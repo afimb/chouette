@@ -1,0 +1,2682 @@
+01;30AOUT;30 Août 1944;CommercialStopPoint
+01;ABESSE;Abbesse;CommercialStopPoint
+01;ABRIAND;Aristide Briand;CommercialStopPoint
+01;ACOLLET;Albert Collet;CommercialStopPoint
+01;ADER;Ader;CommercialStopPoint
+01;ADESERBI;A de Serbie;CommercialStopPoint
+01;AFRANCE;A.France;CommercialStopPoint
+01;ALABERTE;A.Laberte;CommercialStopPoint
+01;ALBERT;Albert 1er;CommercialStopPoint
+01;ALLEGRET;M.Allégret;CommercialStopPoint
+01;ALOUETTE;Alouettes;CommercialStopPoint
+01;ALSLOR;Alsace Lorraine;CommercialStopPoint
+01;AMBPETIT;Ambroise Petit;CommercialStopPoint
+01;AMUNDSEN;Amundsen;CommercialStopPoint
+01;ANDRE;St André;CommercialStopPoint
+01;ANDRHUET;André Huet;CommercialStopPoint
+01;ANNE;Ste Anne;CommercialStopPoint
+01;APOPLLIN;APOLLINAIRE;CommercialStopPoint
+01;APREJEAN;A.Préjean;CommercialStopPoint
+01;ARAGO;Arago;CommercialStopPoint
+01;ARCHIAC;Archiac;CommercialStopPoint
+01;ARGONAUT;Argonautes;CommercialStopPoint
+01;ARTDECES;Arthur Décés;CommercialStopPoint
+01;ASERBIE;A de Serbie;CommercialStopPoint
+01;AUVERGNE;Auvergne;CommercialStopPoint
+01;AVENIR;Avenir;CommercialStopPoint
+01;AVIGNON;Avignon;CommercialStopPoint
+01;BALZAC;Balzac;CommercialStopPoint
+01;BARBIER;Barbier;CommercialStopPoint
+01;BARBUSSE;Barbusse;CommercialStopPoint
+01;BASTIE;Collége M.Bastié;CommercialStopPoint
+01;BAUSSONN;Baussonnet;CommercialStopPoint
+01;BEAUREGA;Beauregard;CommercialStopPoint
+01;BEAUXART;Beaux Arts;CommercialStopPoint
+01;BELAIR;Bel Air;CommercialStopPoint
+01;BELGES;Belges;CommercialStopPoint
+01;BELGIQUE;Belgique;CommercialStopPoint
+01;BERDEMUN;Europe;CommercialStopPoint
+01;BERGS;Bergson;CommercialStopPoint
+01;BERTHELO;Berthelot;CommercialStopPoint
+01;BETHENY;BETHENY;CommercialStopPoint
+01;BEZA;BEZANNES;CommercialStopPoint
+01;BEZANNES;BEZANNES;CommercialStopPoint
+01;BEZANTGV;BEZANNES TGV;CommercialStopPoint
+01;BEZATRAM;Bezannes;CommercialStopPoint
+01;BILLARD;Billard;CommercialStopPoint
+01;BIRHAKE;Bir-Hakeim;CommercialStopPoint
+01;BIZERTE;Bizerte;CommercialStopPoint
+01;BLAVIER;Blavier;CommercialStopPoint
+01;BLERIOT;Blériot;CommercialStopPoint
+01;BLUM;Croix Rouge;CommercialStopPoint
+01;BMUM;Europe;CommercialStopPoint
+01;BOCQUAIN;Bocquaine;CommercialStopPoint
+01;BOENFANT;Bons Enfants;CommercialStopPoint
+01;BONNEFEM;Bonne Femme;CommercialStopPoint
+01;BOULILGR;Boulingrin;CommercialStopPoint
+01;BOUSSINE;Boussinesq;CommercialStopPoint
+01;BRAZZAVI;Brazzaville;CommercialStopPoint
+01;BRESSY;Bressy;CommercialStopPoint
+01;BRIMONTE;Brimontel;CommercialStopPoint
+01;BROUETTE;Brouette;CommercialStopPoint
+01;BUIRETTE;Buirette;CommercialStopPoint
+01;BURIDAN;Buridan;CommercialStopPoint
+01;CALVAIRE;Calvaire;CommercialStopPoint
+01;CAMPUS;Campus;CommercialStopPoint
+01;CARNEGIE;Carnégie;CommercialStopPoint
+01;CASANOVA;Casanova;CommercialStopPoint
+01;CAT1;Tonneliers;CommercialStopPoint
+01;CATHEDRA;Cathédrale;CommercialStopPoint
+01;CBERNARD;Claude Bernard;CommercialStopPoint
+01;CERCLE;Cercle;CommercialStopPoint
+01;CGAUTHI;Cité Gauthier;CommercialStopPoint
+01;CHADOR;Châine d'or;CommercialStopPoint
+01;CHAILLOT;Orgeval;CommercialStopPoint
+01;CHAIPLAF;Chaise au Plafond;CommercialStopPoint
+01;CHALET;Chalet;CommercialStopPoint
+01;CHAMPAV;TINQUEUX CHAMP PAVEAU;CommercialStopPoint
+01;CHAMPEAU;Champeaux;CommercialStopPoint
+01;CHAMPS;Deschamps;CommercialStopPoint
+01;CHAPEGUY;JEAN XXIII;CommercialStopPoint
+01;CHARBONN;Charbonneaux;CommercialStopPoint
+01;CHARNOUL;Charles Arnould;CommercialStopPoint
+01;CHATDEAU;Château d'Eau;CommercialStopPoint
+01;CHBERDIN;Champ Berdin;CommercialStopPoint
+01;CHEDUMIL;Chemin du Milieu;CommercialStopPoint
+01;CHESTLEO;Ch.de St Léonard;CommercialStopPoint
+01;CHLEONAR;Ch. de St Léonard;CommercialStopPoint
+01;CIMENORD;Cimetière du Nord;CommercialStopPoint
+01;CIMEST;Cimetiére de l'Est;CommercialStopPoint
+01;CIMETSUD;Cimetiére du Sud;CommercialStopPoint
+01;CIMLAON;Cimetiére de Laon;CommercialStopPoint
+01;CITDEPOT;Cité du Dépôt;CommercialStopPoint
+01;CLAMONET;Claude Monet;CommercialStopPoint
+01;CLEMENCE;Clémenceau;CommercialStopPoint
+01;CLOSMURI;Clos de Murigny;CommercialStopPoint
+01;CLOVIS;Clovis;CommercialStopPoint
+01;COCTEAU;CORMONTREUIL LES PARQUES;CommercialStopPoint
+01;COFFIG;Coffignot;CommercialStopPoint
+01;COFFIGNO;Coffignot;CommercialStopPoint
+01;COLBERT;Colbert;CommercialStopPoint
+01;COLJESUI;Collège des Jésuites;CommercialStopPoint
+01;COLL3F;Collège des 3 Fontaines;CommercialStopPoint
+01;COLOMB;C.Colomb;CommercialStopPoint
+01;COMEDIE;Comédie;CommercialStopPoint
+01;COMETE;La Comète;CommercialStopPoint
+01;COMMERCE;Commerce;CommercialStopPoint
+01;COMMUNE;Commune;CommercialStopPoint
+01;CONGRES;Congrès;CommercialStopPoint
+01;CONTECHA;Comtes deChampagne;CommercialStopPoint
+01;CORDIER;LP Croix Cordier;CommercialStopPoint
+01;CORMLOUV;CORMONTREUIL LOUVOIS;CommercialStopPoint
+01;CORMONTR;CORMONTREUIL LOUVOIS;CommercialStopPoint
+01;CORMPARQ;CORMONTREUIL LES PARQUES;CommercialStopPoint
+01;COUBERTI;COLLEGE COUBERTIN;CommercialStopPoint
+01;COULMY;Coulmy;CommercialStopPoint
+01;COURLANC;Courlancy;CommercialStopPoint
+01;CRAYERES;Crayères;CommercialStopPoint
+01;CREPS;CREPS;CommercialStopPoint
+01;CRNA;FARMAN;CommercialStopPoint
+01;CRODUSUD;CROIX DU SUD;CommercialStopPoint
+01;CROIROUG;CROIX ROUGE;CommercialStopPoint
+01;CROIXDUS;CROIX DU SUD;CommercialStopPoint
+01;DANEMARK;Danemark;CommercialStopPoint
+01;DANTON;Danton;CommercialStopPoint
+01;DAUDET;Daudet;CommercialStopPoint
+01;DAUPHINE;Dauphiné;CommercialStopPoint
+01;DAUPHINO;Dauphinot;CommercialStopPoint
+01;DECERVAN;De Cervantes;CommercialStopPoint
+01;DEFERMAT;De Fermat;CommercialStopPoint
+01;DESBUREA;Desbureaux;CommercialStopPoint
+01;DIDEROT;Diderot;CommercialStopPoint
+01;DORIGNY;Dorigny;CommercialStopPoint
+01;DOSTOIEV;Dostoievski;CommercialStopPoint
+01;DOUMER;Doumer;CommercialStopPoint
+01;DRODELHO;Droits de l'Homme;CommercialStopPoint
+01;DUMDURVI;Dumont d'Urville;CommercialStopPoint
+01;DUNKERQU;Dunkerque;CommercialStopPoint
+01;EDMOREAU;Edmé Moreau;CommercialStopPoint
+01;ELUARD;Eluard;CommercialStopPoint
+01;ENELLE;Enelle;CommercialStopPoint
+01;EPINETTE;Epinettes;CommercialStopPoint
+01;ERLON;Erlon;CommercialStopPoint
+01;ESTIORVE;Estienne d'Orves;CommercialStopPoint
+01;ETAPE;Etape;CommercialStopPoint
+01;EUROPE;EUROPE;CommercialStopPoint
+01;FACDESCI;Faculté des Sciences;CommercialStopPoint
+01;FADROLEH;FACULTES DROIT ET LETTRES;CommercialStopPoint
+01;FARMAN;FARMAN;CommercialStopPoint
+01;FERMAT;Fermat;CommercialStopPoint
+01;FLAMAND;Flamand;CommercialStopPoint
+01;FLECHAMB;Fléchambault;CommercialStopPoint
+01;FMITTERA;F.Mitterand;CommercialStopPoint
+01;FOLLEPEI;Folle Peine;CommercialStopPoint
+01;FORUM;Forum;CommercialStopPoint
+01;FOUJITA;Foujita;CommercialStopPoint
+01;FOULQUAR;Foulquart;CommercialStopPoint
+01;FRAGONAR;Fragonard;CommercialStopPoint
+01;FRANESPE;Franchet d'Esperey;CommercialStopPoint
+01;FULTON;Fulton;CommercialStopPoint
+01;GABRPERI;Gabriel Péri;CommercialStopPoint
+01;GABRVOIS;Gabriel Voisin;CommercialStopPoint
+01;GALLIENI;Gallieni;CommercialStopPoint
+01;GARE;Gare;CommercialStopPoint
+01;GARERECE;GARE REIMS CENTRE;CommercialStopPoint
+01;GARESBC;Gare de St Brice;CommercialStopPoint
+01;GEOHODIN;Georges Hodin;CommercialStopPoint
+01;GEORSAND;George Sand;CommercialStopPoint
+01;GERBERT;Gerbert;CommercialStopPoint
+01;GERPHILI;Gérard Philippe;CommercialStopPoint
+01;GFAUBERT;Gustave Flaubert;CommercialStopPoint
+01;GGBRAQUE;Georges Braque;CommercialStopPoint
+01;GIRAUD;Giraud;CommercialStopPoint
+01;GOBELINS;Gobelins;CommercialStopPoint
+01;GODINOT;Godinot;CommercialStopPoint
+01;GONZALLE;Gonzalle;CommercialStopPoint
+01;GOULIN;Goulin;CommercialStopPoint
+01;GOURAUD;Gouraud;CommercialStopPoint
+01;GREMILLO;Jean Grémillon;CommercialStopPoint
+01;GUTEMBER;Gutemberg;CommercialStopPoint
+01;GUYARD;Guyard;CommercialStopPoint
+01;HARANG;Harang;CommercialStopPoint
+01;HARMAN;Harman;CommercialStopPoint
+01;HEFARMAN;Henri Farman;CommercialStopPoint
+01;HENPARIS;Henri Paris;CommercialStopPoint
+01;HENROYER;Henry Royer;CommercialStopPoint
+01;HENRVASN;Henry Vasnier;CommercialStopPoint
+01;HOCHE;Hoche;CommercialStopPoint
+01;HODEVIRS;Hôtel de Ville;CommercialStopPoint
+01;HODEVITX;Hôtel de Ville Tinqueux;CommercialStopPoint
+01;HOLLANDE;Hollande;CommercialStopPoint
+01;HOPIDEBR;Hôpital Debré;CommercialStopPoint
+01;HOPITAL;Hôpital;CommercialStopPoint
+01;HOPITAUX;HÔPITAUX;CommercialStopPoint
+01;HOPSEBAS;HÔPITAL SEBASTOPOL;CommercialStopPoint
+01;I.U.T.;I.U.T. et C.N.A.M.;CommercialStopPoint
+01;ISLEDEFR;Isle de France;CommercialStopPoint
+01;ITALIE;Italie;CommercialStopPoint
+01;JACELLIE;Jacques Cellier;CommercialStopPoint
+01;JACOB;Jacob;CommercialStopPoint
+01;JACOBINS;Jacobins;CommercialStopPoint
+01;JACQUART;Jacquart;CommercialStopPoint
+01;JAMOT;Jamot;CommercialStopPoint
+01;JARD;Jard;CommercialStopPoint
+01;JBCLEMEN;Jean B. Clément;CommercialStopPoint
+01;JEAN23;JEAN XXIII;CommercialStopPoint
+01;JEANMACE;Jean Macé;CommercialStopPoint
+01;JEANNARC;Jeanne d'Arc;CommercialStopPoint
+01;JEANZAY;Jean Zay;CommercialStopPoint
+01;JJUGAN;J.Jugan;CommercialStopPoint
+01;JMOULIN;Jean Moulin;CommercialStopPoint
+01;JUGUESDE;Jules Guesde;CommercialStopPoint
+01;JUGUICHA;Jules Guichard;CommercialStopPoint
+01;JULAURE;Jules Laurent;CommercialStopPoint
+01;JULFERRY;Jules Ferry;CommercialStopPoint
+01;JUSTICE;Justice;CommercialStopPoint
+01;KENNEDY;Kennedy;CommercialStopPoint
+01;KIPLING;Kipling;CommercialStopPoint
+01;KNOERI;Knoeri;CommercialStopPoint
+01;LA NEUVM;LA NEUVILLETTE MAIRIE;CommercialStopPoint
+01;LABERGER;La Bergerie;CommercialStopPoint
+01;LAHAUBET;La Haubette;CommercialStopPoint
+01;LAHAYE;Lahaye;CommercialStopPoint
+01;LAMUETTE;La Muette;CommercialStopPoint
+01;LANEUECO;LA NEUVILLETTE ECOLE;CommercialStopPoint
+01;LANGLET;Langlet;CommercialStopPoint
+01;LAPOTIER;La Potière;CommercialStopPoint
+01;LAVOISIE;Lavoisier;CommercialStopPoint
+01;LEDROLLI;Ledru Rollin;CommercialStopPoint
+01;LEMATHIE;Léon Mathieu;CommercialStopPoint
+01;LEMOINE;Lemoine;CommercialStopPoint
+01;LEPATOUX;Léon Patoux;CommercialStopPoint
+01;LESOUETT;Les Ouettes;CommercialStopPoint
+01;LETIS;Létis;CommercialStopPoint
+01;LIBERGIE;Libergier;CommercialStopPoint
+01;LIBERTE;Liberté;CommercialStopPoint
+01;LOGESCOQ;Loges Coquault;CommercialStopPoint
+01;LOMICHEL;Louise Michel;CommercialStopPoint
+01;LOUBLANC;Louis Blanc;CommercialStopPoint
+01;LUCLEGER;Lucien Léger;CommercialStopPoint
+01;LUTHULI;Luthuli;CommercialStopPoint
+01;LUTON;Luton;CommercialStopPoint
+01;LYCVAMUR;Lycée Val de Murigny;CommercialStopPoint
+01;LYNEN;Lynen;CommercialStopPoint
+01;MACECLIE;Macecliers;CommercialStopPoint
+01;MACHET;Machet;CommercialStopPoint
+01;MAIANNEX;Mairie Annexe;CommercialStopPoint
+01;MAIDEBEZ;Mairie de Bezannes;CommercialStopPoint
+01;MAINO;Maino;CommercialStopPoint
+01;MAIRBETH;Mairie de Bétheny;CommercialStopPoint
+01;MAIRBEZA;Mairie de Bezannes;CommercialStopPoint
+01;MAIRIESB;Mairie de St Brice;CommercialStopPoint
+01;MANEGE;Manège;CommercialStopPoint
+01;MARCHAND;Marchandeau;CommercialStopPoint
+01;MARTINPE;Martin Peller;CommercialStopPoint
+01;MASTUART;Marie Stuart;CommercialStopPoint
+01;MAURIAC;Mauriac;CommercialStopPoint
+01;MBLANCHE;Maison Blanche;CommercialStopPoint
+01;MELIES;Méliès;CommercialStopPoint
+01;MENDESFR;Mendès France;CommercialStopPoint
+01;MEUSE;Meuse;CommercialStopPoint
+01;MICHELET;Michelet;CommercialStopPoint
+01;MOHOUSSE;MOULIN DE LA HOUSSE;CommercialStopPoint
+01;MOMORBET;Monument aux Morts Betheny;CommercialStopPoint
+01;MONTHERL;Montherlant;CommercialStopPoint
+01;MOULAVEN;Moulin à Vent;CommercialStopPoint
+01;MOULINS;Moulins;CommercialStopPoint
+01;NAPPERT;Nicolas Appert;CommercialStopPoint
+01;NAUDIN;Naudin;CommercialStopPoint
+01;NEUFCHAT;NEUFCHATEL;CommercialStopPoint
+01;NODIER;Nodier;CommercialStopPoint
+01;NOEL;Noël;CommercialStopPoint
+01;ORGEVAL;ORGEVAL;CommercialStopPoint
+01;PAIX;Paix;CommercialStopPoint
+01;PALAITAU;Palais du Tau;CommercialStopPoint
+01;PALIERE;Palière;CommercialStopPoint
+01;PAPIN;Papin;CommercialStopPoint
+01;PAQUERET;Pâquerettes;CommercialStopPoint
+01;PARCCOLB;PARC COLBERT;CommercialStopPoint
+01;PARCEXPO;PARC DES EXPOS;CommercialStopPoint
+01;PARGNY;Pargny;CommercialStopPoint
+01;PASDEM;Passe Demoiselles;CommercialStopPoint
+01;PASSEREL;Passerelle;CommercialStopPoint
+01;PASTEUR;Pasteur;CommercialStopPoint
+01;PAULFORT;Paul Fort;CommercialStopPoint
+01;PERVENCH;Pervenches;CommercialStopPoint
+01;PHENICIE;Phéniciens;CommercialStopPoint
+01;PIECURIE;Pierre Curie;CommercialStopPoint
+01;PODEGAUL;Pont De Gaulle;CommercialStopPoint
+01;PODEMUIR;Pont de Muire;CommercialStopPoint
+01;POEPERNA;Pont d'Epernay;CommercialStopPoint
+01;POINCARE;Poincaré;CommercialStopPoint
+01;POMMERY;Pommery;CommercialStopPoint
+01;POMPELLE;Pompelle;CommercialStopPoint
+01;POMPIDOU;Pompidou;CommercialStopPoint
+01;PONCEDLE;Ponce de Léon;CommercialStopPoint
+01;PONDESBC;Pont de St Brice;CommercialStopPoint
+01;PORTCOLB;Port Colbert;CommercialStopPoint
+01;PORTEMAR;Porte Mars;CommercialStopPoint
+01;PSALMON;Pierre Salmon;CommercialStopPoint
+01;RABELAIS;Rabelais;CommercialStopPoint
+01;RAOUDUFY;Raoul Dufy;CommercialStopPoint
+01;RAPHAEL;Raphaël;CommercialStopPoint
+01;REPUBLIQ;République;CommercialStopPoint
+01;RETHEL;Rethel;CommercialStopPoint
+01;RICHELIE;Richelieu;CommercialStopPoint
+01;RIMBAUD;Rimbaud;CommercialStopPoint
+01;ROBESPIE;Robespierre;CommercialStopPoint
+01;ROCKEFEL;Rockefeller;CommercialStopPoint
+01;RODEWITR;Route de Witry;CommercialStopPoint
+01;ROEDERER;Roederer;CommercialStopPoint
+01;ROFOUCRY;Roger Foucry;CommercialStopPoint
+01;ROMAINS;Romains;CommercialStopPoint
+01;ROOSEVEL;Roosevelt;CommercialStopPoint
+01;ROYALE;Royale;CommercialStopPoint
+01;RUISSELE;Ruisselet;CommercialStopPoint
+01;SAALLEND;Salvador Allende;CommercialStopPoint
+01;SACY;Sacy;CommercialStopPoint
+01;SALAIRE;Salaire;CommercialStopPoint
+01;SALENGRO;Salengro;CommercialStopPoint
+01;SALINES;Salines;CommercialStopPoint
+01;SBERNARD;Ste Bernadette;CommercialStopPoint
+01;SCHWEITZ;Schweitzer;CommercialStopPoint
+01;SCULTEUR;Sculteurs Jacques;CommercialStopPoint
+01;SENEFELD;Sénéfelder;CommercialStopPoint
+01;SOUVENIR;Souvenir;CommercialStopPoint
+01;STADEMUI;Stade de Muire;CommercialStopPoint
+01;STALINGR;Stalingrad;CommercialStopPoint
+01;STBENOIT;St Benoit;CommercialStopPoint
+01;STBERNAR;St Bernard;CommercialStopPoint
+01;STBRICOU;SAINT- BRICE COURCELLES;CommercialStopPoint
+01;STCHARLE;SAINT-BRICE COURCELLES;CommercialStopPoint
+01;STETHERE;Ste Thérèse;CommercialStopPoint
+01;STJBSALL;St Jean Baptiste de le Salle;CommercialStopPoint
+01;STJOPERS;Saint Jhon Perse;CommercialStopPoint
+01;STJOSEPH;St Joseph;CommercialStopPoint
+01;STLEONAR;St Léonard;CommercialStopPoint
+01;STMAURIC;St Maurice;CommercialStopPoint
+01;STNICAIS;St Niçaise;CommercialStopPoint
+01;STRABOUR;Strasbourg;CommercialStopPoint
+01;STREMI;St Remi;CommercialStopPoint
+01;STTHOMAS;St Thomas;CommercialStopPoint
+01;STTIMOTH;St Timothée;CommercialStopPoint
+01;SUZANNE;Suzanne;CommercialStopPoint
+01;SYNAGOGU;Synagogue;CommercialStopPoint
+01;TEMPLIER;Templiers;CommercialStopPoint
+01;TERNAUX;Ternaux;CommercialStopPoint
+01;THEATRE;Théâtre;CommercialStopPoint
+01;THIEROT;Thiérot;CommercialStopPoint
+01;THIOLETT;Thiolettes;CommercialStopPoint
+01;THISABIN;Thierry Sabine;CommercialStopPoint
+01;TILLEULS;Tilleuls;CommercialStopPoint
+01;TINBOUTR;TINQUEUX BOUTREAUX;CommercialStopPoint
+01;TONDEURS;Tondeurs;CommercialStopPoint
+01;TONNELIE;Tonneliers;CommercialStopPoint
+01;TOURANGE;Tourangeaux;CommercialStopPoint
+01;TUILERIE;Tuileries;CommercialStopPoint
+01;TUNISIE;TUNISIE;CommercialStopPoint
+01;UNIVERSI;Université;CommercialStopPoint
+01;URGENCES;Urgences;CommercialStopPoint
+01;VADEMURI;VAL DE MURIGNY;CommercialStopPoint
+01;VALDEVES;Val de Vesle;CommercialStopPoint
+01;VAUBAN;Vauban;CommercialStopPoint
+01;VENISE;Venise;CommercialStopPoint
+01;VERDI;Verdi;CommercialStopPoint
+01;VERNIER;Vernier;CommercialStopPoint
+01;VERNOUIL;Vernouillet;CommercialStopPoint
+01;VERRERIE;Verreries;CommercialStopPoint
+01;VERRIER;Verrier;CommercialStopPoint
+01;VESLE;Vesle;CommercialStopPoint
+01;VICTCOUS;Victor Cousin;CommercialStopPoint
+01;VICTHUGO;Victor Hugo;CommercialStopPoint
+01;VICTLAMB;Victor Lambert;CommercialStopPoint
+01;VRILLY;Vrilly;CommercialStopPoint
+01;WILSON;Wilson;CommercialStopPoint
+01;YSER;Yser;CommercialStopPoint
+01;ZIPOMFAR;ZONE INDUSTRIELLE POMPELLE-FARMAN;CommercialStopPoint
+02;1001;Hôpital;BoardingPosition;LAMBERT II;;;HOPITAL
+02;1003;Château d'Eau;BoardingPosition;LAMBERT II;;;CHATDEAU
+02;1004;Colbert;BoardingPosition;LAMBERT II;;;COLBERT
+02;1005;Arago;BoardingPosition;LAMBERT II;;;ARAGO
+02;1006;Fermat;BoardingPosition;LAMBERT II;;;FERMAT
+02;1007;Kennedy;BoardingPosition;LAMBERT II;;;KENNEDY
+02;1008;Jean Macé;BoardingPosition;LAMBERT II;;;JEANMACE
+02;1009;Campus;BoardingPosition;LAMBERT II;;;CAMPUS
+02;1010;Belges;BoardingPosition;LAMBERT II;;;BELGES
+02;1011;Saint Jhon Perse;BoardingPosition;LAMBERT II;;;STJOPERS
+02;1012;Danton;BoardingPosition;LAMBERT II;;;DANTON
+02;1013;Franchet d'Esperey;BoardingPosition;LAMBERT II;;;FRANESPE
+02;1014;Saint Thomas;BoardingPosition;LAMBERT II;;;STTHOMAS
+02;1015;Courlancy;BoardingPosition;LAMBERT II;;;COURLANC
+02;1016;Boulingrin;BoardingPosition;LAMBERT II;;;BOULILGR
+02;1018;Gare;BoardingPosition;LAMBERT II;;;GARE
+02;1019;Comédie;BoardingPosition;LAMBERT II;;;COMEDIE
+02;1020;Langlet;BoardingPosition;LAMBERT II;;;LANGLET
+02;1021;Vesle;BoardingPosition;LAMBERT II;;;VESLE
+02;1022;Théâtre;BoardingPosition;LAMBERT II;;;THEATRE
+02;1023;Théâtre;BoardingPosition;LAMBERT II;;;THEATRE
+02;1024;Vesle;BoardingPosition;LAMBERT II;;;VESLE
+02;1025;Langlet;BoardingPosition;LAMBERT II;;;LANGLET
+02;1026;Comédie;BoardingPosition;LAMBERT II;;;COMEDIE
+02;1027;Gare;BoardingPosition;LAMBERT II;;;GARE
+02;1029;Boulingrin;BoardingPosition;LAMBERT II;;;BOULILGR
+02;1030;Courlancy;BoardingPosition;LAMBERT II;;;COURLANC
+02;1031;Saint Thomas;BoardingPosition;LAMBERT II;;;STTHOMAS
+02;1032;Franchet d'Esperey;BoardingPosition;LAMBERT II;;;FRANESPE
+02;1033;Danton;BoardingPosition;LAMBERT II;;;DANTON
+02;1034;Saint Jhon Perse;BoardingPosition;LAMBERT II;;;STJOPERS
+02;1035;Belges;BoardingPosition;LAMBERT II;;;BELGES
+02;1036;Campus;BoardingPosition;LAMBERT II;;;CAMPUS
+02;1037;Jean Macé;BoardingPosition;LAMBERT II;;;JEANMACE
+02;1038;Kennedy;BoardingPosition;LAMBERT II;;;KENNEDY
+02;1039;Fermat;BoardingPosition;LAMBERT II;;;FERMAT
+02;1040;Arago;BoardingPosition;LAMBERT II;;;ARAGO
+02;1041;Colbert;BoardingPosition;LAMBERT II;;;COLBERT
+02;1042;Château d'Eau;BoardingPosition;LAMBERT II;;;CHATDEAU
+02;1043;Neufchâtel;BoardingPosition;LAMBERT II;;;NEUFCHAT
+02;1044;Hôpital;BoardingPosition;LAMBERT II;;;HOPITAL
+02;1051;Bezannes;BoardingPosition;LAMBERT II;;;BEZATRAM
+02;1055;Blum;BoardingPosition;LAMBERT II;;;BLUM
+02;1056;Blum;BoardingPosition;LAMBERT II;;;BLUM
+02;1071;1 SUPP VERS NORD;BoardingPosition;LAMBERT II;;;
+02;1072;1 SUPP VERS SUD;BoardingPosition;LAMBERT II;;;
+02;1073;2 SUPP VERS NORD;BoardingPosition;LAMBERT II;;;
+02;1074;2 SUPP VERS SUD;BoardingPosition;LAMBERT II;;;
+02;30AOUT;30 AOUT 1944;BoardingPosition;LAMBERT II;     724406;     174418;30AOUT
+02;30AOUT2;30 AOUT 1944;BoardingPosition;LAMBERT II;     724338;     174430;30AOUT
+02;A BRIAN2;ARISTIDE BRIAND;BoardingPosition;LAMBERT II;     723813;     174366;ABRIAND
+02;A BRIAND;ARISTIDE BRIAND;BoardingPosition;LAMBERT II;     723870;     174394;ABRIAND
+02;ABESSE;ABBESSE;BoardingPosition;LAMBERT II;     720222;     174501;ABESSE
+02;ABESSE2;ABBESSE;BoardingPosition;LAMBERT II;     720189;     174491;ABESSE
+02;ACOLLET;ALBERT COLLET;BoardingPosition;LAMBERT II;     720126;     173936;ACOLLET
+02;ACOLLET2;ALBERT COLLET;BoardingPosition;LAMBERT II;     720069;     173969;ACOLLET
+02;ADER;ADER;BoardingPosition;LAMBERT II;;;
+02;ADER2;ADER;BoardingPosition;LAMBERT II;     726180;     172041;ADER
+02;ADERF;ADER;BoardingPosition;LAMBERT II;     726176;     172040;ADER
+02;ADESERB2;ALEXANDRE DE SERBIE;BoardingPosition;LAMBERT II;     723520;     171666;ADESERBI
+02;ADESERBI;ALEXANDRE DE SERBIE;BoardingPosition;LAMBERT II;     723522;     171657;ADESERBI
+02;ADRIATI;ADRIATIQUE;BoardingPosition;LAMBERT II;;;
+02;AEROGARE;AEROGARE;BoardingPosition;LAMBERT II;;;
+02;AFRANCE;ANATOLE FRANCE;BoardingPosition;LAMBERT II;     720076;     173769;AFRANCE
+02;AFRANCE2;ANATOLE FRANCE;BoardingPosition;LAMBERT II;     720082;     173741;AFRANCE
+02;ALBERT1;ALBERT 1er;BoardingPosition;LAMBERT II;     721859;     175844;ALBERT
+02;ALBERT2;ALBERT 1er;BoardingPosition;LAMBERT II;     721869;     175816;ALBERT
+02;ALLEGRE2;MARC ALLEGRET;BoardingPosition;LAMBERT II;     719672;     173447;ALLEGRET
+02;ALLEGRET;MARC ALLEGRET;BoardingPosition;LAMBERT II;     719675;     173447;ALLEGRET
+02;ALOUETT2;ALOUETTES;BoardingPosition;LAMBERT II;     725174;     173583;ALOUETTE
+02;ALOUETTE;ALOUETTES;BoardingPosition;LAMBERT II;     725225;     173545;ALOUETTE
+02;ALSLOR;ALSACE LORRAINE;BoardingPosition;LAMBERT II;;;
+02;ALSLOR2;ALSACE LORRAINE;BoardingPosition;LAMBERT II;     724180;     170231;ALSLOR
+02;AMBPETI2;AMBROISE PETIT;BoardingPosition;LAMBERT II;     724126;     172542;AMBPETIT
+02;AMBPETIT;AMBROISE PETIT;BoardingPosition;LAMBERT II;     724125;     172544;AMBPETIT
+02;AMUNDSE2;AMUNDSEN;BoardingPosition;LAMBERT II;     723527;     171042;AMUNDSEN
+02;AMUNDSEN;AMUNDSEN;BoardingPosition;LAMBERT II;     723514;     171025;AMUNDSEN
+02;ANDRE;ST ANDRE;BoardingPosition;LAMBERT II;     724108;     174539;ANDRE
+02;ANDRE2;ST ANDRE;BoardingPosition;LAMBERT II;     724074;     174512;ANDRE
+02;ANDREC;ST ANDRE;BoardingPosition;LAMBERT II;     724078;     174498;ANDRE
+02;ANDREC2;ST ANDRE;BoardingPosition;LAMBERT II;     724093;     174505;ANDRE
+02;ANDRHU2;ANDRE HUET;BoardingPosition;LAMBERT II;     721556;     176335;ANDRHUET
+02;ANDRHUET;ANDRE HUET;BoardingPosition;LAMBERT II;     721559;     176334;ANDRHUET
+02;ANNE;STE ANNE;BoardingPosition;LAMBERT II;     723353;     172357;ANNE
+02;ANNE2;STE ANNE;BoardingPosition;LAMBERT II;     723355;     172323;ANNE
+02;ANNET;STE ANNE;BoardingPosition;LAMBERT II;     723404;     172352;ANNE
+02;ANNET2;STE ANNE;BoardingPosition;LAMBERT II;     723404;     172347;ANNE
+02;APOPLLIN;APOLLINAIRE;BoardingPosition;LAMBERT II;     722919;     170679;APOPLLIN
+02;APREJEA2;ALBERT PREJEAN;BoardingPosition;LAMBERT II;     720080;     173377;APREJEAN
+02;APREJEAN;ALBERT PREJEAN;BoardingPosition;LAMBERT II;     720083;     173378;APREJEAN
+02;ARAGO;ARAGO;BoardingPosition;LAMBERT II;     721696;     171302;ARAGO
+02;ARAGO2;ARAGO;BoardingPosition;LAMBERT II;     721661;     171342;ARAGO
+02;ARCHIAC;ARCHIAC;BoardingPosition;LAMBERT II;     725189;     174926;ARCHIAC
+02;ARCHIAC2;ARCHIAC;BoardingPosition;LAMBERT II;     725187;     174878;ARCHIAC
+02;ARGONAU2;ARGONAUTES;BoardingPosition;LAMBERT II;     723800;     171007;ARGONAUT
+02;ARGONAUT;ARGONAUTES;BoardingPosition;LAMBERT II;     723663;     171019;ARGONAUT
+02;ARTDECE2;ARTHUR DECES;BoardingPosition;LAMBERT II;     725354;     174485;ARTDECES
+02;ARTDECES;ARTHUR DECES;BoardingPosition;LAMBERT II;;;
+02;ASERBIE;ALEXANDRE DE SERBIE;BoardingPosition;LAMBERT II;     723541;     171691;ADESERBI
+02;ASERBIE2;ALEXANDRE DE SERBIE;BoardingPosition;LAMBERT II;     723541;     171691;ADESERBI
+02;ASERBIET;ALEXANDRE DE SERBIE;BoardingPosition;LAMBERT II;;;
+02;ASERBIT2;ALEXANDRE DE SERBIE;BoardingPosition;LAMBERT II;;;
+02;AUVERGN2;AUVERGNE;BoardingPosition;LAMBERT II;     724110;     169971;AUVERGNE
+02;AUVERGNE;AUVERGNE;BoardingPosition;LAMBERT II;     724105;     169982;AUVERGNE
+02;AVENIR;AVENIR;BoardingPosition;LAMBERT II;     722040;     176261;AVENIR
+02;AVENIR2;AVENIR;BoardingPosition;LAMBERT II;     722078;     176226;AVENIR
+02;AVIGNON;AVIGNON;BoardingPosition;LAMBERT II;     722256;     172009;AVIGNON
+02;AVIGNON2;AVIGNON;BoardingPosition;LAMBERT II;     722254;     172013;AVIGNON
+02;BALZAC;BALZAC;BoardingPosition;LAMBERT II;     721743;     176759;BALZAC
+02;BALZAC2;BALZAC;BoardingPosition;LAMBERT II;     721754;     176741;BALZAC
+02;BARBIER;BARBIER;BoardingPosition;LAMBERT II;     721064;     175845;BARBIER
+02;BARBIER2;BARBIER;BoardingPosition;LAMBERT II;     721064;     175843;BARBIER
+02;BARBUSS2;BARBUSSE;BoardingPosition;LAMBERT II;     725078;     174211;BARBUSSE
+02;BARBUSSE;BARBUSSE;BoardingPosition;LAMBERT II;     725083;     174239;BARBUSSE
+02;BASTIE2;COLLEGE MARYSE BASTIE;BoardingPosition;LAMBERT II;     724222;     175895;BASTIE
+02;BAUSSON2;BAUSSONNET;BoardingPosition;LAMBERT II;     722105;     174894;BAUSSONN
+02;BAUSSONN;BAUSSONNET;BoardingPosition;LAMBERT II;     722081;     174894;BAUSSONN
+02;BEAUREGA;BEAUREGARD;BoardingPosition;LAMBERT II;     719960;     170818;BEAUREGA
+02;BEAUXART;BEAUX ARTS;BoardingPosition;LAMBERT II;     723154;     173898;BEAUXART
+02;BELAIR;BEL AIR;BoardingPosition;LAMBERT II;     724452;     175611;BELAIR
+02;BELAIR2;BEL AIR;BoardingPosition;LAMBERT II;     724490;     175666;BELAIR
+02;BELGES;BELGES;BoardingPosition;LAMBERT II;     722284;     176432;BELGES
+02;BELGES2;BELGES;BoardingPosition;LAMBERT II;     722378;     176288;BELGES
+02;BELGESt2;BELGES;BoardingPosition;LAMBERT II;;;
+02;BELGIQU2;BELGIQUE;BoardingPosition;LAMBERT II;     721810;     175194;BELGIQUE
+02;BELGIQUE;BELGIQUE;BoardingPosition;LAMBERT II;     721767;     175143;BELGIQUE
+02;BELGIQUY;BELGIQUE;BoardingPosition;LAMBERT II;     721826;     175214;BELGIQUE
+02;BELGIQY2;BELGIQUE;BoardingPosition;LAMBERT II;     721646;     175188;BELGIQUE
+02;BERDEMU2;EUROPE;BoardingPosition;LAMBERT II;     725515;     173851;EUROPE
+02;BERDEMUN;EUROPE;BoardingPosition;LAMBERT II;     725532;     173848;EUROPE
+02;BERGS;BERGSON;BoardingPosition;LAMBERT II;     721295;     172276;BERGS
+02;BERGS2;BERGSON;BoardingPosition;LAMBERT II;     721333;     172253;BERGS
+02;BERTHELO;BERTHELOT;BoardingPosition;LAMBERT II;     726155;     175985;BERTHELO
+02;BETHENY;BETHENY;BoardingPosition;LAMBERT II;     724380;     177002;BETHENY
+02;BIBLIO;BIBLIOTHEQUE UNIVERSITAIRE;BoardingPosition;LAMBERT II;;;
+02;BILLARD;BILLARD;BoardingPosition;LAMBERT II;     721673;     171834;BILLARD
+02;BILLARD2;BILLARD;BoardingPosition;LAMBERT II;     721667;     171849;BILLARD
+02;BILLPRO;BILLARD;BoardingPosition;LAMBERT II;;;
+02;BIR HAK2;BIR HAKEIM;BoardingPosition;LAMBERT II;     720956;     173121;BIRHAKE
+02;BIR HAKE;BIR HAKEIM;BoardingPosition;LAMBERT II;     720955;     173121;BIRHAKE
+02;BIZERTE;BIZERTE;BoardingPosition;LAMBERT II;     724779;     175545;BIZERTE
+02;BIZERTE2;BIZERTE;BoardingPosition;LAMBERT II;     724690;     175649;BIZERTE
+02;BLANMONT;LES BLANCS MONTS;BoardingPosition;LAMBERT II;;;
+02;BLAVIER;BLAVIER;BoardingPosition;LAMBERT II;     722524;     176027;BLAVIER
+02;BLAVIER2;BLAVIER;BoardingPosition;LAMBERT II;     722494;     176090;BLAVIER
+02;BLERIOT;BLERIOT;BoardingPosition;LAMBERT II;     725595;     174378;BLERIOT
+02;BLERIOT2;BLERIOT;BoardingPosition;LAMBERT II;     725586;     174365;BLERIOT
+02;BLUM;CROIX ROUGE;BoardingPosition;LAMBERT II;     721989;     171050;CROIROUG
+02;BLUM S;CROIX ROUGE;BoardingPosition;LAMBERT II;     722081;     171014;CROIROUG
+02;BLUM S2;CROIX ROUGE;BoardingPosition;LAMBERT II;     721997;     171063;CROIROUG
+02;BMUM;EUROPE;BoardingPosition;LAMBERT II;     725609;     173961;EUROPE
+02;BMUM2;EUROPE;BoardingPosition;LAMBERT II;     725638;     173920;EUROPE
+02;BOCQUAI2;BOCQUAINE;BoardingPosition;LAMBERT II;     723063;     172872;BOCQUAIN
+02;BOCQUAIN;BOCQUAINE;BoardingPosition;LAMBERT II;     723078;     172914;BOCQUAIN
+02;BOENFAN2;BONS ENFANTS;BoardingPosition;LAMBERT II;     725357;     173457;BOENFANT
+02;BOENFANT;BONS ENFANTS;BoardingPosition;LAMBERT II;     725361;     173450;BOENFANT
+02;BONNEFE2;BONNE FEMME;BoardingPosition;LAMBERT II;     722863;     172240;BONNEFEM
+02;BONNEFEM;BONNE FEMME;BoardingPosition;LAMBERT II;     722835;     172266;BONNEFEM
+02;BOULARD;BOULARD;BoardingPosition;LAMBERT II;;;
+02;BOULARD2;BOULARD;BoardingPosition;LAMBERT II;;;
+02;BOULINGR;BOULINGRIN;BoardingPosition;LAMBERT II;     723331;     174720;BOULILGR
+02;BOUSSIN2;BOUSSINESQ;BoardingPosition;LAMBERT II;     724683;     173746;BOUSSINE
+02;BOUSSINE;BOUSSINESQ;BoardingPosition;LAMBERT II;     724619;     173755;BOUSSINE
+02;BRAZASCO;BRAZAVILLE;BoardingPosition;LAMBERT II;;;
+02;BRAZZAV2;BRAZZAVILLE;BoardingPosition;LAMBERT II;     725373;     173899;BRAZZAVI
+02;BRAZZAVI;BRAZZAVILLE;BoardingPosition;LAMBERT II;     725329;     173908;BRAZZAVI
+02;BRESSY;BRESSY;BoardingPosition;LAMBERT II;     724972;     172034;BRESSY
+02;BRESSY2;BRESSY;BoardingPosition;LAMBERT II;;;
+02;BRIMONT2;BRIMONTEL;BoardingPosition;LAMBERT II;     723430;     176411;BRIMONTE
+02;BRIMONTE;BRIMONTEL;BoardingPosition;LAMBERT II;     723443;     176333;BRIMONTE
+02;BROSSOL2;BROSSOLETTE;BoardingPosition;LAMBERT II;;;
+02;BROSSOLE;BROSSOLETTE;BoardingPosition;LAMBERT II;;;
+02;BROUETT2;BROUETTE;BoardingPosition;LAMBERT II;     724543;     174787;BROUETTE
+02;BROUETTE;BROUETTE;BoardingPosition;LAMBERT II;     724470;     174752;BROUETTE
+02;BUIRETTE;BUIRETTE;BoardingPosition;LAMBERT II;     722911;     174111;BUIRETTE
+02;BURIDAN;BURIDAN;BoardingPosition;LAMBERT II;     723246;     172101;BURIDAN
+02;C GAUTH2;CITE GAUTHIER;BoardingPosition;LAMBERT II;;;
+02;C GAUTHI;CITE GAUTHIER;BoardingPosition;LAMBERT II;     722115;     176692;CGAUTHI
+02;CALVAIR2;CALVAIRE;BoardingPosition;LAMBERT II;     729304;     170462;CALVAIRE
+02;CALVAIRE;CALVAIRE;BoardingPosition;LAMBERT II;     729325;     170442;CALVAIRE
+02;CAPUCIN2;CAPUCINS;BoardingPosition;LAMBERT II;;;
+02;CAPUCINS;CAPUCINS;BoardingPosition;LAMBERT II;;;
+02;CARNEGI2;CARNEGIE;BoardingPosition;LAMBERT II;     723744;     173936;CARNEGIE
+02;CARNEGIE;CARNEGIE;BoardingPosition;LAMBERT II;;;
+02;CARRE;JEAN MOULIN;BoardingPosition;LAMBERT II;     725553;     174197;JMOULIN
+02;CARRE2;JEAN MOULIN;BoardingPosition;LAMBERT II;     725560;     174187;JMOULIN
+02;CARREF;CARREFOUR MARATHON;BoardingPosition;LAMBERT II;;;
+02;CARTONLe;CARTONNERIE Dt LEMOINE;BoardingPosition;LAMBERT II;;;
+02;CARTONPh;CARTONNERIE rue. PHILIPPE;BoardingPosition;LAMBERT II;;;
+02;CASANOV2;CASANOVA;BoardingPosition;LAMBERT II;     720512;     173076;CASANOVA
+02;CASANOVA;CASANOVA;BoardingPosition;LAMBERT II;     720523;     173065;CASANOVA
+02;CAT1;TONNELIERS;BoardingPosition;LAMBERT II;     726025;     169688;TONNELIE
+02;CATHEDRA;ROYALE;BoardingPosition;LAMBERT II;     723614;     174187;ROYALE
+02;CBERNAR2;CLAUDE BERNARD;BoardingPosition;LAMBERT II;     721403;     173275;CBERNARD
+02;CBERNARD;CLAUDE BERNARD;BoardingPosition;LAMBERT II;     721369;     173287;CBERNARD
+02;CCMaur;Centre Commercial Croix Mauricienne;BoardingPosition;LAMBERT II;;;
+02;CDESTLE2;CHEMIN DE ST LEONARD;BoardingPosition;LAMBERT II;     728149;     170937;CHLEONAR
+02;CDESTLEO;ST LEONARD;BoardingPosition;LAMBERT II;;;
+02;CDS;CROIX DU SUD;BoardingPosition;LAMBERT II;;;
+02;CDS2;CROIX DU SUD;BoardingPosition;LAMBERT II;;;
+02;CEN SPOR;CENTRE SPORTIF;BoardingPosition;LAMBERT II;;;
+02;CENTCOME;CONTINENT;BoardingPosition;LAMBERT II;;;
+02;CERCLE;CERCLE;BoardingPosition;LAMBERT II;     722759;     171266;CERCLE
+02;CERCLE2;CERCLE;BoardingPosition;LAMBERT II;     722742;     171254;CERCLE
+02;CHAIDO2;CHAINE D'OR;BoardingPosition;LAMBERT II;     724493;     177255;CHADOR
+02;CHAIDOR;CHAINE D OR;BoardingPosition;LAMBERT II;     724531;     177355;CHADOR
+02;CHAILLOT;ORGEVAL;BoardingPosition;LAMBERT II;;;
+02;CHAIPLA2;CHAISE AU PLAFOND;BoardingPosition;LAMBERT II;     722226;     171329;CHAIPLAF
+02;CHAIPLAF;CHAISE AU PLAFOND;BoardingPosition;LAMBERT II;     722208;     171349;CHAIPLAF
+02;CHALET;CHALET;BoardingPosition;LAMBERT II;     724922;     175023;CHALET
+02;CHALET2;CHALET;BoardingPosition;LAMBERT II;     724959;     175031;CHALET
+02;CHAMPA2;CHAMP PAVEAU;BoardingPosition;LAMBERT II;;;
+02;CHAMPAV;CHAMP PAVEAU;BoardingPosition;LAMBERT II;     718956;     173460;CHAMPAV
+02;CHAMPEA2;CHAMPEAUX;BoardingPosition;LAMBERT II;     721937;     176407;CHAMPEAU
+02;CHAMPEAU;CHAMPEAUX;BoardingPosition;LAMBERT II;     721911;     176426;CHAMPEAU
+02;CHAMPIGN;CHAMPIGNY;BoardingPosition;LAMBERT II;;;
+02;CHAMPS;DESCHAMPS;BoardingPosition;LAMBERT II;     721590;     177602;CHAMPS
+02;CHAMPS2;DESCHAMPS;BoardingPosition;LAMBERT II;     721614;     177577;CHAMPS
+02;CHAPEGUY;JEAN XXIII;BoardingPosition;LAMBERT II;     723220;     177189;JEAN23
+02;CHARBO2;CHARBONNEAUX;BoardingPosition;LAMBERT II;     721620;     175818;CHARBONN
+02;CHARBONN;CHARBONNEAUX;BoardingPosition;LAMBERT II;     721620;     175818;CHARBONN
+02;CHARNOU2;CHARLES ARNOULD;BoardingPosition;LAMBERT II;     721984;     175486;CHARNOUL
+02;CHARNOUL;CHARLES ARNOULD;BoardingPosition;LAMBERT II;     721991;     175542;CHARNOUL
+02;CHBERDI;CHAMP BERDIN;BoardingPosition;LAMBERT II;     725797;     170306;CHBERDIN
+02;CHBERDIN;CHAMP BERDIN;BoardingPosition;LAMBERT II;     725751;     170356;CHBERDIN
+02;CHEDUMIL;CHEMIN DU MILIEU;BoardingPosition;LAMBERT II;     720651;     174685;CHEDUMIL
+02;CHESTLEO;CHEMIN DE ST LEONARD;BoardingPosition;LAMBERT II;     728158;     170925;CHESTLEO
+02;CIM ESR2;CIMETIERE DE L' EST;BoardingPosition;LAMBERT II;     725179;     175104;CIMEST
+02;CIM EST;CIMETIERE DE L' EST;BoardingPosition;LAMBERT II;     725172;     175169;CIMEST
+02;CIM EST2;CIMETIERE DE L' EST;BoardingPosition;LAMBERT II;     725162;     175147;CIMEST
+02;CIM ESTR;CIMETIERE DE L' EST;BoardingPosition;LAMBERT II;     725157;     175111;CIMEST
+02;CIM LAO2;CIMETIERE DE LAON;BoardingPosition;LAMBERT II;     722024;     176877;CIMLAON
+02;CIM LAON;CIMETIERE DE LAON;BoardingPosition;LAMBERT II;     722019;     176886;CIMLAON
+02;CIMETSU2;CIMETIERE DU SUD;BoardingPosition;LAMBERT II;     724332;     172638;CIMETSUD
+02;CIMETSUD;CIMETIERE DU SUD;BoardingPosition;LAMBERT II;     724314;     172600;CIMETSUD
+02;CITDEPO2;CITE DU DEPOT;BoardingPosition;LAMBERT II;     723356;     176773;CITDEPOT
+02;CITDEPOT;CITE DU DEPOT;BoardingPosition;LAMBERT II;     723355;     176766;CITDEPOT
+02;CITE GA2;CITE GAUTHIER;BoardingPosition;LAMBERT II;     722179;     176619;CGAUTHI
+02;CITE GAU;CITE GAUTHIER;BoardingPosition;LAMBERT II;;;
+02;CLAMONET;CLAUDE MONET;BoardingPosition;LAMBERT II;     724671;     171800;CLAMONET
+02;CLEMENC2;CLEMENCEAU;BoardingPosition;LAMBERT II;     724406;     173813;CLEMENCE
+02;CLEMENCE;CLEMENCEAU;BoardingPosition;LAMBERT II;     724374;     173815;CLEMENCE
+02;CLOSMURI;CLOS DE MURIGNY;BoardingPosition;LAMBERT II;     722799;     170478;CLOSMURI
+02;CLOVIS;CLOVIS;BoardingPosition;LAMBERT II;     723003;     173876;CLOVIS
+02;CLOVIS2;CLOVIS;BoardingPosition;LAMBERT II;     722998;     173866;CLOVIS
+02;COCTEAU;CORMONTREUIL LES PARQUES;BoardingPosition;LAMBERT II;     724347;     169791;CORMPARQ
+02;COFFIG;COFFIGNOT;BoardingPosition;LAMBERT II;     726953;     171722;COFFIG
+02;COFFIG2;COFFIGNOT;BoardingPosition;LAMBERT II;     726917;     171734;COFFIG
+02;COGNJAY;MAISON BLANCHE;BoardingPosition;LAMBERT II;;;
+02;COGNJAY2;MAISON BLANCHE;BoardingPosition;LAMBERT II;;;
+02;COLIN;COMEDIE;BoardingPosition;LAMBERT II;     722461;     173566;COMEDIE
+02;COLIN2;COMEDIE;BoardingPosition;LAMBERT II;     722551;     173608;COMEDIE
+02;COLJESUI;COLLEGE DES JESUITES;BoardingPosition;LAMBERT II;     724086;     173359;COLJESUI
+02;COLL3F;COLLEGE 3 FONTAINES;BoardingPosition;LAMBERT II;;;
+02;COLOMB;CHRISTOPHE COLOMB;BoardingPosition;LAMBERT II;     723798;     171205;COLOMB
+02;COLOMB2;CHRISTOPHE COLOMB;BoardingPosition;LAMBERT II;     723812;     171198;COLOMB
+02;COLOMBT;CHRISTOPHE COLOMB;BoardingPosition;LAMBERT II;     723866;     171196;COLOMB
+02;COLOMBT2;CHRISTOPHE COLOMB;BoardingPosition;LAMBERT II;     723872;     171211;COLOMB
+02;COMET2;LA COMETE;BoardingPosition;LAMBERT II;     724911;     177091;COMETE
+02;COMETE;LA COMETE;BoardingPosition;LAMBERT II;     724842;     176990;COMETE
+02;COMMERCE;COMMERCE;BoardingPosition;LAMBERT II;     726230;     170018;COMMERCE
+02;COMMUNE;COMMUNE;BoardingPosition;LAMBERT II;     720673;     174540;COMMUNE
+02;CONGRES;CONGRES;BoardingPosition;LAMBERT II;     722827;     173954;CONGRES
+02;CONGRES2;CONGRES;BoardingPosition;LAMBERT II;;;
+02;CONTECHA;COMTES DE CHAMPAGNE;BoardingPosition;LAMBERT II;     723406;     174506;CONTECHA
+02;CORDIER;LEP CROIX CORDIER;BoardingPosition;LAMBERT II;     720509;     173090;CORDIER
+02;CORDIER2;LEP CROIX CORDIER;BoardingPosition;LAMBERT II;;;
+02;CORMON S;CORMONTREUIL LOUVOIS;BoardingPosition;LAMBERT II;     724885;     169921;CORMLOUV
+02;CORMONTR;CORMONTREUIL LOUVOIS;BoardingPosition;LAMBERT II;;;
+02;COUBERTI;COLLEGE COUBERTIN;BoardingPosition;LAMBERT II;     723730;     170219;COUBERTI
+02;COULMY;COULMY;BoardingPosition;LAMBERT II;     724682;     177560;COULMY
+02;COURLAN2;COURLANCY;BoardingPosition;LAMBERT II;     722962;     172769;COURLANC
+02;COURLANC;COURLANCY;BoardingPosition;LAMBERT II;     722925;     172756;COURLANC
+02;CRAYERE2;CRAYERES;BoardingPosition;LAMBERT II;     725144;     173083;CRAYERES
+02;CRAYERES;CRAYERES;BoardingPosition;LAMBERT II;     725148;     173028;CRAYERES
+02;CREPS;CREPS;BoardingPosition;LAMBERT II;     721144;     171686;CREPS
+02;CREPS2;CREPS;BoardingPosition;LAMBERT II;     721046;     171794;CREPS
+02;CRNA;FARMAN;BoardingPosition;LAMBERT II;     726319;     172173;FARMAN
+02;CRNA2;FARMAN;BoardingPosition;LAMBERT II;;;
+02;CROISUD1;CROIX DU SUD;BoardingPosition;LAMBERT II;;;
+02;CROISUD2;CROIX DU SUD;BoardingPosition;LAMBERT II;;;
+02;DANEMAR2;DANEMARK;BoardingPosition;LAMBERT II;     721811;     174929;DANEMARK
+02;DANEMARK;DANEMARK;BoardingPosition;LAMBERT II;     721779;     174927;DANEMARK
+02;DANEMAT2;DANEMARK;BoardingPosition;LAMBERT II;     721806;     174930;DANEMARK
+02;DANTON;DANTON;BoardingPosition;LAMBERT II;     722682;     175758;DANTON
+02;DANTON2;DANTON;BoardingPosition;LAMBERT II;     722622;     175874;DANTON
+02;DAUDET;DAUDET;BoardingPosition;LAMBERT II;     719232;     173521;DAUDET
+02;DAUDET2;DAUDET;BoardingPosition;LAMBERT II;     719166;     173505;DAUDET
+02;DAUPHIN2;DAUPHINE;BoardingPosition;LAMBERT II;     721275;     171178;DAUPHINE
+02;DAUPHINE;DAUPHINE;BoardingPosition;LAMBERT II;     721248;     171208;DAUPHINE
+02;DAUPHINO;DAUPHINOT;BoardingPosition;LAMBERT II;     725187;     174512;DAUPHINO
+02;DAUPHIO2;DAUPHINOT;BoardingPosition;LAMBERT II;     725089;     174520;DAUPHINO
+02;DAUPHIR;DAUPHINOT;BoardingPosition;LAMBERT II;     725130;     174438;DAUPHINO
+02;DAUPHIR2;DAUPHINOT;BoardingPosition;LAMBERT II;     725159;     174596;DAUPHINO
+02;DE;DEPOT ANDRE HUET;BoardingPosition;LAMBERT II;     721534;     175986;
+02;DEBRE;HOPITAL DEBRE;BoardingPosition;LAMBERT II;;;
+02;DEBRE A;HOPITAL DEBRE;BoardingPosition;LAMBERT II;;;
+02;DEBREN;HOPITAL DEBRE;BoardingPosition;LAMBERT II;     722578;     170947;HOPIDEBR
+02;DEBREN2;HOPITAL DEBRE;BoardingPosition;LAMBERT II;     722589;     170999;HOPIDEBR
+02;DEBRENS;HOPITAL DEBRE;BoardingPosition;LAMBERT II;;;
+02;DEBRENS2;HOPITAL DEBRE;BoardingPosition;LAMBERT II;;;
+02;DEBRES;HOPITAL DEBRE;BoardingPosition;LAMBERT II;     722607;     170856;HOPIDEBR
+02;DEBRES2;HOPITAL DEBRE;BoardingPosition;LAMBERT II;     722609;     170872;HOPIDEBR
+02;DECERVA2;DE CERVANTES;BoardingPosition;LAMBERT II;     722897;     170173;DECERVAN
+02;DECERVAN;DE CERVANTES;BoardingPosition;LAMBERT II;     723008;     170095;DECERVAN
+02;DEFEMt2;DE FERMAT;BoardingPosition;LAMBERT II;;;
+02;DEFENSE;FACULTE DES SCIENCES;BoardingPosition;LAMBERT II;     725615;     173253;FACDESCI
+02;DEFERMA2;DE FERMAT;BoardingPosition;LAMBERT II;     722552;     177033;DEFERMAT
+02;DEFERMAT;DE FERMAT;BoardingPosition;LAMBERT II;     722530;     177080;DEFERMAT
+02;DEGAULL2;PONT DE GAULLE;BoardingPosition;LAMBERT II;     722652;     173382;PODEGAUL
+02;DEGAULLE;PONT DE GAULLE;BoardingPosition;LAMBERT II;     722670;     173423;PODEGAUL
+02;DENAVE;DEPOT NAVETTE;BoardingPosition;LAMBERT II;     721744;     176019;
+02;DEPOT;DEPOT;BoardingPosition;LAMBERT II;     721734;     175986;
+02;DESBURE2;DESBUREAUX;BoardingPosition;LAMBERT II;     723504;     176052;DESBUREA
+02;DESBUREA;DESBUREAUX;BoardingPosition;LAMBERT II;     723496;     176011;DESBUREA
+02;DIDEROT;DIDEROT;BoardingPosition;LAMBERT II;     721111;     172777;DIDEROT
+02;DIDEROT2;DIDEROT;BoardingPosition;LAMBERT II;     721104;     172770;DIDEROT
+02;DORIGNY;DORIGNY;BoardingPosition;LAMBERT II;     724120;     174924;DORIGNY
+02;DORIGNY2;DORIGNY;BoardingPosition;LAMBERT II;     724144;     174952;DORIGNY
+02;DOSTOIE2;DOSTOIEVSKI;BoardingPosition;LAMBERT II;;;
+02;DOSTOIEV;DOSTOIEVSKI;BoardingPosition;LAMBERT II;     722754;     169196;DOSTOIEV
+02;DOUMER;DOUMER;BoardingPosition;LAMBERT II;     723349;     173324;DOUMER
+02;DRODELH2;DROITS DE L'HOMME;BoardingPosition;LAMBERT II;;;
+02;DRODELHO;DROITS DE L'HOMME;BoardingPosition;LAMBERT II;     724430;     172495;DRODELHO
+02;DROITLE2;FACULTE DROIT ET LETTRES;BoardingPosition;LAMBERT II;;;
+02;DROITLEH;FACULTES DROIT ET LETTRES;BoardingPosition;LAMBERT II;     721434;     172117;FADROLEH
+02;DROITLET;FACULTES DROIT ET LETTRES;BoardingPosition;LAMBERT II;     721361;     172181;FADROLEH
+02;DROITLH2;FACULTES DROIT ET LETTRES;BoardingPosition;LAMBERT II;     721409;     172149;FADROLEH
+02;DROITMS;FACULTE DROIT ET LETTRES;BoardingPosition;LAMBERT II;;;
+02;DROITQ;FACULTE DROIT ET LETTRES;BoardingPosition;LAMBERT II;;;
+02;DROITR2;FACULTES DROIT ET LETTRES;BoardingPosition;LAMBERT II;     721361;     172181;FADROLEH
+02;DROITU;FACULTE DROIT ET LETTRES;BoardingPosition;LAMBERT II;;;
+02;DROITV;FACULTES DROIT ET LETTRES;BoardingPosition;LAMBERT II;     721387;     172197;FADROLEH
+02;DUFY;RAOUL DUFY;BoardingPosition;LAMBERT II;     722207;     171007;RAOUDUFY
+02;DUFY2;RAOUL DUFY;BoardingPosition;LAMBERT II;     722245;     171014;RAOUDUFY
+02;DUMONT;DUMONT D'URVILLE;BoardingPosition;LAMBERT II;     723847;     170845;DUMDURVI
+02;DUMONT2;DUMONT D'URVILLE;BoardingPosition;LAMBERT II;     723869;     170821;DUMDURVI
+02;DUNKERh;DUNKERQUE;BoardingPosition;LAMBERT II;;;
+02;DUNKERQ2;DUNKERQUE;BoardingPosition;LAMBERT II;     722124;     172230;DUNKERQU
+02;DUNKERQU;DUNKERQUE;BoardingPosition;LAMBERT II;     722135;     172232;DUNKERQU
+02;E.S.C.;DROIT ET LETTRES;BoardingPosition;LAMBERT II;;;
+02;ECAILLE;NICOLAS APPERT;BoardingPosition;LAMBERT II;;;
+02;ECAILLE2;NICOLAS APPERT;BoardingPosition;LAMBERT II;;;
+02;ECARNOUL;ECOLE C. ARNOULD;BoardingPosition;LAMBERT II;;;
+02;ECJARDEL;ECOLE JARDELLE;BoardingPosition;LAMBERT II;;;
+02;EDMOREA2;EDMEE MOREAU;BoardingPosition;LAMBERT II;     723406;     177236;EDMOREAU
+02;EDMOREAU;EDMEE MOREAU;BoardingPosition;LAMBERT II;     723412;     177169;EDMOREAU
+02;EIFFEL;ROUTE DE WITRY;BoardingPosition;LAMBERT II;     726247;     175843;RODEWITR
+02;ELUART;ELUARD;BoardingPosition;LAMBERT II;     720210;     173400;ELUARD
+02;EMDRUART;EMILE DRUART;BoardingPosition;LAMBERT II;;;
+02;EMIZOLA;EMILE ZOLA;BoardingPosition;LAMBERT II;;;
+02;ENELLE;ENELLE;BoardingPosition;LAMBERT II;     724590;     170724;ENELLE
+02;ENELLE2;ENELLE;BoardingPosition;LAMBERT II;     724570;     170744;ENELLE
+02;EPINETT2;EPINETTES;BoardingPosition;LAMBERT II;     726158;     175720;EPINETTE
+02;EPINETT4;EPINETTES;BoardingPosition;LAMBERT II;     726158;     175720;EPINETTE
+02;EPINETTE;EPINETTES;BoardingPosition;LAMBERT II;     726119;     175778;EPINETTE
+02;ERLON;ERLON;BoardingPosition;LAMBERT II;     722979;     174432;ERLON
+02;ESIEC;ESIEC;BoardingPosition;LAMBERT II;;;
+02;ESIEC2;ESIEC;BoardingPosition;LAMBERT II;;;
+02;ESTIORG2;ESTIENNE D'ORVES;BoardingPosition;LAMBERT II;     723161;     171935;ESTIORVE
+02;ESTIORV2;ESTIENNE D'ORVES;BoardingPosition;LAMBERT II;     723171;     171861;ESTIORVE
+02;ESTIORVE;ESTIENNE D'ORVES;BoardingPosition;LAMBERT II;     723223;     171864;ESTIORVE
+02;ETAPE;ETAPE;BoardingPosition;LAMBERT II;     723161;     174266;ETAPE
+02;ETAPE2;ETAPE;BoardingPosition;LAMBERT II;     723161;     174260;ETAPE
+02;EUROPE;EUROPE;BoardingPosition;LAMBERT II;     725532;     173848;EUROPE
+02;EXPOS;EXPOS MARATHON;BoardingPosition;LAMBERT II;;;
+02;FACSCR;FACULTE DES SCIENCES;BoardingPosition;LAMBERT II;     725640;     173282;FACDESCI
+02;FACSCR2;FACULTE DES SCIENCES;BoardingPosition;LAMBERT II;     725639;     173270;FACDESCI
+02;FDESPEN2;FRANCHET D'ESPEREY;BoardingPosition;LAMBERT II;     722095;     172704;FRANESPE
+02;FDESPER2;FRANCHET D'ESPEREY;BoardingPosition;LAMBERT II;     722187;     172735;FRANESPE
+02;FDESPERE;FRANCHET D'ESPEREY;BoardingPosition;LAMBERT II;     722160;     172721;FRANESPE
+02;FDESPERN;FRANCHET D'ESPEREY;BoardingPosition;LAMBERT II;     722089;     172662;FRANESPE
+02;FDESPERR;FRANCHET D'ESPEREY;BoardingPosition;LAMBERT II;     722235;     172664;FRANESPE
+02;FDESPRR2;FRANCHET D'ESPEREY;BoardingPosition;LAMBERT II;     722277;     172658;FRANESPE
+02;FJOLY;F.JOLY;BoardingPosition;LAMBERT II;;;
+02;FLAMAND;FLAMAND;BoardingPosition;LAMBERT II;     725146;     171963;FLAMAND
+02;FLAMAND2;FLAMAND;BoardingPosition;LAMBERT II;     725118;     171975;FLAMAND
+02;FLECHAM2;FLECHAMBAULT;BoardingPosition;LAMBERT II;     723846;     172672;FLECHAMB
+02;FLECHAMB;FLECHAMBAULT;BoardingPosition;LAMBERT II;     723796;     172728;FLECHAMB
+02;FLEMING;LA NEUVILLETTE ECOLE;BoardingPosition;LAMBERT II;     721494;     177542;LANEUECO
+02;FLODART2;FLODOART;BoardingPosition;LAMBERT II;;;
+02;FLODOART;FLODOART;BoardingPosition;LAMBERT II;;;
+02;FOLPEI;FOLLE PEINE;BoardingPosition;LAMBERT II;;;
+02;FOLPEIN2;FOLLE PEINE;BoardingPosition;LAMBERT II;     723444;     173231;FOLLEPEI
+02;FOLPEINE;FOLLE PEINE;BoardingPosition;LAMBERT II;     723442;     173151;FOLLEPEI
+02;FORUM;FORUM;BoardingPosition;LAMBERT II;     723452;     174288;FORUM
+02;FORUM2;FORUM;BoardingPosition;LAMBERT II;     723505;     174299;FORUM
+02;FOUJITA;FOUJITA;BoardingPosition;LAMBERT II;     723922;     175189;FOUJITA
+02;FOULQUA2;FOULQUART;BoardingPosition;LAMBERT II;     721829;     176562;FOULQUAR
+02;FOULQUAR;FOULQUART;BoardingPosition;LAMBERT II;     721816;     176579;FOULQUAR
+02;FRAGONA2;FRAGONARD;BoardingPosition;LAMBERT II;     721871;     170725;FRAGONAR
+02;FRAGONA3;FRAGONARD;BoardingPosition;LAMBERT II;;;
+02;FRAGONA4;FRAGONARD;BoardingPosition;LAMBERT II;;;
+02;FRAGONAR;FRAGONARD;BoardingPosition;LAMBERT II;     721815;     170748;FRAGONAR
+02;FREYSSI2;FREYSSINET;BoardingPosition;LAMBERT II;;;
+02;FREYSSIN;FREYSSINET;BoardingPosition;LAMBERT II;;;
+02;FULTON;FULTON;BoardingPosition;LAMBERT II;     726492;     171610;FULTON
+02;FULTON2;FULTON;BoardingPosition;LAMBERT II;     726515;     171599;FULTON
+02;GALLIENI;GALLIENI;BoardingPosition;LAMBERT II;     722887;     176895;GALLIENI
+02;GARACFK2;GARE SNCF;BoardingPosition;LAMBERT II;     722986;     174635;GARE
+02;GARCITA;GARE SNCF;BoardingPosition;LAMBERT II;     722891;     174543;GARE
+02;GARE10;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GARE11;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GARE20;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GARE21;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GAREACFK;GARE SNCF;BoardingPosition;LAMBERT II;     722934;     174592;GARE
+02;GAREDT;GARE SNCF;BoardingPosition;LAMBERT II;     722866;     174461;GARE
+02;GAREDT2;GARE SNCF;BoardingPosition;LAMBERT II;     722956;     174570;GARE
+02;GAREFOt1;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GAREFOt2;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GAREPRt1;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GAREPRt2;GARE SNCF;BoardingPosition;LAMBERT II;;;
+02;GARESBC;GARE DE ST BRICE;BoardingPosition;LAMBERT II;     720144;     175165;GARESBC
+02;GARESBC2;GARE DE ST BRICE;BoardingPosition;LAMBERT II;     720158;     175190;GARESBC
+02;GAVOISI2;GABRIEL VOISIN;BoardingPosition;LAMBERT II;     725887;     171376;GABRVOIS
+02;GAVOISIN;GABRIEL VOISIN;BoardingPosition;LAMBERT II;     725897;     171371;GABRVOIS
+02;GEODIS;TERMINUS Z;BoardingPosition;LAMBERT II;;;
+02;GEORSAN2;GEORGE SAND;BoardingPosition;LAMBERT II;     721075;     172542;GEORSAND
+02;GEORSAND;GEORGE SAND;BoardingPosition;LAMBERT II;     721247;     172570;GEORSAND
+02;GEPHILI2;GERARD PHILIPPE;BoardingPosition;LAMBERT II;     724845;     173275;GERPHILI
+02;GEPHILIP;GERARD PHILIPPE;BoardingPosition;LAMBERT II;     724775;     173160;GERPHILI
+02;GERBERT;GERBERT;BoardingPosition;LAMBERT II;     724031;     173763;GERBERT
+02;GFLAUBER;GUSTAVE FLAUBERT;BoardingPosition;LAMBERT II;     721057;     172362;GFAUBERT
+02;GGBRAQU2;GEORGES BRAQUE;BoardingPosition;LAMBERT II;     722468;     170686;GGBRAQUE
+02;GGBRAQUE;GEORGES BRAQUE;BoardingPosition;LAMBERT II;     722451;     170659;GGBRAQUE
+02;GHODIN;GEORGES HODIN;BoardingPosition;LAMBERT II;     723981;     170671;GEOHODIN
+02;GHODIN2;GEORGES HODIN;BoardingPosition;LAMBERT II;     723988;     170664;GEOHODIN
+02;GIRAUD;GIRAUD;BoardingPosition;LAMBERT II;;;
+02;GIRAUD2;GIRAUD;BoardingPosition;LAMBERT II;     724441;     172389;GIRAUD
+02;GOBELIN2;GOBELINS;BoardingPosition;LAMBERT II;     724736;     174897;GOBELINS
+02;GOBELINS;GOBELINS;BoardingPosition;LAMBERT II;     724675;     174869;GOBELINS
+02;GODINOT;GODINOT;BoardingPosition;LAMBERT II;     722867;     170971;GODINOT
+02;GODINOT2;GODINOT;BoardingPosition;LAMBERT II;     722876;     170982;GODINOT
+02;GONZALLE;GONZALLE;BoardingPosition;LAMBERT II;     724805;     172108;GONZALLE
+02;GOSSET;GOSSET;BoardingPosition;LAMBERT II;;;
+02;GOSSET2;BEL AIR;BoardingPosition;LAMBERT II;;;
+02;GOULIN;GOULIN;BoardingPosition;LAMBERT II;     722991;     175549;GOULIN
+02;GOULIN2;GOULIN;BoardingPosition;LAMBERT II;     722972;     175603;GOULIN
+02;GOURAND2;GOURAUD;BoardingPosition;LAMBERT II;     724641;     173048;GOURAUD
+02;GOURAUD;GOURAUD;BoardingPosition;LAMBERT II;     724654;     173038;GOURAUD
+02;GRANDRUE;GRANDE RUE;BoardingPosition;LAMBERT II;;;
+02;GREMILL2;JEAN GREMILLON;BoardingPosition;LAMBERT II;     719837;     173353;GREMILLO
+02;GREMILLO;JEAN GREMILLON;BoardingPosition;LAMBERT II;     719812;     173369;GREMILLO
+02;GUICHAR2;JULES GUICHARD;BoardingPosition;LAMBERT II;     722826;     175520;JUGUICHA
+02;GUICHARD;JULES GUICHARD;BoardingPosition;LAMBERT II;     722826;     175514;JUGUICHA
+02;GUTENB2;GUTENBERG;BoardingPosition;LAMBERT II;     721408;     176575;GUTEMBER
+02;GUTENBER;GUTENBERG;BoardingPosition;LAMBERT II;     721411;     176572;GUTEMBER
+02;GUYART;GUYARD;BoardingPosition;LAMBERT II;     720955;     171968;GUYARD
+02;GUYART2;GUYARD;BoardingPosition;LAMBERT II;     720909;     172069;GUYARD
+02;HARANG;HARANG;BoardingPosition;LAMBERT II;     720506;     175574;HARANG
+02;HARMAN;HARMAN;BoardingPosition;LAMBERT II;     723530;     171951;HARMAN
+02;HARMAN2;HARMAN;BoardingPosition;LAMBERT II;     723539;     171928;HARMAN
+02;HAUBET2;LA HAUBETTE;BoardingPosition;LAMBERT II;     721651;     173317;LAHAUBET
+02;HAUBETTE;LA HAUBETTE;BoardingPosition;LAMBERT II;     721629;     173321;LAHAUBET
+02;HE FARM2;HENRI FARMAN;BoardingPosition;LAMBERT II;     725110;     177313;HEFARMAN
+02;HE FRAMA;HENRI FARMAN;BoardingPosition;LAMBERT II;     725048;     177251;HEFARMAN
+02;HENGAND;HENRI GAND;BoardingPosition;LAMBERT II;;;
+02;HENPARIS;HENRI PARIS;BoardingPosition;LAMBERT II;     724582;     172034;HENPARIS
+02;HENROYER;HENRY ROYER;BoardingPosition;LAMBERT II;     721311;     172440;HENROYER
+02;HERDUIN;HERDUIN;BoardingPosition;LAMBERT II;;;
+02;HINCMAR;HINCMAR;BoardingPosition;LAMBERT II;;;
+02;HOCHE;HOCHE;BoardingPosition;LAMBERT II;     725638;     171539;HOCHE
+02;HOCHE2;HOCHE;BoardingPosition;LAMBERT II;     725657;     171569;HOCHE
+02;HODEVI;HOTEL DE VILLE TINQUEUX;BoardingPosition;LAMBERT II;     720315;     173621;HODEVITX
+02;HOLLAND2;HOLLANDE;BoardingPosition;LAMBERT II;     727399;     171093;HOLLANDE
+02;HOLLANDE;HOLLANDE;BoardingPosition;LAMBERT II;     727396;     171076;HOLLANDE
+02;HOPITA;HOPITAUX;BoardingPosition;LAMBERT II;     722395;     170859;HOPITAUX
+02;HOPITA2;HOPITAUX;BoardingPosition;LAMBERT II;     722359;     170917;HOPITAUX
+02;HOTEVILL;HOTEL DE VILLE;BoardingPosition;LAMBERT II;     723361;     174439;HODEVIRS
+02;I.U.T.;I.U.T. et C.N.A.M.;BoardingPosition;LAMBERT II;     725336;     172837;I.U.T.
+02;I.U.T.2;I.U.T. et C.N.A.M.;BoardingPosition;LAMBERT II;     725316;     172899;I.U.T.
+02;I.U.T3;I.U.T. et C.N.A.M.;BoardingPosition;LAMBERT II;     725472;     172820;I.U.T.
+02;ISLE D F;ISLE DE FRANCE;BoardingPosition;LAMBERT II;     720498;     173521;ISLEDEFR
+02;ISLE DF2;ISLE DE FRANCE;BoardingPosition;LAMBERT II;     720475;     173531;ISLEDEFR
+02;ISLE DFS;TINQUEUX ISLE DE FRANCE;BoardingPosition;LAMBERT II;     720500;     173555;ISLEDEFR
+02;ITALIE;ITALIE;BoardingPosition;LAMBERT II;     724913;     175395;ITALIE
+02;ITALIE2;ITALIE;BoardingPosition;LAMBERT II;     724912;     175398;ITALIE
+02;JACELLI2;JACQUES CELLIER;BoardingPosition;LAMBERT II;     723356;     177387;JACELLIE
+02;JACELLIE;JACQUES CELLIER;BoardingPosition;LAMBERT II;     723351;     177383;JACELLIE
+02;JACOB;JACOB;BoardingPosition;LAMBERT II;     721585;     177058;JACOB
+02;JACOB2;JACOB;BoardingPosition;LAMBERT II;     721585;     177054;JACOB
+02;JACOBINS;JACOBINS;BoardingPosition;LAMBERT II;     723331;     173612;JACOBINS
+02;JACQUAR2;JACQUART;BoardingPosition;LAMBERT II;     724305;     174649;JACQUART
+02;JACQUART;JACQUART;BoardingPosition;LAMBERT II;     724234;     174608;JACQUART
+02;JAMOT;JAMOT;BoardingPosition;LAMBERT II;     724026;     174111;JAMOT
+02;JAMOT2;JAMOT;BoardingPosition;LAMBERT II;     724026;     174125;JAMOT
+02;JARD;JARD;BoardingPosition;LAMBERT II;     723444;     173465;JARD
+02;JAVERNI2;VERNIER;BoardingPosition;LAMBERT II;;;
+02;JAVERNIE;VERNIER;BoardingPosition;LAMBERT II;     722650;     170462;VERNIER
+02;JBCLEME2;JEAN BAPTISTE CLEMENT;BoardingPosition;LAMBERT II;     721417;     172955;JBCLEMEN
+02;JBCLEMEN;JEAN BAPTISTE CLEMENT;BoardingPosition;LAMBERT II;     721428;     172966;JBCLEMEN
+02;JEAJUGAN;JEANNE JUGAN;BoardingPosition;LAMBERT II;     722696;     170820;JJUGAN
+02;JEANNARC;JEANNE D'ARC;BoardingPosition;LAMBERT II;     722945;     174066;JEANNARC
+02;JEANZAY;JEAN ZAY;BoardingPosition;LAMBERT II;     719863;     175151;JEANZAY
+02;JEDAULAN;APOLLINAIRE;BoardingPosition;LAMBERT II;;;
+02;JMOULIN;JEAN MOULIN;BoardingPosition;LAMBERT II;     725482;     174261;JMOULIN
+02;JMOULIN2;JEAN MOULIN;BoardingPosition;LAMBERT II;     725484;     174257;JMOULIN
+02;JOLCURIE;CROIX DU SUD;BoardingPosition;LAMBERT II;     722185;     170621;CRODUSUD
+02;JU LAUR2;JULES LAURENT;BoardingPosition;LAMBERT II;     722983;     176417;JULAURE
+02;JU LAURE;JULES LAURENT;BoardingPosition;LAMBERT II;     722975;     176438;JULAURE
+02;JUGUESD2;JULES GUESDE;BoardingPosition;LAMBERT II;     721958;     173260;JUGUESDE
+02;JUGUESDE;JULES GUESDE;BoardingPosition;LAMBERT II;     721979;     173276;JUGUESDE
+02;JULFERR2;JULES FERRY;BoardingPosition;LAMBERT II;     724513;     174434;JULFERRY
+02;JULFERRY;JULES FERRY;BoardingPosition;LAMBERT II;     724529;     174432;JULFERRY
+02;JUSTICE;JUSTICE;BoardingPosition;LAMBERT II;     723621;     175026;JUSTICE
+02;JUSTICE2;JUSTICE;BoardingPosition;LAMBERT II;     723562;     175191;JUSTICE
+02;KIPLING;KIPLING;BoardingPosition;LAMBERT II;     722777;     169581;KIPLING
+02;KIPLING2;KIPLING;BoardingPosition;LAMBERT II;;;
+02;KNOERI;KNOERI;BoardingPosition;LAMBERT II;     724229;     175102;KNOERI
+02;KNOERI2;KNOERI;BoardingPosition;LAMBERT II;     724278;     175220;KNOERI
+02;LABERGE2;LA BERGERIE;BoardingPosition;LAMBERT II;     721003;     170551;LABERGER
+02;LABERGER;LA BERGERIE;BoardingPosition;LAMBERT II;     720994;     170542;LABERGER
+02;LABERt1;ADOLPHE LABERTE;BoardingPosition;LAMBERT II;;;
+02;LAHAYE;LAHAYE;BoardingPosition;LAMBERT II;     720731;     172837;LAHAYE
+02;LAHAYE2;LAHAYE;BoardingPosition;LAMBERT II;     720760;     172871;LAHAYE
+02;LAMUETTE;LA MUETTE;BoardingPosition;LAMBERT II;     720395;     170949;LAMUETTE
+02;LAPOTIE2;LA POTIERE;BoardingPosition;LAMBERT II;     725010;     176616;LAPOTIER
+02;LAPOTIER;LA POTIERE;BoardingPosition;LAMBERT II;     724899;     176731;LAPOTIER
+02;LAVOISI2;LAVOISIER;BoardingPosition;LAMBERT II;     721398;     171440;LAVOISIE
+02;LAVOISIE;LAVOISIER;BoardingPosition;LAMBERT II;     721386;     171440;LAVOISIE
+02;LBLANC;LOUIS BLANC;BoardingPosition;LAMBERT II;     720489;     174456;LOUBLANC
+02;LBLANC2;LOUIS BLANC;BoardingPosition;LAMBERT II;     720517;     174452;LOUBLANC
+02;LEDRU;LEDRU ROLLIN;BoardingPosition;LAMBERT II;     723554;     172585;LEDROLLI
+02;LEDRU2;LEDRU ROLLIN;BoardingPosition;LAMBERT II;     723559;     172586;LEDROLLI
+02;LEMOINE;LEMOINE;BoardingPosition;LAMBERT II;     723933;     175364;LEMOINE
+02;LEMOINE2;LEMOINE;BoardingPosition;LAMBERT II;     723943;     175367;LEMOINE
+02;LEPATOU2;LEON PATOUX;BoardingPosition;LAMBERT II;     725935;     172089;LEPATOUX
+02;LEPATOUX;LEON PATOUX;BoardingPosition;LAMBERT II;     725970;     172095;LEPATOUX
+02;LESOUETT;LES OUETTES;BoardingPosition;LAMBERT II;     720690;     170880;LESOUETT
+02;LETIS;LETIS;BoardingPosition;LAMBERT II;     720523;     169949;LETIS
+02;LETIS2;LETIS;BoardingPosition;LAMBERT II;     720504;     169960;LETIS
+02;LI;LIBERGIER;BoardingPosition;LAMBERT II;     723124;     173726;LIBERGIE
+02;LI2;LIBERGIER;BoardingPosition;LAMBERT II;     723143;     173700;LIBERGIE
+02;LIBECLt1;LIBERGIER CLOVIS;BoardingPosition;LAMBERT II;;;
+02;LIBECLt2;LIBERGIER;BoardingPosition;LAMBERT II;;;
+02;LIBERGt2;LIBERGIER;BoardingPosition;LAMBERT II;;;
+02;LIBERTE;LIBERTE;BoardingPosition;LAMBERT II;     722971;     176249;LIBERTE
+02;LIBERTE2;LIBERTE;BoardingPosition;LAMBERT II;     722968;     176196;LIBERTE
+02;LLEGER;LUCIEN LEGER;BoardingPosition;LAMBERT II;     724155;     170428;LUCLEGER
+02;LLEGER2;LUCIEN LEGER;BoardingPosition;LAMBERT II;     724157;     170431;LUCLEGER
+02;LMATHIE2;LEON MATHIEU;BoardingPosition;LAMBERT II;     721858;     172492;LEMATHIE
+02;LMATHIEU;LEON MATHIEU;BoardingPosition;LAMBERT II;     721810;     172492;LEMATHIE
+02;LOGESCO2;LOGES COQUAULT;BoardingPosition;LAMBERT II;     723603;     173730;LOGESCOQ
+02;LOGESCOQ;LOGES COQUAULT;BoardingPosition;LAMBERT II;     723686;     173650;LOGESCOQ
+02;LOMICHE2;LOUISE MICHEL;BoardingPosition;LAMBERT II;     722476;     177711;LOMICHEL
+02;LOMICHEL;LOUISE MICHEL;BoardingPosition;LAMBERT II;     722477;     177684;LOMICHEL
+02;LOUVOIS;CORMONTREUIL LOUVOIS;BoardingPosition;LAMBERT II;;;
+02;LOUVOIST;CORMONTREUIL LOUVOIS;BoardingPosition;LAMBERT II;     724949;     169932;CORMLOUV
+02;LUTHULL2;LUTHULI;BoardingPosition;LAMBERT II;     723386;     170768;LUTHULI
+02;LUTHULLI;LUTHULI;BoardingPosition;LAMBERT II;     723391;     170774;LUTHULI
+02;LUTON;LUTON;BoardingPosition;LAMBERT II;     722921;     175821;LUTON
+02;LUTON2;LUTON;BoardingPosition;LAMBERT II;     722941;     175908;LUTON
+02;LYNEN;LYNEN;BoardingPosition;LAMBERT II;     719506;     173542;LYNEN
+02;LYNEN2;LYNEN;BoardingPosition;LAMBERT II;     719511;     173536;LYNEN
+02;LYNENUI;LYNEN;BoardingPosition;LAMBERT II;;;
+02;MACECLI2;MACECLIERS;BoardingPosition;LAMBERT II;     727538;     171402;MACECLIE
+02;MACECLIE;MACECLIERS;BoardingPosition;LAMBERT II;     727553;     171457;MACECLIE
+02;MACHET;MACHET;BoardingPosition;LAMBERT II;     722785;     171592;MACHET
+02;MACHET2;MACHET;BoardingPosition;LAMBERT II;     722810;     171591;MACHET
+02;MAIANNE2;MAIRIE ANNEXE BETHENY;BoardingPosition;LAMBERT II;     724716;     176024;MAIANNEX
+02;MAIANNEX;MAIRIE ANNEXE BETHENY;BoardingPosition;LAMBERT II;     724700;     176005;MAIANNEX
+02;MAINO;MAINO;BoardingPosition;LAMBERT II;     727366;     171587;MAINO
+02;MAINO2;MAINO;BoardingPosition;LAMBERT II;     727202;     171661;MAINO
+02;MAIRBET2;MAIRIE DE BETHENY;BoardingPosition;LAMBERT II;     725260;     177608;MAIRBETH
+02;MAIRBETH;MAIRIE DE BETHENY;BoardingPosition;LAMBERT II;     725237;     177569;MAIRBETH
+02;MAIRBEZA;MAIRIE DE BEZANNES;BoardingPosition;LAMBERT II;     720263;     170547;MAIRBEZA
+02;MAIRIES2;MAIRIE DE ST BRICE;BoardingPosition;LAMBERT II;     719980;     174769;MAIRIESB
+02;MAIRIESB;MAIRIE DE ST BRICE;BoardingPosition;LAMBERT II;     720024;     174807;MAIRIESB
+02;MANDELA;LYCEE VAL DE MURIGNY;BoardingPosition;LAMBERT II;     723176;     170697;LYCVAMUR
+02;MANDELA2;LYCEE VAL DE MURIGNY;BoardingPosition;LAMBERT II;     723180;     170672;LYCVAMUR
+02;MANEGE;MANEGE;BoardingPosition;LAMBERT II;     722744;     174088;MANEGE
+02;MARCHAN2;MARCHANDEAU;BoardingPosition;LAMBERT II;     722663;     172462;MARCHAND
+02;MARCHAND;MARCHANDEAU;BoardingPosition;LAMBERT II;     722669;     172484;MARCHAND
+02;MARCHANR;MARCHANDEAU;BoardingPosition;LAMBERT II;     722592;     172503;MARCHAND
+02;MARCHAR2;MARCHANDEAU;BoardingPosition;LAMBERT II;     722589;     172502;MARCHAND
+02;MARCHE;MARCHANDEAU MARATHON;BoardingPosition;LAMBERT II;;;
+02;MARSILLI;BEZANNES;BoardingPosition;LAMBERT II;     719933;     170660;BEZANNES
+02;MARTINP2;MARTIN PELLER;BoardingPosition;LAMBERT II;     722222;     173459;MARTINPE
+02;MARTINPE;MARTIN PELLER;BoardingPosition;LAMBERT II;     722162;     173450;MARTINPE
+02;MARTYRS;MARTYRS;BoardingPosition;LAMBERT II;;;
+02;MASTUAR2;MARIE STUART;BoardingPosition;LAMBERT II;;;
+02;MASTUART;MARIE STUART;BoardingPosition;LAMBERT II;     723954;     174001;MASTUART
+02;MAUPRO;MAURIAC;BoardingPosition;LAMBERT II;;;
+02;MAUPRO2;MAURIAC;BoardingPosition;LAMBERT II;;;
+02;MAURIAC;MAURIAC;BoardingPosition;LAMBERT II;     721632;     171522;MAURIAC
+02;MAURIAC2;MAURIAC;BoardingPosition;LAMBERT II;     721636;     171526;MAURIAC
+02;MAURICE;ST MAURICE;BoardingPosition;LAMBERT II;     723866;     173357;STMAURIC
+02;MAURICE2;ST MAURICE;BoardingPosition;LAMBERT II;     723982;     173179;STMAURIC
+02;MAURIK;MAURIAC;BoardingPosition;LAMBERT II;     721592;     171498;MAURIAC
+02;MAURIK2;MAURIAC;BoardingPosition;LAMBERT II;     721582;     171497;MAURIAC
+02;MBLANCH2;MAISON BLANCHE;BoardingPosition;LAMBERT II;     722533;     171558;MBLANCHE
+02;MBLANCHE;MAISON BLANCHE;BoardingPosition;LAMBERT II;     722466;     171519;MBLANCHE
+02;MBLANCHN;MAISON BLANCHE;BoardingPosition;LAMBERT II;     722516;     171509;MBLANCHE
+02;MBLANCN2;MAISON BLANCHE;BoardingPosition;LAMBERT II;     722516;     171572;MBLANCHE
+02;MELIES;MELIES;BoardingPosition;LAMBERT II;     723116;     169545;MELIES
+02;MELIES2;MELIES;BoardingPosition;LAMBERT II;     723122;     169540;MELIES
+02;MENDESF2;MENDES FRANCE;BoardingPosition;LAMBERT II;     723230;     170412;MENDESFR
+02;MENDESFR;MENDES FRANCE;BoardingPosition;LAMBERT II;     723237;     170406;MENDESFR
+02;MEUSE;MEUSE;BoardingPosition;LAMBERT II;     725866;     173618;MEUSE
+02;MEUSE2;MEUSE;BoardingPosition;LAMBERT II;     725872;     173570;MEUSE
+02;MICHELE2;MICHELET;BoardingPosition;LAMBERT II;     723327;     170865;MICHELET
+02;MICHELET;MICHELET;BoardingPosition;LAMBERT II;     723320;     170860;MICHELET
+02;MITTERAN;FRANCOIS MITTERAND;BoardingPosition;LAMBERT II;     725481;     170131;FMITTERA
+02;MOHOUSSE;MOULIN DE LA HOUSSE;BoardingPosition;LAMBERT II;     725603;     172754;MOHOUSSE
+02;MONTHERL;MONTHERLANT;BoardingPosition;LAMBERT II;     723057;     169828;MONTHERL
+02;MONUMOR2;MONUMENT AUX MORTS BETHENY;BoardingPosition;LAMBERT II;     725008;     177770;MOMORBET
+02;MONUMORT;MONUMENT AUX MORTS BETHENY;BoardingPosition;LAMBERT II;     725041;     177767;MOMORBET
+02;MOSAIP2;TINQUEUX BOUTREAUX;BoardingPosition;LAMBERT II;     719674;     173968;TINBOUTR
+02;MOSAIPIE;TINQUEUX BOUTREAUX;BoardingPosition;LAMBERT II;     719588;     173905;TINBOUTR
+02;MOUAVEN2;MOULIN A VENT;BoardingPosition;LAMBERT II;     724861;     170233;MOULAVEN
+02;MOULAVEN;MOULIN A VENT;BoardingPosition;LAMBERT II;     724854;     170262;MOULAVEN
+02;MOULINS;MOULINS;BoardingPosition;LAMBERT II;     723598;     173026;MOULINS
+02;MUIRE;PONT DE MUIRE;BoardingPosition;LAMBERT II;     721027;     173258;PODEMUIR
+02;MUIRE2;PONT DE MUIRE;BoardingPosition;LAMBERT II;     721172;     173239;PODEMUIR
+02;NAPPERT;NICOLAS APPERT;BoardingPosition;LAMBERT II;     720488;     172663;NAPPERT
+02;NAPPERT2;NICOLAS APPERT;BoardingPosition;LAMBERT II;     720466;     172650;NAPPERT
+02;NAUDIN;NAUDIN;BoardingPosition;LAMBERT II;     725396;     175306;NAUDIN
+02;NAUDIN2;NAUDIN;BoardingPosition;LAMBERT II;     725524;     175374;NAUDIN
+02;NODIER;NODIER;BoardingPosition;LAMBERT II;     722872;     169773;NODIER
+02;NOEL;NOEL;BoardingPosition;LAMBERT II;     723126;     174404;NOEL
+02;ORGEVAL;ORGEVAL;BoardingPosition;LAMBERT II;     722730;     177790;ORGEVAL
+02;PAIX;PAIX;BoardingPosition;LAMBERT II;     724176;     173780;PAIX
+02;PAIX2;PAIX;BoardingPosition;LAMBERT II;     724179;     173796;PAIX
+02;PALAITAU;PALAIS DU TAU;BoardingPosition;LAMBERT II;     723688;     174000;PALAITAU
+02;PALIERE;PALIERE;BoardingPosition;LAMBERT II;     724733;     177411;PALIERE
+02;PAPIN;PAPIN;BoardingPosition;LAMBERT II;     726426;     176084;PAPIN
+02;PAQUERE2;PAQUERETTES;BoardingPosition;LAMBERT II;     724915;     177533;PAQUERET
+02;PAQUERET;PAQUERETTES;BoardingPosition;LAMBERT II;     724909;     177509;PAQUERET
+02;PAR EXP2;PARC DES EXPOSITIONS;BoardingPosition;LAMBERT II;     725655;     171960;PARCEXPO
+02;PAR EXPO;PARC DES EXPOSITIONS;BoardingPosition;LAMBERT II;     725668;     171974;PARCEXPO
+02;PARCCOLB;PARC COLBERT;BoardingPosition;LAMBERT II;     721154;     176271;PARCCOLB
+02;PARGNY;PARGNY;BoardingPosition;LAMBERT II;     721996;     173108;PARGNY
+02;PARGNY2;PARGNY;BoardingPosition;LAMBERT II;     722001;     173161;PARGNY
+02;PASDEM;PASSE DEMOISELLES;BoardingPosition;LAMBERT II;     722366;     173068;PASDEM
+02;PASDEM2;PASSE DEMOISELLES;BoardingPosition;LAMBERT II;     722403;     173105;PASDEM
+02;PASDEMt1;PASSE DEMOISELLES;BoardingPosition;LAMBERT II;;;
+02;PASDEMt2;PASSE DEMOISELLES;BoardingPosition;LAMBERT II;;;
+02;PASSEREL;PASSERELLE;BoardingPosition;LAMBERT II;     720495;     174932;PASSEREL
+02;PASTEUR;PASTEUR;BoardingPosition;LAMBERT II;     724176;     173454;PASTEUR
+02;PDOUMER;DOUMER;BoardingPosition;LAMBERT II;;;
+02;PEBETHE2;BEL AIR;BoardingPosition;LAMBERT II;;;
+02;PEBETHEN;BEL AIR;BoardingPosition;LAMBERT II;;;
+02;PEPERB2;PONT D EPERNAY;BoardingPosition;LAMBERT II;     721956;     173388;POEPERNA
+02;PEPERNA2;PONT D'EPERNAY;BoardingPosition;LAMBERT II;     722065;     173420;POEPERNA
+02;PEPERNAY;PONT D'EPERNAY;BoardingPosition;LAMBERT II;     721975;     173405;POEPERNA
+02;PEPERNYN;PONT D'EPERNAY;BoardingPosition;LAMBERT II;     722000;     173251;POEPERNA
+02;PERI;GABRIEL PERI;BoardingPosition;LAMBERT II;     725177;     170503;GABRPERI
+02;PERVENC2;PERVENCHES;BoardingPosition;LAMBERT II;     725351;     173177;PERVENCH
+02;PERVENCH;PERVENCHES;BoardingPosition;LAMBERT II;     725315;     173162;PERVENCH
+02;PFORT;PAUL FORT;BoardingPosition;LAMBERT II;     725145;     174299;PAULFORT
+02;PFORT2;PAUL FORT;BoardingPosition;LAMBERT II;     725147;     174298;PAULFORT
+02;PHENICI2;PHENICIENS;BoardingPosition;LAMBERT II;     724129;     171033;PHENICIE
+02;PHENICIE;PHENICIENS;BoardingPosition;LAMBERT II;     724209;     170965;PHENICIE
+02;PIECURI2;PIERRE CURIE;BoardingPosition;LAMBERT II;     721455;     177216;PIECURIE
+02;PIECURIE;PIERRE CURIE;BoardingPosition;LAMBERT II;     721447;     177255;PIECURIE
+02;POCOLBE2;PORT COLBERT;BoardingPosition;LAMBERT II;     721303;     175373;PORTCOLB
+02;POCOLBER;PORT COLBERT;BoardingPosition;LAMBERT II;     721293;     175385;PORTCOLB
+02;POGAULt1;PONT DE GAULLE;BoardingPosition;LAMBERT II;;;
+02;POINCAR2;POINCARE;BoardingPosition;LAMBERT II;     722512;     177179;POINCARE
+02;POINCARE;POINCARE;BoardingPosition;LAMBERT II;     722510;     177179;POINCARE
+02;POITEVIN;POITEVIN;BoardingPosition;LAMBERT II;;;
+02;POMMERY;POMMERY;BoardingPosition;LAMBERT II;     725208;     172688;POMMERY
+02;POMMERY2;POMMERY;BoardingPosition;LAMBERT II;     725081;     172610;POMMERY
+02;POMPELL2;POMPELLE;BoardingPosition;LAMBERT II;     728973;     170609;POMPELLE
+02;POMPELLE;POMPELLE;BoardingPosition;LAMBERT II;     728997;     170593;POMPELLE
+02;POMPIDO2;POMPIDOU;BoardingPosition;LAMBERT II;     723251;     169984;POMPIDOU
+02;POMPIDOU;POMPIDOU;BoardingPosition;LAMBERT II;     723239;     169982;POMPIDOU
+02;PONCEDE2;PONCE DE LEON;BoardingPosition;LAMBERT II;     723552;     170834;PONCEDLE
+02;PONCEDEL;PONCE DE LEON;BoardingPosition;LAMBERT II;     723537;     170829;PONCEDLE
+02;PONDESB2;PONT DE ST BRICE;BoardingPosition;LAMBERT II;     721110;     175009;PONDESBC
+02;PONDESBC;PONT DE ST BRICE;BoardingPosition;LAMBERT II;     721080;     175004;PONDESBC
+02;PORTEMAR;PORTE MARS;BoardingPosition;LAMBERT II;     723235;     174712;PORTEMAR
+02;PSALMON;PIERRE SALMON;BoardingPosition;LAMBERT II;     720620;     169902;PSALMON
+02;PSALMON2;PIERRE SALMON;BoardingPosition;LAMBERT II;     720631;     169914;PSALMON
+02;RABELAI2;RABELAIS;BoardingPosition;LAMBERT II;     723178;     170247;RABELAIS
+02;RABELAIS;RABELAIS;BoardingPosition;LAMBERT II;     723166;     170237;RABELAIS
+02;RAIMU;TINQUEUX CHAMP PAVEAU;BoardingPosition;LAMBERT II;;;
+02;RAPHAEL;RAPHAEL;BoardingPosition;LAMBERT II;     721986;     175338;RAPHAEL
+02;RAPHAEL2;RAPHAEL;BoardingPosition;LAMBERT II;     721969;     175290;RAPHAEL
+02;REMI;ST REMI;BoardingPosition;LAMBERT II;     724064;     172775;STREMI
+02;REMI2;ST REMI;BoardingPosition;LAMBERT II;     724024;     172745;STREMI
+02;REMIF;ST REMI;BoardingPosition;LAMBERT II;     724059;     172784;STREMI
+02;REMIF2;ST REMI;BoardingPosition;LAMBERT II;     724072;     172764;STREMI
+02;REPUBL K;REPUBLIQUE;BoardingPosition;LAMBERT II;     723136;     174834;REPUBLIQ
+02;REPUBLI1;REPUBLIQUE;BoardingPosition;LAMBERT II;;;
+02;REPUBLI2;REPUBLIQUE;BoardingPosition;LAMBERT II;     723138;     174820;REPUBLIQ
+02;REPUBLIC;REPUBLIQUE;BoardingPosition;LAMBERT II;     723167;     174868;REPUBLIQ
+02;REPUBLK2;CIMETIERE DU NORD;BoardingPosition;LAMBERT II;     723226;     174906;CIMENORD
+02;REPUFOt1;REPUBLIQUE;BoardingPosition;LAMBERT II;;;
+02;REPUFOt2;REPUBLIQUE;BoardingPosition;LAMBERT II;;;
+02;REPUPRt1;REPUBLIQUE;BoardingPosition;LAMBERT II;;;
+02;REPUPRt2;REPUBLIQUE;BoardingPosition;LAMBERT II;;;
+02;RETHEL;ADOLPHE LABERTE;BoardingPosition;LAMBERT II;     722948;     177148;ALABERTE
+02;RETHEL2;RETHEL;BoardingPosition;LAMBERT II;     722986;     177015;RETHEL
+02;RICHELI2;RICHELIEU;BoardingPosition;LAMBERT II;     723250;     169850;RICHELIE
+02;RICHELIE;RICHELIEU;BoardingPosition;LAMBERT II;     723214;     169770;RICHELIE
+02;RIMBAUD;RIMBAUD;BoardingPosition;LAMBERT II;     724202;     169871;RIMBAUD
+02;RIMBAUD2;RIMBAUD;BoardingPosition;LAMBERT II;     724202;     169875;RIMBAUD
+02;ROBESPI2;ROBESPIERRE;BoardingPosition;LAMBERT II;     723442;     175687;ROBESPIE
+02;ROBESPIE;ROBESPIERRE;BoardingPosition;LAMBERT II;     723440;     175691;ROBESPIE
+02;ROCKEFE2;ROCKEFELLER;BoardingPosition;LAMBERT II;     723454;     173820;ROCKEFEL
+02;ROCKEFEL;ROCKEFELLER;BoardingPosition;LAMBERT II;     723435;     173822;ROCKEFEL
+02;ROEDERE2;ROEDERER;BoardingPosition;LAMBERT II;     722714;     174386;ROEDERER
+02;ROEDERER;ROEDERER;BoardingPosition;LAMBERT II;     722695;     174396;ROEDERER
+02;ROFOUCRY;ROGER FOUCRY;BoardingPosition;LAMBERT II;     724885;     172018;ROFOUCRY
+02;ROMAINS;ROMAINS;BoardingPosition;LAMBERT II;     722373;     174914;ROMAINS
+02;ROMAINS2;ROMAINS;BoardingPosition;LAMBERT II;     722420;     174849;ROMAINS
+02;ROOSEVE2;ROOSEVELT;BoardingPosition;LAMBERT II;     723065;     175125;ROOSEVEL
+02;ROOSEVEF;ROOSEVELT;BoardingPosition;LAMBERT II;     723144;     175116;ROOSEVEL
+02;ROOSEVEL;ROOSEVELT;BoardingPosition;LAMBERT II;     723059;     175121;ROOSEVEL
+02;ROOSEVF2;ROOSEVELT;BoardingPosition;LAMBERT II;     723140;     175004;ROOSEVEL
+02;ROYALE;ROYALE;BoardingPosition;LAMBERT II;     723654;     174269;ROYALE
+02;ROYALE2;ROYALE;BoardingPosition;LAMBERT II;     723613;     174251;ROYALE
+02;ROYALED;CATHEDRALE;BoardingPosition;LAMBERT II;     723565;     174155;CATHEDRA
+02;ROYER;HENRY ROYER;BoardingPosition;LAMBERT II;     721311;     172440;HENROYER
+02;RUISSEL2;RUISSELET;BoardingPosition;LAMBERT II;     723977;     173094;RUISSELE
+02;RUISSELE;RUISSELET;BoardingPosition;LAMBERT II;     723969;     173102;RUISSELE
+02;SAALLEND;SALVADOR ALLENDE;BoardingPosition;LAMBERT II;     725564;     170435;SAALLEND
+02;SACY;SACY;BoardingPosition;LAMBERT II;     720557;     170389;SACY
+02;SACY2;SACY;BoardingPosition;LAMBERT II;;;
+02;SACYvia;SACY;BoardingPosition;LAMBERT II;;;
+02;SACYZI;SACY;BoardingPosition;LAMBERT II;     720553;     170378;SACY
+02;SALAIRE;SALAIRE;BoardingPosition;LAMBERT II;     723358;     171763;SALAIRE
+02;SALAIRE2;SALAIRE;BoardingPosition;LAMBERT II;     723385;     171754;SALAIRE
+02;SALENGRO;SALENGRO;BoardingPosition;LAMBERT II;     724997;     170596;SALENGRO
+02;SALINES;SALINES;BoardingPosition;LAMBERT II;     724288;     173082;SALINES
+02;SAND;GEORGE SAND;BoardingPosition;LAMBERT II;     721247;     172570;GEORSAND
+02;SBERNA;STE BERNADETTE;BoardingPosition;LAMBERT II;     720470;     173418;SBERNARD
+02;SBERNAD2;STE BERNADETTE;BoardingPosition;LAMBERT II;     720438;     173332;SBERNARD
+02;SBERNARD;STE BERNADETTE;BoardingPosition;LAMBERT II;     720447;     173377;SBERNARD
+02;SCHWEITZ;SCHWEITZER;BoardingPosition;LAMBERT II;     722606;     176837;SCHWEITZ
+02;SCULTEU2;SCULPTEURS JACQUES;BoardingPosition;LAMBERT II;     721729;     173134;SCULTEUR
+02;SCULTEUR;SCULPTEURS JACQUES;BoardingPosition;LAMBERT II;     721710;     173120;SCULTEUR
+02;SEBASN2;HOPITAL SEBASTOPOL;BoardingPosition;LAMBERT II;     724363;     175466;HOPSEBAS
+02;SEBASR2;HOPITAL SEBASTOPOL;BoardingPosition;LAMBERT II;;;
+02;SEBASTO2;HOPITAL SEBASTOPOL;BoardingPosition;LAMBERT II;     724388;     175505;HOPSEBAS
+02;SEBASTOP;HOPITAL SEBASTOPOL;BoardingPosition;LAMBERT II;     724322;     175368;HOPSEBAS
+02;SENEF1;SENEFELDER;BoardingPosition;LAMBERT II;     728807;     170674;SENEFELD
+02;SENEF2;SENEFELFER;BoardingPosition;LAMBERT II;     728845;     170664;SENEFELD
+02;SOUVENI2;SOUVENIR;BoardingPosition;LAMBERT II;     722425;     171730;SOUVENIR
+02;SOUVENIR;SOUVENIR;BoardingPosition;LAMBERT II;     722386;     171761;SOUVENIR
+02;ST BENO2;ST BENOIT;BoardingPosition;LAMBERT II;     723334;     175475;STBENOIT
+02;ST BENOI;ST BENOIT;BoardingPosition;LAMBERT II;     723335;     175483;STBENOIT
+02;ST JEAN;LA NEUVILLETTE MAIRIE;BoardingPosition;LAMBERT II;     721395;     177867;LA NEUVM
+02;STADEMU2;STADE DE MUIRE;BoardingPosition;LAMBERT II;     720662;     173388;STADEMUI
+02;STADEMUI;STADE DE MUIRE;BoardingPosition;LAMBERT II;     720642;     173404;STADEMUI
+02;STALING2;STALINGRAD;BoardingPosition;LAMBERT II;     722827;     173770;STALINGR
+02;STALINGR;STALINGRAD;BoardingPosition;LAMBERT II;     722746;     173733;STALINGR
+02;STALINt2;STALINGRAD;BoardingPosition;LAMBERT II;;;
+02;STBERNA2;ST BERNARD;BoardingPosition;LAMBERT II;     723808;     173008;STBERNAR
+02;STBERNAR;ST BERNARD;BoardingPosition;LAMBERT II;     723811;     173011;STBERNAR
+02;STCHARLE;ST BRICE COURCELLES;BoardingPosition;LAMBERT II;     720941;     174513;STBRICOU
+02;STEGLAN;Stade des Eglantines;BoardingPosition;LAMBERT II;;;
+02;STJBSALL;ST JEAN BAPTISTE DE LA SALLE;BoardingPosition;LAMBERT II;     723897;     173665;STJBSALL
+02;STJEAN A;LA NEUVILLETTE MAIRIE;BoardingPosition;LAMBERT II;     721410;     177882;LA NEUVM
+02;STJOSCIT;ST JOSEPH;BoardingPosition;LAMBERT II;     723605;     173256;STJOSEPH
+02;STJOSE2;ST JOSEPH;BoardingPosition;LAMBERT II;     723574;     173338;STJOSEPH
+02;STJOSEPH;ST JOSEPH;BoardingPosition;LAMBERT II;     723538;     173313;STJOSEPH
+02;STLEONA2;ST LEONARD;BoardingPosition;LAMBERT II;     728492;     171055;STLEONAR
+02;STLEONAR;ST LEONARD;BoardingPosition;LAMBERT II;     728546;     171011;STLEONAR
+02;STNICAI2;ST NICAISE;BoardingPosition;LAMBERT II;     724327;     173065;STNICAIS
+02;STNICAIS;ST NICAISE;BoardingPosition;LAMBERT II;     724331;     173069;STNICAIS
+02;STRASBO2;STRASBOURG;BoardingPosition;LAMBERT II;     724852;     174489;STRABOUR
+02;STRASBOU;STRASBOURG;BoardingPosition;LAMBERT II;     724816;     174485;STRABOUR
+02;STVINCE2;ST VINCENT;BoardingPosition;LAMBERT II;;;
+02;STVINCEN;ST VINCENT;BoardingPosition;LAMBERT II;;;
+02;SULLY;VAL DE MURIGNY;BoardingPosition;LAMBERT II;     723022;     169120;VADEMURI
+02;SULLY2;VAL DE MURIGNY;BoardingPosition;LAMBERT II;;;
+02;SUZANNE;SUZANNE;BoardingPosition;LAMBERT II;     724048;     173068;SUZANNE
+02;SUZANNE2;SUZANNE;BoardingPosition;LAMBERT II;     724087;     173048;SUZANNE
+02;SYNAGOGU;SYNAGOGUE;BoardingPosition;LAMBERT II;     723253;     173512;SYNAGOGU
+02;TEMPLIE2;TEMPLIERS;BoardingPosition;LAMBERT II;     724020;     174701;TEMPLIER
+02;TEMPLIER;TEMPLIERS;BoardingPosition;LAMBERT II;     724017;     174708;TEMPLIER
+02;TERNAUX;TERNAUX;BoardingPosition;LAMBERT II;     724170;     175468;TERNAUX
+02;TERNAUX2;TERNAUX;BoardingPosition;LAMBERT II;     724112;     175441;TERNAUX
+02;TGV;BEZANNES TGV;BoardingPosition;LAMBERT II;     720833;     169626;BEZANTGV
+02;TGV_G;BEZANNES TGV;BoardingPosition;LAMBERT II;;;
+02;TGVV;Réel TGV;BoardingPosition;LAMBERT II;;;
+02;TH.AFK;THEATRE;BoardingPosition;LAMBERT II;     723331;     174000;THEATRE
+02;TH.AFK2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;TH.BCDN;THEATRE;BoardingPosition;LAMBERT II;     723385;     174097;THEATRE
+02;TH.BCDN2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;TH.GHI;THEATRE;BoardingPosition;LAMBERT II;     723357;     174052;THEATRE
+02;TH.IM;THEATRE;BoardingPosition;LAMBERT II;;;
+02;TH.K2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;TH.NUIT;THEATRE;BoardingPosition;LAMBERT II;     723385;     174087;THEATRE
+02;TH.NUIT2;THEATRE;BoardingPosition;LAMBERT II;     723365;     174107;THEATRE
+02;TH1NUI2;THEATRE;BoardingPosition;LAMBERT II;     723365;     174107;THEATRE
+02;TH1NUIT;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THA;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THcar;THEATRE;BoardingPosition;LAMBERT II;     723385;     174097;THEATRE
+02;THcar2;THEATRE;BoardingPosition;LAMBERT II;     723365;     174097;THEATRE
+02;THCAR2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THCARN;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THcha;THEATRE;BoardingPosition;LAMBERT II;     723435;     174135;THEATRE
+02;THclo;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THCoA;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THCoBN;THEATRE;BoardingPosition;LAMBERT II;;;
+02;ThCorA2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THczMt;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THczy;THEATRE;BoardingPosition;LAMBERT II;     723315;     174020;THEATRE
+02;THczy A;THEATRE;BoardingPosition;LAMBERT II;     723310;     174010;THEATRE
+02;THczyD;THEATRE;BoardingPosition;LAMBERT II;     723315;     174020;THEATRE
+02;THczyt1;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THczyt2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THD;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THDUC2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THEACHt1;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THEAELt1;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THEAELt2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THEATAt1;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THEATAt2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THEATREE;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THELU;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THELU2;THEATRE;BoardingPosition;LAMBERT II;;;
+02;THeluR;THEATRE rue des élus Régulation;BoardingPosition;LAMBERT II;;;
+02;THERESE;STE THERESE;BoardingPosition;LAMBERT II;     725879;     175598;STETHERE
+02;THERESE2;STE THERESE;BoardingPosition;LAMBERT II;     725937;     175626;STETHERE
+02;THIEROT;THIEROT;BoardingPosition;LAMBERT II;     722977;     176732;THIEROT
+02;THIEROT2;THIEROT;BoardingPosition;LAMBERT II;     722984;     176790;THIEROT
+02;THILLOIS;THILLOIS;BoardingPosition;LAMBERT II;;;
+02;THIOLET2;THIOLETTES;BoardingPosition;LAMBERT II;     725780;     173340;THIOLETT
+02;THIOLETT;THIOLETTES;BoardingPosition;LAMBERT II;     725793;     173371;THIOLETT
+02;THISABI2;THIERRY SABINE;BoardingPosition;LAMBERT II;     725561;     171841;THISABIN
+02;THISABIN;THIERRY SABINE;BoardingPosition;LAMBERT II;     725566;     171840;THISABIN
+02;THlan;THEATRE;BoardingPosition;LAMBERT II;     723385;     174097;THEATRE
+02;THlan2;THEATRE;BoardingPosition;LAMBERT II;     723365;     174097;THEATRE
+02;THlanN2;THEATRE NUIT LANGLET;BoardingPosition;LAMBERT II;;;
+02;THOMAS;ST THOMAS;BoardingPosition;LAMBERT II;     722940;     175308;STTHOMAS
+02;THOMAS2;ST THOMAS;BoardingPosition;LAMBERT II;     722951;     175318;STTHOMAS
+02;THOMASC;ST THOMAS;BoardingPosition;LAMBERT II;     722999;     175321;STTHOMAS
+02;THOMASC2;ST THOMAS;BoardingPosition;LAMBERT II;     722985;     175311;STTHOMAS
+02;THtal;THEATRE;BoardingPosition;LAMBERT II;     723276;     174065;THEATRE
+02;THtal2;THEATRE;BoardingPosition;LAMBERT II;     723283;     174069;THEATRE
+02;THTRES;THEATRE TRESOR;BoardingPosition;LAMBERT II;;;
+02;THves;THEATRE;BoardingPosition;LAMBERT II;     723256;     174027;THEATRE
+02;TILLEUL2;TILLEULS;BoardingPosition;LAMBERT II;     725308;     177759;TILLEULS
+02;TILLEULS;TILLEULS;BoardingPosition;LAMBERT II;     725271;     177755;TILLEULS
+02;TIMOTHE2;ST TIMOTHEE;BoardingPosition;LAMBERT II;     724248;     172910;STTIMOTH
+02;TIMOTHEE;ST TIMOTHEE;BoardingPosition;LAMBERT II;     724247;     172909;STTIMOTH
+02;TIMOTHEI;ST TIMOTHEE;BoardingPosition;LAMBERT II;     724247;     172909;STTIMOTH
+02;TIMOTHER;ST TIMOTHEE;BoardingPosition;LAMBERT II;     724275;     172906;STTIMOTH
+02;TIMOTHR2;ST TIMOTHEE;BoardingPosition;LAMBERT II;     724284;     172917;STTIMOTH
+02;TIULERI2;TUILERIES;BoardingPosition;LAMBERT II;     723622;     172892;TUILERIE
+02;TONDEUR2;TONDEURS;BoardingPosition;LAMBERT II;     721927;     177046;TONDEURS
+02;TONDEURS;TONDEURS;BoardingPosition;LAMBERT II;     721910;     177063;TONDEURS
+02;TONDNU2;TONDEURS;BoardingPosition;LAMBERT II;;;
+02;TOURANG2;TOURANGEAUX;BoardingPosition;LAMBERT II;     721345;     170975;TOURANGE
+02;TOURANGE;TOURANGEAUX;BoardingPosition;LAMBERT II;     721348;     170975;TOURANGE
+02;TUILERIE;TUILERIES;BoardingPosition;LAMBERT II;     723624;     172904;TUILERIE
+02;TUNISIE;TUNISIE;BoardingPosition;LAMBERT II;     724745;     175579;TUNISIE
+02;UNIVERSI;UNIVERSITE;BoardingPosition;LAMBERT II;     723734;     173901;UNIVERSI
+02;URGENCE;URGENCES;BoardingPosition;LAMBERT II;     722690;     171273;URGENCES
+02;URGENCE2;URGENCES;BoardingPosition;LAMBERT II;     722700;     171307;URGENCES
+02;UTRILLO;HOPITAUX;BoardingPosition;LAMBERT II;     722398;     170854;HOPITAUX
+02;UTRILLO2;HOPITAUX;BoardingPosition;LAMBERT II;;;
+02;V HUGO;VICTOR HUGO;BoardingPosition;LAMBERT II;     721790;     177271;VICTHUGO
+02;V HUGO2;VICTOR HUGO;BoardingPosition;LAMBERT II;     721750;     177344;VICTHUGO
+02;VALCLAIR;Z.I. POMPELLE;BoardingPosition;LAMBERT II;     729696;     170279;ZIPOMFAR
+02;VALDEVE2;VAL DE VESLE;BoardingPosition;LAMBERT II;     727677;     171092;VALDEVES
+02;VALDEVES;VAL DE VESLE;BoardingPosition;LAMBERT II;     727732;     171084;VALDEVES
+02;VASNIER;HENRY VASNIER;BoardingPosition;LAMBERT II;     724478;     173162;HENRVASN
+02;VASNIER2;HENRY VASNIER;BoardingPosition;LAMBERT II;     724470;     173156;HENRVASN
+02;VAUBAN;VAUBAN;BoardingPosition;LAMBERT II;     723356;     170267;VAUBAN
+02;VAUBAN2;VAUBAN;BoardingPosition;LAMBERT II;     723405;     170290;VAUBAN
+02;VCOUSIN;VICTOR COUSIN;BoardingPosition;LAMBERT II;     720541;     172889;VICTCOUS
+02;VCOUSIN2;VICTOR COUSIN;BoardingPosition;LAMBERT II;     720516;     172836;VICTCOUS
+02;VENISE2;VENISE;BoardingPosition;LAMBERT II;     723817;     173458;VENISE
+02;VENISEG2;VENISE;BoardingPosition;LAMBERT II;     723770;     173554;VENISE
+02;VERDI;VERDI;BoardingPosition;LAMBERT II;     723222;     169311;VERDI
+02;VERDI2;VERDI;BoardingPosition;LAMBERT II;     723224;     169315;VERDI
+02;VERNOUI2;VERNOUILLET;BoardingPosition;LAMBERT II;     722521;     174682;VERNOUIL
+02;VERNOUIL;VERNOUILLET;BoardingPosition;LAMBERT II;     722533;     174645;VERNOUIL
+02;VERRERI2;VERRERIES;BoardingPosition;LAMBERT II;     720576;     175114;VERRERIE
+02;VERRERIE;VERRERIES;BoardingPosition;LAMBERT II;     720754;     175043;VERRERIE
+02;VERRIER;VERRIER;BoardingPosition;LAMBERT II;     725076;     173985;VERRIER
+02;VERRIER2;VERRIER;BoardingPosition;LAMBERT II;     725121;     173970;VERRIER
+02;VESLE;VESLE;BoardingPosition;LAMBERT II;;;
+02;VESLE2;VESLE;BoardingPosition;LAMBERT II;     723030;     173868;VESLE
+02;VLAMBERT;VICTOR LAMBERT;BoardingPosition;LAMBERT II;     720588;     170479;VICTLAMB
+02;VRILLY;VRILLY;BoardingPosition;LAMBERT II;     726301;     171426;VRILLY
+02;VRILLY2;VRILLY;BoardingPosition;LAMBERT II;     726360;     171471;VRILLY
+02;WILSON;WILSON;BoardingPosition;LAMBERT II;     723085;     172013;WILSON
+02;WILSON2;WILSON;BoardingPosition;LAMBERT II;     723012;     172092;WILSON
+02;WILSONA;WILSON;BoardingPosition;LAMBERT II;     722980;     171990;WILSON
+02;YSER;YSER;BoardingPosition;LAMBERT II;     724859;     173696;YSER
+02;YSER2;YSER;BoardingPosition;LAMBERT II;     724894;     173696;YSER
+02;YSERNU;YSER;BoardingPosition;LAMBERT II;     724859;     173696;YSER
+02;YSERNU2;YSER;BoardingPosition;LAMBERT II;     724894;     173696;YSER
+02;ZICOLBE;ZONE INDUSTRIELLE COLBERT;BoardingPosition;LAMBERT II;;;
+03;TRANSDEV REIMS;TUR;TONDEURS MAISON BLANCHE;TONDEURS MAISON BLANCHE;1;BUS
+03;TRANSDEV REIMS;TUR;WITRY TINQUEUX;WITRY TINQUEUX;2;BUS
+03;TRANSDEV REIMS;TUR;MOULIN DE LA HOUSSE RETHEL;MOULIN DE LA HOUSSE RETHEL;3;BUS
+03;TRANSDEV REIMS;TUR;THEATRE CROIX ROUGE;THEATRE CROIX ROUGE;4;BUS
+03;TRANSDEV REIMS;TUR;THEATRE VAL DE MURIGNY;THEATRE VAL DE MURIGNY;5;BUS
+03;TRANSDEV REIMS;TUR;THEATRE FAC DROIT & LETTRES;THEATRE FAC DROIT & LETTRES;6;BUS
+03;TRANSDEV REIMS;TUR;ORGEVAL > HOPITAUX Rempl. TW;ORGEVAL > HOPITAUX Rempl. TW;01;BUS
+03;TRANSDEV REIMS;TUR;ESSAI Service technique;ESSAI Service technique;88;BUS
+03;TRANSDEV REIMS;TUR;LA NEUVILLETTE  HOPITAL DEBRE;LA NEUVILLETTE  HOPITAL DEBRE;A;BUS
+03;TRANSDEV REIMS;TUR;LA NEUVILLETTE <> HOPITAUX (Promenades);LA NEUVILLETTE <> HOPITAUX (Promenades);A1;BUS
+03;TRANSDEV REIMS;TUR;THEATRE AEROGARE;THEATRE AEROGARE;AERO;BUS
+03;TRANSDEV REIMS;TUR;AQUATINTIENNE;AQUATINTIENNE;AQUA;BUS
+03;TRANSDEV REIMS;TUR;WITRY TINQUEUX;WITRY TINQUEUX;B;BUS
+03;TRANSDEV REIMS;TUR;ORGEVAL EUROPE;ORGEVAL EUROPE;C;BUS
+03;TRANSDEV REIMS;TUR;ORGEVAL <> EUROPE (Promenades);ORGEVAL <> EUROPE (Promenades);C1;BUS
+03;TRANSDEV REIMS;TUR;CARTONNERIE;CARTONNERIE;CART;BUS
+03;TRANSDEV REIMS;TUR;CITA DINE;CITA DINE;CIDI;BUS
+03;TRANSDEV REIMS;TUR;CITADINE 1;CITADINE 1;CIT1;BUS
+03;TRANSDEV REIMS;TUR;CITADINE 2;CITADINE 2;CIT2;BUS
+03;TRANSDEV REIMS;TUR;CENTRE VILLE;CENTRE VILLE;CITA;BUS
+03;TRANSDEV REIMS;TUR;3 FONTAINES FAC. DES SCIENCES;3 FONTAINES FAC. DES SCIENCES;D;BUS
+03;TRANSDEV REIMS;TUR;CC Croix Mauricienne Fac Sciences;CC Croix Mauricienne Fac Sciences;DL;BUS
+03;TRANSDEV REIMS;TUR;3 FONTAINES FAC. DES SCIENCES;3 FONTAINES FAC. DES SCIENCES;DLA;BUS
+03;TRANSDEV REIMS;TUR;THEATRE I.U.T;THEATRE I.U.T;E;BUS
+03;TRANSDEV REIMS;TUR;TOURNELLES <> MOULIN DE LA HOUSSE (corres théa.);TOURNELLES <> MOULIN DE LA HOUSSE (corres théa.);E1;BUS
+03;TRANSDEV REIMS;TUR;JEAN 23 POMPELLE;JEAN 23 POMPELLE;F;BUS
+03;TRANSDEV REIMS;TUR;JEAN XXIII <> FARMAN (Promenades);JEAN XXIII <> FARMAN (Promenades);F1;BUS
+03;TRANSDEV REIMS;TUR;THEATRE CHATILLONS;THEATRE CHATILLONS;G;BUS
+03;TRANSDEV REIMS;TUR;THEATRE <> CORMONTREUIL LES PARQUES (courte);THEATRE <> CORMONTREUIL LES PARQUES (courte);G1;BUS
+03;TRANSDEV REIMS;TUR;CHATILLONS THEATRE BLUM;CHATILLONS THEATRE BLUM;GH;BUS
+03;TRANSDEV REIMS;TUR;THEATRE CROIX ROUGE;THEATRE CROIX ROUGE;H;BUS
+03;TRANSDEV REIMS;TUR;THEATRE C.COLOMB;THEATRE C.COLOMB;H/S;BUS
+03;TRANSDEV REIMS;TUR;THEATRE/CROIX ROUGE/C.COLOMB (courte);THEATRE/CROIX ROUGE/C.COLOMB (courte);H1;BUS
+03;TRANSDEV REIMS;TUR;SCOLAIRE HENRI GAND;SCOLAIRE HENRI GAND;HGAN;BUS
+03;TRANSDEV REIMS;TUR;THEATRE VAL DE MURIGNY;THEATRE VAL DE MURIGNY;I;BUS
+03;TRANSDEV REIMS;TUR;THEATRE <> VAL DE MURIGNY (courte);THEATRE <> VAL DE MURIGNY (courte);I1;BUS
+03;TRANSDEV REIMS;TUR;ST BRICE COURCELLES TROIS FONTAINES;ST BRICE COURCELLES TROIS FONTAINES;J;BUS
+03;TRANSDEV REIMS;TUR;BETHENY BEZANNES;BETHENY BEZANNES;K;BUS
+03;TRANSDEV REIMS;TUR;Etude modif TGV;Etude modif TGV;K1;BUS
+03;TRANSDEV REIMS;TUR;LIGNE K VIA "LA CARTONNERIE";LIGNE K VIA "LA CARTONNERIE";KLC;BUS
+03;TRANSDEV REIMS;TUR;BETHENY CROIX DU SUD;BETHENY CROIX DU SUD;KTGV;BUS
+03;TRANSDEV REIMS;TUR;COUBERTIN MURIGNY;COUBERTIN MURIGNY;L;BUS
+03;TRANSDEV REIMS;TUR;THEATRE BEZANNES;THEATRE BEZANNES;M;BUS
+03;TRANSDEV REIMS;TUR;THEATRE CROIX ROUGE;THEATRE CROIX ROUGE;MAIN;BUS
+03;TRANSDEV REIMS;TUR;FETE DE LA MUSIQUE LIGNE 1;FETE DE LA MUSIQUE LIGNE 1;MUS1;BUS
+03;TRANSDEV REIMS;TUR;FETE DE LA MUSIQUE LIGNE 2;FETE DE LA MUSIQUE LIGNE 2;MUS2;BUS
+03;TRANSDEV REIMS;TUR;FETE DE LA MUSIQUE LIGNE 3;FETE DE LA MUSIQUE LIGNE 3;MUS3;BUS
+03;TRANSDEV REIMS;TUR;FETE DE LA MUSIQUE LIGNE 4;FETE DE LA MUSIQUE LIGNE 4;MUS4;BUS
+03;TRANSDEV REIMS;TUR;FETE DE LA MUSIQUE LIGNE 5;FETE DE LA MUSIQUE LIGNE 5;MUS5;BUS
+03;TRANSDEV REIMS;TUR;TUNISIE APOLLINAIRE;TUNISIE APOLLINAIRE;N;BUS
+03;TRANSDEV REIMS;TUR;NAVETTE;NAVETTE;NAV;BUS
+03;TRANSDEV REIMS;TUR;NAVETTE;NAVETTE;NAV1;BUS
+03;TRANSDEV REIMS;TUR;NAVETTE;NAVETTE;NAVE;BUS
+03;TRANSDEV REIMS;TUR;NAVETTE;NAVETTE;NAVL;BUS03;TRANSDEV REIMS;TUR;JARDELLE;JARDELLE;O;BUS
+03;TRANSDEV REIMS;TUR;DROITS ET LETTRES->MURIGNY;DROITS ET LETTRES->MURIGNY;P;BUS
+03;TRANSDEV REIMS;TUR;BLANQUI FACULTES DROIT ET LETTRES;BLANQUI FACULTES DROIT ET LETTRES;R;BUS
+03;TRANSDEV REIMS;TUR;FACULTES DROIT ET LETTRES FAC DES SCIENCES;FACULTES DROIT ET LETTRES FAC DES SCIENCES;R EX;BUS
+03;TRANSDEV REIMS;TUR;FACULTES DROIT ET LETTRES FAC DES SCIENCES;FACULTES DROIT ET LETTRES FAC DES SCIENCES;RDI;BUS
+03;TRANSDEV REIMS;TUR;Hopital Sébastopol > Saint Rémi;Hopital Sébastopol > Saint Rémi;Re;BUS
+03;TRANSDEV REIMS;TUR;FACULTES DROIT ET LETTRES FAC DES SCIENCES;FACULTES DROIT ET LETTRES FAC DES SCIENCES;REX;BUS
+03;TRANSDEV REIMS;TUR;Faculté Droit et Lettres > Moulin de la Housse;Faculté Droit et Lettres > Moulin de la Housse;Rw;BUS
+03;TRANSDEV REIMS;TUR;TINQUEUX CORMONTREUIL;TINQUEUX CORMONTREUIL;S;BUS
+03;TRANSDEV REIMS;TUR;SCOLAIRE 3 FONTAINES;SCOLAIRE 3 FONTAINES;SC3F;BUS
+03;TRANSDEV REIMS;TUR;SCOLAIRE SCHUMAN;SCOLAIRE SCHUMAN;SCSC;BUS
+03;TRANSDEV REIMS;TUR;LIGNES SPECIALES;LIGNES SPECIALES;SP;BUS
+03;TRANSDEV REIMS;TUR;SAINT BRICE COURCELLES CORMONTREUIL;SAINT BRICE COURCELLES CORMONTREUIL;T;BUS
+03;TRANSDEV REIMS;TUR;SAINT BRICE COURCELLES-CORMONTREUIL LOUVOIS;SAINT BRICE COURCELLES-CORMONTREUIL LOUVOIS;T1;BUS
+03;TRANSDEV REIMS;TUR;CHAMPIGNY THILOIS;CHAMPIGNY THILOIS;TC;BUS
+03;TRANSDEV REIMS;TUR;3 FONTAINES FAC. DES SCIENCES;3 FONTAINES FAC. DES SCIENCES;TEST;BUS
+03;TRANSDEV REIMS;TUR;Fac Droit Thillois Champigny;Fac Droit Thillois Champigny;TFac;BUS
+03;TRANSDEV REIMS;TUR;ST TIMOTHEE BEZANNES TGV;ST TIMOTHEE BEZANNES TGV;TGV;BUS
+03;TRANSDEV REIMS;TUR;THEATRE THILLOIS;THEATRE THILLOIS;TM;BUS
+03;TRANSDEV REIMS;TUR;;;U;BUS
+03;TRANSDEV REIMS;TUR;FACULTES DROIT ET LETTRES FAC DES SCIENCES;FACULTES DROIT ET LETTRES FAC DES SCIENCES;V;BUS
+03;TRANSDEV REIMS;TUR;BEZANNES TINQUEUX;BEZANNES TINQUEUX;W;BUS
+03;TRANSDEV REIMS;TUR;MARATHON;MARATHON;X;BUS
+03;TRANSDEV REIMS;TUR;ZONE INDUSTRIELLE OUEST;ZONE INDUSTRIELLE OUEST;Y;BUS
+03;TRANSDEV REIMS;TUR;FARMAN Z.I. POMPELLE;FARMAN Z.I. POMPELLE;Z;BUS
+03;TRANSDEV REIMS;TUR;SAINT TIMOTHEE Z.I. POMPELLE;SAINT TIMOTHEE Z.I. POMPELLE;ZZ;BUS
+03;TRANSDEV REIMS;TUR;DIVERS;DIVERS;ZZZ;BUS
+04;Z-TI-POMPEL;Z-TI-POMPEL;Aller;Z-1;Aller;Z
+04;Z-POMPEL-TI;Z-POMPEL-TI;Retour;Z-2;Retour;Z
+04;Y-SN-EMDRUA;Y-SN-EMDRUA;Aller;Y-3;Aller;Y
+04;Y-EMDRUA-SN;Y-EMDRUA-SN;Retour;Y-4;Retour;Y
+
+05;     72471;Y   ;     3;SN    ;06:45;00;07:00;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972461;Y-3
+05;     72472;Y   ;     3;SN    ;07:00;00;07:15;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972462;Y-3
+05;     72473;Y   ;     3;SN    ;07:15;00;07:30;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972463;Y-3
+05;     72474;Y   ;     3;SN    ;07:30;00;07:45;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972464;Y-3
+05;     72475;Y   ;     3;SN    ;07:45;00;08:00;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972465;Y-3
+05;     72476;Y   ;     3;SN    ;08:15;00;08:30;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972466;Y-3
+05;     72477;Y   ;     3;SN    ;08:45;00;09:00;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972467;Y-3
+05;     72483;Y   ;     4;EMDRUA;12:05;00;12:20;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972468;Y-4
+05;     72484;Y   ;     3;SN    ;13:45;00;14:00;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972469;Y-3
+05;     72485;Y   ;     4;EMDRUA;15:35;00;15:50;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972470;Y-4
+05;     72486;Y   ;     4;EMDRUA;16:00;00;16:15;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972471;Y-4
+05;     72487;Y   ;     4;EMDRUA;16:15;00;16:30;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972472;Y-4
+05;     72488;Y   ;     4;EMDRUA;16:30;00;16:45;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972473;Y-4
+05;     72489;Y   ;     4;EMDRUA;16:45;00;17:00;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972474;Y-4
+05;     72490;Y   ;     4;EMDRUA;17:00;00;17:15;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972475;Y-4
+05;     72491;Y   ;     4;EMDRUA;17:30;00;17:45;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972476;Y-4
+05;     80501;Y   ;     4;EMDRUA;13:05;00;13:20;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972477;Y-4
+05;     80502;Y   ;     4;EMDRUA;12:35;00;12:50;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972478;Y-4
+05;     80615;Y   ;     3;SN    ;12:15;00;12:30;00;EMDRUA;11111001111100111110011111001;02/06/2008;30/06/2008;972479;Y-3
+05;    914416;Y   ;     4;EMDRUA;13:45;00;14:00;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972480;Y-4
+05;    914418;Y   ;     4;EMDRUA;18:00;00;18:15;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972481;Y-4
+05;    914419;Y   ;     4;EMDRUA;18:30;00;18:45;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972482;Y-4
+05;    914420;Y   ;     4;EMDRUA;19:15;00;19:30;00;SN    ;11111001111100111110011111001;02/06/2008;30/06/2008;972483;Y-4
+05;    914440;Z   ;     1;TI    ;06:43;00;07:01;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972498;Z-1
+05;    914441;Z   ;     1;TI    ;07:05;00;07:23;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972499;Z-1
+05;    914442;Z   ;     1;TI    ;07:25;00;07:43;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972500;Z-1
+05;    914443;Z   ;     1;TI    ;07:45;00;08:03;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972501;Z-1
+05;    914444;Z   ;     1;TI    ;08:05;00;08:23;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972502;Z-1
+05;    914445;Z   ;     1;TI    ;08:25;00;08:43;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972503;Z-1
+05;    914446;Z   ;     1;TI    ;08:45;00;09:03;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972504;Z-1
+05;    914447;Z   ;     1;TI    ;09:12;00;09:30;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972505;Z-1
+05;    914448;Z   ;     1;TI    ;10:09;00;10:27;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972506;Z-1
+05;    914449;Z   ;     1;TI    ;10:48;00;11:06;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972507;Z-1
+05;    914450;Z   ;     1;TI    ;11:39;00;11:57;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972508;Z-1
+05;    914451;Z   ;     1;TI    ;12:21;00;12:39;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972509;Z-1
+05;    914452;Z   ;     1;TI    ;13:02;00;13:20;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972510;Z-1
+05;    914453;Z   ;     1;TI    ;13:43;00;14:01;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972511;Z-1
+05;    914454;Z   ;     1;TI    ;14:32;00;14:50;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972512;Z-1
+05;    914455;Z   ;     1;TI    ;15:33;00;15:51;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972513;Z-1
+05;    914456;Z   ;     1;TI    ;16:03;00;16:21;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972514;Z-1
+05;    914457;Z   ;     1;TI    ;16:23;00;16:39;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972515;Z-1
+05;    914458;Z   ;     1;TI    ;16:47;00;17:03;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972516;Z-1
+05;    914459;Z   ;     1;TI    ;17:04;00;17:20;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972517;Z-1
+05;    914460;Z   ;     1;TI    ;17:28;00;17:44;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972518;Z-1
+05;    914461;Z   ;     1;TI    ;17:44;00;18:00;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972519;Z-1
+05;    914462;Z   ;     1;TI    ;18:21;00;18:37;00;POMPEL;11111001111100111110011111001;02/06/2008;30/06/2008;972520;Z-1
+05;    914463;Z   ;     2;POMPEL;07:04;00;07:22;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972521;Z-2
+05;    914464;Z   ;     2;POMPEL;07:24;00;07:42;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972522;Z-2
+05;    914465;Z   ;     2;POMPEL;07:44;00;08:02;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972523;Z-2
+05;    914466;Z   ;     2;POMPEL;08:04;00;08:22;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972524;Z-2
+05;    914467;Z   ;     2;POMPEL;08:24;00;08:42;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972525;Z-2
+05;    914468;Z   ;     2;POMPEL;08:53;00;09:11;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972526;Z-2
+05;    914469;Z   ;     2;POMPEL;09:42;00;10:00;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972527;Z-2
+05;    914470;Z   ;     2;POMPEL;10:29;00;10:47;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972528;Z-2
+05;    914471;Z   ;     2;POMPEL;11:18;00;11:37;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972529;Z-2
+05;    914472;Z   ;     2;POMPEL;12:00;00;12:19;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972530;Z-2
+05;    914473;Z   ;     2;POMPEL;12:41;00;13:00;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972531;Z-2
+05;    914474;Z   ;     2;POMPEL;13:22;00;13:41;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972532;Z-2
+05;    914475;Z   ;     2;POMPEL;14:11;00;14:30;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972533;Z-2
+05;    914476;Z   ;     2;POMPEL;15:00;00;15:19;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972534;Z-2
+05;    914477;Z   ;     2;POMPEL;15:42;00;16:01;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972535;Z-2
+05;    914478;Z   ;     2;POMPEL;15:59;00;16:18;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972536;Z-2
+05;    914479;Z   ;     2;POMPEL;16:23;00;16:42;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972537;Z-2
+05;    914480;Z   ;     2;POMPEL;16:40;00;16:59;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972538;Z-2
+05;    914481;Z   ;     2;POMPEL;17:04;00;17:23;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972539;Z-2
+05;    914482;Z   ;     2;POMPEL;17:20;00;17:39;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972540;Z-2
+05;    914483;Z   ;     2;POMPEL;17:44;00;18:03;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972541;Z-2
+05;    914484;Z   ;     2;POMPEL;18:00;00;18:19;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972542;Z-2
+05;    914485;Z   ;     2;POMPEL;18:40;00;18:59;00;TI    ;11111001111100111110011111001;02/06/2008;30/06/2008;972543;Z-2
+06;972461;Y-3;PARCCOLB;07:00:00
+06;972461;Y-3;GUTENB2;06:59:00
+06;972461;Y-3;ANDRHU2;06:57:00
+06;972461;Y-3;CHARBO2;06:55:00
+06;972461;Y-3;BARBIER2;06:53:00
+06;972461;Y-3;POCOLBE2;06:51:00
+06;972461;Y-3;BELGIQY2;06:50:00
+06;972461;Y-3;ROMAINS2;06:48:00
+06;972461;Y-3;VERNOUI2;06:47:00
+06;972461;Y-3;ROEDERE2;06:46:00
+06;972461;Y-3;GAREDT2;06:45:00
+06;972462;Y-3;PARCCOLB;07:15:00
+06;972462;Y-3;GUTENB2;07:14:00
+06;972462;Y-3;ANDRHU2;07:12:00
+06;972462;Y-3;CHARBO2;07:10:00
+06;972462;Y-3;BARBIER2;07:08:00
+06;972462;Y-3;POCOLBE2;07:06:00
+06;972462;Y-3;BELGIQY2;07:05:00
+06;972462;Y-3;ROMAINS2;07:03:00
+06;972462;Y-3;VERNOUI2;07:02:00
+06;972462;Y-3;ROEDERE2;07:01:00
+06;972462;Y-3;GAREDT2;07:00:00
+06;972528;Z-2;TIMOTHEI;10:47:00
+06;972528;Z-2;GIRAUD2;10:46:00
+06;972528;Z-2;HENPARIS;10:45:00
+06;972528;Z-2;ROFOUCRY;10:44:00
+06;972528;Z-2;CLAMONET;10:44:00
+06;972528;Z-2;FLAMAND2;10:43:00
+06;972528;Z-2;THISABI2;10:42:00
+06;972528;Z-2;HOCHE2;10:41:00
+06;972528;Z-2;GAVOISI2;10:40:00
+06;972528;Z-2;FULTON2;10:39:00
+06;972528;Z-2;VRILLY2;10:39:00
+06;972528;Z-2;COFFIG2;10:38:00
+06;972528;Z-2;MAINO2;10:37:00
+06;972528;Z-2;MACECLI2;10:36:00
+06;972528;Z-2;HOLLAND2;10:35:00
+06;972528;Z-2;VALDEVE2;10:34:00
+06;972528;Z-2;CDESTLE2;10:33:00
+06;972528;Z-2;STLEONA2;10:32:00
+06;972528;Z-2;POMPELL2;10:31:00
+06;972528;Z-2;SENEF2;10:31:00
+06;972528;Z-2;CALVAIR2;10:30:00
+06;972528;Z-2;VALCLAIR;10:29:00
+06;972463;Y-3;PARCCOLB;07:30:00
+06;972463;Y-3;GUTENB2;07:29:00
+06;972463;Y-3;ANDRHU2;07:27:00
+06;972463;Y-3;CHARBO2;07:25:00
+06;972463;Y-3;BARBIER2;07:23:00
+06;972463;Y-3;POCOLBE2;07:21:00
+06;972463;Y-3;BELGIQY2;07:20:00
+06;972463;Y-3;ROMAINS2;07:18:00
+06;972463;Y-3;VERNOUI2;07:17:00
+06;972463;Y-3;ROEDERE2;07:16:00
+06;972463;Y-3;GAREDT2;07:15:00
+06;972507;Z-1;VALCLAIR;11:06:00
+06;972507;Z-1;CALVAIRE;11:05:00
+06;972507;Z-1;SENEF1;11:04:00
+06;972507;Z-1;POMPELLE;11:04:00
+06;972507;Z-1;STLEONAR;11:03:00
+06;972507;Z-1;CHESTLEO;11:02:00
+06;972507;Z-1;VALDEVES;11:01:00
+06;972507;Z-1;HOLLANDE;11:00:00
+06;972507;Z-1;MACECLIE;10:59:00
+06;972507;Z-1;MAINO;10:58:00
+06;972507;Z-1;COFFIG;10:57:00
+06;972507;Z-1;FULTON;10:56:00
+06;972507;Z-1;VRILLY;10:55:00
+06;972507;Z-1;GAVOISIN;10:54:00
+06;972507;Z-1;HOCHE;10:53:00
+06;972507;Z-1;THISABIN;10:52:00
+06;972507;Z-1;BRESSY;10:51:00
+06;972507;Z-1;FLAMAND;10:51:00
+06;972507;Z-1;GONZALLE;10:50:00
+06;972507;Z-1;DRODELHO;10:49:00
+06;972507;Z-1;TIMOTHEI;10:48:00
+06;972464;Y-3;PARCCOLB;07:45:00
+06;972464;Y-3;GUTENB2;07:44:00
+06;972464;Y-3;ANDRHU2;07:42:00
+06;972464;Y-3;CHARBO2;07:40:00
+06;972464;Y-3;BARBIER2;07:38:00
+06;972464;Y-3;POCOLBE2;07:36:00
+06;972464;Y-3;BELGIQY2;07:35:00
+06;972464;Y-3;ROMAINS2;07:33:00
+06;972464;Y-3;VERNOUI2;07:32:00
+06;972464;Y-3;ROEDERE2;07:31:00
+06;972464;Y-3;GAREDT2;07:30:00
+06;972465;Y-3;PARCCOLB;08:00:00
+06;972465;Y-3;GUTENB2;07:59:00
+06;972465;Y-3;ANDRHU2;07:57:00
+06;972465;Y-3;CHARBO2;07:55:00
+06;972465;Y-3;BARBIER2;07:53:00
+06;972465;Y-3;POCOLBE2;07:51:00
+06;972465;Y-3;BELGIQY2;07:50:00
+06;972465;Y-3;ROMAINS2;07:48:00
+06;972465;Y-3;VERNOUI2;07:47:00
+06;972465;Y-3;ROEDERE2;07:46:00
+06;972465;Y-3;GAREDT2;07:45:00
+06;972466;Y-3;PARCCOLB;08:30:00
+06;972466;Y-3;GUTENB2;08:29:00
+06;972466;Y-3;ANDRHU2;08:27:00
+06;972466;Y-3;CHARBO2;08:25:00
+06;972466;Y-3;BARBIER2;08:23:00
+06;972466;Y-3;POCOLBE2;08:21:00
+06;972466;Y-3;BELGIQY2;08:20:00
+06;972466;Y-3;ROMAINS2;08:18:00
+06;972466;Y-3;VERNOUI2;08:17:00
+06;972466;Y-3;ROEDERE2;08:16:00
+06;972466;Y-3;GAREDT2;08:15:00
+06;972467;Y-3;PARCCOLB;09:00:00
+06;972467;Y-3;GUTENB2;08:59:00
+06;972467;Y-3;ANDRHU2;08:57:00
+06;972467;Y-3;CHARBO2;08:55:00
+06;972467;Y-3;BARBIER2;08:53:00
+06;972467;Y-3;POCOLBE2;08:51:00
+06;972467;Y-3;BELGIQY2;08:50:00
+06;972467;Y-3;ROMAINS2;08:48:00
+06;972467;Y-3;VERNOUI2;08:47:00
+06;972467;Y-3;ROEDERE2;08:46:00
+06;972467;Y-3;GAREDT2;08:45:00
+06;972468;Y-4;GAREDT2;12:20:00
+06;972468;Y-4;BELGIQUY;12:15:00
+06;972468;Y-4;POCOLBER;12:13:00
+06;972468;Y-4;BARBIER;12:11:00
+06;972468;Y-4;CHARBONN;12:10:00
+06;972468;Y-4;ANDRHUET;12:07:00
+06;972468;Y-4;GUTENBER;12:06:00
+06;972468;Y-4;PARCCOLB;12:05:00
+06;972469;Y-3;PARCCOLB;14:00:00
+06;972469;Y-3;GUTENB2;13:59:00
+06;972469;Y-3;ANDRHU2;13:57:00
+06;972469;Y-3;CHARBO2;13:55:00
+06;972469;Y-3;BARBIER2;13:53:00
+06;972469;Y-3;POCOLBE2;13:51:00
+06;972469;Y-3;BELGIQY2;13:50:00
+06;972469;Y-3;ROMAINS2;13:48:00
+06;972469;Y-3;VERNOUI2;13:47:00
+06;972469;Y-3;ROEDERE2;13:46:00
+06;972469;Y-3;GAREDT2;13:45:00
+06;972470;Y-4;GAREDT2;15:50:00
+06;972470;Y-4;BELGIQUY;15:45:00
+06;972470;Y-4;POCOLBER;15:43:00
+06;972470;Y-4;BARBIER;15:41:00
+06;972470;Y-4;CHARBONN;15:40:00
+06;972470;Y-4;ANDRHUET;15:37:00
+06;972470;Y-4;GUTENBER;15:36:00
+06;972470;Y-4;PARCCOLB;15:35:00
+06;972471;Y-4;GAREDT2;16:15:00
+06;972471;Y-4;BELGIQUY;16:10:00
+06;972471;Y-4;POCOLBER;16:08:00
+06;972471;Y-4;BARBIER;16:06:00
+06;972471;Y-4;CHARBONN;16:05:00
+06;972471;Y-4;ANDRHUET;16:02:00
+06;972471;Y-4;GUTENBER;16:01:00
+06;972471;Y-4;PARCCOLB;16:00:00
+06;972472;Y-4;GAREDT2;16:30:00
+06;972472;Y-4;BELGIQUY;16:25:00
+06;972472;Y-4;POCOLBER;16:23:00
+06;972472;Y-4;BARBIER;16:21:00
+06;972472;Y-4;CHARBONN;16:20:00
+06;972472;Y-4;ANDRHUET;16:17:00
+06;972472;Y-4;GUTENBER;16:16:00
+06;972472;Y-4;PARCCOLB;16:15:00
+06;972473;Y-4;GAREDT2;16:45:00
+06;972473;Y-4;BELGIQUY;16:40:00
+06;972473;Y-4;POCOLBER;16:38:00
+06;972473;Y-4;BARBIER;16:36:00
+06;972473;Y-4;CHARBONN;16:35:00
+06;972473;Y-4;ANDRHUET;16:32:00
+06;972473;Y-4;GUTENBER;16:31:00
+06;972473;Y-4;PARCCOLB;16:30:00
+06;972474;Y-4;GAREDT2;17:00:00
+06;972474;Y-4;BELGIQUY;16:55:00
+06;972474;Y-4;POCOLBER;16:53:00
+06;972474;Y-4;BARBIER;16:51:00
+06;972474;Y-4;CHARBONN;16:50:00
+06;972474;Y-4;ANDRHUET;16:47:00
+06;972474;Y-4;GUTENBER;16:46:00
+06;972474;Y-4;PARCCOLB;16:45:00
+06;972475;Y-4;GAREDT2;17:15:00
+06;972475;Y-4;BELGIQUY;17:10:00
+06;972475;Y-4;POCOLBER;17:08:00
+06;972475;Y-4;BARBIER;17:06:00
+06;972475;Y-4;CHARBONN;17:05:00
+06;972475;Y-4;ANDRHUET;17:02:00
+06;972475;Y-4;GUTENBER;17:01:00
+06;972475;Y-4;PARCCOLB;17:00:00
+06;972476;Y-4;GAREDT2;17:45:00
+06;972476;Y-4;BELGIQUY;17:40:00
+06;972476;Y-4;POCOLBER;17:38:00
+06;972476;Y-4;BARBIER;17:36:00
+06;972476;Y-4;CHARBONN;17:35:00
+06;972476;Y-4;ANDRHUET;17:32:00
+06;972476;Y-4;GUTENBER;17:31:00
+06;972476;Y-4;PARCCOLB;17:30:00
+06;972498;Z-1;VALCLAIR;07:01:00
+06;972498;Z-1;CALVAIRE;07:00:00
+06;972498;Z-1;SENEF1;06:59:00
+06;972498;Z-1;POMPELLE;06:59:00
+06;972498;Z-1;STLEONAR;06:58:00
+06;972498;Z-1;CHESTLEO;06:57:00
+06;972498;Z-1;VALDEVES;06:56:00
+06;972498;Z-1;HOLLANDE;06:55:00
+06;972498;Z-1;MACECLIE;06:54:00
+06;972498;Z-1;MAINO;06:53:00
+06;972498;Z-1;COFFIG;06:52:00
+06;972498;Z-1;FULTON;06:51:00
+06;972498;Z-1;VRILLY;06:50:00
+06;972498;Z-1;GAVOISIN;06:49:00
+06;972498;Z-1;HOCHE;06:48:00
+06;972498;Z-1;THISABIN;06:47:00
+06;972498;Z-1;BRESSY;06:46:00
+06;972498;Z-1;FLAMAND;06:46:00
+06;972498;Z-1;GONZALLE;06:45:00
+06;972498;Z-1;DRODELHO;06:44:00
+06;972498;Z-1;TIMOTHEI;06:43:00
+06;972499;Z-1;VALCLAIR;07:23:00
+06;972499;Z-1;CALVAIRE;07:22:00
+06;972499;Z-1;SENEF1;07:21:00
+06;972499;Z-1;POMPELLE;07:21:00
+06;972499;Z-1;STLEONAR;07:20:00
+06;972499;Z-1;CHESTLEO;07:19:00
+06;972499;Z-1;VALDEVES;07:18:00
+06;972499;Z-1;HOLLANDE;07:17:00
+06;972499;Z-1;MACECLIE;07:16:00
+06;972499;Z-1;MAINO;07:15:00
+06;972499;Z-1;COFFIG;07:14:00
+06;972499;Z-1;FULTON;07:13:00
+06;972499;Z-1;VRILLY;07:12:00
+06;972499;Z-1;GAVOISIN;07:11:00
+06;972499;Z-1;HOCHE;07:10:00
+06;972499;Z-1;THISABIN;07:09:00
+06;972499;Z-1;BRESSY;07:08:00
+06;972499;Z-1;FLAMAND;07:08:00
+06;972499;Z-1;GONZALLE;07:07:00
+06;972499;Z-1;DRODELHO;07:06:00
+06;972499;Z-1;TIMOTHEI;07:05:00
+06;972477;Y-4;GAREDT2;13:20:00
+06;972477;Y-4;BELGIQUY;13:15:00
+06;972477;Y-4;POCOLBER;13:13:00
+06;972477;Y-4;BARBIER;13:11:00
+06;972477;Y-4;CHARBONN;13:10:00
+06;972477;Y-4;ANDRHUET;13:07:00
+06;972477;Y-4;GUTENBER;13:06:00
+06;972477;Y-4;PARCCOLB;13:05:00
+06;972500;Z-1;VALCLAIR;07:43:00
+06;972500;Z-1;CALVAIRE;07:42:00
+06;972500;Z-1;SENEF1;07:41:00
+06;972500;Z-1;POMPELLE;07:41:00
+06;972500;Z-1;STLEONAR;07:40:00
+06;972500;Z-1;CHESTLEO;07:39:00
+06;972500;Z-1;VALDEVES;07:38:00
+06;972500;Z-1;HOLLANDE;07:37:00
+06;972500;Z-1;MACECLIE;07:36:00
+06;972500;Z-1;MAINO;07:35:00
+06;972500;Z-1;COFFIG;07:34:00
+06;972500;Z-1;FULTON;07:33:00
+06;972500;Z-1;VRILLY;07:32:00
+06;972500;Z-1;GAVOISIN;07:31:00
+06;972500;Z-1;HOCHE;07:30:00
+06;972500;Z-1;THISABIN;07:29:00
+06;972500;Z-1;BRESSY;07:28:00
+06;972500;Z-1;FLAMAND;07:28:00
+06;972500;Z-1;GONZALLE;07:27:00
+06;972500;Z-1;DRODELHO;07:26:00
+06;972500;Z-1;TIMOTHEI;07:25:00
+06;972501;Z-1;VALCLAIR;08:03:00
+06;972501;Z-1;CALVAIRE;08:02:00
+06;972501;Z-1;SENEF1;08:01:00
+06;972501;Z-1;POMPELLE;08:01:00
+06;972501;Z-1;STLEONAR;08:00:00
+06;972501;Z-1;CHESTLEO;07:59:00
+06;972501;Z-1;VALDEVES;07:58:00
+06;972501;Z-1;HOLLANDE;07:57:00
+06;972501;Z-1;MACECLIE;07:56:00
+06;972501;Z-1;MAINO;07:55:00
+06;972501;Z-1;COFFIG;07:54:00
+06;972501;Z-1;FULTON;07:53:00
+06;972501;Z-1;VRILLY;07:52:00
+06;972501;Z-1;GAVOISIN;07:51:00
+06;972501;Z-1;HOCHE;07:50:00
+06;972501;Z-1;THISABIN;07:49:00
+06;972501;Z-1;BRESSY;07:48:00
+06;972501;Z-1;FLAMAND;07:48:00
+06;972501;Z-1;GONZALLE;07:47:00
+06;972501;Z-1;DRODELHO;07:46:00
+06;972501;Z-1;TIMOTHEI;07:45:00
+06;972502;Z-1;VALCLAIR;08:23:00
+06;972502;Z-1;CALVAIRE;08:22:00
+06;972502;Z-1;SENEF1;08:21:00
+06;972502;Z-1;POMPELLE;08:21:00
+06;972502;Z-1;STLEONAR;08:20:00
+06;972502;Z-1;CHESTLEO;08:19:00
+06;972502;Z-1;VALDEVES;08:18:00
+06;972502;Z-1;HOLLANDE;08:17:00
+06;972502;Z-1;MACECLIE;08:16:00
+06;972502;Z-1;MAINO;08:15:00
+06;972502;Z-1;COFFIG;08:14:00
+06;972502;Z-1;FULTON;08:13:00
+06;972502;Z-1;VRILLY;08:12:00
+06;972502;Z-1;GAVOISIN;08:11:00
+06;972502;Z-1;HOCHE;08:10:00
+06;972502;Z-1;THISABIN;08:09:00
+06;972502;Z-1;BRESSY;08:08:00
+06;972502;Z-1;FLAMAND;08:08:00
+06;972502;Z-1;GONZALLE;08:07:00
+06;972502;Z-1;DRODELHO;08:06:00
+06;972502;Z-1;TIMOTHEI;08:05:00
+06;972503;Z-1;VALCLAIR;08:43:00
+06;972503;Z-1;CALVAIRE;08:42:00
+06;972503;Z-1;SENEF1;08:41:00
+06;972503;Z-1;POMPELLE;08:41:00
+06;972503;Z-1;STLEONAR;08:40:00
+06;972503;Z-1;CHESTLEO;08:39:00
+06;972503;Z-1;VALDEVES;08:38:00
+06;972503;Z-1;HOLLANDE;08:37:00
+06;972503;Z-1;MACECLIE;08:36:00
+06;972503;Z-1;MAINO;08:35:00
+06;972503;Z-1;COFFIG;08:34:00
+06;972503;Z-1;FULTON;08:33:00
+06;972503;Z-1;VRILLY;08:32:00
+06;972503;Z-1;GAVOISIN;08:31:00
+06;972503;Z-1;HOCHE;08:30:00
+06;972503;Z-1;THISABIN;08:29:00
+06;972503;Z-1;BRESSY;08:28:00
+06;972503;Z-1;FLAMAND;08:28:00
+06;972503;Z-1;GONZALLE;08:27:00
+06;972503;Z-1;DRODELHO;08:26:00
+06;972503;Z-1;TIMOTHEI;08:25:00
+06;972504;Z-1;VALCLAIR;09:03:00
+06;972504;Z-1;CALVAIRE;09:02:00
+06;972504;Z-1;SENEF1;09:01:00
+06;972504;Z-1;POMPELLE;09:01:00
+06;972504;Z-1;STLEONAR;09:00:00
+06;972504;Z-1;CHESTLEO;08:59:00
+06;972504;Z-1;VALDEVES;08:58:00
+06;972504;Z-1;HOLLANDE;08:57:00
+06;972504;Z-1;MACECLIE;08:56:00
+06;972504;Z-1;MAINO;08:55:00
+06;972504;Z-1;COFFIG;08:54:00
+06;972504;Z-1;FULTON;08:53:00
+06;972504;Z-1;VRILLY;08:52:00
+06;972504;Z-1;GAVOISIN;08:51:00
+06;972504;Z-1;HOCHE;08:50:00
+06;972504;Z-1;THISABIN;08:49:00
+06;972504;Z-1;BRESSY;08:48:00
+06;972504;Z-1;FLAMAND;08:48:00
+06;972504;Z-1;GONZALLE;08:47:00
+06;972504;Z-1;DRODELHO;08:46:00
+06;972504;Z-1;TIMOTHEI;08:45:00
+06;972505;Z-1;VALCLAIR;09:30:00
+06;972505;Z-1;CALVAIRE;09:29:00
+06;972505;Z-1;SENEF1;09:28:00
+06;972505;Z-1;POMPELLE;09:28:00
+06;972505;Z-1;STLEONAR;09:27:00
+06;972505;Z-1;CHESTLEO;09:26:00
+06;972505;Z-1;VALDEVES;09:25:00
+06;972505;Z-1;HOLLANDE;09:24:00
+06;972505;Z-1;MACECLIE;09:23:00
+06;972505;Z-1;MAINO;09:22:00
+06;972505;Z-1;COFFIG;09:21:00
+06;972505;Z-1;FULTON;09:20:00
+06;972505;Z-1;VRILLY;09:19:00
+06;972505;Z-1;GAVOISIN;09:18:00
+06;972505;Z-1;HOCHE;09:17:00
+06;972505;Z-1;THISABIN;09:16:00
+06;972505;Z-1;BRESSY;09:15:00
+06;972505;Z-1;FLAMAND;09:15:00
+06;972505;Z-1;GONZALLE;09:14:00
+06;972505;Z-1;DRODELHO;09:13:00
+06;972505;Z-1;TIMOTHEI;09:12:00
+06;972478;Y-4;GAREDT2;12:50:00
+06;972478;Y-4;BELGIQUY;12:45:00
+06;972478;Y-4;POCOLBER;12:43:00
+06;972478;Y-4;BARBIER;12:41:00
+06;972478;Y-4;CHARBONN;12:40:00
+06;972478;Y-4;ANDRHUET;12:37:00
+06;972478;Y-4;GUTENBER;12:36:00
+06;972478;Y-4;PARCCOLB;12:35:00
+06;972506;Z-1;VALCLAIR;10:27:00
+06;972506;Z-1;CALVAIRE;10:26:00
+06;972506;Z-1;SENEF1;10:25:00
+06;972506;Z-1;POMPELLE;10:25:00
+06;972506;Z-1;STLEONAR;10:24:00
+06;972506;Z-1;CHESTLEO;10:23:00
+06;972506;Z-1;VALDEVES;10:22:00
+06;972506;Z-1;HOLLANDE;10:21:00
+06;972506;Z-1;MACECLIE;10:20:00
+06;972506;Z-1;MAINO;10:19:00
+06;972506;Z-1;COFFIG;10:18:00
+06;972506;Z-1;FULTON;10:17:00
+06;972506;Z-1;VRILLY;10:16:00
+06;972506;Z-1;GAVOISIN;10:15:00
+06;972506;Z-1;HOCHE;10:14:00
+06;972506;Z-1;THISABIN;10:13:00
+06;972506;Z-1;BRESSY;10:12:00
+06;972506;Z-1;FLAMAND;10:12:00
+06;972506;Z-1;GONZALLE;10:11:00
+06;972506;Z-1;DRODELHO;10:10:00
+06;972506;Z-1;TIMOTHEI;10:09:00
+06;972508;Z-1;VALCLAIR;11:57:00
+06;972508;Z-1;CALVAIRE;11:56:00
+06;972508;Z-1;SENEF1;11:55:00
+06;972508;Z-1;POMPELLE;11:55:00
+06;972508;Z-1;STLEONAR;11:54:00
+06;972508;Z-1;CHESTLEO;11:53:00
+06;972508;Z-1;VALDEVES;11:52:00
+06;972508;Z-1;HOLLANDE;11:51:00
+06;972508;Z-1;MACECLIE;11:50:00
+06;972508;Z-1;MAINO;11:49:00
+06;972508;Z-1;COFFIG;11:48:00
+06;972508;Z-1;FULTON;11:47:00
+06;972508;Z-1;VRILLY;11:46:00
+06;972508;Z-1;GAVOISIN;11:45:00
+06;972508;Z-1;HOCHE;11:44:00
+06;972508;Z-1;THISABIN;11:43:00
+06;972508;Z-1;BRESSY;11:42:00
+06;972508;Z-1;FLAMAND;11:42:00
+06;972508;Z-1;GONZALLE;11:41:00
+06;972508;Z-1;DRODELHO;11:40:00
+06;972508;Z-1;TIMOTHEI;11:39:00
+06;972509;Z-1;VALCLAIR;12:39:00
+06;972509;Z-1;CALVAIRE;12:38:00
+06;972509;Z-1;SENEF1;12:37:00
+06;972509;Z-1;POMPELLE;12:37:00
+06;972509;Z-1;STLEONAR;12:36:00
+06;972509;Z-1;CHESTLEO;12:35:00
+06;972509;Z-1;VALDEVES;12:34:00
+06;972509;Z-1;HOLLANDE;12:33:00
+06;972509;Z-1;MACECLIE;12:32:00
+06;972509;Z-1;MAINO;12:31:00
+06;972509;Z-1;COFFIG;12:30:00
+06;972509;Z-1;FULTON;12:29:00
+06;972509;Z-1;VRILLY;12:28:00
+06;972509;Z-1;GAVOISIN;12:27:00
+06;972509;Z-1;HOCHE;12:26:00
+06;972509;Z-1;THISABIN;12:25:00
+06;972509;Z-1;BRESSY;12:24:00
+06;972509;Z-1;FLAMAND;12:24:00
+06;972509;Z-1;GONZALLE;12:23:00
+06;972509;Z-1;DRODELHO;12:22:00
+06;972509;Z-1;TIMOTHEI;12:21:00
+06;972510;Z-1;VALCLAIR;13:20:00
+06;972510;Z-1;CALVAIRE;13:19:00
+06;972510;Z-1;SENEF1;13:18:00
+06;972510;Z-1;POMPELLE;13:18:00
+06;972510;Z-1;STLEONAR;13:17:00
+06;972510;Z-1;CHESTLEO;13:16:00
+06;972510;Z-1;VALDEVES;13:15:00
+06;972510;Z-1;HOLLANDE;13:14:00
+06;972510;Z-1;MACECLIE;13:13:00
+06;972510;Z-1;MAINO;13:12:00
+06;972510;Z-1;COFFIG;13:11:00
+06;972510;Z-1;FULTON;13:10:00
+06;972510;Z-1;VRILLY;13:09:00
+06;972510;Z-1;GAVOISIN;13:08:00
+06;972510;Z-1;HOCHE;13:07:00
+06;972510;Z-1;THISABIN;13:06:00
+06;972510;Z-1;BRESSY;13:05:00
+06;972510;Z-1;FLAMAND;13:05:00
+06;972510;Z-1;GONZALLE;13:04:00
+06;972510;Z-1;DRODELHO;13:03:00
+06;972510;Z-1;TIMOTHEI;13:02:00
+06;972511;Z-1;VALCLAIR;14:01:00
+06;972511;Z-1;CALVAIRE;14:00:00
+06;972511;Z-1;SENEF1;13:59:00
+06;972511;Z-1;POMPELLE;13:59:00
+06;972511;Z-1;STLEONAR;13:58:00
+06;972511;Z-1;CHESTLEO;13:57:00
+06;972511;Z-1;VALDEVES;13:56:00
+06;972511;Z-1;HOLLANDE;13:55:00
+06;972511;Z-1;MACECLIE;13:54:00
+06;972511;Z-1;MAINO;13:53:00
+06;972511;Z-1;COFFIG;13:52:00
+06;972511;Z-1;FULTON;13:51:00
+06;972511;Z-1;VRILLY;13:50:00
+06;972511;Z-1;GAVOISIN;13:49:00
+06;972511;Z-1;HOCHE;13:48:00
+06;972511;Z-1;THISABIN;13:47:00
+06;972511;Z-1;BRESSY;13:46:00
+06;972511;Z-1;FLAMAND;13:46:00
+06;972511;Z-1;GONZALLE;13:45:00
+06;972511;Z-1;DRODELHO;13:44:00
+06;972511;Z-1;TIMOTHEI;13:43:00
+06;972512;Z-1;VALCLAIR;14:50:00
+06;972512;Z-1;CALVAIRE;14:49:00
+06;972512;Z-1;SENEF1;14:48:00
+06;972512;Z-1;POMPELLE;14:48:00
+06;972512;Z-1;STLEONAR;14:47:00
+06;972512;Z-1;CHESTLEO;14:46:00
+06;972512;Z-1;VALDEVES;14:45:00
+06;972512;Z-1;HOLLANDE;14:44:00
+06;972512;Z-1;MACECLIE;14:43:00
+06;972512;Z-1;MAINO;14:42:00
+06;972512;Z-1;COFFIG;14:41:00
+06;972512;Z-1;FULTON;14:40:00
+06;972512;Z-1;VRILLY;14:39:00
+06;972512;Z-1;GAVOISIN;14:38:00
+06;972512;Z-1;HOCHE;14:37:00
+06;972512;Z-1;THISABIN;14:36:00
+06;972512;Z-1;BRESSY;14:35:00
+06;972512;Z-1;FLAMAND;14:35:00
+06;972512;Z-1;GONZALLE;14:34:00
+06;972512;Z-1;DRODELHO;14:33:00
+06;972512;Z-1;TIMOTHEI;14:32:00
+06;972513;Z-1;VALCLAIR;15:51:00
+06;972513;Z-1;CALVAIRE;15:50:00
+06;972513;Z-1;SENEF1;15:49:00
+06;972513;Z-1;POMPELLE;15:49:00
+06;972513;Z-1;STLEONAR;15:48:00
+06;972513;Z-1;CHESTLEO;15:47:00
+06;972513;Z-1;VALDEVES;15:46:00
+06;972513;Z-1;HOLLANDE;15:45:00
+06;972513;Z-1;MACECLIE;15:44:00
+06;972513;Z-1;MAINO;15:43:00
+06;972513;Z-1;COFFIG;15:42:00
+06;972513;Z-1;FULTON;15:41:00
+06;972513;Z-1;VRILLY;15:40:00
+06;972513;Z-1;GAVOISIN;15:39:00
+06;972513;Z-1;HOCHE;15:38:00
+06;972513;Z-1;THISABIN;15:37:00
+06;972513;Z-1;BRESSY;15:36:00
+06;972513;Z-1;FLAMAND;15:36:00
+06;972513;Z-1;GONZALLE;15:35:00
+06;972513;Z-1;DRODELHO;15:34:00
+06;972513;Z-1;TIMOTHEI;15:33:00
+06;972479;Y-3;PARCCOLB;12:30:00
+06;972479;Y-3;GUTENB2;12:29:00
+06;972479;Y-3;ANDRHU2;12:27:00
+06;972479;Y-3;CHARBO2;12:25:00
+06;972479;Y-3;BARBIER2;12:23:00
+06;972479;Y-3;POCOLBE2;12:21:00
+06;972479;Y-3;BELGIQY2;12:20:00
+06;972479;Y-3;ROMAINS2;12:18:00
+06;972479;Y-3;VERNOUI2;12:17:00
+06;972479;Y-3;ROEDERE2;12:16:00
+06;972479;Y-3;GAREDT2;12:15:00
+06;972514;Z-1;VALCLAIR;16:21:00
+06;972514;Z-1;CALVAIRE;16:20:00
+06;972514;Z-1;SENEF1;16:19:00
+06;972514;Z-1;POMPELLE;16:19:00
+06;972514;Z-1;STLEONAR;16:18:00
+06;972514;Z-1;CHESTLEO;16:17:00
+06;972514;Z-1;VALDEVES;16:16:00
+06;972514;Z-1;HOLLANDE;16:15:00
+06;972514;Z-1;MACECLIE;16:14:00
+06;972514;Z-1;MAINO;16:13:00
+06;972514;Z-1;COFFIG;16:12:00
+06;972514;Z-1;FULTON;16:11:00
+06;972514;Z-1;VRILLY;16:10:00
+06;972514;Z-1;GAVOISIN;16:09:00
+06;972514;Z-1;HOCHE;16:08:00
+06;972514;Z-1;THISABIN;16:07:00
+06;972514;Z-1;BRESSY;16:06:00
+06;972514;Z-1;FLAMAND;16:06:00
+06;972514;Z-1;GONZALLE;16:05:00
+06;972514;Z-1;DRODELHO;16:04:00
+06;972514;Z-1;TIMOTHEI;16:03:00
+06;972515;Z-1;VALCLAIR;16:39:00
+06;972515;Z-1;POMPELLE;16:38:00
+06;972515;Z-1;CALVAIRE;16:38:00
+06;972515;Z-1;SENEF1;16:37:00
+06;972515;Z-1;STLEONAR;16:36:00
+06;972515;Z-1;CHESTLEO;16:35:00
+06;972515;Z-1;VALDEVES;16:34:00
+06;972515;Z-1;HOLLANDE;16:33:00
+06;972515;Z-1;MAINO;16:32:00
+06;972515;Z-1;MACECLIE;16:32:00
+06;972515;Z-1;COFFIG;16:31:00
+06;972515;Z-1;FULTON;16:30:00
+06;972515;Z-1;VRILLY;16:29:00
+06;972515;Z-1;GAVOISIN;16:28:00
+06;972515;Z-1;THISABIN;16:27:00
+06;972515;Z-1;HOCHE;16:27:00
+06;972515;Z-1;FLAMAND;16:26:00
+06;972515;Z-1;GONZALLE;16:25:00
+06;972515;Z-1;BRESSY;16:25:00
+06;972515;Z-1;DRODELHO;16:24:00
+06;972515;Z-1;TIMOTHEI;16:23:00
+06;972516;Z-1;VALCLAIR;17:03:00
+06;972516;Z-1;POMPELLE;17:02:00
+06;972516;Z-1;CALVAIRE;17:02:00
+06;972516;Z-1;SENEF1;17:01:00
+06;972516;Z-1;STLEONAR;17:00:00
+06;972516;Z-1;CHESTLEO;16:59:00
+06;972516;Z-1;VALDEVES;16:58:00
+06;972516;Z-1;HOLLANDE;16:57:00
+06;972516;Z-1;MAINO;16:56:00
+06;972516;Z-1;MACECLIE;16:56:00
+06;972516;Z-1;COFFIG;16:55:00
+06;972516;Z-1;FULTON;16:54:00
+06;972516;Z-1;VRILLY;16:53:00
+06;972516;Z-1;GAVOISIN;16:52:00
+06;972516;Z-1;THISABIN;16:51:00
+06;972516;Z-1;HOCHE;16:51:00
+06;972516;Z-1;FLAMAND;16:50:00
+06;972516;Z-1;GONZALLE;16:49:00
+06;972516;Z-1;BRESSY;16:49:00
+06;972516;Z-1;DRODELHO;16:48:00
+06;972516;Z-1;TIMOTHEI;16:47:00
+06;972517;Z-1;VALCLAIR;17:20:00
+06;972517;Z-1;POMPELLE;17:19:00
+06;972517;Z-1;CALVAIRE;17:19:00
+06;972517;Z-1;SENEF1;17:18:00
+06;972517;Z-1;STLEONAR;17:17:00
+06;972517;Z-1;CHESTLEO;17:16:00
+06;972517;Z-1;VALDEVES;17:15:00
+06;972517;Z-1;HOLLANDE;17:14:00
+06;972517;Z-1;MAINO;17:13:00
+06;972517;Z-1;MACECLIE;17:13:00
+06;972517;Z-1;COFFIG;17:12:00
+06;972517;Z-1;FULTON;17:11:00
+06;972517;Z-1;VRILLY;17:10:00
+06;972517;Z-1;GAVOISIN;17:09:00
+06;972517;Z-1;THISABIN;17:08:00
+06;972517;Z-1;HOCHE;17:08:00
+06;972517;Z-1;FLAMAND;17:07:00
+06;972517;Z-1;GONZALLE;17:06:00
+06;972517;Z-1;BRESSY;17:06:00
+06;972517;Z-1;DRODELHO;17:05:00
+06;972517;Z-1;TIMOTHEI;17:04:00
+06;972518;Z-1;VALCLAIR;17:44:00
+06;972518;Z-1;POMPELLE;17:43:00
+06;972518;Z-1;CALVAIRE;17:43:00
+06;972518;Z-1;SENEF1;17:42:00
+06;972518;Z-1;STLEONAR;17:41:00
+06;972518;Z-1;CHESTLEO;17:40:00
+06;972518;Z-1;VALDEVES;17:39:00
+06;972518;Z-1;HOLLANDE;17:38:00
+06;972518;Z-1;MAINO;17:37:00
+06;972518;Z-1;MACECLIE;17:37:00
+06;972518;Z-1;COFFIG;17:36:00
+06;972518;Z-1;FULTON;17:35:00
+06;972518;Z-1;VRILLY;17:34:00
+06;972518;Z-1;GAVOISIN;17:33:00
+06;972518;Z-1;THISABIN;17:32:00
+06;972518;Z-1;HOCHE;17:32:00
+06;972518;Z-1;FLAMAND;17:31:00
+06;972518;Z-1;GONZALLE;17:30:00
+06;972518;Z-1;BRESSY;17:30:00
+06;972518;Z-1;DRODELHO;17:29:00
+06;972518;Z-1;TIMOTHEI;17:28:00
+06;972519;Z-1;VALCLAIR;18:00:00
+06;972519;Z-1;POMPELLE;17:59:00
+06;972519;Z-1;CALVAIRE;17:59:00
+06;972519;Z-1;SENEF1;17:58:00
+06;972519;Z-1;STLEONAR;17:57:00
+06;972519;Z-1;CHESTLEO;17:56:00
+06;972519;Z-1;VALDEVES;17:55:00
+06;972519;Z-1;HOLLANDE;17:54:00
+06;972519;Z-1;MAINO;17:53:00
+06;972519;Z-1;MACECLIE;17:53:00
+06;972519;Z-1;COFFIG;17:52:00
+06;972519;Z-1;FULTON;17:51:00
+06;972519;Z-1;VRILLY;17:50:00
+06;972519;Z-1;GAVOISIN;17:49:00
+06;972519;Z-1;THISABIN;17:48:00
+06;972519;Z-1;HOCHE;17:48:00
+06;972519;Z-1;FLAMAND;17:47:00
+06;972519;Z-1;GONZALLE;17:46:00
+06;972519;Z-1;BRESSY;17:46:00
+06;972519;Z-1;DRODELHO;17:45:00
+06;972519;Z-1;TIMOTHEI;17:44:00
+06;972520;Z-1;VALCLAIR;18:37:00
+06;972520;Z-1;POMPELLE;18:36:00
+06;972520;Z-1;CALVAIRE;18:36:00
+06;972520;Z-1;SENEF1;18:35:00
+06;972520;Z-1;STLEONAR;18:34:00
+06;972520;Z-1;CHESTLEO;18:33:00
+06;972520;Z-1;VALDEVES;18:32:00
+06;972520;Z-1;HOLLANDE;18:31:00
+06;972520;Z-1;MAINO;18:30:00
+06;972520;Z-1;MACECLIE;18:30:00
+06;972520;Z-1;COFFIG;18:29:00
+06;972520;Z-1;FULTON;18:28:00
+06;972520;Z-1;VRILLY;18:27:00
+06;972520;Z-1;GAVOISIN;18:26:00
+06;972520;Z-1;THISABIN;18:25:00
+06;972520;Z-1;HOCHE;18:25:00
+06;972520;Z-1;FLAMAND;18:24:00
+06;972520;Z-1;GONZALLE;18:23:00
+06;972520;Z-1;BRESSY;18:23:00
+06;972520;Z-1;DRODELHO;18:22:00
+06;972520;Z-1;TIMOTHEI;18:21:00
+06;972521;Z-2;TIMOTHEI;07:22:00
+06;972521;Z-2;GIRAUD2;07:21:00
+06;972521;Z-2;HENPARIS;07:20:00
+06;972521;Z-2;ROFOUCRY;07:19:00
+06;972521;Z-2;CLAMONET;07:19:00
+06;972521;Z-2;FLAMAND2;07:18:00
+06;972521;Z-2;THISABI2;07:17:00
+06;972521;Z-2;HOCHE2;07:16:00
+06;972521;Z-2;GAVOISI2;07:15:00
+06;972521;Z-2;FULTON2;07:14:00
+06;972521;Z-2;VRILLY2;07:14:00
+06;972521;Z-2;COFFIG2;07:13:00
+06;972521;Z-2;MAINO2;07:12:00
+06;972521;Z-2;MACECLI2;07:11:00
+06;972521;Z-2;HOLLAND2;07:10:00
+06;972521;Z-2;VALDEVE2;07:09:00
+06;972521;Z-2;CDESTLE2;07:08:00
+06;972521;Z-2;STLEONA2;07:07:00
+06;972521;Z-2;POMPELL2;07:06:00
+06;972521;Z-2;SENEF2;07:06:00
+06;972521;Z-2;CALVAIR2;07:05:00
+06;972521;Z-2;VALCLAIR;07:04:00
+06;972522;Z-2;TIMOTHEI;07:42:00
+06;972522;Z-2;GIRAUD2;07:41:00
+06;972522;Z-2;HENPARIS;07:40:00
+06;972522;Z-2;ROFOUCRY;07:39:00
+06;972522;Z-2;CLAMONET;07:39:00
+06;972522;Z-2;FLAMAND2;07:38:00
+06;972522;Z-2;THISABI2;07:37:00
+06;972522;Z-2;HOCHE2;07:36:00
+06;972522;Z-2;GAVOISI2;07:35:00
+06;972522;Z-2;FULTON2;07:34:00
+06;972522;Z-2;VRILLY2;07:34:00
+06;972522;Z-2;COFFIG2;07:33:00
+06;972522;Z-2;MAINO2;07:32:00
+06;972522;Z-2;MACECLI2;07:31:00
+06;972522;Z-2;HOLLAND2;07:30:00
+06;972522;Z-2;VALDEVE2;07:29:00
+06;972522;Z-2;CDESTLE2;07:28:00
+06;972522;Z-2;STLEONA2;07:27:00
+06;972522;Z-2;POMPELL2;07:26:00
+06;972522;Z-2;SENEF2;07:26:00
+06;972522;Z-2;CALVAIR2;07:25:00
+06;972522;Z-2;VALCLAIR;07:24:00
+06;972523;Z-2;TIMOTHEI;08:02:00
+06;972523;Z-2;GIRAUD2;08:01:00
+06;972523;Z-2;HENPARIS;08:00:00
+06;972523;Z-2;ROFOUCRY;07:59:00
+06;972523;Z-2;CLAMONET;07:59:00
+06;972523;Z-2;FLAMAND2;07:58:00
+06;972523;Z-2;THISABI2;07:57:00
+06;972523;Z-2;HOCHE2;07:56:00
+06;972523;Z-2;GAVOISI2;07:55:00
+06;972523;Z-2;FULTON2;07:54:00
+06;972523;Z-2;VRILLY2;07:54:00
+06;972523;Z-2;COFFIG2;07:53:00
+06;972523;Z-2;MAINO2;07:52:00
+06;972523;Z-2;MACECLI2;07:51:00
+06;972523;Z-2;HOLLAND2;07:50:00
+06;972523;Z-2;VALDEVE2;07:49:00
+06;972523;Z-2;CDESTLE2;07:48:00
+06;972523;Z-2;STLEONA2;07:47:00
+06;972523;Z-2;POMPELL2;07:46:00
+06;972523;Z-2;SENEF2;07:46:00
+06;972523;Z-2;CALVAIR2;07:45:00
+06;972523;Z-2;VALCLAIR;07:44:00
+06;972524;Z-2;TIMOTHEI;08:22:00
+06;972524;Z-2;GIRAUD2;08:21:00
+06;972524;Z-2;HENPARIS;08:20:00
+06;972524;Z-2;ROFOUCRY;08:19:00
+06;972524;Z-2;CLAMONET;08:19:00
+06;972524;Z-2;FLAMAND2;08:18:00
+06;972524;Z-2;THISABI2;08:17:00
+06;972524;Z-2;HOCHE2;08:16:00
+06;972524;Z-2;GAVOISI2;08:15:00
+06;972524;Z-2;FULTON2;08:14:00
+06;972524;Z-2;VRILLY2;08:14:00
+06;972524;Z-2;COFFIG2;08:13:00
+06;972524;Z-2;MAINO2;08:12:00
+06;972524;Z-2;MACECLI2;08:11:00
+06;972524;Z-2;HOLLAND2;08:10:00
+06;972524;Z-2;VALDEVE2;08:09:00
+06;972524;Z-2;CDESTLE2;08:08:00
+06;972524;Z-2;STLEONA2;08:07:00
+06;972524;Z-2;POMPELL2;08:06:00
+06;972524;Z-2;SENEF2;08:06:00
+06;972524;Z-2;CALVAIR2;08:05:00
+06;972524;Z-2;VALCLAIR;08:04:00
+06;972525;Z-2;TIMOTHEI;08:42:00
+06;972525;Z-2;GIRAUD2;08:41:00
+06;972525;Z-2;HENPARIS;08:40:00
+06;972525;Z-2;ROFOUCRY;08:39:00
+06;972525;Z-2;CLAMONET;08:39:00
+06;972525;Z-2;FLAMAND2;08:38:00
+06;972525;Z-2;THISABI2;08:37:00
+06;972525;Z-2;HOCHE2;08:36:00
+06;972525;Z-2;GAVOISI2;08:35:00
+06;972525;Z-2;FULTON2;08:34:00
+06;972525;Z-2;VRILLY2;08:34:00
+06;972525;Z-2;COFFIG2;08:33:00
+06;972525;Z-2;MAINO2;08:32:00
+06;972525;Z-2;MACECLI2;08:31:00
+06;972525;Z-2;HOLLAND2;08:30:00
+06;972525;Z-2;VALDEVE2;08:29:00
+06;972525;Z-2;CDESTLE2;08:28:00
+06;972525;Z-2;STLEONA2;08:27:00
+06;972525;Z-2;POMPELL2;08:26:00
+06;972525;Z-2;SENEF2;08:26:00
+06;972525;Z-2;CALVAIR2;08:25:00
+06;972525;Z-2;VALCLAIR;08:24:00
+06;972526;Z-2;TIMOTHEI;09:11:00
+06;972526;Z-2;GIRAUD2;09:10:00
+06;972526;Z-2;HENPARIS;09:09:00
+06;972526;Z-2;ROFOUCRY;09:08:00
+06;972526;Z-2;CLAMONET;09:08:00
+06;972526;Z-2;FLAMAND2;09:07:00
+06;972526;Z-2;THISABI2;09:06:00
+06;972526;Z-2;HOCHE2;09:05:00
+06;972526;Z-2;GAVOISI2;09:04:00
+06;972526;Z-2;FULTON2;09:03:00
+06;972526;Z-2;VRILLY2;09:03:00
+06;972526;Z-2;COFFIG2;09:02:00
+06;972526;Z-2;MAINO2;09:01:00
+06;972526;Z-2;MACECLI2;09:00:00
+06;972526;Z-2;HOLLAND2;08:59:00
+06;972526;Z-2;VALDEVE2;08:58:00
+06;972526;Z-2;CDESTLE2;08:57:00
+06;972526;Z-2;STLEONA2;08:56:00
+06;972526;Z-2;POMPELL2;08:55:00
+06;972526;Z-2;SENEF2;08:55:00
+06;972526;Z-2;CALVAIR2;08:54:00
+06;972526;Z-2;VALCLAIR;08:53:00
+06;972527;Z-2;TIMOTHEI;10:00:00
+06;972527;Z-2;GIRAUD2;09:59:00
+06;972527;Z-2;HENPARIS;09:58:00
+06;972527;Z-2;ROFOUCRY;09:57:00
+06;972527;Z-2;CLAMONET;09:57:00
+06;972527;Z-2;FLAMAND2;09:56:00
+06;972527;Z-2;THISABI2;09:55:00
+06;972527;Z-2;HOCHE2;09:54:00
+06;972527;Z-2;GAVOISI2;09:53:00
+06;972527;Z-2;FULTON2;09:52:00
+06;972527;Z-2;VRILLY2;09:52:00
+06;972527;Z-2;COFFIG2;09:51:00
+06;972527;Z-2;MAINO2;09:50:00
+06;972527;Z-2;MACECLI2;09:49:00
+06;972527;Z-2;HOLLAND2;09:48:00
+06;972527;Z-2;VALDEVE2;09:47:00
+06;972527;Z-2;CDESTLE2;09:46:00
+06;972527;Z-2;STLEONA2;09:45:00
+06;972527;Z-2;POMPELL2;09:44:00
+06;972527;Z-2;SENEF2;09:44:00
+06;972527;Z-2;CALVAIR2;09:43:00
+06;972527;Z-2;VALCLAIR;09:42:00
+06;972529;Z-2;TIMOTHEI;11:37:00
+06;972529;Z-2;GIRAUD2;11:36:00
+06;972529;Z-2;HENPARIS;11:35:00
+06;972529;Z-2;CLAMONET;11:34:00
+06;972529;Z-2;FLAMAND2;11:33:00
+06;972529;Z-2;ROFOUCRY;11:33:00
+06;972529;Z-2;THISABI2;11:32:00
+06;972529;Z-2;HOCHE2;11:31:00
+06;972529;Z-2;GAVOISI2;11:30:00
+06;972529;Z-2;VRILLY2;11:29:00
+06;972529;Z-2;FULTON2;11:28:00
+06;972529;Z-2;COFFIG2;11:27:00
+06;972529;Z-2;MAINO2;11:26:00
+06;972529;Z-2;MACECLI2;11:25:00
+06;972529;Z-2;VALDEVE2;11:24:00
+06;972529;Z-2;HOLLAND2;11:24:00
+06;972529;Z-2;CDESTLE2;11:23:00
+06;972529;Z-2;STLEONA2;11:22:00
+06;972529;Z-2;POMPELL2;11:20:00
+06;972529;Z-2;SENEF2;11:20:00
+06;972529;Z-2;CALVAIR2;11:19:00
+06;972529;Z-2;VALCLAIR;11:18:00
+06;972530;Z-2;TIMOTHEI;12:19:00
+06;972530;Z-2;GIRAUD2;12:18:00
+06;972530;Z-2;HENPARIS;12:17:00
+06;972530;Z-2;CLAMONET;12:16:00
+06;972530;Z-2;FLAMAND2;12:15:00
+06;972530;Z-2;ROFOUCRY;12:15:00
+06;972530;Z-2;THISABI2;12:14:00
+06;972530;Z-2;HOCHE2;12:13:00
+06;972530;Z-2;GAVOISI2;12:12:00
+06;972530;Z-2;VRILLY2;12:11:00
+06;972530;Z-2;FULTON2;12:10:00
+06;972530;Z-2;COFFIG2;12:09:00
+06;972530;Z-2;MAINO2;12:08:00
+06;972530;Z-2;MACECLI2;12:07:00
+06;972530;Z-2;VALDEVE2;12:06:00
+06;972530;Z-2;HOLLAND2;12:06:00
+06;972530;Z-2;CDESTLE2;12:05:00
+06;972530;Z-2;STLEONA2;12:04:00
+06;972530;Z-2;POMPELL2;12:02:00
+06;972530;Z-2;SENEF2;12:02:00
+06;972530;Z-2;CALVAIR2;12:01:00
+06;972530;Z-2;VALCLAIR;12:00:00
+06;972531;Z-2;TIMOTHEI;13:00:00
+06;972531;Z-2;GIRAUD2;12:59:00
+06;972531;Z-2;HENPARIS;12:58:00
+06;972531;Z-2;CLAMONET;12:57:00
+06;972531;Z-2;FLAMAND2;12:56:00
+06;972531;Z-2;ROFOUCRY;12:56:00
+06;972531;Z-2;THISABI2;12:55:00
+06;972531;Z-2;HOCHE2;12:54:00
+06;972531;Z-2;GAVOISI2;12:53:00
+06;972531;Z-2;VRILLY2;12:52:00
+06;972531;Z-2;FULTON2;12:51:00
+06;972531;Z-2;COFFIG2;12:50:00
+06;972531;Z-2;MAINO2;12:49:00
+06;972531;Z-2;MACECLI2;12:48:00
+06;972531;Z-2;VALDEVE2;12:47:00
+06;972531;Z-2;HOLLAND2;12:47:00
+06;972531;Z-2;CDESTLE2;12:46:00
+06;972531;Z-2;STLEONA2;12:45:00
+06;972531;Z-2;POMPELL2;12:43:00
+06;972531;Z-2;SENEF2;12:43:00
+06;972531;Z-2;CALVAIR2;12:42:00
+06;972531;Z-2;VALCLAIR;12:41:00
+06;972532;Z-2;TIMOTHEI;13:41:00
+06;972532;Z-2;GIRAUD2;13:40:00
+06;972532;Z-2;HENPARIS;13:39:00
+06;972532;Z-2;CLAMONET;13:38:00
+06;972532;Z-2;FLAMAND2;13:37:00
+06;972532;Z-2;ROFOUCRY;13:37:00
+06;972532;Z-2;THISABI2;13:36:00
+06;972532;Z-2;HOCHE2;13:35:00
+06;972532;Z-2;GAVOISI2;13:34:00
+06;972532;Z-2;VRILLY2;13:33:00
+06;972532;Z-2;FULTON2;13:32:00
+06;972532;Z-2;COFFIG2;13:31:00
+06;972532;Z-2;MAINO2;13:30:00
+06;972532;Z-2;MACECLI2;13:29:00
+06;972532;Z-2;VALDEVE2;13:28:00
+06;972532;Z-2;HOLLAND2;13:28:00
+06;972532;Z-2;CDESTLE2;13:27:00
+06;972532;Z-2;STLEONA2;13:26:00
+06;972532;Z-2;POMPELL2;13:24:00
+06;972532;Z-2;SENEF2;13:24:00
+06;972532;Z-2;CALVAIR2;13:23:00
+06;972532;Z-2;VALCLAIR;13:22:00
+06;972533;Z-2;TIMOTHEI;14:30:00
+06;972533;Z-2;GIRAUD2;14:29:00
+06;972533;Z-2;HENPARIS;14:28:00
+06;972533;Z-2;CLAMONET;14:27:00
+06;972533;Z-2;FLAMAND2;14:26:00
+06;972533;Z-2;ROFOUCRY;14:26:00
+06;972533;Z-2;THISABI2;14:25:00
+06;972533;Z-2;HOCHE2;14:24:00
+06;972533;Z-2;GAVOISI2;14:23:00
+06;972533;Z-2;VRILLY2;14:22:00
+06;972533;Z-2;FULTON2;14:21:00
+06;972533;Z-2;COFFIG2;14:20:00
+06;972533;Z-2;MAINO2;14:19:00
+06;972533;Z-2;MACECLI2;14:18:00
+06;972533;Z-2;VALDEVE2;14:17:00
+06;972533;Z-2;HOLLAND2;14:17:00
+06;972533;Z-2;CDESTLE2;14:16:00
+06;972533;Z-2;STLEONA2;14:15:00
+06;972533;Z-2;POMPELL2;14:13:00
+06;972533;Z-2;SENEF2;14:13:00
+06;972533;Z-2;CALVAIR2;14:12:00
+06;972533;Z-2;VALCLAIR;14:11:00
+06;972534;Z-2;TIMOTHEI;15:19:00
+06;972534;Z-2;GIRAUD2;15:18:00
+06;972534;Z-2;HENPARIS;15:17:00
+06;972534;Z-2;CLAMONET;15:16:00
+06;972534;Z-2;FLAMAND2;15:15:00
+06;972534;Z-2;ROFOUCRY;15:15:00
+06;972534;Z-2;THISABI2;15:14:00
+06;972534;Z-2;HOCHE2;15:13:00
+06;972534;Z-2;GAVOISI2;15:12:00
+06;972534;Z-2;VRILLY2;15:11:00
+06;972534;Z-2;FULTON2;15:10:00
+06;972534;Z-2;COFFIG2;15:09:00
+06;972534;Z-2;MAINO2;15:08:00
+06;972534;Z-2;MACECLI2;15:07:00
+06;972534;Z-2;VALDEVE2;15:06:00
+06;972534;Z-2;HOLLAND2;15:06:00
+06;972534;Z-2;CDESTLE2;15:05:00
+06;972534;Z-2;STLEONA2;15:04:00
+06;972534;Z-2;POMPELL2;15:02:00
+06;972534;Z-2;SENEF2;15:02:00
+06;972534;Z-2;CALVAIR2;15:01:00
+06;972534;Z-2;VALCLAIR;15:00:00
+06;972535;Z-2;TIMOTHEI;16:01:00
+06;972535;Z-2;GIRAUD2;16:00:00
+06;972535;Z-2;HENPARIS;15:59:00
+06;972535;Z-2;CLAMONET;15:58:00
+06;972535;Z-2;FLAMAND2;15:57:00
+06;972535;Z-2;ROFOUCRY;15:57:00
+06;972535;Z-2;THISABI2;15:56:00
+06;972535;Z-2;HOCHE2;15:55:00
+06;972535;Z-2;GAVOISI2;15:54:00
+06;972535;Z-2;VRILLY2;15:53:00
+06;972535;Z-2;FULTON2;15:52:00
+06;972535;Z-2;COFFIG2;15:51:00
+06;972535;Z-2;MAINO2;15:50:00
+06;972535;Z-2;MACECLI2;15:49:00
+06;972535;Z-2;VALDEVE2;15:48:00
+06;972535;Z-2;HOLLAND2;15:48:00
+06;972535;Z-2;CDESTLE2;15:47:00
+06;972535;Z-2;STLEONA2;15:46:00
+06;972535;Z-2;POMPELL2;15:44:00
+06;972535;Z-2;SENEF2;15:44:00
+06;972535;Z-2;CALVAIR2;15:43:00
+06;972535;Z-2;VALCLAIR;15:42:00
+06;972536;Z-2;TIMOTHEI;16:18:00
+06;972536;Z-2;GIRAUD2;16:17:00
+06;972536;Z-2;HENPARIS;16:16:00
+06;972536;Z-2;CLAMONET;16:15:00
+06;972536;Z-2;FLAMAND2;16:14:00
+06;972536;Z-2;ROFOUCRY;16:14:00
+06;972536;Z-2;THISABI2;16:13:00
+06;972536;Z-2;HOCHE2;16:12:00
+06;972536;Z-2;GAVOISI2;16:11:00
+06;972536;Z-2;VRILLY2;16:10:00
+06;972536;Z-2;FULTON2;16:09:00
+06;972536;Z-2;COFFIG2;16:08:00
+06;972536;Z-2;MAINO2;16:07:00
+06;972536;Z-2;MACECLI2;16:06:00
+06;972536;Z-2;VALDEVE2;16:05:00
+06;972536;Z-2;HOLLAND2;16:05:00
+06;972536;Z-2;CDESTLE2;16:04:00
+06;972536;Z-2;STLEONA2;16:03:00
+06;972536;Z-2;POMPELL2;16:01:00
+06;972536;Z-2;SENEF2;16:01:00
+06;972536;Z-2;CALVAIR2;16:00:00
+06;972536;Z-2;VALCLAIR;15:59:00
+06;972537;Z-2;TIMOTHEI;16:42:00
+06;972537;Z-2;GIRAUD2;16:41:00
+06;972537;Z-2;HENPARIS;16:40:00
+06;972537;Z-2;CLAMONET;16:39:00
+06;972537;Z-2;FLAMAND2;16:38:00
+06;972537;Z-2;ROFOUCRY;16:38:00
+06;972537;Z-2;THISABI2;16:37:00
+06;972537;Z-2;HOCHE2;16:36:00
+06;972537;Z-2;GAVOISI2;16:35:00
+06;972537;Z-2;VRILLY2;16:34:00
+06;972537;Z-2;FULTON2;16:33:00
+06;972537;Z-2;COFFIG2;16:32:00
+06;972537;Z-2;MAINO2;16:31:00
+06;972537;Z-2;MACECLI2;16:30:00
+06;972537;Z-2;VALDEVE2;16:29:00
+06;972537;Z-2;HOLLAND2;16:29:00
+06;972537;Z-2;CDESTLE2;16:28:00
+06;972537;Z-2;STLEONA2;16:27:00
+06;972537;Z-2;POMPELL2;16:25:00
+06;972537;Z-2;SENEF2;16:25:00
+06;972537;Z-2;CALVAIR2;16:24:00
+06;972537;Z-2;VALCLAIR;16:23:00
+06;972538;Z-2;TIMOTHEI;16:59:00
+06;972538;Z-2;GIRAUD2;16:58:00
+06;972538;Z-2;HENPARIS;16:57:00
+06;972538;Z-2;CLAMONET;16:56:00
+06;972538;Z-2;FLAMAND2;16:55:00
+06;972538;Z-2;ROFOUCRY;16:55:00
+06;972538;Z-2;THISABI2;16:54:00
+06;972538;Z-2;HOCHE2;16:53:00
+06;972538;Z-2;GAVOISI2;16:52:00
+06;972538;Z-2;VRILLY2;16:51:00
+06;972538;Z-2;FULTON2;16:50:00
+06;972538;Z-2;COFFIG2;16:49:00
+06;972538;Z-2;MAINO2;16:48:00
+06;972538;Z-2;MACECLI2;16:47:00
+06;972538;Z-2;VALDEVE2;16:46:00
+06;972538;Z-2;HOLLAND2;16:46:00
+06;972538;Z-2;CDESTLE2;16:45:00
+06;972538;Z-2;STLEONA2;16:44:00
+06;972538;Z-2;POMPELL2;16:42:00
+06;972538;Z-2;SENEF2;16:42:00
+06;972538;Z-2;CALVAIR2;16:41:00
+06;972538;Z-2;VALCLAIR;16:40:00
+06;972539;Z-2;TIMOTHEI;17:23:00
+06;972539;Z-2;GIRAUD2;17:22:00
+06;972539;Z-2;HENPARIS;17:21:00
+06;972539;Z-2;CLAMONET;17:20:00
+06;972539;Z-2;FLAMAND2;17:19:00
+06;972539;Z-2;ROFOUCRY;17:19:00
+06;972539;Z-2;THISABI2;17:18:00
+06;972539;Z-2;HOCHE2;17:17:00
+06;972539;Z-2;GAVOISI2;17:16:00
+06;972539;Z-2;VRILLY2;17:15:00
+06;972539;Z-2;FULTON2;17:14:00
+06;972539;Z-2;COFFIG2;17:13:00
+06;972539;Z-2;MAINO2;17:12:00
+06;972539;Z-2;MACECLI2;17:11:00
+06;972539;Z-2;VALDEVE2;17:10:00
+06;972539;Z-2;HOLLAND2;17:10:00
+06;972539;Z-2;CDESTLE2;17:09:00
+06;972539;Z-2;STLEONA2;17:08:00
+06;972539;Z-2;POMPELL2;17:06:00
+06;972539;Z-2;SENEF2;17:06:00
+06;972539;Z-2;CALVAIR2;17:05:00
+06;972539;Z-2;VALCLAIR;17:04:00
+06;972540;Z-2;TIMOTHEI;17:39:00
+06;972540;Z-2;GIRAUD2;17:38:00
+06;972540;Z-2;HENPARIS;17:37:00
+06;972540;Z-2;CLAMONET;17:36:00
+06;972540;Z-2;FLAMAND2;17:35:00
+06;972540;Z-2;ROFOUCRY;17:35:00
+06;972540;Z-2;THISABI2;17:34:00
+06;972540;Z-2;HOCHE2;17:33:00
+06;972540;Z-2;GAVOISI2;17:32:00
+06;972540;Z-2;VRILLY2;17:31:00
+06;972540;Z-2;FULTON2;17:30:00
+06;972540;Z-2;COFFIG2;17:29:00
+06;972540;Z-2;MAINO2;17:28:00
+06;972540;Z-2;MACECLI2;17:27:00
+06;972540;Z-2;VALDEVE2;17:26:00
+06;972540;Z-2;HOLLAND2;17:26:00
+06;972540;Z-2;CDESTLE2;17:25:00
+06;972540;Z-2;STLEONA2;17:24:00
+06;972540;Z-2;POMPELL2;17:22:00
+06;972540;Z-2;SENEF2;17:22:00
+06;972540;Z-2;CALVAIR2;17:21:00
+06;972540;Z-2;VALCLAIR;17:20:00
+06;972541;Z-2;TIMOTHEI;18:03:00
+06;972541;Z-2;GIRAUD2;18:02:00
+06;972541;Z-2;HENPARIS;18:01:00
+06;972541;Z-2;CLAMONET;18:00:00
+06;972541;Z-2;FLAMAND2;17:59:00
+06;972541;Z-2;ROFOUCRY;17:59:00
+06;972541;Z-2;THISABI2;17:58:00
+06;972541;Z-2;HOCHE2;17:57:00
+06;972541;Z-2;GAVOISI2;17:56:00
+06;972541;Z-2;VRILLY2;17:55:00
+06;972541;Z-2;FULTON2;17:54:00
+06;972541;Z-2;COFFIG2;17:53:00
+06;972541;Z-2;MAINO2;17:52:00
+06;972541;Z-2;MACECLI2;17:51:00
+06;972541;Z-2;VALDEVE2;17:50:00
+06;972541;Z-2;HOLLAND2;17:50:00
+06;972541;Z-2;CDESTLE2;17:49:00
+06;972541;Z-2;STLEONA2;17:48:00
+06;972541;Z-2;POMPELL2;17:46:00
+06;972541;Z-2;SENEF2;17:46:00
+06;972541;Z-2;CALVAIR2;17:45:00
+06;972541;Z-2;VALCLAIR;17:44:00
+06;972542;Z-2;TIMOTHEI;18:19:00
+06;972542;Z-2;GIRAUD2;18:18:00
+06;972542;Z-2;HENPARIS;18:17:00
+06;972542;Z-2;CLAMONET;18:16:00
+06;972542;Z-2;FLAMAND2;18:15:00
+06;972542;Z-2;ROFOUCRY;18:15:00
+06;972542;Z-2;THISABI2;18:14:00
+06;972542;Z-2;HOCHE2;18:13:00
+06;972542;Z-2;GAVOISI2;18:12:00
+06;972542;Z-2;VRILLY2;18:11:00
+06;972542;Z-2;FULTON2;18:10:00
+06;972542;Z-2;COFFIG2;18:09:00
+06;972542;Z-2;MAINO2;18:08:00
+06;972542;Z-2;MACECLI2;18:07:00
+06;972542;Z-2;VALDEVE2;18:06:00
+06;972542;Z-2;HOLLAND2;18:06:00
+06;972542;Z-2;CDESTLE2;18:05:00
+06;972542;Z-2;STLEONA2;18:04:00
+06;972542;Z-2;POMPELL2;18:02:00
+06;972542;Z-2;SENEF2;18:02:00
+06;972542;Z-2;CALVAIR2;18:01:00
+06;972542;Z-2;VALCLAIR;18:00:00
+06;972480;Y-4;GAREDT2;14:00:00
+06;972480;Y-4;BELGIQUY;13:55:00
+06;972480;Y-4;POCOLBER;13:53:00
+06;972480;Y-4;BARBIER;13:51:00
+06;972480;Y-4;CHARBONN;13:50:00
+06;972480;Y-4;ANDRHUET;13:47:00
+06;972480;Y-4;GUTENBER;13:46:00
+06;972480;Y-4;PARCCOLB;13:45:00
+06;972543;Z-2;TIMOTHEI;18:59:00
+06;972543;Z-2;GIRAUD2;18:58:00
+06;972543;Z-2;HENPARIS;18:57:00
+06;972543;Z-2;CLAMONET;18:56:00
+06;972543;Z-2;FLAMAND2;18:55:00
+06;972543;Z-2;ROFOUCRY;18:55:00
+06;972543;Z-2;THISABI2;18:54:00
+06;972543;Z-2;HOCHE2;18:53:00
+06;972543;Z-2;GAVOISI2;18:52:00
+06;972543;Z-2;VRILLY2;18:51:00
+06;972543;Z-2;FULTON2;18:50:00
+06;972543;Z-2;COFFIG2;18:49:00
+06;972543;Z-2;MAINO2;18:48:00
+06;972543;Z-2;MACECLI2;18:47:00
+06;972543;Z-2;VALDEVE2;18:46:00
+06;972543;Z-2;HOLLAND2;18:46:00
+06;972543;Z-2;CDESTLE2;18:45:00
+06;972543;Z-2;STLEONA2;18:44:00
+06;972543;Z-2;POMPELL2;18:42:00
+06;972543;Z-2;SENEF2;18:42:00
+06;972543;Z-2;CALVAIR2;18:41:00
+06;972543;Z-2;VALCLAIR;18:40:00
+06;972481;Y-4;GAREDT2;18:15:00
+06;972481;Y-4;BELGIQUY;18:10:00
+06;972481;Y-4;POCOLBER;18:08:00
+06;972481;Y-4;BARBIER;18:06:00
+06;972481;Y-4;CHARBONN;18:05:00
+06;972481;Y-4;ANDRHUET;18:02:00
+06;972481;Y-4;GUTENBER;18:01:00
+06;972481;Y-4;PARCCOLB;18:00:00
+06;972482;Y-4;GAREDT2;18:45:00
+06;972482;Y-4;BELGIQUY;18:40:00
+06;972482;Y-4;POCOLBER;18:38:00
+06;972482;Y-4;BARBIER;18:36:00
+06;972482;Y-4;CHARBONN;18:35:00
+06;972482;Y-4;ANDRHUET;18:32:00
+06;972482;Y-4;GUTENBER;18:31:00
+06;972482;Y-4;PARCCOLB;18:30:00
+06;972483;Y-4;GAREDT2;19:30:00
+06;972483;Y-4;BELGIQUY;19:25:00
+06;972483;Y-4;POCOLBER;19:23:00
+06;972483;Y-4;BARBIER;19:21:00
+06;972483;Y-4;CHARBONN;19:20:00
+06;972483;Y-4;ANDRHUET;19:17:00
+06;972483;Y-4;GUTENBER;19:16:00
+06;972483;Y-4;PARCCOLB;19:15:00
+07;Y-3;GAREDT2;0
+07;Y-3;ROEDERE2;1
+07;Y-3;VERNOUI2;2
+07;Y-3;ROMAINS2;3
+07;Y-3;BELGIQY2;4
+07;Y-3;POCOLBE2;5
+07;Y-3;BARBIER2;6
+07;Y-3;CHARBO2;7
+07;Y-3;ANDRHU2;8
+07;Y-3;GUTENB2;9
+07;Y-3;PARCCOLB;10
+07;Y-4;PARCCOLB;0
+07;Y-4;GUTENBER;1
+07;Y-4;ANDRHUET;2
+07;Y-4;CHARBONN;3
+07;Y-4;BARBIER;4
+07;Y-4;POCOLBER;5
+07;Y-4;BELGIQUY;6
+07;Y-4;GAREDT2;7
+07;Z-1;TIMOTHEI;0
+07;Z-1;DRODELHO;1
+07;Z-1;GONZALLE;2
+07;Z-1;BRESSY;3
+07;Z-1;FLAMAND;4
+07;Z-1;THISABIN;5
+07;Z-1;HOCHE;6
+07;Z-1;GAVOISIN;7
+07;Z-1;VRILLY;8
+07;Z-1;FULTON;9
+07;Z-1;COFFIG;10
+07;Z-1;MAINO;11
+07;Z-1;MACECLIE;12
+07;Z-1;HOLLANDE;13
+07;Z-1;VALDEVES;14
+07;Z-1;CHESTLEO;15
+07;Z-1;STLEONAR;16
+07;Z-1;SENEF1;17
+07;Z-1;POMPELLE;18
+07;Z-1;CALVAIRE;19
+07;Z-1;VALCLAIR;20
+07;Z-2;VALCLAIR;0
+07;Z-2;CALVAIR2;1
+07;Z-2;POMPELL2;2
+07;Z-2;SENEF2;3
+07;Z-2;STLEONA2;4
+07;Z-2;CDESTLE2;5
+07;Z-2;VALDEVE2;6
+07;Z-2;HOLLAND2;7
+07;Z-2;MACECLI2;8
+07;Z-2;MAINO2;9
+07;Z-2;COFFIG2;10
+07;Z-2;FULTON2;11
+07;Z-2;VRILLY2;12
+07;Z-2;GAVOISI2;13
+07;Z-2;HOCHE2;14
+07;Z-2;THISABI2;15
+07;Z-2;FLAMAND2;16
+07;Z-2;ROFOUCRY;17
+07;Z-2;CLAMONET;18
+07;Z-2;HENPARIS;19
+07;Z-2;GIRAUD2;20
+07;Z-2;TIMOTHEI;21

@@ -1,0 +1,91 @@
+<!DOCTYPE validators PUBLIC 
+"-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="positionGeographique.name">
+		<field-validator type="requiredstring">
+			<param name="fieldName">positionGeographique.name</param>
+			<message key="errors.required"/>
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="fieldName">positionGeographique.name</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>
+	<field name="positionGeographique.registrationNumber">
+		<field-validator type="stringlength">
+			<param name="fieldName">positionGeographique.registrationNumber</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>	
+	<field name="positionGeographique.comment">
+		<field-validator type="stringlength">
+			<param name="fieldName">positionGeographique.comment</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>
+	<field name="positionGeographique.nearestTopicName">
+		<field-validator type="stringlength">
+			<param name="fieldName">positionGeographique.nearestTopicName</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>
+		<field name="positionGeographique.fareCode" >
+		<field-validator type="int">
+			<param name="fieldName">positionGeographique.fareCode</param>
+			<param name="min">0</param>
+			<param name="max">100</param>
+			<message key="errors.range"/>
+		</field-validator>
+	</field>
+	<field name="positionGeographique.longitude" >
+		<field-validator type="bigdecimal">
+			<param name="fieldName">positionGeographique.longitude</param>
+			<param name="precision">19</param>
+			<param name="scale">16</param>
+			<message key="errors.bigdecimal" />
+   		</field-validator>
+	</field>
+	<field name="positionGeographique.latitude" >
+		<field-validator type="bigdecimal">
+			<param name="fieldName">positionGeographique.latitude</param>
+			<param name="precision">19</param>
+			<param name="scale">16</param>
+			<message key="errors.bigdecimal" />
+		</field-validator>
+	</field>
+	<field name="positionGeographique.x" >
+		<field-validator type="bigdecimal">
+			<param name="fieldName">positionGeographique.x</param>
+			<param name="precision">19</param>
+			<param name="scale">2</param>
+			<message key="errors.bigdecimal" />
+		</field-validator>
+	</field>
+	<field name="positionGeographique.y" >
+		<field-validator type="bigdecimal">
+			<param name="fieldName">positionGeographique.y</param>
+			<param name="precision">19</param>
+			<param name="scale">2</param>
+			<message key="errors.bigdecimal" />
+		</field-validator>
+	</field>	
+	<field name="positionGeographique.countryCode" >
+		<field-validator type="regex">
+			<param name="fieldName">positionGeographique.countryCode</param>
+			<param name="expression">^\d{5}$</param>
+			<message key="errors.insee"/>
+		</field-validator>
+	</field>	
+	<field name="positionGeographique.streetName">
+		<field-validator type="stringlength">
+			<param name="fieldName">positionGeographique.streetName</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>				
+</validators>
