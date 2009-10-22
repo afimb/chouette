@@ -1,0 +1,2 @@
+<div id="foot">
+</div>

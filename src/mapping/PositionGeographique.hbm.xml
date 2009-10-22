@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+@@LICENCE@@
+-->
+
+<!--
+ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ =============+================+==============================================
+
+ Version : $Revision: 1.5 $
+-->
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="fr.certu.chouette.modele.PositionGeographique" table="StopArea" dynamic-update="false" dynamic-insert="false">
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+        <property name="idParent" column="idParent"/>
+		
+        <property name="objectId" type="string" unique="true" column="objectId" />
+		<property name="objectVersion" type="int" column="objectVersion" />
+		<property name="creationTime" type="java.util.Date" column="creationTime" />
+		<property name="creatorId" type="string" column="creatorId" />
+		
+		<property name="name" type="string" column="name" />
+		<property name="comment" type="string" column="comment" />
+		<property name="areaType" 
+			type="fr.certu.chouette.dao.hibernate.customtype.ChouettteAreaTypeUserType" 
+			column="areaType" />
+		<property name="registrationNumber" column="registrationNumber"/>
+		<property name="nearestTopicName" type="string" column="nearestTopicName" />
+		<property name="fareCode" type="int" column="fareCode" />
+            
+        <property name="longitude" type="java.math.BigDecimal" column="longitude"  scale="16" precision="19"/>
+        <property name="latitude" type="java.math.BigDecimal" column="latitude"  scale="16" precision="19"/>
+        <property name="longLatType"
+            type="fr.certu.chouette.dao.hibernate.customtype.LongLatTypeUserType"
+            column="longLatType" />
+		
+		<property name="x" type="java.math.BigDecimal" column="x" />
+		<property name="y" type="java.math.BigDecimal" column="y"/>
+		<property name="projectionType" type="string" column="projectionType"/>
+		
+		<property name="countryCode" type="string" column="countryCode"/>
+		<property name="streetName" type="string" column="streetName"/>
+
+	</class>
+</hibernate-mapping>

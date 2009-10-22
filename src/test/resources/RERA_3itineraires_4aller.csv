@@ -1,0 +1,85 @@
+;;;;;;;"Nom du réseau";"RER";;;;;;;;;
+;;;;;;;"Code Réseau";500;;;;;;;;;
+;;;;;;;"Description du réseau";"Réseau Express Régional ,exploités par la RATP et la SNCF";;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;"Nom de l'entreprise de transport";"Régie Autonome des Transports Parisiens";;;;;;;;;
+;;;;;;;"Code Transporteur";100;;;;;;;;;
+;;;;;;;"Nom court";"RATP";;;;;;;;;
+;;;;;;;"Description du transporteur";"X";;;;;;;;;
+;;;;;;;"Code postal";75599;;;;;;;;;
+;;;;;;;"Téléphone";"01.01.01.01.01";;;;;;;;;
+;;;;;;;"Fax";"01.01.01.01.01";;;;;;;;;
+;;;;;;;"Email";"service@ratp.fr";;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;"Nom de la ligne";"RER A";;;;;;;;;
+;;;;;;;"Nom public";"RER A";;;;;;;;;
+;;;;;;;"Numero de la ligne";"A";;;;;;;;;
+;;;;;;;"Commentaire de la ligne";"Ligne RER A";;;;;;;;;
+;;;;;;;"Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";"RER";;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;"Horaires des courses";"Horaires";;"Horaires";"Horaires ";"Horaires";"Horaires";"Horaires";"Horaires";"Horaires";"Horaires"
+;;;;;;;"Nom de l'itinéraire";"X";;"X";"X";"X";;"X";"X";"X";"X"
+;;;;;;;"Nom public de l'itinéraire";"Marne-la-Valée-Chessy  Poissy";;"Boissy-Saint-Léger  Saint-Germain-en-Laye";"X";"Marne-la-Valée-Chessy  Cergy";;"Marne-la-Valée-Chessy  Poissy";"X";"Marne-la-Valée-Chessy  Poissy";"X"
+;;;;;;;"Commentaire de l'itinéraire";"X";;"X";"X";"X";;"X";"X";"X";"X"
+;;;;;;;"Direction (ALLER/RETOUR)";"ALLER";;"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER"
+;;;;;;;"Nom de la mission";"X";;"X";"X";"X";"X";"X";"X";"X";"X"
+;;;;;;;"Nom public de la mission";"TEDI";;"ZEBA";"X";"UBUS";"X";"TROC";"X";"TROC";"X"
+;;;;;;;"Date de début d'application";26/07/04;;26/07/04;;26/07/04;;26/07/04;;26/07/04;
+;;;;;;;"Date de fin d'application";20/08/04;;20/08/04;;20/08/04;;20/08/04;;20/08/04;
+;;;;;;;"Commentaire sur la course";"X";"X";"X";"X";"X";"X";"X";"X";"X";"X"
+;;;;;;;"Lundi (O/N)";"O";;"O";;"O";;"O";;"O";
+;;;;;;;"Mardi (O/N)";"O";;"O";;"O";;"O";;"O";
+;;;;;;;"Mercredi (O/N)";"O";;"O";;"O";;"O";;"O";
+;;;;;;;"Jeudi (O/N)";"O";;"O";;"O";;"O";;"O";
+;;;;;;;"Vendredi (O/N)";"O";;"O";;"O";;"O";;"O";
+;;;;;;;"Samedi (O/N)";"N";;"N";;"N";;"O";;"O";
+;;;;;;;"Dimanche (O/N)";"N";;"N";;"N";;"O";;"O";
+;;;;;;;"Jour férié (O/N)";"N";;"N";;"N";;"O";;"O";
+;;;;;;;"Libellé du tableau de marche";"Vacances scolaires ";;"Vacances scolaires ";;"Vacances scolaires ";;"Vacances scolaires ";;"Vacances scolaires ";
+"Code Postal";"Commentaire";"X";"Y";"latitude";"longitude";"Distance";"Liste des arrêts";"heure d'arrivée";"heure de départ";"heure d'arrivée";"heure de départ";"heure d'arrivée";"heure de départ";"heure d'arrivée";"heure de départ";"heure d'arrivée";"heure de départ"
+;;;;;;;"Marne-la-Valée-Chessy";08:00:00;08:00:00;;;;;;;;
+;;;;;;;"Val d'Europe";08:01:00;08:01:00;;;;;;;;
+;;;;;;;"Bussy-Saint-Georges";08:02:00;08:02:00;;;;;;;;
+;;;;;;;"Torcy";08:03:00;08:03:00;;;09:30:00;09:30:00;10:20:00;10:20:00;13:20:00;13:20:00
+;;;;;;;"Lognes";08:04:00;08:04:00;;;09:31:00;09:31:00;10:21:00;10:21:00;13:21:00;13:21:00
+;;;;;;;"Noisiel";08:05:00;08:05:00;;;09:32:00;09:32:00;10:22:00;10:22:00;13:22:00;13:22:00
+;;;;;;;"Noisy-Champs";08:06:00;08:06:00;;;09:33:00;09:33:00;10:23:00;10:23:00;13:23:00;13:23:00
+;;;;;;;"Noisy-le-Grand--Mont d'Est";08:07:00;08:07:00;;;09:34:00;09:34:00;10:24:00;10:24:00;13:24:00;13:24:00
+;;;;;;;"Bry-sur-Marne ";08:08:00;08:08:00;;;09:35:00;09:35:00;10:25:00;10:25:00;13:25:00;13:25:00
+;;;;;;;"Neuilly-Plaisance";08:09:00;08:09:00;;;09:36:00;09:36:00;10:26:00;10:26:00;13:26:00;13:26:00
+;;;;;;;"Val de Fontenay";08:10:00;08:10:00;;;09:37:00;09:37:00;10:27:00;10:27:00;13:27:00;13:27:00
+;;;;;;;"Boissy-Saint-Léger";;;09:00:00;09:00:00;;;;;;
+;;;;;;;"Sucy-Bonneuil";;;09:01:00;09:01:00;;;;;;
+;;;;;;;"La Varenne-Chennevières";;;09:02:00;09:02:00;;;;;;
+;;;;;;;"Champigny";;;09:03:00;09:03:00;;;;;;
+;;;;;;;"La Parc de Saint-maur";;;09:04:00;09:04:00;;;;;;
+;;;;;;;"Saint-Maur-Créteil";;;09:05:00;09:05:00;;;;;;
+;;;;;;;"Joinville-le-Pont";;;09:06:00;09:06:00;;;;;;
+;;;;;;;"Nogent-sur-Marne";;;09:07:00;09:07:00;;;;;;
+;;;;;;;"Fontenay-Sous-Bois";;;09:08:00;09:08:00;;;;;;
+;;;;;;;"Vincennenes";08:11:00;08:11:00;09:09:00;09:09:00;09:38:00;09:38:00;10:27:30;10:27:30;13:27:30;13:27:30
+;;;;;;;"Nation";08:12:00;08:12:00;09:10:00;09:10:00;09:39:00;09:39:00;10:28:00;10:28:00;13:28:00;13:28:00
+;;;;;;;"Gare de Lyon";08:13:00;08:13:00;09:11:00;09:11:00;09:40:00;09:40:00;10:28:30;10:28:30;13:28:30;13:28:30
+;;;;;;;"Châtelet-Les-Halles";08:14:00;08:14:00;09:12:00;09:12:00;09:41:00;09:41:00;10:29:00;10:29:00;13:29:00;13:29:00
+;;;;;;;"Auber";08:15:00;08:15:00;09:13:00;09:13:00;09:42:00;09:42:00;10:29:30;10:29:30;13:29:30;13:29:30
+;;;;;;;"Charles de Gaulle-Etoile";08:16:00;08:16:00;09:14:00;09:14:00;09:43:00;09:43:00;10:30:00;10:30:00;13:30:00;13:30:00
+;;;;;;;"La Défense";08:17:00;08:17:00;09:15:00;09:15:00;09:44:00;09:44:00;10:30:30;10:30:30;13:30:30;13:30:30
+;;;;;;;"Nanterre-Préfecture";08:18:00;08:18:00;09:16:00;09:16:00;09:45:00;09:45:00;10:31:00;10:31:00;13:31:00;13:31:00
+;;;;;;;"Nanterre-Université";;;09:17:00;09:17:00;;;;;;
+;;;;;;;"Nanterre-Ville";;;09:18:00;09:18:00;;;;;;
+;;;;;;;"Rueil-Malmaison";;;09:19:00;09:19:00;;;;;;
+;;;;;;;"Chatou-Croissy";;;09:20:00;09:20:00;;;;;;
+;;;;;;;"Le vésinet-Centre";;;09:21:00;09:21:00;;;;;;
+;;;;;;;"Le vésinet-Le Pecq";;;09:22:00;09:22:00;;;;;;
+;;;;;;;"Saint-Germain-en-Laye";;;09:23:00;09:23:00;;;;;;
+;;;;;;;"Houilles-Carrières/Sine";08:19:00;08:19:00;;;09:46:00;09:46:00;10:32:00;10:32:00;13:32:00;13:32:00
+;;;;;;;"Sartrouville";08:20:00;08:20:00;;;09:47:00;09:47:00;10:33:00;10:33:00;13:33:00;13:33:00
+;;;;;;;"Maisons-Laffitte";08:21:00;08:21:00;;;09:48:00;09:48:00;10:34:00;10:34:00;13:34:00;13:34:00
+;;;;;;;"Achères-Ville";;;;;09:49:00;09:49:00;;;;
+;;;;;;;"Conflans-Fin d'Oise";;;;;09:50:00;09:50:00;;;;
+;;;;;;;"Neuville-Université";;;;;09:51:00;09:51:00;;;;
+;;;;;;;"Cergy-Préfecture";;;;;09:52:00;09:52:00;;;;
+;;;;;;;"Cergy-Saint-Christophe";;;;;09:53:00;09:53:00;;;;
+;;;;;;;"Cergy-le Haut";;;;;09:54:00;09:54:00;;;;
+;;;;;;;"Achères-Grand Cormier";08:23:00;08:23:00;;;;;10:35:00;10:35:00;13:35:00;13:35:00
+;;;;;;;"Poissy";08:22:00;08:22:00;;;;;10:36:00;10:36:00;13:36:00;13:36:00

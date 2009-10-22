@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+@@LICENCE@@
+-->
+
+<!--
+ Société DRYADE
+ 
+ Projet chouette : paramétrage Objet - Base
+ 
+ DTimetableBean.hbm.xml : paramétrage DTimetableBean - Timetable
+ 
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 
+ Version : $Revision: 1.2 $
+-->
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="fr.certu.chouette.modele.LienTMCourse"
+        table="TimetableVehicleJourney"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+        <property name="idTableauMarche" column="idTableauMarche"/>
+        <property name="idCourse" column="idCourse"/>
+	    
+    </class>
+
+</hibernate-mapping>

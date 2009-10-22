@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+@@LICENCE@@
+-->
+
+<!--
+ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DRouteBean.hbm.xml : paramétrage DRouteBean - Route
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 24 nov. 2004 |Marc FLORISSON  | Intégration de la donnée DRoutePtLinkBean
+ =============+================+==============================================
+
+ Version : $Revision: 1.6 $
+-->
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="fr.certu.chouette.modele.Itineraire"
+        table="Route"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+        <property name="idRetour" column="idRetour"/>
+        <property name="idLigne" column="idLigne"/>
+
+        <property name="objectId" type="string" unique="true" column="objectId" />
+		<property name="objectVersion" type="int" column="objectVersion" />
+		<property name="creationTime" type="java.util.Date" column="creationTime" />
+		<property name="creatorId" type="string" column="creatorId" />
+		
+	    <property name="name" column="name" />
+	    <property name="publishedName" column="publishedName" />
+	    <property name="number" column="number" />
+	    <property name="direction"
+	            type="fr.certu.chouette.dao.hibernate.customtype.PTDirectionUserType"
+	            column="direction" />
+        <property name="comment" column="comment" />
+        <property name="wayBack" column="wayBack" />
+    </class>
+</hibernate-mapping>

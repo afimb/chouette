@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+@@LICENCE@@
+-->
+
+<!--
+ Société DRYADE
+ 
+ Projet chouette : paramétrage Objet - Base
+ 
+ DTimetableBean.hbm.xml : paramétrage DTimetableBean - Timetable
+ 
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 
+ Version : $Revision: 1.7 $
+-->
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="fr.certu.chouette.modele.TableauMarche"
+        table="Timetable"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+		<id name="id" column="id" type="long">
+			<generator class="native"/>
+		</id>
+
+        <list name="dates" table="timetable_date" cascade="all" lazy="false">
+              <key column="timetableId" />
+              <index column="position" />
+              <element column="date" type="date" />
+        </list>
+        
+        <list name="periodes" table="timetable_period" cascade="all" lazy="false">
+              <key column="timetableId" />
+              <index column="position" />
+              <composite-element class="fr.certu.chouette.modele.Periode">
+        		<property name="debut" type="date" />
+        		<property name="fin" type="date" />
+              </composite-element>
+        </list>
+
+        <property name="objectId" type="string" unique="true" column="objectId" />
+		<property name="objectVersion" type="int" column="objectVersion" />
+		<property name="creationTime" type="java.util.Date" column="creationTime" />
+		<property name="creatorId" type="string" column="creatorId" />
+	
+	    <property name="Version" column="version" />
+	    <property name="comment" column="comment" />
+	    <property name="intDayTypes" column="intDayTypes" />
+    </class>
+
+</hibernate-mapping>
