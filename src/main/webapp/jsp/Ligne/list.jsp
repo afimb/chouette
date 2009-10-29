@@ -51,32 +51,32 @@
 <br>
 
 <%-- Tableau --%>
-<div id="displaytag"> 
+<div id="displaytag">
 	<display:table name="lignes" sort="list" pagesize="20" requestURI="" id="ligne" export="false">
 	  	<display:column title="Action" sortable="false">
 			<s:url id="editUrl" action="crud_Ligne!edit">
-				<s:param name="idLigne" value="${ligne.id}" />
+        <s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>
 			<s:url id="listRouteUrl" action="liste_Itineraire">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>
 			<s:url id="removeLigne" action="crud_Ligne!delete">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>		
 	 		<s:url id="removeLigneAmivif" action="Export_exportSupprimerAmivif">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>		
 			<s:url id="removeLigneChouette" action="Export_exportSupprimerChouette">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>			
 			<s:url id="exportAmivif" action="Export_exportAmivif">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>
 			<s:url id="exportChouette" action="Export_exportChouette">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>
 			<s:url id="exportCSV" action="Export_exportCSV">
-				<s:param name="idLigne" value="${ligne.id}" />
+				<s:param name="idLigne">${ligne.id}</s:param>
 			</s:url>
 			<div style="float: left; margin-right: 7px;">
 				<s:a href="%{editUrl}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>						
@@ -95,15 +95,16 @@
 	  	<display:column title="Indice" property="line.number" sortable="true" headerClass="sortable"/>
 		<display:column title="Nom Reseau" sortable="true" headerClass="sortable">
 	 		<s:url id="editReseau" action="crud_Reseau!edit">
-				<s:param name="idReseau" value="${ligne.idReseau}" />
+				<s:param name="idReseau">${ligne.idReseau}</s:param>
 			</s:url>			
-			<s:a href="%{editReseau}"><s:property value="reseauParId[${ligne.idReseau}].name"/></s:a>
+			<s:a href="%{editReseau}">${reseauParId[364633].name}</s:a>
 		</display:column>
 	  	<display:column title="Nom Transporteur" sortable="true" headerClass="sortable">
 	 		<s:url id="editTransporteur" action="crud_Transporteur!edit">
-				<s:param name="idTransporteur" value="${ligne.idTransporteur}" />
-			</s:url>				
-			<s:a href="%{editTransporteur}"><s:property value="transporteurParId[${ligne.idTransporteur}].name"/></s:a>
+        <s:param name="idTransporteur"> ${ligne.idTransporteur}</s:param>
+			</s:url>
+      ${ligne.idTransporteur}
+			<s:a href="%{editTransporteur}">${transporteurParId[ligne.idTransporteur].name}</s:a>
 	  	</display:column>	  	
 	  	<display:column title="Accès Itinéraires"><s:a href="%{listRouteUrl}">Itinéraires</s:a></display:column>	
 	  	<display:column title="Export Ligne">

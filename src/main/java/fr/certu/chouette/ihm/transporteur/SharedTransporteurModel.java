@@ -1,5 +1,5 @@
 package fr.certu.chouette.ihm.transporteur;
 
-public class SharedTransporteurModel {
-
+public class SharedTransporteurModel
+{
 }

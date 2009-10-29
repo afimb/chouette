@@ -6,7 +6,7 @@ import org.apache.struts2.util.StrutsTypeConverter;
 
 import chouette.schema.types.ServiceStatusValueType;
 
-import com.opensymphony.xwork2.util.TypeConversionException;
+import com.opensymphony.xwork2.conversion.TypeConversionException;
 
 public final class ServiceStatusValueTypeConverter extends StrutsTypeConverter
 {

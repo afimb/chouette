@@ -383,7 +383,7 @@ public class HorairesDePassageAction extends GeneriqueAction implements ModelInj
 	}
 	
 	public Boolean isErreurHorairesInvalides() {
-		Collection <ActionError> actionErrors = getActionErrors();
+		Collection <String> actionErrors = getActionErrors();
 		if (actionErrors.contains(getText("error.horairesInvalides")))
 			return true;
 		return false;
