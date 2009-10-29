@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
 <sitemesh>
     <property name="decorators-file" value="/WEB-INF/decorators.xml"/>
     <excludes file="${decorators-file}"/>
@@ -39,6 +37,12 @@
             <param name="decorator.parameter" value="decorator"/>
             <param name="parameter.name" value="confirm"/>
             <param name="parameter.value" value="true"/>
+        </mapper>
+
+        <mapper class="com.opensymphony.module.sitemesh.mapper.FileDecoratorMapper">
+        </mapper>
+
+        <mapper class="org.apache.struts2.sitemesh.NoneDecoratorMapper">
         </mapper>
 
         <mapper class="com.opensymphony.module.sitemesh.mapper.ConfigDecoratorMapper">

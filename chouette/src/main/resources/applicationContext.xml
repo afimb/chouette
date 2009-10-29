@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
-            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<import resource="classpath:/externalModule.xml" />
 	<import resource="classpath:/importCSVContext.xml" />
-    <import resource="classpath:/genericCSVContext.xml" />
-    <import resource="classpath:/hastusContext.xml" />
-    <import resource="classpath:/pegaseContext.xml" />
+  <import resource="classpath:/genericCSVContext.xml" />
+  <import resource="classpath:/hastusContext.xml" />
+  <import resource="classpath:/pegaseContext.xml" />
     <import resource="classpath:/altibusContext.xml" />
     <import resource="classpath:/comparatorContext.xml" />
 
@@ -460,7 +463,7 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     <bean id="lecteurFichierXML"
     		class="fr.certu.chouette.service.xml.LecteurFichierXML">
     </bean>
-    <!-- 
+    <!--
     <bean id="ExchangeableAmivifLineComparator"
     	scope="prototype"
     	class="fr.certu.chouette.echange.comparator.ExchangeableAmivifLineComparator">
@@ -604,9 +607,9 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     
     <bean id="LineFileComparisonService" scope="prototype"
 		class="fr.certu.chouette.ihm.LineFileComparisonServiceAction">
-		<property name="identificationManager" ref="identificationManager"/>		
+		<property name="identificationManager" ref="identificationManager"/>
     </bean>
-    
+
     <bean id="Validation" scope="prototype"
 		class="fr.certu.chouette.ihm.ValidationAction">
 		<property name="managerDataSource" ref="dataSourceAdministrateur"/>
