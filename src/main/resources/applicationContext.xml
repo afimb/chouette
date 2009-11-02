@@ -57,13 +57,11 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     <aop:config>
 		<!-- order value is higher than the profiling aspect -->
         <aop:advisor id="managerTx" advice-ref="txAdvice" pointcut="execution(* *..service.database.*Manager.*(..))" order="2"/>
-
 		<aop:aspect id="profilingAspect" ref="profiler">
 			<aop:pointcut id="serviceMethodWithReturnValue"
 				expression="execution(* *..service.database.*Manager.*(..))"/>
 			<aop:around method="profile" pointcut-ref="serviceMethodWithReturnValue"/>
 		</aop:aspect>
-		
 		<aop:aspect id="creatingAspect" ref="creationControleur">
 		<aop:pointcut id="creerMethodWithReturnValue"
 			expression="execution(* *..service.database.*Manager.creer*(..))"/>
@@ -89,30 +87,33 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     	</aop:aspect>
     </aop:config>
  -->
-  
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+
+	 <bean id="chouetteDataSource" class="fr.certu.chouette.service.database.ChouetteDriverManagerDataSource" >
         <property name="driverClassName" value="${jdbc.driver}"/>
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${hibernate.username}"/>
         <property name="password" value="${hibernate.password}"/>
+        <property name="databaseSchema" value="${database.schema}"/>
     </bean>
 
-    <bean id="dataSourceAdministrateur" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+	<bean id="chouetteDataSourceAdministrateur" class="fr.certu.chouette.service.database.ChouetteDriverManagerDataSource" >
         <property name="driverClassName" value="${jdbc.driver}"/>
         <property name="url" value="${jdbc.url}"/>
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
+        <property name="databaseSchema" value="${database.schema}"/>
     </bean>
-
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">fr.certu.chouette.util.ExtendedPostgresSQLDialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.default_schema">${database.schema}</prop>
             </props>
         </property>
-        <property name="dataSource" ref="dataSource"/>
+
+        <property name="dataSource" ref="chouetteDataSource"/>
         <property name="mappingResources">
             <list>
                 <value>fr/certu/chouette/modele/Reseau.hbm.xml</value>
@@ -219,11 +220,13 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     <bean id="selectionSpecifique"
     		class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="databaseSchema" value="${database.schema}"/>
     </bean>
 
     <bean id="modificationSpecifique"
     		class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="databaseSchema" value="${database.schema}"/>        
     </bean>
 
     <!-- Services de lecture du format XML -->
@@ -267,19 +270,23 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     <bean id="analyseurEtatInitial"
     		class="fr.certu.chouette.service.fichier.formatinterne.impl.AnalyseurEtatInitial">
         <property name="gestionSequence" ref="gestionSequence"/>
+        <property name="databaseSchema" value="${database.schema}" />
     </bean>
 
     <bean id="gestionSequence"
     		class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionSequence">
+    		<property name="databaseSchema" value="${database.schema}" />
     </bean>
 
     <bean id="gestionModification"
     		class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionModification">
+    		<property name="databaseSchema" value="${database.schema}" />
     </bean>
 
 	<bean id="nettoyeurLigne"
     		class="fr.certu.chouette.service.fichier.formatinterne.impl.NettoyeurLigne">
         <property name="ligneManager" ref="ligneManager"/>
+        <property name="databaseSchema" value="${database.schema}" />
     </bean>
 
     <bean id="chargeur"
@@ -302,7 +309,7 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
         <property name="gestionModification" ref="gestionModification"/>
         <property name="chargeur" ref="chargeur"/>
         <property name="producteurFichier" ref="producteurFichier"/>
-        <property name="managerDataSource" ref="dataSourceAdministrateur"/>
+        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     </bean>
 
     <!-- Services -->
@@ -441,12 +448,12 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     
     <bean id="exportCorrespondances"
     		class="fr.certu.chouette.service.exportateur.impl.ExportCorrespondances">
-   		 <property name="managerDataSource" ref="dataSourceAdministrateur"/>
+   		 <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     </bean>
     
     <bean id="importCorrespondances"
-    		class="fr.certu.chouette.service.importateur.impl.ImportCorrespondances">
-   		 <property name="managerDataSource" ref="dataSourceAdministrateur"/>
+    		class="fr.certu.chouette.service.importateur.impl.ImportCorrespondances">   		 
+   		 <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
    		 <property name="correspondanceManager" ref="correspondanceManager" />
     </bean>
     
@@ -609,9 +616,10 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     
     <bean id="Validation" scope="prototype"
 		class="fr.certu.chouette.ihm.ValidationAction">
-		<property name="managerDataSource" ref="dataSourceAdministrateur"/>
+		<property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
 		<property name="useGeometry" value="${validation.tm.geometry}"/>
 		<property name="inclusif" value="${validation.tm.inclusif}"/>
+		<property name="databaseSchema" value="${database.schema}" />
     </bean>
     
     <bean id="Export" scope="prototype"

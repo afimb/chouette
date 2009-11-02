@@ -45,12 +45,14 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 	private final static String SENS_ALLER  = "A";
 	private final static String SENS_RETOUR = "R";
 	private static final Logger logger      = Logger.getLogger(SelectionSpecifique.class);
+	private String databaseSchema;
 	
 	public void supprimerArretItineraire(final Long idArretItineraire) {
 		final ArretItineraire arret = (ArretItineraire)getHibernateTemplate().get(ArretItineraire.class, idArretItineraire);
 		if (arret == null)
 			throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, "l'identifiant d'arret "+idArretItineraire+" est inconnu");
 		final Session session = getSession();
+		
 		String sqlRequeteHoraire = "DELETE Horaire h ";
 		sqlRequeteHoraire += "WHERE h.idArret = "+idArretItineraire;
 		String sqlRequetePosition = "UPDATE ArretItineraire SET position = position - 1 ";
@@ -156,8 +158,8 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		if (detruireAvecTMs) {
 			String tableauMarcheIdsList = getSQLlist(tableauMarcheIds);
 			if ((tableauMarcheIdsList != null) && (tableauMarcheIdsList.length() > 0)) {
-				String sqlRequetePeriode = "DELETE FROM timetable_period WHERE timetableid IN ("+tableauMarcheIdsList+")";
-				String sqlRequeteDate = "DELETE FROM timetable_date WHERE timetableid IN ("+tableauMarcheIdsList+")";
+				String sqlRequetePeriode = "DELETE FROM " + getDatabaseSchema() + ".timetable_period WHERE timetableid IN ("+tableauMarcheIdsList+")";
+				String sqlRequeteDate = "DELETE FROM " + getDatabaseSchema() + ".timetable_date WHERE timetableid IN ("+tableauMarcheIdsList+")";
 				String sqlRequeteTM = "DELETE TableauMarche WHERE id IN ("+tableauMarcheIdsList+")";
 				session.createSQLQuery(sqlRequetePeriode).executeUpdate();
 				session.createSQLQuery(sqlRequeteDate).executeUpdate();
@@ -195,7 +197,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 				catch(HibernateQueryException e) {
 				}
 				String sqlRequeteCorrespondance = "DELETE Correspondance c WHERE c.idDepart IN ("+arretIdsList+") OR c.idArrivee IN ("+arretIdsList+")";
-				String sqlRequeteITL = "DELETE FROM itl_stoparea WHERE idstoparea IN ("+arretIdsList+")";
+				String sqlRequeteITL = "DELETE FROM " + getDatabaseSchema() + ".routingConstraint_stoparea WHERE stopareaId IN ("+arretIdsList+")";
 				String sqlRequeteArretPhysique = "DELETE PositionGeographique pg WHERE pg.id IN ("+arretIdsList+")";
 				session.createQuery(sqlRequeteCorrespondance).executeUpdate();
 				if ((arretIdsList != null) && (arretIdsList.length() > 0))
@@ -295,10 +297,10 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			for (InterdictionTraficLocal itl : itls)
 				itlIds.add(itl.getId());
 			final Session session = getSession();
-			String sqlLienItlArretPhysique = "DELETE FROM itl_stoparea ";
-			sqlLienItlArretPhysique += "WHERE iditl in ("+getSQLlist(itlIds)+")";
+			String sqlLienItlArretPhysique = "DELETE FROM " + getDatabaseSchema() + ".routingConstraint_stoparea ";
+			sqlLienItlArretPhysique += "WHERE routingConstraintId in ("+getSQLlist(itlIds)+")";
 			session.createSQLQuery(sqlLienItlArretPhysique).executeUpdate();
-			String sqlItl = "DELETE FROM itl ";
+			String sqlItl = "DELETE FROM " + getDatabaseSchema() + ".routingConstraint ";
 			sqlItl += "WHERE id in ("+getSQLlist(itlIds)+")";
 			session.createSQLQuery(sqlItl).executeUpdate();
 		}
@@ -635,7 +637,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 	
 	public List<TableauMarche> getTableauxMarcheLazy() {
 		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment FROM timetable order by comment").list();
+		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment INTO " + getDatabaseSchema() + ".timetable order by comment").list();
 		List<TableauMarche> tms = new ArrayList<TableauMarche>(rs.size());
 		for (Object[] object : rs) {
 			TableauMarche tm = new TableauMarche();
@@ -886,8 +888,8 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 	}
 	
 	public void dissocierITLGeoPosition(Collection<Long> idGeoPositions) {
-		String sqlRequete = "DELETE FROM itl_stoparea ";
-		sqlRequete += "WHERE idstoparea in ("+getSQLlist(idGeoPositions)+")";
+		String sqlRequete = "DELETE FROM " + getDatabaseSchema() + ".routingConstraint_stoparea ";
+		sqlRequete += "WHERE stopareaId in ("+getSQLlist(idGeoPositions)+")";
 		getSession().createSQLQuery(sqlRequete).executeUpdate();
 	}
 	
@@ -958,8 +960,8 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 	}
 	
 	public void substituerArretPhysiqueDansITLsAssocies(final Long idAncienArretPhysique, final Long idNouveauArretPhysique) {
-		String sqlRequete = "UPDATE itl_stoparea SET idstoparea = " + idNouveauArretPhysique;
-		sqlRequete += " WHERE idstoparea = " + idAncienArretPhysique;
+		String sqlRequete = "UPDATE routingConstraint_stoparea SET stopareaId = " + idNouveauArretPhysique;
+		sqlRequete += " WHERE stopareaId = " + idAncienArretPhysique;
 		this.getSession().createSQLQuery(sqlRequete).executeUpdate();
 	}
 
@@ -1229,5 +1231,13 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		courses.addAll(getCoursesItinerairesSansHoraires(idItineraire));
 		
 		return Arrays.asList(courses.toArray(new Course[courses.size()]));
+	}
+
+	public void setDatabaseSchema(String databaseSchema) {
+		this.databaseSchema = databaseSchema;
+	}
+
+	public String getDatabaseSchema() {
+		return databaseSchema;
 	}
 }

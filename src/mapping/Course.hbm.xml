@@ -34,8 +34,8 @@
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
-        <property name="idItineraire" column="idItineraire"/>
-        <property name="idMission" column="idMission"/>
+        <property name="idItineraire" column="routeId"/>
+        <property name="idMission" column="journeyPatternId"/>
         
         <property name="objectId" type="string" unique="true" column="objectId" />
 		<property name="objectVersion" type="int" column="objectVersion" />

@@ -29,7 +29,7 @@
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
-        <property name="idParent" column="idParent"/>
+        <property name="idParent" column="parentId"/>
 		
         <property name="objectId" type="string" unique="true" column="objectId" />
 		<property name="objectVersion" type="int" column="objectVersion" />

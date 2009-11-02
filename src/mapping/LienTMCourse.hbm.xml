@@ -34,8 +34,8 @@
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
-        <property name="idTableauMarche" column="idTableauMarche"/>
-        <property name="idCourse" column="idCourse"/>
+        <property name="idTableauMarche" column="timetableId"/>
+        <property name="idCourse" column="vehicleJourneyId"/>
 	    
     </class>
 

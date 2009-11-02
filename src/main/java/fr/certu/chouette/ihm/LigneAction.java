@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 
 import com.opensymphony.xwork2.Preparable;
 
@@ -56,7 +56,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 	private Long idTransporteurzz;
 	private String nomLigne;
 	
-	private              DriverManagerDataSource managerDataSource;
+	private              ChouetteDriverManagerDataSource managerDataSource;
 	private              Connection              connexion                = null;
 	private              boolean                 detruireAvecTMs          = true;
 	private              boolean                 detruireAvecArrets       = true;
@@ -100,7 +100,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				connexion.setAutoCommit(false);
 				
 				String idItinerairesStr = "(";
-				String selectItineraires = "SELECT DISTINCT id FROM route WHERE idLigne='"+idLigne.longValue()+"';";
+				String selectItineraires = "SELECT DISTINCT id FROM " + managerDataSource.getDatabaseSchema() + ".route WHERE lineId='"+idLigne.longValue()+"';";
 				Statement statementItineraire = connexion.createStatement();
 				ResultSet rsItineraire = statementItineraire.executeQuery(selectItineraires);
 				boolean drapeau = false;
@@ -115,7 +115,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				
 				String idCoursesStr = "(";
 				if (!idItinerairesStr.equals("()")) {
-					String selectCourses = "SELECT DISTINCT id FROM vehiclejourney WHERE iditineraire IN "+idItinerairesStr+";";
+					String selectCourses = "SELECT DISTINCT id FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney WHERE routeId IN "+idItinerairesStr+";";
 					Statement statementCourse = connexion.createStatement();
 					ResultSet rsCourse = statementCourse.executeQuery(selectCourses);
 					drapeau = false;
@@ -131,7 +131,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				
 				String idPhysiquesStr = "(";
 				if (!idItinerairesStr.equals("()")) {
-					String selectPhysiques = "SELECT DISTINCT idphysique FROM stoppoint WHERE iditineraire IN "+idItinerairesStr+";";
+					String selectPhysiques = "SELECT DISTINCT stopAreaId FROM " + managerDataSource.getDatabaseSchema() + ".stoppoint WHERE routeId IN "+idItinerairesStr+";";
 					Statement statementPhysique = connexion.createStatement();
 					ResultSet rsPhysique = statementPhysique.executeQuery(selectPhysiques);
 					drapeau = false;
@@ -147,7 +147,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				
 				String idMissionsStr = "(";
 				if (!idCoursesStr.equals("()")) {
-					String selectMissions = "SELECT DISTINCT idmission FROM vehiclejourney WHERE id IN "+idCoursesStr+";";
+					String selectMissions = "SELECT DISTINCT journeyPatternId FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney WHERE id IN "+idCoursesStr+";";
 					Statement statementMission = connexion.createStatement();
 					ResultSet rsMission = statementMission.executeQuery(selectMissions);
 					drapeau = false;
@@ -159,10 +159,9 @@ public class LigneAction extends GeneriqueAction implements Preparable
 						idMissionsStr += "'"+tmp+"'";
 					}
 				}
-				idMissionsStr += ")";
-				
+				idMissionsStr += ")";			
 				String idITLsStr = "(";
-				String setectITLs = "SELECT DISTINCT id FROM itl WHERE idligne='"+idLigne.longValue()+"';";
+				String setectITLs = "SELECT DISTINCT id FROM " + managerDataSource.getDatabaseSchema() + ".routingConstraint WHERE lineId='"+idLigne.longValue()+"';";
 				Statement statementITL = connexion.createStatement();
 				ResultSet rsITL = statementITL.executeQuery(setectITLs);
 				drapeau = false;
@@ -177,7 +176,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				
 				String idTMsStr = "(";
 				if (detruireAvecTMs && !idCoursesStr.equals("()")) {
-					String selectTMs = "SELECT DISTINCT idtableaumarche FROM timetablevehiclejourney WHERE idcourse IN "+idCoursesStr+";";
+					String selectTMs = "SELECT DISTINCT timetableId FROM " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney WHERE vehicleJourneyId IN "+idCoursesStr+";";
 					Statement statementTM = connexion.createStatement();
 					ResultSet rsTM = statementTM.executeQuery(selectTMs);
 					drapeau = false;
@@ -192,18 +191,18 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				idTMsStr += ")";
 				
 				if (!idCoursesStr.equals("()")) {
-					String netoyageHoraires = "DELETE FROM vehiclejourneyatstop WHERE idcourse IN "+idCoursesStr+";";
+					String netoyageHoraires = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop WHERE vehicleJourneyId IN "+idCoursesStr+";";
 					Statement statementNetoyageHoraires = connexion.createStatement();
 					statementNetoyageHoraires.executeUpdate(netoyageHoraires);
 				
-					String netoyageTMCourses = "DELETE FROM timetablevehiclejourney WHERE idcourse IN "+idCoursesStr+";";
+					String netoyageTMCourses = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney WHERE vehicleJourneyId IN "+idCoursesStr+";";
 					Statement statementNetoyageTMCourses = connexion.createStatement();
 					statementNetoyageTMCourses.executeUpdate(netoyageTMCourses);
 				}
 				
 				if (detruireAvecTMs && (!idTMsStr.equals("()"))) {
 					
-					String selectTMs = "SELECT DISTINCT idtableaumarche FROM timetablevehiclejourney WHERE idtableaumarche IN "+idTMsStr+";";
+					String selectTMs = "SELECT DISTINCT timetableId FROM " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney WHERE timetableId IN "+idTMsStr+";";
 					Statement statementTM = connexion.createStatement();
 					ResultSet rsTM = statementTM.executeQuery(selectTMs);
 					while (rsTM.next()) {
@@ -222,56 +221,56 @@ public class LigneAction extends GeneriqueAction implements Preparable
 							idTMsStr = "()";
 					}
 					if (!idTMsStr.equals("()")) {
-						String netoyagePeriodes = "DELETE FROM timetable_period WHERE timetableid IN "+idTMsStr+";";
+						String netoyagePeriodes = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable_period WHERE timetableid IN "+idTMsStr+";";
 						Statement statementNetoyagePeriodes = connexion.createStatement();
 						statementNetoyagePeriodes.executeUpdate(netoyagePeriodes);
-						String netoyageDates = "DELETE FROM timetable_Date WHERE timetableid IN "+idTMsStr+";";
+						String netoyageDates = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable_Date WHERE timetableid IN "+idTMsStr+";";
 						Statement statementNetoyageDates = connexion.createStatement();
 						statementNetoyageDates.executeUpdate(netoyageDates);
-						String netoyageTMs = "DELETE FROM timetable WHERE id IN "+idTMsStr+";";
+						String netoyageTMs = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable WHERE id IN "+idTMsStr+";";
 						Statement statementNetoyageTMs = connexion.createStatement();
 						statementNetoyageTMs.executeUpdate(netoyageTMs);
 					}
 				}
 				
 				if (!idCoursesStr.equals("()")) {
-					String netoyageCourses = "DELETE FROM vehiclejourney WHERE id IN "+idCoursesStr+";";
+					String netoyageCourses = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney WHERE id IN "+idCoursesStr+";";
 					Statement statementNetoyageCourses = connexion.createStatement();
 					statementNetoyageCourses.executeUpdate(netoyageCourses);
 				}
 				
 				if (!idMissionsStr.equals("()")) {
-					String netoyageMissions = "DELETE FROM journeypattern WHERE id IN "+idMissionsStr+";";
+					String netoyageMissions = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".journeypattern WHERE id IN "+idMissionsStr+";";
 					Statement statementNetoyageMissions = connexion.createStatement();
 					statementNetoyageMissions.executeUpdate(netoyageMissions);
 				}
 				
 				if (!idItinerairesStr.equals("()")) {
-					String netoyageArretsItineraires = "DELETE FROM stoppoint WHERE iditineraire IN "+idItinerairesStr+";";
+					String netoyageArretsItineraires = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".stoppoint WHERE routeId IN "+idItinerairesStr+";";
 					Statement statementNetoyageArretsItineraires = connexion.createStatement();
 					statementNetoyageArretsItineraires.executeUpdate(netoyageArretsItineraires);
 					
-					String netoyageItineraires1 = "DELETE FROM route WHERE (id IN "+idItinerairesStr+") AND (idretour IS NOT NULL);";
+					String netoyageItineraires1 = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".route WHERE (id IN "+idItinerairesStr+") AND (oppositeRouteId IS NOT NULL);";
 					Statement statementNetoyageItineraires1 = connexion.createStatement();
 					statementNetoyageItineraires1.executeUpdate(netoyageItineraires1);
 					connexion.commit();
-					String netoyageItineraires2 = "DELETE FROM route WHERE id IN "+idItinerairesStr+";";
+					String netoyageItineraires2 = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".route WHERE id IN "+idItinerairesStr+";";
 					Statement statementNetoyageItineraires2 = connexion.createStatement();
 					statementNetoyageItineraires2.executeUpdate(netoyageItineraires2);
 				}
 				
 				if (!idITLsStr.equals("()")) {
-					String netoyageArretsITLs = "DELETE FROM itl_stoparea WHERE iditl IN "+idITLsStr+";";
+					String netoyageArretsITLs = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".routingConstraint_stoparea WHERE routingConstraintId IN "+idITLsStr+";";
 					Statement statementNetoyageArretsITLs = connexion.createStatement();
 					statementNetoyageArretsITLs.executeUpdate(netoyageArretsITLs);
 					
-					String netoyageITLs = "DELETE FROM itl WHERE id IN "+idITLsStr+";";
+					String netoyageITLs = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".routingConstraint WHERE id IN "+idITLsStr+";";
 					Statement statementNetoyageITLs = connexion.createStatement();
 					statementNetoyageITLs.executeUpdate(netoyageITLs);
 				}
 				
 				if (detruireAvecArrets && !idPhysiquesStr.equals("()")) { // arrets, correspondances
-					String selectPhysiques2 = "SELECT DISTINCT idphysique FROM stoppoint WHERE idphysique IN "+idPhysiquesStr+";";
+					String selectPhysiques2 = "SELECT DISTINCT stopAreaId FROM " + managerDataSource.getDatabaseSchema() + ".stoppoint WHERE stopAreaId IN "+idPhysiquesStr+";";
 					Statement statementPhysique2 = connexion.createStatement();
 					ResultSet rsPhysique2 = statementPhysique2.executeQuery(selectPhysiques2);
 					while (rsPhysique2.next()) {
@@ -291,7 +290,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 					}
 					while (!idPhysiquesStr.equals("()")) { // RECURSIVITE
 						
-						String selectPhysiques3 = "SELECT DISTINCT idparent FROM stoparea WHERE idparent IN "+idPhysiquesStr+";";
+						String selectPhysiques3 = "SELECT DISTINCT parentId FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE parentId IN "+idPhysiquesStr+";";
 						Statement statementPhysique3 = connexion.createStatement();
 						ResultSet rsPhysique3 = statementPhysique3.executeQuery(selectPhysiques3);
 						while (rsPhysique3.next()) {
@@ -312,7 +311,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 						
 						if (!idPhysiquesStr.equals("()")) {
 							String idPhysiquesStrTmp = "(";
-							String selectPhysiquesTmp = "SELECT DISTINCT idparent FROM stoparea WHERE id IN "+idPhysiquesStr+";";
+							String selectPhysiquesTmp = "SELECT DISTINCT parentId FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE id IN "+idPhysiquesStr+";";
 							Statement statementPhysiqueTmp = connexion.createStatement();
 							ResultSet rsPhysiqueTmp = statementPhysiqueTmp.executeQuery(selectPhysiquesTmp);
 							drapeau = false;
@@ -327,11 +326,11 @@ public class LigneAction extends GeneriqueAction implements Preparable
 							}
 							idPhysiquesStrTmp += ")";
 						
-							String netoyageCorrespondances = "DELETE FROM connectionlink WHERE (iddepart IN "+idPhysiquesStr+") OR (idarrivee IN "+idPhysiquesStr+");";
+							String netoyageCorrespondances = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".connectionlink WHERE (departureId IN "+idPhysiquesStr+") OR (arrivalId IN "+idPhysiquesStr+");";
 							Statement statementNetoyageCorrespondances = connexion.createStatement();
 							statementNetoyageCorrespondances.executeUpdate(netoyageCorrespondances);
 							
-							String netoyageArrets = "DELETE FROM stoparea WHERE id IN "+idPhysiquesStr+";";
+							String netoyageArrets = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE id IN "+idPhysiquesStr+";";
 							Statement statementNetoyageArrets = connexion.createStatement();
 							statementNetoyageArrets.executeUpdate(netoyageArrets);
 							
@@ -342,34 +341,34 @@ public class LigneAction extends GeneriqueAction implements Preparable
 					}
 				}
 				
-				String selectTransporteur = "SELECT DISTINCT idtransporteur FROM line WHERE id='"+idLigne.longValue()+"';";
+				String selectTransporteur = "SELECT DISTINCT companyId FROM " + managerDataSource.getDatabaseSchema() + ".line WHERE id='"+idLigne.longValue()+"';";
 				Statement satatementTransporteur = connexion.createStatement();
 				ResultSet rsTransporteur = satatementTransporteur.executeQuery(selectTransporteur);
 				String idTransporteur = null;
 				if (rsTransporteur.next())
 					idTransporteur = rsTransporteur.getObject(1).toString();
 				
-				String selectReseau = "SELECT DISTINCT idreseau FROM line WHERE id='"+idLigne.longValue()+"';";
+				String selectReseau = "SELECT DISTINCT PTNetworkId FROM " + managerDataSource.getDatabaseSchema() + ".line WHERE id='"+idLigne.longValue()+"';";
 				Statement satatementReseau = connexion.createStatement();
 				ResultSet rsReseau = satatementReseau.executeQuery(selectReseau);
 				String idReseau = null;
 				if (rsReseau.next())
 					idReseau = rsReseau.getObject(1).toString();
 				
-				String netoyageLigne = "DELETE FROM line WHERE id='"+idLigne.longValue()+"';";
+				String netoyageLigne = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".line WHERE id='"+idLigne.longValue()+"';";
 				Statement statementNetoyageLigne = connexion.createStatement();
 				statementNetoyageLigne.executeUpdate(netoyageLigne);
 				
 				if (detruireAvecTransporteur) {
 					if (idTransporteur != null) {
-						String selectAutres = "SELECT * FROM line WHERE idtransporteur='"+idTransporteur+"';";
+						String selectAutres = "SELECT * FROM " + managerDataSource.getDatabaseSchema() + ".line WHERE companyId='"+idTransporteur+"';";
 						Statement statementAutres = connexion.createStatement();
 						ResultSet rsAutres = statementAutres.executeQuery(selectAutres);
 						if (rsAutres.next())
 							idTransporteur = null;
 					}
 					if (idTransporteur != null) {
-						String netoyageTransporteur = "DELETE FROM company WHERE id='"+idTransporteur+"';";
+						String netoyageTransporteur = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".company WHERE id='"+idTransporteur+"';";
 						Statement statementNetoyageTransporteur = connexion.createStatement();
 						statementNetoyageTransporteur.executeUpdate(netoyageTransporteur);
 					}
@@ -377,14 +376,14 @@ public class LigneAction extends GeneriqueAction implements Preparable
 				
 				if (detruireAvecReseau) {
 					if (idReseau != null) {
-						String selectAutres = "SELECT * FROM line WHERE idreseau='"+idReseau+"';";
+						String selectAutres = "SELECT * FROM " + managerDataSource.getDatabaseSchema() + ".line WHERE PTNetworkId='"+idReseau+"';";
 						Statement statementAutres = connexion.createStatement();
 						ResultSet rsAutres = statementAutres.executeQuery(selectAutres);
 						if (rsAutres.next())
 							idReseau = null;
 					}
 					if (idReseau != null) {
-						String netoyageReseau = "DELETE FROM ptnetwork WHERE id='"+idReseau+"';";
+						String netoyageReseau = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".ptnetwork WHERE id='"+idReseau+"';";
 						Statement statementNetoyageReseau = connexion.createStatement();
 						statementNetoyageReseau.executeUpdate(netoyageReseau);
 					}
@@ -499,8 +498,8 @@ public class LigneAction extends GeneriqueAction implements Preparable
 		listeLigne = 
 			ligneManager.select (
 				new AndClause()
-					.add(ScalarClause.newEqualsClause("idReseau", idReseauzz))
-					.add(ScalarClause.newEqualsClause("idTransporteur", idTransporteurzz))
+					.add(ScalarClause.newEqualsClause("PTNetworkId", idReseauzz))
+					.add(ScalarClause.newEqualsClause("companyId", idTransporteurzz))
 					.add(ScalarClause.newIlikeClause("name", nomLigne)));
 		
 		return SUCCESS;
@@ -675,7 +674,7 @@ public class LigneAction extends GeneriqueAction implements Preparable
 		this.idTransporteurzz = idTransporteurzz;
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 }

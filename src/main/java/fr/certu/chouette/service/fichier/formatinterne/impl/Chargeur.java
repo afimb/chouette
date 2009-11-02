@@ -75,8 +75,8 @@ public class Chargeur implements IChargeur {
 				charger(stmt, "timetable_period", gestionFichier.getCheminFichierTableauMarchePeriode());
 			}
 			charger(stmt, "timetablevehiclejourney", gestionFichier.getCheminFichierTableauMarcheCourse());
-			charger(stmt, "itl", gestionFichier.getCheminFichierItl());
-			charger(stmt, "itl_stoparea", gestionFichier.getCheminFichierItlStoparea());
+			charger(stmt, "routingConstraint", gestionFichier.getCheminFichierItl());
+			charger(stmt, "routingConstraint_stoparea", gestionFichier.getCheminFichierItlStoparea());
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
@@ -90,7 +90,7 @@ public class Chargeur implements IChargeur {
 			chemin = chemin.replaceAll("\\\\", "/");
 			logger.debug("chemin="+chemin);
 		}
-		stmt.executeUpdate("COPY "+nomTable+" FROM '"+chemin+"';");
+		stmt.executeUpdate("COPY "+ getNettoyeurLigne().getDatabaseSchema() + "." + nomTable + " FROM '"+chemin+"';");
 		fichier.delete();
 	}
 	
@@ -100,5 +100,10 @@ public class Chargeur implements IChargeur {
 	
 	public void setNettoyeurLigne(INettoyeurLigne nettoyeurLigne) {
 		this.nettoyeurLigne = nettoyeurLigne;
+	}
+	
+	public INettoyeurLigne getNettoyeurLigne()
+	{
+		return nettoyeurLigne;
 	}
 }

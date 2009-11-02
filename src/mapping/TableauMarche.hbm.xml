@@ -37,16 +37,16 @@
 
         <list name="dates" table="timetable_date" cascade="all" lazy="false">
               <key column="timetableId" />
-              <index column="position" />
+              <list-index column="position" />
               <element column="date" type="date" />
         </list>
         
         <list name="periodes" table="timetable_period" cascade="all" lazy="false">
               <key column="timetableId" />
-              <index column="position" />
+              <list-index column="position" />
               <composite-element class="fr.certu.chouette.modele.Periode">
-        		<property name="debut" type="date" />
-        		<property name="fin" type="date" />
+        		<property name="debut" type="date" column="periodStart" />
+        		<property name="fin" type="date" column="periodEnd" />
               </composite-element>
         </list>
 

@@ -212,9 +212,8 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		List<String> completionMessage = new ArrayList<String>();
 		completionMessage.add(exchangeFormat);
 		setTitle(getText("comparator.action.title.reporting", completionMessage));
-		return SUCCESS;		
+		return SUCCESS;
 	}
-	
 	
 	private String doExceptionTreatments(Exception e, boolean completeIhmMessage)
 	{
@@ -244,7 +243,7 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		if (completeIhmMessage)
 		{
 			ihmCompletionMessage = completionMessage;
-		}				
+		}
 		
 		logger.error(getText(logKey, completionMessage), e);		
 		addActionError(getText(ihmKey, ihmCompletionMessage));
@@ -429,7 +428,6 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	public String getTitle() {
 		return title;
 	}
-
 
 	public void setObjectStates(List<ChouetteObjectState> objectStates) {
 		this.objectStates = objectStates;

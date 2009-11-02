@@ -34,10 +34,10 @@
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
-        <property name="idReseau" column="idReseau"/>
-        <property name="idTransporteur" column="idTransporteur"/>
+        <property name="idReseau" column="PTNetworkId"/>
+        <property name="idTransporteur" column="companyId"/>
 
-        <property name="objectId" type="string" unique="true" column="objectId" />
+		<property name="objectId" type="string" unique="true" column="objectId" />
 		<property name="objectVersion" type="int" column="objectVersion" />
 		<property name="creationTime" type="java.util.Date" column="creationTime" />
 		<property name="creatorId" type="string" column="creatorId" />

@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import chouette.schema.types.ConnectionLinkTypeType;
 import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.modele.Correspondance;
@@ -23,7 +23,7 @@ import fr.certu.chouette.service.importateur.IImportCorrespondances;
 
 public class ImportCorrespondances implements IImportCorrespondances {
 	
-	private DriverManagerDataSource managerDataSource;
+	private ChouetteDriverManagerDataSource managerDataSource;
 	private ICorrespondanceManager  correspondanceManager;
 	private SimpleDateFormat        sdf                   = new SimpleDateFormat("HH:mm:ss");
 	
@@ -52,13 +52,13 @@ public class ImportCorrespondances implements IImportCorrespondances {
 					messages.add("Toute correspondance doit connecter deux \"stoparea\".");
 					continue;
 				}
-				String firstIdStatement = "SELECT id FROM stoparea WHERE registrationnumber=\'"+ligne[0]+"\'";
+				String firstIdStatement = "SELECT id FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE registrationnumber=\'"+ligne[0]+"\'";
 				Statement firstStatement = connexion.createStatement();
 				ResultSet firstResultSet = firstStatement.executeQuery(firstIdStatement);
 				String firstId = null;
 				while (firstResultSet.next())
 					firstId = firstResultSet.getObject(1).toString();
-				String secondIdStatement = "SELECT id FROM stoparea WHERE registrationnumber=\'"+ligne[1]+"\'";
+				String secondIdStatement = "SELECT id FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE registrationnumber=\'"+ligne[1]+"\'";
 				Statement secondStatement = connexion.createStatement();
 				ResultSet secondResultSet = secondStatement.executeQuery(secondIdStatement);
 				String secondId = null;
@@ -180,7 +180,7 @@ public class ImportCorrespondances implements IImportCorrespondances {
 		return messages;
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 	

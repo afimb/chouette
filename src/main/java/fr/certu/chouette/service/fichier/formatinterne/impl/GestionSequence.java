@@ -11,11 +11,12 @@ public class GestionSequence implements IGestionSequence, IFournisseurId {
 	private Connection connexion;
 	private long       valeurSequence = 0L;
 	private int        totalIdCrees   = 0;
+	private String databaseSchema;
 	
 	public void actualiser() {
 		try {
 			Statement stmt = connexion.createStatement();
-			stmt.executeQuery("select setval('hibernate_sequence', " + (valeurSequence + totalIdCrees ) + ");");
+			stmt.executeQuery("select setval('" + databaseSchema + ".hibernate_sequence', " + (valeurSequence + totalIdCrees ) + ");");
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
@@ -25,7 +26,7 @@ public class GestionSequence implements IGestionSequence, IFournisseurId {
 	public void initialiser() {
 		try {
 			Statement stmt = connexion.createStatement();
-			ResultSet rs = stmt.executeQuery("select nextval('hibernate_sequence');");
+			ResultSet rs = stmt.executeQuery("select nextval('" + databaseSchema + ".hibernate_sequence');");
 			while (rs.next())
 				valeurSequence = Long.parseLong(rs.getObject(1).toString());
 		}
@@ -49,5 +50,13 @@ public class GestionSequence implements IGestionSequence, IFournisseurId {
 	
 	public void setConnexion(Connection connexion) {
 		this.connexion = connexion;
+	}
+
+	public void setDatabaseSchema(String databaseSchema) {
+		this.databaseSchema = databaseSchema;
+	}
+
+	public String getDatabaseSchema() {
+		return databaseSchema;
 	}
 }

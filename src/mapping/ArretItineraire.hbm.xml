@@ -11,11 +11,11 @@
  DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
 
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | Libellé
  =============+================+==============================================
  2 nov. 2004  |Marc FLORISSON  | Création
  =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propriétés complémentaires
  =============+================+==============================================
 
  Version : $Revision: 1.2 $
@@ -25,14 +25,13 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint" dynamic-update="false" dynamic-insert="false">
+	<class name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint" dynamic-insert="false">
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
-		</id>
-		
-        <property name="idItineraire" column="idItineraire"/>
-        <property name="idPhysique" column="idPhysique"/>
-    	<property name="modifie" column="modifie"/>
+		</id>		
+        <property name="idItineraire" column="routeId"/>
+        <property name="idPhysique" column="stopAreaId"/>
+    	<property name="modifie" column="isModified"/>
         <property name="position" column="position" type="int" />
 
         <property name="objectId" type="string" unique="true" column="objectId" />

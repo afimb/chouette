@@ -29,8 +29,8 @@
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
-        <property name="idDepart" column="idDepart"/>
-        <property name="idArrivee" column="idArrivee"/>
+        <property name="idDepart" column="departureId"/>
+        <property name="idArrivee" column="arrivalId"/>
 		
         <property name="objectId" type="string" unique="true" column="objectId" />
 		<property name="objectVersion" type="int" column="objectVersion" />
@@ -50,7 +50,6 @@
 		<property name="mobilityRestrictedSuitability" type="boolean" column="mobilityRestrictedSuitability" />
 		<property name="stairsAvailability" type="boolean" column="stairsAvailability" />
 		<property name="liftAvailability" type="boolean" column="liftAvailability" />
-
 
 	</class>
 </hibernate-mapping>
