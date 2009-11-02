@@ -28,8 +28,7 @@
         name="fr.certu.chouette.modele.Transporteur"
         table="Company"
         dynamic-update="false"
-        dynamic-insert="false"
-    >
+        dynamic-insert="false">
 
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
@@ -42,7 +41,7 @@
 
         <property name="name" column="name" />
         <property name="shortName" column="shortName" />
-        <property name="organisationalUnit" column="organisationalUnit" />
+        <property name="organisationalUnit" column="organizationalUnit" />
         <property name="operatingDepartmentName" column="operatingDepartmentName" />
         <property name="code" column="code" />
         <property name="phone" column="phone" />

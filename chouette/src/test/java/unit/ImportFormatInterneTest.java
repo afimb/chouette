@@ -5,9 +5,8 @@ import java.sql.DriverManager;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Configuration;
 import org.testng.annotations.Test;
 
 import chouette.schema.ChouettePTNetworkType;
@@ -18,7 +17,6 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.fichier.formatinterne.IAnalyseurEtatInitial;
-import fr.certu.chouette.service.fichier.formatinterne.IGestionSequence;
 import fr.certu.chouette.service.fichier.formatinterne.INettoyeurLigne;
 import fr.certu.chouette.service.fichier.formatinterne.IProducteurFichier;
 import fr.certu.chouette.service.fichier.formatinterne.modele.IEtatDifference;
@@ -37,7 +35,7 @@ public class ImportFormatInterneTest
 	private ILigneManager ligneManager;
 	private ILecteurEchangeXML lecteurEchangeXML;
 	private IAnalyseurEtatInitial analyseurEtatInitial;
-	private DriverManagerDataSource managerDataSource;
+	private ChouetteDriverManagerDataSource managerDataSource;
 	
 	@BeforeSuite
 	public void initialisation()
@@ -49,7 +47,7 @@ public class ImportFormatInterneTest
 		lecteurEchangeXML = ( ILecteurEchangeXML)applicationContext.getBean( "lecteurEchangeXML");
 		ligneManager = ( ILigneManager)applicationContext.getBean( "ligneManager");
 		analyseurEtatInitial = ( IAnalyseurEtatInitial)applicationContext.getBean( "analyseurEtatInitial");
-		managerDataSource = ( DriverManagerDataSource)applicationContext.getBean( "dataSourceAdministrateur");
+		managerDataSource = (ChouetteDriverManagerDataSource)applicationContext.getBean( "dataSourceAdministrateur");
 	}
 	
 	@Test(groups="tests unitaires", description="impact des modifications sur les 2 connexions simultanees")

@@ -35,9 +35,8 @@
 		<id name="id" column="id" type="long">
 			<generator class="native"/>
 		</id>
-        <property name="idRetour" column="idRetour"/>
-        <property name="idLigne" column="idLigne"/>
-
+        <property name="idRetour" column="oppositeRouteId"/>
+        <property name="idLigne" column="lineId"/>
         <property name="objectId" type="string" unique="true" column="objectId" />
 		<property name="objectVersion" type="int" column="objectVersion" />
 		<property name="creationTime" type="java.util.Date" column="creationTime" />

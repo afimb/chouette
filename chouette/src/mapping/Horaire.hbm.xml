@@ -28,28 +28,25 @@
         name="fr.certu.chouette.modele.Horaire"
         table="VehicleJourneyAtStop"
         dynamic-update="false"
-        dynamic-insert="false"
-    >
+        dynamic-insert="false" >
 
-	<id name="id" column="id" type="long">
-		<generator class="native"/>
-	</id>
+		<id name="id" column="id" type="long">
+			<generator class="native" />
+		</id>
+		
+	    <property name="idCourse" column="vehicleJourneyId" />
+	    <property name="idArret" column="stopPointId" />
+	    <property name="modifie" column="isModified" />
 	
-    <property name="idCourse" column="idCourse"/>
-    <property name="idArret" column="idArret"/>
-    <property name="modifie" column="modifie"/>
-
-    <property name="arrivalTime" type="time" column="arrivalTime" />
-    <property name="departureTime" type="time" column="departureTime" />
-    <property name="waitingTime" type="time" column="waitingTime" />
-
-    <property name="connectingServiceId" column="connectingServiceId"/>
-    <property name="boardingAlightingPossibility"
-        type="fr.certu.chouette.dao.hibernate.customtype.BoardingAlightingPossibilityUserType"
-        column="boardingAlightingPossibility"
-    />
-    <property name="depart" column="depart" />
-
+	    <property name="arrivalTime" type="time" column="arrivalTime" />
+	    <property name="departureTime" type="time" column="departureTime" />
+	    <property name="waitingTime" type="time" column="waitingTime" />
+	
+	    <property name="connectingServiceId" column="connectingServiceId" />
+	    <property name="boardingAlightingPossibility"
+	        type="fr.certu.chouette.dao.hibernate.customtype.BoardingAlightingPossibilityUserType"
+	        column="boardingAlightingPossibility" />
+	    <property name="depart" column="isDeparture" />
     </class>
 
 </hibernate-mapping>

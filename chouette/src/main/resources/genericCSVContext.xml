@@ -96,7 +96,7 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
     	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurZone">
         <property name="colonneDesTitres" value="7"/>
         <property name="identificationManager" ref="identificationManager"/>
-        <property name="managerDataSource" ref="dataSourceAdministrateur" />
+        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur" />
     </bean>
     
 	<bean id = "lecteurExcelHoraire"

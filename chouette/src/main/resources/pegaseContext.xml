@@ -11,6 +11,6 @@
 		<property name="ligneNumber" value="0"/>
 		<property name="logFileName" value="${import.csv.pegase.log}"/>
 		<property name="identificationManager" ref="identificationManager"/>
-        <property name="managerDataSource" ref="dataSourceAdministrateur"/>
+        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
 	</bean>
 </beans>

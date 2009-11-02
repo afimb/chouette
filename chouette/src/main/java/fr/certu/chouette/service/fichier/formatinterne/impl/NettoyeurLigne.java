@@ -15,6 +15,7 @@ public class NettoyeurLigne implements INettoyeurLigne {
 	private static final Logger             logger = Logger.getLogger(NettoyeurLigne.class);
 	private              ILigneManager      ligneManager;
 	private              Connection         connexion;
+	private 			 String 			databaseSchema;
 	
 	public void nettoyer(Long ligneId) {
 		nettoyer(ligneId, false);
@@ -79,16 +80,16 @@ public class NettoyeurLigne implements INettoyeurLigne {
 				Statement stmt = connexion.createStatement();
 				for (List<Long> _itineraireIds : superItinerairesIds ) {
 					if (_itineraireIds.size()>0) {
-						String clause = "select vv.id from vehiclejourney as vv where vv.iditineraire in ("+getSQLlist(_itineraireIds)+")";
-						String reqHoraires = "delete from vehiclejourneyatstop where idcourse in ("+clause+")";
+						String clause = "select vv.id FROM " + getDatabaseSchema() + ".vehiclejourney as vv where vv.routeId in ("+getSQLlist(_itineraireIds)+")";
+						String reqHoraires = "delete FROM " + getDatabaseSchema() + ".vehiclejourneyatstop where vehicleJourneyId in ("+clause+")";
 						//logger.debug(reqHoraires);
 						stmt.executeUpdate(reqHoraires);
-						String reqTM = "delete from timetablevehiclejourney where idcourse in ("+clause+")";
+						String reqTM = "delete FROM " + getDatabaseSchema() + ".timetablevehiclejourney where vehicleJourneyId in ("+clause+")";
 						//logger.debug(reqTM);
 						stmt.executeUpdate(reqTM);
-						String clauseMissions = "select vv.idmission from vehiclejourney as vv where vv.iditineraire in ("+getSQLlist(_itineraireIds)+") group by vv.idmission";
+						String clauseMissions = "select vv.journeyPatternId FROM " + getDatabaseSchema() + ".vehiclejourney as vv where vv.routeId in ("+getSQLlist(_itineraireIds)+") group by vv.journeyPatternId";
 						/****************************************************/
-						/** IL FAUT EFFACSE LES COURSES AVANT LES MISSIONS **/
+						/** IL FAUT EFFACER LES COURSES AVANT LES MISSIONS **/
 						ResultSet rs = stmt.executeQuery(clauseMissions);
 						String idMissions = "";
 						boolean drapeau = false;
@@ -100,21 +101,21 @@ public class NettoyeurLigne implements INettoyeurLigne {
 								idMissions += "'"+rs.getLong(1)+"'";
 							}
 						/****************************************************/
-						String reqCourses = "delete from vehiclejourney  where iditineraire in ("+getSQLlist(_itineraireIds)+");";
+						String reqCourses = "delete FROM " + getDatabaseSchema() + ".vehiclejourney  where routeId in ("+getSQLlist(_itineraireIds)+");";
 						logger.debug(reqCourses);
 						stmt.executeUpdate(reqCourses);
 						if (idMissions.length() > 0) {
-							String reqMissions = "delete from journeypattern where id in ("+idMissions+" );";
+							String reqMissions = "delete FROM " + getDatabaseSchema() + ".journeypattern where id in ("+idMissions+" );";
 							logger.debug(reqMissions);
 							stmt.executeUpdate(reqMissions);
 						}
-						stmt.executeUpdate("delete from stoppoint where idItineraire in ("+getSQLlist(_itineraireIds)+");");
+						stmt.executeUpdate("delete FROM " + getDatabaseSchema() + ".stoppoint where routeId in ("+getSQLlist(_itineraireIds)+");");
 					}
 				}
-				stmt.executeUpdate("delete from route where idligne="+ligneId+";");
-				stmt.executeUpdate("delete from itl_stoparea where iditl in (select i.id from itl i where i.idligne="+ligneId+");");
-				stmt.executeUpdate("delete from itl where idligne="+ligneId+";");
-				stmt.executeUpdate("delete from line where id="+ligneId+";");
+				stmt.executeUpdate("delete FROM " + getDatabaseSchema() + ".route where lineId="+ligneId+";");
+				stmt.executeUpdate("delete FROM " + getDatabaseSchema() + ".routingConstraint_stoparea where routingConstraintId in (select i.id FROM " + getDatabaseSchema() + ".routingConstraint i where i.lineId="+ligneId+");");
+				stmt.executeUpdate("delete FROM " + getDatabaseSchema() + ".routingConstraint where lineId="+ligneId+";");
+				stmt.executeUpdate("delete FROM " + getDatabaseSchema() + ".line where id="+ligneId+";");
 			}
 			catch(Exception e) {
 				throw new RuntimeException(e);
@@ -139,5 +140,13 @@ public class NettoyeurLigne implements INettoyeurLigne {
 	
 	public void setConnexion(Connection connexion) {
 		this.connexion = connexion;
+	}
+
+	public void setDatabaseSchema(String databaseSchema) {
+		this.databaseSchema = databaseSchema;
+	}
+
+	public String getDatabaseSchema() {
+		return databaseSchema;
 	}
 }

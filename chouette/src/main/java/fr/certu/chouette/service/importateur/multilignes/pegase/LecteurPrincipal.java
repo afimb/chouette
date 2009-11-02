@@ -4,7 +4,7 @@ import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
 import java.io.File;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 
 import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.echange.LectureEchange;
@@ -40,7 +40,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 	private              String                     logFileName; 
 	private              IIdentificationManager     identificationManager;
 	public  static       int                        counter;
-	private              DriverManagerDataSource    managerDataSource;
+	private              ChouetteDriverManagerDataSource    managerDataSource;
 	
 	public List<ILectureEchange> getLecturesEchange() {
 		Connection connexion = null;
@@ -333,7 +333,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 		this.identificationManager = identificationManager;
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 }

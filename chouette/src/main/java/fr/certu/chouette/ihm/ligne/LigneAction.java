@@ -14,18 +14,12 @@ import fr.certu.chouette.modele.Transporteur;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.service.database.ITransporteurManager;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+
+@SuppressWarnings({ "unchecked", "serial" })
 public class LigneAction extends GeneriqueAction implements ModelInjectable, ModelDriven, Preparable {
 	
 	//private final        Log                  log      = LogFactory.getLog(LigneAction.class);

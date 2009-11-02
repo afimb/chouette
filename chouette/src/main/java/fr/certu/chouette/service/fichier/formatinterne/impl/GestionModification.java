@@ -28,6 +28,7 @@ public class GestionModification implements IGestionModification {
 	private              IEtatDifference   etatDifference;
 	private              Statement         statement;
 	private              Map<String, Long> idParObjectId;
+	private String databaseSchema;
 	
 	public void setEtatDifference(IEtatDifference etatDifference) {
 		this.etatDifference = etatDifference;
@@ -72,7 +73,7 @@ public class GestionModification implements IGestionModification {
 	private void modifierTransporteur(final ILectureEchange echange) throws SQLException {
 		if (etatDifference.isTransporteurConnu()) {
 			Transporteur transporteur = echange.getTransporteur();
-			StringBuffer buffer = new StringBuffer("UPDATE company SET ");
+			StringBuffer buffer = new StringBuffer("UPDATE " + getDatabaseSchema() + ".company SET ");
 			buffer.append(getSQLClause("objectversion", transporteur.getObjectVersion()));
 			buffer.append(", ");
 			buffer.append(getSQLClause("creationtime", transporteur.getCreationTime()));
@@ -83,7 +84,7 @@ public class GestionModification implements IGestionModification {
 			buffer.append(", ");
 			buffer.append(getSQLClause("shortname", transporteur.getShortName()));
 			buffer.append(", ");
-			buffer.append(getSQLClause("organisationalunit", transporteur.getOrganisationalUnit()));
+			buffer.append(getSQLClause("organizationalunit", transporteur.getOrganisationalUnit()));
 			buffer.append(", ");
 			buffer.append(getSQLClause("operatingdepartmentname", transporteur.getOperatingDepartmentName()));
 			buffer.append(", ");
@@ -104,7 +105,7 @@ public class GestionModification implements IGestionModification {
 	private void modifierReseau(final ILectureEchange echange) throws SQLException {
 		if (etatDifference.isReseauConnu()) {
 			Reseau reseau = echange.getReseau();
-			StringBuffer buffer = new StringBuffer("UPDATE ptnetwork SET ");
+			StringBuffer buffer = new StringBuffer("UPDATE " + getDatabaseSchema() + ".ptnetwork SET ");
 			buffer.append(getSQLClause("objectversion", reseau.getObjectVersion()));
 			buffer.append(", ");
 			buffer.append(getSQLClause("creationtime", reseau.getCreationTime()));
@@ -135,7 +136,7 @@ public class GestionModification implements IGestionModification {
 			String objectId = marche.getObjectId();
 			if (etatDifference.isObjectIdTableauMarcheConnu(objectId)) {
 				Long idTM = etatDifference.getIdTableauMarcheConnu(objectId);
-				StringBuffer buffer = new StringBuffer("UPDATE timetable SET ");
+				StringBuffer buffer = new StringBuffer("UPDATE " + getDatabaseSchema() + ".timetable SET ");
 				buffer.append(getSQLClause("objectversion", marche.getObjectVersion()));
 				buffer.append(", ");
 				buffer.append(getSQLClause("creationtime", marche.getCreationTime()));
@@ -150,13 +151,13 @@ public class GestionModification implements IGestionModification {
 				buffer.append(";");
 				//logger.debug(buffer.toString());
 				statement.executeUpdate(buffer.toString());
-				statement.executeUpdate("DELETE FROM timetable_date WHERE timetableid="+idTM+";");
+				statement.executeUpdate("DELETE FROM " + getDatabaseSchema() + ".timetable_date WHERE timetableid="+idTM+";");
 				// parcours des jours calendaires
 				int totalCalendaire = marche.getTotalDates();
 				List<java.util.Date> dates = marche.getDates();
 				for (int i = 0; i < totalCalendaire; i++) {
 					java.util.Date jour = dates.get(i);
-					StringBuffer buf = new StringBuffer("INSERT INTO timetable_date (timetableid, date, position) values (");
+					StringBuffer buf = new StringBuffer("INSERT INTO " + getDatabaseSchema() + ".timetable_date (timetableid, date, position) values (");
 					buf.append(idTM);
 					buf.append(", '");
 					buf.append(jour.toString());
@@ -166,13 +167,13 @@ public class GestionModification implements IGestionModification {
 					//logger.debug(buf.toString());
 					statement.executeUpdate(buf.toString());
 				}
-				statement.executeUpdate("DELETE FROM timetable_period WHERE timetableid="+idTM+";");
+				statement.executeUpdate("DELETE FROM " + getDatabaseSchema() + ".timetable_period WHERE timetableid="+idTM+";");
 				// parcours des jours périodes
 				int totalPeriode = marche.getTotalPeriodes();
 				List<Periode> periodes = marche.getPeriodes();
 				for (int i = 0; i < totalPeriode; i++) {
 					Periode periode = periodes.get(i);
-					StringBuffer buf = new StringBuffer("INSERT INTO timetable_period (timetableid, debut, fin, position) values (");
+					StringBuffer buf = new StringBuffer("INSERT INTO " + getDatabaseSchema() + ".timetable_period (timetableid, periodStart, periodEnd, position) values (");
 					buf.append(idTM);
 					buf.append(", '");
 					buf.append(periode.debut.toString());
@@ -196,8 +197,8 @@ public class GestionModification implements IGestionModification {
 				final Long idPhysique = etatDifference.getIdZoneGeneriqueConnue(objectId);
 				String objectIdParent = echange.getZoneParente(objectId);
 				Long idZoneParente = (objectIdParent==null)?null:idParObjectId.get(objectIdParent);
-				StringBuffer buffer = new StringBuffer("UPDATE stoparea SET ");
-				buffer.append(getSQLClause("idParent", idZoneParente));
+				StringBuffer buffer = new StringBuffer("UPDATE " + getDatabaseSchema() + ".stoparea SET ");
+				buffer.append(getSQLClause("parentId", idZoneParente));
 				buffer.append(", ");
 				buffer.append(getSQLClause("objectversion", geoPosition.getObjectVersion()));
 				buffer.append(", ");
@@ -246,7 +247,7 @@ public class GestionModification implements IGestionModification {
 			String objectId = correspondance.getObjectId();
 			if (etatDifference.isObjectIdCorrespondanceConnue(objectId)) {
 				final Long idCorrespondance = etatDifference.getIdCorrespondanceConnue(objectId);
-				StringBuffer buffer = new StringBuffer("UPDATE connectionlink SET ");
+				StringBuffer buffer = new StringBuffer("UPDATE " + getDatabaseSchema() + ".connectionlink SET ");
 				buffer.append(getSQLClause("objectversion", correspondance.getObjectVersion()));
 				buffer.append(", ");
 				buffer.append(getSQLClause("creationtime", correspondance.getCreationTime()));
@@ -315,5 +316,13 @@ public class GestionModification implements IGestionModification {
 		if (date == null)
 			return null;
 		return sdfHoraire.format(date);
+	}
+
+	public void setDatabaseSchema(String databaseSchema) {
+		this.databaseSchema = databaseSchema;
+	}
+
+	public String getDatabaseSchema() {
+		return databaseSchema;
 	}
 }
