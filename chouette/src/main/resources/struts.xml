@@ -6,8 +6,42 @@
 
 <struts>
 
-  <package name="fr.certu.chouette.ihm" extends="struts-default">
+  <!-- Constantes pour le plugin REST -->
+  <constant name="struts.codebehind.classSuffix" value="Controller"/>
+  <constant name="struts.codebehind.action.checkImplementsAction" value="false"/>
+  <constant name="struts.codebehind.action.checkAnnotation" value="false"/>
+  <constant name="struts.codebehind.action.defaultMethodName" value="index"/>
+  <constant name="struts.configuration.classpath.defaultParentPackage" value="rest-default" />
 
+  <!-- Constantes pour le plugin Convention -->
+  <constant name="struts.convention.actionConfigBuilder" value="convention"/>
+  <constant name="struts.convention.actionNameBuilder" value="convention"/>
+  <constant name="struts.convention.resultMapBuilder" value="convention"/>
+  <constant name="struts.convention.interceptorMapBuilder" value="convention"/>
+  <constant name="struts.convention.conventionsService" value="convention"/>
+  <constant name="struts.convention.result.path" value="/jsp/"/>
+  <constant name="struts.convention.result.flatLayout" value="true"/>
+  <constant name="struts.convention.action.suffix" value="Action"/>
+  <constant name="struts.convention.action.disableScanning" value="false"/>
+  <constant name="struts.convention.action.mapAllMatches" value="false"/>
+  <constant name="struts.convention.action.checkImplementsAction" value="true"/>
+  <constant name="struts.convention.default.parent.package" value="struts"/>
+  <constant name="struts.convention.action.name.lowercase" value="true"/>
+  <constant name="struts.convention.action.name.separator" value="-"/>
+  <constant name="struts.convention.package.locators" value="struts"/>
+  <constant name="struts.convention.package.locators.disable" value="false"/>
+  <constant name="struts.convention.package.locators.basePackage" value=""/>
+  <constant name="struts.convention.exclude.packages" value="org.apache.struts.*,org.apache.struts2.*,org.springframework.web.struts.*,org.springframework.web.struts2.*,org.hibernate.*"/>
+  <constant name="struts.convention.relative.result.types" value="dispatcher,velocity,freemarker"/>
+  <constant name="struts.convention.redirect.to.slash" value="true"/>
+  <constant name="struts.convention.action.alwaysMapExecute" value="true"/>
+  <constant name="struts.mapper.alwaysSelectFullNamespace" value="true"/>
+  <constant name="struts.convention.action.fileProtocols" value="jar"/>
+  <constant name="struts.convention.classes.reload" value="true"/>
+  <constant name="struts.convention.exclude.parentClassLoader" value="true"/>
+
+
+  <package name="struts" extends="struts-default">
     <interceptors>
       <interceptor name="alias" class="com.opensymphony.xwork2.interceptor.AliasInterceptor"/>
       <interceptor name="autowiring" class="com.opensymphony.xwork2.spring.interceptor.ActionAutowiringInterceptor"/>
@@ -23,7 +57,6 @@
       <interceptor name="fileUpload" class="org.apache.struts2.interceptor.FileUploadInterceptor"/>
       <interceptor name="i18n" class="com.opensymphony.xwork2.interceptor.I18nInterceptor"/>
       <interceptor name="logger" class="com.opensymphony.xwork2.interceptor.LoggingInterceptor"/>
-		  <interceptor name="modelInjectable" class="fr.certu.chouette.ihm.struts.ModelInjectableInterceptor"/>
       <interceptor name="modelDriven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
       <interceptor name="scopedModelDriven" class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor"/>
       <interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"/>
@@ -46,7 +79,7 @@
       <interceptor name="annotationWorkflow" class="com.opensymphony.xwork2.interceptor.annotations.AnnotationWorkflowInterceptor" />
       <interceptor name="multiselect" class="org.apache.struts2.interceptor.MultiselectInterceptor" />
 
-      <interceptor-stack name="pileAvecLogException">
+      <interceptor-stack name="crudStack">
         <interceptor-ref name="exception">
           <param name="logEnabled">true</param>
           <param name="logLevel">error</param>
@@ -54,15 +87,14 @@
         <interceptor-ref name="alias"/>
         <interceptor-ref name="servletConfig"/>
         <interceptor-ref name="i18n"/>
-			  <interceptor-ref name="modelInjectable"/>
-        <interceptor-ref name="scopedModelDriven"/>
-        <interceptor-ref name="modelDriven"/>
         <interceptor-ref name="params">
           <param name="excludeParams">dojo\..*,^struts\..*</param>
         </interceptor-ref>
         <interceptor-ref name="prepare"/>
         <interceptor-ref name="chain"/>
         <interceptor-ref name="debugging"/>
+        <interceptor-ref name="scopedModelDriven"/>
+        <interceptor-ref name="modelDriven"/>
         <interceptor-ref name="fileUpload"/>
         <interceptor-ref name="checkbox"/>
         <interceptor-ref name="multiselect"/>
@@ -80,6 +112,7 @@
         </interceptor-ref>
       </interceptor-stack>
     </interceptors>
+    <default-interceptor-ref name="crudStack" />
 
 	<!-- Action par défaut -->
     <default-action-ref name="ActionNotFound" />
@@ -110,16 +143,14 @@
       <result name="success">/jsp/aproposde.jsp</result>
     </action>
 
-	<!-- Mise à jour des données du modèle -->
-    <action name="crud_*" class="{1}">
-      <result name="success" type="redirectAction">liste_{1}</result>
-      <result name="createAndEdit" type="redirectAction">createAndEdit_{1}</result>
-      <result name="input" >/jsp/{1}/edit.jsp</result>
-      <result name="recherche">
-			/jsp/{1}/recherche.jsp
-      </result>
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
-    </action>
+	<!-- Mise à jour des données du modèle 
+    <action name="*/*" method="{2}" class='fr.certu.chouette.struts.reseau.{1}Action'>
+      <result name="success">/jsp/{1}/edit.jsp</result>
+      <result name="list" >/jsp/{1}/list.jsp</result>
+      <result name="input" >/jsp/{1}/{2}.jsp</result>
+      <result name="recherche">/jsp/{1}/recherche.jsp</result>
+      <interceptor-ref name="crudStack"></interceptor-ref>
+    </action>-->
 
 	<!-- Liste des données du modèle -->
     <action name="liste_*" class="{1}" method="list">
@@ -128,7 +159,7 @@
       <interceptor-ref name="store">
         <param name="operationMode">RETRIEVE</param>
       </interceptor-ref>
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
     </action>
 
 	<!-- Mise à jour des données du modèle et récupération des messages et erreurs en session -->
@@ -137,13 +168,13 @@
       <interceptor-ref name="store">
         <param name="operationMode">RETRIEVE</param>
       </interceptor-ref>
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
     </action>
 
 
 	<!-- Import des données -->
     <action name="Import_*" class="Import" method="{1}">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/import.jsp</result>
       <result name="input">/jsp/import.jsp</result>
       <result name="success_itineraire" type="redirectAction">
@@ -161,7 +192,7 @@
 
 	<!-- Validation des données -->
     <action name="Validation_*" class="Validation" method="{1}">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/validation.jsp</result>
       <result name="input">/jsp/validation.jsp</result>
       <result name="success_itineraire" type="redirectAction">
@@ -189,14 +220,14 @@
       <result name="input" type="chain">
         <param name="actionName">liste_Ligne</param>
       </result>
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <interceptor-ref name="store">
         <param name="operationMode">STORE</param>
       </interceptor-ref>
     </action>
 
     <action name="HorairesDePassage_*" class="HorairesDePassage" method="{1}">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_HorairesDePassage</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -211,7 +242,7 @@
     </action>
 
     <action name="ArretSurItineraire_*" class="ArretSurItineraire" method="{1}">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_ArretSurItineraire</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -224,7 +255,7 @@
 
 	<!-- Ajout d'une donnée du modèle liée à la ligne -->
     <action name="creer_*_sur_la_ligne" class="{1}" method="update">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_{1}</param>
         <param name="idLigne">${idLigne}</param>
@@ -234,7 +265,7 @@
 
 	<!-- Ajout d'une donnée du modèle liée à la ligne -->
     <action name="creer_Itineraire_retour_sur_la_ligne" class="Itineraire" method="creerItineraireRetour">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_Itineraire</param>
         <param name="idLigne">${idLigne}</param>
@@ -244,7 +275,7 @@
 
 	<!-- Annulation d'une modification d'une donnée du modèle liée à la ligne -->
     <action name="annuler_*_sur_la_ligne" class="{1}" method="cancel">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_{1}</param>
         <param name="idLigne">${idLigne}</param>
@@ -254,7 +285,7 @@
 
 	<!-- Suppression d'une donnée du modèle liée à la ligne -->
     <action name="supprimer_*_de_la_ligne" class="{1}" method="delete">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_{1}</param>
         <param name="idLigne">${idLigne}</param>
@@ -264,7 +295,7 @@
 
 	<!-- Ajout d'une donnée du modèle liée à l'itinéraire -->
     <action name="creer_*_sur_son_itineraire" class="{1}" method="update">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_HorairesDePassage</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -278,7 +309,7 @@
 
 	<!-- Annulation d'une modification d'une donnée du modèle liée à l'itinéraire -->
     <action name="annuler_*_sur_son_itineraire" class="{1}" method="cancel">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_HorairesDePassage</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -292,7 +323,7 @@
 
 	<!-- Suppression d'une donnée du modèle liée à l'itinéraire -->
     <action name="supprimer_*_sur_son_itineraire" class="{1}" method="delete">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_HorairesDePassage</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -306,7 +337,7 @@
 
 	<!-- Association d'un tableau de marche liée à l'itinéraire -->
     <action name="creerAssociationTableauMarche" class="Course" method="creerAssociationTableauMarche">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">crud_Course!edit</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -318,7 +349,7 @@
 
 	<!-- Suppression d'une association d'un tableau de marche liée à l'itinéraire -->
     <action name="supprimerAssociationTableauMarche" class="Course" method="supprimerAssociationTableauMarche">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">crud_Course!edit</param>
         <param name="idItineraire">${idItineraire}</param>
@@ -329,7 +360,7 @@
     </action>
 
     <action name="ITL_*" class="ITL" method="{1}">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="idItl">${idItl}</param>
         <param name="actionName">crud_ITL!edit</param>
@@ -356,7 +387,7 @@
 			/jsp/PositionGeographique/search.jsp
       </result>
       <result name="input">/jsp/PositionGeographique/edit.jsp</result>
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <interceptor-ref name="store">
         <param name="operationMode">STORE</param>
       </interceptor-ref>
@@ -366,11 +397,11 @@
     <action name="search_*" class="{1}" method="search">
       <result name="success">/jsp/{1}/search.jsp</result>
       <result name="input">/jsp/{1}/search.jsp</result>
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
     </action>
 
     <action name="Correspondance_*" class="Correspondance" method="{1}">
-      <interceptor-ref name="pileAvecLogException"></interceptor-ref>
+      <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success" type="redirectAction">
         <param name="actionName">liste_Correspondance</param>
         <param name="idCorrespondance">${connectionlink.id}</param>
@@ -393,12 +424,51 @@
       <result name="error">/jsp/linesComparaison.jsp</result>
     </action>
 
-	<!--
-	<action name="*">
-	<result>/jsp/{1}.jsp</result>
-	</action>
-	-->
+  </package>
 
+  <!-- Mise à jour des données du modèle Réseau -->
+  <package name="network" extends="struts" namespace="/network">
+    <action name="/*" method="{1}" class='fr.certu.chouette.struts.network.NetworkAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+      </result>
+      <result name="edit">/jsp/network/edit.jsp</result>
+      <result name="list" type="dispatcher">
+        <param name="location">/jsp/network/list.jsp</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="input" >/jsp/network/edit.jsp</result>
+    </action>
+  </package>
+
+  <!-- Mise à jour des données du modèle Ligne -->
+  <package name="line" extends="struts" namespace="/line">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.line.LineAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+      </result>
+      <result name="edit">/jsp/line/edit.jsp</result>
+      <result name="list" type="dispatcher">
+        <param name="location">/jsp/line/list.jsp</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="input" >/jsp/line/edit.jsp</result>
+    </action>
+  </package>
+
+  <!-- Mise à jour des données du modèle Transporteur -->
+  <package name="company" extends="struts" namespace="/company">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.company.CompanyAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+      </result>
+      <result name="edit">/jsp/company/edit.jsp</result>
+      <result name="list" type="dispatcher">
+        <param name="location">/jsp/company/list.jsp</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="input" >/jsp/company/edit.jsp</result>
+    </action>
   </package>
 
 </struts>
