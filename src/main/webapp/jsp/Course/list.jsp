@@ -10,11 +10,11 @@
 	<display:table name="courses" sort="list" pagesize="5" requestURI="" id="course" export="false">
 	  	<display:column title="Action" sortable="false">
 			<s:url id="removeUrl" action="crud_Course!delete">
-				<s:param name="idCourse" value="${course.id}" />
+				<s:param name="idCourse">${course.id}</s:param>
 			</s:url>
 			<s:url id="editUrl" action="crud_Course!edit">
 				<s:param name="idCourse" value="${course.id}" />
-				<s:param name="idItineraire" value="${course.idItineraire}" />
+        <s:param name="idItineraire">${course.idItineraire}</s:param>
 			</s:url>
 			<s:a href="%{editUrl}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
 	    	<s:a href="%{removeUrl}" onclick="return confirm('%{getText('popup.confirmer')}');"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 	

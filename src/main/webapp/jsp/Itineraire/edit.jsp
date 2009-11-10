@@ -20,7 +20,7 @@
 		<s:hidden name="idItineraire" value="%{itineraire.id}"/>	
 	</s:if>
 	<s:hidden name="idLigne" value="%{idLigne}"/>
-	<s:select name="idRetour" value="%{idRetour}" label="%{getText('itineraire.idRetour')}" list="itinerairesSansItineraireEdite" listKey="id" listValue="publishedName" headerKey="-1" headerValue="%{getText('itineraire.aucunRetour')}" />
+  <s:select name="idRetour" value="%{idRetour}" label="%{getText('itineraire.idRetour')}" list="itineraire.itinerairesSansItineraireEdite" listKey="id" listValue="publishedName" headerKey="-1" headerValue="%{getText('itineraire.aucunRetour')}" />
 	<s:textfield key="itineraire.name" required="true"/>
 	<s:textfield key="itineraire.publishedName" />
 	<s:select key="itineraire.direction" list="@fr.certu.chouette.ihm.enumeration.EnumerationApplication@getDirectionEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>

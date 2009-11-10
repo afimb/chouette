@@ -47,7 +47,7 @@
 <%-- Filtre --%>
 <div>
 	<s:form action="liste_PositionGeographique">
-		<s:hidden name="typePositionGeographique" value="${typePositionGeographique}" />
+		<s:hidden name="typePositionGeographique" value="%{typePositionGeographique}" />
 		<s:select name="idReseau" label="%{getText('filtre.select.reseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
 		<s:textfield name="nomArret" label="%{getText('filtre.select.nomArret')}"></s:textfield>
 		<s:textfield name="codeInsee" label="%{getText('filtre.select.codeInsee')}"></s:textfield>
@@ -104,7 +104,7 @@
 	  	
 	  		<%-- BOUTON EDITER --%>
 			<s:url id="editUrl" action="PositionGeographique!edit">
-				<s:param name="idPositionGeographique" value="${positionGeographique.id}" />			
+        <s:param name="idPositionGeographique">${positionGeographique.id}</s:param>
 			</s:url>
 			<s:a href="%{editUrl}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
 			
@@ -117,7 +117,7 @@
 
 			<%-- BOUTON SUPPRIMER --%>
 			<s:url id="deletePositionGeographique" action="PositionGeographique!delete">
-				<s:param name="idPositionGeographique" value="${positionGeographique.id}" />
+        <s:param name="idPositionGeographique">${positionGeographique.id}</s:param>
 			</s:url>			
 			<s:if test="typePositionGeographique == 'arretPhysique'">
 	    		<s:a href="%{deletePositionGeographique}" onclick="return confirm('%{getText('arretPhysique.delete.confirmation')}');" cssStyle="visibility:%{getLiaisonItineraire(${positionGeographique.id})};"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 	

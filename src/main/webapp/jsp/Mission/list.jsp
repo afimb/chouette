@@ -7,7 +7,7 @@
 	<display:table name="missions" sort="list" pagesize="20" requestURI="" id="mission" export="false">
 	  	<display:column title="Action" sortable="false">
 			<s:url id="editMission" action="crud_Mission!edit">
-				<s:param name="idMission" value="${mission.id}" />
+        <s:param name="idMission">${mission.id}</s:param>
 			</s:url>
 			<s:a href="%{editMission}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;	
 	  	</display:column>	
