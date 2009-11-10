@@ -3,7 +3,8 @@
  % It includes standard caching, style sheet, header, footer and copyright notice.
 --%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
-7: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <html>
   <head>

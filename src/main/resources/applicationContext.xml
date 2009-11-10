@@ -472,7 +472,7 @@
  			<property name="amivifAdapter" ref="amivifAdapter"/>
     </bean>
     -->
-    <!-- Modules IHM -->
+    <!-- Modules struts -->
     <bean id="enumApplication"
     		class="fr.certu.chouette.ihm.enumeration.EnumerationApplication"
     		scope="singleton" 
@@ -489,7 +489,7 @@
     </bean>
 
     <bean id="Itineraire" scope="prototype"
-    		class="fr.certu.chouette.ihm.ItineraireAction">
+    		class="fr.certu.chouette.ihm.itineraire.ItineraireAction">
     		 <property name="itineraireManager" ref="itineraireManager"/>
     		 <property name="ligneManager" ref="ligneManager"/>
     </bean>
@@ -533,7 +533,7 @@
     </bean>       
     
     <bean id="Ligne" scope="prototype"
-		class="fr.certu.chouette.ihm.ligne.LigneAction">
+		class="fr.certu.chouette.ihm.line.LineAction">
 		 <property name="ligneManager" ref="ligneManager"/>
 		 <property name="reseauManager" ref="reseauManager"/>
  		 <property name="transporteurManager" ref="transporteurManager"/>
@@ -545,12 +545,12 @@
     </bean>
     
     <bean id="Transporteur" scope="prototype"
-		class="fr.certu.chouette.ihm.transporteur.TransporteurAction">
+		class="fr.certu.chouette.ihm.company.CompanyAction">
 		 <property name="transporteurManager" ref="transporteurManager"/>
     </bean>
     
     <bean id="Reseau" scope="prototype"
-		class="fr.certu.chouette.ihm.reseau.ReseauAction">
+		class="fr.certu.chouette.ihm.network.NetworkAction">
 		 <property name="reseauManager" ref="reseauManager"/>
     </bean>
     
