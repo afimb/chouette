@@ -1,15 +1,9 @@
-package fr.certu.chouette.ihm;
+package fr.certu.chouette.struts;
 
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.interceptor.PrincipalAware;
-import org.apache.struts2.interceptor.PrincipalProxy;
-import org.apache.struts2.interceptor.SessionAware;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.Preparable;
 
 public class RechercheItineraireAction extends GeneriqueAction
 {
