@@ -17,13 +17,15 @@
 	<display:table name="itls" pagesize="20" requestURI="" id="itl" export="false">
 	  	<display:column title="Action" sortable="false">
 			<s:url id="removeUrl" action="crud_ITL!delete">
-				<s:param name="idItl" value="${itl.id}" />
+        <s:param name="idItl">${itl.id}</s:param>
 			</s:url>
 			<s:url id="editUrl" action="crud_ITL!edit">
-				<s:param name="idItl" value="${itl.id}" />
+        <s:param name="idItl">${itl.id}</s:param>
 			</s:url>
 			<s:a href="%{editUrl}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
-	    	<s:a href="%{removeUrl}" onclick="return confirm('%{getText('itl.delete.confirmation')}');"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 	
+	    	<s:a href="%{removeUrl}" onclick="return confirm('%{getText('itl.delete.confirmation')}');">
+          <img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+        </s:a>
 	  	</display:column>	
 	  	<display:column title="Nom" property="nom" sortable="false"/>
 	</display:table>

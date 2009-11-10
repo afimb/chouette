@@ -29,7 +29,7 @@
 			<s:if test="itl.id != null">
 				<tr>
 					<td><s:text name="text.itl.line"/></td>
-					<td><s:text name="${ligneName}"/></td>
+					<td>${ligneName}</td>
 				</tr>
 				
 			</s:if>
@@ -61,11 +61,13 @@
 			<div id="displaytag">
 				<display:table uid="arretsDansITLList" name="arretsDansITLList" excludedParams="action saisieNomArretExistant saisieNomArretExistantKey" requestURI="crud_ITL!edit.action" sort="list" pagesize="10" export="false">		
 					<display:column title="Action">
-				  		<s:url id="removeUrl" action="ITL_removeStop">
-							<s:param name="idItl" value="${itl.id}" />
-							<s:param name="idAreaStop" value="%{arretsDansITLList[${arretsDansITLList_rowNum} - 1].id}" />
+            <s:url id="removeUrl" action="ITL_removeStop">
+              <s:param name="idItl">${itl.id}</s:param>
+              <s:param name="idAreaStop">%{arretsDansITLList[${arretsDansITLList_rowNum} - 1].id}</s:param>
 						</s:url>
-						<s:a href="%{removeUrl}" onclick="return confirm('%{getText('popup.confirmer')}')"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 
+						<s:a href="%{removeUrl}" onclick="return confirm('%{getText('popup.confirmer')}')">
+              <img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+            </s:a>
 				  	</display:column>
 	
 				  	<display:column title="Nom" property="name"/>

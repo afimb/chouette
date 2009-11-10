@@ -4,15 +4,15 @@
 		<div>Menu</div>
 		<ul id="sommaire">
 			<%-- Reseaux --%>
-			<s:url id="urlReseauxMenu" action="liste_Reseau" includeParams="none"/>
+      <s:url id="urlReseauxMenu" value="/network/list" includeParams="none"/>
 			<li><s:a href="%{urlReseauxMenu}" id="reseauxMenu"><s:text name="text.reseaux"/></s:a></li>
 			
 			<%-- Transporteurs --%>
-			<s:url id="transporteursMenu" action="liste_Transporteur" includeParams="none"/>
+			<s:url id="transporteursMenu" value="/company/list" includeParams="none"/>
 			<li><s:a href="%{transporteursMenu}" id="transporteursMenu"><s:text name="text.transporteurs"/></s:a></li>
 			
 			<%-- Lignes --%>
-			<s:url id="urlLignesMenu" action="liste_Ligne" includeParams="none"/>
+			<s:url id="urlLignesMenu" value="/line/list" includeParams="none"/>
 			<li><s:a href="%{urlLignesMenu}" id="lignesMenu"><s:text name="text.lignes"/></s:a></li>
 
 			<%-- Itineraires --%>

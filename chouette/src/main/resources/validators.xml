@@ -17,7 +17,7 @@
     <validator name="conversion" class="com.opensymphony.xwork2.validator.validators.ConversionErrorFieldValidator"/>
     <validator name="stringlength" class="com.opensymphony.xwork2.validator.validators.StringLengthFieldValidator"/>
     <validator name="regex" class="com.opensymphony.xwork2.validator.validators.RegexFieldValidator"/>
-    <validator name="periods" class="fr.certu.chouette.ihm.validator.PeriodValidator" />
-    <validator name="bigdecimal" class="fr.certu.chouette.ihm.validator.BigDecimalValidator" />
+    <validator name="periods" class="fr.certu.chouette.struts.validator.PeriodValidator" />
+    <validator name="bigdecimal" class="fr.certu.chouette.struts.validator.BigDecimalValidator" />
 </validators>
 <!--  END SNIPPET: validators-default -->

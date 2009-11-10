@@ -117,28 +117,28 @@
 				<display:table name="iti" uid="iti" sort="list" pagesize="10" requestURI="crud_PositionGeographique!edit.action" export="false">
 				  	<display:column title="Nom Itineraire" sortable="true" headerClass="sortable">
 						<s:url id="arretSurItineraire" action="ArretSurItineraire" includeParams="none">
-							<s:param name="idItineraire" value="%{iti[${iti_rowNum} - 1].id}" />
+              <s:param name="idItineraire">%{iti[${iti_rowNum} - 1].id}</s:param>
 						</s:url>	
-						<s:a href="%{arretSurItineraire}"><s:property value="%{iti[${iti_rowNum} - 1].name}"/></s:a>
+						<s:a href="%{arretSurItineraire}">%{iti[${iti_rowNum} - 1].name}</s:a>
 				  	</display:column>	
 				  	<display:column title="Horaires" sortable="true" headerClass="sortable">
 						<s:url id="horairesDePassage" action="liste_HorairesDePassage" includeParams="none">
-							<s:param name="idItineraire" value="%{iti[${iti_rowNum} - 1].id}" />
-							<s:param name="idLigne" value="%{iti[${iti_rowNum} - 1].idLigne}" />
+              <s:param name="idItineraire">%{iti[${iti_rowNum} - 1].id}</s:param>
+              <s:param name="idLigne">%{iti[${iti_rowNum} - 1].idLigne}</s:param>
 						</s:url>				  	
 				  		<s:a href="%{horairesDePassage}">Horaires</s:a>
 				  	</display:column>
 				  	<display:column title="Nom Ligne" sortable="true" headerClass="sortable">
 						<s:url id="editLigne" action="crud_Ligne!edit" includeParams="none">
-							<s:param name="idLigne" value="%{iti[${iti_rowNum} - 1].idLigne}" />
+              <s:param name="idLigne">%{iti[${iti_rowNum} - 1].idLigne}</s:param>
 						</s:url>			  		
-				  		<s:a href="%{editLigne}"><s:property value="%{getLigne(iti[${iti_rowNum} - 1].id).name}" /></s:a>
+				  		<s:a href="%{editLigne}">%{getLigne(iti[${iti_rowNum} - 1].id).name}</s:a>
 				  	</display:column>
 				  	<display:column title="Nom Reseau" sortable="true" headerClass="sortable">
 						<s:url id="editReseau" action="crud_Reseau!edit" includeParams="none">
-							<s:param name="idReseau" value="getReseau(%{iti[${iti_rowNum} - 1].idLigne}).id" />
+              <s:param name="idReseau">getReseau(%{iti[${iti_rowNum} - 1].idLigne}).id</s:param>
 						</s:url>			  		
-				  		<s:a href="%{editReseau}"><s:property value="%{getReseau(iti[${iti_rowNum} - 1].idLigne).name}" /></s:a>
+				  		<s:a href="%{editReseau}">%{getReseau(iti[${iti_rowNum} - 1].idLigne).name}</s:a>
 				  	</display:column>
 				</display:table>
 			</s:div>
@@ -155,23 +155,23 @@
 				<display:table uid="children" name="children" excludedParams="" requestURI="crud_PositionGeographique!edit.action" sort="list" pagesize="10" export="false">
 					<display:column title="action">			
 						<s:url id="editUrl" action="crud_PositionGeographique!edit">
-							<s:param name="idPositionGeographique" value="%{children[${children_rowNum} - 1].id}" />
+              <s:param name="idPositionGeographique">%{children[${children_rowNum} - 1].id}</s:param>
 						</s:url>
 						<s:a href="%{editUrl}"><s:text name="action.edit" /></s:a>&nbsp;&nbsp;
 						<s:url id="editUrl" action="crud_PositionGeographique!edit">
-							<s:param name="idPositionGeographique" value="%{children[${children_rowNum} - 1].id}" />
+              <s:param name="idPositionGeographique">%{children[${children_rowNum} - 1].id}</s:param>
 						</s:url>
 						<s:url id="removeUrl" action="PositionGeographique_removeChildFromParent">
 							<s:param name="idPositionGeographique" value="%{positionGeographique.id}" />
-							<s:param name="idChild" value="%{children[${children_rowNum} - 1].id}" />
+              <s:param name="idChild">%{children[${children_rowNum} - 1].id}</s:param>
 						</s:url>
 						<s:a href="%{removeUrl}"><s:text name="action.remove" /></s:a>&nbsp;&nbsp;
 					</display:column>
 					<display:column title="Nom">
-					Zone	<s:property value="%{children[${children_rowNum} - 1].name}" />
+					Zone	%{children[${children_rowNum} - 1].name}
 					</display:column>
 					<display:column title="Type">
-						<s:text name="%{children[${children_rowNum} - 1].areaType}"/>
+						%{children[${children_rowNum} - 1].areaType}
 					</display:column>
 				</display:table>
 			</s:div> 
@@ -219,7 +219,7 @@
 								</td>
 								<td><s:property value="father.name" /></td>
 								<td>
-									<s:text name="${father.areaType}"/>
+                  ${father.areaType}
 								</td>
 							</tr>
 						</tbody>

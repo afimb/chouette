@@ -91,11 +91,11 @@
 	<display:table name="tableauxMarche" sort="list" pagesize="10" requestURI="" id="tableauMarche" export="false">	
 	  	<display:column title="Actions" sortable="false">
 	  		<s:url id="supprimerAssociationTableauMarche" action="supprimerAssociationTableauMarche">
-				<s:param name="idTableauMarche" value="${tableauMarche.id}" />
+          <s:param name="idTableauMarche">{tableauMarche.id}</s:param>
 			</s:url>
 			<s:url id="editTableauMarche" action="crud_TableauMarche!edit">
 				<s:param name="idCourse" value="%{idCourse}" />
-				<s:param name="idTableauMarche" value="${tableauMarche.id}" />
+        <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
 			</s:url>
 			<s:a href="%{editTableauMarche}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
 	    	<s:a href="%{supprimerAssociationTableauMarche}" onclick="return confirm('%{getText('popup.confirmer')}'"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 	

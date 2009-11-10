@@ -14,4 +14,8 @@
     <role-name>chouette-role</role-name>
     <group-name>chouette-group-test-exploit</group-name>
   </security-role-mapping>
+  <locale-charset-info>
+    <locale-charset-map charset="UTF-8" locale=""/>
+    <parameter-encoding default-charset="UTF-8"/>
+  </locale-charset-info>
 </sun-web-app>
