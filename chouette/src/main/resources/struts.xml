@@ -57,6 +57,7 @@
       <interceptor name="fileUpload" class="org.apache.struts2.interceptor.FileUploadInterceptor"/>
       <interceptor name="i18n" class="com.opensymphony.xwork2.interceptor.I18nInterceptor"/>
       <interceptor name="logger" class="com.opensymphony.xwork2.interceptor.LoggingInterceptor"/>
+      <interceptor name="modelInjectable" class="fr.certu.chouette.ihm.struts.ModelInjectableInterceptor"/>
       <interceptor name="modelDriven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
       <interceptor name="scopedModelDriven" class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor"/>
       <interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"/>
@@ -110,6 +111,7 @@
         <interceptor-ref name="workflow">
           <param name="excludeMethods">input,edit,back,cancel</param>
         </interceptor-ref>
+        <interceptor-ref name="store"></interceptor-ref>
       </interceptor-stack>
     </interceptors>
     <default-interceptor-ref name="crudStack" />
@@ -428,15 +430,13 @@
 
   <!-- Mise à jour des données du modèle Réseau -->
   <package name="network" extends="struts" namespace="/network">
-    <action name="/*" method="{1}" class='fr.certu.chouette.struts.network.NetworkAction'>
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.network.NetworkAction'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
-      </result>
-      <result name="edit">/jsp/network/edit.jsp</result>
-      <result name="list" type="dispatcher">
-        <param name="location">/jsp/network/list.jsp</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
+      <result name="edit">/jsp/network/edit.jsp</result>
+      <result name="list">/jsp/network/list.jsp</result>
       <result name="input" >/jsp/network/edit.jsp</result>
     </action>
   </package>
@@ -446,12 +446,10 @@
     <action name="*" method="{1}" class='fr.certu.chouette.struts.line.LineAction'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
-      </result>
-      <result name="edit">/jsp/line/edit.jsp</result>
-      <result name="list" type="dispatcher">
-        <param name="location">/jsp/line/list.jsp</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
+      <result name="edit">/jsp/line/edit.jsp</result>
+      <result name="list">/jsp/line/list.jsp</result>
       <result name="input" >/jsp/line/edit.jsp</result>
     </action>
   </package>
@@ -461,13 +459,30 @@
     <action name="*" method="{1}" class='fr.certu.chouette.struts.company.CompanyAction'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
-      </result>
-      <result name="edit">/jsp/company/edit.jsp</result>
-      <result name="list" type="dispatcher">
-        <param name="location">/jsp/company/list.jsp</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
+      <result name="edit">/jsp/company/edit.jsp</result>
+      <result name="list">/jsp/company/list.jsp</result>
       <result name="input" >/jsp/company/edit.jsp</result>
+    </action>
+  </package>
+
+
+	<!-- Export des données -->
+  <package name="export" extends="struts" namespace="/export">
+    <action name="*" class="fr.certu.chouette.struts.export.ExportAction" method="{1}">
+      <result name="success" type="stream">
+        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="inputName">inputStream</param>
+        <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
+        <param name="contentTransferEncoding">binary</param>
+        <param name="bufferSize">4096</param>
+      </result>
+      <result name="input" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="namespace">/%{origin}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
     </action>
   </package>
 

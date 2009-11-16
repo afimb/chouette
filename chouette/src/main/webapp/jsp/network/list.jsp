@@ -23,11 +23,12 @@
         <s:param name="idReseau">${reseau.id}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
-      <s:url id="editUrl" action="edit" namespace="/network">
+      <s:url id="editUrl" value="/network/edit">
         <s:param name="idReseau">${reseau.id}</s:param>
       </s:url>
-      <s:url id="exportsChouettes" action="export" namespace="/reseau">
+      <s:url id="exportsChouettes" value="/export/exportsChouettes">
         <s:param name="idReseau">${reseau.id}</s:param>
+        <s:param name="origin">network</s:param>
       </s:url>
       <s:a href="%{editUrl}">
         <img border="0" class="edit" src="/images/editer.png" alt="Edit" title="<s:text name="tooltip.edit"/>" >
