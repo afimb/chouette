@@ -5,11 +5,12 @@ import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.service.database.IReseauManager;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.validator.annotations.VisitorFieldValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class NetworkAction extends GeneriqueAction implements ModelDriven, Preparable
+public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau>, Preparable
 {
   private static final Log log = LogFactory.getLog(NetworkAction.class);
   private Reseau networkModel = new Reseau();
@@ -27,6 +28,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven, Prepa
     this.idReseau = idReseau;
   }
 
+  @Override
   public Reseau getModel()
   {
     return networkModel;
@@ -59,7 +61,8 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven, Prepa
     setMappedRequest(SAVE);
     return EDIT;
   }
-
+  
+  @VisitorFieldValidator(message = "Default message", fieldName = "model", appendPrefix = false)
   public String save()
   {
     reseauManager.creer(getModel());
