@@ -48,12 +48,12 @@
   <tr>
     <td colspan="2">
       <s:if test="id != null">
-        <s:submit key="action.update" action="Reseau" method="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
       </s:if>
       <s:else>
-        <s:submit value="action.create" action="Reseau" method="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
       </s:else>
-      <s:submit key="action.cancel" action="Reseau" method="cancel"  theme="simple" cssStyle="float: right;"/>
+      <s:submit key="action.cancel" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
     </td>
   </tr>
 
