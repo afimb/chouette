@@ -474,7 +474,7 @@
     -->
     <!-- Modules struts -->
     <bean id="enumApplication"
-    		class="fr.certu.chouette.ihm.enumeration.EnumerationApplication"
+    		class="fr.certu.chouette.struts.enumeration.EnumerationApplication"
     		scope="singleton" 
     		init-method="reinit">
    		 <property name="strutsProperties" value="struts"/>
@@ -489,31 +489,31 @@
     </bean>
 
     <bean id="Itineraire" scope="prototype"
-    		class="fr.certu.chouette.ihm.itineraire.ItineraireAction">
+    		class="fr.certu.chouette.struts.itineraire.ItineraireAction">
     		 <property name="itineraireManager" ref="itineraireManager"/>
     		 <property name="ligneManager" ref="ligneManager"/>
     </bean>
     
     <bean id="Mission" scope="prototype"
-		class="fr.certu.chouette.ihm.MissionAction">
+		class="fr.certu.chouette.struts.MissionAction">
 		 <property name="missionManager" ref="missionManager"/>
     </bean>
     
     <bean id="ArretSurItineraire" scope="prototype"
-    		class="fr.certu.chouette.ihm.ArretSurItineraireAction">
+    		class="fr.certu.chouette.struts.ArretSurItineraireAction">
     		 <property name="itineraireManager" ref="itineraireManager"/>
     		 <property name="ligneManager" ref="ligneManager"/>    		 
     		 <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>    
     </bean>    
     
      <bean id="Pagination" scope="prototype"
-    		class="fr.certu.chouette.ihm.outil.pagination.Pagination">
+    		class="fr.certu.chouette.struts.outil.pagination.Pagination">
      		 <property name="nbColonnesParPage" value="${vehicleJourney.displayed}"/>
      		 <property name="nbTotalPages" value="${page.displayed}"/>       		
     </bean>		
     
     <bean id="HorairesDePassage" scope="prototype"
-    		class="fr.certu.chouette.ihm.horairesdepassage.HorairesDePassageAction">
+    		class="fr.certu.chouette.struts.horairesdepassage.HorairesDePassageAction">
     		 <property name="itineraireManager" ref="itineraireManager"/>
     		 <property name="horaireManager" ref="horaireManager"/>    
     		 <property name="courseManager" ref="courseManager"/>
@@ -525,7 +525,7 @@
     </bean>        
     
     <bean id="Course" scope="prototype"
-		class="fr.certu.chouette.ihm.CourseAction">
+		class="fr.certu.chouette.struts.CourseAction">
   		 <property name="itineraireManager" ref="itineraireManager"/>
 		 <property name="courseManager" ref="courseManager"/>
 		 <property name="tableauMarcheManager" ref="tableauMarcheManager"/>		 
@@ -533,7 +533,7 @@
     </bean>       
     
     <bean id="Ligne" scope="prototype"
-		class="fr.certu.chouette.ihm.line.LineAction">
+		class="fr.certu.chouette.struts.line.LineAction">
 		 <property name="ligneManager" ref="ligneManager"/>
 		 <property name="reseauManager" ref="reseauManager"/>
  		 <property name="transporteurManager" ref="transporteurManager"/>
@@ -545,44 +545,44 @@
     </bean>
     
     <bean id="Transporteur" scope="prototype"
-		class="fr.certu.chouette.ihm.company.CompanyAction">
+		class="fr.certu.chouette.struts.company.CompanyAction">
 		 <property name="transporteurManager" ref="transporteurManager"/>
     </bean>
     
     <bean id="Reseau" scope="prototype"
-		class="fr.certu.chouette.ihm.network.NetworkAction">
+		class="fr.certu.chouette.struts.network.NetworkAction">
 		 <property name="reseauManager" ref="reseauManager"/>
     </bean>
     
     <bean id="TableauMarche" scope="prototype"
-		class="fr.certu.chouette.ihm.TableauMarcheAction">
+		class="fr.certu.chouette.struts.TableauMarcheAction">
 		 <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
 		 <property name="courseManager" ref="courseManager"/>
 		 <property name="reseauManager" ref="reseauManager"/>
     </bean>    
     
     <bean id="PositionGeographique" scope="prototype"
-		class="fr.certu.chouette.ihm.PositionGeographiqueAction">
+		class="fr.certu.chouette.struts.PositionGeographiqueAction">
 		 <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>	
 	     <property name="ligneManager" ref="ligneManager"/>
 	     <property name="reseauManager" ref="reseauManager"/>		 
     </bean>  
     
     <bean id="Correspondance" scope="prototype"
-		class="fr.certu.chouette.ihm.CorrespondanceAction">
+		class="fr.certu.chouette.struts.CorrespondanceAction">
 		 <property name="correspondanceManager" ref="correspondanceManager"/>
 		 <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>		 
  		<property name="useHastus" value="${import.csv.hastus}"/> 	
     </bean>  
     
-    <bean id="ITL" scope="prototype" class="fr.certu.chouette.ihm.ITLAction">
+    <bean id="ITL" scope="prototype" class="fr.certu.chouette.struts.ITLAction">
 		 <property name="manager" ref="itlManager"/>	
 		 <property name="ligneManager" ref="ligneManager"/>
 		 <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>	 
     </bean>
     
     <bean id="Import" scope="prototype"
-		class="fr.certu.chouette.ihm.ImportAction">
+		class="fr.certu.chouette.struts.ImportAction">
 		<property name="importateur" ref="importateur"/>
 		<property name="lecteurCSV" ref="lecteurCSV"/>
 		<property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
@@ -606,19 +606,19 @@
     </bean>
     
     <bean id="LineFileComparisonService" scope="prototype"
-		class="fr.certu.chouette.ihm.LineFileComparisonServiceAction">
+		class="fr.certu.chouette.struts.LineFileComparisonServiceAction">
 		<property name="identificationManager" ref="identificationManager"/>
     </bean>
 
     <bean id="Validation" scope="prototype"
-		class="fr.certu.chouette.ihm.ValidationAction">
+		class="fr.certu.chouette.struts.ValidationAction">
 		<property name="managerDataSource" ref="dataSourceAdministrateur"/>
 		<property name="useGeometry" value="${validation.tm.geometry}"/>
 		<property name="inclusif" value="${validation.tm.inclusif}"/>
     </bean>
     
     <bean id="Export" scope="prototype"
-		class="fr.certu.chouette.ihm.ExportAction">
+		class="fr.certu.chouette.struts.export.ExportAction">
  		 <property name="exportManager" ref="exportManager"/>
  		 <property name="exportHorairesManager" ref="exportHorairesManager"/>
  		 <property name="exportCorrespondances" ref="exportCorrespondances"/>
@@ -632,20 +632,20 @@
     </bean> 
         
     <bean id="Deconnexion" scope="prototype"
-		class="fr.certu.chouette.ihm.DeconnexionAction">
+		class="fr.certu.chouette.struts.DeconnexionAction">
     </bean>
 
     <bean id="AProposDe" scope="prototype"
-		class="fr.certu.chouette.ihm.AProposDeAction">
+		class="fr.certu.chouette.struts.AProposDeAction">
  		 <property name="versionApplication" value="${applie.version}"/>		
     </bean>
     
     <bean id="RechercheHorairesDePassage" scope="prototype"
-		class="fr.certu.chouette.ihm.RechercheHorairesDePassageAction">
+		class="fr.certu.chouette.struts.RechercheHorairesDePassageAction">
     </bean>
     
     <bean id="RechercheItineraire" scope="prototype"
-		class="fr.certu.chouette.ihm.RechercheItineraireAction">
+		class="fr.certu.chouette.struts.RechercheItineraireAction">
     </bean>    
 
     <bean id="version" scope="prototype"
