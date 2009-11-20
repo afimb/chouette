@@ -18,6 +18,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 	public static final String CREATEANDEDIT = "createAndedit";
   public static final String LIST = "list";
   public static final String REDIRECTLIST = "redirectList";
+  public static final String REDIRECTEDIT = "redirectEdit";
+  public static final String SEARCH = "search";
 
 	protected Map            session;
 	protected Map            request;

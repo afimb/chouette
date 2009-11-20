@@ -1,99 +1,107 @@
+/****************************************************************/
+/*                         BASE                               	*/
+/****************************************************************/
+
 .checkboxlist
 {
-	display: table-column-group;
-	text-decoration: underline;
-	color: fuchsia;
+  display: table-column-group;
+  text-decoration: underline;
+  color: fuchsia;
 }
 
-BODY {
-	BACKGROUND-COLOR: #7B89A6;
-	TEXT-ALIGN: center;
-    FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
-    FONT-SIZE: 77%;
-    COLOR: #1A408B;
-	PADDING: 10px;
-}
-FORM {
-	PADDING: 0px;
-	MARGIN: 0px;
-}
-A {
-    COLOR: #1A408B;
-    TEXT-DECORATION: none;
-}
-A:hover {
-    TEXT-DECORATION: underline;
+BODY
+{
+  BACKGROUND-COLOR: #7B89A6;
+  TEXT-ALIGN: center;
+  FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
+  FONT-SIZE: 77%;
+  COLOR: #1A408B;
+  PADDING: 10px;
 }
 
-#global {
-	BACKGROUND-COLOR: #FFFFFF;
-	BORDER: 1px solid #1A408B;
-	MARGIN: auto;
-	PADDING: 10px;
+FORM
+{
+  PADDING: 0px;
+  MARGIN: 0px;
 }
 
-/* en-tête */
+A
+{
+  COLOR: #1A408B;
+  TEXT-DECORATION: none;
+}
+
+A:hover
+{
+  TEXT-DECORATION: underline;
+}
+
+#global
+{
+  BACKGROUND-COLOR: #FFFFFF;
+  BORDER: 1px solid #1A408B;
+  MARGIN: auto;
+  PADDING: 10px;
+}
+
+/****************************************************************/
+/*                         HEADER                             	*/
+/****************************************************************/
 #header {
-	TEXT-ALIGN: left;
+  TEXT-ALIGN: left;
 }
+
 #title {
-	FLOAT: left;
-    FONT-WEIGHT: bold;
+  FLOAT: left;
+  FONT-WEIGHT: bold;
 }
 
 
 #logoImg {
-	FLOAT: left;
-	vertical-align:top;	
-	margin:0px;
-	padding:0px;
+  FLOAT: left;
+  vertical-align:top;
+  margin:0px;
+  padding:0px;
 }
 #logoMedad {
-	
-	WIDTH:85px;
-	HEIGHT:108px;
-	vertical-align:top;
-	margin-top:0px;
-	PADDING: 0px;
+
+  WIDTH:85px;
+  HEIGHT:108px;
+  vertical-align:top;
+  margin-top:0px;
+  PADDING: 0px;
 }
 
 #logoCertu {
-	vertical-align:top;
-	margin-top:0px;
-	PADDING: 0px;
-	WIDTH:108px;
-	HEIGHT:108px;
+  vertical-align:top;
+  margin-top:0px;
+  PADDING: 0px;
+  WIDTH:108px;
+  HEIGHT:108px;
 }
 
-#logo {	
-	height:108px;
-	WIDTH: 500px;
-	BACKGROUND-COLOR: #657CB0;
-    COLOR: #FFFFFF;
-    PADDING: 10px;
-    
+#logo {
+  height:108px;
+  WIDTH: 500px;
+  BACKGROUND-COLOR: #657CB0;
+  COLOR: #FFFFFF;
+  PADDING: 10px;
+
 }
 
 #chouette {
-	FONT-WEIGHT: bolder;
-	FONT-SIZE: 140%;
+  FONT-WEIGHT: bolder;
+  FONT-SIZE: 140%;
 }
-	
-#definition {
-	FONT-SIZE: 110%;
-	}	
 
-#baseline {
-    PADDING: 10px;
-	MARGIN-LEFT: 100px;
-	WIDTH: 500px;
-	TEXT-ALIGN: center;
-	BACKGROUND-COLOR: #B0BCD6;
+#definition {
+  FONT-SIZE: 110%;
 }
+
 #tools {
     PADDING: 10px;
 	FLOAT: right;
-    FONT-WEIGHT: bold;	
+    FONT-WEIGHT: bold;
 }
 #tools UL {
 	LIST-STYLE: none;
@@ -104,331 +112,179 @@ A:hover {
 	DISPLAY: inline;
 }
 
+
+
+#baseline {
+  PADDING: 10px;
+  MARGIN-LEFT: 100px;
+  WIDTH: 500px;
+  TEXT-ALIGN: center;
+  BACKGROUND-COLOR: #B0BCD6;
+}
+
 /* zone principale */
 #main {
-	TEXT-ALIGN: left;
-	CLEAR: both;
-	PADDING-TOP: 15px;
+  TEXT-ALIGN: left;
+  CLEAR: both;
+  PADDING-TOP: 15px;
 }
 
 /* menu */
 #menu {
-	FLOAT: left;
-	WIDTH: 190px;
-	BORDER: 1px solid #B0BCD6;
-	TEXT-ALIGN: left;
-	PADDING: 2px;
+  FLOAT: left;
+  WIDTH: 190px;
+  BORDER: 1px solid #B0BCD6;
+  TEXT-ALIGN: left;
+  PADDING: 2px;
 }
 #menu .submenu {
-	MARGIN-BOTTOM: 30px;
+  MARGIN-BOTTOM: 30px;
 }
 #menu .submenu DIV {
-	FONT-SIZE: 120%;
-	PADDING-LEFT: 15px;
-	BACKGROUND-COLOR: #F2F3F8;
-	BORDER-BOTTOM: 1px solid #B0BCD6;
-	FONT-WEIGHT: bold;
+  FONT-SIZE: 120%;
+  PADDING-LEFT: 15px;
+  BACKGROUND-COLOR: #F2F3F8;
+  BORDER-BOTTOM: 1px solid #B0BCD6;
+  FONT-WEIGHT: bold;
 }
 #menu .submenu UL {
-	LIST-STYLE: none;
-	MARGIN: 0px 0px 0px 15px;
-	PADDING: 0px;
+  LIST-STYLE: none;
+  MARGIN: 0px 0px 0px 15px;
+  PADDING: 0px;
 }
 
 #menu .selectionne 
 {
-	font-weight: bold;
-	color: purple;
+  font-weight: bold;
+  color: purple;
 }
 
 /* autre */
 #help {
-	FLOAT: right;
+  FLOAT: right;
 }
 
 /* contenu */
 #content {
-	MARGIN-LEFT: 200px;
-	PADDING: 0px 20px 0px 20px;
+  MARGIN-LEFT: 200px;
+  PADDING: 0px 20px 0px 20px;
 }
 
 #content .selection {
-	BORDER: 1px solid #B0BCD6;
-	PADDING: 2px;
-	FONT-WEIGHT: bold;
-	FONT-SIZE: 120%;
+  BORDER: 1px solid #B0BCD6;
+  PADDING: 2px;
+  FONT-WEIGHT: bold;
+  FONT-SIZE: 120%;
 }
 #content .selection .selprinc {
-	BACKGROUND-COLOR: #FB9D1F;
-	PADDING: 2px 5px 10px 15px;
-	BORDER-BOTTOM: 1px solid #B0BCD6;
+  BACKGROUND-COLOR: #FB9D1F;
+  PADDING: 2px 5px 10px 15px;
+  BORDER-BOTTOM: 1px solid #B0BCD6;
 }
 #content .selection .selprinc SPAN {
-	COLOR: #FFFFFF;
+  COLOR: #FFFFFF;
 }
 #content .selection .selsec {
-	BACKGROUND-COLOR: #FBBE6D;
-	PADDING: 2px 5px 20px 15px;
+  BACKGROUND-COLOR: #FBBE6D;
+  PADDING: 2px 5px 20px 15px;
 }
 #content .selection .selsec SPAN {
-	FONT-WEIGHT: normal;
+  FONT-WEIGHT: normal;
 }
 
 #content H1 {
-	TEXT-ALIGN: center;
-	MARGIN: 20px 0px 20px 0px;
-	FONT-WEIGHT: bold;
-	FONT-SIZE: 120%;
-	COLOR: #5A73AB;
+  TEXT-ALIGN: center;
+  MARGIN: 20px 0px 20px 0px;
+  FONT-WEIGHT: bold;
+  FONT-SIZE: 120%;
+  COLOR: #5A73AB;
 }
 
 #content .options {
-	MARGIN-BOTTOM: 20px;
+  MARGIN-BOTTOM: 20px;
 }
 #content .options INPUT {
-	MARGIN-LEFT: 20px;
-	BORDER: 1px solid #FA980F;
-	BACKGROUND-COLOR: #FDDDB4;
-	FONT-SIZE: 100%;
-    FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
-    COLOR: #1A408B;
+  MARGIN-LEFT: 20px;
+  BORDER: 1px solid #FA980F;
+  BACKGROUND-COLOR: #FDDDB4;
+  FONT-SIZE: 100%;
+  FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
+  COLOR: #1A408B;
 }
 
 #content .tools {
-	TEXT-ALIGN: right;
-	FONT-WEIGHT: bold;
-	MARGIN-BOTTOM: 5px;
+  TEXT-ALIGN: right;
+  FONT-WEIGHT: bold;
+  MARGIN-BOTTOM: 5px;
 }
 #content .tools UL {
-	LIST-STYLE: none;
-	PADDING: 0px;
-	MARGIN: 0px;
+  LIST-STYLE: none;
+  PADDING: 0px;
+  MARGIN: 0px;
 }
 #content .tools LI {
-	MARGIN-LEFT: 10px;
-	DISPLAY: inline;
+  MARGIN-LEFT: 10px;
+  DISPLAY: inline;
 }
 
 #content .fullsize {
-	WIDTH: 100%;
+  WIDTH: 100%;
 }
 
 /* tableaux */
 #content TABLE {
-	BORDER-COLLAPSE: collapse;
-	FONT-SIZE: 100%;
-	BORDER: 1px solid #B0BCD6;
+  BORDER-COLLAPSE: collapse;
+  FONT-SIZE: 100%;
+  BORDER: 1px solid #B0BCD6;
 }
 #content TR {
-	BORDER-BOTTOM: 1px solid #B0BCD6;
+  BORDER-BOTTOM: 1px solid #B0BCD6;
 }
 #content TH {
-	FONT-WEIGHT: bold;
-	TEXT-ALIGN: left;
+  FONT-WEIGHT: bold;
+  TEXT-ALIGN: left;
 }
 #content TD {
-	PADDING: 2px;
+  PADDING: 2px;
 }
 
 #content .courses {
-	WIDTH: 100%;
-	TEXT-ALIGN: center;
+  WIDTH: 100%;
+  TEXT-ALIGN: center;
 }
 
 #content .shortcuts {
-	MARGIN-LEFT: 35px;
-	MARGIN-TOP: 5px;
-	FONT-SIZE: 93%;
-	FONT-WEIGHT: bold;
+  MARGIN-LEFT: 35px;
+  MARGIN-TOP: 5px;
+  FONT-SIZE: 93%;
+  FONT-WEIGHT: bold;
 }
 #content .shortcuts A {
-	COLOR: #FA9A12;
+  COLOR: #FA9A12;
 }
 #content .shortcuts UL {
-	LIST-STYLE: none;
-	PADDING: 0px;
-	MARGIN: 0px;
+  LIST-STYLE: none;
+  PADDING: 0px;
+  MARGIN: 0px;
 }
 #content .shortcuts LI {
-	DISPLAY: inline;
+  DISPLAY: inline;
 }
 
 /* pied de page */
 #foot {
-	CLEAR: both;
+  CLEAR: both;
 }
 
-/****************************************************************/
-/*	Css des tableaux pour struts displaytag 					*/
-/****************************************************************/
-
-/* DISPLAY TAG TABLEAU ------------------------------------------------ */
-
-#displaytag TABLE {
-	border: 1px solid #666;
-	width: 75%;
-	margin: 20px 0 2px 0 !important;
-	border-collapse: separate;
-}
-
-#displaytag TH,TD {
-	padding: 2px 4px 2px 4px !important;
-	text-align: center;
-	vertical-align: middle;
-}
-
-#displaytag THEAD TR {
-	background-color: #fc0;
-}
-
-#displaytag th.sorted {
-	background-color: orange;
-}
-
-#displaytag th a,th a:visited {
-	color: black;
-}
-
-#displaytag th a:hover {
-	text-decoration: underline;
-	color: black;
-}
-
-#displaytag th.sorted a,th.sortable a {
-	background-position: right;
-	background-repeat: no-repeat;
-	display: block;
-	width: 100%;
-}
-
-#displaytag th.sortable a {
-	background-image: url(../images/arrow_off.png);
-}
-
-#displaytag th.order1 a {
-	background-image: url(../images/arrow_down.png);
-}
-
-#displaytag th.order2 a {
-	background-image: url(../images/arrow_up.png);
-}
-
-#displaytag tr.even {
-	background-color: #fea
-}
-
-#displaytag tr.odd {
-	background-color: #fff
-}
-
-#displaytag tr.selected {
-	background-color: #aaddff;
-}
-
-#displaytag tr.even td input {
-	background-color: #fea;
-	border:none; 
-	width:50px;
-	padding-left:2px;
-	padding-right:2px;
-	text-align:center;
-}
-
-#displaytag tr.odd td input {
-	background-color: #fff;
-	border:none; 
-	width:50px;
-	padding-left:2px;
-	padding-right:2px;
-	text-align:center;	
-}
-
-#displaytag tr.even td.enCoursDEdition {
-	background-color:#aaddff;
-}
-
-#displaytag tr.odd td.enCoursDEdition {
-	background-color:#aaddff;
-}
-
-#displaytag tr.even td.enCoursDEdition input {
-	background-color:white;
-}
-
-#displaytag tr.odd td.enCoursDEdition input {
-	background-color:white;
-}
-
-/* FIN DISPLAY TAG TABLEAU ------------------------------------------------ */
-
-#displaytag div.exportlinks {
-	background-color: #eee;
-	border: 1px dotted #999;
-	padding: 2px 4px 2px 4px;
-	margin: 2px 0 10px 0;
-	width: 79%;
-}
-
-#displaytag span.export {
-	padding: 0 4px 1px 20px;
-	display: inline;
-	display: inline-block;
-	cursor: pointer;
-}
-
-#displaytag span.excel {
-	background-image: url(../images/ico_file_excel.png);
-}
-
-#displaytag span.csv {
-	background-image: url(../images/ico_file_csv.png);
-}
-
-#displaytag span.xml {
-	background-image: url(../images/ico_file_xml.png);
-}
-
-#displaytag span.pdf {
-	background-image: url(../images/ico_file_pdf.png);
-}
-
-#displaytag span.rtf {
-	background-image: url(../images/ico_file_rtf.png);
-}
-
-#displaytag span.pagebanner {
-	background-color: #eee;
-	border: 1px dotted #999;
-	padding: 2px 4px 2px 4px;
-	width: 79%;
-	margin-top: 10px;
-	display: block;
-	border-bottom: none;
-}
-
-#displaytag span.pagelinks {
-	background-color: #eee;
-	border: 1px dotted #999;
-	padding: 2px 4px 2px 4px;
-	width: 79%;
-	display: block;
-	border-top: none;
-	margin-bottom: -5px;
-}
-
-#displaytag td.itineraire
-{
-	border-bottom: 1px solid red !important;
-}
 
 /****************************************************************/
 /*	Css pour l'édition d'un tableau de marche					*/
 /****************************************************************/ 
 .editTableauMarche UL, LI
 {
-	list-style: none;
-	list-style-type: none;
-	text-align: left;	
+  list-style: none;
+  list-style-type: none;
+  text-align: left;
 }
 
 /****************************************************************/
@@ -474,7 +330,7 @@ A:hover {
 #connectionLinkForm .stop_areas_auto_complete_list ul { padding: 0; margin: 0; }
 #connectionLinkForm .stop_areas_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
 #connectionLinkForm .stop_areas_auto_complete_list li.selected { background-color: #FFE4FB; }
-		
+
 /****************************************************************/
 /*	Css pour liste de des zones									*/
 /****************************************************************/ 
@@ -485,147 +341,308 @@ A:hover {
 #positionGeographiqueFatherForm .positionGeographiques_auto_complete_list ul { padding: 0; margin: 0; }
 #positionGeographiqueFatherForm .positionGeographiques_complete_list li { list-style-type: none; padding: 0; margin: 0; }
 #positionGeographiqueFatherForm .positionGeographiques_auto_complete_list li.selected { background-color: #FFE4FB; }		
-	
+
 #positionGeographiqueChildForm img { position:relative; top:4px; right: 3px; }
 #positionGeographiqueChildForm {padding: 1em; }
 #positionGeographiqueChildForm .positionGeographiques_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
 #positionGeographiqueChildForm .positionGeographiques_auto_complete_list ul { padding: 0; margin: 0; }
 #positionGeographiqueChildForm .positionGeographiques_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
 #positionGeographiqueChildForm .positionGeographiques_auto_complete_list li.selected { background-color: #FFE4FB; }		
-			
+
 /****************************************************************/
 /*	Css pour le tableau des horaires							*/
 /****************************************************************/ 		
 #horairesCourses TABLE {
-	border: 1px solid #666;
-	width: 80%;
-	margin: 20px 0 2px 0 !important;
+  border: 1px solid #666;
+  width: 80%;
+  margin: 20px 0 2px 0 !important;
 }
 
 #horairesCourses TH,TD {
-	padding: 2px 4px 2px 4px !important;
-	text-align: center;
-	vertical-align: top;
+  padding: 2px 4px 2px 4px !important;
+  text-align: center;
+  vertical-align: top;
 }
 
 #horairesCourses THEAD TR {
-	background-color: #fc0;
+  background-color: #fc0;
 }
 
 #horairesCourses INPUT {
-	width: 75px;
-	min-width: 75px;
-	text-align: center;
+  width: 75px;
+  min-width: 75px;
+  text-align: center;
 }
 
 #horairesCourses LI 
 {
-	height: 25px;
-	min-height: 25px; 
-	display : list-item;
-	list-style-image : none;
+  height: 25px;
+  min-height: 25px;
+  display : list-item;
+  list-style-image : none;
  	list-style-position: outside;
  	list-style: none;
  	list-style-type: none;
 }
-	
+
 #horairesCourses OL 
 {
-	padding: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
 
 /****************************************************************/
 /*	Css pour le tableau de la pagination						*/
 /****************************************************************/ 	
 #pagination TABLE {
-	border: 0px;
+  border: 0px;
 }
 
 #pagination TH,TD {
-	padding: 1px 2px 1px 2px !important;
-	text-align: center;
-	vertical-align: middle;
+  padding: 1px 2px 1px 2px !important;
+  text-align: center;
+  vertical-align: middle;
 }
 
-		
+
 /****************************************************************/
 /*	Css pour les messages et les erreurs						*/
 /****************************************************************/ 		
 .message
 {
-	color: green;
-	font-weight: bold;
-	list-style: none;
-	list-style-type: none;
+  color: green;
+  font-weight: bold;
+  list-style: none;
+  list-style-type: none;
 }
 
 .erreur
 {
-	color: red;
-	font-weight: bold;
-	list-style: none;
-	list-style-type: none;
+  color: red;
+  font-weight: bold;
+  list-style: none;
+  list-style-type: none;
 }
 
 .panelData  {
-	FONT-SIZE: 120%;
-	PADDING-LEFT: 15px;
-	BACKGROUND-COLOR: #F2F3F8;
-	BORDER-BOTTOM: 1px solid #B0BCD6;
-	FONT-WEIGHT: bold;
-	MARGIN-TOP: 2px;
+  FONT-SIZE: 120%;
+  PADDING-LEFT: 15px;
+  BACKGROUND-COLOR: #F2F3F8;
+  BORDER-BOTTOM: 1px solid #B0BCD6;
+  FONT-WEIGHT: bold;
+  MARGIN-TOP: 2px;
 }
 
 .panelDataSection  {
-	FONT-SIZE: 100%;
-	PADDING-LEFT: 20px;
-	BACKGROUND-COLOR: #FaFaFa;
-	MARGIN-TOP: 10px;
-	MARGIN-LEFT: 0px;
-	MARGIN-RIGHT: 0px;
-	MARGIN-BOTTOM: 0px;	
-	BORDER-LEFT: 1px solid #B0BCD6;
-	BORDER-RIGHT: 1px solid #B0BCD6;
-	BORDER-TOP: 1px solid #B0BCD6;
-	FONT-WEIGHT: bold;
+  FONT-SIZE: 100%;
+  PADDING-LEFT: 20px;
+  BACKGROUND-COLOR: #FaFaFa;
+  MARGIN-TOP: 10px;
+  MARGIN-LEFT: 0px;
+  MARGIN-RIGHT: 0px;
+  MARGIN-BOTTOM: 0px;
+  BORDER-LEFT: 1px solid #B0BCD6;
+  BORDER-RIGHT: 1px solid #B0BCD6;
+  BORDER-TOP: 1px solid #B0BCD6;
+  FONT-WEIGHT: bold;
 }
 
 .panelDataInnerForm {
-	border: 0px solid #666;
-	width: 80%;
-	margin: 2px 0 2px 0 !important;
+  border: 0px solid #666;
+  width: 80%;
+  margin: 2px 0 2px 0 !important;
 }
 
 .panel  {
-	FONT-SIZE: 100%;
-	PADDING-LEFT: 20px;
-	BACKGROUND-COLOR: #FFFFFF;
-	MARGIN-TOP: 0px;
-	MARGIN-LEFT: 0px;
-	MARGIN-RIGHT: 0px;
-	MARGIN-BOTTOM: 2px;
-	BORDER: 1px solid #B0BCD6;
+  FONT-SIZE: 100%;
+  PADDING-LEFT: 20px;
+  BACKGROUND-COLOR: #FFFFFF;
+  MARGIN-TOP: 0px;
+  MARGIN-LEFT: 0px;
+  MARGIN-RIGHT: 0px;
+  MARGIN-BOTTOM: 2px;
+  BORDER: 1px solid #B0BCD6;
 }
 
 .actions  {
-	FONT-SIZE: 100%;
-	PADDING-LEFT: 20px;
-	BACKGROUND-COLOR: #FFFFFF;
-	MARGIN-TOP: 5px;
-	MARGIN-LEFT: 5px;
-	MARGIN-RIGHT: 5px;
-	MARGIN-BOTTOM: 5px;
+  FONT-SIZE: 100%;
+  PADDING-LEFT: 20px;
+  BACKGROUND-COLOR: #FFFFFF;
+  MARGIN-TOP: 5px;
+  MARGIN-LEFT: 5px;
+  MARGIN-RIGHT: 5px;
+  MARGIN-BOTTOM: 5px;
 }
 
 .errorMessage {
-	COLOR: red;
-	FONT-WEIGHT: bold;
-	}
-	
+  COLOR: red;
+  FONT-WEIGHT: bold;
+}
+
 /****************************************************************/
 /*	Css pour les input											*/
 /****************************************************************/ 			
 .texteNonEditable
 {
-	background-color: #dcdcdc;	
-}			
+  background-color: #dcdcdc;
+}
+
+/****************************************************************/
+/*                         DISPLAYTAG                          	*/
+/****************************************************************/
+
+#displaytag TABLE {
+  border: 1px solid #666;
+  width: 75%;
+  margin: 20px 0 2px 0 !important;
+  border-collapse: separate;
+}
+
+#displaytag TH,TD {
+  padding: 2px 4px 2px 4px !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#displaytag THEAD TR {
+  background-color: #fc0;
+}
+
+#displaytag th.sorted {
+  background-color: orange;
+}
+
+#displaytag th a,th a:visited {
+  color: black;
+}
+
+#displaytag th a:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+#displaytag th.sorted a,th.sortable a {
+  background-position: right;
+  background-repeat: no-repeat;
+  display: block;
+  width: 100%;
+}
+
+#displaytag th.sortable a {
+  background-image: url(../images/arrow_off.png);
+}
+
+#displaytag th.order1 a {
+  background-image: url(../images/arrow_down.png);
+}
+
+#displaytag th.order2 a {
+  background-image: url(../images/arrow_up.png);
+}
+
+#displaytag tr.even {
+  background-color: #fea
+}
+
+#displaytag tr.odd {
+  background-color: #fff
+}
+
+#displaytag tr.selected {
+  background-color: #aaddff;
+}
+
+#displaytag tr.even td input {
+  background-color: #fea;
+  border:none;
+  width:50px;
+  padding-left:2px;
+  padding-right:2px;
+  text-align:center;
+}
+
+#displaytag tr.odd td input {
+  background-color: #fff;
+  border:none;
+  width:50px;
+  padding-left:2px;
+  padding-right:2px;
+  text-align:center;
+}
+
+#displaytag tr.even td.enCoursDEdition {
+  background-color:#aaddff;
+}
+
+#displaytag tr.odd td.enCoursDEdition {
+  background-color:#aaddff;
+}
+
+#displaytag tr.even td.enCoursDEdition input {
+  background-color:white;
+}
+
+#displaytag tr.odd td.enCoursDEdition input {
+  background-color:white;
+}
+
+#displaytag div.exportlinks {
+  background-color: #eee;
+  border: 1px dotted #999;
+  padding: 2px 4px 2px 4px;
+  margin: 2px 0 10px 0;
+  width: 79%;
+}
+
+#displaytag span.export {
+  padding: 0 4px 1px 20px;
+  display: inline;
+  display: inline-block;
+  cursor: pointer;
+}
+
+#displaytag span.excel {
+  background-image: url(../images/ico_file_excel.png);
+}
+
+#displaytag span.csv {
+  background-image: url(../images/ico_file_csv.png);
+}
+
+#displaytag span.xml {
+  background-image: url(../images/ico_file_xml.png);
+}
+
+#displaytag span.pdf {
+  background-image: url(../images/ico_file_pdf.png);
+}
+
+#displaytag span.rtf {
+  background-image: url(../images/ico_file_rtf.png);
+}
+
+#displaytag span.pagebanner {
+  background-color: #eee;
+  border: 1px dotted #999;
+  padding: 2px 4px 2px 4px;
+  width: 79%;
+  margin-top: 10px;
+  display: block;
+  border-bottom: none;
+}
+
+#displaytag span.pagelinks {
+  background-color: #eee;
+  border: 1px dotted #999;
+  padding: 2px 4px 2px 4px;
+  width: 79%;
+  display: block;
+  border-top: none;
+  margin-bottom: -5px;
+}
+
+#displaytag td.itineraire
+{
+  border-bottom: 1px solid red !important;
+}
+
+

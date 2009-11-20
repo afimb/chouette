@@ -295,48 +295,6 @@
       <result name="input">/jsp/{1}/edit.jsp</result>
     </action>
 
-	<!-- Ajout d'une donnée du modèle liée à l'itinéraire -->
-    <action name="creer_*_sur_son_itineraire" class="{1}" method="update">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_HorairesDePassage</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idLigne">${idLigne}</param>
-        <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
-        <param name="page">${page}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-	<!-- Annulation d'une modification d'une donnée du modèle liée à l'itinéraire -->
-    <action name="annuler_*_sur_son_itineraire" class="{1}" method="cancel">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_HorairesDePassage</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idLigne">${idLigne}</param>
-        <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
-        <param name="page">${page}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-	<!-- Suppression d'une donnée du modèle liée à l'itinéraire -->
-    <action name="supprimer_*_sur_son_itineraire" class="{1}" method="delete">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_HorairesDePassage</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idLigne">${idLigne}</param>
-        <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
-        <param name="page">${page}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
 	<!-- Association d'un tableau de marche liée à l'itinéraire -->
     <action name="creerAssociationTableauMarche" class="Course" method="creerAssociationTableauMarche">
       <interceptor-ref name="crudStack"></interceptor-ref>
@@ -372,28 +330,7 @@
       </result>
     </action>
 
-    <action name="PositionGeographique_*" class="PositionGeographique" method="{1}">
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_PositionGeographique</param>
-        <param name="typePositionGeographique">${typePositionGeographique}</param>
-      </result>
-      <result name="createAndEdit" type="redirectAction">
-        <param name="actionName">createAndEdit_PositionGeographique</param>
-        <param name="typePositionGeographique">${typePositionGeographique}</param>
-      </result>
-      <result name="loadedit" type="redirectAction">
-        <param name="actionName">PositionGeographique_edit</param>
-        <param name="idPositionGeographique">${positionGeographique.id}</param>
-      </result>
-      <result name="results" >
-			/jsp/PositionGeographique/search.jsp
-      </result>
-      <result name="input">/jsp/PositionGeographique/edit.jsp</result>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <interceptor-ref name="store">
-        <param name="operationMode">STORE</param>
-      </interceptor-ref>
-    </action>
+
 
 	<!-- Recherche d'une donnée -->
     <action name="search_*" class="{1}" method="search">
@@ -426,9 +363,32 @@
       <result name="error">/jsp/linesComparaison.jsp</result>
     </action>
 
+  <action name="PositionGeographique_*" class="PositionGeographique" method="{1}">
+    <result name="success" type="redirectAction">
+      <param name="actionName">liste_PositionGeographique</param>
+      <param name="typePositionGeographique">${typePositionGeographique}</param>
+    </result>
+    <result name="createAndEdit" type="redirectAction">
+      <param name="actionName">createAndEdit_PositionGeographique</param>
+      <param name="typePositionGeographique">${typePositionGeographique}</param>
+    </result>
+    <result name="loadedit" type="redirectAction">
+      <param name="actionName">PositionGeographique_edit</param>
+      <param name="idPositionGeographique">${positionGeographique.id}</param>
+    </result>
+    <result name="results" >
+			/jsp/PositionGeographique/search.jsp
+    </result>
+    <result name="input">/jsp/PositionGeographique/edit.jsp</result>
+    <interceptor-ref name="crudStack"></interceptor-ref>
+    <interceptor-ref name="store">
+      <param name="operationMode">STORE</param>
+    </interceptor-ref>
+  </action>
+
   </package>
 
-  <!-- Mise à jour des données du modèle Réseau -->
+  <!-- Mise à jour des données du modèle Network -->
   <package name="network" extends="struts" namespace="/network">
     <action name="*" method="{1}" class='fr.certu.chouette.struts.network.NetworkAction'>
       <result name="redirectList" type="redirectAction">
@@ -441,7 +401,7 @@
     </action>
   </package>
 
-  <!-- Mise à jour des données du modèle Ligne -->
+  <!-- Mise à jour des données du modèle Line -->
   <package name="line" extends="struts" namespace="/line">
     <action name="*" method="{1}" class='fr.certu.chouette.struts.line.LineAction'>
       <result name="redirectList" type="redirectAction">
@@ -454,7 +414,7 @@
     </action>
   </package>
 
-  <!-- Mise à jour des données du modèle Transporteur -->
+  <!-- Mise à jour des données du modèle Company -->
   <package name="company" extends="struts" namespace="/company">
     <action name="*" method="{1}" class='fr.certu.chouette.struts.company.CompanyAction'>
       <result name="redirectList" type="redirectAction">
@@ -480,9 +440,74 @@
       </result>
       <result name="input" type="redirectAction">
         <param name="actionName">list</param>
-        <param name="namespace">/%{origin}</param>
+        <param name="namespace">/${origin}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
+    </action>
+  </package>
+
+
+  <!-- Mise à jour des données du modèle ITL -->
+  <package name="itl" extends="struts" namespace="/itl">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.ITLAction'>
+      <result name="redirectEdit" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="operationMode">RETRIEVE</param>
+        <param name="idItl">${idItl}</param>
+      </result>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/ITL/edit.jsp</result>
+      <result name="list">/jsp/ITL/list.jsp</result>
+      <result name="input" >/jsp/ITL/edit.jsp</result>
+    </action>
+  </package>
+
+    <!-- Mise à jour des données du modèle Itineraires -->
+  <package name="itinerary" extends="struts" namespace="/itinerary">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.itineraire.ItineraireAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/itinerary/edit.jsp</result>
+      <result name="list">/jsp/itinerary/list.jsp</result>
+      <result name="input" >/jsp/itinerary/edit.jsp</result>
+    </action>
+  </package>
+
+    <!-- Mise à jour des données du modèle Stoppoint -->
+  <package name="stoppoint" extends="struts" namespace="/stoppoint">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.PositionGeographiqueAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="${idPositionGeographique}">${idPositionGeographique}</param>
+        <param name="typePositionGeographique">${typePositionGeographique}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/stoppoint/edit.jsp</result>
+      <result name="list">/jsp/stoppoint/list.jsp</result>
+      <result name="input" >/jsp/stoppoint/edit.jsp</result>
+      <result name="search" >/jsp/stoppoint/search.jsp</result>
+    </action>
+  </package>
+
+    <!-- Mise à jour des données du modèle Stoparea -->
+  <package name="stoparea" extends="struts" namespace="/stoparea">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.PositionGeographiqueAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="${idPositionGeographique}">${idPositionGeographique}</param>
+        <param name="typePositionGeographique">${typePositionGeographique}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/stoparea/edit.jsp</result>
+      <result name="list">/jsp/stoparea/list.jsp</result>
+      <result name="input" >/jsp/stoparea/edit.jsp</result>
+      <result name="search" >/jsp/stoparea/search.jsp</result>
     </action>
   </package>
 
