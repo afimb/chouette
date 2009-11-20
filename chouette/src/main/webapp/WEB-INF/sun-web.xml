@@ -5,7 +5,7 @@
  Use is subject to license terms.
 -->
 <sun-web-app error-url="">
-  <context-root>/chouette</context-root>
+  <context-root>/</context-root>
   <security-role-mapping>
     <role-name>chouette-role</role-name>
     <group-name>chouette-group</group-name>
