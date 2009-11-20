@@ -28,7 +28,6 @@ public class LineAction extends GeneriqueAction implements ModelDriven, Preparab
   private static IReseauManager reseauManager;
   private Long idLigne;
   private String mappedRequest;
-  private String typeLigne;
   private String useAmivif;
   private boolean detruireAvecTMs;
   private boolean detruireAvecArrets;
@@ -245,11 +244,6 @@ public class LineAction extends GeneriqueAction implements ModelDriven, Preparab
   public void setTransporteurs(List<Transporteur> transporteurs)
   {
     this.companies = transporteurs;
-  }
-
-  public void setTypeLigne(String typeLigne)
-  {
-    this.typeLigne = typeLigne;
   }
 
   public String getUseAmivif()

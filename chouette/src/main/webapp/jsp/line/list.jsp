@@ -32,7 +32,7 @@
                headerKey=""
                headerValue="%{getText('filtre.transporteur.dropDownListItem.tous')}" />
 
-    <s:textfield name="nomLigne" label="%{getText('filtre.select.nomLigne')}"></s:textfield>
+    <s:textfield name="name" label="%{getText('filtre.select.nomLigne')}"></s:textfield>
 
     <s:submit value="%{getText('action.filtrer')}"/>
 
