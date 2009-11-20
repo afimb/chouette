@@ -576,7 +576,7 @@
     </bean>  
     
     <bean id="ITL" scope="prototype" class="fr.certu.chouette.struts.ITLAction">
-		 <property name="manager" ref="itlManager"/>	
+		 <property name="itlManager" ref="itlManager"/>
 		 <property name="ligneManager" ref="ligneManager"/>
 		 <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>	 
     </bean>

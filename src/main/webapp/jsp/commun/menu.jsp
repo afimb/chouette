@@ -28,13 +28,13 @@
 			<li><s:a href="%{urlTableauMarchesMenu}" id="tableauMarchesMenu"><s:text name="text.tableauMarches"/></s:a></li>
 
 			<%-- Arrets physiques --%>
-			<s:url id="urlArretPhysiquesMenu" action="liste_PositionGeographique" includeParams="none">
+			<s:url id="urlArretPhysiquesMenu" value="/stoppoint/list" includeParams="none">
 				<s:param name="typePositionGeographique">arretPhysique</s:param>
 			</s:url>			
 			<li><s:a href="%{urlArretPhysiquesMenu}" id="arretPhysiquesMenu"><s:text name="text.arretPhysiques"/></s:a></li>
 
 			<%-- Zones --%>			
-			<s:url id="urlZonesMenu" action="liste_PositionGeographique" includeParams="none">
+			<s:url id="urlZonesMenu" value="/stoparea/list" includeParams="none">
 				<s:param name="typePositionGeographique">zone</s:param>
 			</s:url>			
 			<li><s:a href="%{urlZonesMenu}" id="zonesMenu"><s:text name="text.zones"/></s:a></li>
@@ -44,7 +44,7 @@
 			<li><s:a href="%{urlCorrespondancesMenu}" id="correspondancesMenu"><s:text name="text.correspondances"/></s:a></li>
 
 			<%-- ITL --%>	
-			<s:url id="urlITLMenu" action="liste_ITL" includeParams="none"/>
+			<s:url id="urlITLMenu" value="/itl/list" includeParams="none"/>
 			<li><s:a href="%{urlITLMenu}" id="ITLMenu"><s:text name="text.ITL"/></s:a></li>
 
 			<%-- Import --%>	

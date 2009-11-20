@@ -12,6 +12,7 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 
 public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau>, Preparable
 {
+
   private static final Log log = LogFactory.getLog(NetworkAction.class);
   private Reseau networkModel = new Reseau();
   private static IReseauManager reseauManager;
@@ -28,6 +29,9 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     this.idReseau = idReseau;
   }
 
+  /********************************************************
+   *                  MODEL + PREPARE                     *
+   ********************************************************/
   @Override
   public Reseau getModel()
   {
@@ -47,6 +51,9 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     }
   }
 
+  /********************************************************
+   *                           CRUD                       *
+   ********************************************************/
   @SkipValidation
   public String list()
   {
@@ -61,7 +68,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     setMappedRequest(SAVE);
     return EDIT;
   }
-  
+
   @VisitorFieldValidator(message = "Default message", fieldName = "model", appendPrefix = false)
   public String save()
   {
@@ -96,11 +103,6 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     return REDIRECTLIST;
   }
 
-  public void setReseauManager(IReseauManager reseauManager)
-  {
-    NetworkAction.reseauManager = reseauManager;
-  }
-
   @SkipValidation
   public String cancel()
   {
@@ -108,6 +110,24 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     return REDIRECTLIST;
   }
 
+  @Override
+  @SkipValidation
+  public String input() throws Exception
+  {
+    return INPUT;
+  }
+
+  /********************************************************
+   *                        MANAGER                       *
+   ********************************************************/
+  public void setReseauManager(IReseauManager reseauManager)
+  {
+    NetworkAction.reseauManager = reseauManager;
+  }
+
+  /********************************************************
+   *                   METHOD ACTION                      *
+   ********************************************************/
   // this prepares command for button on initial screen write
   public void setMappedRequest(String actionMethod)
   {
@@ -124,5 +144,4 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   {
     return mappedRequest;
   }
-  
 }
