@@ -3,7 +3,7 @@
 
 <%-- Titre et barre de navigation --%>	
 <title><s:text name="text.reseau.list.title" /></title>
-<s:url id="urlReseaux" value="/network/list" includeParams="none"/>
+<s:url id="urlReseaux" action="list" namespace="/network" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.reseau.list.title'), '', #urlReseaux)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
@@ -11,7 +11,7 @@
 <br>
 <%-- Ajouter réseau --%>
 <div>
-  <s:url value="/network/add" id="ajoutReseau"/>
+  <s:url action="add" namespace="/network" id="ajoutReseau"/>
   <s:a href="%{ajoutReseau}"><b><s:text name="text.reseau.create.button"/></b></s:a>
 </div>
 <br>
@@ -19,14 +19,14 @@
 <div id="displaytag"> 
   <display:table name="reseaux" sort="list" pagesize="20" requestURI="" id="reseau" export="false">
     <display:column title="Action" sortable="false">
-      <s:url id="removeUrl" value="/network/delete">
+      <s:url id="removeUrl" action="delete" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
-      <s:url id="editUrl" value="/network/edit">
+      <s:url id="editUrl" action="edit" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
       </s:url>
-      <s:url id="exportsChouettes" value="/export/exportsChouettes">
+      <s:url id="exportsChouettes" action="exportsChouettes" namespace="/export">
         <s:param name="idReseau">${reseau.id}</s:param>
         <s:param name="origin">network</s:param>
       </s:url>

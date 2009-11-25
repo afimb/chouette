@@ -2,17 +2,17 @@
 <s:include value="/jsp/commun/jscalendar.jsp"></s:include>
 
 <%-- Titre et barre de navigation --%>
-<s:url id="network_edit" action="edit" namespace="/reseau">
+<s:url id="networkEdit" action="edit" namespace="/network">
   <s:param name="idReseau" value="%{id}"/>
 </s:url>
 
 <s:if test="id != null">
   <title><s:text name="text.reseau.update.title" /></title>
-  <s:property value="filAriane.addElementFilAriane(getText('text.reseau.update.title'), '', #network_edit)"/>
+  <s:property value="filAriane.addElementFilAriane(getText('text.reseau.update.title'), '', #networkEdit)"/>
 </s:if> 
 <s:else>
   <title><s:text name="text.reseau.create.title" /></title>
-  <s:property value="filAriane.addElementFilAriane(getText('text.reseau.create.title'), '', #network_edit)"/>
+  <s:property value="filAriane.addElementFilAriane(getText('text.reseau.create.title'), '', #networkEdit)"/>
 </s:else>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
@@ -20,7 +20,7 @@
 <br>
 
 <%-- Formulaire --%>	
-<s:form id="network_form">
+<s:form id="network_form" validate="true">
   <s:hidden name="idReseau" value="%{id}" />
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
@@ -48,7 +48,7 @@
   <tr>
     <td colspan="2">
       <s:if test="id != null">
-        <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.update" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
       </s:if>
       <s:else>
         <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>

@@ -20,16 +20,16 @@
 <br>	
 <div class="panelDataSection"><s:text name="connectionlink"/></div>
 <div class="panel">
-  <s:form validate="true" id="connectionLinkForm"  action="crud_Correspondance!update">
+  <s:form id="connectionLinkForm"  namespace="/correspondance">
     <s:hidden name="idCorrespondance" value="%{id}"/>
     <s:hidden name="operationMode" value="STORE" />
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
     <s:textfield key="connectionlink.name" name="name" required="true"/>
     <s:textfield key="connectionlink.comment" name="comment" required="false"/>
-    <s:textfield maxlength="5" id="defaultDuration" name="defaultDuration" key="defaultDuration" value="%{strutsDefaultDuration}" required="false"/>
-    <s:textfield maxlength="5" id="mobilityRestrictedTravellerDuration" key="mobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" required="false"/>
-    <s:textfield maxlength="5" id="occasionalTravellerDuration" key="occasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" required="false"/>
-    <s:textfield maxlength="5" id="frequentTravellerDuration" key="frequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" required="false"/>
+    <s:textfield maxlength="5" key="connectionlink.defaultDuration" name="defaultDuration" value="%{strutsDefaultDuration}" required="false"/>
+    <s:textfield maxlength="5" key="connectionlink.mobilityRestrictedTravellerDuration" name="mobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" required="false"/>
+    <s:textfield maxlength="5" key="connectionlink.occasionalTravellerDuration" name="occasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" required="false"/>
+    <s:textfield maxlength="5" key="connectionlink.frequentTravellerDuration" name="frequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" required="false"/>
     <s:select emptyOption="false" key="connectionlink.linkType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getConnectionLinkTypeEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     <s:select emptyOption="false" key="connectionlink.liftAvailability" name="liftAvailability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="liftAvailability"/>
     <s:select emptyOption="false" key="connectionlink.mobilityRestrictedSuitability" name="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="mobilityRestrictedSuitability"/>
@@ -40,12 +40,12 @@
     <tr>
       <td colspan="2">
         <s:if test="id != null">
-          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
+          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"  validate="true"/>
         </s:if>
         <s:else>
-          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"  validate="true"/>
         </s:else>
-        <s:submit key="action.cancel" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
       </td>
     </tr>
 

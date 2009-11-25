@@ -21,26 +21,23 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 
 public class CorrespondanceAction extends GeneriqueAction implements ModelDriven<Correspondance>, Preparable
 {
-
   private static final Log log = LogFactory.getLog(CorrespondanceAction.class);
   private static ICorrespondanceManager correspondanceManager;
   private static IPositionGeographiqueManager positionGeographiqueManager;
   private String useHastus;
-  private List<Correspondance> correspondances;
   private Long idCorrespondance;
-  private String zoneDepartText;
-  private String zoneArriveeText;
-  private String saisieZoneExistante;
-  private String saisieZoneExistanteKey;
-  private List<PositionGeographique> zones;
   private PositionGeographique criteria;
   private PositionGeographique start;
   private PositionGeographique end;
   private String actionSuivante;
   private Long idPositionGeographique;
-  private List<PositionGeographique> positionGeographiquesResultat;
   private String durationsFormat = "mm:ss";
   private Correspondance correspondanceModel = new Correspondance();
+
+  public void setCorrespondanceModel(Correspondance correspondanceModel)
+  {
+    this.correspondanceModel = correspondanceModel;
+  }
   private String mappedRequest;
 
   public Long getIdCorrespondance()
@@ -66,7 +63,6 @@ public class CorrespondanceAction extends GeneriqueAction implements ModelDriven
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
-  @Override
   public Correspondance getModel()
   {
     return correspondanceModel;
@@ -203,7 +199,7 @@ public class CorrespondanceAction extends GeneriqueAction implements ModelDriven
     {
       criteria.setCountryCode(null);
     }
-    positionGeographiquesResultat = positionGeographiqueManager.select(new AndClause().add(ScalarClause.newIlikeClause("name", criteria.getName())).
+    List<PositionGeographique> positionGeographiquesResultat = positionGeographiqueManager.select(new AndClause().add(ScalarClause.newIlikeClause("name", criteria.getName())).
             add(ScalarClause.newIlikeClause("countryCode", criteria.getCountryCode())).
             add(VectorClause.newInClause("areaType", areas)));
 
