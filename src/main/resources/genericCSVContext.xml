@@ -8,10 +8,9 @@ xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.sprin
 
     <bean id="lecteurCSVPrincipal"
     		class="fr.certu.chouette.service.importateur.multilignes.genericcsv.LecteurCSVPrincipal">
-        <property name="repertoire" value="."/><!--
+        <property name="repertoire" value="."/>
         <property name="separateur" value="${csv.field.separator}"/>
-        --><property name="colonneDesTitres" value="7"/>
-        <property name="separateur" value=";"/>
+        <property name="colonneDesTitres" value="7"/>
         <property name="lecteurCalendrier" ref="lecteurExcelTableauMarche"/>
         <property name="lecteurReseau" ref="lecteurExcelReseau"/>
         <property name="lecteurTransporteur" ref="lecteurExcelTransporteur"/>
