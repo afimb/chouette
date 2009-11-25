@@ -19,7 +19,8 @@
 <!-- ==========================================================================	-->
 <!-- 01/10/2004|Marc FLORISSON  | Creation										-->
 <!-- ==========================================================================	-->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trident.org/schema/trident" xmlns:trd="http://www.trident.org/schema/trident" targetNamespace="http://www.trident.org/schema/trident" elementFormDefault="qualified" version="1.00">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trident.org/schema/trident" xmlns:trd="http://www.trident.org/schema/trident" 
+  targetNamespace="http://www.trident.org/schema/trident" elementFormDefault="qualified" version="1.00">
 	<xsd:annotation>
 		<xsd:documentation xml:lang="en">
 TRIDENT exchange schema.
