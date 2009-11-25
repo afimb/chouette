@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- Titre et barre de navigation --%>
-<s:url id="urlUpdate" value="/line/edit">
+<s:url id="urlLigneUpdate" action="edit" namespace="/line">
   <s:param name="idLigne" value="%{id}"/>
 </s:url>
 <s:if test="id != null">
@@ -15,7 +15,7 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
-<s:form> 
+<s:form validate="true">
   <s:hidden name="idLigne" value="%{id}"/>
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>

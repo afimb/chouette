@@ -3,7 +3,7 @@
 
 <%-- Titre et barre de navigation --%> 
 <title><s:text name="text.ligne.list.title" /></title>
-<s:url id="urlLignes" value="/line/list" includeParams="none"/>
+<s:url id="urlLignes" action="list" namespace="/line" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.ligne.list.title'), '', #urlLignes)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
@@ -54,32 +54,32 @@
 <div id="displaytag">
   <display:table name="lignes" sort="list" pagesize="20" requestURI="" id="ligne" export="false">
     <display:column title="Action" sortable="false">
-      <s:url id="editUrl" value="/line/edit">
+      <s:url id="editUrl" action="edit" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
       </s:url>
-      <s:url id="itinerary" value="/itinerary/list">
+      <s:url id="removeLigne" action="delete" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
       </s:url>
-      <s:url id="removeLigne" value="/line/delete">
+      <s:url id="itinerary" action="list" namespace="/itinerary">
         <s:param name="idLigne">${ligne.id}</s:param>
       </s:url>
-      <s:url id="removeLigneAmivif" value="/export/exportSupprimerAmivif">
-        <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="origin">line</s:param>
-      </s:url>
-      <s:url id="removeLigneChouette" value="/export/exportSupprimerChouette">
+      <s:url id="removeLigneAmivif" action="exportSupprimerAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
       </s:url>
-      <s:url id="exportAmivif" value="/export/exportAmivif">
+      <s:url id="removeLigneChouette" action="exportSupprimerChouette" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
       </s:url>
-      <s:url id="exportChouette" value="/export/exportChouette">
+      <s:url id="exportAmivif" action="exportAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
       </s:url>
-      <s:url id="exportCSV" value="/export/exportCSV">
+      <s:url id="exportChouette" action="exportChouette" namespace="/export">
+        <s:param name="idLigne">${ligne.id}</s:param>
+        <s:param name="origin">line</s:param>
+      </s:url>
+      <s:url id="exportCSV" action="exportCSV" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
       </s:url>
