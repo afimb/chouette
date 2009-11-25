@@ -332,12 +332,12 @@
 
 
 
-	<!-- Recherche d'une donnée -->
+	<!-- Recherche d'une donnée 
     <action name="search_*" class="{1}" method="search">
       <result name="success">/jsp/{1}/search.jsp</result>
       <result name="input">/jsp/{1}/search.jsp</result>
       <interceptor-ref name="crudStack"></interceptor-ref>
-    </action>
+    </action>-->
 
     <action name="Correspondance_*" class="Correspondance" method="{1}">
       <interceptor-ref name="crudStack"></interceptor-ref>
@@ -363,28 +363,28 @@
       <result name="error">/jsp/linesComparaison.jsp</result>
     </action>
 
-  <action name="PositionGeographique_*" class="PositionGeographique" method="{1}">
-    <result name="success" type="redirectAction">
-      <param name="actionName">liste_PositionGeographique</param>
-      <param name="typePositionGeographique">${typePositionGeographique}</param>
-    </result>
-    <result name="createAndEdit" type="redirectAction">
-      <param name="actionName">createAndEdit_PositionGeographique</param>
-      <param name="typePositionGeographique">${typePositionGeographique}</param>
-    </result>
-    <result name="loadedit" type="redirectAction">
-      <param name="actionName">PositionGeographique_edit</param>
-      <param name="idPositionGeographique">${positionGeographique.id}</param>
-    </result>
-    <result name="results" >
+    <action name="PositionGeographique_*" class="PositionGeographique" method="{1}">
+      <result name="success" type="redirectAction">
+        <param name="actionName">liste_PositionGeographique</param>
+        <param name="typePositionGeographique">${typePositionGeographique}</param>
+      </result>
+      <result name="createAndEdit" type="redirectAction">
+        <param name="actionName">createAndEdit_PositionGeographique</param>
+        <param name="typePositionGeographique">${typePositionGeographique}</param>
+      </result>
+      <result name="loadedit" type="redirectAction">
+        <param name="actionName">PositionGeographique_edit</param>
+        <param name="idPositionGeographique">${positionGeographique.id}</param>
+      </result>
+      <result name="results" >
 			/jsp/PositionGeographique/search.jsp
-    </result>
-    <result name="input">/jsp/PositionGeographique/edit.jsp</result>
-    <interceptor-ref name="crudStack"></interceptor-ref>
-    <interceptor-ref name="store">
-      <param name="operationMode">STORE</param>
-    </interceptor-ref>
-  </action>
+      </result>
+      <result name="input">/jsp/PositionGeographique/edit.jsp</result>
+      <interceptor-ref name="crudStack"></interceptor-ref>
+      <interceptor-ref name="store">
+        <param name="operationMode">STORE</param>
+      </interceptor-ref>
+    </action>
 
   </package>
 
@@ -508,6 +508,24 @@
       <result name="list">/jsp/stoparea/list.jsp</result>
       <result name="input" >/jsp/stoparea/edit.jsp</result>
       <result name="search" >/jsp/stoparea/search.jsp</result>
+    </action>
+  </package>
+
+  <package name="correspondance" extends="struts" namespace="/correspondance">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.CorrespondanceAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="redirectEdit" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="operationMode">RETRIEVE</param>
+        <param name="idCorrespondance">${idCorrespondance}</param>
+      </result>
+      <result name="edit">/jsp/correspondance/edit.jsp</result>
+      <result name="list">/jsp/correspondance/list.jsp</result>
+      <result name="input" >/jsp/correspondance/edit.jsp</result>
+      <result name="search" >/jsp/correspondance/search.jsp</result>
     </action>
   </package>
 

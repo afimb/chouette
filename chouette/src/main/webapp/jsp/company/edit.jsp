@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <%-- Titre et barre de navigation --%>
-<s:url id="urlTransporteurUpdate" value="/company/edit">
+<s:url id="urlTransporteurUpdate" action="edit" namespace="/company">
   <s:param name="idTransporteur" value="%{id}"/>
 </s:url>
 <s:if test="id != null">
