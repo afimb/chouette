@@ -107,13 +107,13 @@
     <display:column title="Nom" sortable="true" headerClass="sortable" property="line.name"/>
     <display:column title="Indice" property="line.number" sortable="true" headerClass="sortable"/>
     <display:column title="Nom Reseau" sortable="true" headerClass="sortable">
-      <s:url id="editReseau" value="/network/edit">
+      <s:url id="editReseau" action="edit" namespace="/network">
         <s:param name="idReseau">${ligne.idReseau}</s:param>
       </s:url>
       <s:a href="%{editReseau}"><s:property value="%{getReseau(#attr.ligne.idReseau)}"/></s:a>
     </display:column>
     <display:column title="Nom Transporteur" sortable="true" headerClass="sortable">
-      <s:url id="editTransporteur" value="/company/edit">
+      <s:url id="editTransporteur" action="edit"  namespace="/company">
         <s:param name="idTransporteur"> ${ligne.idTransporteur}</s:param>
       </s:url>
       <s:a href="%{editTransporteur}" ><s:property value="%{getTransporteur(#attr.ligne.idTransporteur)}"/></s:a>
