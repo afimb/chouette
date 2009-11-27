@@ -226,7 +226,7 @@
   </pluginRepositories>
   <build>
     <filters>
-      <filter>src/main/filters/filter.properties</filter><!--${site}-->
+      <filter>src/main/filters/filter${site}.properties</filter>
     </filters>
     <extensions>
       <extension>
