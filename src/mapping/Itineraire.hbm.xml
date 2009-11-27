@@ -1,55 +1,41 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
 
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
 
- DRouteBean.hbm.xml : paramétrage DRouteBean - Route
+ DRouteBean.hbm.xml : paramÃ©trage DRouteBean - Route
 
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
+ 2 nov. 2004  |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
- 24 nov. 2004 |Marc FLORISSON  | Intégration de la donnée DRoutePtLinkBean
+ 24 nov. 2004 |Marc FLORISSON  | IntÃ©gration de la donnÃ©e DRoutePtLinkBean
  =============+================+==============================================
 
  Version : $Revision: 1.6 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.Itineraire"
-        table="Route"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-        <property name="idRetour" column="idRetour"/>
-        <property name="idLigne" column="idLigne"/>
-
-        <property name="objectId" type="string" unique="true" column="objectId" />
-		<property name="objectVersion" type="int" column="objectVersion" />
-		<property name="creationTime" type="java.util.Date" column="creationTime" />
-		<property name="creatorId" type="string" column="creatorId" />
-		
-	    <property name="name" column="name" />
-	    <property name="publishedName" column="publishedName" />
-	    <property name="number" column="number" />
-	    <property name="direction"
-	            type="fr.certu.chouette.dao.hibernate.customtype.PTDirectionUserType"
-	            column="direction" />
-        <property name="comment" column="comment" />
-        <property name="wayBack" column="wayBack" />
-    </class>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Itineraire" table="Route">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="idRetour" name="idRetour"/>
+    <property column="idLigne" name="idLigne"/>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="name" name="name"/>
+    <property column="publishedName" name="publishedName"/>
+    <property column="number" name="number"/>
+    <property column="direction" name="direction" type="fr.certu.chouette.dao.hibernate.customtype.PTDirectionUserType"/>
+    <property column="comment" name="comment"/>
+    <property column="wayBack" name="wayBack"/>
+  </class>
 </hibernate-mapping>

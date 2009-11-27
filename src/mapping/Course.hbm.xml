@@ -1,58 +1,41 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
  
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
  
- DVehicleJourneyBean.hbm.xml : paramétrage DVehicleJourneyBean - VehicleJourney
+ DVehicleJourneyBean.hbm.xml : paramÃ©trage DVehicleJourneyBean - VehicleJourney
  
  Historique des modifications :
- Date        | Auteur         | Libéllé
+ Date        | Auteur         | LibÃ©llÃ©
  ============+================+==============================================
- 2 nov. 2004 |Marc FLORISSON  | Création
+ 2 nov. 2004 |Marc FLORISSON  | CrÃ©ation
  ============+================+==============================================
  
  Version : $Revision: 1.5 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.Course"
-        table="VehicleJourney"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-        <property name="idItineraire" column="idItineraire"/>
-        <property name="idMission" column="idMission"/>
-        
-        <property name="objectId" type="string" unique="true" column="objectId" />
-		<property name="objectVersion" type="int" column="objectVersion" />
-		<property name="creationTime" type="java.util.Date" column="creationTime" />
-		<property name="creatorId" type="string" column="creatorId" />
-        
-        <property name="publishedJourneyName" column="publishedJourneyName" />
-        <property name="publishedJourneyIdentifier" column="publishedJourneyIdentifier" />
-        <property name="transportMode"
-            type="fr.certu.chouette.dao.hibernate.customtype.TransportModeNameUserType"
-            column="transportMode" />
-        <property name="vehicleTypeIdentifier" column="vehicleTypeIdentifier" />
-        <property name="statusValue"
-            type="fr.certu.chouette.dao.hibernate.customtype.ServiceStatusValueUserType"
-            column="statusValue" />
-        <property name="facility" column="facility" />
-        <property name="number" column="number" />
-        <property name="comment" column="comment" />
-    </class>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Course" table="VehicleJourney">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="idItineraire" name="idItineraire"/>
+    <property column="idMission" name="idMission"/>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="publishedJourneyName" name="publishedJourneyName"/>
+    <property column="publishedJourneyIdentifier" name="publishedJourneyIdentifier"/>
+    <property column="transportMode" name="transportMode" type="fr.certu.chouette.dao.hibernate.customtype.TransportModeNameUserType"/>
+    <property column="vehicleTypeIdentifier" name="vehicleTypeIdentifier"/>
+    <property column="statusValue" name="statusValue" type="fr.certu.chouette.dao.hibernate.customtype.ServiceStatusValueUserType"/>
+    <property column="facility" name="facility"/>
+    <property column="number" name="number"/>
+    <property column="comment" name="comment"/>
+  </class>
 </hibernate-mapping>

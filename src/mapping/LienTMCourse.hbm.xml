@@ -1,42 +1,29 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
  
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
  
- DTimetableBean.hbm.xml : paramétrage DTimetableBean - Timetable
+ DTimetableBean.hbm.xml : paramÃ©trage DTimetableBean - Timetable
  
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
+ 2 nov. 2004  |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
  
  Version : $Revision: 1.2 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.LienTMCourse"
-        table="TimetableVehicleJourney"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-        <property name="idTableauMarche" column="idTableauMarche"/>
-        <property name="idCourse" column="idCourse"/>
-	    
-    </class>
-
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.LienTMCourse" table="TimetableVehicleJourney">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="idTableauMarche" name="idTableauMarche"/>
+    <property column="idCourse" name="idCourse"/>
+  </class>
 </hibernate-mapping>

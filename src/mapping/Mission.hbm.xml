@@ -1,48 +1,35 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
  
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
  
- DVehicleJourneyBean.hbm.xml : paramétrage DVehicleJourneyBean - VehicleJourney
+ DVehicleJourneyBean.hbm.xml : paramÃ©trage DVehicleJourneyBean - VehicleJourney
  
  Historique des modifications :
- Date        | Auteur         | Libéllé
+ Date        | Auteur         | LibÃ©llÃ©
  ============+================+==============================================
- 2 nov. 2004 |Marc FLORISSON  | Création
+ 2 nov. 2004 |Marc FLORISSON  | CrÃ©ation
  ============+================+==============================================
  
  Version : $Revision: 1.2 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.Mission"
-        table="JourneyPattern"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-        
-        <property name="objectId" type="string" unique="true" column="objectId" />
-		<property name="objectVersion" type="int" column="objectVersion" />
-		<property name="creationTime" type="java.util.Date" column="creationTime" />
-		<property name="creatorId" type="string" column="creatorId" />
-        
-		<property name="registrationNumber" column="registrationNumber" unique="true"/>
-	    <property name="name" column="name" />
-	    <property name="publishedName" column="publishedName" />
-        <property name="comment" column="comment" />
-    </class>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Mission" table="JourneyPattern">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="registrationNumber" name="registrationNumber" unique="true"/>
+    <property column="name" name="name"/>
+    <property column="publishedName" name="publishedName"/>
+    <property column="comment" name="comment"/>
+  </class>
 </hibernate-mapping>

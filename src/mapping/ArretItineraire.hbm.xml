@@ -1,43 +1,37 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
 
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
 
- DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+ DStopPointBean.hbm.xml : paramÃ©trage DStopPointBean - StopPoint
 
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
+ 2 nov. 2004  |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritÃ©tÃ©s complÃ©mentaires
  =============+================+==============================================
 
  Version : $Revision: 1.2 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint" dynamic-update="false" dynamic-insert="false">
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-		
-        <property name="idItineraire" column="idItineraire"/>
-        <property name="idPhysique" column="idPhysique"/>
-    	<property name="modifie" column="modifie"/>
-        <property name="position" column="position" type="int" />
-
-        <property name="objectId" type="string" unique="true" column="objectId" />
-		<property name="objectVersion" type="int" column="objectVersion" />
-		<property name="creationTime" type="java.util.Date" column="creationTime" />
-		<property name="creatorId" type="string" column="creatorId" />
-	</class>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="idItineraire" name="idItineraire"/>
+    <property column="idPhysique" name="idPhysique"/>
+    <property column="modifie" name="modifie"/>
+    <property column="position" name="position" type="int"/>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+  </class>
 </hibernate-mapping>

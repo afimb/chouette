@@ -6,13 +6,5 @@
       <param name="appendPrefix">false</param>
       <message>Réseau: </message>
     </field-validator>
-    <field-validator type="require">
-      <message>Requis</message>
-    </field-validator>
-  </field>
-  <field name="model.name">
-    <field-validator type="require">
-      <message>Requis</message>
-    </field-validator>
   </field>
 </validators>
