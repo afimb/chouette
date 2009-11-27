@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlLigneUpdate" action="edit" namespace="/line">
@@ -19,10 +20,10 @@
   <s:hidden name="idLigne" value="%{id}"/>
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
-  <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdReseau) et doit être une chaîne de caractère obligatoirement --%>
+  <%-- Valeur sÃ©lectionnÃ© par dÃ©faut est contenue dans value (chaineIdReseau) et doit Ãªtre une chaÃ®ne de caractÃ¨re obligatoirement --%>
   <s:select key="ligne.idReseau" name="idReseau" label="%{getText('ligne.idReseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="-1" headerValue="%{getText('ligne.aucunReseau')}">
   </s:select>
-  <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdTransporteur) et doit être une chaîne de caractère obligatoirement --%>
+  <%-- Valeur sÃ©lectionnÃ© par dÃ©faut est contenue dans value (chaineIdTransporteur) et doit Ãªtre une chaÃ®ne de caractÃ¨re obligatoirement --%>
   <s:select key="ligne.idTransporteur" name="idTransporteur" label="%{getText('ligne.idTransporteur')}" value="%{idTransporteur}" list="transporteurs" listKey="id" listValue="name"  headerKey="-1" headerValue="%{getText('ligne.aucunTransporteur')}">
   </s:select>
   <s:textfield key="ligne.name" name="name" required="true"/>

@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
@@ -9,7 +10,7 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
-<%-- Ajouter réseau --%>
+<%-- Ajouter rÃ©seau --%>
 <div>
   <s:url action="add" namespace="/network" id="ajoutReseau"/>
   <s:a href="%{ajoutReseau}"><b><s:text name="text.reseau.create.button"/></b></s:a>

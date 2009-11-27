@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
@@ -11,7 +12,7 @@
 
 <br>
 
-<%-- Filtre sur les réseaux et les transporteurs --%>
+<%-- Filtre sur les rÃ©seaux et les transporteurs --%>
 <div>
 
   <s:form action="list">
@@ -118,7 +119,7 @@
       </s:url>
       <s:a href="%{editTransporteur}" ><s:property value="%{getTransporteur(#attr.ligne.idTransporteur)}"/></s:a>
     </display:column>
-    <display:column title="Accès Itinéraires"><s:a href="%{itinerary}">Itinéraires</s:a></display:column>
+    <display:column title="AccÃ¨s ItinÃ©raires"><s:a href="%{itinerary}">ItinÃ©raires</s:a></display:column>
     <display:column title="Export Ligne">
       <s:a href="%{exportChouette}">Export CHOUETTE</s:a>
       <s:if test="useAmivif == 'true'">

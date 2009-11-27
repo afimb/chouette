@@ -2,7 +2,6 @@
 <div id="header">
 
 	<div id="title">
-
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td height="108" style="vertical-align:top;">
 				<a href="http://www.ecologie.gouv.fr/developpement-durable" target="_blank">

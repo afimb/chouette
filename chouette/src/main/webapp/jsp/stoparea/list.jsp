@@ -1,9 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
-<head>
-  <s:include value="/jsp/commun/scriptaculous.jsp" />
-</head>
+<s:include value="/jsp/commun/scriptaculous.jsp" />
 
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiques" action="list" namespace="/stoparea" includeParams="none">

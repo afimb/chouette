@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <%-- Titre et barre de navigation --%>
@@ -15,7 +16,7 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<%-- Caractéristiques des PositionGeographiques --%>
+<%-- CaractÃ©ristiques des PositionGeographiques --%>
 <div class="panelDataSection"><s:text name="text.arretPhysique" /></div>
 <div class="panel">
   <s:form cssClass="panelDataInnerForm">
@@ -74,9 +75,9 @@
   </s:form>
 </div>
 <s:if test="id != null">
-  <%-- Itinéraires liés à l'arrêt physique --%>
+  <%-- ItinÃ©raires liÃ©s Ã  l'arrÃªt physique --%>
   <div class="panelDataSection">
-			Itinéraires liés à l'arrêt physique
+			ItinÃ©raires liÃ©s Ã  l'arrÃªt physique
   </div>
   <div class="panel">
     <s:div label="Iti" id="displaytag">
