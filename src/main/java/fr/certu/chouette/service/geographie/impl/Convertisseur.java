@@ -6,13 +6,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import fr.certu.chouette.service.geographie.IConvertisseur;
 
 public class Convertisseur implements IConvertisseur {
 	
 	private static final Logger                  logger             = Logger.getLogger(Convertisseur.class);
-	private              DriverManagerDataSource managerDataSource;
+	private              ChouetteDriverManagerDataSource managerDataSource;
 	private              int                     lambert2SRID;      // 27561
 	private              int                     wgs84SRID;         // 4326
 	
@@ -26,7 +26,7 @@ public class Convertisseur implements IConvertisseur {
 			props.setProperty("allowEncodingChanges","true");
 			connexion = DriverManager.getConnection(managerDataSource.getUrl(), props);
 			connexion.setAutoCommit(false);
-			String selection = "SELECT id, x, y FROM stoparea;";
+			String selection = "SELECT id, x, y FROM " + managerDataSource.getDatabaseSchema() + ".stoparea;";
 			Statement sqlStatement = connexion.createStatement();
 			ResultSet rs = sqlStatement.executeQuery(selection);
 			while (rs.next()) {
@@ -41,7 +41,8 @@ public class Convertisseur implements IConvertisseur {
 					continue;
 				if ((y == null) || (y.trim().length() == 0))
 					continue;
-				String update = "UPDATE stoparea SET longitude = x(transform(GeometryFromText('POINT("+x+" "+y+")', "+lambert2SRID+"), "+wgs84SRID+")), latitude = y(transform(GeometryFromText('POINT("+x+" "+y+")', 27561), 4326)) WHERE id='"+id+"';";
+				String update = "UPDATE " + managerDataSource.getDatabaseSchema() + ".stoparea";
+				update += " SET longitude = x(transform(GeometryFromText('POINT("+x+" "+y+")', "+lambert2SRID+"), "+wgs84SRID+")), latitude = y(transform(GeometryFromText('POINT("+x+" "+y+")', 27561), 4326)) WHERE id='"+id+"';";
 				Statement statement = connexion.createStatement();
 				statement.executeUpdate(update);
 			}
@@ -69,7 +70,7 @@ public class Convertisseur implements IConvertisseur {
 		}
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 	

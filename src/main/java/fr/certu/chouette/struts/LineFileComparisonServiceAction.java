@@ -28,26 +28,26 @@ import fr.certu.chouette.echange.comparator.IExchangeableLineComparator;
 
 @SuppressWarnings("serial")
 public class LineFileComparisonServiceAction extends GeneriqueAction implements ServletRequestAware {
-	
+
 	//todo move that in the generiqueActio
 	private static final Log logger = LogFactory.getLog(LineFileComparisonServiceAction.class);
-	
-	//TODO test Logger.getLog(...)	
-	private IIdentificationManager identificationManager;	
+
+	//TODO test Logger.getLog(...)
+	private IIdentificationManager identificationManager;
 	private HttpServletRequest request;
-		
+
 	/**
-	 *  Available exchange formats, code label map 
-	 *  TODO dynamic list (linked to installed extension) 
-	 *  or set at least as parameters or ... 
+	 *  Available exchange formats, code label map
+	 *  TODO dynamic list (linked to installed extension)
+	 *  or set at least as parameters or ...
 	 */
-	private final static HashMap<String, String> AVAILABLE_EXCHANGE_FORMATS = new HashMap<String, String>();	
+	private final static HashMap<String, String> AVAILABLE_EXCHANGE_FORMATS = new HashMap<String, String>();
 	static
 	{
 		AVAILABLE_EXCHANGE_FORMATS.put("Chouette", "Chouette");
 		AVAILABLE_EXCHANGE_FORMATS.put("Amivif", "Amivif");
-	}	
-	
+	}
+
 	private final static HashMap<String, String> EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP = new HashMap<String, String>();
 	public static HashMap<String, String> getEXCHANGE_FORMAT_BEAN_COMPARATOR_MAP() {
 		return EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP;
@@ -59,16 +59,16 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		//EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Chouette", "ExchangeableLineComparatorChouette");
 		EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Amivif", "ExchangeableAmivifLineComparator");
 	}
-	
+
 	// Defaut comparison format and verbose mode
 	// TODO : set as application parameters
-	private static String DEFAULT_FORMAT = "Chouette";	
-	private static boolean ENABLE_VERBOSE_MODE = false; 
-	
-	
+	private static String DEFAULT_FORMAT = "Chouette";
+	private static boolean ENABLE_VERBOSE_MODE = false;
+
+
 	/**
 	 * @category Members linked to INPUT HTML Fields
-	 **/	
+	 **/
 	private String title = null;
 	private File sourceFile = null;
 	private File targetFile = null;
@@ -77,19 +77,19 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	private List<StringPair> exchangeFormats = null;
 	private String exchangeFormat = null;
 	private boolean enableVerboseMode = false;
-	
-	private List<ChouetteObjectState> objectStates = null; 
-	private ComparisonReport comparisonReport = null;	
-	
-	/** ***** Constructor ***** **/	
+
+	private List<ChouetteObjectState> objectStates = null;
+	private ComparisonReport comparisonReport = null;
+
+	/** ***** Constructor ***** **/
 	public LineFileComparisonServiceAction()
 	{
-		super();		
+		super();
 		logger.debug("DEBUG TEST OK");
-		
+
 		// Initialization of available formats view list
 		initExchangeFormats();
-		//TODO set all that correctly with properties !			
+		//TODO set all that correctly with properties !
 		exchangeFormat = DEFAULT_FORMAT;
 		this.enableVerboseMode = ENABLE_VERBOSE_MODE;
 	}
@@ -97,14 +97,14 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	private void initExchangeFormats()
 	{
 		exchangeFormats = new ArrayList<StringPair>();
-		
+
 		Set<String> formatKeys  = getAvailableFormat().keySet();
-		for (String formatKey : formatKeys) 
+		for (String formatKey : formatKeys)
 		{
-			exchangeFormats.add(new StringPair(formatKey, getAvailableFormat().get(formatKey))); 
-		}		
+			exchangeFormats.add(new StringPair(formatKey, getAvailableFormat().get(formatKey)));
+		}
 	}
-	
+
 	public String index()
 	{
 		//TODO no clear done, to investigate
@@ -113,58 +113,58 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		setTitle(getText("comparator.action.title.index"));
 		return SUCCESS;
 	}
-	
+
 	/** ***** Compare Main Method ***** **/
-	public String compare() 
+	public String compare()
 	{
 		logger.debug("compare::mark 1");
 		//TODO remove when chouette comparator "profile" will be complete !
 		setExchangeFormat("Amivif");
-		
+
 		//TODO a field to switch mode
 		//setEnableVerboseMode(true);
-		
+
 		//TODO no clear done, to investigate
 		clearErrorsAndMessages();
-		
+
 		// TODO all messages are keys, have to be stored with human readable message
-		// as struts parameter
-		if (sourceFile == null || sourceFile.length() == 0)  
+		// as ihm parameter
+		if (sourceFile == null || sourceFile.length() == 0)
 		{
-			addFieldError("sourceFile", getText("comparator.error.field.file"));				
+			addFieldError("sourceFile", getText("comparator.error.field.file"));
 			return INPUT;
 		}
 		if (targetFile == null || targetFile.length() == 0)
 		{
-			addFieldError("targetFile", getText("comparator.error.field.file"));				
+			addFieldError("targetFile", getText("comparator.error.field.file"));
 			return INPUT;
 		}
 		if (exchangeFormat == null || exchangeFormat.length() == 0)
 		{
-			addFieldError("exchangeFormat",  getText("comparator.error.field.exchangeFormat"));				
+			addFieldError("exchangeFormat",  getText("comparator.error.field.exchangeFormat"));
 			return INPUT;
 		}
-		
+
 		logger.debug("compare::mark 2");
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();			
+		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
 		HashMap<String, String> availableFormats = getAvailableFormat();
 		boolean foundFormat = false;
 		Iterator<Entry<String, String>> iter = availableFormats.entrySet().iterator();
-		
+
 		logger.debug("compare::mark 3");
-		while (iter.hasNext()) 
+		while (iter.hasNext())
 		{
 			Entry<String, String> format = iter.next();
 			//La clé de la HashMap
 			if (format.getKey().equals(exchangeFormat))
 			{
 				logger.debug("compare::mark 4");
-				foundFormat = true;				
+				foundFormat = true;
 				String beanKey = "Exchangeable" + format.getValue() + "LineComparator";
 				logger.debug("compare::beanKey : " + beanKey);
-				boolean completestrutsMessage = false;
-				
-				IExchangeableLineComparator comparator = null;				
+				boolean completeIhmMessage = false;
+
+				IExchangeableLineComparator comparator = null;
 				try
 				{
 					comparator = (IExchangeableLineComparator)applicationContext.getBean(beanKey);
@@ -174,12 +174,12 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 					logger.debug("compare::mark 5");
 					String errorMessageCompletion = "Invalid Spring Bean Referenced by : " + beanKey;
 					ServiceException se = new ServiceException(CodeIncident.COMPARATOR_UNVAILABLE_RESOURCE, errorMessageCompletion);
-					return doExceptionTreatments(se, completestrutsMessage);
+					return doExceptionTreatments(se, completeIhmMessage);
 				}
-				
+
 				try
 				{
-					// Launch comparison 
+					// Launch comparison
 					logger.debug("compare::mark 6");
 					doComparison(comparator);
 				}
@@ -188,46 +188,45 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 					logger.debug("compare::mark 7");
 					if (e.getCode().equals(CodeIncident.COMPARATOR_DUPLICATED_KEY))
 					{
-						completestrutsMessage = true;					
+						completeIhmMessage = true;
 					}
-					return doExceptionTreatments(e, completestrutsMessage);
-					
+					return doExceptionTreatments(e, completeIhmMessage);
+
 				}
-				catch(Exception e) 
-				{				
+				catch(Exception e)
+				{
 					logger.debug("compare::mark 8");
-					return doExceptionTreatments(e, completestrutsMessage);
+					return doExceptionTreatments(e, completeIhmMessage);
 				}
 			}//end if
 		}//end while
-			
+
 		if(! foundFormat)
-		{	
+		{
 			logger.debug("compare::mark 9");
-			addFieldError("exchangeFormat", "comparator.error.field.exchangeFormat");				
+			addFieldError("exchangeFormat", "comparator.error.field.exchangeFormat");
 			return INPUT;
 		}
 		logger.debug("compare::mark success");
-		//Build action/view title 
-		List<String> completionMessage = new ArrayList<String>();
+		//Build action/view title
+		ArrayList<Object> completionMessage = new ArrayList<Object>();
 		completionMessage.add(exchangeFormat);
-		//setTitle(getText("comparator.action.title.reporting", completionMessage));
-		return SUCCESS;		
+		setTitle(getText("comparator.action.title.reporting", completionMessage));
+		return SUCCESS;
 	}
-	
-	
-	private String doExceptionTreatments(Exception e, boolean completestrutsMessage)
+
+	private String doExceptionTreatments(Exception e, boolean completeIhmMessage)
 	{
 		logger.debug("compare::mark 10");
-		// Log message completion 
-		List<String> completionMessage = new ArrayList<String>();
+		// Log message completion
+		List<Object> completionMessage = new ArrayList<Object>();
 		completionMessage.add(e.getMessage());
-		
-		// Possible struts message completion
-		List<String> strutsCompletionMessage = null;
-	
+
+		// Possible ihm message completion
+		List<Object> ihmCompletionMessage = null;
+
 		String logKey = null;
-		String strutsKey = null;		
+		String ihmKey = null;
 		if (e instanceof ServiceException)
 		{
 			logKey = ((ServiceException)e).getCode().name();
@@ -235,25 +234,25 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		}
 		else
 		{
-			logKey = strutsKey = "COMPARATOR_UNKNOWN_EXCEPTION";
+			logKey = ihmKey = "COMPARATOR_UNKNOWN_EXCEPTION";
 		}
 		logKey += "_LOG";
-		strutsKey += "_struts";
+		ihmKey += "_IHM";
 
-		// add origine message to struts message if required  
-		if (completestrutsMessage)
+		// add origine message to ihm message if required
+		if (completeIhmMessage)
 		{
-			strutsCompletionMessage = completionMessage;
-		}				
-		
-		//logger.error(getText(logKey, completionMessage), e);
-		//addActionError(getText(strutsKey, strutsCompletionMessage));
+			ihmCompletionMessage = completionMessage;
+		}
+
+		logger.error(getText(logKey, completionMessage), e);
+		addActionError(getText(ihmKey, ihmCompletionMessage));
 		return ERROR;
 	}
-	
+
 	private void doComparison(IExchangeableLineComparator comparator) throws Exception
 	{
-		
+
 		logger.debug("compare::mark 11");
 		objectStates = comparator.getObjectStateList();
 		ComparisonReport comparisonReport= new ComparisonReport(objectStates);
@@ -272,9 +271,9 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 			}
 			addActionMessage(getText("comparator.result.failure"));
 		}
-		
+
 		//set report into request
-		
+
 		if (enableVerboseMode)
 		{
 			request.setAttribute("comparisonReport", comparisonReport.getAllItems());
@@ -282,28 +281,28 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		logger.debug("compare::mark 14");
 		return;
 	}
-	
+
 	public String downloadReport()
-	{		
+	{
 		logger.debug("Comparator::downReportAction");
 		clearErrorsAndMessages();
 		addActionMessage(getText("error.notYetImplemented"));
 		return SUCCESS;
 	}
-	
-	/** 
+
+	/**
 	 * @category Basic objects methods as getters and setters
 	 */
 	public void setIdentificationManager(IIdentificationManager identificationManager)
 	{
 		this.identificationManager = identificationManager;
 	}
-		
-	public IIdentificationManager getIdentificationManager() 
+
+	public IIdentificationManager getIdentificationManager()
 	{
 		return identificationManager;
 	}
-	
+
 	public File getSourceFile() {
 		return sourceFile;
 	}
@@ -311,32 +310,32 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	public void setSourceFile(File sourceFile) {
 		this.sourceFile = sourceFile;
 	}
-	
-	public void setTargetFile(File target) 
+
+	public void setTargetFile(File target)
 	{
 		this.targetFile = target;
 	}
 
-	public File getTargetFile() 
+	public File getTargetFile()
 	{
 		return targetFile;
 	}
 
-	public void setServletRequest(HttpServletRequest request) 
+	public void setServletRequest(HttpServletRequest request)
 	{
 		this.request = request;
 	}
-	
+
 	public List<StringPair> getExchangeFormats()
 	{
 		return exchangeFormats;
 	}
 
-	public void setExchangeFormats(List<StringPair> exchangeFormat) 
+	public void setExchangeFormats(List<StringPair> exchangeFormat)
 	{
 		this.exchangeFormats = exchangeFormat;
 	}
-	
+
 	public String getExchangeFormat() {
 		return exchangeFormat;
 	}
@@ -345,7 +344,7 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	{
 		this.exchangeFormat = exchangeFormat;
 	}
-	
+
 	public void setSourceFileContentType(String sourceFileContentType) {
 		this.sourceFileContentType = sourceFileContentType;
 	}
@@ -364,7 +363,7 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		return targetFileContentType;
 	}
 
-	
+
 	public void setEnableVerboseMode(boolean enableVerboseMode) {
 		this.enableVerboseMode = enableVerboseMode;
 	}
@@ -377,41 +376,41 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	public class StringPair {
 		private String key;
 		private String value;
-		
+
 		public StringPair(String key, String value) {
 			setKey(key);
 			setValue(value);
 		}
-		
+
 		public String getKey() {
 			return key;
 		}
-		
+
 		public void setKey(String key) {
 			this.key = key;
 		}
-		
+
 		public String getValue() {
 			return value;
 		}
 		public void setValue(String value) {
 			this.value = value;
-		}		
+		}
 	}
-	
+
 	/** Static basic methods on private static fields **/
 	public static HashMap<String, String> getAvailableFormat()
 	{
 		return AVAILABLE_EXCHANGE_FORMATS;
 	}
-	
-	
+
+
 	public static String getDefaultFormat()
 	{
 		return DEFAULT_FORMAT;
 	}
-	
-	
+
+
 	public static boolean SetDefaultFormat(String defaultFormat)
 	{
 		if (getAvailableFormat().containsKey(defaultFormat))
@@ -429,7 +428,6 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	public String getTitle() {
 		return title;
 	}
-
 
 	public void setObjectStates(List<ChouetteObjectState> objectStates) {
 		this.objectStates = objectStates;

@@ -11,10 +11,9 @@
 
     <bean id="lecteurCSVPrincipal"
     		class="fr.certu.chouette.service.importateur.multilignes.genericcsv.LecteurCSVPrincipal">
-        <property name="repertoire" value="."/><!--
+        <property name="repertoire" value="."/>
         <property name="separateur" value="${csv.field.separator}"/>
-        --><property name="colonneDesTitres" value="7"/>
-        <property name="separateur" value=";"/>
+        <property name="colonneDesTitres" value="7"/>
         <property name="lecteurCalendrier" ref="lecteurExcelTableauMarche"/>
         <property name="lecteurReseau" ref="lecteurExcelReseau"/>
         <property name="lecteurTransporteur" ref="lecteurExcelTransporteur"/>
@@ -99,7 +98,7 @@
     	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurZone">
         <property name="colonneDesTitres" value="7"/>
         <property name="identificationManager" ref="identificationManager"/>
-        <property name="managerDataSource" ref="dataSourceAdministrateur" />
+        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur" />
     </bean>
     
 	<bean id = "lecteurExcelHoraire"

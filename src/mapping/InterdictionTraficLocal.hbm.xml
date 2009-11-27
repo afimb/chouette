@@ -19,17 +19,17 @@
  Version : $Revision: 1.2 $
 -->
 <hibernate-mapping>
-  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.InterdictionTraficLocal" table="itl">
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.InterdictionTraficLocal" table="routingConstraint">
     <id column="id" name="id" type="long">
       <generator class="native"/>
     </id>
-    <list cascade="all" lazy="false" name="arretPhysiqueIds" table="itl_stoparea">
-      <key column="idItl"/>
+    <list cascade="all" lazy="false" name="arretPhysiqueIds" table="routingConstraint_stoparea">
+      <key column="routingConstraintId"/>
       <index column="position"/>
-      <element column="idstoparea" type="long"/>
+      <element column="stopareaId" type="long"/>
     </list>
     <property column="objectId" name="objectId" type="string" unique="true"/>
-    <property column="idLigne" name="idLigne"/>
-    <property column="nom" name="nom"/>
+    <property column="lineId" name="idLigne"/>
+    <property column="name" name="nom"/>
   </class>
 </hibernate-mapping>

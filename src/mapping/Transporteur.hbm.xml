@@ -29,7 +29,7 @@
     <property column="creatorId" name="creatorId" type="string"/>
     <property column="name" name="name"/>
     <property column="shortName" name="shortName"/>
-    <property column="organisationalUnit" name="organisationalUnit"/>
+    <property column="organizationalUnit" name="organisationalUnit"/>
     <property column="operatingDepartmentName" name="operatingDepartmentName"/>
     <property column="code" name="code"/>
     <property column="phone" name="phone"/>

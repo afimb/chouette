@@ -25,7 +25,7 @@
     <id column="id" name="id" type="long">
       <generator class="native"/>
     </id>
-    <property column="idParent" name="idParent"/>
+    <property column="parentId" name="idParent"/>
     <property column="objectId" name="objectId" type="string" unique="true"/>
     <property column="objectVersion" name="objectVersion" type="int"/>
     <property column="creationTime" name="creationTime" type="java.util.Date"/>

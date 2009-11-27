@@ -463,7 +463,8 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importAmivifXML() {
+	public String importAmivifXML() 
+	{
 		String canonicalPath = copieTemporaire();
 		//	Creation de l'objet ChouettePTNetworkType
 		RespPTLineStructTimetable amivifLine = null;
@@ -537,6 +538,7 @@ public class ImportAction extends GeneriqueAction {
 	
 	private void gestionException(Exception exception) {
 		if (exception instanceof ServiceException)
+		{
 			if (exception instanceof fr.certu.chouette.service.validation.commun.ValidationException) {
 				fr.certu.chouette.service.validation.commun.ValidationException validationException = (fr.certu.chouette.service.validation.commun.ValidationException) exception;
 				//	Liste de codes d'erreur 
@@ -561,6 +563,8 @@ public class ImportAction extends GeneriqueAction {
 				addActionError("Impossible de r&eacute;cup&eacute;rer le fichier");
 				log.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
 			}
+		}
+		//TODO 
 	}
 	
 	private String copieTemporaire() {

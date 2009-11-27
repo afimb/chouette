@@ -23,14 +23,14 @@
     <id column="id" name="id" type="long">
       <generator class="native"/>
     </id>
-    <property column="idCourse" name="idCourse"/>
-    <property column="idArret" name="idArret"/>
-    <property column="modifie" name="modifie"/>
+    <property column="vehicleJourneyId" name="idCourse"/>
+    <property column="stopPointId" name="idArret"/>
+    <property column="isModified" name="modifie"/>
     <property column="arrivalTime" name="arrivalTime" type="time"/>
     <property column="departureTime" name="departureTime" type="time"/>
     <property column="waitingTime" name="waitingTime" type="time"/>
     <property column="connectingServiceId" name="connectingServiceId"/>
     <property column="boardingAlightingPossibility" name="boardingAlightingPossibility" type="fr.certu.chouette.dao.hibernate.customtype.BoardingAlightingPossibilityUserType"/>
-    <property column="depart" name="depart"/>
+    <property column="isDeparture" name="depart"/>
   </class>
 </hibernate-mapping>
