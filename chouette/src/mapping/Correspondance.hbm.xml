@@ -1,56 +1,46 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
 
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
 
- DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+ DStopPointBean.hbm.xml : paramÃ©trage DStopPointBean - StopPoint
 
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
+ 2 nov. 2004  |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritÃ©tÃ©s complÃ©mentaires
  =============+================+==============================================
 
  Version : $Revision: 1.2 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="fr.certu.chouette.modele.Correspondance" table="ConnectionLink" dynamic-update="false" dynamic-insert="false">
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-        <property name="idDepart" column="idDepart"/>
-        <property name="idArrivee" column="idArrivee"/>
-		
-        <property name="objectId" type="string" unique="true" column="objectId" />
-		<property name="objectVersion" type="int" column="objectVersion" />
-		<property name="creationTime" type="java.util.Date" column="creationTime" />
-		<property name="creatorId" type="string" column="creatorId" />
-		
-		<property name="name" type="string" column="name" />
-		<property name="comment" type="string" column="comment" />
-        <property name="linkDistance" type="java.math.BigDecimal" column="linkDistance" />
-		<property name="linkType"
-		    type="fr.certu.chouette.dao.hibernate.customtype.ConnectionLinkTypeUserType"
-		    column="linkType" />
-		<property name="defaultDuration" type="time" column="defaultDuration" />
-		<property name="frequentTravellerDuration" type="time" column="frequentTravellerDuration" />
-		<property name="occasionalTravellerDuration" type="time" column="occasionalTravellerDuration" />
-		<property name="mobilityRestrictedTravellerDuration" type="time" column="mobilityRestrictedTravellerDuration" />
-		<property name="mobilityRestrictedSuitability" type="boolean" column="mobilityRestrictedSuitability" />
-		<property name="stairsAvailability" type="boolean" column="stairsAvailability" />
-		<property name="liftAvailability" type="boolean" column="liftAvailability" />
-
-
-	</class>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Correspondance" table="ConnectionLink">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="idDepart" name="idDepart"/>
+    <property column="idArrivee" name="idArrivee"/>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="name" name="name" type="string"/>
+    <property column="comment" name="comment" type="string"/>
+    <property column="linkDistance" name="linkDistance" type="java.math.BigDecimal"/>
+    <property column="linkType" name="linkType" type="fr.certu.chouette.dao.hibernate.customtype.ConnectionLinkTypeUserType"/>
+    <property column="defaultDuration" name="defaultDuration" type="time"/>
+    <property column="frequentTravellerDuration" name="frequentTravellerDuration" type="time"/>
+    <property column="occasionalTravellerDuration" name="occasionalTravellerDuration" type="time"/>
+    <property column="mobilityRestrictedTravellerDuration" name="mobilityRestrictedTravellerDuration" type="time"/>
+    <property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitability" type="boolean"/>
+    <property column="stairsAvailability" name="stairsAvailability" type="boolean"/>
+    <property column="liftAvailability" name="liftAvailability" type="boolean"/>
+  </class>
 </hibernate-mapping>

@@ -1,50 +1,35 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
  
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
  
- DTimetableBean.hbm.xml : paramétrage DTimetableBean - Timetable
+ DTimetableBean.hbm.xml : paramÃ©trage DTimetableBean - Timetable
  
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
+ 2 nov. 2004  |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
  
  Version : $Revision: 1.2 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.InterdictionTraficLocal"
-        table="itl"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-
-        <list name="arretPhysiqueIds" table="itl_stoparea" cascade="all" lazy="false">
-              <key column="idItl" />
-              <index column="position" />
-              <element column="idstoparea" type="long" />
-        </list>
-
-        <property name="objectId" type="string" unique="true" column="objectId" />
-	
-        <property name="idLigne" column="idLigne"/>
-	    <property name="nom" column="nom" />
-    </class>
-
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.InterdictionTraficLocal" table="itl">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <list cascade="all" lazy="false" name="arretPhysiqueIds" table="itl_stoparea">
+      <key column="idItl"/>
+      <index column="position"/>
+      <element column="idstoparea" type="long"/>
+    </list>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="idLigne" name="idLigne"/>
+    <property column="nom" name="nom"/>
+  </class>
 </hibernate-mapping>

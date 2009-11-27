@@ -1,63 +1,47 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
  
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
  
- DTimetableBean.hbm.xml : paramétrage DTimetableBean - Timetable
+ DTimetableBean.hbm.xml : paramÃ©trage DTimetableBean - Timetable
  
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
+ 2 nov. 2004  |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
  
  Version : $Revision: 1.7 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.TableauMarche"
-        table="Timetable"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-
-		<id name="id" column="id" type="long">
-			<generator class="native"/>
-		</id>
-
-        <list name="dates" table="timetable_date" cascade="all" lazy="false">
-              <key column="timetableId" />
-              <index column="position" />
-              <element column="date" type="date" />
-        </list>
-        
-        <list name="periodes" table="timetable_period" cascade="all" lazy="false">
-              <key column="timetableId" />
-              <index column="position" />
-              <composite-element class="fr.certu.chouette.modele.Periode">
-        		<property name="debut" type="date" />
-        		<property name="fin" type="date" />
-              </composite-element>
-        </list>
-
-        <property name="objectId" type="string" unique="true" column="objectId" />
-		<property name="objectVersion" type="int" column="objectVersion" />
-		<property name="creationTime" type="java.util.Date" column="creationTime" />
-		<property name="creatorId" type="string" column="creatorId" />
-	
-	    <property name="Version" column="version" />
-	    <property name="comment" column="comment" />
-	    <property name="intDayTypes" column="intDayTypes" />
-    </class>
-
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.TableauMarche" table="Timetable">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <list cascade="all" lazy="false" name="dates" table="timetable_date">
+      <key column="timetableId"/>
+      <index column="position"/>
+      <element column="date" type="date"/>
+    </list>
+    <list cascade="all" lazy="false" name="periodes" table="timetable_period">
+      <key column="timetableId"/>
+      <index column="position"/>
+      <composite-element class="fr.certu.chouette.modele.Periode">
+        <property name="debut" type="date"/>
+        <property name="fin" type="date"/>
+      </composite-element>
+    </list>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="version" name="Version"/>
+    <property column="comment" name="comment"/>
+    <property column="intDayTypes" name="intDayTypes"/>
+  </class>
 </hibernate-mapping>

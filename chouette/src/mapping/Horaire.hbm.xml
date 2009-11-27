@@ -1,55 +1,36 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!--
 @@LICENCE@@
 -->
-
 <!--
- Société DRYADE
+ SociÃ©tÃ© DRYADE
  
- Projet chouette : paramétrage Objet - Base
+ Projet chouette : paramÃ©trage Objet - Base
  
- DVehicleJourneyAtStopBean.hbm.xml : paramétrage DVehicleJourneyAtStopBean - VehicleJourney
+ DVehicleJourneyAtStopBean.hbm.xml : paramÃ©trage DVehicleJourneyAtStopBean - VehicleJourney
  
  Historique des modifications :
- Date         | Auteur         | Libéllé
+ Date         | Auteur         | LibÃ©llÃ©
  =============+================+==============================================
- 29 nov. 2004 |Marc FLORISSON  | Création
+ 29 nov. 2004 |Marc FLORISSON  | CrÃ©ation
  =============+================+==============================================
  
  Version : $Revision: 1.6 $
 -->
-
-<!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
 <hibernate-mapping>
-    <class
-        name="fr.certu.chouette.modele.Horaire"
-        table="VehicleJourneyAtStop"
-        dynamic-update="false"
-        dynamic-insert="false"
-    >
-
-	<id name="id" column="id" type="long">
-		<generator class="native"/>
-	</id>
-	
-    <property name="idCourse" column="idCourse"/>
-    <property name="idArret" column="idArret"/>
-    <property name="modifie" column="modifie"/>
-
-    <property name="arrivalTime" type="time" column="arrivalTime" />
-    <property name="departureTime" type="time" column="departureTime" />
-    <property name="waitingTime" type="time" column="waitingTime" />
-
-    <property name="connectingServiceId" column="connectingServiceId"/>
-    <property name="boardingAlightingPossibility"
-        type="fr.certu.chouette.dao.hibernate.customtype.BoardingAlightingPossibilityUserType"
-        column="boardingAlightingPossibility"
-    />
-    <property name="depart" column="depart" />
-
-    </class>
-
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Horaire" table="VehicleJourneyAtStop">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="idCourse" name="idCourse"/>
+    <property column="idArret" name="idArret"/>
+    <property column="modifie" name="modifie"/>
+    <property column="arrivalTime" name="arrivalTime" type="time"/>
+    <property column="departureTime" name="departureTime" type="time"/>
+    <property column="waitingTime" name="waitingTime" type="time"/>
+    <property column="connectingServiceId" name="connectingServiceId"/>
+    <property column="boardingAlightingPossibility" name="boardingAlightingPossibility" type="fr.certu.chouette.dao.hibernate.customtype.BoardingAlightingPossibilityUserType"/>
+    <property column="depart" name="depart"/>
+  </class>
 </hibernate-mapping>
