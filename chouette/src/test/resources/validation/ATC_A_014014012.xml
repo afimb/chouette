@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
-<ChouettePTNetwork xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.trident.org/schema/trident" xsi:schemaLocation="http://www.trident.org/schema/trident /home/marc/workspace/chouette-ninoxe/src/main/castor/Chouette.xsd">
+<ChouettePTNetwork xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.trident.org/schema/trident" xsi:schemaLocation="http://www.trident.org/schema/trident ../../../main/castor/Chouette.xsd">
 	<PTNetwork>
 		<objectId>AMIV:PTNetwork:95</objectId>
 		<versionDate>2007-03-21</versionDate>

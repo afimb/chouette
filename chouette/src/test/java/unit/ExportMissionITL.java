@@ -60,7 +60,7 @@ public class ExportMissionITL {
     	}
     	//Logger.getRootLogger().addAppender(new ConsoleAppender());
     	Logger.getRootLogger().setLevel(Level.WARN);
-    	schemaLocaction += " /home/marc/workspace/chouette-ninoxe/src/main/castor/Chouette.xsd";
+    	schemaLocaction += " ../../../main/castor/Chouette.xsd";
 	}
 	
 	@Test(groups="test d'export avec Mission", description="export d'une ligne avec missions.")

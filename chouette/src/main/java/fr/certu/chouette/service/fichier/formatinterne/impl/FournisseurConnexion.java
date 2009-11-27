@@ -3,11 +3,11 @@ package fr.certu.chouette.service.fichier.formatinterne.impl;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 
 public class FournisseurConnexion  {
 	
-	private DriverManagerDataSource managerDataSource;
+	private ChouetteDriverManagerDataSource managerDataSource;
 	private Connection              connection;
 	
 	public void ouvrirConnection() {
@@ -51,7 +51,7 @@ public class FournisseurConnexion  {
 		return connection;
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 }

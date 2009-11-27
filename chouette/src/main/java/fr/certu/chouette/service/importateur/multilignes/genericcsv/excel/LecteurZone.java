@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 
 import chouette.schema.types.ChouetteAreaType;
 import chouette.schema.types.LongLatTypeType;
@@ -36,7 +36,7 @@ public class LecteurZone implements ILecteurZone {
 	private              Set<PositionGeographique>                            zonesDeLigne;
 	private              int                                                  counter;
 	private              Map<Ligne, Map<String, String>>                      zoneParenteParObjectId;
-	private              DriverManagerDataSource                              managerDataSource;
+	private              ChouetteDriverManagerDataSource                      managerDataSource;
 	private              Connection                                           connexion           = null;
 	
 	class Identification implements Comparable<Identification> {
@@ -162,7 +162,7 @@ public class LecteurZone implements ILecteurZone {
 						connexion = DriverManager.getConnection(managerDataSource.getUrl(), props);
 						connexion.setAutoCommit(false);
 						String name = ligneCSV[6].trim().replaceAll("'", "''");
-						ResultSet rs = connexion.createStatement().executeQuery("SELECT id, idparent, objectid, objectversion, creationtime, creatorid, \"name\", \"comment\", areatype, registrationnumber, nearesttopicname,  farecode, longitude, latitude, longlattype, x, y, projectiontype, countrycode, streetname FROM stoparea WHERE \"name\"='"+name+"' AND areatype='CommercialStopPoint';");
+						ResultSet rs = connexion.createStatement().executeQuery("SELECT id, parentId, objectid, objectversion, creationtime, creatorid, \"name\", \"comment\", areatype, registrationnumber, nearesttopicname,  farecode, longitude, latitude, longlattype, x, y, projectiontype, countrycode, streetname FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE \"name\"='"+name+"' AND areatype='CommercialStopPoint';");
 						if (rs.next()) {
 							//TODO. LA CAS idparent != null
 							positionGeographique = new PositionGeographique();
@@ -317,7 +317,7 @@ public class LecteurZone implements ILecteurZone {
 		this.colonneDesTitres = colonneDesTitres;
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 }

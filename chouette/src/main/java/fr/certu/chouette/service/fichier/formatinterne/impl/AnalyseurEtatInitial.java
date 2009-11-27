@@ -42,35 +42,41 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 	private static final SimpleDateFormat sdf2            = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
 	private static final SimpleDateFormat sdf3            = new SimpleDateFormat("yyyy-MM-dd");
 	
-	public void setGestionSequence(IGestionSequence gestionSequence) {
+	private String databaseSchema; 
+	
+	public void setGestionSequence(IGestionSequence gestionSequence) 
+	{
 		this.gestionSequence = gestionSequence;
 	}
 	
-	public IEtatDifference analyser(ILectureEchange lectureEchange, Connection connexion) {
+	public IEtatDifference analyser(ILectureEchange lectureEchange, Connection connexion) 
+	{
 		return analyser(lectureEchange, connexion, false); 
 	}
 	
-	public IEtatDifference analyser2(ILectureEchange lectureEchange, Connection connexion) {
+	public IEtatDifference analyser2(ILectureEchange lectureEchange, Connection connexion) 
+	{
 		return analyser2(lectureEchange, connexion, false); 
 	}
 	
-	public IEtatDifference analyser(ILectureEchange lectureEchange, Connection connexion, boolean incremental) {
+	public IEtatDifference analyser(ILectureEchange lectureEchange, Connection connexion, boolean incremental) 
+	{
 		etatDifference = new EtatDifference();
 		Ligne ligne = lectureEchange.getLigne();
 		Reseau reseau = lectureEchange.getReseau();
 		Transporteur transporteur = lectureEchange.getTransporteur();
 		try {
-			final String selectionLigne = "select id from line where registrationnumber='"+ligne.getRegistrationNumber()+"';";
+			final String selectionLigne = "select id from " + getDatabaseSchema() + ".line where registrationnumber='"+ligne.getRegistrationNumber()+"';";
 			Statement sqlStatement = connexion.createStatement();
 			ResultSet rs = sqlStatement.executeQuery(selectionLigne);
 			while (rs.next())
 				etatDifference.setExLigne(Long.parseLong(rs.getObject(1).toString()));
-			final String selectionReseau = "select id from ptnetwork where registrationnumber='"+reseau.getRegistrationNumber()+"';";
+			final String selectionReseau = "select id from " + getDatabaseSchema() + ".ptnetwork where registrationnumber='"+reseau.getRegistrationNumber()+"';";
 			sqlStatement = connexion.createStatement();
 			rs = sqlStatement.executeQuery(selectionReseau);
 			while (rs.next()) 
 				etatDifference.setExReseau(Long.parseLong(rs.getObject(1).toString()));
-			final String selectionTransporteur = "select id from company where registrationnumber='"+transporteur.getRegistrationNumber()+"';";
+			final String selectionTransporteur = "select id from " + getDatabaseSchema() + ".company where registrationnumber='"+transporteur.getRegistrationNumber()+"';";
 			sqlStatement = connexion.createStatement();
 			rs = sqlStatement.executeQuery(selectionTransporteur);
 			while (rs.next()) 
@@ -86,28 +92,30 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			}
 			return etatDifference;
 		}
-		catch(Exception e) {
+		catch(Exception e) 
+		{
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public IEtatDifference analyser2(ILectureEchange lectureEchange, Connection connexion, boolean incremental) {
+	public IEtatDifference analyser2(ILectureEchange lectureEchange, Connection connexion, boolean incremental) 
+	{
 		etatDifference = new EtatDifference();
 		Ligne ligne = lectureEchange.getLigne();
 		Reseau reseau = lectureEchange.getReseau();
 		Transporteur transporteur = lectureEchange.getTransporteur();
 		try {
-			final String selectionLigne = "select id from line where registrationnumber='"+ligne.getRegistrationNumber()+"';";
+			final String selectionLigne = "select id from " + getDatabaseSchema() + ".line where registrationnumber='"+ligne.getRegistrationNumber()+"';";
 			Statement sqlStatement = connexion.createStatement();
 			ResultSet rs = sqlStatement.executeQuery(selectionLigne);
 			while (rs.next())
 				etatDifference.setExLigne(Long.parseLong(rs.getObject(1).toString()));
-			final String selectionReseau = "select id from ptnetwork where registrationnumber='"+reseau.getRegistrationNumber()+"';";
+			final String selectionReseau = "select id from " + getDatabaseSchema() + ".ptnetwork where registrationnumber='"+reseau.getRegistrationNumber()+"';";
 			sqlStatement = connexion.createStatement();
 			rs = sqlStatement.executeQuery(selectionReseau);
 			while (rs.next()) 
 				etatDifference.setExReseau(Long.parseLong(rs.getObject(1).toString()));
-			final String selectionTransporteur = "select id from company where registrationnumber='"+transporteur.getRegistrationNumber()+"';";
+			final String selectionTransporteur = "select id from " + getDatabaseSchema() + ".company where registrationnumber='"+transporteur.getRegistrationNumber()+"';";
 			sqlStatement = connexion.createStatement();
 			rs = sqlStatement.executeQuery(selectionTransporteur);
 			while (rs.next()) 
@@ -130,7 +138,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 	
 	private void analyserZones(final ILectureEchange lectureEchange, final Connection connexion) throws SQLException {
 		final List<String> objectIdZonesGeneriques = lectureEchange.getObjectIdZonesGeneriques();
-		final String selectionZones = "SELECT t.objectid, t.id FROM stoparea t;";
+		final String selectionZones = "SELECT t.objectid, t.id from " + getDatabaseSchema() + ".stoparea t;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionZones);
 		final Map<String, Long> exZoneGeneriqueIdParObjectId = new Hashtable<String, Long>();
@@ -147,7 +155,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 	
 	private void analyserZones2(final ILectureEchange lectureEchange, final Connection connexion) throws SQLException {
 		final List<String> objectIdZonesGeneriques = lectureEchange.getObjectIdZonesGeneriques();
-		final String selectionZones = "SELECT t.objectid, t.id FROM stoparea t;";
+		final String selectionZones = "SELECT t.objectid, t.id from " + getDatabaseSchema() + ".stoparea t;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionZones);
 		final Map<String, Long> exZoneGeneriqueIdParObjectId = new Hashtable<String, Long>();
@@ -168,7 +176,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (correspondances != null)
 			for (Correspondance correspondance : correspondances)
 				objectIdCorrespondances.add(correspondance.getObjectId());
-		final String selectionCorrespondances = "SELECT t.objectid, t.id FROM connectionlink t;";
+		final String selectionCorrespondances = "SELECT t.objectid, t.id FROM " + getDatabaseSchema() + ".connectionlink t;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionCorrespondances);
 		final Map<String, Long> exCorrespondanceIdParObjectId = new Hashtable<String, Long>();
@@ -189,7 +197,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (correspondances != null)
 			for (Correspondance correspondance : correspondances)
 				objectIdCorrespondances.add(correspondance.getObjectId());
-		final String selectionCorrespondances = "SELECT t.objectid, t.id FROM connectionlink t;";
+		final String selectionCorrespondances = "SELECT t.objectid, t.id from " + getDatabaseSchema() + ".connectionlink t;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionCorrespondances);
 		final Map<String, Long> exCorrespondanceIdParObjectId = new Hashtable<String, Long>();
@@ -213,7 +221,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			else
 				analyserTM(lectureEchange, connexion);
 		}
-		final String selectionTableau = "SELECT t.objectid, t.id FROM timetable t;";
+		final String selectionTableau = "SELECT t.objectid, t.id from " + getDatabaseSchema() + ".timetable t;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionTableau);
 		final Map<String, Long> exTMIdParObjectId = new Hashtable<String, Long>();
@@ -241,7 +249,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			else
 				analyserTM2(lectureEchange, connexion);
 		}
-		final String selectionTableau = "SELECT t.objectid, t.id FROM timetable t;";
+		final String selectionTableau = "SELECT t.objectid, t.id from " + getDatabaseSchema() + ".timetable t;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionTableau);
 		final Map<String, Long> exTMIdParObjectId = new Hashtable<String, Long>();
@@ -271,7 +279,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Map<Long, Set<Long>> coursesIdsParItinerairesId  = new HashMap<Long, Set<Long>>();
 		Map<Long, Set<Long>> missionsIdsParItinerairesId = new HashMap<Long, Set<Long>>();
 		Map<Long, Set<Long>> coursesIdsParMissionsId     = new HashMap<Long, Set<Long>>();
-		String    selectionItineraires = "SELECT id FROM route WHERE idligne='"+idLigne+"';";
+		String    selectionItineraires = "SELECT id from " + getDatabaseSchema() + ".route WHERE lineId='"+idLigne+"';";
 		Statement selectionItinerairesStatement = connexion.createStatement();
 		ResultSet selectionItinerairesResultSet = selectionItinerairesStatement.executeQuery(selectionItineraires);
 		while (selectionItinerairesResultSet.next()) {
@@ -282,7 +290,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			oldItinerairesIds.add(idItineraire);
 			coursesIdsParItinerairesId.put(idItineraire, new HashSet<Long>());
 			missionsIdsParItinerairesId.put(idItineraire, new HashSet<Long>());
-			String selectionCourses = "SELECT id, idmission FROM vehiclejourney WHERE iditineraire='"+idItineraireSt+"';";
+			String selectionCourses = "SELECT id, journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE iditineraire='"+idItineraireSt+"';";
 			Statement selectionCoursesStatement = connexion.createStatement();
 			ResultSet selectionCoursesResultSet = selectionCoursesStatement.executeQuery(selectionCourses);
 			while (selectionCoursesResultSet.next()) {
@@ -309,7 +317,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Set<Long>            oldTMIds           = new HashSet<Long>();
 		Map<Long, Set<Date>> datesParTMIds      = new HashMap<Long, Set<Date>>();
 		Map<Long, Set<Long>> coursesIdsParTMIds = new HashMap<Long, Set<Long>>();
-		String selectionTMs = "SELECT idtableaumarche, idcourse FROM timetablevehiclejourney WHERE idcourse IN "+getSQLList(oldCoursesIds)+";";
+		String selectionTMs = "SELECT timetableId, vehicleJourneyId from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE vehicleJourneyId IN "+getSQLList(oldCoursesIds)+";";
 		Statement selectionTMsStatement = connexion.createStatement();
 		ResultSet selectionTMsResultSet = selectionTMsStatement.executeQuery(selectionTMs);
 		while (selectionTMsResultSet.next()) {
@@ -328,7 +336,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		for (Long tmId : oldTMIds) {
 			datesParTMIds.put(tmId, new HashSet<Date>());
-			String selectionDates = "SELECT date FROM timetable_date WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionDates = "SELECT date from " + getDatabaseSchema() + ".timetable_date WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionDatesStatement = connexion.createStatement();
 			ResultSet selectionDatesResultSet = selectionDatesStatement.executeQuery(selectionDates);
 			while (selectionDatesResultSet.next()) {
@@ -336,7 +344,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					continue;
 				datesParTMIds.get(tmId).add(selectionDatesResultSet.getDate(1));
 			}
-			String selectionPeriodes = "SELECT debut, fin, (SELECT intdaytypes FROM timetable WHERE id=timetableid) FROM timetable_period WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionPeriodes = "SELECT periodStart, periodEnd, (SELECT intdaytypes from " + getDatabaseSchema() + ".timetable WHERE id=timetableid) from " + getDatabaseSchema() + ".timetable_period WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionPeriodesStatement = connexion.createStatement();
 			ResultSet selectionPeriodesResultSet = selectionPeriodesStatement.executeQuery(selectionPeriodes);
 			while (selectionPeriodesResultSet.next()) {
@@ -354,7 +362,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		
 		Map<Long, Set<Date>> tousDatesParTMIds      = new HashMap<Long, Set<Date>>();
-		String selectionTousTMs = "SELECT id FROM timetable;";
+		String selectionTousTMs = "SELECT id from " + getDatabaseSchema() + ".timetable;";
 		Statement selectionTousTMsStatement = connexion.createStatement();
 		ResultSet selectionTousTMsResultSet = selectionTousTMsStatement.executeQuery(selectionTousTMs);
 		while (selectionTousTMsResultSet.next()) {
@@ -362,7 +370,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				continue;
 			Long tmId = selectionTousTMsResultSet.getLong(1);
 			tousDatesParTMIds.put(tmId, new HashSet<Date>());
-			String selectionDates = "SELECT date FROM timetable_date WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionDates = "SELECT date from " + getDatabaseSchema() + ".timetable_date WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionDatesStatement = connexion.createStatement();
 			ResultSet selectionDatesResultSet = selectionDatesStatement.executeQuery(selectionDates);
 			while (selectionDatesResultSet.next()) {
@@ -370,7 +378,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					continue;
 				tousDatesParTMIds.get(tmId).add(selectionDatesResultSet.getDate(1));
 			}
-			String selectionPeriodes = "SELECT debut, fin, (SELECT intdaytypes FROM timetable WHERE id=timetableid) FROM timetable_period WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionPeriodes = "SELECT periodStart, periodEnd, (SELECT intdaytypes from " + getDatabaseSchema() + ".timetable WHERE id=timetableid) from " + getDatabaseSchema() + ".timetable_period WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionPeriodesStatement = connexion.createStatement();
 			ResultSet selectionPeriodesResultSet = selectionPeriodesStatement.executeQuery(selectionPeriodes);
 			while (selectionPeriodesResultSet.next()) {
@@ -405,9 +413,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				continue;
 			coursesModifiees.addAll(coursesIdsParTMIds.get(tmId));
 			tmModifiees.add(tmId);
-			String decrochage = "DELETE FROM timetablevehiclejourney WHERE idtableaumarche='"+tmId.longValue()+"' AND idcourse IN "+getSQLList(coursesIdsParTMIds.get(tmId))+";";
+			String decrochage = "DELETE from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE timetableId='"+tmId.longValue()+"' AND vehicleJourneyId IN "+getSQLList(coursesIdsParTMIds.get(tmId))+";";
 			////// TRANSACTIONNELL
-			//String decrochage = "UPDATE timetablevehiclejourney SET tobedeleted='true' WHERE idtableaumarche='"+tmId.longValue()+"' AND idcourse IN "+getSQLList(coursesIdsParTMIds.get(tmId))+";";
+			//String decrochage = "UPDATE timetablevehiclejourney SET tobedeleted='true' WHERE timetableId='"+tmId.longValue()+"' AND vehicleJourneyId IN "+getSQLList(coursesIdsParTMIds.get(tmId))+";";
 			Statement decrochageStatement = connexion.createStatement();
 			int nombreDeCoursesDecrochees = decrochageStatement.executeUpdate(decrochage);
 			logger.debug("INCREMENTAL : NOMBRE DE COURSES DECROCHEES DE LA TM "+tmId.longValue()+" : "+nombreDeCoursesDecrochees+". La difference possede : "+diferenceDates.size()+" dates.");
@@ -420,7 +428,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					break;
 				}
 			if (newTmId == 0 ) {
-				String tmSQL = "SELECT objectid, \"comment\" FROM timetable WHERE id = '"+tmId+"';";
+				String tmSQL = "SELECT objectid, \"comment\" from " + getDatabaseSchema() + ".timetable WHERE id = '"+tmId+"';";
 				Statement tmStatement = connexion.createStatement();
 				ResultSet tmResultSet = tmStatement.executeQuery(tmSQL);
 				if (tmResultSet.next())
@@ -436,9 +444,8 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						diferenceDates = new TreeSet<Date>(diferenceDates);
 						Date first = ((TreeSet<Date>)diferenceDates).first();
 						int position = 0;
-						String dateInsert = "INSERT INTO timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(first)+"', '"+position+"');";
+						String dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(first)+"', '"+position+"');";
 						Statement dateInsertStatement = connexion.createStatement();
-						dateInsertStatement.executeUpdate(dateInsert);
 						position++;
 						Date last = ((TreeSet<Date>)diferenceDates).last();
 						Date date = new Date(first.getTime()+(long)24*(long)60*(long)60*(long)1000);
@@ -450,7 +457,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 								date = new Date(date.getTime()+(long)24*(long)60*(long)60*(long)1000);
 							}
 							value += "1";
-							dateInsert = "INSERT INTO timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
+							dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
 							dateInsertStatement = connexion.createStatement();
 							dateInsertStatement.executeUpdate(dateInsert);
 							position++;
@@ -463,7 +470,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						tmObjectId += firstDate + bigInt + lastDate;
 						String comment = "FROM "+sdf3.format(first)+" TO "+sdf3.format(last) ;
 						String nowDate = sdf2.format(Calendar.getInstance().getTime());
-						String tmInsert = "INSERT INTO timetable(id, objectid, objectversion, creationtime, \"comment\") VALUES ('"+newTmId+"', '"+tmObjectId+"', '1', '"+nowDate+"', '"+comment+"');";
+						String tmInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable(id, objectid, objectversion, creationtime, \"comment\") VALUES ('"+newTmId+"', '"+tmObjectId+"', '1', '"+nowDate+"', '"+comment+"');";
 						Statement tmInsertStatement = connexion.createStatement();
 						tmInsertStatement.executeUpdate(tmInsert);
 						//
@@ -477,7 +484,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			}
 			for (Long coId : coursesIdsParTMIds.get(tmId)) {
 				String idLien = ""+gestionSequence.getNouvelId("tmObjectId");
-				String lienInsert = "INSERT INTO timetablevehiclejourney(id, idtableaumarche, idcourse) VALUES('"+idLien+"', '"+newTmId+"', '"+coId.longValue()+"');";
+				String lienInsert = "INSERT INTO " + getDatabaseSchema() + ".timetablevehiclejourney(id, timetableId, vehicleJourneyId) VALUES('"+idLien+"', '"+newTmId+"', '"+coId.longValue()+"');";
 				Statement lienInsertStatement = connexion.createStatement();
 				lienInsertStatement.executeUpdate(lienInsert);
 			}
@@ -490,9 +497,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (coursesModifiees.size() == 0)
 			return;
 		Set<Long> coursesAEffacer = new HashSet<Long>(coursesModifiees);
-		String coursesAEffacerSQL = "SELECT DISTINCT idcourse FROM timetablevehiclejourney WHERE idcourse IN "+getSQLList(coursesModifiees)+";";
+		String coursesAEffacerSQL = "SELECT DISTINCT vehicleJourneyId from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE vehicleJourneyId IN "+getSQLList(coursesModifiees)+";";
 		////// TRANSACTIONNELL
-		//String coursesAEffacerSQL = "SELECT DISTINCT idcourse FROM timetablevehiclejourney WHERE idcourse IN "+getSQLList(coursesModifiees)+" AND tobedeleted='false';";
+		//String coursesAEffacerSQL = "SELECT DISTINCT vehicleJourneyId FROM timetablevehiclejourney WHERE vehicleJourneyId IN "+getSQLList(coursesModifiees)+" AND tobedeleted='false';";
 		Statement coursesAEffacerSt = connexion.createStatement();
 		ResultSet coursesAEffacerRS = coursesAEffacerSt.executeQuery(coursesAEffacerSQL);
 		while (coursesAEffacerRS.next())
@@ -501,15 +508,15 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (coursesAEffacer.size() == 0)
 			return;
 		// EFFACER LES HORAIRES
-		String effacerHoraire = "DELETE FROM vehicleJourneyatstop WHERE idcourse IN "+getSQLList(coursesAEffacer)+";";
+		String effacerHoraire = "DELETE from " + getDatabaseSchema() + ".vehicleJourneyatstop WHERE vehicleJourneyId IN "+getSQLList(coursesAEffacer)+";";
 		////// TRANSACTIONNELL
-		//String effacerHoraire = "UPDATE vehicleJourneyatstop SET tobedeleted='true' WHERE idcourse IN "+getSQLList(coursesAEffacer)+";";
+		//String effacerHoraire = "UPDATE vehicleJourneyatstop SET tobedeleted='true' WHERE vehicleJourneyId IN "+getSQLList(coursesAEffacer)+";";
 		Statement effacerHoraireSt = connexion.createStatement();
 		effacerHoraireSt.executeUpdate(effacerHoraire);
 		// DETERMINER LES MISSIONS ET LES ITINERAIRES A EFFACER AVANT D'EFFACER LES courses;
 		Set<Long> missionsAeffacer = new HashSet<Long>();
 		Set<Long> itinerairesAeffacer = new HashSet<Long>();
-		String missionItinerrairesSQL = "SELECT iditineraire, idmission FROM vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
+		String missionItinerrairesSQL = "SELECT routeId, journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
 		Statement missionItinerrairesSt = connexion.createStatement();
 		ResultSet missionItinerrairesRS = missionItinerrairesSt.executeQuery(missionItinerrairesSQL);
 		while (missionItinerrairesRS.next()) {
@@ -519,7 +526,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				missionsAeffacer.add(Long.valueOf(missionItinerrairesRS.getObject(2).toString()));
 		}
 		// EFFACER LES COURSES
-		String effacerCourses = "DELETE FROM vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
+		String effacerCourses = "DELETE from " + getDatabaseSchema() + ".vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
 		////// TRANSACTIONNELL
 		//String effacerCourses = "UPDATE vehiclejourney SET tobedeleted='true' WHERE id IN "+getSQLList(coursesAEffacer)+";";
 		Statement effacerCoursesSt = connexion.createStatement();
@@ -531,9 +538,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		// EFFACER LES MISSIONS
 		if (missionsAeffacer.size() > 0) {
 			Set<Long> missionsAeffacer2 = new HashSet<Long>();
-			String missionsSQL = "SELECT idmission FROM vehiclejourney WHERE idmission IN "+getSQLList(missionsAeffacer)+";";
+			String missionsSQL = "SELECT journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE journeyPatternId IN "+getSQLList(missionsAeffacer)+";";
 			////// TRANSACTIONNELL
-			//String missionsSQL = "SELECT idmission FROM vehiclejourney WHERE idmission IN "+getSQLList(missionsAeffacer)+" AND tobedeleted='false';";
+			//String missionsSQL = "SELECT journeyPatternId FROM vehiclejourney WHERE journeyPatternId IN "+getSQLList(missionsAeffacer)+" AND tobedeleted='false';";
 			Statement missionsSt = connexion.createStatement();
 			ResultSet missionsRS = missionsSt.executeQuery(missionsSQL);
 			while (missionsRS.next())
@@ -542,7 +549,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			missionsAeffacer.removeAll(missionsAeffacer2);
 		}
 		if (missionsAeffacer.size() > 0) {
-			String effacerMissions = "DELETE FROM journeypattern WHERE id IN "+getSQLList(missionsAeffacer)+";";
+			String effacerMissions = "DELETE from " + getDatabaseSchema() + ".journeypattern WHERE id IN "+getSQLList(missionsAeffacer)+";";
 			////// TRANSACTIONNELL
 			//String effacerMissions = "UPDATE journeypattern SET tobedeleted='true' WHERE id IN "+getSQLList(missionsAeffacer)+";";
 			Statement effacerMissionsSt = connexion.createStatement();
@@ -551,9 +558,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		// EFFACER LES ITINERAIRES ET LEURS ARRETS ET HORAIRES
 		if (itinerairesAeffacer.size() > 0) {
 			Set<Long> itinerairesAeffacer2 = new HashSet<Long>();
-			String itinerairesSQL = "SELECT iditineraire FROM vehiclejourney WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			String itinerairesSQL = "SELECT routeId from " + getDatabaseSchema() + ".vehiclejourney WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			////// TRANSACTIONNELL
-			//String itinerairesSQL = "SELECT iditineraire FROM vehiclejourney WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+" AND tobedeleted='false';";
+			//String itinerairesSQL = "SELECT routeId FROM vehiclejourney WHERE routeId IN "+getSQLList(itinerairesAeffacer)+" AND tobedeleted='false';";
 			Statement itinerairesSt = connexion.createStatement();
 			ResultSet itinerairesRS = itinerairesSt.executeQuery(itinerairesSQL);
 			while (itinerairesRS.next())
@@ -563,7 +570,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		Set<Long> arretsAEffacer = new HashSet<Long>();
 		if (itinerairesAeffacer.size() > 0) {
-			String arretsSQL = "SELECT id FROM stoppoint WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			String arretsSQL = "SELECT id from " + getDatabaseSchema() + ".stoppoint WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			Statement arretsSt = connexion.createStatement();
 			ResultSet arretsRS = arretsSt.executeQuery(arretsSQL);
 			while (arretsRS.next())
@@ -571,20 +578,20 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					arretsAEffacer.add(Long.valueOf(arretsRS.getObject(1).toString()));
 		}
 		if (arretsAEffacer.size() > 0) {
-			String horairesSQL = "DELETE FROM vehiclejourneyatstop WHERE idarret IN "+getSQLList(arretsAEffacer)+";";
+			String horairesSQL = "DELETE from " + getDatabaseSchema() + ".vehiclejourneyatstop WHERE stopPointId IN "+getSQLList(arretsAEffacer)+";";
 			////// TRANSACTIONNELL
-			//String horairesSQL = "UPDATE vehiclejourneyatstop SET tobedeleted='true' WHERE idarret IN "+getSQLList(arretsAEffacer)+";";
+			//String horairesSQL = "UPDATE vehiclejourneyatstop SET tobedeleted='true' WHERE stopPointId IN "+getSQLList(arretsAEffacer)+";";
 			Statement horairesSt = connexion.createStatement();
 			if (horairesSt.executeUpdate(horairesSQL) > 0)
 				logger.error("CES HORAIRES AURAIENT DUS ETRE DEJA EFFACES !!");
 		}
 		if (itinerairesAeffacer.size() > 0) {
-			String arretsSQL = "DELETE FROM stoppoint WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			String arretsSQL = "DELETE from " + getDatabaseSchema() + ".stoppoint WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			////// TRANSACTIONNELL
-			//String arretsSQL = "UPDATE stoppoint SET tobedeleted='true' WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			//String arretsSQL = "UPDATE stoppoint SET tobedeleted='true' WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			Statement arretsSt = connexion.createStatement();
 			arretsSt.executeUpdate(arretsSQL);
-			String itiSQL = "DELETE FROM route WHERE id IN "+getSQLList(itinerairesAeffacer)+";";
+			String itiSQL = "DELETE from " + getDatabaseSchema() + ".route WHERE id IN "+getSQLList(itinerairesAeffacer)+";";
 			////// TRANSACTIONNELL
 			//String itiSQL = "UPDATE route SET tobedeleted='true' WHERE id IN "+getSQLList(itinerairesAeffacer)+";";
 			logger.debug("ITINERAIRES EFFACES : "+getSQLList(itinerairesAeffacer));
@@ -596,9 +603,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (tmModifiees.size() == 0)
 			return;
 		Set<Long> tmAEffacer = new HashSet<Long>(tmModifiees);
-		String tmAEffacerSQL = "SELECT DISTINCT idtableaumarche FROM timetablevehiclejourney WHERE idtableaumarche IN "+getSQLList(tmModifiees)+";";
+		String tmAEffacerSQL = "SELECT DISTINCT timetableId from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE timetableId IN "+getSQLList(tmModifiees)+";";
 		////// TRANSACTIONNELL
-		//String coursesAEffacerSQL = "SELECT DISTINCT idtableaumarche FROM timetablevehiclejourney WHERE idtableaumarche IN "+getSQLList(tmModifiees)+" AND tobedeleted='false';";
+		//String coursesAEffacerSQL = "SELECT DISTINCT timetableId FROM timetablevehiclejourney WHERE timetableId IN "+getSQLList(tmModifiees)+" AND tobedeleted='false';";
 		Statement tmAEffacerSt = connexion.createStatement();
 		ResultSet tmAEffacerRS = tmAEffacerSt.executeQuery(tmAEffacerSQL);
 		while (tmAEffacerRS.next())
@@ -606,17 +613,17 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				tmAEffacer.remove(tmAEffacerRS.getLong(1));
 		if (tmAEffacer.size() == 0)
 			return;
-		final String effacerDateSQL = "DELETE FROM timetable_date WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
+		final String effacerDateSQL = "DELETE from " + getDatabaseSchema() + ".timetable_date WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		////// TRANSACTIONNELL
 		//final String effacerDateSQL = "UPDATE timetable_date SET tobedeleted='true' WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		final Statement effacerDateSt = connexion.createStatement();
 		effacerDateSt.executeUpdate(effacerDateSQL);
-		final String effacerPeriodSQL = "DELETE FROM timetable_period WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
+		final String effacerPeriodSQL = "DELETE from " + getDatabaseSchema() + ".timetable_period WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		////// TRANSACTIONNELL
 		//final String effacerPeriodSQL = "UPDATE timetable_period SET tobedeleted='true' WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		final Statement effacerPeriodSt = connexion.createStatement();
 		effacerPeriodSt.executeUpdate(effacerPeriodSQL);
-		String effacerTM = "DELETE FROM timetable WHERE id IN "+getSQLList(tmAEffacer)+";";
+		String effacerTM = "DELETE from " + getDatabaseSchema() + ".timetable WHERE id IN "+getSQLList(tmAEffacer)+";";
 		////// TRANSACTIONNELL
 		//String effacerTM = "UPDATE timetable SET tobedeleted='true' WHERE id IN "+getSQLList(tmAEffacer)+";";
 		Statement effacerTMSt = connexion.createStatement();
@@ -637,7 +644,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Map<Long, Set<Long>> coursesIdsParItinerairesId  = new HashMap<Long, Set<Long>>();
 		Map<Long, Set<Long>> missionsIdsParItinerairesId = new HashMap<Long, Set<Long>>();
 		Map<Long, Set<Long>> coursesIdsParMissionsId     = new HashMap<Long, Set<Long>>();
-		String    selectionItineraires = "SELECT id FROM route WHERE idligne='"+idLigne+"';";
+		String    selectionItineraires = "SELECT id from " + getDatabaseSchema() + ".route WHERE lineId='"+idLigne+"';";
 		Statement selectionItinerairesStatement = connexion.createStatement();
 		ResultSet selectionItinerairesResultSet = selectionItinerairesStatement.executeQuery(selectionItineraires);
 		while (selectionItinerairesResultSet.next()) {
@@ -648,7 +655,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			oldItinerairesIds.add(idItineraire);
 			coursesIdsParItinerairesId.put(idItineraire, new HashSet<Long>());
 			missionsIdsParItinerairesId.put(idItineraire, new HashSet<Long>());
-			String selectionCourses = "SELECT id, idmission FROM vehiclejourney WHERE iditineraire='"+idItineraireSt+"';";
+			String selectionCourses = "SELECT id, journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE routeId='"+idItineraireSt+"';";
 			Statement selectionCoursesStatement = connexion.createStatement();
 			ResultSet selectionCoursesResultSet = selectionCoursesStatement.executeQuery(selectionCourses);
 			while (selectionCoursesResultSet.next()) {
@@ -675,7 +682,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Set<Long>            oldTMIds           = new HashSet<Long>();
 		Map<Long, Set<Date>> datesParTMIds      = new HashMap<Long, Set<Date>>();
 		Map<Long, Set<Long>> coursesIdsParTMIds = new HashMap<Long, Set<Long>>();
-		String selectionTMs = "SELECT idtableaumarche, idcourse FROM timetablevehiclejourney WHERE idcourse IN "+getSQLList(oldCoursesIds)+";";
+		String selectionTMs = "SELECT timetableId, vehicleJourneyId from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE vehicleJourneyId IN "+getSQLList(oldCoursesIds)+";";
 		Statement selectionTMsStatement = connexion.createStatement();
 		ResultSet selectionTMsResultSet = selectionTMsStatement.executeQuery(selectionTMs);
 		while (selectionTMsResultSet.next()) {
@@ -694,7 +701,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		for (Long tmId : oldTMIds) {
 			datesParTMIds.put(tmId, new HashSet<Date>());
-			String selectionDates = "SELECT date FROM timetable_date WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionDates = "SELECT date from " + getDatabaseSchema() + ".timetable_date WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionDatesStatement = connexion.createStatement();
 			ResultSet selectionDatesResultSet = selectionDatesStatement.executeQuery(selectionDates);
 			while (selectionDatesResultSet.next()) {
@@ -702,7 +709,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					continue;
 				datesParTMIds.get(tmId).add(selectionDatesResultSet.getDate(1));
 			}
-			String selectionPeriodes = "SELECT debut, fin, (SELECT intdaytypes FROM timetable WHERE id=timetableid) FROM timetable_period WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionPeriodes = "SELECT periodStart, periodEnd, (SELECT intdaytypes from " + getDatabaseSchema() + ".timetable WHERE id=timetableid) from " + getDatabaseSchema() + ".timetable_period WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionPeriodesStatement = connexion.createStatement();
 			ResultSet selectionPeriodesResultSet = selectionPeriodesStatement.executeQuery(selectionPeriodes);
 			while (selectionPeriodesResultSet.next()) {
@@ -720,7 +727,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		
 		Map<Long, Set<Date>> tousDatesParTMIds      = new HashMap<Long, Set<Date>>();
-		String selectionTousTMs = "SELECT id FROM timetable;";
+		String selectionTousTMs = "SELECT id from " + getDatabaseSchema() + ".timetable;";
 		Statement selectionTousTMsStatement = connexion.createStatement();
 		ResultSet selectionTousTMsResultSet = selectionTousTMsStatement.executeQuery(selectionTousTMs);
 		while (selectionTousTMsResultSet.next()) {
@@ -728,7 +735,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				continue;
 			Long tmId = selectionTousTMsResultSet.getLong(1);
 			tousDatesParTMIds.put(tmId, new HashSet<Date>());
-			String selectionDates = "SELECT date FROM timetable_date WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionDates = "SELECT date from " + getDatabaseSchema() + ".timetable_date WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionDatesStatement = connexion.createStatement();
 			ResultSet selectionDatesResultSet = selectionDatesStatement.executeQuery(selectionDates);
 			while (selectionDatesResultSet.next()) {
@@ -736,7 +743,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					continue;
 				tousDatesParTMIds.get(tmId).add(selectionDatesResultSet.getDate(1));
 			}
-			String selectionPeriodes = "SELECT debut, fin, (SELECT intdaytypes FROM timetable WHERE id=timetableid) FROM timetable_period WHERE timetableid = '"+tmId.toString()+"';";
+			String selectionPeriodes = "SELECT periodStart, periodEnd, (SELECT intdaytypes from " + getDatabaseSchema() + ".timetable WHERE id=timetableid) from " + getDatabaseSchema() + ".timetable_period WHERE timetableid = '"+tmId.toString()+"';";
 			Statement selectionPeriodesStatement = connexion.createStatement();
 			ResultSet selectionPeriodesResultSet = selectionPeriodesStatement.executeQuery(selectionPeriodes);
 			while (selectionPeriodesResultSet.next()) {
@@ -753,7 +760,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			}
 		}
 		
-		String correction = "UPDATE timetablevehiclejourney SET tobedeleted='false';";
+		String correction = "UPDATE " + getDatabaseSchema() + ".timetablevehiclejourney SET tobedeleted='false';";
 		Statement correctionStatement = connexion.createStatement();
 		correctionStatement.executeUpdate(correction);
 		
@@ -775,7 +782,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				continue;
 			coursesModifiees.addAll(coursesIdsParTMIds.get(tmId));
 			tmModifiees.add(tmId);
-			String decrochage = "UPDATE timetablevehiclejourney SET tobedeleted='true' WHERE idtableaumarche='"+tmId.longValue()+"' AND idcourse IN "+getSQLList(coursesIdsParTMIds.get(tmId))+";";
+			String decrochage = "UPDATE " + getDatabaseSchema() + ".timetablevehiclejourney SET tobedeleted='true' WHERE timetableId='"+tmId.longValue()+"' AND vehicleJourneyId IN "+getSQLList(coursesIdsParTMIds.get(tmId))+";";
 			Statement decrochageStatement = connexion.createStatement();
 			int nombreDeCoursesDecrochees = decrochageStatement.executeUpdate(decrochage);
 			logger.debug("INCREMENTAL : NOMBRE DE COURSES DECROCHEES DE LA TM "+tmId.longValue()+" : "+nombreDeCoursesDecrochees+". La difference possede : "+diferenceDates.size()+" dates.");
@@ -788,7 +795,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					break;
 				}
 			if (newTmId == 0 ) {
-				String tmSQL = "SELECT objectid, \"comment\" FROM timetable WHERE id = '"+tmId+"';";
+				String tmSQL = "SELECT objectid, \"comment\" from " + getDatabaseSchema() + ".timetable WHERE id = '"+tmId+"';";
 				Statement tmStatement = connexion.createStatement();
 				ResultSet tmResultSet = tmStatement.executeQuery(tmSQL);
 				if (tmResultSet.next())
@@ -801,7 +808,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						diferenceDates = new TreeSet<Date>(diferenceDates);
 						Date first = ((TreeSet<Date>)diferenceDates).first();
 						int position = 0;
-						String dateInsert = "INSERT INTO timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(first)+"', '"+position+"');";
+						String dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(first)+"', '"+position+"');";
 						Statement dateInsertStatement = connexion.createStatement();
 						dateInsertStatement.executeUpdate(dateInsert);
 						position++;
@@ -815,7 +822,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 								date = new Date(date.getTime()+(long)24*(long)60*(long)60*(long)1000);
 							}
 							value += "1";
-							dateInsert = "INSERT INTO timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
+							dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
 							dateInsertStatement = connexion.createStatement();
 							dateInsertStatement.executeUpdate(dateInsert);
 							position++;
@@ -828,7 +835,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						tmObjectId += firstDate + bigInt + lastDate;
 						String comment = "FROM "+sdf3.format(first)+" TO "+sdf3.format(last) ;
 						String nowDate = sdf2.format(Calendar.getInstance().getTime());
-						String tmInsert = "INSERT INTO timetable(id, objectid, objectversion, creationtime, \"comment\") VALUES ('"+newTmId+"', '"+tmObjectId+"', '1', '"+nowDate+"', '"+comment+"');";
+						String tmInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable(id, objectid, objectversion, creationtime, \"comment\") VALUES ('"+newTmId+"', '"+tmObjectId+"', '1', '"+nowDate+"', '"+comment+"');";
 						Statement tmInsertStatement = connexion.createStatement();
 						tmInsertStatement.executeUpdate(tmInsert);
 					}
@@ -839,7 +846,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			}
 			for (Long coId : coursesIdsParTMIds.get(tmId)) {
 				String idLien = ""+gestionSequence.getNouvelId("tmObjectId");
-				String lienInsert = "INSERT INTO timetablevehiclejourney(id, idtableaumarche, idcourse) VALUES('"+idLien+"', '"+newTmId+"', '"+coId.longValue()+"');";
+				String lienInsert = "INSERT INTO " + getDatabaseSchema() + ".timetablevehiclejourney(id, timetableId, vehicleJourneyId) VALUES('"+idLien+"', '"+newTmId+"', '"+coId.longValue()+"');";
 				Statement lienInsertStatement = connexion.createStatement();
 				lienInsertStatement.executeUpdate(lienInsert);
 			}
@@ -852,9 +859,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (coursesModifiees.size() == 0)
 			return;
 		Set<Long> coursesAEffacer = new HashSet<Long>(coursesModifiees);
-		String coursesAEffacerSQL = "SELECT DISTINCT idcourse FROM timetablevehiclejourney WHERE idcourse IN "+getSQLList(coursesModifiees)+";";
+		String coursesAEffacerSQL = "SELECT DISTINCT vehicleJourneyId from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE vehicleJourneyId IN "+getSQLList(coursesModifiees)+";";
 		////// TRANSACTIONNELL
-		//String coursesAEffacerSQL = "SELECT DISTINCT idcourse FROM timetablevehiclejourney WHERE idcourse IN "+getSQLList(coursesModifiees)+" AND tobedeleted='false';";
+		//String coursesAEffacerSQL = "SELECT DISTINCT vehicleJourneyId FROM timetablevehiclejourney WHERE vehicleJourneyId IN "+getSQLList(coursesModifiees)+" AND tobedeleted='false';";
 		Statement coursesAEffacerSt = connexion.createStatement();
 		ResultSet coursesAEffacerRS = coursesAEffacerSt.executeQuery(coursesAEffacerSQL);
 		while (coursesAEffacerRS.next())
@@ -863,15 +870,15 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (coursesAEffacer.size() == 0)
 			return;
 		// EFFACER LES HORAIRES
-		String effacerHoraire = "DELETE FROM vehicleJourneyatstop WHERE idcourse IN "+getSQLList(coursesAEffacer)+";";
+		String effacerHoraire = "DELETE from " + getDatabaseSchema() + ".vehicleJourneyatstop WHERE vehicleJourneyId IN "+getSQLList(coursesAEffacer)+";";
 		////// TRANSACTIONNELL
-		//String effacerHoraire = "UPDATE vehicleJourneyatstop SET tobedeleted='true' WHERE idcourse IN "+getSQLList(coursesAEffacer)+";";
+		//String effacerHoraire = "UPDATE vehicleJourneyatstop SET tobedeleted='true' WHERE vehicleJourneyId IN "+getSQLList(coursesAEffacer)+";";
 		Statement effacerHoraireSt = connexion.createStatement();
 		effacerHoraireSt.executeUpdate(effacerHoraire);
 		// DETERMINER LES MISSIONS ET LES ITINERAIRES A EFFACER AVANT D'EFFACER LES courses;
 		Set<Long> missionsAeffacer = new HashSet<Long>();
 		Set<Long> itinerairesAeffacer = new HashSet<Long>();
-		String missionItinerrairesSQL = "SELECT iditineraire, idmission FROM vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
+		String missionItinerrairesSQL = "SELECT routeId, journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
 		Statement missionItinerrairesSt = connexion.createStatement();
 		ResultSet missionItinerrairesRS = missionItinerrairesSt.executeQuery(missionItinerrairesSQL);
 		while (missionItinerrairesRS.next()) {
@@ -881,7 +888,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				missionsAeffacer.add(Long.valueOf(missionItinerrairesRS.getObject(2).toString()));
 		}
 		// EFFACER LES COURSES
-		String effacerCourses = "DELETE FROM vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
+		String effacerCourses = "DELETE from " + getDatabaseSchema() + ".vehiclejourney WHERE id IN "+getSQLList(coursesAEffacer)+";";
 		////// TRANSACTIONNELL
 		//String effacerCourses = "UPDATE vehiclejourney SET tobedeleted='true' WHERE id IN "+getSQLList(coursesAEffacer)+";";
 		Statement effacerCoursesSt = connexion.createStatement();
@@ -893,9 +900,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		// EFFACER LES MISSIONS
 		if (missionsAeffacer.size() > 0) {
 			Set<Long> missionsAeffacer2 = new HashSet<Long>();
-			String missionsSQL = "SELECT idmission FROM vehiclejourney WHERE idmission IN "+getSQLList(missionsAeffacer)+";";
+			String missionsSQL = "SELECT journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE journeyPatternId IN "+getSQLList(missionsAeffacer)+";";
 			////// TRANSACTIONNELL
-			//String missionsSQL = "SELECT idmission FROM vehiclejourney WHERE idmission IN "+getSQLList(missionsAeffacer)+" AND tobedeleted='false';";
+			//String missionsSQL = "SELECT journeyPatternId FROM vehiclejourney WHERE journeyPatternId IN "+getSQLList(missionsAeffacer)+" AND tobedeleted='false';";
 			Statement missionsSt = connexion.createStatement();
 			ResultSet missionsRS = missionsSt.executeQuery(missionsSQL);
 			while (missionsRS.next())
@@ -904,7 +911,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			missionsAeffacer.removeAll(missionsAeffacer2);
 		}
 		if (missionsAeffacer.size() > 0) {
-			String effacerMissions = "DELETE FROM journeypattern WHERE id IN "+getSQLList(missionsAeffacer)+";";
+			String effacerMissions = "DELETE from " + getDatabaseSchema() + ".journeypattern WHERE id IN "+getSQLList(missionsAeffacer)+";";
 			////// TRANSACTIONNELL
 			//String effacerMissions = "UPDATE journeypattern SET tobedeleted='true' WHERE id IN "+getSQLList(missionsAeffacer)+";";
 			Statement effacerMissionsSt = connexion.createStatement();
@@ -913,9 +920,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		// EFFACER LES ITINERAIRES ET LEURS ARRETS ET HORAIRES
 		if (itinerairesAeffacer.size() > 0) {
 			Set<Long> itinerairesAeffacer2 = new HashSet<Long>();
-			String itinerairesSQL = "SELECT iditineraire FROM vehiclejourney WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			String itinerairesSQL = "SELECT routeId from " + getDatabaseSchema() + ".vehiclejourney WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			////// TRANSACTIONNELL
-			//String itinerairesSQL = "SELECT iditineraire FROM vehiclejourney WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+" AND tobedeleted='false';";
+			//String itinerairesSQL = "SELECT routeId FROM vehiclejourney WHERE routeId IN "+getSQLList(itinerairesAeffacer)+" AND tobedeleted='false';";
 			Statement itinerairesSt = connexion.createStatement();
 			ResultSet itinerairesRS = itinerairesSt.executeQuery(itinerairesSQL);
 			while (itinerairesRS.next())
@@ -925,7 +932,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		Set<Long> arretsAEffacer = new HashSet<Long>();
 		if (itinerairesAeffacer.size() > 0) {
-			String arretsSQL = "SELECT id FROM stoppoint WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			String arretsSQL = "SELECT id from " + getDatabaseSchema() + ".stoppoint WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			Statement arretsSt = connexion.createStatement();
 			ResultSet arretsRS = arretsSt.executeQuery(arretsSQL);
 			while (arretsRS.next())
@@ -933,20 +940,20 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 					arretsAEffacer.add(Long.valueOf(arretsRS.getObject(1).toString()));
 		}
 		if (arretsAEffacer.size() > 0) {
-			String horairesSQL = "DELETE FROM vehiclejourneyatstop WHERE idarret IN "+getSQLList(arretsAEffacer)+";";
+			String horairesSQL = "DELETE from " + getDatabaseSchema() + ".vehiclejourneyatstop WHERE stopPointId IN "+getSQLList(arretsAEffacer)+";";
 			////// TRANSACTIONNELL
-			//String horairesSQL = "UPDATE vehiclejourneyatstop SET tobedeleted='true' WHERE idarret IN "+getSQLList(arretsAEffacer)+";";
+			//String horairesSQL = "UPDATE vehiclejourneyatstop SET tobedeleted='true' WHERE stopPointId IN "+getSQLList(arretsAEffacer)+";";
 			Statement horairesSt = connexion.createStatement();
 			if (horairesSt.executeUpdate(horairesSQL) > 0)
 				logger.error("CES HORAIRES AURAIENT DUS ETRE DEJA EFFACES !!");
 		}
 		if (itinerairesAeffacer.size() > 0) {
-			String arretsSQL = "DELETE FROM stoppoint WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			String arretsSQL = "DELETE from " + getDatabaseSchema() + ".stoppoint WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			////// TRANSACTIONNELL
-			//String arretsSQL = "UPDATE stoppoint SET tobedeleted='true' WHERE iditineraire IN "+getSQLList(itinerairesAeffacer)+";";
+			//String arretsSQL = "UPDATE stoppoint SET tobedeleted='true' WHERE routeId IN "+getSQLList(itinerairesAeffacer)+";";
 			Statement arretsSt = connexion.createStatement();
 			arretsSt.executeUpdate(arretsSQL);
-			String itiSQL = "DELETE FROM route WHERE id IN "+getSQLList(itinerairesAeffacer)+";";
+			String itiSQL = "DELETE from " + getDatabaseSchema() + ".route WHERE id IN "+getSQLList(itinerairesAeffacer)+";";
 			////// TRANSACTIONNELL
 			//String itiSQL = "UPDATE route SET tobedeleted='true' WHERE id IN "+getSQLList(itinerairesAeffacer)+";";
 			logger.debug("ITINERAIRES EFFACES : "+getSQLList(itinerairesAeffacer));
@@ -958,9 +965,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (tmModifiees.size() == 0)
 			return;
 		Set<Long> tmAEffacer = new HashSet<Long>(tmModifiees);
-		String tmAEffacerSQL = "SELECT DISTINCT idtableaumarche FROM timetablevehiclejourney WHERE idtableaumarche IN "+getSQLList(tmModifiees)+";";
+		String tmAEffacerSQL = "SELECT DISTINCT timetableId from " + getDatabaseSchema() + ".timetablevehiclejourney WHERE timetableId IN "+getSQLList(tmModifiees)+";";
 		////// TRANSACTIONNELL
-		//String coursesAEffacerSQL = "SELECT DISTINCT idtableaumarche FROM timetablevehiclejourney WHERE idtableaumarche IN "+getSQLList(tmModifiees)+" AND tobedeleted='false';";
+		//String coursesAEffacerSQL = "SELECT DISTINCT timetableId FROM timetablevehiclejourney WHERE timetableId IN "+getSQLList(tmModifiees)+" AND tobedeleted='false';";
 		Statement tmAEffacerSt = connexion.createStatement();
 		ResultSet tmAEffacerRS = tmAEffacerSt.executeQuery(tmAEffacerSQL);
 		while (tmAEffacerRS.next())
@@ -968,17 +975,17 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				tmAEffacer.remove(tmAEffacerRS.getLong(1));
 		if (tmAEffacer.size() == 0)
 			return;
-		final String effacerDateSQL = "DELETE FROM timetable_date WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
+		final String effacerDateSQL = "DELETE from " + getDatabaseSchema() + ".timetable_date WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		////// TRANSACTIONNELL
 		//final String effacerDateSQL = "UPDATE timetable_date SET tobedeleted='true' WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		final Statement effacerDateSt = connexion.createStatement();
 		effacerDateSt.executeUpdate(effacerDateSQL);
-		final String effacerPeriodSQL = "DELETE FROM timetable_period WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
+		final String effacerPeriodSQL = "DELETE from " + getDatabaseSchema() + ".timetable_period WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		////// TRANSACTIONNELL
 		//final String effacerPeriodSQL = "UPDATE timetable_period SET tobedeleted='true' WHERE timetableid IN "+getSQLList(tmAEffacer)+";";
 		final Statement effacerPeriodSt = connexion.createStatement();
 		effacerPeriodSt.executeUpdate(effacerPeriodSQL);
-		String effacerTM = "DELETE FROM timetable WHERE id IN "+getSQLList(tmAEffacer)+";";
+		String effacerTM = "DELETE from " + getDatabaseSchema() + ".timetable WHERE id IN "+getSQLList(tmAEffacer)+";";
 		////// TRANSACTIONNELL
 		//String effacerTM = "UPDATE timetable SET tobedeleted='true' WHERE id IN "+getSQLList(tmAEffacer)+";";
 		Statement effacerTMSt = connexion.createStatement();
@@ -1135,7 +1142,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (itineraires != null)
 			for (Itineraire itineraire : itineraires)
 				objectIdItineraires.add(itineraire.getObjectId());
-		final String selectionItineraires = "SELECT r.objectid, r.id FROM route r;";
+		final String selectionItineraires = "SELECT r.objectid, r.id from " + getDatabaseSchema() + ".route r;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionItineraires);
 		final Map<String, Long> exItineraireIdParObjectId = new Hashtable<String, Long>();
@@ -1158,7 +1165,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (missions != null)
 			for (Mission mission : missions)
 				objectIdMissions.add(mission.getObjectId());
-		final String selectionMissions = "SELECT j.objectid, j.id FROM journeypattern j;";
+		final String selectionMissions = "SELECT j.objectid, j.id from " + getDatabaseSchema() + ".journeypattern j;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionMissions);
 		final Map<String, Long> exMissionIdParObjectId = new Hashtable<String, Long>();
@@ -1180,7 +1187,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (courses != null)
 			for (Course course : courses)
 				objectIdCourses.add(course.getObjectId());
-		final String selectionCourses = "SELECT v.objectid, v.id FROM vehiclejourney v;";
+		final String selectionCourses = "SELECT v.objectid, v.id from " + getDatabaseSchema() + ".vehiclejourney v;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionCourses);
 		final Map<String, Long> exCourseIdParObjectId = new Hashtable<String, Long>();
@@ -1203,7 +1210,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		if (arrets != null)
 			for (ArretItineraire arret : arrets)
 				objectIdArrets.add(arret.getObjectId());
-		final String selectionArrets = "SELECT s.objectid, s.id, s.position FROM stoppoint s;";
+		final String selectionArrets = "SELECT s.objectid, s.id, s.position from " + getDatabaseSchema() + ".stoppoint s;";
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionArrets);
 		final Map<String, Long> exArretIdParObjectId = new Hashtable<String, Long>();
@@ -1253,5 +1260,13 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		etatDifference.setNvObjectIdArret(objIdArretsNouvelles);
 		if (msg.length() > 0)
 			throw new SQLException(msg);
+	}
+
+	public void setDatabaseSchema(String databaseShema) {
+		this.databaseSchema = databaseShema;
+	}
+
+	public String getDatabaseSchema() {
+		return databaseSchema;
 	}
 }

@@ -23,7 +23,7 @@
     <id column="id" name="id" type="long">
       <generator class="native"/>
     </id>
-    <property column="idTableauMarche" name="idTableauMarche"/>
-    <property column="idCourse" name="idCourse"/>
+    <property column="timetableId" name="idTableauMarche"/>
+    <property column="vehicleJourneyId" name="idCourse"/>
   </class>
 </hibernate-mapping>

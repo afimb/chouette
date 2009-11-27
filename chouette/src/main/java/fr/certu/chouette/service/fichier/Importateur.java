@@ -10,12 +10,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 
 public class Importateur implements IImportateur {
 	
 	private static final Logger                  logger              = Logger.getLogger(Importateur.class);
-	private              DriverManagerDataSource managerDataSource;
+	private              ChouetteDriverManagerDataSource managerDataSource;
 	private              IProducteurFichier      producteurFichier;
 	private              IAnalyseurEtatInitial   analyseurEtatInitial;
 	private              IChargeur               chargeur;
@@ -81,7 +81,7 @@ public class Importateur implements IImportateur {
 		this.producteurFichier = producteurFichier;
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 	

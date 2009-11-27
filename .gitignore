@@ -1,0 +1,16 @@
+apres_import.xml
+.classpath
+echange_chouette_aleatoire.xml
+.externalToolBuilders
+maven-eclipse.xml
+Myapres_import0.xml
+Myorigine0.xml
+origine.xml
+.project
+.settings
+validationLog.txt
+target
+*~
+*.log
+.metadata
+Servers

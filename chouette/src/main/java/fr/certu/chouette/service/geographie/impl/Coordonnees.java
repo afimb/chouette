@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import fr.certu.chouette.service.geographie.ICoordonnees;
 
 public class Coordonnees implements ICoordonnees {
 	
 	private static final Logger                  logger             = Logger.getLogger(Coordonnees.class);
-	private              DriverManagerDataSource managerDataSource;
+	private              ChouetteDriverManagerDataSource managerDataSource;
 	
 	public void calculBarycentre() {
 		Connection connexion = null;
@@ -31,7 +31,7 @@ public class Coordonnees implements ICoordonnees {
 			connexion = DriverManager.getConnection(managerDataSource.getUrl(), props);
 			connexion.setAutoCommit(false);
 			
-			String selection = "SELECT id, idparent, longitude, latitude FROM stoparea WHERE (areatype = 'BoardingPosition') OR (areatype = 'Quay');";
+			String selection = "SELECT id, parentId, longitude, latitude FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE (areatype = 'BoardingPosition') OR (areatype = 'Quay');";
 			Statement sqlStatement = connexion.createStatement();
 			ResultSet rs = sqlStatement.executeQuery(selection);
 			int rsCount = 0;
@@ -78,7 +78,7 @@ public class Coordonnees implements ICoordonnees {
 					latitude += _latitude.doubleValue();
 				}
 				latitude = latitude / ((double)latitudes.get(key).size());
-				String update = "UPDATE stoparea SET longitude = '"+longitude+"', latitude = '"+latitude+"', longlattype= 'WGS84' WHERE id ='"+key.longValue()+"';";
+				String update = "UPDATE " + managerDataSource.getDatabaseSchema() + ".stoparea SET longitude = '"+longitude+"', latitude = '"+latitude+"', longlattype= 'WGS84' WHERE id ='"+key.longValue()+"';";
 				Statement updateStatement = connexion.createStatement();
 				int number = updateStatement.executeUpdate(update);
 				bigNumber += number;
@@ -108,7 +108,7 @@ public class Coordonnees implements ICoordonnees {
 		}
 	}
 	
-	public void setManagerDataSource(DriverManagerDataSource managerDataSource) {
+	public void setManagerDataSource(ChouetteDriverManagerDataSource managerDataSource) {
 		this.managerDataSource = managerDataSource;
 	}
 }

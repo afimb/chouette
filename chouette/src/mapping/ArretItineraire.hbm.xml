@@ -21,13 +21,13 @@
  Version : $Revision: 1.2 $
 -->
 <hibernate-mapping>
-  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint">
+  <class dynamic-insert="false" name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint">
     <id column="id" name="id" type="long">
       <generator class="native"/>
     </id>
-    <property column="idItineraire" name="idItineraire"/>
-    <property column="idPhysique" name="idPhysique"/>
-    <property column="modifie" name="modifie"/>
+    <property column="routeId" name="idItineraire"/>
+    <property column="stopAreaId" name="idPhysique"/>
+    <property column="isModified" name="modifie"/>
     <property column="position" name="position" type="int"/>
     <property column="objectId" name="objectId" type="string" unique="true"/>
     <property column="objectVersion" name="objectVersion" type="int"/>
