@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <s:include value="/jsp/commun/scriptaculous.jsp" />
@@ -56,7 +57,7 @@
 </div>
 
 <%-- Zones depart --%>
-<div class="panelDataSection"><s:text name="Départ"/></div>
+<div class="panelDataSection"><s:text name="DÃ©part"/></div>
 <div class="panel" id="displaytag"> 
   <s:if test="id != null">
     <table>
@@ -102,8 +103,8 @@
   </s:if>
 </div>	
 
-<%-- Zones arrivée --%>
-<div class="panelDataSection"><s:text name="Arrivée"/></div>	
+<%-- Zones arrivÃ©e --%>
+<div class="panelDataSection"><s:text name="ArrivÃ©e"/></div>	
 <div class="panel" id="displaytag">
   <s:if test="id != null">
     <table>

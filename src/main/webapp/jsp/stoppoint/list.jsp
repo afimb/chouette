@@ -1,32 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
-<head>
+<s:include value="/jsp/commun/scriptaculous.jsp" />
 
-  <s:include value="/jsp/commun/scriptaculous.jsp" />
+<SCRIPT type="text/javascript" >
 
-  <SCRIPT type="text/javascript" >
-
-    var trSelectionne = undefined;
+  var trSelectionne = undefined;
 			 
-    function initialiserFusionArret(idArretSource, noeudSelectionne)
-    {
-      if (trSelectionne != undefined) $(trSelectionne).removeClassName('selected');
-      trSelectionne = noeudSelectionne.parentNode.parentNode;
-      $(trSelectionne).addClassName('selected');
-      $('idArretSource').value = idArretSource;
-      $('fusionnerArret').show();
-    }
+  function initialiserFusionArret(idArretSource, noeudSelectionne)
+  {
+    if (trSelectionne != undefined) $(trSelectionne).removeClassName('selected');
+    trSelectionne = noeudSelectionne.parentNode.parentNode;
+    $(trSelectionne).addClassName('selected');
+    $('idArretSource').value = idArretSource;
+    $('fusionnerArret').show();
+  }
 	 
-    function annulerFusionArret()
-    {
-      $('fusionnerArret').hide();
-      $(trSelectionne).removeClassName('selected');
-    }
+  function annulerFusionArret()
+  {
+    $('fusionnerArret').hide();
+    $(trSelectionne).removeClassName('selected');
+  }
 			 
-  </SCRIPT>
-
-</head>
+</SCRIPT>
 
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiques" action="list" namespace="/stoppoint" includeParams="none">
@@ -67,7 +64,7 @@
 <div id="fusionnerArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
   <s:form id="fusionnerArretForm" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();" validate="true">
     <s:hidden name="typePositionGeographique" value="arretPhysique" />
-    <div style="padding-left:2px">Veuillez saisir le nom de l'arrêt vers lequel vous souhaitez fusionner votre arrêt de départ</div>
+    <div style="padding-left:2px">Veuillez saisir le nom de l'arrÃªt vers lequel vous souhaitez fusionner votre arrÃªt de dÃ©part</div>
     <div>
       <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
       <s:hidden name="idArretDestination" id="idArretDestination" value=""/>

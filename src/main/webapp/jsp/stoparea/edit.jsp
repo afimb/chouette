@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <%-- Titre et barre de navigation --%>
@@ -16,7 +17,7 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 
-<%-- Caractéristiques des zones --%>
+<%-- CaractÃ©ristiques des zones --%>
 <div class="panelDataSection"><s:text name="text.zone" /></div>
 <div class="panel">
   <s:form cssClass="panelDataInnerForm" validate="true">

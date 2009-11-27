@@ -1,5 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+
 <%-- Titre et barre de navigation --%>	
 <title><s:text name="text.positionGeographique.search.title" /></title>
 <s:url id="urlPositionGeographiqueRecherche" action="search" namespace="/stoparea">
@@ -24,7 +26,7 @@
   </s:form>
 </div>
 
-<%-- Tableau résultat --%>
+<%-- Tableau rÃ©sultat --%>
 <div class="panel" id="displaytag"> 
 	<display:table name="positionGeographiquesResultat" pagesize="15" requestURI="" id="positionGeographique" export="false">
 	  	<display:column title="Action" sortable="false">
