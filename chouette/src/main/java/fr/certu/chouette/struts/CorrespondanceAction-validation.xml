@@ -1,9 +1,104 @@
-<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//
-     EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
 <validators>
-  <field name="model">
-    <field-validator type="visitor">
-      <param name="appendPrefix">false</param>
+
+  <field name="name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">connectionlink.name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">connectionlink.name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="model.name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">connectionlink.name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">connectionlink.name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="model.comment">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">connectionlink.name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">connectionlink.name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+    <field-validator type="regex">
+      <param name="fieldName">defaultDuration</param>
+      <param name="expression">^$|([0-9][0-9]:[0-9][0-9])</param>
+      <message key="error.formatDate"/>
+    </field-validator>
+  </field>
+
+  <field name="model.defaultDuration">
+    <field-validator type="regex">
+      <param name="fieldName">defaultDuration</param>
+      <param name="expression">^$|([0-9][0-9]:[0-9][0-9])</param>
+      <message key="error.formatDate"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">defaultDuration</param>
+      <param name="maxLength">5</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+
+  <field name="model.occasionalTravellerDuration">
+    <field-validator type="regex">
+      <param name="fieldName">occasionalTravellerDuration</param>
+      <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
+      </param>
+      <message key="error.formatDate"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">occasionalTravellerDuration</param>
+      <param name="maxLength">5</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+
+  <field name="mobilityRestrictedTravellerDuration">
+    <field-validator type="regex">
+      <param name="fieldName">mobilityRestrictedTravellerDuration</param>
+      <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
+      </param>
+      <message key="error.formatDate"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">mobilityRestrictedTravellerDuration</param>
+      <param name="maxLength">5</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+
+  <field name="frequentTravellerDuration">
+    <field-validator type="regex">
+      <param name="fieldName">frequentTravellerDuration</param>
+      <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
+      </param>
+      <message key="error.formatDate"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">frequentTravellerDuration</param>
+      <param name="maxLength">5</param>
+      <message key="errors.maxlength"/>
     </field-validator>
   </field>
 </validators>
+
