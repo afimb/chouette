@@ -65,7 +65,7 @@
             <s:param name="idAreaStop">%{arretsDansITLList[${arretsDansITLList_rowNum} - 1].id}</s:param>
           </s:url>
           <s:a href="%{removeUrl}" onclick="return confirm('%{getText('popup.confirmer')}')">
-            <img border="0" alt="Delete" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+            <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
           </s:a>
         </display:column>
 

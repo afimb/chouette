@@ -9,7 +9,7 @@
 			<s:url id="editMission" action="crud_Mission!edit">
         <s:param name="idMission">${mission.id}</s:param>
 			</s:url>
-			<s:a href="%{editMission}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;	
+			<s:a href="%{editMission}"><img border="0" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
 	  	</display:column>	
 	  	<display:column title="Nom" property="name" sortable="true" headerClass="sortable"/>
 	</display:table>
