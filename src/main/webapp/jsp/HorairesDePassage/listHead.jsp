@@ -39,10 +39,10 @@
         </s:else>
       </s:a>&nbsp;
       <s:a href="#" onclick="afficherBloqueDecalageTemps(%{id})">
-        <img border="0" alt="Add" src="images/ajouter.png" title="<s:text name="tooltip.create_by_translation"/>">
+        <img border="0" alt="Add" src="<s:url value='/images/ajouter.png'/>" title="<s:text name="tooltip.create_by_translation"/>">
       </s:a>&nbsp;
       <s:a href="%{supprimerCourse}" preInvokeJS="confirm('%{getText('course.delete.confirmation')}');">
-        <img border="0" alt="Delete" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+        <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
       <br>
     </td>

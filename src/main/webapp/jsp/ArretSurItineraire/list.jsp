@@ -119,10 +119,10 @@
 						</s:url>
 						<%-- BOUTON INSERER ARRET --%>
 						<s:a href="#" onclick="initialiserCreationArret(${arret.position}, this)">
-							<img border="0" src="images/ajouter.png" title="<s:text name="tooltip.inserer"/>">
+              <img border="0" alt="Add" src="<s:url value='/images/ajouter.png'/>" title="<s:text name="tooltip.inserer"/>">
 						</s:a>&nbsp;&nbsp;
 						<s:a href="%{supprimerArret}" onclick="return confirm('%{getText('arretSurItineraire.delete.confirmation')}')">
-							<img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+							<img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
 						</s:a>
 					</TD>
 					<TD>
@@ -153,7 +153,7 @@
 					<TD>
 						<%-- BOUTON INSERER ARRET --%>
 						<s:a href="#" onclick="initialiserCreationArret(0, this)">
-							<img border="0" src="images/ajouter.png" title="<s:text name="tooltip.inserer"/>">
+							<img border="0" src="<s:url value='/images/ajouter.png'/>" title="<s:text name="tooltip.inserer"/>">
 						</s:a>
 					</TD>
 					<TD>
