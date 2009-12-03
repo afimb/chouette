@@ -91,12 +91,12 @@
         <s:param name="idPositionGeographique">${positionGeographique.id}</s:param>
       </s:url>
       <s:a href="%{editUrl}">
-        <img border="0" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+        <img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>">
       </s:a>&nbsp;&nbsp;
 
       <%-- BOUTON FUSIONNER --%>
       <s:a href="#" onclick="javascript:initialiserFusionArret(%{#attr.positionGeographique.id}, this);">
-        <img border="0" src="/images/ajouter.png" title="<s:text name="tooltip.fusionner"/>">
+        <img border="0" src="images/ajouter.png" title="<s:text name="tooltip.fusionner"/>">
       </s:a>&nbsp;&nbsp;
 
       <%-- BOUTON SUPPRIMER --%>
@@ -105,7 +105,7 @@
         <s:hidden name="operationMode" value="STORE" />
       </s:url>
       <s:a href="%{deletePositionGeographique}" onclick="return confirm('%{getText('arretPhysique.delete.confirmation')}');" cssStyle="visibility:%{getLiaisonItineraire(#positionGeographique.id)};">
-        <img border="0" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+        <img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
     <display:column title="Nom" property="name" />

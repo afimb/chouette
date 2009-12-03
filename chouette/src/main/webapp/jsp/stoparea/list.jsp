@@ -48,7 +48,7 @@
         <s:param name="idPositionGeographique">${positionGeographique.id}</s:param>
       </s:url>
       <s:a href="%{editUrl}">
-        <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+        <img border="0" alt="Edit" src="images/editer.png" title="<s:text name="tooltip.edit"/>">
       </s:a>&nbsp;&nbsp;
       <%-- BOUTON SUPPRIMER --%>
       <s:url id="deletePositionGeographique" action="delete" namespace="/stoparea">
@@ -56,7 +56,7 @@
         <s:hidden name="operationMode" value="STORE" />
       </s:url>
       <s:a href="%{deletePositionGeographique}" onclick="return confirm('%{getText('zone.delete.confirmation')}');">
-        <img border="0" alt="Delete" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+        <img border="0" alt="Delete" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
     <display:column title="Nom" property="name" />

@@ -76,7 +76,7 @@
                 <s:param name="idPositionGeographique" value="%{idDepart}" />
               </s:url>
               <s:a href="%{editUrl}">
-                <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">&nbsp;
+                <img border="0" alt="Edit" src="images/editer.png" title="<s:text name="tooltip.edit"/>">&nbsp;
               </s:a>
             </s:if>
 
@@ -123,7 +123,7 @@
                 <s:param name="idPositionGeographique" value="%{idArrivee}" />
               </s:url>
               <s:a href="%{editUrl}">
-                <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">&nbsp;
+                <img border="0" alt="Edit" src="images/editer.png" title="<s:text name="tooltip.edit"/>">&nbsp;
               </s:a>
             </s:if>
 

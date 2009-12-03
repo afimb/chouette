@@ -37,10 +37,10 @@
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:a href="%{editUrl}">
-        <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+        <img border="0" alt="Edit" src="images/editer.png" title="<s:text name="tooltip.edit"/>">
       </s:a>&nbsp;&nbsp;
       <s:a href="%{removeUrl}" onclick="return confirm('%{getText('transporteur.delete.confirmation')}');">
-        <img border="0" alt="Delete" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+        <img border="0" alt="Delete" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
     <display:column title="Nom" property="company.name" sortable="true" headerClass="sortable"/>
