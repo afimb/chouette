@@ -86,21 +86,21 @@
       </s:url>
       <div style="float: left; margin-right: 7px;">
         <s:a href="%{editUrl}">
-          <img border="0" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+          <img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>">
         </s:a>
       </div>
       <div style="float: left; text-align: left;">
         <s:a href="%{removeLigneChouette}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-          <img border="0" src="/images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">(CHOUETTE)
+          <img border="0" src="images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">(CHOUETTE)
         </s:a>
         <br>
         <s:a href="%{removeLigne}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-          <img border="0" src="/images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">(DU RESEAU)
+          <img border="0" src="images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">(DU RESEAU)
         </s:a>
         <s:if test="useAmivif == 'true'">
           <br>
           <s:a href="%{removeLigneAmivif}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-            <img border="0" src="/images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">(STIF)
+            <img border="0" src="images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">(STIF)
           </s:a>
         </s:if>
       </div>
