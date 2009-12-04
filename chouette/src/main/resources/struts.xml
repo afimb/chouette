@@ -476,6 +476,7 @@
       <result name="edit">/jsp/itinerary/edit.jsp</result>
       <result name="list">/jsp/itinerary/list.jsp</result>
       <result name="input" >/jsp/itinerary/edit.jsp</result>
+      <result name="search" >/jsp/itinerary/search.jsp</result>
     </action>
   </package>
 
@@ -521,6 +522,7 @@
     </action>
   </package>
 
+  <!-- Mise à jour des données du modèle Correspondance -->
   <package name="correspondance" extends="struts" namespace="/correspondance">
     <action name="*" method="{1}" class='fr.certu.chouette.struts.CorrespondanceAction'>
       <result name="redirectList" type="redirectAction">
@@ -536,6 +538,24 @@
       <result name="list">/jsp/correspondance/list.jsp</result>
       <result name="input" >/jsp/correspondance/edit.jsp</result>
       <result name="search" >/jsp/correspondance/search.jsp</result>
+    </action>
+  </package>
+
+    <!-- Mise à jour des données du modèle TableauMarche -->
+  <package name="tableauMarche" extends="struts" namespace="/tableauMarche">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.TableauMarcheAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="redirectEdit" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="operationMode">RETRIEVE</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+      </result>
+      <result name="edit">/jsp/tableauMarche/edit.jsp</result>
+      <result name="list">/jsp/tableauMarche/list.jsp</result>
+      <result name="input" >/jsp/tableauMarche/edit.jsp</result>
     </action>
   </package>
 

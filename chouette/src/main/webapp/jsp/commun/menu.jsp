@@ -16,15 +16,15 @@
 			<li><s:a href="%{urlLignesMenu}" id="lignesMenu"><s:text name="text.lignes"/></s:a></li>
 
 			<%-- Itineraires --%>
-			<s:url id="urlItinerairesMenu" action="crud_RechercheItineraire" includeParams="none"/>
+      <s:url id="urlItinerairesMenu" action="search" namespace="/itinerary" includeParams="none"/>
 			<li><s:a href="%{urlItinerairesMenu}" id="itinerairesMenu"><s:text name="text.itineraires"/></s:a></li>
 
 			<%-- Horaires --%>
-			<s:url id="urlHorairesMenu" action="crud_RechercheHorairesDePassage" includeParams="none"/>
+			<s:url id="urlHorairesMenu" action="search" namespace="/horairesDePassage" includeParams="none"/>
 			<li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
 
 			<%-- Calendriers d'application --%>
-			<s:url id="urlTableauMarchesMenu" action="liste_TableauMarche" includeParams="none"/>
+      <s:url id="urlTableauMarchesMenu" action="list" namespace="/tableauMarche" includeParams="none"/>
 			<li><s:a href="%{urlTableauMarchesMenu}" id="tableauMarchesMenu"><s:text name="text.tableauMarches"/></s:a></li>
 
 			<%-- Arrets physiques --%>

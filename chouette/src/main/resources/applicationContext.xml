@@ -648,14 +648,6 @@
     <property name="versionApplication" value="${applie.version}"/>
   </bean>
     
-  <bean id="RechercheHorairesDePassage" scope="prototype"
-		class="fr.certu.chouette.struts.RechercheHorairesDePassageAction">
-  </bean>
-    
-  <bean id="RechercheItineraire" scope="prototype"
-		class="fr.certu.chouette.struts.RechercheItineraireAction">
-  </bean>
-
   <bean id="version" scope="prototype"
 		class="fr.certu.chouette.shell.Version">
     <property name="version" value="${applie.version}"/>

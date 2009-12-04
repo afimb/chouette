@@ -54,7 +54,7 @@
       <s:else>
         <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
       </s:else>
-      <s:submit key="action.cancel" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+      <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
     </td>
   </tr>
 

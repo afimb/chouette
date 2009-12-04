@@ -252,6 +252,12 @@ public class ItineraireAction extends GeneriqueAction implements ModelDriven<Iti
     return INPUT;
   }
 
+  @SkipValidation
+  public String search()
+  {
+    return SEARCH;
+  }
+
   /********************************************************
    *                        MANAGER                       *
    ********************************************************/
