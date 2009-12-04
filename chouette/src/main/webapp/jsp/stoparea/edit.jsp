@@ -88,14 +88,14 @@
             <s:param name="idPositionGeographique">${child.id}</s:param>
           </s:url>
           <s:a href="%{editUrl}">
-            <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+            <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
           </s:a>&nbsp;&nbsp;
           <s:url id="removeUrl" action="removeChildFromParent" namespace="/stoparea">
             <s:param name="idPositionGeographique" value="%{positionGeographique.id}" />
             <s:param name="idChild">${child.id}</s:param>
           </s:url>
           <s:a href="%{removeUrl}">
-            <img border="0" alt="Delete" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+            <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
           </s:a>
         </display:column>
         <display:column title="Nom">
@@ -127,7 +127,7 @@
           <s:param name="idPositionGeographique" value="%{father.id}" />
         </s:url>
         <s:a href="%{editUrl}">
-          <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+          <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
         </s:a>&nbsp;&nbsp;
         <s:url id="removeUrl" action="removeChildFromParent" namespace="/stoparea">
           <s:param name="idChild" value="%{positionGeographique.id}" />
@@ -138,7 +138,7 @@
           <s:param name="typePositionGeographique" value="%{typePositionGeographique}"/>
         </s:url>
         <s:a href="%{removeUrl}">
-          <img border="0" alt="Delete" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+          <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
         </s:a>
       </display:column>
       <display:column title="Nom">

@@ -61,8 +61,10 @@
 			<s:url id="editUrl" action="crud_TableauMarche!edit">
 				<s:param name="idTableauMarche" value="${tableauMarche.id}" />
 			</s:url>
-			<s:a href="%{editUrl}"><img border="0" src="images/editer.png" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
-	    	<s:a href="%{removeUrl}" onclick="return confirm('%{getText('tableauMarche.delete.confirmation')}');"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 	
+			<s:a href="%{editUrl}">
+        <img border="0" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>"></s:a>&nbsp;&nbsp;
+	    	<s:a href="%{removeUrl}" onclick="return confirm('%{getText('tableauMarche.delete.confirmation')}');">
+          <img border="0" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>"></s:a>
 	  	</display:column>	
 	  	<display:column title="Commentaire et Identifiant de l'objet" sortable="false" headerClass="sortable">
 	  	${tableauMarche.comment}&nbsp;(${tableauMarche.objectId})

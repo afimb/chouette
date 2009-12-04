@@ -1,2 +1,2 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<s:action name="list" namespace="/line" ignoreContextParams="true"/>
+<s:action var="list" name="list" namespace="/line" executeResult="true" ignoreContextParams="true"/>

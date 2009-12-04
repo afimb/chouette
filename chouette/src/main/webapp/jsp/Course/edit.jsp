@@ -89,10 +89,10 @@
           <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
         </s:url>
         <s:a href="%{editTableauMarche}">
-          <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+          <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
         </s:a>&nbsp;&nbsp;
         <s:a href="%{supprimerAssociationTableauMarche}" onclick="return confirm('%{getText('popup.confirmer')}'">
-          <img border="0" alt="Delete" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+          <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
         </s:a>
       </display:column>
       <display:column title="Commentaire" property="comment" sortable="false"/>
