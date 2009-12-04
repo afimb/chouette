@@ -34,10 +34,6 @@ public class CorrespondanceAction extends GeneriqueAction implements ModelDriven
   private String durationsFormat = "mm:ss";
   private Correspondance correspondanceModel = new Correspondance();
 
-  public void setCorrespondanceModel(Correspondance correspondanceModel)
-  {
-    this.correspondanceModel = correspondanceModel;
-  }
   private String mappedRequest;
 
   public Long getIdCorrespondance()

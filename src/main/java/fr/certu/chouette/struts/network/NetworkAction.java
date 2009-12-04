@@ -32,7 +32,6 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
-  @Override
   public Reseau getModel()
   {
     return networkModel;

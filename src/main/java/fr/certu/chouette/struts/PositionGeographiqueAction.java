@@ -104,7 +104,6 @@ public class PositionGeographiqueAction extends GeneriqueAction implements Model
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
-  @Override
   public PositionGeographique getModel()
   {
     return positionGeographiqueModel;
