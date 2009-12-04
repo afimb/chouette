@@ -1,116 +1,126 @@
 package fr.certu.chouette.echange.comparator;
 
-import java.util.ArrayList;
-
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import chouette.schema.Period;
 
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.Periode;
 import fr.certu.chouette.modele.TableauMarche;
-import fr.certu.chouette.service.commun.ServiceException;
 
 /**
  * @author Dryade, Evelyne Zahn
  * 
  */
-public class TimetableComparator extends AbstractChouetteDataComparator {
-	public boolean compareData(IExchangeableLineComparator master)
-			throws ComparatorException{
-		
-		boolean sameTimetables = true;
+public class TimetableComparator extends AbstractChouetteDataComparator 
+{
+   public boolean compareData(IExchangeableLineComparator master) throws ComparatorException{
 
-		this.master = master;
+      boolean sameTimetables = true;
 
-		ILectureEchange source = master.getSource();
-		ILectureEchange target = master.getTarget();
+      this.master = master;
 
-		List<TableauMarche> sourceDataList = source.getTableauxMarche();
-		List<TableauMarche> targetDataList = target.getTableauxMarche();
+      ILectureEchange source = master.getSource();
+      ILectureEchange target = master.getTarget();
 
-		HashMap<String, String> sourceObjectIdBytargetNaturalKey = new HashMap<String, String>();
-		// natural key ? dayTypes, periods, calendar days
-		for (TableauMarche sourceTM : sourceDataList) {
-			int dayTypeMask = sourceTM.getIntDayTypes();
-			List<Periode> TMPeriods = sourceTM.getPeriodes();
-			List<Date> TMDates = sourceTM.getDates();
-			String key = buildNaturalKey(dayTypeMask, TMPeriods, TMDates);
-			for (int i = 0; i < sourceTM.getVehicleJourneyIdCount(); i++) {
-				String sourceVehiculeJourneyId = sourceTM
-						.getVehicleJourneyId(i);
-				String targetVehiculeJourneyId = master
-						.getTargetId(sourceVehiculeJourneyId);
-				key += "-" + targetVehiculeJourneyId;
-			}
-			sourceObjectIdBytargetNaturalKey.put(key, sourceTM.getObjectId());
-		}
+      List<TableauMarche> sourceDataList = source.getTableauxMarche();
+      List<TableauMarche> targetDataList = target.getTableauxMarche();
 
-		for (TableauMarche targetTM : targetDataList) {
-			int dayTypeMask = targetTM.getIntDayTypes();
-			List<Periode> TMPeriods = targetTM.getPeriodes();
-			List<Date> TMDates = targetTM.getDates();
-			String key = buildNaturalKey(dayTypeMask, TMPeriods, TMDates);
-			for (int i = 0; i < targetTM.getVehicleJourneyIdCount(); i++) {
-				key += "-" + targetTM.getVehicleJourneyId(i);
-			}
+      HashMap<String, String> sourceObjectIdBytargetNaturalKey = new HashMap<String, String>();
+      // natural key ? dayTypes, periods, calendar days
+      for (TableauMarche sourceTM : sourceDataList) 
+      {
+         int dayTypeMask = sourceTM.getIntDayTypes();
+         List<Periode> TMPeriods = sourceTM.getPeriodes();
+         List<Date> TMDates = sourceTM.getDates();
+         String key = buildNaturalKey(dayTypeMask, TMPeriods, TMDates);
+         key = key + sourceTM.getVehicleJourneyIdCount();
+         sourceObjectIdBytargetNaturalKey.put(key, sourceTM.getObjectId());
+      }
 
-			String sourceTMId = sourceObjectIdBytargetNaturalKey.remove(key);
-			ChouetteObjectState objectState = null;
-			if (sourceTMId == null) {
-				objectState = new ChouetteObjectState(getMappingKey(), null,
-						targetTM.getObjectId());
-				sameTimetables = false;
-			} else {
-				objectState = new ChouetteObjectState(getMappingKey(), sourceTMId,
-						targetTM.getObjectId());
-				master.addMappingIds(sourceTMId, targetTM.getObjectId());
-			}
-			master.addObjectState(objectState);
-		}
+      for (TableauMarche targetTM : targetDataList) 
+      {
+         int dayTypeMask = targetTM.getIntDayTypes();
+         List<Periode> TMPeriods = targetTM.getPeriodes();
+         List<Date> TMDates = targetTM.getDates();
+         String key = buildNaturalKey(dayTypeMask, TMPeriods, TMDates);
+         key = key + targetTM.getVehicleJourneyIdCount();
+         String sourceTMId = sourceObjectIdBytargetNaturalKey.remove(key);
+         ChouetteObjectState objectState = null;
+         if (sourceTMId == null) 
+         {
+            objectState = new ChouetteObjectState(getMappingKey(), null, targetTM.getObjectId());
+            sameTimetables = false;
+         }
+         else 
+         {
+            objectState = new ChouetteObjectState(getMappingKey(), sourceTMId, targetTM.getObjectId());
+            master.addMappingIds(sourceTMId, targetTM.getObjectId());
+         }
+         master.addObjectState(objectState);
+      }
 
-		// Unmapped source vehicle journeys
-		Collection<String> unmappedSourceObjects = sourceObjectIdBytargetNaturalKey
-				.values();
-		if (unmappedSourceObjects.size() != 0) {
-			sameTimetables = false;
-			for (String sourceObjectId : unmappedSourceObjects) {
-				ChouetteObjectState objectState = new ChouetteObjectState(
-				        getMappingKey(), sourceObjectId, null);
-				master.addObjectState(objectState);
-			}
-		}
-		return sameTimetables;
-	}
+      // Unmapped source vehicle journeys
+      Collection<String> unmappedSourceObjects = sourceObjectIdBytargetNaturalKey.values();
+      if (unmappedSourceObjects.size() != 0) 
+      {
+         sameTimetables = false;
+         for (String sourceObjectId : unmappedSourceObjects) 
+         {
+            ChouetteObjectState objectState = new ChouetteObjectState(getMappingKey(), sourceObjectId, null);
+            master.addObjectState(objectState);
+         }
+      }
+      return sameTimetables;
+   }
 
-	//@todo rename : just first part of key, the other part 
-	// consisting in stoppoints list
-	private String buildNaturalKey(int dayTypesMask, List<Periode> TMPeriods,
-			List<Date> TMDates) {
-		String key = ((Integer) dayTypesMask).toString();
-		for (Periode TMPeriod : TMPeriods) {
-			key += "-" + TMPeriod.getDebut().toString();
-			key += "-" + TMPeriod.getFin().toString();
-		}
 
-		for (Date TMDate : TMDates) {
-			key += "-" + TMDate.toString();
-		}
+   private String buildNaturalKey(int dayTypesMask, List<Periode> TMPeriods,List<Date> TMDates) 
+   {
+      String key = ((Integer) dayTypesMask).toString();
+      SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+      Periode[] periods = (Periode[])TMPeriods.toArray(new Periode[0]);
+      Comparator<Periode> comparor = new PeriodeComparator();
+      Arrays.sort(periods, comparor);
+      for (Periode TMPeriod : TMPeriods) 
+      {
+         key = key + "-" + format.format(TMPeriod.getDebut());
+         key = key + "-" + format.format(TMPeriod.getFin());
+      }
 
-		return key;
-	}
+      Date[] dates = (Date[])TMDates.toArray(new Date[0]);
+      Arrays.sort(dates);
 
-    @Override
-    public Map<String, ChouetteObjectState> getStateMap()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
+      for (Date TMDate : dates)
+      {
+         key = key + "-" + format.format(TMDate);
+      }
+
+      return key;
+   }
+
+   @Override
+   public Map<String, ChouetteObjectState> getStateMap()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   class PeriodeComparator implements Comparator<Periode>
+   {
+      public int compare(Periode o1, Periode o2)
+      {
+         if (o1.debut.equals(o2.debut))
+         {
+            return o1.fin.compareTo(o2.fin);
+         }
+         return o1.debut.compareTo(o2.debut);
+      }
+   }
+
 }
