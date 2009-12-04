@@ -71,7 +71,8 @@
 						<s:param name="idTableauMarche" value="%{tableauMarche.id}"/>
 						<s:param name="idxDate" value="${datesTable_rowNum}"/>												
 					</s:url>			  			  
-			  		<s:a href="%{deleteUrl}" onclick="return confirm('%{getText('popup.confirmer')}'"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 
+			  		<s:a href="%{deleteUrl}" onclick="return confirm('%{getText('popup.confirmer')}'">
+              <img border="0" src="<s:url value='images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>"></s:a>
 			  	</display:column>
 			</display:table>
 		</s:div>
@@ -118,7 +119,8 @@
 						<s:param name="idxPeriod" value="${periodsTable_rowNum}"/>											
 					</s:url>
 			  			  
-			  		<s:a href="%{deleteUrl}" onclick="return confirm('%{getText('popup.confirmer')}'"><img border="0" src="images/supprimer.png" title="<s:text name="tooltip.delete"/>"></s:a> 
+			  		<s:a href="%{deleteUrl}" onclick="return confirm('%{getText('popup.confirmer')}'">
+              <img border="0" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>"></s:a>
 			  	</display:column>				  		  	  
 			</display:table>
 		</div>

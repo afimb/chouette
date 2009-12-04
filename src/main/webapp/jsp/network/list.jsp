@@ -32,10 +32,10 @@
         <s:param name="origin">network</s:param>
       </s:url>
       <s:a href="%{editUrl}">
-        <img border="0" class="edit" src="/images/editer.png" alt="Edit" title="<s:text name="tooltip.edit"/>" >
+        <img border="0" class="edit" src="<s:url value='/images/editer.png'/>" alt="Edit" title="<s:text name="tooltip.edit"/>" >
       </s:a>&nbsp;&nbsp;
       <s:a href="%{removeUrl}" onclick="return confirm('%{getText('reseau.delete.confirmation')}');">
-        <img border="0" class="delete" src="/images/supprimer.png" alt="Delete" title="<s:text name="tooltip.delete"/>">
+        <img border="0" class="delete" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
     <display:column title="Nom" property="ptNetwork.name" sortable="true" headerClass="sortable"/>

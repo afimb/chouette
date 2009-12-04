@@ -47,10 +47,10 @@
         <s:param name="idCorrespondance">${correspondance.id}</s:param>
       </s:url>
       <s:a href="%{editUrl}">
-        <img border="0" alt="Edit" src="/images/editer.png" title="<s:text name="tooltip.edit"/>">
+        <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
       </s:a>&nbsp;&nbsp;
       <s:a href="%{removeUrl}" onclick="return confirm('%{getText('connectionlink.delete.confirmation')}');">
-        <img border="0" alt="Delete" src="/images/supprimer.png" title="<s:text name="tooltip.delete"/>">
+        <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
     <display:column title="Nom" property="name"/>
