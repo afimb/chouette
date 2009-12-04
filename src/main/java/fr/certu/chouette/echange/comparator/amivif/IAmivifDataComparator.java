@@ -11,5 +11,9 @@ public interface IAmivifDataComparator
    boolean compareData(ExchangeableAmivifLineComparator master) throws ServiceException;
 
    Map<String,ChouetteObjectState> getStateMap();
+   
+   boolean mustStopOnFailure();
+   
+   String getMappingKey();
 
 }
