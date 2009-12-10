@@ -27,10 +27,10 @@ import fr.certu.chouette.echange.comparator.ComparisonReport;
 import fr.certu.chouette.echange.comparator.IExchangeableLineComparator;
 
 @SuppressWarnings("serial")
-public class LineFileComparisonServiceAction extends GeneriqueAction implements ServletRequestAware {
+public class LineFilesComparisonServiceAction extends GeneriqueAction implements ServletRequestAware{
 
 	//todo move that in the generiqueActio
-	private static final Log logger = LogFactory.getLog(LineFileComparisonServiceAction.class);
+	private static final Log logger = LogFactory.getLog(LineFilesComparisonServiceAction.class);
 
 	//TODO test Logger.getLog(...)
 	private IIdentificationManager identificationManager;
@@ -82,10 +82,9 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	private ComparisonReport comparisonReport = null;
 
 	/** ***** Constructor ***** **/
-	public LineFileComparisonServiceAction()
+	public LineFilesComparisonServiceAction()
 	{
 		super();
-		logger.debug("DEBUG TEST OK");
 
 		// Initialization of available formats view list
 		initExchangeFormats();
@@ -108,16 +107,14 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 	public String index()
 	{
 		//TODO no clear done, to investigate
-		clearErrorsAndMessages();
-		logger.debug("comparator::indexAction");
+		//clearErrorsAndMessages();
 		setTitle(getText("comparator.action.title.index"));
 		return SUCCESS;
 	}
-
+	
 	/** ***** Compare Main Method ***** **/
 	public String compare()
-	{
-		logger.debug("compare::mark 1");
+	{		
 		//TODO remove when chouette comparator "profile" will be complete !
 		setExchangeFormat("Amivif");
 
@@ -144,25 +141,32 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 			addFieldError("exchangeFormat",  getText("comparator.error.field.exchangeFormat"));
 			return INPUT;
 		}
-
-		logger.debug("compare::mark 2");
+		
+		// Log info, print selected files names,
+		// files necessary exist at this step, so nothing is done in never-visited catch
+		try 
+		{
+			logger.info("Source file selected : " + sourceFile.getCanonicalPath());
+			logger.info("Target file selected : " + targetFile.getCanonicalPath());
+		}
+		catch (Exception e)
+		{
+			
+		}
+		
 		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
 		HashMap<String, String> availableFormats = getAvailableFormat();
 		boolean foundFormat = false;
 		Iterator<Entry<String, String>> iter = availableFormats.entrySet().iterator();
 
-		logger.debug("compare::mark 3");
 		while (iter.hasNext())
 		{
 			Entry<String, String> format = iter.next();
 			//La clé de la HashMap
 			if (format.getKey().equals(exchangeFormat))
 			{
-				logger.debug("compare::mark 4");
 				foundFormat = true;
-				String beanKey = "Exchangeable" + format.getValue() + "LineComparator";
-				logger.debug("compare::beanKey : " + beanKey);
-				boolean completeIhmMessage = false;
+				String beanKey = "Exchangeable" + format.getValue() + "LineComparator";				
 
 				IExchangeableLineComparator comparator = null;
 				try
@@ -170,101 +174,72 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 					comparator = (IExchangeableLineComparator)applicationContext.getBean(beanKey);
 				}
 				catch(Exception e)
-				{
-					logger.debug("compare::mark 5");
+				{					
 					String errorMessageCompletion = "Invalid Spring Bean Referenced by : " + beanKey;
 					ServiceException se = new ServiceException(CodeIncident.COMPARATOR_UNVAILABLE_RESOURCE, errorMessageCompletion);
-					return doExceptionTreatments(se, completeIhmMessage);
+					return doExceptionTreatments(se);
 				}
-
 				try
 				{
 					// Launch comparison
-					logger.debug("compare::mark 6");
 					doComparison(comparator);
-				}
-				catch(ServiceException e)
-				{
-					logger.debug("compare::mark 7");
-					if (e.getCode().equals(CodeIncident.COMPARATOR_DUPLICATED_KEY))
-					{
-						completeIhmMessage = true;
-					}
-					return doExceptionTreatments(e, completeIhmMessage);
-
 				}
 				catch(Exception e)
 				{
-					logger.debug("compare::mark 8");
-					return doExceptionTreatments(e, completeIhmMessage);
-				}
+					return doExceptionTreatments(e);
+
+				}				
 			}//end if
 		}//end while
 
 		if(! foundFormat)
 		{
-			logger.debug("compare::mark 9");
 			addFieldError("exchangeFormat", "comparator.error.field.exchangeFormat");
 			return INPUT;
 		}
-		logger.debug("compare::mark success");
 		//Build action/view title
 		ArrayList<Object> completionMessage = new ArrayList<Object>();
 		completionMessage.add(exchangeFormat);
 		setTitle(getText("comparator.action.title.reporting", completionMessage));
-		return SUCCESS;
+		return "comparison-success";
 	}
 
-	private String doExceptionTreatments(Exception e, boolean completeIhmMessage)
+	private String doExceptionTreatments(Exception e)
 	{
-		logger.debug("compare::mark 10");
 		// Log message completion
 		List<Object> completionMessage = new ArrayList<Object>();
 		completionMessage.add(e.getMessage());
-
-		// Possible ihm message completion
-		List<Object> ihmCompletionMessage = null;
 
 		String logKey = null;
 		String ihmKey = null;
 		if (e instanceof ServiceException)
 		{
-			logKey = ((ServiceException)e).getCode().name();
-			e = null; // isn't transmit to logger
+			logKey = ihmKey = ((ServiceException)e).getCode().name();
+			e = null; // won't transmit it to logger
 		}
 		else
 		{
 			logKey = ihmKey = "COMPARATOR_UNKNOWN_EXCEPTION";
-		}
+		} 
 		logKey += "_LOG";
 		ihmKey += "_IHM";
 
-		// add origine message to ihm message if required
-		if (completeIhmMessage)
-		{
-			ihmCompletionMessage = completionMessage;
-		}
-
 		logger.error(getText(logKey, completionMessage), e);
-		addActionError(getText(ihmKey, ihmCompletionMessage));
+		addActionError(getText(ihmKey, completionMessage));
 		return ERROR;
 	}
 
 	private void doComparison(IExchangeableLineComparator comparator) throws Exception
 	{
-
-		logger.debug("compare::mark 11");
 		objectStates = comparator.getObjectStateList();
 		ComparisonReport comparisonReport= new ComparisonReport(objectStates);
 		boolean comparisonResult = comparator.doComparison(sourceFile, targetFile);
 		if (comparisonResult)
 		{
-			logger.debug("compare::mark 12");
 			addActionMessage(getText("comparator.result.success"));
 		}
 		else
 		{
-			logger.debug("compare::mark 13");
 			if (! enableVerboseMode)
 			{
 				request.setAttribute("comparisonReport", comparisonReport.getErrorItems());
@@ -278,16 +253,14 @@ public class LineFileComparisonServiceAction extends GeneriqueAction implements 
 		{
 			request.setAttribute("comparisonReport", comparisonReport.getAllItems());
 		}
-		logger.debug("compare::mark 14");
 		return;
 	}
 
 	public String downloadReport()
-	{
-		logger.debug("Comparator::downReportAction");
+	{		
 		clearErrorsAndMessages();
 		addActionMessage(getText("error.notYetImplemented"));
-		return SUCCESS;
+		return "report-download-success";
 	}
 
 	/**

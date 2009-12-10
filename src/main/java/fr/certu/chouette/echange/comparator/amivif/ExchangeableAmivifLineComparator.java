@@ -145,13 +145,12 @@ public class ExchangeableAmivifLineComparator extends ExchangeableLineComparator
 				logger.debug("starting "+amivifDataComparator.getMappingKey());
 				if (! amivifDataComparator.compareData(this))
 				{
-					logger.debug("comparison failed ");
+					logger.debug(amivifDataComparator.getMappingKey() + " comparison failed");
 					amivifResult = false;
 					if (amivifDataComparator.mustStopOnFailure()) break;
 				}
 			}
 		}
-		logger.debug("end "+amivifResult);
 		return (commonResult && amivifResult);		
 	}
 
