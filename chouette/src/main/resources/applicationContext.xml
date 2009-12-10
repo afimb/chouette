@@ -612,8 +612,8 @@
     <property name="usePegase" value="${import.csv.pegase}"/>
   </bean>
     
-  <bean id="LineFileComparisonService" scope="prototype"
-		class="fr.certu.chouette.struts.LineFileComparisonServiceAction">
+  <bean id="LineFilesComparisonService" scope="prototype"
+		class="fr.certu.chouette.struts.LineFilesComparisonServiceAction">
     <property name="identificationManager" ref="identificationManager"/>
   </bean>
 
