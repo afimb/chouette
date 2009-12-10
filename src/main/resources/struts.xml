@@ -198,16 +198,6 @@
 			<result name="success">/jsp/aproposde.jsp</result>
 		</action>
 
-		<!--
-			Mise à jour des données du modèle <action name="*/*" method="{2}"
-			class='fr.certu.chouette.struts.reseau.{1}Action'> <result
-			name="success">/jsp/{1}/edit.jsp</result> <result name="list"
-			>/jsp/{1}/list.jsp</result> <result name="input"
-			>/jsp/{1}/{2}.jsp</result> <result
-			name="recherche">/jsp/{1}/recherche.jsp</result> <interceptor-ref
-			name="crudStack"></interceptor-ref> </action>
-		-->
-
 		<!-- Liste des données du modèle -->
 		<action name="liste_*" class="{1}" method="list">
 			<result name="success">/jsp/{1}/list.jsp</result>
