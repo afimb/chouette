@@ -60,6 +60,9 @@
 
 	<package name="struts" extends="struts-default">
 		<interceptors>
+			<interceptor 
+				name="singleAction" 
+				class="fr.certu.chouette.struts.interceptor.SingleActionInterceptor" />
 			<interceptor name="alias"
 				class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />
 			<interceptor name="autowiring"
@@ -136,6 +139,7 @@
 					<param name="logEnabled">true</param>
 					<param name="logLevel">error</param>
 				</interceptor-ref>
+				<interceptor-ref name="singleAction" />
 				<interceptor-ref name="alias" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="i18n" />
