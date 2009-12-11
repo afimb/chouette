@@ -303,6 +303,7 @@
           <fork>true</fork>
           <source>1.5</source>
           <target>1.5</target>
+          <showDeprecation>true</showDeprecation>
         </configuration>
       </plugin>
       <plugin>
@@ -401,4 +402,5 @@
     <netbeans.hint.deploy.server>J2EE</netbeans.hint.deploy.server>
   </properties>
 </project>
+
 
