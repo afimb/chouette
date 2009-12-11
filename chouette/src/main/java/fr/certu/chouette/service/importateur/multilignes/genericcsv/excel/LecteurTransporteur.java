@@ -20,7 +20,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 	private              String                 cleNomCourt;           // "Nom court"
 	private              String                 cleDescription;        // "Description du transporteur"
 	private              String                 cleCodePostal;         // "Code postal"
-	private              String                 cleTelephone;          // "Téléphone"
+	private              String                 cleTelephone;          // "TÃ©lÃ©phone"
 	private              String                 cleFax;                // "Fax"
 	private              String                 cleEmail;              // "Email"
 	private              Transporteur           transporteur;
@@ -78,7 +78,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 			transporteur.setCreationTime(new Date());
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce réseau.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce rÃ©seau.");
 		if (cleNom.equals(titre))
 			transporteur.setName(valeur);
 		else if (cleCode.equals(titre))
@@ -102,7 +102,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir un transporteur:"+cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les donnÃ©es suivantes pour dÃ©finir un transporteur:"+cellulesNonRenseignees);
 		logger.debug("FIN DE LECTURE DU TRANSPORTEUR.");
 	}
 	
