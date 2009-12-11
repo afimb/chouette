@@ -56,7 +56,7 @@
 			<li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>
 			
 			<%-- Comparaison --%>
-			<s:url id="urlComparaisonMenu" action="compareLineFiles" includeParams="none"/>			
+			<s:url id="urlComparaisonMenu" action="LineFilesComparisonService_index" namespace="/" includeParams="none"/>			
 			<li><s:a href="%{urlComparaisonMenu}" id="comparaisonMenu"><s:text name="text.comparaison"/></s:a></li>
 		</ul>
 	</div>
@@ -236,7 +236,7 @@
 </s:else>
 
 <%-- Comparaison --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.comparaison.list.title')">
+<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('comparator.action.title.index')">
 	<SCRIPT type="text/javascript">
 		$('comparaisonMenu').className='selectionne';
 	</SCRIPT>	

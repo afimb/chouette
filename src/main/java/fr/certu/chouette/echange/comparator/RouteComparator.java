@@ -63,6 +63,7 @@ public class RouteComparator extends AbstractChouetteDataComparator
 		        objectState.addAttributeState("Name", sourceData.getName(), targetData.getName());
                 objectState.addAttributeState("Number", sourceData.getNumber(), targetData.getNumber());
                 objectState.addAttributeState("Direction", sourceData.getDirection(), targetData.getDirection());
+                objectState.addAttributeState("WayBack", sourceData.getWayBack(), targetData.getWayBack());
 		        
                 master.addMappingIds(sourceData.getObjectId(), targetData.getObjectId());
 		    }
