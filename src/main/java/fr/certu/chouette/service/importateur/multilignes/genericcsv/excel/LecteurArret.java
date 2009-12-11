@@ -59,7 +59,7 @@ public class LecteurArret implements ILecteurArret {
 	}
 	
 	public void lire(Ligne ligne, Set<Course> coursesAller, Set<Course> coursesRetour, List<PositionGeographique> _arretsPhysiques) {
-		logger.debug("Construction des Arrets sur Itin�raire.");
+		logger.debug("Construction des Arrets sur Itinéraire.");
 		Map<Itineraire, List<ArretItineraire>> arretsItinerairesParItineraire = new HashMap<Itineraire, List<ArretItineraire>>();
 		arretsItinerairesParLigne.put(ligne, new ArrayList<ArretItineraire>());
 		itineraireParArret.put(ligne, new HashMap<String, String>());

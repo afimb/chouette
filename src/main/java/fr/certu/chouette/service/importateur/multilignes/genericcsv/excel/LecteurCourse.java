@@ -33,7 +33,7 @@ public class LecteurCourse implements ILecteurCourse {
 	private              IIdentificationManager     identificationManager; //
 	private              String                     cleDirection;          // "Direction (ALLER/RETOUR)"
 	private              String                     cleCalendrier;         // "Calendriers d'application"
-	private              String                     cleListe;              // "Liste des arrêts"
+	private              String                     cleListe;              // "Liste des arrÃªts"
 	private              String                     cleX;                  // "X"
 	private              String                     cleY;                  // "Y"
 	private              String                     cleLatitude;           // "Latitude"
@@ -155,7 +155,7 @@ public class LecteurCourse implements ILecteurCourse {
 			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++)
 				if (ligneCSV[i] != null)
 					if (ligneCSV[i].trim().length() > 0)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+ligneCSV[i].trim()+"\" doit être vide.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+ligneCSV[i].trim()+"\" doit Ãªtre vide.");
 		}
 	}
 	
@@ -209,7 +209,7 @@ public class LecteurCourse implements ILecteurCourse {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir les coursesEnCours : " + cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les donnÃ©es suivantes pour dÃ©finir les coursesEnCours : " + cellulesNonRenseignees);
 	}
 	
 	public IIdentificationManager getIdentificationManager() {
