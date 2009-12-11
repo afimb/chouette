@@ -559,4 +559,38 @@
     </action>
   </package>
 
+  <!-- Mise à jour des données du modèle ArretSurItineraire -->
+  <package name="arretSurItineraire" extends="struts" namespace="/arretSurItineraire">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.ArretSurItineraireAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="operationMode">RETRIEVE</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+      </result>
+      <result name="edit">/jsp/arretSurItineraire/edit.jsp</result>
+      <result name="list">/jsp/arretSurItineraire/list.jsp</result>
+      <result name="input" >/jsp/arretSurItineraire/edit.jsp</result>
+    </action>
+  </package>
+
+    <!-- Mise à jour des données du modèle Horaires -->
+  <package name="horairesDePassage" extends="struts" namespace="/horairesDePassage">
+    <action name="*" method="{1}" class='fr.certu.chouette.struts.horairesdepassage.HorairesDePassageAction'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="page">${page}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/horairesdePassage/edit.jsp</result>
+      <result name="list">/jsp/horairesDePassage/list.jsp</result>
+      <result name="input" >/jsp/horairesDePassage/edit.jsp</result>
+      <result name="search" >/jsp/horairesDePassage/search.jsp</result>
+    </action>
+  </package>
+
 </struts>

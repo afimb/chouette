@@ -513,11 +513,11 @@
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
   </bean>
     
-  <bean id="Pagination" scope="prototype"
+  <!--<bean id="Pagination" scope="prototype"
     		class="fr.certu.chouette.struts.outil.pagination.Pagination">
     <property name="nbColonnesParPage" value="${vehicleJourney.displayed}"/>
     <property name="nbTotalPages" value="${page.displayed}"/>
-  </bean>
+  </bean>-->
     
   <bean id="HorairesDePassage" scope="prototype"
     		class="fr.certu.chouette.struts.horairesdepassage.HorairesDePassageAction">
@@ -526,9 +526,9 @@
     <property name="courseManager" ref="courseManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="missionManager" ref="missionManager"/>
+    <property name="pagination" ref="Pagination"/>
     <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
     <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
-    <property name="pagination" ref="Pagination"/>
   </bean>
     
   <bean id="Course" scope="prototype"
