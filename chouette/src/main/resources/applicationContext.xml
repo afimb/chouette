@@ -521,14 +521,6 @@
     
   <bean id="HorairesDePassage" scope="prototype"
     		class="fr.certu.chouette.struts.horairesdepassage.HorairesDePassageAction">
-    <property name="itineraireManager" ref="itineraireManager"/>
-    <property name="horaireManager" ref="horaireManager"/>
-    <property name="courseManager" ref="courseManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-    <property name="missionManager" ref="missionManager"/>
-    <property name="pagination" ref="Pagination"/>
-    <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
-    <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
   </bean>
     
   <bean id="Course" scope="prototype"
