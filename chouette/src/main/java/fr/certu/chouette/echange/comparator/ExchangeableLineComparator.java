@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import fr.certu.chouette.echange.ILectureEchange;
 
 
 public abstract class ExchangeableLineComparator implements IExchangeableLineComparator
 {	
-	
+	private static final Log logger = LogFactory.getLog(ExchangeableLineComparator.class);
+
 	/** 
 	 * SourceObjectIds<->targetObjectIds maps to link same schema objects
 	 * as they don't necessary have the same id
@@ -46,16 +50,20 @@ public abstract class ExchangeableLineComparator implements IExchangeableLineCom
 	
 	public boolean doComparison() throws Exception
 	{
-		boolean globalResult = true;
-		
-		for (IChouetteDataComparator chouetteDataComparator : dataComparators)
-		{
-			if (! chouetteDataComparator.compareData(this))
-			{
-				globalResult = false;
-			}
-		}
-		return globalResult;
+    boolean globalResult = true;
+
+    for (IChouetteDataComparator chouetteDataComparator : this.dataComparators)
+    {
+      logger.debug("starting " + chouetteDataComparator.getMappingKey());
+      if (chouetteDataComparator.compareData(this))
+        continue;
+      logger.debug("comparison failed ");
+      globalResult = false;
+      if (chouetteDataComparator.mustStopOnFailure())
+        break;
+    }
+    logger.debug("end " + globalResult);
+    return globalResult;
 	}
 	
 	/** 

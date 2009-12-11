@@ -226,7 +226,7 @@
   </pluginRepositories>
   <build>
     <filters>
-      <filter>src/main/filters/filter.properties</filter>
+      <filter>src/main/filters/filter${site}.properties</filter>
     </filters>
     <extensions>
       <extension>
@@ -402,5 +402,3 @@
     <netbeans.hint.deploy.server>J2EE</netbeans.hint.deploy.server>
   </properties>
 </project>
-
-

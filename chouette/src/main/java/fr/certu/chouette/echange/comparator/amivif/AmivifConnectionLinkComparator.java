@@ -9,7 +9,7 @@ import amivif.schema.StopPointInConnection;
 
 import fr.certu.chouette.echange.comparator.ChouetteObjectState;
 import fr.certu.chouette.echange.comparator.ComparatorException;
-import fr.certu.chouette.service.commun.*;
+import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.modele.PositionGeographique;
 
 /**

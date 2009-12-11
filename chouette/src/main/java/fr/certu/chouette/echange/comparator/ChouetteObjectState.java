@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dryade, Michel Etienne
+ * state of an elementary checked item
+ * 
+ * @author Michel Etienne
  *
  */
 public class ChouetteObjectState 
@@ -25,15 +27,28 @@ public class ChouetteObjectState
      */
     private String targetId;
     /**
-     * Attribute states
+     * Attribute states with valid status
      */
     private List<DataState> validAttributesStates;
+    /**
+     * get the valid attributes
+     * 
+     * @return
+     */
     public List<DataState> getValidAttributesStates() 
     {
 		return validAttributesStates;
 	}
 
+	/**
+	 * Attribute states with invalid status
+	 */
 	private List<DataState> unvalidAttributesStates;    
+    /**
+     * get the invalid attributes
+     * 
+     * @return
+     */
     public List<DataState> getUnvalidAttributesStates() 
     {
 		return unvalidAttributesStates;
@@ -74,6 +89,11 @@ public class ChouetteObjectState
         this.unvalidAttributesStates = new ArrayList<DataState>();
     }
 
+    /**
+     * add an attribute state
+     * 
+     * @param newState
+     */
     private void addAttributeState(DataState newState)
     {
     	if (!newState.isIdentical())

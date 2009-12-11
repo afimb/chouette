@@ -6,540 +6,638 @@
 
 <struts>
 
-  <!-- Constantes pour le plugin REST -->
-  <constant name="struts.codebehind.classSuffix" value="Controller"/>
-  <constant name="struts.codebehind.action.checkImplementsAction" value="false"/>
-  <constant name="struts.codebehind.action.checkAnnotation" value="false"/>
-  <constant name="struts.codebehind.action.defaultMethodName" value="index"/>
-  <constant name="struts.configuration.classpath.defaultParentPackage" value="rest-default" />
+	<!-- Constantes pour le plugin REST -->
+	<constant name="struts.codebehind.classSuffix" value="Controller" />
+	<constant name="struts.codebehind.action.checkImplementsAction"
+		value="false" />
+	<constant name="struts.codebehind.action.checkAnnotation"
+		value="false" />
+	<constant name="struts.codebehind.action.defaultMethodName"
+		value="index" />
+	<constant name="struts.configuration.classpath.defaultParentPackage"
+		value="rest-default" />
 
-  <!-- Constantes pour le plugin Convention -->
-  <constant name="struts.convention.actionConfigBuilder" value="convention"/>
-  <constant name="struts.convention.actionNameBuilder" value="convention"/>
-  <constant name="struts.convention.resultMapBuilder" value="convention"/>
-  <constant name="struts.convention.interceptorMapBuilder" value="convention"/>
-  <constant name="struts.convention.conventionsService" value="convention"/>
-  <constant name="struts.convention.result.path" value="/jsp/"/>
-  <constant name="struts.convention.result.flatLayout" value="true"/>
-  <constant name="struts.convention.action.suffix" value="Action"/>
-  <constant name="struts.convention.action.disableScanning" value="false"/>
-  <constant name="struts.convention.action.mapAllMatches" value="false"/>
-  <constant name="struts.convention.action.checkImplementsAction" value="true"/>
-  <constant name="struts.convention.default.parent.package" value="struts"/>
-  <constant name="struts.convention.action.name.lowercase" value="true"/>
-  <constant name="struts.convention.action.name.separator" value="-"/>
-  <constant name="struts.convention.package.locators" value="struts"/>
-  <constant name="struts.convention.package.locators.disable" value="false"/>
-  <constant name="struts.convention.package.locators.basePackage" value=""/>
-  <constant name="struts.convention.exclude.packages" value="org.apache.struts.*,org.apache.struts2.*,org.springframework.web.struts.*,org.springframework.web.struts2.*,org.hibernate.*"/>
-  <constant name="struts.convention.relative.result.types" value="dispatcher,velocity,freemarker"/>
-  <constant name="struts.convention.redirect.to.slash" value="true"/>
-  <constant name="struts.convention.action.alwaysMapExecute" value="true"/>
-  <constant name="struts.mapper.alwaysSelectFullNamespace" value="true"/>
-  <constant name="struts.convention.action.fileProtocols" value="jar"/>
-  <constant name="struts.convention.classes.reload" value="true"/>
-  <constant name="struts.convention.exclude.parentClassLoader" value="true"/>
-
-
-  <package name="struts" extends="struts-default">
-    <interceptors>
-      <interceptor name="alias" class="com.opensymphony.xwork2.interceptor.AliasInterceptor"/>
-      <interceptor name="autowiring" class="com.opensymphony.xwork2.spring.interceptor.ActionAutowiringInterceptor"/>
-      <interceptor name="chain" class="com.opensymphony.xwork2.interceptor.ChainingInterceptor"/>
-      <interceptor name="conversionError" class="org.apache.struts2.interceptor.StrutsConversionErrorInterceptor"/>
-      <interceptor name="cookie" class="org.apache.struts2.interceptor.CookieInterceptor"/>
-      <interceptor name="clearSession" class="org.apache.struts2.interceptor.ClearSessionInterceptor" />
-      <interceptor name="createSession" class="org.apache.struts2.interceptor.CreateSessionInterceptor" />
-      <interceptor name="debugging" class="org.apache.struts2.interceptor.debugging.DebuggingInterceptor" />
-      <interceptor name="externalRef" class="com.opensymphony.xwork2.interceptor.ExternalReferencesInterceptor"/>
-      <interceptor name="execAndWait" class="org.apache.struts2.interceptor.ExecuteAndWaitInterceptor"/>
-      <interceptor name="exception" class="com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor"/>
-      <interceptor name="fileUpload" class="org.apache.struts2.interceptor.FileUploadInterceptor"/>
-      <interceptor name="i18n" class="com.opensymphony.xwork2.interceptor.I18nInterceptor"/>
-      <interceptor name="logger" class="com.opensymphony.xwork2.interceptor.LoggingInterceptor"/>
-      <interceptor name="modelInjectable" class="fr.certu.chouette.ihm.struts.ModelInjectableInterceptor"/>
-      <interceptor name="modelDriven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"/>
-      <interceptor name="scopedModelDriven" class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor"/>
-      <interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"/>
-      <interceptor name="actionMappingParams" class="org.apache.struts2.interceptor.ActionMappingParametersInteceptor"/>
-      <interceptor name="prepare" class="com.opensymphony.xwork2.interceptor.PrepareInterceptor"/>
-      <interceptor name="staticParams" class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor"/>
-      <interceptor name="scope" class="org.apache.struts2.interceptor.ScopeInterceptor"/>
-      <interceptor name="servletConfig" class="org.apache.struts2.interceptor.ServletConfigInterceptor"/>
-      <interceptor name="sessionAutowiring" class="org.apache.struts2.spring.interceptor.SessionContextAutowiringInterceptor"/>
-      <interceptor name="timer" class="com.opensymphony.xwork2.interceptor.TimerInterceptor"/>
-      <interceptor name="token" class="org.apache.struts2.interceptor.TokenInterceptor"/>
-      <interceptor name="tokenSession" class="org.apache.struts2.interceptor.TokenSessionStoreInterceptor"/>
-      <interceptor name="validation" class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
-      <interceptor name="workflow" class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor"/>
-      <interceptor name="store" class="org.apache.struts2.interceptor.MessageStoreInterceptor" />
-      <interceptor name="checkbox" class="org.apache.struts2.interceptor.CheckboxInterceptor" />
-      <interceptor name="profiling" class="org.apache.struts2.interceptor.ProfilingActivationInterceptor" />
-      <interceptor name="roles" class="org.apache.struts2.interceptor.RolesInterceptor" />
-      <interceptor name="jsonValidation" class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
-      <interceptor name="annotationWorkflow" class="com.opensymphony.xwork2.interceptor.annotations.AnnotationWorkflowInterceptor" />
-      <interceptor name="multiselect" class="org.apache.struts2.interceptor.MultiselectInterceptor" />
-
-      <interceptor-stack name="crudStack">
-        <interceptor-ref name="exception">
-          <param name="logEnabled">true</param>
-          <param name="logLevel">error</param>
-        </interceptor-ref>
-        <interceptor-ref name="alias"/>
-        <interceptor-ref name="servletConfig"/>
-        <interceptor-ref name="i18n"/>
-        <interceptor-ref name="params">
-          <param name="excludeParams">dojo\..*,^struts\..*</param>
-        </interceptor-ref>
-        <interceptor-ref name="prepare"/>
-        <interceptor-ref name="chain"/>
-        <interceptor-ref name="debugging"/>
-        <interceptor-ref name="scopedModelDriven"/>
-        <interceptor-ref name="modelDriven"/>
-        <interceptor-ref name="fileUpload"/>
-        <interceptor-ref name="checkbox"/>
-        <interceptor-ref name="multiselect"/>
-        <interceptor-ref name="staticParams"/>
-        <interceptor-ref name="actionMappingParams"/>
-        <interceptor-ref name="params">
-          <param name="excludeParams">dojo\..*,^struts\..*</param>
-        </interceptor-ref>
-        <interceptor-ref name="conversionError"/>
-        <interceptor-ref name="validation">
-          <param name="excludeMethods">input,edit,delete,back,cancel</param>
-        </interceptor-ref>
-        <interceptor-ref name="workflow">
-          <param name="excludeMethods">input,edit,back,cancel</param>
-        </interceptor-ref>
-        <interceptor-ref name="store"></interceptor-ref>
-      </interceptor-stack>
-    </interceptors>
-    <default-interceptor-ref name="crudStack" />
-
-	<!-- Action par défaut -->
-    <default-action-ref name="ActionNotFound" />
-
-	<!-- Resultats "reutilisables" -->
-    <global-results>
-      <result name="error">/jsp/error.jsp</result>
-    </global-results>
-
-	<!-- Traitement des erreurs -->
-    <global-exception-mappings>
-		<!-- Les erreurs des services -->
-      <exception-mapping result="input" exception="java.lang.Exception"/>
-    </global-exception-mappings>
-
-	<!-- Déconnexion -->
-    <action name="deconnexion" class="Deconnexion" >
-      <result name="success" type="redirect">.</result>
-    </action>
-
-	<!-- Action non trouvée -->
-    <action name="ActionNotFound">
-      <result>/jsp/action_not_found.jsp</result>
-    </action>
-
-	<!-- A propos de l'application -->
-    <action name="AProposDe" class="AProposDe">
-      <result name="success">/jsp/aproposde.jsp</result>
-    </action>
-
-	<!-- Mise à jour des données du modèle 
-    <action name="*/*" method="{2}" class='fr.certu.chouette.struts.reseau.{1}Action'>
-      <result name="success">/jsp/{1}/edit.jsp</result>
-      <result name="list" >/jsp/{1}/list.jsp</result>
-      <result name="input" >/jsp/{1}/{2}.jsp</result>
-      <result name="recherche">/jsp/{1}/recherche.jsp</result>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-    </action>-->
-
-	<!-- Liste des données du modèle -->
-    <action name="liste_*" class="{1}" method="list">
-      <result name="success">/jsp/{1}/list.jsp</result>
-      <result name="input">/jsp/{1}/list.jsp</result>
-      <interceptor-ref name="store">
-        <param name="operationMode">RETRIEVE</param>
-      </interceptor-ref>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-    </action>
-
-	<!-- Mise à jour des données du modèle et récupération des messages et erreurs en session -->
-    <action name="createAndEdit_*" class="{1}" method="edit">
-      <result name="input">/jsp/{1}/edit.jsp</result>
-      <interceptor-ref name="store">
-        <param name="operationMode">RETRIEVE</param>
-      </interceptor-ref>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-    </action>
+	<!-- Constantes pour le plugin Convention -->
+	<constant name="struts.convention.actionConfigBuilder" value="convention" />
+	<constant name="struts.convention.actionNameBuilder" value="convention" />
+	<constant name="struts.convention.resultMapBuilder" value="convention" />
+	<constant name="struts.convention.interceptorMapBuilder"
+		value="convention" />
+	<constant name="struts.convention.conventionsService" value="convention" />
+	<constant name="struts.convention.result.path" value="/jsp/" />
+	<constant name="struts.convention.result.flatLayout" value="true" />
+	<constant name="struts.convention.action.suffix" value="Action" />
+	<constant name="struts.convention.action.disableScanning"
+		value="false" />
+	<constant name="struts.convention.action.mapAllMatches" value="false" />
+	<constant name="struts.convention.action.checkImplementsAction"
+		value="true" />
+	<constant name="struts.convention.default.parent.package"
+		value="struts" />
+	<constant name="struts.convention.action.name.lowercase"
+		value="true" />
+	<constant name="struts.convention.action.name.separator"
+		value="-" />
+	<constant name="struts.convention.package.locators" value="struts" />
+	<constant name="struts.convention.package.locators.disable"
+		value="false" />
+	<constant name="struts.convention.package.locators.basePackage"
+		value="" />
+	<constant name="struts.convention.exclude.packages"
+		value="org.apache.struts.*,org.apache.struts2.*,org.springframework.web.struts.*,org.springframework.web.struts2.*,org.hibernate.*" />
+	<constant name="struts.convention.relative.result.types"
+		value="dispatcher,velocity,freemarker" />
+	<constant name="struts.convention.redirect.to.slash" value="true" />
+	<constant name="struts.convention.action.alwaysMapExecute"
+		value="true" />
+	<constant name="struts.mapper.alwaysSelectFullNamespace"
+		value="true" />
+	<constant name="struts.convention.action.fileProtocols" value="jar" />
+	<constant name="struts.convention.classes.reload" value="true" />
+	<constant name="struts.convention.exclude.parentClassLoader"
+		value="true" />
 
 
-	<!-- Import des données -->
-    <action name="Import_*" class="Import" method="{1}">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success">/jsp/import.jsp</result>
-      <result name="input">/jsp/import.jsp</result>
-      <result name="success_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
-        <param name="idLigne">${idLigne}</param>
+	<package name="struts" extends="struts-default">
+		<interceptors>
+			<interceptor 
+				name="singleAction" 
+				class="fr.certu.chouette.struts.interceptor.SingleActionInterceptor" />
+			<interceptor name="alias"
+				class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />
+			<interceptor name="autowiring"
+				class="com.opensymphony.xwork2.spring.interceptor.ActionAutowiringInterceptor" />
+			<interceptor name="chain"
+				class="com.opensymphony.xwork2.interceptor.ChainingInterceptor" />
+			<interceptor name="conversionError"
+				class="org.apache.struts2.interceptor.StrutsConversionErrorInterceptor" />
+			<interceptor name="cookie"
+				class="org.apache.struts2.interceptor.CookieInterceptor" />
+			<interceptor name="clearSession"
+				class="org.apache.struts2.interceptor.ClearSessionInterceptor" />
+			<interceptor name="createSession"
+				class="org.apache.struts2.interceptor.CreateSessionInterceptor" />
+			<interceptor name="debugging"
+				class="org.apache.struts2.interceptor.debugging.DebuggingInterceptor" />
+			<interceptor name="externalRef"
+				class="com.opensymphony.xwork2.interceptor.ExternalReferencesInterceptor" />
+			<interceptor name="execAndWait"
+				class="org.apache.struts2.interceptor.ExecuteAndWaitInterceptor" />
+			<interceptor name="exception"
+				class="com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor" />
+			<interceptor name="fileUpload"
+				class="org.apache.struts2.interceptor.FileUploadInterceptor" />
+			<interceptor name="i18n"
+				class="com.opensymphony.xwork2.interceptor.I18nInterceptor" />
+			<interceptor name="logger"
+				class="com.opensymphony.xwork2.interceptor.LoggingInterceptor" />
+			<interceptor name="modelDriven"
+				class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor" />
+			<interceptor name="scopedModelDriven"
+				class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor" />
+			<interceptor name="params"
+				class="com.opensymphony.xwork2.interceptor.ParametersInterceptor" />
+			<interceptor name="actionMappingParams"
+				class="org.apache.struts2.interceptor.ActionMappingParametersInteceptor" />
+			<interceptor name="prepare"
+				class="com.opensymphony.xwork2.interceptor.PrepareInterceptor" />
+			<interceptor name="staticParams"
+				class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor" />
+			<interceptor name="scope"
+				class="org.apache.struts2.interceptor.ScopeInterceptor" />
+			<interceptor name="servletConfig"
+				class="org.apache.struts2.interceptor.ServletConfigInterceptor" />
+			<interceptor name="sessionAutowiring"
+				class="org.apache.struts2.spring.interceptor.SessionContextAutowiringInterceptor" />
+			<interceptor name="timer"
+				class="com.opensymphony.xwork2.interceptor.TimerInterceptor" />
+			<interceptor name="token"
+				class="org.apache.struts2.interceptor.TokenInterceptor" />
+			<interceptor name="tokenSession"
+				class="org.apache.struts2.interceptor.TokenSessionStoreInterceptor" />
+			<interceptor name="validation"
+				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
+			<interceptor name="workflow"
+				class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor" />
+			<interceptor name="store"
+				class="org.apache.struts2.interceptor.MessageStoreInterceptor" />
+			<interceptor name="checkbox"
+				class="org.apache.struts2.interceptor.CheckboxInterceptor" />
+			<interceptor name="profiling"
+				class="org.apache.struts2.interceptor.ProfilingActivationInterceptor" />
+			<interceptor name="roles"
+				class="org.apache.struts2.interceptor.RolesInterceptor" />
+			<interceptor name="jsonValidation"
+				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
+			<interceptor name="annotationWorkflow"
+				class="com.opensymphony.xwork2.interceptor.annotations.AnnotationWorkflowInterceptor" />
+			<interceptor name="multiselect"
+				class="org.apache.struts2.interceptor.MultiselectInterceptor" />
+
+			<interceptor-stack name="crudStack">
+				<interceptor-ref name="exception">
+					<param name="logEnabled">true</param>
+					<param name="logLevel">error</param>
+				</interceptor-ref>
+				<interceptor-ref name="singleAction" />
+				<interceptor-ref name="alias" />
+				<interceptor-ref name="servletConfig" />
+				<interceptor-ref name="i18n" />
+				<interceptor-ref name="params">
+					<param name="excludeParams">dojo\..*,^struts\..*</param>
+				</interceptor-ref>
+				<interceptor-ref name="prepare" />
+				<interceptor-ref name="chain" />
+				<interceptor-ref name="debugging" />
+				<interceptor-ref name="scopedModelDriven" />
+				<interceptor-ref name="modelDriven" />
+				<interceptor-ref name="fileUpload" />
+				<interceptor-ref name="checkbox" />
+				<interceptor-ref name="multiselect" />
+				<interceptor-ref name="staticParams" />
+				<interceptor-ref name="actionMappingParams" />
+				<interceptor-ref name="params">
+					<param name="excludeParams">dojo\..*,^struts\..*</param>
+				</interceptor-ref>
+				<interceptor-ref name="conversionError" />
+				<interceptor-ref name="validation">
+					<param name="excludeMethods">input,edit,delete,back,cancel</param>
+				</interceptor-ref>
+				<interceptor-ref name="workflow">
+					<param name="excludeMethods">input,edit,back,cancel</param>
+				</interceptor-ref>
+				<interceptor-ref name="store"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="crudStack" />
+
+
+		<!-- Action par défaut -->
+		<default-action-ref name="ActionNotFound" />
+
+		<!-- Resultats "reutilisables" -->
+		<global-results>
+			<result name="error">/jsp/error.jsp</result>
+		</global-results>
+
+		<!-- Traitement des erreurs -->
+		<global-exception-mappings>
+			<!-- Les erreurs des services -->
+			<exception-mapping result="input" exception="java.lang.Exception" />
+		</global-exception-mappings>
+
+		<!-- Déconnexion -->
+		<action name="deconnexion" class="Deconnexion">
+			<result name="success" type="redirect">.</result>
+		</action>
+
+		<!-- Action non trouvée -->
+		<action name="ActionNotFound">
+			<result>/jsp/action_not_found.jsp</result>
+		</action>
+
+		<!-- A propos de l'application -->
+		<action name="AProposDe" class="AProposDe">
+			<result name="success">/jsp/aproposde.jsp</result>
+		</action>
+
+		<!-- Liste des données du modèle -->
+		<action name="liste_*" class="{1}" method="list">
+			<result name="success">/jsp/{1}/list.jsp</result>
+			<result name="input">/jsp/{1}/list.jsp</result>
+			<interceptor-ref name="store">
+				<param name="operationMode">RETRIEVE</param>
+			</interceptor-ref>
+			<interceptor-ref name="crudStack"></interceptor-ref>
+		</action>
+
+		<!--
+			Mise à jour des données du modèle et récupération des messages et
+			erreurs en session
+		-->
+		<action name="createAndEdit_*" class="{1}" method="edit">
+			<result name="input">/jsp/{1}/edit.jsp</result>
+			<interceptor-ref name="store">
+				<param name="operationMode">RETRIEVE</param>
+			</interceptor-ref>
+			<interceptor-ref name="crudStack"></interceptor-ref>
+		</action>
+
+
+		<!-- Import des données -->
+		<action name="Import_*" class="Import" method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success">/jsp/import.jsp</result>
+			<result name="input">/jsp/import.jsp</result>
+			<result name="success_itineraire" type="redirectAction">
+				<param name="actionName">liste_Itineraire</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input_itineraire" type="redirectAction">
+				<param name="actionName">liste_Itineraire</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+		</action>
+
+		<action name="LineFilesComparisonService_*" class="LineFilesComparisonService"
+			method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success">/jsp/lineFilesComparisonService/index.jsp
+			</result>
+			<result name="error">/jsp/lineFilesComparisonService/index.jsp
+			</result>
+			<result name="input">/jsp/lineFilesComparisonService/index.jsp
+			</result>
+			<result name="comparison-success">/jsp/lineFilesComparisonService/reporting.jsp
+			</result>
+			<result name="report-download-success">/jsp/lineFilesComparisonService/reporting.jsp
+			</result>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+		</action>
+
+		<!-- Validation des données -->
+		<action name="Validation_*" class="Validation" method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success">/jsp/validation.jsp</result>
+			<result name="input">/jsp/validation.jsp</result>
+			<result name="success_itineraire" type="redirectAction">
+				<param name="actionName">liste_Itineraire</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input_itineraire" type="redirectAction">
+				<param name="actionName">liste_Itineraire</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+		</action>
+
+		<!-- Export des données -->
+		<action name="Export_*" class="Export" method="{1}">
+			<result name="success" type="stream">
+				<param name="contentType">text/xml; charset=ISO-8859-1</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment; filename="${nomFichier}"</param>
+				<param name="contentTransferEncoding">binary</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="input" type="chain">
+				<param name="actionName">liste_Ligne</param>
+			</result>
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+		</action>
+
+		<action name="HorairesDePassage_*" class="HorairesDePassage"
+			method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_HorairesDePassage</param>
+				<param name="idItineraire">${idItineraire}</param>
+				<param name="idLigne">${idLigne}</param>
+				<param name="idTableauMarche">${idTableauMarche}</param>
+				<param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+				<param name="page">${page}</param>
+			</result>
+			<result name="input">
+				/jsp/HorairesDePassage/list.jsp
       </result>
-      <result name="input_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <interceptor-ref name="store">
-        <param name="operationMode">STORE</param>
-      </interceptor-ref>
-    </action>
+		</action>
 
-	<!-- Validation des données -->
-    <action name="Validation_*" class="Validation" method="{1}">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success">/jsp/validation.jsp</result>
-      <result name="input">/jsp/validation.jsp</result>
-      <result name="success_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
-        <param name="idLigne">${idLigne}</param>
+		<action name="ArretSurItineraire_*" class="ArretSurItineraire"
+			method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_ArretSurItineraire</param>
+				<param name="idItineraire">${idItineraire}</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">
+				/jsp/ArretSurItineraire/list.jsp
       </result>
-      <result name="input_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
-        <param name="idLigne">${idLigne}</param>
+		</action>
+
+		<!-- Ajout d'une donnée du modèle liée à la ligne -->
+		<action name="creer_*_sur_la_ligne" class="{1}" method="update">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_{1}</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">/jsp/{1}/edit.jsp</result>
+		</action>
+
+		<!-- Ajout d'une donnée du modèle liée à la ligne -->
+		<action name="creer_Itineraire_retour_sur_la_ligne" class="Itineraire"
+			method="creerItineraireRetour">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_Itineraire</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">/jsp/Itineraire/edit.jsp
+			</result>
+		</action>
+
+		<!--
+			Annulation d'une modification d'une donnée du modèle liée à la ligne
+		-->
+		<action name="annuler_*_sur_la_ligne" class="{1}" method="cancel">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_{1}</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">/jsp/{1}/edit.jsp</result>
+		</action>
+
+		<!-- Suppression d'une donnée du modèle liée à la ligne -->
+		<action name="supprimer_*_de_la_ligne" class="{1}" method="delete">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_{1}</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">/jsp/{1}/edit.jsp</result>
+		</action>
+
+		<!-- Association d'un tableau de marche liée à l'itinéraire -->
+		<action name="creerAssociationTableauMarche" class="Course"
+			method="creerAssociationTableauMarche">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">crud_Course!edit</param>
+				<param name="idItineraire">${idItineraire}</param>
+				<param name="idCourse">${idCourse}</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">/jsp/{1}/edit.jsp</result>
+		</action>
+
+		<!--
+			Suppression d'une association d'un tableau de marche liée à
+			l'itinéraire
+		-->
+		<action name="supprimerAssociationTableauMarche" class="Course"
+			method="supprimerAssociationTableauMarche">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">crud_Course!edit</param>
+				<param name="idItineraire">${idItineraire}</param>
+				<param name="idCourse">${idCourse}</param>
+				<param name="idLigne">${idLigne}</param>
+			</result>
+			<result name="input">/jsp/{1}/edit.jsp</result>
+		</action>
+
+		<action name="ITL_*" class="ITL" method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="idItl">${idItl}</param>
+				<param name="actionName">crud_ITL!edit</param>
+			</result>
+			<result name="input">
+				/jsp/ITL/edit.jsp
       </result>
-      <interceptor-ref name="store">
-        <param name="operationMode">STORE</param>
-      </interceptor-ref>
-    </action>
+		</action>
+
+		<action name="Correspondance_*" class="Correspondance" method="{1}">
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_Correspondance</param>
+				<param name="idCorrespondance">${connectionlink.id}</param>
+			</result>
+			<result name="loadedit" type="redirectAction">
+				<param name="actionName">Correspondance_edit</param>
+				<param name="idCorrespondance">${connectionlink.id}</param>
+			</result>
+			<result name="input">
+				/jsp/Correspondance/edit.jsp
+      </result>
+			<result name="results">
+				/jsp/Correspondance/search.jsp
+      </result>
+		</action>
+
+
+
+		<action name="PositionGeographique_*" class="PositionGeographique"
+			method="{1}">
+			<result name="success" type="redirectAction">
+				<param name="actionName">liste_PositionGeographique</param>
+				<param name="typePositionGeographique">${typePositionGeographique}</param>
+			</result>
+			<result name="createAndEdit" type="redirectAction">
+				<param name="actionName">createAndEdit_PositionGeographique</param>
+				<param name="typePositionGeographique">${typePositionGeographique}</param>
+			</result>
+			<result name="loadedit" type="redirectAction">
+				<param name="actionName">PositionGeographique_edit</param>
+				<param name="idPositionGeographique">${positionGeographique.id}</param>
+			</result>
+			<result name="results">
+				/jsp/PositionGeographique/search.jsp
+      </result>
+			<result name="input">/jsp/PositionGeographique/edit.jsp
+			</result>
+			<interceptor-ref name="crudStack"></interceptor-ref>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+		</action>
+	</package>
+
+	<!-- Mise à jour des données du modèle Network -->
+	<package name="network" extends="struts" namespace="/network">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.network.NetworkAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="edit">/jsp/network/edit.jsp
+			</result>
+			<result name="list">/jsp/network/list.jsp
+			</result>
+			<result name="input">/jsp/network/edit.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- Mise à jour des données du modèle Line -->
+	<package name="line" extends="struts" namespace="/line">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.line.LineAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="edit">/jsp/line/edit.jsp</result>
+			<result name="list">/jsp/line/list.jsp</result>
+			<result name="input">/jsp/line/edit.jsp
+			</result>
+		</action>
+	</package>
+
+	<!-- Mise à jour des données du modèle Company -->
+	<package name="company" extends="struts" namespace="/company">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.company.CompanyAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="edit">/jsp/company/edit.jsp
+			</result>
+			<result name="list">/jsp/company/list.jsp
+			</result>
+			<result name="input">/jsp/company/edit.jsp
+			</result>
+		</action>
+	</package>
+
 
 	<!-- Export des données -->
-    <action name="Export_*" class="Export" method="{1}">
-      <result name="success" type="stream">
-        <param name="contentType">text/xml; charset=ISO-8859-1</param>
-        <param name="inputName">inputStream</param>
-        <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
-        <param name="contentTransferEncoding">binary</param>
-        <param name="bufferSize">4096</param>
-      </result>
-      <result name="input" type="chain">
-        <param name="actionName">liste_Ligne</param>
-      </result>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <interceptor-ref name="store">
-        <param name="operationMode">STORE</param>
-      </interceptor-ref>
-    </action>
-
-    <action name="HorairesDePassage_*" class="HorairesDePassage" method="{1}">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_HorairesDePassage</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idLigne">${idLigne}</param>
-        <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
-        <param name="page">${page}</param>
-      </result>
-      <result name="input">
-			/jsp/HorairesDePassage/list.jsp
-      </result>
-    </action>
-
-    <action name="ArretSurItineraire_*" class="ArretSurItineraire" method="{1}">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_ArretSurItineraire</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">
-			/jsp/ArretSurItineraire/list.jsp
-      </result>
-    </action>
-
-	<!-- Ajout d'une donnée du modèle liée à la ligne -->
-    <action name="creer_*_sur_la_ligne" class="{1}" method="update">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_{1}</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-	<!-- Ajout d'une donnée du modèle liée à la ligne -->
-    <action name="creer_Itineraire_retour_sur_la_ligne" class="Itineraire" method="creerItineraireRetour">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">/jsp/Itineraire/edit.jsp</result>
-    </action>
-
-	<!-- Annulation d'une modification d'une donnée du modèle liée à la ligne -->
-    <action name="annuler_*_sur_la_ligne" class="{1}" method="cancel">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_{1}</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-	<!-- Suppression d'une donnée du modèle liée à la ligne -->
-    <action name="supprimer_*_de_la_ligne" class="{1}" method="delete">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_{1}</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-	<!-- Association d'un tableau de marche liée à l'itinéraire -->
-    <action name="creerAssociationTableauMarche" class="Course" method="creerAssociationTableauMarche">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">crud_Course!edit</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idCourse">${idCourse}</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-	<!-- Suppression d'une association d'un tableau de marche liée à l'itinéraire -->
-    <action name="supprimerAssociationTableauMarche" class="Course" method="supprimerAssociationTableauMarche">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">crud_Course!edit</param>
-        <param name="idItineraire">${idItineraire}</param>
-        <param name="idCourse">${idCourse}</param>
-        <param name="idLigne">${idLigne}</param>
-      </result>
-      <result name="input">/jsp/{1}/edit.jsp</result>
-    </action>
-
-    <action name="ITL_*" class="ITL" method="{1}">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="idItl">${idItl}</param>
-        <param name="actionName">crud_ITL!edit</param>
-      </result>
-      <result name="input">
-			/jsp/ITL/edit.jsp
-      </result>
-    </action>
+	<package name="export" extends="struts" namespace="/export">
+		<action name="*" class="fr.certu.chouette.struts.export.ExportAction"
+			method="{1}">
+			<result name="success" type="stream">
+				<param name="contentType">text/xml; charset=UTF-8</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment; filename="${nomFichier}"</param>
+				<param name="contentTransferEncoding">binary</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="namespace">/${origin}</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+		</action>
+	</package>
 
 
+	<!-- Mise à jour des données du modèle ITL -->
+	<package name="itl" extends="struts" namespace="/itl">
+		<action name="*" method="{1}" class='fr.certu.chouette.struts.ITLAction'>
+			<result name="redirectEdit" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idItl">${idItl}</param>
+			</result>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="edit">/jsp/ITL/edit.jsp</result>
+			<result name="list">/jsp/ITL/list.jsp</result>
+			<result name="input">/jsp/ITL/edit.jsp
+			</result>
+		</action>
+	</package>
 
-	<!-- Recherche d'une donnée 
-    <action name="search_*" class="{1}" method="search">
-      <result name="success">/jsp/{1}/search.jsp</result>
-      <result name="input">/jsp/{1}/search.jsp</result>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-    </action>-->
+	<!-- Mise à jour des données du modèle Itineraires -->
+	<package name="itinerary" extends="struts" namespace="/itinerary">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.itineraire.ItineraireAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="idLigne">${idLigne}</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="edit">/jsp/itinerary/edit.jsp
+			</result>
+			<result name="list">/jsp/itinerary/list.jsp
+			</result>
+			<result name="input">/jsp/itinerary/edit.jsp
+			</result>
+		</action>
+	</package>
 
-    <action name="Correspondance_*" class="Correspondance" method="{1}">
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_Correspondance</param>
-        <param name="idCorrespondance">${connectionlink.id}</param>
-      </result>
-      <result name="loadedit" type="redirectAction">
-        <param name="actionName">Correspondance_edit</param>
-        <param name="idCorrespondance">${connectionlink.id}</param>
-      </result>
-      <result name="input">
-			/jsp/Correspondance/edit.jsp
-      </result>
-      <result name="results" >
-			/jsp/Correspondance/search.jsp
-      </result>
-    </action>
+	<!-- Mise à jour des données du modèle Stoppoint -->
+	<package name="stoppoint" extends="struts" namespace="/stoppoint">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.PositionGeographiqueAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="${idPositionGeographique}">${idPositionGeographique}</param>
+				<param name="typePositionGeographique">${typePositionGeographique}</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="redirectEdit" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idPositionGeographique">${idPositionGeographique}</param>
+			</result>
+			<result name="edit">/jsp/stoppoint/edit.jsp
+			</result>
+			<result name="list">/jsp/stoppoint/list.jsp
+			</result>
+			<result name="input">/jsp/stoppoint/edit.jsp
+			</result>
+			<result name="search">/jsp/stoppoint/search.jsp
+			</result>
+		</action>
+	</package>
 
-    <action name="compareLineFiles" class="CompareLineFiles" method="compare">
-      <result name="success">/jsp/linesComparaison.jsp</result>
-      <result name="input">/jsp/linesComparaison.jsp</result>
-      <result name="error">/jsp/linesComparaison.jsp</result>
-    </action>
+	<!-- Mise à jour des données du modèle Stoparea -->
+	<package name="stoparea" extends="struts" namespace="/stoparea">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.PositionGeographiqueAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="${idPositionGeographique}">${idPositionGeographique}</param>
+				<param name="typePositionGeographique">${typePositionGeographique}</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="redirectEdit" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idPositionGeographique">${idPositionGeographique}</param>
+			</result>
+			<result name="edit">/jsp/stoparea/edit.jsp
+			</result>
+			<result name="list">/jsp/stoparea/list.jsp
+			</result>
+			<result name="input">/jsp/stoparea/edit.jsp
+			</result>
+			<result name="search">/jsp/stoparea/search.jsp
+			</result>
+		</action>
+	</package>
 
-    <action name="PositionGeographique_*" class="PositionGeographique" method="{1}">
-      <result name="success" type="redirectAction">
-        <param name="actionName">liste_PositionGeographique</param>
-        <param name="typePositionGeographique">${typePositionGeographique}</param>
-      </result>
-      <result name="createAndEdit" type="redirectAction">
-        <param name="actionName">createAndEdit_PositionGeographique</param>
-        <param name="typePositionGeographique">${typePositionGeographique}</param>
-      </result>
-      <result name="loadedit" type="redirectAction">
-        <param name="actionName">PositionGeographique_edit</param>
-        <param name="idPositionGeographique">${positionGeographique.id}</param>
-      </result>
-      <result name="results" >
-			/jsp/PositionGeographique/search.jsp
-      </result>
-      <result name="input">/jsp/PositionGeographique/edit.jsp</result>
-      <interceptor-ref name="crudStack"></interceptor-ref>
-      <interceptor-ref name="store">
-        <param name="operationMode">STORE</param>
-      </interceptor-ref>
-    </action>
-
-  </package>
-
-  <!-- Mise à jour des données du modèle Network -->
-  <package name="network" extends="struts" namespace="/network">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.network.NetworkAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="edit">/jsp/network/edit.jsp</result>
-      <result name="list">/jsp/network/list.jsp</result>
-      <result name="input" >/jsp/network/edit.jsp</result>
-    </action>
-  </package>
-
-  <!-- Mise à jour des données du modèle Line -->
-  <package name="line" extends="struts" namespace="/line">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.line.LineAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="edit">/jsp/line/edit.jsp</result>
-      <result name="list">/jsp/line/list.jsp</result>
-      <result name="input" >/jsp/line/edit.jsp</result>
-    </action>
-  </package>
-
-  <!-- Mise à jour des données du modèle Company -->
-  <package name="company" extends="struts" namespace="/company">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.company.CompanyAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="edit">/jsp/company/edit.jsp</result>
-      <result name="list">/jsp/company/list.jsp</result>
-      <result name="input" >/jsp/company/edit.jsp</result>
-    </action>
-  </package>
-
-
-	<!-- Export des données -->
-  <package name="export" extends="struts" namespace="/export">
-    <action name="*" class="fr.certu.chouette.struts.export.ExportAction" method="{1}">
-      <result name="success" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
-        <param name="inputName">inputStream</param>
-        <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
-        <param name="contentTransferEncoding">binary</param>
-        <param name="bufferSize">4096</param>
-      </result>
-      <result name="input" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="namespace">/${origin}</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-    </action>
-  </package>
-
-
-  <!-- Mise à jour des données du modèle ITL -->
-  <package name="itl" extends="struts" namespace="/itl">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.ITLAction'>
-      <result name="redirectEdit" type="redirectAction">
-        <param name="actionName">edit</param>
-        <param name="operationMode">RETRIEVE</param>
-        <param name="idItl">${idItl}</param>
-      </result>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">edit</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="edit">/jsp/ITL/edit.jsp</result>
-      <result name="list">/jsp/ITL/list.jsp</result>
-      <result name="input" >/jsp/ITL/edit.jsp</result>
-    </action>
-  </package>
-
-    <!-- Mise à jour des données du modèle Itineraires -->
-  <package name="itinerary" extends="struts" namespace="/itinerary">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.itineraire.ItineraireAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="idLigne">${idLigne}</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="edit">/jsp/itinerary/edit.jsp</result>
-      <result name="list">/jsp/itinerary/list.jsp</result>
-      <result name="input" >/jsp/itinerary/edit.jsp</result>
-      <result name="search" >/jsp/itinerary/search.jsp</result>
-    </action>
-  </package>
-
-    <!-- Mise à jour des données du modèle Stoppoint -->
-  <package name="stoppoint" extends="struts" namespace="/stoppoint">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.PositionGeographiqueAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="${idPositionGeographique}">${idPositionGeographique}</param>
-        <param name="typePositionGeographique">${typePositionGeographique}</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="redirectEdit" type="redirectAction">
-        <param name="actionName">edit</param>
-        <param name="operationMode">RETRIEVE</param>
-        <param name="idPositionGeographique">${idPositionGeographique}</param>
-      </result>
-      <result name="edit">/jsp/stoppoint/edit.jsp</result>
-      <result name="list">/jsp/stoppoint/list.jsp</result>
-      <result name="input" >/jsp/stoppoint/edit.jsp</result>
-      <result name="search" >/jsp/stoppoint/search.jsp</result>
-    </action>
-  </package>
-
-    <!-- Mise à jour des données du modèle Stoparea -->
-  <package name="stoparea" extends="struts" namespace="/stoparea">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.PositionGeographiqueAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="${idPositionGeographique}">${idPositionGeographique}</param>
-        <param name="typePositionGeographique">${typePositionGeographique}</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="redirectEdit" type="redirectAction">
-        <param name="actionName">edit</param>
-        <param name="operationMode">RETRIEVE</param>
-        <param name="idPositionGeographique">${idPositionGeographique}</param>
-      </result>
-      <result name="edit">/jsp/stoparea/edit.jsp</result>
-      <result name="list">/jsp/stoparea/list.jsp</result>
-      <result name="input" >/jsp/stoparea/edit.jsp</result>
-      <result name="search" >/jsp/stoparea/search.jsp</result>
-    </action>
-  </package>
-
-  <!-- Mise à jour des données du modèle Correspondance -->
-  <package name="correspondance" extends="struts" namespace="/correspondance">
-    <action name="*" method="{1}" class='fr.certu.chouette.struts.CorrespondanceAction'>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="redirectEdit" type="redirectAction">
-        <param name="actionName">edit</param>
-        <param name="operationMode">RETRIEVE</param>
-        <param name="idCorrespondance">${idCorrespondance}</param>
-      </result>
-      <result name="edit">/jsp/correspondance/edit.jsp</result>
-      <result name="list">/jsp/correspondance/list.jsp</result>
-      <result name="input" >/jsp/correspondance/edit.jsp</result>
-      <result name="search" >/jsp/correspondance/search.jsp</result>
-    </action>
-  </package>
+	<package name="correspondance" extends="struts" namespace="/correspondance">
+		<action name="*" method="{1}"
+			class='fr.certu.chouette.struts.CorrespondanceAction'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>
+			<result name="redirectEdit" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>
+			</result>
+			<result name="edit">/jsp/correspondance/edit.jsp
+			</result>
+			<result name="list">/jsp/correspondance/list.jsp
+			</result>
+			<result name="input">/jsp/correspondance/edit.jsp
+			</result>
+			<result name="search">/jsp/correspondance/search.jsp
+			</result>
+		</action>
+	</package>
+>>>>>>> 4088a13f9e9ad996bba4912b03070359f6cbcabb:chouette/src/main/resources/struts.xml
 
     <!-- Mise à jour des données du modèle TableauMarche -->
   <package name="tableauMarche" extends="struts" namespace="/tableauMarche">

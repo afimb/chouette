@@ -2,7 +2,13 @@
 <%-- Titre et barre de navigation --%>	
 <title><s:property value="title"/></title>
 
-<div class="panelData"><s:property value="title"/></div>
+<!-- main mother action in breadcrumb -->
+<s:url id="urlLinesComparisonReport" action="LineFilesComparisonService_index" includeParams="none"/>
+<s:property value="filAriane.addElementFilAriane(getText('comparator.action.title.index'), '', #urlLinesComparisonReport)"/>
+<div class="panelData">
+	<s:property value="filAriane.texteFilAriane" escape="false"/>
+</div>
+<br>
 
 <%-- Import de différents fichiers --%>
 
@@ -11,11 +17,11 @@
 		<s:form id="comparisonResultActionsForm" enctype="multipart/form-data" method="POST">
 			<span>
 				<s:submit 
-					theme="simple" action="downloadReport" 
+					theme="simple" action="LineFilesComparisonService_downloadReport" 
 					name="downloadReport" value="download Report">					
 				</s:submit>
 				<s:submit 
-					theme="simple" action="lineFilesComparisonService" 
+					theme="simple" action="LineFilesComparisonService_index" 
 					name="lineFilesComparisonService" value="new comparison"></s:submit>
 			</span>
 		</s:form>

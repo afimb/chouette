@@ -1,18 +1,16 @@
 package fr.certu.chouette.echange.comparator.amivif;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import amivif.schema.RespPTLineStructTimetable;
 import amivif.schema.StopPointInConnection;
-
 import fr.certu.chouette.echange.comparator.ChouetteObjectState;
 import fr.certu.chouette.echange.comparator.ComparatorException;
-import fr.certu.chouette.service.commun.ServiceException;
 
 /**
  * @author michel
@@ -20,22 +18,11 @@ import fr.certu.chouette.service.commun.ServiceException;
  */
 public class AmivifStopPointInConnectionComparator extends AbstractAmivifDataComparator 
 {
+  private static final Log logger = LogFactory.getLog(AmivifStopPointInConnectionComparator.class);
 
 	public boolean compareData(ExchangeableAmivifLineComparator master)
 			throws ComparatorException{		
 		
-		/**
-		PrintWriter p = null;
-		try 
-		{
-			p = new PrintWriter(new File("/home/evelyne/Tmp/chouette-debug-traces.log"));
-		} 
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    */
 		boolean sameConnectionLinks = true;
 		
 		this.master = master;
@@ -43,73 +30,73 @@ public class AmivifStopPointInConnectionComparator extends AbstractAmivifDataCom
 		RespPTLineStructTimetable source = master.getAmivifSource();
         RespPTLineStructTimetable target = master.getAmivifTarget();
 
-		HashMap<String, String> sourceObjectIdByNaturalKey = new HashMap<String, String>();
+		HashMap<String, StopPointInConnection> sourceObjectByNaturalKey = new HashMap<String, StopPointInConnection>();
 		StopPointInConnection[] sourceDataList = source.getStopPointInConnection();
 		
 		Integer duplicates = 1;
 		for (StopPointInConnection sourceCSTP : sourceDataList) 
 		{
 			String key = buildKey(sourceCSTP);			
-			if (sourceObjectIdByNaturalKey.containsKey(key))
+			if (sourceObjectByNaturalKey.containsKey(key))
 			{				
-				key += duplicates.toString();				
-				//p.println("Duplicate source found : " + sourceCSTP.getObjectId());
-				//p.println("Add duplicatekey : " + key);
-				duplicates ++;
+				Integer i = 1;
+				String dupKey = key ;
+				while (sourceObjectByNaturalKey.containsKey(dupKey))
+				{
+					dupKey = key + "-"+i.toString();	
+				   i++;
+				}
+				if (i > duplicates) duplicates = i;
+				key = dupKey;
 			}
-			sourceObjectIdByNaturalKey.put(key, sourceCSTP.getObjectId());
+			sourceObjectByNaturalKey.put(key, sourceCSTP);
 		}
-		
+				
 		StopPointInConnection[] targetDataList = target.getStopPointInConnection();
 		for (StopPointInConnection targetCSTP : targetDataList) 
 		{
 			String key = buildKey(targetCSTP);
-			String sourceCSTPId = sourceObjectIdByNaturalKey.remove(key);
+			StopPointInConnection sourceCSTP = sourceObjectByNaturalKey.remove(key);
 			
 			//check if not corresponding to a duplicate key
 			Integer i = 1;
 			String searchKey = key;
-			while (sourceCSTPId == null && i != duplicates)
+			while (sourceCSTP == null && i != duplicates)
 			{				
-				searchKey = key + i.toString();
-				//p.println("search possible duplicate key : " + searchKey);
-				sourceCSTPId = sourceObjectIdByNaturalKey.remove(searchKey);
-				//debug
-				if (sourceCSTPId != null)
-				{
-					//p.println("=> Duplicate mapped source : " + sourceCSTPId);
-				}
+				searchKey = key +"-"+ i.toString();
+				sourceCSTP = sourceObjectByNaturalKey.remove(searchKey);
 				i++;
 			}
 			
 			ChouetteObjectState objectState = null;
-			if (sourceCSTPId == null)
+			if (sourceCSTP == null)
 			{				
+        logger.debug("no source for targetId : " + targetCSTP.getObjectId() + " key = " + key);
 				objectState = new ChouetteObjectState(getMappingKey(), null, targetCSTP.getObjectId());
 				sameConnectionLinks = false;
 			}
 			else 
 			{
-				objectState = new ChouetteObjectState(getMappingKey(), sourceCSTPId, targetCSTP.getObjectId());
-				master.addMappingIds(sourceCSTPId, targetCSTP.getObjectId());
+				objectState = new ChouetteObjectState(getMappingKey(), sourceCSTP.getObjectId(), targetCSTP.getObjectId());
+				master.addMappingIds(sourceCSTP.getObjectId(), targetCSTP.getObjectId());
 			}
 			master.addObjectState(objectState);
 		}
 		
 		// Unmapped source vehicle journeys
-		Collection<String> unmappedSourceObjects = sourceObjectIdByNaturalKey.values();
+		Collection<StopPointInConnection> unmappedSourceObjects = sourceObjectByNaturalKey.values();
 		if (unmappedSourceObjects.size() != 0)
 		{
 			sameConnectionLinks = false;
-			for (String sourceObjectId : unmappedSourceObjects)
+			for (StopPointInConnection sourceObject : unmappedSourceObjects)
 			{
-				ChouetteObjectState objectState = new ChouetteObjectState(getMappingKey(), sourceObjectId, null);
+        String key = buildKey(sourceObject);
+        logger.debug("no target for sourceId : " + sourceObject.getObjectId() + " key = " + key);
+				ChouetteObjectState objectState = new ChouetteObjectState(getMappingKey(), sourceObject.getObjectId(), null);
 				master.addObjectState(objectState);
 			}
 		}
 		
-		//p.println("closing descriptor");
-		//p.close();
 		
 		return sameConnectionLinks;
 	}
@@ -117,7 +104,11 @@ public class AmivifStopPointInConnectionComparator extends AbstractAmivifDataCom
 	private String buildKey(StopPointInConnection data)
 	{
 		//String key = data.getName() + "-" + data.getProjectedPoint().getX();
-		String key = data.getProjectedPoint().getX() + "-" + data.getProjectedPoint().getY();
+		String key = data.getName() + "-" 
+		           + data.getProjectedPoint().getX() + "-" 
+		           + data.getProjectedPoint().getY() + "-" 
+		           + data.getAddress().getStreetName() + "-" 
+		           + data.getAddress().getPostalCode();
 		return key;
 	}
 
