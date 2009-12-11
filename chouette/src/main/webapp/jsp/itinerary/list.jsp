@@ -105,7 +105,7 @@
           </TD>
           <TD class="${cssBordure}">
             <s:url id="arretSurItineraire" action="list" namespace="/arretSurItineraire">
-              <s:param name="idItineraire" value="id" />
+              <s:param name="idItineraire" value="%{id}" />
             </s:url>
             <s:a href="%{arretSurItineraire}">Arr&ecirc;ts</s:a>
           </TD>
