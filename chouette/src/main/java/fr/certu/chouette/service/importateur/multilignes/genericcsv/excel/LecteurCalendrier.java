@@ -88,7 +88,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 					finDeLigne = true;
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive après la fin de la ligne.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive aprÃ¨s la fin de la ligne.");
 					try {
 						calendrierEnCours.ajoutDate(sdf.parse(valeur));
 					}
@@ -106,14 +106,14 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 					finDeLigne = true;
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive après la fin de la ligne.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive aprÃ¨s la fin de la ligne.");
 					Periode periode = new Periode();
 					calendrierEnCours.ajoutPeriode(periode);
 					try {
 						periode.setDebut(sdf.parse(valeur));
 					}
 					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date de debut de période invalide : "+valeur, e);
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date de debut de pÃ©riode invalide : "+valeur, e);
 					}
 				}
 			}
@@ -126,19 +126,19 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 				if ((valeur == null) || (valeur.trim().length() == 0)) {
 					finDeLigne = true;
 					if ((periodes != null) && (periodes.size() > i-(colonneDesTitres+1)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La date de debut "+periodes.get(i-(colonneDesTitres+1))+" ne correspond à aucune periode.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La date de debut "+periodes.get(i-(colonneDesTitres+1))+" ne correspond Ã  aucune periode.");
 				}
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive après la fin de la ligne.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive aprÃ¨s la fin de la ligne.");
 					if ((periodes == null) || (periodes.size() <= i-(colonneDesTitres+1)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La date de fin "+valeur+" ne correspond à aucune periode.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La date de fin "+valeur+" ne correspond Ã  aucune periode.");
 					Periode periode = periodes.get(i-(colonneDesTitres+1));
 					try {
 						periode.setFin(sdf.parse(valeur));
 					}
 					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date de fin de période invalide : "+valeur, e);
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date de fin de pÃ©riode invalide : "+valeur, e);
 					}
 				}
 			}
@@ -195,7 +195,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 		else if (cleAlias.equals(titre)) {
 			logger.debug("\talias = "+valeur);
 			if ((valeur == null) || (valeur.trim().length() == 0))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Un alias ne peut être null.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Un alias ne peut Ãªtre null.");
 			if (caldendriersParRef.get(valeur.trim()) != null)
 				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Chaque calendrier doit avoir un alias propre.");
 			caldendriersParRef.put(valeur.trim(), calendrierEnCours);
@@ -220,7 +220,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir un calendrier d'application: " + cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les donnÃ©es suivantes pour dÃ©finir un calendrier d'application: " + cellulesNonRenseignees);
 	}
 	
 	public Map<String, TableauMarche> getTableauxMarchesParRef() {

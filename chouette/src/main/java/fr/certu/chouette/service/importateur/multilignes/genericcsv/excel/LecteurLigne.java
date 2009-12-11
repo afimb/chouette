@@ -69,7 +69,7 @@ public class LecteurLigne implements ILecteurLigne {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir une ligne : " + cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les donnï¿½es suivantes pour dÃ©finir une ligne : " + cellulesNonRenseignees);
 	}
 	
 	public void lire(String[] ligneCSV) {
