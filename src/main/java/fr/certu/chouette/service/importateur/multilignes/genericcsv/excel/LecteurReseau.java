@@ -15,9 +15,9 @@ public class LecteurReseau implements ILecteurReseau {
 	private static final Logger                 logger                 = Logger.getLogger(LecteurReseau.class);
 	private              int                    colonneDesTitres;      // 7
 	private              IIdentificationManager identificationManager; // 
-	private              String                 cleNom;                // "Nom du réseau"
-	private              String                 cleCode;               // "Code Réseau"
-	private              String                 cleDescription;        // "Description du réseau"
+	private              String                 cleNom;                // "Nom du rÃ©seau"
+	private              String                 cleCode;               // "Code RÃ©seau"
+	private              String                 cleDescription;        // "Description du rÃ©seau"
 	private              Reseau                 reseau;
 	private              Set<String>            cellulesNonRenseignees;
 	private              Set<String>            titres;
@@ -46,7 +46,7 @@ public class LecteurReseau implements ILecteurReseau {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir un réseau:"+cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les donnÃ©es suivantes pour dÃ©finir un rÃ©seau:"+cellulesNonRenseignees);
 		logger.debug("FIN DE LECTURE RESEAU.");
 	}
 	
@@ -66,7 +66,7 @@ public class LecteurReseau implements ILecteurReseau {
 			reseau.setVersionDate(new Date());
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce réseau.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce rÃ©seau.");
 		if (cleNom.equals(titre))
 			reseau.setName(valeur);
 		else if (cleCode.equals(titre))
