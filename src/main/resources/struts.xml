@@ -637,7 +637,6 @@
 			</result>
 		</action>
 	</package>
->>>>>>> 4088a13f9e9ad996bba4912b03070359f6cbcabb:chouette/src/main/resources/struts.xml
 
     <!-- Mise à jour des données du modèle TableauMarche -->
   <package name="tableauMarche" extends="struts" namespace="/tableauMarche">
