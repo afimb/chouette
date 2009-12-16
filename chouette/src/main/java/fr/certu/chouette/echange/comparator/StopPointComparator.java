@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeIncident;
 
 /**
  * @author michel
@@ -15,10 +19,33 @@ import fr.certu.chouette.modele.PositionGeographique;
  */
 public class StopPointComparator extends AbstractChouetteDataComparator 
 {
+   private static final Log logger = LogFactory.getLog(StopPointComparator.class);
+   
+   /*
+   // map locale des routes
+   private Map<String, String> sourceTargetIdMap = new HashMap<String, String>();   
+   private Map<String, String> targetSourceIdMap = new HashMap<String, String>();
 
-   public boolean compareData(IExchangeableLineComparator master) throws Exception
+   private void addMappingIds(String sourceId, String targetId) 
    {
-      this.master = master;
+      sourceTargetIdMap.put(sourceId, targetId);
+      targetSourceIdMap.put(targetId, sourceId);
+   }
+
+   private String getSourceId(String targetId)
+   {
+      return targetSourceIdMap.get(targetId);
+   }
+
+   private String getTargetId(String sourceId)
+   {
+      return sourceTargetIdMap.get(sourceId);
+   }  
+
+   */
+   
+   private boolean compareDataImpl() throws Exception
+   {
       ILectureEchange source = master.getSource();
       ILectureEchange target = master.getTarget();
 
@@ -40,14 +67,31 @@ public class StopPointComparator extends AbstractChouetteDataComparator
       boolean validList = true;
 
       Map<String,ArretItineraire> targetDataMap = new HashMap<String, ArretItineraire>();
+
       for (ArretItineraire targetData : targetDataList) 
       {
-         String key = buildKey(targetData, targetMapper);
+         String key = buildKey(targetData, targetMapper,true);
+         if (targetDataMap.containsKey(key))
+         {
+            Integer i = 1;
+            String dupKey = key ;
+            while (targetDataMap.containsKey(dupKey))
+            {
+               dupKey = key + "-"+i.toString(); 
+               i++;
+            }
+
+            key = dupKey;
+         }
+         targetDataMap.put(key, targetData);
+
+         /*
          ArretItineraire oldTargetData = targetDataMap.put(key, targetData);
          if (oldTargetData != null)
          {
             throw new ComparatorException(ComparatorException.TYPE.DuplicateKey, "target key = " + key + " ids = " + targetData.getObjectId() + "," + oldTargetData.getObjectId());
          }
+          */
       }
 
 
@@ -56,9 +100,9 @@ public class StopPointComparator extends AbstractChouetteDataComparator
       // at the end of processing, the target map contains only unknown objects in the source list
       for (ArretItineraire sourceData : sourceDataList) 
       {
-         String parentId = sourceData.getContainedIn();
-         PositionGeographique sourceParent = sourceMapper.getStopArea(parentId);		    
-         ArretItineraire targetData = targetDataMap.remove(buildKey(sourceData, sourceMapper));
+         // String parentId = sourceData.getContainedIn();
+         // PositionGeographique sourceParent = sourceMapper.getStopArea(parentId);		    
+         ArretItineraire targetData = targetDataMap.remove(buildKey(sourceData, sourceMapper,false));
          ChouetteObjectState objectState = null;
          if (targetData == null)
          {
@@ -67,18 +111,25 @@ public class StopPointComparator extends AbstractChouetteDataComparator
          }
          else
          {
-            String targetParentId = targetData.getContainedIn();		        
-            PositionGeographique targetParent = targetMapper.getStopArea(targetParentId);
+            // String targetParentId = targetData.getContainedIn();		        
+            // PositionGeographique targetParent = targetMapper.getStopArea(targetParentId);
 
             objectState = new ChouetteObjectState(getMappingKey(),sourceData.getObjectId(),targetData.getObjectId());
             objectState.addAttributeState("Name", sourceData.getName(), targetData.getName());
 
-            objectState.addAttributeState("ParentName", sourceParent.getName(), targetParent.getName());
-            objectState.addAttributeState("ParentLatitude", sourceParent.getLatitude(), targetParent.getLatitude());
-            objectState.addAttributeState("ParentLongitude", sourceParent.getLongitude(), targetParent.getLongitude());
-            objectState.addAttributeState("Position", sourceData.getPosition(), targetData.getPosition());
+            // objectState.addAttributeState("ParentName", sourceParent.getName(), targetParent.getName());
+            // objectState.addAttributeState("ParentLatitude", sourceParent.getLatitude(), targetParent.getLatitude());
+            // objectState.addAttributeState("ParentLongitude", sourceParent.getLongitude(), targetParent.getLongitude());
+            // objectState.addAttributeState("Position", sourceData.getPosition(), targetData.getPosition());
 
             master.addMappingIds(sourceData.getObjectId(), targetData.getObjectId());
+            /*
+            // ajout du mapping des routes pour dédouanner les doublons
+            Itineraire sourceRoute = sourceMapper.getRouteOfStopPoint(sourceData.getObjectId());
+            Itineraire targetRoute = targetMapper.getRouteOfStopPoint(targetData.getObjectId());
+
+            addMappingIds(sourceRoute.getObjectId(), targetRoute.getObjectId());
+            */
          }
          validList = validList && objectState.isIdentical();
          master.addObjectState(objectState);
@@ -94,24 +145,64 @@ public class StopPointComparator extends AbstractChouetteDataComparator
       return validList;
    }
 
-   private String buildKey(ArretItineraire data, ExchangeableLineObjectIdMapper mapper)
+   private String buildKey(ArretItineraire data, ExchangeableLineObjectIdMapper mapper,boolean withConversion)
    {
       String parentId = data.getContainedIn();
       PositionGeographique parent = mapper.getStopArea(parentId);
       Itineraire route = mapper.getRouteOfStopPoint(data.getObjectId());
+      
       String dir = "U";
       if (route != null)
       {
-         List<ArretItineraire> arrets = mapper.getStopPointsOfRoute(route.getObjectId());
-         if (arrets != null)
+         /*
+         boolean isMapped = false;
+         String routeId = route.getObjectId();
+         if (withConversion)
          {
-            PositionGeographique start = mapper.getStopArea(arrets.get(0).getContainedIn());
-            PositionGeographique end = mapper.getStopArea(arrets.get(arrets.size() - 1).getContainedIn());
-            if ((start != null) && (end != null))
-               dir = start.getName() + "-" + end.getName();
+            isMapped = (getSourceId(routeId) != null);
+            if (isMapped) routeId = getSourceId(routeId);
+         }
+         else
+         {
+            isMapped = (getSourceId(routeId) != null);
+         }
+         if (isMapped)
+         {
+            dir = "-"+routeId;
+         }
+         else
+         */
+         {
+            {
+            List<ArretItineraire> arrets = mapper.getStopPointsOfRoute(route.getObjectId());
+            if (arrets != null)
+            {
+               PositionGeographique start = mapper.getStopArea(arrets.get(0).getContainedIn());
+               PositionGeographique end = mapper.getStopArea(arrets.get(arrets.size() - 1).getContainedIn());
+               if ((start != null) && (end != null))
+                  dir = start.getName() + "-" + end.getName();
+            }
+            dir += "-"+mapper.getJourneyPatternList(route.getObjectId()).size();
+            }
+            String retourId = route.getChouetteRoute().getWayBackRouteId();
+            if (retourId != null)
+            {
+               List<ArretItineraire> arrets = mapper.getStopPointsOfRoute(retourId);
+               if (arrets != null)
+               {
+                  PositionGeographique start = mapper.getStopArea(arrets.get(0).getContainedIn());
+                  PositionGeographique end = mapper.getStopArea(arrets.get(arrets.size() - 1).getContainedIn());
+                  if ((start != null) && (end != null))
+                     dir = start.getName() + "-" + end.getName();
+               }
+               dir += "-"+mapper.getJourneyPatternList(retourId).size();
+            }
+            
          }
       }
-      return data.getPosition() + "-" + parent.getName() + "-" + parent.getLatitude() + "-" + parent.getLongitude() + "-" + dir;
+      String key = data.getPosition() + "-" + parent.getName() + "-" + parent.getLatitude() + "-" + parent.getLongitude() + "-" + dir;
+      // logger.debug(data.getObjectId() +": key = "+key);
+      return key ;
    }
 
    @Override
@@ -119,5 +210,24 @@ public class StopPointComparator extends AbstractChouetteDataComparator
    {
       // TODO Auto-generated method stub
       return null;
+   }
+
+   @Override
+   public boolean compareData(IExchangeableLineComparator master)
+   throws Exception
+   {
+      this.master = master;
+      ILectureEchange source = master.getSource();
+
+      int routeCount = 1; //source.getItineraires().size();
+
+      boolean result = false;
+      for (int i = 0; i < routeCount && !result; i++)
+      {
+         if (i > 0) logger.debug("maybe dupplicate key : try again ");
+         result = compareDataImpl();
+      }
+
+      return result;
    }
 }
