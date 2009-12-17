@@ -39,27 +39,28 @@
     <s:url id="language_en" value="">
       <s:param name="request_locale" value="%{'en'}" />
     </s:url>
-    <s:form>
-      <ul>
-        <s:url action="AProposDe" id="aproposde"/>
-        <li><s:a href="%{aproposde}"><s:text name="app.aproposde.title"/></s:a></li>
-      </ul>
-      <ul>
-        <li><s:property value="principalProxy.remoteUser"/></li> |
-        <s:url action="deconnexion" id="deconnexion" includeParams="none"/>
-        <li><s:a href="%{deconnexion}" >D&eacute;connexion</s:a></li>
-      </ul>
-      <ul>
-        <li>
-          <s:a href="%{language_fr}" includeParams="none">
-            <img  alt="French"  border="0" src="<s:url value='/images/french_flag.jpg'/>">
-          </s:a>
-          <s:a  href="%{language_en}" includeParams="none">
-            <img  alt="English"  border="0" src="<s:url value='/images/english_flag.jpg'/>">
-          </s:a>
-        </li>
-      </ul>
-    </s:form>
+    <s:url action="AProposDe" id="aproposde"/>
+    <ul>
+      <li><s:a href="%{aproposde}"><s:text name="app.aproposde.title"/></s:a></li>
+    </ul>
+    <ul>
+      <li><s:property value="principalProxy.remoteUser"/></li> |
+      <s:url action="deconnexion" id="deconnexion" includeParams="none"/>
+      <li><s:a href="%{deconnexion}" >D&eacute;connexion</s:a></li>
+    </ul>
+    <br>
+    <ul>
+      <li class="french">
+        <s:a href="%{language_fr}" includeParams="none">
+          <img  alt="French"  border="0" src="<s:url value='/images/french_flag.png'/>">
+        </s:a>
+      </li>
+      <li class="english">
+        <s:a  href="%{language_en}" includeParams="none">
+          <img  alt="English"  border="0" src="<s:url value='/images/english_flag.png'/>">
+        </s:a>
+      </li>
+    </ul>
   </div>
 
 </div>
