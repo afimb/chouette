@@ -23,9 +23,9 @@ public class LineAction extends GeneriqueAction implements ModelDriven, Preparab
 
   private static final Log log = LogFactory.getLog(LineAction.class);
   private Ligne lineModel = new Ligne();
-  private static ILigneManager ligneManager;
-  private static ITransporteurManager transporteurManager;
-  private static IReseauManager reseauManager;
+  private ILigneManager ligneManager;
+  private ITransporteurManager transporteurManager;
+  private IReseauManager reseauManager;
   private Long idLigne;
   private String mappedRequest;
   private String useAmivif;
@@ -165,17 +165,17 @@ public class LineAction extends GeneriqueAction implements ModelDriven, Preparab
    ********************************************************/
   public void setLigneManager(ILigneManager ligneManager)
   {
-    LineAction.ligneManager = ligneManager;
+    this.ligneManager = ligneManager;
   }
 
   public void setReseauManager(IReseauManager reseauManager)
   {
-    LineAction.reseauManager = reseauManager;
+    this.reseauManager = reseauManager;
   }
 
   public void setTransporteurManager(ITransporteurManager transporteurManager)
   {
-    LineAction.transporteurManager = transporteurManager;
+    this.transporteurManager = transporteurManager;
   }
 
   /********************************************************
