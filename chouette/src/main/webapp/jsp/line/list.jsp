@@ -86,21 +86,21 @@
       </s:url>
       <div style="float: left; margin-right: 7px;">
         <s:a href="%{editUrl}">
-          <img border="0" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
+          <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
         </s:a>
       </div>
       <div style="float: left; text-align: left;">
         <s:a href="%{removeLigneChouette}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-          <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>">(CHOUETTE)
+          <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.chouette"/>
         </s:a>
         <br>
         <s:a href="%{removeLigne}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-          <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>">(DU RESEAU)
+          <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.network"/>
         </s:a>
         <s:if test="useAmivif == 'true'">
           <br>
           <s:a href="%{removeLigneAmivif}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-            <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>">(STIF)
+            <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.stif"/>
           </s:a>
         </s:if>
       </div>
@@ -121,12 +121,12 @@
     </display:column>
     <display:column title="Accès Itinéraires"><s:a href="%{itinerary}">Itinéraires</s:a></display:column>
     <display:column title="Export Ligne">
-      <s:a href="%{exportChouette}">Export CHOUETTE</s:a>
+      <s:a href="%{exportChouette}"><s:text name="text.ligne.export.chouette" /></s:a>
       <s:if test="useAmivif == 'true'">
         <br>
-        <s:a href="%{exportAmivif}">Export STIF</s:a>
+        <s:a href="%{exportAmivif}"><s:text name="text.ligne.export.stif" /></s:a>
         <br>
-        <s:a href="%{exportCSV}">Export CSV</s:a>
+        <s:a href="%{exportCSV}"><s:text name="text.ligne.export.csv" /></s:a>
       </s:if>
     </display:column>
   </display:table>
