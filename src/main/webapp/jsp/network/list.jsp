@@ -40,7 +40,7 @@
     </display:column>
     <display:column title="Nom" property="ptNetwork.name" sortable="true" headerClass="sortable"/>
     <display:column title="Export Lignes">
-      <s:a href="%{exportsChouettes}">Export CHOUETTE</s:a>
+      <s:a href="%{exportsChouettes}"><s:text name="text.reseau.export.chouette"/></s:a>
     </display:column>
   </display:table>
 </div>

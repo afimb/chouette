@@ -21,14 +21,14 @@
 <br>
 
 <%-- Formulaire --%>	
-<s:form id="network_form" validate="true">
+<s:form id="network_form">
   <s:hidden name="idReseau" value="%{id}" />
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
-  <s:textfield key="reseau.name" name="name"  required="true" />
-  <s:textfield key="reseau.registrationNumber" name="registrationNumber" required="true" />
-  <s:textfield key="reseau.comment" name="comment" />
-  <s:textfield key="reseau.versionDate" name="versionDate" id="versionDate" required="true"/>
+  <s:textfield key="name"  required="true" />
+  <s:textfield key="registrationNumber" required="true" />
+  <s:textfield key="comment" />
+  <s:textfield key="versionDate" id="versionDate" required="true"/>
   <script type="text/javascript">
     <!--//
     Calendar.setup(
@@ -41,9 +41,9 @@
   );
     //-->
   </script>
-  <s:textfield key="reseau.description" name="description" />
-  <s:textfield key="reseau.sourceName" name="sourceName" />
-  <s:textfield key="reseau.sourceIdentifier" name="sourceIdentifier"/>
+  <s:textfield key="description" />
+  <s:textfield key="sourceName" />
+  <s:textfield key="sourceIdentifier"/>
 
   <%-- Actions --%>
   <tr>

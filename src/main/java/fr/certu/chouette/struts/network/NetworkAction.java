@@ -6,6 +6,11 @@ import fr.certu.chouette.service.database.IReseauManager;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.annotations.VisitorFieldValidator;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -28,6 +33,29 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   {
     this.idReseau = idReseau;
   }
+
+  @Override
+  public Collection<String> getActionErrors() {
+    log.debug("getActionErrors : " + super.getActionErrors().toString());
+    return super.getActionErrors();
+  }
+
+  @Override
+  public Collection<String> getActionMessages() {
+        log.debug("getActionMessages : " + super.getActionMessages().toString());
+    return super.getActionMessages();
+  }
+
+  @Override
+  public Map<String, List<String>> getFieldErrors() {
+        log.debug("getFieldErrors : " + super.getFieldErrors().toString());
+    return super.getFieldErrors();
+  }
+
+
+
+
+
 
   /********************************************************
    *                  MODEL + PREPARE                     *
