@@ -5,9 +5,6 @@ import com.opensymphony.xwork2.Preparable;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.modele.Transporteur;
 import fr.certu.chouette.service.database.ITransporteurManager;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -17,7 +14,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
 
   private static final Log log = LogFactory.getLog(CompanyAction.class);
   private Transporteur companyModel = new Transporteur();
-  private static ITransporteurManager transporteurManager;
+  private ITransporteurManager transporteurManager;
   private Long idTransporteur;
   private String mappedRequest;
 
@@ -30,25 +27,6 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
   {
     this.idTransporteur = idTransporteur;
   }
-
-    @Override
-  public Collection<String> getActionErrors() {
-    log.debug("getActionErrors : " + super.getActionErrors().toString());
-    return super.getActionErrors();
-  }
-
-  @Override
-  public Collection<String> getActionMessages() {
-        log.debug("getActionMessages : " + super.getActionMessages().toString());
-    return super.getActionMessages();
-  }
-
-  @Override
-  public Map<String, List<String>> getFieldErrors() {
-        log.debug("getFieldErrors : " + super.getFieldErrors().toString());
-    return super.getFieldErrors();
-  }
-
 
   /********************************************************
    *                  MODEL + PREPARE                     *
@@ -134,7 +112,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
    ********************************************************/
   public void setTransporteurManager(ITransporteurManager transporteurManager)
   {
-    CompanyAction.transporteurManager = transporteurManager;
+    this.transporteurManager = transporteurManager;
   }
   
   /********************************************************

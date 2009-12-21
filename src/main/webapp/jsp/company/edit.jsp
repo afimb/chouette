@@ -19,7 +19,7 @@
 <br>
 
 <%-- Formulaire --%>
-<s:form validate="true">
+<s:form>
   <s:hidden name="idTransporteur" value="%{id}"/>
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
