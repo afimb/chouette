@@ -489,10 +489,8 @@
   
   <bean id="enumApplication"
     		class="fr.certu.chouette.struts.enumeration.EnumerationApplication"
-    		scope="singleton" 
-    		init-method="reinit">
-    <property name="strutsProperties" value="struts"/>
-    <property name="cleLangue" value="struts.locale"/>
+    		scope="singleton"
+        init-method="reinit">
     <property name="direction" value="direction"/>
     <property name="jourType" value="jourType"/>
     <property name="mode" value="transport"/>
@@ -502,32 +500,32 @@
     <property name="correspondance" value="correspondance"/>
   </bean>
 
-  <bean id="Itineraire" scope="prototype"
-    		class="fr.certu.chouette.struts.itineraire.ItineraireAction">
+  <bean id="RouteActionBean" scope="prototype"
+    		class="fr.certu.chouette.struts.route.RouteAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="ligneManager" ref="ligneManager"/>
   </bean>
     
-  <bean id="Mission" scope="prototype"
-		class="fr.certu.chouette.struts.MissionAction">
+  <bean id="JourneyPatternActionBean" scope="prototype"
+		class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
     <property name="missionManager" ref="missionManager"/>
   </bean>
     
-  <bean id="ArretSurItineraire" scope="prototype"
-    		class="fr.certu.chouette.struts.ArretSurItineraireAction">
+  <bean id="StoppointOnRouteActionBean" scope="prototype"
+    		class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
   </bean>
     
-  <!--<bean id="Pagination" scope="prototype"
+  <bean id="Pagination" scope="prototype"
     		class="fr.certu.chouette.struts.outil.pagination.Pagination">
     <property name="nbColonnesParPage" value="${vehicleJourney.displayed}"/>
     <property name="nbTotalPages" value="${page.displayed}"/>
-  </bean>-->
+  </bean>
     
-  <bean id="HorairesDePassage" scope="prototype"
-    		class="fr.certu.chouette.struts.horairesdepassage.HorairesDePassageAction">
+  <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
+    		class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="horaireManager" ref="horaireManager"/>
     <property name="courseManager" ref="courseManager"/>
@@ -538,15 +536,15 @@
     <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
   </bean>
     
-  <bean id="Course" scope="prototype"
-		class="fr.certu.chouette.struts.CourseAction">
+  <bean id="VehicleJourneyActionBean" scope="prototype"
+		class="fr.certu.chouette.struts.vehicleJourney.VehicleJourneyAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="courseManager" ref="courseManager"/>
     <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
     <property name="ligneManager" ref="ligneManager"/>
   </bean>
     
-  <bean id="Ligne" scope="prototype"
+  <bean id="LineActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.line.LineAction">
     <property name="ligneManager" ref="ligneManager"/>
     <property name="reseauManager" ref="reseauManager"/>
@@ -558,44 +556,43 @@
     <property name="detruireAvecReseau" value="${destructionLigne.detruireAvecReseau}"/>
   </bean>
     
-  <bean id="Transporteur" scope="prototype"
+  <bean id="CompanyActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.company.CompanyAction">
     <property name="transporteurManager" ref="transporteurManager"/>
   </bean>
     
-  <bean id="Reseau" scope="prototype"
+  <bean id="NetworkActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.network.NetworkAction">
     <property name="reseauManager" ref="reseauManager"/>
   </bean>
     
-  <bean id="TableauMarche" scope="prototype"
-		class="fr.certu.chouette.struts.TableauMarcheAction">
+  <bean id="TimeTableActionBean" scope="prototype"
+		class="fr.certu.chouette.struts.timeTable.TimeTableAction">
     <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
-    <property name="courseManager" ref="courseManager"/>
     <property name="reseauManager" ref="reseauManager"/>
   </bean>
     
-  <bean id="PositionGeographique" scope="prototype"
-		class="fr.certu.chouette.struts.PositionGeographiqueAction">
+  <bean id="StopAreaActionBean" scope="prototype"
+		class="fr.certu.chouette.struts.stopArea.StopAreaAction">
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="reseauManager" ref="reseauManager"/>
   </bean>
     
-  <bean id="Correspondance" scope="prototype"
-		class="fr.certu.chouette.struts.CorrespondanceAction">
+  <bean id="ConnectionLinkActionBean" scope="prototype"
+		class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
     <property name="correspondanceManager" ref="correspondanceManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
     
-  <bean id="ITL" scope="prototype" class="fr.certu.chouette.struts.ITLAction">
+  <bean id="RoutingConstraintActionBean" scope="prototype" class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
     <property name="itlManager" ref="itlManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
   </bean>
     
-  <bean id="Import" scope="prototype"
+  <bean id="ImportActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.ImportAction">
     <property name="importateur" ref="importateur"/>
     <property name="lecteurCSV" ref="lecteurCSV"/>
@@ -629,10 +626,9 @@
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     <property name="useGeometry" value="${validation.tm.geometry}"/>
     <property name="inclusif" value="${validation.tm.inclusif}"/>
-    <property name="databaseSchema" value="${database.schema}" />
   </bean>
     
-  <bean id="Export" scope="prototype"
+  <bean id="ExportActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.export.ExportAction">
     <property name="exportManager" ref="exportManager"/>
     <property name="exportHorairesManager" ref="exportHorairesManager"/>
