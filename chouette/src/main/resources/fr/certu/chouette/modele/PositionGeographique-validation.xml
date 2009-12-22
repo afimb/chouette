@@ -1,0 +1,92 @@
+<!DOCTYPE validators PUBLIC 
+"-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+  <field name="name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="registrationNumber">
+    <field-validator type="stringlength">
+      <param name="fieldName">registrationNumber</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="comment">
+    <field-validator type="stringlength">
+      <param name="fieldName">comment</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="nearestTopicName">
+    <field-validator type="stringlength">
+      <param name="fieldName">nearestTopicName</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="fareCode" >
+    <field-validator type="int">
+      <param name="fieldName">fareCode</param>
+      <param name="min">0</param>
+      <param name="max">100</param>
+      <message key="errors.range"/>
+    </field-validator>
+  </field>
+  <field name="longitude" >
+    <field-validator type="bigdecimal">
+      <param name="fieldName">longitude</param>
+      <param name="precision">19</param>
+      <param name="scale">16</param>
+      <message key="errors.bigdecimal" />
+    </field-validator>
+  </field>
+  <field name="latitude" >
+    <field-validator type="bigdecimal">
+      <param name="fieldName">latitude</param>
+      <param name="precision">19</param>
+      <param name="scale">16</param>
+      <message key="errors.bigdecimal" />
+    </field-validator>
+  </field>
+  <field name="x" >
+    <field-validator type="bigdecimal">
+      <param name="fieldName">x</param>
+      <param name="precision">19</param>
+      <param name="scale">2</param>
+      <message key="errors.bigdecimal" />
+    </field-validator>
+  </field>
+  <field name="y" >
+    <field-validator type="bigdecimal">
+      <param name="fieldName">y</param>
+      <param name="precision">19</param>
+      <param name="scale">2</param>
+      <message key="errors.bigdecimal" />
+    </field-validator>
+  </field>
+  <field name="countryCode" >
+    <field-validator type="regex">
+      <param name="fieldName">countryCode</param>
+      <param name="expression">^\d{5}$</param>
+      <message key="errors.insee"/>
+    </field-validator>
+  </field>
+  <field name="streetName">
+    <field-validator type="stringlength">
+      <param name="fieldName">streetName</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+</validators>
