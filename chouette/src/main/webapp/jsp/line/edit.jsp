@@ -16,27 +16,27 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
-<s:form validate="true">
+<s:form>
   <s:hidden name="idLigne" value="%{id}"/>
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
   <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdReseau) et doit être une chaîne de caractère obligatoirement --%>
-  <s:select key="ligne.idReseau" name="idReseau" label="%{getText('ligne.idReseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="-1" headerValue="%{getText('ligne.aucunReseau')}">
+  <s:select key="idReseau" name="idReseau" label="%{getText('idReseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="-1" headerValue="%{getText('aucunReseau')}">
   </s:select>
   <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdTransporteur) et doit être une chaîne de caractère obligatoirement --%>
-  <s:select key="ligne.idTransporteur" name="idTransporteur" label="%{getText('ligne.idTransporteur')}" value="%{idTransporteur}" list="transporteurs" listKey="id" listValue="name"  headerKey="-1" headerValue="%{getText('ligne.aucunTransporteur')}">
+  <s:select key="idTransporteur" name="idTransporteur" label="%{getText('idTransporteur')}" value="%{idTransporteur}" list="transporteurs" listKey="id" listValue="name"  headerKey="-1" headerValue="%{getText('aucunTransporteur')}">
   </s:select>
-  <s:textfield key="ligne.name" name="name" required="true"/>
-  <s:textfield key="ligne.publishedName" name="publishedName" />
-  <s:textfield key="ligne.registrationNumber" name="registrationNumber" required="true"/>
-  <s:textfield key="ligne.number" name="number" />
-  <s:if test="ligne.id != null">
-    <s:select key="ligne.transportModeName" name="transportModeName" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+  <s:textfield key="name" required="true"/>
+  <s:textfield key="publishedName" />
+  <s:textfield key="registrationNumber" required="true"/>
+  <s:textfield key="number" />
+  <s:if test="id != null">
+    <s:select key="transportModeName" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
   </s:if>
   <s:else>
-    <s:select key="ligne.transportModeName" name="transportModeName" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="@chouette.schema.types.TransportModeNameType@BUS"/>
+    <s:select key="transportModeName" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="@chouette.schema.types.TransportModeNameType@BUS"/>
   </s:else>
-  <s:textfield key="ligne.comment" name="comment"/>
+  <s:textfield key="comment" name="comment"/>
 
   <%-- Actions --%>
   <tr>
@@ -47,7 +47,7 @@
       <s:else>
         <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
       </s:else>
-      <s:submit key="action.cancel" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+      <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
     </td>
   </tr>
 
