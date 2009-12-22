@@ -114,6 +114,8 @@
                 <s:url action="supprimerArret" namespace="/stoppointOnRoute" id="supprimerArret">
                   <s:param name="idArret" value="%{id}" />
                   <s:param name="positionArret" value="%{position}" />
+                  <s:param name="idLigne" value="idLigne" />
+                  <s:param name="idItineraire" value="idItineraire" />
                 </s:url>
                 <%-- BOUTON INSERER ARRET --%>
                 <s:a href="#"  onclick="initialiserCreationArret(%{#arret.position}, this)">
@@ -125,11 +127,10 @@
               </TD>
               <TD>
                 <%-- Itération sur la liste des arrèts --%>
-                <s:url action="edit"  namespace="/stoppoint" id="arretPhysiqueUrl">
+                <s:url action="edit"  namespace="/boardingPosition" id="arretPhysiqueUrl">
                   <s:param name="idPositionGeographique" value="%{idPhysique}" />
                   <s:param name="idLigne" value="idLigne" />
                   <s:param name="idItineraire" value="idItineraire" />
-                  <s:param name="typePositionGeographique" value="%{'arretPhysique'}" />
                 </s:url>
                 <s:a href="%{arretPhysiqueUrl}" id="nomArretPhysique%{#rangArret.index}">
                   <s:if test="getArretPhysique(id).name != null && getArretPhysique(id).name != ''">
