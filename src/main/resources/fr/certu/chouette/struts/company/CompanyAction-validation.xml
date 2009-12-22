@@ -4,7 +4,7 @@
   <field name="model">
     <field-validator type="visitor">
       <param name="appendPrefix">false</param>
-      <message>Réseau: </message>
+      <message></message>
     </field-validator>
   </field>
 </validators>
