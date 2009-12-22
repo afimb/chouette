@@ -39,7 +39,7 @@
 
 <%-- Titre et barre de navigation --%>	
 <title><s:text name="text.arretSurItineraire.list.title" /></title>
-<s:url id="urlArretSurItineraires" action="list" namespace="/arretSurItineraire" includeParams="none">
+<s:url id="urlArretSurItineraires" action="list" namespace="/stoppointOnRoute" includeParams="none">
   <s:param name="idItineraire" value="%{idItineraire}" />
 </s:url>
 <s:property value="filAriane.addElementFilAriane(getText('text.arretSurItineraire.list.title'), itineraire.name, #urlArretSurItineraires)"/>
@@ -52,7 +52,7 @@
 <%-- INSERTION D'UN ARRET --%>
 <div id="insererArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
 
-  <s:form id="insererArretForm" namespace="/arretSurItineraire" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();">
+  <s:form id="insererArretForm" namespace="/stoppointOnRoute" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();">
 
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="idLigne" value="%{idLigne}" />
@@ -79,7 +79,7 @@
 <br>
 
 <div id="displaytag">
-  <s:form id="deplacementArretForm" namespace="/arretSurItineraire">
+  <s:form id="deplacementArretForm" namespace="/stoppointOnRoute">
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="idLigne" value="%{idLigne}"/>
     <table>
@@ -111,7 +111,7 @@
               </TD>
               <TD>
                 <%-- Itération sur la liste des actions : Insertion d'un arrèt nouveau ou existant ou suppression d'un arrèt  --%>
-                <s:url action="supprimerArret" namespace="/arretSurItineraire" id="supprimerArret">
+                <s:url action="supprimerArret" namespace="/stoppointOnRoute" id="supprimerArret">
                   <s:param name="idArret" value="%{id}" />
                   <s:param name="positionArret" value="%{position}" />
                 </s:url>
