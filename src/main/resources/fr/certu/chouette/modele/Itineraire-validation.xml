@@ -3,28 +3,37 @@
 "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>
-  <field name="itl.nom">
+  <field name="name">
     <field-validator type="requiredstring">
       <param name="trim">true</param>
-      <param name="fieldName">itl.nom</param>
+      <param name="fieldName">name</param>
       <message key="errors.required"/>
     </field-validator>
     <field-validator type="stringlength">
-      <param name="fieldName">itl.nom</param>
+      <param name="fieldName">name</param>
       <param name="maxLength">255</param>
       <message key="errors.maxlength"/>
     </field-validator>
   </field>
-  <field name="itl.toto">
-    <field-validator type="requiredstring">
-      <param name="trim">true</param>
-      <param name="fieldName">itl.nom</param>
-      <message key="errors.required"/>
-    </field-validator>
+  <field name="publishedName" >
     <field-validator type="stringlength">
-      <param name="fieldName">itl.nom</param>
+      <param name="fieldName">publishedName</param>
       <param name="maxLength">255</param>
       <message key="errors.maxlength"/>
     </field-validator>
   </field>
-</validators> 
+  <field name="number">
+    <field-validator type="stringlength">
+      <param name="fieldName">number</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="comment">
+    <field-validator type="stringlength">
+      <param name="fieldName">comment</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+</validators>
