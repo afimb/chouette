@@ -1,4 +1,4 @@
-package fr.certu.chouette.struts.horairesdepassage;
+package fr.certu.chouette.struts.vehicleJourneyAtStop;
 
 import chouette.schema.types.DayTypeType;
 import com.opensymphony.xwork2.ModelDriven;
@@ -31,10 +31,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class HorairesDePassageAction extends GeneriqueAction implements ModelDriven<HorairesDePassageModel>, Preparable
+public class VehicleJourneyAtStopAction extends GeneriqueAction implements ModelDriven<VehicleJourneyAtStopModel>, Preparable
 {
 
-  private static final Log log = LogFactory.getLog(HorairesDePassageAction.class);
+  private static final Log log = LogFactory.getLog(VehicleJourneyAtStopAction.class);
   private ICourseManager courseManager;
   private IPositionGeographiqueManager positionGeographiqueManager;
   private IHoraireManager horaireManager;
@@ -44,7 +44,7 @@ public class HorairesDePassageAction extends GeneriqueAction implements ModelDri
   private int maxNbCalendriersParCourse;
   private List<Course> courses;
   private Pagination pagination;
-  private HorairesDePassageModel model = new HorairesDePassageModel();
+  private VehicleJourneyAtStopModel model = new VehicleJourneyAtStopModel();
   private Long idItineraire;
   private Long idLigne;
 
@@ -71,7 +71,7 @@ public class HorairesDePassageAction extends GeneriqueAction implements ModelDri
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
-  public HorairesDePassageModel getModel()
+  public VehicleJourneyAtStopModel getModel()
   {
     return model;
   }
