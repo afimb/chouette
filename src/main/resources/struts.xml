@@ -350,6 +350,7 @@
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
         <param name="idLigne">${idLigne}</param>
+        <param name="idItineraire">${idItineraire}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
       <result name="edit">/jsp/route/edit.jsp
@@ -459,9 +460,8 @@
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
       </result>
-      <result name="edit">/jsp/stoppointOnRoute/edit.jsp</result>
       <result name="list">/jsp/stoppointOnRoute/list.jsp</result>
-      <result name="input" >/jsp/stoppointOnRoute/edit.jsp</result>
+      <result name="input" >/jsp/stoppointOnRoute/list.jsp</result>
     </action>
   </package>
 

@@ -5,6 +5,7 @@
 <validators>
   <field name="name">
     <field-validator type="requiredstring">
+      <param name="trim">true</param>
       <param name="fieldName">name</param>
       <message key="errors.required" />
     </field-validator>
@@ -26,9 +27,8 @@
   <field
 		name="registrationNumber">
     <field-validator type="requiredstring">
-      <param name="fieldName">
-				registrationNumber
-      </param>
+      <param name="trim">true</param>
+      <param name="fieldName">registrationNumber</param>
       <message key="errors.required" />
     </field-validator>
     <field-validator type="regex">
