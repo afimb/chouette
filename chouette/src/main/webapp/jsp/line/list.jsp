@@ -61,7 +61,7 @@
       <s:url id="removeLigne" action="delete" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
       </s:url>
-      <s:url id="itinerary" action="list" namespace="/itinerary">
+      <s:url id="itinerary" action="list" namespace="/route">
         <s:param name="idLigne">${ligne.id}</s:param>
       </s:url>
       <s:url id="removeLigneAmivif" action="exportSupprimerAmivif" namespace="/export">
