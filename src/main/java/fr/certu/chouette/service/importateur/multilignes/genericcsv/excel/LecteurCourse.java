@@ -33,7 +33,7 @@ public class LecteurCourse implements ILecteurCourse {
 	private              IIdentificationManager     identificationManager; //
 	private              String                     cleDirection;          // "Direction (ALLER/RETOUR)"
 	private              String                     cleCalendrier;         // "Calendriers d'application"
-	private              String                     cleListe;              // "Liste des arrèts"
+	private              String                     cleListe;              // "Liste des arrêts"
 	private              String                     cleX;                  // "X"
 	private              String                     cleY;                  // "Y"
 	private              String                     cleLatitude;           // "Latitude"

@@ -10,7 +10,7 @@
     <bean id="CompanyComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.CompanyComparator">
         <property name="mappingKey"><value>Company</value></property>
     </bean>
-    <bean id="ConnectionLinkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ConectionLinkComparator">
+    <bean id="ConnectionLinkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ConnectionLinkComparator">
         <property name="mappingKey"><value>ConnectionLink</value></property>
     </bean>
     <bean id="LineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.LineComparator">
