@@ -484,4 +484,40 @@
     </action>
   </package>
 
+    <!-- Mise à jour des données du modèle vehicleJourney -->
+  <package name="vehicleJourney" extends="struts" namespace="/vehicleJourney">
+    <action name="*" method="{1}" class='VehicleJourneyActionBean'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="page">${page}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/vehicleJourney/edit.jsp</result>
+      <result name="list">/jsp/vehicleJourney/list.jsp</result>
+      <result name="input" >/jsp/vehicleJourney/edit.jsp</result>
+    </action>
+  </package>
+
+      <!-- Mise à jour des données du modèle vehicleJourney -->
+  <package name="journeyPattern" extends="struts" namespace="/journeyPattern">
+    <action name="*" method="{1}" class='JourneyPatternActionBean'>
+      <result name="redirectList" type="redirectAction">
+        <param name="actionName">list</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="page">${page}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
+      <result name="edit">/jsp/journeyPattern/edit.jsp</result>
+      <result name="list">/jsp/journeyPattern/list.jsp</result>
+      <result name="input" >/jsp/journeyPattern/edit.jsp</result>
+    </action>
+  </package>
+
 </struts>
