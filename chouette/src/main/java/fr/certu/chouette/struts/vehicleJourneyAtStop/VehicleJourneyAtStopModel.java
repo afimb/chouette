@@ -1,4 +1,4 @@
-package fr.certu.chouette.struts.horairesdepassage;
+package fr.certu.chouette.struts.vehicleJourneyAtStop;
 
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Course;
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class HorairesDePassageModel
+public class VehicleJourneyAtStopModel
 {
 
   private Map<Long, Mission> missionParIdCourse;

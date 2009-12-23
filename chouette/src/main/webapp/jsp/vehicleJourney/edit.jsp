@@ -2,7 +2,7 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <s:include value="/jsp/commun/scriptaculous.jsp" />
 <%-- Titre et barre de navigation --%>
-<s:url id="urlCourseUpdate" action="/course/edit">
+<s:url id="urlCourseUpdate" action="edit" namespace="/vehicleJourney">
   <s:param name="idCourse" value="%{id}"/>
 </s:url>
 <s:if test="id != null">
@@ -20,7 +20,7 @@
 <div>
   <s:form id="creerCourseForm" method="POST">
 
-    <s:hidden name="idCourse" value="%{course.id}"/>
+    <s:hidden name="idCourse" value="%{id}"/>
 
     <%-- Remplissage des paramètres cachés utiles pour l'action--%>
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
@@ -29,15 +29,15 @@
     <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
     <s:hidden name="page" value="%{page}" />
 
-    <s:textfield key="course.publishedJourneyName" name="publishedJourneyName" />
-    <s:textfield key="course.publishedJourneyIdentifier" name="publishedJourneyIdentifier" />
+    <s:textfield key="publishedJourneyName" />
+    <s:textfield key="publishedJourneyIdentifier" />
     <s:if test="id != null">
-      <s:select key="course.transportMode" name="transportMode" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="transportMode" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     </s:if>
     <s:else>
-      <s:select key="course.transportMode" name="transportMode" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{modeTransportLigne}"/>
+      <s:select key="transportMode" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{modeTransportLigne}"/>
     </s:else>
-    <s:textfield key="course.comment" name="course.comment" />
+    <s:textfield key="comment" />
     <%-- Actions --%>
     <tr>
       <td colspan="2">
@@ -47,7 +47,7 @@
         <s:else>
           <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
         </s:else>
-        <s:submit key="action.cancel" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
       </td>
     </tr>
   </s:form>
@@ -55,7 +55,7 @@
 <br><br>
 
 <%-- Association des tableaux de marche--%>
-<s:if test="course.id != null">
+<s:if test="id != null">
   <div>
     <%-- Affichage de la liste des tableaux de marche--%>
     <b>Calendriers d'application</b>
