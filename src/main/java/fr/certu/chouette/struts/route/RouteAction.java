@@ -56,7 +56,6 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
-  @Override
   public Itineraire getModel()
   {
     return itineraryModel;
