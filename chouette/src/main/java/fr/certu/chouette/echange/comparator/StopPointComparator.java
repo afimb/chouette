@@ -212,7 +212,6 @@ public class StopPointComparator extends AbstractChouetteDataComparator
       return null;
    }
 
-   @Override
    public boolean compareData(IExchangeableLineComparator master)
    throws Exception
    {
