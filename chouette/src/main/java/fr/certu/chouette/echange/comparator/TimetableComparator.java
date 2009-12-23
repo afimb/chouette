@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.Periode;
 import fr.certu.chouette.modele.TableauMarche;
@@ -19,6 +22,8 @@ import fr.certu.chouette.modele.TableauMarche;
  */
 public class TimetableComparator extends AbstractChouetteDataComparator 
 {
+   private static final Log logger = LogFactory.getLog(TimetableComparator.class);
+
    public boolean compareData(IExchangeableLineComparator master) throws ComparatorException{
 
       boolean sameTimetables = true;
@@ -33,13 +38,27 @@ public class TimetableComparator extends AbstractChouetteDataComparator
 
       HashMap<String, String> sourceObjectIdBytargetNaturalKey = new HashMap<String, String>();
       // natural key ? dayTypes, periods, calendar days
+      Integer dupplicates = 1;
       for (TableauMarche sourceTM : sourceDataList) 
       {
          int dayTypeMask = sourceTM.getIntDayTypes();
          List<Periode> TMPeriods = sourceTM.getPeriodes();
          List<Date> TMDates = sourceTM.getDates();
-         String key = buildNaturalKey(dayTypeMask, TMPeriods, TMDates);
+         String key = buildNaturalKey(sourceTM,dayTypeMask, TMPeriods, TMDates);
          key = key + sourceTM.getVehicleJourneyIdCount();
+         // sourceObjectIdBytargetNaturalKey.put(key, sourceTM.getObjectId());
+         if (sourceObjectIdBytargetNaturalKey.containsKey(key))
+         {
+            Integer i = 1;
+            String dupKey = key ;
+            while (sourceObjectIdBytargetNaturalKey.containsKey(dupKey))
+            {
+               dupKey = key + "-"+i.toString(); 
+               i++;
+            }
+            if (dupplicates < i) dupplicates = i;
+            key = dupKey;
+         }
          sourceObjectIdBytargetNaturalKey.put(key, sourceTM.getObjectId());
       }
 
@@ -48,11 +67,19 @@ public class TimetableComparator extends AbstractChouetteDataComparator
          int dayTypeMask = targetTM.getIntDayTypes();
          List<Periode> TMPeriods = targetTM.getPeriodes();
          List<Date> TMDates = targetTM.getDates();
-         String key = buildNaturalKey(dayTypeMask, TMPeriods, TMDates);
+         String key = buildNaturalKey(targetTM,dayTypeMask, TMPeriods, TMDates);
          key = key + targetTM.getVehicleJourneyIdCount();
          String sourceTMId = sourceObjectIdBytargetNaturalKey.remove(key);
          ChouetteObjectState objectState = null;
-         if (sourceTMId == null) 
+         Integer i = 1;
+         while (sourceTMId == null && i <= dupplicates)
+         {
+            String dupKey = key + "-"+i.toString(); 
+            sourceTMId = sourceObjectIdBytargetNaturalKey.remove(dupKey);
+            i++;
+         }
+            
+         if (sourceTMId == null)
          {
             objectState = new ChouetteObjectState(getMappingKey(), null, targetTM.getObjectId());
             sameTimetables = false;
@@ -80,9 +107,10 @@ public class TimetableComparator extends AbstractChouetteDataComparator
    }
 
 
-   private String buildNaturalKey(int dayTypesMask, List<Periode> TMPeriods,List<Date> TMDates) 
+   private String buildNaturalKey(TableauMarche timetable, int dayTypesMask, List<Periode> TMPeriods,List<Date> TMDates) 
    {
-      String key = ((Integer) dayTypesMask).toString();
+      String key = ""+timetable.getComment();
+      key += "-" +((Integer) dayTypesMask).toString();
       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
       Periode[] periods = (Periode[])TMPeriods.toArray(new Periode[0]);
       Comparator<Periode> comparor = new PeriodeComparator();
