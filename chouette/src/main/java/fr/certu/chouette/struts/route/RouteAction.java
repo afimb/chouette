@@ -74,8 +74,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     }
 
     // TODO : Le virer grâce a OGNL
-    itinerairesSansItineraireEdite = lineManager.getItinerairesLigne(itineraryModel.getIdLigne());
-
+    itinerairesSansItineraireEdite = lineManager.getItinerairesLigne(getIdLigne());
     //	Suppression dans la liste des itinéraires de celui étant édité
     for (Itineraire itineraire : itinerairesSansItineraireEdite)
     {
