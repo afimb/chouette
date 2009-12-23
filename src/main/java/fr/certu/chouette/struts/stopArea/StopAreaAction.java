@@ -103,16 +103,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   {
     return idPositionGeographique;
   }
-
-  @Override
-  public Map<String, List<String>> getFieldErrors()
-  {
-    log.debug(super.getFieldErrors().toString());
-    return super.getFieldErrors();
-  }
-
-
-
+  
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
