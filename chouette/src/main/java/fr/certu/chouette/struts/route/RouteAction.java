@@ -56,11 +56,13 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
+  @Override
   public Itineraire getModel()
   {
     return itineraryModel;
   }
 
+  @Override
   public void prepare() throws Exception
   {
     log.debug("Prepare with id : " + getIdItineraire());
