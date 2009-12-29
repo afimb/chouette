@@ -59,6 +59,7 @@
         <s:param name="idMission" value="idMission" />
         <s:param name="idLigne" value="idLigne" />
         <s:param name="idItineraire" value="idItineraire" />
+        <s:param name="page" value="page" />
       </s:url>
       <s:a href="%{editMission}">
         <s:if test="missionParIdCourse[idMission].name == null || missionParIdCourse[idMission].name == ''">
