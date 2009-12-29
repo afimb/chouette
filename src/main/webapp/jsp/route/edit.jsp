@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- Titre et barre de navigation --%>	
 <s:url id="urlItineraireUpdate" action="edit" namespace="/route">

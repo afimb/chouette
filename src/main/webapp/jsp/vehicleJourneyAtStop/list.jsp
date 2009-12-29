@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <head>
@@ -22,7 +23,7 @@
 
 <%-- BOUTON AJOUT NOUVELLE COURSE --%>
 <div>
-  <s:url id="editCourse" action="add" namespace="/vehicleJourneyAtStop"/>
+  <s:url id="editCourse" action="add" namespace="/vehicleJourney"/>
   <s:a href="%{editCourse}"><b><s:text name="text.course.create.button"/></b></s:a>
 </div>
 <br>

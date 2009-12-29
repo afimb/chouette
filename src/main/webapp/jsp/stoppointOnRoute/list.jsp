@@ -1,5 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-
 <s:include value="/jsp/commun/scriptaculous.jsp" />
 
 <SCRIPT type="text/javascript" >
@@ -66,8 +66,8 @@
     </div>
     <div>
       <s:reset value="%{getText('action.cancel')}" onclick="annulerCreationArret();" />
-      <s:submit formId="insererArretForm" action="insererArret" value="Insérer Un Nouvel Arrèt" />
-      <s:submit formId="insererArretForm" action="insererArret" value="Insérer l'Arrèt Existant" />
+      <s:submit formId="insererArretForm" action="insererArret" value="InsÃ©rer Un Nouvel ArrÃ¨t" />
+      <s:submit formId="insererArretForm" action="insererArret" value="InsÃ©rer l'ArrÃ¨t Existant" />
     </div>
 
   </s:form>
@@ -106,11 +106,11 @@
             </s:else>
             <TR class="${TRParityClass}">
               <TD>
-                <%-- Itération sur la liste des checkbox pour le déplacement d'arrèt  --%>
+                <%-- ItÃ©ration sur la liste des checkbox pour le dÃ©placement d'arrÃ¨t  --%>
                 <s:checkbox name="deplacementsArret[%{id}]" theme="simple" onclick="checkPermutation()" id="checkbox"/>
               </TD>
               <TD>
-                <%-- Itération sur la liste des actions : Insertion d'un arrèt nouveau ou existant ou suppression d'un arrèt  --%>
+                <%-- ItÃ©ration sur la liste des actions : Insertion d'un arrÃ¨t nouveau ou existant ou suppression d'un arrÃ¨t  --%>
                 <s:url action="supprimerArret" namespace="/stoppointOnRoute" id="supprimerArret">
                   <s:param name="idArret" value="%{id}" />
                   <s:param name="positionArret" value="%{position}" />
@@ -126,7 +126,7 @@
                 </s:a>
               </TD>
               <TD>
-                <%-- Itération sur la liste des arrèts --%>
+                <%-- ItÃ©ration sur la liste des arrÃ¨ts --%>
                 <s:url action="edit"  namespace="/boardingPosition" id="arretPhysiqueUrl">
                   <s:param name="idPositionGeographique" value="%{idPhysique}" />
                   <s:param name="idLigne" value="idLigne" />
