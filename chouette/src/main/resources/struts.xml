@@ -433,7 +433,7 @@
     </action>
   </package>
 
-    <!-- Mise à jour des données du modèle TableauMarche -->
+    <!-- Mise à jour des données du modèle timeTable -->
   <package name="timeTable" extends="struts" namespace="/timeTable">
     <action name="*" method="{1}" class='TimeTableActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -470,6 +470,7 @@
     <action name="*" method="{1}" class='VehicleJourneyAtStopActionBean'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
+        <param name="namespace">/vehicleJourneyAtStop</param>
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>
@@ -489,6 +490,7 @@
     <action name="*" method="{1}" class='VehicleJourneyActionBean'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
+        <param name="namespace">/vehicleJourneyAtStop</param>
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>
@@ -502,11 +504,12 @@
     </action>
   </package>
 
-      <!-- Mise à jour des données du modèle vehicleJourney -->
+      <!-- Mise à jour des données du modèle journeyPattern -->
   <package name="journeyPattern" extends="struts" namespace="/journeyPattern">
     <action name="*" method="{1}" class='JourneyPatternActionBean'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
+        <param name="namespace">/vehicleJourneyAtStop</param>
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>

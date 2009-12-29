@@ -37,14 +37,11 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   private Date seuilDateDepartCourse;
   private Long page;
   //	Liste des courses et course sélectionnée
-  private List<Course> courses;
-  private Course course;
   private String saisieTableauMarche;
   private Long saisieTableauMarcheKey;
   private List<TableauMarche> tableauxMarcheAssocieCourse;
   private List<TableauMarche> tableauxMarchePasAssocieCourse;
   private Course model = new Course();
-  private Long idReseau;
   private String mappedRequest;
 
   public Long getIdCourse()
@@ -90,11 +87,13 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
+  @Override
   public Course getModel()
   {
     return model;
   }
-
+  
+  @Override
   public void prepare() throws Exception
   {
     log.debug("Prepare with id : " + getIdCourse());
@@ -155,9 +154,9 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   public String save()
   {
     // ré-affecter l'identifiant de la ligne sur l'itinéraire
-    course.setIdItineraire(idItineraire);
+    model.setIdItineraire(idItineraire);
 
-    courseManager.creer(course);
+    courseManager.creer(model);
     addActionMessage(getText("course.create.ok"));
     setMappedRequest(SAVE);
     log.debug("Create vehicleJourney with id : " + getModel().getId());
@@ -174,7 +173,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   public String update()
   {
     // ré-affecter l'identifiant de la ligne sur l'itinéraire
-    course.setIdItineraire(idItineraire);
+    model.setIdItineraire(idItineraire);
 
     courseManager.modifier(model);
     setMappedRequest(UPDATE);
@@ -202,7 +201,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   @SkipValidation
   public String input() throws Exception
   {
-    return INPUT;
+    return REDIRECTLIST;
   }
 
   /********************************************************
