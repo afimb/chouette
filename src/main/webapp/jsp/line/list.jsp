@@ -45,7 +45,7 @@
 
 <%-- Ajouter ligne --%>
 <div>
-  <s:url action="crud_Ligne!edit" id="ajoutLigne"/>
+  <s:url action="add" namespace="/line" id="ajoutLigne"/>
   <s:a href="%{ajoutLigne}"><b><s:text name="text.ligne.create.button"/></b></s:a>
 </div>
 
