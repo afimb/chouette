@@ -328,7 +328,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       indexPremiereDonneeDansCollectionPaginee++;
     }
     horaireManager.modifier(majHoraires);
-    return SUCCESS;
+    return LIST;
   }
 
   public String editerHorairesCoursesConfirmation()
@@ -359,7 +359,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       indexPremiereDonneePagination++;
     }
     horaireManager.modifier(majHoraires);
-    return SUCCESS;
+    return LIST;
   }
 
   public String ajoutCourseAvecDecalageTemps()
@@ -422,7 +422,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
         horairesADecalerResultat = new ArrayList<Horaire>();
       }
     }
-    return SUCCESS;
+    return LIST;
   }
 
   /********************************************************

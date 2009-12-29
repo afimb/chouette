@@ -165,7 +165,7 @@ public class JourneyPatternAction extends GeneriqueAction implements ModelDriven
   @SkipValidation
   public String input() throws Exception
   {
-    return INPUT;
+    return REDIRECTLIST;
   }
 
   /********************************************************
