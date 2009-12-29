@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%-- Titre et barre de navigation --%>	
@@ -10,7 +11,7 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
-<%-- Ajouter itinéraire --%>
+<%-- Ajouter itinÃ©raire --%>
 <div>
   <s:url id="editItineraire" action="add" namespace="/route" includeParams="none">
     <s:param name="idLigne" value="%{idLigne}" />
@@ -74,7 +75,7 @@
               <s:param name="idLigne" value="idLigne" />
             </s:url>
             <s:a href="%{editUrl}">
-              <img border="0" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
+              <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
             </s:a>&nbsp;&nbsp;
             <s:url id="removeUrl" action="delete" namespace="/route">
               <s:param name="idItineraire" value="id" />
@@ -82,7 +83,7 @@
               <s:param name="operationMode" value="STORE" />
             </s:url>
             <s:a href="%{removeUrl}" onclick="return confirm('%{getText('itineraire.delete.confirmation')}');">
-              <img border="0" src="<s:url value='images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
+              <img border="0" alt="Delete" src="<s:url value='images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
             </s:a>
           </TD>
           <TD class="${cssBordure}">

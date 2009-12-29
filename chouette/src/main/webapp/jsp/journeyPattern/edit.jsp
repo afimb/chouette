@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlMissionUpdate" action="edit" namespace="/journeyPattern">
@@ -21,7 +22,7 @@
     <s:hidden name="idMission" value="%{id}" />
   </s:if>
 
-  <%-- Remplissage des paramètres cachés utiles pour l'action--%>
+  <%-- Remplissage des paramÃ¨tres cachÃ©s utiles pour l'action--%>
   <s:hidden name="idItineraire" value="%{idItineraire}"/>
   <s:hidden name="idLigne" value="%{idLigne}" />
   <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
