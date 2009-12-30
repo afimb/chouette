@@ -4,7 +4,7 @@
 <s:include value="/jsp/commun/jscalendar.jsp"></s:include>
 
 <%-- Titre et barre de navigation --%>
-<s:url id="urlTableauMarcheUpdate" action="edit" namespace="/tableauMarche">
+<s:url id="urlTableauMarcheUpdate" action="edit" namespace="/timeTable">
   <s:param name="idTableauMarche" value="%{id}"/>
 </s:url>
 <s:if test="id != null">
@@ -26,8 +26,8 @@
     <s:hidden name="idTableauMarche" value="%{id}"/>
     <s:hidden name="operationMode" value="STORE" />
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
-    <s:textfield key="tableauMarche.objectId" name="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 250px;"/>
-    <s:textfield key="tableauMarche.comment" name="comment" required="true" cssStyle="width: 250px;"/>
+    <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 250px;"/>
+    <s:textfield key="comment" required="true" cssStyle="width: 250px;"/>
 
     <s:if test="id != null">
       <div class="editTableauMarche" >
@@ -62,7 +62,7 @@
           <s:property value="%{dates[#attr.datesTable_rowNum - 1]}" />
         </display:column>
         <display:column title="Action">
-          <s:url id="deleteUrl" action="deleteDate" namespace="/tableauMarche">
+          <s:url id="deleteUrl" action="deleteDate" namespace="/timeTable">
             <s:param name="idTableauMarche" value="%{id}"/>
             <s:param name="idxDate" value="#attr.datesTable_rowNum"/>
           </s:url>
@@ -72,11 +72,11 @@
         </display:column>
       </display:table>
     </s:div>
-    <s:form cssClass="panelDataInnerForm" action="addDate" namespace="/tableauMarche">
+    <s:form cssClass="panelDataInnerForm" action="addDate" namespace="/timeTable">
       <s:if test="id != null">
         <s:hidden name="idTableauMarche" value="%{id}"/>
       </s:if>
-      <s:textfield label="Date" name="jour" id="jour" />
+      <s:textfield key="jour" id="jour" />
       <s:submit key="text.tableauMarche.addDate.button"/>
       <br>
 
@@ -110,7 +110,7 @@
           <s:property value="%{periodes[#attr.periodsTable_rowNum - 1].fin}" />
         </display:column>
         <display:column title="Action">
-          <s:url id="deleteUrl" action="deletePeriod" namespace="/tableauMarche">
+          <s:url id="deleteUrl" action="deletePeriod" namespace="/timeTable">
             <s:param name="idTableauMarche" value="%{id}"/>
             <s:param name="idxPeriod" value="#attr.periodsTable_rowNum"/>
           </s:url>
@@ -121,12 +121,12 @@
       </display:table>
     </div>
     <!-- Affichage formulaire création nouvelle période -->
-    <s:form cssClass="panelDataInnerForm" action="addPeriode" namespace="/tableauMarche">
+    <s:form cssClass="panelDataInnerForm" action="addPeriode" namespace="/timeTable">
       <s:if test="id != null">
         <s:hidden name="idTableauMarche" value="%{id}"/>
       </s:if>
-      <s:textfield key="tableauMarche.period.startDate" name="debut" id="debut"/>
-      <s:textfield key="tableauMarche.period.endDate" name="fin" id="fin"/>
+      <s:textfield key="debut" id="debut"/>
+      <s:textfield key="fin" id="fin"/>
       <s:submit key="text.tableauMarche.addPeriod.button"/>
       <br>
       <script type="text/javascript">
