@@ -69,20 +69,24 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     if (getIdItineraire() == null)
     {
       itineraryModel = new Itineraire();
-    } else
+    }
+    else
     {
       itineraryModel = itineraryManager.lire(getIdItineraire());
     }
 
-    // TODO : Le virer grâce a OGNL
-    itinerairesSansItineraireEdite = lineManager.getItinerairesLigne(getIdLigne());
-    //	Suppression dans la liste des itinéraires de celui étant édité
-    for (Itineraire itineraire : itinerairesSansItineraireEdite)
+    if (getIdLigne() != null)
     {
-      if (itineraire.getId().equals(itineraryModel.getId()))
+      // TODO : Le virer grâce a OGNL
+      itinerairesSansItineraireEdite = lineManager.getItinerairesLigne(getIdLigne());
+      //	Suppression dans la liste des itinéraires de celui étant édité
+      for (Itineraire itineraire : itinerairesSansItineraireEdite)
       {
-        itinerairesSansItineraireEdite.remove(itineraire);
-        break;
+        if (itineraire.getId().equals(itineraryModel.getId()))
+        {
+          itinerairesSansItineraireEdite.remove(itineraire);
+          break;
+        }
       }
     }
   }
@@ -130,7 +134,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
             itineraires.add(0, itineraireParIdItineraire.get(itineraire.getIdRetour()));
           }
           itineraires.add(0, itineraire);
-        } else
+        }
+        else
         {
           itineraires.add(0, itineraire);
           //	Si l'itinéraire retour se trouve dans la liste on l'ajoute
@@ -139,7 +144,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
             itineraires.add(0, itineraireParIdItineraire.get(itineraire.getIdRetour()));
           }
         }
-      } else
+      }
+      else
       {
         //	Ajout d'un itineraire sans idRetour à la fin de la liste
         itineraires.add(itineraire);
@@ -168,7 +174,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
       if (itineraryModel.getIdRetour().equals("-1"))
       {
         itineraryManager.dissocierItineraire(itineraryModel.getId());
-      } else
+      }
+      else
       {
         itineraryManager.dissocierItineraire(itineraryModel.getId());
         itineraryManager.associerItineraire(itineraryModel.getId(), new Long(itineraryModel.getIdRetour()));
@@ -198,7 +205,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
       if (itineraryModel.getIdRetour().equals("-1"))
       {
         itineraryManager.dissocierItineraire(itineraryModel.getId());
-      } else
+      }
+      else
       {
         itineraryManager.dissocierItineraire(itineraryModel.getId());
         itineraryManager.associerItineraire(itineraryModel.getId(), new Long(itineraryModel.getIdRetour()));
@@ -294,7 +302,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     if (itineraryModel != null && itineraryModel.getWayBack() != null)
     {
       return itineraryModel.getWayBack().toString();
-    } else
+    }
+    else
     {
       return sensAller;
     }
@@ -314,7 +323,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     if (this.itineraryModel.getIdRetour() == null)
     {
       return "-1";
-    } else
+    }
+    else
     {
       return this.itineraryModel.getIdRetour().toString();
     }
