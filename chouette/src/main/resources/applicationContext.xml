@@ -486,19 +486,6 @@
   		scope="singleton">
   	<property name="timeout" value="${action.lock.timeout}" />
   </bean>
-  
-  <bean id="enumApplication"
-    		class="fr.certu.chouette.struts.enumeration.EnumerationApplication"
-    		scope="singleton"
-        init-method="reinit">
-    <property name="direction" value="direction"/>
-    <property name="jourType" value="jourType"/>
-    <property name="mode" value="transport"/>
-    <property name="statut" value="statutService"/>
-    <property name="longitudeLatitude" value="longitudeLatitude"/>
-    <property name="zoneType" value="zoneType"/>
-    <property name="correspondance" value="correspondance"/>
-  </bean>
 
   <bean id="RouteActionBean" scope="prototype"
     		class="fr.certu.chouette.struts.route.RouteAction">
