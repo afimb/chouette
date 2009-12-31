@@ -54,7 +54,7 @@
 <%-- Tableau --%>
 <div id="displaytag">
   <display:table name="lignes" sort="list" pagesize="20" requestURI="" id="ligne" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="editUrl" action="edit" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
       </s:url>
@@ -105,22 +105,22 @@
         </s:if>
       </div>
     </display:column>
-    <display:column title="Nom" sortable="true" headerClass="sortable" property="line.name"/>
-    <display:column title="Indice" property="line.number" sortable="true" headerClass="sortable"/>
-    <display:column title="Nom Reseau" sortable="true" headerClass="sortable">
+    <display:column titleKey="table.title.name" sortable="true" headerClass="sortable" property="line.name"/>
+    <display:column titleKey="table.title.index" property="line.number" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.network" sortable="true" headerClass="sortable">
       <s:url id="editReseau" action="edit" namespace="/network">
         <s:param name="idReseau">${ligne.idReseau}</s:param>
       </s:url>
       <s:a href="%{editReseau}"><s:property value="%{getReseau(#attr.ligne.idReseau)}"/></s:a>
     </display:column>
-    <display:column title="Nom Transporteur" sortable="true" headerClass="sortable">
+    <display:column titleKey="table.title.company" sortable="true" headerClass="sortable">
       <s:url id="editTransporteur" action="edit"  namespace="/company">
         <s:param name="idTransporteur"> ${ligne.idTransporteur}</s:param>
       </s:url>
       <s:a href="%{editTransporteur}" ><s:property value="%{getTransporteur(#attr.ligne.idTransporteur)}"/></s:a>
     </display:column>
-    <display:column title="Accès Itinéraires"><s:a href="%{itinerary}">Itinéraires</s:a></display:column>
-    <display:column title="Export Ligne">
+    <display:column titleKey="table.title.route"><s:a href="%{itinerary}">Itinéraires</s:a></display:column>
+    <display:column titleKey="table.title.export">
       <s:a href="%{exportChouette}"><s:text name="text.ligne.export.chouette" /></s:a>
       <s:if test="useAmivif == 'true'">
         <br>
