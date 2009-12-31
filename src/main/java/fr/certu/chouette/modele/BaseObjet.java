@@ -7,20 +7,23 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class BaseObjet implements Serializable
 {
-	   private static final long serialVersionUID = 3256446889040622647L;
-	   private Long id;
 
-	   public Long getId() {
-		return id;
-	}
+  private static final long serialVersionUID = 3256446889040622647L;
+  private Long id;
 
-	public void setId( final Long id) {
-		this.id = id;
-	}
+  public Long getId()
+  {
+    return id;
+  }
 
-	public String toString() {
-	       return ToStringBuilder.reflectionToString(this,
-	               ToStringStyle.MULTI_LINE_STYLE);
-	   }
+  public void setId(final Long id)
+  {
+    this.id = id;
+  }
 
+  public String toString()
+  {
+    return ToStringBuilder.reflectionToString(this,
+            ToStringStyle.MULTI_LINE_STYLE);
+  }
 }
