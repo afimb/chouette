@@ -26,9 +26,9 @@ public class DictionaryObjectId implements IDictionaryObjectId {
 	}
 	
 	public void completion() {
-		positionsGeographiquesObjectIdParRef = null;
-		tableauxMarcheObjectIdParRef = null;
-		objectIdParOldObjectId = null;
+	    positionsGeographiquesObjectIdParRef.clear();
+		tableauxMarcheObjectIdParRef.clear();
+		objectIdParOldObjectId.clear();
 	}
 	
 	public Map<String, String> getPositionsGeographiquesObjectIdParRef() {
