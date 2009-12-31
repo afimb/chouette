@@ -18,7 +18,7 @@
     <s:hidden name="idCorrespondance" value="%{idCorrespondance}" />
     <s:hidden name="actionSuivante" value="%{actionSuivante}" />
     <s:textfield key="criteria.name"/>
-    <s:select emptyOption="true" key="criteria.areaType" list="%{getStopAreaTypeEnum(#attr.authorizedType)}"/>
+    <s:select emptyOption="true" key="criteria.areaType" list="%{getStopAreaEnum(#attr.authorizedType)}"  listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     <s:textfield key="criteria.countryCode" />
     <tr>
       <td colspan="2">

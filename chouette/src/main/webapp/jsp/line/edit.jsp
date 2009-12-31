@@ -31,10 +31,10 @@
   <s:textfield key="registrationNumber" required="true"/>
   <s:textfield key="number" />
   <s:if test="id != null">
-    <s:select key="transportModeName" list="modesOfTransportEnum" />
+    <s:select key="transportModeName" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
   </s:if>
   <s:else>
-    <s:select key="transportModeName" list="modesOfTransportEnum" value="@chouette.schema.types.TransportModeNameType@BUS"/>
+    <s:select key="transportModeName" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{'Bus'}"/>
   </s:else>
   <s:textfield key="comment" name="comment"/>
 

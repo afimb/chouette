@@ -1,8 +1,27 @@
 package fr.certu.chouette.struts;
 
+import chouette.schema.types.ChouetteAreaType;
+import chouette.schema.types.ConnectionLinkTypeType;
+import chouette.schema.types.DayTypeType;
+import chouette.schema.types.LongLatTypeType;
+import chouette.schema.types.PTDirectionType;
+import chouette.schema.types.ServiceStatusValueType;
+import chouette.schema.types.TransportModeNameType;
 import com.opensymphony.xwork2.ActionSupport;
+import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import fr.certu.chouette.struts.outil.filAriane.FilAriane;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.PrincipalAware;
 import org.apache.struts2.interceptor.PrincipalProxy;
 import org.apache.struts2.interceptor.RequestAware;
@@ -11,6 +30,7 @@ import org.apache.struts2.interceptor.SessionAware;
 public class GeneriqueAction extends ActionSupport implements RequestAware, SessionAware, PrincipalAware
 {
 
+  private static final Log log = LogFactory.getLog(GeneriqueAction.class);
   public static final String EDIT = "edit";
   public static final String REDIRECT = "redirect";
   public static final String SAVE = "save";
@@ -23,6 +43,24 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   protected Map session;
   protected Map request;
   protected PrincipalProxy principalProxy;
+  public static final String AUTHORIZEDTYPESET_ALL = "All";
+  public static final String AUTHORIZEDTYPESET_C = "CommercialStop";
+  public static final String AUTHORIZEDTYPESET_S = "StopPlace";
+  public static final String AUTHORIZEDTYPESET_CS = "CommercialStopStopPlace";
+  public static final String AUTHORIZEDTYPESET_QB = "QuayBoardingPosition";
+  public static final String MODE_LAST_ENTRY = "Other";
+  public static final int WEEKDAY_TYPE = 0;
+  public static final int WEEKEND_TYPE = 1;
+  public static final int MONDAY_TYPE = 2;
+  public static final int TUESDAY_TYPE = 3;
+  public static final int WEDNESDAY_TYPE = 4;
+  public static final int THURSDAY_TYPE = 5;
+  public static final int FRIDAY_TYPE = 6;
+  public static final int SATURDAY_TYPE = 7;
+  public static final int SUNDAY_TYPE = 8;
+  public static final int SCHOOLHOLLIDAY_TYPE = 9;
+  public static final int PUBLICHOLLIDAY_TYPE = 10;
+  public static final int MARKETDAY_TYPE = 11;
 
   public void setSession(Map session)
   {
@@ -55,6 +93,426 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     else
     {
       return (FilAriane) session.get("filAriane");
+    }
+  }
+
+  public List<ObjetEnumere> getDirectionsEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    ResourceBundle rsDir = ResourceBundle.getBundle("directions", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    List<ObjetEnumere> directions = new ArrayList<ObjetEnumere>();
+    for (String traduction : traductionTriees)
+    {
+      PTDirectionType ptDirectionType = null;
+      try
+      {
+        ptDirectionType = PTDirectionType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      directions.add(new ObjetEnumere(ptDirectionType, traduction));
+    }
+    return directions;
+  }
+
+  public List<ObjetEnumere> getModesOfTransportEnum()
+  {
+    ResourceBundle rsDir = ResourceBundle.getBundle("modesOfTransport", getLocale());
+    String lastValue = rsDir.getString(MODE_LAST_ENTRY);
+    ArrayList<ObjetEnumere> modes = new ArrayList<ObjetEnumere>();
+
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(new ComparatorSpecial(lastValue));
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    for (String traduction : traductionTriees)
+    {
+      TransportModeNameType modeType = null;
+      try
+      {
+        modeType = TransportModeNameType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      modes.add(new ObjetEnumere(modeType, traduction));
+      //log.debug( "modeType="+modeType+" "+traduction);
+    }
+
+    return modes;
+
+
+//    Locale locale = Locale.getDefault();
+//    Properties modesOfTransport = new Properties();
+//    ResourceFinder resourceFinder = new ResourceFinder("");
+//    String fileName = "modesOfTransport_" + locale.getLanguage().toLowerCase() + ".properties";
+//
+//    try
+//    {
+//      modesOfTransport = resourceFinder.findProperties(fileName);
+//    }
+//    catch (IOException exception)
+//    {
+//      log.debug("No properties file with name : " + fileName);
+//      try
+//      {
+//        modesOfTransport = resourceFinder.findProperties("modesOfTransport_fr.properties");
+//      }
+//      catch (IOException frenchException)
+//      {
+//        log.debug("No properties file with name : " + fileName);
+//      }
+//    }
+//    return modesOfTransport;
+  }
+
+  public List<ObjetEnumere> getDayTypeEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    ResourceBundle rsDir = ResourceBundle.getBundle("dayType", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+
+    //	On ne prend que les tableaux de marche de lundi à dimanche
+    ObjetEnumere[] joursTypesTab = new ObjetEnumere[SUNDAY_TYPE - 1];
+
+    for (String traduction : cleParTraduction.keySet())
+    {
+      DayTypeType dayTypeType = null;
+      try
+      {
+        dayTypeType = DayTypeType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      //	On ne prend que les tableaux de marche de lundi à dimanche
+      if (MONDAY_TYPE <= dayTypeType.getType() && dayTypeType.getType() <= SUNDAY_TYPE)
+      {
+        joursTypesTab[dayTypeType.getType() - 2] = new ObjetEnumere(dayTypeType, traduction);
+      }
+    }
+    List<ObjetEnumere> dayType = Arrays.asList(joursTypesTab);
+    return dayType;
+  }
+
+  public List<ObjetEnumere> getLongLatEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    ResourceBundle rsDir = ResourceBundle.getBundle("longitudeLatitude", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    List<ObjetEnumere> longitudeLatitude = new ArrayList<ObjetEnumere>();
+    for (String traduction : traductionTriees)
+    {
+      LongLatTypeType longLatType = null;
+      try
+      {
+        longLatType = LongLatTypeType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      longitudeLatitude.add(new ObjetEnumere(longLatType, traduction));
+      //log.debug( "longLatType="+longLatType+" "+traduction);
+    }
+    return longitudeLatitude;
+  }
+
+  public List<ObjetEnumere> getServiceStatusEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    ResourceBundle rsDir = ResourceBundle.getBundle("serviceStatus", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    List<ObjetEnumere> serviceStatus = new ArrayList<ObjetEnumere>();
+    for (String traduction : traductionTriees)
+    {
+      ServiceStatusValueType statutType = null;
+      try
+      {
+        statutType = ServiceStatusValueType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      serviceStatus.add(new ObjetEnumere(statutType, traduction));
+      //log.debug( "statutType="+statutType+" "+traduction);
+    }
+    return serviceStatus;
+  }
+
+  public List<ObjetEnumere> getStopAreaEnum(String authorizedTypes)
+  {
+    List<ObjetEnumere> toutesZonesTypes = getStopPlaceEnum();
+    toutesZonesTypes.addAll(getBoardingPositionEnum());
+
+    if (AUTHORIZEDTYPESET_ALL.equals(authorizedTypes))
+    {
+      return toutesZonesTypes;
+    }
+    else if (AUTHORIZEDTYPESET_CS.equals(authorizedTypes))
+    {
+      List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
+      for (int i = 0; i < toutesZonesTypes.size(); i++)
+      {
+        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.getType() == ChouetteAreaType.STOPPLACE_TYPE || type.getType() == ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE)
+        {
+          l.add(toutesZonesTypes.get(i));
+        }
+      }
+      return l;
+    }
+    else if (AUTHORIZEDTYPESET_QB.equals(authorizedTypes))
+    {
+      List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
+      for (int i = 0; i < toutesZonesTypes.size(); i++)
+      {
+        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.getType() == ChouetteAreaType.BOARDINGPOSITION_TYPE || type.getType() == ChouetteAreaType.QUAY_TYPE)
+        {
+          l.add(toutesZonesTypes.get(i));
+        }
+      }
+      return l;
+    }
+    else if (AUTHORIZEDTYPESET_S.equals(authorizedTypes))
+    {
+      List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
+      for (int i = 0; i < toutesZonesTypes.size(); i++)
+      {
+        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.getType() == ChouetteAreaType.STOPPLACE_TYPE)
+        {
+          l.add(toutesZonesTypes.get(i));
+        }
+      }
+      return l;
+    }
+    else if (AUTHORIZEDTYPESET_C.equals(authorizedTypes))
+    {
+      List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
+      for (int i = 0; i < toutesZonesTypes.size(); i++)
+      {
+        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.getType() == ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE)
+        {
+          l.add(toutesZonesTypes.get(i));
+        }
+      }
+      return l;
+    }
+    else
+    {
+      return toutesZonesTypes;
+    }
+  }
+
+  public List<ObjetEnumere> getBoardingPositionEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    ResourceBundle rsDir = ResourceBundle.getBundle("boardingPosition", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    List<ObjetEnumere> boardingPosition = new ArrayList<ObjetEnumere>();
+    for (String traduction : traductionTriees)
+    {
+      ChouetteAreaType boardingPositionType = null;
+      try
+      {
+        boardingPositionType = ChouetteAreaType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      boardingPosition.add(new ObjetEnumere(boardingPositionType, traduction));
+      //log.debug( "statutType="+statutType+" "+traduction);
+    }
+    return boardingPosition;
+  }
+
+  public List<ObjetEnumere> getStopPlaceEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    ResourceBundle rsDir = ResourceBundle.getBundle("stopPlace", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    List<ObjetEnumere> stopPlace = new ArrayList<ObjetEnumere>();
+    for (String traduction : traductionTriees)
+    {
+      ChouetteAreaType stopPlaceType = null;
+      try
+      {
+        stopPlaceType = ChouetteAreaType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      stopPlace.add(new ObjetEnumere(stopPlaceType, traduction));
+      //log.debug( "statutType="+statutType+" "+traduction);
+    }
+    return stopPlace;
+  }
+
+  public List<ObjetEnumere> getConnectionLinkTypeEnum()
+  {
+    Map<String, String> cleParTraduction = new Hashtable<String, String>();
+    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    ResourceBundle rsDir = ResourceBundle.getBundle("connectionLink", getLocale());
+
+    Enumeration<String> rsDirEnum = rsDir.getKeys();
+    while (rsDirEnum.hasMoreElements())
+    {
+      String cle = rsDirEnum.nextElement();
+      String traduction = rsDir.getString(cle);
+      if (traduction != null && !traduction.isEmpty())
+      {
+        cleParTraduction.put(traduction, cle);
+      }
+    }
+    traductionTriees.addAll(cleParTraduction.keySet());
+
+    List<ObjetEnumere> connectionLink = new ArrayList<ObjetEnumere>();
+    for (String traduction : traductionTriees)
+    {
+      ConnectionLinkTypeType correspondanceType = null;
+      try
+      {
+        correspondanceType = ConnectionLinkTypeType.valueOf(cleParTraduction.get(traduction));
+      }
+      catch (Exception e)
+      {
+        log.error(e.getMessage(), e);
+      }
+      connectionLink.add(new ObjetEnumere(correspondanceType, traduction));
+      //log.debug( "correspondanceType="+correspondanceType+" "+traduction);
+    }
+    return connectionLink;
+  }
+
+  private class ComparatorSpecial implements Comparator<String>
+  {
+
+    private String lastValue;
+
+    public ComparatorSpecial(String lastValue)
+    {
+      if (lastValue == null)
+      {
+        throw new IllegalArgumentException();
+      }
+      this.lastValue = lastValue;
+    }
+
+    @Override
+    public int compare(String o1, String o2)
+    {
+      if (lastValue.equals(o1))
+      {
+        return 1;
+      }
+      if (lastValue.equals(o2))
+      {
+        return -1;
+      }
+      return String.CASE_INSENSITIVE_ORDER.compare(o1, o2);
     }
   }
 }

@@ -20,7 +20,7 @@
 		<s:hidden name="authorizedType" value="%{authorizedType}" />
 		<s:hidden name="actionSuivante" value="%{actionSuivante}" />
 		<s:textfield key="searchCriteria.name"/>
-		<s:select emptyOption="true" key="searchCriteria.areaType" list="%{getStopAreaTypeEnum(#attr.authorizedType)}" />
+		<s:select emptyOption="true" key="searchCriteria.areaType" list="%{getStopAreaEnum(#attr.authorizedType)}"  listKey="enumeratedTypeAccess" listValue="textePropriete"/>
 		<s:textfield key="searchCriteria.countryCode" />
 		<s:submit key="action.search" />
   </s:form>

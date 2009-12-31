@@ -33,10 +33,10 @@
     <s:textfield key="publishedJourneyName" />
     <s:textfield key="publishedJourneyIdentifier" />
     <s:if test="id != null">
-      <s:select key="transportMode" list="modesOfTransportEnum"/>
+      <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     </s:if>
     <s:else>
-      <s:select key="transportMode" list="modesOfTransportEnum" value="%{modeTransportLigne}"/>
+      <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{modeTransportLigne}"/>
     </s:else>
     <s:textfield key="comment" />
     <%-- Actions --%>
