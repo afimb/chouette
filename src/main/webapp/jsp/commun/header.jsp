@@ -33,10 +33,10 @@
   </div>
 
   <div id="tools">
-    <s:url id="language_fr" value="">
+    <s:url id="language_fr" value="" includeParams="all">
       <s:param name="request_locale" value="%{'fr'}" />
     </s:url>
-    <s:url id="language_en" value="">
+    <s:url id="language_en" value="" includeParams="all">
       <s:param name="request_locale" value="%{'en'}" />
     </s:url>
     <s:url action="AProposDe" id="aproposde"/>
@@ -51,12 +51,12 @@
     <br>
     <ul>
       <li class="french">
-        <s:a href="%{language_fr}" includeParams="none">
+        <s:a href="%{language_fr}">
           <img  alt="French"  border="0" src="<s:url value='/images/french_flag.png'/>">
         </s:a>
       </li>
       <li class="english">
-        <s:a  href="%{language_en}" includeParams="none">
+        <s:a  href="%{language_en}">
           <img  alt="English"  border="0" src="<s:url value='/images/english_flag.png'/>">
         </s:a>
       </li>

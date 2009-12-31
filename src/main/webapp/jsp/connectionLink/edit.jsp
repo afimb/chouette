@@ -31,7 +31,7 @@
     <s:textfield maxlength="5" key="mobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" required="false"/>
     <s:textfield maxlength="5" key="occasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" required="false"/>
     <s:textfield maxlength="5" key="frequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" required="false"/>
-    <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum"/>
+    <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="liftAvailability"/>
     <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="mobilityRestrictedSuitability"/>
     <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="stairsAvailability"/>

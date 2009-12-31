@@ -36,10 +36,10 @@
     <s:textfield key="registrationNumber" />
 
     <s:if test="id != null">
-      <s:select key="areaType" required="true" list="%{getStopAreaTypeEnum('CommercialStopStopPlace')}" disabled="true"/>
+      <s:select key="areaType" required="true" list="%{getStopAreaEnum('CommercialStopStopPlace')}" listKey="enumeratedTypeAccess" listValue="textePropriete" disabled="true"/>
     </s:if>
     <s:else>
-      <s:select key="areaType" required="true" list="%{getStopAreaTypeEnum('CommercialStopStopPlace')}"/>
+      <s:select key="areaType" required="true" list="%{getStopAreaEnum('CommercialStopStopPlace')}" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     </s:else>
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
@@ -48,10 +48,10 @@
     <s:textfield key="x" />
     <s:textfield key="y" />
     <s:if test="id != null">
-      <s:select key="longLatType" list="longLatEnum"/>
+      <s:select key="longLatType" list="longLatEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     </s:if>
     <s:else>
-      <s:select key="longLatType" list="longLatEnum" value="%{'WGS84'}"/>
+      <s:select key="longLatType" list="longLatEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{'WGS84'}"/>
     </s:else>
     <s:textfield key="latitude" />
     <s:textfield key="longitude" />

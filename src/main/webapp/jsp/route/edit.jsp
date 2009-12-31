@@ -25,7 +25,7 @@
   <s:select name="idRetour" label="%{getText('idRetour')}" list="itinerairesSansItineraireEdite" listKey="id" listValue="publishedName" headerKey="-1" headerValue="%{getText('aucunRetour')}" />
   <s:textfield key="name" required="true"/>
   <s:textfield key="publishedName" />
-  <s:select key="direction" list="directionsEnum"/>
+  <s:select key="direction" list="directionsEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
   <s:textfield key="number" />
   <s:radio name="wayBack" value="%{sensItineraire}" list="sensItineraires" label="%{getText('wayBack')}" />
   <s:textfield key="comment"/>
