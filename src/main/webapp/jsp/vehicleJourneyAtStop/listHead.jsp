@@ -3,7 +3,7 @@
 
 <%-- COURSES --%>
 <tr>
-  <td style="font-weight:bold">Courses&nbsp;&nbsp;</td>
+  <td style="font-weight:bold"><s:text name="table.title.vehicleJourney"/>&nbsp;&nbsp;</td>
   <s:iterator value="coursesPage" >
     <td>
       <s:url id="editCourse" action="edit" namespace="/vehicleJourney">
@@ -52,7 +52,7 @@
 
 <%-- MISSIONS --%>
 <tr>
-  <td style="font-weight:bold">Missions&nbsp;&nbsp;</td>
+  <td style="font-weight:bold"><s:text name="table.title.journeyPattern"/>&nbsp;&nbsp;</td>
   <s:iterator value="coursesPage" >
     <td>
       <s:url id="editMission" action="edit" namespace="/journeyPattern">
@@ -75,7 +75,7 @@
 
 <%-- CALENDRIERS --%>
 <tr>
-  <td style="font-weight:bold">Calendriers&nbsp;&nbsp;</td>
+  <td style="font-weight:bold"><s:text name="table.title.vehicleJourneyAtStop"/>&nbsp;&nbsp;</td>
   <s:iterator value="coursesPage" >
     <td>
       <s:subset source="tableauxMarcheParIdCourse[id]" count="maxNbCalendriersParCourse">
@@ -90,7 +90,7 @@
 
 <%-- ARRETS --%>
 <tr>
-  <td style="font-weight:bold">Arr&ecirc;ts</td>
+  <td style="font-weight:bold"><s:text name="table.title.stoppointOnRoute"/></td>
   <s:iterator value="coursesPage" >
     <td>&nbsp;</td>
   </s:iterator>

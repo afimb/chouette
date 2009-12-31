@@ -85,9 +85,9 @@
     <table>
       <THEAD>
         <TR>
-          <TH>Permutations</TH>
-          <TH>Actions</TH>
-          <TH>Arrets</TH>
+          <TH><s:text name="table.title.rotate"/></TH>
+          <TH><s:text name="table.title.action"/></TH>
+          <TH><s:text name="table.title.stoppointOnRoute"/></TH>
         </TR>
       </THEAD>
       <TBODY>
