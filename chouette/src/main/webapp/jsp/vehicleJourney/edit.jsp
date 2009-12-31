@@ -59,7 +59,7 @@
 <s:if test="id != null">
   <div>
     <%-- Affichage de la liste des tableaux de marche--%>
-    <b>Calendriers d'application</b>
+    <b><s:text name="title.timeTable"/></b>
   </div>
   <br>
   <div>

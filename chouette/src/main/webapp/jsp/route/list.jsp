@@ -19,7 +19,7 @@
   <s:a href="%{editItineraire}"><b><s:text name="text.itineraire.create.button"/></b></s:a>
   <br><br>
   <FIELDSET align="center" style="width: 500px;">
-    <LEGEND><b>Import des horaires d'un itineraire</b></LEGEND>
+    <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/import" enctype="multipart/form-data" method="POST">
       <s:file name="fichier" label="%{getText('action.browse')}"/>
       <s:hidden name="fichierContentType" value="text/csv; charset=ISO-8859-1"/>
@@ -44,7 +44,7 @@
       </TR>
     </THEAD>
     <TBODY>
-      <s:iterator value="#request.itineraires" status="rangItineraire">
+      <s:iterator value="#request.itineraires" var="itineraire" status="rangItineraire">
         <%
     String cssBordure = "";
     String TRParityClass = "";
@@ -93,7 +93,12 @@
             <s:property value="publishedName"/>
           </TD>
           <TD class="${cssBordure}">
-            <s:text name="direction"/>
+            <s:if test="#itineraire.direction != null">
+              <s:text name="%{#itineraire.direction}"/>
+            </s:if>
+            <s:else>
+              <s:text name="no.direction"/>
+            </s:else>
           </TD>
           <TD class="${cssBordure}">
             <s:if test="!isArretsVide(id)">
@@ -101,21 +106,21 @@
                 <s:param name="idItineraire" value="id" />
                 <s:param name="page" value="1" />
               </s:url>
-              <s:a href="%{horairesDePassage}">Horaires</s:a>
+              <s:a href="%{horairesDePassage}"><s:text name="title.vehicleJourneyAtStop"/></s:a>
             </s:if>
           </TD>
           <TD class="${cssBordure}">
             <s:url id="arretSurItineraire" action="list" namespace="/stoppointOnRoute">
               <s:param name="idItineraire" value="%{id}" />
             </s:url>
-            <s:a href="%{arretSurItineraire}">Arr&ecirc;ts</s:a>
+            <s:a href="%{arretSurItineraire}"><s:text name="title.stoppointOnRoute"/></s:a>
           </TD>
           <TD class="${cssBordure}">
             <s:url id="exportHorairesItineraire" action="exportHorairesItineraire" namespace="/export">
               <s:param name="idItineraire" value="id"/>
               <s:param name="origin" value="itinerary"/>
             </s:url>
-            <s:a href="%{exportHorairesItineraire}">Export horaires</s:a>
+            <s:a href="%{exportHorairesItineraire}"><s:text name="title.export.vehicleJourneyAtStop"/></s:a>
           </TD>
         </TR>
       </s:iterator>

@@ -22,9 +22,9 @@
         </td>
         <td height="108" style="vertical-align:top;">
           <table id="logo" height="108">
-            <tr><td id="chouette">Chouette</td></tr>
+            <tr><td id="chouette"><s:text name="app.title"/></td></tr>
             <tr><td id="definition">
-						(Création d'horaires avec un outil d'échange de données TC selon le format Trident Européen)
+                <s:text name="app.definition"/>
               </td></tr>
           </table>
         </td>
@@ -46,7 +46,7 @@
     <ul>
       <li><s:property value="principalProxy.remoteUser"/></li> |
       <s:url action="deconnexion" id="deconnexion" includeParams="none"/>
-      <li><s:a href="%{deconnexion}" >D&eacute;connexion</s:a></li>
+      <li><s:a href="%{deconnexion}" ><s:text name="app.deconnection"/></s:a></li>
     </ul>
     <br>
     <ul>

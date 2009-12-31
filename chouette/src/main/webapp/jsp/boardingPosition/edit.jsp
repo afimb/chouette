@@ -77,7 +77,7 @@
 <s:if test="id != null">
   <%-- Itinéraires liés à l'arrêt physique --%>
   <div class="panelDataSection">
-			Itinéraires liés à l'arrêt physique
+    <s:text name="text.stopPlace.routes"/>
   </div>
   <div class="panel">
     <s:div label="Iti" id="displaytag">
