@@ -35,21 +35,25 @@ resolver.<br/>
  * @author Carles Gasques Baró
  * @version 1.0
  */
-public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider {
+public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider
+{
 
   public static final String UNDEFINED_KEY = "???";
   private static Log log = LogFactory.getLog(I18nStruts2Adapter.class);
 
-  public Locale resolveLocale(HttpServletRequest request) {
-
+  @Override
+  public Locale resolveLocale(HttpServletRequest request)
+  {
     Locale result = null;
     ValueStack stack = ActionContext.getContext().getValueStack();
 
     Iterator iterator = stack.getRoot().iterator();
-    while (iterator.hasNext()) {
+    while (iterator.hasNext())
+    {
       Object o = iterator.next();
 
-      if (o instanceof LocaleProvider) {
+      if (o instanceof LocaleProvider)
+      {
         LocaleProvider lp = (LocaleProvider) o;
         result = lp.getLocale();
 
@@ -57,7 +61,8 @@ public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider 
       }
     }
 
-    if (result == null) {
+    if (result == null)
+    {
       log.debug("Missing LocalProvider actions, init locale to default");
       result = Locale.getDefault();
     }
@@ -65,20 +70,21 @@ public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider 
     return result;
   }
 
-  public String getResource(String resourceKey, String defaultValue, Tag tag, PageContext pageContext) {
+  @Override
+  public String getResource(String resourceKey, String defaultValue, Tag tag, PageContext pageContext)
+  {
     String key = (resourceKey != null) ? resourceKey : defaultValue;
-    log.debug("resourceKey" + resourceKey);
-    log.debug("defaultValue" + defaultValue);
-    log.debug("tag" + tag);
     String message = null;
     OgnlValueStack stack =
             (OgnlValueStack) TagUtils.getStack(pageContext);
     Iterator iterator = stack.getRoot().iterator();
 
-    while (iterator.hasNext()) {
+    while (iterator.hasNext())
+    {
       Object o = iterator.next();
 
-      if (o instanceof TextProvider) {
+      if (o instanceof TextProvider)
+      {
         TextProvider tp = (TextProvider) o;
         message = tp.getText(key, defaultValue,
                 Collections.EMPTY_LIST, stack);
@@ -87,7 +93,8 @@ public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider 
       }
     }
 
-    if (message == null && resourceKey != null) {
+    if (message == null && resourceKey != null)
+    {
       log.debug(Messages.getString("Localization.missingkey",
               resourceKey));
       message = UNDEFINED_KEY + resourceKey + UNDEFINED_KEY;
