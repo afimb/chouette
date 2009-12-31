@@ -18,7 +18,7 @@
     <s:hidden name="idCorrespondance" value="%{idCorrespondance}" />
     <s:hidden name="actionSuivante" value="%{actionSuivante}" />
     <s:textfield key="criteria.name"/>
-    <s:select emptyOption="true" key="criteria.areaType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getStopAreaTypeEnum('%{#attr.authorizedType}')" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+    <s:select emptyOption="true" key="criteria.areaType" list="%{getStopAreaTypeEnum(#attr.authorizedType)}"/>
     <s:textfield key="criteria.countryCode" />
     <tr>
       <td colspan="2">
@@ -33,17 +33,17 @@
 <%-- Tableau résultat --%>
 <div class="panel" id="displaytag"> 
   <display:table name="positionGeographiquesResultat" pagesize="15" requestURI="" id="positionGeographique">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="addUrl" action="%{actionSuivante}" namespace="/connectionLink">
         <s:param name="idCorrespondance" value="%{idCorrespondance}" />
         <s:param name="idPositionGeographique" value="%{#attr.positionGeographique.id}" />
       </s:url>
       <s:a href="%{addUrl}"><s:text name="action.select"/></s:a>&nbsp;&nbsp;
     </display:column>
-    <display:column title="Name" property="name" />
-    <display:column title="Type" >
+    <display:column titleKey="table.title.name" property="name" />
+    <display:column titleKey="table.title.type" >
       <s:text name="%{#attr.positionGeographique.areaType}"/>
     </display:column>
-    <display:column title="Code INSEE" property="countryCode" />
+    <display:column titleKey="table.title.inseeCode" property="countryCode" />
   </display:table>
 </div>

@@ -37,10 +37,10 @@
     <s:textfield key="registrationNumber" />
 
     <s:if test="id != null">
-      <s:select key="areaType" required="true" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getStopAreaTypeEnum('QuayBoardingPosition')" listKey="enumeratedTypeAccess" listValue="textePropriete"  disabled="true"/>
+      <s:select key="areaType" required="true" list="%{getStopAreaEnum('QuayBoardingPosition')}" disabled="true"/>
     </s:if>
     <s:else>
-      <s:select key="areaType" required="true" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getStopAreaTypeEnum('QuayBoardingPosition')" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="areaType" required="true" list="%{getStopAreaTypeEnum('QuayBoardingPosition')}"/>
     </s:else>
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
@@ -49,10 +49,10 @@
     <s:textfield key="x" />
     <s:textfield key="y" />
     <s:if test="id != null">
-      <s:select key="longLatType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getLongLatEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="longLatType" list="longLatEnum"/>
     </s:if>
     <s:else>
-      <s:select key="longLatType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getLongLatEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="@fr.certu.chouette.service.validation.LongLatType@WGS84"/>
+      <s:select key="longLatType" list="longLatEnum" value="%{'WGS84'}"/>
     </s:else>
     <s:textfield key="latitude" />
     <s:textfield key="longitude" />

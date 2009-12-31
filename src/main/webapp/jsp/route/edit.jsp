@@ -25,7 +25,7 @@
   <s:select name="idRetour" label="%{getText('idRetour')}" list="itinerairesSansItineraireEdite" listKey="id" listValue="publishedName" headerKey="-1" headerValue="%{getText('aucunRetour')}" />
   <s:textfield key="name" required="true"/>
   <s:textfield key="publishedName" />
-  <s:select key="direction" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getDirectionEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+  <s:select key="direction" list="directionsEnum"/>
   <s:textfield key="number" />
   <s:radio name="wayBack" value="%{sensItineraire}" list="sensItineraires" label="%{getText('wayBack')}" />
   <s:textfield key="comment"/>

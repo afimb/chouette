@@ -36,10 +36,10 @@
     <s:textfield key="registrationNumber" />
 
     <s:if test="id != null">
-      <s:select key="areaType" required="true" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getStopAreaTypeEnum('CommercialStopStopPlace')" listKey="enumeratedTypeAccess" listValue="textePropriete" disabled="true"/>
+      <s:select key="areaType" required="true" list="%{getStopAreaTypeEnum('CommercialStopStopPlace')}" disabled="true"/>
     </s:if>
     <s:else>
-      <s:select key="areaType" required="true" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getStopAreaTypeEnum('CommercialStopStopPlace')" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="areaType" required="true" list="%{getStopAreaTypeEnum('CommercialStopStopPlace')}"/>
     </s:else>
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
@@ -48,10 +48,10 @@
     <s:textfield key="x" />
     <s:textfield key="y" />
     <s:if test="id != null">
-      <s:select key="longLatType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getLongLatEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="longLatType" list="longLatEnum"/>
     </s:if>
     <s:else>
-      <s:select key="longLatType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getLongLatEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="@fr.certu.chouette.service.validation.LongLatType@WGS84"/>
+      <s:select key="longLatType" list="longLatEnum" value="%{'WGS84'}"/>
     </s:else>
     <s:textfield key="latitude" />
     <s:textfield key="longitude" />
@@ -82,7 +82,7 @@
   <div class="panel">
     <s:div label="Children" id="displaytag">
       <display:table name="children" id="child"  excludedParams="" sort="list" pagesize="10" export="false">
-        <display:column title="action">
+        <display:column titleKey="table.title.action">
           <s:url id="editUrl" action="edit" namespace="/stopPlace">
             <s:param name="idPositionGeographique">${child.id}</s:param>
           </s:url>
@@ -97,10 +97,10 @@
             <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
           </s:a>
         </display:column>
-        <display:column title="Nom">
+        <display:column titleKey="table.title.name">
 					Zone	<s:property value="%{#attr.child.name}"/>
         </display:column>
-        <display:column title="Type">
+        <display:column titleKey="table.title.type">
           <s:text name="%{#attr.child.areaType}"/>
         </display:column>
       </display:table>
@@ -121,7 +121,7 @@
 <div class="panel">
   <s:div label="father" id="displaytag">
     <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
-      <display:column title="action">
+      <display:column titleKey="table.title.action">
         <s:url id="editUrl" action="edit" namespace="/stopPlace">
           <s:param name="idPositionGeographique" value="%{father.id}" />
         </s:url>
@@ -140,10 +140,10 @@
           <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
         </s:a>
       </display:column>
-      <display:column title="Nom">
+      <display:column titleKey="table.title.name">
 					Zone	<s:property value="%{#attr.child.name}"/>
       </display:column>
-      <display:column title="Type">
+      <display:column titleKey="table.title.type">
         <s:text name="%{#attr.child.areaType}"/>
       </display:column>
     </display:table>

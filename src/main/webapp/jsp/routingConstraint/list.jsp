@@ -15,8 +15,8 @@
 </div>
 
 <div class="panel" id="displaytag"> 
-  <display:table name="itls" pagesize="20" requestURI="" id="itl" export="false">
-    <display:column title="Action" sortable="false">
+  <display:table name="itls" pagesize="20" requestURI="" uid="itl" export="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/routingConstraint">
         <s:param name="idItl">${itl.id}</s:param>
       </s:url>
@@ -30,6 +30,6 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Nom" property="nom" sortable="false"/>
+    <display:column titleKey="table.title.name" property="nom" sortable="false"/>
   </display:table>
 </div>

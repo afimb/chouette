@@ -33,10 +33,10 @@
     <s:textfield key="publishedJourneyName" />
     <s:textfield key="publishedJourneyIdentifier" />
     <s:if test="id != null">
-      <s:select key="transportMode" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="transportMode" list="modesOfTransportEnum"/>
     </s:if>
     <s:else>
-      <s:select key="transportMode" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getModeTransportEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{modeTransportLigne}"/>
+      <s:select key="transportMode" list="modesOfTransportEnum" value="%{modeTransportLigne}"/>
     </s:else>
     <s:textfield key="comment" />
     <%-- Actions --%>
@@ -81,7 +81,7 @@
   </div>
   <div id="displaytag">
     <display:table name="tableauxMarche" sort="list" pagesize="10" requestURI="" id="tableauMarche" export="false">
-      <display:column title="Actions" sortable="false">
+      <display:column titleKey="table.title.action" sortable="false">
         <s:url id="supprimerAssociationTableauMarche" action="supprimerAssociationTableauMarche">
           <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
         </s:url>
@@ -96,7 +96,7 @@
           <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
         </s:a>
       </display:column>
-      <display:column title="Commentaire" property="comment" sortable="false"/>
+      <display:column titleKey="table.title.comment" property="comment" sortable="false"/>
     </display:table>
   </div>
 </s:if>

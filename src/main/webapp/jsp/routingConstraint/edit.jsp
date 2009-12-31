@@ -59,7 +59,7 @@
   <s:if test="id != null && idLigne != null">
     <div id="displaytag">
       <display:table uid="arretsDansITLList" name="arretsDansITLList" sort="list" pagesize="10" export="false">
-        <display:column title="Action">
+        <display:column titleKey="table.title.action">
           <s:url id="removeUrl" value="/itl/removeStop">
             <s:param name="idItl">${itl.id}</s:param>
             <s:param name="idAreaStop">%{arretsDansITLList[${arretsDansITLList_rowNum} - 1].id}</s:param>
@@ -69,9 +69,9 @@
           </s:a>
         </display:column>
 
-        <display:column title="Nom" property="name"/>
-        <display:column title="Code INSEE" property="countryCode"/>
-        <display:column title="Adresse" property="streetName"/>
+        <display:column titleKey="table.title.name" property="name"/>
+        <display:column titleKey="table.title.inseeCode" property="countryCode"/>
+        <display:column titleKey="table.title.address" property="streetName"/>
       </display:table>
     </div>
 

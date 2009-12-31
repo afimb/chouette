@@ -42,7 +42,7 @@
 <%-- Tableau --%>
 <div id="displaytag"> 
   <display:table name="positionGeographiques" pagesize="20" requestURI="" id="positionGeographique" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <%-- BOUTON EDITER --%>
       <s:url id="editUrl" action="edit" namespace="/stopPlace">
         <s:param name="idPositionGeographique">${positionGeographique.id}</s:param>
@@ -59,9 +59,9 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Nom" property="name" />
-    <display:column title="Identifiant de l'objet" property="objectId" />
-    <display:column title="Type" >
+    <display:column titleKey="table.title.name" property="name" />
+    <display:column titleKey="table.title.id" property="objectId" />
+    <display:column titleKey="table.title.type" >
       <s:text name="%{#attr.positionGeographique.areaType}"/>
     </display:column>
   </display:table>

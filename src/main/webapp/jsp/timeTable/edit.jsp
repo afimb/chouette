@@ -31,7 +31,7 @@
 
     <s:if test="id != null">
       <div class="editTableauMarche" >
-        <s:checkboxlist name="joursTypes" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getJoursTypesEnum()" listKey="enumeratedTypeAccess" listValue="textePropriete" template="checkboxlist.ftl"></s:checkboxlist>
+        <s:checkboxlist name="joursTypes" list="dayTypeEnum" template="checkboxlist.ftl"></s:checkboxlist>
       </div>
     </s:if>
 
