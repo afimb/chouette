@@ -83,7 +83,7 @@
               <s:param name="operationMode" value="STORE" />
             </s:url>
             <s:a href="%{removeUrl}" onclick="return confirm('%{getText('itineraire.delete.confirmation')}');">
-              <img border="0" alt="Delete" src="<s:url value='images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
+              <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
             </s:a>
           </TD>
           <TD class="${cssBordure}">
