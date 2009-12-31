@@ -38,7 +38,7 @@
 <br>
 <div class="panel" id="displaytag"> 
   <display:table name="correspondances" pagesize="20"  requestURI="" id="correspondance" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/connectionLink">
         <s:param name="idCorrespondance">${correspondance.id}</s:param>
         <s:param name="operationMode">STORE</s:param>
@@ -53,9 +53,9 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Nom" property="name"/>
-    <display:column title="Commentaire" property="comment"/>
-    <display:column title="Type">
+    <display:column titleKey="table.title.name" property="name"/>
+    <display:column titleKey="table.title.comment" property="comment"/>
+    <display:column titleKey="table.title.type">
       <s:text name="%{#attr.correspondance.linkType}"/>
     </display:column>
   </display:table>

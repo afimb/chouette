@@ -16,10 +16,10 @@
   <s:url action="add" namespace="/timeTable" id="editTableauMarche"/>
   <s:a href="%{editTableauMarche}"><b><s:text name="text.tableauMarche.create.button"/></b></s:a>
 </div>
-
+<br>
 <%-- FILTRE --%>
 <div>
-  <s:form action="list" namespace="/timeTable">
+  <s:form action="list" namespace="/timeTable" >
     <s:select name="idReseau" label="%{getText('filter.network')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
     <s:textfield name="commentaire" label="%{getText('filter.comment')}"></s:textfield>
     <s:textfield id="dateDebutPeriode" name="dateDebutPeriode" label="%{getText('filter.begin.interval')}"></s:textfield>
@@ -48,13 +48,13 @@
     );
       //-->
     </script>
-    <s:submit value="%{getText('action.filtrer')}"/>
+    <s:submit value="%{getText('action.filtrer')}" />
   </s:form>
 </div>
-
+<br>
 <div class="panel" id="displaytag">
   <display:table name="tableauxMarche"  pagesize="20"  requestURI="" id="tableauMarche" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/timeTable">
         <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
         <s:param name="operationMode">STORE</s:param>
@@ -69,7 +69,7 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Commentaire et Identifiant de l'objet" sortable="false" headerClass="sortable">
+      <display:column titleKey="table.title.route" sortable="false" headerClass="sortable">
       ${tableauMarche.comment}&nbsp;(${tableauMarche.objectId})
     </display:column>
   </display:table>

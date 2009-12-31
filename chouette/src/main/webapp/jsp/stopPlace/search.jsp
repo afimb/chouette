@@ -20,7 +20,7 @@
 		<s:hidden name="authorizedType" value="%{authorizedType}" />
 		<s:hidden name="actionSuivante" value="%{actionSuivante}" />
 		<s:textfield key="searchCriteria.name"/>
-		<s:select emptyOption="true" key="searchCriteria.areaType" list="@fr.certu.chouette.struts.enumeration.EnumerationApplication@getStopAreaTypeEnum(#attr.authorizedType)" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+		<s:select emptyOption="true" key="searchCriteria.areaType" list="%{getStopAreaTypeEnum(#attr.authorizedType)}" />
 		<s:textfield key="searchCriteria.countryCode" />
 		<s:submit key="action.search" />
   </s:form>
@@ -29,7 +29,7 @@
 <%-- Tableau résultat --%>
 <div class="panel" id="displaytag"> 
 	<display:table name="positionGeographiquesResultat" pagesize="15" requestURI="" id="positionGeographique" export="false">
-	  	<display:column title="Action" sortable="false">
+	  	<display:column titleKey="table.title.action" sortable="false">
 			<s:url id="addUrl" action="PositionGeographique_%{actionSuivante}">
 				<s:param name="idChild" value="%{#attr.positionGeographique.id}" />
 				<s:param name="idFather" value="%{#attr.positionGeographique.id}" />
@@ -38,10 +38,10 @@
 			</s:url>
 			<s:a href="%{addUrl}"><s:text name="action.select"/></s:a>&nbsp;&nbsp;
 	  	</display:column>	  	
-	  	<display:column title="Name" property="name" />
-	  	<display:column title="Type" >
+	  	<display:column titleKey="table.title.name" property="name" />
+	  	<display:column titleKey="table.title.type" >
 	  		<s:text name="%{#attr.positionGeographique.areaType}"/>
 	  	</display:column>	
-	  	<display:column title="Code INSEE" property="countryCode" />	  		  	
+	  	<display:column titleKey="table.title.inseeCode" property="countryCode" />
 	</display:table>
 </div>
