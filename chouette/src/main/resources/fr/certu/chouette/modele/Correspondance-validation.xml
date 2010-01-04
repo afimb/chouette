@@ -30,11 +30,6 @@
       <param name="expression">^$|([0-9][0-9]:[0-9][0-9])</param>
       <message key="error.formatDate"/>
     </field-validator>
-    <field-validator type="stringlength">
-      <param name="fieldName">defaultDuration</param>
-      <param name="maxLength">5</param>
-      <message key="errors.maxlength"/>
-    </field-validator>
   </field>
     
   <field name="occasionalTravellerDuration">
@@ -43,11 +38,6 @@
       <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
       </param>
       <message key="error.formatDate"/>
-    </field-validator>
-    <field-validator type="stringlength">
-      <param name="fieldName">occasionalTravellerDuration</param>
-      <param name="maxLength">5</param>
-      <message key="errors.maxlength"/>
     </field-validator>
   </field>
 
@@ -58,11 +48,6 @@
       </param>
       <message key="error.formatDate"/>
     </field-validator>
-    <field-validator type="stringlength">
-      <param name="fieldName">mobilityRestrictedTravellerDuration</param>
-      <param name="maxLength">5</param>
-      <message key="errors.maxlength"/>
-    </field-validator>
   </field>
     
   <field name="frequentTravellerDuration">
@@ -71,11 +56,6 @@
       <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
       </param>
       <message key="error.formatDate"/>
-    </field-validator>
-    <field-validator type="stringlength">
-      <param name="fieldName">frequentTravellerDuration</param>
-      <param name="maxLength">5</param>
-      <message key="errors.maxlength"/>
     </field-validator>
   </field>
 </validators> 
