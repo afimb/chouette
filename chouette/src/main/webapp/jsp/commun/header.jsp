@@ -57,7 +57,7 @@
       </li>
       <li class="english">
         <s:a  href="%{language_en}">
-          <img  alt="English"  border="0" src="<s:url value='/images/english_flag.png'/>">
+          <img  alt="English"  border="0" src="<s:url value='/images/european_flag.png'/>">
         </s:a>
       </li>
     </ul>
