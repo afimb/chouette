@@ -1,6 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Factory"  verbose="5" >
+  <test name="SpringBeans">
+      <classes>
+          <class name="unit.BeanTest"/>
+      </classes>
+  </test>
   <test name="Unitaires">
     <classes>
       <class name="unit.DBServiceTestCase"/>
