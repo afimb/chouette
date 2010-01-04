@@ -167,19 +167,18 @@
  			<property name="amivifAdapter" ref="amivifAdapter"/>
     		<property name="amivifComparators">
     		   <list>
-    		     <ref local="AmivifLineComparator"/>
-    		     <ref local="AmivifGroupOfLineCountComparator"/>
-    		     <ref local="AmivifGroupOfLineComparator"/>
-    		     <ref local="AmivifSubLineCountComparator"/>
-    		     <ref local="AmivifSubLineComparator"/>
-    		     <ref local="AmivifStopPointComparator"/>
-    		     <ref local="AmivifStopAreaComparator"/>
-    		     <ref local="AmivifPtLinkCountComparator"/>
-    		     <ref local="AmivifPtLinkComparator"/>
-    		     <ref local="AmivifStopPointInConnectionCountComparator"/>
-    		     <ref local="AmivifStopPointInConnectionComparator"/>
-    		   </list>
+    		     	<ref local="AmivifLineComparator"/>
+    		     	<ref local="AmivifGroupOfLineCountComparator"/>
+    		     	<ref local="AmivifGroupOfLineComparator"/>
+    		     	<ref local="AmivifSubLineCountComparator"/>
+    		     	<ref local="AmivifSubLineComparator"/>
+    		     	<ref local="AmivifStopPointComparator"/>
+    		     	<ref local="AmivifStopAreaComparator"/>
+    		     	<ref local="AmivifPtLinkCountComparator"/>
+    		     	<ref local="AmivifPtLinkComparator"/>
+    		     	<ref local="AmivifStopPointInConnectionCountComparator"/>
+    		    	<ref local="AmivifStopPointInConnectionComparator"/>
+    			</list>
     		</property> 			
     </bean>
-    
 </beans>

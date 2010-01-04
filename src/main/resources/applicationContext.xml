@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xmlns:aop="http://www.springframework.org/schema/aop"
-     xmlns:tx="http://www.springframework.org/schema/tx"
-     xsi:schemaLocation="
+<beans 	
+	xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+   <!--  default-autowire="no" -->
 
+  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="classpath:/spring.properties"/>
+  </bean>
+  
   <import resource="classpath:/externalModule.xml" />
   <import resource="classpath:/importCSVContext.xml" />
   <import resource="classpath:/genericCSVContext.xml" />
@@ -36,10 +42,6 @@
             <aop:before pointcut-ref="reinitPointcut" method="reinit" />
         </aop:aspect>
     </aop:config -->
-
-  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:/spring.properties"/>
-  </bean>
     
   <bean id="profiler" class="fr.certu.chouette.profiler.SimpleProfiler">
 		<!-- execute before the transactional advice (hence the lower order number) -->
@@ -106,6 +108,7 @@
     <property name="password" value="${jdbc.password}"/>
     <property name="databaseSchema" value="${database.schema}"/>
   </bean>
+  
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="hibernateProperties">
       <props>
@@ -115,7 +118,6 @@
         <prop key="hibernate.default_schema">${database.schema}</prop>
       </props>
     </property>
-
     <property name="dataSource" ref="chouetteDataSource"/>
     <property name="mappingResources">
       <list>
