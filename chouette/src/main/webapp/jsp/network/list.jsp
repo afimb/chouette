@@ -19,7 +19,7 @@
 <%-- Tableau --%>
 <div id="displaytag"> 
   <display:table name="reseaux" sort="list" pagesize="20" requestURI="" id="reseau" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
         <s:param name="operationMode">STORE</s:param>
@@ -38,9 +38,9 @@
         <img border="0" class="delete" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Nom" property="ptNetwork.name" sortable="true" headerClass="sortable"/>
-    <display:column title="Export Lignes">
-      <s:a href="%{exportsChouettes}">Export CHOUETTE</s:a>
+    <display:column titleKey="table.title.name" property="ptNetwork.name" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.export">
+      <s:a href="%{exportsChouettes}"><s:text name="text.reseau.export.chouette"/></s:a>
     </display:column>
   </display:table>
 </div>

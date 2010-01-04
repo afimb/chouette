@@ -1,4 +1,5 @@
 <%@ taglib uri="/struts-tags" prefix="s"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div id="menu">
 	<div class="submenu">
 		<div>Menu</div>
@@ -16,35 +17,35 @@
 			<li><s:a href="%{urlLignesMenu}" id="lignesMenu"><s:text name="text.lignes"/></s:a></li>
 
 			<%-- Itineraires --%>
-      <s:url id="urlItinerairesMenu" action="search" namespace="/itinerary" includeParams="none"/>
+      <s:url id="urlItinerairesMenu" action="search" namespace="/route" includeParams="none"/>
 			<li><s:a href="%{urlItinerairesMenu}" id="itinerairesMenu"><s:text name="text.itineraires"/></s:a></li>
 
 			<%-- Horaires --%>
-			<s:url id="urlHorairesMenu" action="search" namespace="/horairesDePassage" includeParams="none"/>
+			<s:url id="urlHorairesMenu" action="search" namespace="/vehicleJourneyAtStop" includeParams="none"/>
 			<li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
 
 			<%-- Calendriers d'application --%>
-      <s:url id="urlTableauMarchesMenu" action="list" namespace="/tableauMarche" includeParams="none"/>
+      <s:url id="urlTableauMarchesMenu" action="list" namespace="/timeTable" includeParams="none"/>
 			<li><s:a href="%{urlTableauMarchesMenu}" id="tableauMarchesMenu"><s:text name="text.tableauMarches"/></s:a></li>
 
 			<%-- Arrets physiques --%>
-			<s:url id="urlArretPhysiquesMenu" action="list" namespace="/stoppoint" includeParams="none">
+			<s:url id="urlArretPhysiquesMenu" action="list" namespace="/boardingPosition" includeParams="none">
 				<s:param name="typePositionGeographique">arretPhysique</s:param>
 			</s:url>			
 			<li><s:a href="%{urlArretPhysiquesMenu}" id="arretPhysiquesMenu"><s:text name="text.arretPhysiques"/></s:a></li>
 
 			<%-- Zones --%>			
-			<s:url id="urlZonesMenu" action="list" namespace="/stoparea" includeParams="none">
+			<s:url id="urlZonesMenu" action="list" namespace="/stopPlace" includeParams="none">
 				<s:param name="typePositionGeographique">zone</s:param>
 			</s:url>			
 			<li><s:a href="%{urlZonesMenu}" id="zonesMenu"><s:text name="text.zones"/></s:a></li>
 
 			<%-- Correspondances --%>	
-			<s:url id="urlCorrespondancesMenu" action="list" namespace="/correspondance" includeParams="none"/>
+			<s:url id="urlCorrespondancesMenu" action="list" namespace="/connectionLink" includeParams="none"/>
 			<li><s:a href="%{urlCorrespondancesMenu}" id="correspondancesMenu"><s:text name="text.correspondances"/></s:a></li>
 
 			<%-- ITL --%>	
-			<s:url id="urlITLMenu" action="list" namespace="/itl" includeParams="none"/>
+			<s:url id="urlITLMenu" action="list" namespace="/routingConstraint" includeParams="none"/>
 			<li><s:a href="%{urlITLMenu}" id="ITLMenu"><s:text name="text.ITL"/></s:a></li>
 
 			<%-- Import --%>	

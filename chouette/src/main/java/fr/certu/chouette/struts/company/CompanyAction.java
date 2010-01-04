@@ -14,7 +14,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
 
   private static final Log log = LogFactory.getLog(CompanyAction.class);
   private Transporteur companyModel = new Transporteur();
-  private static ITransporteurManager transporteurManager;
+  private ITransporteurManager transporteurManager;
   private Long idTransporteur;
   private String mappedRequest;
 
@@ -112,7 +112,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
    ********************************************************/
   public void setTransporteurManager(ITransporteurManager transporteurManager)
   {
-    CompanyAction.transporteurManager = transporteurManager;
+    this.transporteurManager = transporteurManager;
   }
   
   /********************************************************

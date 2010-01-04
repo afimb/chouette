@@ -22,6 +22,7 @@ import chouette.schema.types.LongLatTypeType;
 import chouette.schema.types.PTDirectionType;
 import chouette.schema.types.ServiceStatusValueType;
 import chouette.schema.types.TransportModeNameType;
+import com.opensymphony.xwork2.ActionContext;
 
 
 public class EnumerationApplication
@@ -70,12 +71,8 @@ public class EnumerationApplication
 
 	public void reinit()
 	{
-		//log.debug( "Appel EnumerationApplication() strutsProperties="+strutsProperties);
-		ResourceBundle rsStruts = ResourceBundle.getBundle( strutsProperties); 
-		
-		Locale locale = new Locale(rsStruts.getString( cleLangue));
-		//log.debug( "rsStruts.getString( langue)="+rsStruts.getString( cleLangue));
-		
+		Locale locale = Locale.getDefault();
+		log.debug("locale : " + locale);
 		initDirection(locale);
 		initJoursTypes(locale);
 		initMode(locale);
