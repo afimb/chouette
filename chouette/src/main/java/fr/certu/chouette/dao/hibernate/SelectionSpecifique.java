@@ -637,7 +637,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 	
 	public List<TableauMarche> getTableauxMarcheLazy() {
 		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment INTO " + getDatabaseSchema() + ".timetable order by comment").list();
+		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment FROM " + getDatabaseSchema() + ".timetable order by comment").list();
 		List<TableauMarche> tms = new ArrayList<TableauMarche>(rs.size());
 		for (Object[] object : rs) {
 			TableauMarche tm = new TableauMarche();
