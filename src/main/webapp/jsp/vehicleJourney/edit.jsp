@@ -63,7 +63,7 @@
   </div>
   <br>
   <div>
-    <s:form action="creerAssociationTableauMarche" id="associerTableauMarcheForm" onsubmit="TridentAutoComplete.beforeSubmit();">
+    <s:form action="creerAssociationTableauMarche" namespace="/vehicleJourney" id="associerTableauMarcheForm" onsubmit="TridentAutoComplete.beforeSubmit();">
       <s:if test="id != null">
         <s:hidden name="idCourse" value="%{id}"/>
       </s:if>
@@ -82,10 +82,10 @@
   <div id="displaytag">
     <display:table name="tableauxMarche" sort="list" pagesize="10" requestURI="" id="tableauMarche" export="false">
       <display:column titleKey="table.title.action" sortable="false">
-        <s:url id="supprimerAssociationTableauMarche" action="supprimerAssociationTableauMarche">
+        <s:url id="supprimerAssociationTableauMarche" action="supprimerAssociationTableauMarche" namespace="/vehicleJourney">
           <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
         </s:url>
-        <s:url id="editTableauMarche" action="/tableauMarche/edit">
+        <s:url id="editTableauMarche" action="edit" namespace="/timeTable">
           <s:param name="idCourse" value="%{idCourse}" />
           <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
         </s:url>
