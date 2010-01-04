@@ -398,7 +398,7 @@
                 </configuration>
             </plugin>
         </plugins>
-    </reporting>
+    </reporting>    
     <properties>
         <netbeans.hint.deploy.server>J2EE</netbeans.hint.deploy.server>
     </properties>

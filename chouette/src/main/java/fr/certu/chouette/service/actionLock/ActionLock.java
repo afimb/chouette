@@ -9,7 +9,7 @@ public class ActionLock {
 	
 	private static final Log logger = LogFactory.getLog(ActionLock.class);
 	private int timeout;
-	private Calendar creationTime;
+	private Calendar creationTime = null;
 	
 
 	public int getTimeout() 
@@ -31,18 +31,21 @@ public class ActionLock {
 	public void setCreationTime(Calendar creationTime) 
 	{
 		this.creationTime = creationTime;
+		//logger.info("Set lock creation time to : " + this.creationTime.toString());
 	}	
 
 	private boolean isAvailable()
 	{		
-		if (creationTime == null)
+		if (this.creationTime == null)
 		{
 			return true;
-		}
-		Calendar expireAt = creationTime;
+		}		
+		Calendar expireAt = (Calendar) this.creationTime.clone();
 		expireAt.add(Calendar.SECOND, timeout);
+		//logger.debug("Lock expires at : " + expireAt.getTime().toString());		
 		if (expireAt.getTime().before(Calendar.getInstance().getTime()))
 		{
+			//logger.debug("Lock timeout doesn't expire yet");
 			return true;
 		}
 		return false;
@@ -52,8 +55,8 @@ public class ActionLock {
 	{
 		if (isAvailable())
 		{
-			creationTime = Calendar.getInstance();
-			logger.info("Action Lock -- Token Reserve");
+			setCreationTime(Calendar.getInstance());			
+			logger.info("Reserve Actions Lock");
 			return true;
 		}
 		return false;
@@ -61,7 +64,7 @@ public class ActionLock {
 	
 	public void releaseToken()
 	{
-		logger.info("Action Lock -- Token Release");
-		creationTime = null;
+		logger.info("Release Actions Lock");
+		this.creationTime = null;
 	}
 }

@@ -17,6 +17,7 @@
     <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>
   </filter>
 
+
   <filter>
     <filter-name>struts-execute</filter-name>
     <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>
@@ -26,7 +27,7 @@
     <filter-name>sitemesh</filter-name>
     <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
   </filter>
-
+	
   <filter-mapping>
     <filter-name>struts-prepare</filter-name>
     <url-pattern>/*</url-pattern>
@@ -46,10 +47,11 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+	<!--
   <listener>
     <listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
   </listener>
-
+	-->
 	<!-- Welcome file lists -->
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

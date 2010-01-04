@@ -607,13 +607,15 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.id in ("+getSQLlist(idLignes)+")");
 	}
 	
-	public List<Reseau> getReseaux(final Collection<Long> idReseaux) {
+	public List<Reseau> getReseaux(final Collection<Long> idReseaux) 
+	{
 		if (isCollectionVide(idReseaux))
 			return new ArrayList<Reseau>();
 		return getHibernateTemplate().find("FROM Reseau as r WHERE r.id in ("+getSQLlist(idReseaux)+")");
 	}
 	
-	public List<Ligne> getLignesFiltrees(final Collection<Long> idReseaux, final Collection<Long> idTransporteurs) {
+	public List<Ligne> getLignesFiltrees(final Collection<Long> idReseaux, final Collection<Long> idTransporteurs) 
+	{
 		List<Ligne> resultat = null;
 		final boolean hasReseau = isCollectionNonVide(idReseaux);
 		final boolean hasTransporteur = isCollectionNonVide(idTransporteurs);
@@ -627,17 +629,19 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		return resultat;
 	}
 	
-	public List<Ligne> getLignesReseau(final Long idReseau) {
+	public List<Ligne> getLignesReseau(final Long idReseau) 
+	{
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.idReseau=?", idReseau);
 	}
 	
-	public List<Ligne> getLignesTransporteur(final Long idTransporteur) {
+	public List<Ligne> getLignesTransporteur(final Long idTransporteur) 
+	{
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.idTransporteur=?", idTransporteur);
 	}
 	
 	public List<TableauMarche> getTableauxMarcheLazy() {
 		Session session = getHibernateTemplate().getSessionFactory().openSession();
-		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment INTO " + getDatabaseSchema() + ".timetable order by comment").list();
+		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment FROM " + getDatabaseSchema() + ".timetable order by comment").list();
 		List<TableauMarche> tms = new ArrayList<TableauMarche>(rs.size());
 		for (Object[] object : rs) {
 			TableauMarche tm = new TableauMarche();

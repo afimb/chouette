@@ -21,8 +21,7 @@
 	<constant name="struts.convention.actionConfigBuilder" value="convention" />
 	<constant name="struts.convention.actionNameBuilder" value="convention" />
 	<constant name="struts.convention.resultMapBuilder" value="convention" />
-	<constant name="struts.convention.interceptorMapBuilder"
-		value="convention" />
+	<constant name="struts.convention.interceptorMapBuilder" value="convention" />
 	<constant name="struts.convention.conventionsService" value="convention" />
 	<constant name="struts.convention.result.path" value="/jsp/" />
 	<constant name="struts.convention.result.flatLayout" value="true" />
@@ -57,16 +56,15 @@
 	<constant name="struts.convention.exclude.parentClassLoader"
 		value="true" />
 
-
 	<package name="struts" extends="struts-default">
 		<interceptors>
 			<interceptor 
 				name="singleAction" 
 				class="fr.certu.chouette.struts.interceptor.SingleActionInterceptor" />
 			<interceptor name="alias"
-				class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />
+				class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />			
 			<interceptor name="autowiring"
-				class="com.opensymphony.xwork2.spring.interceptor.ActionAutowiringInterceptor" />
+				class="com.opensymphony.xwork2.spring.interceptor.ActionAutowiringInterceptor" />				
 			<interceptor name="chain"
 				class="com.opensymphony.xwork2.interceptor.ChainingInterceptor" />
 			<interceptor name="conversionError"
@@ -135,11 +133,11 @@
 				class="org.apache.struts2.interceptor.MultiselectInterceptor" />
 
 			<interceptor-stack name="crudStack">
+				<interceptor-ref name="singleAction" />
 				<interceptor-ref name="exception">
 					<param name="logEnabled">true</param>
 					<param name="logLevel">error</param>
 				</interceptor-ref>
-				<interceptor-ref name="singleAction" />
 				<interceptor-ref name="alias" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="i18n" />
@@ -171,7 +169,6 @@
 		</interceptors>
 
 		<default-interceptor-ref name="crudStack" />
-
 
 		<!-- Action par défaut -->
 		<default-action-ref name="ActionNotFound" />
@@ -310,7 +307,7 @@
 			</result>
 			<result name="input">
 				/jsp/HorairesDePassage/list.jsp
-      </result>
+      		</result>
 		</action>
 
 		<action name="ArretSurItineraire_*" class="ArretSurItineraire"
@@ -428,8 +425,6 @@
       </result>
 		</action>
 
-
-
 		<action name="PositionGeographique_*" class="PositionGeographique"
 			method="{1}">
 			<result name="success" type="redirectAction">
@@ -476,7 +471,7 @@
 	<!-- Mise à jour des données du modèle Line -->
 	<package name="line" extends="struts" namespace="/line">
 		<action name="*" method="{1}"
-			class='fr.certu.chouette.struts.line.LineAction'>
+			class='Ligne'>
 			<result name="redirectList" type="redirectAction">
 				<param name="actionName">list</param>
 				<param name="operationMode">RETRIEVE</param>
@@ -670,8 +665,8 @@
       <result name="input" >/jsp/arretSurItineraire/edit.jsp</result>
     </action>
   </package>
-
-    <!-- Mise à jour des données du modèle Horaires -->
+  
+  <!-- Mise à jour des données du modèle Horaires -->
   <package name="horairesDePassage" extends="struts" namespace="/horairesDePassage">
     <action name="*" method="{1}" class='fr.certu.chouette.struts.horairesdepassage.HorairesDePassageAction'>
       <result name="redirectList" type="redirectAction">
@@ -683,11 +678,8 @@
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
-      <result name="edit">/jsp/horairesdePassage/edit.jsp</result>
       <result name="list">/jsp/horairesDePassage/list.jsp</result>
-      <result name="input" >/jsp/horairesDePassage/edit.jsp</result>
       <result name="search" >/jsp/horairesDePassage/search.jsp</result>
     </action>
   </package>
-
 </struts>

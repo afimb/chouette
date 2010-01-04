@@ -10,7 +10,7 @@
     <bean id="CompanyComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.CompanyComparator">
         <property name="mappingKey"><value>Company</value></property>
     </bean>
-    <bean id="ConnectionLinkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ConectionLinkComparator">
+    <bean id="ConnectionLinkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ConnectionLinkComparator">
         <property name="mappingKey"><value>ConnectionLink</value></property>
     </bean>
     <bean id="LineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.LineComparator">
@@ -167,19 +167,18 @@
  			<property name="amivifAdapter" ref="amivifAdapter"/>
     		<property name="amivifComparators">
     		   <list>
-    		     <ref local="AmivifLineComparator"/>
-    		     <ref local="AmivifGroupOfLineCountComparator"/>
-    		     <ref local="AmivifGroupOfLineComparator"/>
-    		     <ref local="AmivifSubLineCountComparator"/>
-    		     <ref local="AmivifSubLineComparator"/>
-    		     <ref local="AmivifStopPointComparator"/>
-    		     <ref local="AmivifStopAreaComparator"/>
-    		     <ref local="AmivifPtLinkCountComparator"/>
-    		     <ref local="AmivifPtLinkComparator"/>
-    		     <ref local="AmivifStopPointInConnectionCountComparator"/>
-    		     <ref local="AmivifStopPointInConnectionComparator"/>
-    		   </list>
+    		     	<ref local="AmivifLineComparator"/>
+    		     	<ref local="AmivifGroupOfLineCountComparator"/>
+    		     	<ref local="AmivifGroupOfLineComparator"/>
+    		     	<ref local="AmivifSubLineCountComparator"/>
+    		     	<ref local="AmivifSubLineComparator"/>
+    		     	<ref local="AmivifStopPointComparator"/>
+    		     	<ref local="AmivifStopAreaComparator"/>
+    		     	<ref local="AmivifPtLinkCountComparator"/>
+    		     	<ref local="AmivifPtLinkComparator"/>
+    		     	<ref local="AmivifStopPointInConnectionCountComparator"/>
+    		    	<ref local="AmivifStopPointInConnectionComparator"/>
+    			</list>
     		</property> 			
     </bean>
-    
 </beans>
