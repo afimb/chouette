@@ -11,7 +11,7 @@ import fr.certu.chouette.modele.PositionGeographique;
 /**
  * @author michel
  */
-public class ConectionLinkComparator extends AbstractChouetteDataComparator
+public class ConnectionLinkComparator extends AbstractChouetteDataComparator
 {
    public boolean compareData(IExchangeableLineComparator master) throws ComparatorException
    {
