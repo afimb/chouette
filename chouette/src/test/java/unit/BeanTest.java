@@ -18,17 +18,19 @@ public class BeanTest {
 
     @Test(groups="tests unitaires", description="test des Beans Spring")
 	public void generateBeans() throws Throwable {
-        try {
-            String[] beanDeinitionNames = applicationContext.getBeanDefinitionNames();
-            if (beanDeinitionNames != null)
-                for (int i = 0; i < beanDeinitionNames.length; i++) {
+        String[] beanDeinitionNames = applicationContext.getBeanDefinitionNames();
+        if (beanDeinitionNames != null)
+            for (int i = 0; i < beanDeinitionNames.length; i++) {
+                try {
                     applicationContext.getBean(beanDeinitionNames[i]);
                     logger.info("Bean Initialized : "+beanDeinitionNames[i]);
                 }
-        }
-        catch(Throwable e) {
-            logger.error("Bean Initilisation Error : "+e.getMessage());
-            throw e;
-        }
+                catch(Throwable e) {
+                    String message = e.getMessage();
+                    logger.error("Bean Initilisation Error : "+message);
+                    if ((message == null) || (message.indexOf("abstract") < 0))
+                        throw e;
+                }
+            }
     }
 }
