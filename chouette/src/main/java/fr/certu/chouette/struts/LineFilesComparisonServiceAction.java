@@ -27,7 +27,7 @@ import fr.certu.chouette.echange.comparator.ComparisonReport;
 import fr.certu.chouette.echange.comparator.IExchangeableLineComparator;
 
 @SuppressWarnings("serial")
-public class LineFilesComparisonServiceAction extends GeneriqueAction implements ServletRequestAware{
+public class LineFilesComparisonServiceAction extends GeneriqueAction implements ServletRequestAware {
 
 	//todo move that in the generiqueActio
 	private static final Log logger = LogFactory.getLog(LineFilesComparisonServiceAction.class);
@@ -49,11 +49,10 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	}
 
 	private final static HashMap<String, String> EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP = new HashMap<String, String>();
-	public static HashMap<String, String> getEXCHANGE_FORMAT_BEAN_COMPARATOR_MAP() {
+	public static HashMap<String, String> getEXCHANGE_FORMAT_BEAN_COMPARATOR_MAP() 
+	{
 		return EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP;
 	}
-
-
 	static
 	{
 		//EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Chouette", "ExchangeableLineComparatorChouette");
@@ -136,6 +135,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 			addFieldError("targetFile", getText("comparator.error.field.file"));
 			return INPUT;
 		}
+		
 		if (exchangeFormat == null || exchangeFormat.length() == 0)
 		{
 			addFieldError("exchangeFormat",  getText("comparator.error.field.exchangeFormat"));
@@ -197,10 +197,12 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 			addFieldError("exchangeFormat", "comparator.error.field.exchangeFormat");
 			return INPUT;
 		}
+		
 		//Build action/view title
 		ArrayList<Object> completionMessage = new ArrayList<Object>();
 		completionMessage.add(exchangeFormat);
 		setTitle(getText("comparator.action.title.reporting", completionMessage));
+		
 		return "comparison-success";
 	}
 
@@ -276,11 +278,13 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		return identificationManager;
 	}
 
-	public File getSourceFile() {
+	public File getSourceFile() 
+	{
 		return sourceFile;
 	}
 
-	public void setSourceFile(File sourceFile) {
+	public void setSourceFile(File sourceFile) 
+	{
 		this.sourceFile = sourceFile;
 	}
 
@@ -318,55 +322,67 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		this.exchangeFormat = exchangeFormat;
 	}
 
-	public void setSourceFileContentType(String sourceFileContentType) {
+	public void setSourceFileContentType(String sourceFileContentType) 
+	{
 		this.sourceFileContentType = sourceFileContentType;
 	}
 
 
-	public String getSourceFileContentType() {
+	public String getSourceFileContentType() 
+	{
 		return sourceFileContentType;
 	}
 
-	public void setTargetFileContentType(String targetFileContentType) {
+	public void setTargetFileContentType(String targetFileContentType) 
+	{
 		this.targetFileContentType = targetFileContentType;
 	}
 
 
-	public String getTargetFileContentType() {
+	public String getTargetFileContentType() 
+	{
 		return targetFileContentType;
 	}
 
 
-	public void setEnableVerboseMode(boolean enableVerboseMode) {
+	public void setEnableVerboseMode(boolean enableVerboseMode) 
+	{
 		this.enableVerboseMode = enableVerboseMode;
 	}
 
-	public boolean isEnableVerboseMode() {
+	public boolean isEnableVerboseMode() 
+	{
 		return enableVerboseMode;
 	}
 	/** inner StringPair class for exchange formats list**/
 	//TODO Move into a toolkit
-	public class StringPair {
+	public class StringPair 
+	{
 		private String key;
 		private String value;
 
-		public StringPair(String key, String value) {
+		public StringPair(String key, String value) 
+		{
 			setKey(key);
 			setValue(value);
 		}
 
-		public String getKey() {
+		public String getKey() 
+		{
 			return key;
 		}
 
-		public void setKey(String key) {
+		public void setKey(String key) 
+		{
 			this.key = key;
 		}
 
-		public String getValue() {
+		public String getValue() 
+		{
 			return value;
 		}
-		public void setValue(String value) {
+		public void setValue(String value) 
+		{
 			this.value = value;
 		}
 	}
@@ -394,27 +410,33 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		return false;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(String title)
+	{
 		this.title = title;
 	}
 
-	public String getTitle() {
+	public String getTitle() 
+	{
 		return title;
 	}
 
-	public void setObjectStates(List<ChouetteObjectState> objectStates) {
+	public void setObjectStates(List<ChouetteObjectState> objectStates) 
+	{
 		this.objectStates = objectStates;
 	}
 
-	public List<ChouetteObjectState> getObjectStates() {
+	public List<ChouetteObjectState> getObjectStates() 
+	{
 		return objectStates;
 	}
 
-	public void setComparisonReport(ComparisonReport comparisonReport) {
+	public void setComparisonReport(ComparisonReport comparisonReport)
+	{
 		this.comparisonReport = comparisonReport;
 	}
 
-	public ComparisonReport getComparisonReport() {
+	public ComparisonReport getComparisonReport()
+	{
 		return comparisonReport;
 	}
 }

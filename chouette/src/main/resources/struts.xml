@@ -18,17 +18,16 @@
 		value="rest-default" />
 
 	<!-- Constantes pour le plugin Convention -->
-  <constant name="struts.convention.actionConfigBuilder" value="convention" />
-  <constant name="struts.convention.actionNameBuilder" value="convention" />
-  <constant name="struts.convention.resultMapBuilder" value="convention" />
-  <constant name="struts.convention.interceptorMapBuilder"
-		value="convention" />
-  <constant name="struts.convention.conventionsService" value="convention" />
-  <constant name="struts.convention.result.path" value="/jsp/" />
-  <constant name="struts.convention.result.flatLayout" value="true" />
-  <constant name="struts.convention.action.suffix" value="Action" />
-  <constant name="struts.convention.action.disableScanning"
-		value="false" />
+	<constant name="struts.convention.actionConfigBuilder" value="convention" />
+	<constant name="struts.convention.actionNameBuilder" value="convention" />
+	<constant name="struts.convention.resultMapBuilder" value="convention" />
+	<constant name="struts.convention.interceptorMapBuilder" value="convention" />
+	<constant name="struts.convention.conventionsService" value="convention" />
+	<constant name="struts.convention.result.path" value="/jsp/" />
+	<constant name="struts.convention.result.flatLayout" value="true" />
+	<constant name="struts.convention.action.suffix" value="Action" />
+	<constant name="struts.convention.action.disableScanning" value="false" />
+	
   <constant name="struts.convention.action.mapAllMatches" value="false" />
   <constant name="struts.convention.action.checkImplementsAction"
 		value="true" />
@@ -56,17 +55,14 @@
   <constant name="struts.convention.classes.reload" value="true" />
   <constant name="struts.convention.exclude.parentClassLoader"
 		value="true" />
-
-
-  <package name="struts" extends="struts-default">
-    <interceptors>
-      <interceptor
+		
+	<package name="struts" extends="struts-default">
+		<interceptors>
+			<interceptor
 				name="singleAction" 
 				class="fr.certu.chouette.struts.interceptor.SingleActionInterceptor" />
       <interceptor name="alias"
 				class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />
-      <interceptor name="autowiring"
-				class="com.opensymphony.xwork2.spring.interceptor.ActionAutowiringInterceptor" />
       <interceptor name="chain"
 				class="com.opensymphony.xwork2.interceptor.ChainingInterceptor" />
       <interceptor name="conversionError"
@@ -134,41 +130,42 @@
       <interceptor name="multiselect"
 				class="org.apache.struts2.interceptor.MultiselectInterceptor" />
 
-      <interceptor-stack name="crudStack">
-        <interceptor-ref name="exception">
-          <param name="logEnabled">true</param>
-          <param name="logLevel">error</param>
-        </interceptor-ref>
-        <!--<interceptor-ref name="singleAction" />-->
-        <interceptor-ref name="alias" />
-        <interceptor-ref name="servletConfig" />
-        <interceptor-ref name="i18n" />
-        <interceptor-ref name="params">
-          <param name="excludeParams">dojo\..*,^struts\..*</param>
-        </interceptor-ref>
-        <interceptor-ref name="prepare" />
-        <interceptor-ref name="chain" />
-        <interceptor-ref name="debugging" />
-        <interceptor-ref name="scopedModelDriven" />
-        <interceptor-ref name="modelDriven" />
-        <interceptor-ref name="fileUpload" />
-        <interceptor-ref name="checkbox" />
-        <interceptor-ref name="multiselect" />
-        <interceptor-ref name="staticParams" />
-        <interceptor-ref name="actionMappingParams" />
-        <interceptor-ref name="params">
-          <param name="excludeParams">dojo\..*,^struts\..*</param>
-        </interceptor-ref>
-        <interceptor-ref name="conversionError" />
-        <interceptor-ref name="validation">
-          <param name="excludeMethods">input,edit,delete,back,cancel</param>
-        </interceptor-ref>
-        <interceptor-ref name="workflow">
-          <param name="excludeMethods">input,edit,back,cancel</param>
-        </interceptor-ref>
-        <interceptor-ref name="store"></interceptor-ref>
-      </interceptor-stack>
-    </interceptors>
+			<interceptor-stack name="crudStack">
+				<interceptor-ref name="singleAction" />
+				<interceptor-ref name="exception">
+					<param name="logEnabled">true</param>
+					<param name="logLevel">error</param>
+				</interceptor-ref>
+				<interceptor-ref name="alias" />
+				<interceptor-ref name="servletConfig" />
+				<interceptor-ref name="i18n" />
+				<interceptor-ref name="params">
+					<param name="excludeParams">dojo\..*,^struts\..*</param>
+				</interceptor-ref>
+				<interceptor-ref name="prepare" />
+				<interceptor-ref name="chain" />
+				<interceptor-ref name="debugging" />
+				<interceptor-ref name="scopedModelDriven" />
+				<interceptor-ref name="modelDriven" />
+				<interceptor-ref name="fileUpload" />
+				<interceptor-ref name="checkbox" />
+				<interceptor-ref name="multiselect" />
+				<interceptor-ref name="staticParams" />
+				<interceptor-ref name="actionMappingParams" />
+				<interceptor-ref name="params">
+					<param name="excludeParams">dojo\..*,^struts\..*</param>
+				</interceptor-ref>
+				<interceptor-ref name="conversionError" />
+				<interceptor-ref name="validation">
+					<param name="excludeMethods">input,edit,delete,back,cancel</param>
+				</interceptor-ref>
+				<interceptor-ref name="workflow">
+					<param name="excludeMethods">input,edit,back,cancel</param>
+				</interceptor-ref>
+				<interceptor-ref name="store"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
 
     <default-interceptor-ref name="crudStack" />
 
@@ -222,8 +219,7 @@
       </interceptor-ref>
     </action>
 
-    <action name="LineFilesComparisonService_*" class="LineFilesComparisonService"
-			method="{1}">
+    <action name="LineFilesComparisonService_*" class="LineFilesComparisonService" method="{1}">
       <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/lineFilesComparisonService/index.jsp
       </result>
@@ -240,7 +236,7 @@
       </interceptor-ref>
     </action>
 
-		<!-- Validation des données -->
+	<!-- Validation des données -->
     <action name="Validation_*" class="Validation" method="{1}">
       <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/validation.jsp</result>
@@ -279,6 +275,7 @@
   </package>
 
 	<!-- Mise à jour des données du modèle Line -->
+
   <package name="line" extends="struts" namespace="/line">
     <action name="*" method="{1}" class='LineActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -469,6 +466,7 @@
     </action>
   </package>
 
+
     <!-- Mise à jour des données du modèle Horaires -->
   <package name="vehicleJourneyAtStop" extends="struts" namespace="/vehicleJourneyAtStop">
     <action name="*" method="{1}" class='VehicleJourneyAtStopActionBean'>
@@ -526,5 +524,4 @@
       <result name="input" >/jsp/journeyPattern/edit.jsp</result>
     </action>
   </package>
-
 </struts>
