@@ -22,7 +22,7 @@
       <LEGEND><b>Import des Correspondances</b></LEGEND>
       <s:form id="uploadCorrespondancesForm1" enctype="multipart/form-data" method="POST">
         <s:file name="fichier" label="%{getText('action.browse')}" />
-        <s:hidden name="fichierContentType" value="text/xml; charset=ISO-8859-1"/>
+        <s:hidden name="fichierContentType" value="text/xml; charset=UTF-8"/>
         <s:submit value="Import Correspondances" formId="uploadCorrespondancesForm1" action="Import_importCorrespondances" />
       </s:form>
     </FIELDSET>

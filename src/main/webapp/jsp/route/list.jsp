@@ -22,7 +22,7 @@
     <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/import" enctype="multipart/form-data" method="POST">
       <s:file name="fichier" label="%{getText('action.browse')}"/>
-      <s:hidden name="fichierContentType" value="text/csv; charset=ISO-8859-1"/>
+      <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:submit value="Import fichier CSV" formId="uploadCSVForm"/>
     </s:form>
@@ -104,6 +104,7 @@
             <s:if test="!isArretsVide(id)">
               <s:url id="horairesDePassage" action="list" namespace="/vehicleJourneyAtStop">
                 <s:param name="idItineraire" value="id" />
+                <s:param name="idLigne" value="idLigne" />
                 <s:param name="page" value="1" />
               </s:url>
               <s:a href="%{horairesDePassage}"><s:text name="title.vehicleJourneyAtStop"/></s:a>
@@ -112,12 +113,14 @@
           <TD class="${cssBordure}">
             <s:url id="arretSurItineraire" action="list" namespace="/stoppointOnRoute">
               <s:param name="idItineraire" value="%{id}" />
+              <s:param name="idLigne" value="idLigne" />
             </s:url>
             <s:a href="%{arretSurItineraire}"><s:text name="title.stoppointOnRoute"/></s:a>
           </TD>
           <TD class="${cssBordure}">
             <s:url id="exportHorairesItineraire" action="exportHorairesItineraire" namespace="/export">
               <s:param name="idItineraire" value="id"/>
+              <s:param name="idLigne" value="idLigne" />
               <s:param name="origin" value="itinerary"/>
             </s:url>
             <s:a href="%{exportHorairesItineraire}"><s:text name="title.export.vehicleJourneyAtStop"/></s:a>

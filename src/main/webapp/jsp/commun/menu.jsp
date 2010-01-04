@@ -49,11 +49,11 @@
 			<li><s:a href="%{urlITLMenu}" id="ITLMenu"><s:text name="text.ITL"/></s:a></li>
 
 			<%-- Import --%>	
-			<s:url id="urlImportMenu" action="Import_execute" includeParams="none"/>			
+			<s:url id="urlImportMenu" action="Import_execute" namespace="/" includeParams="none"/>
 			<li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>
 
 			<%-- Validation --%>	
-			<s:url id="urlValidationMenu" action="Validation_execute" includeParams="none"/>			
+			<s:url id="urlValidationMenu" action="Validation_execute" namespace="/" includeParams="none"/>
 			<li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>
 			
 			<%-- Comparaison --%>
