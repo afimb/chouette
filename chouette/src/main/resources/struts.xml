@@ -208,11 +208,13 @@
       <result name="success">/jsp/import.jsp</result>
       <result name="input">/jsp/import.jsp</result>
       <result name="success_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
+        <param name="actionName">list</param>
+        <param name="namespace">route</param>
         <param name="idLigne">${idLigne}</param>
       </result>
       <result name="input_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
+        <param name="actionName">list</param>
+        <param name="namespace">route</param>
         <param name="idLigne">${idLigne}</param>
       </result>
       <interceptor-ref name="store">
@@ -244,11 +246,13 @@
       <result name="success">/jsp/validation.jsp</result>
       <result name="input">/jsp/validation.jsp</result>
       <result name="success_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
+        <param name="actionName">list</param>
+        <param name="namespace">route</param>
         <param name="idLigne">${idLigne}</param>
       </result>
       <result name="input_itineraire" type="redirectAction">
-        <param name="actionName">liste_Itineraire</param>
+        <param name="actionName">list</param>
+        <param name="namespace">route</param>
         <param name="idLigne">${idLigne}</param>
       </result>
       <interceptor-ref name="store">
