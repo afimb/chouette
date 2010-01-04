@@ -57,7 +57,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier non existant.")
 	public void testFileNotFound() {
 		try {
-			lecteurFichierXML.lire(fileNameNotFound);
+		    lecteurFichierXML.lire(fileNameNotFound, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.FILE_NOT_FOUND))
@@ -70,7 +70,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier XML invalide : pas de version XML.")
 	public void testXMLNotOK0() {
 		try {
-			lecteurFichierXML.lire(fileNameBadXML0);
+			lecteurFichierXML.lire(fileNameBadXML0, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_XML_FILE))
@@ -83,7 +83,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier XML invalide : nom d'élément malformé.")
 	public void testXMLNotOK1() {
 		try {
-			lecteurFichierXML.lire(fileNameBadXML1);
+			lecteurFichierXML.lire(fileNameBadXML1, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_XML_FILE))
@@ -96,7 +96,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier XML invalide : valeurs d'attributs entre guillemets.")
 	public void testXMLNotOK2() {
 		try {
-			lecteurFichierXML.lire(fileNameBadXML2);
+			lecteurFichierXML.lire(fileNameBadXML2, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_XML_FILE))
@@ -109,7 +109,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier XML invalide : element non vide non fermé.")
 	public void testXMLNotOK3() {
 		try {
-			lecteurFichierXML.lire(fileNameBadXML3);
+			lecteurFichierXML.lire(fileNameBadXML3, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_XML_FILE))
@@ -122,7 +122,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier CHOUETTE invalide : balise inconnue.")
 	public void testChouetteNotOK0() {
 		try {
-			lecteurFichierXML.lire(fileNameBadChouette0);
+			lecteurFichierXML.lire(fileNameBadChouette0, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_CHOUETTE_FILE))
@@ -135,7 +135,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier CHOUETTE invalide : balise obligatoire absente.")
 	public void testChouetteNotOK1() {
 		try {
-			lecteurFichierXML.lire(fileNameBadChouette1);
+			lecteurFichierXML.lire(fileNameBadChouette1, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.NULL_PTNETWORK))
@@ -148,7 +148,7 @@ public class TestValidation {
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier CHOUETTE invalide : arborescence des balises.")
 	public void testChouetteNotOK2() {
 		try {
-			lecteurFichierXML.lire(fileNameBadChouette2);
+			lecteurFichierXML.lire(fileNameBadChouette2, true);
 		}
 		catch(ValidationException e) {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_CHOUETTE_FILE))
@@ -160,7 +160,7 @@ public class TestValidation {
 	//description = "Test de la validation du modele CHOUETTE sur un exemple sans erreurs.")
 	public void testerOK() {
 		try {
-			lecteurFichierXML.lire(fileName);
+			lecteurFichierXML.lire(fileName, true);
 		}
 		catch(ValidationException e) {
 			String str = getInvalidites(e);
@@ -178,7 +178,7 @@ public class TestValidation {
 	//description = "Test de la validation du modele CHOUETTE sur un exmple avec des erreurs.")
 	public void testerKO() {
 		try {
-			lecteurFichierXML.lire(fileNameKO);
+			lecteurFichierXML.lire(fileNameKO, true);
 			assert false: "bloquer l'asso arret physique contient commercialstop ....";
 		}
 		catch(ValidationException e) {

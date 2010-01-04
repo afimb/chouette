@@ -19,19 +19,19 @@
 <br>
 
 <%-- Formulaire --%>
-<s:form validate="true">
+<s:form>
   <s:hidden name="idTransporteur" value="%{id}"/>
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
-  <s:textfield key="transporteur.company.name" name="name" required="true"/>
-  <s:textfield key="transporteur.company.shortName" name="shortName"/>
-  <s:textfield key="transporteur.company.organisationalUnit" name="organisationalUnit"/>
-  <s:textfield key="transporteur.company.operatingDepartmentName" name="operatingDepartmentName"/>
-  <s:textfield key="transporteur.company.code" name="code"/>
-  <s:textfield key="transporteur.company.phone" name="phone"/>
-  <s:textfield key="transporteur.company.fax" name="fax"/>
-  <s:textfield key="transporteur.company.email" name="email"/>
-  <s:textfield key="transporteur.company.registration.registrationNumber" name="registrationNumber" required="true"/>
+  <s:textfield key="name" required="true"/>
+  <s:textfield key="shortName"/>
+  <s:textfield key="organisationalUnit"/>
+  <s:textfield key="operatingDepartmentName"/>
+  <s:textfield key="code"/>
+  <s:textfield key="phone"/>
+  <s:textfield key="fax"/>
+  <s:textfield key="email"/>
+  <s:textfield key="registrationNumber" required="true"/>
 	
 	<%-- Actions --%>
   		<tr>

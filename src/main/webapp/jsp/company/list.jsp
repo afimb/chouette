@@ -20,10 +20,9 @@
 </div>
 
 <br>
-
 <div id="displaytag"> 
   <display:table name="transporteurs" sort="list" pagesize="20" requestURI="" id="transporteur" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
         <s:param name="operationMode">STORE</s:param>
@@ -43,10 +42,10 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Nom" property="company.name" sortable="true" headerClass="sortable"/>
-    <display:column title="Code Postal" property="company.code" sortable="true" headerClass="sortable"/>
-    <display:column title="Export Lignes">
-      <s:a href="%{exportsChouette}">Export CHOUETTE</s:a>
+    <display:column titleKey="table.title.name" property="company.name" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.postalCode" property="company.code" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.export">
+      <s:a href="%{exportsChouette}"><s:text name="text.transporteur.export.chouette"/></s:a>
     </display:column>
   </display:table>
 </div>

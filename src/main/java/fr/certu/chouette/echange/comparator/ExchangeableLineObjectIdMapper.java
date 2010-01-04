@@ -39,6 +39,7 @@ public class ExchangeableLineObjectIdMapper
 
 	// map des arrets d'un itinéraire
 	private Map<String,List<ArretItineraire>> stopPointsOfRouteIdMap;
+   private Map<String, List<String>> journeyPatternIdListByRouteIdMap;
 
 	public ExchangeableLineObjectIdMapper(ILectureEchange line)
 	{
@@ -136,6 +137,7 @@ public class ExchangeableLineObjectIdMapper
 
 		// map stoppoint route
 		routeByStopPointIdMap = new HashMap<String, Itineraire>();
+		journeyPatternIdListByRouteIdMap = new HashMap<String,List<String>>();
 		for (Mission mission : journeyPatterns)
 		{
 			Itineraire route = getRoute(mission.getRouteId());
@@ -147,6 +149,13 @@ public class ExchangeableLineObjectIdMapper
 					routeByStopPointIdMap.put(stopTime.getStopPointId(),route);
 				}
 			}
+			List<String> journeyPatternList = journeyPatternIdListByRouteIdMap.get(mission.getRouteId());
+			if (journeyPatternList == null)
+			{
+			   journeyPatternList = new ArrayList<String>();
+			   journeyPatternIdListByRouteIdMap.put(mission.getRouteId(), journeyPatternList);
+			}
+			journeyPatternList.add(mission.getObjectId());
 		}        
 
 		this.timetableIdListByjpIdMap = new HashMap<String, List<String>>();
@@ -228,6 +237,13 @@ public class ExchangeableLineObjectIdMapper
 	public List<String> getTimetableIdList(String journeyPatternId)
 	{
 		return timetableIdListByjpIdMap.get(journeyPatternId);
+	}
+	
+	public List<String> getJourneyPatternList(String routeId)
+	{
+	   List<String> ret = journeyPatternIdListByRouteIdMap.get(routeId);
+	   if (ret == null) ret = new ArrayList<String>();
+	   return ret;
 	}
 
 }

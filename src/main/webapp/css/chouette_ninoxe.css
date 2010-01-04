@@ -98,17 +98,25 @@ A:hover
   FONT-SIZE: 110%;
 }
 
-#tools {
-    PADDING: 10px;
-	FLOAT: right;
-    FONT-WEIGHT: bold;
+
+#tools
+{
+  padding: 10px;
+  float: right;
+  font-weight: bold;
 }
-#tools UL {
-	LIST-STYLE: none;
-	PADDING: 0px;
-	MARGIN: 0px;
+
+#tools UL
+{
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+  text-align:center;
 }
-#tools LI {
+
+#tools LI
+{
+  padding:5px;
 	DISPLAY: inline;
 }
 
@@ -393,11 +401,18 @@ A:hover
 /****************************************************************/
 /*	Css pour le tableau de la pagination						*/
 /****************************************************************/ 	
-#pagination TABLE {
+#pagination
+{
   border: 0px;
 }
 
-#pagination TH,TD {
+#pagination thead
+{
+  font-size:16px;
+}
+
+#pagination th,td
+{
   padding: 1px 2px 1px 2px !important;
   text-align: center;
   vertical-align: middle;
