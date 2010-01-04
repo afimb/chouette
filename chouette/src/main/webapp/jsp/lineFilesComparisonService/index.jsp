@@ -7,7 +7,6 @@
 	<s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
-<p>TMP PUSH TEST</p>
 <div>
 	<fieldset style="width: 500px;">
 		<legend>XML Files to compare</legend>
