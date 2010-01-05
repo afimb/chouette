@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -29,7 +30,7 @@ import fr.certu.chouette.echange.comparator.IExchangeableLineComparator;
 @SuppressWarnings("serial")
 public class LineFilesComparisonServiceAction extends GeneriqueAction implements ServletRequestAware {
 
-	//todo move that in the generiqueActio
+	//TODO move that in the generiqueAction
 	private static final Log logger = LogFactory.getLog(LineFilesComparisonServiceAction.class);
 
 	//TODO test Logger.getLog(...)
@@ -41,38 +42,37 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	 *  TODO dynamic list (linked to installed extension)
 	 *  or set at least as parameters or ...
 	 */
-	private final static HashMap<String, String> AVAILABLE_EXCHANGE_FORMATS = new HashMap<String, String>();
+	private Map<String, String> availableExchangeFormats;
+	/*
 	static
 	{
 		AVAILABLE_EXCHANGE_FORMATS.put("Chouette", "Chouette");
 		AVAILABLE_EXCHANGE_FORMATS.put("Amivif", "Amivif");
 	}
+	*/
 
-	private final static HashMap<String, String> EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP = new HashMap<String, String>();
-	public static HashMap<String, String> getEXCHANGE_FORMAT_BEAN_COMPARATOR_MAP() 
-	{
-		return EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP;
-	}
+	private Map<String, String> exchangeFormatBeanComparatorMap ;
+	
+	/*
 	static
 	{
 		//EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Chouette", "ExchangeableLineComparatorChouette");
 		EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Amivif", "ExchangeableAmivifLineComparator");
 	}
+	*/
 
-	// Defaut comparison format and verbose mode
+	// Default comparison format and verbose mode
 	// TODO : set as application parameters
-	private static String DEFAULT_FORMAT = "Chouette";
-	private static boolean ENABLE_VERBOSE_MODE = false;
-
-
+	private String defaultFormat = "Chouette";
+	
 	/**
 	 * @category Members linked to INPUT HTML Fields
 	 **/
 	private String title = null;
 	private File sourceFile = null;
 	private File targetFile = null;
-	private  String sourceFileContentType = null;
-	private  String targetFileContentType = null;
+	private String sourceFileContentType = null;
+	private String targetFileContentType = null;
 	private List<StringPair> exchangeFormats = null;
 	private String exchangeFormat = null;
 	private boolean enableVerboseMode = false;
@@ -88,8 +88,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		// Initialization of available formats view list
 		initExchangeFormats();
 		//TODO set all that correctly with properties !
-		exchangeFormat = DEFAULT_FORMAT;
-		this.enableVerboseMode = ENABLE_VERBOSE_MODE;
+		exchangeFormat = defaultFormat;
 	}
 
 	private void initExchangeFormats()
@@ -155,7 +154,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		}
 		
 		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-		HashMap<String, String> availableFormats = getAvailableFormat();
+		Map<String, String> availableFormats = getAvailableFormat();
 		boolean foundFormat = false;
 		Iterator<Entry<String, String>> iter = availableFormats.entrySet().iterator();
 
@@ -388,23 +387,23 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	}
 
 	/** Static basic methods on private static fields **/
-	public static HashMap<String, String> getAvailableFormat()
+	public Map<String, String> getAvailableFormat()
 	{
-		return AVAILABLE_EXCHANGE_FORMATS;
+		return availableExchangeFormats;
 	}
 
 
-	public static String getDefaultFormat()
+	public String getDefaultFormat()
 	{
-		return DEFAULT_FORMAT;
+		return defaultFormat;
 	}
 
 
-	public static boolean SetDefaultFormat(String defaultFormat)
+	public boolean setDefaultFormat(String defaultFormat)
 	{
 		if (getAvailableFormat().containsKey(defaultFormat))
 		{
-			DEFAULT_FORMAT = defaultFormat;
+			defaultFormat = defaultFormat;
 			return true;
 		}
 		return false;

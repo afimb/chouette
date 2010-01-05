@@ -112,14 +112,16 @@
     		</property>
     </bean>
     
-	<!--  To complete, see existence of a generic adapter   
 	<bean id="ExchangeableChouetteLineComparator"
     	scope="prototype"
     	parent="DefaultExchangeableLineComparator"
     	class="fr.certu.chouette.echange.comparator.ExchangeableChouetteLineComparator">
     	<property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
+    	<property name="lecteurFichierXML" ref="lecteurFichierXML"/>
     </bean>
-    -->
+    
+    <!-- AMIVIF specific comparators-->
+    
     <bean id="AmivifLineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifLineComparator">
         <property name="mappingKey"><value>Line</value></property>
     </bean>
