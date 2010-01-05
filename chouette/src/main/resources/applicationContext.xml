@@ -473,15 +473,6 @@
   <bean id="lecteurFichierXML"
     		class="fr.certu.chouette.service.xml.LecteurFichierXML">
   </bean>
-    <!--
-    <bean id="ExchangeableAmivifLineComparator"
-    	scope="prototype"
-    	class="fr.certu.chouette.echange.comparator.ExchangeableAmivifLineComparator">
-    		<property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
-			<property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
- 			<property name="amivifAdapter" ref="amivifAdapter"/>
-    </bean>
-    -->
     
     <!-- Modules struts -->
   <bean id="actionLock" class="fr.certu.chouette.service.actionLock.ActionLock"
