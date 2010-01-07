@@ -1,4 +1,4 @@
-package fr.certu.chouette.struts;
+package fr.certu.chouette.struts.lineFilesComparisonService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,10 +17,10 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import fr.certu.chouette.manager.SingletonManager;
-//TODO : see exception politic with zak
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
+import fr.certu.chouette.struts.GeneriqueAction;
 
 import fr.certu.chouette.echange.comparator.ChouetteObjectState;
 import fr.certu.chouette.echange.comparator.ComparisonReport;
@@ -29,10 +29,8 @@ import fr.certu.chouette.echange.comparator.IExchangeableLineComparator;
 @SuppressWarnings("serial")
 public class LineFilesComparisonServiceAction extends GeneriqueAction implements ServletRequestAware {
 
-	//todo move that in the generiqueActio
 	private static final Log logger = LogFactory.getLog(LineFilesComparisonServiceAction.class);
 
-	//TODO test Logger.getLog(...)
 	private IIdentificationManager identificationManager;
 	private HttpServletRequest request;
 
@@ -107,7 +105,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	{
 		//TODO no clear done, to investigate
 		//clearErrorsAndMessages();
-		setTitle(getText("comparator.action.title.index"));
+		setTitle(getText("index.title"));
 		return SUCCESS;
 	}
 	
@@ -127,18 +125,18 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		// as ihm parameter
 		if (sourceFile == null || sourceFile.length() == 0)
 		{
-			addFieldError("sourceFile", getText("comparator.error.field.file"));
+			addFieldError("sourceFile", getText("error.field.file"));
 			return INPUT;
 		}
 		if (targetFile == null || targetFile.length() == 0)
 		{
-			addFieldError("targetFile", getText("comparator.error.field.file"));
+			addFieldError("targetFile", getText("error.field.file"));
 			return INPUT;
 		}
 		
 		if (exchangeFormat == null || exchangeFormat.length() == 0)
 		{
-			addFieldError("exchangeFormat",  getText("comparator.error.field.exchangeFormat"));
+			addFieldError("exchangeFormat",  getText("error.field.exchangeFormat"));
 			return INPUT;
 		}
 		
@@ -201,7 +199,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		//Build action/view title
 		ArrayList<Object> completionMessage = new ArrayList<Object>();
 		completionMessage.add(exchangeFormat);
-		setTitle(getText("comparator.action.title.reporting", completionMessage));
+		setTitle(getText("reporting.title", completionMessage));
 		
 		return "comparison-success";
 	}
@@ -238,7 +236,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		boolean comparisonResult = comparator.doComparison(sourceFile, targetFile);
 		if (comparisonResult)
 		{
-			addActionMessage(getText("comparator.result.success"));
+			addActionMessage(getText("comparison.result.success"));
 		}
 		else
 		{
@@ -246,7 +244,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 			{
 				request.setAttribute("comparisonReport", comparisonReport.getErrorItems());
 			}
-			addActionMessage(getText("comparator.result.failure"));
+			addActionMessage(getText("comparison.result.failure"));
 		}
 
 		//set report into request

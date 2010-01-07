@@ -163,7 +163,7 @@ public class ExportAction extends GeneriqueAction
     // Creation d'un fichier temporaire
     temp = File.createTempFile("exportChouette", ".xml");
     // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();
+    temp.deleteOnExit();    
     ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(idLigne);
     try
     {
@@ -186,6 +186,7 @@ public class ExportAction extends GeneriqueAction
       }
       nomFichier = "C_INVALIDE_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
       lecteurFichierXML.ecrire(ligneLue, temp);
+      log.debug("return result success");
       return SUCCESS;
     }
     //	Nom du fichier de sortie

@@ -1,4 +1,4 @@
-package fr.certu.chouette.struts;
+package fr.certu.chouette.struts.upload;
 
 import amivif.schema.RespPTLineStructTimetable;
 import chouette.schema.ChouettePTNetworkType;
@@ -20,6 +20,8 @@ import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import fr.certu.chouette.struts.GeneriqueAction;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -236,6 +238,7 @@ public class ImportAction extends GeneriqueAction {
 	}
 	
 	public String importCorrespondances() {
+		logger.debug("importCorrespondances");
 		String canonicalPath = null;
 		try {
 			canonicalPath = fichier.getCanonicalPath();
@@ -249,7 +252,9 @@ public class ImportAction extends GeneriqueAction {
 				if (messages.size() > 0) {
 					for (String msg : messages)
 						addActionError(msg);
-					return INPUT;
+					
+					logger.debug("importCorrespondances read connectionLinks has errors but run");
+					return "input_connectionLink";
 				}
 		}
 		catch (ServiceException e) {
@@ -268,10 +273,13 @@ public class ImportAction extends GeneriqueAction {
 				message += e.getMessage();
 				addActionError(message);
 			}
-			return INPUT;
+			logger.debug("importCorrespondances read connectionLinks failed --service exception");
+			return "input_connectionLink";
 		}
+		logger.debug("importCorrespondances succedded");
 		addActionMessage("Correspondances importées.");
-		return SUCCESS;
+		
+		return "success_connectionLink";
 	}
 	
 	public String importCSVGeneric() {

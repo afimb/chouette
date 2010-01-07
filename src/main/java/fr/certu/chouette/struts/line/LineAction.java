@@ -13,266 +13,235 @@ import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.service.database.ITransporteurManager;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class LineAction extends GeneriqueAction implements ModelDriven, Preparable
-{
+public class LineAction extends GeneriqueAction implements ModelDriven,
+		Preparable {
 
-  private static final Log log = LogFactory.getLog(LineAction.class);
-  private Ligne lineModel = new Ligne();
-  private ILigneManager ligneManager;
-  private ITransporteurManager transporteurManager;
-  private IReseauManager reseauManager;
-  private Long idLigne;
-  private String mappedRequest;
-  private String useAmivif;
-  private boolean detruireAvecTMs;
-  private boolean detruireAvecArrets;
-  private boolean detruireAvecTransporteur;
-  private boolean detruireAvecReseau;
-  private List<Reseau> networks;
-  private List<Transporteur> companies;
-  private String networkName = "";
-  private String companyName = "";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7602165137555108469L;
+	private static final Log log = LogFactory.getLog(LineAction.class);
+	private Ligne lineModel = new Ligne();
+	private ILigneManager ligneManager;
+	private ITransporteurManager transporteurManager;
+	private IReseauManager reseauManager;
+	private Long idLigne;
+	private String mappedRequest;
+	private String useAmivif;
+	private boolean detruireAvecTMs;
+	private boolean detruireAvecArrets;
+	private boolean detruireAvecTransporteur;
+	private boolean detruireAvecReseau;
+	private List<Reseau> networks;
+	private List<Transporteur> companies;
+	private String networkName = "";
+	private String companyName = "";
 
-  public Long getIdLigne()
-  {
-    return idLigne;
-  }
+	public Long getIdLigne() {
+		return idLigne;
+	}
 
-  public void setIdLigne(Long idLigne)
-  {
-    this.idLigne = idLigne;
-  }
+	public void setIdLigne(Long idLigne) {
+		this.idLigne = idLigne;
+	}
 
-  /********************************************************
-   *                  MODEL + PREPARE                     *
-   ********************************************************/
-  public Ligne getModel()
-  {
-    return lineModel;
-  }
+	/********************************************************
+	 * MODEL + PREPARE *
+	 ********************************************************/
+	public Ligne getModel() {
+		return lineModel;
+	}
 
-  public void prepare() throws Exception
-  {
-    log.debug("Prepare with id : " + getIdLigne());
-    if (getIdLigne() == null)
-    {
-      lineModel = new Ligne();
-    }
-    else
-    {
-      lineModel = ligneManager.lire(getIdLigne());
-    }
+	public void prepare() throws Exception {
+		log.debug("Prepare with id : " + getIdLigne());
+		if (getIdLigne() == null) {
+			lineModel = new Ligne();
+		} else {
+			lineModel = ligneManager.lire(getIdLigne());
+		}
 
-    networks = new ArrayList<Reseau>(reseauManager.lire());
-    companies = new ArrayList<Transporteur>(transporteurManager.lire());
-  }
+		networks = new ArrayList<Reseau>(reseauManager.lire());
+		companies = new ArrayList<Transporteur>(transporteurManager.lire());
+	}
 
-  /********************************************************
-   *                           CRUD                       *
-   ********************************************************/
-  @SkipValidation
-  public String list()
-  {
-    IClause clauseFiltre = new AndClause().add(ScalarClause.newEqualsClause("idReseau", lineModel.getIdReseau())).add(ScalarClause.newEqualsClause("idTransporteur", lineModel.getIdTransporteur())).add(ScalarClause.newIlikeClause("name", lineModel.getName()));
-    this.request.put("lignes", ligneManager.select(clauseFiltre));
-    log.debug("List of lines");
-    return LIST;
-  }
+	/********************************************************
+	 * CRUD *
+	 ********************************************************/
+	@SkipValidation
+	public String list() {
+		log.debug("List of lines");
+		IClause clauseFiltre = new AndClause().add(
+				ScalarClause.newEqualsClause("idReseau", lineModel
+						.getIdReseau())).add(
+				ScalarClause.newEqualsClause("idTransporteur", lineModel
+						.getIdTransporteur())).add(
+				ScalarClause.newIlikeClause("name", lineModel.getName()));
+		this.request.put("lignes", ligneManager.select(clauseFiltre));		
+		return LIST;
+	}
 
-  @SkipValidation
-  public String add()
-  {
-    setMappedRequest(SAVE);
-    return EDIT;
-  }
+	@SkipValidation
+	public String add() {
+		setMappedRequest(SAVE);
+		return EDIT;
+	}
 
-  public String save()
-  {
-    ligneManager.creer(getModel());
-    setMappedRequest(SAVE);
-    addActionMessage(getText("ligne.create.ok"));
-    log.debug("Create line with id : " + getModel().getId());
+	public String save() {
+		ligneManager.creer(getModel());
+		setMappedRequest(SAVE);
+		addActionMessage(getText("ligne.create.ok"));
+		log.debug("Create line with id : " + getModel().getId());
 
-    return REDIRECTLIST;
-  }
+		return REDIRECTLIST;
+	}
 
-  @SkipValidation
-  public String edit()
-  {
-    setMappedRequest(UPDATE);
-    return EDIT;
-  }
+	@SkipValidation
+	public String edit() {
+		setMappedRequest(UPDATE);
+		return EDIT;
+	}
 
-  public String update()
-  {
-    Ligne ligne = getModel();
-    if (ligne == null)
-    {
-      return INPUT;
-    }
-    if (ligneManager.nomConnu(ligne.getName()))
-    {
-      addActionMessage(getText("ligne.homonyme"));
-    }
-    if (ligne.getIdReseau().equals(new Long(-1)))
-    {
-      ligne.setIdReseau(null);
-    }
-    if (ligne.getIdTransporteur().equals(new Long(-1)))
-    {
-      ligne.setIdTransporteur(null);
-    }
-    else
-    {
-      ligneManager.modifier(ligne);
-      setMappedRequest(UPDATE);
-      addActionMessage(getText("ligne.update.ok"));
-      log.debug("Update network with id : " + getModel().getId());
-    }
+	public String update() {
+		Ligne ligne = getModel();
+		if (ligne == null) {
+			return INPUT;
+		}
+		if (ligneManager.nomConnu(ligne.getName())) {
+			addActionMessage(getText("ligne.homonyme"));
+		}
+		if (ligne.getIdReseau().equals(new Long(-1))) {
+			ligne.setIdReseau(null);
+		}
+		if (ligne.getIdTransporteur().equals(new Long(-1))) {
+			ligne.setIdTransporteur(null);
+		} else {
+			ligneManager.modifier(ligne);
+			setMappedRequest(UPDATE);
+			addActionMessage(getText("ligne.update.ok"));
+			log.debug("Update network with id : " + getModel().getId());
+		}
 
-    return REDIRECTLIST;
-  }
+		return REDIRECTLIST;
+	}
 
-  public String delete()
-  {
-    ligneManager.supprimer(getModel().getId(), detruireAvecTMs, detruireAvecArrets, detruireAvecTransporteur, detruireAvecReseau);
-    addActionMessage(getText("ligne.delete.ok"));
-    log.debug("Delete line with id : " + getModel().getId());
+	public String delete() {
+		ligneManager.supprimer(getModel().getId(), detruireAvecTMs,
+				detruireAvecArrets, detruireAvecTransporteur,
+				detruireAvecReseau);
+		addActionMessage(getText("ligne.delete.ok"));
+		log.debug("Delete line with id : " + getModel().getId());
 
-    return REDIRECTLIST;
-  }
+		return REDIRECTLIST;
+	}
 
-  @SkipValidation
-  public String cancel()
-  {
-    addActionMessage(getText("ligne.cancel.ok"));
-    return REDIRECTLIST;
-  }
+	@SkipValidation
+	public String cancel() {
+		addActionMessage(getText("ligne.cancel.ok"));
+		return REDIRECTLIST;
+	}
 
-  @Override
-  public String input() throws Exception
-  {
-    return INPUT;
-  }
+	@Override
+	public String input() throws Exception {
+		return INPUT;
+	}
 
-  /********************************************************
-   *                        MANAGER                       *
-   ********************************************************/
-  public void setLigneManager(ILigneManager ligneManager)
-  {
-    this.ligneManager = ligneManager;
-  }
+	/********************************************************
+	 * MANAGER *
+	 ********************************************************/
+	public void setLigneManager(ILigneManager ligneManager) {
+		this.ligneManager = ligneManager;
+	}
 
-  public void setReseauManager(IReseauManager reseauManager)
-  {
-    this.reseauManager = reseauManager;
-  }
+	public void setReseauManager(IReseauManager reseauManager) {
+		this.reseauManager = reseauManager;
+	}
 
-  public void setTransporteurManager(ITransporteurManager transporteurManager)
-  {
-    this.transporteurManager = transporteurManager;
-  }
+	public void setTransporteurManager(ITransporteurManager transporteurManager) {
+		this.transporteurManager = transporteurManager;
+	}
 
-  /********************************************************
-   *                   METHOD  ACTION                     *
-   ********************************************************/
-  // this prepares command for button on initial screen write
-  public void setMappedRequest(String actionMethod)
-  {
-    this.mappedRequest = actionMethod;
-  }
+	/********************************************************
+	 * METHOD ACTION *
+	 ********************************************************/
+	// this prepares command for button on initial screen write
+	public void setMappedRequest(String actionMethod) {
+		this.mappedRequest = actionMethod;
+	}
 
-  // when invalid, the request parameter will restore command action
-  public void setActionMethod(String method)
-  {
-    this.mappedRequest = method;
-  }
+	// when invalid, the request parameter will restore command action
+	public void setActionMethod(String method) {
+		this.mappedRequest = method;
+	}
 
-  public String getActionMethod()
-  {
-    return mappedRequest;
-  }
+	public String getActionMethod() {
+		return mappedRequest;
+	}
 
-  /********************************************************
-   *                   OTHERS METHODS                     *
-   ********************************************************/
-  public String getReseau(Long networkId)
-  {
-    for (Reseau network : networks)
-    {
-      if (network.getId().equals(networkId))
-      {
-        networkName = network.getName();
-        break;
-      }
-    }
-    return networkName;
-  }
+	/********************************************************
+	 * OTHERS METHODS *
+	 ********************************************************/
+	public String getReseau(Long networkId) {
+		for (Reseau network : networks) {
+			if (network.getId().equals(networkId)) {
+				networkName = network.getName();
+				break;
+			}
+		}
+		return networkName;
+	}
 
-  public void setReseaux(List<Reseau> reseaux)
-  {
-    this.networks = reseaux;
-  }
+	public void setReseaux(List<Reseau> reseaux) {
+		this.networks = reseaux;
+	}
 
-  public List<Reseau> getReseaux()
-  {
-    return networks;
-  }
+	public List<Reseau> getReseaux() {
+		return networks;
+	}
 
-  public String getTransporteur(Long companyId)
-  {
-    for (Transporteur company : companies)
-    {
-      if (company.getId().equals(companyId))
-      {
-        companyName = company.getName();
-      }
-    }
-    return companyName;
-  }
+	public String getTransporteur(Long companyId) {
+		for (Transporteur company : companies) {
+			if (company.getId().equals(companyId)) {
+				companyName = company.getName();
+			}
+		}
+		return companyName;
+	}
 
-  public List<Transporteur> getTransporteurs()
-  {
-    return companies;
-  }
+	public List<Transporteur> getTransporteurs() {
+		return companies;
+	}
 
-  public void setTransporteurs(List<Transporteur> transporteurs)
-  {
-    this.companies = transporteurs;
-  }
+	public void setTransporteurs(List<Transporteur> transporteurs) {
+		this.companies = transporteurs;
+	}
 
-  public String getUseAmivif()
-  {
-    return useAmivif;
-  }
+	public String getUseAmivif() {
+		return useAmivif;
+	}
 
-  public void setUseAmivif(String useAmivif)
-  {
-    this.useAmivif = useAmivif;
-  }
+	public void setUseAmivif(String useAmivif) {
+		this.useAmivif = useAmivif;
+	}
 
-  public void setDetruireAvecTMs(boolean detruireAvecTMs)
-  {
-    this.detruireAvecTMs = detruireAvecTMs;
-  }
+	public void setDetruireAvecTMs(boolean detruireAvecTMs) {
+		this.detruireAvecTMs = detruireAvecTMs;
+	}
 
-  public void setDetruireAvecArrets(boolean detruireAvecArrets)
-  {
-    this.detruireAvecArrets = detruireAvecArrets;
-  }
+	public void setDetruireAvecArrets(boolean detruireAvecArrets) {
+		this.detruireAvecArrets = detruireAvecArrets;
+	}
 
-  public void setDetruireAvecTransporteur(boolean detruireAvecTransporteur)
-  {
-    this.detruireAvecTransporteur = detruireAvecTransporteur;
-  }
+	public void setDetruireAvecTransporteur(boolean detruireAvecTransporteur) {
+		this.detruireAvecTransporteur = detruireAvecTransporteur;
+	}
 
-  public void setDetruireAvecReseau(boolean detruireAvecReseau)
-  {
-    this.detruireAvecReseau = detruireAvecReseau;
-  }
+	public void setDetruireAvecReseau(boolean detruireAvecReseau) {
+		this.detruireAvecReseau = detruireAvecReseau;
+	}
 }
