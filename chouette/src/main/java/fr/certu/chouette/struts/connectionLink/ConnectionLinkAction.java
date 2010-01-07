@@ -22,6 +22,10 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 
 public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven<Correspondance>, Preparable
 {
+  /**
+	 * 
+	 */
+  private static final long serialVersionUID = 6964959559153714259L;
   private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
   private ICorrespondanceManager correspondanceManager;
   private IPositionGeographiqueManager positionGeographiqueManager;

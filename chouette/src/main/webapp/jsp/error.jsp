@@ -6,7 +6,8 @@
   <s:property value="%{exception.message}"/>
 </p>
 <hr />
-<h3>Details Techniques</h3>
+<h3>Détails Techniques</h3>
 <p>
   <s:property value="%{exceptionStack}"/>
-</p> 
+</p>
+ 

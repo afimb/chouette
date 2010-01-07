@@ -20,16 +20,18 @@
   <s:if test="useHastus == 'true'">
     <FIELDSET align="center" style="width: 500px;">
       <LEGEND><b>Import des Correspondances</b></LEGEND>
-      <s:form id="uploadCorrespondancesForm1" enctype="multipart/form-data" method="POST">
+      <s:form id="uploadCorrespondancesForm1" enctype="multipart/form-data" method="POST" action="importCorrespondances" namespace="/upload">
         <s:file name="fichier" label="%{getText('action.browse')}" />
         <s:hidden name="fichierContentType" value="text/xml; charset=UTF-8"/>
-        <s:submit value="Import Correspondances" formId="uploadCorrespondancesForm1" action="Import_importCorrespondances" />
+        <s:hidden name="origin" value="connectionLink" />
+        <s:submit value="Import Correspondances" formId="uploadCorrespondancesForm1" />
       </s:form>
     </FIELDSET>
     <FIELDSET align="center" style="width: 500px;">
       <LEGEND><b>Export des Correspondances</b></LEGEND>
-      <s:form id="uploadCorrespondancesForm2" enctype="multipart/form-data" method="POST">
-        <s:submit value="Export Correspondances" formId="uploadCorrespondancesForm2" action="Export_exportCorrespondances" />
+      <s:form id="downloadCorrespondancesForm2" enctype="multipart/form-data" method="POST" action="exportCorrespondances" namespace="/export">
+      	<s:hidden name="origin" value="connectionLink" />
+        <s:submit value="Export Correspondances" formId="downloadCorrespondancesForm2" />
       </s:form>
     </FIELDSET>
   </s:if>
