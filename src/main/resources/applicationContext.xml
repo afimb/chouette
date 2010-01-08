@@ -473,7 +473,7 @@
   <bean id="lecteurFichierXML"
     		class="fr.certu.chouette.service.xml.LecteurFichierXML">
   </bean>
-   
+  
   <!-- Modules struts -->
   <bean id="actionLock" class="fr.certu.chouette.service.actionLock.ActionLock"
   		scope="singleton">
