@@ -245,5 +245,5 @@
 <s:else>
 	<SCRIPT type="text/javascript">
 		$('comparaisonMenu').className='';
-	</SCRIPT>	
+	</SCRIPT>
 </s:else>

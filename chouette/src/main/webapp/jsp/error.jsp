@@ -10,4 +10,3 @@
 <p>
   <s:property value="%{exceptionStack}"/>
 </p>
- 
