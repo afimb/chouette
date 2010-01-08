@@ -599,6 +599,15 @@
   <bean id="LineFilesComparisonServiceBean" scope="prototype"
 		class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
     <property name="identificationManager" ref="identificationManager"/>
+      <property name="exchangeFormat" value="Chouette"/>      
+      <property name="enableVerboseMode" value="false"/> 
+         
+      <property name="availableExchangeFormats">
+      <map>
+         <entry key="Chouette"><ref bean="ExchangeableChouetteLineComparator"/></entry> 
+         <entry key="Stif"><ref bean="ExchangeableAmivifLineComparator"/></entry> 
+      </map>   
+      </property>    
   </bean>
 
   <bean id="Validation" scope="prototype"
