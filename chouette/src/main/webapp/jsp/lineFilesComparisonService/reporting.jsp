@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- Titre et barre de navigation --%>	
-<title><s:text name="reporting.title" /></title>
+<title><s:text name="reporting.title" /> <s:property value="exchangeFormat"/></title>
 
 <!-- main mother action in breadcrumb -->
 <s:url id="urlLinesComparisonReport" action="index" includeParams="none"/>
@@ -10,10 +10,8 @@
 </div>
 <br>
 
-<%-- Import de différents fichiers --%>
-
-<div style="width: 500px;" >
-	<h2><s:text name="reporting.subtitle.availableActions"></s:text></h2>
+<%-- Report backup --%>
+<!-- <div style="width: 500px;" ><h2><s:text name="reporting.subtitle.availableActions"></s:text></h2>
 		<s:form id="comparisonResultActionsForm" enctype="multipart/form-data" method="POST">
 			<span>
 				<s:submit 
@@ -22,8 +20,9 @@
 				</s:submit>
 			</span>
 		</s:form>
-</div>
+</div>-->
 
+<!-- Comparison Report -->
 <s:if test="#request.comparisonReport != null">
 	<div style="width: 500px;">
 		<h2><s:text name="reporting.subtitle.report"></s:text></h2>

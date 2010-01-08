@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,9 @@ import fr.certu.chouette.echange.comparator.IExchangeableLineComparator;
 
 public class LineFilesComparisonServiceAction extends GeneriqueAction implements ServletRequestAware {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2257063668664142870L;
-
 	private static final Log logger = LogFactory.getLog(LineFilesComparisonServiceAction.class);
-
+	
 	private IIdentificationManager identificationManager;
 	private HttpServletRequest request;
 
@@ -43,25 +40,25 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	 *  TODO dynamic list (linked to installed extension)
 	 *  or set at least as parameters or ...
 	 */
-	private Map<String, String> availableExchangeFormats;
-	/*
+
+	private static Map<String, String> AVAILABLE_EXCHANGE_FORMATS = new HashMap<String, String>();
 	static
 	{
 		AVAILABLE_EXCHANGE_FORMATS.put("Chouette", "Chouette");
 		AVAILABLE_EXCHANGE_FORMATS.put("Amivif", "Amivif");
-	}
-	*/
-
-	private Map<String, String> exchangeFormatBeanComparatorMap ;
+	}	
 	
-	/*
+	private static Map<String, String> EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP = new HashMap<String, String>();
 	static
 	{
-		//EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Chouette", "ExchangeableLineComparatorChouette");
+		EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Chouette", "ExchangeableLineComparatorChouette");
 		EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP.put("Amivif", "ExchangeableAmivifLineComparator");
 	}
-	*/
-
+	public Map<String, String> getExchangeFormatBeanComparatorMap() 
+	{
+		return EXCHANGE_FORMAT_BEAN_COMPARATOR_MAP;
+	}
+	
 	// Default comparison format and verbose mode
 	// TODO : set as application parameters
 	private String defaultFormat = "Chouette";
@@ -96,10 +93,10 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	{
 		exchangeFormats = new ArrayList<StringPair>();
 
-		Set<String> formatKeys  = getAvailableFormat().keySet();
+		Set<String> formatKeys  = getAvailableFormats().keySet();
 		for (String formatKey : formatKeys)
 		{
-			exchangeFormats.add(new StringPair(formatKey, getAvailableFormat().get(formatKey)));
+			exchangeFormats.add(new StringPair(formatKey, getAvailableFormats().get(formatKey)));
 		}
 	}
 
@@ -120,9 +117,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		//TODO a field to switch mode
 		//setEnableVerboseMode(true);
 
-		//TODO no clear done, to investigate
-		clearErrorsAndMessages();
-
+		
 		// TODO all messages are keys, have to be stored with human readable message
 		// as ihm parameter
 		if (sourceFile == null || sourceFile.length() == 0)
@@ -155,53 +150,39 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 		}
 		
 		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-		Map<String, String> availableFormats = getAvailableFormat();
-		boolean foundFormat = false;
-		Iterator<Entry<String, String>> iter = availableFormats.entrySet().iterator();
-
-		while (iter.hasNext())
-		{
-			Entry<String, String> format = iter.next();
-			//La clé de la HashMap
-			if (format.getKey().equals(exchangeFormat))
-			{
-				foundFormat = true;
-				String beanKey = "Exchangeable" + format.getValue() + "LineComparator";				
-
-				IExchangeableLineComparator comparator = null;
-				try
-				{
-					comparator = (IExchangeableLineComparator)applicationContext.getBean(beanKey);
-				}
-				catch(Exception e)
-				{					
-					String errorMessageCompletion = "Invalid Spring Bean Referenced by : " + beanKey;
-					ServiceException se = new ServiceException(CodeIncident.COMPARATOR_UNVAILABLE_RESOURCE, errorMessageCompletion);
-					return doExceptionTreatments(se);
-				}
-				try
-				{
-					// Launch comparison
-					doComparison(comparator);
-				}
-				catch(Exception e)
-				{
-					return doExceptionTreatments(e);
-
-				}				
-			}//end if
-		}//end while
-
-		if(! foundFormat)
+		Map<String, String> availableFormats = getAvailableFormats();
+		
+		/** exchange format field validation **/
+		String selectedFormat = availableFormats.get(exchangeFormat);
+		if (null == selectedFormat)
 		{
 			addFieldError("exchangeFormat", "comparator.error.field.exchangeFormat");
 			return INPUT;
 		}
 		
-		//Build action/view title
-		ArrayList<Object> completionMessage = new ArrayList<Object>();
-		completionMessage.add(exchangeFormat);
-		setTitle(getText("reporting.title", completionMessage));
+		//create bean format associated comparator and launch comparison
+		Map<String, String> exchangeFormatBeanComparator = getExchangeFormatBeanComparatorMap();
+		String beanKey = exchangeFormatBeanComparator.get(exchangeFormat);
+		IExchangeableLineComparator comparator = null;
+		try
+		{
+			comparator = (IExchangeableLineComparator)applicationContext.getBean(beanKey);
+		}
+		catch(Exception e)
+		{					
+			ServiceException se = new ServiceException(CodeIncident.COMPARATOR_BEAN_INITIALIZATION_FAILED, beanKey);
+			return doExceptionTreatments(se);
+		}
+		try
+		{
+			// Launch comparison
+			doComparison(comparator);
+		}
+		catch(Exception e)
+		{
+			return doExceptionTreatments(e);
+
+		}
 		
 		return "comparison-success";
 	}
@@ -388,9 +369,9 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	}
 
 	/** Static basic methods on private static fields **/
-	public Map<String, String> getAvailableFormat()
+	public Map<String, String> getAvailableFormats()
 	{
-		return availableExchangeFormats;
+		return AVAILABLE_EXCHANGE_FORMATS;
 	}
 
 
@@ -402,7 +383,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 
 	public boolean setDefaultFormat(String defaultFormat)
 	{
-		if (getAvailableFormat().containsKey(defaultFormat))
+		if (getAvailableFormats().containsKey(defaultFormat))
 		{
 			this.defaultFormat = defaultFormat;
 			return true;
