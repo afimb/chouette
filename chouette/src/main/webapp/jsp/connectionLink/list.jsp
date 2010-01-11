@@ -57,15 +57,11 @@
         <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
       </s:a>
       
-      &nbsp;&nbsp;
-      <!--      
+      &nbsp;&nbsp;            
       <s:a href="%{removeUrl}" onclick="return confirm('%{getText('connectionlink.delete.confirmation')}');">
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
-      </s:a>      
-      -->
-      <s:a href="%{removeUrl}">
-        <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
-      </s:a>   
+      </s:a>
+        
     </display:column>
     <display:column titleKey="table.title.name" property="name"/>
     <display:column titleKey="table.title.comment" property="comment"/>
