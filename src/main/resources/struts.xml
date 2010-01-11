@@ -96,7 +96,7 @@
 			<interceptor name="params"
 				class="com.opensymphony.xwork2.interceptor.ParametersInterceptor" />
 			<interceptor name="actionMappingParams"
-				class="org.apache.struts2.interceptor.ActionMappingParametersInteceptor" />
+				class="org.apache.struts2.interceptor.ActionMappingParametersInterceptor" />
 			<interceptor name="prepare"
 				class="com.opensymphony.xwork2.interceptor.PrepareInterceptor" />
 			<interceptor name="staticParams"
@@ -117,8 +117,7 @@
 				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
 			<interceptor name="workflow"
 				class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor" />
-			<interceptor name="store"
-				class="org.apache.struts2.interceptor.MessageStoreInterceptor" />
+			
 			<interceptor name="checkbox"
 				class="org.apache.struts2.interceptor.CheckboxInterceptor" />
 			<interceptor name="profiling"
@@ -129,6 +128,8 @@
 				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 			<interceptor name="annotationWorkflow"
 				class="com.opensymphony.xwork2.interceptor.annotations.AnnotationWorkflowInterceptor" />
+			<interceptor name="store"
+				class="org.apache.struts2.interceptor.MessageStoreInterceptor" />
 			<interceptor name="multiselect"
 				class="org.apache.struts2.interceptor.MultiselectInterceptor" />
 
@@ -161,16 +162,13 @@
 				<interceptor-ref name="validation">
 					<param name="excludeMethods">input,edit,delete,back,cancel</param>
 				</interceptor-ref>
+				<interceptor-ref name="store"></interceptor-ref>
 				<interceptor-ref name="workflow">
 					<param name="excludeMethods">input,edit,back,cancel</param>
 				</interceptor-ref>
-				<interceptor-ref name="store"></interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
-
-
 		<default-interceptor-ref name="crudStack" />
-
 
 		<!-- Action par défaut -->
 		<default-action-ref name="ActionNotFound" />
@@ -357,9 +355,9 @@
 			</result>
 		</action>
 	</package>
-
+	
 	<package name="connectionLink" extends="struts" namespace="/connectionLink">
-		<action name="*" method="{1}" class='ConnectionLinkActionBean'>
+		<action name="update" method="update" class='ConnectionLinkActionBean'>
 			<result name="redirectList" type="redirectAction">
 				<param name="actionName">list</param>
 				<param name="operationMode">RETRIEVE</param>
@@ -367,19 +365,56 @@
 			<result name="redirectEdit" type="redirectAction">
 				<param name="actionName">edit</param>
 				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>				
 			</result>
-			<result name="edit">/jsp/connectionLink/edit.jsp
+			<result name="input" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>				
 			</result>
-			<result name="list">/jsp/connectionLink/list.jsp
+		</action>		
+		<action name="upload" method="upload" class='ConnectionLinkActionBean'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
+			</result>		
+			<result name="input" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="connectionLinks">${connectionLinks}</param>			
 			</result>
-			<result name="input">/jsp/connectionLink/edit.jsp
+		</action>		
+		<action name="save" method="save" class='ConnectionLinkActionBean'>
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>				
+			</result>		
+			<result name="input" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>	
 			</result>
-			<result name="search">/jsp/connectionLink/search.jsp
+		</action>
+		
+		<action name="*" method="{1}" class='ConnectionLinkActionBean'>						
+			<!-- default result, for list and for global error see global exceptions interceptor -->						
+			<result name="list">/jsp/connectionLink/list.jsp</result>
+			<result name="edit">/jsp/connectionLink/edit.jsp</result>
+			
+			<result name="search">/jsp/connectionLink/search.jsp</result>
+			<result name="input">/jsp/connectionLink/list.jsp</result>
+			
+			<!-- Result for : import, "update_success", delete, cancel -->
+			<result name="redirectList" type="redirectAction">
+				<param name="actionName">list</param>
+				<param name="operationMode">RETRIEVE</param>
 			</result>
-			<result name="success_connectionLink">/jsp/connectionLink/list.jsp
-			</result>
-			<result name="input_connectionLink">/jsp/connectionLink/list.jsp
+			
+			<!-- Result for : "update_input", cancelSearch, addStart, addEnd -->
+			<result name="redirectEdit" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>				
 			</result>
 		</action>
 	</package>
@@ -522,20 +557,12 @@
 				<param name="idLigne">${idLigne}</param>
 				<param name="operationMode">RETRIEVE</param>
 			</result>
-			<result name="input_itineraire" type="redirectAction">
+			<result name="input_itineraire" type="redirectAction"> 
 				<param name="actionName">list</param>
 				<param name="namespace">/route</param>
 				<param name="idLigne">${idLigne}</param>
-				<param name="operationMode">RETRIEVE</param>
-			</result>
-			<result name="success_connectionLink" type="chain">
-				<param name="actionName">list</param>
-				<param name="namespace">/connectionLink</param>
-			</result>
-			<result name="input_connectionLink" type="chain">
-				<param name="actionName">list</param>
-				<param name="namespace">/connectionLink</param>
-			</result>
+				<param name="operationMode">RETREIVE</param>
+			</result>					
 		</action>
 	</package>
 		

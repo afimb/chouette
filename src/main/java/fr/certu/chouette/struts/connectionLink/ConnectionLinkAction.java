@@ -2,33 +2,57 @@ package fr.certu.chouette.struts.connectionLink;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import com.sun.corba.se.impl.orbutil.GetPropertyAction;
+
 import fr.certu.chouette.critere.AndClause;
 import fr.certu.chouette.critere.ScalarClause;
 import fr.certu.chouette.critere.VectorClause;
 import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import fr.certu.chouette.modele.Correspondance;
 import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeIncident;
+import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ICorrespondanceManager;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
+import fr.certu.chouette.service.importateur.IImportCorrespondances;
 import fr.certu.chouette.struts.GeneriqueAction;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven<Correspondance>, Preparable
 {
-  /**
-	 * 
-	 */
+  
   private static final long serialVersionUID = 6964959559153714259L;
   private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
-  private ICorrespondanceManager correspondanceManager;
+
+  // Model Linked
+  private Correspondance correspondanceModel = new Correspondance();  
+  
+  // Managers and upload class
+  private IImportCorrespondances importateurCorrespondances;  
+  private ICorrespondanceManager correspondanceManager;  
   private IPositionGeographiqueManager positionGeographiqueManager;
+  
+  //Attributes linked to fields form  
   private String useHastus;
   private Long idCorrespondance;
   private PositionGeographique criteria;
@@ -36,129 +60,264 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   private PositionGeographique end;
   private String actionSuivante;
   private Long idPositionGeographique;
-  private String durationsFormat = "mm:ss";
-  private Correspondance correspondanceModel = new Correspondance();
+  private String durationsFormat = "mm:ss";  
+ 
+  private String fichierContentType;
+  private File fichier;
 
-  private String mappedRequest;
-
-  public Long getIdCorrespondance()
+  private List<Correspondance> connectionLinks; 
+  
+  // Technical attribute 
+  // Added parameter to avoid ognl exception
+  //private String operationMode = "NONE";  
+  private static Map<String, String> ops = new HashMap<String, String>();
+  static
   {
-    return idCorrespondance;
-  }
+	  ops.put("delete", "STORE");	  
+	  ops.put("editCombinedActions", "STORE");//save,update,cancel
+	  ops.put("upload", "STORE");
+  }	
 
-  public void setIdCorrespondance(Long idCorrespondance)
-  {
-    this.idCorrespondance = idCorrespondance;
-  }
-
-  public Long getIdPositionGeographique()
-  {
-    return idPositionGeographique;
-  }
-
-  public void setIdPositionGeographique(Long idPositionGeographique)
-  {
-    this.idPositionGeographique = idPositionGeographique;
-  }
-
-  /********************************************************
+/********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
   public Correspondance getModel()
-  {
-    return correspondanceModel;
+  {    
+	  return correspondanceModel;
   }
 
   public void prepare() throws Exception
   {
-    log.debug("Prepare with id : " + getIdCorrespondance());
-    if (getIdCorrespondance() == null)
-    {
-      correspondanceModel = new Correspondance();
-    }
-    else
-    {
-      correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
-      if (correspondanceModel.getIdDepart() != null)
-      {
-        this.start = positionGeographiqueManager.lire(correspondanceModel.getIdDepart());
-      }
-      if (correspondanceModel.getIdArrivee() != null)
-      {
-        this.end = positionGeographiqueManager.lire(correspondanceModel.getIdArrivee());
-      }
-    }
+	  this.correspondanceManager = this.importateurCorrespondances.getCorrespondanceManager();
+	  if (getIdCorrespondance() == null)
+	  {
+		  log.debug("Prepare with null id");
+		  correspondanceModel = new Correspondance();
+		  try 
+		  {
+			  connectionLinks = correspondanceManager.lire();
+		  }
+		  catch(Exception e)
+		  {		  
+			  log.error("Unread ConnectionLinks : correspondanceManager.lire() failed, exception : " + e.getMessage());
+		  }
+	  }	
+	  else
+	  {
+		  log.debug("Prepare with id : " + getIdCorrespondance());
+		  correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
+		  if (correspondanceModel.getIdDepart() != null)
+		  {
+			  this.start = positionGeographiqueManager.lire(correspondanceModel.getIdDepart());
+		  }
+		  if (correspondanceModel.getIdArrivee() != null)
+		  {
+			  this.end = positionGeographiqueManager.lire(correspondanceModel.getIdArrivee());
+		  }
+	  }
+	  log.debug("prepare ended");
   }
 
   /********************************************************
+   *                  MAIN METHODS                    *
+   ********************************************************/
+  /**
+   * Return connectionsLinks list 
+   * @return List<Correspondance>
+   */
+  private List<Correspondance> getConnectionsLinks()
+  {
+	  List<Correspondance> connectionsLinks = null;
+	  try 
+	  {
+		  connectionsLinks = correspondanceManager.lire();
+	  }
+	  catch(Exception e)
+	  {		  
+		  log.error("Unread ConnectionLinks : correspondanceManager.lire() failed, exception : " + e.getMessage());
+	  }
+	  return connectionsLinks;
+  }
+  
+  /**
+   * Connection Links Import
+   * @return String result REDIRECTLIST
+   */
+  @SkipValidation
+  public String upload()
+  {
+	  log.debug("importConnectionLinks");
+	  
+	  // Validate File path
+	  String canonicalPath = null;
+	  try 
+	  {
+		  if (null == fichier)
+		  {
+			  throw new IOException("null file");
+		  }
+		  canonicalPath = fichier.getCanonicalPath();
+	  }
+	  catch (Exception e) 
+	  {
+		  log.debug("unvalid path file");
+		  addFieldError("fichier", "unvalid.path.file");
+		  if (null != e.getMessage())
+		  {
+			  log.debug("unvalid path file, " + e.getMessage());
+		  }
+		
+		  if (null == this.connectionLinks)
+		  {
+			  addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
+		  }
+		  return REDIRECTLIST;
+	  }
+	  
+	  // Connection links importation
+	  try 
+	  {
+		  List<String> messages = importateurCorrespondances.lire(canonicalPath);
+		  if (messages != null)
+		  {
+			  // same error on several connectionlinks, retreive duplicates			  
+			  Map<String, String> duplicates = new HashMap<String, String>();			  
+			  if (messages.size() > 0)
+			  {				  
+				  for (String errMsg : messages)
+				  {
+						if (! duplicates.containsKey(errMsg))
+						{
+							duplicates.put(errMsg, null);
+							log.debug(errMsg);
+							addActionError(errMsg);
+						}
+				  }				  
+			  }
+			  else
+			  {
+				  String errMsg = "Unread ConnectionLinks : importateurCorrespondances.lire(canonicalPath) failed without messages";
+				  log.debug(errMsg);
+				  addActionError(errMsg);
+			  }			  
+		  }
+		  else
+		  {
+			  addActionMessage(getText("import.csv.format.ok"));
+		  }		  		  
+		}
+		catch (ServiceException e)
+		{
+			String errMsg = "";
+			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
+			{
+				errMsg = getText("import.csv.fichier.introuvable");
+				addFieldError("fichier", errMsg);
+			}
+			else
+			{			
+				errMsg = getText("import.csv.format.ko");
+				addActionError(errMsg);
+			}			
+			errMsg += e.getMessage();
+			log.debug(errMsg);
+		}
+		
+		
+		List<Correspondance> connectionsLinks = getConnectionsLinks();
+		if (null == connectionsLinks)
+		{
+			addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
+		}
+		request.put("correspondances", connectionsLinks);
+		return REDIRECTLIST;
+  }
+  /********************************************************
    *                           CRUD                       *
    ********************************************************/
+  
   @SkipValidation
   public String list()
   {
-    this.request.put("correspondances", correspondanceManager.lire());
-    log.debug("List of connectionLinks");
-    return LIST;
+	  //List<Correspondance> connectionsLinks = getConnectionsLinks();
+	  this.connectionLinks = getConnectionsLinks();
+	  if (null == connectionLinks)
+	  {
+		  addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
+		  return INPUT;
+	  }
+	  //request.put("correspondances", connectionsLinks);
+	  return LIST;
   }
-
+  
   @SkipValidation
   public String add()
   {
-    setMappedRequest(SAVE);
     return EDIT;
   }
-
+    
   public String save()
   {
-    try
-    {
-      correspondanceManager.creer(getModel());
-      addActionMessage(getText("connectionlink.create.ok"));
-    }
-    catch (Exception exception)
-    {
-      addActionError(getText("connectionlink.create.ko"));
-    }
-    setMappedRequest(SAVE);
-    log.debug("Create connectionLink with id : " + getModel().getId());
-    return REDIRECTLIST;
+	  try
+	  {
+		  correspondanceManager.creer(getModel());
+		  addActionMessage(getText("connectionlink.create.ok"));
+	  }
+	  catch (Exception exception)
+	  {
+		  addActionError(getText("connectionlink.create.ko"));
+		  return REDIRECTEDIT;
+	  }
+	  log.debug("Create connectionLink with id : " + getModel().getId());    
+	  return REDIRECTLIST;
   }
 
-  @SkipValidation
-  public String edit()
-  {
-    setMappedRequest(UPDATE);
-    return EDIT;
-  }
+//@Action(value="edit", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "RETRIEVE"})})
+@SkipValidation
+ public String edit()
+ {	
+	return EDIT;
+ }
 
-  public String update()
+  
+// TODO : why doesn't work
+//@Action(value="update", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "STORE"})})
+public String update()
   {
+	log.debug("Update connectionLink with id : " + getModel().getId());
     try
     {
-      correspondanceManager.modifier(getModel());
-      addActionMessage(getText("connectionlink.update.ok"));
+    	correspondanceManager.modifier(getModel());
+    	String msg = getText("connectionlink.update.ok");
+    	log.debug(msg);
+    	addActionMessage(msg);
+    	
+    	return REDIRECTLIST;
     }
-    catch (Exception ex)
+    catch (Exception e)
     {
-      addActionError(getText("connectionlink.update.ko"));
-    }
-    setMappedRequest(UPDATE);
-    log.debug("Update connectionLink with id : " + getModel().getId());
-    return REDIRECTLIST;
-  }
+    	String errMsg = getText("connectionlink.update.ko");
+    	errMsg += e.getMessage();
+    	log.debug(errMsg);
+    	addActionError(errMsg);
+    	
+    	return REDIRECTEDIT;
+    }    
+}
 
   public String delete()
   {
-    correspondanceManager.supprimer(getModel().getId());
-    addActionMessage(getText("connectionlink.delete.ok"));
-    log.debug("Delete connectionLink with id : " + getModel().getId());
+	log.debug("Delete connectionLink with id : " + getModel().getId());
+	correspondanceManager.supprimer(getModel().getId());
+    addActionMessage(getText("connectionlink.delete.ok"));    
+    
     return REDIRECTLIST;
   }
 
   @SkipValidation
   public String cancel()
   {
-    addActionMessage(getText("connectionlink.cancel.ok"));
+	addActionMessage(getText("connectionlink.cancel.ok"));    
     return REDIRECTLIST;
   }
 
@@ -254,7 +413,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   }
 
   /********************************************************
-   *                        MANAGER                       *
+   *                        MANAGER ET IMPORATEUR                     *
    ********************************************************/
   public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager)
   {
@@ -266,24 +425,15 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
     this.correspondanceManager = correspondanceManager;
   }
 
-  /********************************************************
-   *                   METHODE ACTION                     *
-   ********************************************************/
-  // this prepares command for button on initial screen write
-  public void setMappedRequest(String actionMethod)
+  public IImportCorrespondances getImportateurCorrespondances() 
   {
-    this.mappedRequest = actionMethod;
+	return importateurCorrespondances;
   }
 
-  // when invalid, the request parameter will restore command action
-  public void setActionMethod(String method)
+  public void setImportateurCorrespondances(
+		IImportCorrespondances importateurCorrespondances) 
   {
-    this.mappedRequest = method;
-  }
-
-  public String getActionMethod()
-  {
-    return mappedRequest;
+	this.importateurCorrespondances = importateurCorrespondances;
   }
 
   /********************************************************
@@ -471,4 +621,63 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   {
     this.actionSuivante = actionSuivante;
   }
+  
+  public String getFichierContentType() 
+  {
+	return fichierContentType;
+  }
+
+  public void setFichierContentType(String fichierContentType) 
+  {
+	this.fichierContentType = fichierContentType;
+  }
+
+  public File getFichier() 
+  {
+	return fichier;
+  }
+
+  public void setFichier(File fichier) 
+  {
+	this.fichier = fichier;
+  }
+
+  public Long getIdCorrespondance()
+  {
+    return idCorrespondance;
+  }
+
+  public void setIdCorrespondance(Long idCorrespondance)
+  {
+    this.idCorrespondance = idCorrespondance;
+  }
+
+  public Long getIdPositionGeographique()
+  {
+    return idPositionGeographique;
+  }
+
+  public void setIdPositionGeographique(Long idPositionGeographique)
+  {
+    this.idPositionGeographique = idPositionGeographique;
+  }
+  
+  public Map<String,String>getOps() 
+  {
+	  return ops;
+  }
+  
+  public void setOps(Map<String,String> ops) 
+  {
+	  this.ops = ops;
+  }
+
+public void setConnectionLinks(List<Correspondance> connectionLinks) {
+	this.connectionLinks = connectionLinks;
+}
+
+public List<Correspondance> getConnectionLinks() {
+	return connectionLinks;
+}
+  
 }
