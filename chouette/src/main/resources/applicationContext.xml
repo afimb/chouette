@@ -561,8 +561,8 @@
     
   <bean id="ConnectionLinkActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
-    <property name="correspondanceManager" ref="correspondanceManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    <property name="importateurCorrespondances" ref="importCorrespondances"/>
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>    
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
     

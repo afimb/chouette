@@ -237,33 +237,48 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importCorrespondances() {
+	public String importCorrespondances() 
+	{
 		logger.debug("importCorrespondances");
+		
 		String canonicalPath = null;
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) {
+		catch (Exception e) 
+		{
 			e.printStackTrace();
+			addActionError("unvalid path file : " + e.getMessage());
+			return "input_connectionLink";
 		}
-		try {
+		try 
+		{
 			List<String> messages = importCorrespondances.lire(canonicalPath);
 			if (messages != null)
-				if (messages.size() > 0) {
+			{
+				if (messages.size() > 0) 
+				{
 					for (String msg : messages)
 						addActionError(msg);
-					
-					logger.debug("importCorrespondances read connectionLinks has errors but run");
-					return "input_connectionLink";
 				}
+				logger.debug("importCorrespondances read connectionLinks has errors but run");
+				return "input_connectionLink";
+			}
+			log.debug("importCorrespondances full succedded");
+			return "success_connectionLink";
 		}
-		catch (ServiceException e) {
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) {
+		catch (ServiceException e)
+		{
+			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
+			{
 				String message = getText("import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError(message);
 			}
-			else {
+			else 
+			{
+				//TODO what is that ? to clean
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
 				args.add("aaa");
@@ -276,10 +291,6 @@ public class ImportAction extends GeneriqueAction {
 			logger.debug("importCorrespondances read connectionLinks failed --service exception");
 			return "input_connectionLink";
 		}
-		logger.debug("importCorrespondances succedded");
-		addActionMessage("Correspondances importées.");
-		
-		return "success_connectionLink";
 	}
 	
 	public String importCSVGeneric() {
