@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class LineAction extends GeneriqueAction implements ModelDriven,
+public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 		Preparable {
 
 	/**
