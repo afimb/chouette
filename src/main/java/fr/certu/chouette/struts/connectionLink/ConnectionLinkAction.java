@@ -1,22 +1,5 @@
 package fr.certu.chouette.struts.connectionLink;
 
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
-import com.sun.corba.se.impl.orbutil.GetPropertyAction;
-
-import fr.certu.chouette.critere.AndClause;
-import fr.certu.chouette.critere.ScalarClause;
-import fr.certu.chouette.critere.VectorClause;
-import fr.certu.chouette.struts.enumeration.ObjetEnumere;
-import fr.certu.chouette.modele.Correspondance;
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.commun.CodeIncident;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.database.ICorrespondanceManager;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.service.importateur.IImportCorrespondances;
-import fr.certu.chouette.struts.GeneriqueAction;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -27,16 +10,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.interceptor.validation.SkipValidation;
+
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import fr.certu.chouette.critere.AndClause;
+import fr.certu.chouette.critere.ScalarClause;
+import fr.certu.chouette.critere.VectorClause;
+import fr.certu.chouette.modele.Correspondance;
+import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeIncident;
+import fr.certu.chouette.service.commun.ServiceException;
+import fr.certu.chouette.service.database.ICorrespondanceManager;
+import fr.certu.chouette.service.database.IPositionGeographiqueManager;
+import fr.certu.chouette.service.importateur.IImportCorrespondances;
+import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 
 public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven<Correspondance>, Preparable
 {
@@ -44,6 +36,8 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   private static final long serialVersionUID = 6964959559153714259L;
   private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
 
+  private static final String INPUT_SAVE = "input_save";
+  
   // Model Linked
   private Correspondance correspondanceModel = new Correspondance();  
   
@@ -69,7 +63,18 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   
   // Technical attribute 
   // Added parameter to avoid ognl exception
-  //private String operationMode = "NONE";  
+  private String operationMode = "NONE";  
+  
+  public String getOperationMode() 
+  {
+	return operationMode;
+  }
+
+  public void setOperationMode(String operationMode) 
+  {
+	  this.operationMode = operationMode;
+  }
+
   private static Map<String, String> ops = new HashMap<String, String>();
   static
   {
@@ -95,6 +100,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 		  correspondanceModel = new Correspondance();
 		  try 
 		  {
+			  // Initialisation for list action
 			  connectionLinks = correspondanceManager.lire();
 		  }
 		  catch(Exception e)
@@ -105,14 +111,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	  else
 	  {
 		  log.debug("Prepare with id : " + getIdCorrespondance());
-		  correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
-		  if (correspondanceModel.getIdDepart() != null)
+		  try 
 		  {
-			  this.start = positionGeographiqueManager.lire(correspondanceModel.getIdDepart());
+			  this.initStartEndStopAreas();
 		  }
-		  if (correspondanceModel.getIdArrivee() != null)
-		  {
-			  this.end = positionGeographiqueManager.lire(correspondanceModel.getIdArrivee());
+		  catch(Exception e)
+		  {		  
+			  log.error("initStartEndStopAreas failed : " + e.getMessage());
 		  }
 	  }
 	  log.debug("prepare ended");
@@ -138,6 +143,26 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	  }
 	  return connectionsLinks;
   }
+  
+  /**
+   * Init connection link departure (start) and arrival (end) 
+   */
+  private void initStartEndStopAreas()
+  {
+	  
+	  correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
+	  // This case could occurs if user 2nd step creation is bypass, as
+	  // start end constraints aren't checked
+	  if (correspondanceModel.getIdDepart() != null)
+	  {
+		  this.start = positionGeographiqueManager.lire(correspondanceModel.getIdDepart());
+	  }
+	  if (correspondanceModel.getIdArrivee() != null)
+	  {
+		  this.end = positionGeographiqueManager.lire(correspondanceModel.getIdArrivee());
+	  }
+  }
+  
   
   /**
    * Connection Links Import
@@ -221,15 +246,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 			}			
 			errMsg += e.getMessage();
 			log.debug(errMsg);
-		}
+		}		
 		
-		
-		List<Correspondance> connectionsLinks = getConnectionsLinks();
-		if (null == connectionsLinks)
+		this.connectionLinks = getConnectionsLinks();
+		if (null == connectionLinks)
 		{
 			addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
 		}
-		request.put("correspondances", connectionsLinks);
 		return REDIRECTLIST;
   }
   /********************************************************
@@ -238,15 +261,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   
   @SkipValidation
   public String list()
-  {
-	  //List<Correspondance> connectionsLinks = getConnectionsLinks();
+  {	  
 	  this.connectionLinks = getConnectionsLinks();
 	  if (null == connectionLinks)
 	  {
 		  addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
 		  return INPUT;
 	  }
-	  //request.put("correspondances", connectionsLinks);
 	  return LIST;
   }
   
@@ -257,19 +278,20 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   }
     
   public String save()
-  {
+  {	  	  
 	  try
 	  {
-		  correspondanceManager.creer(getModel());
-		  addActionMessage(getText("connectionlink.create.ok"));
+		  correspondanceManager.creer(getModel());		  		 
+		  addActionMessage(getText ("connectionlink.create.ok"));		  
 	  }
 	  catch (Exception exception)
 	  {
 		  addActionError(getText("connectionlink.create.ko"));
-		  return REDIRECTEDIT;
+		  log.error("ConnectionLink creation failed with message : " + exception.getMessage());
+		  return INPUT_SAVE;
 	  }
-	  log.debug("Create connectionLink with id : " + getModel().getId());    
-	  return REDIRECTLIST;
+	  this.setIdCorrespondance(correspondanceModel.getId());
+	  return REDIRECTEDIT;
   }
 
 //@Action(value="edit", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "RETRIEVE"})})
@@ -285,13 +307,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 public String update()
   {
 	log.debug("Update connectionLink with id : " + getModel().getId());
+	
     try
     {
     	correspondanceManager.modifier(getModel());
     	String msg = getText("connectionlink.update.ok");
     	log.debug(msg);
     	addActionMessage(msg);
-    	
     	return REDIRECTLIST;
     }
     catch (Exception e)
