@@ -30,7 +30,7 @@
       <s:url id="editUrl" action="edit" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
       </s:url>
-      <s:url id="exportsChouette" action="exportsChouette" namespace="/company">
+      <s:url id="exportChouette" action="exportChouetteCompany" namespace="/export">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
         <s:param name="origin">company</s:param>
         <s:param name="operationMode">STORE</s:param>
@@ -45,7 +45,7 @@
     <display:column titleKey="table.title.name" property="company.name" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.postalCode" property="company.code" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportsChouette}"><s:text name="text.transporteur.export.chouette"/></s:a>
+      <s:a href="%{exportChouette}"><s:text name="text.transporteur.export.chouette"/></s:a>
     </display:column>
   </display:table>
 </div>
