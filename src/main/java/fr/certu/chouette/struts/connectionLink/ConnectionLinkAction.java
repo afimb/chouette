@@ -1,22 +1,5 @@
 package fr.certu.chouette.struts.connectionLink;
 
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
-import com.sun.corba.se.impl.orbutil.GetPropertyAction;
-
-import fr.certu.chouette.critere.AndClause;
-import fr.certu.chouette.critere.ScalarClause;
-import fr.certu.chouette.critere.VectorClause;
-import fr.certu.chouette.struts.enumeration.ObjetEnumere;
-import fr.certu.chouette.modele.Correspondance;
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.commun.CodeIncident;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.database.ICorrespondanceManager;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.service.importateur.IImportCorrespondances;
-import fr.certu.chouette.struts.GeneriqueAction;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -27,16 +10,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.convention.annotation.Action;
-import org.apache.struts2.convention.annotation.InterceptorRef;
-import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.interceptor.validation.SkipValidation;
+
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import fr.certu.chouette.critere.AndClause;
+import fr.certu.chouette.critere.ScalarClause;
+import fr.certu.chouette.critere.VectorClause;
+import fr.certu.chouette.modele.Correspondance;
+import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeIncident;
+import fr.certu.chouette.service.commun.ServiceException;
+import fr.certu.chouette.service.database.ICorrespondanceManager;
+import fr.certu.chouette.service.database.IPositionGeographiqueManager;
+import fr.certu.chouette.service.importateur.IImportCorrespondances;
+import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 
 public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven<Correspondance>, Preparable
 {
