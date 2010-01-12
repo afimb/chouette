@@ -5,6 +5,7 @@
   <field name="model">
     <field-validator type="visitor">
       <param name="appendPrefix">false</param>
+      <message></message>
     </field-validator>
   </field>
 </validators>
