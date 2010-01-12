@@ -52,12 +52,12 @@
     <ul>
       <li class="french">
         <s:a href="%{language_fr}">
-          <img  alt="French"  border="0" src="<s:url value='/images/french_flag.png'/>">
+          <img  alt="French"  border="0" src="<s:url value='/images/french_flag.png'/>" title="<s:text name="tooltip.french.flag"/>">
         </s:a>
       </li>
       <li class="english">
         <s:a  href="%{language_en}">
-          <img  alt="English"  border="0" src="<s:url value='/images/european_flag.png'/>">
+          <img  alt="English"  border="0" src="<s:url value='/images/european_flag.png'/>" title="<s:text name="tooltip.european.flag"/>">
         </s:a>
       </li>
     </ul>
