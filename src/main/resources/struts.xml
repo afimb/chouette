@@ -96,7 +96,7 @@
 			<interceptor name="params"
 				class="com.opensymphony.xwork2.interceptor.ParametersInterceptor" />
 			<interceptor name="actionMappingParams"
-				class="org.apache.struts2.interceptor.ActionMappingParametersInterceptor" />
+				class="org.apache.struts2.interceptor.ActionMappingParametersInteceptor" />
 			<interceptor name="prepare"
 				class="com.opensymphony.xwork2.interceptor.PrepareInterceptor" />
 			<interceptor name="staticParams"
