@@ -1,25 +1,27 @@
 package fr.certu.chouette.struts.line;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+
 import fr.certu.chouette.critere.AndClause;
 import fr.certu.chouette.critere.IClause;
 import fr.certu.chouette.critere.ScalarClause;
-import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.Transporteur;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.service.database.ITransporteurManager;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.interceptor.validation.SkipValidation;
+import fr.certu.chouette.struts.GeneriqueAction;
 
-public class LineAction extends GeneriqueAction implements ModelDriven,
+public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 		Preparable {
 
 	/**
@@ -93,7 +95,20 @@ public class LineAction extends GeneriqueAction implements ModelDriven,
 	}
 
 	public String save() {
-		ligneManager.creer(getModel());
+		Ligne ligne = getModel();
+		if (ligne == null) {
+			return INPUT;
+		}
+		if (ligneManager.nomConnu(ligne.getName())) {
+			addActionMessage(getText("ligne.homonyme"));
+		}
+		if (ligne.getIdReseau().equals(new Long(-1))) {
+			ligne.setIdReseau(null);
+		}
+		if (ligne.getIdTransporteur().equals(new Long(-1))) {
+			ligne.setIdTransporteur(null);
+		} 
+		ligneManager.creer(ligne);
 		setMappedRequest(SAVE);
 		addActionMessage(getText("ligne.create.ok"));
 		log.debug("Create line with id : " + getModel().getId());
@@ -112,7 +127,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven,
 		if (ligne == null) {
 			return INPUT;
 		}
-		if (ligneManager.nomConnu(ligne.getName())) {
+		if (ligneManager.nomConnu(ligne.getId(),ligne.getName())) {
 			addActionMessage(getText("ligne.homonyme"));
 		}
 		if (ligne.getIdReseau().equals(new Long(-1))) {
@@ -120,12 +135,12 @@ public class LineAction extends GeneriqueAction implements ModelDriven,
 		}
 		if (ligne.getIdTransporteur().equals(new Long(-1))) {
 			ligne.setIdTransporteur(null);
-		} else {
+		} 
 			ligneManager.modifier(ligne);
 			setMappedRequest(UPDATE);
 			addActionMessage(getText("ligne.update.ok"));
 			log.debug("Update network with id : " + getModel().getId());
-		}
+		
 
 		return REDIRECTLIST;
 	}

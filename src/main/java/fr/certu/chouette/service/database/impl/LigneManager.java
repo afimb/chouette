@@ -1,6 +1,8 @@
 package fr.certu.chouette.service.database.impl;
 
+import fr.certu.chouette.critere.AndClause;
 import fr.certu.chouette.critere.IClause;
+import fr.certu.chouette.critere.NotClause;
 import fr.certu.chouette.critere.Ordre;
 import fr.certu.chouette.critere.ScalarClause;
 import fr.certu.chouette.dao.IModificationSpecifique;
@@ -64,6 +66,13 @@ public class LigneManager implements ILigneManager {
 		return ligneDao.select(ScalarClause.newEqualsClause("name", name)).size() > 0;
 	}
 
+	public boolean nomConnu(Long id,String name) 
+	{
+		IClause clauseID = ScalarClause.newEqualsClause("id", id);
+		IClause notClause = new NotClause(clauseID);
+		IClause andClause = new AndClause(notClause,ScalarClause.newEqualsClause("name", name));
+		return ligneDao.select(andClause).size() > 0;
+	}
 	public List<Ligne> filtrer(Collection<Long> idReseaux, Collection<Long> idTransporteurs) {
 		return selectionSpecifique.getLignesFiltrees(idReseaux, idTransporteurs);
 	}

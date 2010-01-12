@@ -20,6 +20,7 @@ public interface ILigneManager  {
 	List<Ligne> getLignes( final Collection<Long> idLignes);
 	List<fr.certu.chouette.modele.PositionGeographique> getArretsPhysiques( Long idLigne);
 	boolean nomConnu( String name);
+	boolean nomConnu(Long id,String name) ;
 	List <Ligne> select (IClause clause);
 	void supprimer(Long idLigne, boolean detruireAvecTMs, boolean detruireAvecArrets, boolean detruireAvecTransporteur, boolean detruireAvecReseau);
 }
