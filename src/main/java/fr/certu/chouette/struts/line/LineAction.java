@@ -95,7 +95,20 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 	}
 
 	public String save() {
-		ligneManager.creer(getModel());
+		Ligne ligne = getModel();
+		if (ligne == null) {
+			return INPUT;
+		}
+		if (ligneManager.nomConnu(ligne.getName())) {
+			addActionMessage(getText("ligne.homonyme"));
+		}
+		if (ligne.getIdReseau().equals(new Long(-1))) {
+			ligne.setIdReseau(null);
+		}
+		if (ligne.getIdTransporteur().equals(new Long(-1))) {
+			ligne.setIdTransporteur(null);
+		} 
+		ligneManager.creer(ligne);
 		setMappedRequest(SAVE);
 		addActionMessage(getText("ligne.create.ok"));
 		log.debug("Create line with id : " + getModel().getId());
@@ -114,7 +127,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 		if (ligne == null) {
 			return INPUT;
 		}
-		if (ligneManager.nomConnu(ligne.getName())) {
+		if (ligneManager.nomConnu(ligne.getId(),ligne.getName())) {
 			addActionMessage(getText("ligne.homonyme"));
 		}
 		if (ligne.getIdReseau().equals(new Long(-1))) {
@@ -122,12 +135,12 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 		}
 		if (ligne.getIdTransporteur().equals(new Long(-1))) {
 			ligne.setIdTransporteur(null);
-		} else {
+		} 
 			ligneManager.modifier(ligne);
 			setMappedRequest(UPDATE);
 			addActionMessage(getText("ligne.update.ok"));
 			log.debug("Update network with id : " + getModel().getId());
-		}
+		
 
 		return REDIRECTLIST;
 	}
