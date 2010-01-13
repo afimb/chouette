@@ -60,8 +60,8 @@
     <div id="displaytag">
       <display:table uid="arretsDansITLList" name="arretsDansITLList" sort="list" pagesize="10" export="false">
         <display:column titleKey="table.title.action">
-          <s:url id="removeUrl" value="/itl/removeStop">
-            <s:param name="idItl">${itl.id}</s:param>
+          <s:url id="removeUrl" action="removeStop" namespace="/routingConstraint">
+            <s:param name="idItl">${id}</s:param>
             <s:param name="idAreaStop">%{arretsDansITLList[${arretsDansITLList_rowNum} - 1].id}</s:param>
           </s:url>
           <s:a href="%{removeUrl}" onclick="return confirm('%{getText('popup.confirmer')}')">
@@ -80,9 +80,7 @@
       <s:form cssClass="panelDataInnerForm" action="addStop" namespace="/routingConstraint" id="creerArretForm" theme="simple">
         <table><tr>
             <td>
-              <s:if test="id != null">
-                <s:hidden name="idItl" value="%{id}" id="idItl"/>
-              </s:if>
+              <s:hidden name="idItl" value="%{id}" id="idItl"/>
               <s:select name="saisieNomArretExistantKey" value="%{saisieNomArretExistant}" key="saisieNomArretExistantKey"  list="arrets" listKey="id" listValue="fullName"/>
             </td>
             <td>

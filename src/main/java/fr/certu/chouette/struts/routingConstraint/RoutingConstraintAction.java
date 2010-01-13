@@ -209,7 +209,7 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
         }
       }
     }
-    return INPUT;
+    return REDIRECTEDIT;
   }
 
   /********************************************************
