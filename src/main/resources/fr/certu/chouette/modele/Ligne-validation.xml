@@ -22,6 +22,18 @@
       <message key="errors.maxlength"/>
     </field-validator>
   </field>
+  <field name="idReseau">
+    <field-validator type="long">
+      <param name="min">1</param>
+      <message key="errors.required"/>
+	</field-validator>
+  </field>
+  <field name="idTransporteur">
+    <field-validator type="long">
+      <param name="min">1</param>
+      <message key="errors.required"/>
+    </field-validator>
+  </field>
   <field name="registrationNumber" >
     <field-validator type="requiredstring">
       <param name="trim">true</param>
