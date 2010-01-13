@@ -29,6 +29,7 @@
     <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
     <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
     <s:hidden name="page" value="%{page}" />
+    <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
     <s:textfield key="publishedJourneyName" />
     <s:textfield key="publishedJourneyIdentifier" />
@@ -100,28 +101,28 @@
     </display:table>
   </div>
 </s:if>
-  
+
 <script type="text/javascript">
-    var tableauMarches = <%= request.getAttribute("jsonTableauMarches")%>;
+  var tableauMarches = <%= request.getAttribute("jsonTableauMarches")%>;
 	
-    function autocompletion()
+  function autocompletion()
+  {
+    new Autocompleter.Local('tableauMarches_auto_complete', 'tableauMarches_auto_complete_list', Object.keys(tableauMarches), {});
+    $('tableauMarches_auto_complete').focus();
+  }
+	
+  Event.observe(window, 'load', autocompletion);
+	
+  var TridentAutoComplete =
     {
-      new Autocompleter.Local('tableauMarches_auto_complete', 'tableauMarches_auto_complete_list', Object.keys(tableauMarches), {});
-      $('tableauMarches_auto_complete').focus();
+    beforeSubmit: function()
+    {
+      var value = tableauMarches[$('tableauMarches_auto_complete').value];
+      if (value == null)
+        $('saisieTableauMarcheKey').value="";
+      else
+        $('saisieTableauMarcheKey').value = value;
+      return true;
     }
-	
-    Event.observe(window, 'load', autocompletion);
-	
-    var TridentAutoComplete =
-      {
-      beforeSubmit: function()
-      {
-        var value = tableauMarches[$('tableauMarches_auto_complete').value];
-        if (value == null)
-          $('saisieTableauMarcheKey').value="";
-        else
-          $('saisieTableauMarcheKey').value = value;
-        return true;
-      }
-    };
+  };
 </script>

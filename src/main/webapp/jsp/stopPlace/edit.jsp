@@ -25,6 +25,7 @@
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
     <s:hidden name="idPositionGeographique" value="%{id}" />
+    <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
     <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 300px;"/>
     <s:textfield key="name" required="true" cssStyle="width: 300px;" />
