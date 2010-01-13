@@ -24,8 +24,7 @@
 <div class="panel">
   <s:form id="connectionLinkForm"  namespace="/connectionLink">
     <s:hidden name="idCorrespondance" value="%{id}"/>
-    <s:hidden name="operationMode" value="STORE" />
-    <s:hidden key="actionMethod" value="%{actionMethod}"/>
+    <s:hidden name="operationMode" value="%{ops.editCombinedActions}" />
     <s:textfield key="name" required="true"/>
     <s:textfield key="comment" required="false"/>
     <s:textfield maxlength="5" key="defaultDuration" value="%{strutsDefaultDuration}" required="false"/>
@@ -42,10 +41,10 @@
     <tr>
       <td colspan="2">
         <s:if test="id != null">
-          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"  validate="true"/>
+          <s:submit key="action.update" action="update"  theme="simple" cssStyle="float: right;"/>
         </s:if>
         <s:else>
-          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"  validate="true"/>
+          <s:submit key="action.create" action="save" theme="simple" cssStyle="float: right;"/>
         </s:else>
         <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
       </td>
@@ -149,3 +148,4 @@
       </tbody>
     </table>
   </s:if>
+ </div>
