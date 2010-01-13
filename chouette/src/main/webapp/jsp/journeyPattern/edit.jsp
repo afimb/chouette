@@ -28,6 +28,7 @@
   <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
   <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
   <s:hidden name="page" value="%{page}" />
+  <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
   <s:textfield key="name" />
   <s:textfield key="registrationNumber" />
