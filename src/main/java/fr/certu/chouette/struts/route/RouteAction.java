@@ -28,8 +28,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   private Long idItinerary;
   private Long lineId;
   private String mappedRequest;
-  private String sensAller = "A";
-  private String sensRetour = "R";
+  private String sensAller = getText("route.direction.aller");
+  private String sensRetour = getText("route.direction.retour");;
   private String idRetour;
   private List<Itineraire> itinerairesSansItineraireEdite;
 
@@ -307,14 +307,6 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     {
       return sensAller;
     }
-  }
-
-  public Map<String, String> getSensItineraires()
-  {
-    Map<String, String> sens = new HashMap<String, String>();
-    sens.put(sensRetour, sensRetour);
-    sens.put(sensAller, sensAller);
-    return sens;
   }
 
   public String getIdRetour()
