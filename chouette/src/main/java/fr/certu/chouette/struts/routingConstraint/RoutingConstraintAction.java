@@ -137,7 +137,9 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
     {
       addActionError(getText("itl.create.ko"));
     }
-    setMappedRequest(SAVE);
+    setMappedRequest(UPDATE);
+    // Update itl id to update itl
+    setIdItl(model.getId());
     log.debug("Create itl with id : " + model.getId());
     return REDIRECTEDIT;
   }
