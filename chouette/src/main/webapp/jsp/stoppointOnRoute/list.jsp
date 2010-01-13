@@ -60,7 +60,7 @@
 
     <div style="padding-left:2px"><s:text name=""/></div>
     <div>
-      <s:textfield name="nomArretAInserer" id="nomArretAInserer" size="100" value="" />
+      <s:textfield name="nomArretAInserer" id="nomArretAInserer" size="75" value="" />
       <s:hidden name="idArretAInserer" id="idArretAInserer" value=""/>
       <div id="listeArrets" class="stop_areas_auto_complete_list" style="display:none;"></div>
     </div>
