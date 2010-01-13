@@ -44,7 +44,7 @@
     </s:else>
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
-    <tr><TD style="text-align: center;"><b><s:text name="text.dataGeo.fieldset"/></b></TD></tr>
+    <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
     <s:textfield key="projectionType" name="projectionType"/>
     <s:textfield key="x" />
     <s:textfield key="y" />
@@ -93,7 +93,7 @@
             <s:param name="idItineraire">%{#attr.itineraire.id}</s:param>
             <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
           </s:url>
-          <s:a href="%{horairesDePassage}">Horaires</s:a>
+          <s:a href="%{horairesDePassage}"><s:text name="text.vehicleJourneyAtStop"/></s:a>
         </display:column>
         <display:column title="Nom Ligne" sortable="true" headerClass="sortable">
           <s:url id="editLigne" action="edit" namespace="/line" includeParams="none">

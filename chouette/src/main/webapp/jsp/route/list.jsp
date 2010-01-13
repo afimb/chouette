@@ -24,7 +24,7 @@
       <s:file name="fichier" label="%{getText('action.browse')}"/>
       <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
-      <s:submit value="Import fichier CSV" formId="uploadCSVForm"/>
+      <s:submit value="%{getText('action.import.csv')}" formId="uploadCSVForm"/>
     </s:form>
   </FIELDSET>
 </div>
@@ -40,7 +40,7 @@
         <TH><s:text name="table.itineraires.sens"/></TH>
         <TH><s:text name="table.itineraires.horairesDePassage"/></TH>
         <TH><s:text name="table.itineraires.arrets"/></TH>
-        <TH>exports</TH>
+        <TH><s:text name="table.itineraires.export"/></TH>
       </TR>
     </THEAD>
     <TBODY>
@@ -123,7 +123,7 @@
               <s:param name="idLigne" value="idLigne" />
               <s:param name="origin" value="itinerary"/>
             </s:url>
-            <s:a href="%{exportHorairesItineraire}"><s:text name="title.export.vehicleJourneyAtStop"/></s:a>
+            <s:a href="%{exportHorairesItineraire}"><s:text name="text.export.vehicleJourneyAtStop"/></s:a>
           </TD>
         </TR>
       </s:iterator>

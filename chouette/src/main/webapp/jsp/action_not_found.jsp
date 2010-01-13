@@ -1,5 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<title>Missing Feature</title>
+<title><s:text name="title.missing.feature"/></title>
 <p>
-    Non implémenté
+  <s:text name="missing.feature"/>
 </p>

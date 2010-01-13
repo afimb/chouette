@@ -3,6 +3,7 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <s:include value="/jsp/commun/scriptaculous.jsp" />
 
+
 <%-- Titre et barre de navigation --%>
 <s:url id="urlCorrespondanceUpdate" action="edit" namespace="/connectionLink">
   <s:param name="idCorrespondance" value="%{id}"/>
@@ -32,9 +33,9 @@
     <s:textfield maxlength="5" key="occasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" required="false"/>
     <s:textfield maxlength="5" key="frequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" required="false"/>
     <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-    <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="liftAvailability"/>
-    <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="mobilityRestrictedSuitability"/>
-    <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="stairsAvailability"/>
+    <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="liftAvailability"/>
+    <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="mobilityRestrictedSuitability"/>
+    <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="stairsAvailability"/>
     <s:textfield key="linkDistance" />
 
     <%-- Actions --%>
@@ -57,7 +58,7 @@
 </div>
 
 <%-- Zones depart --%>
-<div class="panelDataSection"><s:text name="Départ"/></div>
+<div class="panelDataSection"><s:text name="text.connectionlink.departure"/></div>
 <div class="panel" id="displaytag"> 
   <s:if test="id != null">
     <table>
@@ -104,7 +105,7 @@
 </div>	
 
 <%-- Zones arrivée --%>
-<div class="panelDataSection"><s:text name="Arrivée"/></div>	
+<div class="panelDataSection"><s:text name="text.connectionlink.arrival"/></div>
 <div class="panel" id="displaytag">
   <s:if test="id != null">
     <table>

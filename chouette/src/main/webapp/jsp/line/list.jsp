@@ -119,7 +119,9 @@
       </s:url>
       <s:a href="%{editTransporteur}" ><s:property value="%{getTransporteur(#attr.ligne.idTransporteur)}"/></s:a>
     </display:column>
-    <display:column titleKey="table.title.route"><s:a href="%{itinerary}"><s:text name="table.text.route"/></s:a></display:column>
+    <display:column titleKey="table.title.route">
+      <s:a href="%{itinerary}"><s:text name="table.text.route"/></s:a>
+    </display:column>
     <display:column titleKey="table.title.export">
       <s:a href="%{exportChouette}"><s:text name="text.ligne.export.chouette" /></s:a>
       <s:if test="useAmivif == 'true'">

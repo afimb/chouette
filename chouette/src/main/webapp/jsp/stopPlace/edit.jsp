@@ -43,7 +43,7 @@
     </s:else>
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
-    <tr><TD style="text-align: center;"><b><s:text name="text.dataGeo.fieldset"/></b></TD></tr>
+    <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
     <s:textfield key="projectionType" />
     <s:textfield key="x" />
     <s:textfield key="y" />
