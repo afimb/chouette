@@ -1,6 +1,5 @@
 package fr.certu.chouette.struts.route;
 
-import com.opensymphony.xwork2.ModelDriven;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -10,13 +9,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
+import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.service.database.IItineraireManager;
 import fr.certu.chouette.service.database.ILigneManager;
-import java.util.HashMap;
+import fr.certu.chouette.struts.GeneriqueAction;
 
 public class RouteAction extends GeneriqueAction implements ModelDriven<Itineraire>, Preparable
 {
@@ -28,8 +27,6 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   private Long idItinerary;
   private Long lineId;
   private String mappedRequest;
-  private String sensAller = getText("route.direction.aller");
-  private String sensRetour = getText("route.direction.retour");;
   private String idRetour;
   private List<Itineraire> itinerairesSansItineraireEdite;
 
@@ -305,7 +302,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     }
     else
     {
-      return sensAller;
+      return getText("route.direction.aller");
     }
   }
 
