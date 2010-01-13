@@ -45,7 +45,7 @@
         <s:else>
           <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
         </s:else>
-        <s:submit key="action.cancel" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
       </td>
     </tr>
 
@@ -54,9 +54,9 @@
   </s:form>
 </div>
 
-<div class="panelDataSection"><s:text name="itl.arretPhysiqueIds"/></div>
-<div class="panel">
-  <s:if test="id != null && idLigne != null">
+<s:if test="id != null && idLigne != null">
+  <div class="panelDataSection"><s:text name="itl.arretPhysiqueIds"/></div>
+  <div class="panel">
     <div id="displaytag">
       <display:table uid="arretsDansITLList" name="arretsDansITLList" sort="list" pagesize="10" export="false">
         <display:column titleKey="table.title.action">
@@ -91,5 +91,5 @@
           </tr></table>
         </s:form>
     </div>
-  </s:if>
-</div>
+  </div>
+</s:if>
