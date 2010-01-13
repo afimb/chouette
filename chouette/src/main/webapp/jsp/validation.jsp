@@ -8,17 +8,17 @@
 	<s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
-<%-- Import de différents fichiers --%>
+<%-- Import de diffÃ©rents fichiers --%>
 <div>
 	<FIELDSET align="center" style="width: 500px;"> 
-	  	<LEGEND><b>Validation des données</b></LEGEND> 
+	  	<LEGEND><b>Validation des donnÃ©es</b></LEGEND> 
 		<s:form id="validationForm" action="Validation_valider" enctype="multipart/form-data" method="POST">
 		<s:submit value="Valider" formId="validationForm"/>    
 		</s:form>
 	 </FIELDSET> 
 	 <br><br>
 	<FIELDSET align="center" style="width: 500px;"> 
-	  	<LEGEND><b>Decalage des horaires d'arrivées par rapport aux horaires de départ</b></LEGEND>
+	  	<LEGEND><b>DÃ©calage des horaires d'arrivÃ©es par rapport aux horaires de dÃ©part</b></LEGEND>
 		<s:form validate="true" id="decalageForm" action="Validation_decaler" enctype="multipart/form-data" method="POST">
 		<s:textfield maxlength="5" id="decalage" name="decalage" key="decalage" required="true"/>
 		<s:submit value="Decaler" formId="decalageForm"/>    
@@ -27,14 +27,14 @@
 <s:if test="useGeometry == 'true'">
 	 <br><br>
 	 <FIELDSET align="center" style="width: 500px;"> 
-	  	<LEGEND><b>Calcul des coordonnées GPS des arrêts en fonction de ceux de leurs sous-arrêts</b></LEGEND> 
+	  	<LEGEND><b>Calcul des coordonnÃ©es GPS des arrÃªts en fonction de ceux de leurs sous-arrÃªts</b></LEGEND> 
 		<s:form id="barycentreForm" action="Validation_barycentre" enctype="multipart/form-data" method="POST">
 		<s:submit value="Calculer Barycentre" formId="barycentreForm"/>    
 		</s:form>
 	 </FIELDSET> 
 	 <br><br>
 	 <FIELDSET align="center" style="width: 500px;"> 
-	  	<LEGEND><b>Convertion des coordonnées Lambert II en WGS 84</b></LEGEND> 
+	  	<LEGEND><b>Convertion des coordonnÃ©es Lambert II en WGS 84</b></LEGEND> 
 		<s:form id="conversionForm" action="Validation_convertir" enctype="multipart/form-data" method="POST">
 		<s:submit value="Convertir" formId="convertionForm"/>    
 		</s:form>
@@ -42,24 +42,21 @@
 </s:if>
 	 <br><br>
 	<FIELDSET align="center" style="width: 500px;"> 
-	  	<LEGEND><b>Purge des données obsolètes</b></LEGEND>
+	  	<LEGEND><b>Purge des donnÃ©es obsolÃ¨tes</b></LEGEND>
 		<s:form validate="true" id="purgeForm" action="Validation_purger" enctype="multipart/form-data" method="POST">
 		<s:textfield maxlength="10" id="purge" name="purge" key="purge" required="true"/>
 		<script type="text/javascript">
 		<!--//
-		Calendar.setup(
-			{
-       			singleClick : true,
-				firstDay : 1,
-				inputField : "purge",    	// ID of the input field
-				ifFormat : "%Y-%m-%d"  			// the date format
-			}
+		Calendar.setup({
+					singleClick : true, 
+					firstDay : 1, 
+					inputField : "purge",	// ID of the input field 
+					ifFormat : "%Y-%m-%d"	// the date format
+				}
 		);
 		//-->
 		</script>
 		<s:submit value="Purger" formId="purgeForm"/>
 		</s:form>
-	 </FIELDSET> 
-	 
-	 
+	 </FIELDSET>
 </div>	

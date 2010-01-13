@@ -1,4 +1,6 @@
-function onHoraireClicked (textNode) {
+
+function onHoraireClicked (textNode) 
+{
 	textNode.parentNode.className = "enCoursDEdition"; 
 }
 
@@ -7,7 +9,8 @@ function onHoraireBlurred (textNode) {
 }
 
 /**
- * Fonction permettant d'afficher la zone de saisie permettant de definir le nombre d'heures et de minutes pour le decalage dans le temps
+ * Fonction permettant d\'afficher la zone de saisie permettant de definir 
+ * le nombre d\'heures et de minutes pour le décalage dans le temps
  * @param {type} param 
  */
 function afficherBloqueDecalageTemps(idCourse) {
@@ -21,21 +24,21 @@ function cacherBloqueDecalageTemps() {
 }
  
  /**
- * Fonction permettant le controle de la saisie de l'utilisateur pour les horaires : 
+  * Fonction permettant le controle de la saisie de l\'utilisateur pour les horaires : 
  */
 function calculateTime(el) {
 	var input = $(el);
 	var output = "12:00";
 	var reg=new RegExp("^[0-9]{2}[:]{1}[0-9]{2}$","g");		
 	
-	//	La chaine est null
+	//La chaine est null
 	if(input.value == null || input.value == "") {
 		output = null;
 	}
 	
-	//	La chaine se trouve au bon format
+	//La chaine se trouve au bon format
 	else if(reg.test(input.value)) {
-		//	Separation de l'heure par une expression reguliere
+		//Séparation de l\'heure par une expression réguliere
 		var input_value = input.value.split(':');
 		
 		var hours = input_value.first();
@@ -46,7 +49,7 @@ function calculateTime(el) {
 		output = hours + ':' + minutes;
 	}
 	
-	//	La chaine n'est pas au bon format
+	//La chaine n\'est pas au bon format
 	else {
 		output = "12:00";	
 	}
@@ -54,8 +57,9 @@ function calculateTime(el) {
 	input.value = output;
 }
 
-//	Fonction permettant de conserver les heures inferieures a� 24 et les minutes a� 60
-function keepUnderValue(input, under, defaultValue, dont_complete) {
+//Fonction permettant de conserver les heures inferieures à 24 et les minutes à 60
+function keepUnderValue(input, under, defaultValue, dont_complete) 
+{
 
 	if (input < under) {
 		out = input;

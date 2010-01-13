@@ -149,5 +149,3 @@
       </tbody>
     </table>
   </s:if>
-
-</div>		

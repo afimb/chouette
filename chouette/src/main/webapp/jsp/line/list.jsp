@@ -76,7 +76,7 @@
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
       </s:url>
-      <s:url id="exportChouette" action="exportChouette" namespace="/export">
+      <s:url id="exportChouette" action="exportChouetteLine" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
       </s:url>

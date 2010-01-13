@@ -77,25 +77,25 @@ public class ExportAction extends GeneriqueAction
     return SUCCESS;
   }
 
-  public String exportsChouettes() throws Exception
+  public String exportChouetteNetwork() throws Exception
   {
     log.debug("Export Chouette : toutes les lignes du reseau : " + idReseau);
     List<Ligne> lignes = reseauManager.getLignesReseau(idReseau);
     if ((lignes == null) || (lignes.size() == 0))
     {
-      addActionMessage("Ce réseau ne contient pas de lignes.");
+      addActionMessage(getText("export.network.noline"));
       return INPUT;
     }
     return exportLignes(lignes, "reseau_" + idReseau);
   }
 
-  public String exportsChouette() throws Exception
+  public String exportChouetteCompany() throws Exception
   {
     log.debug("Export Chouette : toutes les lignes du transporteur : " + idTransporteur);
     List<Ligne> lignes = transporteurManager.getLignesTransporteur(idTransporteur);
     if ((lignes == null) || (lignes.size() == 0))
     {
-      addActionMessage("Ce transporteur ne contient pas de lignes.");
+      addActionMessage(getText("export.company.noline"));
       return INPUT;
     }
     return exportLignes(lignes, "transporteur_" + idTransporteur);
@@ -157,13 +157,13 @@ public class ExportAction extends GeneriqueAction
     return SUCCESS;
   }
 
-  public String exportChouette() throws Exception
+  public String exportChouetteLine() throws Exception
   {
     log.debug("Export Chouette");
     // Creation d'un fichier temporaire
     temp = File.createTempFile("exportChouette", ".xml");
     // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();
+    temp.deleteOnExit();    
     ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(idLigne);
     try
     {
@@ -186,6 +186,7 @@ public class ExportAction extends GeneriqueAction
       }
       nomFichier = "C_INVALIDE_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
       lecteurFichierXML.ecrire(ligneLue, temp);
+      log.debug("return result success");
       return SUCCESS;
     }
     //	Nom du fichier de sortie

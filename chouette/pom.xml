@@ -254,14 +254,13 @@
       </resource>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
+	<excludes>
+	  <exclude>filtered/**</exclude>
+	 </excludes>
         <filtering>false</filtering>
       </resource>
       <resource>
         <directory>${basedir}/src/main/resources/filtered</directory>
-        <includes>
-          <include>*.xml</include>
-          <include>*.properties</include>
-        </includes>
         <filtering>true</filtering>
       </resource>
     </resources>

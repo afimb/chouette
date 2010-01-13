@@ -27,7 +27,7 @@
       <s:url id="editUrl" action="edit" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
       </s:url>
-      <s:url id="exportsChouettes" action="exportsChouettes" namespace="/export">
+      <s:url id="exportChouette" action="exportChouetteNetwork" namespace="/export">
         <s:param name="idReseau">${reseau.id}</s:param>
         <s:param name="origin">network</s:param>
       </s:url>
@@ -40,7 +40,7 @@
     </display:column>
     <display:column titleKey="table.title.name" property="ptNetwork.name" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportsChouettes}"><s:text name="text.reseau.export.chouette"/></s:a>
+      <s:a href="%{exportChouette}"><s:text name="text.reseau.export.chouette"/></s:a>
     </display:column>
   </display:table>
 </div>

@@ -49,7 +49,7 @@
 			<li><s:a href="%{urlITLMenu}" id="ITLMenu"><s:text name="text.ITL"/></s:a></li>
 
 			<%-- Import --%>	
-			<s:url id="urlImportMenu" action="Import_execute" namespace="/" includeParams="none"/>
+			<s:url id="urlImportMenu" action="execute" namespace="/upload" includeParams="none"/>
 			<li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>
 
 			<%-- Validation --%>	
@@ -57,7 +57,7 @@
 			<li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>
 			
 			<%-- Comparaison --%>
-			<s:url id="urlComparaisonMenu" action="LineFilesComparisonService_index" namespace="/" includeParams="none"/>			
+			<s:url id="urlComparaisonMenu" action="index" namespace="/lineFilesComparisonService" includeParams="none"/>			
 			<li><s:a href="%{urlComparaisonMenu}" id="comparaisonMenu"><s:text name="text.comparaison"/></s:a></li>
 		</ul>
 	</div>
@@ -237,7 +237,7 @@
 </s:else>
 
 <%-- Comparaison --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('comparator.action.title.index')">
+<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('index.title')">
 	<SCRIPT type="text/javascript">
 		$('comparaisonMenu').className='selectionne';
 	</SCRIPT>	
@@ -245,5 +245,5 @@
 <s:else>
 	<SCRIPT type="text/javascript">
 		$('comparaisonMenu').className='';
-	</SCRIPT>	
+	</SCRIPT>
 </s:else>
