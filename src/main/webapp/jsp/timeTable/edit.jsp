@@ -58,10 +58,10 @@
   <div class="panel">
     <s:div label="Dates" id="displaytag">
       <display:table uid="datesTable" name="dates" excludedParams="debut fin date tableauMarche.comment jour" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1"  export="false">
-        <display:column title="Date" sortable="true" headerClass="sortable" comparator="fr.certu.chouette.struts.util.DateComparator">
+        <display:column titleKey="table.title.date" sortable="true" headerClass="sortable" comparator="fr.certu.chouette.struts.util.DateComparator">
           <s:property value="%{dates[#attr.datesTable_rowNum - 1]}" />
         </display:column>
-        <display:column title="Action">
+        <display:column titleKey="table.title.action">
           <s:url id="deleteUrl" action="deleteDate" namespace="/timeTable">
             <s:param name="idTableauMarche" value="%{id}"/>
             <s:param name="idxDate" value="#attr.datesTable_rowNum"/>
@@ -103,13 +103,13 @@
     <!-- Affichage liste des périodes -->
     <div id="displaytag">
       <display:table uid="periodsTable" name="periodes" excludedParams="debut fin date tableauMarche.comment jour" sort="list" pagesize="10" defaultorder="ascending" defaultsort="2" export="false">
-        <display:column title="Debut" sortable="true" headerClass="sortable">
+        <display:column titleKey="table.title.begin" sortable="true" headerClass="sortable">
           <s:property value="%{periodes[#attr.periodsTable_rowNum - 1].debut}" />
         </display:column>
-        <display:column title="Fin" sortable="true" headerClass="sortable">
+        <display:column titleKey="table.title.end" sortable="true" headerClass="sortable">
           <s:property value="%{periodes[#attr.periodsTable_rowNum - 1].fin}" />
         </display:column>
-        <display:column title="Action">
+        <display:column titleKey="table.title.action">
           <s:url id="deleteUrl" action="deletePeriod" namespace="/timeTable">
             <s:param name="idTableauMarche" value="%{id}"/>
             <s:param name="idxPeriod" value="#attr.periodsTable_rowNum"/>

@@ -8,7 +8,7 @@
       <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
       <%@ include file='/jsp/commun/meta.jsp' %>
       <decorator:head />
-      <title>Chouette - <decorator:title default="Bienvenue" /></title>
+      <title><s:text name="main.title"/><decorator:title default="Bienvenue" /></title>
       <link rel="stylesheet" type="text/css" href="<s:url value='/css/chouette_ninoxe.css' includeParams='none'/>"/>
       <script language="JavaScript" type="text/javascript" src="<s:url value='/js/chouette.js' includeParams='none'/>" ></script>
       <script language="JavaScript" type="text/javascript" src="<s:url value='/js/prototype/prototype.js' includeParams='none'/>" ></script>

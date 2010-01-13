@@ -19,17 +19,18 @@
 <div>
   <s:if test="useHastus == 'true'">
     <FIELDSET align="center" style="width: 500px;">
-      <LEGEND><b>Import des Correspondances</b></LEGEND>
+      <LEGEND><b><s:text name="text.connectionlink.import"/></b></LEGEND>
       <s:form id="uploadCorrespondancesForm1" enctype="multipart/form-data" method="POST">
-        <s:file name="fichier" label="%{getText('action.browse')}" />
+        <s:file name="fichier" />
         <s:hidden name="fichierContentType" value="text/xml; charset=UTF-8"/>
-        <s:submit value="Import Correspondances" formId="uploadCorrespondancesForm1" action="Import_importCorrespondances" />
+        <s:submit value="%{getText('action.import.connectionLink')}" formId="uploadCorrespondancesForm1" action="Import_importCorrespondances" />
       </s:form>
     </FIELDSET>
+    <br>
     <FIELDSET align="center" style="width: 500px;">
-      <LEGEND><b>Export des Correspondances</b></LEGEND>
-      <s:form id="uploadCorrespondancesForm2" enctype="multipart/form-data" method="POST">
-        <s:submit value="Export Correspondances" formId="uploadCorrespondancesForm2" action="Export_exportCorrespondances" />
+      <LEGEND><b><s:text name="text.connectionlink.export"/></b></LEGEND>
+      <s:form id="uploadCorrespondancesForm2" enctype="multipart/form-data" method="POST" namespace="/export">
+        <s:submit value="%{getText('action.export.connectionLink')}" formId="uploadCorrespondancesForm2" action="exportCorrespondances" />
       </s:form>
     </FIELDSET>
   </s:if>
