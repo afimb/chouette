@@ -36,6 +36,8 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   private static final long serialVersionUID = 6964959559153714259L;
   private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
 
+  private static final String INPUT_SAVE = "input_save";
+  
   // Model Linked
   private Correspondance correspondanceModel = new Correspondance();  
   
@@ -61,7 +63,18 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   
   // Technical attribute 
   // Added parameter to avoid ognl exception
-  //private String operationMode = "NONE";  
+  private String operationMode = "NONE";  
+  
+  public String getOperationMode() 
+  {
+	return operationMode;
+  }
+
+  public void setOperationMode(String operationMode) 
+  {
+	  this.operationMode = operationMode;
+  }
+
   private static Map<String, String> ops = new HashMap<String, String>();
   static
   {
@@ -87,6 +100,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 		  correspondanceModel = new Correspondance();
 		  try 
 		  {
+			  // Initialisation for list action
 			  connectionLinks = correspondanceManager.lire();
 		  }
 		  catch(Exception e)
@@ -97,14 +111,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	  else
 	  {
 		  log.debug("Prepare with id : " + getIdCorrespondance());
-		  correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
-		  if (correspondanceModel.getIdDepart() != null)
+		  try 
 		  {
-			  this.start = positionGeographiqueManager.lire(correspondanceModel.getIdDepart());
+			  this.initStartEndStopAreas();
 		  }
-		  if (correspondanceModel.getIdArrivee() != null)
-		  {
-			  this.end = positionGeographiqueManager.lire(correspondanceModel.getIdArrivee());
+		  catch(Exception e)
+		  {		  
+			  log.error("initStartEndStopAreas failed : " + e.getMessage());
 		  }
 	  }
 	  log.debug("prepare ended");
@@ -130,6 +143,26 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	  }
 	  return connectionsLinks;
   }
+  
+  /**
+   * Init connection link departure (start) and arrival (end) 
+   */
+  private void initStartEndStopAreas()
+  {
+	  
+	  correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
+	  // This case could occurs if user 2nd step creation is bypass, as
+	  // start end constraints aren't checked
+	  if (correspondanceModel.getIdDepart() != null)
+	  {
+		  this.start = positionGeographiqueManager.lire(correspondanceModel.getIdDepart());
+	  }
+	  if (correspondanceModel.getIdArrivee() != null)
+	  {
+		  this.end = positionGeographiqueManager.lire(correspondanceModel.getIdArrivee());
+	  }
+  }
+  
   
   /**
    * Connection Links Import
@@ -213,15 +246,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 			}			
 			errMsg += e.getMessage();
 			log.debug(errMsg);
-		}
+		}		
 		
-		
-		List<Correspondance> connectionsLinks = getConnectionsLinks();
-		if (null == connectionsLinks)
+		this.connectionLinks = getConnectionsLinks();
+		if (null == connectionLinks)
 		{
 			addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
 		}
-		request.put("correspondances", connectionsLinks);
 		return REDIRECTLIST;
   }
   /********************************************************
@@ -230,15 +261,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   
   @SkipValidation
   public String list()
-  {
-	  //List<Correspondance> connectionsLinks = getConnectionsLinks();
+  {	  
 	  this.connectionLinks = getConnectionsLinks();
 	  if (null == connectionLinks)
 	  {
 		  addActionError("Unread ConnectionLinks : correspondanceManager.lire() failed");
 		  return INPUT;
 	  }
-	  //request.put("correspondances", connectionsLinks);
 	  return LIST;
   }
   
@@ -249,19 +278,20 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   }
     
   public String save()
-  {
+  {	  	  
 	  try
 	  {
-		  correspondanceManager.creer(getModel());
-		  addActionMessage(getText("connectionlink.create.ok"));
+		  correspondanceManager.creer(getModel());		  		 
+		  addActionMessage(getText ("connectionlink.create.ok"));		  
 	  }
 	  catch (Exception exception)
 	  {
 		  addActionError(getText("connectionlink.create.ko"));
-		  return REDIRECTEDIT;
+		  log.error("ConnectionLink creation failed with message : " + exception.getMessage());
+		  return INPUT_SAVE;
 	  }
-	  log.debug("Create connectionLink with id : " + getModel().getId());    
-	  return REDIRECTLIST;
+	  this.setIdCorrespondance(correspondanceModel.getId());
+	  return REDIRECTEDIT;
   }
 
 //@Action(value="edit", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "RETRIEVE"})})
@@ -277,13 +307,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 public String update()
   {
 	log.debug("Update connectionLink with id : " + getModel().getId());
+	
     try
     {
     	correspondanceManager.modifier(getModel());
     	String msg = getText("connectionlink.update.ok");
     	log.debug(msg);
     	addActionMessage(msg);
-    	
     	return REDIRECTLIST;
     }
     catch (Exception e)

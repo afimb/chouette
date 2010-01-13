@@ -248,8 +248,7 @@
 			</result>
 			<result name="edit">/jsp/line/edit.jsp</result>
 			<result name="list">/jsp/line/list.jsp</result>
-			<result name="input">/jsp/line/edit.jsp
-      </result>
+			<result name="input">/jsp/line/edit.jsp</result>
 		</action>
 	</package>
 
@@ -299,15 +298,11 @@
 				<param name="idItineraire">${idItineraire}</param>
 				<param name="operationMode">RETRIEVE</param>
 			</result>
-			<result name="edit">/jsp/route/edit.jsp
-      </result>
-			<result name="list">/jsp/route/list.jsp
-      </result>
-			<result name="input">/jsp/route/edit.jsp
-      </result>
-			<result name="search">/jsp/route/search.jsp
-			</result>
-		</action>
+			<result name="edit">/jsp/route/edit.jsp</result>
+			<result name="list">/jsp/route/list.jsp</result>
+			<result name="input">/jsp/route/edit.jsp</result>
+			<result name="search">/jsp/route/search.jsp</result>
+	  	</action>
 	</package>
 
 	<!-- Mise à jour des données du modèle boardingPosition -->
@@ -381,18 +376,23 @@
 			<result name="input" type="redirectAction">
 				<param name="actionName">list</param>
 				<param name="operationMode">RETRIEVE</param>
-				<param name="connectionLinks">${connectionLinks}</param>			
+				<!--<param name="connectionLinks">${connectionLinks}</param>-->			
 			</result>
 		</action>		
 		<action name="save" method="save" class='ConnectionLinkActionBean'>
-			<result name="redirectList" type="redirectAction">
-				<param name="actionName">list</param>
-				<param name="operationMode">RETRIEVE</param>				
+			<result name="redirectEdit" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>				
 			</result>		
 			<result name="input" type="redirectAction">
 				<param name="actionName">edit</param>
 				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>	
+				<param name="idCorrespondance">${idCorrespondance}</param>
+			</result>
+			<result name="input_save" type="redirectAction">
+				<param name="actionName">edit</param>
+				<param name="operationMode">RETRIEVE</param>
 			</result>
 		</action>
 		
