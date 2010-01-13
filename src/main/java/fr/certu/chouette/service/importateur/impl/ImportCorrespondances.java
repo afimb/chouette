@@ -25,7 +25,11 @@ public class ImportCorrespondances implements IImportCorrespondances {
 	
 	private ChouetteDriverManagerDataSource managerDataSource;
 	private ICorrespondanceManager  correspondanceManager;
-	private SimpleDateFormat        sdf                   = new SimpleDateFormat("HH:mm:ss");
+	public ICorrespondanceManager getCorrespondanceManager() {
+		return correspondanceManager;
+	}
+
+	private SimpleDateFormat  sdf = new SimpleDateFormat("HH:mm:ss");
 	
 	public List<String> lire(String canonicalPath) {
 		Connection     connexion   = null;

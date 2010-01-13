@@ -473,17 +473,8 @@
   <bean id="lecteurFichierXML"
     		class="fr.certu.chouette.service.xml.LecteurFichierXML">
   </bean>
-    <!--
-    <bean id="ExchangeableAmivifLineComparator"
-    	scope="prototype"
-    	class="fr.certu.chouette.echange.comparator.ExchangeableAmivifLineComparator">
-    		<property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
-			<property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
- 			<property name="amivifAdapter" ref="amivifAdapter"/>
-    </bean>
-    -->
-    
-    <!-- Modules struts -->
+  
+  <!-- Modules struts -->
   <bean id="actionLock" class="fr.certu.chouette.service.actionLock.ActionLock"
   		scope="singleton">
   	<property name="timeout" value="${action.lock.timeout}" />
@@ -570,8 +561,8 @@
     
   <bean id="ConnectionLinkActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
-    <property name="correspondanceManager" ref="correspondanceManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    <property name="importateurCorrespondances" ref="importCorrespondances"/>
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>    
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
     
@@ -582,7 +573,7 @@
   </bean>
     
   <bean id="ImportActionBean" scope="prototype"
-		class="fr.certu.chouette.struts.ImportAction">
+		class="fr.certu.chouette.struts.upload.ImportAction">
     <property name="importateur" ref="importateur"/>
     <property name="lecteurCSV" ref="lecteurCSV"/>
     <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
@@ -605,9 +596,18 @@
     <property name="usePegase" value="${import.csv.pegase}"/>
   </bean>
     
-  <bean id="LineFilesComparisonService" scope="prototype"
-		class="fr.certu.chouette.struts.LineFilesComparisonServiceAction">
+  <bean id="LineFilesComparisonServiceBean" scope="prototype"
+		class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
     <property name="identificationManager" ref="identificationManager"/>
+      <property name="exchangeFormat" value="Chouette"/>      
+      <property name="enableVerboseMode" value="false"/> 
+         
+      <property name="availableExchangeFormats">
+      <map>
+         <entry key="Chouette"><ref bean="ExchangeableChouetteLineComparator"/></entry> 
+         <entry key="Stif"><ref bean="ExchangeableAmivifLineComparator"/></entry> 
+      </map>   
+      </property>    
   </bean>
 
   <bean id="Validation" scope="prototype"
