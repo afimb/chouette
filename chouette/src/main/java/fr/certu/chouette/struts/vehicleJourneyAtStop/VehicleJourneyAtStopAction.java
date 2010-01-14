@@ -454,7 +454,9 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     this.positionGeographiqueManager = positionGeographiqueManager;
   }
 
-  // MISC ____________________________________________________________________________________
+  /********************************************************
+   *                        OTHERS                        *
+   ********************************************************/
   private boolean areBothDefinedAndDifferent(Date heureSaisie, Horaire horaireBase)
   {
     return heureSaisie != null && horaireBase != null && horaireBase.getDepartureTime() != null && (horaireBase.getDepartureTime().compareTo(heureSaisie) != 0);
@@ -471,6 +473,16 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     int indiceCourse = indice / arretsItineraire.size();
     return courses.get(indiceCourse).getId();
   }
+
+  public String getRouteName()
+  {
+    if(idItineraire != null)
+      return itineraireManager.lire(idItineraire).getName();
+    else
+      return "";
+  }
+
+
 
   /********************************************************
    *                           ERROR                      *

@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.modele.Itineraire;
+import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.service.database.IItineraireManager;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.struts.GeneriqueAction;
@@ -322,5 +323,14 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   public void setIdRetour(String idRetour)
   {
     this.idRetour = idRetour;
+  }
+
+  public String getLineName()
+  {
+    log.debug("lineId : " + lineId);
+    if(lineId != null)
+      return lineManager.lire(lineId).getName();
+    else
+      return "";
   }
 }
