@@ -29,15 +29,11 @@
 			<li><s:a href="%{urlTableauMarchesMenu}" id="tableauMarchesMenu"><s:text name="text.tableauMarches"/></s:a></li>
 
 			<%-- Arrets physiques --%>
-			<s:url id="urlArretPhysiquesMenu" action="list" namespace="/boardingPosition" includeParams="none">
-				<s:param name="typePositionGeographique">arretPhysique</s:param>
-			</s:url>			
+			<s:url id="urlArretPhysiquesMenu" action="list" namespace="/boardingPosition" includeParams="none"/>
 			<li><s:a href="%{urlArretPhysiquesMenu}" id="arretPhysiquesMenu"><s:text name="text.arretPhysiques"/></s:a></li>
 
 			<%-- Zones --%>			
-			<s:url id="urlZonesMenu" action="list" namespace="/stopPlace" includeParams="none">
-				<s:param name="typePositionGeographique">zone</s:param>
-			</s:url>			
+			<s:url id="urlZonesMenu" action="list" namespace="/stopPlace" includeParams="none" />
 			<li><s:a href="%{urlZonesMenu}" id="zonesMenu"><s:text name="text.zones"/></s:a></li>
 
 			<%-- Correspondances --%>	
@@ -157,7 +153,8 @@
 <%-- Arrets physiques --%>
 <s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.arretPhysique.list.title')
 || filAriane.cleTexteDernierElementFilAriane == getText('text.arretPhysique.create.title')
-|| filAriane.cleTexteDernierElementFilAriane == getText('text.arretPhysique.update.title')">
+|| filAriane.cleTexteDernierElementFilAriane == getText('text.arretPhysique.update.title')
+|| filAriane.cleTexteDernierElementFilAriane == getText('text.boardingPosition.search.title')">
 	<SCRIPT type="text/javascript">
 		$('arretPhysiquesMenu').className='selectionne';
 	</SCRIPT>	
@@ -172,7 +169,7 @@
 <s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.zone.list.title')
 || filAriane.cleTexteDernierElementFilAriane == getText('text.zone.create.title')
 || filAriane.cleTexteDernierElementFilAriane == getText('text.zone.update.title')
-|| filAriane.cleTexteDernierElementFilAriane == getText('text.positionGeographique.search.title')">
+|| filAriane.cleTexteDernierElementFilAriane == getText('text.stopPlace.search.title')">
 	<SCRIPT type="text/javascript">
 		$('zonesMenu').className='selectionne';
 	</SCRIPT>	
