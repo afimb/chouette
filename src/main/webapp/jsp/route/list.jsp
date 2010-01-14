@@ -6,7 +6,7 @@
 <s:url id="urlItineraires" action="list" namespace="/route" includeParams="none">
   <s:param name="idLigne" value="%{idLigne}" />
 </s:url>
-<s:property value="filAriane.addElementFilAriane(getText('text.itineraire.list.title'), ligne.name, #urlItineraires)"/>
+<s:property value="filAriane.addElementFilAriane(getText('text.itineraire.list.title'), lineName, #urlItineraires)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
@@ -21,7 +21,9 @@
   <FIELDSET align="center" style="width: 500px;">
     <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/import" enctype="multipart/form-data" method="POST">
-      <s:file name="fichier" label="%{getText('action.browse')}"/>
+      <s:file label="%{getText('text.route.file')}" name="fichier" accept="text/csv" title="Test" id="Ouh">
+        <s:submit value="test"/>
+      </s:file>
       <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:submit value="%{getText('action.import.csv')}" formId="uploadCSVForm"/>

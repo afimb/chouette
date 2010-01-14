@@ -15,7 +15,7 @@
 <s:url id="urlHorairesDePassages" action="list" namespace="/vehicleJourneyAtStop" includeParams="none">
   <s:param name="idItineraire" value="%{idItineraire}" />
 </s:url>
-<s:property value="filAriane.addElementFilAriane(getText('text.horairesDePassage.list.title'), itineraire.name, #urlHorairesDePassages)"/>
+<s:property value="filAriane.addElementFilAriane(getText('text.horairesDePassage.list.title'), routeName, #urlHorairesDePassages)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
