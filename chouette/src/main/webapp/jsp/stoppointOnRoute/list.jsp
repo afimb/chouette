@@ -66,8 +66,8 @@
     </div>
     <div>
       <s:reset value="%{getText('action.cancel')}" onclick="annulerCreationArret();" />
-      <s:submit formId="insererArretForm" action="insererArret" value="Insérer Un Nouvel Arrèt" />
-      <s:submit formId="insererArretForm" action="insererArret" value="Insérer l'Arrèt Existant" />
+      <s:submit formId="insererArretForm" action="insererArret" value="%{getText('stoppointOnRoute.insert.new')}" />
+      <s:submit formId="insererArretForm" action="insererArret" value="%{getText('stoppointOnRoute.insert.existing')}" />
     </div>
 
   </s:form>
@@ -137,7 +137,7 @@
                     <s:property value="getArretPhysique(id).name"/>
                   </s:if>
                   <s:else>
-                    <s:text name="arretSurItineraire.anonyme"></s:text> (<s:text name="getArretPhysique(id).objectId"/>)
+                    <s:text name="arretSurItineraire.anonyme"/> (<s:property value="getArretPhysique(id).objectId"/>)
                   </s:else>
                 </s:a>
               </TD>
@@ -163,7 +163,7 @@
       </TBODY>
     </table>
     <s:if test="arrets.size > 0">
-      <s:submit name="action" id="Bpermutation" action="deplacerArret" value="Valider Permutation" formId="deplacementArretForm"/>
+      <s:submit name="action" id="Bpermutation" action="deplacerArret" value="%{getText('stoppointOnRoute.validate.exchange')}" formId="deplacementArretForm"/>
     </s:if>
   </s:form>
 </div>
