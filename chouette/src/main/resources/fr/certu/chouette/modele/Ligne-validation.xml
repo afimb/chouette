@@ -1,6 +1,6 @@
-<!DOCTYPE validators PUBLIC 
-"-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
-"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
 
 <validators>
   <field name="name">
@@ -20,6 +20,18 @@
       <param name="fieldName">publishedName</param>
       <param name="maxLength">255</param>
       <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="idReseau">
+    <field-validator type="long">
+      <param name="min">1</param>
+      <message key="errors.required"/>
+	</field-validator>
+  </field>
+  <field name="idTransporteur">
+    <field-validator type="long">
+      <param name="min">1</param>
+      <message key="errors.required"/>
     </field-validator>
   </field>
   <field name="registrationNumber" >

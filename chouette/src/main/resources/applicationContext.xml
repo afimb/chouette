@@ -8,19 +8,21 @@
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-   <!--  default-autowire="no" -->
+ 
 
   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="location" value="classpath:/spring.properties"/>
   </bean>
   
+  <!--  empty file : unused
   <import resource="classpath:/externalModule.xml" />
-  <import resource="classpath:/importCSVContext.xml" />
-  <import resource="classpath:/genericCSVContext.xml" />
-  <import resource="classpath:/hastusContext.xml" />
-  <import resource="classpath:/pegaseContext.xml" />
-  <import resource="classpath:/altibusContext.xml" />
-  <import resource="classpath:/comparatorContext.xml" />
+   -->
+  <import resource="classpath:/spring_modules/importCSVContext.xml" />
+  <import resource="classpath:/spring_modules/genericCSVContext.xml" />
+  <import resource="classpath:/spring_modules/hastusContext.xml" />
+  <import resource="classpath:/spring_modules/pegaseContext.xml" />
+  <import resource="classpath:/spring_modules/altibusContext.xml" />
+  <import resource="classpath:/spring_modules/comparatorContext.xml" />
 
 <!-- Prise en compte de la pérennité --> 
     <!-- bean id="perenniteAspect" class="fr.archivage.PerenniteAspect" />
@@ -581,7 +583,6 @@
     <property name="lecteurCVSPegase" ref="lecteurCSVPegase"/>
     <property name="lecteurXMLAltibus" ref="lecteurXMLAltibus"/>
     <property name="identificationManager" ref="identificationManager"/>
-    <property name="importCorrespondances" ref="importCorrespondances"/>
     <property name="importHorairesManager" ref="importHorairesManager"/>
     <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
     <property name="lecteurFichierXML" ref="lecteurFichierXML"/>

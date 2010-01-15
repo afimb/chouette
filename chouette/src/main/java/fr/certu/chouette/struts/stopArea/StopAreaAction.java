@@ -103,7 +103,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   {
     return idPositionGeographique;
   }
-  
+
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
@@ -118,7 +118,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (getIdPositionGeographique() == null)
     {
       positionGeographiqueModel = new PositionGeographique();
-    } else
+    }
+    else
     {
       positionGeographiqueModel = positionGeographiqueManager.lire(getIdPositionGeographique());
     }
@@ -205,7 +206,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       areaTypes.add(ChouetteAreaType.QUAY);
       areaTypes.add(ChouetteAreaType.BOARDINGPOSITION);
-    } else
+    }
+    else
     {
       areaTypes.add(ChouetteAreaType.STOPPLACE);
       areaTypes.add(ChouetteAreaType.COMMERCIALSTOPPOINT);
@@ -247,7 +249,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       addActionMessage(getText("arretPhysique.create.ok"));
       log.debug("Create boardingPosition with id : " + positionGeographiqueModel.getId());
-    } else
+    }
+    else
     {
       addActionMessage(getText("zone.create.ok"));
       log.debug("Create stopPlace with id : " + positionGeographiqueModel.getId());
@@ -271,7 +274,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       addActionMessage(getText("arretPhysique.update.ok"));
       log.debug("Update boardingPosition with id : " + positionGeographiqueModel.getId());
-    } else
+    }
+    else
     {
       addActionMessage(getText("zone.update.ok"));
       log.debug("Update stopPlace with id : " + positionGeographiqueModel.getId());
@@ -288,7 +292,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       addActionMessage(getText("arretPhysique.delete.ok"));
       log.debug("Delete boardingPosition with id : " + positionGeographiqueModel.getId());
-    } else
+    }
+    else
     {
       addActionMessage(getText("zone.delete.ok"));
       log.debug("Delete stopPlace with id : " + positionGeographiqueModel.getId());
@@ -303,7 +308,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
     {
       addActionMessage(getText("arretPhysique.cancel.ok"));
-    } else
+    }
+    else
     {
       addActionMessage(getText("zone.cancel.ok"));
     }
@@ -345,7 +351,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
           case ChouetteAreaType.QUAY_TYPE:
             break;
         }
-      } else if ("addFather".equals(getActionSuivante()))
+      }
+      else if ("addFather".equals(getActionSuivante()))
       {
         switch (positionGeographiqueModel.getAreaType().getType())
         {
@@ -371,43 +378,42 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   public String searchResults()
   {
     List<PositionGeographique> positionGeographiquesResultat = new ArrayList<PositionGeographique>();
-    if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
-    {
-      positionGeographiquesResultat = positionGeographiqueManager.lireArretsPhysiques();
-      presenceItineraireParIdPhysique = positionGeographiqueManager.getPresenceItineraireParPhysiqueId();
-    } else
-    {
-      // Clause areaType
-      Collection<String> areas = new HashSet<String>();
-      if (searchCriteria.getAreaType() != null)
-      {
-        areas.add(searchCriteria.getAreaType().toString());
-      } else
-      {
-        if (EnumerationApplication.AUTHORIZEDTYPESET_C.equals(authorizedType))
-        {
-          areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
-        } else if (EnumerationApplication.AUTHORIZEDTYPESET_CS.equals(authorizedType))
-        {
-          areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
-          areas.add(ChouetteAreaType.STOPPLACE.toString());
-        } else if (EnumerationApplication.AUTHORIZEDTYPESET_QB.equals(authorizedType))
-        {
-          areas.add(ChouetteAreaType.QUAY.toString());
-          areas.add(ChouetteAreaType.BOARDINGPOSITION.toString());
-        } else if (EnumerationApplication.AUTHORIZEDTYPESET_S.equals(authorizedType))
-        {
-          areas.add(ChouetteAreaType.STOPPLACE.toString());
-        }
-      }
 
-      IClause searchClause = new AndClause(
-              ScalarClause.newIlikeClause("name", searchCriteria.getName()),
-              ScalarClause.newIlikeClause("countryCode", searchCriteria.getCountryCode()),
-              VectorClause.newInClause("areaType", areas));
-
-      positionGeographiquesResultat = positionGeographiqueManager.select(searchClause);
+    // Clause areaType
+    Collection<String> areas = new HashSet<String>();
+    if (searchCriteria.getAreaType() != null)
+    {
+      areas.add(searchCriteria.getAreaType().toString());
     }
+    else
+    {
+      if (EnumerationApplication.AUTHORIZEDTYPESET_C.equals(authorizedType))
+      {
+        areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
+      }
+      else if (EnumerationApplication.AUTHORIZEDTYPESET_CS.equals(authorizedType))
+      {
+        areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
+        areas.add(ChouetteAreaType.STOPPLACE.toString());
+      }
+      else if (EnumerationApplication.AUTHORIZEDTYPESET_QB.equals(authorizedType))
+      {
+        areas.add(ChouetteAreaType.QUAY.toString());
+        areas.add(ChouetteAreaType.BOARDINGPOSITION.toString());
+      }
+      else if (EnumerationApplication.AUTHORIZEDTYPESET_S.equals(authorizedType))
+      {
+        areas.add(ChouetteAreaType.STOPPLACE.toString());
+      }
+    }
+
+    IClause searchClause = new AndClause(
+            ScalarClause.newIlikeClause("name", searchCriteria.getName()),
+            ScalarClause.newIlikeClause("countryCode", searchCriteria.getCountryCode()),
+            VectorClause.newInClause("areaType", areas));
+
+    positionGeographiquesResultat = positionGeographiqueManager.select(searchClause);
+
     request.put("positionGeographiquesResultat", positionGeographiquesResultat);
     return SEARCH;
   }
@@ -538,11 +544,13 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
       if (positionGeographiqueModel.getAreaType().getType() == ChouetteAreaType.QUAY_TYPE || positionGeographiqueModel.getAreaType().getType() == ChouetteAreaType.BOARDINGPOSITION_TYPE)
       {
         return ARRETPHYSIQUE;
-      } else
+      }
+      else
       {
         return ZONE;
       }
-    } else
+    }
+    else
     {
       // Récupération du namespace pour basculer sur des arrèts physiques ou zones
       return ActionContext.getContext().getActionInvocation().getProxy().getNamespace();
@@ -693,7 +701,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (positionGeographiqueModel.getAreaType().equals(ChouetteAreaType.BOARDINGPOSITION) || positionGeographiqueModel.getAreaType().equals(ChouetteAreaType.QUAY))
     {
       positionGeographiques = positionGeographiqueManager.lireArretsPhysiques();
-    } else
+    }
+    else
     {
       positionGeographiques = positionGeographiqueManager.lireZones();
     }
@@ -703,7 +712,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
       if (positionGeographiques.indexOf(positionGeographique) == positionGeographiques.size() - 1)
       {
         resultat += "\"" + positionGeographique.getName() + "\"" + ": " + positionGeographique.getId();
-      } else
+      }
+      else
       {
         resultat += "\"" + positionGeographique.getName() + "\"" + ": " + positionGeographique.getId() + ",";
       }

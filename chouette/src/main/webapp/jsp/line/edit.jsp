@@ -21,10 +21,10 @@
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
   <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdReseau) et doit être une chaîne de caractère obligatoirement --%>
-  <s:select key="idReseau" name="idReseau" label="%{getText('idReseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="-1" headerValue="%{getText('aucunReseau')}">
+  <s:select key="idReseau" required="true" name="idReseau" label="%{getText('idReseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="-1" headerValue="%{getText('aucunReseau')}">
   </s:select>
   <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdTransporteur) et doit être une chaîne de caractère obligatoirement --%>
-  <s:select key="idTransporteur" name="idTransporteur" label="%{getText('idTransporteur')}" value="%{idTransporteur}" list="transporteurs" listKey="id" listValue="name"  headerKey="-1" headerValue="%{getText('aucunTransporteur')}">
+  <s:select key="idTransporteur" required="true" rename="idTransporteur" label="%{getText('idTransporteur')}" value="%{idTransporteur}" list="transporteurs" listKey="id" listValue="name"  headerKey="-1" headerValue="%{getText('aucunTransporteur')}">
   </s:select>
   <s:textfield key="name" required="true"/>
   <s:textfield key="publishedName" />

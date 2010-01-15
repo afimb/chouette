@@ -40,16 +40,13 @@
 <%-- Filtre --%>
 <div>
   <s:form action="list" namespace="/boardingPosition">
-    <s:hidden name="typePositionGeographique" value="%{typePositionGeographique}" />
     <s:select name="idReseau" label="%{getText('filtre.select.reseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
     <s:textfield name="nomArret" label="%{getText('filtre.select.nomArret')}"></s:textfield>
     <s:textfield name="codeInsee" label="%{getText('filtre.select.codeInsee')}"></s:textfield>
     <s:submit value="%{getText('action.filtrer')}"/>
   </s:form>
 </div>
-
 <br>
-
 <%-- Actions --%>
 <div class="actions">
   <s:url action="add"  namespace="/boardingPosition" id="editPositionGeographique">
@@ -57,9 +54,7 @@
   </s:url>
   <s:a href="%{editPositionGeographique}"><b><s:text name="text.arretPhysique.create.button"/></b></s:a>
 </div>
-
 <br/>
-
 <%-- FUSION D'UN ARRET --%>
 <div id="fusionnerArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
   <s:form id="fusionnerArretForm" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();" validate="true">

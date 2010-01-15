@@ -19,6 +19,7 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 
 public class TimeTableAction extends GeneriqueAction implements Preparable, ModelDriven<TableauMarche>
 {
+
   private static final Log log = LogFactory.getLog(TimeTableAction.class);
   private ITableauMarcheManager tableauMarcheManager;
   private IReseauManager reseauManager;
@@ -109,12 +110,14 @@ public class TimeTableAction extends GeneriqueAction implements Preparable, Mode
   {
     tableauMarcheManager.creer(tableauMarcheModel);
 
-    setMappedRequest(SAVE);
+    setMappedRequest(UPDATE);
     String[] args = new String[1];
     args[0] = tableauMarcheModel.getObjectId();
     addActionMessage(getText("tableauMarche.create.ok", args));
+    // Update timetable id to update timetable
+    setIdTableauMarche(tableauMarcheModel.getId());
     log.debug("Create tableauMarche with id : " + tableauMarcheModel.getId());
-    return REDIRECTLIST;
+    return REDIRECTEDIT;
   }
 
   @SkipValidation
@@ -309,7 +312,7 @@ public class TimeTableAction extends GeneriqueAction implements Preparable, Mode
   {
     this.commentaire = commentaire;
   }
-  
+
   public Date getDateDebutPeriode()
   {
     return dateDebutPeriode;

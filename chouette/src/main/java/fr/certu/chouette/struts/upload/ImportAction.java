@@ -66,7 +66,6 @@ public class ImportAction extends GeneriqueAction {
 	private              String                 usePegase;
 	private              IIdentificationManager identificationManager;
 	private				 IImportHorairesManager importHorairesManager;
-	private              IImportCorrespondances importCorrespondances;
 	private				 Long					idLigne;
 	private              String                 logFileName;
 	private              IReducteur             reducteur;
@@ -237,63 +236,6 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	/**
-	public String importCorrespondances() 
-	{
-		logger.debug("importCorrespondances");
-		
-		String canonicalPath = null;
-		try 
-		{
-			canonicalPath = fichier.getCanonicalPath();
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			addActionError("unvalid path file : " + e.getMessage());
-			return "input_connectionLink";
-		}
-		try 
-		{
-			List<String> messages = importCorrespondances.lire(canonicalPath);
-			if (messages != null)
-			{
-				if (messages.size() > 0) 
-				{
-					for (String msg : messages)
-						addActionError(msg);
-				}
-				logger.debug("importCorrespondances read connectionLinks has errors but run");
-				return "input_connectionLink";
-			}
-			log.debug("importCorrespondances full succedded");
-			return "success_connectionLink";
-		}
-		catch (ServiceException e)
-		{
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
-			{
-				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
-				addActionError(message);
-			}
-			else 
-			{
-				//TODO what is that ? to clean
-				String defaut = "defaut";
-				List<String> args = new ArrayList<String>();
-				args.add("aaa");
-				args.add("bbb");
-				args.add("ccc");
-				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
-				message += e.getMessage();
-				addActionError(message);
-			}
-			logger.debug("importCorrespondances read connectionLinks failed --service exception");
-			return "input_connectionLink";
-		}
-	}
-	**/
 	public String importCSVGeneric() {
 		String canonicalPath = null;
 		try {
@@ -748,10 +690,7 @@ public class ImportAction extends GeneriqueAction {
 	public void setIdentificationManager(IIdentificationManager identificationManager) {
 		this.identificationManager = identificationManager;
 	}
-	
-	public void setImportCorrespondances(IImportCorrespondances importCorrespondances) {
-		this.importCorrespondances = importCorrespondances;
-	}
+
 	
 	public void setImportHorairesManager(IImportHorairesManager importHorairesManager) {
 		this.importHorairesManager = importHorairesManager;

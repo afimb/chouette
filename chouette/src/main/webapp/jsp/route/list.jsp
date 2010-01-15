@@ -6,7 +6,7 @@
 <s:url id="urlItineraires" action="list" namespace="/route" includeParams="none">
   <s:param name="idLigne" value="%{idLigne}" />
 </s:url>
-<s:property value="filAriane.addElementFilAriane(getText('text.itineraire.list.title'), ligne.name, #urlItineraires)"/>
+<s:property value="filAriane.addElementFilAriane(getText('text.itineraire.list.title'), lineName, #urlItineraires)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
@@ -21,11 +21,13 @@
   <FIELDSET align="center" style="width: 500px;">
     <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/upload" enctype="multipart/form-data" method="POST">
-      <s:file name="fichier" label="%{getText('action.browse')}"/>
+      <s:file label="%{getText('text.route.file')}" name="fichier" accept="text/csv" title="Test" id="Ouh">
+        <s:submit value="test"/>
+      </s:file>
       <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:hidden name="operationMode" value="STORE" />
-      <s:submit value="Import fichier CSV" formId="uploadCSVForm"/>
+      <s:submit value="%{getText('action.import.csv')}" formId="uploadCSVForm"/>
     </s:form>
   </FIELDSET>
 </div>
@@ -41,7 +43,7 @@
         <TH><s:text name="table.itineraires.sens"/></TH>
         <TH><s:text name="table.itineraires.horairesDePassage"/></TH>
         <TH><s:text name="table.itineraires.arrets"/></TH>
-        <TH>exports</TH>
+        <TH><s:text name="table.itineraires.export"/></TH>
       </TR>
     </THEAD>
     <TBODY>
@@ -124,7 +126,7 @@
               <s:param name="idLigne" value="idLigne" />
               <s:param name="origin" value="itinerary"/>
             </s:url>
-            <s:a href="%{exportHorairesItineraire}"><s:text name="title.export.vehicleJourneyAtStop"/></s:a>
+            <s:a href="%{exportHorairesItineraire}"><s:text name="text.export.vehicleJourneyAtStop"/></s:a>
           </TD>
         </TR>
       </s:iterator>
