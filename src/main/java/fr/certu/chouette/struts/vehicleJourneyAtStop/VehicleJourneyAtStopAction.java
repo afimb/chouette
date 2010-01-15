@@ -181,7 +181,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     model.setIdTableauMarche(null);
     model.setSeuilDateDepartCourse(null);
     addActionMessage(getText("horairesDePassage.cancel.ok"));
-    return LIST;
+    return REDIRECTLIST;
   }
 
   @Override
@@ -190,6 +190,155 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     return LIST;
   }
 
+  public String ajoutCourseAvecDecalageTemps()
+  {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(model.getTempsDecalage());
+    long tempsDecalageMillis = cal.get(Calendar.HOUR_OF_DAY) * 3600000 + cal.get(Calendar.MINUTE) * 60000;
+    List<ArretItineraire> arretsItineraire = model.getArretsItineraire();
+    Long idCourseADecaler = model.getIdCourseADecaler();
+    Integer nbreCourseDecalage = model.getNbreCourseDecalage();
+    if (idCourseADecaler != null && nbreCourseDecalage >= 1)
+    {
+      // Récupération des horaires de la course qu'il faut décaler d'un
+      // certain temps
+      List<Horaire> horairesADecaler = model.getHorairesParIdCourse().get(idCourseADecaler);
+      //log.debug("horairesADecaler : " + horairesADecaler);
+      List<Horaire> horairesADecalerResultat = new ArrayList<Horaire>();
+      //création de la liste des ids des tableaux de marche de la course de référence
+      List<Long> tableauxMarcheIds = new ArrayList<Long>();
+      List<TableauMarche> tms = model.getTableauxMarcheParIdCourse().get(idCourseADecaler);
+      for (TableauMarche tm : tms)
+      {
+        tableauxMarcheIds.add(tm.getId());
+      }
+      for (int i = 0; i < nbreCourseDecalage; i++)
+      {
+        // Création d'une course
+        Course course = new Course();
+        course.setIdItineraire(getIdItineraire());
+        course.setPublishedJourneyName(getText("vehicleJourney.noname"));
+        courseManager.creer(course);
+        // Copie des tableaux de marche de la course de référence dans la nouvelle
+        courseManager.associerCourseTableauxMarche(course.getId(), tableauxMarcheIds);
+        // Ajout du temps de décalage à toutes les dates
+        int compteurHoraire = 0;
+        Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
+        for (Horaire horaire : horairesADecaler)
+        {
+          if (horaire != null)
+          {
+            Date heureDepartOrigine = horaire.getDepartureTime();
+            Date heureDepartResultat = new Date(heureDepartOrigine.getTime() + tempsDecalageMillis);
+            //	Mise à jour de la liste d'horaire résultat
+            Horaire horaireResultat = new Horaire();
+            horaireResultat.setIdArret(horaire.getIdArret());
+            horaireResultat.setIdCourse(horaire.getIdCourse());
+            horaireResultat.setDepartureTime(heureDepartResultat);
+            horairesADecalerResultat.add(horaireResultat);
+            Long idArretItineraire = getIdArretParIndice(compteurHoraire, arretsItineraire);
+            majHoraires.add(EtatMajHoraire.getCreation(idArretItineraire, course.getId(), heureDepartResultat));
+          }
+          else
+          {
+            horairesADecalerResultat.add(null);
+          }
+          compteurHoraire++;
+        }
+        horaireManager.modifier(majHoraires);
+        horairesADecaler = horairesADecalerResultat;
+        horairesADecalerResultat = new ArrayList<Horaire>();
+      }
+    }
+    return REDIRECTLIST;
+  }
+
+  public String editerHorairesCourses()
+  {
+    List<Date> heuresCourses = model.getHeuresCourses();
+    log.debug("heuresCourses.size()                     : " + heuresCourses.size());
+    List<ArretItineraire> arretsItineraire = model.getArretsItineraire();
+    log.debug("arretsItineraire.size()                  : " + arretsItineraire.size());
+    List<Integer> idsHorairesInvalides = horaireManager.filtreHorairesInvalides(heuresCourses, arretsItineraire.size());
+    model.setIdsHorairesInvalides(idsHorairesInvalides);
+    if (idsHorairesInvalides != null && !idsHorairesInvalides.isEmpty())
+    {
+      addActionError(getText("error.horairesInvalides"));
+      return INPUT;
+    }
+    int indexPremiereDonneeDansCollectionPaginee = pagination.getIndexPremiereDonneePageCouranteDansCollectionPaginee(arretsItineraire.size());
+    log.debug("indexPremiereDonneeDansCollectionPaginee : " + indexPremiereDonneeDansCollectionPaginee);
+    log.debug("horairesCourses.size()                   : " + model.getHorairesCourses().size());
+    Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
+    for (int i = 0; i < model.getHorairesCourses().size(); i++)
+    {
+      Date heureCourse = model.getHeuresCourses().get(i);
+      Horaire horaireCourse = model.getHorairesCourses().get(i);
+      if (horaireCourse == null)
+      {
+        log.debug("horaireCourse.getIdCourse()              : NULL");
+      }
+      else
+      {
+        log.debug("idCourse : stopPointId : departureTime   : " + horaireCourse.getIdCourse() + " : " + horaireCourse.getStopPointId() + " : " + horaireCourse.getDepartureTime().toString());
+      }
+      if (heureCourse != null && horaireCourse == null)
+      {
+        EtatMajHoraire etatMajHoraire = EtatMajHoraire.getCreation(
+                getIdArretParIndice(indexPremiereDonneeDansCollectionPaginee, arretsItineraire),
+                getIdCourseParIndice(indexPremiereDonneeDansCollectionPaginee, arretsItineraire),
+                heureCourse);
+        majHoraires.add(etatMajHoraire);
+      }
+      else if (heureCourse == null && horaireCourse != null)
+      {
+        majHoraires.add(EtatMajHoraire.getSuppression(horaireCourse));
+      }
+      else if (areBothDefinedAndDifferent(heureCourse, horaireCourse))
+      {
+        horaireCourse.setDepartureTime(heureCourse);
+        majHoraires.add(EtatMajHoraire.getModification(horaireCourse));
+      }
+      indexPremiereDonneeDansCollectionPaginee++;
+    }
+    horaireManager.modifier(majHoraires);
+    return REDIRECTLIST;
+  }
+
+  public String editerHorairesCoursesConfirmation()
+  {
+    List<ArretItineraire> arretsItineraire = model.getArretsItineraire();
+    int indexPremiereDonneePagination = pagination.getIndexPremiereDonneePageCouranteDansCollectionPaginee(arretsItineraire.size());
+    Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
+    for (int i = 0; i < model.getHorairesCourses().size(); i++)
+    {
+      Date heureDepart = model.getHeuresCourses().get(i);
+      Horaire horaire = model.getHorairesCourses().get(i);
+      if (heureDepart != null && horaire == null)
+      {
+        majHoraires.add(EtatMajHoraire.getCreation(
+                getIdArretParIndice(indexPremiereDonneePagination, arretsItineraire),
+                getIdCourseParIndice(indexPremiereDonneePagination, arretsItineraire),
+                heureDepart));
+      }
+      else if (heureDepart == null && horaire != null)
+      {
+        majHoraires.add(EtatMajHoraire.getSuppression(horaire));
+      }
+      else if (areBothDefinedAndDifferent(heureDepart, horaire))
+      {
+        horaire.setDepartureTime(heureDepart);
+        majHoraires.add(EtatMajHoraire.getModification(horaire));
+      }
+      indexPremiereDonneePagination++;
+    }
+    horaireManager.modifier(majHoraires);
+    return REDIRECTLIST;
+  }
+
+  /********************************************************
+   *                           OTHERS                       *
+   ********************************************************/
   private List<Date> obtenirDatesDepartFromHoraires(List<Horaire> horaires)
   {
     List<Date> dates = new ArrayList<Date>(horaires.size());
@@ -277,154 +426,6 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     model.setReferenceTableauMarcheParIdTableauMarche(referenceTableauMarcheParIdTableauMarche);
   }
 
-  // LIST ____________________________________________________________________________________
-  // CRUD ____________________________________________________________________________________
-  public String editerHorairesCourses()
-  {
-    List<Date> heuresCourses = model.getHeuresCourses();
-    log.debug("heuresCourses.size()                     : " + heuresCourses.size());
-    List<ArretItineraire> arretsItineraire = model.getArretsItineraire();
-    log.debug("arretsItineraire.size()                  : " + arretsItineraire.size());
-    List<Integer> idsHorairesInvalides = horaireManager.filtreHorairesInvalides(heuresCourses, arretsItineraire.size());
-    model.setIdsHorairesInvalides(idsHorairesInvalides);
-    if (idsHorairesInvalides != null && !idsHorairesInvalides.isEmpty())
-    {
-      addActionError(getText("error.horairesInvalides"));
-      return INPUT;
-    }
-    int indexPremiereDonneeDansCollectionPaginee = pagination.getIndexPremiereDonneePageCouranteDansCollectionPaginee(arretsItineraire.size());
-    log.debug("indexPremiereDonneeDansCollectionPaginee : " + indexPremiereDonneeDansCollectionPaginee);
-    log.debug("horairesCourses.size()                   : " + model.getHorairesCourses().size());
-    Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
-    for (int i = 0; i < model.getHorairesCourses().size(); i++)
-    {
-      Date heureCourse = model.getHeuresCourses().get(i);
-      Horaire horaireCourse = model.getHorairesCourses().get(i);
-      if (horaireCourse == null)
-      {
-        log.debug("horaireCourse.getIdCourse()              : NULL");
-      }
-      else
-      {
-        log.debug("idCourse : stopPointId : departureTime   : " + horaireCourse.getIdCourse() + " : " + horaireCourse.getStopPointId() + " : " + horaireCourse.getDepartureTime().toString());
-      }
-      if (heureCourse != null && horaireCourse == null)
-      {
-        EtatMajHoraire etatMajHoraire = EtatMajHoraire.getCreation(
-                getIdArretParIndice(indexPremiereDonneeDansCollectionPaginee, arretsItineraire),
-                getIdCourseParIndice(indexPremiereDonneeDansCollectionPaginee, arretsItineraire),
-                heureCourse);
-        majHoraires.add(etatMajHoraire);
-      }
-      else if (heureCourse == null && horaireCourse != null)
-      {
-        majHoraires.add(EtatMajHoraire.getSuppression(horaireCourse));
-      }
-      else if (areBothDefinedAndDifferent(heureCourse, horaireCourse))
-      {
-        horaireCourse.setDepartureTime(heureCourse);
-        majHoraires.add(EtatMajHoraire.getModification(horaireCourse));
-      }
-      indexPremiereDonneeDansCollectionPaginee++;
-    }
-    horaireManager.modifier(majHoraires);
-    return LIST;
-  }
-
-  public String editerHorairesCoursesConfirmation()
-  {
-    List<ArretItineraire> arretsItineraire = model.getArretsItineraire();
-    int indexPremiereDonneePagination = pagination.getIndexPremiereDonneePageCouranteDansCollectionPaginee(arretsItineraire.size());
-    Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
-    for (int i = 0; i < model.getHorairesCourses().size(); i++)
-    {
-      Date heureDepart = model.getHeuresCourses().get(i);
-      Horaire horaire = model.getHorairesCourses().get(i);
-      if (heureDepart != null && horaire == null)
-      {
-        majHoraires.add(EtatMajHoraire.getCreation(
-                getIdArretParIndice(indexPremiereDonneePagination, arretsItineraire),
-                getIdCourseParIndice(indexPremiereDonneePagination, arretsItineraire),
-                heureDepart));
-      }
-      else if (heureDepart == null && horaire != null)
-      {
-        majHoraires.add(EtatMajHoraire.getSuppression(horaire));
-      }
-      else if (areBothDefinedAndDifferent(heureDepart, horaire))
-      {
-        horaire.setDepartureTime(heureDepart);
-        majHoraires.add(EtatMajHoraire.getModification(horaire));
-      }
-      indexPremiereDonneePagination++;
-    }
-    horaireManager.modifier(majHoraires);
-    return LIST;
-  }
-
-  public String ajoutCourseAvecDecalageTemps()
-  {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(model.getTempsDecalage());
-    long tempsDecalageMillis = cal.get(Calendar.HOUR_OF_DAY) * 3600000 + cal.get(Calendar.MINUTE) * 60000;
-    List<ArretItineraire> arretsItineraire = model.getArretsItineraire();
-    Long idCourseADecaler = model.getIdCourseADecaler();
-    Integer nbreCourseDecalage = model.getNbreCourseDecalage();
-    if (idCourseADecaler != null && nbreCourseDecalage >= 1)
-    {
-      // Récupération des horaires de la course qu'il faut décaler d'un
-      // certain temps
-      List<Horaire> horairesADecaler = model.getHorairesParIdCourse().get(idCourseADecaler);
-      //log.debug("horairesADecaler : " + horairesADecaler);
-      List<Horaire> horairesADecalerResultat = new ArrayList<Horaire>();
-      //création de la liste des ids des tableaux de marche de la course de référence
-      List<Long> tableauxMarcheIds = new ArrayList<Long>();
-      List<TableauMarche> tms = model.getTableauxMarcheParIdCourse().get(idCourseADecaler);
-      for (TableauMarche tm : tms)
-      {
-        tableauxMarcheIds.add(tm.getId());
-      }
-      for (int i = 0; i < nbreCourseDecalage; i++)
-      {
-        // Création d'une course
-        Course course = new Course();
-        course.setIdItineraire(getIdItineraire());
-        course.setPublishedJourneyName("Pas de nom");
-        courseManager.creer(course);
-        // Copie des tableaux de marche de la course de référence dans la nouvelle
-        courseManager.associerCourseTableauxMarche(course.getId(), tableauxMarcheIds);
-        // Ajout du temps de décalage à toutes les dates
-        int compteurHoraire = 0;
-        Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
-        for (Horaire horaire : horairesADecaler)
-        {
-          if (horaire != null)
-          {
-            Date heureDepartOrigine = horaire.getDepartureTime();
-            Date heureDepartResultat = new Date(heureDepartOrigine.getTime() + tempsDecalageMillis);
-            //	Mise à jour de la liste d'horaire résultat
-            Horaire horaireResultat = new Horaire();
-            horaireResultat.setIdArret(horaire.getIdArret());
-            horaireResultat.setIdCourse(horaire.getIdCourse());
-            horaireResultat.setDepartureTime(heureDepartResultat);
-            horairesADecalerResultat.add(horaireResultat);
-            Long idArretItineraire = getIdArretParIndice(compteurHoraire, arretsItineraire);
-            majHoraires.add(EtatMajHoraire.getCreation(idArretItineraire, course.getId(), heureDepartResultat));
-          }
-          else
-          {
-            horairesADecalerResultat.add(null);
-          }
-          compteurHoraire++;
-        }
-        horaireManager.modifier(majHoraires);
-        horairesADecaler = horairesADecalerResultat;
-        horairesADecalerResultat = new ArrayList<Horaire>();
-      }
-    }
-    return LIST;
-  }
-
   /********************************************************
    *                        MANAGER                       *
    ********************************************************/
@@ -476,13 +477,15 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 
   public String getRouteName()
   {
-    if(idItineraire != null)
+    if (idItineraire != null)
+    {
       return itineraireManager.lire(idItineraire).getName();
+    }
     else
+    {
       return "";
+    }
   }
-
-
 
   /********************************************************
    *                           ERROR                      *

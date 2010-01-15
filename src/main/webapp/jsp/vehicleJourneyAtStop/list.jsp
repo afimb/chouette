@@ -59,7 +59,7 @@
       <tr>
         <td colspan="2">
           <s:submit value="%{getText('action.filtrer')}" action="list" theme="simple" cssStyle="float:right;" />
-          <s:submit value="%{getText('action.cancel')} Filtre" action="cancel" theme="simple" cssStyle="float:right;"/>
+          <s:submit value="%{getText('action.cancel.filter')}" action="cancel" theme="simple" cssStyle="float:right;"/>
         </td>
       </tr>
     </s:form>
