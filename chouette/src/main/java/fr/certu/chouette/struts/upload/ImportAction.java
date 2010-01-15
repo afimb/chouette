@@ -66,7 +66,6 @@ public class ImportAction extends GeneriqueAction {
 	private              String                 usePegase;
 	private              IIdentificationManager identificationManager;
 	private				 IImportHorairesManager importHorairesManager;
-	private              IImportCorrespondances importCorrespondances;
 	private				 Long					idLigne;
 	private              String                 logFileName;
 	private              IReducteur             reducteur;
@@ -235,62 +234,6 @@ public class ImportAction extends GeneriqueAction {
 			return INPUT;
 		addActionMessage("Toutes les lignes ont été import&eacute;es avec succ&eacute;s.");
 		return SUCCESS;
-	}
-	
-	public String importCorrespondances() 
-	{
-		logger.debug("importCorrespondances");
-		
-		String canonicalPath = null;
-		try 
-		{
-			canonicalPath = fichier.getCanonicalPath();
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			addActionError("unvalid path file : " + e.getMessage());
-			return "input_connectionLink";
-		}
-		try 
-		{
-			List<String> messages = importCorrespondances.lire(canonicalPath);
-			if (messages != null)
-			{
-				if (messages.size() > 0) 
-				{
-					for (String msg : messages)
-						addActionError(msg);
-				}
-				logger.debug("importCorrespondances read connectionLinks has errors but run");
-				return "input_connectionLink";
-			}
-			log.debug("importCorrespondances full succedded");
-			return "success_connectionLink";
-		}
-		catch (ServiceException e)
-		{
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
-			{
-				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
-				addActionError(message);
-			}
-			else 
-			{
-				//TODO what is that ? to clean
-				String defaut = "defaut";
-				List<String> args = new ArrayList<String>();
-				args.add("aaa");
-				args.add("bbb");
-				args.add("ccc");
-				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
-				message += e.getMessage();
-				addActionError(message);
-			}
-			logger.debug("importCorrespondances read connectionLinks failed --service exception");
-			return "input_connectionLink";
-		}
 	}
 	
 	public String importCSVGeneric() {
@@ -513,23 +456,20 @@ public class ImportAction extends GeneriqueAction {
 		LecteurCSV lecteurCsvItineraire = new LecteurCSV();
 		List<String[]> donneesIn = null;
 				
-		try {
+		try 
+		{
 			donneesIn = lecteurCsvItineraire.lire(fichier);
 		}
-		catch (IOException e){
-			e.printStackTrace();
-			String message = getText( "import.csv.fichier.introuvable");
-			message += e.getMessage();
-			addActionError( message);
-			return INPUT_ITINERAIRE;
-		}
-		catch (ServiceException e) {
-			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) {
+		catch (ServiceException e) 
+		{
+			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
+			{
 				String message = getText( "import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError( message);
 			}
-			else {
+			else 
+			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
 				args.add( "aaa");
@@ -541,12 +481,23 @@ public class ImportAction extends GeneriqueAction {
 			}
 			return INPUT_ITINERAIRE;
 		}
+		catch (Exception e){
+			e.printStackTrace();
+			String message = getText( "import.csv.fichier.introuvable");
+			message += e.getMessage();
+			addActionError(message);
+			return INPUT_ITINERAIRE;
+		}
+		
 		
 		//	Import des données CSV
-		try {
+		try 
+		{
 			importHorairesManager.importer(donneesIn);
 		}
-		catch (ServiceException e) {
+		//catch (ServiceException e) 
+		catch (Exception e)
+		{
 			addActionMessage("Impossible d'importer les horaires de l'itineraire");
 			log.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
 			return INPUT_ITINERAIRE;
@@ -739,10 +690,7 @@ public class ImportAction extends GeneriqueAction {
 	public void setIdentificationManager(IIdentificationManager identificationManager) {
 		this.identificationManager = identificationManager;
 	}
-	
-	public void setImportCorrespondances(IImportCorrespondances importCorrespondances) {
-		this.importCorrespondances = importCorrespondances;
-	}
+
 	
 	public void setImportHorairesManager(IImportHorairesManager importHorairesManager) {
 		this.importHorairesManager = importHorairesManager;

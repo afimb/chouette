@@ -198,7 +198,6 @@
 		<action name="AProposDe" class="AProposDe">
 			<result name="success">/jsp/aproposde.jsp</result>
 		</action>
-
 		
 		<!-- Validation des données -->
 		<action name="Validation_*" class="Validation" method="{1}">
@@ -378,7 +377,8 @@
 				<param name="operationMode">RETRIEVE</param>
 				<!--<param name="connectionLinks">${connectionLinks}</param>-->			
 			</result>
-		</action>		
+		</action>
+		
 		<action name="save" method="save" class='ConnectionLinkActionBean'>
 			<result name="redirectEdit" type="redirectAction">
 				<param name="actionName">edit</param>
@@ -388,11 +388,16 @@
 			<result name="input" type="redirectAction">
 				<param name="actionName">edit</param>
 				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>
 			</result>
-			<result name="input_save" type="redirectAction">
+		</action>
+		
+		<action name="doSearch" method="doSearch" class='ConnectionLinkActionBean' >
+			<result name="search">/jsp/connectionLink/search.jsp</result>
+			<result name="input">/jsp/connectionLink/search.jsp</result>
+			<result name="error" type="redirectAction">
 				<param name="actionName">edit</param>
 				<param name="operationMode">RETRIEVE</param>
+				<param name="idCorrespondance">${idCorrespondance}</param>
 			</result>
 		</action>
 		
@@ -400,9 +405,8 @@
 			<!-- default result, for list and for global error see global exceptions interceptor -->						
 			<result name="list">/jsp/connectionLink/list.jsp</result>
 			<result name="edit">/jsp/connectionLink/edit.jsp</result>
-			
-			<result name="search">/jsp/connectionLink/search.jsp</result>
 			<result name="input">/jsp/connectionLink/list.jsp</result>
+			<result name="search">/jsp/connectionLink/search.jsp</result>
 			
 			<!-- Result for : import, "update_success", delete, cancel -->
 			<result name="redirectList" type="redirectAction">
@@ -561,7 +565,7 @@
 				<param name="actionName">list</param>
 				<param name="namespace">/route</param>
 				<param name="idLigne">${idLigne}</param>
-				<param name="operationMode">RETREIVE</param>
+				<param name="operationMode">RETRIEVE</param>
 			</result>					
 		</action>
 	</package>
