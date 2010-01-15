@@ -32,96 +32,86 @@ import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 
 public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven<Correspondance>, Preparable
 {
-  
-  private static final long serialVersionUID = 6964959559153714259L;
-  private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
+	private static final long serialVersionUID = 6964959559153714259L;
+	private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
 
-  private static final String INPUT_SAVE = "input_save";
+	private static final String INPUT_SAVE = "input_save";
   
-  // Model Linked
-  private Correspondance correspondanceModel = new Correspondance();  
+	// Model Linked
+	private Correspondance correspondanceModel = new Correspondance();  
   
-  // Managers and upload class
-  private IImportCorrespondances importateurCorrespondances;  
-  private ICorrespondanceManager correspondanceManager;  
-  private IPositionGeographiqueManager positionGeographiqueManager;
+	// Managers and upload class
+	private IImportCorrespondances importateurCorrespondances;  
+	private ICorrespondanceManager correspondanceManager;  
+	private IPositionGeographiqueManager positionGeographiqueManager;
   
-  //Attributes linked to fields form  
-  private String useHastus;
-  private Long idCorrespondance;
-  private PositionGeographique criteria;
-  private PositionGeographique start;
-  private PositionGeographique end;
-  private String actionSuivante;
-  private Long idPositionGeographique;
-  private String durationsFormat = "mm:ss";  
+	// Attributes linked to fields form  
+	private String useHastus;
+	private Long idCorrespondance;
+	private PositionGeographique criteria;
+	private PositionGeographique start;
+	private PositionGeographique end;
+	private String actionSuivante;
+	private Long idPositionGeographique;
+	private String durationsFormat = "mm:ss";  
  
-  private String fichierContentType;
-  private File fichier;
+	private String fichierContentType;
+	private File fichier;
 
-  private List<Correspondance> connectionLinks; 
+	private List<Correspondance> connectionLinks; 
   
-  // Technical attribute 
-  // Added parameter to avoid ognl exception
-  private String operationMode = "NONE";  
-  
-  public String getOperationMode() 
-  {
-	return operationMode;
-  }
+	// Technical attribute 
+	// Added parameter to avoid ognl exception
+	private String operationMode = "NONE";  
 
-  public void setOperationMode(String operationMode) 
-  {
-	  this.operationMode = operationMode;
-  }
-
-  private static Map<String, String> ops = new HashMap<String, String>();
-  static
-  {
-	  ops.put("delete", "STORE");	  
-	  ops.put("editCombinedActions", "STORE");//save,update,cancel
-	  ops.put("upload", "STORE");
-  }	
+	private static Map<String, String> ops = new HashMap<String, String>();
+	static
+	{
+		ops.put("delete", "STORE");	  
+		ops.put("editCombinedActions", "STORE");//save,update,cancel
+		ops.put("upload", "STORE");
+		ops.put("doSearch", "STORE");
+	}	
 
 /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
-  public Correspondance getModel()
-  {    
-	  return correspondanceModel;
-  }
+	public Correspondance getModel()
+	{    
+		return correspondanceModel;
+	}
 
-  public void prepare() throws Exception
-  {
-	  this.correspondanceManager = this.importateurCorrespondances.getCorrespondanceManager();
-	  if (getIdCorrespondance() == null)
-	  {
-		  log.debug("Prepare with null id");
-		  correspondanceModel = new Correspondance();
-		  try 
-		  {
+	public void prepare() throws Exception
+	{
+		this.correspondanceManager = this.importateurCorrespondances.getCorrespondanceManager();
+		if (getIdCorrespondance() == null)
+		{
+			log.debug("Prepare with null id");
+			correspondanceModel = new Correspondance();
+			try 
+			{
 			  // Initialisation for list action
 			  connectionLinks = correspondanceManager.lire();
-		  }
-		  catch(Exception e)
-		  {		  
-			  log.error("Unread ConnectionLinks : correspondanceManager.lire() failed, exception : " + e.getMessage());
-		  }
-	  }	
-	  else
-	  {
-		  log.debug("Prepare with id : " + getIdCorrespondance());
-		  try 
-		  {
-			  this.initStartEndStopAreas();
-		  }
-		  catch(Exception e)
-		  {		  
-			  log.error("initStartEndStopAreas failed : " + e.getMessage());
-		  }
-	  }
-	  log.debug("prepare ended");
-  }
+			}
+			catch(Exception e)
+			{
+				log.error("Unread ConnectionLinks : correspondanceManager.lire() failed, exception : " + e.getMessage());
+			}
+		}	
+		else
+		{
+			log.debug("Prepare with id : " + getIdCorrespondance());
+			try 
+			{
+				this.initStartEndStopAreas();
+			}
+			catch(Exception e)
+			{
+				log.error("initStartEndStopAreas failed : " + e.getMessage());
+			}
+		}
+		log.debug("prepare ended");
+	}
 
   /********************************************************
    *                  MAIN METHODS                    *
@@ -130,26 +120,25 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
    * Return connectionsLinks list 
    * @return List<Correspondance>
    */
-  private List<Correspondance> getConnectionsLinks()
-  {
-	  List<Correspondance> connectionsLinks = null;
-	  try 
-	  {
-		  connectionsLinks = correspondanceManager.lire();
-	  }
-	  catch(Exception e)
-	  {		  
-		  log.error("Unread ConnectionLinks : correspondanceManager.lire() failed, exception : " + e.getMessage());
-	  }
-	  return connectionsLinks;
-  }
+	private List<Correspondance> getConnectionsLinks()
+	{
+		List<Correspondance> connectionsLinks = null;
+		try 
+		{
+			connectionsLinks = correspondanceManager.lire();
+		}
+		catch(Exception e)
+		{
+			log.error("Unread ConnectionLinks : correspondanceManager.lire() failed, exception : " + e.getMessage());
+		}
+		return connectionsLinks;
+	}
   
   /**
    * Init connection link departure (start) and arrival (end) 
    */
   private void initStartEndStopAreas()
-  {
-	  
+  {	  
 	  correspondanceModel = correspondanceManager.lire(getIdCorrespondance());
 	  // This case could occurs if user 2nd step creation is bypass, as
 	  // start end constraints aren't checked
@@ -206,7 +195,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 		  if (messages != null)
 		  {
 			  // same error on several connectionlinks, retreive duplicates			  
-			  Map<String, String> duplicates = new HashMap<String, String>();			  
+			  Map<String, String> duplicates = new HashMap<String, String>();
 			  if (messages.size() > 0)
 			  {				  
 				  for (String errMsg : messages)
@@ -224,7 +213,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 				  String errMsg = "Unread ConnectionLinks : importateurCorrespondances.lire(canonicalPath) failed without messages";
 				  log.debug(errMsg);
 				  addActionError(errMsg);
-			  }			  
+			  }
 		  }
 		  else
 		  {
@@ -246,7 +235,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 			}			
 			errMsg += e.getMessage();
 			log.debug(errMsg);
-		}		
+		}
 		
 		this.connectionLinks = getConnectionsLinks();
 		if (null == connectionLinks)
@@ -280,52 +269,51 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   public String save()
   {	  	  
 	  try
-	  {
+	  {		 
 		  correspondanceManager.creer(getModel());		  		 
-		  addActionMessage(getText ("connectionlink.create.ok"));		  
+		  addActionMessage(getText ("connectionlink.create.ok"));
 	  }
 	  catch (Exception exception)
 	  {
 		  addActionError(getText("connectionlink.create.ko"));
 		  log.error("ConnectionLink creation failed with message : " + exception.getMessage());
-		  return INPUT_SAVE;
+		  return INPUT;
 	  }
 	  this.setIdCorrespondance(correspondanceModel.getId());
 	  return REDIRECTEDIT;
   }
 
-//@Action(value="edit", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "RETRIEVE"})})
-@SkipValidation
- public String edit()
- {	
-	return EDIT;
- }
+  //@Action(value="edit", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "RETRIEVE"})})
+  @SkipValidation
+  public String edit()
+  {
+	  return EDIT;
+  }
 
   
-// TODO : why doesn't work
-//@Action(value="update", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "STORE"})})
-public String update()
+  // TODO : why doesn't work
+  //@Action(value="update", interceptorRefs={@InterceptorRef(value="store",params={"operationMode", "STORE"})})
+  public String update()
   {
-	log.debug("Update connectionLink with id : " + getModel().getId());
-	
-    try
-    {
-    	correspondanceManager.modifier(getModel());
-    	String msg = getText("connectionlink.update.ok");
-    	log.debug(msg);
-    	addActionMessage(msg);
-    	return REDIRECTLIST;
-    }
-    catch (Exception e)
-    {
-    	String errMsg = getText("connectionlink.update.ko");
-    	errMsg += e.getMessage();
-    	log.debug(errMsg);
-    	addActionError(errMsg);
+	  log.debug("Update connectionLink with id : " + getModel().getId());
+	  try
+	  {
+		  correspondanceManager.modifier(getModel());
+		  String msg = getText("connectionlink.update.ok");
+		  log.debug(msg);
+		  addActionMessage(msg);
+		  return REDIRECTLIST;
+	  }
+	  catch (Exception e)
+	  {
+		  String errMsg = getText("connectionlink.update.ko");
+		  errMsg += e.getMessage();
+		  log.debug(errMsg);
+		  addActionError(errMsg);
     	
-    	return REDIRECTEDIT;
-    }    
-}
+		  return REDIRECTEDIT;
+	  }    
+  }
 
   public String delete()
   {
@@ -359,35 +347,57 @@ public String update()
   @SkipValidation
   public String doSearch()
   {
-    Collection<String> areas = new HashSet<String>();
-    if (criteria.getAreaType() != null)
-    {
-      areas.add(criteria.getAreaType().toString());
-    }
-    else
-    {
-      List<ObjetEnumere> areaEnumerations = fr.certu.chouette.struts.enumeration.EnumerationApplication.getArretPhysiqueAreaTypeEnum();
-      areaEnumerations.addAll(fr.certu.chouette.struts.enumeration.EnumerationApplication.getZoneAreaTypeEnum());
-      for (ObjetEnumere enumeration : areaEnumerations)
-      {
-        areas.add(enumeration.getEnumeratedTypeAccess().toString());
-      }
-    }
-    if ("".equals(criteria.getName()))
-    {
-      criteria.setName(null);
-    }
-    if ("".equals(criteria.getCountryCode()))
-    {
-      criteria.setCountryCode(null);
-    }
-    List<PositionGeographique> positionGeographiquesResultat = positionGeographiqueManager.select(new AndClause().add(ScalarClause.newIlikeClause("name", criteria.getName())).
+	  Collection<String> areas = new HashSet<String>();
+	  if (criteria.getAreaType() != null)
+	  {
+		  log.debug("*** EZ selected criteria areatype : " + criteria.getAreaType());
+		  areas.add(criteria.getAreaType().toString());
+	  }
+	  else
+	  {
+		  try 
+		  {
+			  //List<ObjetEnumere> areaEnumerations = fr.certu.chouette.struts.enumeration.EnumerationApplication.getArretPhysiqueAreaTypeEnum();
+			  //areaEnumerations.addAll(fr.certu.chouette.struts.enumeration.EnumerationApplication.getZoneAreaTypeEnum());
+			  List<ObjetEnumere> areaEnumerations = getStopAreaEnum("");
+			  for (ObjetEnumere enumeration : areaEnumerations)
+			  {
+				  areas.add(enumeration.getEnumeratedTypeAccess().toString());
+			  }
+		  }
+		  catch (Exception e) 
+		  {
+			  String msg = "search action unvailable, and by relation start end added unvailable too";
+			  log.debug(msg);
+			  addActionError(msg);
+			  
+			  if (e.getMessage() != null)
+			  {
+				  msg = "Exception code and message : " + e.getMessage();
+				  log.debug(msg);
+			  }
+			  if (e.getCause() != null)
+			  {
+				  msg = "Exception cause : " + e.getCause();
+				  log.debug(msg);  
+			  }
+			  return "error";
+		  }
+	  }
+	  if ("".equals(criteria.getName()))
+	  {
+		  criteria.setName(null);
+	  }
+	  if ("".equals(criteria.getCountryCode()))
+	  {
+		  criteria.setCountryCode(null);
+	  }
+	  List<PositionGeographique> positionGeographiquesResultat = positionGeographiqueManager.select(new AndClause().add(ScalarClause.newIlikeClause("name", criteria.getName())).
             add(ScalarClause.newIlikeClause("countryCode", criteria.getCountryCode())).
             add(VectorClause.newInClause("areaType", areas)));
 
-    request.put("positionGeographiquesResultat", positionGeographiquesResultat);
-
-    return SEARCH;
+	  request.put("positionGeographiquesResultat", positionGeographiquesResultat);
+	  return SEARCH;
   }
 
   @SkipValidation
@@ -694,12 +704,23 @@ public String update()
 	  this.ops = ops;
   }
 
-public void setConnectionLinks(List<Correspondance> connectionLinks) {
-	this.connectionLinks = connectionLinks;
-}
+  public String getOperationMode() 
+  {
+	return operationMode;
+  }
 
-public List<Correspondance> getConnectionLinks() {
-	return connectionLinks;
-}
+  public void setOperationMode(String operationMode) 
+  {
+	  this.operationMode = operationMode;
+  }
   
+  public void setConnectionLinks(List<Correspondance> connectionLinks) 
+  {
+	this.connectionLinks = connectionLinks;
+  }
+
+  public List<Correspondance> getConnectionLinks() 
+  {
+	  return connectionLinks;
+  }
 }

@@ -8,7 +8,7 @@
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-   <!--  default-autowire="no" -->
+ 
 
   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="location" value="classpath:/spring.properties"/>
@@ -583,7 +583,6 @@
     <property name="lecteurCVSPegase" ref="lecteurCSVPegase"/>
     <property name="lecteurXMLAltibus" ref="lecteurXMLAltibus"/>
     <property name="identificationManager" ref="identificationManager"/>
-    <property name="importCorrespondances" ref="importCorrespondances"/>
     <property name="importHorairesManager" ref="importHorairesManager"/>
     <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
     <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
