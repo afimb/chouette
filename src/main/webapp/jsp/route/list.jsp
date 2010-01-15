@@ -20,10 +20,11 @@
   <br><br>
   <FIELDSET align="center" style="width: 500px;">
     <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
-    <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/import" enctype="multipart/form-data" method="POST">
+    <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/upload" enctype="multipart/form-data" method="POST">
       <s:file name="fichier" label="%{getText('action.browse')}"/>
       <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
+      <s:hidden name="operationMode" value="STORE" />
       <s:submit value="Import fichier CSV" formId="uploadCSVForm"/>
     </s:form>
   </FIELDSET>

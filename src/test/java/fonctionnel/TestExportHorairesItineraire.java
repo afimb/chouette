@@ -109,9 +109,12 @@ public class TestExportHorairesItineraire {
 			List<String[]> donneesIn = null;
 			File fichierIn = new File("exportItineraire.csv");
 			LecteurCSV lc = new LecteurCSV();
-			try {
+			try 
+			{
 				donneesIn = lc.lire(fichierIn);
-			} catch (IOException e) {
+			} 
+			catch (Exception e) {
+			//ez catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
@@ -138,9 +141,12 @@ public class TestExportHorairesItineraire {
 			donneesIn = null;
 			fichierIn = new File("exportItineraireModifie.csv");
 			lc = new LecteurCSV();
-			try {
+			try 
+			{
 				donneesIn = lc.lire(fichierIn);
-			} catch (IOException e) {
+			} 
+			catch (Exception e) {
+				//catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
