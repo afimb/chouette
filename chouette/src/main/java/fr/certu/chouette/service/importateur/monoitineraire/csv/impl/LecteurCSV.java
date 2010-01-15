@@ -17,7 +17,8 @@ public class LecteurCSV {
 	
 	
 	@SuppressWarnings("unchecked")
-	public List<String[]> lire(File fichier) throws IOException{
+	//public List<String[]> lire(File fichier) throws IOException {
+	public List<String[]> lire(File fichier) throws Exception {
 		CSVReader cr = new CSVReader(new InputStreamReader(new FileInputStream(fichier),encodage),separateur,texteSeparateur);
 		List<String[]> donnees = cr.readAll();
 		cr.close();

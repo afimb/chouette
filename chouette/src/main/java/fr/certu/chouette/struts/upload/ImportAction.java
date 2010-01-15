@@ -237,6 +237,7 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
+	/**
 	public String importCorrespondances() 
 	{
 		logger.debug("importCorrespondances");
@@ -292,7 +293,7 @@ public class ImportAction extends GeneriqueAction {
 			return "input_connectionLink";
 		}
 	}
-	
+	**/
 	public String importCSVGeneric() {
 		String canonicalPath = null;
 		try {
@@ -513,23 +514,20 @@ public class ImportAction extends GeneriqueAction {
 		LecteurCSV lecteurCsvItineraire = new LecteurCSV();
 		List<String[]> donneesIn = null;
 				
-		try {
+		try 
+		{
 			donneesIn = lecteurCsvItineraire.lire(fichier);
 		}
-		catch (IOException e){
-			e.printStackTrace();
-			String message = getText( "import.csv.fichier.introuvable");
-			message += e.getMessage();
-			addActionError( message);
-			return INPUT_ITINERAIRE;
-		}
-		catch (ServiceException e) {
-			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) {
+		catch (ServiceException e) 
+		{
+			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
+			{
 				String message = getText( "import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError( message);
 			}
-			else {
+			else 
+			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
 				args.add( "aaa");
@@ -541,12 +539,23 @@ public class ImportAction extends GeneriqueAction {
 			}
 			return INPUT_ITINERAIRE;
 		}
+		catch (Exception e){
+			e.printStackTrace();
+			String message = getText( "import.csv.fichier.introuvable");
+			message += e.getMessage();
+			addActionError(message);
+			return INPUT_ITINERAIRE;
+		}
+		
 		
 		//	Import des données CSV
-		try {
+		try 
+		{
 			importHorairesManager.importer(donneesIn);
 		}
-		catch (ServiceException e) {
+		//catch (ServiceException e) 
+		catch (Exception e)
+		{
 			addActionMessage("Impossible d'importer les horaires de l'itineraire");
 			log.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
 			return INPUT_ITINERAIRE;
