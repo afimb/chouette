@@ -3,18 +3,18 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
 <%-- Titre et barre de navigation --%>	
-<title><s:text name="text.stopPlace.search.title" /></title>
-<s:url id="urlPositionGeographiqueRecherche" action="search" namespace="/stopPlace">
+<title><s:text name="text.boardingPosition.search.title" /></title>
+<s:url id="urlPositionGeographiqueRecherche" action="search" namespace="/boardingPosition">
 	<s:param name="idPositionGeographique" value="%{idPositionGeographique}"/>
 </s:url>
-<s:property value="filAriane.addElementFilAriane(getText('text.stopPlace.search.title'), '', #urlPositionGeographiqueRecherche)"/>
+<s:property value="filAriane.addElementFilAriane(getText('text.boardingPosition.search.title'), '', #urlPositionGeographiqueRecherche)"/>
 <div class="panelData">
 	<s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 <br>
 <%-- Formulaire de recherche --%>
 <div class="panel">
-  <s:form cssClass="panelDataInnerForm" action="searchResults" namespace="/stopPlace">
+  <s:form cssClass="panelDataInnerForm" action="searchResults" namespace="/boardingPosition">
 		<s:hidden name="idPositionGeographique" value="%{idPositionGeographique}" />
 		<s:hidden name="authorizedType" value="%{authorizedType}" />
 		<s:hidden name="actionSuivante" value="%{actionSuivante}" />
@@ -29,7 +29,7 @@
 <div class="panel" id="displaytag"> 
 	<display:table name="positionGeographiquesResultat" pagesize="15" requestURI="" id="positionGeographique" export="false">
 	  	<display:column titleKey="table.title.action" sortable="false">
-        <s:url id="addUrl" action="%{actionSuivante}" namespace="/stopPlace">
+        <s:url id="addUrl" action="%{actionSuivante}" namespace="/boardingPosition">
 				<s:param name="idChild" value="%{#attr.positionGeographique.id}" />
 				<s:param name="idFather" value="%{#attr.positionGeographique.id}" />
 				<s:param name="idPositionGeographique" value="%{idPositionGeographique}" />
