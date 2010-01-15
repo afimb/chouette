@@ -15,7 +15,7 @@
 <s:url id="urlHorairesDePassages" action="list" namespace="/vehicleJourneyAtStop" includeParams="none">
   <s:param name="idItineraire" value="%{idItineraire}" />
 </s:url>
-<s:property value="filAriane.addElementFilAriane(getText('text.horairesDePassage.list.title'), itineraire.name, #urlHorairesDePassages)"/>
+<s:property value="filAriane.addElementFilAriane(getText('text.horairesDePassage.list.title'), routeName, #urlHorairesDePassages)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
@@ -23,7 +23,18 @@
 
 <%-- BOUTON AJOUT NOUVELLE COURSE --%>
 <div>
-  <s:url id="editCourse" action="add" namespace="/vehicleJourney"/>
+  <s:url id="editCourse" action="add" namespace="/vehicleJourney">
+    <s:param name="idCourse" value="id" />
+    <s:param name="idItineraire" value="idItineraire" />
+    <s:param name="idLigne" value="idLigne" />
+    <s:param name="idTableauMarche" value="idTableauMarche" />
+    <s:param name="seuilDateDepartCourse">
+      <s:if test="seuilDateDepartCourse != null">
+        <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+      </s:if>
+    </s:param>
+    <s:param name="page" value="page" />
+  </s:url>
   <s:a href="%{editCourse}"><b><s:text name="text.course.create.button"/></b></s:a>
 </div>
 <br>
@@ -48,7 +59,7 @@
       <tr>
         <td colspan="2">
           <s:submit value="%{getText('action.filtrer')}" action="list" theme="simple" cssStyle="float:right;" />
-          <s:submit value="%{getText('action.cancel')} Filtre" action="cancel" theme="simple" cssStyle="float:right;"/>
+          <s:submit value="%{getText('action.cancel.filter')}" action="cancel" theme="simple" cssStyle="float:right;"/>
         </td>
       </tr>
     </s:form>

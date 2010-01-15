@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-<title>Les itineraires</title>
+<title><s:text name="title.vehicleJourney"/></title>
 <s:url action="/course/add" id="editCourse" includeParams="none">
   <s:param name="idItineraire" value="%{idItineraire}" />
 </s:url>
@@ -15,7 +15,7 @@
 <%-- Tableau de courses --%>
 <div id="displaytag"> 
   <display:table name="courses" sort="list" pagesize="5" requestURI="" id="course" export="false">
-    <display:column title="Action" sortable="false">
+    <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="/course/delete">
         <s:param name="idCourse">${id}</s:param>
       </s:url>
@@ -30,7 +30,7 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column title="Nom" property="vehicleJourney.publishedJourneyName" sortable="true" headerClass="sortable"/>
-    <display:column title="Indice" property="vehicleJourney.publishedJourneyIdentifier" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.name" property="vehicleJourney.publishedJourneyName" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.index" property="vehicleJourney.publishedJourneyIdentifier" sortable="true" headerClass="sortable"/>
   </display:table>
 </div>

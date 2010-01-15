@@ -1,6 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <s:include value="/jsp/commun/scriptaculous.jsp" />
+
 
 <%-- Titre et barre de navigation --%>
 <s:url id="urlCorrespondanceUpdate" action="edit" namespace="/connectionLink">
@@ -14,7 +16,6 @@
   <title><s:text name="text.connectionlink.create.title" /></title>
   <s:property value="filAriane.addElementFilAriane(getText('text.connectionlink.create.title'), '', #urlCorrespondanceUpdate)"/>
 </s:else>
-
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
@@ -22,20 +23,18 @@
 <div class="panelDataSection"><s:text name="connectionlink"/></div>
 <div class="panel">
   <s:form id="connectionLinkForm"  namespace="/connectionLink">
+    <s:hidden name="idCorrespondance" value="%{id}"/>
     <s:hidden name="operationMode" value="%{ops.editCombinedActions}" />
-    <s:hidden name="idCorrespondance" value="%{id}"/>  
-      
-    <%-- model attributes --%>
     <s:textfield key="name" required="true"/>
     <s:textfield key="comment" required="false"/>
-    <s:textfield  key="defaultDuration" value="%{strutsDefaultDuration}" required="false"/>
-    <s:textfield  key="mobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" required="false"/>
-    <s:textfield  key="occasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" required="false"/>
-    <s:textfield  key="frequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" required="false"/>
+    <s:textfield maxlength="5" key="defaultDuration" value="%{strutsDefaultDuration}" required="false"/>
+    <s:textfield maxlength="5" key="mobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" required="false"/>
+    <s:textfield maxlength="5" key="occasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" required="false"/>
+    <s:textfield maxlength="5" key="frequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" required="false"/>
     <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-    <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="liftAvailability"/>
-    <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="mobilityRestrictedSuitability"/>
-    <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':'Oui', 'false':'Non'}" value="stairsAvailability"/>
+    <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="liftAvailability"/>
+    <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="mobilityRestrictedSuitability"/>
+    <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="stairsAvailability"/>
     <s:textfield key="linkDistance" />
 
     <%-- Actions --%>
@@ -45,7 +44,7 @@
           <s:submit key="action.update" action="update"  theme="simple" cssStyle="float: right;"/>
         </s:if>
         <s:else>
-          <s:submit key="action.create" action="save" theme="simple" cssStyle="float: right;" />
+          <s:submit key="action.create" action="save" theme="simple" cssStyle="float: right;"/>
         </s:else>
         <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
       </td>
@@ -58,7 +57,7 @@
 </div>
 
 <%-- Zones depart --%>
-<div class="panelDataSection"><s:text name="Départ"/></div>
+<div class="panelDataSection"><s:text name="text.connectionlink.departure"/></div>
 <div class="panel" id="displaytag"> 
   <s:if test="id != null">
     <table>
@@ -105,7 +104,7 @@
 </div>	
 
 <%-- Zones arrivée --%>
-<div class="panelDataSection"><s:text name="Arrivée"/></div>	
+<div class="panelDataSection"><s:text name="text.connectionlink.arrival"/></div>
 <div class="panel" id="displaytag">
   <s:if test="id != null">
     <table>
@@ -149,5 +148,4 @@
       </tbody>
     </table>
   </s:if>
-
-</div>		
+ </div>

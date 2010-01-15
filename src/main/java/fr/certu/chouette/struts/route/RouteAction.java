@@ -1,6 +1,5 @@
 package fr.certu.chouette.struts.route;
 
-import com.opensymphony.xwork2.ModelDriven;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -10,13 +9,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
+import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.modele.Itineraire;
+import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.service.database.IItineraireManager;
 import fr.certu.chouette.service.database.ILigneManager;
-import java.util.HashMap;
+import fr.certu.chouette.struts.GeneriqueAction;
 
 public class RouteAction extends GeneriqueAction implements ModelDriven<Itineraire>, Preparable
 {
@@ -28,8 +28,6 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   private Long idItinerary;
   private Long lineId;
   private String mappedRequest;
-  private String sensAller = "A";
-  private String sensRetour = "R";
   private String idRetour;
   private List<Itineraire> itinerairesSansItineraireEdite;
 
@@ -305,16 +303,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     }
     else
     {
-      return sensAller;
+      return getText("route.direction.aller");
     }
-  }
-
-  public Map<String, String> getSensItineraires()
-  {
-    Map<String, String> sens = new HashMap<String, String>();
-    sens.put(sensRetour, sensRetour);
-    sens.put(sensAller, sensAller);
-    return sens;
   }
 
   public String getIdRetour()
@@ -333,5 +323,14 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   public void setIdRetour(String idRetour)
   {
     this.idRetour = idRetour;
+  }
+
+  public String getLineName()
+  {
+    log.debug("lineId : " + lineId);
+    if(lineId != null)
+      return lineManager.lire(lineId).getName();
+    else
+      return "";
   }
 }

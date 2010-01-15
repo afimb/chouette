@@ -27,7 +27,7 @@
   <s:textfield key="publishedName" />
   <s:select key="direction" list="directionsEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
   <s:textfield key="number" />
-  <s:radio name="wayBack" value="%{sensItineraire}" list="sensItineraires" label="%{getText('wayBack')}" />
+  <s:radio key="wayBack" value="%{sensItineraire}" list="#{getText('text.route.outward.journey'):getText('text.route.outward.journey'), getText('text.route.return.journey'):getText('text.route.return.journey')}" />
   <s:textfield key="comment"/>
   <br>
 

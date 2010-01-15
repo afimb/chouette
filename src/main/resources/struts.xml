@@ -276,7 +276,7 @@
 				<param name="idItl">${idItl}</param>
 			</result>
 			<result name="redirectList" type="redirectAction">
-				<param name="actionName">edit</param>
+				<param name="actionName">list</param>
 				<param name="operationMode">RETRIEVE</param>
 			</result>
 			<result name="edit">/jsp/routingConstraint/edit.jsp

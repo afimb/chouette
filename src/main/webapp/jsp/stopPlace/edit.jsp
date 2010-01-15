@@ -25,6 +25,7 @@
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
     <s:hidden name="idPositionGeographique" value="%{id}" />
+    <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
     <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 300px;"/>
     <s:textfield key="name" required="true" cssStyle="width: 300px;" />
@@ -43,7 +44,7 @@
     </s:else>
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
-    <tr><TD style="text-align: center;"><b><s:text name="text.dataGeo.fieldset"/></b></TD></tr>
+    <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
     <s:textfield key="projectionType" />
     <s:textfield key="x" />
     <s:textfield key="y" />
@@ -90,7 +91,7 @@
             <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
           </s:a>&nbsp;&nbsp;
           <s:url id="removeUrl" action="removeChildFromParent" namespace="/stopPlace">
-            <s:param name="idPositionGeographique" value="%{positionGeographique.id}" />
+            <s:param name="idPositionGeographique" value="%{id}" />
             <s:param name="idChild">${child.id}</s:param>
           </s:url>
           <s:a href="%{removeUrl}">
@@ -129,12 +130,11 @@
           <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
         </s:a>&nbsp;&nbsp;
         <s:url id="removeUrl" action="removeChildFromParent" namespace="/stopPlace">
-          <s:param name="idChild" value="%{positionGeographique.id}" />
-          <s:param name="idPositionGeographique" value="%{positionGeographique.id}" />
+          <s:param name="idChild" value="%{id}" />
+          <s:param name="idPositionGeographique" value="%{id}" />
           <s:param name="idItineraire" value="%{idItineraire}"/>
           <s:param name="idLigne" value="%{idLigne}"/>
           <s:param name="actionSuivante" value="%{actionSuivante}"/>
-          <s:param name="typePositionGeographique" value="%{typePositionGeographique}"/>
         </s:url>
         <s:a href="%{removeUrl}">
           <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
@@ -144,7 +144,7 @@
         <s:text name="text.zone"/>	<s:property value="%{#attr.child.name}"/>
       </display:column>
       <display:column titleKey="table.title.type">
-        <s:text name="%{#attr.child.areaType}"/>
+        <s:text name="%{#attr.father.areaType}"/>
       </display:column>
     </display:table>
   </s:div>
@@ -206,21 +206,3 @@
 	
   // ]]>
   --></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
