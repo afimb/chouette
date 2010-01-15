@@ -18,12 +18,10 @@
   </s:url>
   <s:a href="%{editItineraire}"><b><s:text name="text.itineraire.create.button"/></b></s:a>
   <br><br>
-  <FIELDSET align="center" style="width: 500px;">
+  <FIELDSET style="width: 500px;">
     <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
-    <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/import" enctype="multipart/form-data" method="POST">
-      <s:file label="%{getText('text.route.file')}" name="fichier" accept="text/csv" title="Test" id="Ouh">
-        <s:submit value="test"/>
-      </s:file>
+    <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/upload" enctype="multipart/form-data" method="POST">
+      <s:file label="%{getText('text.route.file')}" name="fichier" accept="text/csv"/>
       <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:submit value="%{getText('action.import.csv')}" formId="uploadCSVForm"/>
