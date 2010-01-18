@@ -294,7 +294,6 @@
 			<result name="redirectList" type="redirectAction">
 				<param name="actionName">list</param>
 				<param name="idLigne">${idLigne}</param>
-				<param name="idItineraire">${idItineraire}</param>
 				<param name="operationMode">RETRIEVE</param>
 			</result>
 			<result name="edit">/jsp/route/edit.jsp</result>
