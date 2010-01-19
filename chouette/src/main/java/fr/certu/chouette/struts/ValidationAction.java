@@ -487,7 +487,7 @@ public class ValidationAction extends GeneriqueAction
     withErrors = false;
     try
     {
-      String selectCourse = "SELECT id, \"number\", \"comment\", (SELECT \"name\" FROM " + managerDataSource.getDatabaseSchema() + ".route WHERE id=iditineraire) FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney;";
+      String selectCourse = "SELECT id, \"number\", \"comment\", (SELECT \"name\" FROM " + managerDataSource.getDatabaseSchema() + ".route WHERE id=routeid) FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney;";
       Statement statementCourse = connexion.createStatement();
       ResultSet rsCourse = statementCourse.executeQuery(selectCourse);
       while (rsCourse.next())
