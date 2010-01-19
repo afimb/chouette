@@ -133,12 +133,12 @@
 			<interceptor name="multiselect"
 				class="org.apache.struts2.interceptor.MultiselectInterceptor" />
 
-			<interceptor-stack name="crudStack">
-				<!--<interceptor-ref name="singleAction" />-->
+			<interceptor-stack name="crudStack">				
 				<interceptor-ref name="exception">
 					<param name="logEnabled">true</param>
 					<param name="logLevel">error</param>
 				</interceptor-ref>
+				<interceptor-ref name="singleAction" />
 				<interceptor-ref name="alias" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="i18n" />
@@ -168,6 +168,7 @@
 				</interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
+		
 		<default-interceptor-ref name="crudStack" />
 
 		<!-- Action par défaut -->
