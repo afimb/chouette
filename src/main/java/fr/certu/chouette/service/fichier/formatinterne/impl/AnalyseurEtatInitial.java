@@ -290,7 +290,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			oldItinerairesIds.add(idItineraire);
 			coursesIdsParItinerairesId.put(idItineraire, new HashSet<Long>());
 			missionsIdsParItinerairesId.put(idItineraire, new HashSet<Long>());
-			String selectionCourses = "SELECT id, journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE iditineraire='"+idItineraireSt+"';";
+			String selectionCourses = "SELECT id, journeyPatternId from " + getDatabaseSchema() + ".vehiclejourney WHERE routeid='"+idItineraireSt+"';";
 			Statement selectionCoursesStatement = connexion.createStatement();
 			ResultSet selectionCoursesResultSet = selectionCoursesStatement.executeQuery(selectionCourses);
 			while (selectionCoursesResultSet.next()) {
