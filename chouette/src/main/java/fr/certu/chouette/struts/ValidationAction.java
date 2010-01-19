@@ -148,7 +148,7 @@ public class ValidationAction extends GeneriqueAction
     try
     {
       Statement statement = connexion.createStatement();
-      String selectStatement = "SELECT vjas.vehicleJourneyId, vjas.arrivaltime, vjas.departuretime, vj.routeId, r.lineId, s.position FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop vjas, vehiclejourney vj, route r, stoppoint s WHERE vj.id = vjas.vehicleJourneyId AND r.id = vj.routeId AND s.id = vjas.stopPointId ORDER BY vjas.vehicleJourneyId, s.position;";
+      String selectStatement = "SELECT vjas.vehicleJourneyId, vjas.arrivaltime, vjas.departuretime, vj.routeId, r.lineId, s.position FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop vjas, " + managerDataSource.getDatabaseSchema() + ".vehiclejourney vj, " + managerDataSource.getDatabaseSchema() + ".route r, " + managerDataSource.getDatabaseSchema() + ".stoppoint s WHERE vj.id = vjas.vehicleJourneyId AND r.id = vj.routeId AND s.id = vjas.stopPointId ORDER BY vjas.vehicleJourneyId, s.position;";
       ResultSet rs = statement.executeQuery(selectStatement);
       long idCourse = (long) -1;
       Date date = null;
@@ -263,6 +263,7 @@ public class ValidationAction extends GeneriqueAction
       }
       erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.times") + e.getMessage();
       withErrors = true;
+      logger.error("erreur SQL",e);
     }
     if (erreurs.length() != 0)
     {
@@ -597,16 +598,16 @@ public class ValidationAction extends GeneriqueAction
     // connectionLink
     try
     {
-      String add1 = "ALTER TABLE connectionlink ADD CONSTRAINT new_connectionlink_stoparea_arrival FOREIGN KEY (arrivalId) REFERENCES stoparea (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;";
+      String add1 = "ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink ADD CONSTRAINT new_connectionlink_stoparea_arrival FOREIGN KEY (arrivalId) REFERENCES " + managerDataSource.getDatabaseSchema() + ".stoparea (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;";
       Statement a1Statement = connexion.createStatement();
       a1Statement.execute(add1);
-      String drop1 = "ALTER TABLE connectionlink DROP CONSTRAINT new_connectionlink_stoparea_arrival;";
+      String drop1 = "ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink DROP CONSTRAINT new_connectionlink_stoparea_arrival;";
       Statement d1Statement = connexion.createStatement();
       d1Statement.execute(drop1);
-      String add2 = "ALTER TABLE connectionlink ADD CONSTRAINT new_connectionlink_stoparea_departure FOREIGN KEY (departureId) REFERENCES stoparea (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;";
+      String add2 = "ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink ADD CONSTRAINT new_connectionlink_stoparea_departure FOREIGN KEY (departureId) REFERENCES " + managerDataSource.getDatabaseSchema() + ".stoparea (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;";
       Statement a2Statement = connexion.createStatement();
       a2Statement.execute(add2);
-      String drop2 = "ALTER TABLE connectionlink DROP CONSTRAINT new_connectionlink_stoparea_departure;";
+      String drop2 = "ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink DROP CONSTRAINT new_connectionlink_stoparea_departure;";
       Statement d2Statement = connexion.createStatement();
       d2Statement.execute(drop2);
     }
@@ -696,22 +697,22 @@ public class ValidationAction extends GeneriqueAction
       props.setProperty("allowEncodingChanges", "true");
       connexion = DriverManager.getConnection(managerDataSource.getUrl(), props);
       connexion.setAutoCommit(false);
-      connexion.createStatement().execute("ALTER TABLE company DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE connectionlink DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE routingConstraint_stoparea DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE routingConstraint DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE journeypattern DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE line DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE ptnetwork DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE route DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE stoparea DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE stoppoint DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetable_period DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetable_date DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetable DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetablevehiclejourney DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE vehiclejourney DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE vehiclejourneyatstop DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".company DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint_stoparea DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".journeypattern DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".line DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".ptnetwork DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".route DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoparea DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoppoint DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_period DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_date DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourney DISABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop DISABLE TRIGGER ALL;");
       String deleteDates = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable_date WHERE date <= '" + purge + "';";
       Statement deleteDatesStatement = connexion.createStatement();
       int numberOfDates = deleteDatesStatement.executeUpdate(deleteDates);
@@ -813,22 +814,22 @@ public class ValidationAction extends GeneriqueAction
       Statement deleteLignesStatement = connexion.createStatement();
       int numberOfLignes = deleteLignesStatement.executeUpdate(deleteLignes);
       addActionMessage(getText("message.validate.purge.lines") + numberOfLignes);
-      connexion.createStatement().execute("ALTER TABLE company ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE connectionlink ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE routingConstraint_stoparea ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE routingConstraint ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE journeypattern ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE line ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE ptnetwork ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE route ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE stoparea ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE stoppoint ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetable_period ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetable_date ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetable ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE timetablevehiclejourney ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE vehiclejourney ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE vehiclejourneyatstop ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".company ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint_stoparea ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".journeypattern ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".line ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".ptnetwork ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".route ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoparea ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoppoint ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_period ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_date ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourney ENABLE TRIGGER ALL;");
+      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop ENABLE TRIGGER ALL;");
 
       connexion.commit();
     }
