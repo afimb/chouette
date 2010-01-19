@@ -327,7 +327,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   public String fusionnerArrets()
   {
     positionGeographiqueManager.fusionnerPositionsGeographiques(idArretSource, idArretDestination);
-    return NONE;
+    return REDIRECTLIST;
   }
 
   @SkipValidation
