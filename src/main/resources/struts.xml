@@ -138,10 +138,10 @@
 					<param name="logEnabled">true</param>
 					<param name="logLevel">error</param>
 				</interceptor-ref>
-				<interceptor-ref name="singleAction" />
 				<interceptor-ref name="alias" />
 				<interceptor-ref name="servletConfig" />
 				<interceptor-ref name="i18n" />
+				<interceptor-ref name="singleAction" />
 				<interceptor-ref name="params">
 					<param name="excludeParams">dojo\..*,^struts\..*</param>
 				</interceptor-ref>
