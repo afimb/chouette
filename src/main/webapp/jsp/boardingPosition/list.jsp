@@ -57,7 +57,7 @@
 <br/>
 <%-- FUSION D'UN ARRET --%>
 <div id="fusionnerArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
-  <s:form id="fusionnerArretForm" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();" validate="true">
+  <s:form id="fusionnerArretForm" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();" validate="true" namespace="/boardingPosition">
     <s:hidden name="typePositionGeographique" value="arretPhysique" />
     <div style="padding-left:2px"><s:text name="text.boardingPosition.stoppoints.merge"/></div>
     <div>
