@@ -405,13 +405,13 @@ public class ImportAction extends GeneriqueAction
       }
       catch (Exception e)
       {
-        addActionMessage("Impossible de cr&eacute;er la ligne en base");
-        log.error("Impossible de cr�er la ligne en base, msg=" + e.getMessage(), e);
+        addActionMessage(getText("message.import.generical.csv.failure"));
+        log.error("Impossible de créer la ligne en base, msg=" + e.getMessage(), e);
         return INPUT;
       }
     }
     identificationManager.getDictionaryObjectId().completion();
-    addActionMessage("Cr&eacute;ation des lignes en base effectu&eacute;e");
+    addActionMessage(getText("message.import.generical.csv.success"));
     return SUCCESS;
   }
 

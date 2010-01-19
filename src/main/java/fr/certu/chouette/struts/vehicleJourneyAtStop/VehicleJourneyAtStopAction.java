@@ -217,7 +217,6 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
         // Création d'une course
         Course course = new Course();
         course.setIdItineraire(getIdItineraire());
-        course.setPublishedJourneyName(getText("vehicleJourney.noname"));
         courseManager.creer(course);
         // Copie des tableaux de marche de la course de référence dans la nouvelle
         courseManager.associerCourseTableauxMarche(course.getId(), tableauxMarcheIds);
