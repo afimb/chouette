@@ -24,6 +24,8 @@ import fr.certu.chouette.service.importateur.IImportCorrespondances;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,9 +128,10 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
     {
       addActionError(getText("connectionlink.create.ko"));
     }
-    setMappedRequest(SAVE);
+    setMappedRequest(UPDATE);
+    setIdCorrespondance(model.getId());
     log.debug("Create connectionLink with id : " + getModel().getId());
-    return REDIRECTLIST;
+    return REDIRECTEDIT;
   }
 
   @SkipValidation
@@ -151,7 +154,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
     }
     setMappedRequest(UPDATE);
     log.debug("Update connectionLink with id : " + getModel().getId());
-    return REDIRECTLIST;
+    return REDIRECTEDIT;
   }
 
   public String delete()
@@ -166,7 +169,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   public String cancel()
   {
     addActionMessage(getText("connectionlink.cancel.ok"));
-    return REDIRECTLIST;
+    return REDIRECTEDIT;
   }
 
   @Override
@@ -431,5 +434,147 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   public void setFichier(File fichier)
   {
     this.fichier = fichier;
+  }
+
+  public void setStrutsOccasionalTravellerDuration(String s)
+  {
+    SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+    if (s != null && s.length() > 0)
+    {
+      try
+      {
+        Date d = sdfHoraire.parse(s);
+        model.setOccasionalTravellerDuration(d);
+      }
+      catch (Exception ex)
+      {
+        addActionError(ex.getLocalizedMessage());
+      }
+    }
+    else
+    {
+      model.setOccasionalTravellerDuration(null);
+    }
+  }
+
+  public String getStrutsOccasionalTravellerDuration()
+  {
+    if (model != null && model.getOccasionalTravellerDuration() != null)
+    {
+      Date d = model.getOccasionalTravellerDuration();
+      SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+      return sdfHoraire.format(d);
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  public void setStrutsMobilityRestrictedTravellerDuration(String s)
+  {
+    SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+    if (s != null && s.length() > 0)
+    {
+      try
+      {
+        Date d = sdfHoraire.parse(s);
+        model.setMobilityRestrictedTravellerDuration(d);
+      }
+      catch (Exception ex)
+      {
+        addActionError(ex.getLocalizedMessage());
+      }
+    }
+    else
+    {
+      model.setMobilityRestrictedTravellerDuration(null);
+    }
+  }
+
+  public String getStrutsMobilityRestrictedTravellerDuration()
+  {
+    if (model != null && model.getMobilityRestrictedTravellerDuration() != null)
+    {
+      Date d = model.getMobilityRestrictedTravellerDuration();
+      SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+      return sdfHoraire.format(d);
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  public void setStrutsFrequentTravellerDuration(String s)
+  {
+    SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+    if (s != null && s.length() > 0)
+    {
+      try
+      {
+        Date d = sdfHoraire.parse(s);
+        model.setFrequentTravellerDuration(d);
+      }
+      catch (Exception ex)
+      {
+        addActionError(ex.getLocalizedMessage());
+      }
+    }
+    else
+    {
+      model.setFrequentTravellerDuration(null);
+    }
+  }
+
+  public String getStrutsFrequentTravellerDuration()
+  {
+    if (model != null && model.getFrequentTravellerDuration() != null)
+    {
+      Date d = model.getFrequentTravellerDuration();
+      SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+      return sdfHoraire.format(d);
+    }
+    else
+    {
+      return null;
+    }
+  }
+
+  public void setStrutsDefaultDuration(String s)
+  {
+    log.debug("setStrutsDefaultDuration");
+    SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+    if (s != null && s.length() > 0)
+    {
+      try
+      {
+        Date d = sdfHoraire.parse(s);
+        model.setDefaultDuration(d);
+      }
+      catch (Exception ex)
+      {
+        addActionError(ex.getLocalizedMessage());
+      }
+    }
+    else
+    {
+      model.setDefaultDuration(null);
+    }
+  }
+
+  public String getStrutsDefaultDuration()
+  {
+    log.debug("getStrutsDefaultDuration");
+    if (model != null && model.getDefaultDuration() != null)
+    {
+      Date d = model.getDefaultDuration();
+      SimpleDateFormat sdfHoraire = new SimpleDateFormat(durationsFormat);
+      return sdfHoraire.format(d);
+    }
+    else
+    {
+      return null;
+    }
   }
 }
