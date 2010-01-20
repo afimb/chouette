@@ -458,13 +458,13 @@
     		class="fr.certu.chouette.service.exportateur.impl.ExportCorrespondances">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
   </bean>
-    
+
   <bean id="importCorrespondances"
-    		class="fr.certu.chouette.service.importateur.impl.ImportCorrespondances">   		 
+               class="fr.certu.chouette.service.importateur.impl.ImportCorrespondances">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     <property name="correspondanceManager" ref="correspondanceManager" />
   </bean>
-    
+
   <bean id="importHorairesManager"
     		class="fr.certu.chouette.service.importateur.monoitineraire.csv.impl.ImportHorairesManager">
     <property name="courseManager" ref="courseManager"/>
@@ -479,7 +479,7 @@
   <!-- Modules struts -->
   <bean id="actionLock" class="fr.certu.chouette.service.actionLock.ActionLock"
   		scope="singleton">
-  	<property name="timeout" value="${action.lock.timeout}" />
+    <property name="timeout" value="${action.lock.timeout}" />
   </bean>
 
   <bean id="RouteActionBean" scope="prototype"
@@ -563,8 +563,9 @@
     
   <bean id="ConnectionLinkActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
-    <property name="importateurCorrespondances" ref="importCorrespondances"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>    
+    <property name="correspondanceManager" ref="correspondanceManager"/>
+    <property name="importCorrespondances" ref="importCorrespondances"/>
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
     
@@ -600,15 +601,19 @@
   <bean id="LineFilesComparisonServiceBean" scope="prototype"
 		class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
     <property name="identificationManager" ref="identificationManager"/>
-      <property name="exchangeFormat" value="Chouette"/>      
-      <property name="enableVerboseMode" value="false"/> 
+    <property name="exchangeFormat" value="Chouette"/>
+    <property name="enableVerboseMode" value="false"/>
          
-      <property name="availableExchangeFormats">
+    <property name="availableExchangeFormats">
       <map>
-         <entry key="Chouette"><ref bean="ExchangeableChouetteLineComparator"/></entry> 
-         <entry key="Stif"><ref bean="ExchangeableAmivifLineComparator"/></entry> 
-      </map>   
-      </property>    
+        <entry key="Chouette">
+          <ref bean="ExchangeableChouetteLineComparator"/>
+        </entry>
+        <entry key="Stif">
+          <ref bean="ExchangeableAmivifLineComparator"/>
+        </entry>
+      </map>
+    </property>
   </bean>
 
   <bean id="Validation" scope="prototype"
