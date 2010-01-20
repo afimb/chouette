@@ -27,10 +27,10 @@
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
     <s:textfield key="name" required="true"/>
     <s:textfield key="comment" required="false"/>
-    <s:textfield key="defaultDuration" />
-    <s:textfield key="mobilityRestrictedTravellerDuration"/>
-    <s:textfield key="occasionalTravellerDuration"/>
-    <s:textfield key="frequentTravellerDuration"/>
+    <s:textfield name="strutsDefaultDuration" value="%{strutsDefaultDuration}" label="%{getText('defaultDuration')}" />
+    <s:textfield name="strutsMobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" label="%{getText('mobilityRestrictedTravellerDuration')}"/>
+    <s:textfield name="strutsOccasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" label="%{getText('occasionalTravellerDuration')}"/>
+    <s:textfield name="strutsFrequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" label="%{getText('frequentTravellerDuration')}"/>
     <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="liftAvailability"/>
     <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="mobilityRestrictedSuitability"/>
@@ -57,9 +57,9 @@
 </div>
 
 <%-- Zones depart --%>
-<div class="panelDataSection"><s:text name="text.connectionlink.departure"/></div>
-<div class="panel" id="displaytag">
-  <s:if test="id != null">
+<s:if test="id != null">
+  <div class="panelDataSection"><s:text name="text.connectionlink.departure"/></div>
+  <div class="panel" id="displaytag">
     <table>
       <thead>
         <tr>
@@ -100,13 +100,14 @@
         </tr>
       </tbody>
     </table>
-  </s:if>
-</div>
+  </div>
+</s:if>
+
 
 <%-- Zones arrivée --%>
-<div class="panelDataSection"><s:text name="text.connectionlink.arrival"/></div>
-<div class="panel" id="displaytag">
-  <s:if test="id != null">
+<s:if test="id != null">
+  <div class="panelDataSection"><s:text name="text.connectionlink.arrival"/></div>
+  <div class="panel" id="displaytag">
     <table>
       <thead>
         <tr>
@@ -147,6 +148,7 @@
         </tr>
       </tbody>
     </table>
-  </s:if>
+  </div>
+</s:if>
 
-</div>
+
