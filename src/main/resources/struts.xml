@@ -350,74 +350,27 @@
 	</package>
 	
 	<package name="connectionLink" extends="struts" namespace="/connectionLink">
-		<action name="update" method="update" class='ConnectionLinkActionBean'>
+		<action name="*" method="{1}" class='ConnectionLinkActionBean'>
 			<result name="redirectList" type="redirectAction">
 				<param name="actionName">list</param>
 				<param name="operationMode">RETRIEVE</param>
 			</result>
 			<result name="redirectEdit" type="redirectAction">
-				<param name="actionName">edit</param>
-				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>				
-			</result>
-			<result name="input" type="redirectAction">
-				<param name="actionName">edit</param>
-				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>				
-			</result>
-		</action>		
-		<action name="upload" method="upload" class='ConnectionLinkActionBean'>
-			<result name="redirectList" type="redirectAction">
-				<param name="actionName">list</param>
-				<param name="operationMode">RETRIEVE</param>
-			</result>		
-			<result name="input" type="redirectAction">
-				<param name="actionName">list</param>
-				<param name="operationMode">RETRIEVE</param>
-				<!--<param name="connectionLinks">${connectionLinks}</param>-->			
-			</result>
-		</action>
-		
-		<action name="save" method="save" class='ConnectionLinkActionBean'>
-			<result name="redirectEdit" type="redirectAction">
-				<param name="actionName">edit</param>
-				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>				
-			</result>		
-			<result name="input" type="redirectAction">
-				<param name="actionName">edit</param>
-				<param name="operationMode">RETRIEVE</param>
-			</result>
-		</action>
-		
-		<action name="doSearch" method="doSearch" class='ConnectionLinkActionBean' >
-			<result name="search">/jsp/connectionLink/search.jsp</result>
-			<result name="input">/jsp/connectionLink/search.jsp</result>
-			<result name="error" type="redirectAction">
 				<param name="actionName">edit</param>
 				<param name="operationMode">RETRIEVE</param>
 				<param name="idCorrespondance">${idCorrespondance}</param>
 			</result>
-		</action>
-		
-		<action name="*" method="{1}" class='ConnectionLinkActionBean'>						
-			<!-- default result, for list and for global error see global exceptions interceptor -->						
-			<result name="list">/jsp/connectionLink/list.jsp</result>
-			<result name="edit">/jsp/connectionLink/edit.jsp</result>
-			<result name="input">/jsp/connectionLink/list.jsp</result>
-			<result name="search">/jsp/connectionLink/search.jsp</result>
-			
-			<!-- Result for : import, "update_success", delete, cancel -->
-			<result name="redirectList" type="redirectAction">
-				<param name="actionName">list</param>
-				<param name="operationMode">RETRIEVE</param>
+			<result name="edit">/jsp/connectionLink/edit.jsp
 			</result>
-			
-			<!-- Result for : "update_input", cancelSearch, addStart, addEnd -->
-			<result name="redirectEdit" type="redirectAction">
-				<param name="actionName">edit</param>
-				<param name="operationMode">RETRIEVE</param>
-				<param name="idCorrespondance">${idCorrespondance}</param>				
+			<result name="list">/jsp/connectionLink/list.jsp
+			</result>
+			<result name="input">/jsp/connectionLink/edit.jsp
+			</result>
+			<result name="search">/jsp/connectionLink/search.jsp
+			</result>
+			<result name="success_connectionLink">/jsp/connectionLink/list.jsp
+			</result>
+			<result name="input_connectionLink">/jsp/connectionLink/list.jsp
 			</result>
 		</action>
 	</package>

@@ -1,7 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-
-<%-- Titre et barre de navigation --%>	
+<%-- Titre et barre de navigation --%>
 <title><s:text name="text.connectionlink.search.title" /></title>
 <s:url id="urlCorrespondanceRecherche" action="search" namespace="/connectionLink">
   <s:param name="idCorrespondance" value="%{idCorrespondance}"/>
@@ -12,18 +12,13 @@
 </div>
 <br>
 <%-- Formulaire de recherche --%>
-<div class="panel">  
-  <s:form cssClass="panelDataInnerForm" validate="true" namespace="/connectionLink">  	  	
+<div class="panel">
+  <s:form cssClass="panelDataInnerForm" validate="true" namespace="/connectionLink">
     <s:hidden name="typePositionGeographique" value="zone" />
-    <s:hidden name="operationMode" value="%{ops.doSearch}" />
     <s:hidden name="idCorrespondance" value="%{idCorrespondance}" />
     <s:hidden name="actionSuivante" value="%{actionSuivante}" />
-    
-    <s:textfield key="criteria.name"/>    
-    <s:select emptyOption="true" key="criteria.areaType"
-    	list="%{getStopAreaEnum(#attr.authorizedType)}"
-    	listKey="enumeratedTypeAccess"
-    	listValue="textePropriete"/>    
+    <s:textfield key="criteria.name"/>
+    <s:select emptyOption="true" key="criteria.areaType" list="%{getStopAreaEnum(#attr.authorizedType)}"  listKey="enumeratedTypeAccess" listValue="textePropriete"/>
     <s:textfield key="criteria.countryCode" />
     <tr>
       <td colspan="2">
@@ -34,8 +29,9 @@
   </s:form>
 </div>
 <br>
+
 <%-- Tableau résultat --%>
-<div class="panel" id="displaytag"> 
+<div class="panel" id="displaytag">
   <display:table name="positionGeographiquesResultat" pagesize="15" requestURI="" id="positionGeographique">
     <display:column titleKey="table.title.action" sortable="false">
       <s:url id="addUrl" action="%{actionSuivante}" namespace="/connectionLink">
