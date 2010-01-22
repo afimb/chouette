@@ -67,16 +67,9 @@ public class ValidationAction extends GeneriqueAction
       props.setProperty("allowEncodingChanges", "true");
       connexion = DriverManager.getConnection(managerDataSource.getUrl(), props);
       connexion.setAutoCommit(false);
+
       // Les horaires sont croissants.
-      String errHoraire = validerHoraires();
-      if (errHoraire.length() == 0)
-      {
-        addActionMessage(getText("message.validate.vehicleJourneyAtStop.increase"));
-      }
-      else
-      {
-        addActionError(errHoraire);
-      }
+      validerHoraires();
 
       // Tout Calendrier est non vide
       validerCalendriers();
@@ -131,7 +124,7 @@ public class ValidationAction extends GeneriqueAction
     return SUCCESS;
   }
 
-  private String validerHoraires()
+  private void validerHoraires()
   {
     withErrors = false;
     String erreurs = "";
@@ -163,9 +156,9 @@ public class ValidationAction extends GeneriqueAction
         {
           if (!withErrors)
           {
-            erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+            erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
           }
-          erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.link");
+          erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.link") + "</LI>";
           withErrors = true;
           continue;
         }
@@ -173,9 +166,9 @@ public class ValidationAction extends GeneriqueAction
         {
           if (!withErrors)
           {
-            erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+            erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
           }
-          erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.time");
+          erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.time") + "</LI>";
           withErrors = true;
           continue;
         }
@@ -190,9 +183,9 @@ public class ValidationAction extends GeneriqueAction
           {
             if (!withErrors)
             {
-              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
             }
-            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.arrival") + ex.getMessage();
+            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.arrival") + ex.getMessage() + "</LI>";
             withErrors = true;
             continue;
           }
@@ -207,9 +200,9 @@ public class ValidationAction extends GeneriqueAction
           {
             if (!withErrors)
             {
-              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
             }
-            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.departure") + ex.getMessage();
+            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.departure") + ex.getMessage() + "</LI>";
             withErrors = true;
             continue;
           }
@@ -221,14 +214,14 @@ public class ValidationAction extends GeneriqueAction
           {
             if (!withErrors)
             {
-              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
             }
             String[] args = new String[5];
             args[0] = sdf.format(tmpDate2);
             args[1] = sdf.format(tmpDate3);
             args[2] = obj1.toString();
             args[3] = rs.getObject(4).toString();
-            erreurs += "<LI><a href=\"liste_HorairesDePassage.action?idLigne=" + rs.getObject(5).toString() + "&amp;idItineraire=" + rs.getObject(4).toString() + "\">" + getText("message.validate.vehicleJourneyAtStop.stoppoint", args) + "</a>";
+            erreurs += "<LI><a href=\"vehicleJourneyAtStop/list?idLigne=" + rs.getObject(5).toString() + "&idItineraire=" + rs.getObject(4).toString() + "\">" + getText("message.validate.vehicleJourneyAtStop.stoppoint", args) + "</a>" + "</LI>";
             withErrors = true;
           }
         }
@@ -239,7 +232,7 @@ public class ValidationAction extends GeneriqueAction
           {
             if (!withErrors)
             {
-              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+              erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
             }
             String[] args = new String[5];
             args[0] = sdf.format(date);
@@ -247,7 +240,7 @@ public class ValidationAction extends GeneriqueAction
             args[2] = obj1.toString();
             args[3] = rs.getObject(4).toString();
             args[4] = rs.getObject(6).toString();
-            erreurs += "<LI><a href=\"liste_HorairesDePassage.action?idLigne=" + rs.getObject(5).toString() + "&amp;idItineraire=" + rs.getObject(4).toString() + "\">" + getText("message.validate.vehicleJourneyAtStop.previous.stoppoint", args) + "</a>";
+            erreurs += "<LI><a href=\"vehicleJourneyAtStop/list?idLigne=" + rs.getObject(5).toString() + "&idItineraire=" + rs.getObject(4).toString() + "\">" + getText("message.validate.vehicleJourneyAtStop.previous.stoppoint", args) + "</a></LI>";
             withErrors = true;
           }
         }
@@ -259,17 +252,23 @@ public class ValidationAction extends GeneriqueAction
     {
       if (!withErrors)
       {
-        erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=DISC>";
+        erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
       }
-      erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.times") + e.getMessage();
+      erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.times") + e.getMessage() + "</LI>";
       withErrors = true;
-      logger.error("erreur SQL",e);
+      logger.error("erreur SQL", e);
     }
+    
     if (erreurs.length() != 0)
     {
       erreurs += "</UL>";
+      logger.debug("erreurs : " + erreurs);
+      addActionError(erreurs);
     }
-    return erreurs;
+    else
+    {
+      addActionMessage(getText("message.validate.vehicleJourneyAtStop.increase"));
+    }
   }
 
   private void validerCalendriers()
