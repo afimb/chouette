@@ -57,101 +57,106 @@ public class VehicleJourneyProducer extends TridentObjectProducer {
 		
 		// transportMode optionne
 		if (castorVehicleJourney.getTransportMode() != null)
-			switch (castorVehicleJourney.getTransportMode()) {
-			case amivif.schema.types.TransportModeNameType.AIR:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Air);
-				break;
-			case amivif.schema.types.TransportModeNameType.BICYCLE:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Bicycle);
-				break;
-			case amivif.schema.types.TransportModeNameType.BUS:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Bus);
-				break;
-			case amivif.schema.types.TransportModeNameType.COACH:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Coach);
-				break;
-			case amivif.schema.types.TransportModeNameType.LOCALTRAIN:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.LocalTrain);
-				break;
-			case amivif.schema.types.TransportModeNameType.LONGDISTANCETRAIN:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.LongDistanceTrain);
-				break;
-			case amivif.schema.types.TransportModeNameType.METRO:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Metro);
-				break;
-			case amivif.schema.types.TransportModeNameType.OTHER:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Other);
-				break;
-			case amivif.schema.types.TransportModeNameType.PRIVATEVEHICLE:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.PrivateVehicle);
-				break;
-			case amivif.schema.types.TransportModeNameType.RAPIDTRANSIT:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.RapidTransit);
-				break;
-			case amivif.schema.types.TransportModeNameType.SHUTTLE:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Shuttle);
-				break;
-			case amivif.schema.types.TransportModeNameType.TAXI:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Taxi);
-				break;
-			case amivif.schema.types.TransportModeNameType.TRAIN:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Train);
-				break;
-			case amivif.schema.types.TransportModeNameType.TRAMWAY:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Tramway);
-				break;
-			case amivif.schema.types.TransportModeNameType.TROLLEYBUS:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Trolleybus);
-				break;
-			case amivif.schema.types.TransportModeNameType.VAL:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.VAL);
-				break;
-			case amivif.schema.types.TransportModeNameType.WALK:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Walk);
-				break;
-			case amivif.schema.types.TransportModeNameType.WATERBORNE:
-				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Waterborne);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidTransportMode_VehicleJourney, "Le \"transportMode\" ("+castorVehicleJourney.getTransportMode().toString()+") du \"VehicleJourney\" ("+castorVehicleJourney.getObjectId()+") est invalid.");
+		{
+			switch (castorVehicleJourney.getTransportMode()) 
+			{
+				case AIR:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Air);
+					break;
+				case BICYCLE:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Bicycle);
+					break;
+				case BUS:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Bus);
+					break;
+				case COACH:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Coach);
+					break;
+				case LOCALTRAIN:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.LocalTrain);
+					break;
+				case LONGDISTANCETRAIN:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.LongDistanceTrain);
+					break;
+				case METRO:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Metro);
+					break;
+				case OTHER:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Other);
+					break;
+				case PRIVATEVEHICLE:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.PrivateVehicle);
+					break;
+				case RAPIDTRANSIT:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.RapidTransit);
+					break;
+				case SHUTTLE:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Shuttle);
+					break;
+				case TAXI:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Taxi);
+					break;
+				case TRAIN:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Train);
+					break;
+				case TRAMWAY:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Tramway);
+					break;
+				case TROLLEYBUS:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Trolleybus);
+					break;
+				case VAL:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.VAL);
+					break;
+				case WALK:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Walk);
+					break;
+				case WATERBORNE:
+					vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Waterborne);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidTransportMode_VehicleJourney, "Le \"transportMode\" ("+castorVehicleJourney.getTransportMode().toString()+") du \"VehicleJourney\" ("+castorVehicleJourney.getObjectId()+") est invalid.");
 			}
-		
+		}
 		// vehicleTypeIdentifier optionnel
 		vehicleJourney.setVehicleTypeIdentifier(castorVehicleJourney.getVehicleTypeIdentifier());
 		
 		// statusValue optionnel
 		if (castorVehicleJourney.getStatusValue() != null)
-			switch (castorVehicleJourney.getStatusValue().getType()) {
-			case amivif.schema.types.ServiceStatusValueType.CANCELLED_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Cancelled);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.DELAYED_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Delayed);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.DISRUPTED_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Disrupted);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.EARLY_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Early);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.INCREASEDSERVICE_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.IncreasedService);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.NORMAL_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Normal);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.NOTSTOPPING_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.NotStopping);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.REDUCEDSERVICE_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.ReducedService);
-				break;
-			case amivif.schema.types.ServiceStatusValueType.REROUTED_TYPE:
-				vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Rerouted);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidStatusValue_VehicleJourney, "Le \"statusValue\" ("+castorVehicleJourney.getStatusValue().toString()+") du \"VehicleJourney\" ("+castorVehicleJourney.getObjectId()+") est invalid.");
+		{
+			switch (castorVehicleJourney.getStatusValue()) 
+			{
+				case CANCELLED:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Cancelled);
+					break;
+				case DELAYED:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Delayed);
+					break;
+				case DISRUPTED:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Disrupted);
+					break;
+				case EARLY:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Early);
+					break;
+				case INCREASEDSERVICE:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.IncreasedService);
+					break;
+				case NORMAL:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Normal);
+					break;
+				case NOTSTOPPING:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.NotStopping);
+					break;
+				case REDUCEDSERVICE:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.ReducedService);
+					break;
+				case REROUTED:
+					vehicleJourney.setStatusValue(VehicleJourney.StatusValue.Rerouted);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidStatusValue_VehicleJourney, "Le \"statusValue\" ("+castorVehicleJourney.getStatusValue().toString()+") du \"VehicleJourney\" ("+castorVehicleJourney.getObjectId()+") est invalid.");
 			}
+		}
 		
 		// lineIdShortcut optionnel
 		vehicleJourney.setLineIdShortcut(castorVehicleJourney.getLineIdShortcut());
@@ -286,32 +291,33 @@ public class VehicleJourneyProducer extends TridentObjectProducer {
 		
 		// boardingAlightingPossiblity optionnel
 		if (castorVehicleJourneyAtStop.getBoardingAlightingPossibility() != null)
-			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility()) {
-			case amivif.schema.types.BoardingAlightingPossibilityType.ALIGHTONLY:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.AlightOnly);
-				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.ALIGHTONREQUEST:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.AlightOnRequest);
-				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHT:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardAndAlight);
-				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHTONREQUEST:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardAndAlightOnRequest);
-				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDONLY:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardOnly);
-				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDONREQUEST:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardOnRequest);
-				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.NEITHERBOARDORALIGHT:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.NeitherBoardOrAlight);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidBoardingAlightingPossibility_VehicleJourneyAtStop, "Le \"BoardingAlightingPossibility\" ("+castorVehicleJourneyAtStop.getBoardingAlightingPossibility().toString()+") est unvalid.");
+			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility()) 
+			{
+				case ALIGHTONLY:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.AlightOnly);
+					break;
+				case ALIGHTONREQUEST:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.AlightOnRequest);
+					break;
+				case BOARDANDALIGHT:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardAndAlight);
+					break;
+				case BOARDANDALIGHTONREQUEST:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardAndAlightOnRequest);
+					break;
+				case BOARDONLY:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardOnly);
+					break;
+				case BOARDONREQUEST:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardOnRequest);
+					break;
+				case NEITHERBOARDORALIGHT:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.NeitherBoardOrAlight);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidBoardingAlightingPossibility_VehicleJourneyAtStop, "Le \"BoardingAlightingPossibility\" ("+castorVehicleJourneyAtStop.getBoardingAlightingPossibility().toString()+") est unvalid.");
 			}
-		
+			
 		// order optionnel
 		if (castorVehicleJourneyAtStop.hasOrder())
 			vehicleJourneyAtStop.setOrder((int)castorVehicleJourneyAtStop.getOrder());

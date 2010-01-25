@@ -360,7 +360,7 @@ public class ValidationAction extends GeneriqueAction
                 switch (calendar.get(Calendar.DAY_OF_WEEK))
                 {
                   case Calendar.MONDAY:
-                    int monday = (int) Math.pow(2, chouette.schema.types.DayTypeType.MONDAY_TYPE);
+                    int monday = (int) Math.pow(2, chouette.schema.types.DayTypeType.MONDAY.ordinal());
                     if ((intDayTypes & monday) == monday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -371,7 +371,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                   case Calendar.TUESDAY:
-                    int tuesday = (int) Math.pow(2, chouette.schema.types.DayTypeType.TUESDAY_TYPE);
+                    int tuesday = (int) Math.pow(2, chouette.schema.types.DayTypeType.TUESDAY.ordinal());
                     if ((intDayTypes & tuesday) == tuesday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -382,7 +382,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                   case Calendar.WEDNESDAY:
-                    int wednesday = (int) Math.pow(2, chouette.schema.types.DayTypeType.WEDNESDAY_TYPE);
+                    int wednesday = (int) Math.pow(2, chouette.schema.types.DayTypeType.WEDNESDAY.ordinal());
                     if ((intDayTypes & wednesday) == wednesday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -393,7 +393,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                   case Calendar.THURSDAY:
-                    int thursday = (int) Math.pow(2, chouette.schema.types.DayTypeType.THURSDAY_TYPE);
+                    int thursday = (int) Math.pow(2, chouette.schema.types.DayTypeType.THURSDAY.ordinal());
                     if ((intDayTypes & thursday) == thursday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -404,7 +404,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                   case Calendar.FRIDAY:
-                    int friday = (int) Math.pow(2, chouette.schema.types.DayTypeType.FRIDAY_TYPE);
+                    int friday = (int) Math.pow(2, chouette.schema.types.DayTypeType.FRIDAY.ordinal());
                     if ((intDayTypes & friday) == friday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -415,7 +415,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                   case Calendar.SATURDAY:
-                    int saturday = (int) Math.pow(2, chouette.schema.types.DayTypeType.SATURDAY_TYPE);
+                    int saturday = (int) Math.pow(2, chouette.schema.types.DayTypeType.SATURDAY.ordinal());
                     if ((intDayTypes & saturday) == saturday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -426,7 +426,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                   case Calendar.SUNDAY:
-                    int sunday = (int) Math.pow(2, chouette.schema.types.DayTypeType.SUNDAY_TYPE);
+                    int sunday = (int) Math.pow(2, chouette.schema.types.DayTypeType.SUNDAY.ordinal());
                     if ((intDayTypes & sunday) == sunday)
                     {
                       tmDates.add(sdf2.format(date));
@@ -437,7 +437,7 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                 }
-                long time = date.getTime() + ((long) 24) * ((long) 60) * ((long) 60) * ((long) 1000);
+                long time = date.getTime() + 24l * 60l * 60l * 1000l;
                 date = new Date(time);
               }
             }

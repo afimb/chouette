@@ -38,62 +38,63 @@ public class LineProducer extends TridentObjectProducer {
 		// transportModeName optionnel
 		if (castorLine.getTransportModeName() != null)
 		{
-			switch (castorLine.getTransportModeName()) {
-				case amivif.schema.types.TransportModeNameType.AIR:
+			switch (castorLine.getTransportModeName()) 
+			{
+				case AIR:
 					line.setTransportMode(Line.TransportMode.Air);
 					break;
-				case amivif.schema.types.TransportModeNameType.BICYCLE:
+				case BICYCLE:
 					line.setTransportMode(Line.TransportMode.Bicycle);
 					break;
-				case amivif.schema.types.TransportModeNameType.BUS:
+				case BUS:
 					line.setTransportMode(Line.TransportMode.Bus);
 					break;
-				case amivif.schema.types.TransportModeNameType.COACH:
+				case COACH:
 					line.setTransportMode(Line.TransportMode.Coach);
 					break;
-				case amivif.schema.types.TransportModeNameType.FERRY:
+				case FERRY:
 					line.setTransportMode(Line.TransportMode.Ferry);
 					break;
-				case amivif.schema.types.TransportModeNameType.LOCALTRAIN:
+				case LOCALTRAIN:
 					line.setTransportMode(Line.TransportMode.LocalTrain);
 					break;
-				case amivif.schema.types.TransportModeNameType.LONGDISTANCETRAIN:
+				case LONGDISTANCETRAIN:
 					line.setTransportMode(Line.TransportMode.LongDistanceTrain);
 					break;
-				case amivif.schema.types.TransportModeNameType.METRO:
+				case METRO:
 					line.setTransportMode(Line.TransportMode.Metro);
 					break;
-				case amivif.schema.types.TransportModeNameType.OTHER:
+				case OTHER:
 					line.setTransportMode(Line.TransportMode.Other);
 					break;
-				case amivif.schema.types.TransportModeNameType.PRIVATEVEHICLE:
+				case PRIVATEVEHICLE:
 					line.setTransportMode(Line.TransportMode.PrivateVehicle);
 					break;
-				case amivif.schema.types.TransportModeNameType.RAPIDTRANSIT:
+				case RAPIDTRANSIT:
 					line.setTransportMode(Line.TransportMode.RapidTransit);
 					break;
-				case amivif.schema.types.TransportModeNameType.SHUTTLE:
+				case SHUTTLE:
 					line.setTransportMode(Line.TransportMode.Shuttle);
 					break;
-				case amivif.schema.types.TransportModeNameType.TAXI:
+				case TAXI:
 					line.setTransportMode(Line.TransportMode.Taxi);
 					break;
-				case amivif.schema.types.TransportModeNameType.TRAIN:
+				case TRAIN:
 					line.setTransportMode(Line.TransportMode.Train);
 					break;
-				case amivif.schema.types.TransportModeNameType.TRAMWAY:
+				case TRAMWAY:
 					line.setTransportMode(Line.TransportMode.Tramway);
 					break;
-				case amivif.schema.types.TransportModeNameType.TROLLEYBUS:
+				case TROLLEYBUS:
 					line.setTransportMode(Line.TransportMode.Trolleybus);
 					break;
-				case amivif.schema.types.TransportModeNameType.VAL:
+				case VAL:
 					line.setTransportMode(Line.TransportMode.VAL);
 					break;
-				case amivif.schema.types.TransportModeNameType.WALK:
+				case WALK:
 					line.setTransportMode(Line.TransportMode.Walk);
 					break;
-				case amivif.schema.types.TransportModeNameType.WATERBORNE:
+				case WATERBORNE:
 					line.setTransportMode(Line.TransportMode.Waterborne);
 					break;
 				default:

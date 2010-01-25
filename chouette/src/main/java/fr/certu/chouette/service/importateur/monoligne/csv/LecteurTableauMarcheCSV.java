@@ -170,28 +170,28 @@ public class LecteurTableauMarcheCSV {
 						for (int l = 0; l < timetable.getDayTypeCount(); l++)
 							switch (timetable.getDayType(l))
 							{
-								case DayTypeType.MONDAY:
+								case MONDAY:
 									donneesTableauxMarche4[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.TUESDAY:
+								case TUESDAY:
 									donneesTableauxMarche5[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.WEDNESDAY:
+								case WEDNESDAY:
 									donneesTableauxMarche6[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.THURSDAY:
+								case THURSDAY:
 									donneesTableauxMarche7[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.FRIDAY:
+								case FRIDAY:
 									donneesTableauxMarche8[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.SATURDAY:
+								case SATURDAY:
 									donneesTableauxMarche9[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.SUNDAY:
+								case SUNDAY:
 									donneesTableauxMarche10[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
-								case DayTypeType.PUBLICHOLLIDAY:
+								case PUBLICHOLLIDAY:
 									donneesTableauxMarche11[colonneTitrePartieFixe+1+2*i] = "O";
 									break;
 							}

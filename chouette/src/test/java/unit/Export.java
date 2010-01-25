@@ -24,8 +24,8 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.ChouetteArea;
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLineTypeType;
 import chouette.schema.ITL;
 import chouette.schema.StopArea;
 import chouette.schema.StopPoint;
@@ -98,7 +98,7 @@ public class Export
 		Random random = new Random();
 		String cle = String.valueOf( random.nextInt(1000000));
 		
-		ChouettePTNetworkType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
+		ChouettePTNetworkTypeType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
 		
 		ITL grande = GenerateurDonnee.creerXMLITL();
 		grande.setLineIdShortCut( ligneXML.getChouetteLineDescription().getLine().getObjectId());
@@ -203,7 +203,7 @@ public class Export
 		Random random = new Random();
 		String cle = String.valueOf( random.nextInt(1000000));
 		
-		ChouettePTNetworkType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
+		ChouettePTNetworkTypeType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
 		
 		PositionGeographique exArretPhysique = getArretPhysique( ligneXML).get( 2);
 		String objectIdOrigine = exArretPhysique.getObjectId();
@@ -267,7 +267,7 @@ public class Export
 		Random random = new Random();
 		String cle = String.valueOf( random.nextInt(1000000));
 		
-		ChouettePTNetworkType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
+		ChouettePTNetworkTypeType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
 		
 		PositionGeographique nvArretPhysique = getArretPhysique( ligneXML).get( 2);
 		
@@ -304,7 +304,7 @@ public class Export
 		Random random = new Random();
 		String cle = String.valueOf( random.nextInt(1000000));
 		
-		ChouettePTNetworkType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
+		ChouettePTNetworkTypeType ligneXML = GenerateurDonnee.creerXMLaleatoire( cle, 1, 7, 8);
 		
 		PositionGeographique nvArretPhysique = getArretPhysique( ligneXML).get( 2);
 		
@@ -332,7 +332,7 @@ public class Export
 //			description="export specifique")
     public void export_specifique() 
     {
-		ChouettePTNetworkType ligneXML = exportManager.getExportParRegistration( "003003021");
+		ChouettePTNetworkTypeType ligneXML = exportManager.getExportParRegistration( "003003021");
 		MainSchemaProducer valideur = new MainSchemaProducer();		
 		try {
 			valideur.getASG( ligneXML);
@@ -357,16 +357,17 @@ public class Export
 				throw e;
 		}
 	}	
-	private List<PositionGeographique> getArretPhysique( ChouettePTNetworkType ligne)
+	private List<PositionGeographique> getArretPhysique(ChouettePTNetworkTypeType ligne)
 	{
 		ChouetteArea chouetteArea = ligne.getChouetteArea();
 		int totalArrets = chouetteArea.getStopAreaCount();
-		List<PositionGeographique> arretsPhysiques = new ArrayList<PositionGeographique>( totalArrets);
-		for (int i = 0; i < totalArrets; i++) {
+		List<PositionGeographique> arretsPhysiques = new ArrayList<PositionGeographique>(totalArrets);
+		for (int i = 0; i < totalArrets; i++) 
+		{
 			PositionGeographique arretPhysique = new PositionGeographique();
-			arretPhysique.setStopArea( chouetteArea.getStopArea( i));
-			arretPhysique.setAreaCentroid( chouetteArea.getAreaCentroid( i));
-			arretsPhysiques.add( arretPhysique);
+			arretPhysique.setStopArea(chouetteArea.getStopArea( i));
+			arretPhysique.setAreaCentroid(chouetteArea.getAreaCentroid( i));
+			arretsPhysiques.add(arretPhysique);
 		}
 		return arretsPhysiques;
 	}
@@ -378,8 +379,7 @@ public class Export
 		String nomFic = "test_export.xml";
 		
 		logger.debug( "début");
-		ChouettePTNetworkType ligneDeTestLue = 
-			exportManager.getExportParRegistration( registration);
+		ChouettePTNetworkTypeType ligneDeTestLue = exportManager.getExportParRegistration( registration);
 		
 		lecteurFichierXML.ecrire( ligneDeTestLue, new File( nomFic));
 		logger.debug( "validation");
@@ -423,13 +423,13 @@ public class Export
     {
 		try
 		{
-			ChouettePTNetworkType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
+			ChouettePTNetworkTypeType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
 			
 			ILectureEchange lectureEchange = lecteurEchangeXML.lire(ligneDeTest);
 			importateur.importer( false, lectureEchange);
 			
 			Ligne ligne = ligneManager.getLigneParRegistration( ligneDeTest.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber());
-			ChouettePTNetworkType ligneDeTestLue = 
+			ChouettePTNetworkTypeType ligneDeTestLue = 
 				exportManager.getExportParIdLigne( ligne.getId());
 			
 			lecteurFichierXML.ecrire( ligneDeTestLue, new File( "apres_import.xml"));
@@ -462,7 +462,7 @@ public class Export
     {
 		try
 		{
-			ChouettePTNetworkType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
+			ChouettePTNetworkTypeType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
 			
 			ILectureEchange lectureEchange = lecteurEchangeXML.lire(ligneDeTest);
 			importateur.importer( false, lectureEchange);
@@ -473,7 +473,7 @@ public class Export
 			assert reseaux.size()==1:"Le registrationNumber ("+ligneDeTest.getPTNetwork().getRegistration().getRegistrationNumber()
 										+") devrait être unique en base";
 			
-			ChouetteRemoveLineType removeLine = exportManager.getSuppressionParRegistration(
+			ChouetteRemoveLineTypeType removeLine = exportManager.getSuppressionParRegistration(
 					ligneDeTest.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber());
 
 			assert removeLine.getLine().getObjectId().equals( ligneDeTest.getChouetteLineDescription().getLine().getObjectId());
@@ -492,7 +492,7 @@ public class Export
 	@Test(groups="tests unitaires", description="import - export d'une ligne avec 4 zones")
 	public void export_zones()
 	{
-		ChouettePTNetworkType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
+		ChouettePTNetworkTypeType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
 		
 		List<StopArea> arretsPhysiques = new ArrayList<StopArea>();
 		for (int i=0; i<ligneDeTest.getChouetteArea().getStopAreaCount(); i++) {
@@ -553,7 +553,7 @@ public class Export
 		test.setId( 1L);
 		logger.debug( identification.getIdFonctionnel( "nom", test));
 		
-		ChouettePTNetworkType ligneDeTestLue = 
+		ChouettePTNetworkTypeType ligneDeTestLue = 
 			exportManager.getExportParRegistration( ligneDeTest.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber());
 		
 		lecteurFichierXML.ecrire( ligneDeTestLue, new File( "apres_import.xml"));
@@ -588,7 +588,7 @@ public class Export
 	@Test(groups="tests unitaires", description="import sur fichier avec des zones invalides")
 	public void export_zones_invalides()
 	{
-		ChouettePTNetworkType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
+		ChouettePTNetworkTypeType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork( 4, 15, 8);
 		
 		List<StopArea> arretsPhysiques = new ArrayList<StopArea>();
 		for (int i=0; i<ligneDeTest.getChouetteArea().getStopAreaCount(); i++) {
@@ -644,15 +644,15 @@ public class Export
 	@Test(groups="tests unitaires", description="ecriture - lecture d'une ligne")
     public void lire_ecrire() 
 	{
-		ChouettePTNetworkType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork(4, 15, 8);
+		ChouettePTNetworkTypeType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork(4, 15, 8);
 		
 		String nomFic = "apres_import.xml";
 		lecteurFichierXML.ecrire( ligneDeTest, new File( nomFic));
-		ChouettePTNetworkType ligneLue = null;
+		ChouettePTNetworkTypeType ligneLue = null;
 		
 		try
 		{
-			ligneLue = lire( nomFic);
+			ligneLue = lire(nomFic);
 		}
 		catch( Exception e)
 		{
@@ -669,14 +669,14 @@ public class Export
 		assert resultat : "fichier de test non detruit";
 	}
 
-	private ChouettePTNetworkType lire( String nom) throws FileNotFoundException, IOException, MarshalException, ValidationException
+	private ChouettePTNetworkTypeType lire( String nom) throws FileNotFoundException, IOException, MarshalException, ValidationException
 	{
 		  FileReader aFileReader = new FileReader( nom);
 	
-	     Unmarshaller anUnmarshaller = new Unmarshaller( ChouettePTNetworkType.class);
+	     Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetworkTypeType.class);
 	     anUnmarshaller.setValidation( false);
 	     
-	     ChouettePTNetworkType aReturnValue = ( ChouettePTNetworkType) anUnmarshaller
+	     ChouettePTNetworkTypeType aReturnValue = (ChouettePTNetworkTypeType) anUnmarshaller
 	           .unmarshal( aFileReader);
 	     aFileReader.close();
 	     return aReturnValue;

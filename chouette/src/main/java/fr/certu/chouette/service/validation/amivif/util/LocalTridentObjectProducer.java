@@ -20,39 +20,39 @@ public class LocalTridentObjectProducer extends TridentObjectProducer {
 		
 		// referencingMethod optionnel
 		if (castorLocationType.getReferencingMethod() != null)
-			switch (castorLocationType.getReferencingMethod().getType()) 
+			switch (castorLocationType.getReferencingMethod()) 
 			{
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_1_TYPE:
+				case VALUE_1:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_1);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_2_TYPE:
+				case VALUE_2:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_2);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_3_TYPE:
+				case VALUE_3:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_3);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_4_TYPE:
+				case VALUE_4:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_4);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_5_TYPE:
+				case VALUE_5:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_5);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_6_TYPE:
+				case VALUE_6:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_6);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_7_TYPE:
+				case VALUE_7:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_7);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_8_TYPE:
+				case VALUE_8:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_8);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_9_TYPE:
+				case VALUE_9:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_9);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_10_TYPE:
+				case VALUE_10:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_10);
 					break;
-				case amivif.schema.types.LocationReferencingMethodType.VALUE_11_TYPE:
+				case VALUE_11:
 					locationTridentObject.setReferencingMethod(LocationTridentObject.ReferencingMethod.VALUE_11);
 					break;
 				default:

@@ -42,25 +42,26 @@ class StopAreaExtensionProducer {
 		
 		// AreaType obligatoire
 		if (castorStopAreaExtension.getAreaType() != null)
-			switch (castorStopAreaExtension.getAreaType().getType()) {
-			case chouette.schema.types.ChouetteAreaType.BOARDINGPOSITION_TYPE:
-				stopAreaExtension.setType(ChouetteAreaType.BOARDINGPOSITION);
-				break;
-			case chouette.schema.types.ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE:
-				stopAreaExtension.setType(ChouetteAreaType.COMMERCIALSTOPPOINT);
-				break;
-			case chouette.schema.types.ChouetteAreaType.ITL_TYPE:
-				stopAreaExtension.setType(ChouetteAreaType.ITL);
-				break;
-			case chouette.schema.types.ChouetteAreaType.QUAY_TYPE:
-				stopAreaExtension.setType(ChouetteAreaType.QUAY);
-				break;
-			case chouette.schema.types.ChouetteAreaType.STOPPLACE_TYPE:
-				stopAreaExtension.setType(ChouetteAreaType.STOPPLACE);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"areaType\" pour ce \"StopAreaExtension\" est invalide.", Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDTYPE_STOPAREAEXTENSION, "Le \"areaType\" pour ce \"StopAreaExtension\" est invalide.");
+			switch (castorStopAreaExtension.getAreaType()) 
+			{
+				case BOARDINGPOSITION:
+					stopAreaExtension.setType(ChouetteAreaType.BOARDINGPOSITION);
+					break;
+				case COMMERCIALSTOPPOINT:
+					stopAreaExtension.setType(ChouetteAreaType.COMMERCIALSTOPPOINT);
+					break;
+				case ITL:
+					stopAreaExtension.setType(ChouetteAreaType.ITL);
+					break;
+				case QUAY:
+					stopAreaExtension.setType(ChouetteAreaType.QUAY);
+					break;
+				case STOPPLACE:
+					stopAreaExtension.setType(ChouetteAreaType.STOPPLACE);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"areaType\" pour ce \"StopAreaExtension\" est invalide.", Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDTYPE_STOPAREAEXTENSION, "Le \"areaType\" pour ce \"StopAreaExtension\" est invalide.");
 			}
 		
 		// NearestTopicNName optionnel

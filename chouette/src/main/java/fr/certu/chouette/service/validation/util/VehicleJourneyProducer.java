@@ -174,71 +174,75 @@ class VehicleJourneyProducer {
 		
 		// TransportMode optionnel
 		if (castorVehicleJourney.getTransportMode() == null)
+		{
 			LoggingManager.log(logger, "Pas de \"transportMode\" pour ce \"VehicleJourney\".", params, Level.INFO);
+		}
 		else
-			switch (castorVehicleJourney.getTransportMode().getType()) {
-			case chouette.schema.types.TransportModeNameType.AIR_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.AIR);
-				break;
-			case chouette.schema.types.TransportModeNameType.BICYCLE_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.BICYCLE);
-				break;
-			case chouette.schema.types.TransportModeNameType.BUS_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.BUS);
-				break;
-			case chouette.schema.types.TransportModeNameType.COACH_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.COACH);
-				break;
-			case chouette.schema.types.TransportModeNameType.FERRY_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.FERRY);
-				break;
-			case chouette.schema.types.TransportModeNameType.LOCALTRAIN_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.LOCALTRAIN);
-				break;
-			case chouette.schema.types.TransportModeNameType.LONGDISTANCETRAIN_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.LONGDISTANCETRAIN);
-				break;
-			case chouette.schema.types.TransportModeNameType.METRO_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.METRO);
-				break;
-			case chouette.schema.types.TransportModeNameType.OTHER_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.OTHER);
-				break;
-			case chouette.schema.types.TransportModeNameType.PRIVATEVEHICLE_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.PRIVATEVEHICLE);
-				break;
-			case chouette.schema.types.TransportModeNameType.RAPIDTRANSIT_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.RAPIDTRANSIT);
-				break;
-			case chouette.schema.types.TransportModeNameType.SHUTTLE_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.SHUTTLE);
-				break;
-			case chouette.schema.types.TransportModeNameType.TAXI_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.TAXI);
-				break;
-			case chouette.schema.types.TransportModeNameType.TRAIN_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.TRAIN);
-				break;
-			case chouette.schema.types.TransportModeNameType.TRAMWAY_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.TRAMWAY);
-				break;
-			case chouette.schema.types.TransportModeNameType.TROLLEYBUS_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.TROLLEYBUS);
-				break;
-			case chouette.schema.types.TransportModeNameType.VAL_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.VAL);
-				break;
-			case chouette.schema.types.TransportModeNameType.WALK_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.WALK);
-				break;
-			case chouette.schema.types.TransportModeNameType.WATERBORNE_TYPE:
-				vehicleJourney.setTransportMode(TransportMode.WATERBORNE);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"transportMode\" de ce \"VehicleJourney\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDTRANSPORTMODENAMETYPE_VEHICLEJOURNEY, "Le \"transportMode\" de ce \"VehicleJourney\" () est invalide.", params);
+		{
+			switch (castorVehicleJourney.getTransportMode()) 
+			{
+				case AIR:
+					vehicleJourney.setTransportMode(TransportMode.AIR);
+					break;
+				case BICYCLE:
+					vehicleJourney.setTransportMode(TransportMode.BICYCLE);
+					break;
+				case BUS:
+					vehicleJourney.setTransportMode(TransportMode.BUS);
+					break;
+				case COACH:
+					vehicleJourney.setTransportMode(TransportMode.COACH);
+					break;
+				case FERRY:
+					vehicleJourney.setTransportMode(TransportMode.FERRY);
+					break;
+				case LOCALTRAIN:
+					vehicleJourney.setTransportMode(TransportMode.LOCALTRAIN);
+					break;
+				case LONGDISTANCETRAIN:
+					vehicleJourney.setTransportMode(TransportMode.LONGDISTANCETRAIN);
+					break;
+				case METRO:
+					vehicleJourney.setTransportMode(TransportMode.METRO);
+					break;
+				case OTHER:
+					vehicleJourney.setTransportMode(TransportMode.OTHER);
+					break;
+				case PRIVATEVEHICLE:
+					vehicleJourney.setTransportMode(TransportMode.PRIVATEVEHICLE);
+					break;
+				case RAPIDTRANSIT:
+					vehicleJourney.setTransportMode(TransportMode.RAPIDTRANSIT);
+					break;
+				case SHUTTLE:
+					vehicleJourney.setTransportMode(TransportMode.SHUTTLE);
+					break;
+				case TAXI:
+					vehicleJourney.setTransportMode(TransportMode.TAXI);
+					break;
+				case TRAIN:
+					vehicleJourney.setTransportMode(TransportMode.TRAIN);
+					break;
+				case TRAMWAY:
+					vehicleJourney.setTransportMode(TransportMode.TRAMWAY);
+					break;
+				case TROLLEYBUS:
+					vehicleJourney.setTransportMode(TransportMode.TROLLEYBUS);
+					break;
+				case VAL:
+					vehicleJourney.setTransportMode(TransportMode.VAL);
+					break;
+				case WALK:
+					vehicleJourney.setTransportMode(TransportMode.WALK);
+					break;
+				case WATERBORNE:
+					vehicleJourney.setTransportMode(TransportMode.WATERBORNE);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"transportMode\" de ce \"VehicleJourney\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDTRANSPORTMODENAMETYPE_VEHICLEJOURNEY, "Le \"transportMode\" de ce \"VehicleJourney\" () est invalide.", params);
 			}
-		
+		}
 		// VehicleTypeIdentifier optionnel
 		String castorVehicleTypeIdentifier = castorVehicleJourney.getVehicleTypeIdentifier();
 		if (castorVehicleTypeIdentifier == null)
@@ -253,41 +257,45 @@ class VehicleJourneyProducer {
 		
 		// StatusValue optionnel
 		if (castorVehicleJourney.getStatusValue() == null)
+		{
 			LoggingManager.log(logger, "Pas de \"statusValue\" pour ce \"VehicleJourney\" ().", params, Level.INFO);
+		}
 		else
-			switch (castorVehicleJourney.getStatusValue().getType()) {
-			case chouette.schema.types.ServiceStatusValueType.CANCELLED_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.CANCELLED);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.DELAYED_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.DELAYED);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.DISRUPTED_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.DISRUPTED);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.EARLY_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.EARLY);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.INCREASEDSERVICE_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.INCREASEDSERVICE);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.NORMAL_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.NORMAL);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.NOTSTOPPING_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.NOTSTOPPING);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.REDUCEDSERVICE_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.REDUCEDSERVICE);
-				break;
-			case chouette.schema.types.ServiceStatusValueType.REROUTED_TYPE:
-				vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.REROUTED);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"statusValue\" de ce \"VehicleJourney\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDSERVICESTATUSVALUETYPE_VEHICLEJOURNEY, "Le \"statusValue\" de ce \"VehicleJourney\" () est invalide.", params);
+		{
+			switch (castorVehicleJourney.getStatusValue()) 
+			{
+				case CANCELLED:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.CANCELLED);
+					break;
+				case DELAYED:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.DELAYED);
+					break;
+				case DISRUPTED:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.DISRUPTED);
+					break;
+				case EARLY:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.EARLY);
+					break;
+				case INCREASEDSERVICE:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.INCREASEDSERVICE);
+					break;
+				case NORMAL:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.NORMAL);
+					break;
+				case NOTSTOPPING:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.NOTSTOPPING);
+					break;
+				case REDUCEDSERVICE:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.REDUCEDSERVICE);
+					break;
+				case REROUTED:
+					vehicleJourney.setServiceStatusValueType(ServiceStatusValueType.REROUTED);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"statusValue\" de ce \"VehicleJourney\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDSERVICESTATUSVALUETYPE_VEHICLEJOURNEY, "Le \"statusValue\" de ce \"VehicleJourney\" () est invalide.", params);
 			}
-		
+		}
 		// LineIdShortcut optionnel
 		String castorLineIdShortcut = castorVehicleJourney.getLineIdShortcut();
 		if (castorLineIdShortcut == null)

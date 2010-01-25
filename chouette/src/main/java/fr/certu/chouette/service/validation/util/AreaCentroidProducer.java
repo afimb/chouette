@@ -150,21 +150,23 @@ class AreaCentroidProducer {
 			//validationException.add(TypeInvalidite.NULLLONGLATTYPE_AREACENTROID, "Pas de \"longlattype\" pour ce \"AreaCentroid\" ().", params);
 		}
 		else
-			switch (castorAreaCentroid.getLongLatType().getType()) {
-			case chouette.schema.types.LongLatTypeType.STANDARD_TYPE:
-				areaCentroid.setLongLatType(LongLatType.STANDARD);
-				break;
-			case chouette.schema.types.LongLatTypeType.WGS84_TYPE:
-				areaCentroid.setLongLatType(LongLatType.WGS84);
-				break;
-			case chouette.schema.types.LongLatTypeType.WGS92_TYPE:
-				areaCentroid.setLongLatType(LongLatType.WGS92);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"longlattype\" de ce \"AreaCentroid\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDLONGLATTYPE_AREACENTROID, "Le \"longlattype\" de ce \"AreaCentroid\" () est invalide.", params);
-			}
-		
+		{	
+			switch (castorAreaCentroid.getLongLatType()) 
+			{
+				case STANDARD:
+					areaCentroid.setLongLatType(LongLatType.STANDARD);
+					break;
+				case WGS84:
+					areaCentroid.setLongLatType(LongLatType.WGS84);
+					break;
+				case WGS92:
+					areaCentroid.setLongLatType(LongLatType.WGS92);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"longlattype\" de ce \"AreaCentroid\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDLONGLATTYPE_AREACENTROID, "Le \"longlattype\" de ce \"AreaCentroid\" () est invalide.", params);
+				}
+		}
 		// Address optionnel
 		chouette.schema.Address castorAddress = castorAreaCentroid.getAddress();
 		if (castorAddress == null)

@@ -15,7 +15,8 @@ import org.exolab.castor.types.Time;
 import chouette.schema.AreaCentroid;
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetwork;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ITL;
 import chouette.schema.ProjectedPoint;
 import chouette.schema.PtLink;
@@ -23,7 +24,7 @@ import chouette.schema.StopArea;
 import chouette.schema.StopAreaExtension;
 import chouette.schema.StopPoint;
 import chouette.schema.Timetable;
-import chouette.schema.TridentObjectType;
+import chouette.schema.TridentObjectTypeType;
 import chouette.schema.VehicleJourneyAtStop;
 import chouette.schema.types.BoardingAlightingPossibilityType;
 import chouette.schema.types.ChouetteAreaType;
@@ -48,14 +49,14 @@ public class GenerateurDonnee
 {
 	private static Random random = new Random();
 
-	public static ChouettePTNetworkType creerXMLaleatoire( 
+	public static ChouettePTNetworkTypeType creerXMLaleatoire( 
 			String cle,
 			int max_itineraires,
 			int max_arrets,
 			int max_courses,
 			int max_coorespondances)
 	{
-		ChouettePTNetworkType resultat = creerXMLaleatoire(cle, max_itineraires, max_arrets, max_courses);
+		ChouettePTNetworkTypeType resultat = creerXMLaleatoire(cle, max_itineraires, max_arrets, max_courses);
 		
 		assert max_coorespondances<max_arrets:"le nb de corresp doit etre inférieur à celui des arrets";
 		
@@ -76,13 +77,13 @@ public class GenerateurDonnee
 		return resultat;
 	}
 
-	public static ChouettePTNetworkType creerXMLaleatoire( 
+	public static ChouettePTNetworkTypeType creerXMLaleatoire( 
 			String cle,
 			int max_itineraires,
 			int max_arrets,
 			int max_courses)
 	{
-		ChouettePTNetworkType resultat = new ChouettePTNetworkType();
+		ChouettePTNetworkTypeType resultat = new ChouettePTNetwork();
 		
 		Transporteur transporteur = creerTransporteur();
 		resultat.addCompany( transporteur.getCompany());
@@ -212,7 +213,7 @@ public class GenerateurDonnee
 		return resultat;
 	}
 
-	public static ChouettePTNetworkType creerChouettePTNetwork( int max_itineraires,
+	public static ChouettePTNetworkTypeType creerChouettePTNetwork( int max_itineraires,
 			int max_arrets,
 			int max_courses)
 	{
@@ -343,10 +344,13 @@ public class GenerateurDonnee
 		correspondance.setFrequentTravellerDuration( creerDate());
 		
 		List<ConnectionLinkTypeType> lesTypes = new ArrayList<ConnectionLinkTypeType>();
-		for ( Enumeration enumDir = ConnectionLinkTypeType.enumerate(); enumDir.hasMoreElements();)
+		//EVOCASTOR
+		ConnectionLinkTypeType[] connectionLinksTypes = ConnectionLinkTypeType.values();
+		for (ConnectionLinkTypeType connectionLinkTypeType : connectionLinksTypes) 
 		{
-			lesTypes.add( ( ConnectionLinkTypeType)enumDir.nextElement());
+			lesTypes.add(connectionLinkTypeType);
 		}
+		//--
 		correspondance.setLinkType( lesTypes.get( random.nextInt( lesTypes.size())));
 		correspondance.setLiftAvailability( random.nextBoolean());
 		correspondance.setMobilityRestrictedSuitability( random.nextBoolean());
@@ -501,10 +505,14 @@ public class GenerateurDonnee
 		itineraire.setWayBack( random.nextBoolean()?"A":"R");
 		
 		List<PTDirectionType> lesDirections = new ArrayList<PTDirectionType>();
-		for ( Enumeration enumDir = PTDirectionType.enumerate(); enumDir.hasMoreElements();)
+		//CASTOREVO
+		PTDirectionType[] directionsTypes = PTDirectionType.values();
+		for (PTDirectionType directionType : directionsTypes) 
 		{
-			lesDirections.add( ( PTDirectionType)enumDir.nextElement());
+
+			lesDirections.add(directionType);
 		}
+		//--
 		PTDirectionType direction = lesDirections.get( random.nextInt( lesDirections.size()));
 		itineraire.setDirection( direction);
 
@@ -547,10 +555,13 @@ public class GenerateurDonnee
 		horaire.setWaitingTime( heure.toDate());
 
 		List<BoardingAlightingPossibilityType> lesPossibilites = new ArrayList<BoardingAlightingPossibilityType>();
-		for ( Enumeration enumDir = BoardingAlightingPossibilityType.enumerate(); enumDir.hasMoreElements();)
+		//CASTOREVO
+		BoardingAlightingPossibilityType[] BAPTypes = BoardingAlightingPossibilityType.values();
+		for (BoardingAlightingPossibilityType boardingAlightingPossibilityType : BAPTypes) 
 		{
-			lesPossibilites.add( ( BoardingAlightingPossibilityType)enumDir.nextElement());
+			lesPossibilites.add(boardingAlightingPossibilityType);
 		}
+		//--
 		horaire.setBoardingAlightingPossibility( lesPossibilites.get( random.nextInt( lesPossibilites.size())));
 		
 		return horaire;
@@ -565,23 +576,32 @@ public class GenerateurDonnee
 		course.setNumber( random.nextInt( 50));
 		
 		List<ServiceStatusValueType> lesServices = new ArrayList<ServiceStatusValueType>();
-		for ( Enumeration enumDir = ServiceStatusValueType.enumerate(); enumDir.hasMoreElements();)
+		//CASTOREVO
+		ServiceStatusValueType[] servicesTypes = ServiceStatusValueType.values();		
+		for (ServiceStatusValueType serviceStatusValueType : servicesTypes) 
 		{
-			lesServices.add( ( ServiceStatusValueType)enumDir.nextElement());
+			lesServices.add(serviceStatusValueType);
 		}
+		//--
 		course.setStatusValue( lesServices.get( random.nextInt( lesServices.size())));
 		
+		
 		List<TransportModeNameType> lesModes = new ArrayList<TransportModeNameType>();
-		for ( Enumeration enumDir = TransportModeNameType.enumerate(); enumDir.hasMoreElements();)
+		//CASTOREVO
+		TransportModeNameType[] modesTypes = TransportModeNameType.values();
+		for (TransportModeNameType transportModeNameType : modesTypes) 
 		{
-			lesModes.add( ( TransportModeNameType)enumDir.nextElement());
+			lesModes.add(transportModeNameType);
 		}
+		//--
 		course.setTransportMode( lesModes.get( random.nextInt( lesModes.size())));
+		
 		
 		return course;
 	}
 
-	private static void majTridentObjet( TridentObjectType trident)
+	//EVOCASTOR 
+	private static void majTridentObjet(chouette.schema.TridentObjectTypeType trident)
 	{
 		trident.setObjectId( "id:"+random.nextLong());
 		trident.setCreatorId( "test");

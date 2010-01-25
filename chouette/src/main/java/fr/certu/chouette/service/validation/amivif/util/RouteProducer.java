@@ -32,47 +32,49 @@ public class RouteProducer extends TridentObjectProducer {
 		
 		// direction optionnel
 		if (castorRoute.getDirection() != null)
-			switch (castorRoute.getDirection().getType()) {
-			case amivif.schema.types.PTDirectionType.A_TYPE:
-				route.setDirection(Route.Direction.A);
-				break;
-			case amivif.schema.types.PTDirectionType.CLOCKWISE_TYPE:
-				route.setDirection(Route.Direction.ClockWise);
-				break;
-			case amivif.schema.types.PTDirectionType.COUNTERCLOCKWISE_TYPE:
-				route.setDirection(Route.Direction.CounterClockWise);
-				break;
-			case amivif.schema.types.PTDirectionType.EAST_TYPE:
-				route.setDirection(Route.Direction.East);
-				break;
-			case amivif.schema.types.PTDirectionType.NORTH_TYPE:
-				route.setDirection(Route.Direction.North);
-				break;
-			case amivif.schema.types.PTDirectionType.NORTHEAST_TYPE:
-				route.setDirection(Route.Direction.NorthEast);
-				break;
-			case amivif.schema.types.PTDirectionType.NORTHWEST_TYPE:
-				route.setDirection(Route.Direction.NorthWest);
-				break;
-			case amivif.schema.types.PTDirectionType.R_TYPE:
-				route.setDirection(Route.Direction.R);
-				break;
-			case amivif.schema.types.PTDirectionType.SOUTH_TYPE:
-				route.setDirection(Route.Direction.South);
-				break;
-			case amivif.schema.types.PTDirectionType.SOUTHEAST_TYPE:
-				route.setDirection(Route.Direction.SouthEast);
-				break;
-			case amivif.schema.types.PTDirectionType.SOUTHWEST_TYPE:
-				route.setDirection(Route.Direction.SouthWest);
-				break;
-			case amivif.schema.types.PTDirectionType.WEST_TYPE:
-				route.setDirection(Route.Direction.West);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidDirection_Route, "La \"Direction\" pour la \"Route\" ("+castorRoute.getObjectId()+") est invalid.");
+		{
+			switch (castorRoute.getDirection()) 
+			{
+				case A:
+					route.setDirection(Route.Direction.A);
+					break;
+				case CLOCKWISE:
+					route.setDirection(Route.Direction.ClockWise);
+					break;
+				case COUNTERCLOCKWISE:
+					route.setDirection(Route.Direction.CounterClockWise);
+					break;
+				case EAST:
+					route.setDirection(Route.Direction.East);
+					break;
+				case NORTH:
+					route.setDirection(Route.Direction.North);
+					break;
+				case NORTHEAST:
+					route.setDirection(Route.Direction.NorthEast);
+					break;
+				case NORTHWEST:
+					route.setDirection(Route.Direction.NorthWest);
+					break;
+				case R:
+					route.setDirection(Route.Direction.R);
+					break;
+				case SOUTH:
+					route.setDirection(Route.Direction.South);
+					break;
+				case SOUTHEAST:
+					route.setDirection(Route.Direction.SouthEast);
+					break;
+				case SOUTHWEST:
+					route.setDirection(Route.Direction.SouthWest);
+					break;
+				case WEST:
+					route.setDirection(Route.Direction.West);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidDirection_Route, "La \"Direction\" pour la \"Route\" ("+castorRoute.getObjectId()+") est invalid.");
 			}
-		
+		}
 		// ptLinkId 1..w
 		Set<String> aSet = new HashSet<String>();
 		String[] castorPtLinkIds = castorRoute.getPtLinkId();

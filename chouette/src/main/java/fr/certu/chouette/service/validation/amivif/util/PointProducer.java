@@ -65,13 +65,13 @@ public class PointProducer extends LocalTridentObjectProducer
 						
 			switch (castorPoint.getLongLatType()) 
 			{
-				case amivif.schema.types.LongLatTypeType.STANDARD:
+				case STANDARD:
 					point.setLongLatType(Point.LongLatType.Standard);
 					break;
-				case amivif.schema.types.LongLatTypeType.WGS84:
+				case WGS84:
 					point.setLongLatType(Point.LongLatType.WGS84);
 					break;
-				case amivif.schema.types.LongLatTypeType.WGS92:
+				case WGS92:
 					point.setLongLatType(Point.LongLatType.WGS92);
 					break;
 				default:
@@ -164,35 +164,35 @@ public class PointProducer extends LocalTridentObjectProducer
 		//if (castorPointOfInterest.getT != null)
 		switch (castorPointOfInterest.getType()) 
 		{
-			case amivif.schema.types.POITypeType.ACCOMMODATIONEATINGANDDRINKING:
+			case ACCOMMODATIONEATINGANDDRINKING:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.AccommodationEatingAndDrinking);
 				break;		
-			case amivif.schema.types.POITypeType.ATTRACTION:
+			case ATTRACTION:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Attraction);
 				break;
-			case amivif.schema.types.POITypeType.COMMERCIALSERVICES:
+			case COMMERCIALSERVICES:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.CommercialServices);
 				break;
-			case amivif.schema.types.POITypeType.EDUCATIONANDHEALTH:
+			case EDUCATIONANDHEALTH:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.EducationAndHealth);
 				break;
-			case amivif.schema.types.POITypeType.MANUFACTURINGANDPRODUCTION:
+			case MANUFACTURINGANDPRODUCTION:
 				pointOfInterest
 					.setPointOfInterestType(Point.PointOfInterestType.ManufacturingAndProduction);
 				break;
-			case amivif.schema.types.POITypeType.PUBLICINFRASTRUCTURE:
+			case PUBLICINFRASTRUCTURE:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.PublicInfrastructure);
 				break;
-			case amivif.schema.types.POITypeType.RETAIL:
+			case RETAIL:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Retail);
 				break;
-			case amivif.schema.types.POITypeType.SPORTANDENTERTAINMENT:
+			case SPORTANDENTERTAINMENT:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.SportAndEntertainment);
 				break;
-			case amivif.schema.types.POITypeType.TRANSPORT:
+			case TRANSPORT:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Transport);
 				break;
-			case amivif.schema.types.POITypeType.WHOLESALE:
+			case WHOLESALE:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Wholesale);
 				break;
 			default:

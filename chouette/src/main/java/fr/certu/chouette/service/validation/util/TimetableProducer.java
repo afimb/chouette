@@ -154,51 +154,57 @@ class TimetableProducer {
 		if (castorTimetable.getDayType() == null)
 			LoggingManager.log(logger, "Pas de \"dayType\" pour ce \"Timetable\" ().", params, Level.INFO);
 		for (int i = 0; i < castorTimetable.getDayTypeCount(); i++)
+		{
 			if (castorTimetable.getDayType(i) == null)
+			{
 				LoggingManager.log(logger, "Un \"dayType\" de cette \"Timetable\" () est null.", params, Level.WARN);
+			}
 			else
-				switch (castorTimetable.getDayType(i).getType()) {
-				case chouette.schema.types.DayTypeType.FRIDAY_TYPE:
-					timetable.addDayType(DayType.FRIDAY);
-					break;
-				case chouette.schema.types.DayTypeType.MARKETDAY_TYPE:
-					timetable.addDayType(DayType.MARKETDAY);
-					break;
-				case chouette.schema.types.DayTypeType.MONDAY_TYPE:
-					timetable.addDayType(DayType.MONDAY);
-					break;
-				case chouette.schema.types.DayTypeType.PUBLICHOLLIDAY_TYPE:
-					timetable.addDayType(DayType.PUBLICHOLLIDAY);
-					break;
-				case chouette.schema.types.DayTypeType.SATURDAY_TYPE:
-					timetable.addDayType(DayType.SATURDAY);
-					break;
-				case chouette.schema.types.DayTypeType.SCHOOLHOLLIDAY_TYPE:
-					timetable.addDayType(DayType.SCHOOLHOLLIDAY);
-					break;
-				case chouette.schema.types.DayTypeType.SUNDAY_TYPE:
-					timetable.addDayType(DayType.SUNDAY);
-					break;
-				case chouette.schema.types.DayTypeType.THURSDAY_TYPE:
-					timetable.addDayType(DayType.THURSDAY);
-					break;
-				case chouette.schema.types.DayTypeType.TUESDAY_TYPE:
-					timetable.addDayType(DayType.TUESDAY);
-					break;
-				case chouette.schema.types.DayTypeType.WEDNESDAY_TYPE:
-					timetable.addDayType(DayType.WEDNESDAY);
-					break;
-				case chouette.schema.types.DayTypeType.WEEKDAY_TYPE:
-					timetable.addDayType(DayType.WEEKDAY);
-					break;
-				case chouette.schema.types.DayTypeType.WEEKEND_TYPE:
-					timetable.addDayType(DayType.WEEKEND);
-					break;
-				default:
-					LoggingManager.log(logger, "Un \"dayType\" de cette \"Timetable\" () est invalide.", params, Level.ERROR);
-					validationException.add(TypeInvalidite.INVALIDDAYTYPE_TIMETABLE, "Un \"dayType\" de cette \"Timetable\" () est invalide.", params);
+			{
+				switch (castorTimetable.getDayType(i)) 
+				{
+					case FRIDAY:
+						timetable.addDayType(DayType.FRIDAY);
+						break;
+					case MARKETDAY:
+						timetable.addDayType(DayType.MARKETDAY);
+						break;
+					case MONDAY:
+						timetable.addDayType(DayType.MONDAY);
+						break;
+					case PUBLICHOLLIDAY:
+						timetable.addDayType(DayType.PUBLICHOLLIDAY);
+						break;
+					case SATURDAY:
+						timetable.addDayType(DayType.SATURDAY);
+						break;
+					case SCHOOLHOLLIDAY:
+						timetable.addDayType(DayType.SCHOOLHOLLIDAY);
+						break;
+					case SUNDAY:
+						timetable.addDayType(DayType.SUNDAY);
+						break;
+					case THURSDAY:
+						timetable.addDayType(DayType.THURSDAY);
+						break;
+					case TUESDAY:
+						timetable.addDayType(DayType.TUESDAY);
+						break;
+					case WEDNESDAY:
+						timetable.addDayType(DayType.WEDNESDAY);
+						break;
+					case WEEKDAY:
+						timetable.addDayType(DayType.WEEKDAY);
+						break;
+					case WEEKEND:
+						timetable.addDayType(DayType.WEEKEND);
+						break;
+					default:
+						LoggingManager.log(logger, "Un \"dayType\" de cette \"Timetable\" () est invalide.", params, Level.ERROR);
+						validationException.add(TypeInvalidite.INVALIDDAYTYPE_TIMETABLE, "Un \"dayType\" de cette \"Timetable\" () est invalide.", params);
 				}
-		
+			}
+		}
 		// VehicleJourney [0..w]
 		String[] castorVehicleJourneyIds = castorTimetable.getVehicleJourneyId();
 		if (castorVehicleJourneyIds == null)

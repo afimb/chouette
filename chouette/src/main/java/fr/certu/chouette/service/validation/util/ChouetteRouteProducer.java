@@ -156,49 +156,54 @@ class ChouetteRouteProducer {
 		
 		// Direction optionnel
 		if (castorChouetteRoute.getDirection() == null)
+		{
 			LoggingManager.log(logger, "Pas de \"Direction\" pour ce \"ChouetteRoute\".", params, Level.INFO);
+		}
 		else
-			switch (castorChouetteRoute.getDirection().getType()) {
-			case chouette.schema.types.PTDirectionType.A_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.A);
-				break;
-			case chouette.schema.types.PTDirectionType.CLOCKWISE_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.CLOCKWISE);
-				break;
-			case chouette.schema.types.PTDirectionType.COUNTERCLOCKWISE_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.COUNTERCLOCKWISE);
-				break;
-			case chouette.schema.types.PTDirectionType.EAST_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.EAST);
-				break;
-			case chouette.schema.types.PTDirectionType.NORTH_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.NORTH);
-				break;
-			case chouette.schema.types.PTDirectionType.NORTHEAST_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.NORTHEAST);
-				break;
-			case chouette.schema.types.PTDirectionType.NORTHWEST_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.NORTHWEST);
-				break;
-			case chouette.schema.types.PTDirectionType.R_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.R);
-				break;
-			case chouette.schema.types.PTDirectionType.SOUTH_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.SOUTH);
-				break;
-			case chouette.schema.types.PTDirectionType.SOUTHEAST_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.SOUTHEAST);
-				break;
-			case chouette.schema.types.PTDirectionType.SOUTHWEST_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.SOUTHWEST);
-				break;
-			case chouette.schema.types.PTDirectionType.WEST_TYPE:
-				chouetteRoute.setPTDirectionType(PTDirectionType.WEST);
-				break;
-			default:
-				LoggingManager.log(logger, "La \"direction\" de ce \"ChouetteRoute\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDDIRECTIONTYPE_CHOUETTEROUTE, "La \"direction\" de ce \"ChouetteRoute\" () est invalide.", params);
+		{
+			switch (castorChouetteRoute.getDirection()) 
+			{
+				case A:
+					chouetteRoute.setPTDirectionType(PTDirectionType.A);
+					break;
+				case CLOCKWISE:
+					chouetteRoute.setPTDirectionType(PTDirectionType.CLOCKWISE);
+					break;
+				case COUNTERCLOCKWISE:
+					chouetteRoute.setPTDirectionType(PTDirectionType.COUNTERCLOCKWISE);
+					break;
+				case EAST:
+					chouetteRoute.setPTDirectionType(PTDirectionType.EAST);
+					break;
+				case NORTH:
+					chouetteRoute.setPTDirectionType(PTDirectionType.NORTH);
+					break;
+				case NORTHEAST:
+					chouetteRoute.setPTDirectionType(PTDirectionType.NORTHEAST);
+					break;
+				case NORTHWEST:
+					chouetteRoute.setPTDirectionType(PTDirectionType.NORTHWEST);
+					break;
+				case R:
+					chouetteRoute.setPTDirectionType(PTDirectionType.R);
+					break;
+				case SOUTH:
+					chouetteRoute.setPTDirectionType(PTDirectionType.SOUTH);
+					break;
+				case SOUTHEAST:
+					chouetteRoute.setPTDirectionType(PTDirectionType.SOUTHEAST);
+					break;
+				case SOUTHWEST:
+					chouetteRoute.setPTDirectionType(PTDirectionType.SOUTHWEST);
+					break;
+				case WEST:
+					chouetteRoute.setPTDirectionType(PTDirectionType.WEST);
+					break;
+				default:
+					LoggingManager.log(logger, "La \"direction\" de ce \"ChouetteRoute\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDDIRECTIONTYPE_CHOUETTEROUTE, "La \"direction\" de ce \"ChouetteRoute\" () est invalide.", params);
 			}
+		}
 		
 		// PtLink [1..w]
 		String[] castorPtLinkIds = castorChouetteRoute.getPtLinkId();

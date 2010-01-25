@@ -51,15 +51,15 @@ public class TableauMarche {
 				periode.setDateFin(intervalle.getFin().toDate());
 				periode.setRef(intervalle.getRefIntervalle());
 				boolean inclusive = true;
-				switch(intervalle.getType().getType()) {
-				case EType.E_TYPE:
-					inclusive = false;
-					break;
-				case EType.I_TYPE:
-					inclusive = true;
-					break;
-				default:
-					throw new TableauMarcheException("ERREUR POUR TABLEAU_MARCHE TYPE : "+intervalle.getType().getType());
+				switch(intervalle.getType()) {
+					case E:
+						inclusive = false;
+						break;
+					case I:
+						inclusive = true;
+						break;
+					default:
+						throw new TableauMarcheException("ERREUR POUR TABLEAU_MARCHE TYPE : "+intervalle.getType());
 				}
 				if (inclusive) {
 					periode.setDimanche(intervalle.getDimanche());

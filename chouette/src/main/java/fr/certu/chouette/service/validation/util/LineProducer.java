@@ -156,71 +156,75 @@ class LineProducer {
 		
 		// TransportModeName optionnel
 		if (castorLine.getTransportModeName() == null)
+		{
 			LoggingManager.log(logger, "Pas de \"transportModeName\" pour ce \"Line\" ().", params, Level.INFO);
+		}
 		else
-			switch (castorLine.getTransportModeName().getType()) {
-			case chouette.schema.types.TransportModeNameType.AIR_TYPE:
-				line.setTransportMode(TransportMode.AIR);
+		{
+			switch (castorLine.getTransportModeName()) 
+			{
+				case AIR:
+					line.setTransportMode(TransportMode.AIR);
 				break;
-			case chouette.schema.types.TransportModeNameType.BICYCLE_TYPE:
-				line.setTransportMode(TransportMode.BICYCLE);
-				break;
-			case chouette.schema.types.TransportModeNameType.BUS_TYPE:
-				line.setTransportMode(TransportMode.BUS);
-				break;
-			case chouette.schema.types.TransportModeNameType.COACH_TYPE:
-				line.setTransportMode(TransportMode.COACH);
-				break;
-			case chouette.schema.types.TransportModeNameType.FERRY_TYPE:
-				line.setTransportMode(TransportMode.FERRY);
-				break;
-			case chouette.schema.types.TransportModeNameType.LOCALTRAIN_TYPE:
-				line.setTransportMode(TransportMode.LOCALTRAIN);
-				break;
-			case chouette.schema.types.TransportModeNameType.LONGDISTANCETRAIN_TYPE:
-				line.setTransportMode(TransportMode.LONGDISTANCETRAIN);
-				break;
-			case chouette.schema.types.TransportModeNameType.METRO_TYPE:
-				line.setTransportMode(TransportMode.METRO);
-				break;
-			case chouette.schema.types.TransportModeNameType.OTHER_TYPE:
-				line.setTransportMode(TransportMode.OTHER);
-				break;
-			case chouette.schema.types.TransportModeNameType.PRIVATEVEHICLE_TYPE:
-				line.setTransportMode(TransportMode.PRIVATEVEHICLE);
-				break;
-			case chouette.schema.types.TransportModeNameType.RAPIDTRANSIT_TYPE:
-				line.setTransportMode(TransportMode.RAPIDTRANSIT);
-				break;
-			case chouette.schema.types.TransportModeNameType.SHUTTLE_TYPE:
-				line.setTransportMode(TransportMode.SHUTTLE);
-				break;
-			case chouette.schema.types.TransportModeNameType.TAXI_TYPE:
-				line.setTransportMode(TransportMode.TAXI);
-				break;
-			case chouette.schema.types.TransportModeNameType.TRAIN_TYPE:
-				line.setTransportMode(TransportMode.TRAIN);
-				break;
-			case chouette.schema.types.TransportModeNameType.TRAMWAY_TYPE:
-				line.setTransportMode(TransportMode.TRAMWAY);
-				break;
-			case chouette.schema.types.TransportModeNameType.TROLLEYBUS_TYPE:
-				line.setTransportMode(TransportMode.TROLLEYBUS);
-				break;
-			case chouette.schema.types.TransportModeNameType.VAL_TYPE:
-				line.setTransportMode(TransportMode.VAL);
-				break;
-			case chouette.schema.types.TransportModeNameType.WALK_TYPE:
-				line.setTransportMode(TransportMode.WALK);
-				break;
-			case chouette.schema.types.TransportModeNameType.WATERBORNE_TYPE:
-				line.setTransportMode(TransportMode.WATERBORNE);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"transportModeName\" pour ce \"Line\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDTRANSPORTMODENAMETYPE_LINE, "Le \"transportModeName\" pour ce \"Line\" () est invalide.", params);
+				case BICYCLE:
+					line.setTransportMode(TransportMode.BICYCLE);
+					break;
+				case BUS:
+					line.setTransportMode(TransportMode.BUS);
+					break;
+				case COACH:
+					line.setTransportMode(TransportMode.COACH);
+					break;
+				case FERRY:
+					line.setTransportMode(TransportMode.FERRY);
+					break;
+				case LOCALTRAIN:
+					line.setTransportMode(TransportMode.LOCALTRAIN);
+					break;
+				case LONGDISTANCETRAIN:
+					line.setTransportMode(TransportMode.LONGDISTANCETRAIN);
+					break;
+				case METRO:
+					line.setTransportMode(TransportMode.METRO);
+					break;
+				case OTHER:
+					line.setTransportMode(TransportMode.OTHER);
+					break;
+				case PRIVATEVEHICLE:
+					line.setTransportMode(TransportMode.PRIVATEVEHICLE);
+					break;
+				case RAPIDTRANSIT:
+					line.setTransportMode(TransportMode.RAPIDTRANSIT);
+					break;
+				case SHUTTLE:
+					line.setTransportMode(TransportMode.SHUTTLE);
+					break;
+				case TAXI:
+					line.setTransportMode(TransportMode.TAXI);
+					break;
+				case TRAIN:
+					line.setTransportMode(TransportMode.TRAIN);
+					break;
+				case TRAMWAY:
+					line.setTransportMode(TransportMode.TRAMWAY);
+					break;
+				case TROLLEYBUS:
+					line.setTransportMode(TransportMode.TROLLEYBUS);
+					break;
+				case VAL:
+					line.setTransportMode(TransportMode.VAL);
+					break;
+				case WALK:
+					line.setTransportMode(TransportMode.WALK);
+					break;
+				case WATERBORNE:
+					line.setTransportMode(TransportMode.WATERBORNE);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"transportModeName\" pour ce \"Line\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDTRANSPORTMODENAMETYPE_LINE, "Le \"transportModeName\" pour ce \"Line\" () est invalide.", params);
 			}
-		
+		}
 		// LineEnd [0..w]
 		String[] castorLineEnds = castorLine.getLineEnd();
 		if (castorLineEnds == null)

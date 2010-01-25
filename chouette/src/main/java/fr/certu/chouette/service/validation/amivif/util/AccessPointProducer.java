@@ -20,20 +20,22 @@ public class AccessPointProducer extends PointProducer {
 		
 		// type optionnel
 		if (castorAccessPoint.getType() != null)
-			switch (castorAccessPoint.getType().getType()) {
-			case amivif.schema.types.TypeType.IN_TYPE:
-				accessPoint.setAccessPointType(AccessPoint.AccessPointType.In);
-				break;
-			case amivif.schema.types.TypeType.OUT_TYPE:
-				accessPoint.setAccessPointType(AccessPoint.AccessPointType.Out);
-				break;
-			case amivif.schema.types.TypeType.INOUT_TYPE:
-				accessPoint.setAccessPointType(AccessPoint.AccessPointType.InOut);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidAccessPointType_AccessPoint, "Le \"type\" de l'\"AccessPoint\" ("+castorAccessPoint.getObjectId()+") est invalid.");
+		{
+			switch (castorAccessPoint.getType()) 
+			{
+				case IN:
+					accessPoint.setAccessPointType(AccessPoint.AccessPointType.In);
+					break;
+				case OUT:
+					accessPoint.setAccessPointType(AccessPoint.AccessPointType.Out);
+					break;
+				case INOUT:
+					accessPoint.setAccessPointType(AccessPoint.AccessPointType.InOut);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidAccessPointType_AccessPoint, "Le \"type\" de l'\"AccessPoint\" ("+castorAccessPoint.getObjectId()+") est invalid.");
 			}
-		
+		}
 		// openningTime optionnel
 		if (castorAccessPoint.getOpeningTime() == null)
 			getValidationException().add(TypeInvalidite.NoOpenningTime_AccessPoint, "L'\"openningTime\" de l'\"AccessPoint\" ("+castorAccessPoint.getObjectId()+") est null.");

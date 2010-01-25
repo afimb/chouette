@@ -230,83 +230,83 @@ class PTNetworkProducer {
 		if (castorPTNetwork.getSourceType() == null)
 			LoggingManager.log(logger, "Pas de \"sourceType\" pour ce \"PTNetwork\" ().", params, Level.INFO);
 		else
-			switch (castorPTNetwork.getSourceType().getType()) {
-			case chouette.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL_TYPE:
+			switch (castorPTNetwork.getSourceType()) {
+			case AUTOMOBILECLUBPATROL:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.AUTOMOBILECLUBPATROL);
 				break;
-			case chouette.schema.types.SourceTypeType.BREAKDOWNSERVICE_TYPE:
+			case BREAKDOWNSERVICE:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.BREAKDOWNSERVICE);
 				break;
-			case chouette.schema.types.SourceTypeType.CAMERAOBSERVATION_TYPE:
+			case CAMERAOBSERVATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.CAMERAOBSERVATION);
 				break;
-			case chouette.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL_TYPE:
+			case EMERGENCYSERVICEPATROL:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.EMERGENCYSERVICEPATROL);
 				break;
-			case chouette.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR_TYPE:
+			case FREIGHTVEHICLEOPERATOR:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.FREIGHTVEHICLEOPERATOR);
 				break;
-			case chouette.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY_TYPE:
+			case INDIVIDUALSUBJECTOFTRAVELITINERARY:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.INDIVIDUALSUBJECTOFTRAVELITINERARY);
 				break;
-			case chouette.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION_TYPE:
+			case INDUCTIONLOOPMONITORINGSTATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.INDUCTIONLOOPMONITORINGSTATION);
 				break;
-			case chouette.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION_TYPE:
+			case INFRAREDMONITORINGSTATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.INFRAREDMONITORINGSTATION);
 				break;
-			case chouette.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION_TYPE:
+			case MICROWAVEMONITORINGSTATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.MICROWAVEMONITORINGSTATION);
 				break;
-			case chouette.schema.types.SourceTypeType.MOBILETELEPHONECALLER_TYPE:
+			case MOBILETELEPHONECALLER:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.MOBILETELEPHONECALLER);
 				break;
-			case chouette.schema.types.SourceTypeType.OTHERINFORMATION_TYPE:
+			case OTHERINFORMATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.OTHERINFORMATION);
 				break;
-			case chouette.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE_TYPE:
+			case OTHEROFFICIALVEHICLE:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.OTHEROFFICIALVEHICLE);
 				break;
-			case chouette.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY_TYPE:
+			case PASSENGERTRANSPORTCOORDINATINGAUTHORITY:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY);
 				break;
-			case chouette.schema.types.SourceTypeType.POLICEPATROL_TYPE:
+			case POLICEPATROL:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.POLICEPATROL);
 				break;
-			case chouette.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES_TYPE:
+			case PUBLICANDPRIVATEUTILITIES:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.PUBLICANDPRIVATEUTILITIES);
 				break;
-			case chouette.schema.types.SourceTypeType.PUBLICTRANSPORT_TYPE:
+			case PUBLICTRANSPORT:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.PUBLICTRANSPORT);
 				break;
-			case chouette.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER_TYPE:
+			case REGISTEREDMOTORISTOBSERVER:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.REGISTEREDMOTORISTOBSERVER);
 				break;
-			case chouette.schema.types.SourceTypeType.ROADAUTHORITIES_TYPE:
+			case ROADAUTHORITIES:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.ROADAUTHORITIES);
 				break;
-			case chouette.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER_TYPE:
+			case ROADSIDETELEPHONECALLER:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.ROADSIDETELEPHONECALLER);
 				break;
-			case chouette.schema.types.SourceTypeType.SPOTTERAIRCRAFT_TYPE:
+			case SPOTTERAIRCRAFT:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.SPOTTERAIRCRAFT);
 				break;
-			case chouette.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION_TYPE:
+			case TRAFFICMONITORINGSTATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.TRAFFICMONITORINGSTATION);
 				break;
-			case chouette.schema.types.SourceTypeType.TRANSITOPERATOR_TYPE:
+			case TRANSITOPERATOR:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.TRANSITOPERATOR);
 				break;
-			case chouette.schema.types.SourceTypeType.TRAVELAGENCY_TYPE:
+			case TRAVELAGENCY:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.TRAVELAGENCY);
 				break;
-			case chouette.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER_TYPE:
+			case TRAVELINFORMATIONSERVICEPROVIDER:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.TRAVELINFORMATIONSERVICEPROVIDER);
 				break;
-			case chouette.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT_TYPE:
+			case VEHICLEPROBEMEASUREMENT:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.VEHICLEPROBEMEASUREMENT);
 				break;
-			case chouette.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION_TYPE:
+			case VIDEOPROCESSINGMONITORINGSTATION:
 				pTNetwork.setPTNetworkSourceType(PTNetworkSourceType.VIDEOPROCESSINGMONITORINGSTATION);
 				break;
 			default:
