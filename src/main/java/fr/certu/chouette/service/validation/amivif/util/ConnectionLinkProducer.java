@@ -20,14 +20,14 @@ public class ConnectionLinkProducer extends LinkProducer {
 		
 		// linkType optionnel
 		if (castorConnectionLink.getLinkType() != null)
-			switch (castorConnectionLink.getLinkType().getType()) {
-			case amivif.schema.types.ConnectionLinkTypeType.UNDERGROUND_TYPE:
+			switch (castorConnectionLink.getLinkType()) {
+			case amivif.schema.types.ConnectionLinkTypeType.UNDERGROUND:
 				connectionLink.setConnectionLinkType(ConnectionLink.ConnectionLinkType.Underground);
 				break;
-			case amivif.schema.types.ConnectionLinkTypeType.OVERGROUND_TYPE:
+			case amivif.schema.types.ConnectionLinkTypeType.OVERGROUND:
 				connectionLink.setConnectionLinkType(ConnectionLink.ConnectionLinkType.Overground);
 				break;
-			case amivif.schema.types.ConnectionLinkTypeType.MIXED_TYPE:
+			case amivif.schema.types.ConnectionLinkTypeType.MIXED:
 				connectionLink.setConnectionLinkType(ConnectionLink.ConnectionLinkType.Mixed);
 				break;
 			default:

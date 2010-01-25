@@ -57,59 +57,59 @@ public class VehicleJourneyProducer extends TridentObjectProducer {
 		
 		// transportMode optionne
 		if (castorVehicleJourney.getTransportMode() != null)
-			switch (castorVehicleJourney.getTransportMode().getType()) {
-			case amivif.schema.types.TransportModeNameType.AIR_TYPE:
+			switch (castorVehicleJourney.getTransportMode()) {
+			case amivif.schema.types.TransportModeNameType.AIR:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Air);
 				break;
-			case amivif.schema.types.TransportModeNameType.BICYCLE_TYPE:
+			case amivif.schema.types.TransportModeNameType.BICYCLE:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Bicycle);
 				break;
-			case amivif.schema.types.TransportModeNameType.BUS_TYPE:
+			case amivif.schema.types.TransportModeNameType.BUS:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Bus);
 				break;
-			case amivif.schema.types.TransportModeNameType.COACH_TYPE:
+			case amivif.schema.types.TransportModeNameType.COACH:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Coach);
 				break;
-			case amivif.schema.types.TransportModeNameType.LOCALTRAIN_TYPE:
+			case amivif.schema.types.TransportModeNameType.LOCALTRAIN:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.LocalTrain);
 				break;
-			case amivif.schema.types.TransportModeNameType.LONGDISTANCETRAIN_TYPE:
+			case amivif.schema.types.TransportModeNameType.LONGDISTANCETRAIN:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.LongDistanceTrain);
 				break;
-			case amivif.schema.types.TransportModeNameType.METRO_TYPE:
+			case amivif.schema.types.TransportModeNameType.METRO:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Metro);
 				break;
-			case amivif.schema.types.TransportModeNameType.OTHER_TYPE:
+			case amivif.schema.types.TransportModeNameType.OTHER:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Other);
 				break;
-			case amivif.schema.types.TransportModeNameType.PRIVATEVEHICLE_TYPE:
+			case amivif.schema.types.TransportModeNameType.PRIVATEVEHICLE:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.PrivateVehicle);
 				break;
-			case amivif.schema.types.TransportModeNameType.RAPIDTRANSIT_TYPE:
+			case amivif.schema.types.TransportModeNameType.RAPIDTRANSIT:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.RapidTransit);
 				break;
-			case amivif.schema.types.TransportModeNameType.SHUTTLE_TYPE:
+			case amivif.schema.types.TransportModeNameType.SHUTTLE:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Shuttle);
 				break;
-			case amivif.schema.types.TransportModeNameType.TAXI_TYPE:
+			case amivif.schema.types.TransportModeNameType.TAXI:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Taxi);
 				break;
-			case amivif.schema.types.TransportModeNameType.TRAIN_TYPE:
+			case amivif.schema.types.TransportModeNameType.TRAIN:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Train);
 				break;
-			case amivif.schema.types.TransportModeNameType.TRAMWAY_TYPE:
+			case amivif.schema.types.TransportModeNameType.TRAMWAY:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Tramway);
 				break;
-			case amivif.schema.types.TransportModeNameType.TROLLEYBUS_TYPE:
+			case amivif.schema.types.TransportModeNameType.TROLLEYBUS:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Trolleybus);
 				break;
-			case amivif.schema.types.TransportModeNameType.VAL_TYPE:
+			case amivif.schema.types.TransportModeNameType.VAL:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.VAL);
 				break;
-			case amivif.schema.types.TransportModeNameType.WALK_TYPE:
+			case amivif.schema.types.TransportModeNameType.WALK:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Walk);
 				break;
-			case amivif.schema.types.TransportModeNameType.WATERBORNE_TYPE:
+			case amivif.schema.types.TransportModeNameType.WATERBORNE:
 				vehicleJourney.setTransportMode(VehicleJourney.TransportMode.Waterborne);
 				break;
 			default:
@@ -286,26 +286,26 @@ public class VehicleJourneyProducer extends TridentObjectProducer {
 		
 		// boardingAlightingPossiblity optionnel
 		if (castorVehicleJourneyAtStop.getBoardingAlightingPossibility() != null)
-			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility().getType()) {
-			case amivif.schema.types.BoardingAlightingPossibilityType.ALIGHTONLY_TYPE:
+			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility()) {
+			case amivif.schema.types.BoardingAlightingPossibilityType.ALIGHTONLY:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.AlightOnly);
 				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.ALIGHTONREQUEST_TYPE:
+			case amivif.schema.types.BoardingAlightingPossibilityType.ALIGHTONREQUEST:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.AlightOnRequest);
 				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHT_TYPE:
+			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHT:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardAndAlight);
 				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHTONREQUEST_TYPE:
+			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHTONREQUEST:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardAndAlightOnRequest);
 				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDONLY_TYPE:
+			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDONLY:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardOnly);
 				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDONREQUEST_TYPE:
+			case amivif.schema.types.BoardingAlightingPossibilityType.BOARDONREQUEST:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.BoardOnRequest);
 				break;
-			case amivif.schema.types.BoardingAlightingPossibilityType.NEITHERBOARDORALIGHT_TYPE:
+			case amivif.schema.types.BoardingAlightingPossibilityType.NEITHERBOARDORALIGHT:
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(VehicleJourney.BoardingAlightingPossibility.NeitherBoardOrAlight);
 				break;
 			default:

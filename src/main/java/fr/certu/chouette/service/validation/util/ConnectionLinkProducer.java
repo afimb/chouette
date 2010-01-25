@@ -202,14 +202,14 @@ class ConnectionLinkProducer {
 		if (castorConnectionLink.getLinkType() == null)
 			LoggingManager.log(logger, "Pas de \"linkType\" pour ce \"ConnectionLink\" ().", params, Level.INFO);
 		else
-			switch (castorConnectionLink.getLinkType().getType()) {
-			case chouette.schema.types.ConnectionLinkTypeType.MIXED_TYPE:
+			switch (castorConnectionLink.getLinkType()) {
+			case chouette.schema.types.ConnectionLinkTypeType.MIXED:
 				connectionLink.setLinkType(ConnectionLinkType.MIXED);
 				break;
-			case chouette.schema.types.ConnectionLinkTypeType.UNDERGROUND_TYPE:
+			case chouette.schema.types.ConnectionLinkTypeType.UNDERGROUND:
 				connectionLink.setLinkType(ConnectionLinkType.UNDERGROUND);
 				break;
-			case chouette.schema.types.ConnectionLinkTypeType.OVERGROUND_TYPE:
+			case chouette.schema.types.ConnectionLinkTypeType.OVERGROUND:
 				connectionLink.setLinkType(ConnectionLinkType.OVERGROUND);
 				break;
 			default:

@@ -5,57 +5,58 @@ public class SourceTypeTypeConverter {
 	public chouette.schema.types.SourceTypeType atc(amivif.schema.types.SourceTypeType amivifSourceTypeType) {
 		if (amivifSourceTypeType == null)
 			return null;
-		switch(amivifSourceTypeType.getType()) {
-		case amivif.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL_TYPE :
-			return chouette.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL;
-		case amivif.schema.types.SourceTypeType.BREAKDOWNSERVICE_TYPE:
-			return chouette.schema.types.SourceTypeType.BREAKDOWNSERVICE;
-		case amivif.schema.types.SourceTypeType.CAMERAOBSERVATION_TYPE:
-			return chouette.schema.types.SourceTypeType.CAMERAOBSERVATION;
-		case amivif.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL_TYPE:
-			return chouette.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL;
-		case amivif.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR_TYPE:
-			return chouette.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR;
-		case amivif.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY_TYPE:
-			return chouette.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY;
-		case amivif.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION_TYPE:
-			return chouette.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION;
-		case amivif.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION_TYPE:
-			return chouette.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION;
-		case amivif.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION_TYPE:
-			return chouette.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION;
-		case amivif.schema.types.SourceTypeType.MOBILETELEPHONECALLER_TYPE:
-			return chouette.schema.types.SourceTypeType.MOBILETELEPHONECALLER;
-		case amivif.schema.types.SourceTypeType.OTHERINFORMATION_TYPE:
-			return chouette.schema.types.SourceTypeType.OTHERINFORMATION;
-		case amivif.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE_TYPE:
-			return chouette.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE;
-		case amivif.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY_TYPE:
-			return chouette.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY;
-		case amivif.schema.types.SourceTypeType.POLICEPATROL_TYPE:
-			return chouette.schema.types.SourceTypeType.POLICEPATROL;
-		case amivif.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES_TYPE:
-			return chouette.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES;
-		case amivif.schema.types.SourceTypeType.PUBLICTRANSPORT_TYPE:
-			return chouette.schema.types.SourceTypeType.PUBLICTRANSPORT;
-		case amivif.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER_TYPE:
-			return chouette.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER;
-		case amivif.schema.types.SourceTypeType.ROADAUTHORITIES_TYPE:
-			return chouette.schema.types.SourceTypeType.ROADAUTHORITIES;
-		case amivif.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER_TYPE:
-			return chouette.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER;
-		case amivif.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION_TYPE:
-			return chouette.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION;
-		case amivif.schema.types.SourceTypeType.TRANSITOPERATOR_TYPE:
-			return chouette.schema.types.SourceTypeType.TRANSITOPERATOR;
-		case amivif.schema.types.SourceTypeType.TRAVELAGENCY_TYPE:
-			return chouette.schema.types.SourceTypeType.TRAVELAGENCY;
-		case amivif.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER_TYPE:
-			return chouette.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER;
-		case amivif.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT_TYPE:
-			return chouette.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT;
-		case amivif.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION_TYPE:
-			return chouette.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION;
+		//EVOCASTOR
+		switch(amivifSourceTypeType) {
+			case amivif.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL:
+				return chouette.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL;
+			case amivif.schema.types.SourceTypeType.BREAKDOWNSERVICE:
+				return chouette.schema.types.SourceTypeType.BREAKDOWNSERVICE;
+			case amivif.schema.types.SourceTypeType.CAMERAOBSERVATION:
+				return chouette.schema.types.SourceTypeType.CAMERAOBSERVATION;
+			case amivif.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL:
+				return chouette.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL;
+			case amivif.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR:
+				return chouette.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR;
+			case amivif.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY:
+				return chouette.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY;
+			case amivif.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION:
+				return chouette.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION;
+			case amivif.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION:
+				return chouette.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION;
+			case amivif.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION:
+				return chouette.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION;
+			case amivif.schema.types.SourceTypeType.MOBILETELEPHONECALLER:
+				return chouette.schema.types.SourceTypeType.MOBILETELEPHONECALLER;
+			case amivif.schema.types.SourceTypeType.OTHERINFORMATION:
+				return chouette.schema.types.SourceTypeType.OTHERINFORMATION;
+			case amivif.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE:
+				return chouette.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE;
+			case amivif.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY:
+				return chouette.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY;
+			case amivif.schema.types.SourceTypeType.POLICEPATROL:
+				return chouette.schema.types.SourceTypeType.POLICEPATROL;
+			case amivif.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES:
+				return chouette.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES;
+			case amivif.schema.types.SourceTypeType.PUBLICTRANSPORT:
+				return chouette.schema.types.SourceTypeType.PUBLICTRANSPORT;
+			case amivif.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER:
+				return chouette.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER;
+			case amivif.schema.types.SourceTypeType.ROADAUTHORITIES:
+				return chouette.schema.types.SourceTypeType.ROADAUTHORITIES;
+			case amivif.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER:
+				return chouette.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER;
+			case amivif.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION:
+				return chouette.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION;
+			case amivif.schema.types.SourceTypeType.TRANSITOPERATOR:
+				return chouette.schema.types.SourceTypeType.TRANSITOPERATOR;
+			case amivif.schema.types.SourceTypeType.TRAVELAGENCY:
+				return chouette.schema.types.SourceTypeType.TRAVELAGENCY;
+			case amivif.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER:
+				return chouette.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER;
+			case amivif.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT:
+				return chouette.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT;
+			case amivif.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION:
+				return chouette.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION;
 		}
 		return null;
 	}
@@ -63,56 +64,56 @@ public class SourceTypeTypeConverter {
 	public amivif.schema.types.SourceTypeType cta(chouette.schema.types.SourceTypeType chouetteSourceTypeType) {
 		if (chouetteSourceTypeType == null)
 			return null;
-		switch(chouetteSourceTypeType.getType()) {
-		case chouette.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL_TYPE :
+		switch(chouetteSourceTypeType) {
+		case chouette.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL:
 			return amivif.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL;
-		case chouette.schema.types.SourceTypeType.BREAKDOWNSERVICE_TYPE:
+		case chouette.schema.types.SourceTypeType.BREAKDOWNSERVICE:
 			return amivif.schema.types.SourceTypeType.BREAKDOWNSERVICE;
-		case chouette.schema.types.SourceTypeType.CAMERAOBSERVATION_TYPE:
+		case chouette.schema.types.SourceTypeType.CAMERAOBSERVATION:
 			return amivif.schema.types.SourceTypeType.CAMERAOBSERVATION;
-		case chouette.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL_TYPE:
+		case chouette.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL:
 			return amivif.schema.types.SourceTypeType.EMERGENCYSERVICEPATROL;
-		case chouette.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR_TYPE:
+		case chouette.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR:
 			return amivif.schema.types.SourceTypeType.FREIGHTVEHICLEOPERATOR;
-		case chouette.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY_TYPE:
+		case chouette.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY:
 			return amivif.schema.types.SourceTypeType.INDIVIDUALSUBJECTOFTRAVELITINERARY;
-		case chouette.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION_TYPE:
+		case chouette.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION:
 			return amivif.schema.types.SourceTypeType.INDUCTIONLOOPMONITORINGSTATION;
-		case chouette.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION_TYPE:
+		case chouette.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION:
 			return amivif.schema.types.SourceTypeType.INFRAREDMONITORINGSTATION;
-		case chouette.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION_TYPE:
+		case chouette.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION:
 			return amivif.schema.types.SourceTypeType.MICROWAVEMONITORINGSTATION;
-		case chouette.schema.types.SourceTypeType.MOBILETELEPHONECALLER_TYPE:
+		case chouette.schema.types.SourceTypeType.MOBILETELEPHONECALLER:
 			return amivif.schema.types.SourceTypeType.MOBILETELEPHONECALLER;
-		case chouette.schema.types.SourceTypeType.OTHERINFORMATION_TYPE:
+		case chouette.schema.types.SourceTypeType.OTHERINFORMATION:
 			return amivif.schema.types.SourceTypeType.OTHERINFORMATION;
-		case chouette.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE_TYPE:
+		case chouette.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE:
 			return amivif.schema.types.SourceTypeType.OTHEROFFICIALVEHICLE;
-		case chouette.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY_TYPE:
+		case chouette.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY:
 			return amivif.schema.types.SourceTypeType.PASSENGERTRANSPORTCOORDINATINGAUTHORITY;
-		case chouette.schema.types.SourceTypeType.POLICEPATROL_TYPE:
+		case chouette.schema.types.SourceTypeType.POLICEPATROL:
 			return amivif.schema.types.SourceTypeType.POLICEPATROL;
-		case chouette.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES_TYPE:
+		case chouette.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES:
 			return amivif.schema.types.SourceTypeType.PUBLICANDPRIVATEUTILITIES;
-		case chouette.schema.types.SourceTypeType.PUBLICTRANSPORT_TYPE:
+		case chouette.schema.types.SourceTypeType.PUBLICTRANSPORT:
 			return amivif.schema.types.SourceTypeType.PUBLICTRANSPORT;
-		case chouette.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER_TYPE:
+		case chouette.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER:
 			return amivif.schema.types.SourceTypeType.REGISTEREDMOTORISTOBSERVER;
-		case chouette.schema.types.SourceTypeType.ROADAUTHORITIES_TYPE:
+		case chouette.schema.types.SourceTypeType.ROADAUTHORITIES:
 			return amivif.schema.types.SourceTypeType.ROADAUTHORITIES;
-		case chouette.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER_TYPE:
+		case chouette.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER:
 			return amivif.schema.types.SourceTypeType.ROADSIDETELEPHONECALLER;
-		case chouette.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION_TYPE:
+		case chouette.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION:
 			return amivif.schema.types.SourceTypeType.TRAFFICMONITORINGSTATION;
-		case chouette.schema.types.SourceTypeType.TRANSITOPERATOR_TYPE:
+		case chouette.schema.types.SourceTypeType.TRANSITOPERATOR:
 			return amivif.schema.types.SourceTypeType.TRANSITOPERATOR;
-		case chouette.schema.types.SourceTypeType.TRAVELAGENCY_TYPE:
+		case chouette.schema.types.SourceTypeType.TRAVELAGENCY:
 			return amivif.schema.types.SourceTypeType.TRAVELAGENCY;
-		case chouette.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER_TYPE:
+		case chouette.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER:
 			return amivif.schema.types.SourceTypeType.TRAVELINFORMATIONSERVICEPROVIDER;
-		case chouette.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT_TYPE:
+		case chouette.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT:
 			return amivif.schema.types.SourceTypeType.VEHICLEPROBEMEASUREMENT;
-		case chouette.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION_TYPE:
+		case chouette.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION:
 			return amivif.schema.types.SourceTypeType.VIDEOPROCESSINGMONITORINGSTATION;
 		}
 		return null;

@@ -8,11 +8,10 @@ import org.exolab.castor.types.EnumeratedTypeAccess;
  */
 public class ObjetEnumere
 {
-	private EnumeratedTypeAccess  enumeratedTypeAccess;
+	private EnumeratedTypeAccess  enumeratedTypeAccess ;
 	private String textePropriete;
 	
-	public ObjetEnumere(enum  enumeratedTypeAccess, String textePropriete)
-	//public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
+	public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
 	{
 		this.enumeratedTypeAccess = enumeratedTypeAccess;
 		this.textePropriete = textePropriete;
@@ -23,19 +22,23 @@ public class ObjetEnumere
 		this.textePropriete = textePropriete;
 	}
 
-	public EnumeratedTypeAccess getEnumeratedTypeAccess() {
+	public EnumeratedTypeAccess getEnumeratedTypeAccess() 
+	{
 		return enumeratedTypeAccess;
 	}
 
-	public void setEnumeratedTypeAccess(EnumeratedTypeAccess enumeratedTypeAccess) {
+	public void setEnumeratedTypeAccess(EnumeratedTypeAccess enumeratedTypeAccess) 
+	{
 		this.enumeratedTypeAccess = enumeratedTypeAccess;
 	}
 
-	public String getTextePropriete() {
+	public String getTextePropriete() 
+	{
 		return textePropriete;
 	}
 
-	public void setTextePropriete(String textePropriete) {
+	public void setTextePropriete(String textePropriete) 
+	{
 		this.textePropriete = textePropriete;
 	}
 
