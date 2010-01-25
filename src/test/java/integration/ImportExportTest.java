@@ -11,8 +11,8 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
-import amivif.schema.RespPTLineStructTimetableType;
-import chouette.schema.ChouettePTNetworkType;
+import amivif.schema.RespPTLineStructTimetableTypeType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRoute;
 import chouette.schema.VehicleJourney;
 import chouette.schema.VehicleJourneyAtStop;
@@ -77,23 +77,23 @@ public class ImportExportTest {
 	}
 	
 	private void importerAmivif_exportChouette( String fichier) {
-		RespPTLineStructTimetableType respPTLineStructTimetable = lecteurAmivifXML.lire( fichier);
+		RespPTLineStructTimetableTypeType respPTLineStructTimetable = lecteurAmivifXML.lire( fichier);
 		String registrationNumber = respPTLineStructTimetable.getLine().getRegistration().getRegistrationNumber();
 
 		// conversion Amivif -> Chouette
-		ChouettePTNetworkType chouetteXML = amivifAdapter.getATC( respPTLineStructTimetable);
+		ChouettePTNetworkTypeType chouetteXML = amivifAdapter.getATC( respPTLineStructTimetable);
 		
 		// validation format Chouette
 		validation_chouette_xml( chouetteXML);
 		
-		importateur.importer( false, lecteurEchangeXML.lire( chouetteXML));
+		importateur.importer(false, lecteurEchangeXML.lire( chouetteXML));
 		
-		ChouettePTNetworkType chouetteXMLExporte = exportManager.getExportParRegistration(registrationNumber);
+		ChouettePTNetworkTypeType chouetteXMLExporte = exportManager.getExportParRegistration(registrationNumber);
 		
 		comparaison( chouetteXML, chouetteXMLExporte);
 	}
 	
-	private void comparaison( ChouettePTNetworkType initial, ChouettePTNetworkType exporte)
+	private void comparaison(ChouettePTNetworkTypeType initial, ChouettePTNetworkTypeType exporte)
 	{
 		assert initial.getPTNetwork().getRegistration().getRegistrationNumber().equals( exporte.getPTNetwork().getRegistration().getRegistrationNumber());
 		assert initial.getPTNetwork().getObjectId().equals( exporte.getPTNetwork().getObjectId());
@@ -149,7 +149,7 @@ public class ImportExportTest {
 		assert totalCalendriers==exporte.getTimetableCount();
 	}
 	
-    private void validation_chouette_xml( ChouettePTNetworkType ligneXML) 
+    private void validation_chouette_xml(ChouettePTNetworkTypeType ligneXML) 
     {
 		MainSchemaProducer valideur = new MainSchemaProducer();		
 		try {

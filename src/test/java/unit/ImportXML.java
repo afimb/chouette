@@ -1,6 +1,6 @@
 package unit;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.commun.ServiceException;
@@ -61,7 +61,7 @@ public class ImportXML {
 	}
 	
 	public void importer(String fileName) {
-		ChouettePTNetworkType chouettePTNetworkType = null;
+		ChouettePTNetworkTypeType chouettePTNetworkType = null;
 		try {
 			logger.debug("IMPORT XML DU FICHIER "+fileName);
 			chouettePTNetworkType = lecteurFichierXML.lire(fileName, true);

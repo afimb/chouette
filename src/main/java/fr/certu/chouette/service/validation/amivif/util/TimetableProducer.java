@@ -37,47 +37,52 @@ public class TimetableProducer extends TridentObjectProducer {
 		
 		// dayType 0..w
 		if (castorTimetable.getDayType() != null)
+		{
 			for (int i = 0; i < castorTimetable.getDayType().length; i++)
-				switch (castorTimetable.getDayType(i).getType()) {
-				case amivif.schema.types.DayTypeType.FRIDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Friday);
-					break;
-				case amivif.schema.types.DayTypeType.MARKETDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.MarketDay);
-					break;
-				case amivif.schema.types.DayTypeType.MONDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Monday);
-					break;
-				case amivif.schema.types.DayTypeType.PUBLICHOLLIDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.PublicHolliday);
-					break;
-				case amivif.schema.types.DayTypeType.SATURDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Saturday);
-					break;
-				case amivif.schema.types.DayTypeType.SCHOOLHOLLIDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.SchoolHolliday);
-					break;
-				case amivif.schema.types.DayTypeType.SUNDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Sunday);
-					break;
-				case amivif.schema.types.DayTypeType.THURSDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Thursday);
-					break;
-				case amivif.schema.types.DayTypeType.TUESDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Tuesday);
-					break;
-				case amivif.schema.types.DayTypeType.WEDNESDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.Wednesday);
-					break;
-				case amivif.schema.types.DayTypeType.WEEKDAY_TYPE:
-					timetable.addDayType(Timetable.DayType.WeekDay);
-					break;
-				case amivif.schema.types.DayTypeType.WEEKEND_TYPE:
-					timetable.addDayType(Timetable.DayType.WeekEnd);
-					break;
-				default:
-					getValidationException().add(TypeInvalidite.InvalidDayType_Timetable, "Le \"daytype\" ("+castorTimetable.getDayType(i).toString()+") de la \"timetable\" ("+castorTimetable.getObjectId()+") est invalid.");
+			{
+				switch (castorTimetable.getDayType(i)) 
+				{
+					case FRIDAY:
+						timetable.addDayType(Timetable.DayType.Friday);
+						break;
+					case MARKETDAY:
+						timetable.addDayType(Timetable.DayType.MarketDay);
+						break;
+					case MONDAY:
+						timetable.addDayType(Timetable.DayType.Monday);
+						break;
+					case PUBLICHOLLIDAY:
+						timetable.addDayType(Timetable.DayType.PublicHolliday);
+						break;
+					case SATURDAY:
+						timetable.addDayType(Timetable.DayType.Saturday);
+						break;
+					case SCHOOLHOLLIDAY:
+						timetable.addDayType(Timetable.DayType.SchoolHolliday);
+						break;
+					case SUNDAY:
+						timetable.addDayType(Timetable.DayType.Sunday);
+						break;
+					case THURSDAY:
+						timetable.addDayType(Timetable.DayType.Thursday);
+						break;
+					case TUESDAY:
+						timetable.addDayType(Timetable.DayType.Tuesday);
+						break;
+					case WEDNESDAY:
+						timetable.addDayType(Timetable.DayType.Wednesday);
+						break;
+					case WEEKDAY:
+						timetable.addDayType(Timetable.DayType.WeekDay);
+						break;
+					case WEEKEND:
+						timetable.addDayType(Timetable.DayType.WeekEnd);
+						break;
+					default:
+						getValidationException().add(TypeInvalidite.InvalidDayType_Timetable, "Le \"daytype\" ("+castorTimetable.getDayType(i).toString()+") de la \"timetable\" ("+castorTimetable.getObjectId()+") est invalid.");
 				}
+			}
+		}
 		
 		// stopPointId 0..w
 		Set<String> aSet = new HashSet<String>();

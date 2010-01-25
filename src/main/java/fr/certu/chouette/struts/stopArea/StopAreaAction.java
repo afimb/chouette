@@ -337,35 +337,35 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       if ("addChild".equals(getActionSuivante()))
       {
-        switch (positionGeographiqueModel.getAreaType().getType())
+        switch (positionGeographiqueModel.getAreaType())
         {
-          case ChouetteAreaType.STOPPLACE_TYPE:
+          case STOPPLACE:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_ALL;
             break;
 
-          case ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE:
+          case COMMERCIALSTOPPOINT:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_QB;
             break;
 
-          case ChouetteAreaType.BOARDINGPOSITION_TYPE:
-          case ChouetteAreaType.QUAY_TYPE:
+          case BOARDINGPOSITION:
+          case QUAY:
             break;
         }
       }
       else if ("addFather".equals(getActionSuivante()))
       {
-        switch (positionGeographiqueModel.getAreaType().getType())
+        switch (positionGeographiqueModel.getAreaType())
         {
-          case ChouetteAreaType.STOPPLACE_TYPE:
+          case STOPPLACE:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_S;
             break;
 
-          case ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE:
+          case COMMERCIALSTOPPOINT:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_S;
             break;
 
-          case ChouetteAreaType.BOARDINGPOSITION_TYPE:
-          case ChouetteAreaType.QUAY_TYPE:
+          case BOARDINGPOSITION:
+          case QUAY:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_CS;
             break;
         }
@@ -541,7 +541,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   {
     if (positionGeographiqueModel.getId() != null)
     {
-      if (positionGeographiqueModel.getAreaType().getType() == ChouetteAreaType.QUAY_TYPE || positionGeographiqueModel.getAreaType().getType() == ChouetteAreaType.BOARDINGPOSITION_TYPE)
+      if (positionGeographiqueModel.getAreaType() == ChouetteAreaType.QUAY
+					|| positionGeographiqueModel.getAreaType() == ChouetteAreaType.BOARDINGPOSITION)
       {
         return ARRETPHYSIQUE;
       }

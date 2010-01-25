@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ConnectionLink;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.manager.SingletonManager;
@@ -69,7 +69,7 @@ public class TestImportateur
 		int max_arrets = 4;
 		int max_corres = max_arrets / 2;
 		Random random = new Random();
-		ChouettePTNetworkType chouettePTNetwork = generateurDonnee.creerXMLaleatoire( "TEST"+random.nextInt(10000), 1, max_arrets, 1, max_corres);
+		ChouettePTNetworkTypeType chouettePTNetwork = generateurDonnee.creerXMLaleatoire( "TEST"+random.nextInt(10000), 1, max_arrets, 1, max_corres);
 		logger.debug( "Démarrage réel");
 		
 		// Creer une zone externe à la ligne
@@ -142,8 +142,8 @@ public class TestImportateur
 		}
 		
 		
-		ChouettePTNetworkType ligneXML = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
-		ChouettePTNetworkType ligneXMLmemeCode = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
+		ChouettePTNetworkTypeType ligneXML = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
+		ChouettePTNetworkTypeType ligneXMLmemeCode = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
 		
 		String idTridentTrsp = ligneXML.getCompany(0).getObjectId();
 		String codePerenneTrsp = ligneXML.getCompany(0).getRegistration().getRegistrationNumber();
@@ -195,7 +195,7 @@ public class TestImportateur
 	@Test(groups="tests unitaires", description="chaine complete d'import d'une structure d'echange")
     public void importChaineComplete()
     {
-		ChouettePTNetworkType chouettePTNetwork = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
+		ChouettePTNetworkTypeType chouettePTNetwork = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
 		
 		logger.debug( "Attente");
 //		try
@@ -214,7 +214,7 @@ public class TestImportateur
 //	@Test(groups="charge", description="chaine complete d'import d'une structure d'echange")
     public void importChaineCompleteCharge()
     {
-		ChouettePTNetworkType chouettePTNetwork = generateurDonnee.creerChouettePTNetwork(4, 50, 1000);
+		ChouettePTNetworkTypeType chouettePTNetwork = generateurDonnee.creerChouettePTNetwork(4, 50, 1000);
 		
 		logger.debug( "Attente");
 //		try
@@ -232,7 +232,7 @@ public class TestImportateur
 	@Test(groups="tests d'ecriture d'un fichier de test pour import", description="ecriture d'un fichier d'import")
 	public void produireFichierEchangeXML()
 	{
-		ChouettePTNetworkType chouettePTNetwork = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
+		ChouettePTNetworkTypeType chouettePTNetwork = generateurDonnee.creerChouettePTNetwork(4, 15, 8);
 		
 		File file = new File( "echange_chouette_aleatoire.xml");
 		
@@ -315,7 +315,7 @@ public class TestImportateur
 	
 			GenerateurDonnee monGenerateur = new GenerateurDonnee();
 			IImportateur monImportateur = ( IImportateur)applicationContext.getBean( "importateur");
-			ChouettePTNetworkType chouettePTNetwork = monGenerateur.creerChouettePTNetwork(4, 15, 8);
+			ChouettePTNetworkTypeType chouettePTNetwork = monGenerateur.creerChouettePTNetwork(4, 15, 8);
 			
 			ILecteurEchangeXML monLecteurEchange = ( ILecteurEchangeXML)applicationContext.getBean( "lecteurEchangeXML");
 			ILectureEchange lectureEchange = monLecteurEchange.lire( chouettePTNetwork);

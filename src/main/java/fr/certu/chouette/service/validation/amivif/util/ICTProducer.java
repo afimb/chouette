@@ -20,11 +20,11 @@ public class ICTProducer extends TridentObjectProducer {
 		if (castorICT.getTypeICT() == null)
 			getValidationException().add(TypeInvalidite.NoTypeICT_ICT, "Le \"TypeICT\" du \"ICT\" ("+castorICT.getObjectId()+") est null.");
 		else
-			switch (castorICT.getTypeICT().getType()) {
-			case amivif.schema.types.TypeICTType.ITL_TYPE:
+			switch (castorICT.getTypeICT()) {
+			case ITL:
 				ict.setICTType(ICT.ICTType.ITL);
 				break;
-			case amivif.schema.types.TypeICTType.SECTION_TYPE:
+			case SECTION:
 				ict.setICTType(ICT.ICTType.Section);
 				break;
 			default:

@@ -31,29 +31,30 @@ public final class TableauMarcheUtils {
 	public static int getIntDayType (final Date day) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(day);
-		switch (calendar.get(Calendar.DAY_OF_WEEK)) {
-		case Calendar.MONDAY	:
-			return (int)Math.pow(2, DayTypeType.MONDAY_TYPE);
-		case Calendar.TUESDAY	:
-			return (int)Math.pow(2, DayTypeType.TUESDAY_TYPE);
-		case Calendar.WEDNESDAY	:
-			return (int)Math.pow(2, DayTypeType.WEDNESDAY_TYPE);
-		case Calendar.THURSDAY	:
-			return (int)Math.pow(2, DayTypeType.THURSDAY_TYPE);
-		case Calendar.FRIDAY	:
-			return (int)Math.pow(2, DayTypeType.FRIDAY_TYPE);
-		case Calendar.SATURDAY	:
-			return (int)Math.pow(2, DayTypeType.SATURDAY_TYPE);
-		case Calendar.SUNDAY	:
-			return (int)Math.pow(2, DayTypeType.SUNDAY_TYPE);
+		switch (calendar.get(Calendar.DAY_OF_WEEK)) 
+		{
+			case Calendar.MONDAY	:
+				return (int)Math.pow(2, DayTypeType.MONDAY.ordinal());
+			case Calendar.TUESDAY	:
+				return (int)Math.pow(2, DayTypeType.TUESDAY.ordinal());
+			case Calendar.WEDNESDAY	:
+				return (int)Math.pow(2, DayTypeType.WEDNESDAY.ordinal());
+			case Calendar.THURSDAY	:
+				return (int)Math.pow(2, DayTypeType.THURSDAY.ordinal());
+			case Calendar.FRIDAY	:
+				return (int)Math.pow(2, DayTypeType.FRIDAY.ordinal());
+			case Calendar.SATURDAY	:
+				return (int)Math.pow(2, DayTypeType.SATURDAY.ordinal());
+			case Calendar.SUNDAY	:
+				return (int)Math.pow(2, DayTypeType.SUNDAY.ordinal());
 		}
 		return 0;
 	}
 	
 	private static int getOneWeekIntDayType () {
-		return	(int)Math.pow(2, DayTypeType.MONDAY_TYPE) + (int)Math.pow(2, DayTypeType.TUESDAY_TYPE) +
-				(int)Math.pow(2, DayTypeType.WEDNESDAY_TYPE) + (int)Math.pow(2, DayTypeType.THURSDAY_TYPE) +
-				(int)Math.pow(2, DayTypeType.FRIDAY_TYPE) + (int)Math.pow(2, DayTypeType.SATURDAY_TYPE) +
-				(int)Math.pow(2, DayTypeType.SUNDAY_TYPE);
+		return	(int)Math.pow(2, DayTypeType.MONDAY.ordinal()) + (int)Math.pow(2, DayTypeType.TUESDAY.ordinal()) +
+				(int)Math.pow(2, DayTypeType.WEDNESDAY.ordinal()) + (int)Math.pow(2, DayTypeType.THURSDAY.ordinal()) +
+				(int)Math.pow(2, DayTypeType.FRIDAY.ordinal()) + (int)Math.pow(2, DayTypeType.SATURDAY.ordinal()) +
+				(int)Math.pow(2, DayTypeType.SUNDAY.ordinal());
 	}
 }

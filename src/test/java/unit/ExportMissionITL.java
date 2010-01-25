@@ -17,7 +17,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.ChouettePTNetwork;
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.database.IExportManager;
@@ -72,9 +72,9 @@ public class ExportMissionITL {
 				ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetwork);
 				importateur.importer(false, lectureEchange);		
 				String registrationNumber = chouettePTNetwork.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber();
-				ChouettePTNetworkType chouettePTNetworkType = exportManager.getExportParRegistration(registrationNumber);
-				lecteurFichierXML.ecrire( chouettePTNetworkType, new File( "Myapres_import"+i+".xml"));
-				lecteurFichierXML.ecrire( chouettePTNetwork, new File( "Myorigine"+i+".xml"));
+				ChouettePTNetworkTypeType chouettePTNetworkType = exportManager.getExportParRegistration(registrationNumber);
+				lecteurFichierXML.ecrire(chouettePTNetworkType, new File( "Myapres_import"+i+".xml"));
+				lecteurFichierXML.ecrire(chouettePTNetwork, new File( "Myorigine"+i+".xml"));
 			}
 			catch(ValidationException e) {
 				List<TypeInvalidite> categories = e.getCategories();

@@ -210,26 +210,29 @@ class StopPointProducer {
 			stopPoint.setLatitude(castorLatitude);
 		
 		// LongLatType obligatoire
-		if (castorStopPoint.getLongLatType() == null) {
+		if (castorStopPoint.getLongLatType() == null) 
+		{
 			LoggingManager.log(logger, "Pas de \"LongLatType\" pour ce \"StopPoint\" ().", params, Level.ERROR);
 			//validationException.add(TypeInvalidite.NOLONGLATTYPE_STOPPOINT, "Pas de \"LongLatType\" pour ce \"StopPoint\" ().", params);
 		}
 		else
-			switch (castorStopPoint.getLongLatType().getType()) {
-			case chouette.schema.types.LongLatTypeType.STANDARD_TYPE:
-				stopPoint.setLongLatType(LongLatType.STANDARD);
-				break;
-			case chouette.schema.types.LongLatTypeType.WGS84_TYPE:
-				stopPoint.setLongLatType(LongLatType.WGS84);
-				break;
-			case chouette.schema.types.LongLatTypeType.WGS92_TYPE:
-				stopPoint.setLongLatType(LongLatType.WGS92);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"LongLatType\" pour ce \"StopPoint\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDLONGLATTYPE_STOPPOINT, "Le \"LongLatType\" pour ce \"StopPoint\" () est invalide.", params);
+		{
+			switch (castorStopPoint.getLongLatType()) 
+			{
+				case STANDARD:
+					stopPoint.setLongLatType(LongLatType.STANDARD);
+					break;
+				case WGS84:
+					stopPoint.setLongLatType(LongLatType.WGS84);
+					break;
+				case WGS92:
+					stopPoint.setLongLatType(LongLatType.WGS92);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"LongLatType\" pour ce \"StopPoint\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDLONGLATTYPE_STOPPOINT, "Le \"LongLatType\" pour ce \"StopPoint\" () est invalide.", params);				
 			}
-		
+		}
 		// Address optionnel
 		chouette.schema.Address castorAddress = castorStopPoint.getAddress();
 		if (castorAddress == null)

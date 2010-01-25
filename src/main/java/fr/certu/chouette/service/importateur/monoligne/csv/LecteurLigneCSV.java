@@ -76,64 +76,65 @@ public class LecteurLigneCSV {
 				case 4:
 					line[colonneTitrePartieFixe] = cleMode;
 					if (ligne.getTransportModeName() != null)
-						switch (ligne.getTransportModeName().getType()) {
-						case TransportModeNameType.AIR_TYPE:
-							line[colonneTitrePartieFixe+1] = "AIR";
-							break;
-						case TransportModeNameType.BICYCLE_TYPE:
-							line[colonneTitrePartieFixe+1] = "BICYCLE";
-							break;
-						case TransportModeNameType.BUS_TYPE:
-							line[colonneTitrePartieFixe+1] = "BUS";
-							break;
-						case TransportModeNameType.COACH_TYPE:
-							line[colonneTitrePartieFixe+1] = "COACH";
-							break;
-						case TransportModeNameType.FERRY_TYPE:
-							line[colonneTitrePartieFixe+1] = "FERRY";
-							break;
-						case TransportModeNameType.LOCALTRAIN_TYPE:
-							line[colonneTitrePartieFixe+1] = "RER";
-							break;
-						case TransportModeNameType.LONGDISTANCETRAIN_TYPE:
-							line[colonneTitrePartieFixe+1] = "LONGDISTANCETRAIN";
-							break;
-						case TransportModeNameType.METRO_TYPE:
-							line[colonneTitrePartieFixe+1] = "METRO";
-							break;
-						case TransportModeNameType.OTHER_TYPE:
-							line[colonneTitrePartieFixe+1] = "OTHER";
-							break;
-						case TransportModeNameType.PRIVATEVEHICLE_TYPE:
-							line[colonneTitrePartieFixe+1] = "PRIVATEVEHICLE";
-							break;
-						case TransportModeNameType.RAPIDTRANSIT_TYPE:
-							line[colonneTitrePartieFixe+1] = "RAPIDTRANSIT";
-							break;
-						case TransportModeNameType.SHUTTLE_TYPE:
-							line[colonneTitrePartieFixe+1] = "SHUTTLE";
-							break;
-						case TransportModeNameType.TAXI_TYPE:
-							line[colonneTitrePartieFixe+1] = "TAXI";
-							break;
-						case TransportModeNameType.TRAIN_TYPE:
-							line[colonneTitrePartieFixe+1] = "TRAIN";
-							break;
-						case TransportModeNameType.TRAMWAY_TYPE:
-							line[colonneTitrePartieFixe+1] = "TRAMWAY";
-							break;
-						case TransportModeNameType.TROLLEYBUS_TYPE:
-							line[colonneTitrePartieFixe+1] = "TROLLEYBUS";
-							break;
-						case TransportModeNameType.VAL_TYPE:
-							line[colonneTitrePartieFixe+1] = "VAL";
-							break;
-						case TransportModeNameType.WALK_TYPE:
-							line[colonneTitrePartieFixe+1] = "WALK";
-							break;
-						case TransportModeNameType.WATERBORNE_TYPE:
-							line[colonneTitrePartieFixe+1] = "WATERBORNE";
-							break;
+						switch (ligne.getTransportModeName()) 
+						{
+							case AIR:
+								line[colonneTitrePartieFixe+1] = "AIR";
+								break;
+							case BICYCLE:
+								line[colonneTitrePartieFixe+1] = "BICYCLE";
+								break;
+							case BUS:
+								line[colonneTitrePartieFixe+1] = "BUS";
+								break;
+							case COACH:
+								line[colonneTitrePartieFixe+1] = "COACH";
+								break;
+							case FERRY:
+								line[colonneTitrePartieFixe+1] = "FERRY";
+								break;
+							case LOCALTRAIN:
+								line[colonneTitrePartieFixe+1] = "RER";
+								break;
+							case LONGDISTANCETRAIN:
+								line[colonneTitrePartieFixe+1] = "LONGDISTANCETRAIN";
+								break;
+							case METRO:
+								line[colonneTitrePartieFixe+1] = "METRO";
+								break;
+							case OTHER:
+								line[colonneTitrePartieFixe+1] = "OTHER";
+								break;
+							case PRIVATEVEHICLE:
+								line[colonneTitrePartieFixe+1] = "PRIVATEVEHICLE";
+								break;
+							case RAPIDTRANSIT:
+								line[colonneTitrePartieFixe+1] = "RAPIDTRANSIT";
+								break;
+							case SHUTTLE:
+								line[colonneTitrePartieFixe+1] = "SHUTTLE";
+								break;
+							case TAXI:
+								line[colonneTitrePartieFixe+1] = "TAXI";
+								break;
+							case TRAIN:
+								line[colonneTitrePartieFixe+1] = "TRAIN";
+								break;
+							case TRAMWAY:
+								line[colonneTitrePartieFixe+1] = "TRAMWAY";
+								break;
+							case TROLLEYBUS:
+								line[colonneTitrePartieFixe+1] = "TROLLEYBUS";
+								break;
+							case VAL:
+								line[colonneTitrePartieFixe+1] = "VAL";
+								break;
+							case WALK:
+								line[colonneTitrePartieFixe+1] = "WALK";
+								break;
+							case WATERBORNE:
+								line[colonneTitrePartieFixe+1] = "WATERBORNE";
+								break;
 						}
 					break;
 				}					

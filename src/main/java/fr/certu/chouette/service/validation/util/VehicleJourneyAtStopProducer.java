@@ -178,26 +178,27 @@ class VehicleJourneyAtStopProducer {
 		if (castorVehicleJourneyAtStop.getBoardingAlightingPossibility() == null)
 			LoggingManager.log(logger, "Ce \"VehicleJourneyAtStop\" () n'a pas de \"boardingAlightingPossibility\".", params, Level.INFO);
 		else
-			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility()) {
-				case chouette.schema.types.BoardingAlightingPossibilityType.ALIGHTONLY:
+			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility()) 
+			{
+				case ALIGHTONLY:
 					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.ALIGHTONLY);
 					break;
-				case chouette.schema.types.BoardingAlightingPossibilityType.ALIGHTONREQUEST:
+				case ALIGHTONREQUEST:
 					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.ALIGHTONREQUEST);
 					break;
-				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHT:
-					ehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHT);
+				case BOARDANDALIGHT:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHT);
 					break;
-				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHTONREQUEST:
+				case BOARDANDALIGHTONREQUEST:
 					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHTONREQUEST);
 					break;
-				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDONLY:
+				case BOARDONLY:
 					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDONLY);
 					break;
-				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDONREQUEST:
+				case BOARDONREQUEST:
 					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDONREQUEST);
 					break;
-				case chouette.schema.types.BoardingAlightingPossibilityType.NEITHERBOARDORALIGHT:
+				case NEITHERBOARDORALIGHT:
 					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.NEITHERBOARDORALIGHT);
 					break;
 				default:

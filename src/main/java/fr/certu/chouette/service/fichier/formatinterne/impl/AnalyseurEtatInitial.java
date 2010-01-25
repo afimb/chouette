@@ -1054,56 +1054,59 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			calendar.setTime(date);
 			switch (calendar.get(Calendar.DAY_OF_WEEK)) {
 			case Calendar.MONDAY:
-				int monday = (int)Math.pow(2, chouette.schema.types.DayTypeType.MONDAY_TYPE);
+				int monday = (int)Math.pow(2, chouette.schema.types.DayTypeType.MONDAY.ordinal());
 				if ((intDayTypes & monday) == monday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			case Calendar.TUESDAY:
-				int tuesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.TUESDAY_TYPE);
+				int tuesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.TUESDAY.ordinal());
 				if ((intDayTypes & tuesday) == tuesday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			case Calendar.WEDNESDAY:
-				int wednesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.WEDNESDAY_TYPE);
+				int wednesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.WEDNESDAY.ordinal());
 				if ((intDayTypes & wednesday) == wednesday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			case Calendar.THURSDAY:
-				int thursday = (int)Math.pow(2, chouette.schema.types.DayTypeType.THURSDAY_TYPE);
+				int thursday = (int)Math.pow(2, chouette.schema.types.DayTypeType.THURSDAY.ordinal());
 				if ((intDayTypes & thursday) == thursday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			case Calendar.FRIDAY:
-				int friday = (int)Math.pow(2, chouette.schema.types.DayTypeType.FRIDAY_TYPE);
+				int friday = (int)Math.pow(2, chouette.schema.types.DayTypeType.FRIDAY.ordinal());
 				if ((intDayTypes & friday) == friday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			case Calendar.SATURDAY:
-				int saturday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SATURDAY_TYPE);
+				int saturday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SATURDAY.ordinal());
 				if ((intDayTypes & saturday) == saturday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			case Calendar.SUNDAY:
-				int sunday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SUNDAY_TYPE);
+				int sunday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SUNDAY.ordinal());
 				if ((intDayTypes & sunday) == sunday)
 					dates.add(date);
 				//else 
 				//delete(date, dates);
 				break;
 			}
-			date = new Date(date.getTime()+(long)86400000); //((long)24)*((long)60)*((long)60)*((long)1000));
+			
+			date = new Date(date.getTime() + (24l * 60l * 60l * 1000l));
+			//CASTOREVO correction date = new Date(date.getTime()+(long)86400000); 
+			//ez : previously commented : ((long)24)*((long)60)*((long)60)*((long)1000));
 		}
 		return dates;
 	}

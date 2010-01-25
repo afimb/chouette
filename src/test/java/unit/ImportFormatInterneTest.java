@@ -9,7 +9,7 @@ import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.modele.Ligne;
@@ -95,7 +95,7 @@ public class ImportFormatInterneTest
 	@Test(groups="tests unitaires", description="transformation d'une ligne en fichier CSV pour import par COPY")
     public void testProductionFichier()
     {
-	   ChouettePTNetworkType chouettePTNetwork = GenerateurDonnee.creerChouettePTNetwork(4, 15, 8);
+	   ChouettePTNetworkTypeType chouettePTNetwork = GenerateurDonnee.creerChouettePTNetwork(4, 15, 8);
 		try
 		{
 		   ILectureEchange echange = lecteurEchangeXML.lire(chouettePTNetwork);
