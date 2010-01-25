@@ -7,7 +7,7 @@ public class StopAreaExtensionConverter {
 			return null;
 		chouette.schema.StopAreaExtension chouetteStopExtension = new chouette.schema.StopAreaExtension();
 		chouetteStopExtension.setAreaType(chouette.schema.types.ChouetteAreaType.QUAY);
-		chouetteStopExtension.setFareCode(amivifStopPointExtension.getUpFarZone());
+		chouetteStopExtension.setFareCode((int)amivifStopPointExtension.getUpFarZone());
 		if ( amivifStopPointExtension.getCodeUIC()!=null && !amivifStopPointExtension.getCodeUIC().isEmpty())	{
 			chouette.schema.Registration registration = new chouette.schema.Registration();
 			registration.setRegistrationNumber(amivifStopPointExtension.getCodeUIC());

@@ -1,6 +1,6 @@
 package fr.certu.chouette.shell;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
@@ -299,7 +299,7 @@ public class ImportXMLMain {
 			logger.debug("Fichier : \""+file+"\"");
 			if (format.equals(FORMAT_XML)) {
 				try {
-					ChouettePTNetworkType xmlTest = lecteurFichierXML.lire(file, verify);
+					ChouettePTNetworkTypeType xmlTest = lecteurFichierXML.lire(file, verify);
 					if (importer) {
 						ILectureEchange lectureEchange = lecteurEchangeXML.lire(xmlTest);
 						importateur.importer(false, lectureEchange);

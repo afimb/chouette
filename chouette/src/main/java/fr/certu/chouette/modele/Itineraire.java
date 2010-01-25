@@ -14,27 +14,32 @@ public class Itineraire extends BaseObjet
 	private Long idRetour;
 	private Long idLigne;
 
-	public Itineraire() {
+	public Itineraire() 
+	{
 		super();
 		
 		route = new ChouetteRoute();
-		route.setRouteExtension( new RouteExtension());
+		route.setRouteExtension(new RouteExtension());
 		route.getRouteExtension().setWayBack( "A");
 	}
 
-	public Long getIdRetour() {
+	public Long getIdRetour() 
+	{
 		return idRetour;
 	}
 
-	public void setIdRetour(Long idRetour) {
+	public void setIdRetour(Long idRetour) 
+	{
 		this.idRetour = idRetour;
 	}
 
-	public ChouetteRoute getChouetteRoute() {
+	public ChouetteRoute getChouetteRoute() 
+	{
 		return route;
 	}
 
-	public void setChouetteRoute(final ChouetteRoute route) {
+	public void setChouetteRoute(final ChouetteRoute route) 
+	{
 		if ( this.route==null)
 		{
 			this.route = new ChouetteRoute();
@@ -54,7 +59,8 @@ public class Itineraire extends BaseObjet
 		}
 	}
 
-	public String getWayBack() {
+	public String getWayBack() 
+	{
 		return this.route.getRouteExtension().getWayBack();
 	}
 
@@ -99,7 +105,7 @@ public class Itineraire extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return route.getObjectVersion();
+		return (int)route.getObjectVersion();
 	}
 
 	public String getPublishedName() {

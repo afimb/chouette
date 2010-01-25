@@ -33,7 +33,7 @@ public class ICTProducer extends TridentObjectProducer {
 		
 		// section optionnel
 		if (castorICT.hasSection())
-			ict.setSection(castorICT.getSection());
+			ict.setSection((int)castorICT.getSection());
 		else {
 			ict.setSection(-1);
 			if (ict.getICTType().equals(ICT.ICTType.Section))

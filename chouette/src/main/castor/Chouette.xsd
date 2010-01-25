@@ -12,20 +12,23 @@
 <!--  																			-->
 <!-- build.xml : Description XML du profil Chouette 							-->
 <!--  																			-->
-<!-- Version : $Revision: 1.6 $												-->
+<!-- Version : $Revision: 1.6 $												    -->
 <!--  																			-->
 <!-- Historique des modifications :												-->
 <!-- Date      | Auteur         | Libelle										-->
 <!-- ==========================================================================	-->
 <!-- 01/10/2004|Marc FLORISSON  | Creation										-->
 <!-- ==========================================================================	-->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trident.org/schema/trident" xmlns:trd="http://www.trident.org/schema/trident" 
-  targetNamespace="http://www.trident.org/schema/trident" elementFormDefault="qualified" version="1.00">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns="http://www.trident.org/schema/trident" 
+	xmlns:trd="http://www.trident.org/schema/trident" 
+	targetNamespace="http://www.trident.org/schema/trident" 
+	elementFormDefault="qualified" version="1.00">
 	<xsd:annotation>
 		<xsd:documentation xml:lang="en">
-TRIDENT exchange schema.
-Request / Answer schema
-Copyright (c) 2001 TRIDENT consortium, All Rights Reserved.
+			TRIDENT exchange schema.
+			Request / Answer schema
+			Copyright (c) 2001 TRIDENT consortium, All Rights Reserved.
 		</xsd:documentation>
 	</xsd:annotation>
 	<xsd:include schemaLocation="./trident/trident_Global_schema.xsd"/>
@@ -78,8 +81,10 @@ Copyright (c) 2001 TRIDENT consortium, All Rights Reserved.
 	</xsd:complexType>
 	<xsd:complexType name="ChouettePTNetworkType">
 		<xsd:annotation>
-			<xsd:documentation>La strucutre d'échange d'une ligne de transport.
-Cette strucuture contient la totalité des données qui décrivent la ligne.</xsd:documentation>
+			<xsd:documentation>
+				La strucutre d'échange d'une ligne de transport.
+				Cette strucuture contient la totalité des données qui décrivent la ligne.
+			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="PTNetwork" type="trd:PTNetworkType">
@@ -141,8 +146,7 @@ Les correspondances relient un arrêt de la ligne avec un autre arrêt de cette mê
 			<xsd:element name="TimeSlot" type="TimeSlotType" minOccurs="0" maxOccurs="unbounded"/>
 			<xsd:element name="ChouetteLineDescription">
 				<xsd:annotation>
-					<xsd:documentation>Structure qui regroupe les autres données de la ligne.
-</xsd:documentation>
+					<xsd:documentation>Structure qui regroupe les autres données de la ligne.</xsd:documentation>
 				</xsd:annotation>
 				<xsd:complexType>
 					<xsd:sequence>

@@ -32,31 +32,39 @@ public class TableauMarche extends BaseObjet
 		return intDayTypes;
 	}
 
-	private void setIntDayTypes(Integer intDayTypes) {
+	private void setIntDayTypes(Integer intDayTypes) 
+	{
 		this.intDayTypes = intDayTypes;
 	}
 	
-	public Set<DayTypeType> getDayTypes() {
+	public Set<DayTypeType> getDayTypes() 
+	{
 		Set<DayTypeType> dayTypeSet = new HashSet<DayTypeType>();
-		if ( intDayTypes==null) return dayTypeSet;
+		if (intDayTypes == null) return dayTypeSet;
 		
-		for (Enumeration<DayTypeType> enumDayType = DayTypeType.enumerate(); 
-					enumDayType.hasMoreElements();) {
-			DayTypeType dayTypeType = (DayTypeType) enumDayType.nextElement();
-			int filtreJourType = ( int)Math.pow(2, dayTypeType.getType());
-			if ( filtreJourType==(intDayTypes.intValue() & filtreJourType))
-				dayTypeSet.add( dayTypeType);
+		//CASTOREVO
+		DayTypeType[] dayTypes = DayTypeType.values();
+		for (DayTypeType dayTypeType : dayTypes) 
+		{
+			int filtreJourType = (int) Math.pow(2, dayTypeType.ordinal());
+			if (filtreJourType == (intDayTypes.intValue() & filtreJourType))
+			{
+				dayTypeSet.add(dayTypeType);
+			}
 		}
+		
 		return dayTypeSet;
 	}
 	
 	public void setDayTypes(Set<DayTypeType> dayTypes)
 	{
+		//CASTOREVO
 		intDayTypes = 0;
-		if ( dayTypes==null) return;
+		if (dayTypes == null) return;
 			
-		for (DayTypeType dayType : dayTypes) {
-			intDayTypes += ( int)Math.pow(2, dayType.getType());
+		for (DayTypeType dayType : dayTypes) 
+		{
+			intDayTypes += (int)Math.pow(2, dayType.ordinal());
 		}
 	}
 
@@ -232,7 +240,7 @@ public class TableauMarche extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return timetable.getObjectVersion();
+		return (int)timetable.getObjectVersion();
 	}
 
 	public String getVersion() {

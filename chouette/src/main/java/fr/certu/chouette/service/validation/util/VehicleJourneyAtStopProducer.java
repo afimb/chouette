@@ -207,7 +207,7 @@ class VehicleJourneyAtStopProducer {
 		
 		// Order optionnel
 		if (castorVehicleJourneyAtStop.hasOrder()) {
-			int castorOrder = castorVehicleJourneyAtStop.getOrder();
+			int castorOrder = (int)castorVehicleJourneyAtStop.getOrder();
 			vehicleJourneyAtStop.setOrder(castorOrder);
 		}
 		else

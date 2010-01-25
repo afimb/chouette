@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.Timetable;
 
 public class UselessIdCleaner 
 {
-	public void clean( ChouettePTNetworkType chouette)
+	public void clean(ChouettePTNetworkTypeType chouette)
 	{
 		Set<String> vehicleIdDefined = new HashSet<String>();
 		int total = chouette.getChouetteLineDescription().getVehicleJourneyCount();

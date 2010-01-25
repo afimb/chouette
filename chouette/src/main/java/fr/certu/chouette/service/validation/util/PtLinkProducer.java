@@ -63,7 +63,7 @@ class PtLinkProducer {
 		
 		// ObjectVersion optionnel
 		if (castorPtLink.hasObjectVersion()) {
-			int castorObjectVersion = castorPtLink.getObjectVersion();
+			int castorObjectVersion = (int)castorPtLink.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				params = null;
 				if (ptLink.getObjectId() != null)

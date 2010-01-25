@@ -66,7 +66,7 @@ class LineProducer {
 		
 		// ObjectVersion optionnel
 		if (castorLine.hasObjectVersion()) {
-			int castorObjectVersion = castorLine.getObjectVersion();
+			int castorObjectVersion = (int)castorLine.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				params = null;
 				if (line.getObjectId() != null)

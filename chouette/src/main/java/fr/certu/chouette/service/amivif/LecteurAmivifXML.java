@@ -6,13 +6,16 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 
-import amivif.schema.RespPTDestrLineType;
+import amivif.schema.RespPTDestrLine;
+import amivif.schema.RespPTDestrLineTypeType;
 import amivif.schema.RespPTLineStructTimetable;
-import amivif.schema.RespPTLineStructTimetableType;
+import amivif.schema.RespPTLineStructTimetableTypeType;
 import fr.certu.chouette.service.amivif.util.XMLAdapter;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
@@ -21,14 +24,16 @@ import fr.certu.chouette.service.validation.commun.ValidationException;
 
 public class LecteurAmivifXML implements ILecteurAmivifXML 
 {
+	private static final Log logger = LogFactory.getLog(LecteurAmivifXML.class);
 	private static final String JEU_CARACTERES = "ISO-8859-1"; 
 	private ValidationException validationException;
 	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.amivif.ILecteurAmivifXML#lire(java.lang.String)
 	 */
-	public RespPTLineStructTimetable lire(String fileName) 
+	public RespPTLineStructTimetableTypeType lire(String fileName) 
 	{
+		logger.debug("EVOCASTOR --> unmarshal RespPTLineStructTimetable");
 		String contenu = null;
 		validationException = new ValidationException( "");
 		
@@ -42,11 +47,12 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		
         contenu = XMLAdapter.atcSimplify( contenu);
         
-        RespPTLineStructTimetable amivifLine = null;
+       RespPTLineStructTimetableTypeType amivifLine = null;
+
         try {
-    		Unmarshaller anUnmarshaller = new Unmarshaller( RespPTLineStructTimetable.class);
+    		Unmarshaller anUnmarshaller = new Unmarshaller(RespPTLineStructTimetableTypeType.class);
             anUnmarshaller.setValidation(false);
-        	amivifLine = ( RespPTLineStructTimetable)anUnmarshaller.unmarshal(
+        	amivifLine = (RespPTLineStructTimetableTypeType)anUnmarshaller.unmarshal(
         			new StringReader( contenu));
 		}
         catch (org.exolab.castor.xml.ValidationException e) {
@@ -65,15 +71,16 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.amivif.ILecteurAmivifXML#lire(java.lang.String)
 	 */
-	public void ecrire(RespPTLineStructTimetableType amivif, File file) 
+	public void ecrire(RespPTLineStructTimetableTypeType amivif, File file) 
 	{
+		logger.debug("EVOCASTOR --> marshal RespPTLineStructTimetableTypeType");
 		try
 		{
 			StringWriter writer = new StringWriter();
 			
 			Marshaller aMarshaller = new Marshaller( writer);
 			aMarshaller.setEncoding("ISO-8859-1");
-			aMarshaller.setRootElement("RespPTLineStructTimetable");
+			aMarshaller.setRootElement("RespPTLineStructTimetableTypeType");
 	        aMarshaller.setNamespaceMapping("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident RATP-AMIVIF.xsd");
 			aMarshaller.setValidation(false);
@@ -91,15 +98,16 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		}
 	}
 	
-	public void ecrire(RespPTDestrLineType amivif, File file) 
+	public void ecrire(RespPTDestrLineTypeType amivif, File file) 
 	{
+		logger.debug("EVOCASTOR --> marshal RespPTDestrLineTypeType");
 		try
 		{
 			StringWriter writer = new StringWriter();
 			
 			Marshaller aMarshaller = new Marshaller( writer);
 			aMarshaller.setEncoding("ISO-8859-1");
-			aMarshaller.setRootElement("RespPTDestrLine");
+			aMarshaller.setRootElement("RespPTDestrLineTypeType");
 	        aMarshaller.setNamespaceMapping("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident RATP-AMIVIF.xsd");
 			aMarshaller.setValidation(false);

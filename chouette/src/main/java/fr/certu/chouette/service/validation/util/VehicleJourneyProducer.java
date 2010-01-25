@@ -64,7 +64,7 @@ class VehicleJourneyProducer {
 		
 		// ObjectVersion optionnel
 		if (castorVehicleJourney.hasObjectVersion()) {
-			int castorObjectVersion = castorVehicleJourney.getObjectVersion();
+			int castorObjectVersion = (int)castorVehicleJourney.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				params = LoggingManager.getParams(""+castorObjectVersion, vehicleJourney.getObjectId());
 				LoggingManager.log(logger, "La version () \"objectVersion\" du \"VehicleJourney\" () est invalide.", params, Level.ERROR);
@@ -357,7 +357,7 @@ class VehicleJourneyProducer {
 		
 		// Number optionnel
 		if (castorVehicleJourney.hasNumber()) {
-			int castorNumber = castorVehicleJourney.getNumber();
+			int castorNumber = (int)castorVehicleJourney.getNumber();
 			if (castorNumber < 0) {
 				LoggingManager.log(logger, "Le numero \"number\" du \"VehicleJourney\" () ne peut < 0.", params, Level.ERROR);
 				validationException.add(TypeInvalidite.INVALIDNUMBER_VEHICLEJOURNEY, "Le numero \"number\" du \"VehicleJourney\" () ne peut < 0.", params);

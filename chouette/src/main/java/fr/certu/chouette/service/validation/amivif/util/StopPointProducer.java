@@ -64,13 +64,13 @@ public class StopPointProducer extends PointProducer {
 			
 			// upFareZone optionnel
 			if (castorStopPoint.getAMIVIF_StopPoint_Extension().hasUpFarZone())
-				stopPoint.setUpFareZone(castorStopPoint.getAMIVIF_StopPoint_Extension().getUpFarZone());
+				stopPoint.setUpFareZone((int)castorStopPoint.getAMIVIF_StopPoint_Extension().getUpFarZone());
 			else
 				stopPoint.setUpFareZone(-1);
 			
 			// downFareZone optionnel
 			if (castorStopPoint.getAMIVIF_StopPoint_Extension().hasDownFarZone())
-				stopPoint.setDownFareZone(castorStopPoint.getAMIVIF_StopPoint_Extension().getDownFarZone());
+				stopPoint.setDownFareZone((int)castorStopPoint.getAMIVIF_StopPoint_Extension().getDownFarZone());
 			else
 				stopPoint.setDownFareZone(-1);
 			

@@ -63,7 +63,7 @@ public class Reseau extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return ptNetwork.getObjectVersion();
+		return (int)ptNetwork.getObjectVersion();
 	}
 
 	public String getSourceIdentifier() {

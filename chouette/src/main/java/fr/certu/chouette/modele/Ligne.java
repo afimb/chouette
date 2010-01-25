@@ -81,7 +81,7 @@ public class Ligne extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return line.getObjectVersion();
+		return (int)line.getObjectVersion();
 	}
 
 	public String getPublishedName() {

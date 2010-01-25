@@ -5,7 +5,7 @@ import java.util.Map;
 
 import chouette.schema.AreaCentroid;
 import chouette.schema.ChouetteArea;
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.StopArea;
 import chouette.schema.StopPoint;
 import chouette.schema.types.ChouetteAreaType;
@@ -17,7 +17,7 @@ public class AccesseurAreaStop implements IAccesseurAreaStop
 	private Map<String, AreaCentroid> areaCentroidParAreaId;
 	private Map<String, AreaCentroid> centroidParId;
 	
-	public void initialiser( ChouettePTNetworkType chouettePTNetwork)
+	public void initialiser(ChouettePTNetworkTypeType chouettePTNetwork)
 	{
 		ChouetteArea chouetteArea = chouettePTNetwork.getChouetteArea();
 		

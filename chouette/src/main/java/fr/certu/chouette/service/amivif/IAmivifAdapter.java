@@ -1,15 +1,15 @@
 package fr.certu.chouette.service.amivif;
 
-import amivif.schema.RespPTDestrLineType;
-import amivif.schema.RespPTLineStructTimetableType;
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import amivif.schema.RespPTDestrLineTypeType;
+import amivif.schema.RespPTLineStructTimetableTypeType;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLineTypeType;
 
 public interface IAmivifAdapter {
 
-	ChouettePTNetworkType getATC(RespPTLineStructTimetableType amivif);
+	ChouettePTNetworkTypeType getATC(RespPTLineStructTimetableTypeType amivif);
 
-	RespPTLineStructTimetableType getCTA(ChouettePTNetworkType chouette);
+	RespPTLineStructTimetableTypeType getCTA(ChouettePTNetworkTypeType chouette);
 
-	RespPTDestrLineType getCTA(ChouetteRemoveLineType chouette);
+	RespPTDestrLineTypeType getCTA(ChouetteRemoveLineTypeType chouette);
 }

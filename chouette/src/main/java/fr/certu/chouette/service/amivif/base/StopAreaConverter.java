@@ -47,8 +47,8 @@ public class StopAreaConverter {
 			StopAreaExtension extension = new StopAreaExtension();
 			chouette.setStopAreaExtension( extension);
 			
-			extension.setFareCode( amivifExt.getUpFarZone());
-			extension.setAreaType( ChouetteAreaType.STOPPLACE);
+			extension.setFareCode((int)amivifExt.getUpFarZone());
+			extension.setAreaType(ChouetteAreaType.STOPPLACE);
 			if ( amivifExt.getProjectedPoint()!=null)
 			{
 				chouette.setCentroidOfArea( ObjectIdLecteur.getNouveauId( amivif.getObjectId(), "Place"));

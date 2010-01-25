@@ -2,8 +2,8 @@ package fr.certu.chouette.struts.export;
 
 import fr.certu.chouette.struts.*;
 import au.com.bytecode.opencsv.CSVWriter;
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLineTypeType;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.service.amivif.IAmivifAdapter;
 import fr.certu.chouette.service.amivif.ILecteurAmivifXML;
@@ -110,7 +110,7 @@ public class ExportAction extends GeneriqueAction
     nomFichier = "C_" + id + ".zip";
     for (Ligne ligne : lignes)
     {
-      ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
+      ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
       try
       {
         MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
@@ -164,7 +164,7 @@ public class ExportAction extends GeneriqueAction
     temp = File.createTempFile("exportChouette", ".xml");
     // Destruction de ce fichier temporaire à la sortie du programme
     temp.deleteOnExit();    
-    ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(idLigne);
+    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne);
     try
     {
       MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
@@ -202,7 +202,7 @@ public class ExportAction extends GeneriqueAction
     temp = File.createTempFile("exportCSV", ".csv");
     // Destruction de ce fichier temporaire à la sortie du programme
     temp.deleteOnExit();
-    ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(idLigne);
+    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne);
     if (lecteurCSV == null)
     {
       log.error("EXPORT CSV : lecteurCSV == null");
@@ -232,7 +232,7 @@ public class ExportAction extends GeneriqueAction
     temp = File.createTempFile("exportAmivif", ".xml");
     // Destruction de ce fichier temporaire à la sortie du programme
     temp.deleteOnExit();
-    ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(idLigne);
+    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne);
     //	Nom du fichier de sortie
     nomFichier = "AMIV_S_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
     lecteurAmivifXML.ecrire(amivifAdapter.getCTA(ligneLue), temp);
@@ -245,7 +245,7 @@ public class ExportAction extends GeneriqueAction
     temp = File.createTempFile("exportSupprimerChouette", ".xml");
     // Destruction de ce fichier temporaire à la sortie du programme
     temp.deleteOnExit();
-    ChouetteRemoveLineType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
+    ChouetteRemoveLineTypeType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
     //	Nom du fichier de sortie
     nomFichier = "S_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
     lecteurFichierXML.ecrire(ligneLue, temp);
@@ -259,7 +259,7 @@ public class ExportAction extends GeneriqueAction
     temp = File.createTempFile("exportSupprimerAmivif", ".xml");
     // Destruction de ce fichier temporaire à la sortie du programme
     temp.deleteOnExit();
-    ChouetteRemoveLineType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
+    ChouetteRemoveLineTypeType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
     //	Nom du fichier de sortie
     nomFichier = "AMIV_D_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
     lecteurAmivifXML.ecrire(amivifAdapter.getCTA(ligneLue), temp);

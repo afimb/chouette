@@ -97,13 +97,13 @@ public class StopAreaProducer extends LocalTridentObjectProducer {
 			
 			// upFareZone obligatoire
 			if (castorStopArea.getAMIVIF_StopArea_Extension().hasUpFarZone())
-				stopArea.setUpFareCode(castorStopArea.getAMIVIF_StopArea_Extension().getUpFarZone());
+				stopArea.setUpFareCode((int)castorStopArea.getAMIVIF_StopArea_Extension().getUpFarZone());
 			else
 				getValidationException().add(TypeInvalidite.NoUpFareZone_StopArea, "La \"StopArea\" ("+castorStopArea.getObjectId()+") n'a pas de \"upFarZone\".");
 			
 			// downFarZone optionnel
 			if (castorStopArea.getAMIVIF_StopArea_Extension().hasDownFarZone())
-				stopArea.setUpFareCode(castorStopArea.getAMIVIF_StopArea_Extension().getDownFarZone());
+				stopArea.setUpFareCode((int)castorStopArea.getAMIVIF_StopArea_Extension().getDownFarZone());
 			else
 				stopArea.setUpFareCode(-1);
 			

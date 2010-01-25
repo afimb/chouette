@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
 <!--  File: RATP-AMIVIF.xsd  -->
-<xsd:schema xmlns:trd="http://www.trident.org/schema/trident" xmlns="http://www.trident.org/schema/trident" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.trident.org/schema/trident" elementFormDefault="qualified" version="1.00">
+<xsd:schema 
+	xmlns:trd="http://www.trident.org/schema/trident" 
+	xmlns="http://www.trident.org/schema/trident" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.trident.org/schema/trident" 
+	elementFormDefault="qualified" version="1.00">
 	<xsd:annotation>
 		<xsd:appinfo>
 			<Metadata>

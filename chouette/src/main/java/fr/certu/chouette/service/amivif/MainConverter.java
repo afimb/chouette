@@ -7,13 +7,16 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import amivif.schema.Line;
-import amivif.schema.RespPTDestrLineType;
-import amivif.schema.RespPTLineStructTimetableType;
+import amivif.schema.RespPTDestrLine;
+import amivif.schema.RespPTDestrLineTypeType;
+import amivif.schema.RespPTLineStructTimetable;
+import amivif.schema.RespPTLineStructTimetableTypeType;
 import chouette.schema.AreaCentroid;
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import chouette.schema.ChouettePTNetwork;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLineTypeType;
 import chouette.schema.StopArea;
 import fr.certu.chouette.service.amivif.base.CompanyConverter;
 import fr.certu.chouette.service.amivif.base.ConnectionLinkConverter;
@@ -58,8 +61,10 @@ public class MainConverter implements IAmivifAdapter {
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.amivif.IAmivifAdapter#getATC(amivif.schema.RespPTLineStructTimetable)
 	 */
-	public ChouettePTNetworkType getATC(RespPTLineStructTimetableType amivif){
-		ChouettePTNetworkType chouette = new ChouettePTNetworkType();
+	public ChouettePTNetworkTypeType getATC(RespPTLineStructTimetableTypeType amivif)
+	{
+		logger.debug("EVOCASTOR --> new ChouettePTNetwork()");
+		ChouettePTNetworkTypeType chouette = new ChouettePTNetwork();
 		chouette.setPTNetwork(transportNetworkConverter.atc(amivif.getTransportNetwork()));
 		for (int i = 0; i < amivif.getGroupOfLineCount(); i++)
 			if ( amivif.getGroupOfLine(i) != null) {
@@ -126,9 +131,10 @@ public class MainConverter implements IAmivifAdapter {
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.amivif.IAmivifAdapter#getCTA(chouette.schema.ChouettePTNetwork)
 	 */
-	public RespPTDestrLineType getCTA(ChouetteRemoveLineType chouette) 
+	public RespPTDestrLineTypeType getCTA(ChouetteRemoveLineTypeType chouette) 
 	{
-		RespPTDestrLineType amivif = new RespPTDestrLineType();
+		logger.debug("EVOCASTOR --> new RespPTDestrLine()");
+		RespPTDestrLineTypeType amivif = new RespPTDestrLine();
 		
 		Line line = lineConverter.cta( chouette.getLine());
 		amivif.setLine(line);
@@ -139,8 +145,10 @@ public class MainConverter implements IAmivifAdapter {
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.amivif.IAmivifAdapter#getCTA(chouette.schema.ChouettePTNetwork)
 	 */
-	public RespPTLineStructTimetableType getCTA(ChouettePTNetworkType chouette) {
-		RespPTLineStructTimetableType amivif = new RespPTLineStructTimetableType();
+	public RespPTLineStructTimetableTypeType getCTA(ChouettePTNetworkTypeType chouette) 
+	{
+		logger.debug("EVOCASTOR --> new RespPTLineStructTimetable()");
+		RespPTLineStructTimetableTypeType amivif = new RespPTLineStructTimetable();
 		amivif.setTransportNetwork(transportNetworkConverter.cta(chouette.getPTNetwork()));
 		amivif.addGroupOfLine(groupOfLineConverter.cta(chouette.getGroupOfLine()));
 		amivif.setCompany(companyConverter.cta(chouette.getCompany()));

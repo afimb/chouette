@@ -3,8 +3,10 @@ package fr.certu.chouette.service.database.impl;
 import chouette.schema.AreaCentroid;
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import chouette.schema.ChouettePTNetwork;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLine;
+import chouette.schema.ChouetteRemoveLineTypeType;
 import chouette.schema.ChouetteRoute;
 import chouette.schema.ITL;
 import chouette.schema.JourneyPattern;
@@ -74,30 +76,37 @@ public class ExportManager implements IExportManager {
 	private              Map<Long, String>            objectIdParCourseId        = new Hashtable<Long, String>();
 	private              Map<Long, Integer>           positionParArretId         = new Hashtable<Long, Integer>();
 	private              Set<Long>                    idsArretsPhysiquesSurZone  = new HashSet<Long>();
-	private              ChouettePTNetworkType        resultat;
+	private              ChouettePTNetworkTypeType     resultat;
 	
-	public ChouetteRemoveLineType getSuppressionParIdLigne(final Long idLigne) {
+	public ChouetteRemoveLineTypeType getSuppressionParIdLigne(final Long idLigne)
+	{
 		return getSuppression(ligneManager.lire(idLigne));
 	}
 	
-	public ChouetteRemoveLineType getSuppressionParRegistration(final String registrationNumber) {
+	public ChouetteRemoveLineTypeType getSuppressionParRegistration(final String registrationNumber) 
+	{
 		return getSuppression(ligneManager.getLigneParRegistration(registrationNumber));
 	}
 	
-	private ChouetteRemoveLineType getSuppression(final Ligne ligne) {
-		ChouetteRemoveLineType resultat = new ChouetteRemoveLineType();
-		if (ligne.getIdReseau() != null) {
+	private ChouetteRemoveLineTypeType getSuppression(final Ligne ligne) 
+	{
+		logger.debug("EVOCASTOR --> new ChouetteRemoveLine()");
+		ChouetteRemoveLineTypeType resultat = new ChouetteRemoveLine();
+		if (ligne.getIdReseau() != null) 
+		{
 			Reseau reseau = reseauManager.lire(ligne.getIdReseau());
 			ligne.getLine().setPtNetworkIdShortcut(reseau.getObjectId());
 		}
 		List<Itineraire> itineraires = ligneManager.getItinerairesLigne(ligne.getId());
 		for (Itineraire itineraire : itineraires)
 			ligne.getLine().addRouteId(itineraire.getObjectId());
+		logger.debug("EVOCASTOR --> ChouetteRemoveLine:setLine");
 		resultat.setLine(ligne.getLine());
 		return resultat;
 	}	
 	
-	private void reinit() {
+	private void reinit() 
+	{
 		objectIdParArretPhysiqueId.clear();
 		objectIdParArretLogiqueId.clear();
 		objectIdParItineraireId.clear();
@@ -106,9 +115,11 @@ public class ExportManager implements IExportManager {
 		idsArretsPhysiquesSurZone.clear();
 	}
 	
-	private ChouettePTNetworkType getExport(final Ligne ligne) {
+	private ChouettePTNetworkTypeType getExport(final Ligne ligne) 
+	{
 		reinit();
-		resultat = new ChouettePTNetworkType();
+		logger.debug("EVOCASTOR --> new ChouettePTNetwork");
+		resultat = new ChouettePTNetwork();
 		if (ligne.getIdReseau() == null)
 			throw new ServiceException(CodeIncident.EXPORT_SANS_RESEAU, "EXPORT_SANS_RESEAU");
 		if (ligne.getIdTransporteur() == null)
@@ -120,9 +131,13 @@ public class ExportManager implements IExportManager {
 		for (Itineraire itineraire : itineraires) 
 			idItineraires.add(itineraire.getId());
 		systemId = lireSystemeOrigine(ligne.getObjectId());
+		
+		logger.debug("EVOCASTOR --> ChouettePTNetwork:addCompagny");
 		resultat.addCompany(transporteur.getCompany());
+		logger.debug("EVOCASTOR --> ChouettePTNetwork:setPTNetwork");
 		resultat.setPTNetwork(reseau.getPtNetwork());
 		ChouetteLineDescription description = new ChouetteLineDescription();
+		logger.debug("EVOCASTOR --> ChouettePTNetwork:setChouetteLineDescription");
 		resultat.setChouetteLineDescription(description);
 		description.setLine(ligne.getLine());
 		construireRoutesArretsLogiques(itineraires);
@@ -133,15 +148,18 @@ public class ExportManager implements IExportManager {
 		return resultat;
 	}
 	
-	public ChouettePTNetworkType getExportParRegistration(final String registrationNumber) {
+	public ChouettePTNetworkTypeType getExportParRegistration(final String registrationNumber) 
+	{
 		return getExport(ligneManager.getLigneParRegistration(registrationNumber));
 	}
 	
-	public ChouettePTNetworkType getExportParIdLigne(final Long idLigne) {
+	public ChouettePTNetworkTypeType getExportParIdLigne(final Long idLigne) 
+	{
 		return getExport(ligneManager.lire(idLigne));
 	}
 	
-	private void construireITL(Ligne ligne) {
+	private void construireITL(Ligne ligne) 
+	{
 		ChouetteLineDescription description = resultat.getChouetteLineDescription();
 		ChouetteArea chouetteArea = resultat.getChouetteArea();
 		List<InterdictionTraficLocal> itls = itlManager.getITLLigne(ligne.getId());

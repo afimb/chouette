@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import chouette.schema.AreaCentroid;
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRoute;
 import chouette.schema.Company;
 import chouette.schema.ConnectionLink;
@@ -69,21 +69,22 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.xml.ILecteurEchangeXML#lire(chouette.schema.ChouettePTNetworkType)
 	 */
-	public ILectureEchange lire( final ChouettePTNetworkType chouettePTNetwork)
+	public ILectureEchange lire( final ChouettePTNetworkTypeType chouettePTNetwork)
 	{
-		if ( chouettePTNetwork.getCompanyCount()==0)
+		logger.debug("EVOCASTOR --> read ChouettePTNetworkTypeType");
+		if (chouettePTNetwork.getCompanyCount() == 0)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_TRSP_ABSENT, "");
+			throw new ServiceException(CodeIncident.ERR_LECT_TRSP_ABSENT, "");
 		}
 		Company company = chouettePTNetwork.getCompany( 0);
-		if ( company.getRegistration()==null || company.getRegistration().getRegistrationNumber()==null)
+		if (company.getRegistration()==null || company.getRegistration().getRegistrationNumber()==null)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_REGISTRE_TRSP_ABSENT, "");
+			throw new ServiceException(CodeIncident.ERR_LECT_REGISTRE_TRSP_ABSENT, "");
 		}
 		transporteur = new Transporteur();
-		transporteur.setCompany( company);
+		transporteur.setCompany(company);
 
-		if ( chouettePTNetwork.getPTNetwork()==null)
+		if (chouettePTNetwork.getPTNetwork() == null)
 		{
 			throw new ServiceException( CodeIncident.ERR_LECT_RES_ABSENT, "");
 		}

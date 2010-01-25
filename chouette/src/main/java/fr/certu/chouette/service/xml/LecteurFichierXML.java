@@ -1,8 +1,7 @@
 package fr.certu.chouette.service.xml;
 
-import chouette.schema.ChouettePTNetwork;
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLineTypeType;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.validation.commun.LoggingManager;
@@ -36,11 +35,11 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 	public LecteurFichierXML() {
 	}
 	
-	public ChouettePTNetworkType lire(String fileName) {
+	public ChouettePTNetworkTypeType lire(String fileName) {
 		return lire(fileName, false);
 	}
 	
-	public ChouettePTNetworkType lire(String fileName, boolean withValidation) {
+	public ChouettePTNetworkTypeType lire(String fileName, boolean withValidation) {
 		String contenu = null;
 		logger.debug("CREATION DU MainSchemaProducer");
 		mainSchemaProducer = new MainSchemaProducer();
@@ -56,37 +55,46 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 			validationException.add(TypeInvalidite.FILE_NOT_FOUND, msg);
 			throw validationException;
 		}
-		ChouettePTNetworkType chouettePTNetworkType = null;
-		try {
+		ChouettePTNetworkTypeType chouettePTNetworkType = null;
+		try 
+		{
 			logger.debug("UNMARSHALING OF contenu");
-			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetwork.class);
+			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetworkTypeType.class);
+			anUnmarshaller.setIgnoreExtraElements(false);
 			anUnmarshaller.setValidation(false);
-			chouettePTNetworkType = (ChouettePTNetwork)anUnmarshaller.unmarshal(new StringReader(contenu));
+			chouettePTNetworkType = (ChouettePTNetworkTypeType)anUnmarshaller.unmarshal(new StringReader(contenu));
 			logger.debug("END OF UNMARSHALING OF contenu");
 		}
-		catch (org.exolab.castor.xml.ValidationException e) {
+		catch (org.exolab.castor.xml.ValidationException e) 
+		{
 			logger.debug("ValidationException "+e.getMessage());
-			do {
+			do 
+			{
 				String msg = e.getMessage();
 				LoggingManager.log(logger, msg, Level.ERROR);
 				validationException.add(TypeInvalidite.INVALID_XML_FILE, msg);
 				e = e.getNext();
-			} while (e != null);
+			} 
+			while (e != null);
 			throw validationException;
 		}
-		catch (MarshalException e) {
+		catch (MarshalException e) 
+		{
 			if ((e instanceof MarshalException) && (e.getCause() != null) && (e.getCause() instanceof SAXException)) {
-				try {
+				try 
+				{
 					test_xml(fileName);
 				}
-				catch (SAXParseException e1) {
+				catch (SAXParseException e1) 
+				{
 					String msg1 = e1.getMessage() + " AT LINE " +e1.getLineNumber()+ " COLUMN "+ e1.getColumnNumber();
 					logger.error("SAXParseException "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
 					validationException.add(TypeInvalidite.INVALID_XML_FILE, msg1);
 					throw validationException;
 				}
-				catch (Exception e1) {
+				catch (Exception e1)
+				{
 					String msg1 = e1.getMessage();
 					logger.error("Exception "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
@@ -99,7 +107,8 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 				mesg += e.getMessage()+" : ";
 			mesg += e.toString();
 			Throwable ex = e;
-			while (ex.getCause() != null) {
+			while (ex.getCause() != null) 
+			{
 				ex = ex.getCause();
 				mesg += "\n";
 				if (ex.getMessage() != null)
@@ -116,10 +125,12 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 		return chouettePTNetworkType;
 	}
 	
-	public void ecrire(ChouettePTNetworkType chouette, File file) {
+	public void ecrire(ChouettePTNetworkTypeType chouette, File file) 
+	{
 		FileOutputStream   fileOutputStream   = null;
 		OutputStreamWriter outputStreamWriter = null;
-		try {
+		try 
+		{
 			fileOutputStream   = new FileOutputStream(file);
 			outputStreamWriter = new OutputStreamWriter(fileOutputStream, JEU_CARACTERES);
 			Marshaller marshaller = new Marshaller(outputStreamWriter);
@@ -131,39 +142,50 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 			outputStreamWriter.close();
 			fileOutputStream.close();
 		}
-		catch(IOException e) {
+		catch(IOException e) 
+		{
 			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
 		}
-		catch(MarshalException e) {
+		catch(MarshalException e) 
+		{
 			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
 		}
 		catch(org.exolab.castor.xml.ValidationException e) {
 			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
 		}
-		finally {
-			if (outputStreamWriter != null) {
-				try {
+		finally 
+		{
+			if (outputStreamWriter != null) 
+			{
+				try 
+				{
 					outputStreamWriter.close();
 				}
-				catch(IOException e) {
+				catch(IOException e) 
+				{
 					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
 				}
 			}
-			if (fileOutputStream != null) {
-				try {
+			if (fileOutputStream != null) 
+			{
+				try 
+				{
 					fileOutputStream.close();
 				}
-				catch(IOException e) {
+				catch(IOException e) 
+				{
 					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
 				}
 			}
 		}
 	}
 	
-	public void ecrire(ChouetteRemoveLineType chouette, File file) {
+	public void ecrire(ChouetteRemoveLineTypeType chouette, File file) 
+	{
 		FileOutputStream   fileOutputStream   = null;
 		OutputStreamWriter outputStreamWriter = null;
-		try {
+		try 
+		{
 			fileOutputStream   = new FileOutputStream(file);
 			outputStreamWriter = new OutputStreamWriter(fileOutputStream, JEU_CARACTERES);
 			Marshaller aMarshaller = new Marshaller(outputStreamWriter);
@@ -175,36 +197,47 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 			outputStreamWriter.close();
 			fileOutputStream.close();
 		}
-		catch(IOException e) {
+		catch(IOException e) 
+		{
 			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
 		}
-		catch(MarshalException e) {
+		catch(MarshalException e) 
+		{
 			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
 		}
-		catch(org.exolab.castor.xml.ValidationException e) {
+		catch(org.exolab.castor.xml.ValidationException e) 
+		{
 			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
 		} 
-		finally {
-			if (outputStreamWriter != null) {
-				try {
+		finally 
+		{
+			if (outputStreamWriter != null) 
+			{
+				try 
+				{
 					outputStreamWriter.close();
 				}
-				catch(IOException e) {
+				catch(IOException e) 
+				{
 					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
 				}
 			}
-			if (fileOutputStream != null) {
-				try {
+			if (fileOutputStream != null) 
+			{
+				try 
+				{
 					fileOutputStream.close();
 				}
-				catch(IOException e) {
+				catch(IOException e) 
+				{
 					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
 				}
 			}
 		}
 	}
 	
-	private void test_xml(String fichier) throws ParserConfigurationException, Exception {
+	private void test_xml(String fichier) throws ParserConfigurationException, Exception 
+	{
 		logger.debug("Test du fichier "+fichier);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();

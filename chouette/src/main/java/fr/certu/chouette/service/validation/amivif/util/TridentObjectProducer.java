@@ -2,6 +2,10 @@ package fr.certu.chouette.service.validation.amivif.util;
 
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import fr.certu.chouette.service.amivif.LecteurAmivifXML;
 import fr.certu.chouette.service.validation.amivif.TridentObject;
 import fr.certu.chouette.service.validation.amivif.TridentObject.ValidityPeriod;
 import fr.certu.chouette.service.validation.amivif.commun.TypeInvalidite;
@@ -9,7 +13,8 @@ import fr.certu.chouette.service.validation.amivif.commun.ValidationException;
 
 public class TridentObjectProducer {
     
-    private ValidationException		validationException;
+	private static final Log logger = LogFactory.getLog(TridentObjectProducer.class);
+	private ValidationException		validationException;
 
 	public TridentObjectProducer(ValidationException validationException) {
 		setValidationException(validationException);
@@ -23,7 +28,9 @@ public class TridentObjectProducer {
 		return validationException;
 	}
 
-	public TridentObject getASG(amivif.schema.TridentObjectType castorTridentObject) {
+	public TridentObject getASG(amivif.schema.TridentObjectTypeType castorTridentObject) 
+	{
+		logger.debug("EVOCASTOR --> parameter has new type amivif.schema.TridentObjectTypeType");
 		if (castorTridentObject == null)
 			return null;
 		TridentObject tridentObject = new TridentObject();
@@ -48,7 +55,7 @@ public class TridentObjectProducer {
 		if (castorTridentObject.hasObjectVersion()) {
 			if (castorTridentObject.getObjectVersion() < 1)
 				validationException.add(TypeInvalidite.InvalidObjectVersion, "L'\"objectVersion\" d'un \"TridentObject\" doit etre >= 1.");
-			tridentObject.setObjectVersion(castorTridentObject.getObjectVersion());
+			tridentObject.setObjectVersion((int)castorTridentObject.getObjectVersion());
 		}
 		else
 			tridentObject.setObjectVersion(0);
