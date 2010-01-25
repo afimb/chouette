@@ -1,6 +1,6 @@
 package fr.certu.chouette.service.validation.util;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.service.validation.commun.LoggingManager;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.commun.ValidationException;
@@ -54,7 +54,7 @@ public class MainSchemaProducer implements IMainSchemaProducer {
 	 * @param castorChouettePTNetwork
 	 * @return
 	 */
-	public ChouettePTNetwork getASG(ChouettePTNetworkType castorChouettePTNetwork)  {
+	public ChouettePTNetwork getASG(ChouettePTNetworkTypeType castorChouettePTNetwork)  {
 		LoggingManager.setMessages(new HashSet<String>());
 		String[] params = null;
 		
@@ -265,7 +265,7 @@ public class MainSchemaProducer implements IMainSchemaProducer {
 		for (int i = 0; i < subNames.length; i++)
 			if ((subNames[i] == null) || (subNames[i].trim().length() == 0))
 				return false;
-		//(\p{L}|_)+:\p{L}+:[0-9A-Za-z]+ remplac� par (\p{L}|_)+:\p{L}+:[0-9A-Za-z-]+
+		//(\p{L}|_)+:\p{L}+:[0-9A-Za-z]+ remplaced by (\p{L}|_)+:\p{L}+:[0-9A-Za-z-]+
 		return true;
 	}
 }

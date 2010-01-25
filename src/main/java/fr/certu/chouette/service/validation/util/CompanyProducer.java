@@ -66,7 +66,7 @@ class CompanyProducer {
 		
 		// ObjectVersion optionnel
 		if (castorCompany.hasObjectVersion()) {
-			int castorObjectVersion = castorCompany.getObjectVersion();
+			int castorObjectVersion = (int)castorCompany.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				if (castorCompany.getName() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, castorCompany.getName());

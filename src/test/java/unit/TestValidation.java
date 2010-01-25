@@ -120,14 +120,27 @@ public class TestValidation {
 	@Test(groups="test de validation",
 			expectedExceptions = ValidationException.class,
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier CHOUETTE invalide : balise inconnue.")
-	public void testChouetteNotOK0() {
-		try {
+	public void testChouetteNotOK0() 
+	{
+		try
+		{
 			lecteurFichierXML.lire(fileNameBadChouette0, true);
+			
 		}
-		catch(ValidationException e) {
+		catch(ValidationException e) 
+		{
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_CHOUETTE_FILE))
+			{
 				throw e;
-		}		
+			}
+			String msg = "";
+			List<TypeInvalidite> categories = e.getCategories();
+			for (TypeInvalidite typeInvalidite : categories) 
+			{
+				msg += typeInvalidite;
+			}
+			throw new RuntimeException ("unvalid with type : " + msg);
+		}
 	}
 	
 	@Test(groups="test de validation",
@@ -146,13 +159,25 @@ public class TestValidation {
 	@Test(groups="test de validation",
 			expectedExceptions = ValidationException.class,
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier CHOUETTE invalide : arborescence des balises.")
-	public void testChouetteNotOK2() {
-		try {
+	public void testChouetteNotOK2() 
+	{
+		try 
+		{
 			lecteurFichierXML.lire(fileNameBadChouette2, true);
 		}
-		catch(ValidationException e) {
+		catch(ValidationException e) 
+		{
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_CHOUETTE_FILE))
+			{
 				throw e;
+			}
+			String msg = "";
+			List<TypeInvalidite> categories = e.getCategories();
+			for (TypeInvalidite typeInvalidite : categories) 
+			{
+				msg += typeInvalidite;
+			}
+			throw new RuntimeException ("unvalid with type : " + msg);
 		}		
 	}
 
@@ -192,7 +217,8 @@ public class TestValidation {
 		}
 	}
 	
-	private boolean detecterInvalidite(ValidationException e, TypeInvalidite typeInvalidite) {
+	private boolean detecterInvalidite(ValidationException e, TypeInvalidite typeInvalidite) 
+	{
 		List<TypeInvalidite> categories = e.getCategories();
 		if (categories != null)
 			for (int i = 0; i < categories.size(); i++)

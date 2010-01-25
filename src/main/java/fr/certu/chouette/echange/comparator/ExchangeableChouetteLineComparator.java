@@ -8,7 +8,7 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.echange.comparator.amivif.AmivifExchangeableLineObjectIdMapper;
@@ -26,8 +26,8 @@ public class ExchangeableChouetteLineComparator extends ExchangeableLineComparat
 	private ILecteurEchangeXML lecteurEchangeXML;
 	
 	private ILecteurFichierXML lecteurFichierXML;
-	private ChouettePTNetworkType sourceLineStruct;
-	private ChouettePTNetworkType targetLineStruct;
+	private ChouettePTNetworkTypeType sourceLineStruct;
+	private ChouettePTNetworkTypeType targetLineStruct;
 
 	/**
 	 * 
@@ -107,7 +107,7 @@ public class ExchangeableChouetteLineComparator extends ExchangeableLineComparat
 		}
 	}
 
-	private ILectureEchange getExchangeableLine(ChouettePTNetworkType lineStruct) 
+	private ILectureEchange getExchangeableLine(ChouettePTNetworkTypeType lineStruct) 
 	{
 		// TODO Auto-generated method stub
 		return lecteurEchangeXML.lire(lineStruct);

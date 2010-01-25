@@ -105,98 +105,112 @@ public class PositionGeographique  extends BaseObjet
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getObjectVersion()
 	 */
-	public int getObjectVersion() {
-		return stopArea.getObjectVersion();
+	public int getObjectVersion() 
+	{
+		return (int)stopArea.getObjectVersion();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#setObjectVersion(int)
 	 */
-	public void setObjectVersion(int objectVersion) {
+	public void setObjectVersion(int objectVersion) 
+	{
 		stopArea.setObjectVersion(objectVersion);
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getCountryCode()
 	 */
-	public String getCountryCode() {
+	public String getCountryCode() 
+	{
 		return areaCentroid.getAddress().getCountryCode();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getStreetName()
 	 */
-	public String getStreetName() {
+	public String getStreetName() 
+	{
 		return areaCentroid.getAddress().getStreetName();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#setCountryCode(java.lang.String)
 	 */
-	public void setCountryCode(String countryCode) {
+	public void setCountryCode(String countryCode) 
+	{
 		areaCentroid.getAddress().setCountryCode(countryCode);
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#setStreetName(java.lang.String)
 	 */
-	public void setStreetName(String streetName) {
+	public void setStreetName(String streetName) 
+	{
 		areaCentroid.getAddress().setStreetName(streetName);
 	}
 	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getProjectionType()
 	 */
-	public String getProjectionType() {
+	public String getProjectionType() 
+	{
 		return areaCentroid.getProjectedPoint().getProjectionType();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getX()
 	 */
-	public BigDecimal getX() {
+	public BigDecimal getX() 
+	{
 		return areaCentroid.getProjectedPoint().getX();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getY()
 	 */
-	public BigDecimal getY() {
+	public BigDecimal getY() 
+	{
 		return areaCentroid.getProjectedPoint().getY();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#setProjectionType(java.lang.String)
 	 */
-	public void setProjectionType(String projectionType) {
+	public void setProjectionType(String projectionType) 
+	{
 		areaCentroid.getProjectedPoint().setProjectionType(projectionType);
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#setX(java.math.BigDecimal)
 	 */
-	public void setX(BigDecimal x) {
+	public void setX(BigDecimal x) 
+	{
 		areaCentroid.getProjectedPoint().setX(x);
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#setY(java.math.BigDecimal)
 	 */
-	public void setY(BigDecimal y) {
+	public void setY(BigDecimal y)
+	{
 		areaCentroid.getProjectedPoint().setY(y);
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getLatitude()
 	 */
-	public BigDecimal getLatitude() {
+	public BigDecimal getLatitude() 
+	{
 		return areaCentroid.getLatitude();
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.modele.interne.IPositionGeographique#getLongitude()
 	 */
-	public BigDecimal getLongitude() {
+	public BigDecimal getLongitude() 
+	{
 		return areaCentroid.getLongitude();
 	}
 

@@ -67,7 +67,7 @@ class TimetableProducer {
 		
 		// ObjectVersion optionnel
 		if (castorTimetable.hasObjectVersion()) {
-			int castorObjectVersion = castorTimetable.getObjectVersion();
+			int castorObjectVersion = (int)castorTimetable.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				params = LoggingManager.getParams(""+castorObjectVersion, castorTimetable.getObjectId());
 				LoggingManager.log(logger, "La version () \"objectVersion\" du \"Timetable\" () est invalide.", params, Level.ERROR);

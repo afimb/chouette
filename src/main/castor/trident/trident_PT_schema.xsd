@@ -2,7 +2,12 @@
 <!-- edited with XMLSpy v2007 sp2 (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
 <!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by Christophe Duquesne (Dryade) -->
 <!--  File: trident_PT_schema.xsd  -->
-<xsd:schema xmlns:trd="http://www.trident.org/schema/trident" xmlns="http://www.trident.org/schema/trident" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.trident.org/schema/trident" elementFormDefault="qualified" version="2.0">
+<xsd:schema 
+	xmlns:trd="http://www.trident.org/schema/trident" 
+	xmlns="http://www.trident.org/schema/trident" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.trident.org/schema/trident" 
+	elementFormDefault="qualified" version="2.0">
 	<xsd:annotation>
 		<xsd:appinfo>trident.xsd v1.00 2002-10</xsd:appinfo>
 		<xsd:documentation xml:lang="en">

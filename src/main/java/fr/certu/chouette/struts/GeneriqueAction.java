@@ -127,6 +127,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       {
         log.error(e.getMessage(), e);
       }
+      //EVOCASTOR
       directions.add(new ObjetEnumere(ptDirectionType, traduction));
     }
     return directions;

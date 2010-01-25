@@ -200,7 +200,7 @@ public class VehicleJourneyProducer extends TridentObjectProducer {
 		
 		// number optionnel
 		if (castorVehicleJourney.hasNumber())
-			vehicleJourney.setNumber(castorVehicleJourney.getNumber());
+			vehicleJourney.setNumber((int)castorVehicleJourney.getNumber());
 		else
 			vehicleJourney.setNumber(-1);
 		
@@ -314,7 +314,7 @@ public class VehicleJourneyProducer extends TridentObjectProducer {
 		
 		// order optionnel
 		if (castorVehicleJourneyAtStop.hasOrder())
-			vehicleJourneyAtStop.setOrder(castorVehicleJourneyAtStop.getOrder());
+			vehicleJourneyAtStop.setOrder((int)castorVehicleJourneyAtStop.getOrder());
 		else
 			vehicleJourneyAtStop.setOrder(-1);
 		

@@ -109,7 +109,7 @@ public class Correspondance extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return connectionLink.getObjectVersion();
+		return (int)connectionLink.getObjectVersion();
 	}
 
 	public Date getOccasionalTravellerDuration() {

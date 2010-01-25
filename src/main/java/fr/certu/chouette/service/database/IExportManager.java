@@ -1,17 +1,13 @@
 package fr.certu.chouette.service.database;
 
-import chouette.schema.ChouettePTNetworkType;
-import chouette.schema.ChouetteRemoveLineType;
+import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRemoveLineTypeType;
 
-public interface IExportManager {
+public interface IExportManager 
+{
 
-	ChouettePTNetworkType getExportParRegistration(
-			final String registrationNumber);
-	ChouettePTNetworkType getExportParIdLigne(
-			final Long idLigne);
-	ChouetteRemoveLineType getSuppressionParRegistration( 
-			final String registrationNumber);
-	ChouetteRemoveLineType getSuppressionParIdLigne( 
-			final Long idLigne);
-
+	ChouettePTNetworkTypeType getExportParRegistration(final String registrationNumber);
+	ChouettePTNetworkTypeType getExportParIdLigne(final Long idLigne);
+	ChouetteRemoveLineTypeType getSuppressionParRegistration(final String registrationNumber);
+	ChouetteRemoveLineTypeType getSuppressionParIdLigne(final Long idLigne);	
 }

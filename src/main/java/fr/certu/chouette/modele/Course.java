@@ -64,7 +64,7 @@ public class Course extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return vehicleJourney.getObjectVersion();
+		return (int)vehicleJourney.getObjectVersion();
 	}
 
 	public String getPublishedJourneyIdentifier() {
@@ -88,7 +88,7 @@ public class Course extends BaseObjet
 	}
 
 	public int getNumber() {
-		return vehicleJourney.getNumber();
+		return (int)vehicleJourney.getNumber();
 	}
 
 	public String getRouteId() {

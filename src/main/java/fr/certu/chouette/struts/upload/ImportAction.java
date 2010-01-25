@@ -1,7 +1,7 @@
 package fr.certu.chouette.struts.upload;
 
 import amivif.schema.RespPTLineStructTimetable;
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.TableauMarche;
@@ -402,7 +402,7 @@ public class ImportAction extends GeneriqueAction {
 	
 	private String importXML(File file) throws Exception {
 		String canonicalPath = file.getCanonicalPath();
-		ChouettePTNetworkType chouettePTNetworkType = null;
+		ChouettePTNetworkTypeType chouettePTNetworkType = null;
 		try {
 			logger.debug("IMPORT XML DU FICHIER "+canonicalPath);
 			chouettePTNetworkType = lecteurFichierXML.lire(canonicalPath);

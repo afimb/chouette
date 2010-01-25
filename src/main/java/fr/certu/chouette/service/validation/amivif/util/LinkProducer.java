@@ -14,7 +14,7 @@ public class LinkProducer extends LocalTridentObjectProducer {
 		super(validationException);
 	}
 	
-	public Link getASG(amivif.schema.GeneralLinkType castorLink) {
+	public Link getASG(amivif.schema.GeneralLinkTypeType castorLink) {
 		if (castorLink == null)
 			return null;
 		LocationTridentObject locationTridentObject = super.getASG(castorLink);

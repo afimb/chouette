@@ -113,7 +113,7 @@ public class ArretItineraire extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return stopPoint.getObjectVersion();
+		return (int)stopPoint.getObjectVersion();
 	}
 
 	public void setCreationTime(Date creationTime) {

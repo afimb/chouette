@@ -64,13 +64,13 @@ public class StopPointInConnectionProducer extends StopPointProducer {
 			
 			// upFareZone optionnel
 			if (castorStopPointInConnection.getAMIVIF_StopPoint_Extension().hasUpFarZone())
-				stopPointInConnection.setUpFareZone(castorStopPointInConnection.getAMIVIF_StopPoint_Extension().getUpFarZone());
+				stopPointInConnection.setUpFareZone((int)castorStopPointInConnection.getAMIVIF_StopPoint_Extension().getUpFarZone());
 			else
 				stopPointInConnection.setUpFareZone(-1);
 			
 			// downFareZone optionnel
 			if (castorStopPointInConnection.getAMIVIF_StopPoint_Extension().hasDownFarZone())
-				stopPointInConnection.setDownFareZone(castorStopPointInConnection.getAMIVIF_StopPoint_Extension().getDownFarZone());
+				stopPointInConnection.setDownFareZone((int)castorStopPointInConnection.getAMIVIF_StopPoint_Extension().getDownFarZone());
 			else
 				stopPointInConnection.setDownFareZone(-1);
 			

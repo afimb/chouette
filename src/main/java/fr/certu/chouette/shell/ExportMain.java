@@ -1,6 +1,6 @@
 package fr.certu.chouette.shell;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.database.ILigneManager;
@@ -54,7 +54,7 @@ public class ExportMain {
 		for (Ligne ligne : lignes) {
 			try {
 				System.out.println("\tExport de la ligne : "+ligne.getName());
-				ChouettePTNetworkType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
+				ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
 				File temp = new File(directory, "LIGNE_"+Integer.toString(counter++)+".xml");
 				while (temp.exists())
 					temp = new File("LIGNE_"+Integer.toString(counter++)+".xml");

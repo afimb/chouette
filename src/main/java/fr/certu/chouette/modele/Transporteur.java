@@ -66,7 +66,7 @@ public class Transporteur extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return company.getObjectVersion();
+		return (int)company.getObjectVersion();
 	}
 
 	public String getOperatingDepartmentName() {

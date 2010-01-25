@@ -1,7 +1,7 @@
 package fr.certu.chouette.service.importateur.monoligne.csv;
 
 import au.com.bytecode.opencsv.CSVReader;
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.echange.LectureEchange;
 import fr.certu.chouette.modele.Horaire;
@@ -187,7 +187,7 @@ public class LecteurCSV implements ILecteurCSV {
 		return contenu.subList(colonneTitrePartieFixe + 1, contenu.size());
 	}
 	
-	public void ecrire(ChouettePTNetworkType chouettePTNetworkType, File file) {
+	public void ecrire(ChouettePTNetworkTypeType chouettePTNetworkType, File file) {
 		if (chouettePTNetworkType == null) {
 			logger.error("EXPORT CSV : chouettePTNetworkType == null");
 			return;

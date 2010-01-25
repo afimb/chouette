@@ -11,7 +11,8 @@ public class ObjetEnumere
 	private EnumeratedTypeAccess  enumeratedTypeAccess;
 	private String textePropriete;
 	
-	public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
+	public ObjetEnumere(enum  enumeratedTypeAccess, String textePropriete)
+	//public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
 	{
 		this.enumeratedTypeAccess = enumeratedTypeAccess;
 		this.textePropriete = textePropriete;
@@ -37,6 +38,5 @@ public class ObjetEnumere
 	public void setTextePropriete(String textePropriete) {
 		this.textePropriete = textePropriete;
 	}
-	
-	
+
 }

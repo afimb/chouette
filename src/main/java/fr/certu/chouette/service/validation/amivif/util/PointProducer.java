@@ -4,6 +4,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.components.ElseIf;
+
+import amivif.schema.types.LongLatTypeType;
+
 import fr.certu.chouette.service.validation.amivif.LocationTridentObject;
 import fr.certu.chouette.service.validation.amivif.Point;
 import fr.certu.chouette.service.validation.amivif.TridentObject;
@@ -12,15 +18,16 @@ import fr.certu.chouette.service.validation.amivif.Point.PointOfInterest;
 import fr.certu.chouette.service.validation.amivif.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.amivif.commun.ValidationException;
 
-public class PointProducer extends LocalTridentObjectProducer {
-    
-    private ProjectedPointProducer	projectedPointProducer	= new ProjectedPointProducer(getValidationException());
+public class PointProducer extends LocalTridentObjectProducer 
+{
+	private final Log log = LogFactory.getLog(PointProducer.class);
+    private ProjectedPointProducer	projectedPointProducer = new ProjectedPointProducer(getValidationException());
     
     public PointProducer(ValidationException validationException) {
     	super(validationException);
     }
 
-	public Point getASG(amivif.schema.PointType castorPoint) {
+	public Point getASG(amivif.schema.PointTypeType castorPoint) {
 		if (castorPoint == null)
 			return null;
 		
@@ -49,22 +56,29 @@ public class PointProducer extends LocalTridentObjectProducer {
 		
 		// longLatType obligatoire
 		if (castorPoint.getLongLatType() == null)
+		{
 			getValidationException().add(TypeInvalidite.NoLongLatType_Point, "Le \"StopPoint\" ("+castorPoint.getObjectId()+") n'a pas de \"longLatType\".");
+		}
 		else
-			switch (castorPoint.getLongLatType().getType()) {
-			case amivif.schema.types.LongLatTypeType.STANDARD_TYPE:
-				point.setLongLatType(Point.LongLatType.Standard);
-				break;
-			case amivif.schema.types.LongLatTypeType.WGS84_TYPE:
-				point.setLongLatType(Point.LongLatType.WGS84);
-				break;
-			case amivif.schema.types.LongLatTypeType.WGS92_TYPE:
-				point.setLongLatType(Point.LongLatType.WGS92);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidLongLatType_Point, "Le \"longLatType\" du \"StopPoint\" ("+castorPoint.getObjectId()+") est invalid.");
+		{
+			log.debug("EVOCASTOR --> point LongLatTypeType determination");
+						
+			switch (castorPoint.getLongLatType()) 
+			{
+				case amivif.schema.types.LongLatTypeType.STANDARD:
+					point.setLongLatType(Point.LongLatType.Standard);
+					break;
+				case amivif.schema.types.LongLatTypeType.WGS84:
+					point.setLongLatType(Point.LongLatType.WGS84);
+					break;
+				case amivif.schema.types.LongLatTypeType.WGS92:
+					point.setLongLatType(Point.LongLatType.WGS92);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidLongLatType_Point, 
+							"Le \"longLatType\" du \"StopPoint\" ("+castorPoint.getObjectId()+") est invalid.");
 			}
-		
+		}
 		// languageCode optionnel
 		point.setLanguageCode(castorPoint.getLanguageCode());
 		
@@ -148,39 +162,40 @@ public class PointProducer extends LocalTridentObjectProducer {
 		
 		// type optionnel
 		if (castorPointOfInterest.getType() != null)
-			switch (castorPointOfInterest.getType().getType()) {
-			case amivif.schema.types.POITypeType.ACCOMMODATIONEATINGANDDRINKING_TYPE:
+			switch (castorPointOfInterest.getType()) {
+			case amivif.schema.types.POITypeType.ACCOMMODATIONEATINGANDDRINKING:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.AccommodationEatingAndDrinking);
 				break;
-			case amivif.schema.types.POITypeType.ATTRACTION_TYPE:
+			case amivif.schema.types.POITypeType.ATTRACTION:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Attraction);
 				break;
-			case amivif.schema.types.POITypeType.COMMERCIALSERVICES_TYPE:
+			case amivif.schema.types.POITypeType.COMMERCIALSERVICES:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.CommercialServices);
 				break;
-			case amivif.schema.types.POITypeType.EDUCATIONANDHEALTH_TYPE:
+			case amivif.schema.types.POITypeType.EDUCATIONANDHEALTH:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.EducationAndHealth);
 				break;
-			case amivif.schema.types.POITypeType.MANUFACTURINGANDPRODUCTION_TYPE:
+			case amivif.schema.types.POITypeType.MANUFACTURINGANDPRODUCTION:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.ManufacturingAndProduction);
 				break;
-			case amivif.schema.types.POITypeType.PUBLICINFRASTRUCTURE_TYPE:
+			case amivif.schema.types.POITypeType.PUBLICINFRASTRUCTURE:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.PublicInfrastructure);
 				break;
-			case amivif.schema.types.POITypeType.RETAIL_TYPE:
+			case amivif.schema.types.POITypeType.RETAIL:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Retail);
 				break;
-			case amivif.schema.types.POITypeType.SPORTANDENTERTAINMENT_TYPE:
+			case amivif.schema.types.POITypeType.SPORTANDENTERTAINMENT:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.SportAndEntertainment);
 				break;
-			case amivif.schema.types.POITypeType.TRANSPORT_TYPE:
+			case amivif.schema.types.POITypeType.TRANSPORT:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Transport);
 				break;
-			case amivif.schema.types.POITypeType.WHOLESALE_TYPE:
+			case amivif.schema.types.POITypeType.WHOLESALE:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Wholesale);
 				break;
 			default:
-				getValidationException().add(TypeInvalidite.InvalidType_PointOfInterest, "Le \"Type\" du \"PointOfInterest\" ("+castorPointOfInterest.getName()+") est invalid.");
+				getValidationException().add(TypeInvalidite.InvalidType_PointOfInterest, 
+						"Le \"Type\" du \"PointOfInterest\" ("+castorPointOfInterest.getName()+") est invalid.");
 			}
 		
 		return pointOfInterest;

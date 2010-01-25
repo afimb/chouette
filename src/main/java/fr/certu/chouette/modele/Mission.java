@@ -64,7 +64,7 @@ public class Mission extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return journeyPattern.getObjectVersion();
+		return (int)journeyPattern.getObjectVersion();
 	}
 
 	public String getPublishedName() {

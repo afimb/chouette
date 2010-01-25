@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import amivif.schema.PTLink;
-import amivif.schema.RespPTLineStructTimetableType;
+import amivif.schema.RespPTLineStructTimetableTypeType;
 import amivif.schema.Route;
 import fr.certu.chouette.service.identification.ObjectIdLecteur;
 
@@ -19,7 +19,7 @@ public class FoldingTransformer
     private Map<String, String> principalIdParId = new Hashtable<String, String>();
     private Map<String, PTLink> ptLinkParPrincipalId = new Hashtable<String, PTLink>();
     
-    private RespPTLineStructTimetableType lineStrut;
+    private RespPTLineStructTimetableTypeType lineStrut;
     private static final String SEP = "A";
     
     private void initialise()
@@ -81,7 +81,8 @@ public class FoldingTransformer
     	return buffer.toString();
     }
 
-	public void setLineStrut(RespPTLineStructTimetableType lineStrut) {
+	public void setLineStrut(RespPTLineStructTimetableTypeType lineStrut) 
+	{
 		this.lineStrut = lineStrut;
 	}
 }

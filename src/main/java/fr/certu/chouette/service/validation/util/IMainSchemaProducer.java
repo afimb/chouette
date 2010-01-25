@@ -5,7 +5,7 @@ import fr.certu.chouette.service.validation.commun.ValidationException;
 
 public interface IMainSchemaProducer {
 	
-	public ChouettePTNetwork getASG(chouette.schema.ChouettePTNetworkType castorChouettePTNetwork);
+	public ChouettePTNetwork getASG(chouette.schema.ChouettePTNetworkTypeType castorChouettePTNetwork);
 	public void setValidationException(ValidationException validationException);
 	public ValidationException getValidationException();
 	public void setChouettePTNetwork(ChouettePTNetwork chouettePTNetwork);

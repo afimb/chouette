@@ -250,7 +250,7 @@ positive angles are to the East, while negative angles are to the West. 0° latit
 			<xsd:enumeration value="Air"/>
 			<xsd:enumeration value="Train"/>
 			<xsd:enumeration value="LongDistanceTrain"/>
-			<xsd:enumeration value="LongDistanceTrain"/>
+			<!--<xsd:enumeration value="LongDistanceTrain"/>-->
 			<xsd:enumeration value="LocalTrain"/>
 			<xsd:enumeration value="RapidTransit"/>
 			<xsd:enumeration value="Metro"/>

@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import chouette.schema.ChouettePTNetworkType;
+import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.Timetable;
 import chouette.schema.types.DayTypeType;
 import fr.certu.chouette.modele.Periode;
@@ -124,7 +124,7 @@ public class LecteurTableauMarcheCSV {
 		return tableauxMarches;
 	}
 	
-	public List<String[]> ecrire(ChouettePTNetworkType chouettePTNetworkType, int length, int colonneTitrePartieFixe, LecteurCourseCSV lecteurCourseCSV) {
+	public List<String[]> ecrire(ChouettePTNetworkTypeType chouettePTNetworkType, int length, int colonneTitrePartieFixe, LecteurCourseCSV lecteurCourseCSV) {
 		List<String[]> donneesTableauxMarche = new ArrayList<String[]>();
 		String[] donneesTableauxMarche1 = new String[length];
 		String[] donneesTableauxMarche2 = new String[length];
@@ -168,31 +168,32 @@ public class LecteurTableauMarcheCSV {
 							donneesTableauxMarche2[colonneTitrePartieFixe+1+2*i] = new SimpleDateFormat("dd/MM/yy").format(timetable.getPeriod(0).getEndOfPeriod().toDate());
 						}
 						for (int l = 0; l < timetable.getDayTypeCount(); l++)
-							switch (timetable.getDayType(l).getType()) {
-							case DayTypeType.MONDAY_TYPE:
-								donneesTableauxMarche4[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.TUESDAY_TYPE:
-								donneesTableauxMarche5[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.WEDNESDAY_TYPE:
-								donneesTableauxMarche6[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.THURSDAY_TYPE:
-								donneesTableauxMarche7[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.FRIDAY_TYPE:
-								donneesTableauxMarche8[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.SATURDAY_TYPE:
-								donneesTableauxMarche9[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.SUNDAY_TYPE:
-								donneesTableauxMarche10[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
-							case DayTypeType.PUBLICHOLLIDAY_TYPE:
-								donneesTableauxMarche11[colonneTitrePartieFixe+1+2*i] = "O";
-								break;
+							switch (timetable.getDayType(l))
+							{
+								case DayTypeType.MONDAY:
+									donneesTableauxMarche4[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.TUESDAY:
+									donneesTableauxMarche5[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.WEDNESDAY:
+									donneesTableauxMarche6[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.THURSDAY:
+									donneesTableauxMarche7[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.FRIDAY:
+									donneesTableauxMarche8[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.SATURDAY:
+									donneesTableauxMarche9[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.SUNDAY:
+									donneesTableauxMarche10[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
+								case DayTypeType.PUBLICHOLLIDAY:
+									donneesTableauxMarche11[colonneTitrePartieFixe+1+2*i] = "O";
+									break;
 							}
 						donneesTableauxMarche12[colonneTitrePartieFixe+1+2*i] = timetable.getComment();
 					}

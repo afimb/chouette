@@ -62,7 +62,7 @@ class TimeSlotProducer {
 		
 		// ObjectVersion optionnel
 		if (castorTimeSlot.hasObjectVersion()) {
-			int castorObjectVersion = castorTimeSlot.getObjectVersion();
+			int castorObjectVersion = (int)castorTimeSlot.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				params = LoggingManager.getParams(""+castorObjectVersion, castorTimeSlot.getObjectId());
 				LoggingManager.log(logger, "La version () \"objectVersion\" du \"TimeSlot\" () est invalide.", params, Level.ERROR);

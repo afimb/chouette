@@ -67,7 +67,7 @@ class AreaCentroidProducer {
 		
 		// ObjectVersion optionnel
 		if (castorAreaCentroid.hasObjectVersion()) {
-			int castorObjectVersion = castorAreaCentroid.getObjectVersion();
+			int castorObjectVersion = (int)castorAreaCentroid.getObjectVersion();
 			if (castorObjectVersion < 0) {
 				if (castorAreaCentroid.getName() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, castorAreaCentroid.getName());
