@@ -1,17 +1,19 @@
 package fr.certu.chouette.struts.enumeration;
 
-import org.exolab.castor.types.EnumeratedTypeAccess;
 /**
  * Objet contenu dans toutes nos enumerations pour accéder aux propriétés de chaque élément énuméré (besoin struts)
  * @author luc
  *
  */
+@SuppressWarnings("unchecked")
 public class ObjetEnumere
 {
-	private EnumeratedTypeAccess  enumeratedTypeAccess ;
+	
+	private Enum  enumeratedTypeAccess;
 	private String textePropriete;
 	
-	public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
+	public ObjetEnumere(Enum enumeratedTypeAccess, String textePropriete)
+	//public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
 	{
 		this.enumeratedTypeAccess = enumeratedTypeAccess;
 		this.textePropriete = textePropriete;
@@ -22,23 +24,19 @@ public class ObjetEnumere
 		this.textePropriete = textePropriete;
 	}
 
-	public EnumeratedTypeAccess getEnumeratedTypeAccess() 
-	{
+	public Enum getEnumeratedTypeAccess() {
 		return enumeratedTypeAccess;
 	}
 
-	public void setEnumeratedTypeAccess(EnumeratedTypeAccess enumeratedTypeAccess) 
-	{
+	public void setEnumeratedTypeAccess(Enum enumeratedTypeAccess) {
 		this.enumeratedTypeAccess = enumeratedTypeAccess;
 	}
 
-	public String getTextePropriete() 
-	{
+	public String getTextePropriete() {
 		return textePropriete;
 	}
 
-	public void setTextePropriete(String textePropriete) 
-	{
+	public void setTextePropriete(String textePropriete) {
 		this.textePropriete = textePropriete;
 	}
 

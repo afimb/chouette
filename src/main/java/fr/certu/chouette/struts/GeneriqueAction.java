@@ -326,7 +326,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
         ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.getType() == ChouetteAreaType.STOPPLACE_TYPE || type.getType() == ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE)
+        if (type == ChouetteAreaType.STOPPLACE || type == ChouetteAreaType.COMMERCIALSTOPPOINT)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -339,7 +339,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
         ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.getType() == ChouetteAreaType.BOARDINGPOSITION_TYPE || type.getType() == ChouetteAreaType.QUAY_TYPE)
+        if (type == ChouetteAreaType.BOARDINGPOSITION || type == ChouetteAreaType.QUAY)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -352,7 +352,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
         ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.getType() == ChouetteAreaType.STOPPLACE_TYPE)
+        if (type == ChouetteAreaType.STOPPLACE)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -365,7 +365,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
         ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.getType() == ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE)
+        if (type == ChouetteAreaType.COMMERCIALSTOPPOINT)
         {
           l.add(toutesZonesTypes.get(i));
         }

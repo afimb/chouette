@@ -6,7 +6,8 @@ public class SourceTypeTypeConverter {
 		if (amivifSourceTypeType == null)
 			return null;
 		//EVOCASTOR
-		switch(amivifSourceTypeType) {
+		switch(amivifSourceTypeType) 
+		{
 			case amivif.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL:
 				return chouette.schema.types.SourceTypeType.AUTOMOBILECLUBPATROL;
 			case amivif.schema.types.SourceTypeType.BREAKDOWNSERVICE:
