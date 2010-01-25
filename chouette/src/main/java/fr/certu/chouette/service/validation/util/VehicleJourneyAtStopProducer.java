@@ -178,31 +178,31 @@ class VehicleJourneyAtStopProducer {
 		if (castorVehicleJourneyAtStop.getBoardingAlightingPossibility() == null)
 			LoggingManager.log(logger, "Ce \"VehicleJourneyAtStop\" () n'a pas de \"boardingAlightingPossibility\".", params, Level.INFO);
 		else
-			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility().getType()) {
-			case chouette.schema.types.BoardingAlightingPossibilityType.ALIGHTONLY_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.ALIGHTONLY);
-				break;
-			case chouette.schema.types.BoardingAlightingPossibilityType.ALIGHTONREQUEST_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.ALIGHTONREQUEST);
-				break;
-			case chouette.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHT_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHT);
-				break;
-			case chouette.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHTONREQUEST_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHTONREQUEST);
-				break;
-			case chouette.schema.types.BoardingAlightingPossibilityType.BOARDONLY_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDONLY);
-				break;
-			case chouette.schema.types.BoardingAlightingPossibilityType.BOARDONREQUEST_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDONREQUEST);
-				break;
-			case chouette.schema.types.BoardingAlightingPossibilityType.NEITHERBOARDORALIGHT_TYPE:
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.NEITHERBOARDORALIGHT);
-				break;
-			default:
-				LoggingManager.log(logger, "Le \"boardingAlightingPossibility\" de ce \"VehicleJourneyAtStop\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDBOARDINGALIGHTING_VEHICLEJOURNEYATSTOP, "Le \"boardingAlightingPossibility\" de ce \"VehicleJourneyAtStop\" () est invalide.", params);
+			switch (castorVehicleJourneyAtStop.getBoardingAlightingPossibility()) {
+				case chouette.schema.types.BoardingAlightingPossibilityType.ALIGHTONLY:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.ALIGHTONLY);
+					break;
+				case chouette.schema.types.BoardingAlightingPossibilityType.ALIGHTONREQUEST:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.ALIGHTONREQUEST);
+					break;
+				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHT:
+					ehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHT);
+					break;
+				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDANDALIGHTONREQUEST:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDANDALIGHTONREQUEST);
+					break;
+				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDONLY:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDONLY);
+					break;
+				case chouette.schema.types.BoardingAlightingPossibilityType.BOARDONREQUEST:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.BOARDONREQUEST);
+					break;
+				case chouette.schema.types.BoardingAlightingPossibilityType.NEITHERBOARDORALIGHT:
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibility.NEITHERBOARDORALIGHT);
+					break;
+				default:
+					LoggingManager.log(logger, "Le \"boardingAlightingPossibility\" de ce \"VehicleJourneyAtStop\" () est invalide.", params, Level.ERROR);
+					validationException.add(TypeInvalidite.INVALIDBOARDINGALIGHTING_VEHICLEJOURNEYATSTOP, "Le \"boardingAlightingPossibility\" de ce \"VehicleJourneyAtStop\" () est invalide.", params);
 			}
 		
 		// Order optionnel

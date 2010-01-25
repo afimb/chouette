@@ -36,66 +36,66 @@ public class LineProducer extends TridentObjectProducer {
 		
 		// transportModeName optionnel
 		if (castorLine.getTransportModeName() != null)
-			switch (castorLine.getTransportModeName().getType()) {
-			case amivif.schema.types.TransportModeNameType.AIR_TYPE:
-				line.setTransportMode(Line.TransportMode.Air);
-				break;
-			case amivif.schema.types.TransportModeNameType.BICYCLE_TYPE:
-				line.setTransportMode(Line.TransportMode.Bicycle);
-				break;
-			case amivif.schema.types.TransportModeNameType.BUS_TYPE:
-				line.setTransportMode(Line.TransportMode.Bus);
-				break;
-			case amivif.schema.types.TransportModeNameType.COACH_TYPE:
-				line.setTransportMode(Line.TransportMode.Coach);
-				break;
-			case amivif.schema.types.TransportModeNameType.FERRY_TYPE:
-				line.setTransportMode(Line.TransportMode.Ferry);
-				break;
-			case amivif.schema.types.TransportModeNameType.LOCALTRAIN_TYPE:
-				line.setTransportMode(Line.TransportMode.LocalTrain);
-				break;
-			case amivif.schema.types.TransportModeNameType.LONGDISTANCETRAIN_TYPE:
-				line.setTransportMode(Line.TransportMode.LongDistanceTrain);
-				break;
-			case amivif.schema.types.TransportModeNameType.METRO_TYPE:
-				line.setTransportMode(Line.TransportMode.Metro);
-				break;
-			case amivif.schema.types.TransportModeNameType.OTHER_TYPE:
-				line.setTransportMode(Line.TransportMode.Other);
-				break;
-			case amivif.schema.types.TransportModeNameType.PRIVATEVEHICLE_TYPE:
-				line.setTransportMode(Line.TransportMode.PrivateVehicle);
-				break;
-			case amivif.schema.types.TransportModeNameType.RAPIDTRANSIT_TYPE:
-				line.setTransportMode(Line.TransportMode.RapidTransit);
-				break;
-			case amivif.schema.types.TransportModeNameType.SHUTTLE_TYPE:
-				line.setTransportMode(Line.TransportMode.Shuttle);
-				break;
-			case amivif.schema.types.TransportModeNameType.TAXI_TYPE:
-				line.setTransportMode(Line.TransportMode.Taxi);
-				break;
-			case amivif.schema.types.TransportModeNameType.TRAIN_TYPE:
-				line.setTransportMode(Line.TransportMode.Train);
-				break;
-			case amivif.schema.types.TransportModeNameType.TRAMWAY_TYPE:
-				line.setTransportMode(Line.TransportMode.Tramway);
-				break;
-			case amivif.schema.types.TransportModeNameType.TROLLEYBUS_TYPE:
-				line.setTransportMode(Line.TransportMode.Trolleybus);
-				break;
-			case amivif.schema.types.TransportModeNameType.VAL_TYPE:
-				line.setTransportMode(Line.TransportMode.VAL);
-				break;
-			case amivif.schema.types.TransportModeNameType.WALK_TYPE:
-				line.setTransportMode(Line.TransportMode.Walk);
-				break;
-			case amivif.schema.types.TransportModeNameType.WATERBORNE_TYPE:
-				line.setTransportMode(Line.TransportMode.Waterborne);
-				break;
-			default:
-				getValidationException().add(TypeInvalidite.InvalidTransportModeName_Line, "Le \"TransportModeName\" de la \"Line\" est inconnue.");
+			switch (castorLine.getTransportModeName()) {
+				case amivif.schema.types.TransportModeNameType.AIR:
+					line.setTransportMode(Line.TransportMode.Air);
+					break;
+				case amivif.schema.types.TransportModeNameType.BICYCLE:
+					line.setTransportMode(Line.TransportMode.Bicycle);
+					break;
+				case amivif.schema.types.TransportModeNameType.BUS:
+					line.setTransportMode(Line.TransportMode.Bus);
+					break;
+				case amivif.schema.types.TransportModeNameType.COACH:
+					line.setTransportMode(Line.TransportMode.Coach);
+					break;
+				case amivif.schema.types.TransportModeNameType.FERRY:
+					line.setTransportMode(Line.TransportMode.Ferry);
+					break;
+				case amivif.schema.types.TransportModeNameType.LOCALTRAIN:
+					line.setTransportMode(Line.TransportMode.LocalTrain);
+					break;
+				case amivif.schema.types.TransportModeNameType.LONGDISTANCETRAIN:
+					line.setTransportMode(Line.TransportMode.LongDistanceTrain);
+					break;
+				case amivif.schema.types.TransportModeNameType.METRO:
+					line.setTransportMode(Line.TransportMode.Metro);
+					break;
+				case amivif.schema.types.TransportModeNameType.OTHER:
+					line.setTransportMode(Line.TransportMode.Other);
+					break;
+				case amivif.schema.types.TransportModeNameType.PRIVATEVEHICLE:
+					line.setTransportMode(Line.TransportMode.PrivateVehicle);
+					break;
+				case amivif.schema.types.TransportModeNameType.RAPIDTRANSIT:
+					line.setTransportMode(Line.TransportMode.RapidTransit);
+					break;
+				case amivif.schema.types.TransportModeNameType.SHUTTLE:
+					line.setTransportMode(Line.TransportMode.Shuttle);
+					break;
+				case amivif.schema.types.TransportModeNameType.TAXI:
+					line.setTransportMode(Line.TransportMode.Taxi);
+					break;
+				case amivif.schema.types.TransportModeNameType.TRAIN:
+					line.setTransportMode(Line.TransportMode.Train);
+					break;
+				case amivif.schema.types.TransportModeNameType.TRAMWAY:
+					line.setTransportMode(Line.TransportMode.Tramway);
+					break;
+				case amivif.schema.types.TransportModeNameType.TROLLEYBUS:
+					line.setTransportMode(Line.TransportMode.Trolleybus);
+					break;
+				case amivif.schema.types.TransportModeNameType.VAL:
+					line.setTransportMode(Line.TransportMode.VAL);
+					break;
+				case amivif.schema.types.TransportModeNameType.WALK:
+					line.setTransportMode(Line.TransportMode.Walk);
+					break;
+				case amivif.schema.types.TransportModeNameType.WATERBORNE:
+					line.setTransportMode(Line.TransportMode.Waterborne);
+					break;
+				default:
+					getValidationException().add(TypeInvalidite.InvalidTransportModeName_Line, "Le \"TransportModeName\" de la \"Line\" est inconnue.");
 			}
 		
 		// lineEnd 0..w

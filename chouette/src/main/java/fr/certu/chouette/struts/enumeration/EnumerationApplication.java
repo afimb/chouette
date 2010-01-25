@@ -104,13 +104,13 @@ public class EnumerationApplication
 			PTDirectionType ptDirectionType = null;
 			try
 			{
-				ptDirectionType = PTDirectionType.valueOf( cleParTraduction.get( traduction));
+				ptDirectionType = PTDirectionType.valueOf(cleParTraduction.get(traduction));
 			}
 			catch( Exception e)
 			{
 				log.error( e.getMessage(), e);
 			}
-			directions.add( new ObjetEnumere( ptDirectionType, traduction));
+			directions.add(new ObjetEnumere(ptDirectionType, traduction));
 		}
 	}
 	

@@ -227,9 +227,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         log.error(e.getMessage(), e);
       }
       //	On ne prend que les tableaux de marche de lundi à dimanche
-      if (MONDAY_TYPE <= dayTypeType.getType() && dayTypeType.getType() <= SUNDAY_TYPE)
+      //EVOCASTOR
+      if (MONDAY_TYPE <= dayTypeType.ordinal() && dayTypeType.ordinal() <= SUNDAY_TYPE)
       {
-        joursTypesTab[dayTypeType.getType() - 2] = new ObjetEnumere(dayTypeType, traduction);
+        joursTypesTab[dayTypeType.ordinal() - 2] = new ObjetEnumere(dayTypeType, traduction);
       }
     }
     List<ObjetEnumere> dayType = Arrays.asList(joursTypesTab);

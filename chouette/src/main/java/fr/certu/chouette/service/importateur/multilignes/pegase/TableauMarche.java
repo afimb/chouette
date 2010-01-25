@@ -29,7 +29,7 @@ public class TableauMarche {
 		catch(ParseException e) {
 			throw e;
 		}
-		long time = (long)1000 * (long)60 * (long)60 * (long)24 * (long)365;
+		long time = 1000l * 60l * 60l * 24l * 365l;
 		dateFin = new Date(dateDebut.getTime()+time);
 		//////////////////////////// AJOUT ....
 		try {
@@ -40,51 +40,52 @@ public class TableauMarche {
 			throw e;
 		}
 		////////////////////////////////FIN AJOUT ....
+		//EVOCASTOR 
 		joursApplication = 0;
 		if (joursAppli.charAt(0) == 'l') {
-			joursApplication += 1 >> DayTypeType.MONDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.MONDAY.ordinal();
 			dayTypes.add(DayTypeType.MONDAY);
 		}
 		else
 			if (joursAppli.charAt(0) != '-')
 				throw new TableauMarcheException("ERROR POUR JOURS_APPLICATION joursAppli.charAt(0) DOIT ETRE l OU - : "+joursAppli.charAt(0));
 		if (joursAppli.charAt(1) == 'm') {
-			joursApplication += 1 >> DayTypeType.TUESDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.TUESDAY.ordinal();
 			dayTypes.add(DayTypeType.TUESDAY);
 		}
 		else
 			if (joursAppli.charAt(1) != '-')
 				throw new TableauMarcheException("ERROR POUR JOURS_APPLICATION joursAppli.charAt(1) DOIT ETRE m OU - : "+joursAppli.charAt(1));
 		if (joursAppli.charAt(2) == 'm') {
-			joursApplication += 1 >> DayTypeType.WEDNESDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.WEDNESDAY.ordinal();
 			dayTypes.add(DayTypeType.WEDNESDAY);
 		}
 		else
 			if (joursAppli.charAt(2) != '-')
 				throw new TableauMarcheException("ERROR POUR JOURS_APPLICATION joursAppli.charAt(2) DOIT ETRE m OU - : "+joursAppli.charAt(2));
 		if (joursAppli.charAt(3) == 'j') {
-			joursApplication += 1 >> DayTypeType.THURSDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.THURSDAY.ordinal();
 			dayTypes.add(DayTypeType.THURSDAY);
 		}
 		else
 			if (joursAppli.charAt(3) != '-')
 				throw new TableauMarcheException("ERROR POUR JOURS_APPLICATION joursAppli.charAt(3) DOIT ETRE j OU - : "+joursAppli.charAt(3));
 		if (joursAppli.charAt(4) == 'v') {
-			joursApplication += 1 >> DayTypeType.FRIDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.FRIDAY.ordinal();
 			dayTypes.add(DayTypeType.FRIDAY);
 		}
 		else
 			if (joursAppli.charAt(4) != '-')
 				throw new TableauMarcheException("ERROR POUR JOURS_APPLICATION joursAppli.charAt(4) DOIT ETRE v OU - : "+joursAppli.charAt(4));
 		if (joursAppli.charAt(5) == 's') {
-			joursApplication += 1 >> DayTypeType.SATURDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.SATURDAY.ordinal();
 			dayTypes.add(DayTypeType.SATURDAY);
 		}
 		else
 			if (joursAppli.charAt(5) != '-')
 				throw new TableauMarcheException("ERROR POUR JOURS_APPLICATION joursAppli.charAt(5) DOIT ETRE s OU - : "+joursAppli.charAt(5));
 		if (joursAppli.charAt(6) == 'd') {
-			joursApplication += 1 >> DayTypeType.SUNDAY_TYPE;
+			joursApplication += 1 >> DayTypeType.SUNDAY.ordinal();
 			dayTypes.add(DayTypeType.SUNDAY);
 		}
 		else

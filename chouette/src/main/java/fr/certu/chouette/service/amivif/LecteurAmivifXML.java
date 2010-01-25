@@ -31,7 +31,8 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.amivif.ILecteurAmivifXML#lire(java.lang.String)
 	 */
-	public RespPTLineStructTimetableTypeType lire(String fileName) 
+	//EVOCASTOR
+	public RespPTLineStructTimetable lire(String fileName) 
 	{
 		logger.debug("EVOCASTOR --> unmarshal RespPTLineStructTimetable");
 		String contenu = null;
@@ -47,12 +48,12 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		
         contenu = XMLAdapter.atcSimplify( contenu);
         
-       RespPTLineStructTimetableTypeType amivifLine = null;
+       RespPTLineStructTimetable amivifLine = null;
 
         try {
-    		Unmarshaller anUnmarshaller = new Unmarshaller(RespPTLineStructTimetableTypeType.class);
+    		Unmarshaller anUnmarshaller = new Unmarshaller(RespPTLineStructTimetable.class);
             anUnmarshaller.setValidation(false);
-        	amivifLine = (RespPTLineStructTimetableTypeType)anUnmarshaller.unmarshal(
+        	amivifLine = (RespPTLineStructTimetable)anUnmarshaller.unmarshal(
         			new StringReader( contenu));
 		}
         catch (org.exolab.castor.xml.ValidationException e) {
