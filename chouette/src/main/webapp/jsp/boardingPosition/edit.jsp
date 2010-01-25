@@ -82,27 +82,27 @@
   <div class="panel">
     <s:div label="Iti" id="displaytag">
       <display:table name="itineraires" uid="itineraire" sort="list" pagesize="10" export="false">
-        <display:column title="Nom Itineraire" sortable="true" headerClass="sortable">
+        <display:column titleKey="route.title.name" sortable="true" headerClass="sortable">
           <s:url id="arretSurItineraire" action="list" namespace="/stoppointOnRoute" includeParams="none">
             <s:param name="idItineraire">%{#attr.itineraire.id}</s:param>
             <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
           </s:url>
           <s:a href="%{arretSurItineraire}"><s:property value="%{#attr.itineraire.name}"/></s:a>
         </display:column>
-        <display:column title="Horaires" sortable="true" headerClass="sortable">
+        <display:column titleKey="route.title.passingtime" sortable="true" headerClass="sortable">
           <s:url id="horairesDePassage" action="list" namespace="/vehicleJourneyAtStop" includeParams="none">
             <s:param name="idItineraire">%{#attr.itineraire.id}</s:param>
             <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
           </s:url>
           <s:a href="%{horairesDePassage}"><s:text name="text.vehicleJourneyAtStop"/></s:a>
         </display:column>
-        <display:column title="Nom Ligne" sortable="true" headerClass="sortable">
+        <display:column titleKey="route.title.linename"sortable="true" headerClass="sortable">
           <s:url id="editLigne" action="edit" namespace="/line" includeParams="none">
             <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
           </s:url>
           <s:a href="%{editLigne}"><s:property value="%{getLigne(#attr.itineraire.id).name}" /></s:a>
         </display:column>
-        <display:column title="Nom Reseau" sortable="true" headerClass="sortable">
+        <display:column titleKey="route.title.networkname" sortable="true" headerClass="sortable">
           <s:url id="editReseau" action="edit" namespace="/network" includeParams="none">
             <s:param name="idReseau">%{#attr.itineraire.idReseau}</s:param>
           </s:url>
