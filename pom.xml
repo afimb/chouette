@@ -6,7 +6,7 @@
   <groupId>fr.certu.chouette</groupId>
   <artifactId>chouette</artifactId>
   <packaging>war</packaging>
-  <version>1.3.1-41</version>
+  <version>1.4.0</version>
   <name>Projet Chouette</name>
   <repositories>
     <repository>

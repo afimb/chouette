@@ -11,7 +11,6 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.identification.IIdentificationManager;
-import fr.certu.chouette.service.importateur.IImportCorrespondances;
 import fr.certu.chouette.service.importateur.IReducteur;
 import fr.certu.chouette.service.importateur.monoitineraire.csv.IImportHorairesManager;
 import fr.certu.chouette.service.importateur.monoitineraire.csv.impl.LecteurCSV;
@@ -402,7 +401,7 @@ public class ImportAction extends GeneriqueAction {
 	
 	private String importXML(File file) throws Exception {
 		String canonicalPath = file.getCanonicalPath();
-		ChouettePTNetworkTypeType chouettePTNetworkType = null;
+		chouette.schema.ChouettePTNetworkTypeType chouettePTNetworkType = null;
 		try {
 			logger.debug("IMPORT XML DU FICHIER "+canonicalPath);
 			chouettePTNetworkType = lecteurFichierXML.lire(canonicalPath);
@@ -430,7 +429,8 @@ public class ImportAction extends GeneriqueAction {
 		String canonicalPath = copieTemporaire();
 		//	Creation de l'objet ChouettePTNetworkType
 		RespPTLineStructTimetable amivifLine = null;
-		try {
+		try 
+		{
 			amivifLine = lecteurAmivifXML.lire(canonicalPath);
 		}
 		catch (Exception exception) {

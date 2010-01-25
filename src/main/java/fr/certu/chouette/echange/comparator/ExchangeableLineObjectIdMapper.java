@@ -39,7 +39,7 @@ public class ExchangeableLineObjectIdMapper
 
 	// map des arrets d'un itinéraire
 	private Map<String,List<ArretItineraire>> stopPointsOfRouteIdMap;
-   private Map<String, List<String>> journeyPatternIdListByRouteIdMap;
+	private Map<String, List<String>> journeyPatternIdListByRouteIdMap;
 
 	public ExchangeableLineObjectIdMapper(ILectureEchange line)
 	{
@@ -152,8 +152,8 @@ public class ExchangeableLineObjectIdMapper
 			List<String> journeyPatternList = journeyPatternIdListByRouteIdMap.get(mission.getRouteId());
 			if (journeyPatternList == null)
 			{
-			   journeyPatternList = new ArrayList<String>();
-			   journeyPatternIdListByRouteIdMap.put(mission.getRouteId(), journeyPatternList);
+				journeyPatternList = new ArrayList<String>();
+				journeyPatternIdListByRouteIdMap.put(mission.getRouteId(), journeyPatternList);
 			}
 			journeyPatternList.add(mission.getObjectId());
 		}        
@@ -166,16 +166,19 @@ public class ExchangeableLineObjectIdMapper
 			{
 				String vehicleJourneyId = timetable.getVehicleJourneyId(i);
 				Course vehicleJourney = (Course)this.vehicleJourneyByIdMap.get(vehicleJourneyId);
-				String journeyPatternId = vehicleJourney.getJourneyPatternId();
-				List<String> timetablesOfJP = this.timetableIdListByjpIdMap.get(journeyPatternId);
-				if (timetablesOfJP == null)
+				if (vehicleJourney != null)
 				{
-					timetablesOfJP = new ArrayList<String>();
-					this.timetableIdListByjpIdMap.put(journeyPatternId, timetablesOfJP);
+					String journeyPatternId = vehicleJourney.getJourneyPatternId();
+					List<String> timetablesOfJP = this.timetableIdListByjpIdMap.get(journeyPatternId);
+					if (timetablesOfJP == null)
+					{
+						timetablesOfJP = new ArrayList<String>();
+						this.timetableIdListByjpIdMap.put(journeyPatternId, timetablesOfJP);
+					}
+					if (timetablesOfJP.contains(timetable.getObjectId()))
+						continue;
+					timetablesOfJP.add(timetable.getObjectId());
 				}
-				if (timetablesOfJP.contains(timetable.getObjectId()))
-					continue;
-				timetablesOfJP.add(timetable.getObjectId());
 			}
 		}
 
@@ -233,17 +236,17 @@ public class ExchangeableLineObjectIdMapper
 		if (courses.size() == 0) return null;
 		return (getVehicleJourneyAtStopList(courses.get(0).getObjectId()));
 	}
-	
+
 	public List<String> getTimetableIdList(String journeyPatternId)
 	{
 		return timetableIdListByjpIdMap.get(journeyPatternId);
 	}
-	
+
 	public List<String> getJourneyPatternList(String routeId)
 	{
-	   List<String> ret = journeyPatternIdListByRouteIdMap.get(routeId);
-	   if (ret == null) ret = new ArrayList<String>();
-	   return ret;
+		List<String> ret = journeyPatternIdListByRouteIdMap.get(routeId);
+		if (ret == null) ret = new ArrayList<String>();
+		return ret;
 	}
 
 }
