@@ -104,13 +104,13 @@ public class EnumerationApplication
 			PTDirectionType ptDirectionType = null;
 			try
 			{
-				ptDirectionType = PTDirectionType.valueOf(cleParTraduction.get(traduction));
+				ptDirectionType = PTDirectionType.valueOf( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
 				log.error( e.getMessage(), e);
 			}
-			directions.add(new ObjetEnumere(ptDirectionType, traduction));
+			directions.add( new ObjetEnumere( ptDirectionType, traduction));
 		}
 	}
 	
@@ -143,9 +143,9 @@ public class EnumerationApplication
 				log.error( e.getMessage(), e);
 			}
 			//	On ne prend que les tableaux de marche de lundi à dimanche
-			if(MONDAY_TYPE<=dayTypeType.getType() && dayTypeType.getType() <=  SUNDAY_TYPE)
+			if(MONDAY_TYPE<=dayTypeType.ordinal() && dayTypeType.ordinal() <=  SUNDAY_TYPE)
 			{
-				joursTypesTab[dayTypeType.getType()-2] = new ObjetEnumere( dayTypeType, traduction);
+				joursTypesTab[dayTypeType.ordinal()-2] = new ObjetEnumere( dayTypeType, traduction);
 			}
 		}
 		joursTypes = Arrays.asList(joursTypesTab);
@@ -365,7 +365,7 @@ public class EnumerationApplication
 			List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
 			for (int i=0; i<toutesZonesTypes.size(); i++) {
 				ChouetteAreaType type = (ChouetteAreaType)toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-				if (type.getType() == ChouetteAreaType.STOPPLACE_TYPE || type.getType() == ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE) {
+				if (type.ordinal() == ChouetteAreaType.STOPPLACE.ordinal() || type.ordinal() == ChouetteAreaType.COMMERCIALSTOPPOINT.ordinal()) {
 					l.add(toutesZonesTypes.get(i));
 				}
 			}
@@ -375,7 +375,7 @@ public class EnumerationApplication
 			List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
 			for (int i=0; i<toutesZonesTypes.size(); i++) {
 				ChouetteAreaType type = (ChouetteAreaType)toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-				if (type.getType() == ChouetteAreaType.BOARDINGPOSITION_TYPE || type.getType() == ChouetteAreaType.QUAY_TYPE) {
+				if (type.ordinal() == ChouetteAreaType.BOARDINGPOSITION.ordinal() || type.ordinal() == ChouetteAreaType.QUAY.ordinal()) {
 					l.add(toutesZonesTypes.get(i));
 				}
 			}
@@ -385,7 +385,7 @@ public class EnumerationApplication
 			List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
 			for (int i=0; i<toutesZonesTypes.size(); i++) {
 				ChouetteAreaType type = (ChouetteAreaType)toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-				if (type.getType() == ChouetteAreaType.STOPPLACE_TYPE) {
+				if (type.ordinal() == ChouetteAreaType.STOPPLACE.ordinal()) {
 					l.add(toutesZonesTypes.get(i));
 				}
 			}
@@ -395,7 +395,7 @@ public class EnumerationApplication
 			List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
 			for (int i=0; i<toutesZonesTypes.size(); i++) {
 				ChouetteAreaType type = (ChouetteAreaType)toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-				if (type.getType() == ChouetteAreaType.COMMERCIALSTOPPOINT_TYPE) {
+				if (type.ordinal() == ChouetteAreaType.COMMERCIALSTOPPOINT.ordinal()) {
 					l.add(toutesZonesTypes.get(i));
 				}
 			}

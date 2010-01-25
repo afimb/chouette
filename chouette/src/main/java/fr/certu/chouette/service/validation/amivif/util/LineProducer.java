@@ -3,6 +3,7 @@ package fr.certu.chouette.service.validation.amivif.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import amivif.schema.types.TransportModeNameType;
 import fr.certu.chouette.service.validation.amivif.Line;
 import fr.certu.chouette.service.validation.amivif.TridentObject;
 import fr.certu.chouette.service.validation.amivif.commun.TypeInvalidite;
@@ -36,6 +37,7 @@ public class LineProducer extends TridentObjectProducer {
 		
 		// transportModeName optionnel
 		if (castorLine.getTransportModeName() != null)
+		{
 			switch (castorLine.getTransportModeName()) {
 				case amivif.schema.types.TransportModeNameType.AIR:
 					line.setTransportMode(Line.TransportMode.Air);
@@ -97,6 +99,7 @@ public class LineProducer extends TridentObjectProducer {
 				default:
 					getValidationException().add(TypeInvalidite.InvalidTransportModeName_Line, "Le \"TransportModeName\" de la \"Line\" est inconnue.");
 			}
+		}
 		
 		// lineEnd 0..w
 		Set<String> aSet = new HashSet<String>();

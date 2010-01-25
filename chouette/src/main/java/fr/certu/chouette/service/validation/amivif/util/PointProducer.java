@@ -161,11 +161,12 @@ public class PointProducer extends LocalTridentObjectProducer
 		pointOfInterest.setName(castorPointOfInterest.getName());
 		
 		// type optionnel
-		if (castorPointOfInterest.getType() != null)
-			switch (castorPointOfInterest.getType()) {
+		//if (castorPointOfInterest.getT != null)
+		switch (castorPointOfInterest.getType()) 
+		{
 			case amivif.schema.types.POITypeType.ACCOMMODATIONEATINGANDDRINKING:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.AccommodationEatingAndDrinking);
-				break;
+				break;		
 			case amivif.schema.types.POITypeType.ATTRACTION:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Attraction);
 				break;
@@ -176,7 +177,8 @@ public class PointProducer extends LocalTridentObjectProducer
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.EducationAndHealth);
 				break;
 			case amivif.schema.types.POITypeType.MANUFACTURINGANDPRODUCTION:
-				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.ManufacturingAndProduction);
+				pointOfInterest
+					.setPointOfInterestType(Point.PointOfInterestType.ManufacturingAndProduction);
 				break;
 			case amivif.schema.types.POITypeType.PUBLICINFRASTRUCTURE:
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.PublicInfrastructure);
@@ -194,9 +196,11 @@ public class PointProducer extends LocalTridentObjectProducer
 				pointOfInterest.setPointOfInterestType(Point.PointOfInterestType.Wholesale);
 				break;
 			default:
-				getValidationException().add(TypeInvalidite.InvalidType_PointOfInterest, 
-						"Le \"Type\" du \"PointOfInterest\" ("+castorPointOfInterest.getName()+") est invalid.");
-			}
+				getValidationException().add(TypeInvalidite.InvalidType_PointOfInterest,
+					"Le \"Type\" du \"PointOfInterest\" ("
+							+ castorPointOfInterest.getName()
+							+ ") est invalid.");
+		}
 		
 		return pointOfInterest;
 	}
