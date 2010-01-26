@@ -61,7 +61,7 @@ public class WordOrderTypeUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : WordOrderType.valueOf(name);	
+		return resultSet.wasNull() ? null : WordOrderType.fromValue(name);	
 	}
 	public void nullSafeSet(PreparedStatement statement, Object value, int index)
 			throws HibernateException, SQLException 

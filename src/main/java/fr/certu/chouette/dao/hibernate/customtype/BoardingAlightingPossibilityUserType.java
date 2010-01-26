@@ -100,7 +100,7 @@ public class BoardingAlightingPossibilityUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : BoardingAlightingPossibilityType.valueOf(name);	
+		return resultSet.wasNull() ? null : BoardingAlightingPossibilityType.fromValue(name);	
 	}
 	/**
 	 * @see UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

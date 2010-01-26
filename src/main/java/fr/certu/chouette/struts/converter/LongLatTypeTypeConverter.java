@@ -19,11 +19,11 @@ public final class LongLatTypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (LongLatTypeType.valueOf(value[0])==null)
+		if (LongLatTypeType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return LongLatTypeType.valueOf(value[0]);
+		return LongLatTypeType.fromValue(value[0]);
 	}
 
 	@Override

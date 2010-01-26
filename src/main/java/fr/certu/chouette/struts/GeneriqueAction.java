@@ -121,7 +121,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       PTDirectionType ptDirectionType = null;
       try
       {
-        ptDirectionType = PTDirectionType.valueOf(cleParTraduction.get(traduction));
+        ptDirectionType = PTDirectionType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {
@@ -159,14 +159,15 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       TransportModeNameType modeType = null;
       try
       {
-        modeType = TransportModeNameType.valueOf(cleParTraduction.get(traduction));
+    	  log.debug( "Traduction : " + traduction + " --- Traduction key : " + cleParTraduction.get(traduction));
+    	  modeType = TransportModeNameType.fromValue(cleParTraduction.get(traduction));
+    	  log.debug( "modeType based on traduction key : " + modeType);
       }
       catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
       modes.add(new ObjetEnumere(modeType, traduction));
-      //log.debug( "modeType="+modeType+" "+traduction);
     }
 
     return modes;
@@ -220,7 +221,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       DayTypeType dayTypeType = null;
       try
       {
-        dayTypeType = DayTypeType.valueOf(cleParTraduction.get(traduction));
+        dayTypeType = DayTypeType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {
@@ -262,7 +263,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       LongLatTypeType longLatType = null;
       try
       {
-        longLatType = LongLatTypeType.valueOf(cleParTraduction.get(traduction));
+        longLatType = LongLatTypeType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {
@@ -299,7 +300,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       ServiceStatusValueType statutType = null;
       try
       {
-        statutType = ServiceStatusValueType.valueOf(cleParTraduction.get(traduction));
+        statutType = ServiceStatusValueType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {
@@ -403,7 +404,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       ChouetteAreaType boardingPositionType = null;
       try
       {
-        boardingPositionType = ChouetteAreaType.valueOf(cleParTraduction.get(traduction));
+        boardingPositionType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {
@@ -440,7 +441,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       ChouetteAreaType stopPlaceType = null;
       try
       {
-        stopPlaceType = ChouetteAreaType.valueOf(cleParTraduction.get(traduction));
+        stopPlaceType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {
@@ -477,7 +478,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       ConnectionLinkTypeType correspondanceType = null;
       try
       {
-        correspondanceType = ConnectionLinkTypeType.valueOf(cleParTraduction.get(traduction));
+        correspondanceType = ConnectionLinkTypeType.fromValue(cleParTraduction.get(traduction));
       }
       catch (Exception e)
       {

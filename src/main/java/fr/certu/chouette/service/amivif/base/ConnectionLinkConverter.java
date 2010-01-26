@@ -17,7 +17,7 @@ public class ConnectionLinkConverter {
 		chouetteConnectionLink.setEndOfLink(amivifConnectionLink.getEndOfLink());
 		chouetteConnectionLink.setLinkDistance(amivifConnectionLink.getLinkDistance());
 		if (amivifConnectionLink.getLinkType() != null) 
-			chouetteConnectionLink.setLinkType(chouette.schema.types.ConnectionLinkTypeType.valueOf(amivifConnectionLink.getLinkType().toString()));
+			chouetteConnectionLink.setLinkType(chouette.schema.types.ConnectionLinkTypeType.fromValue(amivifConnectionLink.getLinkType().toString()));
 		else
 			chouetteConnectionLink.setObjectVersion( 1);
 		chouetteConnectionLink.setDefaultDuration(amivifConnectionLink.getDefaultDuration());
@@ -58,7 +58,7 @@ public class ConnectionLinkConverter {
 		amivifConnectionLink.setEndOfLink(chouetteConnectionLink.getEndOfLink());
 		amivifConnectionLink.setLinkDistance(chouetteConnectionLink.getLinkDistance());
 		if (chouetteConnectionLink.getLinkType() != null) 
-			amivifConnectionLink.setLinkType(amivif.schema.types.ConnectionLinkTypeType.valueOf(chouetteConnectionLink.getLinkType().toString()));
+			amivifConnectionLink.setLinkType(amivif.schema.types.ConnectionLinkTypeType.fromValue(chouetteConnectionLink.getLinkType().toString()));
 		amivifConnectionLink.setDefaultDuration(chouetteConnectionLink.getDefaultDuration());
 		amivifConnectionLink.setFrequentTravellerDuration(chouetteConnectionLink.getFrequentTravellerDuration());
 		amivifConnectionLink.setMobilityRestrictedTravellerDuration(chouetteConnectionLink.getMobilityRestrictedTravellerDuration());

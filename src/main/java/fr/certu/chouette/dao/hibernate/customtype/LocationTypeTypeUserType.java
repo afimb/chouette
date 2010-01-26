@@ -75,7 +75,7 @@ public class LocationTypeTypeUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : LocationTypeType.valueOf(name);	
+		return resultSet.wasNull() ? null : LocationTypeType.fromValue(name);	
 	}
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

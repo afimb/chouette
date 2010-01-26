@@ -75,7 +75,7 @@ public class ReferencingMethodUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : LocationReferencingMethodType.valueOf(name);	
+		return resultSet.wasNull() ? null : LocationReferencingMethodType.fromValue(name);	
 	}
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

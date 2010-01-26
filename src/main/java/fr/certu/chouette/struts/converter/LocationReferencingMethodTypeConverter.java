@@ -19,11 +19,11 @@ public final class LocationReferencingMethodTypeConverter extends StrutsTypeConv
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (LocationReferencingMethodType.valueOf(value[0])==null)
+		if (LocationReferencingMethodType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return LocationReferencingMethodType.valueOf(value[0]);
+		return LocationReferencingMethodType.fromValue(value[0]);
 	}
 
 	@Override

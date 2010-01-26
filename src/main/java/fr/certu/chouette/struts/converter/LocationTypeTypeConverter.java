@@ -19,11 +19,11 @@ public final class LocationTypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (LocationTypeType.valueOf(value[0])==null)
+		if (LocationTypeType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return LocationTypeType.valueOf(value[0]);
+		return LocationTypeType.fromValue(value[0]);
 	}
 
 	@Override

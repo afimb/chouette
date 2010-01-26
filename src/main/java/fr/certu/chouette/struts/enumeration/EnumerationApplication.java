@@ -104,7 +104,7 @@ public class EnumerationApplication
 			PTDirectionType ptDirectionType = null;
 			try
 			{
-				ptDirectionType = PTDirectionType.valueOf( cleParTraduction.get( traduction));
+				ptDirectionType = PTDirectionType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
@@ -136,7 +136,7 @@ public class EnumerationApplication
 			DayTypeType dayTypeType = null;
 			try
 			{
-				dayTypeType = DayTypeType.valueOf( cleParTraduction.get( traduction));
+				dayTypeType = DayTypeType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
@@ -175,7 +175,7 @@ public class EnumerationApplication
 			TransportModeNameType modeType = null;
 			try
 			{
-				modeType = TransportModeNameType.valueOf( cleParTraduction.get( traduction));
+				modeType = TransportModeNameType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
@@ -208,7 +208,7 @@ public class EnumerationApplication
 			ServiceStatusValueType statutType = null;
 			try
 			{
-				statutType = ServiceStatusValueType.valueOf( cleParTraduction.get( traduction));
+				statutType = ServiceStatusValueType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
@@ -241,7 +241,7 @@ public class EnumerationApplication
 			ConnectionLinkTypeType correspondanceType = null;
 			try
 			{
-				correspondanceType = ConnectionLinkTypeType.valueOf( cleParTraduction.get( traduction));
+				correspondanceType = ConnectionLinkTypeType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
@@ -276,7 +276,7 @@ public class EnumerationApplication
 			ChouetteAreaType areaType = null;
 			try
 			{
-				areaType = ChouetteAreaType.valueOf( cleParTraduction.get( traduction));
+				areaType = ChouetteAreaType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{
@@ -320,7 +320,7 @@ public class EnumerationApplication
 			LongLatTypeType longLatType = null;
 			try
 			{
-				longLatType = LongLatTypeType.valueOf( cleParTraduction.get( traduction));
+				longLatType = LongLatTypeType.fromValue( cleParTraduction.get( traduction));
 			}
 			catch( Exception e)
 			{

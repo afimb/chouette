@@ -21,11 +21,11 @@ public final class ServiceStatusValueTypeConverter extends StrutsTypeConverter
 		{
 			return null;
 		}
-		if (ServiceStatusValueType.valueOf(value[0]) == null)
+		if (ServiceStatusValueType.fromValue(value[0]) == null)
 		{
 			throw new TypeConversionException();
 		}
-		return ServiceStatusValueType.valueOf(value[0]);
+		return ServiceStatusValueType.fromValue(value[0]);
 	}
 
 	@Override

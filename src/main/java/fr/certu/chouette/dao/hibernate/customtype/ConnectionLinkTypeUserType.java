@@ -75,7 +75,7 @@ public class ConnectionLinkTypeUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : ConnectionLinkTypeType.valueOf(name);	
+		return resultSet.wasNull() ? null : ConnectionLinkTypeType.fromValue(name);	
 	}
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

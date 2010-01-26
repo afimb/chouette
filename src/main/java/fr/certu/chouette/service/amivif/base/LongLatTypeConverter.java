@@ -3,7 +3,7 @@ package fr.certu.chouette.service.amivif.base;
 public class LongLatTypeConverter {
 
 	chouette.schema.types.LongLatTypeType atc(amivif.schema.types.LongLatTypeType amivifStopPointLongLatType) {
-		//return chouette.schema.types.LongLatTypeType.valueOf(amivifStopPointLongLatType.toString());
+		//return chouette.schema.types.LongLatTypeType.fromValue(amivifStopPointLongLatType.toString());
 		switch(amivifStopPointLongLatType) 
 		{
 			case STANDARD:
@@ -17,7 +17,7 @@ public class LongLatTypeConverter {
 	}
 	
 	amivif.schema.types.LongLatTypeType cta(chouette.schema.types.LongLatTypeType chouetteStopPointLongLatType) {
-		//return amivif.schema.types.LongLatTypeType.valueOf(chouetteStopPointLongLatType.toString());
+		//return amivif.schema.types.LongLatTypeType.fromValue(chouetteStopPointLongLatType.toString());
 		if ( chouetteStopPointLongLatType==null) return null;
 		
 		switch(chouetteStopPointLongLatType) 

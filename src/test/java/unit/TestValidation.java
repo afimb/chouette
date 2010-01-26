@@ -132,25 +132,21 @@ public class TestValidation {
 			if (detecterInvalidite(e, TypeInvalidite.INVALID_CHOUETTE_FILE))
 			{
 				throw e;
-			}
-			String msg = "";
-			List<TypeInvalidite> categories = e.getCategories();
-			for (TypeInvalidite typeInvalidite : categories) 
-			{
-				msg += typeInvalidite;
-			}
-			throw new RuntimeException ("unvalid with type : " + msg);
+			}			
 		}
 	}
 	
 	@Test(groups="test de validation",
 			expectedExceptions = ValidationException.class,
 			description = "Test de la validation du modele CHOUETTE sur un exemple d'un fichier CHOUETTE invalide : balise obligatoire absente.")
-	public void testChouetteNotOK1() {
-		try {
+	public void testChouetteNotOK1() 
+	{
+		try 
+		{
 			lecteurFichierXML.lire(fileNameBadChouette1, true);
 		}
-		catch(ValidationException e) {
+		catch(ValidationException e) 
+		{
 			if (detecterInvalidite(e, TypeInvalidite.NULL_PTNETWORK))
 				throw e;
 		}		
@@ -171,13 +167,6 @@ public class TestValidation {
 			{
 				throw e;
 			}
-			String msg = "";
-			List<TypeInvalidite> categories = e.getCategories();
-			for (TypeInvalidite typeInvalidite : categories) 
-			{
-				msg += typeInvalidite;
-			}
-			throw new RuntimeException ("unvalid with type : " + msg);
 		}		
 	}
 

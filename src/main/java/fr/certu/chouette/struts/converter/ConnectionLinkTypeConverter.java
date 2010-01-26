@@ -22,10 +22,10 @@ public final class ConnectionLinkTypeConverter extends StrutsTypeConverter
             throw new TypeConversionException();
         if(value[0] == null || value[0].trim().equals(""))
             return null;
-        if(ConnectionLinkTypeType.valueOf(value[0]) == null)
+        if(ConnectionLinkTypeType.fromValue(value[0]) == null)
             throw new TypeConversionException();
         else
-            return ConnectionLinkTypeType.valueOf(value[0]);
+            return ConnectionLinkTypeType.fromValue(value[0]);
     }
 
     public String convertToString(Map arg0, Object arg1)
