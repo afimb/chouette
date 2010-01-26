@@ -8,5 +8,10 @@
 			<suffix>Type</suffix>
 		</complexTypeName>
 	</namingXML>
-	
+	<elementBinding name="/complexType:SuitabilityStructure/UserNeed">
+		<java-class name="SuitabilityStructureUserNeed"/>
+   </elementBinding>
+   <elementBinding name="/complexType:PassengerAccessibilityNeedsStructure/UserNeed">
+      <java-class name="PassengerAccessibilityNeedsStructureUserNeed"/>
+   </elementBinding>
 </binding>

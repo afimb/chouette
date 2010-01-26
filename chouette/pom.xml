@@ -360,10 +360,11 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <schema>${basedir}/src/main/castor/Chouette.xsd</schema>
+              <schema>${basedir}/src/main/castor/neptune.xsd</schema>
               <packaging>chouette.schema</packaging>
               <properties>${basedir}/src/main/castor/castorbuilder.properties</properties>
               <bindingfile>${basedir}/src/main/castor/binding.xml</bindingfile>
+              <generateImportedSchemas>true</generateImportedSchemas>
               <verbose>true</verbose>
             </configuration>
           </execution>
