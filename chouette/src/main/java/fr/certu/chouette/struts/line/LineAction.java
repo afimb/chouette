@@ -145,7 +145,8 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 		return REDIRECTLIST;
 	}
 
-	public String delete() {
+	public String delete() 
+	{
 		ligneManager.supprimer(getModel().getId(), detruireAvecTMs,
 				detruireAvecArrets, detruireAvecTransporteur,
 				detruireAvecReseau);
@@ -156,28 +157,33 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 	}
 
 	@SkipValidation
-	public String cancel() {
+	public String cancel() 
+	{
 		addActionMessage(getText("ligne.cancel.ok"));
 		return REDIRECTLIST;
 	}
 
 	@Override
-	public String input() throws Exception {
+	public String input() throws Exception 
+	{
 		return INPUT;
 	}
 
 	/********************************************************
 	 * MANAGER *
 	 ********************************************************/
-	public void setLigneManager(ILigneManager ligneManager) {
+	public void setLigneManager(ILigneManager ligneManager) 
+	{
 		this.ligneManager = ligneManager;
 	}
 
-	public void setReseauManager(IReseauManager reseauManager) {
+	public void setReseauManager(IReseauManager reseauManager) 
+	{
 		this.reseauManager = reseauManager;
 	}
 
-	public void setTransporteurManager(ITransporteurManager transporteurManager) {
+	public void setTransporteurManager(ITransporteurManager transporteurManager) 
+	{
 		this.transporteurManager = transporteurManager;
 	}
 
@@ -185,25 +191,30 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 	 * METHOD ACTION *
 	 ********************************************************/
 	// this prepares command for button on initial screen write
-	public void setMappedRequest(String actionMethod) {
+	public void setMappedRequest(String actionMethod)
+{
 		this.mappedRequest = actionMethod;
 	}
 
 	// when invalid, the request parameter will restore command action
-	public void setActionMethod(String method) {
+	public void setActionMethod(String method) 
+	{
 		this.mappedRequest = method;
 	}
 
-	public String getActionMethod() {
+	public String getActionMethod() 
+	{
 		return mappedRequest;
 	}
 
 	/********************************************************
 	 * OTHERS METHODS *
 	 ********************************************************/
-	public String getReseau(Long networkId) {
+	public String getReseau(Long networkId) 
+	{
 		for (Reseau network : networks) {
-			if (network.getId().equals(networkId)) {
+			if (network.getId().equals(networkId)) 
+			{
 				networkName = network.getName();
 				break;
 			}
@@ -211,52 +222,65 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
 		return networkName;
 	}
 
-	public void setReseaux(List<Reseau> reseaux) {
+	public void setReseaux(List<Reseau> reseaux) 
+	{
 		this.networks = reseaux;
 	}
 
-	public List<Reseau> getReseaux() {
+	public List<Reseau> getReseaux() 
+	{
 		return networks;
 	}
 
-	public String getTransporteur(Long companyId) {
-		for (Transporteur company : companies) {
-			if (company.getId().equals(companyId)) {
+	public String getTransporteur(Long companyId) 
+	{
+		for (Transporteur company : companies) 
+		{
+			if (company.getId().equals(companyId)) 
+			{
 				companyName = company.getName();
 			}
 		}
 		return companyName;
 	}
 
-	public List<Transporteur> getTransporteurs() {
+	public List<Transporteur> getTransporteurs() 
+	{
 		return companies;
 	}
 
-	public void setTransporteurs(List<Transporteur> transporteurs) {
+	public void setTransporteurs(List<Transporteur> transporteurs) 
+	{
 		this.companies = transporteurs;
 	}
 
-	public String getUseAmivif() {
+	public String getUseAmivif() 
+	{
 		return useAmivif;
 	}
 
-	public void setUseAmivif(String useAmivif) {
+	public void setUseAmivif(String useAmivif) 
+	{
 		this.useAmivif = useAmivif;
 	}
 
-	public void setDetruireAvecTMs(boolean detruireAvecTMs) {
+	public void setDetruireAvecTMs(boolean detruireAvecTMs) 
+	{
 		this.detruireAvecTMs = detruireAvecTMs;
 	}
 
-	public void setDetruireAvecArrets(boolean detruireAvecArrets) {
+	public void setDetruireAvecArrets(boolean detruireAvecArrets) 
+	{
 		this.detruireAvecArrets = detruireAvecArrets;
 	}
 
-	public void setDetruireAvecTransporteur(boolean detruireAvecTransporteur) {
+	public void setDetruireAvecTransporteur(boolean detruireAvecTransporteur) 
+	{
 		this.detruireAvecTransporteur = detruireAvecTransporteur;
 	}
 
-	public void setDetruireAvecReseau(boolean detruireAvecReseau) {
+	public void setDetruireAvecReseau(boolean detruireAvecReseau) 
+	{
 		this.detruireAvecReseau = detruireAvecReseau;
 	}
 }

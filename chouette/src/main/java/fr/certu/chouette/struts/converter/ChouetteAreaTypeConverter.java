@@ -19,11 +19,11 @@ public final class ChouetteAreaTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (ChouetteAreaType.valueOf(value[0])==null)
+		if (ChouetteAreaType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return ChouetteAreaType.valueOf(value[0]);
+		return ChouetteAreaType.fromValue(value[0]);
 	}
 
 	@Override

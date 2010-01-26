@@ -1,5 +1,6 @@
 package fr.certu.chouette.service.xml;
 
+import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
 import fr.certu.chouette.service.commun.CodeIncident;
@@ -59,7 +60,7 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 		try 
 		{
 			logger.debug("UNMARSHALING OF contenu");
-			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetworkTypeType.class);
+			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetwork.class);
 			anUnmarshaller.setIgnoreExtraElements(false);
 			anUnmarshaller.setValidation(false);
 			chouettePTNetworkType = (ChouettePTNetworkTypeType)anUnmarshaller.unmarshal(new StringReader(contenu));

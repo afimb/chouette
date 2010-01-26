@@ -19,11 +19,11 @@ public final class POITypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (POITypeType.valueOf(value[0])==null)
+		if (POITypeType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return POITypeType.valueOf(value[0]);
+		return POITypeType.fromValue(value[0]);
 	}
 
 	@Override

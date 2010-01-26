@@ -19,11 +19,11 @@ public final class DayTypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (DayTypeType.valueOf(value[0])==null)
+		if (DayTypeType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return DayTypeType.valueOf(value[0]);
+		return DayTypeType.fromValue(value[0]);
 	}
 
 	@Override

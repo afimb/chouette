@@ -19,11 +19,11 @@ public final class TransportModeNameTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (TransportModeNameType.valueOf(value[0])==null)
+		if (TransportModeNameType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return TransportModeNameType.valueOf(value[0]);
+		return TransportModeNameType.fromValue(value[0]);
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.ChouetteArea;
+import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
 import chouette.schema.ITL;
@@ -625,7 +626,8 @@ public class Export
 		zonePoleC.getStopArea().addContains( arretsPhysiques.get( 4).getObjectId());
 		zonePoleD.getStopArea().addContains( arretsPhysiques.get( 5).getObjectId());
 		
-		for (PositionGeographique area : zones) {
+		for (PositionGeographique area : zones) 
+		{
 			ligneDeTest.getChouetteArea().addStopArea( area.getStopArea());
 			ligneDeTest.getChouetteArea().addAreaCentroid( area.getAreaCentroid());
 		}
@@ -647,9 +649,8 @@ public class Export
 		ChouettePTNetworkTypeType ligneDeTest = GenerateurDonnee.creerChouettePTNetwork(4, 15, 8);
 		
 		String nomFic = "apres_import.xml";
-		lecteurFichierXML.ecrire( ligneDeTest, new File( nomFic));
-		ChouettePTNetworkTypeType ligneLue = null;
-		
+		lecteurFichierXML.ecrire(ligneDeTest, new File(nomFic));
+		ChouettePTNetworkTypeType ligneLue = null;		
 		try
 		{
 			ligneLue = lire(nomFic);
@@ -657,27 +658,23 @@ public class Export
 		catch( Exception e)
 		{
 			logger.error(e.getMessage(),e);
-			assert false:"echec de lecture";
+			assert false : "echec de lecture";
 		}
-		
-		assert ligneLue!=null : "fichier xml mal lu";
-		assert ligneLue.getCompanyCount()==ligneDeTest.getCompanyCount() : "fichier xml mal lu";
-		assert ligneLue.getPTNetwork().getName().equals( ligneDeTest.getPTNetwork().getName()) : "fichier xml mal lu";
+		assert ligneLue != null : "fichier xml mal lu";
+		assert ligneLue.getCompanyCount() == ligneDeTest.getCompanyCount() : "fichier xml mal lu";
+		assert ligneLue.getPTNetwork().getName().equals(ligneDeTest.getPTNetwork().getName()) : "fichier xml mal lu";
 		File fic = new File( nomFic);
-		boolean resultat = fic.delete();
-		
-		assert resultat : "fichier de test non detruit";
+		boolean resultat = fic.delete();		
+		assert resultat : "fichier de test non detruit";		
 	}
 
-	private ChouettePTNetworkTypeType lire( String nom) throws FileNotFoundException, IOException, MarshalException, ValidationException
+	private ChouettePTNetworkTypeType lire(String nom) throws FileNotFoundException, IOException, MarshalException, ValidationException
 	{
-		  FileReader aFileReader = new FileReader( nom);
+		  FileReader aFileReader = new FileReader(nom);
 	
-	     Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetworkTypeType.class);
-	     anUnmarshaller.setValidation( false);
-	     
-	     ChouettePTNetworkTypeType aReturnValue = (ChouettePTNetworkTypeType) anUnmarshaller
-	           .unmarshal( aFileReader);
+	     Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetwork.class);
+	     anUnmarshaller.setValidation(false);	     
+	     ChouettePTNetworkTypeType aReturnValue = (ChouettePTNetworkTypeType) anUnmarshaller.unmarshal(aFileReader);
 	     aFileReader.close();
 	     return aReturnValue;
 	}

@@ -19,11 +19,11 @@ public final class PTDirectionTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (PTDirectionType.valueOf(value[0])==null)
+		if (PTDirectionType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return PTDirectionType.valueOf(value[0]);
+		return PTDirectionType.fromValue(value[0]);
 	}
 
 	@Override

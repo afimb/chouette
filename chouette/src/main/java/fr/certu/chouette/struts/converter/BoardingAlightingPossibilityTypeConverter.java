@@ -19,11 +19,11 @@ public final class BoardingAlightingPossibilityTypeConverter extends StrutsTypeC
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (BoardingAlightingPossibilityType.valueOf(value[0])==null)
+		if (BoardingAlightingPossibilityType.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return BoardingAlightingPossibilityType.valueOf(value[0]);
+		return BoardingAlightingPossibilityType.fromValue(value[0]);
 	}
 
 	@Override
