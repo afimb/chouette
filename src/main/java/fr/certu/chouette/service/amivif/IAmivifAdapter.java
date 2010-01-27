@@ -5,8 +5,8 @@ import amivif.schema.RespPTLineStructTimetableTypeType;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
 
-public interface IAmivifAdapter {
-
+public interface IAmivifAdapter 
+{
 	ChouettePTNetworkTypeType getATC(RespPTLineStructTimetableTypeType amivif);
 
 	RespPTLineStructTimetableTypeType getCTA(ChouettePTNetworkTypeType chouette);

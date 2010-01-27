@@ -27,23 +27,28 @@ public class LigneManager implements ILigneManager {
 	private              IIdentificationManager  identificationManager;
 	private              IItineraireManager      itineraireManager;
 	
-	public Ligne getLigneParRegistration(String registrationNumber) {
+	public Ligne getLigneParRegistration(String registrationNumber) 
+	{
 		return selectionSpecifique.getLigneParRegistration(registrationNumber);
 	}
 	
-	public List<Itineraire> getItinerairesLigne(Long idLigne) {
+	public List<Itineraire> getItinerairesLigne(Long idLigne) 
+	{
 		return selectionSpecifique.getItinerairesLigne(idLigne);
 	}
 	
-	public List<Itineraire> getLigneItinerairesExportables(Long idLigne) {
+	public List<Itineraire> getLigneItinerairesExportables(Long idLigne) 
+	{
 		return selectionSpecifique.getLigneItinerairesExportables(idLigne);
 	}
 	
-	public void modifier(Ligne ligne) {
+	public void modifier(Ligne ligne) 
+	{
 		ligneDao.update(ligne);
 	}
 
-	public void creer(Ligne ligne) {
+	public void creer(Ligne ligne) 
+	{
 		ligneDao.save(ligne);
 		String objectId = identificationManager.getIdFonctionnel("Line", ligne);
 		ligne.setObjectId(objectId);
@@ -52,17 +57,20 @@ public class LigneManager implements ILigneManager {
 		ligneDao.update(ligne);
 	}
 
-	public Ligne lire(Long idLigne) {
+	public Ligne lire(Long idLigne) 
+	{
 		return ligneDao.get(idLigne);
 	}
 
-	public List<Ligne> lire() {
+	public List<Ligne> lire() 
+	{
 		List<Ordre> ordres = new ArrayList<Ordre>();
 		ordres.add(new Ordre("name", true));
 		return ligneDao.select(null, ordres);
 	}
 	
-	public boolean nomConnu(String name) {
+	public boolean nomConnu(String name) 
+	{
 		return ligneDao.select(ScalarClause.newEqualsClause("name", name)).size() > 0;
 	}
 
@@ -73,15 +81,18 @@ public class LigneManager implements ILigneManager {
 		IClause andClause = new AndClause(notClause,ScalarClause.newEqualsClause("name", name));
 		return ligneDao.select(andClause).size() > 0;
 	}
-	public List<Ligne> filtrer(Collection<Long> idReseaux, Collection<Long> idTransporteurs) {
+	public List<Ligne> filtrer(Collection<Long> idReseaux, Collection<Long> idTransporteurs) 
+	{
 		return selectionSpecifique.getLignesFiltrees(idReseaux, idTransporteurs);
 	}
 
-	public List<Ligne> getLignes(final Collection<Long> idLignes) {
+	public List<Ligne> getLignes(final Collection<Long> idLignes) 
+	{
 		return selectionSpecifique.getLignes(idLignes);
 	}
 	
-	public List<PositionGeographique> getArretsPhysiques(Long idLigne) {
+	public List<PositionGeographique> getArretsPhysiques(Long idLigne) 
+	{
 		return selectionSpecifique.getArretPhysiqueLigne(idLigne);
 	}
 
@@ -89,47 +100,58 @@ public class LigneManager implements ILigneManager {
 		modificationSpecifique.supprimerLigne(idLigne, detruireAvecTMs, detruireAvecArrets, detruireAvecTransporteur, detruireAvecReseau);
 	}
 	
-	public void supprimer(Long idLigne) {
+	public void supprimer(Long idLigne) 
+	{
 		supprimer(idLigne, false, false, false, false);
 	}
 	
-	public IItineraireManager getItineraireManager() {
+	public IItineraireManager getItineraireManager() 
+	{
 		return itineraireManager;
 	}
 	
-	public void setItineraireManager(IItineraireManager itineraireManager) {
+	public void setItineraireManager(IItineraireManager itineraireManager) 
+	{
 		this.itineraireManager = itineraireManager;
 	}
 	
-	public ITemplateDao<Ligne> getLigneDao() {
+	public ITemplateDao<Ligne> getLigneDao() 
+	{
 		return ligneDao;
 	}
 	
-	public void setLigneDao(ITemplateDao<Ligne> ligneDao) {
+	public void setLigneDao(ITemplateDao<Ligne> ligneDao) 
+	{
 		this.ligneDao = ligneDao;
 	}
 	
-	public ISelectionSpecifique getSelectionSpecifique() {
+	public ISelectionSpecifique getSelectionSpecifique() 
+	{
 		return selectionSpecifique;
 	}
 
-	public void setSelectionSpecifique(ISelectionSpecifique selectionSpecifique) {
+	public void setSelectionSpecifique(ISelectionSpecifique selectionSpecifique) 
+	{
 		this.selectionSpecifique = selectionSpecifique;
 	}
 
-	public IModificationSpecifique getModificationSpecifique() {
+	public IModificationSpecifique getModificationSpecifique() 
+	{
 		return modificationSpecifique;
 	}
 
-	public void setModificationSpecifique(IModificationSpecifique modificationSpecifique) {
+	public void setModificationSpecifique(IModificationSpecifique modificationSpecifique) 
+	{
 		this.modificationSpecifique = modificationSpecifique;
 	}
 
-	public void setIdentificationManager(IIdentificationManager identificationManager) {
+	public void setIdentificationManager(IIdentificationManager identificationManager) 
+	{
 		this.identificationManager = identificationManager;
 	}
 
-	public List<Ligne> select(IClause clause) {
+	public List<Ligne> select(IClause clause) 
+	{
 		return ligneDao.select(clause);
 	}
 }

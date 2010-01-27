@@ -8,11 +8,11 @@ public class XMLAdapter
 	
 	public static String atcSimplify( String contenu)
 	{
-		return contenu.replaceAll( AMIVIF_ADRESSE, CHOUETTE_ADRESSE);
+		return contenu.replaceAll(AMIVIF_ADRESSE, CHOUETTE_ADRESSE);
 	}
 	
 	public static String ctaSimplify( String contenu)
 	{
-		return contenu.replaceAll( AMIVIF_ADRESSE, CHOUETTE_ADRESSE);
+		return contenu.replaceAll(AMIVIF_ADRESSE, CHOUETTE_ADRESSE);
 	}
 }

@@ -26,31 +26,37 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class LecteurFichierXML implements ILecteurFichierXML {
+public class LecteurFichierXML implements ILecteurFichierXML 
+{
 	
 	private static final Logger              logger              = Logger.getLogger(fr.certu.chouette.service.xml.LecteurFichierXML.class);
 	private              MainSchemaProducer  mainSchemaProducer;
 	private              ValidationException validationException;
 	private static final String              JEU_CARACTERES      = "ISO-8859-1"; 
 	
-	public LecteurFichierXML() {
+	public LecteurFichierXML() 
+	{
 	}
 	
-	public ChouettePTNetworkTypeType lire(String fileName) {
+	public ChouettePTNetworkTypeType lire(String fileName) 
+	{
 		return lire(fileName, false);
 	}
 	
-	public ChouettePTNetworkTypeType lire(String fileName, boolean withValidation) {
+	public ChouettePTNetworkTypeType lire(String fileName, boolean withValidation) 
+	{
 		String contenu = null;
 		logger.debug("CREATION DU MainSchemaProducer");
 		mainSchemaProducer = new MainSchemaProducer();
 		logger.debug("RECUPERATION DU ValidationException");
 		validationException = mainSchemaProducer.getValidationException();
-		try {
+		try 
+		{
 			logger.debug("RECUPERATION DU contenu");
 			contenu = FileUtils.readFileToString(new File(fileName), JEU_CARACTERES);
 		}
-		catch(IOException e) {
+		catch(IOException e) 
+		{
 			String msg = e.getMessage();
 			LoggingManager.log(logger, msg, Level.ERROR);
 			validationException.add(TypeInvalidite.FILE_NOT_FOUND, msg);
@@ -105,7 +111,9 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 			}
 			String mesg = "";
 			if (e.getMessage() != null)
+			{
 				mesg += e.getMessage()+" : ";
+			}
 			mesg += e.toString();
 			Throwable ex = e;
 			while (ex.getCause() != null) 
@@ -122,7 +130,9 @@ public class LecteurFichierXML implements ILecteurFichierXML {
 			throw validationException;
 		}
 		if (withValidation)
+		{
 			mainSchemaProducer.getASG(chouettePTNetworkType);
+		}
 		return chouettePTNetworkType;
 	}
 	

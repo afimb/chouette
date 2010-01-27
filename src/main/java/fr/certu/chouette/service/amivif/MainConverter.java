@@ -33,7 +33,8 @@ import fr.certu.chouette.service.amivif.base.VehicleConverter;
 
 
 
-public class MainConverter implements IAmivifAdapter {
+public class MainConverter implements IAmivifAdapter 
+{
 	private static final Logger logger = Logger.getLogger(MainConverter.class);
 	
 	

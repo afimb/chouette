@@ -38,32 +38,39 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		String contenu = null;
 		validationException = new ValidationException( "");
 		
-		try {
+		try 
+		{
 			contenu = FileUtils.readFileToString( 
 				new File( fileName), JEU_CARACTERES);
-		} catch( IOException e) {
+		} 
+		catch( IOException e) 
+		{
         	validationException.add(TypeInvalidite.FILE_NOT_FOUND, e.getMessage());
         	throw validationException;
 		}
 		
-        contenu = XMLAdapter.atcSimplify( contenu);
+        contenu = XMLAdapter.atcSimplify(contenu);
         
-       RespPTLineStructTimetable amivifLine = null;
-
-        try {
+        RespPTLineStructTimetable amivifLine = null;
+        try 
+        {
     		Unmarshaller anUnmarshaller = new Unmarshaller(RespPTLineStructTimetable.class);
             anUnmarshaller.setValidation(false);
         	amivifLine = (RespPTLineStructTimetable)anUnmarshaller.unmarshal(
-        			new StringReader( contenu));
+        			new StringReader(contenu));
 		}
-        catch (org.exolab.castor.xml.ValidationException e) {
-        	do {
+        catch (org.exolab.castor.xml.ValidationException e) 
+        {
+        	do 
+        	{
         		validationException.add(TypeInvalidite.INVALID_XML_FILE, e.getMessage());
         		e = e.getNext();
-        	} while (e != null);
+        	} 
+        	while (e != null);
         	throw validationException;
         }
-        catch (MarshalException e) {
+        catch (MarshalException e) 
+        {
         	validationException.add(TypeInvalidite.INVALID_CHOUETTE_FILE, e.getMessage());
         	throw validationException;
         }
@@ -79,23 +86,29 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		{
 			StringWriter writer = new StringWriter();
 			
-			Marshaller aMarshaller = new Marshaller( writer);
+			Marshaller aMarshaller = new Marshaller(writer);
 			aMarshaller.setEncoding("ISO-8859-1");
 			aMarshaller.setRootElement("RespPTLineStructTimetableTypeType");
 	        aMarshaller.setNamespaceMapping("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident RATP-AMIVIF.xsd");
 			aMarshaller.setValidation(false);
-			aMarshaller.marshal( amivif);
+			aMarshaller.marshal(amivif);
 			
 			String contenu = XMLAdapter.ctaSimplify( writer.toString());
-			FileUtils.writeStringToFile( file, contenu, JEU_CARACTERES);
+			FileUtils.writeStringToFile(file, contenu, JEU_CARACTERES);
 			
-		} catch( IOException e) {
-			throw new ServiceException( CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
-		} catch( MarshalException e) {
-			throw new ServiceException( CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
-		} catch( org.exolab.castor.xml.ValidationException e) {
-			throw new ServiceException( CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+		} 
+		catch(IOException e) 
+		{
+			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+		} 
+		catch(MarshalException e) 
+		{
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+		} 
+		catch(org.exolab.castor.xml.ValidationException e) 
+		{
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
 		}
 	}
 	
@@ -112,17 +125,23 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 	        aMarshaller.setNamespaceMapping("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident RATP-AMIVIF.xsd");
 			aMarshaller.setValidation(false);
-			aMarshaller.marshal( amivif);
+			aMarshaller.marshal(amivif);
 			
 			String contenu = XMLAdapter.ctaSimplify( writer.toString());
-			FileUtils.writeStringToFile( file, contenu, JEU_CARACTERES);
+			FileUtils.writeStringToFile(file, contenu, JEU_CARACTERES);
 			
-		} catch( IOException e) {
-			throw new ServiceException( CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
-		} catch( MarshalException e) {
-			throw new ServiceException( CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
-		} catch( org.exolab.castor.xml.ValidationException e) {
-			throw new ServiceException( CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+		} 
+		catch(IOException e) 
+		{
+			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+		} 
+		catch(MarshalException e) 
+		{
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+		} 
+		catch(org.exolab.castor.xml.ValidationException e) 
+		{
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
 		}
 	}
 
