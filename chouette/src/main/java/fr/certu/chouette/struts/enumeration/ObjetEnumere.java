@@ -24,19 +24,23 @@ public class ObjetEnumere
 		this.textePropriete = textePropriete;
 	}
 
-	public Enum getEnumeratedTypeAccess() {
+	public Enum getEnumeratedTypeAccess() 
+	{
 		return enumeratedTypeAccess;
 	}
 
-	public void setEnumeratedTypeAccess(Enum enumeratedTypeAccess) {
+	public void setEnumeratedTypeAccess(Enum enumeratedTypeAccess) 
+	{
 		this.enumeratedTypeAccess = enumeratedTypeAccess;
 	}
 
-	public String getTextePropriete() {
+	public String getTextePropriete() 
+	{
 		return textePropriete;
 	}
 
-	public void setTextePropriete(String textePropriete) {
+	public void setTextePropriete(String textePropriete) 
+	{
 		this.textePropriete = textePropriete;
 	}
 

@@ -75,16 +75,20 @@ public class ImportAction extends GeneriqueAction {
 	}
 	
 	@Override
-	public String execute() throws Exception {
+	public String execute() throws Exception 
+	{
 		return SUCCESS;
 	}
 	
-	public String reduireHastus() {
+	public String reduireHastus() 
+	{
 		String canonicalPath = null;
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		String newCanonicalPath = reducteur.reduire(canonicalPath, true);
@@ -92,25 +96,32 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String analyseHastus() {
+	public String analyseHastus() 
+	{
 		String canonicalPath = null;
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		String newCanonicalPath = reducteur.reduire(canonicalPath, true);
-		try {
+		try 
+		{
 			lecteurCSVHastus.lireCheminFichier(newCanonicalPath);
 		}
-		catch (ServiceException e) {
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) {
+		catch (ServiceException e) 
+		{
+			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
+			{
 				String message = getText("import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError(message);
 			}
-			else {
+			else 
+			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
 				args.add("aaa");
@@ -127,11 +138,14 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importAltibus() {
-		try {
+	public String importAltibus() 
+	{
+		try 
+		{
 			lecteurXMLAltibus.lireCheminFichier(null);
 		}
-		catch(Throwable e) {
+		catch(Throwable e) 
+		{
 			addActionError(e.getMessage());
 			return INPUT;
 		}
@@ -139,30 +153,38 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importPegase() {
+	public String importPegase()
+	{
 		String canonicalPath = null;
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 			log.debug("IMPORT DU FICHIER PEGASE : "+canonicalPath);
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
-		try {
+		try 
+		{
 			lecteurCSVPegase.lireCheminFichier(canonicalPath);
 		}
-		catch(Throwable e) {
+		catch(Throwable e) 
+		{
 			addActionError(e.getMessage());
 			return INPUT;
 		}
 		boolean echec = false;
 		List<ILectureEchange> lecturesEchange = lecteurCSVPegase.getLecturesEchange();
-		for (ILectureEchange lectureEchange : lecturesEchange) {
-			try {
+		for (ILectureEchange lectureEchange : lecturesEchange) 
+		{
+			try 
+			{
 				importateur.importer(false, lectureEchange, false);
 				addActionMessage("La ligne "+lectureEchange.getLigneRegistration()+" a été import&eacute;e.");
 			}
-			catch(Exception e) {
+			catch(Exception e) 
+			{
 				echec = true;
 				this.addFieldError("fieldName_1", "errorMessage 1");
 				this.addFieldError("fieldName_2", "errorMessage 2");
@@ -176,30 +198,37 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importHastus() {
+	public String importHastus() 
+	{
 		String canonicalPath = null;
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 			if (incremental)
 				log.debug("IMPORT INCREMENTAL DU FICHIER : "+canonicalPath);
 			else
 				log.debug("IMPORT DU FICHIER : "+canonicalPath);
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		String newCanonicalPath = reducteur.reduire(canonicalPath, true);
 		log.debug("DECOMPRESSION VERS LE FICHIER : "+newCanonicalPath);
-		try {
+		try 
+		{
 			lecteurCSVHastus.lireCheminFichier(newCanonicalPath);
 		}
-		catch (ServiceException e) {
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) {
+		catch (ServiceException e) 
+		{
+			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
+			{
 				String message = getText("import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError(message);
 			}
-			else {
+			else 
+			{
 				List<String> args = new ArrayList<String>();
 				args.add("aaa");
 				args.add("bbb");
@@ -213,15 +242,18 @@ public class ImportAction extends GeneriqueAction {
 		boolean echec = false;
 		List<ILectureEchange> lecturesEchange = lecteurCSVHastus.getLecturesEchange();
 		for (ILectureEchange lectureEchange : lecturesEchange) {
-			try {
+			try 
+			{
 				if (!lectureEchange.getLigneRegistration().equals("SP") &&
 						!lectureEchange.getLigneRegistration().equals("88") &&
-						!lectureEchange.getLigneRegistration().equals("NAVL")) {
+						!lectureEchange.getLigneRegistration().equals("NAVL")) 
+				{
 					importateur.importer(false, lectureEchange, incremental);
 					addActionMessage("La ligne "+lectureEchange.getLigneRegistration()+" a été import&eacute;e.");
 				}
 			}
-			catch(Exception e) {
+			catch(Exception e) 
+			{
 				echec = true;
 				this.addFieldError("fieldName_1", "errorMessage 1");
 				this.addFieldError("fieldName_2", "errorMessage 2");
@@ -235,24 +267,31 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importCSVGeneric() {
+	public String importCSVGeneric() 
+	{
 		String canonicalPath = null;
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
-		try {
+		try 
+		{
 			lecteurCSVPrincipal.lireCheminFichier(canonicalPath);
 		}
-		catch (ServiceException e) {
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) {
+		catch (ServiceException e) 
+		{
+			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
+			{
 				String message = getText("import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError(message);
 			}
-			else {
+			else 
+			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
 				String message = e.getMessage();
@@ -265,8 +304,10 @@ public class ImportAction extends GeneriqueAction {
 		Map<String, String> oldTableauxMarcheObjectIdParRef = new HashMap<String, String>();
 		Map<String, String> oldPositionsGeographiquesObjectIdParRef = new HashMap<String, String>();
 		Map<String, String> oldObjectIdParOldObjectId = new HashMap<String, String>();
-		for (ILectureEchange lectureEchange : lecturesEchange) {
-			try {
+		for (ILectureEchange lectureEchange : lecturesEchange) 
+		{
+			try 
+			{
 				List<TableauMarche> tableauxMarche = lectureEchange.getTableauxMarche();
 				for (TableauMarche tableauMarche : tableauxMarche)
 					if (oldTableauxMarcheObjectIdParRef.get(tableauMarche.getComment()) != null)
@@ -315,7 +356,8 @@ public class ImportAction extends GeneriqueAction {
 				for (String key : _oldObjectIdParOldObjectId.keySet())
 					oldObjectIdParOldObjectId.put(key, _oldObjectIdParOldObjectId.get(key));
 			}
-			catch(Exception e) {
+			catch(Exception e) 
+			{
 				addActionMessage("Impossible de cr&eacute;er la ligne en base");
 				log.error("Impossible de cr�er la ligne en base, msg=" + e.getMessage(), e);
 				return INPUT;
@@ -326,25 +368,32 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importCSV() {
+	public String importCSV() 
+	{
 		String canonicalPath = null;
 		//	Recuperation du chemin du fichier
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
-		try {
+		try 
+		{
 			lecteurCSV.lireCheminFichier(canonicalPath);
 		}
-		catch (ServiceException e) {
-			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) {
+		catch (ServiceException e) 
+		{
+			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
+			{
 				String message = getText( "import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError( message);
 			}
-			else {
+			else 
+			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
 				args.add( "aaa");
@@ -362,10 +411,12 @@ public class ImportAction extends GeneriqueAction {
 		// ChouettePTNetworkType chouettePTNetworkType = exportManager.getExportParRegistration(lectureEchange.getReseau().getRegistrationNumber());
 		//	TODO : Validation du fichier CSV
 		//	Import des données CSV
-		try {
+		try 
+		{
 			importateur.importer(true, lectureEchange);
 		}
-		catch (ServiceException e) {
+		catch (ServiceException e) 
+		{
 			addActionMessage("Impossible de cr&eacute;er la ligne en base");
 			log.error("Impossible de creer la ligne en base, msg = " + e.getMessage(), e);
 			return INPUT;
@@ -374,7 +425,8 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importXMLs() throws Exception {
+	public String importXMLs() throws Exception 
+	{
 		String result = SUCCESS;
 		ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(fichier));
 		ZipEntry zipEntry = zipInputStream.getNextEntry();
@@ -395,27 +447,33 @@ public class ImportAction extends GeneriqueAction {
 		return result;
 	}
 	
-	public String importXML() throws Exception {
+	public String importXML() throws Exception 
+	{
 		return importXML(fichier);
 	}
 	
-	private String importXML(File file) throws Exception {
+	private String importXML(File file) throws Exception 
+	{
 		String canonicalPath = file.getCanonicalPath();
 		chouette.schema.ChouettePTNetworkTypeType chouettePTNetworkType = null;
-		try {
+		try 
+		{
 			logger.debug("IMPORT XML DU FICHIER "+canonicalPath);
 			chouettePTNetworkType = lecteurFichierXML.lire(canonicalPath);
 			logger.debug("CREATION DU CHOUETTEPTNETWORKTYPE REUSSI");
 		}
-		catch (Exception exception) {
+		catch (Exception exception) 
+		{
 			gestionException(exception);
 			return INPUT;
 		}
 		ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
-		try {
+		try 
+		{
 			importateur.importer(false, lectureEchange);
 		}
-		catch (ServiceException serviceException) {
+		catch (ServiceException serviceException) 
+		{
 			addActionError("Impossible de cr&eacute;er la ligne en base");
 			log.error("Impossible de créer la ligne en base, msg=" + serviceException.getMessage(), serviceException);
 			return INPUT;
@@ -433,17 +491,20 @@ public class ImportAction extends GeneriqueAction {
 		{
 			amivifLine = lecteurAmivifXML.lire(canonicalPath);
 		}
-		catch (Exception exception) {
+		catch (Exception exception) 
+		{
 			gestionException(exception);
 			return INPUT;
 		}
 		//	Donnees convertibles en format chouette
-		ILectureEchange lectureEchange = lecteurEchangeXML.lire( amivifAdapter.getATC(amivifLine));
+		ILectureEchange lectureEchange = lecteurEchangeXML.lire(amivifAdapter.getATC(amivifLine));
 		//	Import des donnees XML
-		try {
+		try 
+		{
 			importateur.importer(false, lectureEchange);
 		}
-		catch (ServiceException serviceException) {
+		catch (ServiceException serviceException) 
+		{
 			addActionError("Impossible de cr&eacute;er la ligne en base");
 			log.error("Impossible de créer la ligne en base, msg=" + serviceException.getMessage(), serviceException);
 			return INPUT;
@@ -452,7 +513,8 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importHorairesItineraire() {
+	public String importHorairesItineraire() 
+	{
 		LecteurCSV lecteurCsvItineraire = new LecteurCSV();
 		List<String[]> donneesIn = null;
 				
@@ -481,7 +543,8 @@ public class ImportAction extends GeneriqueAction {
 			}
 			return INPUT_ITINERAIRE;
 		}
-		catch (Exception e){
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			String message = getText( "import.csv.fichier.introuvable");
 			message += e.getMessage();
@@ -506,7 +569,8 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS_ITINERAIRE;
 	}
 	
-	private void gestionException(Exception exception) {
+	private void gestionException(Exception exception) 
+	{
 		if (exception instanceof ServiceException)
 		{
 			if (exception instanceof fr.certu.chouette.service.validation.commun.ValidationException) {
@@ -528,7 +592,8 @@ public class ImportAction extends GeneriqueAction {
 					}
 				}
 			}
-			else {
+			else 
+			{
 				ServiceException serviceException = (ServiceException) exception;
 				addActionError("Impossible de r&eacute;cup&eacute;rer le fichier");
 				log.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
@@ -537,7 +602,8 @@ public class ImportAction extends GeneriqueAction {
 		//TODO 
 	}
 	
-	private String copieTemporaire() {
+	private String copieTemporaire() 
+	{
 		try {
 			File temp = File.createTempFile("ligne", ".xml");
 			FileCopyUtils.copy(fichier, temp);
@@ -548,69 +614,85 @@ public class ImportAction extends GeneriqueAction {
 		}
 		String canonicalPath = null;
 		//	Recupération du chemin du fichier
-		try {
+		try 
+		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) {
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		return canonicalPath;
 	}
 	
 	@Override
-	public String input() throws Exception {
+	public String input() throws Exception 
+	{
 		return INPUT;
 	}
 	
-	public void setImportateur(IImportateur importateur) {
+	public void setImportateur(IImportateur importateur) 
+	{
 		this.importateur = importateur;
 	}
 	
-	public void setLecteurCSV(ILecteurCSV lecteurCSV) {
+	public void setLecteurCSV(ILecteurCSV lecteurCSV) 
+	{
 		this.lecteurCSV = lecteurCSV;
 	}
 	
-	public void setLecteurCSVPrincipal(ILecteurPrincipal lecteurPrincipal) {
+	public void setLecteurCSVPrincipal(ILecteurPrincipal lecteurPrincipal) 
+	{
 		this.lecteurCSVPrincipal = lecteurPrincipal;
 	}
 	
-	public ILecteurPrincipal getLecteurCSVPrincipal() {
+	public ILecteurPrincipal getLecteurCSVPrincipal() 
+	{
 		return lecteurCSVPrincipal;
 	}
 	
-	public void setLecteurCVSHastus(ILecteurPrincipal lecteurPrincipal) {
+	public void setLecteurCVSHastus(ILecteurPrincipal lecteurPrincipal) 
+	{
 		this.lecteurCSVHastus = lecteurPrincipal;
 	}
 	
-	public ILecteurPrincipal getLecteurCVSHastus() {
+	public ILecteurPrincipal getLecteurCVSHastus() 
+	{
 		return lecteurCSVHastus;
 	}
 	
-	public void setLecteurCVSPegase(ILecteurPrincipal lecteurPrincipal) {
+	public void setLecteurCVSPegase(ILecteurPrincipal lecteurPrincipal) 
+	{
 		this.lecteurCSVPegase = lecteurPrincipal;
 	}
 	
-	public ILecteurPrincipal getLecteurCVSPegase() {
+	public ILecteurPrincipal getLecteurCVSPegase() 
+	{
 		return lecteurCSVPegase;
 	}
 	
-	public void setLecteurXMLAltibus(ILecteurPrincipal lecteurXMLAltibus) {
+	public void setLecteurXMLAltibus(ILecteurPrincipal lecteurXMLAltibus) 
+	{
 		this.lecteurXMLAltibus = lecteurXMLAltibus;
 	}
 	
-	public String getFichierFileName() {
+	public String getFichierFileName() 
+	{
 		return fichierFileName;
 	}
 	
-	public void setFichierFileName(String fichierFileName) {
+	public void setFichierFileName(String fichierFileName) 
+	{
 		this.fichierFileName = fichierFileName;
 	}
 	
-	public File getFichier() {
+	public File getFichier() 
+	{
 		return fichier;
 	}
 	
-	public void setFichier(File fichier) {
+	public void setFichier(File fichier) 
+	{
 		this.fichier = fichier;
 	}
 	
@@ -618,105 +700,130 @@ public class ImportAction extends GeneriqueAction {
 		return incremental;
 	}
 	
-	public void setIncremental(boolean incremental) {
+	public void setIncremental(boolean incremental) 
+	{
 		this.incremental = incremental;
 	}
 	
-	public String getFichierContentType() {
+	public String getFichierContentType() 
+	{
 		return fichierContentType;
 	}
 	
-	public void setFichierContentType(String fichierContentType) {
+	public void setFichierContentType(String fichierContentType) 
+	{
 		log.debug(fichierContentType);
 		this.fichierContentType = fichierContentType;
 	}
 	
-	public void setLecteurEchangeXML(ILecteurEchangeXML lecteurEchangeXML) {
+	public void setLecteurEchangeXML(ILecteurEchangeXML lecteurEchangeXML) 
+	{
 		this.lecteurEchangeXML = lecteurEchangeXML;
 	}
 	
-	public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML) {
+	public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML) 
+	{
 		this.lecteurFichierXML = lecteurFichierXML;
 	}
 	
-	public void setAmivifAdapter(IAmivifAdapter amivifAdapter) {
+	public void setAmivifAdapter(IAmivifAdapter amivifAdapter) 
+	{
 		this.amivifAdapter = amivifAdapter;
 	}
 	
-	public void setLecteurAmivifXML(ILecteurAmivifXML lecteurAmivifXML) {
+	public void setLecteurAmivifXML(ILecteurAmivifXML lecteurAmivifXML) 
+	{
 		this.lecteurAmivifXML = lecteurAmivifXML;
 	}
 	
-	public String getUseAmivif() {
+	public String getUseAmivif() 
+	{
 		return useAmivif;
 	}
 	
-	public void setUseAmivif(String useAmivif) {
+	public void setUseAmivif(String useAmivif) 
+	{
 		this.useAmivif = useAmivif;
 	}
 	
-	public void setUseCSVGeneric(String useCSVGeneric) {
+	public void setUseCSVGeneric(String useCSVGeneric) 
+	{
 		this.useCSVGeneric = useCSVGeneric;
 	}
 	
-	public String getUseCSVGeneric() {
+	public String getUseCSVGeneric() 
+	{
 		return useCSVGeneric;
 	}
 	
-	public void setUseHastus(String useHastus) {
+	public void setUseHastus(String useHastus) 
+	{
 		this.useHastus = useHastus;
 	}
 	
-	public String getUseHastus() {
+	public String getUseHastus() 
+	{
 		return useHastus;
 	}
 	
-	public void setUseAltibus(String useAltibus) {
+	public void setUseAltibus(String useAltibus) 
+	{
 		this.useAltibus = useAltibus;
 	}
 	
-	public String getUseAltibus() {
+	public String getUseAltibus() 
+	{
 		return useAltibus;
 	}
 	
-	public void setUsePegase(String usePegase) {
+	public void setUsePegase(String usePegase) 
+	{
 		this.usePegase = usePegase;
 	}
 	
-	public String getUsePegase() {
+	public String getUsePegase() 
+	{
 		return usePegase;
 	}
 	
-	public void setIdentificationManager(IIdentificationManager identificationManager) {
+	public void setIdentificationManager(IIdentificationManager identificationManager) 
+	{
 		this.identificationManager = identificationManager;
 	}
 
 	
-	public void setImportHorairesManager(IImportHorairesManager importHorairesManager) {
+	public void setImportHorairesManager(IImportHorairesManager importHorairesManager) 
+	{
 		this.importHorairesManager = importHorairesManager;
 	}
 	
-	public IIdentificationManager getIdentificationManager() {
+	public IIdentificationManager getIdentificationManager() 
+	{
 		return identificationManager;
 	}
 
-	public Long getIdLigne() {
+	public Long getIdLigne() 
+	{
 		return idLigne;
 	}
 
-	public void setIdLigne(Long idLigne) {
+	public void setIdLigne(Long idLigne) 
+	{
 		this.idLigne = idLigne;
 	}
 	
-	public void setLogFileName(String logFileName) {
+	public void setLogFileName(String logFileName) 
+	{
 		this.logFileName = logFileName;
 	}
 	
-	public void setReducteur(IReducteur reducteur) {
+	public void setReducteur(IReducteur reducteur) 
+	{
 		this.reducteur = reducteur;
 	}
 	
-	public void setBaseName(String baseName) {
+	public void setBaseName(String baseName) 
+	{
 		this.baseName = baseName;
 	}
 }

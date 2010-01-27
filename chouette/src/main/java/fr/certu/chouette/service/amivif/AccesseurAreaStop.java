@@ -23,7 +23,8 @@ public class AccesseurAreaStop implements IAccesseurAreaStop
 		
 		Map<String, StopArea> areaParId = new Hashtable<String, StopArea>();
 		int totalArea = chouetteArea.getStopAreaCount();
-		for (int i = 0; i < totalArea; i++) {
+		for (int i = 0; i < totalArea; i++) 
+		{
 			StopArea stopArea = chouetteArea.getStopArea(i);
 			ChouetteAreaType areaType = stopArea.getStopAreaExtension().getAreaType();
 			if ( 	ChouetteAreaType.BOARDINGPOSITION.equals( areaType)
@@ -32,7 +33,8 @@ public class AccesseurAreaStop implements IAccesseurAreaStop
 		}
 		centroidParId = new Hashtable<String, AreaCentroid>();
 		int totalCentroid = chouetteArea.getAreaCentroidCount();
-		for (int i = 0; i < totalCentroid; i++) {
+		for (int i = 0; i < totalCentroid; i++) 
+		{
 			AreaCentroid areaCentroid = chouetteArea.getAreaCentroid( i);
 			centroidParId.put( areaCentroid.getObjectId(), areaCentroid);
 		}
@@ -41,7 +43,8 @@ public class AccesseurAreaStop implements IAccesseurAreaStop
 		areaCentroidParStopId = new Hashtable<String, AreaCentroid>();
 		areaCentroidParAreaId = new Hashtable<String, AreaCentroid>();
 		int totalStop = chouettePTNetwork.getChouetteLineDescription().getStopPointCount();
-		for (int i = 0; i < totalStop; i++) {
+		for (int i = 0; i < totalStop; i++) 
+		{
 			StopPoint stopPoint = chouettePTNetwork.getChouetteLineDescription().getStopPoint( i);
 			
 			StopArea stopArea = areaParId.get( stopPoint.getContainedIn());
