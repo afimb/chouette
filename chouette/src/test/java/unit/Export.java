@@ -47,6 +47,7 @@ import fr.certu.chouette.service.database.IITLManager;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.service.database.IReseauManager;
+import fr.certu.chouette.service.database.IExportManager.ExportMode;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
@@ -56,8 +57,7 @@ import fr.certu.chouette.service.xml.ILecteurFichierXML;
 
 public class Export 
 {
-	private static final Logger logger = Logger
-	.getLogger(Export.class);
+	private static final Logger logger = Logger.getLogger(Export.class);
 	private IExportManager exportManager;
 	private IImportateur importateur;
 	private IIdentificationManager identification;
@@ -68,7 +68,13 @@ public class Export
 	private ILigneManager ligneManager;
 	private IReseauManager reseauManager;
 	
-	@BeforeSuite
+	//TODO : app test paths should be in properties 
+	private String DATA_FOLDER = "src/test/data/";
+	private String goodAFNORFile = DATA_FOLDER + "goodAFNORLineFile.xml";
+	
+	private String OUTPUT_FOLDER = "dataTestsOutput/";
+		
+;	@BeforeSuite
 	public void initialisation()
 	{
 		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
@@ -111,10 +117,11 @@ public class Export
 		
 		PositionGeographique exArretPhysique = getArretPhysique( ligneXML).get( 2);
 		String objectIdOrigine = exArretPhysique.getObjectId();
-		positionGeographiqueManager.creer( exArretPhysique);
+		positionGeographiqueManager.creer(exArretPhysique);
 		PositionGeographique arretInitialLu = positionGeographiqueManager.lire( exArretPhysique.getId());
 		String objectIdDestination = arretInitialLu.getObjectId();
-		for (int i=0; i<ligneXML.getChouetteArea().getStopAreaCount(); i++) {
+		for (int i=0; i<ligneXML.getChouetteArea().getStopAreaCount(); i++) 
+		{
 			StopArea stopArea = ligneXML.getChouetteArea().getStopArea( i);
 			if ( stopArea.getObjectId().equals( objectIdOrigine))
 			{
@@ -126,7 +133,8 @@ public class Export
 				pItlPhysiqueId.add( stopArea.getObjectId());
 			}
 		}
-		for (int i=0; i<ligneXML.getChouetteLineDescription().getStopPointCount(); i++) {
+		for (int i=0; i<ligneXML.getChouetteLineDescription().getStopPointCount(); i++) 
+		{
 			StopPoint stopPoint = ligneXML.getChouetteLineDescription().getStopPoint( i);
 			if ( stopPoint.getContainedIn().equals( objectIdOrigine))
 			{
@@ -261,8 +269,7 @@ public class Export
 		assert zoneLue.getName().equals( nomZoneAprestImport) : "le nom de la zone n'a pas été màj par import XML";
 	}
 
-	@Test(groups="tests unitaires", 
-			description="import XML de zones - nv arret physique sur ex zone")
+	@Test(groups="tests unitaires", description="import XML de zones - nv arret physique sur ex zone")
     public void export_zone_nv_ex() 
     {
 		Random random = new Random();
@@ -278,19 +285,19 @@ public class Export
 		
 		String nomZoneAvantImport = zoneEx.getName();
 		String nomZoneAprestImport = "azerty " + nomZoneAvantImport;
-		zoneEx.setName( nomZoneAprestImport);
-		zoneEx.getStopArea().addContains( nvArretPhysique.getObjectId());
-		ligneXML.getChouetteArea().addStopArea( zoneEx.getStopArea());
-		ligneXML.getChouetteArea().addAreaCentroid( zoneEx.getAreaCentroid());
+		zoneEx.setName(nomZoneAprestImport);
+		zoneEx.getStopArea().addContains(nvArretPhysique.getObjectId());
+		ligneXML.getChouetteArea().addStopArea(zoneEx.getStopArea());
+		ligneXML.getChouetteArea().addAreaCentroid(zoneEx.getAreaCentroid());
 		
-		lecteurFichierXML.ecrire( ligneXML, new File( "origine.xml"));
+		lecteurFichierXML.ecrire(ligneXML, new File( "origine.xml"));
 		
 		ILectureEchange lectureEchange = lecteurEchangeXML.lire(ligneXML);
 		importateur.importer( false, lectureEchange);
 		
 		// conservation de l'id de la zone existante
-		PositionGeographique zoneLue = positionGeographiqueManager.lire( zoneEx.getId());
-		assert zoneLue.getObjectId().equals( zoneEx.getObjectId()) : "l'objectId de la nouvelle n'est pas correct";
+		PositionGeographique zoneLue = positionGeographiqueManager.lire(zoneEx.getId());
+		assert zoneLue.getObjectId().equals(zoneEx.getObjectId()) : "l'objectId de la nouvelle n'est pas correct";
 		assert zoneLue.getName().equals( nomZoneAprestImport) : "le nom de la zone n'a pas été màj par import XML";
 		
 		List<PositionGeographique> posGeos = positionGeographiqueManager.getGeoPositionsDirectementContenues( zoneLue.getId());
@@ -419,6 +426,84 @@ public class Export
 		}
 	}
 
+	@Test(groups="tests unitaires", description = "import - export d'une ligne AFNOR")
+    public void exportAFNOR() 
+    {
+		String filename = goodAFNORFile;
+		try
+		{			
+			ChouettePTNetworkTypeType chouettePTNetworkType = null;
+			try 
+			{
+				logger.debug("IMPORT XML DU FICHIER " + filename);
+				chouettePTNetworkType = lecteurFichierXML.lire(filename, true);
+				logger.debug("CREATION DU CHOUETTEPTNETWORKTYPETYPE REUSSI");
+			}
+			catch (Exception e) 
+			{
+				String message = "Erreur de lecture du fichier " + filename;
+				logger.error(message + ", msg = " + e.getMessage(), e);
+				assert false:"Echec export : " + message;				
+			}
+			
+			ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
+			importateur.importer(false, lectureEchange);
+			
+			Ligne ligne = ligneManager.getLigneParRegistration(chouettePTNetworkType.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber());
+			ChouettePTNetworkTypeType exportedLine = exportManager.getExportParIdLigne( ligne.getId());
+			
+			lecteurFichierXML.ecrire(exportedLine, new File(OUTPUT_FOLDER + "after_AFNOR_import.xml"));
+			lecteurFichierXML.ecrire(chouettePTNetworkType, new File(OUTPUT_FOLDER + "before_AFNOR_import.xml"));
+			
+			ILectureEchange lect = lecteurEchangeXML.lire(exportedLine);
+			
+			List<TableauMarche> tms = lect.getTableauxMarche();
+			for (TableauMarche timetable : tms) 
+			{
+				logger.debug( "id="+timetable.getObjectId());
+				int total = timetable.getVehicleJourneyIdCount();
+				for (int i = 0; i < total; i++) 
+				{
+					logger.debug( "course :"+timetable.getVehicleJourneyId( i));
+				}
+			}
+			
+			importateur.importer(false, lect);
+		}
+		catch(Exception e)
+		{
+			logger.error(e.getMessage(), e);
+			assert false:"Echec du test d'export AFNOR :" + e.getMessage();
+		}
+    }
+
+	
+	public void importer(String fileName) 
+	{
+		ChouettePTNetworkTypeType chouettePTNetworkType = null;
+		try 
+		{
+			logger.debug("IMPORT XML DU FICHIER "+fileName);
+			chouettePTNetworkType = lecteurFichierXML.lire(fileName, true);
+			logger.debug("CREATION DU CHOUETTEPTNETWORKTYPE REUSSI");
+		}
+		catch (Exception e) 
+		{
+			logger.error("Erreur de lecture du fichier "+fileName+", msg = " + e.getMessage(), e);
+			return;
+		}
+		ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
+		try 
+		{
+			importateur.importer(true, lectureEchange);
+		}
+		catch (ServiceException e) 
+		{
+			logger.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+			return;
+		}
+	}
+	
 	@Test(groups="tests unitaires", description="import - export d'une ligne")
     public void export() 
     {
@@ -451,13 +536,13 @@ public class Export
 			// tester le resultat enregistre
 			// comparer ligneDeTest et ligneDeTestLue
 		}
-		catch( Exception e)
+		catch(Exception e)
 		{
-			logger.error( e.getMessage(), e);
-			assert false:"Echec du test d'export:"+e.getMessage();
+			logger.error(e.getMessage(), e);
+			assert false:"Echec du test d'export: " + e.getMessage();
 		}
     }
-
+	
 	@Test(groups="tests unitaires", description="export en suppression d'une ligne")
     public void export_remove() 
     {

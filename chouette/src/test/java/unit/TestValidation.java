@@ -6,6 +6,9 @@ import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeClass;
@@ -17,6 +20,8 @@ import org.testng.annotations.Test;
 
 public class TestValidation {
 	
+	private static final Log log = LogFactory.getLog(TestValidation.class);
+	
 	private String             fileName             = "src/test/resources/validation/ATC_100110200.xml";
 	private String             fileNameKO           = "src/test/resources/validation/ATC_A_014014012.xml";
 	private String             fileNameNotFound     = "src/test/resources/validation/fileNotFound.xml";
@@ -27,6 +32,8 @@ public class TestValidation {
 	private String             fileNameBadChouette0 = "src/test/resources/validation/fileBadChouette0.xml";
 	private String             fileNameBadChouette1 = "src/test/resources/validation/fileBadChouette1.xml";
 	private String             fileNameBadChouette2 = "src/test/resources/validation/fileBadChouette2.xml";
+	private String             badEnumValueAFNORFile = "src/test/data/badAFNORFile0.xml";
+	
 	private boolean            logging              = true;
 	private ILecteurFichierXML lecteurFichierXML;
 	
@@ -133,6 +140,28 @@ public class TestValidation {
 			{
 				throw e;
 			}			
+		}
+	}
+	
+	@Test(groups="test de validation",
+			expectedExceptions = ValidationException.class,
+			description = "Test de la validation du modele AFNOR sur un exemple d'un fichier AFNOR invalide : valeur &eacute;num&eacute;ration invalide.")
+	public void testAFNORNotOK0() 
+	{
+		try
+		{
+			lecteurFichierXML.lire(badEnumValueAFNORFile, true);
+			
+		}
+		catch(ValidationException e) 
+		{
+			
+			// same "LecteurFichierXML" used for Chouette et AFNOR,
+			// so same "INVALID_CHOUETTE_FILE" error message when a marshal sax exception occurs
+			if (detecterInvalidite(e, TypeInvalidite.INVALID_CHOUETTE_FILE))
+			{
+				throw e;
+			}
 		}
 	}
 	

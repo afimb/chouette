@@ -14,3 +14,6 @@ target
 *.log
 .metadata
 Servers
+chouette/src/main/webapp/META-INF
+chouette/dataTestsOutput
+

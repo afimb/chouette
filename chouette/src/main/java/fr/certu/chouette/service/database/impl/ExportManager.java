@@ -55,7 +55,8 @@ import java.util.TreeSet;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 
-public class ExportManager implements IExportManager {
+public class ExportManager implements IExportManager 
+{
 	
 	private static final Logger                       logger                     = Logger.getLogger(ExportManager.class);
 	private static final String                       SEPARATOR                  = "A";
@@ -69,15 +70,16 @@ public class ExportManager implements IExportManager {
 	private              IIdentificationManager       identificationManager;
 	private              IMissionManager              missionManager;
 	private              IITLManager                  itlManager;
-	private              String                       systemId;
+	private              String						  systemId;
 	private              Map<Long, String>            objectIdParArretPhysiqueId = new Hashtable<Long, String>();
 	private              Map<Long, String>            objectIdParArretLogiqueId  = new Hashtable<Long, String>();
 	private              Map<Long, String>            objectIdParItineraireId    = new Hashtable<Long, String>();
 	private              Map<Long, String>            objectIdParCourseId        = new Hashtable<Long, String>();
 	private              Map<Long, Integer>           positionParArretId         = new Hashtable<Long, Integer>();
 	private              Set<Long>                    idsArretsPhysiquesSurZone  = new HashSet<Long>();
-	private              ChouettePTNetworkTypeType     resultat;
+	private              ChouettePTNetworkTypeType    resultat;
 	
+		
 	public ChouetteRemoveLineTypeType getSuppressionParIdLigne(final Long idLigne)
 	{
 		return getSuppression(ligneManager.lire(idLigne));
@@ -114,8 +116,13 @@ public class ExportManager implements IExportManager {
 		positionParArretId.clear();
 		idsArretsPhysiquesSurZone.clear();
 	}
-	
-	private ChouettePTNetworkTypeType getExport(final Ligne ligne) 
+		
+	/**
+	 * @param ligne
+	 * @param exportMode will be used to specify the export type following desired extensions
+	 * @return
+	 */
+	private ChouettePTNetworkTypeType getExport(final Ligne ligne, ExportMode exportMode) 
 	{
 		reinit();
 		logger.debug("EVOCASTOR --> new ChouettePTNetwork");
@@ -128,8 +135,10 @@ public class ExportManager implements IExportManager {
 		Transporteur transporteur = transporteurManager.lire(ligne.getIdTransporteur());
 		List<Itineraire> itineraires = ligneManager.getLigneItinerairesExportables(ligne.getId());
 		Collection<Long> idItineraires = new ArrayList<Long>();
-		for (Itineraire itineraire : itineraires) 
+		for (Itineraire itineraire : itineraires)
+		{
 			idItineraires.add(itineraire.getId());
+		}
 		systemId = lireSystemeOrigine(ligne.getObjectId());
 		
 		logger.debug("EVOCASTOR --> ChouettePTNetwork:addCompagny");
@@ -150,12 +159,22 @@ public class ExportManager implements IExportManager {
 	
 	public ChouettePTNetworkTypeType getExportParRegistration(final String registrationNumber) 
 	{
-		return getExport(ligneManager.getLigneParRegistration(registrationNumber));
+		return getExportParRegistration(registrationNumber, ExportMode.CHOUETTE);
 	}
 	
 	public ChouettePTNetworkTypeType getExportParIdLigne(final Long idLigne) 
 	{
-		return getExport(ligneManager.lire(idLigne));
+		return getExportParIdLigne(idLigne, ExportMode.CHOUETTE);
+	}
+	
+	public ChouettePTNetworkTypeType getExportParRegistration(final String registrationNumber, ExportMode exportMode) 
+	{
+		return getExport(ligneManager.getLigneParRegistration(registrationNumber), exportMode);
+	}
+	
+	public ChouettePTNetworkTypeType getExportParIdLigne(final Long idLigne, ExportMode exportMode) 
+	{
+		return getExport(ligneManager.lire(idLigne), exportMode);
 	}
 	
 	private void construireITL(Ligne ligne) 
@@ -164,24 +183,30 @@ public class ExportManager implements IExportManager {
 		ChouetteArea chouetteArea = resultat.getChouetteArea();
 		List<InterdictionTraficLocal> itls = itlManager.getITLLigne(ligne.getId());
 		logger.debug("id ligne="+ligne.getId()+" total itls = "+itls.size());
-		for (InterdictionTraficLocal itl : itls) {
+		for (InterdictionTraficLocal itl : itls) 
+		{
 			description.addITL(getITL(itl, ligne));
 			chouetteArea.addStopArea(getITLStopArea(itl));
 		}
 	}
 	
-	private void construireZoneCorrespondances() {
+	private void construireZoneCorrespondances() 
+	{
 		Map<Long, PositionGeographique> zonesParentesParId = new Hashtable<Long, PositionGeographique>();
 		Map<Long, String> zonesParentesObjectIdParId = new Hashtable<Long, String>();
 		Map<Long, List<Long>> zonesContenuesParIdZone = new Hashtable<Long, List<Long>>();
-		for (Long zoneId : idsArretsPhysiquesSurZone) {
+		for (Long zoneId : idsArretsPhysiquesSurZone) 
+		{
 			List<PositionGeographique> zonesParentes = positionGeographiqueManager.getGeoPositionsParentes(zoneId);
-			for (PositionGeographique zone : zonesParentes) {
+			for (PositionGeographique zone : zonesParentes) 
+			{
 				zonesParentesParId.put(zone.getId(), zone);
 				zonesParentesObjectIdParId.put(zone.getId(), zone.getObjectId());
-				if (zone.getIdParent() != null) {
+				if (zone.getIdParent() != null) 
+				{
 					List<Long> idsZonesContenues = zonesContenuesParIdZone.get(zone.getIdParent());
-					if (idsZonesContenues == null) {
+					if (idsZonesContenues == null) 
+					{
 						idsZonesContenues = new ArrayList<Long>();
 						zonesContenuesParIdZone.put(zone.getIdParent(), idsZonesContenues);
 					}
@@ -190,14 +215,17 @@ public class ExportManager implements IExportManager {
 				}
 			}
 		}
-		for (PositionGeographique zone : zonesParentesParId.values()) {
+		for (PositionGeographique zone : zonesParentesParId.values()) 
+		{
 			StopArea stopArea = zone.getStopArea();
 			List<Long> zonesContenues = zonesContenuesParIdZone.get(zone.getId());
-			if (zonesContenues!=null && !zonesContenues.isEmpty()) {
+			if (zonesContenues!=null && !zonesContenues.isEmpty()) 
+			{
 				for (Long idZoneContenue : zonesContenues)
 					stopArea.addContains(zonesParentesParId.get(idZoneContenue).getObjectId());
 				retirerStructuresVides(stopArea);
-				if (!zone.isEmptyAreaCentroid()) {
+				if (!zone.isEmptyAreaCentroid()) 
+				{
 					AreaCentroid centroid = getExportAreaCentroid(zone);
 					stopArea.setCentroidOfArea(centroid.getObjectId());
 					resultat.getChouetteArea().addAreaCentroid(centroid);
@@ -210,7 +238,8 @@ public class ExportManager implements IExportManager {
 		positionIds.addAll(zonesParentesParId.keySet());
 		List<Correspondance> correspondances = correspondanceManager.selectionParPositions(positionIds);
 		Collection<Long> positionHorsLigneIds = new HashSet<Long>();
-		for (Correspondance correspondance : correspondances) {
+		for (Correspondance correspondance : correspondances) 
+		{
 			Long depart = correspondance.getIdDepart();
 			Long arrivee = correspondance.getIdArrivee();
 			if (!objectIdParArretPhysiqueId.containsKey(depart) && !zonesParentesParId.containsKey(depart))
@@ -224,7 +253,8 @@ public class ExportManager implements IExportManager {
 		positionParId.putAll(zonesParentesObjectIdParId);
 		for (PositionGeographique positionGeographique : positionHorsLignes)
 			positionParId.put(positionGeographique.getId(), positionGeographique.getObjectId());
-		for (Correspondance correspondance : correspondances) {
+		for (Correspondance correspondance : correspondances) 
+		{
 			correspondance.setStartOfLink(positionParId.get(correspondance.getIdDepart()));
 			correspondance.setEndOfLink(positionParId.get(correspondance.getIdArrivee()));
 			if (correspondance.getStartOfLink()==null)
@@ -235,7 +265,8 @@ public class ExportManager implements IExportManager {
 		}
 	}
 
-	private void construireCourseTM(final List<Itineraire> itineraires) {
+	private void construireCourseTM(final List<Itineraire> itineraires) 
+	{
 		Map<Long, String> objectIdParIdItineraire = new Hashtable<Long, String>();
 		for (Itineraire itineraire : itineraires)
 			objectIdParIdItineraire.put(itineraire.getId(), itineraire.getObjectId());
@@ -247,9 +278,11 @@ public class ExportManager implements IExportManager {
 		tousHoraires = new ArrayList<Horaire>(horairesTries);
 		logger.debug("fin tri");
 		Map<Long, List<Horaire>> horairesTriesParCourse = new Hashtable<Long, List<Horaire>>();
-		for (Horaire horaire : tousHoraires) {
+		for (Horaire horaire : tousHoraires) 
+		{
 			List<Horaire> horairesTriesDeCourse = horairesTriesParCourse.get(horaire.getIdCourse());
-			if (horairesTriesDeCourse == null) {
+			if (horairesTriesDeCourse == null) 
+			{
 				horairesTriesDeCourse = new ArrayList<Horaire>();
 				horairesTriesParCourse.put(horaire.getIdCourse(), horairesTriesDeCourse);
 			}
@@ -269,13 +302,16 @@ public class ExportManager implements IExportManager {
 		int totalItineraires = description.getChouetteRouteCount();
 		for (int i = 0; i < totalItineraires; i++)
 			itineraireParTridentId.put(description.getChouetteRoute(i).getObjectId(), description.getChouetteRoute(i));
-		for (Course course : courses) {
+		for (Course course : courses) 
+		{
 			Long idCourse = course.getId();
 			List<Horaire> horaires = horairesTriesParCourse.get(idCourse);
-			if (horaires!=null && 1<horaires.size()) {
+			if (horaires!=null && 1<horaires.size()) 
+			{
 				List<String> stopPointList = new ArrayList<String>();
 				objectIdParCourseId.put(idCourse, course.getObjectId());
-				for (Horaire horaire : horaires) {
+				for (Horaire horaire : horaires) 
+				{
 					horaire.setStopPointId(objectIdParArretLogiqueId.get(horaire.getIdArret()));
 					horaire.setVehicleJourneyId(course.getObjectId());
 					course.getVehicleJourney().addVehicleJourneyAtStop(horaire.getVehicleJourneyAtStop());
@@ -285,10 +321,12 @@ public class ExportManager implements IExportManager {
 				vehicleJourney.setRouteId(objectIdParIdItineraire.get(course.getIdItineraire()));
 				description.addVehicleJourney(vehicleJourney);
 				Long idMission = course.getIdMission();
-				if (idMission != null) {
+				if (idMission != null) 
+				{
 					Mission mission = missionParId.get(idMission);
 					vehicleJourney.setJourneyPatternId(mission.getObjectId());
-					if (journeyPatternIds.add(mission.getObjectId())) {
+					if (journeyPatternIds.add(mission.getObjectId())) 
+					{
 						JourneyPattern journeyPattern = mission.getJourneyPattern();
 						journeyPattern.setRouteId(vehicleJourney.getRouteId());
 						journeyPattern.setStopPointList(stopPointList.toArray(new String[0]));
@@ -302,7 +340,8 @@ public class ExportManager implements IExportManager {
 			}
 		}
 		List<TableauMarche> tousTableauxMarche = itineraireManager.getTableauxMarcheItineraires(idItineraires);
-		for (TableauMarche marche : tousTableauxMarche) {
+		for (TableauMarche marche : tousTableauxMarche) 
+		{
 			Long idTM = marche.getId();
 			List<Course> tmCourses = tableauMarcheManager.getCoursesTableauMarche(idTM);
 			for (Course course : tmCourses) 
@@ -311,24 +350,32 @@ public class ExportManager implements IExportManager {
 		}
 	}
 	
-	private void construireRoutesArretsLogiques(final List<Itineraire> itineraires) {
-		Collection<Long> idItineraires = new HashSet<Long>();
+	private void construireRoutesArretsLogiques(final List<Itineraire> itineraires) 
+	{
+		Collection<Long> idItineraires = new HashSet<Long>();		
 		for (Itineraire itineraire : itineraires)
+		{
 			idItineraires.add(itineraire.getId());
+		}
+		
 		Map<String, PtLink> troncons = new Hashtable<String, PtLink>();
 		Map<Long, List<ArretItineraire>> arretsParItineraire = new Hashtable<Long, List<ArretItineraire>>();
 		List<ArretItineraire> arretsToutItineraire = itineraireManager.getArretsItineraires(idItineraires);
-		for (ArretItineraire arret : arretsToutItineraire) {
+		for (ArretItineraire arret : arretsToutItineraire) 
+		{
 			List<ArretItineraire> arretsItineraire = arretsParItineraire.get(arret.getIdItineraire());
-			if (arretsItineraire == null) {
+			if (arretsItineraire == null) 
+			{
 				arretsItineraire = new ArrayList<ArretItineraire>();
 				arretsParItineraire.put(arret.getIdItineraire(), arretsItineraire);
 			}
 			arretsItineraire.add(arret);
 			positionParArretId.put(arret.getId(), arret.getPosition());
 		}
+		
 		ChouetteLineDescription description = resultat.getChouetteLineDescription();
-		for (Itineraire itineraire : itineraires) {
+		for (Itineraire itineraire : itineraires) 
+		{
 			Long idItineraire = itineraire.getId();
 			ChouetteRoute route = itineraire.getChouetteRoute();
 			description.addChouetteRoute(route);
@@ -352,7 +399,9 @@ public class ExportManager implements IExportManager {
 		List<PositionGeographique> arretsPhysiques = positionGeographiqueManager.getArretsPhysiques(idPhysiques);
 		Map<String, StopArea> stopAreaParTridentId = new Hashtable<String, StopArea>();
 		Map<String, AreaCentroid> centroidParTridentId = new Hashtable<String, AreaCentroid>();
-		for (PositionGeographique physique : arretsPhysiques) {
+		
+		for (PositionGeographique physique : arretsPhysiques) 
+		{
 			objectIdParArretPhysiqueId.put(physique.getId(), physique.getObjectId());
 			StopArea stopArea = getExportStopArea(physique);
 			stopAreaParTridentId.put(stopArea.getObjectId(), stopArea);
@@ -365,7 +414,9 @@ public class ExportManager implements IExportManager {
 			if (physique.getIdParent()!=null)
 				idsArretsPhysiquesSurZone.add(physique.getId());
 		}
-		for (ArretItineraire arret : arretsToutItineraire) {
+		
+		for (ArretItineraire arret : arretsToutItineraire) 
+		{
 			String arretPhysiqueObjectId = objectIdParArretPhysiqueId.get(arret.getIdPhysique());
 			arret.setContainedIn(arretPhysiqueObjectId);
 			StopArea stopArea = stopAreaParTridentId.get(arretPhysiqueObjectId);
@@ -373,7 +424,8 @@ public class ExportManager implements IExportManager {
 			stopArea.addContains(arret.getObjectId());
 			StopPoint stopPoint = arret.getStopPoint();
 			stopPoint.setName(stopArea.getName());
-			if (centroid != null) {
+			if (centroid != null) 
+			{
 				stopPoint.setLatitude(centroid.getLatitude());
 				stopPoint.setLongitude(centroid.getLongitude());
 				stopPoint.setLongLatType(centroid.getLongLatType());
@@ -383,12 +435,15 @@ public class ExportManager implements IExportManager {
 		}
 	}
 	
-	private StopArea getExportStopArea(PositionGeographique arretPhysique) {
+	private StopArea getExportStopArea(PositionGeographique arretPhysique) 
+	{
 		PositionGeographique copie = new PositionGeographique();
-		try {
+		try 
+		{
 			PropertyUtils.copyProperties(copie, arretPhysique);
 		}
-		catch(Exception e) {
+		catch(Exception e) 
+		{
 			throw new RuntimeException(e);
 		}
 		String systemIdArretPhysique = lireSystemeOrigine(arretPhysique.getObjectId());
@@ -399,14 +454,16 @@ public class ExportManager implements IExportManager {
 		return stopArea;
 	}
 	
-	private void retirerStructuresVides(StopArea stopArea) {
+	private void retirerStructuresVides(StopArea stopArea) 
+	{
 		if (!PositionGeographique.isExtensionDefinie(stopArea))
 			stopArea.setStopAreaExtension(null);
 		else if (!PositionGeographique.isRegistrationNumberDefinie(stopArea))
 			stopArea.getStopAreaExtension().setRegistration(null);
 	}
 	
-	private ITL getITL(InterdictionTraficLocal itl, Ligne ligne) {
+	private ITL getITL(InterdictionTraficLocal itl, Ligne ligne) 
+	{
 		ITL schemaITL = new ITL();
 		schemaITL.setAreaId(itl.getObjectId());
 		schemaITL.setLineIdShortCut(ligne.getObjectId());
@@ -414,7 +471,8 @@ public class ExportManager implements IExportManager {
 		return schemaITL;
 	}
 	
-	private StopArea getITLStopArea(InterdictionTraficLocal itl) {
+	private StopArea getITLStopArea(InterdictionTraficLocal itl) 
+	{
 		StopArea area = new StopArea();
 		StopAreaExtension extension = new StopAreaExtension();
 		extension.setAreaType(ChouetteAreaType.ITL);
@@ -426,12 +484,15 @@ public class ExportManager implements IExportManager {
 		return area;
 	}
 
-	private AreaCentroid getExportAreaCentroid(PositionGeographique arretPhysique) {
+	private AreaCentroid getExportAreaCentroid(PositionGeographique arretPhysique) 
+	{
 		AreaCentroid areaCentroid = new AreaCentroid();
-		try {
+		try 
+		{
 			PropertyUtils.copyProperties(areaCentroid, arretPhysique.getAreaCentroid());
 		}
-		catch(Exception e) {
+		catch(Exception e) 
+		{
 			throw new RuntimeException(e);
 		}
 		String systemIdArretPhysique = lireSystemeOrigine(arretPhysique.getObjectId());
@@ -442,12 +503,14 @@ public class ExportManager implements IExportManager {
 		areaCentroid.setCreatorId(arretPhysique.getStopArea().getCreatorId());
 		areaCentroid.setName(arretPhysique.getName());
 		areaCentroid.setContainedIn(arretPhysique.getObjectId());
-		if (areaCentroid.getAddress() != null) {
+		if (areaCentroid.getAddress() != null) 
+		{
 			boolean noCountryCode = isBlank(areaCentroid.getAddress().getCountryCode());
 			boolean noStreetName = isBlank(areaCentroid.getAddress().getStreetName());
 			if (noCountryCode && noStreetName)
 				areaCentroid.setAddress(null);
-			else {
+			else 
+			{
 				if (noCountryCode)
 					areaCentroid.getAddress().setCountryCode(null);
 				if (noStreetName)
@@ -459,11 +522,13 @@ public class ExportManager implements IExportManager {
 		return areaCentroid;
 	}
 	
-	private boolean isBlank(String string) {
+	private boolean isBlank(String string) 
+	{
 		return string == null || string.isEmpty();
 	}
 	
-	private String lireSystemeOrigine(String objectId) {
+	private String lireSystemeOrigine(String objectId) 
+	{
 		if (objectId == null)
 			return null;
 		try {
@@ -475,7 +540,8 @@ public class ExportManager implements IExportManager {
 	}
 	
 
-	private List<PtLink> getPtLinkArray(List<ArretItineraire> arrets) {
+	private List<PtLink> getPtLinkArray(List<ArretItineraire> arrets) 
+	{
 		if (arrets == null)
 			return new ArrayList<PtLink>();
 		int totalTroncon = arrets.size()-1;
@@ -488,7 +554,8 @@ public class ExportManager implements IExportManager {
 	}
 	
 	
-	private PtLink creerTroncon(ArretItineraire debut, ArretItineraire fin) {
+	private PtLink creerTroncon(ArretItineraire debut, ArretItineraire fin) 
+	{
 		String objectId = identificationManager.getIdFonctionnel(systemId, "PtLink", debut.getId()+SEPARATOR+fin.getId());
 		PtLink ptLink = new PtLink();
 		ptLink.setObjectId(objectId);
@@ -498,66 +565,77 @@ public class ExportManager implements IExportManager {
 	}
 	
 
-	public void setCorrespondanceManager(ICorrespondanceManager correspondanceManager) {
+	public void setCorrespondanceManager(ICorrespondanceManager correspondanceManager) 
+	{
 		this.correspondanceManager = correspondanceManager;
 	}
 	
 	
-	public void setItineraireManager(IItineraireManager itineraireManager) {
+	public void setItineraireManager(IItineraireManager itineraireManager) 
+	{
 		this.itineraireManager = itineraireManager;
 	}
 	
 
-
-	public void setLigneManager(ILigneManager ligneManager) {
+	public void setLigneManager(ILigneManager ligneManager) 
+	{
 		this.ligneManager = ligneManager;
 	}
 	
 	
 
-	public void setReseauManager(IReseauManager reseauManager) {
+	public void setReseauManager(IReseauManager reseauManager) 
+	{
 		this.reseauManager = reseauManager;
 	}
 
 
 	
-	public void setTableauMarcheManager(ITableauMarcheManager tableauMarcheManager) {
+	public void setTableauMarcheManager(ITableauMarcheManager tableauMarcheManager) 
+	{
 		this.tableauMarcheManager = tableauMarcheManager;
 	}
 	
 
 
-	public void setTransporteurManager(ITransporteurManager transporteurManager) {
+	public void setTransporteurManager(ITransporteurManager transporteurManager) 
+	{
 		this.transporteurManager = transporteurManager;
 	}
 	
 
-	public void setIdentificationManager(IIdentificationManager identificationManager) {
+	public void setIdentificationManager(IIdentificationManager identificationManager) 
+	{
 		this.identificationManager = identificationManager;
 	}
 	
 
-	public IPositionGeographiqueManager getPositionGeographiqueManager() {
+	public IPositionGeographiqueManager getPositionGeographiqueManager() 
+	{
 		return positionGeographiqueManager;
 	}
 	
 
-	public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager) {
+	public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager) 
+	{
 		this.positionGeographiqueManager = positionGeographiqueManager;
 	}
 	
 
-	public void setMissionManager(IMissionManager missionManager) {
+	public void setMissionManager(IMissionManager missionManager) 
+	{
 		this.missionManager = missionManager;
 	}
 	
 
-	public void setItlManager(IITLManager itlManager) {
+	public void setItlManager(IITLManager itlManager) 
+	{
 		this.itlManager = itlManager;
 	}
 	
 	
-	private class ComparatorHoraire<T extends Horaire> implements Comparator<Horaire> {
+	private class ComparatorHoraire<T extends Horaire> implements Comparator<Horaire> 
+	{
 		
 		public int compare(Horaire o1, Horaire o2) {
 			if (o1 == null)
