@@ -30,7 +30,8 @@ public class ReseauManager implements IReseauManager
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.database.ReseauManager#getLignesReseau(java.lang.Long)
 	 */
-	public List<Ligne> getLignesReseau( final Long idReseau) {
+	public List<Ligne> getLignesReseau( final Long idReseau) 
+	{
 		return selectionSpecifique.getLignesReseau(idReseau);
 	}
 

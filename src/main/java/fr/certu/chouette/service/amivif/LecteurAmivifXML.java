@@ -88,7 +88,7 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 			
 			Marshaller aMarshaller = new Marshaller(writer);
 			aMarshaller.setEncoding("ISO-8859-1");
-			aMarshaller.setRootElement("RespPTLineStructTimetableTypeType");
+			aMarshaller.setRootElement("RespPTLineStructTimetable");
 	        aMarshaller.setNamespaceMapping("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident RATP-AMIVIF.xsd");
 			aMarshaller.setValidation(false);
@@ -121,7 +121,7 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 			
 			Marshaller aMarshaller = new Marshaller( writer);
 			aMarshaller.setEncoding("ISO-8859-1");
-			aMarshaller.setRootElement("RespPTDestrLineTypeType");
+			aMarshaller.setRootElement("RespPTDestrLine");
 	        aMarshaller.setNamespaceMapping("xsi","http://www.w3.org/2001/XMLSchema-instance");
 	        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident RATP-AMIVIF.xsd");
 			aMarshaller.setValidation(false);

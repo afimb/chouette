@@ -92,7 +92,7 @@ public class ImportAction extends GeneriqueAction {
 			e.printStackTrace();
 		}
 		String newCanonicalPath = reducteur.reduire(canonicalPath, true);
-		addActionMessage("Reduction des données HASTUS effectu&eacute;e. R&eacute;sultat da la reduction dans le fichier : "+newCanonicalPath);
+		addActionMessage(getText("message.reduce.hastus.data") + newCanonicalPath);
 		return SUCCESS;
 	}
 	
@@ -134,7 +134,7 @@ public class ImportAction extends GeneriqueAction {
 			return INPUT;
 		}
 		List<ILectureEchange> lecturesEchange = lecteurCSVHastus.getLecturesEchange();
-		addActionMessage("Validation des données HASTUS effectu&eacute;e. R&eacute;sultat da la validation dans le fichier de log : "+logFileName);
+		addActionMessage(getText("message.validate.hastus.data") + logFileName);
 		return SUCCESS;
 	}
 	
@@ -149,7 +149,7 @@ public class ImportAction extends GeneriqueAction {
 			addActionError(e.getMessage());
 			return INPUT;
 		}
-		addActionMessage("Cr&eacute;ation des lignes en base effectu&eacute;e");
+		addActionMessage(getText("message.import.altibus.success"));
 		return SUCCESS;
 	}
 	
@@ -159,7 +159,7 @@ public class ImportAction extends GeneriqueAction {
 		try 
 		{
 			canonicalPath = fichier.getCanonicalPath();
-			log.debug("IMPORT DU FICHIER PEGASE : "+canonicalPath);
+			log.debug("IMPORT DU FICHIER PEGASE : " + canonicalPath);
 		}
 		catch (IOException e) 
 		{
@@ -181,20 +181,28 @@ public class ImportAction extends GeneriqueAction {
 			try 
 			{
 				importateur.importer(false, lectureEchange, false);
-				addActionMessage("La ligne "+lectureEchange.getLigneRegistration()+" a été import&eacute;e.");
+				String[] args = new String[1];
+		        args[0] = lectureEchange.getLigneRegistration();
+				addActionMessage(getText("message.import.pegase.line.success", args));
 			}
 			catch(Exception e) 
 			{
 				echec = true;
 				this.addFieldError("fieldName_1", "errorMessage 1");
 				this.addFieldError("fieldName_2", "errorMessage 2");
-				addActionError("La ligne "+lectureEchange.getLigneRegistration()+" ne s'est pas import&eacute;e : "+e.getMessage());
+				
+				String[] args = new String[2];
+		        args[0] = lectureEchange.getLigneRegistration();
+		        args[1] = e.getMessage();
+				addActionError(getText("message.import.pegase.line.failure", args));
 				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 			}
 		}
 		if (echec)
+		{
 			return INPUT;
-		addActionMessage("Toutes les lignes ont été import&eacute;es avec succ&eacute;s.");
+		}
+		addActionMessage(getText("message.import.pegase.lines.success"));
 		return SUCCESS;
 	}
 	
@@ -205,9 +213,13 @@ public class ImportAction extends GeneriqueAction {
 		{
 			canonicalPath = fichier.getCanonicalPath();
 			if (incremental)
+			{
 				log.debug("IMPORT INCREMENTAL DU FICHIER : "+canonicalPath);
+			}
 			else
+			{
 				log.debug("IMPORT DU FICHIER : "+canonicalPath);
+			}
 		}
 		catch (IOException e) 
 		{
@@ -241,7 +253,8 @@ public class ImportAction extends GeneriqueAction {
 		}
 		boolean echec = false;
 		List<ILectureEchange> lecturesEchange = lecteurCSVHastus.getLecturesEchange();
-		for (ILectureEchange lectureEchange : lecturesEchange) {
+		for (ILectureEchange lectureEchange : lecturesEchange) 
+		{
 			try 
 			{
 				if (!lectureEchange.getLigneRegistration().equals("SP") &&
@@ -249,7 +262,9 @@ public class ImportAction extends GeneriqueAction {
 						!lectureEchange.getLigneRegistration().equals("NAVL")) 
 				{
 					importateur.importer(false, lectureEchange, incremental);
-					addActionMessage("La ligne "+lectureEchange.getLigneRegistration()+" a été import&eacute;e.");
+					String[] args = new String[1];
+			        args[0] = lectureEchange.getLigneRegistration();
+			        addActionMessage(getText("message.import.hastus.line.success", args));
 				}
 			}
 			catch(Exception e) 
@@ -257,13 +272,19 @@ public class ImportAction extends GeneriqueAction {
 				echec = true;
 				this.addFieldError("fieldName_1", "errorMessage 1");
 				this.addFieldError("fieldName_2", "errorMessage 2");
-				addActionError("La ligne "+lectureEchange.getLigneRegistration()+" ne s'est pas import&eacute;e : "+e.getMessage());
+				
+				String[] args = new String[2];
+		        args[0] = lectureEchange.getLigneRegistration();
+		        args[1] = e.getMessage();
+				addActionError(getText("message.import.hastus.line.failure", args));
 				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 			}
 		}
 		if (echec)
+		{
 			return INPUT;
-		addActionMessage("Toutes les lignes ont été import&eacute;es avec succ&eacute;s.");
+		}
+		addActionMessage(getText("message.import.hastus.lines.success"));
 		return SUCCESS;
 	}
 	
@@ -292,11 +313,12 @@ public class ImportAction extends GeneriqueAction {
 			}
 			else 
 			{
-				String defaut = "defaut";
-				List<String> args = new ArrayList<String>();
-				String message = e.getMessage();
-				addActionError("Format csv multiligne non conforme : "+message);
-				e.printStackTrace();
+				List<String> args = new ArrayList<String>();								
+				args.add(canonicalPath);
+				String message = getText("import.csv.format.multilines.ko", args.toArray(new String[0]));
+				message += e.getMessage();
+				addActionError(message);
+				//e.printStackTrace();
 			}
 			return INPUT;
 		}
@@ -358,13 +380,13 @@ public class ImportAction extends GeneriqueAction {
 			}
 			catch(Exception e) 
 			{
-				addActionMessage("Impossible de cr&eacute;er la ligne en base");
-				log.error("Impossible de cr�er la ligne en base, msg=" + e.getMessage(), e);
+				addActionMessage(getText("message.import.generical.csv.failure"));
+				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 				return INPUT;
 			}
 		}
 		identificationManager.getDictionaryObjectId().completion();
-		addActionMessage("Cr&eacute;ation des lignes en base effectu&eacute;e");
+		addActionMessage(getText("message.import.generical.csv.success"));
 		return SUCCESS;
 	}
 	
@@ -388,7 +410,7 @@ public class ImportAction extends GeneriqueAction {
 		{
 			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
 			{
-				String message = getText( "import.csv.fichier.introuvable");
+				String message = getText("import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError( message);
 			}
@@ -417,11 +439,11 @@ public class ImportAction extends GeneriqueAction {
 		}
 		catch (ServiceException e) 
 		{
-			addActionMessage("Impossible de cr&eacute;er la ligne en base");
+			addActionMessage(getText("message.import.csv.failure"));
 			log.error("Impossible de creer la ligne en base, msg = " + e.getMessage(), e);
 			return INPUT;
 		}
-		addActionMessage("Cr&eacute;ation des lignes en base effectu&eacute;e");
+		addActionMessage(getText("message.import.csv.success"));
 		return SUCCESS;
 	}
 	
@@ -474,12 +496,16 @@ public class ImportAction extends GeneriqueAction {
 		}
 		catch (ServiceException serviceException) 
 		{
-			addActionError("Impossible de cr&eacute;er la ligne en base");
-			log.error("Impossible de créer la ligne en base, msg=" + serviceException.getMessage(), serviceException);
+			addActionError(getText("message.import.xml.failure"));
+			log.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
 			return INPUT;
 		}
-		addActionMessage("Cr&eacute;ation de la ligne \""+lectureEchange.getLigne().getName()+"\" en base effectu&eacute;e");
-		return SUCCESS;
+		
+		String[] args = new String[1];
+	    args[0] = lectureEchange.getLigne().getName();
+	    addActionMessage(getText("message.import.xml.success", args));
+	    return SUCCESS;
+	    
 	}
 	
 	public String importAmivifXML() 
@@ -505,11 +531,11 @@ public class ImportAction extends GeneriqueAction {
 		}
 		catch (ServiceException serviceException) 
 		{
-			addActionError("Impossible de cr&eacute;er la ligne en base");
-			log.error("Impossible de créer la ligne en base, msg=" + serviceException.getMessage(), serviceException);
+			addActionError(getText("message.import.amivif.xml.failure"));
+			log.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
 			return INPUT;
 		}
-		addActionMessage("Cr&eacute;ation des lignes en base effectu&eacute;e");
+		addActionMessage(getText("message.import.amivif.xml.success"));
 		return SUCCESS;
 	}
 	
@@ -526,7 +552,7 @@ public class ImportAction extends GeneriqueAction {
 		{
 			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
 			{
-				String message = getText( "import.csv.fichier.introuvable");
+				String message = getText("import.csv.fichier.introuvable");
 				message += e.getMessage();
 				addActionError( message);
 			}
@@ -534,10 +560,10 @@ public class ImportAction extends GeneriqueAction {
 			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
-				args.add( "aaa");
-				args.add( "bbb");
-				args.add( "ccc");
-				String message = getText( "import.csv.format.ko", args.toArray(new String[0]));
+				args.add("aaa");
+				args.add("bbb");
+				args.add("ccc");
+				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
 				message += e.getMessage();
 				addActionError( message);
 			}
@@ -546,7 +572,7 @@ public class ImportAction extends GeneriqueAction {
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			String message = getText( "import.csv.fichier.introuvable");
+			String message = getText("import.csv.fichier.introuvable");
 			message += e.getMessage();
 			addActionError(message);
 			return INPUT_ITINERAIRE;
@@ -561,11 +587,11 @@ public class ImportAction extends GeneriqueAction {
 		//catch (ServiceException e) 
 		catch (Exception e)
 		{
-			addActionMessage("Impossible d'importer les horaires de l'itineraire");
+			addActionMessage(getText("message.import.vehicleJourneyAtStop.failure"));
 			log.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
 			return INPUT_ITINERAIRE;
 		}
-		addActionMessage("import des horaires de l'itineraire effectué");
+		addActionMessage(getText("message.import.vehicleJourneyAtStop.success"));
 		return SUCCESS_ITINERAIRE;
 	}
 	
@@ -595,7 +621,7 @@ public class ImportAction extends GeneriqueAction {
 			else 
 			{
 				ServiceException serviceException = (ServiceException) exception;
-				addActionError("Impossible de r&eacute;cup&eacute;rer le fichier");
+				addActionError(getText("message.import.file.exception"));
 				log.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
 			}
 		}

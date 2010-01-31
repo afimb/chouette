@@ -29,21 +29,26 @@ public class ImportXML {
 	}
 	
 	@Test(groups="tests unitaires", description="Import de données XML / Chouette.")
-	public void importer() {
+	public void importer() 
+	{
 		File file = new File("target/test-classes/Alsace");
-		if (!file.exists()) {
+		if (!file.exists()) 
+		{
 			logger.error("Il n'y a pas de fichier Alsace.");
 			return;
 		}
-		if (!file.isDirectory()) {
+		if (!file.isDirectory()) 
+		{
 			logger.error("Alsace n'est pas un repertoire.");
 			return;
 		}
 		String path = "";
-		try {
+		try 
+		{
 			path = file.getCanonicalPath();
 		}
-		catch(Exception e) {
+		catch(Exception e) 
+		{
 			logger.error("Problème lors de la lecture du filePath de "+file.getName());
 			return;
 		}
@@ -52,7 +57,8 @@ public class ImportXML {
 		String[] fileNames = file.list();
 		if ((fileNames == null) || (fileNames.length == 0))
 			logger.error("Le repertoire alsace est vide.");
-		for (int i = 0; i < fileNames.length; i++) {
+		for (int i = 0; i < fileNames.length; i++) 
+		{
 			String fileName = fileNames[i];
 			if (fileName.indexOf(File.separator) >= 0)
 				fileName = fileName.substring(fileName.lastIndexOf(File.separator)+1);
@@ -60,22 +66,27 @@ public class ImportXML {
 		}
 	}
 	
-	public void importer(String fileName) {
+	public void importer(String fileName) 
+	{
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
-		try {
+		try 
+		{
 			logger.debug("IMPORT XML DU FICHIER "+fileName);
 			chouettePTNetworkType = lecteurFichierXML.lire(fileName, true);
 			logger.debug("CREATION DU CHOUETTEPTNETWORKTYPE REUSSI");
 		}
-		catch (Exception e) {
+		catch (Exception e) 
+		{
 			logger.error("Erreur de lecture du fichier "+fileName+", msg = " + e.getMessage(), e);
 			return;
 		}
 		ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
-		try {
+		try 
+		{
 			importateur.importer(true, lectureEchange);
 		}
-		catch (ServiceException e) {
+		catch (ServiceException e) 
+		{
 			logger.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 			return;
 		}

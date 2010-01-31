@@ -55,13 +55,14 @@ public class LecteurFichierXML implements ILecteurFichierXML
 			logger.debug("RECUPERATION DU contenu");
 			contenu = FileUtils.readFileToString(new File(fileName), JEU_CARACTERES);
 		}
-		catch(IOException e) 
+		catch(Exception e) 
 		{
 			String msg = e.getMessage();
 			LoggingManager.log(logger, msg, Level.ERROR);
 			validationException.add(TypeInvalidite.FILE_NOT_FOUND, msg);
 			throw validationException;
 		}
+		
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
 		try 
 		{
@@ -87,7 +88,8 @@ public class LecteurFichierXML implements ILecteurFichierXML
 		}
 		catch (MarshalException e) 
 		{
-			if ((e instanceof MarshalException) && (e.getCause() != null) && (e.getCause() instanceof SAXException)) {
+			if ((e instanceof MarshalException) && (e.getCause() != null) && (e.getCause() instanceof SAXException)) 
+			{
 				try 
 				{
 					test_xml(fileName);
@@ -249,10 +251,10 @@ public class LecteurFichierXML implements ILecteurFichierXML
 	
 	private void test_xml(String fichier) throws ParserConfigurationException, Exception 
 	{
-		logger.debug("Test du fichier "+fichier);
+		logger.debug("Test du fichier " + fichier);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		builder.parse(fichier);
-		logger.debug("Test OK du fichier "+fichier);
+		logger.debug("Test OK du fichier " + fichier);
 	}
 }

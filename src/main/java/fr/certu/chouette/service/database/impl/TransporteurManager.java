@@ -31,7 +31,8 @@ public class TransporteurManager implements ITransporteurManager
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.database.TransporteurManager#getLignesTransporteur(java.lang.Long)
 	 */
-	public List<Ligne> getLignesTransporteur(Long idTransporteur) {
+	public List<Ligne> getLignesTransporteur(Long idTransporteur) 
+	{
 		return selectionSpecifique.getLignesTransporteur(idTransporteur);
 	}
 
@@ -82,33 +83,40 @@ public class TransporteurManager implements ITransporteurManager
 		modificationSpecifique.supprimerTransporteur( idTransporteur);
 	}
 
-	public ITemplateDao<Transporteur> getTransporteurDao() {
+	public ITemplateDao<Transporteur> getTransporteurDao() 
+	{
 		return transporteurDao;
 	}
 
-	public void setTransporteurDao(ITemplateDao<Transporteur> transporteurDao) {
+	public void setTransporteurDao(ITemplateDao<Transporteur> transporteurDao) 
+	{
 		this.transporteurDao = transporteurDao;
 	}
 
-	public ISelectionSpecifique getSelectionSpecifique() {
+	public ISelectionSpecifique getSelectionSpecifique() 
+	{
 		return selectionSpecifique;
 	}
 
-	public void setSelectionSpecifique(ISelectionSpecifique selectionSpecifique) {
+	public void setSelectionSpecifique(ISelectionSpecifique selectionSpecifique) 
+	{
 		this.selectionSpecifique = selectionSpecifique;
 	}
 
-	public IModificationSpecifique getModificationSpecifique() {
+	public IModificationSpecifique getModificationSpecifique() 
+	{
 		return modificationSpecifique;
 	}
 
 	public void setModificationSpecifique(
-			IModificationSpecifique modificationSpecifique) {
+			IModificationSpecifique modificationSpecifique) 
+	{
 		this.modificationSpecifique = modificationSpecifique;
 	}
 
 	public void setIdentificationManager(
-			IIdentificationManager identificationManager) {
+			IIdentificationManager identificationManager) 
+	{
 		this.identificationManager = identificationManager;
 	}
 }
