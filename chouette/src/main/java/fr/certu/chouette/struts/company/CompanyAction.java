@@ -1,10 +1,27 @@
 package fr.certu.chouette.struts.company;
 
+import chouette.schema.ChouettePTNetworkTypeType;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
+import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.ServiceException;
+import fr.certu.chouette.service.database.IExportManager;
+import fr.certu.chouette.service.database.IExportManager.ExportMode;
 import fr.certu.chouette.service.database.ITransporteurManager;
+import fr.certu.chouette.service.validation.commun.TypeInvalidite;
+import fr.certu.chouette.service.validation.commun.ValidationException;
+import fr.certu.chouette.service.validation.util.MainSchemaProducer;
+import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -17,6 +34,11 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
   private ITransporteurManager transporteurManager;
   private Long idTransporteur;
   private String mappedRequest;
+  private ExportMode exportMode;
+  private File temp;
+  private String nomFichier;
+  private IExportManager exportManager;
+  private ILecteurFichierXML lecteurFichierXML;
 
   public Long getIdTransporteur()
   {
@@ -48,7 +70,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
       companyModel = transporteurManager.lire(getIdTransporteur());
     }
   }
-  
+
   /********************************************************
    *                           CRUD                       *
    ********************************************************/
@@ -107,6 +129,80 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
     return REDIRECTLIST;
   }
 
+  @SkipValidation
+  public String exportChouette() throws Exception
+  {
+    try
+    {
+      log.debug("Export Chouette : toutes les lignes du transporteur : " + idTransporteur);
+      List<Ligne> lignes = transporteurManager.getLignesTransporteur(idTransporteur);
+      if ((lignes == null) || (lignes.size() == 0))
+      {
+        addActionMessage(getText("export.company.noline"));
+        return REDIRECTLIST;
+      }
+      String id = "transporteur_" + idTransporteur;
+      temp = File.createTempFile("exportChouette", ".zip");
+      temp.deleteOnExit();
+      ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
+      zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
+      nomFichier = "C_"+ exportMode + "_" + id + ".zip";
+      for (Ligne ligne : lignes)
+      {
+        ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
+        try
+        {
+          MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
+          mainSchemaProducer.getASG(ligneLue);
+        }
+        catch (ValidationException e)
+        {
+          List<TypeInvalidite> categories = e.getCategories();
+          if (categories != null)
+          {
+            for (TypeInvalidite category : categories)
+            {
+              Set<String> messages = e.getTridentIds(category);
+              for (String message : messages)
+              {
+                log.error(message);
+              }
+            }
+          }
+          String _nomFichier = "C_INVALIDE_" + exportMode + "_" + id + "_" + ligne.getId();
+          File _temp = File.createTempFile(_nomFichier, ".xml");
+          _temp.deleteOnExit();
+          lecteurFichierXML.ecrire(ligneLue, _temp);
+          zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
+          byte[] bytes = new byte[(int) _temp.length()];
+          FileInputStream fis = new FileInputStream(_temp);
+          fis.read(bytes);
+          zipOutputStream.write(bytes);
+          zipOutputStream.flush();
+          continue;
+        }
+        String _nomFichier = "C_" + exportMode + "_" + id + "_" + ligne.getId();
+        File _temp = File.createTempFile(_nomFichier, ".xml");
+        _temp.deleteOnExit();
+        lecteurFichierXML.ecrire(ligneLue, _temp);
+        zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
+        byte[] bytes = new byte[(int) _temp.length()];
+        FileInputStream fis = new FileInputStream(_temp);
+        fis.read(bytes);
+        zipOutputStream.write(bytes);
+        zipOutputStream.flush();
+      }
+      zipOutputStream.close();
+    }
+    catch (ServiceException exception)
+    {
+      log.debug("ServiceException : " + exception.getMessage());
+      addActionError(getText(exception.getCode().name()));
+      return REDIRECTLIST;
+    }
+    return EXPORT;
+  }
+
   /********************************************************
    *                        MANAGER                       *
    ********************************************************/
@@ -114,7 +210,17 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
   {
     this.transporteurManager = transporteurManager;
   }
-  
+
+  public void setExportManager(IExportManager exportManager)
+  {
+    this.exportManager = exportManager;
+  }
+
+  public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML)
+  {
+    this.lecteurFichierXML = lecteurFichierXML;
+  }
+
   /********************************************************
    *                   METHOD ACTION                      *
    ********************************************************/
@@ -133,5 +239,28 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
   public String getActionMethod()
   {
     return mappedRequest;
+  }
+
+  /********************************************************
+   *                   EXPORT MODE                        *
+   ********************************************************/
+  public ExportMode getExportMode()
+  {
+    return exportMode;
+  }
+
+  public void setExportMode(ExportMode exportMode)
+  {
+    this.exportMode = exportMode;
+  }
+
+  public InputStream getInputStream() throws Exception
+  {
+    return new FileInputStream(temp.getPath());
+  }
+
+  public String getNomFichier()
+  {
+    return nomFichier;
   }
 }
