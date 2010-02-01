@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 public class LecteurPrincipal implements ILecteurPrincipal {
 	
 	private static final Logger             logger             = Logger.getLogger(LecteurPrincipal.class);
-	private static final String             JeuCaracteres      = "ISO-8859-1";
+	private static final String             JeuCaracteres      = "UTF-8";
 	private              String             repertoire;        // "."
 	private              char               separateur;        // ';'
 	private              ILecteurZone       lecteurZone;       // 
@@ -65,6 +65,13 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 			Map<Course, Ligne> ligneParCourse = lecteurCourse.getLigneParCourse();
 			Set<Course> coursesSet = ligneParCourse.keySet();
 			Map<String, Mission> missionParNom = lecteurHoraire.getMissionParNom();
+			
+			for (PositionGeographique pg : arretsPhysiquesParObjectId.values()) {
+				String tmpName = pg.getComment();
+				pg.setComment(pg.getName());
+				pg.setName(tmpName);
+			}
+			
 			for (Itineraire itineraire : arretsItineraireParItineraire.keySet()) {
 				Map<String, ArretItineraire> arretsIt = arretsItineraireParItineraire.get(itineraire);
 				if (arretsIt == null)
@@ -332,6 +339,13 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 					}
 				}
 				horaires.removeAll(hrToRm);
+				
+				// Mise à jours des noms des itinéraires et des arrets physiques
+				for (Itineraire it : itinerairesDest) {
+					String tmpName = it.getPublishedName();
+					it.setPublishedName(it.getName());
+					it.setName(tmpName);
+				}
 				
 				lectureEchange.setItineraires(itinerairesDest);
 				if ((lectureEchange.getItineraires() == null) || (lectureEchange.getItineraires().size() == 0)) {
