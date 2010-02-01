@@ -42,8 +42,8 @@ public class LecteurItineraire implements ILecteurItineraire {
 	public void lire(String[] ligneCSV) {
 		if ((ligneCSV == null) || (ligneCSV.length == 0))
 			return;
-		if (ligneCSV.length != 7)
-			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ITINERAIRE, "La longeur des lignes dans \"Itineraire\" est 7 : "+ligneCSV.length);
+		if ((ligneCSV.length != 7) && (ligneCSV.length != 8))
+			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ITINERAIRE, "La longeur des lignes dans \"Itineraire\" est 7 ou 8 : "+ligneCSV.length);
 		logger.debug("CREATION D'ITINERAIRE "+ligneCSV[1].trim());
 		Itineraire itineraire = new Itineraire();
 		itineraire.setObjectVersion(1);
@@ -82,18 +82,18 @@ public class LecteurItineraire implements ILecteurItineraire {
 				itineraireParNom.put(itineraire.getNumber(), itineraire);
 		if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() <= 0)) {
 			if (itineraire.getDirection() != null)
-				if (itineraire.getDirection() != PTDirectionType.A)
+				if (itineraire.getDirection().getType() != PTDirectionType.A_TYPE)
 					throw new ServiceException(CodeIncident.NULL_DIRECTION_ITINERAIRE, "La \"Direction\" de l'\"Itineraire\" ("+itineraire.getName()+") est par défaut \"Aller\".");
 		}
 		else
 			if (ligneCSV[5].trim().equals(getCleAller())) {
-				if ((itineraire.getDirection() != null) && (itineraire.getDirection() != PTDirectionType.A))
+				if ((itineraire.getDirection() != null) && (itineraire.getDirection().getType() != PTDirectionType.A_TYPE))
 					throw new ServiceException(CodeIncident.DIRECTIONS_CONTRADICTOIRES_ITINERAIRE, "La \"Direction\" d'un \"Itineraire\" est soit "+ligneCSV[3].trim()+" soit "+ligneCSV[5].trim()+".");
 				itineraire.setDirection(PTDirectionType.A);
 				itineraire.setWayBack("A");
 			}
 			else if (ligneCSV[5].trim().equals(getCleRetour())) {
-				if ((itineraire.getDirection() != null) && (itineraire.getDirection() != PTDirectionType.R))
+				if ((itineraire.getDirection() != null) && (itineraire.getDirection().getType() != PTDirectionType.R_TYPE))
 					throw new ServiceException(CodeIncident.DIRECTIONS_CONTRADICTOIRES_ITINERAIRE, "La \"Direction\" d'un \"Itineraire\" est soit "+ligneCSV[3].trim()+" soit "+ligneCSV[5].trim()+".");
 				itineraire.setDirection(PTDirectionType.R);
 				itineraire.setWayBack("R");
