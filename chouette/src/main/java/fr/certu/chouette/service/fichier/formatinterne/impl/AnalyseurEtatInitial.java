@@ -434,7 +434,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				if (tmResultSet.next())
 					if (tmResultSet.getObject(1) != null) {
 						//
-						connexion.createStatement().execute("ALTER TABLE timetable_date DISABLE TRIGGER ALL");
+						connexion.createStatement().execute("ALTER TABLE " + getDatabaseSchema() + ".timetable_date DISABLE TRIGGER ALL");
 						//
 						String tmObjectId = tmResultSet.getObject(1).toString();
 						tmObjectId.substring(0, tmObjectId.lastIndexOf(':')+1);
@@ -474,7 +474,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						Statement tmInsertStatement = connexion.createStatement();
 						tmInsertStatement.executeUpdate(tmInsert);
 						//
-						connexion.createStatement().execute("ALTER TABLE timetable_date ENABLE TRIGGER ALL");
+						connexion.createStatement().execute("ALTER TABLE " + getDatabaseSchema() + ".timetable_date ENABLE TRIGGER ALL");
 						//
 					}
 					else
