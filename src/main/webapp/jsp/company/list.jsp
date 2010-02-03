@@ -30,9 +30,14 @@
       <s:url id="editUrl" action="edit" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
       </s:url>
-      <s:url id="exportChouette" action="exportChouetteCompany" namespace="/export">
+      <s:url id="exportChouette" action="exportChouette" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
-        <s:param name="origin">company</s:param>
+        <s:param name="exportMode">${'CHOUETTE'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
+      </s:url>
+      <s:url id="exportNeptune" action="exportChouette" namespace="/company">
+        <s:param name="idTransporteur">${transporteur.id}</s:param>
+        <s:param name="exportMode">${'NEPTUNE'}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:a href="%{editUrl}">
@@ -45,7 +50,8 @@
     <display:column titleKey="table.title.name" property="company.name" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.postalCode" property="company.code" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportChouette}"><s:text name="text.transporteur.export.chouette"/></s:a>
+      <s:a href="%{exportChouette}"><s:text name="text.transporteur.export.chouette"/></s:a><br>
+      <s:a href="%{exportNeptune}"><s:text name="text.transporteur.export.neptune"/></s:a>
     </display:column>
   </display:table>
 </div>

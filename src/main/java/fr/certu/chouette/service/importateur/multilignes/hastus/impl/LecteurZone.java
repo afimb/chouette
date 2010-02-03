@@ -34,22 +34,26 @@ public class LecteurZone implements ILecteurZone {
 	public void lire(String[] ligneCSV) {
 		if ((ligneCSV == null) || (ligneCSV.length == 0))
 			return;
-		if (ligneCSV.length != 4)
-			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ZONE, "La longeur des lignes dans \"Zone\" est 4 : "+ligneCSV.length);
-		logger.debug("CREATION DE ZONE : "+ligneCSV[1]);
+		if ((ligneCSV.length != 4) && (ligneCSV.length != 5))
+			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ZONE, "La longeur des lignes dans \"Zone\" est 4 ou 5 : "+ligneCSV.length);
 		if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() == 0))
-			throw new ServiceException(CodeIncident.INVALIDE_NAME_ZONE, "Le nom d'une \"Zone\" doit être non null.");
+			throw new ServiceException(CodeIncident.INVALIDE_REGISTRATION_ZONE, "Le numéro d'enregistrement d'une \"Zone\" doit être non null.");
+		logger.debug("CREATION DE ZONE : "+ligneCSV[1]);
 		PositionGeographique zone = new PositionGeographique();
-		zone.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "StopArea", "COM"+toTrident(ligneCSV[1].trim())));//String.valueOf(counter++)));
+		zone.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "StopArea", "COM"+toTrident(ligneCSV[1].trim())));
 		zone.setObjectVersion(1);
 		zone.setCreationTime(new Date(System.currentTimeMillis()));
 		zone.setRegistrationNumber(ligneCSV[1].trim());
+		//zone.setCountryCode("51100");
 		if (ligneCSV[2] != null)
 			zone.setName(ligneCSV[2].trim());
 		if ((ligneCSV[3] == null) || (!ligneCSV[3].trim().equals(getCleAreaType())))
 			throw new ServiceException(CodeIncident.INVALIDE_TYPE_ZONE, "Le type de \"Zone\" est \""+getCleAreaType()+"\" : "+ligneCSV[3]);
 		if ((ligneCSV[3] != null) && (ligneCSV[3].trim().equals(getCleAreaType())))
 			zone.setAreaType(ChouetteAreaType.COMMERCIALSTOPPOINT);
+		if (ligneCSV.length == 5)
+			if ((ligneCSV[4] != null) && (ligneCSV[4].trim().length() > 0))
+				zone.setCountryCode(ligneCSV[4].trim());
 		addZone(zone);
 	}
 	

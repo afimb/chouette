@@ -27,9 +27,15 @@
       <s:url id="editUrl" action="edit" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
       </s:url>
-      <s:url id="exportChouette" action="exportChouetteNetwork" namespace="/export">
+      <s:url id="exportChouette" action="exportChouette" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
-        <s:param name="origin">network</s:param>
+        <s:param name="exportMode">${'CHOUETTE'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
+      </s:url>
+      <s:url id="exportNeptune" action="exportChouette" namespace="/network">
+        <s:param name="idReseau">${reseau.id}</s:param>
+        <s:param name="exportMode">${'NEPTUNE'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:a href="%{editUrl}">
         <img border="0" class="edit" src="<s:url value='/images/editer.png'/>" alt="Edit" title="<s:text name="tooltip.edit"/>" >
@@ -40,7 +46,8 @@
     </display:column>
     <display:column titleKey="table.title.name" property="ptNetwork.name" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportChouette}"><s:text name="text.reseau.export.chouette"/></s:a>
+      <s:a href="%{exportChouette}"><s:text name="text.reseau.export.chouette"/></s:a><br>
+      <s:a href="%{exportNeptune}"><s:text name="text.reseau.export.neptune"/></s:a>
     </display:column>
   </display:table>
 </div>

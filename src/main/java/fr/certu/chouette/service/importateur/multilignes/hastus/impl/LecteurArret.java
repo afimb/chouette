@@ -1,6 +1,7 @@
 package fr.certu.chouette.service.importateur.multilignes.hastus.impl;
 
 import chouette.schema.types.ChouetteAreaType;
+import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurArret;
@@ -25,6 +26,7 @@ public class LecteurArret implements ILecteurArret {
 	private              String                            cleLambert2;                // "LAMBERT II"
 	private              String                            cleLambert3;                // "LAMBERT III"
 	private              String                            cleLambert4;                // "LAMBERT IV"
+	private              String                            cleWGS84;                   // "WGS84"
 	private              String                            hastusCode;                 // "HastusTUR"
 	private              String                            special;                    // "SPECIAL"
 	private              String                            space;                      // "SPACE"
@@ -43,16 +45,17 @@ public class LecteurArret implements ILecteurArret {
 	public void lire(String[] ligneCSV) {
 		if ((ligneCSV == null) || (ligneCSV.length == 0))
 			return;
-		if (ligneCSV.length != 8)
-			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ARRET, "La longeur des lignes dans \"ArretPhysique\" est 8 : "+ligneCSV.length);
-		logger.debug("CREATION D'ARRET PHYSIQUE : "+ligneCSV[1]);
+		if ((ligneCSV.length != 9) && (ligneCSV.length != 8))
+			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ARRET, "La longeur des lignes dans \"ArretPhysique\" est 8 ou 9 : "+ligneCSV.length);
 		if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() == 0))
-			throw new ServiceException(CodeIncident.INVALIDE_NAME_ARRET, "Le nom d'un \"Arret Physique\" doit être non null.");
+			throw new ServiceException(CodeIncident.INVALIDE_REGISTRATION_ZONE, "Le numéro d'enregistrement d'un \"Arret Physique\" doit être non null.");
+		logger.debug("CREATION D'ARRET PHYSIQUE : "+ligneCSV[1]);
 		PositionGeographique arretPhysique = new PositionGeographique();
-		arretPhysique.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "StopArea", "PHY"+toTrident(ligneCSV[1].trim())));//String.valueOf(counter++)));
+		arretPhysique.setName(ligneCSV[1].trim());
+		arretPhysique.setRegistrationNumber(ligneCSV[1].trim());
+		arretPhysique.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "StopArea", "PHY"+toTrident(ligneCSV[1].trim())));
 		arretPhysique.setObjectVersion(1);
 		arretPhysique.setCreationTime(new Date(System.currentTimeMillis()));
-		arretPhysique.setName(ligneCSV[1].trim());
 		if (ligneCSV[2] != null)
 			arretPhysique.setComment(ligneCSV[2].trim());
 		if ((ligneCSV[3] == null) || (!ligneCSV[3].trim().equals(getCleAreaType())))
@@ -60,19 +63,45 @@ public class LecteurArret implements ILecteurArret {
 		arretPhysique.setAreaType(ChouetteAreaType.BOARDINGPOSITION);
 		addArretPhysique(arretPhysique);
 		if (ligneCSV[4] != null) {
-			if (!((ligneCSV[4].equals(getCleLambert1())) || (ligneCSV[4].equals(getCleLambert2())) || (ligneCSV[4].equals(getCleLambert3())) || (ligneCSV[4].equals(getCleLambert4()))))
+			if (!((ligneCSV[4].equals(getCleLambert1())) || (ligneCSV[4].equals(getCleLambert2())) || (ligneCSV[4].equals(getCleLambert3())) || (ligneCSV[4].equals(getCleLambert4())) || (ligneCSV[4].equals(getCleWGS84()))))
 				throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "Le type de coordonnêes \""+ligneCSV[4].trim()+"\" est invalide.");
+			if (ligneCSV[4].equals(getCleLambert1()))
+				arretPhysique.setProjectionType(cleLambert1);
+			else if (ligneCSV[4].equals(getCleLambert2()))
+				arretPhysique.setProjectionType(cleLambert2);
+			else if (ligneCSV[4].equals(getCleLambert3()))
+				arretPhysique.setProjectionType(cleLambert3);
+			else if (ligneCSV[4].equals(getCleLambert4()))
+				arretPhysique.setProjectionType(cleLambert4);
+			else if (ligneCSV[4].equals(getCleWGS84()))
+				arretPhysique.setLongLatType(LongLatTypeType.WGS84);
 			if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() == 0) || (ligneCSV[6] == null) || (ligneCSV[6].trim().length() == 0))
 				if (arretsNames.add("Les coordonnêes sont indispensables lorsque leur type est donnê."))
-					throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "Les coordonnêes sont indispensables lorsque leur type est donnê.");
+					;//throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "Les coordonnêes sont indispensables lorsque leur type est donnê.");
 			try {
-				arretPhysique.setX(new BigDecimal(ligneCSV[5].trim()));
+				if ((ligneCSV[5] != null) && (ligneCSV[5].trim().length() > 0)) {
+					String latNumber = ligneCSV[5].trim();
+					latNumber = latNumber.replace(',', '.');
+					if ((ligneCSV[4].equals(getCleLambert1())) || (ligneCSV[4].equals(getCleLambert2())) ||
+							(ligneCSV[4].equals(getCleLambert3())) || (ligneCSV[4].equals(getCleLambert4())))
+						arretPhysique.setX(new BigDecimal(latNumber));
+					else if (ligneCSV[4].equals(getCleWGS84()))
+						arretPhysique.setLongitude(new BigDecimal(latNumber));
+				}
 			}
 			catch(NumberFormatException e) {
 				throw new ServiceException(CodeIncident.INVALIDE_NUMBER_FORMAT, "L'expression \""+ligneCSV[5].trim()+"\" ne represente pas un \"X\" valide.");
 			}
 			try {
-				arretPhysique.setY(new BigDecimal(ligneCSV[6].trim()));
+				if ((ligneCSV[6] != null) && (ligneCSV[6].trim().length() > 0)) {
+					String longNumber = ligneCSV[6].trim();
+					longNumber = longNumber.replace(',', '.');
+					if ((ligneCSV[4].equals(getCleLambert1())) || (ligneCSV[4].equals(getCleLambert2())) ||
+							(ligneCSV[4].equals(getCleLambert3())) || (ligneCSV[4].equals(getCleLambert4())))
+						arretPhysique.setY(new BigDecimal(longNumber));
+					else if (ligneCSV[4].equals(getCleWGS84()))
+						arretPhysique.setLatitude(new BigDecimal(longNumber));
+				}
 			}
 			catch(NumberFormatException e) {
 				throw new ServiceException(CodeIncident.INVALIDE_NUMBER_FORMAT, "L'expression \""+ligneCSV[6].trim()+"\" ne represente pas un \"Y\" valide.");
@@ -80,14 +109,18 @@ public class LecteurArret implements ILecteurArret {
 		}
 		else
 			if ((ligneCSV[5] != null) || (ligneCSV[6] != null))
-				throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "Il ne peut y avoir de coordonnêes sans type.");
+				;//throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "Il ne peut y avoir de coordonnêes sans type.");
 		if ((ligneCSV[7] == null) || (ligneCSV[7].trim().length() == 0))
-			throw new ServiceException(CodeIncident.INVALIDE_PARENT_ARRET, "L'arrêt \""+ligneCSV[2].trim()+"\" n'est contenu dans aucune zone.");
+			;//throw new ServiceException(CodeIncident.INVALIDE_PARENT_ARRET, "L'arrêt \""+ligneCSV[2].trim()+"\" n'est contenu dans aucune zone.");
 		PositionGeographique zone = getZones().get(ligneCSV[7].trim());
 		if (zone == null)
 			throw new ServiceException(CodeIncident.INVALIDE_PARENT_ARRET, "Il n'y a pas de \"Zone\" avec le nom : "+ligneCSV[7].trim());
 		logger.debug("\t"+arretPhysique.getObjectId()+" ("+arretPhysique.getName()+") est contenu dans de "+zone.getObjectId()+" ("+zone.getName()+").");
 		addObjectIdParParentObjectId(arretPhysique.getObjectId(), zone.getObjectId());
+		if (ligneCSV.length == 9)
+			if ((ligneCSV[8] != null) || (ligneCSV[8].trim().length() != 0))
+				arretPhysique.setComment(ligneCSV[8].trim());
+		//arretPhysique.setCountryCode("51100");
 	}
 	
 	private String toTrident(String str) {
@@ -195,6 +228,14 @@ public class LecteurArret implements ILecteurArret {
 	
 	public void setCleLambert4(String cleLambert4) {
 		this.cleLambert4 = cleLambert4;
+	}
+	
+	public String getCleWGS84() {
+		return cleWGS84;
+	}
+	
+	public void setCleWGS84(String cleWGS84) {
+		this.cleWGS84 = cleWGS84;
 	}
 	
 	public Map<String, PositionGeographique> getZones() {
