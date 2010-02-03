@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
@@ -71,7 +72,18 @@ public class Export
 	private String INPUT_FOLDER;
 	private String OUTPUT_FOLDER;
 	
-	private String goodAFNORFile = "goodAFNORLineFile.xml";
+	private final static Hashtable<String, String> INPUT_FILES = new Hashtable<String, String>();
+	static
+	{
+		INPUT_FILES.put("goodAFNORFile", "goodAFNORLineFile.xml");
+	}
+	
+	private final static Hashtable<String, String> OUTPUT_FILES = new Hashtable<String, String>();
+	static
+	{
+		OUTPUT_FILES.put("beforeAFNORImport", "beforeAFNORImport.xml");
+		OUTPUT_FILES.put("afterAFNORImport", "afterAFNORImport.xml");
+	}
 	
 ;	@BeforeSuite
 	public void initialisation() throws Exception
@@ -427,14 +439,33 @@ public class Export
 		}
 	}
     
+    
+	/**
+	 * @param filename, the key of the input or output data file test 
+	 * @return the full path of data file
+	 */
+	private String getInputFileName(String filename)
+	{
+		return INPUT_FOLDER + INPUT_FILES.get(filename);
+	}
 	
+	/**
+	 * @param filename, the key of the input or output data file test 
+	 * @return the full path of data file
+	 */
+	private String getOutputFileName(String filename)
+	{
+		return OUTPUT_FOLDER + OUTPUT_FILES.get(filename);
+	}
+	 
     @Test(groups="tests unitaires", description = "import - export d'une ligne AFNOR")
     public void exportAFNOR() 
     {
-		String filename = INPUT_FOLDER + goodAFNORFile;
+		String filename = getInputFileName("goodAFNORFile");
+		
 		List<String> outputFiles = new ArrayList<String>();
 		try
-		{			
+		{
 			ChouettePTNetworkTypeType chouettePTNetworkType = null;
 			try 
 			{
@@ -455,8 +486,8 @@ public class Export
 			Ligne ligne = ligneManager.getLigneParRegistration(chouettePTNetworkType.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber());
 			ChouettePTNetworkTypeType exportedLine = exportManager.getExportParIdLigne( ligne.getId());
 			
-			lecteurFichierXML.ecrire(exportedLine, new File(OUTPUT_FOLDER + "after_AFNOR_import.xml"));
-			lecteurFichierXML.ecrire(chouettePTNetworkType, new File(OUTPUT_FOLDER + "before_AFNOR_import.xml"));
+			lecteurFichierXML.ecrire(chouettePTNetworkType, new File(getOutputFileName("beforeAFNORImport")));
+			lecteurFichierXML.ecrire(exportedLine, new File(getOutputFileName("afterAFNORImport")));
 			
 			ILectureEchange lect = lecteurEchangeXML.lire(exportedLine);
 			
