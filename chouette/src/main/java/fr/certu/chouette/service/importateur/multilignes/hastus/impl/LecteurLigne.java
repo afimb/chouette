@@ -8,6 +8,8 @@ import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurLigne;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
+
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class LecteurLigne implements ILecteurLigne {
 			leReseau.setObjectVersion(1);
 			leReseau.setCreationTime(new Date(System.currentTimeMillis()));
 			leReseau.setRegistrationNumber("TUR-HASTUS-"+leReseau.getName());
+			leReseau.setVersionDate(Calendar.getInstance().getTime());
 		}
 		if ((ligneCSV[2] == null) || (ligneCSV[2].trim().length() <= 0))
 			throw new ServiceException(CodeIncident.NULL_TRANSPORTEUR_LIGNE, "Pas de \"Transporteur\" pour cette \"Ligne\".");
@@ -67,21 +70,25 @@ public class LecteurLigne implements ILecteurLigne {
 		ligne.setName(ligneCSV[3].trim());
 		ligne.setObjectVersion(1);
 		ligne.setCreationTime(new Date(System.currentTimeMillis()));
-		if ((ligneCSV[4] != null) && (ligneCSV[4].trim().length() > 0))
-			ligne.setPublishedName(ligneCSV[4].trim());
-		if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() <= 0))
+		if ((ligneCSV[4] == null) || (ligneCSV[4].trim().length() <= 0))
+			throw new ServiceException(CodeIncident.NULL_REGISTRATION_LINE, "Pas de \"Nom Publique\" pour cette \"Ligne\".");
+		ligne.setPublishedName(ligneCSV[4].trim());
+		if ((ligneCSV[6] == null) || (ligneCSV[6].trim().length() <= 0))
 			throw new ServiceException(CodeIncident.NULL_REGISTRATION_LINE, "Pas de \"Registration\" pour cette \"Ligne\".");
-		ligne.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Line", toTrident(ligneCSV[5].trim())));
-		ligne.setRegistrationNumber(ligneCSV[5].trim());
-		ligne.setNumber(ligneCSV[5].trim());
+		ligne.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Line", toTrident(ligneCSV[6].trim())));
+		ligne.setRegistrationNumber(ligneCSV[6].trim());
+		ligne.setNumber(ligneCSV[6].trim());
 		if (lignesParRegistration.get(ligne.getRegistrationNumber()) != null)
 			throw new ServiceException(CodeIncident.DUPLICATE_REGISTRATION_LINE, "Il existe déjà une \"Ligne\" avec ce \"RegistrationNumber\" : "+ligne.getRegistrationNumber());
 		lignesParRegistration.put(ligne.getRegistrationNumber(), ligne);
-		if ((ligneCSV[6] == null) || (ligneCSV[6].trim().length() <= 0))
+		if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() <= 0))
 			throw new ServiceException(CodeIncident.NULL_TRANSPORTMODE_LIGNE, "Le mode de transport d'une \"Ligne\" ne peut être null.");
-		if (!ligneCSV[6].trim().equals(getCleBus()))
-			throw new ServiceException(CodeIncident.INVALIDE_TRANSPORTMODE_LIGNE, "Le mode de transport \""+ligneCSV[6].trim()+"\" est invalide.");
-		ligne.setTransportModeName(TransportModeNameType.BUS);
+		if (!ligneCSV[5].trim().equals(getCleBus()))
+			;//throw new ServiceException(CodeIncident.INVALIDE_TRANSPORTMODE_LIGNE, "Le mode de transport \""+ligneCSV[5].trim()+"\" est invalide.");
+		if (ligneCSV[5].trim().toLowerCase().equals("bus") || ligneCSV[5].trim().toLowerCase().equals("autobus"))
+			ligne.setTransportModeName(TransportModeNameType.BUS);
+		else if (ligneCSV[5].trim().toLowerCase().equals("trolley"))
+			ligne.setTransportModeName(TransportModeNameType.TROLLEYBUS);
 	}
 	
 	private String toTrident(String str) {

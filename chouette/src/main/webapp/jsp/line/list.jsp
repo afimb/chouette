@@ -60,29 +60,40 @@
       </s:url>
       <s:url id="removeLigne" action="delete" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="itinerary" action="list" namespace="/route">
         <s:param name="idLigne">${ligne.id}</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="removeLigneAmivif" action="exportSupprimerAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
-      <s:url id="removeLigneChouette" action="exportSupprimerChouette" namespace="/export">
+      <s:url id="removeLigneChouette" action="deleteChouette" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="origin">line</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportAmivif" action="exportAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
-      <s:url id="exportChouette" action="exportChouetteLine" namespace="/export">
+      <s:url id="exportChouette" action="exportChouette" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="origin">line</s:param>
+        <s:param name="exportMode">${'CHOUETTE'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
+      </s:url>
+      <s:url id="exportNeptune" action="exportChouette" namespace="/line">
+        <s:param name="idLigne">${ligne.id}</s:param>
+        <s:param name="exportMode">${'NEPTUNE'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportCSV" action="exportCSV" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">line</s:param>
+        <s:param name="operationMode">STORE</s:param>
       </s:url>
       <div style="float: left; margin-right: 7px;">
         <s:a href="%{editUrl}">
@@ -92,6 +103,10 @@
       <div style="float: left; text-align: left;">
         <s:a href="%{removeLigneChouette}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
           <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.chouette"/>
+        </s:a>
+        <br>
+        <s:a href="%{removeLigneNeptune}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
+          <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.neptune"/>
         </s:a>
         <br>
         <s:a href="%{removeLigne}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
@@ -124,12 +139,14 @@
     </display:column>
     <display:column titleKey="table.title.export">
       <s:a href="%{exportChouette}"><s:text name="text.ligne.export.chouette" /></s:a>
+      <br>
+      <s:a href="%{exportNeptune}"><s:text name="text.ligne.export.neptune" /></s:a>
       <s:if test="useAmivif == 'true'">
         <br>
         <s:a href="%{exportAmivif}"><s:text name="text.ligne.export.stif" /></s:a>
-        <br>
-        <s:a href="%{exportCSV}"><s:text name="text.ligne.export.csv" /></s:a>
       </s:if>
+      <br>
+      <s:a href="%{exportCSV}"><s:text name="text.ligne.export.csv" /></s:a>
     </display:column>
   </display:table>
 </div>

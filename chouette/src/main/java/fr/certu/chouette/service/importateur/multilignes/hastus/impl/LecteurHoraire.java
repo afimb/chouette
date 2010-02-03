@@ -101,17 +101,9 @@ public class LecteurHoraire implements ILecteurHoraire {
 		}
 		
 		boolean isContigu = false;
-		/*if (arretPhysique.getName().startsWith("HOPITA")) {
-			String tab = ""+objectIdParParentObjectId.size()+" :";
-			for (String k : objectIdParParentObjectId.keySet())
-				tab += " ["+k+" ; "+objectIdParParentObjectId.get(k)+"]";
-			logger.error("HOPITAHOPITA : "+containedIn+" : "+arretPhysique.getName()+" :: "+objectIdParParentObjectId.get(containedIn)+" : "+objectIdParParentObjectId.get(arretPhysique.getName())+" ::: "+tab);
-		}*/
 		if (objectIdParParentObjectId.get(containedIn) != null && objectIdParParentObjectId.get(arretPhysique.getObjectId()) != null)
-			if (objectIdParParentObjectId.get(arretPhysique.getObjectId()).equals(objectIdParParentObjectId.get(containedIn)))  {
+			if (objectIdParParentObjectId.get(arretPhysique.getObjectId()).equals(objectIdParParentObjectId.get(containedIn)))
 				isContigu = true;
-				logger.error("CONTIGUCONTIGU : "+containedIn+" : "+arretPhysique.getObjectId());
-			}
 		
 		String key = ligneCSV[1].trim()+";"+ligneCSV[2].trim()+";"+ligneCSV[3].trim(); 
 		String dolars = "";

@@ -531,6 +531,8 @@
     <property name="ligneManager" ref="ligneManager"/>
     <property name="reseauManager" ref="reseauManager"/>
     <property name="transporteurManager" ref="transporteurManager"/>
+    <property name="exportManager" ref="exportManager"/>
+    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
     <property name="useAmivif" value="${ligne.amivif}"/>
     <property name="detruireAvecTMs" value="${destructionLigne.detruireAvecTMs}"/>
     <property name="detruireAvecArrets" value="${destructionLigne.detruireAvecArrets}"/>
@@ -541,11 +543,15 @@
   <bean id="CompanyActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.company.CompanyAction">
     <property name="transporteurManager" ref="transporteurManager"/>
+    <property name="exportManager" ref="exportManager"/>
+    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
   </bean>
     
   <bean id="NetworkActionBean" scope="prototype"
 		class="fr.certu.chouette.struts.network.NetworkAction">
     <property name="reseauManager" ref="reseauManager"/>
+    <property name="exportManager" ref="exportManager"/>
+    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
   </bean>
     
   <bean id="TimeTableActionBean" scope="prototype"

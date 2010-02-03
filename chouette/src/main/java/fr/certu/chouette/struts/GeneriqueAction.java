@@ -40,6 +40,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final String REDIRECTLIST = "redirectList";
   public static final String REDIRECTEDIT = "redirectEdit";
   public static final String SEARCH = "search";
+    public static final String EXPORT = "export";
   protected Map session;
   protected Map request;
   protected PrincipalProxy principalProxy;
