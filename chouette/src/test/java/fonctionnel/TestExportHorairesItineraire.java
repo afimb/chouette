@@ -26,7 +26,8 @@ import fr.certu.chouette.service.importateur.monoitineraire.csv.IImportHorairesM
 import fr.certu.chouette.service.importateur.monoitineraire.csv.impl.LecteurCSV;
 import fr.certu.chouette.service.importateur.monoligne.ILecteurCSV;
 
-public class TestExportHorairesItineraire {
+public class TestExportHorairesItineraire 
+{
 	private ILecteurCSV lecteurCSV;
 	private IImportateur importateur = null;
 	private ILigneManager ligneManager;
@@ -35,19 +36,20 @@ public class TestExportHorairesItineraire {
 	private IImportHorairesManager importHorairesManager;
 	
 	private final static String REP = "target/test-classes";
-	private final static String SEP = "$";
+	//private final static String SEP = "$";
 
+	
 	@BeforeSuite
 	protected void setUp() throws Exception 
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
-		lecteurCSV = ( ILecteurCSV)applicationContext.getBean( "lecteurCSV");
-		importateur = ( IImportateur)applicationContext.getBean( "importateur");
-		ligneManager = ( ILigneManager)applicationContext.getBean( "ligneManager");
-		itineraireManager = ( IItineraireManager)applicationContext.getBean( "itineraireManager");
-		importHorairesManager = ( IImportHorairesManager)applicationContext.getBean( "importHorairesManager");
-		exportHorairesManager = ( IExportHorairesManager)applicationContext.getBean( "exportHorairesManager");
+		
+		ApplicationContext applicationContext = SingletonManager.getApplicationContext();	
+		lecteurCSV = (ILecteurCSV)applicationContext.getBean("lecteurCSV");
+		importateur = (IImportateur)applicationContext.getBean("importateur");
+		ligneManager = (ILigneManager)applicationContext.getBean("ligneManager");
+		itineraireManager = (IItineraireManager)applicationContext.getBean("itineraireManager");
+		importHorairesManager = (IImportHorairesManager)applicationContext.getBean("importHorairesManager");
+		exportHorairesManager = (IExportHorairesManager)applicationContext.getBean("exportHorairesManager");
 	}
 	
 	@Test(groups="tests fonctionnels", description="verification du fonctionnement de l'export des horaires d'un itineraire")
@@ -61,7 +63,7 @@ public class TestExportHorairesItineraire {
 		catch( ServiceException e)
 		{
 			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode()))
-				lecteurCSV.lire( REP + File.separator + nom);
+				lecteurCSV.lire(REP + File.separator + nom);
 			else
 				throw e;
 		}
