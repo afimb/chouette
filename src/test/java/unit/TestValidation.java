@@ -6,7 +6,7 @@ import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
-
+import fr.certu.chouette.manager.SingletonManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
@@ -22,6 +22,7 @@ public class TestValidation {
 	
 	private static final Log log = LogFactory.getLog(TestValidation.class);
 	
+	private String 			   INPUT_FOLDER;
 	private String             fileName             = "src/test/resources/validation/ATC_100110200.xml";
 	private String             fileNameKO           = "src/test/resources/validation/ATC_A_014014012.xml";
 	private String             fileNameNotFound     = "src/test/resources/validation/fileNotFound.xml";
@@ -32,13 +33,22 @@ public class TestValidation {
 	private String             fileNameBadChouette0 = "src/test/resources/validation/fileBadChouette0.xml";
 	private String             fileNameBadChouette1 = "src/test/resources/validation/fileBadChouette1.xml";
 	private String             fileNameBadChouette2 = "src/test/resources/validation/fileBadChouette2.xml";
-	private String             badEnumValueAFNORFile = "src/test/data/badAFNORFile0.xml";
+	private String             badEnumValueAFNORFile = "badAFNORFile0.xml";
+	
 	
 	private boolean            logging              = true;
 	private ILecteurFichierXML lecteurFichierXML;
 	
 	@BeforeSuite
-	public void setUpSuite() {
+	public void initialisation()throws Exception
+	{
+		INPUT_FOLDER = SingletonManager.getSpringProperty("test.inputData.dir") + "/";
+	}
+	
+	@BeforeSuite
+	public void setUpSuite() throws Exception
+	{
+		
 	}
 	
 	@BeforeClass
@@ -150,7 +160,7 @@ public class TestValidation {
 	{
 		try
 		{
-			lecteurFichierXML.lire(badEnumValueAFNORFile, true);
+			lecteurFichierXML.lire(INPUT_FOLDER + badEnumValueAFNORFile, true);
 			
 		}
 		catch(ValidationException e) 

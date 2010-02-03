@@ -47,7 +47,6 @@ import fr.certu.chouette.service.database.IITLManager;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.service.database.IReseauManager;
-import fr.certu.chouette.service.database.IExportManager.ExportMode;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
@@ -69,31 +68,33 @@ public class Export
 	private IReseauManager reseauManager;
 	
 	//TODO : app test paths should be in properties 
-	private String DATA_FOLDER = "src/test/data/";
-	private String goodAFNORFile = DATA_FOLDER + "goodAFNORLineFile.xml";
+	private String INPUT_FOLDER;
+	private String OUTPUT_FOLDER;
 	
-	private String OUTPUT_FOLDER = "dataTestsOutput/";
-		
+	private String goodAFNORFile = "goodAFNORLineFile.xml";
+	
 ;	@BeforeSuite
-	public void initialisation()
+	public void initialisation() throws Exception
 	{
+		OUTPUT_FOLDER = SingletonManager.getSpringProperty("dir.temp") + "/";
+		INPUT_FOLDER = SingletonManager.getSpringProperty("test.inputData.dir") + "/";
+		
 		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
-		exportManager = ( IExportManager)applicationContext.getBean( "exportManager");
-		importateur = ( IImportateur)applicationContext.getBean( "importateur");
-		identification = ( IIdentificationManager)applicationContext.getBean( "identificationManager");
-		lecteurEchangeXML = ( ILecteurEchangeXML)applicationContext.getBean( "lecteurEchangeXML");
-		positionGeographiqueManager = ( IPositionGeographiqueManager)applicationContext.getBean( "positionGeographiqueManager");
-		itlManager = ( IITLManager)applicationContext.getBean( "itlManager");
-		ligneManager = ( ILigneManager)applicationContext.getBean( "ligneManager");
-		reseauManager = ( IReseauManager)applicationContext.getBean( "reseauManager");
-		lecteurFichierXML = ( ILecteurFichierXML)applicationContext.getBean( "lecteurFichierXML");
+		exportManager = (IExportManager)applicationContext.getBean("exportManager");
+		importateur = (IImportateur)applicationContext.getBean("importateur");
+		identification = (IIdentificationManager)applicationContext.getBean("identificationManager");
+		lecteurEchangeXML = (ILecteurEchangeXML)applicationContext.getBean("lecteurEchangeXML");
+		positionGeographiqueManager = (IPositionGeographiqueManager)applicationContext.getBean("positionGeographiqueManager");
+		itlManager = (IITLManager)applicationContext.getBean("itlManager");
+		ligneManager = (ILigneManager)applicationContext.getBean("ligneManager");
+		reseauManager = (IReseauManager)applicationContext.getBean("reseauManager");
+		lecteurFichierXML = (ILecteurFichierXML)applicationContext.getBean("lecteurFichierXML");		
 	}
 	
 	@Test(groups="tests unitaires", description="import - export d'une ligne")
 	public void lireSystemeOrigine()
 	{
-		 String objectId = "Te-er:erzer:zer";
+		String objectId = "Te-er:erzer:zer";
 		StringTokenizer tokenizer = new StringTokenizer( objectId, ":");
 		tokenizer.hasMoreElements();
 		System.out.println( tokenizer.nextToken());
@@ -425,11 +426,13 @@ public class Export
 			}
 		}
 	}
-
-	@Test(groups="tests unitaires", description = "import - export d'une ligne AFNOR")
+    
+	
+    @Test(groups="tests unitaires", description = "import - export d'une ligne AFNOR")
     public void exportAFNOR() 
     {
-		String filename = goodAFNORFile;
+		String filename = INPUT_FOLDER + goodAFNORFile;
+		List<String> outputFiles = new ArrayList<String>();
 		try
 		{			
 			ChouettePTNetworkTypeType chouettePTNetworkType = null;
@@ -466,18 +469,22 @@ public class Export
 				{
 					logger.debug( "course :"+timetable.getVehicleJourneyId( i));
 				}
-			}
-			
-			importateur.importer(false, lect);
+			}			
+			importateur.importer(false, lect);			
 		}
 		catch(Exception e)
 		{
 			logger.error(e.getMessage(), e);
+			cleanTmpFiles();
 			assert false:"Echec du test d'export AFNOR :" + e.getMessage();
 		}
+		cleanTmpFiles();
     }
 
+	private void cleanTmpFiles()
+	{
 	
+	}
 	public void importer(String fileName) 
 	{
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
