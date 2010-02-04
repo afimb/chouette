@@ -6,7 +6,6 @@ import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
-import fr.certu.chouette.manager.SingletonManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
@@ -18,11 +17,12 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import util.DataFilesManager;
+
 public class TestValidation {
 	
 	private static final Log log = LogFactory.getLog(TestValidation.class);
 	
-	private String 			   INPUT_FOLDER;
 	private String             fileName             = "src/test/resources/validation/ATC_100110200.xml";
 	private String             fileNameKO           = "src/test/resources/validation/ATC_A_014014012.xml";
 	private String             fileNameNotFound     = "src/test/resources/validation/fileNotFound.xml";
@@ -33,8 +33,7 @@ public class TestValidation {
 	private String             fileNameBadChouette0 = "src/test/resources/validation/fileBadChouette0.xml";
 	private String             fileNameBadChouette1 = "src/test/resources/validation/fileBadChouette1.xml";
 	private String             fileNameBadChouette2 = "src/test/resources/validation/fileBadChouette2.xml";
-	private String             badEnumValueAFNORFile = "badAFNORFile0.xml";
-	
+	private DataFilesManager   dataFilesManager;
 	
 	private boolean            logging              = true;
 	private ILecteurFichierXML lecteurFichierXML;
@@ -42,7 +41,7 @@ public class TestValidation {
 	@BeforeSuite
 	public void initialisation()throws Exception
 	{
-		INPUT_FOLDER = SingletonManager.getSpringProperty("test.inputData.dir") + "/";
+		dataFilesManager = new DataFilesManager();
 	}
 	
 	@BeforeSuite
@@ -160,7 +159,8 @@ public class TestValidation {
 	{
 		try
 		{
-			lecteurFichierXML.lire(INPUT_FOLDER + badEnumValueAFNORFile, true);
+			String inputFile = dataFilesManager.getInputFileName("badEnumValueAFNORFile");
+			lecteurFichierXML.lire(inputFile, true);
 			
 		}
 		catch(ValidationException e) 
