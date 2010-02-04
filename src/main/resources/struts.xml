@@ -176,14 +176,14 @@
 
 		<!-- Resultats "reutilisables" -->
     <global-results>
-      <result name="error">/jsp/error.jsp</result>
+    	<result name="locked-action-error">/jsp/locked-action-error.jsp</result>
+      	<result name="error">/jsp/error.jsp</result>
     </global-results>
 
-		<!-- Traitement des erreurs -->
-    <global-exception-mappings>
-			<!-- Les erreurs des services -->
-      <exception-mapping result="error" exception="java.lang.Exception" />
-    </global-exception-mappings>
+	<!-- Traitement des erreurs -->
+	<global-exception-mappings>
+		<exception-mapping result="error" exception="java.lang.Exception" />
+	</global-exception-mappings>
 
 		<!-- Déconnexion -->
     <action name="deconnexion" class="Deconnexion" method="execute">

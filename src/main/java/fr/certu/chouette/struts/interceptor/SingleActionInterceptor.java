@@ -48,7 +48,16 @@ public class SingleActionInterceptor extends AbstractInterceptor {
 		// invoke action and release token at the end
 		// return global jsp error if invocation failed
 		String result = "error";
-		result = invocation.invoke ();
+		try
+		{			
+			result = invocation.invoke ();
+		}
+		catch(Exception e)
+		{
+			actionLock.releaseToken();
+			logger.info("Action ended uncorrectly, running action token released");
+			throw e;
+		}
 		actionLock.releaseToken();
 		logger.info("Action ended, running action token released");
 		return result;
