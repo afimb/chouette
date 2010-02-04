@@ -23,7 +23,7 @@ import org.springframework.context.ApplicationContext;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-
+import util.DataFilesManager;
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
@@ -55,6 +55,7 @@ import fr.certu.chouette.service.validation.util.MainSchemaProducer;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
 
+
 public class Export 
 {
 	private static final Logger logger = Logger.getLogger(Export.class);
@@ -68,29 +69,12 @@ public class Export
 	private ILigneManager ligneManager;
 	private IReseauManager reseauManager;
 	
-	//TODO : app test paths should be in properties 
-	private String INPUT_FOLDER;
-	private String OUTPUT_FOLDER;
-	
-	private final static Hashtable<String, String> INPUT_FILES = new Hashtable<String, String>();
-	static
-	{
-		INPUT_FILES.put("goodAFNORFile", "goodAFNORLineFile.xml");
-	}
-	
-	private final static Hashtable<String, String> OUTPUT_FILES = new Hashtable<String, String>();
-	static
-	{
-		OUTPUT_FILES.put("beforeAFNORImport", "beforeAFNORImport.xml");
-		OUTPUT_FILES.put("afterAFNORImport", "afterAFNORImport.xml");
-	}
+	private DataFilesManager dataFilesManager;
 	
 ;	@BeforeSuite
 	public void initialisation() throws Exception
 	{
-		OUTPUT_FOLDER = SingletonManager.getSpringProperty("dir.temp") + "/";
-		INPUT_FOLDER = SingletonManager.getSpringProperty("test.inputData.dir") + "/";
-		
+		dataFilesManager = new DataFilesManager();
 		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
 		exportManager = (IExportManager)applicationContext.getBean("exportManager");
 		importateur = (IImportateur)applicationContext.getBean("importateur");
@@ -438,56 +422,39 @@ public class Export
 			}
 		}
 	}
-    
-    
-	/**
-	 * @param filename, the key of the input or output data file test 
-	 * @return the full path of data file
-	 */
-	private String getInputFileName(String filename)
-	{
-		return INPUT_FOLDER + INPUT_FILES.get(filename);
-	}
-	
-	/**
-	 * @param filename, the key of the input or output data file test 
-	 * @return the full path of data file
-	 */
-	private String getOutputFileName(String filename)
-	{
-		return OUTPUT_FOLDER + OUTPUT_FILES.get(filename);
-	}
-	 
+      
     @Test(groups="tests unitaires", description = "import - export d'une ligne AFNOR")
     public void exportAFNOR() 
     {
-		String filename = getInputFileName("goodAFNORFile");
-		
-		List<String> outputFiles = new ArrayList<String>();
+    	String filename = "";
+    	ChouettePTNetworkTypeType chouettePTNetworkType = null;
+    	try
+		{
+			filename = dataFilesManager.getInputFileName("goodAFNORFile");			
+			logger.debug("IMPORT XML DU FICHIER " + filename);
+			chouettePTNetworkType = lecteurFichierXML.lire(filename, true);
+			logger.debug("CREATION DU CHOUETTEPTNETWORKTYPETYPE REUSSI");
+		}	
+		catch (Exception e) 
+		{
+			String message = "Erreur de lecture du fichier " + filename;
+			logger.error(message + ", msg = " + e.getMessage(), e);				
+			assert false : "Echec export : " + message;				
+		}
 		try
 		{
-			ChouettePTNetworkTypeType chouettePTNetworkType = null;
-			try 
-			{
-				logger.debug("IMPORT XML DU FICHIER " + filename);
-				chouettePTNetworkType = lecteurFichierXML.lire(filename, true);
-				logger.debug("CREATION DU CHOUETTEPTNETWORKTYPETYPE REUSSI");
-			}
-			catch (Exception e) 
-			{
-				String message = "Erreur de lecture du fichier " + filename;
-				logger.error(message + ", msg = " + e.getMessage(), e);
-				assert false:"Echec export : " + message;				
-			}
-			
 			ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
 			importateur.importer(false, lectureEchange);
 			
 			Ligne ligne = ligneManager.getLigneParRegistration(chouettePTNetworkType.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber());
 			ChouettePTNetworkTypeType exportedLine = exportManager.getExportParIdLigne( ligne.getId());
 			
-			lecteurFichierXML.ecrire(chouettePTNetworkType, new File(getOutputFileName("beforeAFNORImport")));
-			lecteurFichierXML.ecrire(exportedLine, new File(getOutputFileName("afterAFNORImport")));
+
+			File beforeImportFile = dataFilesManager.getOutputFile("beforeAFNORImport");
+			File afterImportFile = dataFilesManager.getOutputFile("afterAFNORImport");
+			
+			lecteurFichierXML.ecrire(chouettePTNetworkType, beforeImportFile);
+			lecteurFichierXML.ecrire(exportedLine, afterImportFile);
 			
 			ILectureEchange lect = lecteurEchangeXML.lire(exportedLine);
 			
@@ -506,16 +473,11 @@ public class Export
 		catch(Exception e)
 		{
 			logger.error(e.getMessage(), e);
-			cleanTmpFiles();
-			assert false:"Echec du test d'export AFNOR :" + e.getMessage();
+			assert false : "Echec du test d'import - export AFNOR :" + e.getMessage();
 		}
-		cleanTmpFiles();
     }
 
-	private void cleanTmpFiles()
-	{
 	
-	}
 	public void importer(String fileName) 
 	{
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
