@@ -220,6 +220,30 @@
       <version>2.7.0</version>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>development</id>
+      <activation>
+        <property>
+          <name>!site</name>
+        </property>
+      </activation>
+      <properties>
+        <profile.filter>filter</profile.filter>
+      </properties>
+    </profile>
+    <profile>
+      <id>production</id>
+      <activation>
+        <property>
+          <name>site</name>
+        </property>
+      </activation>
+      <properties>
+        <profile.filter>filter${site}</profile.filter>
+      </properties>
+    </profile>
+  </profiles>
   <pluginRepositories>
     <pluginRepository>
       <id>repo Maven</id>
@@ -232,7 +256,7 @@
   </pluginRepositories>
   <build>
     <filters>
-      <filter>src/main/filters/filter${site}.properties</filter>
+      <filter>src/main/filters/${profile.filter}.properties</filter>
     </filters>
     <extensions>
       <extension>
