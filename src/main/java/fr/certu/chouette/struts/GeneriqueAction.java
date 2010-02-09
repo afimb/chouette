@@ -62,6 +62,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final int SCHOOLHOLLIDAY_TYPE = 9;
   public static final int PUBLICHOLLIDAY_TYPE = 10;
   public static final int MARKETDAY_TYPE = 11;
+  private boolean menuComparisonEnabled;
 
   public void setSession(Map session)
   {
@@ -518,5 +519,18 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       }
       return String.CASE_INSENSITIVE_ORDER.compare(o1, o2);
     }
+  }
+
+  /********************************************************
+   *           Comparison enabled in the menu             *
+   ********************************************************/
+  public boolean isMenuComparisonEnabled()
+  {
+    return menuComparisonEnabled;
+  }
+
+  public void setMenuComparisonEnabled(boolean menuComparisonEnabled)
+  {
+    this.menuComparisonEnabled = menuComparisonEnabled;
   }
 }
