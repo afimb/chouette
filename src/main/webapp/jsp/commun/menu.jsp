@@ -236,13 +236,13 @@
 </s:else>
 
 <%-- Comparaison --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('index.title')">
+<s:if test="menuComparisonEnabled == true && filAriane.cleTexteDernierElementFilAriane == getText('index.title')">
 	<SCRIPT type="text/javascript">
 		$('comparaisonMenu').className='selectionne';
 	</SCRIPT>	
 </s:if>
-<s:else>
+<s:elseif test="menuComparisonEnabled == true && filAriane.cleTexteDernierElementFilAriane != getText('index.title')">
 	<SCRIPT type="text/javascript">
 		$('comparaisonMenu').className='';
 	</SCRIPT>
-</s:else>
+</s:elseif>
