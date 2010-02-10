@@ -154,7 +154,7 @@ public class ItineraireManager implements IItineraireManager
 			aller.setIdRetour( retour.getId());
 			modifier( aller);
 			
-			// créer les arrêts de l'itinéraire retour
+			// creating backword route stop points
 			List<ArretItineraire> allerArrets = getArretsItineraire(idItineraire);
 			int total = allerArrets.size()-1;
 			for (ArretItineraire arretAller : allerArrets) {
@@ -202,7 +202,7 @@ public class ItineraireManager implements IItineraireManager
 			}
 			else
 			{
-				assert false : "etat de la mise à jour inconnu";
+				assert false : "unknown update state";
 			}
 		}
 		
@@ -220,7 +220,7 @@ public class ItineraireManager implements IItineraireManager
 						creationArretItineraire.size()+" creations");
 			}
 			
-			// déplacer l'arrêt sur l'itinéraire
+			// moving stop points on route
 			positions.add( positionCible);
 			arretsDeplaces.add( etatMaj.getIdArretLogique());
 			
@@ -232,10 +232,10 @@ public class ItineraireManager implements IItineraireManager
 
 		validerModificationItineraire(arretsDeplaces, positions, arretsInitiauxParPosition, idsLogiquesPerdus);
 		
-		// repérer les arrets d'itineraires à replacer
+		// Finding stop points on route to move
 		modificationSpecifique.echangerPositions(arretsDeplaces, positions);
 		
-		// repérer les horaires à échanger
+		// Finding passing times to swap
 		List<Long> arretsHorairesEchanges = new ArrayList<Long>();
 		List<Integer> positionsTriees = new ArrayList<Integer>( arretsDeplacesParPosition.keySet());
 		Collections.sort( positionsTriees);
@@ -267,17 +267,17 @@ public class ItineraireManager implements IItineraireManager
 		}
 		modificationSpecifique.echangerHoraires(idArretAvantEchange, idArretApresEchange);
 		
-		// création des nouveaux arrets
+		// Creating new stops
 		for (EtatMajArretItineraire etatMaj : creationArretItineraire) 
 		{
-			// définir l'arrêt physique
+			// Define Boarding Position OR Quay
 			creerArretItineraire(idItineraire, etatMaj);		
 		}
 		
 		// des horaires peuvent avoir ete supprimes
 		modificationSpecifique.referencerDepartsCourses(idItineraire);
 		
-		// mettre à jour les missions
+		// Updating Journey Patterns
 		if ( !idsLogiquesPerdus.isEmpty())
 		{
 			missionManager.fusionnerMissions(idItineraire);
@@ -289,7 +289,7 @@ public class ItineraireManager implements IItineraireManager
 		if ( arretsHorairesEchangesInitiaux.size()!=arretsHorairesEchanges.size())
 		{
 			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-					"Erreur interne de repérage des échanges d'horaire");
+					"Finding passing times to swap inner error");
 		}
 	}
 
@@ -312,13 +312,13 @@ public class ItineraireManager implements IItineraireManager
 			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Les Positions ne sont pas liberes :"+emplacementNonLiberes);
 		}
 		
-		// tester si répétition de position
+		// Testing positions redundancy
 		Set<Integer> positionsDistinctes = new HashSet<Integer>( positions);
 		if ( positionsDistinctes.size()!=positions.size())
 		{
 			List<Integer> positionsRepetees = new ArrayList<Integer>( positions);
 			positionsRepetees.removeAll(positions);
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Repetition de positions:"+positionsRepetees);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Positions redundancy: "+positionsRepetees);
 		}
 		
 		Set<Long> arretsDeplacesDistincts = new HashSet<Long>( arretsDeplaces);
@@ -342,7 +342,7 @@ public class ItineraireManager implements IItineraireManager
 			positionGeographiqueManager.creer( arretPhysique);
 		}
 		
-		// créer l'arrêt logique
+		// Creating stop point on route
 		ArretItineraire arret = new ArretItineraire();
 		arret.setIdPhysique( arretPhysique.getId());
 		arret.setIdItineraire( idItineraire);

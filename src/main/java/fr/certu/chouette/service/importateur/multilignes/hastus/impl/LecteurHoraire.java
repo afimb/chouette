@@ -58,9 +58,9 @@ public class LecteurHoraire implements ILecteurHoraire {
 		if (ligneCSV.length != 5)
 			throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_HORAIRE, "La longeur des lignes dans \"Horaire\" est 5 : "+ligneCSV.length);
 		if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() == 0))
-			throw new ServiceException(CodeIncident.NULL_COURSENAME_HORAIRE, "Le nom de la \"Course\" dans un \"Horaire\" ne doit pas être null.");
+			throw new ServiceException(CodeIncident.NULL_COURSENAME_HORAIRE, "Le nom de la \"Course\" dans un \"Horaire\" ne doit pas etre null.");
 		if ((ligneCSV[2] == null) || (ligneCSV[2].trim().length() == 0))
-			throw new ServiceException(CodeIncident.NULL_COURSENAME_HORAIRE, "Le nom de la \"Mission\" dans un \"Horaire\" ne doit pas être null.");
+			throw new ServiceException(CodeIncident.NULL_COURSENAME_HORAIRE, "Le nom de la \"Mission\" dans un \"Horaire\" ne doit pas etre null.");
 		Course course = courseParNom.get(ligneCSV[2].trim()+"-"+ligneCSV[1].trim());
 		if (course == null)
 			throw new ServiceException(CodeIncident.INVALIDE_COURSENAME_HORAIRE, "Il n'y a pas de calendreir d'application pour la course numero \""+ligneCSV[1].trim()+"\" pour le parcours \""+ligneCSV[2].trim()+"\"");
@@ -70,7 +70,7 @@ public class LecteurHoraire implements ILecteurHoraire {
 			listHorairesParRegistrationLigne.put(ligneCSV[2].trim().substring(0,ligneCSV[2].trim().indexOf('-')), new ArrayList<Horaire>());
 		Itineraire itineraire = itineraireParNom.get(ligneCSV[2].trim());
 		if (itineraire == null)
-			throw new ServiceException(CodeIncident.UNKNOWN_ITINERAIRENAME_HORAIRE, "Le nom de l'\"Itineraire\" dans un \"Horaire\" ne doit pas être inconnu : "+ligneCSV[2].trim());
+			throw new ServiceException(CodeIncident.UNKNOWN_ITINERAIRENAME_HORAIRE, "Le nom de l'\"Itineraire\" dans un \"Horaire\" ne doit pas etre inconnu : "+ligneCSV[2].trim());
 		if (arretsItineraireParItineraire.get(itineraire) == null)
 			arretsItineraireParItineraire.put(itineraire, new HashMap<String, ArretItineraire>());
 		Mission mission = missionParNom.get(ligneCSV[2].trim());
@@ -89,10 +89,10 @@ public class LecteurHoraire implements ILecteurHoraire {
 		course.setRouteId(itineraire.getObjectId());
 		
 		if ((ligneCSV[3] == null) || (ligneCSV[3].trim().length() == 0))
-			throw new ServiceException(CodeIncident.NULL_ARRETPHYSIQUENAME_HORAIRE, "Le nom de l'\"ArretPhysique\" dans un \"Horaire\" ne doit pas être null.");
+			throw new ServiceException(CodeIncident.NULL_ARRETPHYSIQUENAME_HORAIRE, "Le nom de l'\"ArretPhysique\" dans un \"Horaire\" ne doit pas etre null.");
 		PositionGeographique arretPhysique = arretsPhysiquesParNom.get(ligneCSV[3].trim());
 		if (arretPhysique == null)
-			throw new ServiceException(CodeIncident.INVALIDE_ARRETPHYSIQUENAME_HORAIRE, "Le nom de l'\"ArretPhysique\" dans un \"Horaire\" doit correspondre à un \"ArretPhysique\" : "+ligneCSV[3].trim());
+			throw new ServiceException(CodeIncident.INVALIDE_ARRETPHYSIQUENAME_HORAIRE, "Le nom de l'\"ArretPhysique\" dans un \"Horaire\" doit correspondre a un \"ArretPhysique\" : "+ligneCSV[3].trim());
 		
 		if (!ensembleCoursesAvecHoraire.contains(course.getObjectId())) {
 			containedIn = "";
@@ -149,7 +149,7 @@ public class LecteurHoraire implements ILecteurHoraire {
 		horaire.setStopPointId(arretItineraire.getObjectId());
 		
 		if ((ligneCSV[4] == null) || (ligneCSV[4].trim().length() == 0))
-			throw new ServiceException(CodeIncident.NULL_HORAIRE_HORAIRE, "L'\"horaire\" dans un \"Horaire\" ne doit pas être null.");
+			throw new ServiceException(CodeIncident.NULL_HORAIRE_HORAIRE, "L'\"horaire\" dans un \"Horaire\" ne doit pas etre null.");
 		try {
 			Date departureTime = sdf.parse(ligneCSV[4].trim());
 			if (isContigu)
@@ -157,7 +157,7 @@ public class LecteurHoraire implements ILecteurHoraire {
 			horaire.setDepartureTime2(departureTime);
 		}
 		catch (ParseException e) {
-			throw new ServiceException(CodeIncident.INVALIDE_DATEDEPART_HORAIRE, "La date de départ est invalide : "+ligneCSV[4].trim());
+			throw new ServiceException(CodeIncident.INVALIDE_DATEDEPART_HORAIRE, "La date de depart est invalide : "+ligneCSV[4].trim());
 		}
 		horaire.setVehicleJourneyId(course.getObjectId());
 		if (ensembleCoursesAvecHoraire.add(course.getObjectId()))

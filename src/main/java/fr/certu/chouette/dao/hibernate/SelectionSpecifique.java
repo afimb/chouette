@@ -725,8 +725,8 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			assert nouvellesPositions==null || nouvellesPositions.size()==0:"la liste arrets initiaux est vide alors que celle de leurs nouvelles positions l'est pas";
 			return;
 		}
-		assert nouvellesPositions!=null: "les nouvelles positions d'arret ne sont pas définies";
-		assert arretsOrdreNouveau!=null: "le nouvel ordre des arrets n'est pas défini";
+		assert nouvellesPositions!=null: "les nouvelles positions d'arret ne sont pas definies";
+		assert arretsOrdreNouveau!=null: "le nouvel ordre des arrets n'est pas defini";
 		assert arretsOrdreNouveau.size()==arretsOrdreInitial.size() : "total d'arrets avant deplacement ("+arretsOrdreInitial.size()+") et apres deplacement ("+arretsOrdreNouveau.size()+") differents";
 		assert arretsOrdreNouveau.size()==nouvellesPositions.size() : "total d'arrets avant deplacement ("+arretsOrdreInitial.size()+") et de positions ("+nouvellesPositions.size()+") differents";
 		Set<Long> idsPerdus = new HashSet<Long>(arretsOrdreInitial);
