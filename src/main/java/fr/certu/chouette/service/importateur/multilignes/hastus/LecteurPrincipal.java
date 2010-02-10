@@ -112,8 +112,8 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 				LectureEchange lectureEchange = new LectureEchange();
 				lectureEchange.setReseau(lecteurLigne.getReseau());
 				if (lectureEchange.getReseau() == null) {
-					logger.error("La ligne "+registration+" n'a pas de réseau.");
-					fw.write("La ligne "+registration+" n'a pas de réseau.\n");
+					logger.error("La ligne "+registration+" n'a pas de reseau.");
+					fw.write("La ligne "+registration+" n'a pas de reseau.\n");
 					continue;
 				}
 				lectureEchange.setTransporteur(lecteurLigne.getTransporteur());
@@ -141,8 +141,8 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							if ((mission != null) && (missionsSet.add(mission)))
 								missions.add(mission);
 							else {
-								logger.warn("L'itinéraire "+itineraire.getName()+" n'a pas de mission.");
-								fw.write("L'itinéraire "+itineraire.getName()+" n'a pas de mission.\n");
+								logger.warn("L'itineraire "+itineraire.getName()+" n'a pas de mission.");
+								fw.write("L'itineraire "+itineraire.getName()+" n'a pas de mission.\n");
 							}
 						}
 						Map<String, ArretItineraire> arretsItineraire = arretsItineraireParItineraire.get(itineraire);
@@ -167,8 +167,8 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 						if (itPossedeHoraires)
 							itineraires.add(itineraire);
 						else {
-							logger.warn("L'itinéraire "+itineraire.getName()+" n'a pas d'horaires.");
-							fw.write("L'itinéraire "+itineraire.getName()+" n'a pas d'horaires.\n");
+							logger.warn("L'itineraire "+itineraire.getName()+" n'a pas d'horaires.");
+							fw.write("L'itineraire "+itineraire.getName()+" n'a pas d'horaires.\n");
 						}
 					}
 				List<Course> courses = new ArrayList<Course>();
@@ -251,7 +251,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 								cr.setRouteId(tmp.getObjectId());
 								cr.setJourneyPatternId(missionObjectId);
 							}
-						// arretsItineraires de itToAdd seront détruits
+						// arretsItineraires de itToAdd seront detruits
 						arretsItineraires.removeAll(arretsDeItToAdd);
 						// Les Horaires sur itToAdd passent des arrets de itToAdd aux arrets de tmp
 						for (Horaire hr : horaires)
@@ -340,7 +340,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 				}
 				horaires.removeAll(hrToRm);
 				
-				// Mise à jours des noms des itinéraires et des arrets physiques
+				// Mise a jours des noms des itineraires et des arrets physiques
 				for (Itineraire it : itinerairesDest) {
 					String tmpName = it.getPublishedName();
 					it.setPublishedName(it.getName());
@@ -361,14 +361,14 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 				}
 				lectureEchange.setArrets(arretsItineraires);
 				if ((lectureEchange.getArrets() == null) || (lectureEchange.getArrets().size() == 0)) {
-					logger.error("La ligne "+registration+" n'a pas d'arrêt.");
-					fw.write("La ligne "+registration+" n'a pas d'arrêt.\n");
+					logger.error("La ligne "+registration+" n'a pas d'arret.");
+					fw.write("La ligne "+registration+" n'a pas d'arret.\n");
 					continue;
 				}
 				lectureEchange.setArretsPhysiques(arretsPhysiques);
 				if ((lectureEchange.getArretsPhysiques() == null) || (lectureEchange.getArretsPhysiques().size() == 0)) {
-					logger.error("La ligne "+registration+" n'a pas d'arrêts physiques.");
-					fw.write("La ligne "+registration+" n'a pas d'arrêts physiques.\n");
+					logger.error("La ligne "+registration+" n'a pas d'arrets physiques.");
+					fw.write("La ligne "+registration+" n'a pas d'arrets physiques.\n");
 					continue;
 				}
 				lectureEchange.setCourses(coursesDest);
@@ -437,7 +437,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 					ligneNumber++;
 					if (lecteurZone.isTitreReconnu(ligneCSV)) {
 						if (counter != 0)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Zones\" doivent �tre d�finies au d�but du fichier.");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Zones\" doivent etre definies au debut du fichier.");
 						lecteurZone.lire(ligneCSV);
 					}
 					else if (lecteurArret.isTitreReconnu(ligneCSV)) {
@@ -447,7 +447,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							counter++;
 						}
 						if (counter != 1)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Arrets Physiques\" doivent �tre d�finis en deuxi�me juste apr�s les \"Zones\".");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Arrets Physiques\" doivent etre definis en deuxieme juste apres les \"Zones\".");
 						lecteurArret.lire(ligneCSV);
 					}
 					else if (lecteurLigne.isTitreReconnu(ligneCSV)) {
@@ -457,7 +457,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							counter++;
 						}
 						if (counter != 2)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Lignes\" doivent �tre d�finis en troisi�me juste apr�s les \"Arrets Physiques\".");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Lignes\" doivent etre definis en troisieme juste apres les \"Arrets Physiques\".");
 						lecteurLigne.lire(ligneCSV);
 					}
 					else if (lecteurItineraire.isTitreReconnu(ligneCSV)) {
@@ -470,7 +470,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							counter++;
 						}
 						if (counter != 3)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Itineraires\" doivent �tre d�finis en quatri�me juste apr�s les \"Lignes\".");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Itineraires\" doivent etre definis en quatrieme juste apres les \"Lignes\".");
 						lecteurItineraire.lire(ligneCSV);
 					}
 					else if (lecteurCourse.isTitreReconnu(ligneCSV)) {
@@ -481,7 +481,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							counter++;
 						}
 						if (counter != 4)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Courses\" doivent �tre d�finis en cinqi�me juste apr�s les \"Itineraires\".");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Courses\" doivent etre definis en cinqieme juste apres les \"Itineraires\".");
 						lecteurCourse.lire(ligneCSV);
 					}
 					else if (lecteurHoraire.isTitreReconnu(ligneCSV)) {
@@ -494,7 +494,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							counter++;
 						}
 						if (counter != 5)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Horaires\" doivent �tre d�finis en sixi�me juste apr�s les \"Courses\".");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Horaires\" doivent etre definis en sixieme juste apres les \"Courses\".");
 						lecteurHoraire.lire(ligneCSV);
 					}
 					else if (lecteurOrdre.isTitreReconnu(ligneCSV)) {
@@ -504,7 +504,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 							counter++;
 						}
 						if (counter != 6)
-							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Ordres\" doivent �tre d�finis en dernier juste apr�s les \"Horaires\".");
+							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Ordres\" doivent etre definis en dernier juste apres les \"Horaires\".");
 						lecteurOrdre.lire(ligneCSV);
 					}
 					else if (!isEmptyLigne(ligneCSV))
