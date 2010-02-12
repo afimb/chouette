@@ -230,6 +230,7 @@
       </activation>
       <properties>
         <profile.filter>filter</profile.filter>
+        <profile.setting>default</profile.setting>
       </properties>
     </profile>
     <profile>
@@ -241,6 +242,7 @@
       </activation>
       <properties>
         <profile.filter>filter${site}</profile.filter>
+        <profile.setting>${site}</profile.setting>
       </properties>
     </profile>
   </profiles>
@@ -295,6 +297,36 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.0.2</version>
+        <configuration>
+          <warName>${project.artifactId}_${profile.setting}</warName>
+        </configuration>
+      </plugin>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>git</executable>
+          <arguments>
+            <argument>log</argument>
+            <argument>--pretty=format:%H</argument>
+            <argument>-n1</argument>
+          </arguments>
+          <outputFile>target/classes/gitsha.txt</outputFile>
+        </configuration>
+        </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
