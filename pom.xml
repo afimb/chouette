@@ -302,16 +302,16 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.0.2</version>
         <configuration>
-          <warName>${project.artifactId}_${profile.setting}</warName>
+          <warName>dist/${project.artifactId}_${profile.setting}_${shortSha1}</warName>
         </configuration>
       </plugin>
-    <plugin>
+
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1</version>
         <executions>
           <execution>
-            <phase>compile</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>exec</goal>
             </goals>
@@ -321,12 +321,30 @@
           <executable>git</executable>
           <arguments>
             <argument>log</argument>
-            <argument>--pretty=format:%H</argument>
+            <argument>--pretty=format:shortSha1 = %h%nsha1 = %H</argument>
             <argument>-n1</argument>
           </arguments>
-          <outputFile>target/classes/gitsha.txt</outputFile>
+          <outputFile>${project.build.directory}/build-number.properties</outputFile>
         </configuration>
-        </plugin>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>${project.build.directory}/build-number.properties</file>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
