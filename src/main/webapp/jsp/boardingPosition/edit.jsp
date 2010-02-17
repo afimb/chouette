@@ -139,7 +139,7 @@
         </s:a>
       </display:column>
       <display:column titleKey="table.title.name">
-        <s:text name="text.zone"/>	<s:property value="%{#attr.child.name}"/>
+        <s:text name="text.zone"/>	<s:property value="%{#attr.father.name}"/>
       </display:column>
       <display:column titleKey="table.title.type">
         <s:text name="%{#attr.father.areaType}"/>
