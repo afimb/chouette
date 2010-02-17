@@ -116,12 +116,12 @@
       <artifactId>displaytag</artifactId>
       <version>1.2</version>
     </dependency>
-    <!-- Freemarker -->
+    <!-- Freemarker --><!--
     <dependency>
       <groupId>freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>2.3.4</version>
-    </dependency>
+    </dependency> -->
     <!-- Servlet & Jsp -->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -183,7 +183,7 @@
     <dependency>
       <groupId>postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>8.1-407.jdbc3</version>
+      <version>8.3-603.jdbc3</version>
       <scope>compile</scope>
     </dependency>
     <!-- Castor -->
@@ -230,6 +230,7 @@
       </activation>
       <properties>
         <profile.filter>filter</profile.filter>
+        <profile.setting>default</profile.setting>
       </properties>
     </profile>
     <profile>
@@ -241,6 +242,7 @@
       </activation>
       <properties>
         <profile.filter>filter${site}</profile.filter>
+        <profile.setting>${site}</profile.setting>
       </properties>
     </profile>
   </profiles>
@@ -295,6 +297,54 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.0.2</version>
+        <configuration>
+          <warName>dist/${project.artifactId}_${profile.setting}_${shortSha1}</warName>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>git</executable>
+          <arguments>
+            <argument>log</argument>
+            <argument>--pretty=format:shortSha1 = %h%nsha1 = %H</argument>
+            <argument>-n1</argument>
+          </arguments>
+          <outputFile>${project.build.directory}/build-number.properties</outputFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>${project.build.directory}/build-number.properties</file>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
