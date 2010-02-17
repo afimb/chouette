@@ -28,7 +28,7 @@
             </s:if>
           </s:param>
           <s:param name="idTableauMarche" value="%{idTableauMarche}"></s:param>
-          <s:param name="page" value="%{pagination.pagePrecedente}" />
+          <s:param name="page" value="%{pagination.numeroPagePrecedente}" />
           <s:param name="idItineraire" value="%{idItineraire}" />
           <s:param name="idLigne" value="%{idLigne}" />
         </s:url>
@@ -63,7 +63,7 @@
             </s:if>
           </s:param>
           <s:param name="idTableauMarche" value="%{idTableauMarche}"></s:param>
-          <s:param name="page" value="%{pagination.pageSuivante}" />
+          <s:param name="page" value="%{pagination.numeroPageSuivante}" />
           <s:param name="idItineraire" value="%{idItineraire}" />
           <s:param name="idLigne" value="%{idLigne}" />
         </s:url>

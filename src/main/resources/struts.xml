@@ -438,14 +438,9 @@
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
-      <result name="edit">/jsp/vehicleJourneyAtStop/edit.jsp
-      </result>
-      <result name="list">/jsp/vehicleJourneyAtStop/list.jsp
-      </result>
-      <result name="input">/jsp/vehicleJourneyAtStop/edit.jsp
-      </result>
-      <result name="search">/jsp/vehicleJourneyAtStop/search.jsp
-      </result>
+      <result name="list">/jsp/vehicleJourneyAtStop/list.jsp</result>
+      <result name="input">/jsp/vehicleJourneyAtStop/list.jsp</result>
+      <result name="search">/jsp/vehicleJourneyAtStop/search.jsp</result>
     </action>
   </package>
 
