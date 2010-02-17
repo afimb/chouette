@@ -111,56 +111,56 @@
       </display:table>
     </s:div>
   </div>
-</s:if>
 
-<%-- Zones parentes --%>
-<div class="panelDataSection">
-  <s:text name="text.positionGeographique.fatherArea.title" />
-</div>
-<div class="panel">
-  <s:div label="father" id="displaytag">
-    <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
-      <display:column titleKey="table.title.action">
-        <s:url id="editUrl" action="edit" namespace="/boardingPosition">
-          <s:param name="idPositionGeographique" value="%{father.id}" />
-        </s:url>
-        <s:a href="%{editUrl}">
-          <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
-        </s:a>&nbsp;&nbsp;
-        <s:url id="removeUrl" action="removeChildFromParent" namespace="/boardingPosition">
-          <s:param name="idChild" value="%{id}" />
-          <s:param name="idPositionGeographique" value="%{id}" />
-          <s:param name="idItineraire" value="%{idItineraire}"/>
-          <s:param name="idLigne" value="%{idLigne}"/>
-          <s:param name="actionSuivante" value="%{actionSuivante}"/>
-        </s:url>
-        <s:a href="%{removeUrl}">
-          <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
-        </s:a>
-      </display:column>
-      <display:column titleKey="table.title.name">
-        <s:text name="text.zone"/>	<s:property value="%{#attr.father.name}"/>
-      </display:column>
-      <display:column titleKey="table.title.type">
-        <s:text name="%{#attr.father.areaType}"/>
-      </display:column>
-    </display:table>
-  </s:div>
-  <%-- Formulaire de recherche de zone parente --%>
-  <div ID="father">
-    <s:form id="areaSearchForm" action="search" namespace="/boardingPosition">
-      <s:hidden name="idPositionGeographique" value="%{id}"/>
-      <s:hidden name="actionSuivante" value="addFather"/>
-      <s:hidden name="authorizedType" value="%{authorizedType}" />
-      <s:if test="father.id != null">
-        <s:submit key="action.replace" />
-      </s:if>
-      <s:else>
-        <s:submit key="action.add" />
-      </s:else>
-    </s:form>
+  <%-- Zones parentes --%>
+  <div class="panelDataSection">
+    <s:text name="text.positionGeographique.fatherArea.title" />
   </div>
-</div>
+  <div class="panel">
+    <s:div label="father" id="displaytag">
+      <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
+        <display:column titleKey="table.title.action">
+          <s:url id="editUrl" action="edit" namespace="/boardingPosition">
+            <s:param name="idPositionGeographique" value="%{father.id}" />
+          </s:url>
+          <s:a href="%{editUrl}">
+            <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
+          </s:a>&nbsp;&nbsp;
+          <s:url id="removeUrl" action="removeChildFromParent" namespace="/boardingPosition">
+            <s:param name="idChild" value="%{id}" />
+            <s:param name="idPositionGeographique" value="%{id}" />
+            <s:param name="idItineraire" value="%{idItineraire}"/>
+            <s:param name="idLigne" value="%{idLigne}"/>
+            <s:param name="actionSuivante" value="%{actionSuivante}"/>
+          </s:url>
+          <s:a href="%{removeUrl}">
+            <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
+          </s:a>
+        </display:column>
+        <display:column titleKey="table.title.name">
+          <s:text name="text.zone"/>	<s:property value="%{#attr.father.name}"/>
+        </display:column>
+        <display:column titleKey="table.title.type">
+          <s:text name="%{#attr.father.areaType}"/>
+        </display:column>
+      </display:table>
+    </s:div>
+    <%-- Formulaire de recherche de zone parente --%>
+    <div ID="father">
+      <s:form id="areaSearchForm" action="search" namespace="/boardingPosition">
+        <s:hidden name="idPositionGeographique" value="%{id}"/>
+        <s:hidden name="actionSuivante" value="addFather"/>
+        <s:hidden name="authorizedType" value="%{authorizedType}" />
+        <s:if test="father.id != null">
+          <s:submit key="action.replace" />
+        </s:if>
+        <s:else>
+          <s:submit key="action.add" />
+        </s:else>
+      </s:form>
+    </div>
+  </div>
+</s:if>
 <script type="text/javascript"><!--
   // <![CDATA[
 
