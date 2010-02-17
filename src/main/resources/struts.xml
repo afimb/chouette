@@ -176,14 +176,14 @@
 
 		<!-- Resultats "reutilisables" -->
     <global-results>
-    	<result name="locked-action-error">/jsp/locked-action-error.jsp</result>
-      	<result name="error">/jsp/error.jsp</result>
+      <result name="locked-action-error">/jsp/locked-action-error.jsp</result>
+      <result name="error">/jsp/error.jsp</result>
     </global-results>
 
 	<!-- Traitement des erreurs -->
-	<global-exception-mappings>
-		<exception-mapping result="error" exception="java.lang.Exception" />
-	</global-exception-mappings>
+    <global-exception-mappings>
+      <exception-mapping result="error" exception="java.lang.Exception" />
+    </global-exception-mappings>
 
 		<!-- Déconnexion -->
     <action name="deconnexion" class="Deconnexion" method="execute">
@@ -452,6 +452,17 @@
 	<!-- Mise à jour des données du modèle vehicleJourney -->
   <package name="vehicleJourney" extends="struts" namespace="/vehicleJourney">
     <action name="*" method="{1}" class='VehicleJourneyActionBean'>
+      <result name="redirectEdit" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="namespace">/vehicleJourney</param>
+        <param name="idCourse">${idCourse}</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="page">${page}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
         <param name="namespace">/vehicleJourneyAtStop</param>

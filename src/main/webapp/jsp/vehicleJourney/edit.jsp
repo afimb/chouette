@@ -30,6 +30,7 @@
     <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
     <s:hidden name="page" value="%{page}" />
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
+    <s:hidden name="operationMode" value="%{'STORE'}" />
 
     <s:textfield key="publishedJourneyName" />
     <s:textfield key="publishedJourneyIdentifier" />
@@ -65,13 +66,12 @@
   <br>
   <div>
     <s:form action="creerAssociationTableauMarche" namespace="/vehicleJourney" id="associerTableauMarcheForm" onsubmit="TridentAutoComplete.beforeSubmit();">
-      <s:if test="id != null">
-        <s:hidden name="idCourse" value="%{id}"/>
-      </s:if>
+      <s:hidden name="idCourse" value="%{id}"/>
 
       <%-- Remplissage des paramètres cachés utiles pour l'action--%>
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
       <s:hidden name="idLigne" value="%{idLigne}" />
+     <s:hidden name="operationMode" value="%{'STORE'}" />
 
       <s:textfield name="saisieTableauMarche" id="tableauMarches_auto_complete" size="60" value="" />
       <s:hidden name="saisieTableauMarcheKey" id="saisieTableauMarcheKey" value=""/>
@@ -85,6 +85,10 @@
       <display:column titleKey="table.title.action" sortable="false">
         <s:url id="supprimerAssociationTableauMarche" action="supprimerAssociationTableauMarche" namespace="/vehicleJourney">
           <s:param name="idTableauMarche">${tableauMarche.id}</s:param>
+          <s:param name="idCourse" value="%{idCourse}"/>
+          <s:param name="idItineraire" value="%{idItineraire}"/>
+          <s:param name="idLigne" value="%{idLigne}" />
+          <s:param name="operationMode" value="%{'STORE'}" />
         </s:url>
         <s:url id="editTableauMarche" action="edit" namespace="/timeTable">
           <s:param name="idCourse" value="%{idCourse}" />

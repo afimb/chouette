@@ -153,7 +153,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
 
   public String save()
   {
-    // ré-affecter l'identifiant de la ligne sur l'itinéraire
+    // ré-affecter l'identifiant de l'itinéraire sur la course
     model.setIdItineraire(idItineraire);
 
     courseManager.creer(model);
@@ -172,7 +172,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
 
   public String update()
   {
-    // ré-affecter l'identifiant de la ligne sur l'itinéraire
+    // ré-affecter l'identifiant de l'itinéraire sur la course
     model.setIdItineraire(idItineraire);
 
     courseManager.modifier(model);
@@ -329,7 +329,8 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     {
       addActionError(getText("course.associationTableauMarche.ko"));
     }
-    return SUCCESS;
+
+    return REDIRECTEDIT;
   }
 
   @SkipValidation
@@ -342,7 +343,9 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     }
     idTableauxMarche.remove(idTableauMarche);
     tableauMarcheManager.associerCourseTableauxMarche(idCourse, idTableauxMarche);
-    return SUCCESS;
+    addActionMessage(getText("course.supprimerAssociationTableauMarche.ok"));
+
+    return REDIRECTEDIT;
   }
 
   public void setSaisieTableauMarcheKey(Long saisieTableauMarcheKey)
