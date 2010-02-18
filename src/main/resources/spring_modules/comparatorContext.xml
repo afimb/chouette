@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:aop="http://www.springframework.org/schema/aop"
+      xmlns:tx="http://www.springframework.org/schema/tx"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <bean id="CompanyComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.CompanyComparator">
+        <property name="mappingKey"><value>Company</value></property>
+    </bean>
+    <bean id="ConnectionLinkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ConnectionLinkComparator">
+        <property name="mappingKey"><value>ConnectionLink</value></property>
+    </bean>
+    <bean id="LineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.LineComparator">
+        <property name="mappingKey"><value>Line</value></property>
+    </bean>
+    <bean id="PTNetworkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.PTNetworkComparator">
+        <property name="mappingKey"><value>PTNetwork</value></property>
+    </bean>
+    <bean id="RouteCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>RouteCount</value></property>
+        <property name="listName"><value>Itineraires</value></property>
+    </bean>
+    <bean id="RouteComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.RouteComparator">
+        <property name="mappingKey"><value>Route</value></property>
+        <property name="stopOnFailure"><value>true</value></property>
+    </bean>
+    <bean id="BoardingPositionCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>BoardingPositionCount</value></property>
+        <property name="listName"><value>ArretsPhysiques</value></property>
+    </bean>
+    <bean id="StopPlaceCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>StopPlaceCount</value></property>
+        <property name="listName"><value>ZonesPlaces</value></property>
+    </bean>
+    <bean id="CommercialPlaceCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>CommercialCount</value></property>
+        <property name="listName"><value>ZonesCommerciales</value></property>
+    </bean>
+    <bean id="StopAreaComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.StopAreaComparator">
+        <property name="mappingKey"><value>StopArea</value></property>
+    </bean>
+    <bean id="StopPointCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>StopPointCount</value></property>
+        <property name="listName"><value>Arrets</value></property>
+    </bean>
+    <bean id="StopPointComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.StopPointComparator">
+        <property name="mappingKey"><value>StopPoint</value></property>
+        <property name="stopOnFailure"><value>true</value></property>
+    </bean>
+    <bean id="TimetableCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>TimetableCount</value></property>
+        <property name="listName"><value>TableauxMarche</value></property>
+    </bean>
+    <bean id="TimetableComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.TimetableComparator">
+        <property name="mappingKey"><value>Timetable</value></property>
+        <property name="stopOnFailure"><value>true</value></property>
+    </bean>
+    <bean id="JourneyPatternCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>JourneyPatternCount</value></property>
+        <property name="listName"><value>Missions</value></property>
+    </bean>
+    <bean id="JourneyPatternComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.JourneyPatternComparator">
+        <property name="mappingKey"><value>JourneyPattern</value></property>
+        <property name="stopOnFailure"><value>true</value></property>
+        <property name="verbose"><value>false</value></property>
+    </bean>
+    <bean id="VehicleJourneyCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>VehicleJourneyCount</value></property>
+        <property name="listName"><value>Courses</value></property>
+    </bean>
+    <bean id="VehicleJourneyAtStopCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.ListComparator">
+        <property name="mappingKey"><value>VehicleJourneyAtStopCount</value></property>
+        <property name="listName"><value>Horaires</value></property>
+    </bean>
+    <bean id="VehicleJourneyComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.VehicleJourneyComparator">
+        <property name="mappingKey"><value>VehicleJourney</value></property>
+    </bean>
+
+    <bean id="DefaultExchangeableLineComparator"
+        abstract="true"
+    	scope="prototype"
+    	class="fr.certu.chouette.echange.comparator.ExchangeableLineComparator">
+    		<property name="dataComparators">
+    		   <list>
+    		     <ref local="LineComparator"/>
+    		     <ref local="CompanyComparator"/>
+    		     <ref local="PTNetworkComparator"/>
+    		     <ref local="StopPointCountComparator"/>
+    		     <ref local="StopPointComparator"/>
+    		     <!-- StopAreaComparator needs StopPoint mapping -->
+    		     <ref local="BoardingPositionCountComparator"/>
+    		     <ref local="StopPlaceCountComparator"/>
+    		     <ref local="CommercialPlaceCountComparator"/>
+    		     <ref local="StopAreaComparator"/>
+    		     <!-- RouteComparator needs StopArea mapping -->
+    		     <ref local="RouteCountComparator"/>
+    		     <ref local="RouteComparator"/>
+     		     <!-- TimetableComparator needs no previous mapping -->
+    		     <ref local="TimetableCountComparator"/>
+    		     <ref local="TimetableComparator"/>
+    		     <!-- JourneyPatternComparator needs StopArea and Timetable mapping -->
+    		     <ref local="JourneyPatternCountComparator"/>
+    		     <ref local="JourneyPatternComparator"/>
+    		     <!-- VehicleJourneyComparator needs JourneyPattern mapping -->
+    		     <ref local="VehicleJourneyCountComparator"/>
+    		     <ref local="VehicleJourneyAtStopCountComparator"/>
+    		     <ref local="VehicleJourneyComparator"/>
+    		   </list>
+    		</property>
+    </bean>
+    
+	<bean id="ExchangeableChouetteLineComparator"
+    	scope="prototype"
+    	parent="DefaultExchangeableLineComparator"
+    	class="fr.certu.chouette.echange.comparator.ExchangeableChouetteLineComparator">
+    	<property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
+    	<property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+    </bean>
+    
+    <!-- AMIVIF specific comparators-->
+    
+    <bean id="AmivifLineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifLineComparator">
+        <property name="mappingKey"><value>Line</value></property>
+    </bean>
+    <bean id="AmivifGroupOfLineCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifListComparator">
+        <property name="mappingKey"><value>GroupOfLineCount</value></property>
+        <property name="listName"><value>GroupOfLine</value></property>
+    </bean>
+    <bean id="AmivifGroupOfLineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifGroupOfLineComparator">
+        <property name="mappingKey"><value>GroupOfLine</value></property>
+    </bean>
+    <bean id="AmivifSubLineCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifListComparator">
+        <property name="mappingKey"><value>SubLineCount</value></property>
+        <property name="listName"><value>SubLine</value></property>
+    </bean>
+    <bean id="AmivifSubLineComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifSubLineComparator">
+        <property name="mappingKey"><value>SubLine</value></property>
+    </bean>
+    <bean id="AmivifStopPointComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifStopPointComparator">
+        <property name="mappingKey"><value>StopPoint</value></property>
+    </bean>
+    <bean id="AmivifStopAreaComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifStopAreaComparator">
+        <property name="mappingKey"><value>StopArea</value></property>
+    </bean>
+    <bean id="AmivifPtLinkCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifListComparator">
+        <property name="mappingKey"><value>PtLinkCount</value></property>
+        <property name="listName"><value>PTLink</value></property>
+    </bean>
+    <bean id="AmivifPtLinkComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifPtLinkComparator">
+        <property name="mappingKey"><value>PTLink</value></property>
+    </bean>
+    <bean id="AmivifStopPointInConnectionCountComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifListComparator">
+        <property name="mappingKey"><value>StopPointInConnectionCount</value></property>
+        <property name="listName"><value>StopPointInConnection</value></property>
+    </bean>
+    <bean id="AmivifStopPointInConnectionComparator" scope="prototype" class="fr.certu.chouette.echange.comparator.amivif.AmivifStopPointInConnectionComparator">
+        <property name="mappingKey"><value>StopPointInConnection</value></property>
+    </bean>
+
+    <bean id="ExchangeableAmivifLineComparator"
+    	scope="prototype"
+    	parent="DefaultExchangeableLineComparator"
+    	class="fr.certu.chouette.echange.comparator.amivif.ExchangeableAmivifLineComparator">
+    		<property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
+			<property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
+ 			<property name="amivifAdapter" ref="amivifAdapter"/>
+    		<property name="amivifComparators">
+    		   <list>
+    		     	<ref local="AmivifLineComparator"/>
+    		     	<ref local="AmivifGroupOfLineCountComparator"/>
+    		     	<ref local="AmivifGroupOfLineComparator"/>
+    		     	<ref local="AmivifSubLineCountComparator"/>
+    		     	<ref local="AmivifSubLineComparator"/>
+    		     	<ref local="AmivifStopPointComparator"/>
+    		     	<ref local="AmivifStopAreaComparator"/>
+    		     	<ref local="AmivifPtLinkCountComparator"/>
+    		     	<ref local="AmivifPtLinkComparator"/>
+    		     	<ref local="AmivifStopPointInConnectionCountComparator"/>
+    		    	<ref local="AmivifStopPointInConnectionComparator"/>
+    			</list>
+    		</property> 			
+    </bean>
+</beans>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ChouettePTNetwork xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.trident.org/schema/trident" xsi:schemaLocation="http://www.trident.org/schema/trident ../../../main/castor/Chouette.xsd">
+    <PTNetwork>
+        <objectId>RATP_PIVI:PTNetwork:100</objectId>
+        <versionDate>2005-10-31</versionDate>
+        <name>BUS RATP</name>
+        <registration>
+            <registrationNumber>100</registrationNumber>
+        </registration>
+    </XPTNetwork>
+</ChouettePTNetwork>

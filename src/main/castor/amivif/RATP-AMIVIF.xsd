@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
+<!--  File: RATP-AMIVIF.xsd  -->
+<xsd:schema 
+	xmlns:trd="http://www.trident.org/schema/trident" 
+	xmlns="http://www.trident.org/schema/trident" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.trident.org/schema/trident" 
+	elementFormDefault="qualified" version="1.00">
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata>
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Contributor>AMIVIF</Contributor>
+				<Contributor>RATP</Contributor>
+				<Contributor>Christophe Duquesne - Dryade</Contributor>
+				<Coverage>Europe</Coverage>
+				<Creator>AMIVIF</Creator>
+				<Date>
+					<Created>2003-01-01</Created>
+				</Date>
+				<Date>
+					<Modified>2006-01-10</Modified>
+				</Date>
+				<Description>
+					<p>Ce fichier permet de décrire exhaustivement les échanges de données réalisé entre les différents partenaire de l'AMIVIF</p>
+					<p>Il s'agit d'un modèle d'échange basé sur TRIDENT et donc d'un profil TRIDENT permettant d'échanger les informations suiventes
+                        <ul>
+							<li>La topologies des différents réseaux.</li>
+							<li>Les horaires applicables sur les réseau.</li>
+							<li>Des extension au modéle TRIDENT propre à l'AMIVIF (toutes définies dans le présent fichier)</li>
+						</ul>
+					</p>
+					<p>Les modification de décembre 2005 et janvier 2006 ont permis de produire un modèle AMIVIF "surcontraint" en enlevant des modèles
+					   tous les objets et champs non utilis"s pour l'échange, et en particulier les extension de type "any" qui posaient problème à des 
+					   environnement comm WMLSpy (bien que le XSD soit conforme à la norme).
+					</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>RATP_AMIVIF.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>AMIVIF</Publisher>
+				<Relation>
+					<Requires>trident_Global_schema.xsd</Requires>
+					<Requires>trident_Location_schema.xsd</Requires>
+					<Requires>trident_PT_schema.xsd</Requires>
+				</Relation>
+				<Rights>Unclassified
+                                   <Copyright>AMIVIF 2006</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Based on the TRIDENT standard</li>
+						<li>Derived from the DATEX and TRANSMODEL standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry.
+					</Category>
+					<Project>AMIVIF-TRIDENT</Project>
+				</Subject>
+				<Title>Profil TRIDENT pour l'AMIVIF. </Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+	</xsd:annotation>
+	<!-- **************************************************************** -->
+	<xsd:include schemaLocation="trident_PT_schema.xsd"/>
+	<!-- **************************************************************** -->
+	<xsd:complexType name="TimeSlotType">
+		<xsd:annotation>
+			<xsd:documentation>Type pour les fréquences horaire</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="trd:TridentObjectType">
+				<xsd:sequence>
+					<xsd:element name="journeyPatternId" type="trd:TridentIdType"/>
+					<xsd:element name="timetableId" type="trd:TridentIdType"/>
+					<xsd:element name="frequency" type="xsd:duration"/>
+					<xsd:element name="beginningSlotTime" type="xsd:time"/>
+					<xsd:element name="endSlotTime" type="xsd:time"/>
+					<xsd:element name="firstDepartureTimeInSlot" type="xsd:time"/>
+					<xsd:element name="lastDepartureTimeInSlot" type="xsd:time"/>
+					<xsd:element name="journeyRunningTime" maxOccurs="unbounded">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="stopPointId" type="trd:TridentIdType"/>
+								<xsd:element name="departureToStopPointTime" type="xsd:duration"/>
+								<xsd:element name="stopPointOrder" type="xsd:positiveInteger"/>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ICTType">
+		<xsd:annotation>
+			<xsd:documentation>Information sur les interdictions de trafic local ou le sectionnement des lignes</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="trd:TridentObjectType">
+				<xsd:sequence>
+					<xsd:element name="typeICT">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="ITL"/>
+								<xsd:enumeration value="section"/>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:element>
+					<xsd:element name="section" type="xsd:integer" minOccurs="0"/>
+					<xsd:element name="routeId" type="TridentIdType"/>
+					<xsd:element name="stopPointId" type="TridentIdType" minOccurs="2" maxOccurs="2"/>
+					<xsd:element name="vehicleJourneyId" type="TridentIdType" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="SubLineType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="en">
+A Subline is a subset of Route from a line ...
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="trd:TridentObjectType">
+				<xsd:sequence>
+					<xsd:element name="sublineName" type="xsd:string"/>
+					<xsd:element name="lineName" type="xsd:string"/>
+					<xsd:element name="registration" type="trd:RegistrationType" minOccurs="0"/>
+					<xsd:element name="routeId" type="trd:TridentIdType" maxOccurs="unbounded"/>
+					<xsd:element name="lineId" type="trd:TridentIdType"/>
+					<xsd:element name="comment" type="xsd:string" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="RespPTLineStructTimetableType">
+		<xsd:annotation>
+			<xsd:documentation>Message type pour la structure de ligne et les horaires</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="TransportNetwork" type="trd:PTNetworkType" minOccurs="0"/>
+			<xsd:element name="Company" type="trd:CompanyType" maxOccurs="unbounded"/>
+			<xsd:element name="GroupOfLine" type="trd:GroupOfLineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Line" type="trd:LineType"/>
+			<xsd:element name="StopArea" type="trd:StopAreaType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="StopPoint" type="trd:StopPointType" minOccurs="2" maxOccurs="unbounded"/>
+			<xsd:element name="PTLink" type="PTLinkType" maxOccurs="unbounded"/>
+			<xsd:element name="Route" type="trd:RouteType" maxOccurs="unbounded"/>
+			<xsd:element name="SubLine" type="trd:SubLineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AccessPoint" type="trd:PTAccessPointType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PTAccessLink" type="PTAccessLinkType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="StopPointInConnection" type="trd:StopPointType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ConnectionLink" type="ConnectionLinkType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ICT" type="ICTType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Timetable" type="trd:TimetableType" maxOccurs="unbounded"/>
+			<xsd:element name="JourneyPattern" type="trd:JourneyPatternType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="VehicleJourney" type="trd:VehicleJourneyType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RespPTTimetableType">
+		<xsd:annotation>
+			<xsd:documentation>Message type pour les horaires</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="TransportNetwork" type="trd:PTNetworkType" minOccurs="0"/>
+			<xsd:element name="Company" type="trd:CompanyType" maxOccurs="unbounded"/>
+			<xsd:element name="Line" type="trd:LineType"/>
+			<xsd:element name="SubLine" type="SubLineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Timetable" type="trd:TimetableType" maxOccurs="unbounded"/>
+			<xsd:element name="JourneyPattern" type="trd:JourneyPatternType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="VehicleJourney" type="trd:VehicleJourneyType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RespPTLineStructTimeSlotType">
+		<xsd:annotation>
+			<xsd:documentation>Message type pour la structure de ligne et les frequences</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="TransportNetwork" type="trd:PTNetworkType" minOccurs="0"/>
+			<xsd:element name="Company" type="trd:CompanyType" maxOccurs="unbounded"/>
+			<xsd:element name="GroupOfLine" type="trd:GroupOfLineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Line" type="trd:LineType"/>
+			<xsd:element name="StopArea" type="trd:StopAreaType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="StopPoint" type="StopPointType" minOccurs="2" maxOccurs="unbounded"/>
+			<xsd:element name="PTLink" type="PTLinkType" maxOccurs="unbounded"/>
+			<xsd:element name="Route" type="trd:RouteType" maxOccurs="unbounded"/>
+			<xsd:element name="SubLine" type="trd:SubLineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AccessPoint" type="trd:PTAccessPointType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PTAccessLink" type="PTAccessLinkType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="StopPointInConnection" type="trd:StopPointType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ConnectionLink" type="ConnectionLinkType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ICT" type="ICTType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Timetable" type="trd:TimetableType" maxOccurs="unbounded"/>
+			<xsd:element name="JourneyPattern" type="trd:JourneyPatternType" maxOccurs="unbounded"/>
+			<xsd:element name="TimeSlot" type="TimeSlotType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RespPTTimeSlotType">
+		<xsd:annotation>
+			<xsd:documentation>Message type pour les fréquences</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="TransportNetwork" type="trd:PTNetworkType" minOccurs="0"/>
+			<xsd:element name="Company" type="trd:CompanyType" maxOccurs="unbounded"/>
+			<xsd:element name="Line" type="trd:LineType"/>
+			<xsd:element name="SubLine" type="SubLineType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Timetable" type="trd:TimetableType" maxOccurs="unbounded"/>
+			<xsd:element name="JourneyPattern" type="trd:JourneyPatternType" maxOccurs="unbounded"/>
+			<xsd:element name="TimeSlot" type="TimeSlotType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="RespPTDestrLineType">
+		<xsd:annotation>
+			<xsd:documentation>Message type pour la destruction d'une ligne</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Line" type="trd:LineType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Definition des instances -->
+	<xsd:element name="respPTLineStructTimetable" type="trd:RespPTLineStructTimetableType"/>
+	<xsd:element name="RespPTTimetable" type="trd:RespPTTimetableType"/>
+	<xsd:element name="respPTLineStructTimeSlot" type="RespPTLineStructTimeSlotType"/>
+	<xsd:element name="RespPTDestrLine" type="trd:RespPTDestrLineType"/>
+	<xsd:element name="RespPTTimeSlot" type="trd:RespPTTimeSlotType"/>
+	<xsd:element name="AMIVIF_StopPoint_Extension">
+		<xsd:annotation>
+			<xsd:documentation>Extensions AMIVIF sur les points d'arret</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="codeUIC" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="upFarZone" type="xsd:integer" minOccurs="0"/>
+				<xsd:element name="downFarZone" type="xsd:integer" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AMIVIF_AccessPoint_Extension">
+		<xsd:annotation>
+			<xsd:documentation>Extensions AMIVIF sur les points d'accès</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="accessType" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AMIVIF_StopArea_Extension">
+		<xsd:annotation>
+			<xsd:documentation>Extensions AMIVIF sur les Aires de transport</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="nearestTopicName" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="upFarZone" type="xsd:integer"/>
+				<xsd:element name="downFarZone" type="xsd:integer" minOccurs="0"/>
+				<xsd:element name="projectedPoint" type="trd:ProjectedPointType" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="AMIVIF_ConnectionLink_Extension">
+		<xsd:annotation>
+			<xsd:documentation>Extensions AMIVIF sur les correspondances</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="display" type="xsd:boolean"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

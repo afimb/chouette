@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+@@LICENCE@@
+-->
+<!--
+ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DPTNetworkBean.hbm.xml : paramétrage DPTNetworkBean - PtNetwork
+
+ Historique des modifications :
+ Date        | Auteur         | Libéllé
+ ============+================+==============================================
+ 2 nov. 2004 |Marc FLORISSON  | Création
+ ============+================+==============================================
+
+ Version : $Revision: 1.6 $
+-->
+<hibernate-mapping>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Reseau" table="PtNetwork">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="versionDate" name="versionDate" type="date"/>
+    <property column="description" name="description"/>
+    <property column="name" name="name"/>
+    <property column="registrationNumber" name="registrationNumber" unique="true"/>
+    <property column="sourceName" name="sourceName"/>
+    <property column="sourceIdentifier" name="sourceIdentifier"/>
+    <property column="comment" name="comment"/>
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,68 @@
+package fr.certu.chouette.dao;
+
+import chouette.schema.types.ChouetteAreaType;
+import fr.certu.chouette.critere.IClause;
+import fr.certu.chouette.critere.Ordre;
+import fr.certu.chouette.dao.hibernate.Couple;
+import fr.certu.chouette.modele.ArretItineraire;
+import fr.certu.chouette.modele.Correspondance;
+import fr.certu.chouette.modele.Course;
+import fr.certu.chouette.modele.Horaire;
+import fr.certu.chouette.modele.InterdictionTraficLocal;
+import fr.certu.chouette.modele.Itineraire;
+import fr.certu.chouette.modele.Ligne;
+import fr.certu.chouette.modele.Mission;
+import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.modele.Reseau;
+import fr.certu.chouette.modele.TableauMarche;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+public interface ISelectionSpecifique {
+	
+	Ligne getLigneParRegistration(String registrationNumber);
+	List<Horaire> getHorairesCourse(Long idCourse);
+	List<Horaire> getHorairesCourses(final Collection<Long> idCourses);
+	List<Horaire> getHorairesArretItineraire(Long idArret);
+	List<Course> getCoursesItineraireSelonHeureDepartPremiereCourse (Long idItineraire, Date seuilDateDepartCourse);
+	List<Course> getCoursesItineraire(Long idItineraire);
+	List<Course> getCoursesItineraires(final Collection<Long> idItineraires);
+	List<ArretItineraire> getArretsItineraire(Long idItineraire);
+	List<ArretItineraire> getArretsItineraires(final Collection<Long> idItineraires);
+	List<ArretItineraire> getArretsItineraireParGeoPosition(Long idPhysique);
+	List<PositionGeographique> getGeoPositions(final Collection<Long> idPhysiques, Ordre ordre);
+	List<Itineraire> getItinerairesLigne(Long idLigne);
+	List<Itineraire> getLigneItinerairesExportables(final Long idLigne);
+	List<Itineraire> getItinerairesParGeoPosition(final Long idPhysique);
+	List<Ligne> getLignesReseau(Long idReseau);
+	List<Ligne> getLignesTransporteur(Long idTransporteur);
+	List<TableauMarche> getTableauxMarcheCourse(Long idCourse);
+	List<TableauMarche> getTableauxMarcheCourses(final Collection<Long> idCourses);
+	List<Course> getCoursesTableauMarche(Long idTableauMarche);
+	List<Ligne> getLignesFiltrees(Collection<Long> idReseaux, Collection<Long> idTransporteurs);
+	List<Ligne> getLignes(final Collection<Long> idLignes);
+	List<Reseau> getReseaux(final Collection<Long> idReseaux);
+	List<PositionGeographique> getGeoPositionsDirectementContenues(final Long idParent);
+	List<Correspondance> getCorrespondancesParGeoPosition(final Long idGeoPosition);
+	List<PositionGeographique> getGeoPositionsParentes(final Long idGeoPositionParente);
+	List<InterdictionTraficLocal> getITLLigne(final Long idLigne);
+	List<PositionGeographique> getArretPhysiqueLigne(final Long idLigne);
+	List<PositionGeographique> getArretPhysiqueItineraire(final Long idItineraire);
+	List<Long> getPhysiqueIdAvecItineraire();
+	List<TableauMarche> getTableauxMarcheItineraire(final Long idItineraire);
+	List<TableauMarche> getTableauxMarcheItineraires(final Collection<Long> idItineraires);
+	List<TableauMarche> getTableauxMarcheLazy();
+	List<Couple> getIdMissionIdCourseType(final Long idItineraire);
+	List<Horaire> getHorairesItineraire(final Long idItineraire);
+	List<Horaire> getHorairesItineraires(final Collection<Long> idItineraires);
+	List<Mission> getMissionsItineraire(final Long idItineraire);
+	List<Mission> getMissionsItineraires(final Collection<Long> idItineraires);
+	List<Mission> getMissions(final Collection<Long> idMissions);
+	List<PositionGeographique> getGeoPositions();
+	List<Correspondance> getCorrespondances();
+	List<PositionGeographique> getArretsFiltres(final String nomArret, final String code, final Long idReseau, final List <ChouetteAreaType> areaTypes);
+	List<TableauMarche> getCalendriersFiltres(final Date dateDebutPeriode, final Date dateFinPeriode, final String commentaire, final Long idReseau);
+	List<Object> select (final IClause clause);
+	List<Course> getCoursesFiltrees(Long idItineraire, Long idTableauMarche, Date seuilDateDepartCourses);
+}
