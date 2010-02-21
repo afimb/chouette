@@ -1,6 +1,0 @@
-package fr.certu.chouette.service.validation;
-
-public enum DayType {
-	FRIDAY, MARKETDAY, MONDAY, PUBLICHOLLIDAY, SATURDAY, SCHOOLHOLLIDAY, SUNDAY, THURSDAY, TUESDAY,
-	WEDNESDAY, WEEKDAY, WEEKEND
-}
