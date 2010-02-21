@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+@@LICENCE@@
+-->
+<!--
+ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DCompanyBean.hbm.xml : paramétrage DCompanyBean - company
+
+ Historique des modifications :
+ Date        | Auteur         | Libéllé
+ ============+================+==============================================
+ 2 nov. 2004 |Marc FLORISSON  | Création
+ ============+================+==============================================
+
+ Version : $Revision: 1.5 $
+-->
+<hibernate-mapping>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.Transporteur" table="Company">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+    <property column="name" name="name"/>
+    <property column="shortName" name="shortName"/>
+    <property column="organizationalUnit" name="organisationalUnit"/>
+    <property column="operatingDepartmentName" name="operatingDepartmentName"/>
+    <property column="code" name="code"/>
+    <property column="phone" name="phone"/>
+    <property column="fax" name="fax"/>
+    <property column="email" name="email"/>
+    <property column="registrationNumber" name="registrationNumber" unique="true"/>
+  </class>
+</hibernate-mapping>

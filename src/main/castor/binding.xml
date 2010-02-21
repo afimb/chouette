@@ -1,0 +1,17 @@
+<binding xmlns="http://www.castor.org/SourceGenerator/Binding"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.castor.org/SourceGenerator/Binding C:\\Castor\\xsd\\binding.xsd"
+         defaultBinding="element">
+         
+	<namingXML>
+		<complexTypeName>
+			<suffix>Type</suffix>
+		</complexTypeName>
+	</namingXML>
+	<elementBinding name="/complexType:SuitabilityStructure/UserNeed">
+		<java-class name="SuitabilityStructureUserNeed"/>
+   </elementBinding>
+   <elementBinding name="/complexType:PassengerAccessibilityNeedsStructure/UserNeed">
+      <java-class name="PassengerAccessibilityNeedsStructureUserNeed"/>
+   </elementBinding>
+</binding>

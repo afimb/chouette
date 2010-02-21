@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+@@LICENCE@@
+-->
+<!--
+ Société DRYADE
+ 
+ Projet chouette : paramétrage Objet - Base
+ 
+ DTimetableBean.hbm.xml : paramétrage DTimetableBean - Timetable
+ 
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 
+ Version : $Revision: 1.2 $
+-->
+<hibernate-mapping>
+  <class dynamic-insert="false" dynamic-update="false" name="fr.certu.chouette.modele.InterdictionTraficLocal" table="routingConstraint">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <list cascade="all" lazy="false" name="arretPhysiqueIds" table="routingConstraint_stoparea">
+      <key column="routingConstraintId"/>
+      <index column="position"/>
+      <element column="stopareaId" type="long"/>
+    </list>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="lineId" name="idLigne"/>
+    <property column="name" name="nom"/>
+  </class>
+</hibernate-mapping>

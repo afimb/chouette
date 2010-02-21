@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+@@LICENCE@@
+-->
+<!--
+ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ =============+================+==============================================
+
+ Version : $Revision: 1.2 $
+-->
+<hibernate-mapping>
+  <class dynamic-insert="false" name="fr.certu.chouette.modele.ArretItineraire" table="StopPoint">
+    <id column="id" name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property column="routeId" name="idItineraire"/>
+    <property column="stopAreaId" name="idPhysique"/>
+    <property column="isModified" name="modifie"/>
+    <property column="position" name="position" type="int"/>
+    <property column="objectId" name="objectId" type="string" unique="true"/>
+    <property column="objectVersion" name="objectVersion" type="int"/>
+    <property column="creationTime" name="creationTime" type="java.util.Date"/>
+    <property column="creatorId" name="creatorId" type="string"/>
+  </class>
+</hibernate-mapping>

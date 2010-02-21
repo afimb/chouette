@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:util="http://www.springframework.org/schema/util"
+     xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<bean id="lecteurXMLAltibus" class="fr.certu.chouette.service.importateur.multilignes.altibus.LecteurPrincipal">
+		<property name="logFileName" value="${import.xml.altibus.log}"/>
+		<property name="identificationManager" ref="identificationManager"/>
+		<property name="urlPrefix" value="http://www.altibus.com/sw/altibus/export.aspx?id=chouette&amp;ct="/>
+		<property name="names" ref="names"/>
+	</bean>
+	
+	<util:list id="names" list-class="java.util.ArrayList">
+        <value>AGB</value>
+        <value>ALP</value>
+        <value>BER</value>
+        <value>CHA</value>
+        <value>CRO</value>
+        <value>FOU</value>
+        <value>MAR</value>
+        <value>MOD</value>
+        <value>MON</value>
+        <value>MOU</value>
+        <value>NGA</value>
+        <value>RIG</value>
+        <value>SAA</value>
+        <value>SAT</value>
+        <value>SLM</value>
+        <value>STA</value>
+        <value>TNG</value>
+        <value>TSA</value>
+        <value>TSI</value>
+	</util:list>
+
+</beans>
