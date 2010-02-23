@@ -83,7 +83,7 @@
       <url-pattern>/css/*</url-pattern>
     </web-resource-collection>
   </security-constraint>
-    <!-- Liste des pages non protégées -->
+    <!-- Liste des pages protégées -->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>
