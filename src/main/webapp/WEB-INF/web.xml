@@ -13,23 +13,23 @@
   </context-param>
   
   <!-- encodage utf-8 -->
-      <filter>
-        <filter-name>Spring character encoding filter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-        <init-param>
-            <param-name>forceEncoding</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
+  <filter>
+    <filter-name>Spring character encoding filter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
  
-   <filter-mapping>
-        <filter-name>Spring character encoding filter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+  <filter-mapping>
+    <filter-name>Spring character encoding filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
   
 
   <filter>
@@ -73,16 +73,25 @@
   </listener>
 	-->
 	<!-- Welcome file lists -->
-
+  <!-- Liste des pages non protégées -->
   <security-constraint>
-		<!-- Liste des pages protégées -->
+    <web-resource-collection>
+      <web-resource-name>
+				The Entire Web Application
+      </web-resource-name>
+      <url-pattern>/images/*</url-pattern>
+      <url-pattern>/css/*</url-pattern>
+    </web-resource-collection>
+  </security-constraint>
+    <!-- Liste des pages non protégées -->
+  <security-constraint>
     <web-resource-collection>
       <web-resource-name>
 				The Entire Web Application
       </web-resource-name>
       <url-pattern>/*</url-pattern>
     </web-resource-collection>
-		<!-- Rôles des utilisateurs ayant le droit d'y accéder -->
+    <!-- Rôles des utilisateurs ayant le droit d'y accéder -->
     <auth-constraint>
       <role-name>chouette-role</role-name>
     </auth-constraint>
@@ -97,12 +106,12 @@
     </form-login-config>
   </login-config>
   <welcome-file-list>
-  	<welcome-file>index.html</welcome-file>
-  	<welcome-file>index.htm</welcome-file>
-  	<welcome-file>index.jsp</welcome-file>
-  	<welcome-file>default.html</welcome-file>
-  	<welcome-file>default.htm</welcome-file>
-  	<welcome-file>default.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <error-page>
     <error-code>403</error-code>
