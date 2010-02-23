@@ -61,7 +61,6 @@ public class ImportFormatInterneTest
 	   
 		try
 		{
-		   Class.forName( managerDataSource.getDriverClassName());
 		   Connection connexion = DriverManager.getConnection( managerDataSource.getUrl(), 
 				   managerDataSource.getUsername(), 
 				   managerDataSource.getPassword());
@@ -100,7 +99,6 @@ public class ImportFormatInterneTest
 		{
 		   ILectureEchange echange = lecteurEchangeXML.lire(chouettePTNetwork);
 			   
-		   Class.forName( managerDataSource.getDriverClassName());
 		   Connection connexion = DriverManager.getConnection( managerDataSource.getUrl(), 
 				   managerDataSource.getUsername(), 
 				   managerDataSource.getPassword());

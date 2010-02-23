@@ -25,7 +25,6 @@ public class CopyDumpTestCase
    {
 	   try
 	   {
-		   Class.forName("org.postgresql.Driver");
 		   Connection conn = DriverManager.getConnection( "jdbc:postgresql://localhost:5432/chouette", "postgres", "postgres0");
 		  
 		   Statement stmt = conn.createStatement();
@@ -59,7 +58,6 @@ public class CopyDumpTestCase
 
 	   try
 	   {
-		   Class.forName("org.postgresql.Driver");
 		   Connection conn = DriverManager.getConnection( "jdbc:postgresql://localhost:5432/chouette", "postgres", "postgres0");
 		  
 		   Statement stmt = conn.createStatement();
