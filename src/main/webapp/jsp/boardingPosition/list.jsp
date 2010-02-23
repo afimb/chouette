@@ -97,7 +97,7 @@
       <%-- BOUTON SUPPRIMER --%>
       <s:url id="deletePositionGeographique" action="delete" namespace="/boardingPosition">
         <s:param name="idPositionGeographique">${positionGeographique.id}</s:param>
-        <s:hidden name="operationMode" value="STORE" />
+        <s:param name="operationMode" value="%{'STORE'}" />
       </s:url>
       <s:a href="%{deletePositionGeographique}" onclick="return confirm('%{getText('arretPhysique.delete.confirmation')}');" cssStyle="visibility:%{getLiaisonItineraire(#positionGeographique.id)};">
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
