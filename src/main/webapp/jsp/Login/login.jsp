@@ -32,10 +32,12 @@
 		#content TR {
 			BORDER-BOTTOM: 1px solid #B0BCD6;
 		}
+		
 		#content TH {
 			FONT-WEIGHT: bold;
 			TEXT-ALIGN: left;
 		}
+		
 		#content TD {
 			PADDING: 2px;
 		}
@@ -59,6 +61,18 @@
 <div id="global">
 <div id="main">
 <div id="content">
+<%
+	Object busySessionParam = request.getParameter("busySession");
+	if (busySessionParam != null)
+	{
+		Boolean busySession = Boolean.valueOf(busySessionParam.toString()).booleanValue();
+		if(busySession) 
+		{
+			String html = "<p>La session est actuellement occup&eacute;e, veuillez r&eacute;essayer ult&eacute;rieurement</p>";
+			out.print(html);
+		}
+	}
+%>
 <form action="j_security_check" method="post">
 <table align="center">
 	<tbody>

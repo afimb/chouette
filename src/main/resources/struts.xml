@@ -54,6 +54,7 @@
   <constant name="struts.mapper.alwaysSelectFullNamespace"
 		value="true" />
   <constant name="struts.convention.action.fileProtocols" value="jar" />
+  <constant name="struts.convention.classes.reload" value="true" />
   <constant name="struts.convention.exclude.parentClassLoader"
 		value="true" />
 
@@ -174,34 +175,34 @@
 
 		<!-- Resultats "reutilisables" -->
     <global-results>
-    	<result name="locked-action-error" type="redirectAction">    	
-           <param name="actionName">deconnexion</param>        
-           <param name="busySession">true</param>
-        </result>      
+    	<result name="busy-session" type="redirect">
+    		<param name="location">/</param>
+    		<param name="busySession">true</param>
+    	</result>
       	<result name="error">/jsp/error.jsp</result>
     </global-results>
 
 	<!-- Traitement des erreurs -->
-	<global-exception-mappings>
-		<exception-mapping result="error" exception="java.lang.Exception" />
-	</global-exception-mappings>
+    <global-exception-mappings>
+      <exception-mapping result="error" exception="java.lang.Exception" />
+    </global-exception-mappings>
 
-		<!-- Déconnexion -->
+	<!-- Déconnexion -->
     <action name="deconnexion" class="Deconnexion" method="execute">
       <result name="success" type="redirect">/</result>
     </action>
-
-		<!-- Action non trouvée -->
+        
+	<!-- Action non trouvée -->
     <action name="ActionNotFound">
       <result>/jsp/action_not_found.jsp</result>
     </action>
 
-		<!-- A propos de l'application -->
+	<!-- A propos de l'application -->
     <action name="AProposDe" class="AProposDe">
       <result name="success">/jsp/aproposde.jsp</result>
     </action>
 		
-		<!-- Validation des données -->
+	<!-- Validation des données -->
     <action name="Validation_*" class="Validation" method="{1}">
       <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/validation.jsp</result>
@@ -439,20 +440,26 @@
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
-      <result name="edit">/jsp/vehicleJourneyAtStop/edit.jsp
-      </result>
-      <result name="list">/jsp/vehicleJourneyAtStop/list.jsp
-      </result>
-      <result name="input">/jsp/vehicleJourneyAtStop/edit.jsp
-      </result>
-      <result name="search">/jsp/vehicleJourneyAtStop/search.jsp
-      </result>
+      <result name="list">/jsp/vehicleJourneyAtStop/list.jsp</result>
+      <result name="input">/jsp/vehicleJourneyAtStop/list.jsp</result>
+      <result name="search">/jsp/vehicleJourneyAtStop/search.jsp</result>
     </action>
   </package>
 
 	<!-- Mise à jour des données du modèle vehicleJourney -->
   <package name="vehicleJourney" extends="struts" namespace="/vehicleJourney">
     <action name="*" method="{1}" class='VehicleJourneyActionBean'>
+      <result name="redirectEdit" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="namespace">/vehicleJourney</param>
+        <param name="idCourse">${idCourse}</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="page">${page}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
         <param name="namespace">/vehicleJourneyAtStop</param>

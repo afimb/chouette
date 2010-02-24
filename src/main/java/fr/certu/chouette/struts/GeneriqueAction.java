@@ -7,6 +7,7 @@ import chouette.schema.types.LongLatTypeType;
 import chouette.schema.types.PTDirectionType;
 import chouette.schema.types.ServiceStatusValueType;
 import chouette.schema.types.TransportModeNameType;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import fr.certu.chouette.struts.outil.filAriane.FilAriane;
@@ -40,7 +41,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final String REDIRECTLIST = "redirectList";
   public static final String REDIRECTEDIT = "redirectEdit";
   public static final String SEARCH = "search";
-    public static final String EXPORT = "export";
+  public static final String EXPORT = "export";
+  
   protected Map session;
   protected Map request;
   protected PrincipalProxy principalProxy;
@@ -63,6 +65,9 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final int PUBLICHOLLIDAY_TYPE = 10;
   public static final int MARKETDAY_TYPE = 11;
 
+  private boolean menuComparisonEnabled;
+
+
   public void setSession(Map session)
   {
     this.session = session;
@@ -70,6 +75,14 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 
   public void setRequest(Map request)
   {
+
+    // If the context contains a new locale the breadcrumb is initialized
+    if (ActionContext.getContext().getParameters().containsKey("request_locale"))
+    {
+      FilAriane filAriane = new FilAriane();
+      session.put("filAriane", filAriane);
+    }
+
     this.request = request;
   }
 
@@ -90,8 +103,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       FilAriane filAriane = new FilAriane();
       session.put("filAriane", filAriane);
       return filAriane;
-    }
-    else
+
+    } else
     {
       return (FilAriane) session.get("filAriane");
     }
@@ -123,8 +136,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         ptDirectionType = PTDirectionType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -160,11 +173,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       TransportModeNameType modeType = null;
       try
       {
-    	  log.debug( "Traduction : " + traduction + " --- Traduction key : " + cleParTraduction.get(traduction));
-    	  modeType = TransportModeNameType.fromValue(cleParTraduction.get(traduction));
-    	  log.debug( "modeType based on traduction key : " + modeType);
-      }
-      catch (Exception e)
+        log.debug("Traduction : " + traduction + " --- Traduction key : " + cleParTraduction.get(traduction));
+        modeType = TransportModeNameType.fromValue(cleParTraduction.get(traduction));
+        log.debug("modeType based on traduction key : " + modeType);
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -223,8 +235,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         dayTypeType = DayTypeType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+        
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -265,8 +277,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         longLatType = LongLatTypeType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -302,8 +313,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         statutType = ServiceStatusValueType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -321,8 +331,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     if (AUTHORIZEDTYPESET_ALL.equals(authorizedTypes))
     {
       return toutesZonesTypes;
-    }
-    else if (AUTHORIZEDTYPESET_CS.equals(authorizedTypes))
+
+    } else if (AUTHORIZEDTYPESET_CS.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -334,8 +344,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
-    }
-    else if (AUTHORIZEDTYPESET_QB.equals(authorizedTypes))
+
+    } else if (AUTHORIZEDTYPESET_QB.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -347,8 +357,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
-    }
-    else if (AUTHORIZEDTYPESET_S.equals(authorizedTypes))
+
+    } else if (AUTHORIZEDTYPESET_S.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -360,8 +370,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
-    }
-    else if (AUTHORIZEDTYPESET_C.equals(authorizedTypes))
+
+    } else if (AUTHORIZEDTYPESET_C.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -373,8 +383,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
-    }
-    else
+    } else
     {
       return toutesZonesTypes;
     }
@@ -406,8 +415,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         boardingPositionType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -443,8 +452,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         stopPlaceType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -480,8 +488,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         correspondanceType = ConnectionLinkTypeType.fromValue(cleParTraduction.get(traduction));
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
@@ -518,5 +525,18 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       }
       return String.CASE_INSENSITIVE_ORDER.compare(o1, o2);
     }
+  }
+
+  /********************************************************
+   *           Comparison enabled in the menu             *
+   ********************************************************/
+  public boolean isMenuComparisonEnabled()
+  {
+    return menuComparisonEnabled;
+  }
+
+  public void setMenuComparisonEnabled(boolean menuComparisonEnabled)
+  {
+    this.menuComparisonEnabled = menuComparisonEnabled;
   }
 }

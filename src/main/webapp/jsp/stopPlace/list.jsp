@@ -19,10 +19,9 @@
 <%-- Filtre --%>
 <div>
   <s:form action="list" namespace="/stopPlace">
-    <s:hidden name="typePositionGeographique" value="%{typePositionGeographique}" />
-    <s:select name="listCriteria.idReseau" label="%{getText('filtre.select.reseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
-    <s:textfield name="listCriteria.nomArret" label="%{getText('filtre.select.nomArret')}"></s:textfield>
-    <s:textfield name="listCriteria.codeInsee" label="%{getText('filtre.select.codeInsee')}"></s:textfield>
+    <s:select name="idReseau" label="%{getText('filtre.select.reseau')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
+    <s:textfield name="nomArret" label="%{getText('filtre.select.nomArret')}"></s:textfield>
+    <s:textfield name="codeInsee" label="%{getText('filtre.select.codeInsee')}"></s:textfield>
     <s:submit value="%{getText('action.filtrer')}"/>
   </s:form>
 </div>

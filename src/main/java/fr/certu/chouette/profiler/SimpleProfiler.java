@@ -60,19 +60,19 @@ public class SimpleProfiler implements Ordered
       }
       catch( ObjectRetrievalFailureException e)
       {
-          _log.debug( "ObjectRetrievalFailureException: Echec de l'opération, "+e+", msg="+e.getMessage());
+          _log.debug( "ObjectRetrievalFailureException: Echec de l'operation, "+e+", msg="+e.getMessage());
          throw new ServiceException( CodeIncident.IDENTIFIANT_INCONNU, "IDENTIFIANT_INCONNU", e);
       }
       catch( DataIntegrityViolationException e)
       {
-    	  // ex: contrainte unique violée
-          _log.debug( "DataIntegrityViolationException: Echec de l'opération, "+e+", msg="+e.getMessage());
+    	  // ex: contrainte unique violee
+          _log.debug( "DataIntegrityViolationException: Echec de l'operation, "+e+", msg="+e.getMessage());
 		  throw new ServiceException( CodeIncident.CONTRAINTE_INVALIDE, "CONTRAINTE_INVALIDE", e);
       }
       catch( DataAccessException e)
       {
-    	  // ex: type numérique de format invalide
-          _log.debug( "DataAccessException: Echec de l'opération, "+e+", msg="+e.getMessage());
+    	  // ex: type numerique de format invalide
+          _log.debug( "DataAccessException: Echec de l'operation, "+e+", msg="+e.getMessage());
 		  throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "DONNEE_INVALIDE", e);
       }
       finally

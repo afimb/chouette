@@ -16,4 +16,3 @@ drop table :SCH.vehiclejourney cascade;
 drop table :SCH.vehiclejourneyatstop cascade;
 drop sequence :SCH.hibernate_sequence;
 drop schema :SCH;
-	

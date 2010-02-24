@@ -482,19 +482,29 @@
     <property name="timeout" value="${action.lock.timeout}" />
   </bean>
 
+  <bean id="GeneriqueAction"
+        abstract="true"
+    	scope="prototype"
+      class="fr.certu.chouette.struts.GeneriqueAction">
+    <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
+  </bean>
+
   <bean id="RouteActionBean" scope="prototype"
-    		class="fr.certu.chouette.struts.route.RouteAction">
+    parent="GeneriqueAction"
+    class="fr.certu.chouette.struts.route.RouteAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="ligneManager" ref="ligneManager"/>
   </bean>
     
   <bean id="JourneyPatternActionBean" scope="prototype"
-		class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
+    parent="GeneriqueAction"
+	class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
     <property name="missionManager" ref="missionManager"/>
   </bean>
     
   <bean id="StoppointOnRouteActionBean" scope="prototype"
-    		class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
+  	parent="GeneriqueAction"
+    class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
@@ -507,7 +517,8 @@
   </bean>
     
   <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
-    		class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
+    parent="GeneriqueAction"
+    class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="horaireManager" ref="horaireManager"/>
     <property name="courseManager" ref="courseManager"/>
@@ -519,6 +530,7 @@
   </bean>
     
   <bean id="VehicleJourneyActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.vehicleJourney.VehicleJourneyAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="courseManager" ref="courseManager"/>
@@ -527,6 +539,7 @@
   </bean>
     
   <bean id="LineActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.line.LineAction">
     <property name="ligneManager" ref="ligneManager"/>
     <property name="reseauManager" ref="reseauManager"/>
@@ -541,6 +554,7 @@
   </bean>
     
   <bean id="CompanyActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.company.CompanyAction">
     <property name="transporteurManager" ref="transporteurManager"/>
     <property name="exportManager" ref="exportManager"/>
@@ -548,6 +562,7 @@
   </bean>
     
   <bean id="NetworkActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.network.NetworkAction">
     <property name="reseauManager" ref="reseauManager"/>
     <property name="exportManager" ref="exportManager"/>
@@ -555,12 +570,14 @@
   </bean>
     
   <bean id="TimeTableActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.timeTable.TimeTableAction">
     <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
     <property name="reseauManager" ref="reseauManager"/>
   </bean>
     
   <bean id="StopAreaActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.stopArea.StopAreaAction">
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="ligneManager" ref="ligneManager"/>
@@ -568,6 +585,7 @@
   </bean>
     
   <bean id="ConnectionLinkActionBean" scope="prototype"
+    parent="GeneriqueAction"
 		class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
     <property name="correspondanceManager" ref="correspondanceManager"/>
     <property name="importCorrespondances" ref="importCorrespondances"/>
@@ -575,14 +593,17 @@
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
     
-  <bean id="RoutingConstraintActionBean" scope="prototype" class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
+  <bean id="RoutingConstraintActionBean" scope="prototype"
+    parent="GeneriqueAction"
+    class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
     <property name="itlManager" ref="itlManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
   </bean>
     
   <bean id="ImportActionBean" scope="prototype"
-		class="fr.certu.chouette.struts.upload.ImportAction">
+    parent="GeneriqueAction"
+    class="fr.certu.chouette.struts.upload.ImportAction">
     <property name="importateur" ref="importateur"/>
     <property name="lecteurCSV" ref="lecteurCSV"/>
     <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
@@ -605,7 +626,8 @@
   </bean>
     
   <bean id="LineFilesComparisonServiceBean" scope="prototype"
-		class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
+    parent="GeneriqueAction"
+	class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
     <property name="identificationManager" ref="identificationManager"/>
     <property name="exchangeFormat" value="Chouette"/>
     <property name="enableVerboseMode" value="false"/>
@@ -623,14 +645,16 @@
   </bean>
 
   <bean id="Validation" scope="prototype"
-		class="fr.certu.chouette.struts.ValidationAction">
+    parent="GeneriqueAction"
+	class="fr.certu.chouette.struts.ValidationAction">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     <property name="useGeometry" value="${validation.tm.geometry}"/>
     <property name="inclusif" value="${validation.tm.inclusif}"/>
   </bean>
     
   <bean id="ExportActionBean" scope="prototype"
-		class="fr.certu.chouette.struts.export.ExportAction">
+    parent="GeneriqueAction"
+	class="fr.certu.chouette.struts.export.ExportAction">
     <property name="exportManager" ref="exportManager"/>
     <property name="exportHorairesManager" ref="exportHorairesManager"/>
     <property name="exportCorrespondances" ref="exportCorrespondances"/>

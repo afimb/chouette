@@ -229,6 +229,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionTableau);
 		final Map<String, Long> exTMIdParObjectId = new Hashtable<String, Long>();
+
 		while (rs.next()) 
 		{
 			final String objectId = rs.getObject(1).toString();
@@ -287,6 +288,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		String    selectionItineraires = "SELECT id from " + getDatabaseSchema() + ".route WHERE lineId='"+idLigne+"';";
 		Statement selectionItinerairesStatement = connexion.createStatement();
 		ResultSet selectionItinerairesResultSet = selectionItinerairesStatement.executeQuery(selectionItineraires);
+
 		while (selectionItinerairesResultSet.next()) 
 		{
 			if (selectionItinerairesResultSet.getObject(1) == null)
@@ -406,6 +408,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Set<Long> tmModifiees = new HashSet<Long>();
 		gestionSequence.setConnexion(connexion);
 		gestionSequence.initialiser();
+
 		for (Long tmId : oldTMIds) 
 		{
 			Set<Date> tmDates = datesParTMIds.get(tmId);
@@ -416,7 +419,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			// CAS 3 : diferenceDates != null && diferenceDates != tmDates : Décrocher // Racrocher
 			if (equals(diferenceDates, tmDates))
 			{
-				logger.debug("case 1 : diferenceDates == tmDates");
+				//logger.debug("case 1 : diferenceDates == tmDates");
 				continue;
 			}
 			if ((coursesIdsParTMIds.get(tmId) == null) || (coursesIdsParTMIds.get(tmId).size() == 0))				
@@ -431,18 +434,19 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			logger.debug("INCREMENTAL : NOMBRE DE COURSES DECROCHEES DE LA TM "+tmId.longValue()+" : "+nombreDeCoursesDecrochees+". La difference possede : "+diferenceDates.size()+" dates.");
 			if (diferenceDates.size() == 0)
 			{
-				logger.debug("diferenceDates.size() == 0");
+				//logger.debug("diferenceDates.size() == 0");
 				continue;
 			}
 			logger.debug("differenceDates" + diferenceDates);
 			logger.debug("tmDates" + tmDates);
 			long newTmId = 0l;
 			for (Long key : tousDatesParTMIds.keySet())
+
 			{
 				if (equals(diferenceDates, tousDatesParTMIds.get(key))) 
 				{
 					newTmId = key.longValue();
-					logger.debug("set newTmId to TMkey");
+					//logger.debug("set newTmId to TMkey");
 					break;
 				}
 			}
@@ -457,6 +461,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						connexion.createStatement().execute(
 								"ALTER TABLE " + getDatabaseSchema() 
 								+ ".timetable_date DISABLE TRIGGER ALL");
+						
 						//
 						String tmObjectId = tmResultSet.getObject(1).toString();
 						tmObjectId.substring(0, tmObjectId.lastIndexOf(':')+1);
@@ -470,28 +475,34 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						Statement dateInsertStatement = connexion.createStatement();
 						position++;
 						Date last = ((TreeSet<Date>)diferenceDates).last();
+
 						Date date = new Date(first.getTime()+ 24l*60l*60l*1000l);
+
 						Date ceilling = ((TreeSet<Date>)diferenceDates).ceiling(date);
 						String value = "1";
 						while ((ceilling != null) && (ceilling.compareTo(last) <= 0)) {
 							while (date.before(ceilling)) {
 								value += "0";
+
 								date = new Date(date.getTime()+ 24l*60l*60l*1000l);
+
 							}
 							value += "1";
 							dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
 							dateInsertStatement = connexion.createStatement();
 							dateInsertStatement.executeUpdate(dateInsert);
+
 							position++;							
 							date = new Date(date.getTime()+ 24l*60l*60l*1000l);
 							ceilling = ((TreeSet<Date>)diferenceDates).ceiling(date);
 						}
-						
+
 						BigInteger bigInt = new BigInteger(value);
 						String firstDate = sdf1.format(first);
 						String lastDate = sdf1.format(last);
 						tmObjectId += firstDate + bigInt + lastDate;
-						logger.debug("tmObjectId" + tmObjectId);
+						//logger.debug("tmObjectId" + tmObjectId);
+
 						String comment = "FROM "+sdf3.format(first)+" TO "+sdf3.format(last) ;
 						String nowDate = sdf2.format(Calendar.getInstance().getTime());
 						String tmInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable(id, objectid, objectversion, creationtime, \"comment\") VALUES ('"+newTmId+"', '"+tmObjectId+"', '1', '"+nowDate+"', '"+comment+"');";
@@ -506,8 +517,10 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				else
 					;// THIS CANNOT OCCUR
 			}
+
 			for (Long coId : coursesIdsParTMIds.get(tmId)) 
 			{
+
 				String idLien = ""+gestionSequence.getNouvelId("tmObjectId");
 				String lienInsert = "INSERT INTO " + getDatabaseSchema() + ".timetablevehiclejourney(id, timetableId, vehicleJourneyId) VALUES('"+idLien+"', '"+newTmId+"', '"+coId.longValue()+"');";
 				Statement lienInsertStatement = connexion.createStatement();
@@ -794,6 +807,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Set<Long> tmModifiees = new HashSet<Long>();
 		gestionSequence.setConnexion(connexion);
 		gestionSequence.initialiser();
+
 		for (Long tmId : oldTMIds) 
 		{
 			Set<Date> tmDates = datesParTMIds.get(tmId);
@@ -814,6 +828,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			logger.debug("INCREMENTAL : NOMBRE DE COURSES DECROCHEES DE LA TM "+tmId.longValue()+" : "+nombreDeCoursesDecrochees+". La difference possede : "+diferenceDates.size()+" dates.");
 			if (diferenceDates.size() == 0)
 				continue;
+			
 			long newTmId = 0l;
 			for (Long key : tousDatesParTMIds.keySet())
 				if (equals(diferenceDates, tousDatesParTMIds.get(key))) {
@@ -1035,6 +1050,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		return true;
 	}
 
+
 	private boolean isIn(Date date1, Set<Date> dates2) 
 	{
 		for (Date date2 : dates2)
@@ -1042,6 +1058,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				return true;
 		return false;
 	}
+
 
 	private Set<Date> difference(Set<Date> tmDates, Set<Date> newDates) 
 	{
@@ -1077,6 +1094,7 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 
 	private Set<Date> getDates(Date debut, Date fin, int intDayTypes) 
 	{
+
 		Set<Date> dates = new HashSet<Date>();
 		fin = new Date(fin.getTime() + 86400000l);
 		for (Date date = debut; date.before(fin); ) 
@@ -1281,14 +1299,15 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			throw new SQLException(msg);
 	}
 
+
 	public void setDatabaseSchema(String databaseShema) 
 	{
 		this.databaseSchema = databaseShema;
 	}
+
 
 	public String getDatabaseSchema() 
 	{
 		return databaseSchema;
 	}
 }
-

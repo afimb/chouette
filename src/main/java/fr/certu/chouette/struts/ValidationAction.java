@@ -446,6 +446,7 @@ public class ValidationAction extends GeneriqueAction
                     break;
                 }
                 long time = date.getTime() + 24l*60l*60l*1000l;
+
                 date = new Date(time);
               }
             }
@@ -643,8 +644,8 @@ public class ValidationAction extends GeneriqueAction
       Map<Long, String> arrivalTimes = new HashMap<Long, String>();
       while (rs.next())
       {
-    	  long time = sdf.parse(rs.getObject(2).toString()).getTime() - date.getTime() - (long) (60 * 60 * 1000);
-    	  arrivalTimes.put(new Long(rs.getObject(1).toString()), sdf.format(new Date(time)));
+        long time = sdf.parse(rs.getObject(2).toString()).getTime() - date.getTime() - (long) (60 * 60 * 1000);
+        arrivalTimes.put(new Long(rs.getObject(1).toString()), sdf.format(new Date(time)));
       }
       for (Long key : arrivalTimes.keySet())
       {

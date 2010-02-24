@@ -5,14 +5,47 @@ import java.util.Calendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class ActionLock 
-{
-	
+{	
 	private static final Log logger = LogFactory.getLog(ActionLock.class);
+
 	private static int timeout;
 	private Calendar takenAt = null;
-	private String sessionId = null; 
+	private String sessionId = null;
 	
+	public void reserveLock(String sessionId)
+	{
+		initTakenAt();
+		setSessionId(sessionId);
+	}
+	
+	public void releaseLock()
+	{
+		logger.info("Session Lock Released");
+		setTakenAt(null);
+		setSessionId(null);
+	}
+	
+	public boolean isTimeoutExpired()
+	{
+				
+		// Third true condition : lock has expired
+		Calendar expireAt = (Calendar) this.takenAt.clone();
+		expireAt.add(Calendar.SECOND, timeout);				
+		if (expireAt.getTime().before(Calendar.getInstance().getTime()))
+		{			
+			logger.info("session lock has expired");
+			return true;
+		}
+		return false;
+	}
+	
+	public void initTakenAt()
+	{
+		setTakenAt(Calendar.getInstance());
+	}
+		
 
 	public int getTimeout() 
 	{
@@ -25,7 +58,7 @@ public class ActionLock
 		ActionLock.timeout = timeout;
 	}
 
-	public Calendar getTakenAt() 
+	public Calendar getTakenAt()
 	{
 		return takenAt;
 	}
@@ -34,57 +67,6 @@ public class ActionLock
 	{
 		this.takenAt = takenAt;
 		//logger.info("Set lock creation time to : " + this.creationTime.toString());
-	}	
-
-	private boolean isAvailable(String sessionId)
-	{		
-		// First true condition : lock is free
-		if (this.takenAt == null)
-		{
-			logger.debug("lock : null takenAt");
-			return true;
-		}
-		
-		// Second true condition : lock is taken by current user
-		if (this.sessionId.equals(sessionId))
-		{
-			logger.debug("lock : requester is owner, sessionId : " + sessionId);
-			return true;
-		}
-		
-		// Third true condition : lock has expired
-		Calendar expireAt = (Calendar) this.takenAt.clone();
-		expireAt.add(Calendar.SECOND, timeout);				
-		if (expireAt.getTime().before(Calendar.getInstance().getTime()))
-		{			
-			logger.debug("lock : timeout as expired");
-			return true;
-		}
-		return false;
-	}
-	
-	public void initTakenAt()
-	{
-		setTakenAt(Calendar.getInstance());
-	}
-	
-	public boolean reserveToken(String sessionId) 
-	{
-		if (isAvailable(sessionId))
-		{
-			initTakenAt();
-			setSessionId(sessionId);
-			logger.info("Reserve Actions Lock");
-			return true;
-		}
-		return false;
-	}
-	
-	public void releaseToken()
-	{
-		logger.info("Release Actions Lock");
-		this.takenAt = null;
-		this.sessionId = null;
 	}
 
 	public void setSessionId(String sessionId) 
@@ -96,4 +78,5 @@ public class ActionLock
 	{
 		return sessionId;
 	}
+
 }

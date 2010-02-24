@@ -1,5 +1,5 @@
 
-create view Company as select 
+create view PUBLIC.Company as select 
           id , 
           objectId , 
           objectVersion , 
@@ -16,7 +16,7 @@ create view Company as select
           registrationNumber
           from :SCH.Company;
           
-create view ConnectionLink as select 
+create view PUBLIC.ConnectionLink as select 
           id , 
           departureId as idDepart, 
           arrivalId as idArrivee, 
@@ -37,7 +37,7 @@ create view ConnectionLink as select
           liftAvailability 
           from :SCH.ConnectionLink;
           
-create view JourneyPattern as select 
+create view PUBLIC.JourneyPattern as select 
           id , 
           objectId , 
           objectVersion , 
@@ -49,7 +49,8 @@ create view JourneyPattern as select
           comment 
           from :SCH.JourneyPattern;
           
-create view Line as select 
+
+create view PUBLIC.Line as select 
          id , 
          PTNetworkId as idReseau, 
          companyId as idTransporteur, 
@@ -65,7 +66,7 @@ create view Line as select
          comment 
          from :SCH.Line;
          
-create view PtNetwork as select 
+create view PUBLIC.PtNetwork as select 
          id , 
          objectId , 
          objectVersion , 
@@ -80,7 +81,7 @@ create view PtNetwork as select
          comment 
          from :SCH.PtNetwork;
          
-create view Route as select 
+create view PUBLIC.Route as select 
          id  , 
          oppositeRouteId as idRetour, 
          lineId as idLigne, 
@@ -96,7 +97,7 @@ create view Route as select
          wayBack 
          from :SCH.Route;
          
-create view StopArea as select 
+create view PUBLIC.StopArea as select 
          id , 
          parentId as idParent, 
          objectId , 
@@ -119,7 +120,7 @@ create view StopArea as select
          streetName  
          from :SCH.StopArea;
          
-create view StopPoint as select 
+create view PUBLIC.StopPoint as select 
          id  , 
          routeId  as idItineraire, 
          stopAreaId  as idPhysique, 
@@ -131,7 +132,7 @@ create view StopPoint as select
          creatorId   
          from :SCH.StopPoint;
          
-create view Timetable as select 
+create view PUBLIC.Timetable as select 
          id  , 
          objectId  , 
          objectVersion  , 
@@ -142,13 +143,13 @@ create view Timetable as select
          intDayTypes  
          from :SCH.Timetable;
          
-create view TimetableVehicleJourney as select 
+create view PUBLIC.TimetableVehicleJourney as select 
          id  , 
          timetableId  as idTableauMarche, 
          vehicleJourneyId as idCourse
          from :SCH.TimetableVehicleJourney;
          
-create view VehicleJourney as select 
+create view PUBLIC.VehicleJourney as select 
          id  , 
          routeId as idItineraire, 
          journeyPatternId  as idMission, 
@@ -166,7 +167,7 @@ create view VehicleJourney as select
          comment  
          from :SCH.VehicleJourney;
          
-create view VehicleJourneyAtStop as select 
+create view PUBLIC.VehicleJourneyAtStop as select 
          id  , 
          vehicleJourneyId  as idCourse, 
          stopPointId  as idArret, 
@@ -178,27 +179,27 @@ create view VehicleJourneyAtStop as select
          boardingAlightingPossibility  , 
          isDeparture  as depart
          from :SCH.VehicleJourneyAtStop;
-         
-create view itl as select 
+
+create view PUBLIC.itl as select 
          id  , 
          objectId  , 
          lineId as idLigne , 
          name as nom
          from :SCH.routingConstraint;
          
-create view itl_stoparea as select 
+create view PUBLIC.itl_stoparea as select 
          routingConstraintId  as idItl, 
          stopareaId as idStopArea , 
          position  
          from :SCH.routingConstraint_stoparea;
          
-create view timetable_date as select 
+create view PUBLIC.timetable_date as select 
          timetableId  , 
          date  , 
          position   
          from :SCH.timetable_date;
          
-create view timetable_period as select 
+create view PUBLIC.timetable_period as select 
          timetableId  , 
          periodStart  as debut, 
          periodEnd  as fin, 
