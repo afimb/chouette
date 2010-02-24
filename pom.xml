@@ -339,7 +339,7 @@
             </goals>
             <configuration>
               <files>
-                <file>${project.build.sourceDirectory}/build-number.properties</file>
+                <file>${project.build.outputDirectory}/build-number.properties</file>
               </files>
             </configuration>
           </execution>
