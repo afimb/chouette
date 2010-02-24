@@ -49,7 +49,7 @@ public class AmivifListComparator extends AbstractAmivifDataComparator
 		catch (Exception ex)
 		{
 			logger.error(listName,ex);
-			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, listName, ex);
+			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, ex, listName);
 		}
 	}
 

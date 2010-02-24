@@ -19,6 +19,7 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -147,7 +148,7 @@ public class LectureEchange implements ILectureEchange
 	{
 		if ( !itineraireParArret.containsKey( arretObjectId))
 		{
-			throw new ServiceException( CodeIncident.IDENTIFIANT_INCONNU, arretObjectId);
+			throw new ServiceException( CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.DEFAULT,arretObjectId);
 		}
 		return itineraireParArret.get( arretObjectId);
 	}

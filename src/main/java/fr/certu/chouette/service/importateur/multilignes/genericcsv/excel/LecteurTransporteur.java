@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -65,7 +66,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 	
 	public void lire(String[] ligneCSV) {
 		if (ligneCSV.length < colonneDesTitres+2)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Le nombre de colonnes "+ligneCSV.length+" est invalide ( < "+(colonneDesTitres+2));
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
 		String titre = ligneCSV[colonneDesTitres];
 		String valeur = ligneCSV[colonneDesTitres+1];
 		if (isTitreNouvelleDonnee(titre)) {
@@ -78,7 +79,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 			transporteur.setCreationTime(new Date());
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce réseau.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_DUPLICATELINE,titre);
 		if (cleNom.equals(titre))
 			transporteur.setName(valeur);
 		else if (cleCode.equals(titre))
@@ -102,7 +103,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir un transporteur:"+cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_MISSINGDATA,cellulesNonRenseignees.toString());
 		logger.debug("FIN DE LECTURE DU TRANSPORTEUR.");
 	}
 	

@@ -29,7 +29,7 @@ import fr.certu.chouette.service.validation.amivif.commun.ValidationException;
 public class MainSchemaProducer {
 	
 	private static final Logger				logger							= Logger.getLogger(MainSchemaProducer.class);
-    private ValidationException				validationException				= new ValidationException(this.getClass().getCanonicalName());
+    private ValidationException				validationException				= new ValidationException();
     private TransportNetworkProducer		transportNetworkProducer		= new TransportNetworkProducer(validationException);
     private CompanyProducer					companyProducer					= new CompanyProducer(validationException);
     private GroupOfLineProducer				groupOfLineProducer				= new GroupOfLineProducer(validationException);

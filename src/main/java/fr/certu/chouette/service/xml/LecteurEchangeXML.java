@@ -39,6 +39,7 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -74,24 +75,24 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 		logger.debug("EVOCASTOR --> read ChouettePTNetworkTypeType");
 		if (chouettePTNetwork.getCompanyCount() == 0)
 		{
-			throw new ServiceException(CodeIncident.ERR_LECT_TRSP_ABSENT, "");
+			throw new ServiceException(CodeIncident.ERR_LECT_TRSP_ABSENT);
 		}
 		Company company = chouettePTNetwork.getCompany( 0);
 		if (company.getRegistration()==null || company.getRegistration().getRegistrationNumber()==null)
 		{
-			throw new ServiceException(CodeIncident.ERR_LECT_REGISTRE_TRSP_ABSENT, "");
+			throw new ServiceException(CodeIncident.ERR_LECT_REGISTRE_TRSP_ABSENT);
 		}
 		transporteur = new Transporteur();
 		transporteur.setCompany(company);
 
 		if (chouettePTNetwork.getPTNetwork() == null)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_RES_ABSENT, "");
+			throw new ServiceException( CodeIncident.ERR_LECT_RES_ABSENT);
 		}
 		PTNetwork ptNetwork = chouettePTNetwork.getPTNetwork();
 		if ( ptNetwork.getRegistration()==null || ptNetwork.getRegistration().getRegistrationNumber()==null)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_REGISTRE_RES_ABSENT, "");
+			throw new ServiceException( CodeIncident.ERR_LECT_REGISTRE_RES_ABSENT);
 		}
 		reseau = new Reseau();
 		reseau.setPtNetwork( ptNetwork);
@@ -99,12 +100,12 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 		ChouetteLineDescription description = chouettePTNetwork.getChouetteLineDescription();
 		if ( description==null || description.getLine()==null)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_LIG_ABSENT, "");
+			throw new ServiceException( CodeIncident.ERR_LECT_LIG_ABSENT);
 		}
 		Line line = description.getLine();
 		if ( line.getRegistration()==null || line.getRegistration().getRegistrationNumber()==null)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_REGISTRE_LIG_ABSENT, "");
+			throw new ServiceException( CodeIncident.ERR_LECT_REGISTRE_LIG_ABSENT);
 		}
 		ligne = new Ligne();
 		ligne.setLine( line);
@@ -184,9 +185,7 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 			String areaId = arret.getContainedIn();
 			if ( areaId!=null && !arretPhysiqueParObjectId.containsKey( areaId))
 			{
-				throw new ServiceException( CodeIncident.ERR_LECT_ID_AREA_INCONNU, "l'arrêt:"+arret.getObjectId()+
-						" référence un arrêt physique inconnu "+areaId+
-						"\nles arrets physiques connus sont "+arretPhysiqueParObjectId.keySet());
+				throw new ServiceException( CodeIncident.ERR_LECT_ID_AREA_INCONNU, CodeDetailIncident.STOPPOINT_LINK,arret.getObjectId(),areaId,arretPhysiqueParObjectId.keySet().toString());
 			}
 		}
 		
@@ -209,7 +208,7 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 				
 				if ( !arretsParTroncon.containsKey( tronconObjectId))
 				{
-					throw new ServiceException( CodeIncident.ERR_LECT_TRONCON_NON_DEFINI, "id du tronçon:"+tronconObjectId+", itineraire "+itineraireObjectId+", position i="+i);
+					throw new ServiceException( CodeIncident.ERR_LECT_TRONCON_NON_DEFINI, CodeDetailIncident.DEFAULT,tronconObjectId,itineraireObjectId,i);
 				}
 				List<String> arretsTroncon = arretsParTroncon.get( tronconObjectId);
 				
@@ -220,7 +219,7 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 					
 					if ( !arretParObjectId.containsKey( arretsTroncon.get( 0)))
 					{
-						throw new ServiceException( CodeIncident.ERR_LECT_ARRET_NON_DEFINI, "id de l'arrêt:"+arretsTroncon.get( 0));
+						throw new ServiceException( CodeIncident.ERR_LECT_ARRET_NON_DEFINI, CodeDetailIncident.DEFAULT,arretsTroncon.get( 0));
 					}
 				}
 				positionParArret.put( arretsTroncon.get( 1), new Integer( i+1));
@@ -228,7 +227,7 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 				
 				if ( !arretParObjectId.containsKey( arretsTroncon.get( 1)))
 				{
-					throw new ServiceException( CodeIncident.ERR_LECT_ARRET_NON_DEFINI, "id de l'arrêt:"+arretsTroncon.get( 1));
+					throw new ServiceException( CodeIncident.ERR_LECT_ARRET_NON_DEFINI, CodeDetailIncident.DEFAULT,arretsTroncon.get( 1));
 				}
 			}
 		}
@@ -419,8 +418,7 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 					}
 					if ( zoneParenteParObjectId.containsKey( zonesContenues[ j]))
 					{
-						throw new ServiceException( CodeIncident.DONNEE_INVALIDE,
-								"la zone (ou l'arret physique) "+zonesContenues[ j]+" référence plusieurs zones parents : "+zone.getObjectId()+" et "+zoneParenteParObjectId.get( zonesContenues[ j]));
+						throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.MULTIPLE_PARENT,zonesContenues[ j],zone.getObjectId(),zoneParenteParObjectId.get( zonesContenues[ j]));
 					}
 					zoneParenteParObjectId.put( zonesContenues[ j], zone.getObjectId());
 				}
@@ -434,7 +432,7 @@ public class LecteurEchangeXML implements ILecteurEchangeXML
 		StopAreaExtension extension = stopArea.getStopAreaExtension();
 		if ( extension==null)
 		{
-			throw new ServiceException( CodeIncident.ERR_LECT_ZONE_NON_TYPEE, "Zone "+stopArea.getObjectId()+" sans extension");
+			throw new ServiceException( CodeIncident.ERR_LECT_ZONE_NON_TYPEE, CodeDetailIncident.DEFAULT,stopArea.getObjectId());
 		}
 		
 		// identification du type de zone

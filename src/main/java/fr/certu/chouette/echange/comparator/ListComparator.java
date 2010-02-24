@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.Ligne;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -50,7 +51,7 @@ public class ListComparator extends AbstractChouetteDataComparator
 		catch (Exception ex)
 		{
 			logger.error(listName,ex);
-			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, listName, ex);
+			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.DATA,ex,listName);
 		}
 	}
 

@@ -3,6 +3,7 @@
  */
 package fr.certu.chouette.echange.comparator;
 
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -18,7 +19,7 @@ public class ComparatorException extends ServiceException
 
 	public ComparatorException(TYPE type, String arg0)
 	{
-		super(toCode(type), arg0);
+		super(toCode(type), CodeDetailIncident.DEFAULT, arg0);
 	}
 
 	private static CodeIncident toCode(TYPE type) 

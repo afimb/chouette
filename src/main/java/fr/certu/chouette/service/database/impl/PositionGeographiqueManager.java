@@ -23,6 +23,7 @@ import fr.certu.chouette.modele.Correspondance;
 import fr.certu.chouette.modele.Horaire;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ICorrespondanceManager;
@@ -200,7 +201,7 @@ public class PositionGeographiqueManager implements IPositionGeographiqueManager
 		{
 			List<ArretItineraire> arrets = selectionSpecifique.getArretsItineraireParGeoPosition( idPositionGeo);
 			if ( arrets.size()>0)
-				throw new ServiceException( CodeIncident.ERR_ARRETS_RELIES, arrets.size()+" arrets restants");
+				throw new ServiceException( CodeIncident.ERR_ARRETS_RELIES, CodeDetailIncident.DEFAULT,arrets.size());
 			
 			Collection<Long> idGeoPositions = new HashSet<Long>();
 			idGeoPositions.add( idPositionGeo);
@@ -295,10 +296,7 @@ public class PositionGeographiqueManager implements IPositionGeographiqueManager
 		
 		if ( !contenant.canContain( contenu.getAreaType()))
 		{
-			throw new ServiceException( CodeIncident.ASSOCIATION_ZONES_INVALIDE, 
-					"Le contenant (id="+idContenant+")"+
-					" de type "+contenant.getAreaType()+" ne peut contenir le contenu (id="+idContenue+
-					") de type "+contenu.getAreaType());
+			throw new ServiceException( CodeIncident.ASSOCIATION_ZONES_INVALIDE,CodeDetailIncident.DEFAULT,idContenant,contenant.getAreaType(),idContenue,contenu.getAreaType());
 		}
 		
 		List<PositionGeographique> parentsContenant = getGeoPositionsParentes( idContenant);
@@ -309,17 +307,12 @@ public class PositionGeographiqueManager implements IPositionGeographiqueManager
 		
 		if ( idParentsContenue.removeAll( idParentsContenant))
 		{
-			throw new ServiceException( CodeIncident.RECURSIVITE_INTER_ZONES, 
-					"L'association formerait une imbrication récursive entre zones");
+			throw new ServiceException( CodeIncident.RECURSIVITE_INTER_ZONES,CodeDetailIncident.DEFAULT);
 		}
 		
 		if ( profondeurMaximum <= parentsContenant.size()+getProfondeur( idContenue))
 		{
-			throw new ServiceException( CodeIncident.PROFONDEUR_ZONES_INVALIDE, 
-					"La zone parent est se trouve au bas d'une arborescence de "+
-					(parentsContenant.size()-1)+" niveau(x).\n La zone fille "+
-					"(id="+idContenue+") est à la tête d'une arborescence de "+getProfondeur( idContenue)+" niveau(x)"+
-					".\n Or la profondeur max est de "+profondeurMaximum );
+			throw new ServiceException( CodeIncident.PROFONDEUR_ZONES_INVALIDE,CodeDetailIncident.DEFAULT,(parentsContenant.size()-1),idContenue,getProfondeur( idContenue),profondeurMaximum );
 		}
 
 		

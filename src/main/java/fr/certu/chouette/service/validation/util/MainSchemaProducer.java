@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 public class MainSchemaProducer implements IMainSchemaProducer {
 	
 	private static final Logger              logger              = Logger.getLogger(fr.certu.chouette.service.validation.util.MainSchemaProducer.class);
-	private              ValidationException validationException = new ValidationException("fr.certu.chouette.service.validation.util.MainSchemaProducer");
+	private              ValidationException validationException = new ValidationException();
 	private              ChouettePTNetwork   chouettePTNetwork   = null;
 
 	public void setValidationException(ValidationException validationException) {

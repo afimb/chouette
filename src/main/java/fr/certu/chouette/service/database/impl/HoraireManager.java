@@ -15,6 +15,7 @@ import fr.certu.chouette.dao.ISelectionSpecifique;
 import fr.certu.chouette.dao.ITemplateDao;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.IHoraireManager;
@@ -93,8 +94,7 @@ public class HoraireManager implements IHoraireManager {
 			Course course = courseDao.get( courseId);
 			if ( course==null)
 			{
-				throw new ServiceException( CodeIncident.IDENTIFIANT_INCONNU, "L'identifiant de course "+
-						courseId+" associé à l'horaire "+horaire.getId()+" est inconnu");
+				throw new ServiceException( CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.VEHICLEJOURNEYATSTOP_VEHICLEJOURNEY,courseId,horaire.getId());
 			}
 			idItineraire = course.getIdItineraire();
 			missions.add( course.getIdMission());

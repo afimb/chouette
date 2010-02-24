@@ -157,14 +157,14 @@ public class LecteurFichierXML implements ILecteurFichierXML
 		}
 		catch(IOException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e);
 		}
 		catch(MarshalException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		}
 		catch(org.exolab.castor.xml.ValidationException e) {
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		}
 		finally 
 		{
@@ -176,7 +176,7 @@ public class LecteurFichierXML implements ILecteurFichierXML
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
 				}
 			}
 			if (fileOutputStream != null) 
@@ -187,7 +187,7 @@ public class LecteurFichierXML implements ILecteurFichierXML
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
 				}
 			}
 		}
@@ -212,15 +212,15 @@ public class LecteurFichierXML implements ILecteurFichierXML
 		}
 		catch(IOException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
 		}
 		catch(MarshalException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		}
 		catch(org.exolab.castor.xml.ValidationException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		} 
 		finally 
 		{
@@ -232,7 +232,7 @@ public class LecteurFichierXML implements ILecteurFichierXML
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e);
 				}
 			}
 			if (fileOutputStream != null) 
@@ -243,7 +243,7 @@ public class LecteurFichierXML implements ILecteurFichierXML
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
 				}
 			}
 		}

@@ -22,6 +22,7 @@ import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.IArretItineraireManager;
@@ -154,7 +155,7 @@ public class ItineraireManager implements IItineraireManager
 			aller.setIdRetour( retour.getId());
 			modifier( aller);
 			
-			// creating backword route stop points
+			// créer les arrêts de l'itinéraire retour
 			List<ArretItineraire> allerArrets = getArretsItineraire(idItineraire);
 			int total = allerArrets.size()-1;
 			for (ArretItineraire arretAller : allerArrets) {
@@ -202,7 +203,7 @@ public class ItineraireManager implements IItineraireManager
 			}
 			else
 			{
-				assert false : "unknown update state";
+				assert false : "etat de la mise à jour inconnu";
 			}
 		}
 		
@@ -213,14 +214,10 @@ public class ItineraireManager implements IItineraireManager
 			int positionCible = etatMaj.getNouvellePosition();
 			if ( positionCible<0 || positionCible>=positionMaximum)
 			{
-				throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-						"Position "+positionCible+" invalide, "+
-						totalInitialArrets+" arrets sur l'itineraire avant maj, "+
-						idsLogiquesPerdus.size()+" suppressions, "+
-						creationArretItineraire.size()+" creations");
+				throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_STOPPOINTPOSITION, positionCible,totalInitialArrets,idsLogiquesPerdus.size(),creationArretItineraire.size());
 			}
 			
-			// moving stop points on route
+			// déplacer l'arrêt sur l'itinéraire
 			positions.add( positionCible);
 			arretsDeplaces.add( etatMaj.getIdArretLogique());
 			
@@ -232,10 +229,10 @@ public class ItineraireManager implements IItineraireManager
 
 		validerModificationItineraire(arretsDeplaces, positions, arretsInitiauxParPosition, idsLogiquesPerdus);
 		
-		// Finding stop points on route to move
+		// repérer les arrets d'itineraires à replacer
 		modificationSpecifique.echangerPositions(arretsDeplaces, positions);
 		
-		// Finding passing times to swap
+		// repérer les horaires à échanger
 		List<Long> arretsHorairesEchanges = new ArrayList<Long>();
 		List<Integer> positionsTriees = new ArrayList<Integer>( arretsDeplacesParPosition.keySet());
 		Collections.sort( positionsTriees);
@@ -267,17 +264,17 @@ public class ItineraireManager implements IItineraireManager
 		}
 		modificationSpecifique.echangerHoraires(idArretAvantEchange, idArretApresEchange);
 		
-		// Creating new stops
+		// création des nouveaux arrets
 		for (EtatMajArretItineraire etatMaj : creationArretItineraire) 
 		{
-			// Define Boarding Position OR Quay
+			// définir l'arrêt physique
 			creerArretItineraire(idItineraire, etatMaj);		
 		}
 		
 		// des horaires peuvent avoir ete supprimes
 		modificationSpecifique.referencerDepartsCourses(idItineraire);
 		
-		// Updating Journey Patterns
+		// mettre à jour les missions
 		if ( !idsLogiquesPerdus.isEmpty())
 		{
 			missionManager.fusionnerMissions(idItineraire);
@@ -288,8 +285,7 @@ public class ItineraireManager implements IItineraireManager
 			List<Long> arretsHorairesEchangesInitiaux) {
 		if ( arretsHorairesEchangesInitiaux.size()!=arretsHorairesEchanges.size())
 		{
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-					"Finding passing times to swap inner error");
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_SWAPVEHICLEJOURNEYATSTOP);
 		}
 	}
 
@@ -309,16 +305,16 @@ public class ItineraireManager implements IItineraireManager
 		}
 		if ( !emplacementNonLiberes.isEmpty())
 		{
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Les Positions ne sont pas liberes :"+emplacementNonLiberes);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_STOPPOINTFREEPOSITION, emplacementNonLiberes);
 		}
 		
-		// Testing positions redundancy
+		// tester si répétition de position
 		Set<Integer> positionsDistinctes = new HashSet<Integer>( positions);
 		if ( positionsDistinctes.size()!=positions.size())
 		{
 			List<Integer> positionsRepetees = new ArrayList<Integer>( positions);
 			positionsRepetees.removeAll(positions);
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Positions redundancy: "+positionsRepetees);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.ROUTE_STOPPOINTDUPLICATEPOSITION,positionsRepetees);
 		}
 		
 		Set<Long> arretsDeplacesDistincts = new HashSet<Long>( arretsDeplaces);
@@ -326,7 +322,7 @@ public class ItineraireManager implements IItineraireManager
 		{
 			List<Long> arretsDeplacesRepetes = new ArrayList<Long>( arretsDeplaces);
 			arretsDeplacesRepetes.removeAll( arretsDeplacesDistincts);
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Repetition d'arrets logiques cibles:"+arretsDeplacesDistincts);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.ROUTE_STOPPOINTDUPLICATETARGETSTOPPOINT,arretsDeplacesDistincts);
 		}
 	}
 
@@ -342,7 +338,7 @@ public class ItineraireManager implements IItineraireManager
 			positionGeographiqueManager.creer( arretPhysique);
 		}
 		
-		// Creating stop point on route
+		// créer l'arrêt logique
 		ArretItineraire arret = new ArretItineraire();
 		arret.setIdPhysique( arretPhysique.getId());
 		arret.setIdItineraire( idItineraire);
@@ -357,7 +353,7 @@ public class ItineraireManager implements IItineraireManager
 		{
 			List<Integer> positionsRepetees = new ArrayList<Integer>( nouvellesPositions);
 			positionsRepetees.removeAll(positions);
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Repetition de positions:"+positionsRepetees);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.ROUTE_STOPPOINTDUPLICATEPOSITION,positionsRepetees);
 		}
 		
 		Set<Long> arretsCibles = new HashSet<Long>( arretsOrdreNouveau);
@@ -365,13 +361,13 @@ public class ItineraireManager implements IItineraireManager
 		{
 			List<Long> arretsCiblesRepetes = new ArrayList<Long>( arretsOrdreNouveau);
 			arretsCiblesRepetes.removeAll( arretsCibles);
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Repetition d'arrets logiques cibles:"+arretsCibles);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.ROUTE_STOPPOINTDUPLICATETARGETSTOPPOINT,arretsCibles);
 		}
 		
 		arretsCibles.removeAll(arretsOrdreInitial);
 		if ( arretsCibles.size()>0)
 		{
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "Arrets cibles en collision "+arretsCibles+". Ces arrets ne liberent pas leurs positions");
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.ROUTE_STOPPOINTCOLLUSIONSTOPPOINT,arretsCibles);
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -95,7 +96,7 @@ public class LecteurCourse implements ILecteurCourse {
 	
 	public void lire(String[] ligneCSV, Ligne ligne) {
 		if (ligneCSV.length < colonneDesTitres+2)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Le nombre de colonnes "+ligneCSV.length+" est invalide ( < "+(colonneDesTitres+2));
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
 		String titre = ligneCSV[colonneDesTitres];
 		if (isTitreNouvelleDonnee(titre)) {
 			validerCompletudeDonneeEnCours();
@@ -111,18 +112,18 @@ public class LecteurCourse implements ILecteurCourse {
 					finDeLigne = true;
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il ne peut y avoir de cellules vides entre les coursesEnCours.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,value);
 					if ((value.trim().equals(ALLER)) || (value.trim().equals(RETOUR)))
 						coursesEnCours.add(createCourse(value.trim()));
 					else
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+value.trim()+"\" ne correspond pas au sens d'une course.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.VEHICLEJOURNEY_ORIENTATION,value.trim());
 				}
 			}
 			if (coursesEnCours.size() != 0)
 				coursesParLigne.put(ligneEnCours, coursesEnCours);
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce block \"Ligne\".");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DUPLICATE_LINE,titre);
 		if (cleCalendrier.equals(titre)) {
 			boolean finDeLigne = false;
 			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
@@ -131,7 +132,7 @@ public class LecteurCourse implements ILecteurCourse {
 					finDeLigne = true;
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il ne peut y avoir de cellules vides entre les coursesEnCours.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,value);
 					else
 						associerCalendriersCourse(value, coursesEnCours, i-(colonneDesTitres+1));
 				}
@@ -139,23 +140,23 @@ public class LecteurCourse implements ILecteurCourse {
 		}
 		if (cleListe.equals(titre)) {
 			if (!ligneCSV[0].equals(cleX))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleX+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleX);
 			if (!ligneCSV[1].equals(cleY))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleY+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleY);
 			if (!ligneCSV[2].equals(cleLatitude))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleLatitude+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleLatitude);
 			if (!ligneCSV[3].equals(cleLongitude))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleLongitude+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleLongitude);
 			if (!ligneCSV[4].equals(cleAdresse))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleAdresse+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleAdresse);
 			if (!ligneCSV[5].equals(cleCode))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleCode+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleCode);
 			if (!ligneCSV[6].equals(cleZone))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+cleZone+"\" est indispensable.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleZone);
 			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++)
 				if (ligneCSV[i] != null)
 					if (ligneCSV[i].trim().length() > 0)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La cellule \""+ligneCSV[i].trim()+"\" doit être vide.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.UNEXPECTED_DATA,ligneCSV[i].trim());
 		}
 	}
 	
@@ -189,14 +190,14 @@ public class LecteurCourse implements ILecteurCourse {
 	
 	private void associerCalendriersCourse(String value, List<Course> courses, int indiceDeCourse) {
 		if (indiceDeCourse >= courses.size())
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il  n'y a plus de course pour associer des TM.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_VEHICLEJOURNEY);
 		String vehicleJourneyId = courses.get(indiceDeCourse).getObjectId();
 		String[] aliases = value.split(",");
 		for (int i = 0; i < aliases.length; i++) {
 			String alias = aliases[i];
 			logger.debug("TM : "+alias+". Course : "+vehicleJourneyId);
 			if (caldendriersParRef.get(alias) == null)
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il n' y a pas de calendrier avec l'alias : "+alias);
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.UNKNOWN_ALIAS,alias);
 			caldendriersParRef.get(alias).addVehicleJourneyId(vehicleJourneyId);
 			logger.debug("ZZZ TM : \""+caldendriersParRef.get(alias).getObjectId());
 		}
@@ -209,7 +210,7 @@ public class LecteurCourse implements ILecteurCourse {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir les coursesEnCours : " + cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.VEHICLEJOURNEY_MISSINGDATA,cellulesNonRenseignees);
 	}
 	
 	public IIdentificationManager getIdentificationManager() {

@@ -1,5 +1,6 @@
 package fr.certu.chouette.service.validation.commun;
 
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import java.util.ArrayList;
@@ -16,13 +17,13 @@ public class ValidationException extends ServiceException {
 	private static       Set<String>                      typesInvalidite            = new HashSet<String>();
 	private              Map<TypeInvalidite, Set<String>> tridentIdParTypeInvalidite;
 	
-	public ValidationException(String message) { 
-		super(CodeIncident.DONNEE_INVALIDE, message);
+	public ValidationException(/*String message*/) { 
+		super(CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.DEFAULT);
 		tridentIdParTypeInvalidite = new Hashtable<TypeInvalidite, Set<String>>();
 	}
 	
-	public ValidationException(String message, Throwable exception) {
-		super(CodeIncident.DONNEE_INVALIDE, message, exception);
+	public ValidationException(/*String message,*/ Throwable exception) {
+		super(CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.DEFAULT, exception);
 		tridentIdParTypeInvalidite = new Hashtable<TypeInvalidite, Set<String>>();
 	}
 	

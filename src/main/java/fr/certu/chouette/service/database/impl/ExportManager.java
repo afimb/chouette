@@ -28,6 +28,7 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ICorrespondanceManager;
@@ -128,9 +129,9 @@ public class ExportManager implements IExportManager
 		logger.debug("EVOCASTOR --> new ChouettePTNetwork");
 		resultat = new ChouettePTNetwork();
 		if (ligne.getIdReseau() == null)
-			throw new ServiceException(CodeIncident.EXPORT_SANS_RESEAU, "EXPORT_SANS_RESEAU");
+			throw new ServiceException(CodeIncident.EXPORT_SANS_RESEAU);
 		if (ligne.getIdTransporteur() == null)
-			throw new ServiceException(CodeIncident.EXPORT_SANS_TRANSPORTEUR, "EXPORT_SANS_TRANSPORTEUR");
+			throw new ServiceException(CodeIncident.EXPORT_SANS_TRANSPORTEUR);
 		Reseau reseau = reseauManager.lire(ligne.getIdReseau());
 		Transporteur transporteur = transporteurManager.lire(ligne.getIdTransporteur());
 		List<Itineraire> itineraires = ligneManager.getLigneItinerairesExportables(ligne.getId());
@@ -258,9 +259,9 @@ public class ExportManager implements IExportManager
 			correspondance.setStartOfLink(positionParId.get(correspondance.getIdDepart()));
 			correspondance.setEndOfLink(positionParId.get(correspondance.getIdArrivee()));
 			if (correspondance.getStartOfLink()==null)
-				throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, "Le départ (id="+correspondance.getIdDepart()+") de correspondance "+correspondance.getId()+" est inconnu");
+				throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.CONNECTIONLINK_DEPARTURE,correspondance.getIdDepart(),correspondance.getId());
 			if (correspondance.getEndOfLink()==null)
-				throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, "L'arrivée (id="+correspondance.getIdArrivee()+") de correspondance "+correspondance.getId()+" est inconnu");
+				throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.CONNECTIONLINK_ARRIVAL,correspondance.getIdArrivee(),correspondance.getId());
 			resultat.addConnectionLink(correspondance.getConnectionLink());
 		}
 	}
@@ -535,7 +536,7 @@ public class ExportManager implements IExportManager
 			return ObjectIdLecteur.lirePartieSysteme(objectId);
 		}
 		catch(Exception e) { 
-			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, "L'identifiant objectId="+objectId+" est mal formé");
+			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.MALFORMED_ID, objectId);
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package fr.certu.chouette.service.importateur.multilignes.genericcsv.excel;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import chouette.schema.types.DayTypeType;
 import fr.certu.chouette.modele.Periode;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -64,7 +66,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 	
 	public void lire(String[] ligneCSV) {
 		if (ligneCSV.length < colonneDesTitres+2)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Le nombre de colonnes "+ligneCSV.length+" est invalide ( < "+(colonneDesTitres+2));
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
 		String titre = ligneCSV[colonneDesTitres];
 		String valeur = ligneCSV[colonneDesTitres+1];
 		if (isTitreNouvelleDonnee(titre)) {
@@ -77,7 +79,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 			logger.debug("Nouveau calendrier");
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce calendrier.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_DUPLICATEDATA,titre);
 		if (cleCommentaire.equals(titre))
 			calendrierEnCours.setComment(valeur);
 		else if (cleJour.equals(titre)) {
@@ -88,12 +90,12 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 					finDeLigne = true;
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive après la fin de la ligne.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
 					try {
 						calendrierEnCours.ajoutDate(sdf.parse(valeur));
 					}
 					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date invalide : "+valeur, e);
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,e,valeur);
 					}
 				}
 			}
@@ -106,14 +108,14 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 					finDeLigne = true;
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive après la fin de la ligne.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
 					Periode periode = new Periode();
 					calendrierEnCours.ajoutPeriode(periode);
 					try {
 						periode.setDebut(sdf.parse(valeur));
 					}
 					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date de debut de période invalide : "+valeur, e);
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,e,valeur);
 					}
 				}
 			}
@@ -126,19 +128,19 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 				if ((valeur == null) || (valeur.trim().length() == 0)) {
 					finDeLigne = true;
 					if ((periodes != null) && (periodes.size() > i-(colonneDesTitres+1)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La date de debut "+periodes.get(i-(colonneDesTitres+1))+" ne correspond à aucune periode.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.PERIOD_STARTDATE,periodes.get(i-(colonneDesTitres+1)));
 				}
 				else {
 					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La valeur "+valeur+" arrive après la fin de la ligne.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
 					if ((periodes == null) || (periodes.size() <= i-(colonneDesTitres+1)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La date de fin "+valeur+" ne correspond à aucune periode.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.PERIOD_ENDDATE,valeur);
 					Periode periode = periodes.get(i-(colonneDesTitres+1));
 					try {
 						periode.setFin(sdf.parse(valeur));
 					}
 					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Format de date de fin de période invalide : "+valeur, e);
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE, e,valeur);
 					}
 				}
 			}
@@ -195,9 +197,9 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 		else if (cleAlias.equals(titre)) {
 			logger.debug("\talias = "+valeur);
 			if ((valeur == null) || (valeur.trim().length() == 0))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Un alias ne peut être null.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NULL_ALIAS);
 			if (caldendriersParRef.get(valeur.trim()) != null)
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Chaque calendrier doit avoir un alias propre.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DUPLICATE_ALIAS);
 			caldendriersParRef.put(valeur.trim(), calendrierEnCours);
 		}
 		//calendrierEnCours.setCreatorId(creatorId);
@@ -207,7 +209,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 	
 	private boolean isO(String valeur) {
 		if ((valeur == null) || (!valeur.equals("O") && !valeur.equals("N")))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Valeur du champ invalide "+valeur);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.INVALID_DATA,valeur);
 		if (valeur.equals("O"))
 			return true;
 		return false;
@@ -220,7 +222,7 @@ public class LecteurCalendrier implements ILecteurCalendrier {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir un calendrier d'application: " + cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_MISSINGDATA,cellulesNonRenseignees);
 	}
 	
 	public Map<String, TableauMarche> getTableauxMarchesParRef() {

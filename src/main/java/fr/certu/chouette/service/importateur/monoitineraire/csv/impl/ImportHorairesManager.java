@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import fr.certu.chouette.dao.IModificationSpecifique;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ICourseManager;
@@ -60,7 +61,7 @@ public class ImportHorairesManager implements IImportHorairesManager {
 						dateArrivee = dateFormat.parse(horaireArrivee.getValue());
 						dateDepart = dateFormat.parse(horaireDepart.getValue());
 					} catch (ParseException e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE,"impossible de parser un horaire",e);
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE,CodeDetailIncident.VEHICLEJOURNEYATSTOP,e);
 					}
 					EtatMajHoraire etatMajHoraire = EtatMajHoraire.getCreation(horaireDepart.getKey(), idCourse, dateDepart, dateArrivee);
 					etatMajHoraires.add(etatMajHoraire);
