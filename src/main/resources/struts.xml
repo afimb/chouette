@@ -235,7 +235,7 @@
       <result name="list">/jsp/network/list.jsp</result>
       <result name="input">/jsp/network/edit.jsp</result>
       <result name="export" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
         <param name="inputName">inputStream</param>
         <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
         <param name="contentTransferEncoding">binary</param>
@@ -275,7 +275,7 @@
       <result name="list">/jsp/company/list.jsp</result>
       <result name="input">/jsp/company/edit.jsp</result>
       <result name="export" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
         <param name="inputName">inputStream</param>
         <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
         <param name="contentTransferEncoding">binary</param>
@@ -507,7 +507,7 @@
   <package name="export" extends="struts" namespace="/export">
     <action name="*" class="ExportActionBean" method="{1}">
       <result name="success" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
         <param name="inputName">inputStream</param>
         <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
         <param name="contentTransferEncoding">binary</param>

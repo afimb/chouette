@@ -19,7 +19,6 @@ public class Convertisseur implements IConvertisseur {
 	public void deLambert2AWGS84() {
 		Connection connexion = null;
 		try {
-			Class.forName(managerDataSource.getDriverClassName());
 			Properties props = new Properties();
 			props.setProperty("user",managerDataSource.getUsername());
 			props.setProperty("password",managerDataSource.getPassword());

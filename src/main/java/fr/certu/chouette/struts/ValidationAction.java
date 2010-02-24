@@ -60,7 +60,6 @@ public class ValidationAction extends GeneriqueAction
     try
     {
       // TODO. gestion des messages de validation...
-      Class.forName(managerDataSource.getDriverClassName());
       Properties props = new Properties();
       props.setProperty("user", managerDataSource.getUsername());
       props.setProperty("password", managerDataSource.getPassword());
@@ -631,7 +630,6 @@ public class ValidationAction extends GeneriqueAction
     try
     {
       Date date = sdf.parse("00:" + decalage);
-      Class.forName(managerDataSource.getDriverClassName());
       Properties props = new Properties();
       props.setProperty("user", managerDataSource.getUsername());
       props.setProperty("password", managerDataSource.getPassword());
@@ -667,10 +665,7 @@ public class ValidationAction extends GeneriqueAction
     {
       addActionError(getText("message.validate.shift.error") + e.getMessage());
     }
-    catch (ClassNotFoundException e)
-    {
-      addActionError(getText("message.validate.shift.error") + e.getMessage());
-    } finally
+    finally
     {
       try
       {
@@ -698,7 +693,6 @@ public class ValidationAction extends GeneriqueAction
       cal.add(Calendar.DAY_OF_MONTH, 1);
       Date nextDate = cal.getTime();
       String nextPurge = sdf2.format(nextDate);
-      Class.forName(managerDataSource.getDriverClassName());
       Properties props = new Properties();
       props.setProperty("user", managerDataSource.getUsername());
       props.setProperty("password", managerDataSource.getPassword());
@@ -849,10 +843,7 @@ public class ValidationAction extends GeneriqueAction
     {
       addActionError(getText("message.validate.purge.error") + e.getMessage());
     }
-    catch (ClassNotFoundException e)
-    {
-      addActionError(getText("message.validate.purge.error") + e.getMessage());
-    } finally
+    finally
     {
       try
       {

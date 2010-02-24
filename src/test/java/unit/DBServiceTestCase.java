@@ -117,8 +117,8 @@ public class DBServiceTestCase
 	   }
 	   catch( ServiceException e)
 	   {
-		   assert CodeIncident.DONNEE_INVALIDE.equals( e.getCode()):
-			   "l'exception levé n'a pas le code attendu "+CodeIncident.DONNEE_INVALIDE+
+		   assert CodeIncident.CONTRAINTE_INVALIDE.equals( e.getCode()):
+			   "l'exception levé n'a pas le code attendu "+CodeIncident.CONTRAINTE_INVALIDE+
 			   " mais "+e.getCode();
 	   }
 	   

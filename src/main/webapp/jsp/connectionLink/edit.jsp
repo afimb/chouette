@@ -60,7 +60,7 @@
 <s:if test="id != null">
   <div class="panelDataSection"><s:text name="text.connectionlink.departure"/></div>
   <div class="panel" id="displaytag">
-    <table>
+    <table id="departure">
       <thead>
         <tr>
           <td><s:text name="action.title" /></td>
@@ -108,7 +108,7 @@
 <s:if test="id != null">
   <div class="panelDataSection"><s:text name="text.connectionlink.arrival"/></div>
   <div class="panel" id="displaytag">
-    <table>
+    <table id="arrival">
       <thead>
         <tr>
           <td><s:text name="action.title" /></td>

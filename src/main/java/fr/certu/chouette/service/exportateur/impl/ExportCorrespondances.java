@@ -18,7 +18,6 @@ public class ExportCorrespondances implements IExportCorrespondances {
 		Connection     connexion = null;
 		List<String[]> data      = null;
 		try {
-			Class.forName(managerDataSource.getDriverClassName());
 			Properties props = new Properties();
 			props.setProperty("user",managerDataSource.getUsername());
 			props.setProperty("password",managerDataSource.getPassword());
