@@ -57,6 +57,7 @@
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="idLigne" value="%{idLigne}" />
     <s:hidden name="positionArret" value="%{positionArret}" id="positionArret" />
+    <s:hidden name="operationMode" value="%{'STORE'}"/>
 
     <div style="padding-left:2px"><s:text name=""/></div>
     <div>
@@ -91,17 +92,17 @@
         </TR>
       </THEAD>
       <TBODY>
-        <%  String TRParityClass = ""; %>
+        <%  String TRParityClass = "";%>
         <s:if test="arrets.size > 0">
           <s:iterator value="arrets" status="rangArret" id="arret">
             <s:if test="#rangArret.odd == true">
               <%
-                TRParityClass = "odd";
+    TRParityClass = "odd";
               %>
             </s:if>
             <s:else>
               <%
-                TRParityClass = "even";
+    TRParityClass = "even";
               %>
             </s:else>
             <TR class="${TRParityClass}">
@@ -116,6 +117,7 @@
                   <s:param name="positionArret" value="%{position}" />
                   <s:param name="idLigne" value="idLigne" />
                   <s:param name="idItineraire" value="idItineraire" />
+                  <s:param name="operationMode">STORE</s:param>
                 </s:url>
                 <%-- BOUTON INSERER ARRET --%>
                 <s:a href="#"  onclick="initialiserCreationArret(%{#arret.position}, this)">
@@ -163,6 +165,7 @@
       </TBODY>
     </table>
     <s:if test="arrets.size > 0">
+      <s:hidden name="operationMode" value="%{'STORE'}"/>
       <s:submit name="action" id="Bpermutation" action="deplacerArret" value="%{getText('stoppointOnRoute.validate.exchange')}" formId="deplacementArretForm"/>
     </s:if>
   </s:form>

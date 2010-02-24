@@ -12,7 +12,6 @@ public class FournisseurConnexion  {
 	
 	public void ouvrirConnection() {
 		try {
-			Class.forName(managerDataSource.getDriverClassName());
 			connection = DriverManager.getConnection(managerDataSource.getUrl(), managerDataSource.getUsername(), managerDataSource.getPassword());
 		}
 		catch(Exception e) {

@@ -148,7 +148,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
     }
 
     this.request.put("itineraires", itineraires);
-    log.debug("List of itineraries");
+    log.debug("List of route");
     return LIST;
   }
 
@@ -179,7 +179,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
 
     setMappedRequest(SAVE);
     addActionMessage(getText("itineraire.create.ok"));
-    log.debug("Create itinerary with id : " + itineraryModel.getId());
+    log.debug("Create route with id : " + itineraryModel.getId());
     return REDIRECTLIST;
   }
 
@@ -210,7 +210,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
 
     setMappedRequest(UPDATE);
     addActionMessage(getText("itineraire.update.ok"));
-    log.debug("Update itinerary with id : " + itineraryModel.getId());
+    log.debug("Update route with id : " + itineraryModel.getId());
     return REDIRECTLIST;
   }
 
@@ -218,7 +218,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Itinerai
   {
     itineraryManager.supprimer(getModel().getId());
     addActionMessage(getText("itineraire.delete.ok"));
-    log.debug("Delete itinerary with id : " + getModel().getId());
+    log.debug("Delete route with id : " + getModel().getId());
     return REDIRECTLIST;
   }
 

@@ -14,7 +14,6 @@ BODY
   BACKGROUND-COLOR: #7B89A6;
   TEXT-ALIGN: center;
   FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
-  FONT-SIZE: 77%;
   COLOR: #1A408B;
   PADDING: 10px;
 }
@@ -91,11 +90,11 @@ A:hover
 
 #chouette {
   FONT-WEIGHT: bolder;
-  FONT-SIZE: 140%;
+  font-size:16px;
 }
 
 #definition {
-  FONT-SIZE: 110%;
+  font-size:14px;
 }
 
 
@@ -103,7 +102,9 @@ A:hover
 {
   padding: 10px;
   float: right;
-  font-weight: bold;
+  font-weight: bold;  
+  font-size:12px;
+
 }
 
 #tools UL
@@ -135,6 +136,7 @@ A:hover
   TEXT-ALIGN: left;
   CLEAR: both;
   PADDING-TOP: 15px;
+  font-size:12px;
 }
 
 /* menu */
@@ -159,6 +161,10 @@ A:hover
   LIST-STYLE: none;
   MARGIN: 0px 0px 0px 15px;
   PADDING: 0px;
+}
+
+#menu .submenu UL LI {
+  MARGIN: 2px 0px 0px 0px;
 }
 
 #menu .selectionne 
