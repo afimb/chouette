@@ -28,6 +28,7 @@
             <s:date name="seuilDateDepartCourse" format="HH:mm"/>
           </s:if>
         </s:param>
+        <s:param name="operationMode" value="%{'STORE'}" />
         <s:param name="page" value="page" />
       </s:url>
       <s:a href="%{editCourse}">

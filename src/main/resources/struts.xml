@@ -176,14 +176,14 @@
 
 		<!-- Resultats "reutilisables" -->
     <global-results>
-    	<result name="locked-action-error">/jsp/locked-action-error.jsp</result>
-      	<result name="error">/jsp/error.jsp</result>
+      <result name="locked-action-error">/jsp/locked-action-error.jsp</result>
+      <result name="error">/jsp/error.jsp</result>
     </global-results>
 
 	<!-- Traitement des erreurs -->
-	<global-exception-mappings>
-		<exception-mapping result="error" exception="java.lang.Exception" />
-	</global-exception-mappings>
+    <global-exception-mappings>
+      <exception-mapping result="error" exception="java.lang.Exception" />
+    </global-exception-mappings>
 
 		<!-- Déconnexion -->
     <action name="deconnexion" class="Deconnexion" method="execute">
@@ -233,7 +233,7 @@
       <result name="list">/jsp/network/list.jsp</result>
       <result name="input">/jsp/network/edit.jsp</result>
       <result name="export" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
         <param name="inputName">inputStream</param>
         <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
         <param name="contentTransferEncoding">binary</param>
@@ -273,7 +273,7 @@
       <result name="list">/jsp/company/list.jsp</result>
       <result name="input">/jsp/company/edit.jsp</result>
       <result name="export" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
         <param name="inputName">inputStream</param>
         <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
         <param name="contentTransferEncoding">binary</param>
@@ -438,20 +438,26 @@
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
-      <result name="edit">/jsp/vehicleJourneyAtStop/edit.jsp
-      </result>
-      <result name="list">/jsp/vehicleJourneyAtStop/list.jsp
-      </result>
-      <result name="input">/jsp/vehicleJourneyAtStop/edit.jsp
-      </result>
-      <result name="search">/jsp/vehicleJourneyAtStop/search.jsp
-      </result>
+      <result name="list">/jsp/vehicleJourneyAtStop/list.jsp</result>
+      <result name="input">/jsp/vehicleJourneyAtStop/list.jsp</result>
+      <result name="search">/jsp/vehicleJourneyAtStop/search.jsp</result>
     </action>
   </package>
 
 	<!-- Mise à jour des données du modèle vehicleJourney -->
   <package name="vehicleJourney" extends="struts" namespace="/vehicleJourney">
     <action name="*" method="{1}" class='VehicleJourneyActionBean'>
+      <result name="redirectEdit" type="redirectAction">
+        <param name="actionName">edit</param>
+        <param name="namespace">/vehicleJourney</param>
+        <param name="idCourse">${idCourse}</param>
+        <param name="idItineraire">${idItineraire}</param>
+        <param name="idLigne">${idLigne}</param>
+        <param name="idTableauMarche">${idTableauMarche}</param>
+        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="page">${page}</param>
+        <param name="operationMode">RETRIEVE</param>
+      </result>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
         <param name="namespace">/vehicleJourneyAtStop</param>
@@ -499,7 +505,7 @@
   <package name="export" extends="struts" namespace="/export">
     <action name="*" class="ExportActionBean" method="{1}">
       <result name="success" type="stream">
-        <param name="contentType">text/xml; charset=UTF-8</param>
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
         <param name="inputName">inputStream</param>
         <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
         <param name="contentTransferEncoding">binary</param>

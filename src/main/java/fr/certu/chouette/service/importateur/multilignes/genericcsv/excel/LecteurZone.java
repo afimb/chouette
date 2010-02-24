@@ -119,12 +119,6 @@ public class LecteurZone implements ILecteurZone {
 	}
 	
 	public void reinit() {
-		try {
-			Class.forName(managerDataSource.getDriverClassName());
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 		zones = new HashMap<String, PositionGeographique>();
 		arretsPhysiquesParZoneParente = new HashMap<PositionGeographique, Set<PositionGeographique>>();
 		arretsPhysiquesParLigne = new HashMap<Ligne, List<PositionGeographique>>();

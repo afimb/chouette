@@ -38,7 +38,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private IReseauManager reseauManager;
   private IPositionGeographiqueManager positionGeographiqueManager;
   private ILigneManager ligneManager;
-  private PositionGeographique positionGeographiqueModel = new PositionGeographique();
+  private PositionGeographique model = new PositionGeographique();
   private String mappedRequest;
   private Long idPositionGeographique;
   //	Gestion des zones
@@ -109,7 +109,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
    ********************************************************/
   public PositionGeographique getModel()
   {
-    return positionGeographiqueModel;
+    return model;
   }
 
   public void prepare() throws Exception
@@ -117,11 +117,11 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     log.debug("Prepare with id : " + getIdPositionGeographique());
     if (getIdPositionGeographique() == null)
     {
-      positionGeographiqueModel = new PositionGeographique();
+      model = new PositionGeographique();
     }
     else
     {
-      positionGeographiqueModel = positionGeographiqueManager.lire(getIdPositionGeographique());
+      model = positionGeographiqueManager.lire(getIdPositionGeographique());
     }
 
     // Chargement des réseaux
@@ -139,9 +139,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
     //	Création des zones filles et parentes
     children = positionGeographiqueManager.getGeoPositionsDirectementContenues(idPositionGeographique);
-    if (positionGeographiqueModel.getIdParent() != null)
+    if (model.getIdParent() != null)
     {
-      father = positionGeographiqueManager.lire(positionGeographiqueModel.getIdParent());
+      father = positionGeographiqueManager.lire(model.getIdParent());
     }
 
     // Création de la liste des itinéraires
@@ -244,20 +244,20 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
   public String save()
   {
-    positionGeographiqueManager.creer(positionGeographiqueModel);
+    positionGeographiqueManager.creer(model);
     if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
     {
       addActionMessage(getText("arretPhysique.create.ok"));
-      log.debug("Create boardingPosition with id : " + positionGeographiqueModel.getId());
+      log.debug("Create boardingPosition with id : " + model.getId());
     }
     else
     {
       addActionMessage(getText("zone.create.ok"));
-      log.debug("Create stopPlace with id : " + positionGeographiqueModel.getId());
+      log.debug("Create stopPlace with id : " + model.getId());
     }
-
-    setMappedRequest(SAVE);
-    return REDIRECTLIST;
+    setIdPositionGeographique(model.getId());
+    setMappedRequest(UPDATE);
+    return REDIRECTEDIT;
   }
 
   @SkipValidation
@@ -269,34 +269,34 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
   public String update()
   {
-    positionGeographiqueManager.modifier(positionGeographiqueModel);
+    positionGeographiqueManager.modifier(model);
     if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
     {
       addActionMessage(getText("arretPhysique.update.ok"));
-      log.debug("Update boardingPosition with id : " + positionGeographiqueModel.getId());
+      log.debug("Update boardingPosition with id : " + model.getId());
     }
     else
     {
       addActionMessage(getText("zone.update.ok"));
-      log.debug("Update stopPlace with id : " + positionGeographiqueModel.getId());
+      log.debug("Update stopPlace with id : " + model.getId());
     }
 
     setMappedRequest(UPDATE);
-    return REDIRECTLIST;
+    return REDIRECTEDIT;
   }
 
   public String delete()
   {
-    positionGeographiqueManager.supprimer(positionGeographiqueModel.getId());
+    positionGeographiqueManager.supprimer(model.getId());
     if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
     {
       addActionMessage(getText("arretPhysique.delete.ok"));
-      log.debug("Delete boardingPosition with id : " + positionGeographiqueModel.getId());
+      log.debug("Delete boardingPosition with id : " + model.getId());
     }
     else
     {
       addActionMessage(getText("zone.delete.ok"));
-      log.debug("Delete stopPlace with id : " + positionGeographiqueModel.getId());
+      log.debug("Delete stopPlace with id : " + model.getId());
     }
 
     return REDIRECTLIST;
@@ -337,7 +337,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       if ("addChild".equals(getActionSuivante()))
       {
-        switch (positionGeographiqueModel.getAreaType())
+        switch (model.getAreaType())
         {
           case STOPPLACE:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_ALL;
@@ -354,7 +354,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
       }
       else if ("addFather".equals(getActionSuivante()))
       {
-        switch (positionGeographiqueModel.getAreaType())
+        switch (model.getAreaType())
         {
           case STOPPLACE:
             authorizedType = EnumerationApplication.AUTHORIZEDTYPESET_S;
@@ -539,10 +539,10 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
    ********************************************************/
   public String getTypePositionGeographique()
   {
-    if (positionGeographiqueModel.getId() != null)
+    if (model.getId() != null)
     {
-      if (positionGeographiqueModel.getAreaType() == ChouetteAreaType.QUAY
-					|| positionGeographiqueModel.getAreaType() == ChouetteAreaType.BOARDINGPOSITION)
+      if (model.getAreaType() == ChouetteAreaType.QUAY
+					|| model.getAreaType() == ChouetteAreaType.BOARDINGPOSITION)
       {
         return ARRETPHYSIQUE;
       }
@@ -699,7 +699,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     String resultat = "{";
     List<PositionGeographique> positionGeographiques;
 
-    if (positionGeographiqueModel.getAreaType().equals(ChouetteAreaType.BOARDINGPOSITION) || positionGeographiqueModel.getAreaType().equals(ChouetteAreaType.QUAY))
+    if (model.getAreaType().equals(ChouetteAreaType.BOARDINGPOSITION) || model.getAreaType().equals(ChouetteAreaType.QUAY))
     {
       positionGeographiques = positionGeographiqueManager.lireArretsPhysiques();
     }

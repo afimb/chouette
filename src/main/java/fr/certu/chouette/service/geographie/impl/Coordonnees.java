@@ -23,7 +23,6 @@ public class Coordonnees implements ICoordonnees {
 		Map<Long, List<Double>> longitudes = new HashMap<Long, List<Double>>();
 		Map<Long, List<Double>> latitudes = new HashMap<Long, List<Double>>();
 		try {
-			Class.forName(managerDataSource.getDriverClassName());
 			Properties props = new Properties();
 			props.setProperty("user",managerDataSource.getUsername());
 			props.setProperty("password",managerDataSource.getPassword());

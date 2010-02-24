@@ -33,7 +33,6 @@ public class ImportCorrespondances implements IImportCorrespondances {
 		List<String>   messages    = new ArrayList<String>();
 		List<String[]> donneesLues = null;
 		try {
-			Class.forName(managerDataSource.getDriverClassName());
 			Properties props = new Properties();
 			props.setProperty("user",managerDataSource.getUsername());
 			props.setProperty("password",managerDataSource.getPassword());
@@ -157,9 +156,6 @@ public class ImportCorrespondances implements IImportCorrespondances {
 		}
 		catch (IOException e) {
 			messages.add("IOException : "+e.getMessage());
-		}
-		catch (ClassNotFoundException e) {
-			messages.add("ClassNotFoundException : "+e.getMessage());
 		}
 		catch (SQLException e) {
 			try {

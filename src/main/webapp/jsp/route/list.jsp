@@ -24,7 +24,7 @@
       <s:file label="%{getText('text.route.file')}" name="fichier" accept="text/csv"/>
       <s:hidden name="fichierContentType" value="text/csv; charset=UTF-8"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
-      <s:hidden name="operationMode" value="STORE" />
+      <s:hidden name="operationMode" value="%{'STORE'}" />
       <s:submit value="%{getText('action.import.csv')}" formId="uploadCSVForm"/>
     </s:form>
   </FIELDSET>
@@ -81,7 +81,7 @@
             <s:url id="removeUrl" action="delete" namespace="/route">
               <s:param name="idItineraire" value="id" />
               <s:param name="idLigne" value="idLigne"/>
-              <s:param name="operationMode" value="STORE" />
+              <s:param name="operationMode">STORE</s:param>
             </s:url>
             <s:a href="%{removeUrl}" onclick="return confirm('%{getText('itineraire.delete.confirmation')}');">
               <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">

@@ -28,7 +28,6 @@ public class Importateur implements IImportateur {
 	public void importer(final boolean majIdentification, final ILectureEchange lectureEchange, final boolean incremental) {
 		Connection connexion = null;
 		try {
-			Class.forName(managerDataSource.getDriverClassName());
 			Properties props = new Properties();
 			props.setProperty("user",managerDataSource.getUsername());
 			props.setProperty("password",managerDataSource.getPassword());

@@ -127,8 +127,11 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
     {
       arretsModifies.get(i).setPosition(i);
     }
+
+    addActionMessage(getText("arretSurItineraire.delete.ok"));
     // Enregistrement des modifications sur les arrêts de l'itinéraire
     itineraireManager.modifierArretsItineraire(idItineraire, creerListeEtatMajArret());
+    
     return REDIRECTLIST;
   }
 
@@ -157,6 +160,8 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
       {
         arretsModifies.get(i).setPosition(i);
       }
+
+      addActionMessage(getText("arretSurItineraire.create.ok"));
       // Enregistrement des modifications sur les arrêts de l'itinéraire
       itineraireManager.modifierArretsItineraire(idItineraire, creerListeEtatMajArret());
     }
@@ -194,8 +199,11 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
     {
       premierArret.setPosition(positionDeuxiemeArret);
       deuxiemeArret.setPosition(positionPremierArret);
+      
+      addActionMessage(getText("arretSurItineraire.move.ok"));
       // Enregistrement des modifications sur les arrêts de l'itinéraire
       itineraireManager.modifierArretsItineraire(idItineraire, creerListeEtatMajArret());
+
       return REDIRECTLIST;
     }
   }

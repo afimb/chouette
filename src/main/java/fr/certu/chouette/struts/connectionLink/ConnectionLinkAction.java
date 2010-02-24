@@ -169,7 +169,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   public String cancel()
   {
     addActionMessage(getText("connectionlink.cancel.ok"));
-    return REDIRECTEDIT;
+    return REDIRECTLIST;
   }
 
   @Override
