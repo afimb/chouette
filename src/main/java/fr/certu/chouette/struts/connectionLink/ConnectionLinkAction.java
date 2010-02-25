@@ -448,7 +448,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else
@@ -483,7 +483,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else
@@ -518,7 +518,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else
@@ -554,7 +554,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else

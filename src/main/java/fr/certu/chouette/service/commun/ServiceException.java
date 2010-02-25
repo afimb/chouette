@@ -1,6 +1,8 @@
 package fr.certu.chouette.service.commun;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -57,6 +59,18 @@ public  class ServiceException extends RuntimeException
 		return detail;
 	}
 
+	/*
+	public List<Object> getArgs()
+	{
+		return Arrays.asList(args);
+	}
+	
+	public String getMessageCode()
+	{
+		return "msg."+code.name()+"."+detail.name();
+	}
+	*/
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Throwable#getMessage()
 	 */
@@ -65,7 +79,7 @@ public  class ServiceException extends RuntimeException
 	{
 		try
 		{
-			ResourceBundle bundle = ResourceBundle.getBundle("ServiceException",Locale.getDefault());
+			ResourceBundle bundle = ResourceBundle.getBundle("serviceException");
 			String format = "";
 			try
 			{
@@ -85,9 +99,10 @@ public  class ServiceException extends RuntimeException
 			}
 			return message;
 		}
-		catch (Exception ex)
+		catch (RuntimeException ex)
 		{
-			return this.getClass().getName() + ":"+ code.name()+" "+detail.name();
+			throw ex;
+			//return this.getClass().getName() + ":"+ code.name()+" "+detail.name();
 		}
 	}
 	/* (non-Javadoc)

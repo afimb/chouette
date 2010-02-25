@@ -184,7 +184,7 @@ public class ValidationAction extends GeneriqueAction
             {
               erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
             }
-            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.arrival") + ex.getMessage() + "</LI>";
+            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.arrival") + getExceptionMessage(ex) + "</LI>";
             withErrors = true;
             continue;
           }
@@ -201,7 +201,7 @@ public class ValidationAction extends GeneriqueAction
             {
               erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
             }
-            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.departure") + ex.getMessage() + "</LI>";
+            erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.departure") +  getExceptionMessage(ex) + "</LI>";
             withErrors = true;
             continue;
           }
@@ -253,7 +253,7 @@ public class ValidationAction extends GeneriqueAction
       {
         erreurs = getText("message.validate.vehicleJourneyAtStop") + "<UL TYPE=\"DISC\">";
       }
-      erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.times") + e.getMessage() + "</LI>";
+      erreurs += "<LI>" + getText("message.validate.vehicleJourneyAtStop.times") +  getExceptionMessage(e) + "</LI>";
       withErrors = true;
       logger.error("erreur SQL", e);
     }
@@ -443,7 +443,7 @@ public class ValidationAction extends GeneriqueAction
             catch (ParseException e)
             {
               withErrors = true;
-              addActionError(getText("message.validate.timetable.invalid.format") + e.getMessage());
+              addActionError(getText("message.validate.timetable.invalid.format") +  getExceptionMessage(e));
             }
           }
         }
@@ -477,7 +477,7 @@ public class ValidationAction extends GeneriqueAction
     catch (SQLException e)
     {
       withErrors = true;
-      addActionError(getText("message.validate.timetable.error") + e.getMessage());
+      addActionError(getText("message.validate.timetable.error") +  getExceptionMessage(e));
     }
   }
 
@@ -520,7 +520,7 @@ public class ValidationAction extends GeneriqueAction
     catch (SQLException e)
     {
       withErrors = true;
-      addActionError(getText("message.validate.vehicleJourney.error") + e.getMessage());
+      addActionError(getText("message.validate.vehicleJourney.error") +  getExceptionMessage(e));
     }
   }
 
@@ -552,7 +552,7 @@ public class ValidationAction extends GeneriqueAction
     catch (SQLException e)
     {
       withErrors = true;
-      addActionError(getText("message.validate.coordinates.error") + e.getMessage());
+      addActionError(getText("message.validate.coordinates.error") +  getExceptionMessage(e));
     }
   }
 
@@ -584,7 +584,7 @@ public class ValidationAction extends GeneriqueAction
     catch (SQLException e)
     {
       withErrors = true;
-      addActionError(getText("message.validate.boardingPosition.error") + e.getMessage());
+      addActionError(getText("message.validate.boardingPosition.error") +  getExceptionMessage(e));
     }
   }
 
@@ -612,7 +612,7 @@ public class ValidationAction extends GeneriqueAction
     catch (SQLException e)
     {
       withErrors = true;
-      addActionError(getText("message.validate.constraint.error") + e.getMessage());
+      addActionError(getText("message.validate.constraint.error") +  getExceptionMessage(e));
     }
   }
 
@@ -650,11 +650,11 @@ public class ValidationAction extends GeneriqueAction
     }
     catch (ParseException e)
     {
-      addActionError(getText("message.validate.shift.data.error") + e.getMessage());
+      addActionError(getText("message.validate.shift.data.error") +  getExceptionMessage(e));
     }
     catch (SQLException e)
     {
-      addActionError(getText("message.validate.shift.error") + e.getMessage());
+      addActionError(getText("message.validate.shift.error") +  getExceptionMessage(e));
     }
     finally
     {
@@ -828,11 +828,11 @@ public class ValidationAction extends GeneriqueAction
     }
     catch (ParseException e)
     {
-      addActionError(getText("message.validate.purge.data.error") + e.getMessage());
+      addActionError(getText("message.validate.purge.data.error") +  getExceptionMessage(e));
     }
     catch (SQLException e)
     {
-      addActionError(getText("message.validate.purge.error") + e.getMessage());
+      addActionError(getText("message.validate.purge.error") +  getExceptionMessage(e));
     }
     finally
     {
@@ -863,7 +863,7 @@ public class ValidationAction extends GeneriqueAction
     }
     catch (RuntimeException e)
     {
-      addActionError(getText("message.validate.barycentre.error") + e.getMessage());
+      addActionError(getText("message.validate.barycentre.error") +  getExceptionMessage(e));
     }
     return INPUT;
   }
@@ -879,7 +879,7 @@ public class ValidationAction extends GeneriqueAction
     }
     catch (RuntimeException e)
     {
-      addActionError(getText("message.validate.convert.error") + e.getMessage());
+      addActionError(getText("message.validate.convert.error") +  getExceptionMessage(e));
     }
     return INPUT;
   }

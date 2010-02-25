@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
@@ -526,5 +527,14 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public void setMenuComparisonEnabled(boolean menuComparisonEnabled)
   {
     this.menuComparisonEnabled = menuComparisonEnabled;
+  }
+  
+  public synchronized String getExceptionMessage(Throwable ex)
+  {
+	  Locale defaultLocale = Locale.getDefault();
+	  Locale.setDefault(getLocale());
+	  String message = ex.getLocalizedMessage();
+	  Locale.setDefault(defaultLocale);
+	  return message;
   }
 }
