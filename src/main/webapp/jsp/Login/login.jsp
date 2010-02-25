@@ -47,19 +47,19 @@
       <div id="main">
         <div id="content">
           <%
-			Object busySessionParam = request.getParameter("busySession");
+			Object busySessionParam = request.getParameter("busySession");			
 			if (busySessionParam != null)
 			{
 				Boolean busySession = Boolean.valueOf(busySessionParam.toString()).booleanValue();
 				if(busySession) 
 				{
-					String html = "<p>La session est actuellement occup&eacute;e, veuillez r&eacute;essayer ult&eacute;rieurement</p>";
+					String html = "<p class=\"errorMessage\">La session est actuellement occup&eacute;e, veuillez r&eacute;essayer ult&eacute;rieurement</p>";
 					out.print(html);
 				}
 			}
 		  %>
           <form action="j_security_check" method="post">
-            <table align="center">
+            <table>
               <tbody>
                 <tr>
                   <td><b>Identifiant : </b></td>

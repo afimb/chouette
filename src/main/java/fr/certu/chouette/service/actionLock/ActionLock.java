@@ -66,12 +66,11 @@ public class ActionLock
 	public void setTakenAt(Calendar takenAt) 
 	{
 		this.takenAt = takenAt;
-		//logger.info("Set lock creation time to : " + this.creationTime.toString());
 	}
 
 	public void setSessionId(String sessionId) 
 	{
-		this.sessionId = sessionId;
+		this.sessionId = sessionId;		
 	}
 
 	public String getSessionId() 
