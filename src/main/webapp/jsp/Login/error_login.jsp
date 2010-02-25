@@ -37,7 +37,7 @@
                     <td id="chouette">Chouette</td>
                   </tr>
                   <tr>
-                    <td id="definition">(Création d'horaires avec un outil d'échange de données TC selon le format Trident Européen)</td>
+                    <td id="definition">(Cr&eacute;ation d'horaires avec un outil d'&eacute;change de donn&eacute;es TC selon le format Trident Europ&eacute;en)</td>
                   </tr>
                 </table>
               </td>
