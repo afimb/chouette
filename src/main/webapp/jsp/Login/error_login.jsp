@@ -9,23 +9,22 @@
   <body>
     <div id="global">
       <div id="header">
-
         <div id="title">
           <table cellpadding="0" cellspacing="0" border="0"><tr>
               <td height="108" style="vertical-align:top;">
                 <a href="http://www.ecologie.gouv.fr/developpement-durable" target="_blank">
-                  <img  alt="Visiter le site du Ministère de l'Ecologie, du Développement et de l'Aménagement Durable"  border="0" src="<%=request.getContextPath()%>/images/logoMedad.gif">
+                  <img  alt="Visiter le site du Minist&egrave;re de l'Ecologie, du D&eacute;veloppement et de l'Am&eacute;nagement Durable"  border="0" src="<%=request.getContextPath()%>/images/logoMedad.gif">
                 </a>
               </td>
               <td style="vertical-align:top;">
                 <table cellpadding="0" cellspacing="0" border="0"><tr><td style="vertical-align:top;">
                       <a href="http://www.certu.fr" target="_blank">
-                        <img alt="Visiter le site du Centre d'Etudes sur les Réseaux, les Transports, l'Urbanisme et les constructions publiques"  border="0" src="<%=request.getContextPath()%>/images/logoCertuSmall.gif">
+                        <img alt="Visiter le site du Centre d'Etudes sur les R&eacute;seaux, les Transports, l'Urbanisme et les constructions publiques"  border="0" src="<%=request.getContextPath()%>/images/logoCertuSmall.gif">
                       </a>
                     </td></tr>
                   <tr><td>
                       <a href="http://www.predim.org" target="_blank">
-                        <img border="0" alt="Visiter le site de la Plate-forme de Recherche et d'Expérimentation pour le Développement de l'information Multimodale"  border="0" src="<%=request.getContextPath()%>/images/logoPredimSmall.gif">
+                        <img border="0" alt="Visiter le site de la Plate-forme de Recherche et d'Exp&eacute;rimentation pour le D&eacute;veloppement de l'information Multimodale"  border="0" src="<%=request.getContextPath()%>/images/logoPredimSmall.gif">
                       </a>
                     </td>
                   </tr>
@@ -48,7 +47,7 @@
       <div id="main">
         <div id="content">
           <p style="text-align: center; color: red; font-weight: bold;">Erreur : l'identifiant ou le mot de passe est incorrect</p>
-          <a rel="" href="/chouette/jsp/Login/login.jsp"><p style="text-align: center; font-weight: bold;">retour &agrave; la page d'authentification</p></a>
+          <a rel="" href="<%=request.getContextPath()%>"><p style="text-align: center; font-weight: bold;">retour &agrave; la page d'authentification</p></a>
         </div>
       </div>
     </div>
