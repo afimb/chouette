@@ -18,6 +18,7 @@ import chouette.schema.VehicleJourney;
 import chouette.schema.types.ChouetteAreaType;
 import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -61,7 +62,7 @@ public class LecteurArretPhysiqueCSV {
 	private PositionGeographique lireArretPhysique(List<String> contenuArret, int position) {
 		PositionGeographique arretPhysique = new PositionGeographique();
 		if (contenuArret.get(indiceNom).isEmpty())
-			throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, "un arret n'a pas de nom");
+			throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.BOARDINGPOSITION_NAME);
 		arretPhysique.setName(contenuArret.get(indiceNom));
 		arretPhysique.setAreaType(ChouetteAreaType.BOARDINGPOSITION);
 		arretPhysique.setObjectId(identificationManager.getIdFonctionnel("StopArea", String.valueOf( position)));

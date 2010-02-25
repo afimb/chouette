@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import chouette.schema.types.TransportModeNameType;
 import fr.certu.chouette.modele.Ligne;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -70,13 +71,13 @@ public class LecteurLigne implements ILecteurLigne {
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
 		{
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir une ligne : " + cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.LINE_MISSINGDATA,cellulesNonRenseignees);
 		}
 	}
 	
 	public void lire(String[] ligneCSV) {
 		if (ligneCSV.length < colonneDesTitres+2)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Le nombre de colonnes "+ligneCSV.length+" est invalide ( < "+(colonneDesTitres+2));
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
 		String titre = ligneCSV[colonneDesTitres];
 		String valeur = ligneCSV[colonneDesTitres+1];
 		if (isTitreNouvelleDonnee(titre)) {
@@ -90,7 +91,7 @@ public class LecteurLigne implements ILecteurLigne {
 			logger.debug("Nouvelle ligne");
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce calendrier.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_DUPLICATEDATA,titre);
 		if (cleNom.equals(titre))
 			ligneEnCours.setName(valeur);
 		else if (cleNomPublic.equals(titre))

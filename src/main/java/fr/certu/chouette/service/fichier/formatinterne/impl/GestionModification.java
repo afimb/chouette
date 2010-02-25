@@ -40,7 +40,7 @@ public class GestionModification implements IGestionModification {
 			statement.execute("SET client_encoding to 'UNICODE'");
 		} 
 		catch (SQLException e) {
-			throw new ServiceException(CodeIncident.CONNEXION_BASE, e.getMessage(), e);
+			throw new ServiceException(CodeIncident.CONNEXION_BASE, e);
 		}
 	}
 	
@@ -54,9 +54,9 @@ public class GestionModification implements IGestionModification {
 	
 	public void modifier(final ILectureEchange echange, boolean incremental) {
 		try {
-			logger.debug("Modification des donnees.");
+			logger.debug("Modification des données.");
 			if (incremental) {
-				//TODO. Mise a jour des donnees ...
+				//TODO. Mise à jour des données ...
 				//modifierLigne(echange);
 			}
 			modifierTransporteur(echange);
@@ -168,7 +168,7 @@ public class GestionModification implements IGestionModification {
 					statement.executeUpdate(buf.toString());
 				}
 				statement.executeUpdate("DELETE FROM " + getDatabaseSchema() + ".timetable_period WHERE timetableid="+idTM+";");
-				// parcours des jours periodes
+				// parcours des jours périodes
 				int totalPeriode = marche.getTotalPeriodes();
 				List<Periode> periodes = marche.getPeriodes();
 				for (int i = 0; i < totalPeriode; i++) {

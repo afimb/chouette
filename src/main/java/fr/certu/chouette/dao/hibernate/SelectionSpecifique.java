@@ -17,6 +17,7 @@ import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.util.TableauMarcheUtils;
@@ -50,7 +51,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 	public void supprimerArretItineraire(final Long idArretItineraire) {
 		final ArretItineraire arret = (ArretItineraire)getHibernateTemplate().get(ArretItineraire.class, idArretItineraire);
 		if (arret == null)
-			throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, "l'identifiant d'arret "+idArretItineraire+" est inconnu");
+			throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.STOPPOINT_ID,idArretItineraire);
 		final Session session = getSession();
 		
 		String sqlRequeteHoraire = "DELETE Horaire h ";
@@ -579,9 +580,9 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		detachedCriteria.add(org.hibernate.criterion.Expression.eq("registrationNumber", registrationNumber));
 		final List<Ligne> lignes =  getHibernateTemplate().findByCriteria(detachedCriteria);
 		if (lignes.isEmpty())
-			throw new ServiceException(CodeIncident.NO_REGISTRE_INCONNU, "Aucune ligne ne porte le numero de registre "+registrationNumber);
+			throw new ServiceException(CodeIncident.NO_REGISTRE_INCONNU,CodeDetailIncident.DEFAULT,registrationNumber);
 		else if (lignes.size()>1)
-			throw new ServiceException(CodeIncident.NO_REGISTRE_INCONNU, lignes.size()+" lignes portent le numero de registre "+registrationNumber);
+			throw new ServiceException(CodeIncident.NO_REGISTRE_NON_UNIQUE, CodeDetailIncident.DEFAULT,lignes.size(),registrationNumber);
 		return lignes.get(0);
 	}
 	
@@ -725,8 +726,8 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			assert nouvellesPositions==null || nouvellesPositions.size()==0:"la liste arrets initiaux est vide alors que celle de leurs nouvelles positions l'est pas";
 			return;
 		}
-		assert nouvellesPositions!=null: "les nouvelles positions d'arret ne sont pas definies";
-		assert arretsOrdreNouveau!=null: "le nouvel ordre des arrets n'est pas defini";
+		assert nouvellesPositions!=null: "les nouvelles positions d'arret ne sont pas définies";
+		assert arretsOrdreNouveau!=null: "le nouvel ordre des arrets n'est pas défini";
 		assert arretsOrdreNouveau.size()==arretsOrdreInitial.size() : "total d'arrets avant deplacement ("+arretsOrdreInitial.size()+") et apres deplacement ("+arretsOrdreNouveau.size()+") differents";
 		assert arretsOrdreNouveau.size()==nouvellesPositions.size() : "total d'arrets avant deplacement ("+arretsOrdreInitial.size()+") et de positions ("+nouvellesPositions.size()+") differents";
 		Set<Long> idsPerdus = new HashSet<Long>(arretsOrdreInitial);

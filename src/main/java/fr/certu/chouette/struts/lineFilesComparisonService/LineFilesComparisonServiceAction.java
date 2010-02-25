@@ -148,7 +148,7 @@ public class LineFilesComparisonServiceAction extends GeneriqueAction implements
 	{
 		// Log message completion
 		List<Object> completionMessage = new ArrayList<Object>();
-		completionMessage.add(e.getMessage());
+		completionMessage.add( getExceptionMessage(e));
 
 		String logKey = null;
 		String ihmKey = null;

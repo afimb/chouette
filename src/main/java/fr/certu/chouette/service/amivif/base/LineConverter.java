@@ -25,7 +25,7 @@ public class LineConverter {
 			BeanUtils.copyProperties(chouetteLine, amivifLine);
 		} 
 		catch (Exception e){
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, e.getMessage(), e);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, e);
 		}
 		
 		if ( !amivifLine.hasObjectVersion())
@@ -64,7 +64,7 @@ public class LineConverter {
 			BeanUtils.copyProperties(amivifLine, chouetteLine);
 		} 
 		catch (Exception e){
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, e.getMessage(), e);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, e);
 		}
 		chouetteLine.setRegistration(chouetteRegistration);
 		chouetteLine.setTransportModeName(chouetteTransportModeName);

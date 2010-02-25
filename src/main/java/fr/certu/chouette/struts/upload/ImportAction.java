@@ -117,18 +117,18 @@ public class ImportAction extends GeneriqueAction {
 			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
 			{
 				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError(message);
 			}
 			else 
 			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
-				args.add("aaa");
-				args.add("bbb");
-				args.add("ccc");
+				args.add("");
+				args.add("");
+				args.add("");
 				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError(message);
 			}
 			return INPUT;
@@ -146,7 +146,7 @@ public class ImportAction extends GeneriqueAction {
 		}
 		catch(Throwable e) 
 		{
-			addActionError(e.getMessage());
+			addActionError( getExceptionMessage(e));
 			return INPUT;
 		}
 		addActionMessage(getText("message.import.altibus.success"));
@@ -161,9 +161,10 @@ public class ImportAction extends GeneriqueAction {
 			canonicalPath = fichier.getCanonicalPath();
 			log.debug("IMPORT DU FICHIER PEGASE : " + canonicalPath);
 		}
-		catch (IOException e) 
+		catch (Exception e) 
 		{
-			e.printStackTrace();
+			addActionError(getExceptionMessage(e));
+			return INPUT;
 		}
 		try 
 		{
@@ -171,7 +172,7 @@ public class ImportAction extends GeneriqueAction {
 		}
 		catch(Throwable e) 
 		{
-			addActionError(e.getMessage());
+			addActionError( getExceptionMessage(e));
 			return INPUT;
 		}
 		boolean echec = false;
@@ -193,7 +194,7 @@ public class ImportAction extends GeneriqueAction {
 				
 				String[] args = new String[2];
 		        args[0] = lectureEchange.getLigneRegistration();
-		        args[1] = e.getMessage();
+		        args[1] =  getExceptionMessage(e);
 				addActionError(getText("message.import.pegase.line.failure", args));
 				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 			}
@@ -221,9 +222,10 @@ public class ImportAction extends GeneriqueAction {
 				log.debug("IMPORT DU FICHIER : "+canonicalPath);
 			}
 		}
-		catch (IOException e) 
+		catch (Exception e) 
 		{
-			e.printStackTrace();
+			addActionError(getExceptionMessage(e));
+			return INPUT;
 		}
 		String newCanonicalPath = reducteur.reduire(canonicalPath, true);
 		log.debug("DECOMPRESSION VERS LE FICHIER : "+newCanonicalPath);
@@ -236,17 +238,17 @@ public class ImportAction extends GeneriqueAction {
 			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
 			{
 				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError(message);
 			}
 			else 
 			{
 				List<String> args = new ArrayList<String>();
-				args.add("aaa");
-				args.add("bbb");
-				args.add("ccc");
+				args.add("");
+				args.add("");
+				args.add("");
 				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError(message);
 			}
 			return INPUT;
@@ -275,7 +277,7 @@ public class ImportAction extends GeneriqueAction {
 				
 				String[] args = new String[2];
 		        args[0] = lectureEchange.getLigneRegistration();
-		        args[1] = e.getMessage();
+		        args[1] =  getExceptionMessage(e);
 				addActionError(getText("message.import.hastus.line.failure", args));
 				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 			}
@@ -295,9 +297,10 @@ public class ImportAction extends GeneriqueAction {
 		{
 			canonicalPath = fichier.getCanonicalPath();
 		}
-		catch (IOException e) 
+		catch (Exception e) 
 		{
-			e.printStackTrace();
+			addActionError(getExceptionMessage(e));
+			return INPUT;
 		}
 		try 
 		{
@@ -308,7 +311,7 @@ public class ImportAction extends GeneriqueAction {
 			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
 			{
 				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError(message);
 			}
 			else 
@@ -316,7 +319,7 @@ public class ImportAction extends GeneriqueAction {
 				List<String> args = new ArrayList<String>();								
 				args.add(canonicalPath);
 				String message = getText("import.csv.format.multilines.ko", args.toArray(new String[0]));
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError(message);
 				//e.printStackTrace();
 			}
@@ -397,13 +400,6 @@ public class ImportAction extends GeneriqueAction {
 		try 
 		{
 			canonicalPath = fichier.getCanonicalPath();
-		}
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		try 
-		{
 			lecteurCSV.lireCheminFichier(canonicalPath);
 		}
 		catch (ServiceException e) 
@@ -411,20 +407,25 @@ public class ImportAction extends GeneriqueAction {
 			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
 			{
 				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError( message);
 			}
 			else 
 			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
-				args.add( "aaa");
-				args.add( "bbb");
-				args.add( "ccc");
+				args.add( "");
+				args.add( "");
+				args.add( "");
 				String message = getText( "import.csv.format.ko", args.toArray(new String[0]));
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError( message);
 			}
+			return INPUT;
+		}
+		catch (Exception e) 
+		{
+			addActionError(getExceptionMessage(e));
 			return INPUT;
 		}
 		//	Donnees convertibles en format chouette
@@ -449,6 +450,8 @@ public class ImportAction extends GeneriqueAction {
 	
 	public String importXMLs() throws Exception 
 	{
+		try
+		{
 		String result = SUCCESS;
 		ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(fichier));
 		ZipEntry zipEntry = zipInputStream.getNextEntry();
@@ -467,11 +470,25 @@ public class ImportAction extends GeneriqueAction {
 			zipEntry = zipInputStream.getNextEntry();
 		}
 		return result;
+		}
+		catch (Exception e)
+		{
+			addActionError(getExceptionMessage(e));
+			return INPUT;
+		}
 	}
 	
 	public String importXML() throws Exception 
 	{
-		return importXML(fichier);
+		try
+		{
+			return importXML(fichier);
+		}
+		catch (Exception e) 
+		{
+			addActionError(getExceptionMessage(e));
+			return INPUT;
+		}
 	}
 	
 	private String importXML(File file) throws Exception 
@@ -553,18 +570,18 @@ public class ImportAction extends GeneriqueAction {
 			if ( CodeIncident.ERR_CSV_NON_TROUVE.equals( e.getCode())) 
 			{
 				String message = getText("import.csv.fichier.introuvable");
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError( message);
 			}
 			else 
 			{
 				String defaut = "defaut";
 				List<String> args = new ArrayList<String>();
-				args.add("aaa");
-				args.add("bbb");
-				args.add("ccc");
+				args.add("");
+				args.add("");
+				args.add("");
 				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
-				message += e.getMessage();
+				message += getExceptionMessage(e);
 				addActionError( message);
 			}
 			return INPUT_ITINERAIRE;
@@ -573,7 +590,7 @@ public class ImportAction extends GeneriqueAction {
 		{
 			e.printStackTrace();
 			String message = getText("import.csv.fichier.introuvable");
-			message += e.getMessage();
+			message += getExceptionMessage(e);
 			addActionError(message);
 			return INPUT_ITINERAIRE;
 		}

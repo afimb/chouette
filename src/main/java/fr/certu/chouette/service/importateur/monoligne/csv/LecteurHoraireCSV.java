@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.modele.Horaire;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -51,7 +52,7 @@ public class LecteurHoraireCSV {
 					horaire.setDepartureTime(lireHoraire( chaineDepart));
 				}
 				catch(ParseException e) {
-					throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, "horaire mal formé sur le "+i+"-ème arret (départ="+chaineDepart+", arrivée="+chaineArrivee+")");
+					throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.STOPPOINT_MALFORMEDPASSINGTIME,i,chaineDepart,chaineArrivee);
 				}
 				listeHoraires.get(i).add( horaire);
 				horaire.setStopPointId(identificationManager.getIdFonctionnel("StopArea", String.valueOf( positionArret)));

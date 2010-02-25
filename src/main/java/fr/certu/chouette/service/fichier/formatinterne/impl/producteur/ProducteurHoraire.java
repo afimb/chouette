@@ -2,6 +2,7 @@ package fr.certu.chouette.service.fichier.formatinterne.impl.producteur;
 
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.Horaire;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.fichier.formatinterne.IFournisseurId;
@@ -69,7 +70,7 @@ public class ProducteurHoraire implements IProducteurSpecifique {
 	private Long getIdObligatoire(String objectId, final Map<String, Long> idParObjectId) {
 		Long id = idParObjectId.get(objectId);
 		if (id == null)
-			throw new ServiceException(CodeIncident.IDENTIFIANT_TRIDENT_INCONNU, objectId);
+			throw new ServiceException(CodeIncident.IDENTIFIANT_TRIDENT_INCONNU, CodeDetailIncident.DEFAULT,objectId);
 		return id;
 	}
 

@@ -36,7 +36,7 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 	{
 		logger.debug("EVOCASTOR --> unmarshal RespPTLineStructTimetable");
 		String contenu = null;
-		validationException = new ValidationException( "");
+		validationException = new ValidationException( );
 		
 		try 
 		{
@@ -100,15 +100,15 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		} 
 		catch(IOException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e);
 		} 
 		catch(MarshalException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT,e);
 		} 
 		catch(org.exolab.castor.xml.ValidationException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		}
 	}
 	
@@ -133,15 +133,15 @@ public class LecteurAmivifXML implements ILecteurAmivifXML
 		} 
 		catch(IOException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE, e.getMessage(), e);
+			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
 		} 
 		catch(MarshalException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		} 
 		catch(org.exolab.castor.xml.ValidationException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e.getMessage() ,e);
+			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
 		}
 	}
 

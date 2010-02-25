@@ -23,6 +23,7 @@ import chouette.schema.VehicleJourney;
 import chouette.schema.VehicleJourneyAtStop;
 import chouette.schema.types.ChouetteAreaType;
 import fr.certu.chouette.service.amivif.util.Paire;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -330,8 +331,7 @@ public class UnfoldingTransformer
 						new Paire( routeId, phyArret));
 				if ( positionsPhyArret==null)
 				{
-					throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-							"La course "+vehicle.getObjectId()+" est incompatible avec l'itinéraire "+routeId+" à cause de l'arret "+phyArret);
+					throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_VEHICLEJOURNEYSTOPPOINTMISMATCH,vehicle.getObjectId(),routeId,phyArret);
 				}
 				
 				String unrolledStopId = null;
@@ -352,8 +352,7 @@ public class UnfoldingTransformer
 				// tester si on a trouvé une position placée celle du dernier horaire transformé
 				if ( unrolledStopId==null)
 				{
-					throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-							"La course "+vehicle.getObjectId()+" est incompatible avec l'itinéraire "+routeId);
+					throw new ServiceException( CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.ROUTE_VEHICLEJOURNEYMISMATCH,vehicle.getObjectId(),routeId);
 				}
 				horaire.setStopPointId( unrolledStopId);
 			}
@@ -389,8 +388,7 @@ public class UnfoldingTransformer
 						new Paire( routeId, phyArret));
 				if ( positionsPhyArret==null)
 				{
-					throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-							"La mission "+journey.getObjectId()+" est incompatible avec l'itinéraire "+routeId+" à cause de l'arret "+phyArret);
+					throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_JOURNEYPATTERNSTOPPOINTMISMATCH,journey.getObjectId(),routeId,phyArret);
 				}
 				
 				String unrolledStopId = null;
@@ -411,8 +409,7 @@ public class UnfoldingTransformer
 				// tester si on a trouvé une position placée celle du dernier horaire transformé
 				if ( unrolledStopId==null)
 				{
-					throw new ServiceException( CodeIncident.DONNEE_INVALIDE, 
-							"La mission "+journey.getObjectId()+" est incompatible avec l'itinéraire "+routeId);
+					throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_JOURNEYPATTERNMISMATCH,journey.getObjectId(),routeId);
 				}
 				journey.setStopPointList( j, unrolledStopId);
 			}

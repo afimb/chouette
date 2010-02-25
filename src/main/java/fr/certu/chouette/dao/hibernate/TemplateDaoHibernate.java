@@ -31,6 +31,7 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -159,7 +160,7 @@ public class TemplateDaoHibernate<T extends BaseObjet> extends HibernateDaoSuppo
 		}
 		else if ( total>1)
 		{
-			throw new ServiceException( CodeIncident.BASE_NON_INTEGRE, total + " tableaux de marche d'identifant " + objectId);
+			throw new ServiceException( CodeIncident.BASE_NON_INTEGRE, CodeDetailIncident.TIMETABLE_COUNT,total ,objectId);
 		}
 		
 		return list.get( 0);

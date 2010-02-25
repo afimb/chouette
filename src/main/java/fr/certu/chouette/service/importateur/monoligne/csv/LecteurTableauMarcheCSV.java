@@ -17,6 +17,7 @@ import chouette.schema.Timetable;
 import chouette.schema.types.DayTypeType;
 import fr.certu.chouette.modele.Periode;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -109,11 +110,16 @@ public class LecteurTableauMarcheCSV {
 			tableauMarche.ajoutPeriode(periode);
 			try {
 				periode.setDebut(lireDate(contenuDebut.get(i*2)));
-				periode.setFin(lireDate(contenuFin.get(i*2)));
 			}
 			catch(ParseException e) {
-				throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, "date mal formée sur la "+i+"-ème course");
+				throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,contenuDebut.get(i*2));
 			}
+         try {
+            periode.setFin(lireDate(contenuFin.get(i*2)));
+         }
+         catch(ParseException e) {
+            throw new ServiceException( CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,contenuFin.get(i*2));
+         }
 			Set<DayTypeType> jours = new HashSet<DayTypeType>();
 			for (DayTypeType jourType : etatsParJourType.keySet())
 				if (etatsParJourType.get(jourType).get(i*2).equals("O"))

@@ -3,6 +3,7 @@ package fr.certu.chouette.service.fichier.formatinterne.impl.producteur;
 import chouette.schema.types.ChouetteAreaType;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.fichier.formatinterne.IFournisseurId;
@@ -56,7 +57,7 @@ public class ProducteurPositonGeographique implements IProducteurSpecifique {
 			if (parenteObjectId != null) {
 				geoPosition.setIdParent(resultat.get(parenteObjectId));
 				if (geoPosition.getIdParent() == null)
-					throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, "la zone parente "+parenteObjectId+" est inconnue, cette zone contient "+geoPosition.getObjectId()+"("+geoPosition.getName()+")");
+					throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.STOPAREA_PARENT,parenteObjectId,geoPosition.getObjectId(),geoPosition.getName());
 			}
 		}
 		final List<String[]> contenu = traduire(majIdentification, zonesGeneriquesNouvelles);
