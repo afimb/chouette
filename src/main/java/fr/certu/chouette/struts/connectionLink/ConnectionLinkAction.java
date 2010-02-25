@@ -293,13 +293,13 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
         else
         {
           log.debug("Could not import connection links");
-          addActionError("Could not import connection links");
+          addActionError(getText("import.connectionLink.failure"));
         }
       }
       else
       {
         log.debug("Import connection links success");
-        addActionMessage(getText("import.csv.format.ok"));
+        addActionMessage(getText("import.connectionLink.success"));
       }
     }
     catch (ServiceException serviceException)
@@ -448,7 +448,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else
@@ -483,7 +483,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else
@@ -518,7 +518,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else
@@ -554,7 +554,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
       }
       catch (Exception ex)
       {
-        addActionError(ex.getLocalizedMessage());
+        addActionError( getExceptionMessage(ex));
       }
     }
     else

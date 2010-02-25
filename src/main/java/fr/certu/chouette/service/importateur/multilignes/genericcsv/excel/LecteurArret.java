@@ -189,17 +189,17 @@ public class LecteurArret implements ILecteurArret {
 	
 	private List<String> merge(List<String> list1, List<String> list2) {
 		if ((list1 == null) || (list2 == null))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, ""); // ERROR
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE); // ERROR
 		if (list1.size() != list2.size())
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, ""); // ERROR
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE); // ERROR
 		List<String> list = new ArrayList<String>();
 		for (int i = 0; i < list1.size(); i++) {
 			if ((list1.get(i) == null) || (list1.get(i) == null))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, ""); // ERROR
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE); // ERROR
 			if ((list1.get(i).length() > 0) || (list2.get(i).length() > 0))
 				if ((list1.get(i).length() > 0) && (list2.get(i).length() > 0))
 					if (!list1.get(i).equals(list2.get(i)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, ""); // ERROR
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE); // ERROR
 					else
 						list.add(list1.get(i));
 				else

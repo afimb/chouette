@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -50,7 +51,7 @@ public class LecteurHoraire implements ILecteurHoraire {
 				return;
 			Course course = coursesEnCours.get(i-(colonneDesTitres+1));
 			if (course == null)
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "HORAIRE SANS COURSE");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_VEHICLEJOURNEY);
 			if (arretsPhysiques.get(course) == null)
 				arretsPhysiques.put(course, new ArrayList<String>());
 			if (ligneCSV[i] != null)
@@ -63,7 +64,7 @@ public class LecteurHoraire implements ILecteurHoraire {
 						String liText = "";
 						for (int j = 0; j < ligneCSV.length; j++)
 							liText += ligneCSV[j];
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "FORMAT DE DATE INVALIDE : "+ligneCSV[i]+" : COLONE : "+i+" : VALUE : "+liText); // Invalide format ...
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,liText); // Invalide format ...
 					}
 					arretSansHoraire = false;
 					logger.debug("COURSE : "+(i-(colonneDesTitres+1))+", HORAIRE : "+sdf.format(date));
@@ -85,13 +86,13 @@ public class LecteurHoraire implements ILecteurHoraire {
 			for (int i = ligneCSV.length; i < (colonneDesTitres+1+coursesEnCours.size()); i++) {
 				Course course = coursesEnCours.get(i-(colonneDesTitres+1));
 				if (course == null)
-					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "HORAIRE SANS COURSE");
+					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_VEHICLEJOURNEY);
 				if (arretsPhysiques.get(course) == null)
 					arretsPhysiques.put(course, new ArrayList<String>());
 				arretsPhysiques.get(course).add("");
 			}
 		if (arretSansHoraire)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "ARRET SANS HORAIRE : "+ligneCSV[colonneDesTitres]);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.STOPPOINT_MISSINGPASSINGTIME,ligneCSV[colonneDesTitres]);
 	}
 	
 	public IIdentificationManager getIdentificationManager() {

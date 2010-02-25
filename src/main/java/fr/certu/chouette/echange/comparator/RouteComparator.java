@@ -9,6 +9,7 @@ import java.util.Map;
 import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Itineraire;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -100,7 +101,7 @@ public class RouteComparator extends AbstractChouetteDataComparator
 			if (dataMap.put(buildKey(sourceData, childsOfRoute,withConversion),sourceData) != null)
 			{
 				// duplicate key : cannot check correctly this data
-				throw new ServiceException(CodeIncident.COMPARATOR_DUPLICATED_KEY,"list of StopPoints in Route ");
+				throw new ServiceException(CodeIncident.COMPARATOR_DUPLICATED_KEY,CodeDetailIncident.LIST,"StopPoint","Route");
 			}
 		}
     }

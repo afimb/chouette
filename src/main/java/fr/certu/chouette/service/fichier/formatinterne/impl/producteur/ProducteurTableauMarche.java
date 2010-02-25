@@ -4,6 +4,7 @@ import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.LienTMCourse;
 import fr.certu.chouette.modele.Periode;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.fichier.formatinterne.IFournisseurId;
@@ -54,7 +55,7 @@ public class ProducteurTableauMarche implements IProducteurSpecifique {
 			for (int i = 0; i < totalTMCourse; i++) {
 				String objectIdCourse = marche.getVehicleJourneyId(i);
 				if (objectIdCourse == null)
-					throw new ServiceException(CodeIncident.DONNEE_INVALIDE, "TM ("+marche.getObjectId()+") invalide, i="+i+", objectIdCourse null");
+					throw new ServiceException(CodeIncident.DONNEE_INVALIDE, CodeDetailIncident.TIMETABLE_MISSINGVEHICLEJOURNEY,marche.getObjectId(),i);
 				Long idCourse = idParObjectId.get(objectIdCourse);
 				if (idCourse == null) // idCourse d'une autre ligne que celle ci
 					continue;

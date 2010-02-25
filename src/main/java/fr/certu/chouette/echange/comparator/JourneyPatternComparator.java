@@ -14,6 +14,7 @@ import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Mission;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -138,7 +139,7 @@ public class JourneyPatternComparator extends AbstractChouetteDataComparator
 				else
 				{
 					logger.error("duplicate key = "+key+" between "+sourceData.getObjectId()+" and "+oldSourceData.getObjectId());
-					throw new ServiceException(CodeIncident.COMPARATOR_DUPLICATED_KEY,"JourneyPatternKey of "+sourceData.getObjectId());
+					throw new ServiceException(CodeIncident.COMPARATOR_DUPLICATED_KEY,CodeDetailIncident.DEFAULT,"JourneyPatternKey",sourceData.getObjectId());
 				}
 			}
 		}

@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.util.StrutsTypeConverter;
 
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 
@@ -61,7 +62,7 @@ public class DateConverter extends StrutsTypeConverter
 				}
 				catch (ParseException ex)
 				{
-					throw new ServiceException(CodeIncident.DONNEE_INVALIDE, "La donnee " + dateString + " n'est ni une date ni un horaire");
+					throw new ServiceException(CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.DATETIME_TYPE, dateString );
 				}
 			}
 		}

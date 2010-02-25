@@ -22,7 +22,7 @@ public class PTLinkConverter
 		} 
 		catch ( Exception e)
 		{
-			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, e.getMessage(), e);
+			throw new ServiceException( CodeIncident.DONNEE_INVALIDE, e);
 		}
 		if ( !amivif.hasObjectVersion())
 			chouette.setObjectVersion( 1);

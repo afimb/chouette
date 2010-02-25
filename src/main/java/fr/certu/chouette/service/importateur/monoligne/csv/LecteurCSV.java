@@ -6,6 +6,7 @@ import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.echange.LectureEchange;
 import fr.certu.chouette.modele.Horaire;
 import fr.certu.chouette.modele.PositionGeographique;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.importateur.monoligne.ILecteurCSV;
@@ -76,11 +77,11 @@ public class LecteurCSV implements ILecteurCSV {
 			if (contenu == null)
 				contenu = new ArrayList<String[]>();
 			if (contenu.size() <= finPartieFixe)
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_LIGNE, "Au moins "+finPartieFixe+" lignes attendues. Seulement "+ contenu.size()+" lignes lues.");
+				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_LIGNE, CodeDetailIncident.LINE_COUNT,finPartieFixe,contenu.size());
 			for (int i = debutPartieFixe; i < finPartieFixe; i++) {
 				String[] contenuLigne = contenu.get(i);
 				if (contenuLigne.length < (colonneTitrePartieFixe + 2))
-					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Sur la "+i+"ieme ligne, "+ contenuLigne.length+" colonnes lues, au moins "+(colonneTitrePartieFixe + 2)+" attendues");
+					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE,CodeDetailIncident.COLUMN_COUNT, contenuLigne.length,(colonneTitrePartieFixe + 2));
 				if ((contenuLigne[colonneTitrePartieFixe] != null) &&(contenuLigne[colonneTitrePartieFixe].trim().length() > 0))
 					valeurParTitre.put(contenuLigne[colonneTitrePartieFixe], contenuLigne[colonneTitrePartieFixe+1]);
 			}
@@ -97,7 +98,7 @@ public class LecteurCSV implements ILecteurCSV {
 			for (int i = debutPartieDynamique; i < contenu.size(); i++) {
 				List<String> contenuLigne = Arrays.asList(contenu.get(i));
 				if (totalCourses != calculerTotalCourses(contenuLigne))
-					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_COLONNE, "Ligne "+i+" "+totalCourses+" colonnes attendues, mais "+ calculerTotalCourses(contenuLigne)+" colonnes lues");
+					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_COLONNE, CodeDetailIncident.COLUMN_COUNT,totalCourses,calculerTotalCourses(contenuLigne));
 				String titre = contenuLigne.get(colonneTitrePartieFixe);
 				List<String> proprietes = getProprieteParCourse(contenuLigne);
 				if (i < finPartieDynamique) {
@@ -131,7 +132,7 @@ public class LecteurCSV implements ILecteurCSV {
 			titresIntrouvables.addAll(clesLigneIntrouvables);
 			// TODO : verifier que toutes les cellules de titre sont là
 			if (!titresIntrouvables.isEmpty())
-				throw new ServiceException( CodeIncident.ERR_CSV_CELLULE_INTROUVABLE, "Les cellules suivantes sont introuvables: "+titresIntrouvables);
+				throw new ServiceException( CodeIncident.ERR_CSV_CELLULE_INTROUVABLE, CodeDetailIncident.DEFAULT,titresIntrouvables);
 			// chargement des arrets et des courses
 			// former la liste des arrets et la liste des horaires des courses
 			//List<List<String>> arretsCoursesColonnes = lireEnColonnes( contenu.subList( debutPartieArret, contenu.size()));
@@ -159,13 +160,13 @@ public class LecteurCSV implements ILecteurCSV {
 			reducteurTableauMarche.reduire(lectureEchange);
 		} 
 		catch (FileNotFoundException e) {
-			throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE, e.getMessage(), e);
+			throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE,  e);
 		}
 		catch (ServiceException e) {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, "Echec initialisation", e);
+			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, e, "Echec initialisation");
 		}
 		finally {
 			if (lecteur != null) {
@@ -202,6 +203,7 @@ public class LecteurCSV implements ILecteurCSV {
 		}
 		catch(IOException e) {
 			logger.error("EXPORT CSV : "+e.getMessage());
+			return;
 		}
 		List<String[]> contenu = new ArrayList<String[]>();
 		// contenu ...

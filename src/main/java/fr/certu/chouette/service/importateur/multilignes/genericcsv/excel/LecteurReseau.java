@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import fr.certu.chouette.modele.Reseau;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
@@ -46,13 +47,13 @@ public class LecteurReseau implements ILecteurReseau {
 	
 	public void validerCompletude() {
 		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Il manque les données suivantes pour définir un réseau:"+cellulesNonRenseignees);
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NETWORK_MISSINGDATA,cellulesNonRenseignees.toString());
 		logger.debug("FIN DE LECTURE RESEAU.");
 	}
 	
 	public void lire(String[] ligneCSV) {
 		if (ligneCSV.length < colonneDesTitres+2)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Le nombre de colonnes "+ligneCSV.length+" est invalide ( < "+(colonneDesTitres+2));
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE,CodeDetailIncident.COLUMN_COUNT, ligneCSV.length,(colonneDesTitres+2));
 		String titre = ligneCSV[colonneDesTitres];
 		String valeur = ligneCSV[colonneDesTitres+1];
 		if (isTitreNouvelleDonnee(titre)) {
@@ -66,7 +67,7 @@ public class LecteurReseau implements ILecteurReseau {
 			reseau.setVersionDate(new Date());
 		}
 		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne "+titre+" apparait plusieurs fois dans ce réseau.");
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NETWORK_DUPLICATELINE,titre);
 		if (cleNom.equals(titre))
 			reseau.setName(valeur);
 		else if (cleCode.equals(titre))

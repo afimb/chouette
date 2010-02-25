@@ -20,6 +20,7 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
@@ -135,7 +136,7 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 					if (counter == 0)
 						lecteurCalendrier.lire(ligneCSV);
 					else
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Les calendriers doivent etre au d�but du fichier.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_POSITION);
 				else if (lecteurReseau.isTitreReconnu(ligneCSV)) {
 					if (counter == 0) {
 						lecteurCalendrier.validerCompletude();
@@ -144,7 +145,7 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 					if (counter == 1)
 						lecteurReseau.lire(ligneCSV);
 					else
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Les calendriers doivent etre au d�but du fichier suivi par le r�seau.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NETWORK_POSITION);
 				}
 				else if (lecteurTransporteur.isTitreReconnu(ligneCSV)) {
 					if (counter == 1) {
@@ -154,7 +155,7 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 					if (counter == 2)
 						lecteurTransporteur.lire(ligneCSV);
 					else
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "Les calendriers doivent etre au d�but du fichier suivi par le r�seau et le transporteur.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_POSITION);
 				}
 				else if (lecteurLigne.isTitreReconnu(ligneCSV)) {
 					if (counter == 2) {
@@ -164,7 +165,7 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 					if (counter == 3)
 						lecteurLigne.lire(ligneCSV);
 					else
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, numLigne+ " : Les calendriers doivent etre au d�but du fichier suivi par le r�seau, le transporteur et les lignes.");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.LINE_POSITION);
 				}
 				else if (lecteurCourse.isTitreReconnu(ligneCSV)) {
 					if (counter == 3) {
@@ -209,19 +210,19 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 						String ligneText = "";
 						for (int i = 0; i < ligneCSV.length; i++)
 							ligneText += ligneCSV[i]+";";
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, "La ligne est inconnu : \""+ligneText+"\"");
+						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.INVALID_SYNTAX,ligneText);
 					}
 				}
 			}
 		} 
 		catch (FileNotFoundException e) {
-			throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE, numLigne +" : "+e.getMessage(), e);
+			throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE,  e);
 		}
 		catch (ServiceException e) {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new ServiceException(CodeIncident.DONNEE_INVALIDE,  numLigne +" : Echec initialisation", e);
+			throw new ServiceException(CodeIncident.DONNEE_INVALIDE, e, numLigne);
 		}
 		finally {
 			if (lecteur != null) {

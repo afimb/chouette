@@ -73,6 +73,12 @@
       </s:url>
       <s:url id="removeLigneChouette" action="deleteChouette" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
+        <s:param name="exportMode">${'CHOUETTE'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
+      </s:url>
+      <s:url id="removeLigneNeptune" action="deleteChouette" namespace="/line">
+        <s:param name="idLigne">${ligne.id}</s:param>
+        <s:param name="exportMode">${'NEPTUNE'}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportAmivif" action="exportAmivif" namespace="/export">
