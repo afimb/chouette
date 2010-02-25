@@ -71,8 +71,7 @@
       <%-- Remplissage des paramètres cachés utiles pour l'action--%>
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
       <s:hidden name="idLigne" value="%{idLigne}" />
-     <s:hidden name="operationMode" value="%{'STORE'}" />
-
+      <s:hidden name="operationMode" value="%{'STORE'}" />
       <s:textfield name="saisieTableauMarche" id="tableauMarches_auto_complete" size="60" value="" />
       <s:hidden name="saisieTableauMarcheKey" id="saisieTableauMarcheKey" value=""/>
       <div id="tableauMarches_auto_complete_list" class="tableauMarches_auto_complete_list" style="display:none;"></div>

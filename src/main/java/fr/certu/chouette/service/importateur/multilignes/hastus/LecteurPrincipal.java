@@ -495,6 +495,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 						}
 						if (counter != 5)
 							throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Horaires\" doivent etre definis en sixieme juste apres les \"Courses\".");
+
 						lecteurHoraire.lire(ligneCSV);
 					}
 					else if (lecteurOrdre.isTitreReconnu(ligneCSV)) {

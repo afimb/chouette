@@ -58,7 +58,6 @@
   <constant name="struts.convention.exclude.parentClassLoader"
 		value="true" />
 
-
   <package name="struts" extends="struts-default">
     <interceptors>
       <interceptor name="singleAction"
@@ -176,8 +175,11 @@
 
 		<!-- Resultats "reutilisables" -->
     <global-results>
-      <result name="locked-action-error">/jsp/locked-action-error.jsp</result>
-      <result name="error">/jsp/error.jsp</result>
+    	<result name="busy-session" type="redirect">
+    		<param name="location">/</param>
+    		<param name="busySession">true</param>
+    	</result>
+      	<result name="error">/jsp/error.jsp</result>
     </global-results>
 
 	<!-- Traitement des erreurs -->
@@ -185,22 +187,22 @@
       <exception-mapping result="error" exception="java.lang.Exception" />
     </global-exception-mappings>
 
-		<!-- Déconnexion -->
+	<!-- Déconnexion -->
     <action name="deconnexion" class="Deconnexion" method="execute">
       <result name="success" type="redirect">/</result>
     </action>
-
-		<!-- Action non trouvée -->
+        
+	<!-- Action non trouvée -->
     <action name="ActionNotFound">
       <result>/jsp/action_not_found.jsp</result>
     </action>
 
-		<!-- A propos de l'application -->
+	<!-- A propos de l'application -->
     <action name="AProposDe" class="AProposDe">
       <result name="success">/jsp/aproposde.jsp</result>
     </action>
 		
-		<!-- Validation des données -->
+	<!-- Validation des données -->
     <action name="Validation_*" class="Validation" method="{1}">
       <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/validation.jsp</result>

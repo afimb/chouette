@@ -105,8 +105,10 @@ public class LecteurCourse implements ILecteurCourse {
 			throw new ServiceException(CodeIncident.INVALIDE_DATES_COURSE, "La date de dêbut de \"TableauMarche\" doit être postêrieure ê la date de fin : "+ligneCSV[11]+" < "+ligneCSV[12]);
 		String key = sdf1.format(debut)+bigInt.toString()+sdf1.format(fin);
 		TableauMarche tableauMarche = tableauMarcheParValeur.get(key);
-		if (tableauMarche == null) {
-			long numberOfDays = (long)1 + (fin.getTime()/((long)24*(long)60*(long)60*(long)1000) - debut.getTime()/((long)24*(long)60*(long)60*(long)1000));
+		if (tableauMarche == null) 
+		{
+			long numberOfDays = (long)1 + (fin.getTime()/(24l*60l*60l*1000l) - debut.getTime()/(24l*60l*60l*1000l));
+
 			if (joursValides.length() != (int)numberOfDays)
 				throw new ServiceException(CodeIncident.INVALIDE_DATESJOURSVALIDITE_COURSE, "Le champs jours valides ("+joursValides+") n'est pas conforme aux dates de debut ("+ligneCSV[11].trim()+") est de fin ("+ligneCSV[12].trim()+") : "+(int)numberOfDays+" jours.");
 			long time = debut.getTime();
@@ -114,10 +116,14 @@ public class LecteurCourse implements ILecteurCourse {
 			Date last = null;
 			String value = null;
 			tableauMarche = new TableauMarche();
-			for (int i = 0; i < numberOfDays; i++) {
+			
+			for (int i = 0; i < numberOfDays; i++) 
+			{
 				Date date = new Date(time);
-				if (joursValides.charAt(i) == '1') {
-					if (first == null) {
+				if (joursValides.charAt(i) == '1') 
+				{
+					if (first == null) 
+					{
 						first = new Date(time);
 						value = "1";
 					}
@@ -130,11 +136,14 @@ public class LecteurCourse implements ILecteurCourse {
 			}
 			if (value == null)
 				return; // TM vide
+			
 			tableauMarche.setObjectVersion(1);
 			tableauMarche.setCreationTime(new Date(System.currentTimeMillis()));
 			tableauMarcheParValeur.put(key, tableauMarche);
+			
 			int index = value.length()-1;
-			while (value.charAt(index) == '0') {
+			while (value.charAt(index) == '0') 
+			{
 				value = value.substring(0, index);
 				index = value.length()-1;
 			}

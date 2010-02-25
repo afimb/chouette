@@ -49,6 +49,7 @@ create view PUBLIC.JourneyPattern as select
           comment 
           from :SCH.JourneyPattern;
           
+
 create view PUBLIC.Line as select 
          id , 
          PTNetworkId as idReseau, 
@@ -178,7 +179,7 @@ create view PUBLIC.VehicleJourneyAtStop as select
          boardingAlightingPossibility  , 
          isDeparture  as depart
          from :SCH.VehicleJourneyAtStop;
-         
+
 create view PUBLIC.itl as select 
          id  , 
          objectId  , 

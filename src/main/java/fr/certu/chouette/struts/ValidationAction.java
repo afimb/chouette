@@ -140,9 +140,17 @@ public class ValidationAction extends GeneriqueAction
     try
     {
       Statement statement = connexion.createStatement();
-      String selectStatement = "SELECT vjas.vehicleJourneyId, vjas.arrivaltime, vjas.departuretime, vj.routeId, r.lineId, s.position FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop vjas, " + managerDataSource.getDatabaseSchema() + ".vehiclejourney vj, " + managerDataSource.getDatabaseSchema() + ".route r, " + managerDataSource.getDatabaseSchema() + ".stoppoint s WHERE vj.id = vjas.vehicleJourneyId AND r.id = vj.routeId AND s.id = vjas.stopPointId ORDER BY vjas.vehicleJourneyId, s.position;";
+      String selectStatement = "SELECT " +
+      		"vjas.vehicleJourneyId, vjas.arrivaltime, vjas.departuretime, " +
+      		"vj.routeId, r.lineId, s.position FROM " + 
+      		managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop vjas, " +
+      		managerDataSource.getDatabaseSchema() + ".vehiclejourney vj, " + 
+      		managerDataSource.getDatabaseSchema() + ".route r, " + 
+      		managerDataSource.getDatabaseSchema() + ".stoppoint s " +
+      		"WHERE vj.id = vjas.vehicleJourneyId AND r.id = vj.routeId " +
+      		"AND s.id = vjas.stopPointId ORDER BY vjas.vehicleJourneyId, s.position;";
       ResultSet rs = statement.executeQuery(selectStatement);
-      long idCourse = (long) -1;
+      long idCourse = -1l;
       Date date = null;
       while (rs.next())
       {
@@ -436,7 +444,8 @@ public class ValidationAction extends GeneriqueAction
                     }
                     break;
                 }
-                long time = date.getTime() + 24l * 60l * 60l * 1000l;
+                long time = date.getTime() + 24l*60l*60l*1000l;
+
                 date = new Date(time);
               }
             }

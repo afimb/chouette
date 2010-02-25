@@ -112,10 +112,12 @@
     </s:div>
   </div>
 
+
   <%-- Zones parentes --%>
   <div class="panelDataSection">
     <s:text name="text.positionGeographique.fatherArea.title" />
   </div>
+  
   <div class="panel">
     <s:div label="father" id="displaytag">
       <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
@@ -161,6 +163,7 @@
     </div>
   </div>
 </s:if>
+>>>>>>> a901edee50a17f55125d90b6d615b2f7f49dfe96:src/main/webapp/jsp/boardingPosition/edit.jsp
 <script type="text/javascript"><!--
   // <![CDATA[
 

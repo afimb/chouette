@@ -154,8 +154,8 @@ public class ItineraireManager implements IItineraireManager
 			
 			aller.setIdRetour( retour.getId());
 			modifier( aller);
-			
-			// créer les arrêts de l'itinéraire retour
+
+			// creating backword route stop points
 			List<ArretItineraire> allerArrets = getArretsItineraire(idItineraire);
 			int total = allerArrets.size()-1;
 			for (ArretItineraire arretAller : allerArrets) {
@@ -273,8 +273,8 @@ public class ItineraireManager implements IItineraireManager
 		
 		// des horaires peuvent avoir ete supprimes
 		modificationSpecifique.referencerDepartsCourses(idItineraire);
-		
-		// mettre à jour les missions
+
+		// Updating Journey Patterns
 		if ( !idsLogiquesPerdus.isEmpty())
 		{
 			missionManager.fusionnerMissions(idItineraire);
@@ -283,7 +283,7 @@ public class ItineraireManager implements IItineraireManager
 
 	private void validerEchangeHoraire(List<Long> arretsHorairesEchanges, 
 			List<Long> arretsHorairesEchangesInitiaux) {
-		if ( arretsHorairesEchangesInitiaux.size()!=arretsHorairesEchanges.size())
+		if ( arretsHorairesEchangesInitiaux.size() != arretsHorairesEchanges.size())
 		{
 			throw new ServiceException( CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.ROUTE_SWAPVEHICLEJOURNEYATSTOP);
 		}

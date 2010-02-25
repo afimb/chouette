@@ -43,6 +43,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final String REDIRECTEDIT = "redirectEdit";
   public static final String SEARCH = "search";
   public static final String EXPORT = "export";
+  
   protected Map session;
   protected Map request;
   protected PrincipalProxy principalProxy;
@@ -64,7 +65,9 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final int SCHOOLHOLLIDAY_TYPE = 9;
   public static final int PUBLICHOLLIDAY_TYPE = 10;
   public static final int MARKETDAY_TYPE = 11;
+
   private boolean menuComparisonEnabled;
+
 
   public void setSession(Map session)
   {
@@ -73,6 +76,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 
   public void setRequest(Map request)
   {
+
     // If the context contains a new locale the breadcrumb is initialized
     if (ActionContext.getContext().getParameters().containsKey("request_locale"))
     {
@@ -100,6 +104,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       FilAriane filAriane = new FilAriane();
       session.put("filAriane", filAriane);
       return filAriane;
+
     } else
     {
       return (FilAriane) session.get("filAriane");
@@ -132,6 +137,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         ptDirectionType = PTDirectionType.fromValue(cleParTraduction.get(traduction));
+
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -230,6 +236,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         dayTypeType = DayTypeType.fromValue(cleParTraduction.get(traduction));
+        
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -325,6 +332,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     if (AUTHORIZEDTYPESET_ALL.equals(authorizedTypes))
     {
       return toutesZonesTypes;
+
     } else if (AUTHORIZEDTYPESET_CS.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
@@ -337,6 +345,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
+
     } else if (AUTHORIZEDTYPESET_QB.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
@@ -349,6 +358,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
+
     } else if (AUTHORIZEDTYPESET_S.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
@@ -361,6 +371,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
         }
       }
       return l;
+
     } else if (AUTHORIZEDTYPESET_C.equals(authorizedTypes))
     {
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
@@ -405,6 +416,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         boardingPositionType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
+
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);

@@ -105,6 +105,15 @@
       <form-error-page>/jsp/Login/error_login.jsp</form-error-page>
     </form-login-config>
   </login-config>
+
+  <jsp-config>
+    <jsp-property-group>
+      <description>Toutes les pages</description>
+      <url-pattern>*.jsp</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+  </jsp-config>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>

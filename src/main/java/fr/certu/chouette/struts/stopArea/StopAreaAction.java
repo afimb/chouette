@@ -38,6 +38,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private IReseauManager reseauManager;
   private IPositionGeographiqueManager positionGeographiqueManager;
   private ILigneManager ligneManager;
+
   private PositionGeographique model = new PositionGeographique();
   private String mappedRequest;
   private Long idPositionGeographique;
@@ -122,6 +123,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     else
     {
       model = positionGeographiqueManager.lire(getIdPositionGeographique());
+
     }
 
     // Chargement des réseaux
@@ -139,6 +141,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
     //	Création des zones filles et parentes
     children = positionGeographiqueManager.getGeoPositionsDirectementContenues(idPositionGeographique);
+
     if (model.getIdParent() != null)
     {
       father = positionGeographiqueManager.lire(model.getIdParent());
@@ -269,6 +272,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
   public String update()
   {
+
     positionGeographiqueManager.modifier(model);
     if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
     {
@@ -539,6 +543,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
    ********************************************************/
   public String getTypePositionGeographique()
   {
+
     if (model.getId() != null)
     {
       if (model.getAreaType() == ChouetteAreaType.QUAY

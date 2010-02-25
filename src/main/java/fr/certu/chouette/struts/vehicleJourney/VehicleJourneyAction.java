@@ -153,6 +153,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
 
   public String save()
   {
+
     // ré-affecter l'identifiant de l'itinéraire sur la course
     model.setIdItineraire(idItineraire);
 
@@ -172,6 +173,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
 
   public String update()
   {
+
     // ré-affecter l'identifiant de l'itinéraire sur la course
     model.setIdItineraire(idItineraire);
 

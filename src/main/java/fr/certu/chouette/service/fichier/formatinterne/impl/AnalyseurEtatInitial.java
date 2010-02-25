@@ -66,17 +66,20 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Reseau reseau = lectureEchange.getReseau();
 		Transporteur transporteur = lectureEchange.getTransporteur();
 		try {
-			final String selectionLigne = "select id from " + getDatabaseSchema() + ".line where registrationnumber='"+ligne.getRegistrationNumber()+"';";
+			final String selectionLigne = "select id from " + getDatabaseSchema() 
+				+ ".line where registrationnumber='"+ligne.getRegistrationNumber()+"';";
 			Statement sqlStatement = connexion.createStatement();
 			ResultSet rs = sqlStatement.executeQuery(selectionLigne);
 			while (rs.next())
 				etatDifference.setExLigne(Long.parseLong(rs.getObject(1).toString()));
-			final String selectionReseau = "select id from " + getDatabaseSchema() + ".ptnetwork where registrationnumber='"+reseau.getRegistrationNumber()+"';";
+			final String selectionReseau = "select id from " + getDatabaseSchema() 
+				+ ".ptnetwork where registrationnumber='"+reseau.getRegistrationNumber()+"';";
 			sqlStatement = connexion.createStatement();
 			rs = sqlStatement.executeQuery(selectionReseau);
 			while (rs.next()) 
 				etatDifference.setExReseau(Long.parseLong(rs.getObject(1).toString()));
-			final String selectionTransporteur = "select id from " + getDatabaseSchema() + ".company where registrationnumber='"+transporteur.getRegistrationNumber()+"';";
+			final String selectionTransporteur = "select id from " + getDatabaseSchema() 
+				+ ".company where registrationnumber='"+transporteur.getRegistrationNumber()+"';";
 			sqlStatement = connexion.createStatement();
 			rs = sqlStatement.executeQuery(selectionTransporteur);
 			while (rs.next()) 
@@ -214,7 +217,8 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 	
 	private void analyserTM(final ILectureEchange lectureEchange, final Connection connexion, final boolean incremental) throws SQLException {
 		final List<TableauMarche> tableauxMarche = lectureEchange.getTableauxMarche();
-		if (incremental) {
+		if (incremental) 
+		{
 			logger.debug("IMPORT INCREMENTAL DE LA LIGNE "+lectureEchange.getLigne().getNumber()+".");
 			if ((tableauxMarche == null) || (tableauxMarche.size() <= 0))
 				logger.warn("LA LIGNE "+lectureEchange.getLigne().getNumber()+" N'A PAS DE CALENDRIERS.");
@@ -225,7 +229,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionTableau);
 		final Map<String, Long> exTMIdParObjectId = new Hashtable<String, Long>();
-		while (rs.next()) {
+
+		while (rs.next()) 
+		{
 			final String objectId = rs.getObject(1).toString();
 			final Long id = Long.parseLong(rs.getObject(2).toString());
 			exTMIdParObjectId.put(objectId, id);
@@ -282,7 +288,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		String    selectionItineraires = "SELECT id from " + getDatabaseSchema() + ".route WHERE lineId='"+idLigne+"';";
 		Statement selectionItinerairesStatement = connexion.createStatement();
 		ResultSet selectionItinerairesResultSet = selectionItinerairesStatement.executeQuery(selectionItineraires);
-		while (selectionItinerairesResultSet.next()) {
+
+		while (selectionItinerairesResultSet.next()) 
+		{
 			if (selectionItinerairesResultSet.getObject(1) == null)
 				continue;
 			String idItineraireSt = selectionItinerairesResultSet.getObject(1).toString();
@@ -400,7 +408,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Set<Long> tmModifiees = new HashSet<Long>();
 		gestionSequence.setConnexion(connexion);
 		gestionSequence.initialiser();
-		for (Long tmId : oldTMIds) {
+
+		for (Long tmId : oldTMIds) 
+		{
 			Set<Date> tmDates = datesParTMIds.get(tmId);
 			Set<Date> diferenceDates = difference(tmDates, newDates);
 			// 3 CAS se présentent :
@@ -408,8 +418,11 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			// CAS 2 : diferenceDates == null                              : Décrocher
 			// CAS 3 : diferenceDates != null && diferenceDates != tmDates : Décrocher // Racrocher
 			if (equals(diferenceDates, tmDates))
+			{
+				//logger.debug("case 1 : diferenceDates == tmDates");
 				continue;
-			if ((coursesIdsParTMIds.get(tmId) == null) || (coursesIdsParTMIds.get(tmId).size() == 0))
+			}
+			if ((coursesIdsParTMIds.get(tmId) == null) || (coursesIdsParTMIds.get(tmId).size() == 0))				
 				continue;
 			coursesModifiees.addAll(coursesIdsParTMIds.get(tmId));
 			tmModifiees.add(tmId);
@@ -420,21 +433,35 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			int nombreDeCoursesDecrochees = decrochageStatement.executeUpdate(decrochage);
 			logger.debug("INCREMENTAL : NOMBRE DE COURSES DECROCHEES DE LA TM "+tmId.longValue()+" : "+nombreDeCoursesDecrochees+". La difference possede : "+diferenceDates.size()+" dates.");
 			if (diferenceDates.size() == 0)
+			{
+				//logger.debug("diferenceDates.size() == 0");
 				continue;
-			long newTmId = (long)0;
+			}
+			logger.debug("differenceDates" + diferenceDates);
+			logger.debug("tmDates" + tmDates);
+			long newTmId = 0l;
 			for (Long key : tousDatesParTMIds.keySet())
-				if (equals(diferenceDates, tousDatesParTMIds.get(key))) {
+
+			{
+				if (equals(diferenceDates, tousDatesParTMIds.get(key))) 
+				{
 					newTmId = key.longValue();
+					//logger.debug("set newTmId to TMkey");
 					break;
 				}
-			if (newTmId == 0 ) {
+			}
+			if (newTmId == 0) 
+			{
 				String tmSQL = "SELECT objectid, \"comment\" from " + getDatabaseSchema() + ".timetable WHERE id = '"+tmId+"';";
 				Statement tmStatement = connexion.createStatement();
 				ResultSet tmResultSet = tmStatement.executeQuery(tmSQL);
 				if (tmResultSet.next())
 					if (tmResultSet.getObject(1) != null) {
 						//
-						connexion.createStatement().execute("ALTER TABLE " + getDatabaseSchema() + ".timetable_date DISABLE TRIGGER ALL");
+						connexion.createStatement().execute(
+								"ALTER TABLE " + getDatabaseSchema() 
+								+ ".timetable_date DISABLE TRIGGER ALL");
+						
 						//
 						String tmObjectId = tmResultSet.getObject(1).toString();
 						tmObjectId.substring(0, tmObjectId.lastIndexOf(':')+1);
@@ -448,26 +475,34 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						Statement dateInsertStatement = connexion.createStatement();
 						position++;
 						Date last = ((TreeSet<Date>)diferenceDates).last();
-						Date date = new Date(first.getTime()+(long)24*(long)60*(long)60*(long)1000);
+
+						Date date = new Date(first.getTime()+ 24l*60l*60l*1000l);
+
 						Date ceilling = ((TreeSet<Date>)diferenceDates).ceiling(date);
 						String value = "1";
 						while ((ceilling != null) && (ceilling.compareTo(last) <= 0)) {
 							while (date.before(ceilling)) {
 								value += "0";
-								date = new Date(date.getTime()+(long)24*(long)60*(long)60*(long)1000);
+
+								date = new Date(date.getTime()+ 24l*60l*60l*1000l);
+
 							}
 							value += "1";
 							dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
 							dateInsertStatement = connexion.createStatement();
 							dateInsertStatement.executeUpdate(dateInsert);
-							position++;
-							date = new Date(date.getTime()+(long)24*(long)60*(long)60*(long)1000);
+
+							position++;							
+							date = new Date(date.getTime()+ 24l*60l*60l*1000l);
 							ceilling = ((TreeSet<Date>)diferenceDates).ceiling(date);
 						}
+
 						BigInteger bigInt = new BigInteger(value);
 						String firstDate = sdf1.format(first);
 						String lastDate = sdf1.format(last);
 						tmObjectId += firstDate + bigInt + lastDate;
+						//logger.debug("tmObjectId" + tmObjectId);
+
 						String comment = "FROM "+sdf3.format(first)+" TO "+sdf3.format(last) ;
 						String nowDate = sdf2.format(Calendar.getInstance().getTime());
 						String tmInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable(id, objectid, objectversion, creationtime, \"comment\") VALUES ('"+newTmId+"', '"+tmObjectId+"', '1', '"+nowDate+"', '"+comment+"');";
@@ -482,7 +517,10 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 				else
 					;// THIS CANNOT OCCUR
 			}
-			for (Long coId : coursesIdsParTMIds.get(tmId)) {
+
+			for (Long coId : coursesIdsParTMIds.get(tmId)) 
+			{
+
 				String idLien = ""+gestionSequence.getNouvelId("tmObjectId");
 				String lienInsert = "INSERT INTO " + getDatabaseSchema() + ".timetablevehiclejourney(id, timetableId, vehicleJourneyId) VALUES('"+idLien+"', '"+newTmId+"', '"+coId.longValue()+"');";
 				Statement lienInsertStatement = connexion.createStatement();
@@ -769,7 +807,9 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		Set<Long> tmModifiees = new HashSet<Long>();
 		gestionSequence.setConnexion(connexion);
 		gestionSequence.initialiser();
-		for (Long tmId : oldTMIds) {
+
+		for (Long tmId : oldTMIds) 
+		{
 			Set<Date> tmDates = datesParTMIds.get(tmId);
 			Set<Date> diferenceDates = difference(tmDates, newDates);
 			// 3 CAS se présentent :
@@ -788,7 +828,8 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			logger.debug("INCREMENTAL : NOMBRE DE COURSES DECROCHEES DE LA TM "+tmId.longValue()+" : "+nombreDeCoursesDecrochees+". La difference possede : "+diferenceDates.size()+" dates.");
 			if (diferenceDates.size() == 0)
 				continue;
-			long newTmId = (long)0;
+			
+			long newTmId = 0l;
 			for (Long key : tousDatesParTMIds.keySet())
 				if (equals(diferenceDates, tousDatesParTMIds.get(key))) {
 					newTmId = key.longValue();
@@ -813,20 +854,20 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 						dateInsertStatement.executeUpdate(dateInsert);
 						position++;
 						Date last = ((TreeSet<Date>)diferenceDates).last();
-						Date date = new Date(first.getTime()+(long)24*(long)60*(long)60*(long)1000);
+						Date date = new Date(first.getTime()+ 24l*60l*60l*1000l);
 						Date ceilling = ((TreeSet<Date>)diferenceDates).ceiling(date);
 						String value = "1";
 						while (ceilling.compareTo(last) <= 0) {
 							while (date.before(ceilling)) {
 								value += "0";
-								date = new Date(date.getTime()+(long)24*(long)60*(long)60*(long)1000);
+								date = new Date(date.getTime()+ 24l*60l*60l*1000l);
 							}
 							value += "1";
 							dateInsert = "INSERT INTO " + getDatabaseSchema() + ".timetable_date(timetableid, date, \"position\") VALUES ('"+newTmId+"', '"+sdf3.format(date)+"', '"+position+"');";
 							dateInsertStatement = connexion.createStatement();
 							dateInsertStatement.executeUpdate(dateInsert);
 							position++;
-							date = new Date(date.getTime()+(long)24*(long)60*(long)60*(long)1000);
+							date = new Date(date.getTime()+ 24l*60l*60l*1000l);
 							ceilling = ((TreeSet<Date>)diferenceDates).ceiling(date);
 						}
 						BigInteger bigInt = new BigInteger(value);
@@ -1009,14 +1050,18 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		return true;
 	}
 
-	private boolean isIn(Date date1, Set<Date> dates2) {
+
+	private boolean isIn(Date date1, Set<Date> dates2) 
+	{
 		for (Date date2 : dates2)
 			if (date1.compareTo(date2) == 0)
 				return true;
 		return false;
 	}
 
-	private Set<Date> difference(Set<Date> tmDates, Set<Date> newDates) {
+
+	private Set<Date> difference(Set<Date> tmDates, Set<Date> newDates) 
+	{
 		Set<Date> result = new HashSet<Date>();
 		for (Date date : tmDates) {
 			boolean isIn = true;
@@ -1031,7 +1076,8 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		return result;
 	}
 	
-	private Set<Date> getDates(List<TableauMarche> tableauxMarche) {
+	private Set<Date> getDates(List<TableauMarche> tableauxMarche) 
+	{
 		Set<Date> result = new HashSet<Date>();
 		for (TableauMarche tableauMarche : tableauxMarche)
 			result.addAll(getDates(tableauMarche));
@@ -1046,85 +1092,73 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		return result;
 	}
 
-	private Set<Date> getDates(Date debut, Date fin, int intDayTypes) {
+	private Set<Date> getDates(Date debut, Date fin, int intDayTypes) 
+	{
+
 		Set<Date> dates = new HashSet<Date>();
-		fin = new Date(fin.getTime()+(long)86400000);
-		for (Date date = debut; date.before(fin); ) {
+		fin = new Date(fin.getTime() + 86400000l);
+		for (Date date = debut; date.before(fin); ) 
+		{
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
-			switch (calendar.get(Calendar.DAY_OF_WEEK)) {
-			case Calendar.MONDAY:
-				int monday = (int)Math.pow(2, chouette.schema.types.DayTypeType.MONDAY.ordinal());
-				if ((intDayTypes & monday) == monday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
-			case Calendar.TUESDAY:
-				int tuesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.TUESDAY.ordinal());
-				if ((intDayTypes & tuesday) == tuesday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
-			case Calendar.WEDNESDAY:
-				int wednesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.WEDNESDAY.ordinal());
-				if ((intDayTypes & wednesday) == wednesday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
-			case Calendar.THURSDAY:
-				int thursday = (int)Math.pow(2, chouette.schema.types.DayTypeType.THURSDAY.ordinal());
-				if ((intDayTypes & thursday) == thursday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
-			case Calendar.FRIDAY:
-				int friday = (int)Math.pow(2, chouette.schema.types.DayTypeType.FRIDAY.ordinal());
-				if ((intDayTypes & friday) == friday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
-			case Calendar.SATURDAY:
-				int saturday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SATURDAY.ordinal());
-				if ((intDayTypes & saturday) == saturday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
-			case Calendar.SUNDAY:
-				int sunday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SUNDAY.ordinal());
-				if ((intDayTypes & sunday) == sunday)
-					dates.add(date);
-				//else 
-				//delete(date, dates);
-				break;
+			switch (calendar.get(Calendar.DAY_OF_WEEK)) 
+			{
+				case Calendar.MONDAY:
+					int monday = (int)Math.pow(2, chouette.schema.types.DayTypeType.MONDAY.ordinal());
+					//logger.debug("MONDAY ordinal : " + chouette.schema.types.DayTypeType.MONDAY.ordinal());
+					if ((intDayTypes & monday) == monday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
+				case Calendar.TUESDAY:
+					int tuesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.TUESDAY.ordinal());
+					if ((intDayTypes & tuesday) == tuesday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
+				case Calendar.WEDNESDAY:
+					int wednesday = (int)Math.pow(2, chouette.schema.types.DayTypeType.WEDNESDAY.ordinal());
+					if ((intDayTypes & wednesday) == wednesday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
+				case Calendar.THURSDAY:
+					int thursday = (int)Math.pow(2, chouette.schema.types.DayTypeType.THURSDAY.ordinal());
+					if ((intDayTypes & thursday) == thursday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
+				case Calendar.FRIDAY:
+					int friday = (int)Math.pow(2, chouette.schema.types.DayTypeType.FRIDAY.ordinal());
+					if ((intDayTypes & friday) == friday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
+				case Calendar.SATURDAY:
+					int saturday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SATURDAY.ordinal());
+					if ((intDayTypes & saturday) == saturday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
+				case Calendar.SUNDAY:
+					int sunday = (int)Math.pow(2, chouette.schema.types.DayTypeType.SUNDAY.ordinal());
+					if ((intDayTypes & sunday) == sunday)
+						dates.add(date);
+					//else 
+					//delete(date, dates);
+					break;
 			}
-			
-			date = new Date(date.getTime() + (24l * 60l * 60l * 1000l));
-			//CASTOREVO correction date = new Date(date.getTime()+(long)86400000); 
-			//ez : previously commented : ((long)24)*((long)60)*((long)60)*((long)1000));
+			date = new Date(date.getTime() + 86400000l); //((long)24)*((long)60)*((long)60)*((long)1000));
 		}
 		return dates;
 	}
 	
-	/*
-	private void delete(Date date, Set<Date> dates) {
-		Date aDate = null;
-		if (inclusif) {
-			for (Date d : dates)
-				if ((date.getTime() / (long)1000) == (d.getTime() / (long)1000)) {
-					aDate = d;
-					break;
-				}
-			if (aDate != null)
-				dates.remove(aDate);
-		}
-	}
-	*/
 	
 	private String getSQLList(Set<Long> ids) {		//
 		// EFFACER LES TM
@@ -1265,11 +1299,15 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			throw new SQLException(msg);
 	}
 
-	public void setDatabaseSchema(String databaseShema) {
+
+	public void setDatabaseSchema(String databaseShema) 
+	{
 		this.databaseSchema = databaseShema;
 	}
 
-	public String getDatabaseSchema() {
+
+	public String getDatabaseSchema() 
+	{
 		return databaseSchema;
 	}
 }
