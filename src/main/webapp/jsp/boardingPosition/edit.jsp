@@ -163,7 +163,6 @@
     </div>
   </div>
 </s:if>
->>>>>>> a901edee50a17f55125d90b6d615b2f7f49dfe96:src/main/webapp/jsp/boardingPosition/edit.jsp
 <script type="text/javascript"><!--
   // <![CDATA[
 
