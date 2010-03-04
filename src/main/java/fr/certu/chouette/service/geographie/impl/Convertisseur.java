@@ -39,9 +39,12 @@ public class Convertisseur implements IConvertisseur {
 				if ((x == null) || (x.trim().length() == 0))
 					continue;
 				if ((y == null) || (y.trim().length() == 0))
-					continue;
+					continue;				
 				String update = "UPDATE " + managerDataSource.getDatabaseSchema() + ".stoparea";
-				update += " SET longitude = x(transform(GeometryFromText('POINT("+x+" "+y+")', "+lambert2SRID+"), "+wgs84SRID+")), latitude = y(transform(GeometryFromText('POINT("+x+" "+y+")', 27561), 4326)) WHERE id='"+id+"';";
+				update += " SET longitude = x(transform(GeometryFromText('POINT(" + x + " " + y + ")', " 
+					+ lambert2SRID + "), " + wgs84SRID +")), " 
+					+ "latitude = y(transform(GeometryFromText('POINT("+x+" "+y+")', "
+					+ lambert2SRID + "), " + wgs84SRID + ")) " + "WHERE id='"+id+"';";			
 				Statement statement = connexion.createStatement();
 				statement.executeUpdate(update);
 			}
