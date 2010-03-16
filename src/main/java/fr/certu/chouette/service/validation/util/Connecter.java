@@ -499,17 +499,21 @@ class Connecter {
     		String[] vehicleJourneyIds = timetable.getVehicleJourneyIds();
     		if (vehicleJourneyIds == null)
     			return;
+    		boolean noVehicleJourney = true;
     		for (int j = 0; j < vehicleJourneyIds.length; j++) {
     			VehicleJourney vehicleJourney = vehicleJourneyById.get(vehicleJourneyIds[j]);
     			if (vehicleJourney == null) {
-    				params = new String[]{timetable.getObjectId(), vehicleJourneyIds[j]};
-    				LoggingManager.log(logger, "\"Timetable\" () : Il n'y a pas de \"VehicleJourney\" avec comme nom ().", params, Level.ERROR);
+    				//params = new String[]{timetable.getObjectId(), vehicleJourneyIds[j]};
+    				//LoggingManager.log(logger, "\"Timetable\" () : Il n'y a pas de \"VehicleJourney\" avec comme nom ().", params, Level.ERROR);
     				//validationException.add(TypeInvalidite.NULLVEHICLEJOURNEYID_TIMETABLE, "\"Timetable\" () : Il n'y a pas de \"VehicleJourney\" avec comme nom ().", params);
     				continue;
     			}
     			timetable.addVehicleJourney(vehicleJourney);
     			vehicleJourney.addTimetable(timetable);
+    			noVehicleJourney = false;
     		}
+    		if(noVehicleJourney)
+    			LoggingManager.log(logger, "\"Timetable\" () : Il n'y a pas de \"VehicleJourney\" dans ce TimeTable.", new String[]{timetable.getObjectId()}, Level.ERROR);
     	}
     	if (chouettePTNetwork.getChouetteLineDescription() != null)
     		for (int i = 0; i < chouettePTNetwork.getChouetteLineDescription().getVehicleJourneyCount(); i++)
