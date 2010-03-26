@@ -3,7 +3,7 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%-- Titre et barre de navigation --%>
 <title><s:text name="text.connectionlink.list.title" /></title>
-<s:url id="urlCorrespondances" action="list" namespace="/connectionlink" includeParams="none"/>
+<s:url id="urlCorrespondances" action="list" namespace="/connectionLink" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.connectionlink.list.title'), '', #urlCorrespondances)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
