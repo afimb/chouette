@@ -1,0 +1,47 @@
+                        CHOUETTE RELEASE NOTES
+                        ======================
+
+* Version 1.4.0.2
+    
+  Publiée en avril 2010, cette version de Chouette ajoute les
+  fonctionnalités suivantes :
+  - Montée de version des Frameworks : Struts 2.1.8.1, Hibernate 3.2.0.ga,
+    castor 1.3.1, spring 2.5.6
+  - Internationalisation : Français / Anglais
+  - Intégration de Neptune dans les Imports / Exports
+  - Migration de la base de données sur un schéma spécifique
+  - Gestion des accès concurrent
+
+* Version 1.3.1-42
+
+  Publiée en novembre 2009, cette version de Chouette ajoute les
+  fonctionnalités suivantes :
+  - Import / Export des horaires d'un itinéraire
+  - Filtre sur les courses par Calendriers d'application et / ou par Seuil
+    Heure de Départ
+  - Création des courses par translation horaire
+  - Filtre des calendriers par Réseau, Commentaire, Date de début et Date de fin
+  - Import / Export des Correspondances
+  - Import Multi-ligne XML Chouette
+  - Import Multi-ligne CSV
+  - Import et Import Incrémental HASTUS
+  - Import PEGASE et Import MIRAGE
+  - Export Multi-lignes XML Chouette : Par Réseau et par Transporteur
+  - Validation et contrôle :
+    + Validation des horaires, courses et calendriers d'application
+    + Décalage entre horaires de départs et horaires d'arrivées aux arrêts
+    + Calcul des coordonnées des Zones d'arrêts : barycentre de leurs arrêts
+    + Conversion des coordonnées : Lambert II vers WGS 84
+    + Purge des données avant une date donnée
+
+
+* Version 1.2-SNAPSHOT
+ 
+  Publié en janvier 2008 Chouette V 1.2-SNAPSHOT est la première version
+  publique de l'application.
+  Les fonctionnalités réalisées par cette version sont :
+  - Édition des lignes de transports (pages Réseaux, Transporteurs, lignes,
+    Itinéraires, Horaires, Calendriers d'application, Référentiel des arrêts,
+    Zones d'arrêts, Correspondances et ITL)
+  - Import aux formats XML Chouette, XML AMIVIF et CSV
+  - Export aux formats XML Chouette, XML AMIVIF et CSV
