@@ -31,6 +31,14 @@
       <destName>pom.xml</destName>
     </file>
     <file>
+      <source>LICENCE.txt</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+    <file>
+      <source>ReleaseNotes.txt</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+    <file>
       <source>src/main/filters/filterCERTU.properties</source>
       <outputDirectory>/src/main/filters/</outputDirectory>
     </file>
