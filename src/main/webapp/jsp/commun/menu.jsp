@@ -48,6 +48,10 @@
 			<s:url id="urlImportMenu" action="execute" namespace="/upload" includeParams="none"/>
 			<li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>
 
+			<%-- Export Massif --%>	
+			<s:url id="urlMassiveExportMenu" action="execute" namespace="/massiveExport" includeParams="none"/>
+			<li><s:a href="%{urlMassiveExportMenu}" id="massiveExportMenu"><s:text name="text.exportMassif"/></s:a></li>
+
 			<%-- Validation --%>	
 			<s:url id="urlValidationMenu" action="Validation_execute" namespace="/" includeParams="none"/>
 			<li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>

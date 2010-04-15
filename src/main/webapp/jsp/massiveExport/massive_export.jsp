@@ -1,0 +1,64 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<s:include value="/jsp/commun/jscalendar.jsp"></s:include>
+<%-- Titre et barre de navigation --%>	
+<title><s:text name="massiveExport.index.title" /></title>
+<s:url id="urlMassiveExport" action="execute" namespace="/massiveExport" includeParams="none"/>
+<s:property value="filAriane.addElementFilAriane(getText('massiveExport.index.title'), '', #urlMassiveExport)"/>
+<div class="panelData">
+	<s:property value="filAriane.texteFilAriane" escape="false"/>
+</div>
+<br>
+<%-- Import de différents fichiers --%>
+<div>
+	 <FIELDSET align="center" style="width: 500px;"> 
+	  	<LEGEND><b><s:text name="fieldset.legend.massiveExport.network"/></b></LEGEND> 
+		<s:form id="networkMassiveExportForm" action="exportNetwork" namespace="/massiveExport" enctype="multipart/form-data" method="POST">
+		      <s:select	name="networkId"
+              		label="%{getText('field.select.massiveExport.network')}"
+              		list="test"
+              		listKey="id"
+              		listValue="name"  />
+              
+              <s:textfield name="startDate"
+		      		label="%{getText('field.textfield.massiveExport.startDate')}"
+		      		id="startDate"
+		      		maxlength="10"/>
+		      <script type="text/javascript">
+		        <!--//
+		        Calendar.setup({
+		          singleClick : true,
+		          firstDay : 1,
+		          inputField : "startDate",	// ID of the input field
+		          ifFormat : "%d/%m/%Y"	// the date format
+		        }
+		      );
+		        //-->
+		      </script>
+		      
+		      <s:textfield name="endDate"
+		      		label="%{getText('field.textfield.massiveExport.endDate')}"
+		      		id="endDate"
+		      		maxlength="10"/>
+		      <script type="text/javascript">
+		        <!--//
+		        Calendar.setup({
+		          singleClick : true,
+		          firstDay : 1,
+		          inputField : "endDate",	// ID of the input field
+		          ifFormat : "%d/%m/%Y"	// the date format
+		        }
+		      );
+		        //-->
+		      </script>
+		      <s:checkbox name="excludeConnectionLinks"
+		      		 label="%{getText('field.checkbox.massiveExport.excludeConnectionLinks')}"/>
+		      <s:submit value="%{getText('submit.massiveExport.network')}" formId="networkMassiveExportForm"/>    
+		</s:form>
+	 </FIELDSET> 
+	 <br><br>
+	 <ul>
+	 <s:iterator value="exportFiles">
+       <li><s:property/></li>
+     </s:iterator>
+	 </ul>
+</div>	

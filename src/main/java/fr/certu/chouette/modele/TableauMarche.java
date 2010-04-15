@@ -2,7 +2,7 @@ package fr.certu.chouette.modele;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -271,4 +271,46 @@ public class TableauMarche extends BaseObjet
 		timetable.setVersion(version);
 	}
 
+	public boolean isTimetableInPeriod(java.util.Date startDate, java.util.Date endDate){
+		if(startDate == null && endDate == null){
+			return true;
+		}
+		
+		java.util.Date startOfTimetable = null;
+		java.util.Date endOfTimetable = null;
+		
+		for( java.util.Date date : this.dates){
+			if(startOfTimetable == null || date.before(startOfTimetable)){
+				startOfTimetable = date;
+			}
+			else if(endOfTimetable == null || date.after(endOfTimetable)){
+				endOfTimetable = date;
+			}
+		}
+		
+		for(Periode period  : this.periodes){
+			if(startOfTimetable == null || period.getDebut().before(startOfTimetable)){
+				startOfTimetable = period.getDebut();
+			}
+			if(endOfTimetable == null || period.getFin().after(endOfTimetable)){
+				endOfTimetable = period.getFin();
+			}
+		}
+		
+		if(startOfTimetable == null || endOfTimetable == null){
+			return false;
+		}
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startOfTimetable);
+		cal.add(Calendar.DATE, -1);
+		startOfTimetable = cal.getTime();
+		
+		cal.setTime(endOfTimetable);
+		cal.add(Calendar.DATE, 1);
+		endOfTimetable = cal.getTime();
+			
+		return (startDate == null || (startDate.before(endOfTimetable)))
+				&& (endDate == null || (endDate.after(startOfTimetable)));
+	}
 }

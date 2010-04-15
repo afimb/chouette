@@ -447,6 +447,14 @@
     <property name="missionManager" ref="missionManager"/>
     <property name="itlManager" ref="itlManager"/>
   </bean>
+  
+  <bean id="massiveExportManager" class="fr.certu.chouette.service.exportateur.impl.MassiveExportManager">
+	<property name="networkManager" ref="reseauManager"/>
+	<property name="exportManager" ref="exportManager"/>
+    <property name="xmlFileReader" ref="lecteurFichierXML"/>
+    <property name="notificationEmailAddress" value="${massiveExport.notification.email}"/>
+    <property name="notificationSmtpServer" value="${massiveExport.notification.smtp}"/>
+  </bean>
     
   <bean id="exportHorairesManager"
     		class="fr.certu.chouette.service.exportateur.monoitineraire.csv.impl.ExportHorairesManager">
@@ -665,6 +673,13 @@
     <property name="transporteurManager" ref="transporteurManager"/>
     <property name="reseauManager" ref="reseauManager"/>
     <property name="lecteurCSV" ref="lecteurCSV"/>
+  </bean>
+
+  <bean id="MassiveExportActionBean" scope="prototype"
+    parent="GeneriqueAction"
+	class="fr.certu.chouette.struts.massiveExport.MassiveExportAction">
+	<property name="networkManager" ref="reseauManager"/>
+	<property name="massiveExportManager" ref="massiveExportManager"/>
   </bean>
         
   <bean id="Deconnexion" scope="prototype"

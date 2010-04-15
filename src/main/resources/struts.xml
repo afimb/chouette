@@ -540,6 +540,15 @@
       </result>
     </action>
   </package>
+
+	<!-- Import des données -->
+  <package name="massiveExport" extends="struts" namespace="/massiveExport">
+    <action name="*" class="MassiveExportActionBean" method="{1}">
+      <result name="success">/jsp/massiveExport/massive_export.jsp</result>
+      <result name="input">/jsp/massiveExport/massive_export.jsp</result>
+    </action>
+  </package>
+
 		
 	<!-- Service de comparaison de lignes au format Amivif -->	
   <package name="lineFilesComparisonService" extends="struts" namespace="/lineFilesComparisonService">
