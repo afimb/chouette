@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
-<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Christophe Duquesne (DRYADE SARL) -->
-<!--
-@@LICENCE@@
--->
 <!-- ==========================================================================	-->
-<!--  																			-->
-<!-- Societe DRYADE																-->
-<!--  																			-->
-<!-- projet chouette : Schema XSD												-->
-<!--  																			-->
-<!-- build.xml : Description XML du profil Chouette 							-->
-<!--  																			-->
-<!-- Version : $Revision: 1.6 $												    -->
-<!--  																			-->
-<!-- Historique des modifications :												-->
-<!-- Date      | Auteur         | Libelle										-->
-<!-- ==========================================================================	-->
-<!-- 01/10/2004|Marc FLORISSON  | Creation										-->
+<!--  															-->
+<!-- CERTU														-->
+<!--  															-->
+<!-- projet chouette : Schema XSD										-->
+<!--  															-->
+<!-- chouette.xsd : Description XML du profil NEPTUNE 						-->
+<!--  															-->
+<!-- Version : $Revision: 1.7 $										-->
+<!--  															-->
 <!-- ==========================================================================	-->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 	xmlns="http://www.trident.org/schema/trident" 
