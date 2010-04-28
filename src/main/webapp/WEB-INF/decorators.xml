@@ -6,6 +6,7 @@
         <pattern>/debug.jsp</pattern>
         <pattern>/css/*</pattern>
         <pattern>/js/*</pattern>
+        <pattern>/jsp/Login/*</pattern>
         <pattern>/images/*</pattern>
         <pattern>/dojo/*</pattern>
         <pattern>/struts/*</pattern>
@@ -16,7 +17,6 @@
         <pattern>/chat/ajax/*</pattern>
         <pattern>/hangman/ajax/*</pattern>
         <pattern>/nodecorate/*</pattern>
-        <pattern>/jsp/Login/*</pattern>
     </excludes>
 
     <decorator name="main" page="main.jsp" >
