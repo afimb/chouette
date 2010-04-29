@@ -175,11 +175,11 @@
 
 		<!-- Resultats "reutilisables" -->
     <global-results>
-    	<result name="busy-session" type="redirect">
-    		<param name="location">/</param>
-    		<param name="busySession">true</param>
-    	</result>
-      	<result name="error">/jsp/error.jsp</result>
+      <result name="busy-session" type="redirect">
+        <param name="location">/</param>
+        <param name="busySession">true</param>
+      </result>
+      <result name="error">/jsp/error.jsp</result>
     </global-results>
 
 	<!-- Traitement des erreurs -->
@@ -220,6 +220,15 @@
       <interceptor-ref name="store">
         <param name="operationMode">STORE</param>
       </interceptor-ref>
+    </action>
+
+    <action name="downloadFile" class="DownloadFileAction" method="downloadFile">
+      <result name="success" type="stream">
+        <param name="contentType">application/download</param>
+        <param name="inputName">inputStream</param>
+        <param name="bufferSize">1024</param>
+        <param name="contentDisposition">attachment;filename=${fileName}</param>
+      </result>
     </action>
   </package>
 
@@ -565,4 +574,5 @@
       </result>
     </action>
   </package>
+
 </struts>

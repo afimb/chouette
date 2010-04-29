@@ -47,9 +47,9 @@ public class MassiveExportAction extends GeneriqueAction implements Preparable {
 		return SUCCESS;
 	}
 	
-	public List<String> getExportFiles(){
+	public List<File> getExportFiles(){
 		File exportDir = new File(MassiveExportManager.EXPORT_DIR);
-		return Arrays.asList(exportDir.list());
+		return Arrays.asList(exportDir.listFiles());
 	}
 
 
