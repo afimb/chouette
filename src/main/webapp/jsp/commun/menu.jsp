@@ -49,7 +49,7 @@
 			<li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>
 
 			<%-- Export Massif --%>	
-			<s:url id="urlMassiveExportMenu" action="execute" namespace="/massiveExport" includeParams="none"/>
+			<s:url id="urlMassiveExportMenu" action="list" namespace="/massiveExport" includeParams="none"/>
 			<li><s:a href="%{urlMassiveExportMenu}" id="massiveExportMenu"><s:text name="text.exportMassif"/></s:a></li>
 
 			<%-- Validation --%>	

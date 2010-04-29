@@ -1,7 +1,6 @@
 package fr.certu.chouette.struts.massiveExport;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -18,76 +17,101 @@ import fr.certu.chouette.service.exportateur.IMassiveExportManager;
 import fr.certu.chouette.service.exportateur.impl.MassiveExportManager;
 import fr.certu.chouette.struts.GeneriqueAction;
 
-public class MassiveExportAction extends GeneriqueAction implements Preparable {
+public class MassiveExportAction extends GeneriqueAction implements Preparable
+{
 
-	private static final long serialVersionUID = 1200152356288194220L;
+  private static final long serialVersionUID = 1200152356288194220L;
+  private static final Log log = LogFactory.getLog(MassiveExportAction.class);
+  private long networkId;
+  private Date startDate;
+  private Date endDate;
+  private boolean excludeConnectionLinks = false;
+  private IReseauManager networkManager;
+  private IMassiveExportManager massiveExportManager;
+  private List<Reseau> networks;
 
-	private static final Log log = LogFactory.getLog(MassiveExportAction.class);
+  public void prepare()
+  {
+    log.debug("Prepare massive export");
 
-	private long networkId;
-	private Date startDate;
-	private Date endDate;
-	private boolean excludeConnectionLinks = false;
-
-	private IReseauManager networkManager;
-	private IMassiveExportManager massiveExportManager;
-
-	private List<Reseau> networks;
-
-	public void prepare() {
-		log.debug("Prepare massive export");
-
-		this.networks = new ArrayList<Reseau>(networkManager.lire());
-	}
-
-	public String exportNetwork() throws Exception {
-		log.debug("exportNetwork");
-		this.massiveExportManager.exportNetworkInBackground(networkId, startDate, endDate, excludeConnectionLinks);
-	    addActionMessage(getText("message.massiveExport.network",new String[]{this.massiveExportManager.getNotificationEmailAddress()}));
-		return SUCCESS;
-	}
-	
-	public List<File> getExportFiles(){
-		File exportDir = new File(MassiveExportManager.EXPORT_DIR);
-		return Arrays.asList(exportDir.listFiles());
-	}
+    this.networks = new ArrayList<Reseau>(networkManager.lire());
+  }
 
 
+  public String list()
+  {
+    return LIST;
+  }
 
-	public void setNetworks(List<Reseau> networks) {
-		this.networks = networks;
-	}
+  public String exportNetwork() throws Exception
+  {
+    log.debug("exportNetwork");
+    this.massiveExportManager.exportNetworkInBackground(networkId, startDate, endDate, excludeConnectionLinks);
+    addActionMessage(getText("message.massiveExport.network", new String[]
+            {
+              this.massiveExportManager.getNotificationEmailAddress()
+            }));
+    return EXPORT;
+  }
 
-	public List<Reseau> getTest() {
-		return this.networks;
-	}
+  public List<File> getExportFiles()
+  {
+    File exportDir = new File(MassiveExportManager.EXPORT_DIR);
+    return Arrays.asList(exportDir.listFiles());
+  }
 
-	public void setNetworkManager(IReseauManager networkManager) {
-		this.networkManager = networkManager;
-	}
+  public void setNetworks(List<Reseau> networks)
+  {
+    this.networks = networks;
+  }
 
-	public void setMassiveExportManager(IMassiveExportManager massiveExportManager) {
-		this.massiveExportManager = massiveExportManager;
-	}
+  public List<Reseau> getTest()
+  {
+    return this.networks;
+  }
 
-	public void setNetworkId(long networkId) {
-		this.networkId = networkId;
-	}
+  public void setNetworkManager(IReseauManager networkManager)
+  {
+    this.networkManager = networkManager;
+  }
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
+  public void setMassiveExportManager(IMassiveExportManager massiveExportManager)
+  {
+    this.massiveExportManager = massiveExportManager;
+  }
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
+  public void setNetworkId(long networkId)
+  {
+    this.networkId = networkId;
+  }
 
-	public void setExcludeConnectionLinks(boolean excludeConnectionLinks) {
-		this.excludeConnectionLinks = excludeConnectionLinks;
-	}
+  public void setStartDate(Date startDate)
+  {
+    this.startDate = startDate;
+  }
 
-	public boolean isExcludeConnectionLinks() {
-		return excludeConnectionLinks;
-	}
+  public Date getStartDate()
+  {
+    return startDate;
+  }
 
+  public void setEndDate(Date endDate)
+  {
+    this.endDate = endDate;
+  }
+
+  public Date getEndDate()
+  {
+    return endDate;
+  }
+
+  public void setExcludeConnectionLinks(boolean excludeConnectionLinks)
+  {
+    this.excludeConnectionLinks = excludeConnectionLinks;
+  }
+
+  public boolean isExcludeConnectionLinks()
+  {
+    return excludeConnectionLinks;
+  }
 }

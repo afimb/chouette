@@ -14,13 +14,11 @@
     <LEGEND><b><s:text name="fieldset.legend.massiveExport.network"/></b></LEGEND>
     <s:form id="networkMassiveExportForm" action="exportNetwork" namespace="/massiveExport" enctype="multipart/form-data" method="POST">
       <s:select	name="networkId"
-                label="%{getText('field.select.massiveExport.network')}"
                 list="test"
                 listKey="id"
                 listValue="name"  />
 
-      <s:textfield name="startDate"
-                   label="%{getText('field.textfield.massiveExport.startDate')}"
+      <s:textfield key="startDate"
                    id="startDate"
                    maxlength="10"/>
       <script type="text/javascript">
@@ -35,8 +33,7 @@
         //-->
       </script>
 
-      <s:textfield name="endDate"
-                   label="%{getText('field.textfield.massiveExport.endDate')}"
+      <s:textfield key="endDate"
                    id="endDate"
                    maxlength="10"/>
       <script type="text/javascript">
