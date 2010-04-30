@@ -9,5 +9,7 @@ public interface IMassiveExportManager
 	void exportNetworkInBackground(long networkId, Date startDate, Date endDate, boolean excludeConnectionLinks);
 	
 	public String getNotificationEmailAddress();
+
+  boolean isPending();
 	
 }

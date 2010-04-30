@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.Timetable;
 import fr.certu.chouette.modele.Ligne;
+import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.database.IReseauManager;
@@ -38,6 +39,7 @@ import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.validation.util.MainSchemaProducer;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import java.util.Collection;
 
 public class MassiveExportManager implements IMassiveExportManager {
 
@@ -46,6 +48,7 @@ public class MassiveExportManager implements IMassiveExportManager {
 	private ILecteurFichierXML xmlFileReader;
     private String notificationEmailAddress;
     private String notificationSmtpServer;
+    private boolean pending = false;
 
 	
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM--HH-mm");
@@ -60,11 +63,19 @@ public class MassiveExportManager implements IMassiveExportManager {
 	
 	private static final Logger logger = Logger
 			.getLogger(MassiveExportManager.class);
-	
+
+  private void setPending(boolean pending) {
+    this.pending = pending;
+  }
+
+  public boolean isPending() {
+    return pending;
+  }
+
 	@Override
 	public void exportNetwork(long networkId, Date startDate, Date endDate,
 			boolean excludeConnectionLinks) {
-		File zipFile = new File(EXPORT_DIR+"Network_" + networkId + ".zip");
+		File zipFile = new File(EXPORT_DIR+zipFileName(networkId));
 
 		List<Long> lineIds = getNetworkLineIds(networkId);
 
@@ -76,18 +87,24 @@ public class MassiveExportManager implements IMassiveExportManager {
 		}
 	}
 
-	@Override
-	public void exportNetworkInBackground(long networkId, Date startDate,
-			Date endDate, boolean excludeConnectionLinks) {
-		String zipFileName = "Network_" + networkId + "_"+ getFormattedDate() +".zip";
-		List<Long> lineIds = getNetworkLineIds(networkId);
-		Thread t = new Thread(new RunnableExport(zipFileName, lineIds,
-				startDate, endDate, excludeConnectionLinks));
-		t.start();
-	}
+  private String zipFileName(long networkId) {
+    Collection<Long> networkIds = new ArrayList<Long>(1);
+    networkIds.add( networkId);
+    Reseau reseau = networkManager.getReseaux(networkIds).get(0);
+    return "Network_" + reseau.getRegistrationNumber() + "_"+ getFormattedDate() +".zip";
+  }
 
 	private String getFormattedDate() {
 		return dateFormat.format(Calendar.getInstance().getTime());
+	}
+
+	@Override
+	public void exportNetworkInBackground(long networkId, Date startDate,
+			Date endDate, boolean excludeConnectionLinks) {
+		List<Long> lineIds = getNetworkLineIds(networkId);
+		Thread t = new Thread(new RunnableExport(zipFileName(networkId), lineIds,
+				startDate, endDate, excludeConnectionLinks));
+		t.start();
 	}
 
 	public void exportLines(File zipFile, List<Long> lineIds, Date startDate,
@@ -264,6 +281,7 @@ public class MassiveExportManager implements IMassiveExportManager {
 		}
 
 		public void exportLines() {
+      setPending( true);
 			ZipOutputStream zipOutputStream = null;
 			MassiveExportReport report = new MassiveExportReport(startDate,
 					endDate, excludeConnectionLinks);
@@ -289,18 +307,20 @@ public class MassiveExportManager implements IMassiveExportManager {
 				}
 				sendSuccessMail();
 			} catch (Exception e) {
-				logger.error(e.getStackTrace());
+				logger.error(e.getMessage(),e);
 				sendFailureMail();
 			} finally {
 				try {
+          setPending( false);
 					writeInZipStream(zipOutputStream, report.toString(), "report.txt");
 					zipOutputStream.close();
 					logger.info("massive export in background ended !");
 				} catch (IOException e) {
-					logger.error(e.getStackTrace());
+				logger.error(e.getMessage(),e);
 				}
 			}
 		}
+
 
 		public void sendSuccessMail() {
 			String subject = messages.getString("notification.email.subject.success");
@@ -308,7 +328,7 @@ public class MassiveExportManager implements IMassiveExportManager {
 			try {
 				sendMail(subject, content);
 			} catch (Exception e) {
-				logger.error(e.getStackTrace());
+				logger.error(e.getMessage(),e);
 			}
 		}
 
@@ -318,7 +338,7 @@ public class MassiveExportManager implements IMassiveExportManager {
 			try {
 				sendMail(subject, content);
 			} catch (Exception e) {
-				logger.error(e.getStackTrace());
+				logger.error(e.getMessage(),e);
 			}
 		}
 		
