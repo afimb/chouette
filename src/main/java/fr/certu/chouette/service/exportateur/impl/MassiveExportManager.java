@@ -40,6 +40,7 @@ import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.validation.util.MainSchemaProducer;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
 import java.util.Collection;
+import org.apache.commons.io.FileUtils;
 
 public class MassiveExportManager implements IMassiveExportManager {
 
@@ -54,8 +55,9 @@ public class MassiveExportManager implements IMassiveExportManager {
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM--HH-mm");
 	private static final String NOTIFICATION_EMAIL_FROM = "noreply@chouette.mobi";
 	public static final String EXPORT_DIR = "exports/";
+	public static final String EXPORT_TMP_DIR = EXPORT_DIR + "tmp/";
 	static{
-		new File(EXPORT_DIR).mkdirs();
+		new File(EXPORT_TMP_DIR).mkdirs();
 	}
 
 
@@ -263,7 +265,7 @@ public class MassiveExportManager implements IMassiveExportManager {
 
 		public RunnableExport(String zipFileName, List<Long> lineIds,
 				Date startDate, Date endDate, boolean excludeConnectionLinks) {
-			this.zipFile = new File(EXPORT_DIR+zipFileName);
+			this.zipFile = new File(EXPORT_TMP_DIR+zipFileName);
 			this.lineIds = lineIds;
 			this.startDate = startDate;
 			this.endDate = endDate;
@@ -300,19 +302,26 @@ public class MassiveExportManager implements IMassiveExportManager {
 									+ ((System.currentTimeMillis() - timeCounter) / 1000)
 									+ "s");
 				}
+        writeInZipStream(zipOutputStream, report.toString(), "report.txt");
+        zipOutputStream.close();
+
+        // deplacement du fichier
+        FileUtils.copyFileToDirectory(zipFile, new File(EXPORT_DIR));
+        zipFile.delete();
+
 				sendSuccessMail();
 			} catch (Exception e) {
 				logger.error(e.getMessage(),e);
+        try {
+          zipOutputStream.close();
+        } catch( Exception ex) {
+          logger.error(ex.getMessage(),ex);
+        }
 				sendFailureMail();
 			} finally {
-				try {
-          setPending( false);
-					writeInZipStream(zipOutputStream, report.toString(), "report.txt");
-					zipOutputStream.close();
-					logger.info("massive export in background ended !");
-				} catch (IOException e) {
-				logger.error(e.getMessage(),e);
-				}
+        setPending( false);
+
+        logger.info("massive export in background ended !");
 			}
 		}
 
