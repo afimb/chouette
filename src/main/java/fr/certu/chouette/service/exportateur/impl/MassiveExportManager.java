@@ -75,23 +75,18 @@ public class MassiveExportManager implements IMassiveExportManager {
 	@Override
 	public void exportNetwork(long networkId, Date startDate, Date endDate,
 			boolean excludeConnectionLinks) {
-		File zipFile = new File(EXPORT_DIR+zipFileName(networkId));
-
 		List<Long> lineIds = getNetworkLineIds(networkId);
 
-		try {
-			exportLines(zipFile, lineIds, startDate, endDate,
-					excludeConnectionLinks);
-		} catch (IOException e) {
-			logger.error(e);
-		}
+		RunnableExport runnable = new RunnableExport(zipFileName(networkId), lineIds,
+				startDate, endDate, excludeConnectionLinks);
+    runnable.exportLines();
 	}
 
   private String zipFileName(long networkId) {
     Collection<Long> networkIds = new ArrayList<Long>(1);
     networkIds.add( networkId);
     Reseau reseau = networkManager.getReseaux(networkIds).get(0);
-    return "Network_" + reseau.getRegistrationNumber() + "_"+ getFormattedDate() +".zip";
+    return "Network_" + reseau.getRegistrationNumber().replace(' ', '_') + "_"+ getFormattedDate() +".zip";
   }
 
 	private String getFormattedDate() {
