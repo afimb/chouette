@@ -556,7 +556,6 @@
       <result name="list">/jsp/massiveExport/massive_export.jsp</result>
       <result name="export" type="redirectAction">
         <param name="actionName">list</param>
-        <param name="namespace">/massiveExport</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
       <result name="input">/jsp/massiveExport/massive_export.jsp</result>

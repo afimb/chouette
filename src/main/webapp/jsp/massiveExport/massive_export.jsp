@@ -2,7 +2,7 @@
 <s:include value="/jsp/commun/jscalendar.jsp"></s:include>
 <%-- Titre et barre de navigation --%>	
 <title><s:text name="massiveExport.index.title" /></title>
-<s:url id="urlMassiveExport" action="execute" namespace="/massiveExport" includeParams="none"/>
+<s:url id="urlMassiveExport" action="list" namespace="/massiveExport" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('massiveExport.index.title'), '', #urlMassiveExport)"/>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
@@ -13,6 +13,7 @@
   <FIELDSET align="center" style="width: 500px;">
     <LEGEND><b><s:text name="fieldset.legend.massiveExport.network"/></b></LEGEND>
     <s:form id="networkMassiveExportForm" action="exportNetwork" namespace="/massiveExport" enctype="multipart/form-data" method="POST">
+      <s:hidden name="operationMode" value="STORE" />
       <s:select	name="networkId"
                 list="test"
                 listKey="id"
