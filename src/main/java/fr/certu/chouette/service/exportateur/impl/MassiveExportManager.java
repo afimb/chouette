@@ -52,7 +52,7 @@ public class MassiveExportManager implements IMassiveExportManager {
     private boolean pending = false;
 
 	
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM--HH-mm");
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd--HH-mm");
 	private static final String NOTIFICATION_EMAIL_FROM = "noreply@chouette.mobi";
 	public static final String EXPORT_DIR = "exports/";
 	public static final String EXPORT_TMP_DIR = EXPORT_DIR + "tmp/";
