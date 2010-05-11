@@ -680,6 +680,7 @@
 	class="fr.certu.chouette.struts.massiveExport.MassiveExportAction">
 	<property name="networkManager" ref="reseauManager"/>
 	<property name="massiveExportManager" ref="massiveExportManager"/>
+	<property name="excludeConnectionLinks" value="${massiveExport.ihm.excludeConnectionLinks}"/>
   </bean>
         
   <bean id="Deconnexion" scope="prototype"
