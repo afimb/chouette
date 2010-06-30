@@ -16,6 +16,11 @@
       <message key="errors.maxlength"/>
     </field-validator>
   </field>
-
+  <field name="purgeBoundaryDate">
+    <field-validator type="regex">
+      <param name="expression">^([0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9])$</param>
+      <message key="errors.date.format"/>
+    </field-validator>
+  </field>
 </validators> 
 	

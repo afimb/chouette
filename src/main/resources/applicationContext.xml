@@ -236,6 +236,11 @@
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="databaseSchema" value="${database.schema}"/>
   </bean>
+  
+  <bean id="purge" class="fr.certu.chouette.dao.jdbc.Purge">
+  	<property name="sessionFactory" ref="sessionFactory"/>
+  	<property name="databaseSchema" value="${database.schema}"/>
+  </bean>
 
     <!-- Services de lecture du format XML -->
 
@@ -484,6 +489,10 @@
     		class="fr.certu.chouette.service.xml.LecteurFichierXML">
   </bean>
   
+  <bean id="databasePurgeManager" class="fr.certu.chouette.service.database.impl.DatabasePurgeManager">
+      <property name="purge" ref="purge"/>
+  </bean>
+  
   <!-- Modules struts -->
   <bean id="actionLock" class="fr.certu.chouette.service.actionLock.ActionLock"
   		scope="singleton">
@@ -656,6 +665,7 @@
     parent="GeneriqueAction"
 	class="fr.certu.chouette.struts.ValidationAction">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
+    <property name="databasePurgeManager" ref="databasePurgeManager"/>
     <property name="useGeometry" value="${validation.tm.geometry}"/>
     <property name="inclusif" value="${validation.tm.inclusif}"/>
   </bean>
