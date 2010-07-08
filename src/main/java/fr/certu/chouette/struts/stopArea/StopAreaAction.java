@@ -191,9 +191,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
         reseauParIdLigne.put(ligne.getId(), reseau);
       }
     }
-
-    //	Mise en requete de la liste des AreaStops
-    request.put("jsonPositionGeographiques", getJsonPositionGeographiques());
   }
 
   /********************************************************
@@ -234,8 +231,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
     List<PositionGeographique> positionGeographiques = positionGeographiqueManager.lire(nomArret, codeInsee, idReseau, areaTypes);
     request.put("positionGeographiques", positionGeographiques);
-    // TODO : DELETE
-    //request.put("jsonArrets", getJsonArrets());
     log.debug("List of stopArea");
     return LIST;
   }
@@ -724,121 +719,5 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   public void setBoardingPositionName(String boardingPositionName)
   {
     this.boardingPositionName = boardingPositionName;
-  }
-
-  /********************************************************
-   *              JSON AUTOCOMPLETE                       *
-   ********************************************************/
-  private String getJsonPositionGeographiques()
-  {
-    String resultat = "{";
-    List<PositionGeographique> positionGeographiques;
-
-    if (model.getAreaType().equals(ChouetteAreaType.BOARDINGPOSITION) || model.getAreaType().equals(ChouetteAreaType.QUAY))
-    {
-      positionGeographiques = positionGeographiqueManager.lireArretsPhysiques();
-    } else
-    {
-      positionGeographiques = positionGeographiqueManager.lireZones();
-    }
-
-    for (PositionGeographique positionGeographique : positionGeographiques)
-    {
-      if (positionGeographiques.indexOf(positionGeographique) == positionGeographiques.size() - 1)
-      {
-        resultat += "\"" + positionGeographique.getName() + "\"" + ": " + positionGeographique.getId();
-      } else
-      {
-        resultat += "\"" + positionGeographique.getName() + "\"" + ": " + positionGeographique.getId() + ",";
-      }
-    }
-    resultat += "}";
-    //log.debug("resultat : " + resultat);
-    return resultat;
-  }
-
-  public String getJsonArrets()
-  {
-    StringBuffer resultat = new StringBuffer("{");
-    PositionGeographique dernier = null;
-    List<PositionGeographique> arretsPhysiques = positionGeographiqueManager.lireArretsPhysiques();
-
-    if (arretsPhysiques.size() > 0)
-    {
-      dernier = arretsPhysiques.remove(arretsPhysiques.size() - 1);
-    }
-
-    for (PositionGeographique arretPhysique : arretsPhysiques)
-    {
-      resultat.append("\"");
-      if (arretPhysique.getName() != null)
-      {
-        resultat.append(arretPhysique.getName());
-      }
-      resultat.append("(");
-      if (arretPhysique.getCountryCode() != null)
-      {
-        resultat.append(arretPhysique.getCountryCode());
-      }
-
-      if (arretPhysique.getStreetName() != null)
-      {
-        if (arretPhysique.getCountryCode() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(arretPhysique.getStreetName());
-      }
-
-      if (arretPhysique.getObjectId() != null)
-      {
-        if (arretPhysique.getCountryCode() != null || arretPhysique.getStreetName() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(arretPhysique.getObjectId());
-      }
-
-      resultat.append(")\": ");
-      resultat.append(arretPhysique.getId());
-      resultat.append(",");
-    }
-    if (dernier != null)
-    {
-      resultat.append("\"");
-      if (dernier.getName() != null)
-      {
-        resultat.append(dernier.getName());
-      }
-      resultat.append("(");
-      if (dernier.getCountryCode() != null)
-      {
-        resultat.append(dernier.getCountryCode());
-      }
-
-      if (dernier.getStreetName() != null)
-      {
-        if (dernier.getCountryCode() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(dernier.getStreetName());
-      }
-
-      if (dernier.getObjectId() != null)
-      {
-        if (dernier.getCountryCode() != null || dernier.getStreetName() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(dernier.getObjectId());
-      }
-
-      resultat.append(")\": ");
-      resultat.append(dernier.getId());
-    }
-    resultat.append("}");
-
-    return resultat.toString();
   }
 }

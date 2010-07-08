@@ -24,7 +24,7 @@
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
     <s:hidden name="idPositionGeographique" value="%{id}" />
-    <s:hidden name="operationMode" value="STORE" />
+    <s:hidden name="operationMode" value="%{'STORE'}" />
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
     <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 300px;"/>
@@ -163,31 +163,3 @@
     </div>
   </div>
 </s:if>
-<script type="text/javascript"><!--
-  // <![CDATA[
-
-  var positionGeographiques = <%=request.getAttribute("jsonPositionGeographiques")%>;
-
-  function autocompletion()
-  {
-    new Autocompleter.Local('positionGeographiques_father_auto_complete', 'positionGeographiques_auto_complete_list', Object.keys(positionGeographiques), {});
-    $('positionGeographiques_auto_father_complete').focus();
-  }
-
-  Event.observe(window, 'load', autocompletion);
-
-  var TridentAutoComplete =
-    {
-    beforeSubmit: function()
-    {
-      var value = positionGeographiques[$('positionGeographiques_father_auto_complete').value];
-      if (value == null)
-        $('positionGeographique_father').value="";
-      else
-        $('positionGeographique_father').value = value;
-      return true;
-    }
-  };
-
-  // ]]>
-  --></script>
