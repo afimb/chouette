@@ -30,6 +30,8 @@ import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.struts.GeneriqueAction;
+import java.util.HashMap;
+import org.springframework.context.ApplicationContext;
 
 public class StopAreaAction extends GeneriqueAction implements ModelDriven<PositionGeographique>, Preparable
 {
@@ -38,7 +40,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private IReseauManager reseauManager;
   private IPositionGeographiqueManager positionGeographiqueManager;
   private ILigneManager ligneManager;
-
   private PositionGeographique model = new PositionGeographique();
   private String mappedRequest;
   private Long idPositionGeographique;
@@ -74,6 +75,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private Long idArretDestination = null;
   private String nomArretDestination = null;
   private Long idArretSource = null;
+  private String boardingPositionName = "";
+  private String stopPlaceName = "";
 
   public Long getIdItineraire()
   {
@@ -119,8 +122,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (getIdPositionGeographique() == null)
     {
       model = new PositionGeographique();
-    }
-    else
+    } else
     {
       model = positionGeographiqueManager.lire(getIdPositionGeographique());
 
@@ -209,8 +211,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       areaTypes.add(ChouetteAreaType.QUAY);
       areaTypes.add(ChouetteAreaType.BOARDINGPOSITION);
-    }
-    else
+    } else
     {
       areaTypes.add(ChouetteAreaType.STOPPLACE);
       areaTypes.add(ChouetteAreaType.COMMERCIALSTOPPOINT);
@@ -233,7 +234,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
 
     List<PositionGeographique> positionGeographiques = positionGeographiqueManager.lire(nomArret, codeInsee, idReseau, areaTypes);
     request.put("positionGeographiques", positionGeographiques);
-    request.put("jsonArrets", getJsonArrets());
+    // TODO : DELETE
+    //request.put("jsonArrets", getJsonArrets());
     log.debug("List of stopArea");
     return LIST;
   }
@@ -252,8 +254,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       addActionMessage(getText("arretPhysique.create.ok"));
       log.debug("Create boardingPosition with id : " + model.getId());
-    }
-    else
+    } else
     {
       addActionMessage(getText("zone.create.ok"));
       log.debug("Create stopPlace with id : " + model.getId());
@@ -278,8 +279,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       addActionMessage(getText("arretPhysique.update.ok"));
       log.debug("Update boardingPosition with id : " + model.getId());
-    }
-    else
+    } else
     {
       addActionMessage(getText("zone.update.ok"));
       log.debug("Update stopPlace with id : " + model.getId());
@@ -296,8 +296,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       addActionMessage(getText("arretPhysique.delete.ok"));
       log.debug("Delete boardingPosition with id : " + model.getId());
-    }
-    else
+    } else
     {
       addActionMessage(getText("zone.delete.ok"));
       log.debug("Delete stopPlace with id : " + model.getId());
@@ -312,8 +311,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
     {
       addActionMessage(getText("arretPhysique.cancel.ok"));
-    }
-    else
+    } else
     {
       addActionMessage(getText("zone.cancel.ok"));
     }
@@ -355,8 +353,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
           case QUAY:
             break;
         }
-      }
-      else if ("addFather".equals(getActionSuivante()))
+      } else if ("addFather".equals(getActionSuivante()))
       {
         switch (model.getAreaType())
         {
@@ -388,24 +385,20 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (searchCriteria.getAreaType() != null)
     {
       areas.add(searchCriteria.getAreaType().toString());
-    }
-    else
+    } else
     {
       if (EnumerationApplication.AUTHORIZEDTYPESET_C.equals(authorizedType))
       {
         areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
-      }
-      else if (EnumerationApplication.AUTHORIZEDTYPESET_CS.equals(authorizedType))
+      } else if (EnumerationApplication.AUTHORIZEDTYPESET_CS.equals(authorizedType))
       {
         areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
         areas.add(ChouetteAreaType.STOPPLACE.toString());
-      }
-      else if (EnumerationApplication.AUTHORIZEDTYPESET_QB.equals(authorizedType))
+      } else if (EnumerationApplication.AUTHORIZEDTYPESET_QB.equals(authorizedType))
       {
         areas.add(ChouetteAreaType.QUAY.toString());
         areas.add(ChouetteAreaType.BOARDINGPOSITION.toString());
-      }
-      else if (EnumerationApplication.AUTHORIZEDTYPESET_S.equals(authorizedType))
+      } else if (EnumerationApplication.AUTHORIZEDTYPESET_S.equals(authorizedType))
       {
         areas.add(ChouetteAreaType.STOPPLACE.toString());
       }
@@ -547,16 +540,14 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (model.getId() != null)
     {
       if (model.getAreaType() == ChouetteAreaType.QUAY
-					|| model.getAreaType() == ChouetteAreaType.BOARDINGPOSITION)
+              || model.getAreaType() == ChouetteAreaType.BOARDINGPOSITION)
       {
         return ARRETPHYSIQUE;
-      }
-      else
+      } else
       {
         return ZONE;
       }
-    }
-    else
+    } else
     {
       // Récupération du namespace pour basculer sur des arrèts physiques ou zones
       return ActionContext.getContext().getActionInvocation().getProxy().getNamespace();
@@ -697,6 +688,38 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   }
 
   /********************************************************
+   *              AJAX AUTOCOMPLETE                       *
+   ********************************************************/
+  @SkipValidation
+  public String ajaxBoardingPositions()
+  {
+    List<PositionGeographique> boardingPositions = positionGeographiqueManager.lireArretsPhysiques();
+
+    List<PositionGeographique> boardingPositionsAfterFilter = new ArrayList<PositionGeographique>();
+    for (PositionGeographique boardingPosition : boardingPositions)
+    {
+      String name = boardingPosition.getName();
+      if (name.contains(boardingPositionName))
+      {
+        boardingPositionsAfterFilter.add(boardingPosition);
+      }
+    }
+
+    request.put("boardingPositions", boardingPositionsAfterFilter);
+    return AUTOCOMPLETE;
+  }
+
+  public String getBoardingPositionName()
+  {
+    return boardingPositionName;
+  }
+
+  public void setBoardingPositionName(String boardingPositionName)
+  {
+    this.boardingPositionName = boardingPositionName;
+  }
+
+  /********************************************************
    *              JSON AUTOCOMPLETE                       *
    ********************************************************/
   private String getJsonPositionGeographiques()
@@ -707,8 +730,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     if (model.getAreaType().equals(ChouetteAreaType.BOARDINGPOSITION) || model.getAreaType().equals(ChouetteAreaType.QUAY))
     {
       positionGeographiques = positionGeographiqueManager.lireArretsPhysiques();
-    }
-    else
+    } else
     {
       positionGeographiques = positionGeographiqueManager.lireZones();
     }
@@ -718,8 +740,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
       if (positionGeographiques.indexOf(positionGeographique) == positionGeographiques.size() - 1)
       {
         resultat += "\"" + positionGeographique.getName() + "\"" + ": " + positionGeographique.getId();
-      }
-      else
+      } else
       {
         resultat += "\"" + positionGeographique.getName() + "\"" + ": " + positionGeographique.getId() + ",";
       }

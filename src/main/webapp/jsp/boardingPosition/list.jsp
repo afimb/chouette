@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-
-<s:include value="/jsp/commun/scriptaculous.jsp" />
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/scriptaculous/effects.js' includeParams='none'/>" ></script>
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/scriptaculous/controls.js' includeParams='none'/>" ></script>
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/scriptaculous/dragdrop.js' includeParams='none'/>" ></script>
 
 <SCRIPT type="text/javascript" >
 
@@ -64,7 +65,7 @@
       <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
       <s:hidden name="idArretDestination" id="idArretDestination" value=""/>
       <s:hidden name="idArretSource" id="idArretSource" value=""/>
-      <div id="listeArrets" class="stop_areas_auto_complete_list" style="display:none;"></div>
+      <div id="listeArrets" class="autocomplete"></div>
     </div>
     <div>
       <s:reset value="%{getText('action.cancel')}" onclick="annulerFusionArret();" />
@@ -72,12 +73,10 @@
     </div>
   </s:form>
 </div>
-
 <br/>
 
 <%-- Tableau --%>
 <div id="displaytag"> 
-
   <display:table name="positionGeographiques" pagesize="20" requestURI="" id="positionGeographique" export="false">
 
     <display:column titleKey="table.title.action" sortable="false">
@@ -115,9 +114,23 @@
   // <![CDATA[
 
   var arretsPhysiques = <%=request.getAttribute("jsonArrets")%>;
-	
+
+
   function autocompletion() {
-    new Autocompleter.Local('nomArretDestination', 'listeArrets', Object.keys(arretsPhysiques), {});
+    //new Ajax.Request('/places', {asynchronous:true, evalScripts:true, method:'get', parameters:param});
+    //new Ajax.Autocompleter('nomArretDestination', update, '/json/JSONStopPointOnRoute', {asynchronous:true, evalScripts:true, method:'get', parameters:param});
+    //new Autocompleter.Local('nomArretDestination', 'listeArrets', Object.keys(arretsPhysiques), {});
+    // Instanciation de la classe Autocompleter, pour le champ de saisie "departement"
+    var url = '<%=request.getContextPath()%>' + "/boardingPosition/ajaxBoardingPositions";
+    new Ajax.Autocompleter(
+    "nomArretDestination",   // id du champ de formulaire
+    "listeArrets",  // id de l'élément utilisé pour les propositions
+    url,  // URL du script côté serveur
+    {
+      paramName: 'boardingPositionName',  // Nom du paramètre reçu par le script serveur
+      minChars: 1   // Nombre de caractères minimum avant que des appels serveur ne soient effectués
+    });
+
     $('nomArretDestination').focus();
   }
 	

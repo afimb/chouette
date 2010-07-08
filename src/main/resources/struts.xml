@@ -112,11 +112,11 @@
         </interceptor-ref>
         <interceptor-ref name="conversionError" />
         <interceptor-ref name="validation">
-          <param name="excludeMethods">input,edit,add,delete,list,cancel</param>
+          <param name="excludeMethods">input,edit,add,delete,list,cancel, ajaxBoardingPositions</param>
         </interceptor-ref>
         <interceptor-ref name="store"></interceptor-ref>
         <interceptor-ref name="workflow">
-          <param name="excludeMethods">input,edit,add,delete,list,cancel</param>
+          <param name="excludeMethods">input,edit,add,delete,list,cancel, ajaxBoardingPositions</param>
         </interceptor-ref>
       </interceptor-stack>
     </interceptors>
@@ -311,14 +311,11 @@
         <param name="operationMode">RETRIEVE</param>
         <param name="idPositionGeographique">${idPositionGeographique}</param>
       </result>
-      <result name="edit">/jsp/boardingPosition/edit.jsp
-      </result>
-      <result name="list">/jsp/boardingPosition/list.jsp
-      </result>
-      <result name="input">/jsp/boardingPosition/edit.jsp
-      </result>
-      <result name="search">/jsp/boardingPosition/search.jsp
-      </result>
+      <result name="edit">/jsp/boardingPosition/edit.jsp</result>
+      <result name="list">/jsp/boardingPosition/list.jsp</result>
+      <result name="input">/jsp/boardingPosition/edit.jsp</result>
+      <result name="search">/jsp/boardingPosition/search.jsp</result>
+      <result name="autocomplete">/jsp/boardingPosition/autocomplete.jsp</result>
     </action>
   </package>
 

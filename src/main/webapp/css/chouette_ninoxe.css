@@ -102,23 +102,23 @@ A:hover
 {
   padding: 10px;
   float: right;
-  font-weight: bold;  
+  font-weight: bold;
   font-size:12px;
 
 }
 
 #tools UL
 {
-	list-style: none;
-	padding: 0px;
-	margin: 0px;
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
   text-align:center;
 }
 
 #tools LI
 {
   padding:5px;
-	DISPLAY: inline;
+  DISPLAY: inline;
 }
 
 
@@ -167,7 +167,7 @@ A:hover
   MARGIN: 2px 0px 0px 0px;
 }
 
-#menu .selectionne 
+#menu .selectionne
 {
   font-weight: bold;
   color: purple;
@@ -293,7 +293,7 @@ A:hover
 
 /****************************************************************/
 /*	Css pour l'édition d'un tableau de marche					*/
-/****************************************************************/ 
+/****************************************************************/
 .editTableauMarche UL, LI
 {
   list-style: none;
@@ -302,70 +302,41 @@ A:hover
 }
 
 /****************************************************************/
-/*	Css pour la liste des arrets								*/
-/****************************************************************/ 
-/* VERY IMPORTANT TO ADD TO CSS FOR CURSOR !!!! Change css style as needed axcept for cursor */
-#sortable li { cursor: move; list-style-type: none; background:#FAFAFA url("../images/cursorDragDrop.gif") no-repeat top left; margin: 1em; padding: 0.2em 1em 0.2em 50px; }
-
-#insererArretForm img { position:relative; top:4px; right: 3px; }
-#insererArretForm {padding:1em; padding:0; margin:0}
-#insererArretForm .stop_areas_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
-#insererArretForm .stop_areas_auto_complete_list ul { padding: 0; margin: 0; }
-#insererArretForm .stop_areas_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
-#insererArretForm .stop_areas_auto_complete_list li.selected { background-color: #D7E4FB; }
-
-#fusionnerArretForm img { position:relative; top:4px; right: 3px; }
-#fusionnerArretForm {padding:1em; padding:0; margin:0}
-#fusionnerArretForm .stop_areas_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
-#fusionnerArretForm .stop_areas_auto_complete_list ul { padding: 0; margin: 0; }
-#fusionnerArretForm .stop_areas_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
-#fusionnerArretForm .stop_areas_auto_complete_list li.selected { background-color: #D7E4FB; }
-
+/*          AUTOCOMPLETE                                        */
 /****************************************************************/
-/*	Css pour la liste des tableaux de marche								*/
-/****************************************************************/ 
-/* VERY IMPORTANT TO ADD TO CSS FOR CURSOR !!!! Change css style as needed axcept for cursor */
-#sortable li { cursor: move; list-style-type: none; background:#FAFAFA url("../images/cursorDragDrop.gif") no-repeat top left; margin: 1em; padding: 0.2em 1em 0.2em 50px; }
+div.autocomplete
+{
+  position:absolute;
+  width:250px;
+  background-color:#FEFEFE;
+  border:1px solid #999;
+  margin:0;
+  padding:0;
+  color: #888;
+}
 
-#associerTableauMarcheForm img { position:relative; top:4px; right: 3px; }
-#associerTableauMarcheForm {padding: 1em; }
-#associerTableauMarcheForm .tableauMarches_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
-#associerTableauMarcheForm .tableauMarches_auto_complete_list ul { padding: 0; margin: 0; }
-#associerTableauMarcheForm .tableauMarches_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
-#associerTableauMarcheForm .tableauMarches_auto_complete_list li.selected { background-color: #D7E4FB; }
+div.autocomplete ul
+{
+  list-style-type:none;
+  margin:0;
+  padding:0;
+}
 
-/****************************************************************/
-/*	Css pour la liste des zones									*/
-/****************************************************************/ 
+div.autocomplete ul li.selected { background-color: #FFE4FB;}
 
-#connectionLinkForm img { position:relative; top:4px; right: 3px; }
-#connectionLinkForm {padding: 1em; }
-#connectionLinkForm .stop_areas_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
-#connectionLinkForm .stop_areas_auto_complete_list ul { padding: 0; margin: 0; }
-#connectionLinkForm .stop_areas_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
-#connectionLinkForm .stop_areas_auto_complete_list li.selected { background-color: #FFE4FB; }
-
-/****************************************************************/
-/*	Css pour liste de des zones									*/
-/****************************************************************/ 
-
-#positionGeographiqueFatherForm img { position:relative; top:4px; right: 3px; }
-#positionGeographiqueFatherForm {padding: 1em; }
-#positionGeographiqueFatherForm .positionGeographiques_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
-#positionGeographiqueFatherForm .positionGeographiques_auto_complete_list ul { padding: 0; margin: 0; }
-#positionGeographiqueFatherForm .positionGeographiques_complete_list li { list-style-type: none; padding: 0; margin: 0; }
-#positionGeographiqueFatherForm .positionGeographiques_auto_complete_list li.selected { background-color: #FFE4FB; }		
-
-#positionGeographiqueChildForm img { position:relative; top:4px; right: 3px; }
-#positionGeographiqueChildForm {padding: 1em; }
-#positionGeographiqueChildForm .positionGeographiques_auto_complete_list { background-color: #FEFEFE; color: #888; margin: 0; padding: 0; border: 1px solid #999; border-top: none; }
-#positionGeographiqueChildForm .positionGeographiques_auto_complete_list ul { padding: 0; margin: 0; }
-#positionGeographiqueChildForm .positionGeographiques_auto_complete_list li { list-style-type: none; padding: 0; margin: 0; }
-#positionGeographiqueChildForm .positionGeographiques_auto_complete_list li.selected { background-color: #FFE4FB; }		
+div.autocomplete ul li
+{
+  list-style-type:none;
+  display:block;
+  margin:0;
+  padding:2px;
+  height:15px;
+  cursor:pointer;
+}
 
 /****************************************************************/
 /*	Css pour le tableau des horaires							*/
-/****************************************************************/ 		
+/****************************************************************/
 #horairesCourses TABLE {
   border: 1px solid #666;
   width: 80%;
@@ -388,7 +359,7 @@ A:hover
   text-align: center;
 }
 
-#horairesCourses LI 
+#horairesCourses LI
 {
   height: 25px;
   min-height: 25px;
@@ -399,14 +370,14 @@ A:hover
  	list-style-type: none;
 }
 
-#horairesCourses OL 
+#horairesCourses OL
 {
   padding: 0px 0px 0px 0px;
 }
 
 /****************************************************************/
 /*	Css pour le tableau de la pagination						*/
-/****************************************************************/ 	
+/****************************************************************/
 #pagination
 {
   border: 0px;
@@ -427,7 +398,7 @@ A:hover
 
 /****************************************************************/
 /*	Css pour les messages et les erreurs						*/
-/****************************************************************/ 		
+/****************************************************************/
 .message
 {
   color: green;
@@ -501,7 +472,7 @@ A:hover
 
 /****************************************************************/
 /*	Css pour les input											*/
-/****************************************************************/ 			
+/****************************************************************/
 .texteNonEditable
 {
   background-color: #dcdcdc;
