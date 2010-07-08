@@ -328,7 +328,14 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   @SkipValidation
   public String fusionnerArrets()
   {
-    positionGeographiqueManager.fusionnerPositionsGeographiques(idArretSource, idArretDestination);
+    if (idArretSource == null || idArretDestination == null)
+    {
+      addActionError(getText("arretPhysique.merge.ko"));
+    } else
+    {
+      addActionMessage(getText("arretPhysique.merge.ok"));
+      positionGeographiqueManager.fusionnerPositionsGeographiques(idArretSource, idArretDestination);
+    }
     return REDIRECTLIST;
   }
 

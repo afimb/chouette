@@ -2,6 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <ul>
   <s:iterator value="#request.boardingPositions" var="boardingPosition" >
-    <li ><s:property value="name" /> (<s:property value="countryCode" />, <s:property value="streetName" />, <s:property value="objectId" /> )</li>
+    <li id="${boardingPosition.id}"><s:property value="name" /> (<s:property value="countryCode" /><s:if test='!#boardingPosition.countryCode.equals("")'>, </s:if><s:property value="streetName" /><s:if test='!#boardingPosition.streetName.equals("")'>, </s:if><s:property value="objectId" /> )</li>
   </s:iterator>
 </ul>

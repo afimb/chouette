@@ -58,13 +58,13 @@
 <br/>
 <%-- FUSION D'UN ARRET --%>
 <div id="fusionnerArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
-  <s:form id="fusionnerArretForm" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();" validate="true" namespace="/boardingPosition">
-    <s:hidden name="typePositionGeographique" value="arretPhysique" />
+  <s:form id="fusionnerArretForm" theme="simple" validate="true" namespace="/boardingPosition">
     <div style="padding-left:2px"><s:text name="text.boardingPosition.stoppoints.merge"/></div>
     <div>
       <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
       <s:hidden name="idArretDestination" id="idArretDestination" value=""/>
       <s:hidden name="idArretSource" id="idArretSource" value=""/>
+      <s:param name="operationMode" value="%{'STORE'}" />
       <div id="listeArrets" class="autocomplete"></div>
     </div>
     <div>
@@ -112,38 +112,23 @@
 
 <script type="text/javascript"><!--
   // <![CDATA[
+  var url = '<%=request.getContextPath()%>' + "/boardingPosition/ajaxBoardingPositions";
+  new Ajax.Autocompleter(
+  "nomArretDestination",   // id du champ de formulaire
+  "listeArrets",  // id de l'élément utilisé pour les propositions
+  url,  // URL du script côté serveur
+  {
+    paramName: 'boardingPositionName',  // Nom du paramètre reçu par le script serveur
+    minChars: 1,   // Nombre de caractères minimum avant que des appels serveur ne soient effectués
+    method:'get',
+    afterUpdateElement: hiddenFields
+  });
 
-  var arretsPhysiques = <%=request.getAttribute("jsonArrets")%>;
+  $('nomArretDestination').focus();
 
-
-  function autocompletion() {
-    //new Ajax.Request('/places', {asynchronous:true, evalScripts:true, method:'get', parameters:param});
-    //new Ajax.Autocompleter('nomArretDestination', update, '/json/JSONStopPointOnRoute', {asynchronous:true, evalScripts:true, method:'get', parameters:param});
-    //new Autocompleter.Local('nomArretDestination', 'listeArrets', Object.keys(arretsPhysiques), {});
-    // Instanciation de la classe Autocompleter, pour le champ de saisie "departement"
-    var url = '<%=request.getContextPath()%>' + "/boardingPosition/ajaxBoardingPositions";
-    new Ajax.Autocompleter(
-    "nomArretDestination",   // id du champ de formulaire
-    "listeArrets",  // id de l'élément utilisé pour les propositions
-    url,  // URL du script côté serveur
-    {
-      paramName: 'boardingPositionName',  // Nom du paramètre reçu par le script serveur
-      minChars: 1   // Nombre de caractères minimum avant que des appels serveur ne soient effectués
-    });
-
-    $('nomArretDestination').focus();
+  function hiddenFields(text, li)
+  {
+    $('idArretDestination').value = li.id;
   }
-	
-  Event.observe(window, 'load', autocompletion);
-	
-  var TridentAutoComplete = {
-    beforeSubmit : function() {
-      var value = arretsPhysiques[$('nomArretDestination').value];
-      if (value == null) $('idArretDestination').value="";
-      else $('idArretDestination').value = value;
-      return true;
-    }
-  };
-	
   // ]]>
   --></script>
