@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans 	
-	xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="
-   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
- 
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
 
   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="location" value="classpath:/spring.properties"/>
   </bean>
-  
+
   <!--  empty file : unused
   <import resource="classpath:/externalModule.xml" />
    -->
@@ -24,7 +24,7 @@
   <import resource="classpath:/spring_modules/altibusContext.xml" />
   <import resource="classpath:/spring_modules/comparatorContext.xml" />
 
-<!-- Prise en compte de la pérennité --> 
+  <!-- Prise en compte de la pérennité -->
     <!-- bean id="perenniteAspect" class="fr.archivage.PerenniteAspect" />
     <aop:config proxy-target-class="true">
         <aop:aspect ref="perenniteAspect">
@@ -44,34 +44,34 @@
             <aop:before pointcut-ref="reinitPointcut" method="reinit" />
         </aop:aspect>
     </aop:config -->
-    
+
   <bean id="profiler" class="fr.certu.chouette.profiler.SimpleProfiler">
-		<!-- execute before the transactional advice (hence the lower order number) -->
+    <!-- execute before the transactional advice (hence the lower order number) -->
     <property name="order" value="1"/>
   </bean>
-    
+
   <bean id="creationControleur" class="fr.certu.chouette.profiler.CreationControleur">
-		<!-- execute before the transactional advice (hence the lower order number) -->
+    <!-- execute before the transactional advice (hence the lower order number) -->
     <property name="order" value="0"/>
   </bean>
 
-    <!-- Enable @Transactional support -->
+  <!-- Enable @Transactional support -->
   <tx:annotation-driven/>
 
-    <!-- Enable @AspectJ support -->
+  <!-- Enable @AspectJ support -->
   <aop:aspectj-autoproxy/>
 
   <aop:config>
-		<!-- order value is higher than the profiling aspect -->
+    <!-- order value is higher than the profiling aspect -->
     <aop:advisor id="managerTx" advice-ref="txAdvice" pointcut="execution(* *..service.database.*Manager.*(..))" order="2"/>
     <aop:aspect id="profilingAspect" ref="profiler">
       <aop:pointcut id="serviceMethodWithReturnValue"
-				expression="execution(* *..service.database.*Manager.*(..))"/>
+                    expression="execution(* *..service.database.*Manager.*(..))"/>
       <aop:around method="profile" pointcut-ref="serviceMethodWithReturnValue"/>
     </aop:aspect>
     <aop:aspect id="creatingAspect" ref="creationControleur">
       <aop:pointcut id="creerMethodWithReturnValue"
-			expression="execution(* *..service.database.*Manager.creer*(..))"/>
+                    expression="execution(* *..service.database.*Manager.creer*(..))"/>
       <aop:around method="creationProtect" pointcut-ref="creerMethodWithReturnValue"/>
     </aop:aspect>
   </aop:config>
@@ -83,15 +83,15 @@
     </tx:attributes>
   </tx:advice>
 
-<!--  
+  <!--
     <bean id="loggingAspect"
-    	class="fr.certu.chouette.profiler.LoggingAspect" />
+      class="fr.certu.chouette.profiler.LoggingAspect" />
     <aop:config proxy-target-class="true">
-    	<aop:aspect ref="loggingAspect">
-    		<aop:pointcut id="daoPointcut"
-    			expression="execution(* *..service.database.*Manager.*(..))" />
-    		<aop:before pointcut-ref="daoPointcut" method="logBefore" />
-    	</aop:aspect>
+      <aop:aspect ref="loggingAspect">
+        <aop:pointcut id="daoPointcut"
+          expression="execution(* *..service.database.*Manager.*(..))" />
+        <aop:before pointcut-ref="daoPointcut" method="logBefore" />
+      </aop:aspect>
     </aop:config>
  -->
 
@@ -110,7 +110,7 @@
     <property name="password" value="${jdbc.password}"/>
     <property name="databaseSchema" value="${database.schema}"/>
   </bean>
-  
+
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
     <property name="hibernateProperties">
       <props>
@@ -145,122 +145,122 @@
   </bean>
 
 
-    <!-- Modules DAO -->
+  <!-- Modules DAO -->
 
   <bean id="reseauDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerReseauDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerReseauDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="ligneDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerLigneDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerLigneDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="transporteurDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerTransporteurDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerTransporteurDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="itineraireDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerItineraireDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerItineraireDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="arretItineraireDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerArretItineraireDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerArretItineraireDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="correspondanceDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerCorrespondanceDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerCorrespondanceDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="positionGeographiqueDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerPositionGeographiqueDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerPositionGeographiqueDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="tableauMarcheDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerTableauMarcheDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerTableauMarcheDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="courseDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerCourseDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerCourseDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="horaireDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerHoraireDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerHoraireDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="lienTMCourseDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerLienTMCourseDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerLienTMCourseDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="itlDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerITLDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerITLDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="missionDao"
-    		class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
-    		factory-method="creerMissionDao">
+        class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate"
+        factory-method="creerMissionDao">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
   <bean id="selectionSpecifique"
-    		class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
+        class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="databaseSchema" value="${database.schema}"/>
   </bean>
 
   <bean id="modificationSpecifique"
-    		class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
+        class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
     <property name="sessionFactory" ref="sessionFactory"/>
     <property name="databaseSchema" value="${database.schema}"/>
   </bean>
-  
+
   <bean id="purge" class="fr.certu.chouette.dao.jdbc.Purge">
-  	<property name="sessionFactory" ref="sessionFactory"/>
-  	<property name="databaseSchema" value="${database.schema}"/>
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="databaseSchema" value="${database.schema}"/>
   </bean>
 
-    <!-- Services de lecture du format XML -->
+  <!-- Services de lecture du format XML -->
 
   <bean id="lecteurEchangeXML"
-    		class="fr.certu.chouette.service.xml.LecteurEchangeXML">
+        class="fr.certu.chouette.service.xml.LecteurEchangeXML">
   </bean>
 
-    <!-- Adaptateur AMIVIF -->
+  <!-- Adaptateur AMIVIF -->
 
   <bean id="amivifAdapter"
-    		class="fr.certu.chouette.service.amivif.MainConverter">
+        class="fr.certu.chouette.service.amivif.MainConverter">
   </bean>
 
   <bean id="lecteurAmivifXML"
-    		class="fr.certu.chouette.service.amivif.LecteurAmivifXML">
+        class="fr.certu.chouette.service.amivif.LecteurAmivifXML">
   </bean>
-    
+
   <!-- Services import format interne -->
   <bean id="gestionFichier"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionFichier">
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionFichier">
     <property name="repertoireTmp" value="${dir.temp}"/>
     <property name="ficLigne" value="tmp_ligne.csv"/>
     <property name="ficItineraire" value="tmp_itineraires.csv"/>
@@ -281,43 +281,43 @@
   </bean>
 
   <bean id="analyseurEtatInitial"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.AnalyseurEtatInitial">
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.AnalyseurEtatInitial">
     <property name="gestionSequence" ref="gestionSequence"/>
     <property name="databaseSchema" value="${database.schema}" />
   </bean>
 
   <bean id="gestionSequence"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionSequence">
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionSequence">
     <property name="databaseSchema" value="${database.schema}" />
   </bean>
 
   <bean id="gestionModification"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionModification">
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionModification">
     <property name="databaseSchema" value="${database.schema}" />
   </bean>
 
   <bean id="nettoyeurLigne"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.NettoyeurLigne">
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.NettoyeurLigne">
     <property name="ligneManager" ref="ligneManager"/>
     <property name="databaseSchema" value="${database.schema}" />
   </bean>
 
   <bean id="chargeur"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.Chargeur">
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.Chargeur">
     <property name="gestionFichier" ref="gestionFichier"/>
     <property name="nettoyeurLigne" ref="nettoyeurLigne"/>
   </bean>
 
   <bean id="producteurFichier"
-    		class="fr.certu.chouette.service.fichier.formatinterne.impl.ProducteurFichier"
-    		init-method="initialiser" >
+        class="fr.certu.chouette.service.fichier.formatinterne.impl.ProducteurFichier"
+        init-method="initialiser" >
     <property name="gestionFichier" ref="gestionFichier"/>
     <property name="gestionSequence" ref="gestionSequence"/>
     <property name="identificationManager" ref="identificationManager"/>
   </bean>
 
   <bean id="importateur"
-    		class="fr.certu.chouette.service.fichier.Importateur">
+        class="fr.certu.chouette.service.fichier.Importateur">
     <property name="analyseurEtatInitial" ref="analyseurEtatInitial"/>
     <property name="gestionModification" ref="gestionModification"/>
     <property name="chargeur" ref="chargeur"/>
@@ -325,20 +325,20 @@
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
   </bean>
 
-    <!-- Services -->
+  <!-- Services -->
 
   <bean id="identificationManager"
-    		class="fr.certu.chouette.service.identification.impl.IdentificationManager">
+        class="fr.certu.chouette.service.identification.impl.IdentificationManager">
     <property name="systemId" value="${system.code}"/>
     <property name="dictionaryObjectId" ref="dictionaryObjectId"/>
   </bean>
 
   <bean id="dictionaryObjectId"
-    		class="fr.certu.chouette.service.identification.impl.DictionaryObjectId">
+        class="fr.certu.chouette.service.identification.impl.DictionaryObjectId">
   </bean>
 
   <bean id="reseauManager"
-    		class="fr.certu.chouette.service.database.impl.ReseauManager">
+        class="fr.certu.chouette.service.database.impl.ReseauManager">
     <property name="reseauDao" ref="reseauDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -346,7 +346,7 @@
   </bean>
 
   <bean id="transporteurManager"
-    		class="fr.certu.chouette.service.database.impl.TransporteurManager">
+        class="fr.certu.chouette.service.database.impl.TransporteurManager">
     <property name="transporteurDao" ref="transporteurDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -354,7 +354,7 @@
   </bean>
 
   <bean id="ligneManager"
-    		class="fr.certu.chouette.service.database.impl.LigneManager">
+        class="fr.certu.chouette.service.database.impl.LigneManager">
     <property name="ligneDao" ref="ligneDao"/>
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
@@ -363,7 +363,7 @@
   </bean>
 
   <bean id="positionGeographiqueManager"
-    		class="fr.certu.chouette.service.database.impl.PositionGeographiqueManager">
+        class="fr.certu.chouette.service.database.impl.PositionGeographiqueManager">
     <property name="positionGeographiqueDao" ref="positionGeographiqueDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -373,7 +373,7 @@
   </bean>
 
   <bean id="correspondanceManager"
-    		class="fr.certu.chouette.service.database.impl.CorrespondanceManager">
+        class="fr.certu.chouette.service.database.impl.CorrespondanceManager">
     <property name="correspondanceDao" ref="correspondanceDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -381,7 +381,7 @@
   </bean>
 
   <bean id="itineraireManager"
-    		class="fr.certu.chouette.service.database.impl.ItineraireManager">
+        class="fr.certu.chouette.service.database.impl.ItineraireManager">
     <property name="itineraireDao" ref="itineraireDao"/>
     <property name="arretItineraireManager" ref="arretItineraireManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
@@ -392,7 +392,7 @@
   </bean>
 
   <bean id="courseManager"
-    		class="fr.certu.chouette.service.database.impl.CourseManager">
+        class="fr.certu.chouette.service.database.impl.CourseManager">
     <property name="courseDao" ref="courseDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -400,7 +400,7 @@
   </bean>
 
   <bean id="missionManager"
-    		class="fr.certu.chouette.service.database.impl.MissionManager">
+        class="fr.certu.chouette.service.database.impl.MissionManager">
     <property name="missionDao" ref="missionDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -408,7 +408,7 @@
   </bean>
 
   <bean id="tableauMarcheManager"
-    		class="fr.certu.chouette.service.database.impl.TableauMarcheManager">
+        class="fr.certu.chouette.service.database.impl.TableauMarcheManager">
     <property name="tableauMarcheDao" ref="tableauMarcheDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -416,7 +416,7 @@
   </bean>
 
   <bean id="horaireManager"
-    		class="fr.certu.chouette.service.database.impl.HoraireManager">
+        class="fr.certu.chouette.service.database.impl.HoraireManager">
     <property name="horaireDao" ref="horaireDao"/>
     <property name="courseDao" ref="courseDao"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -425,7 +425,7 @@
   </bean>
 
   <bean id="arretItineraireManager"
-    		class="fr.certu.chouette.service.database.impl.ArretItineraireManager">
+        class="fr.certu.chouette.service.database.impl.ArretItineraireManager">
     <property name="arretItineraireDao" ref="arretItineraireDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
@@ -433,14 +433,14 @@
   </bean>
 
   <bean id="itlManager"
-    		class="fr.certu.chouette.service.database.impl.ITLManager">
+        class="fr.certu.chouette.service.database.impl.ITLManager">
     <property name="itlDao" ref="itlDao"/>
     <property name="selectionSpecifique" ref="selectionSpecifique"/>
     <property name="identificationManager" ref="identificationManager"/>
   </bean>
 
   <bean id="exportManager"
-    		class="fr.certu.chouette.service.database.impl.ExportManager">
+        class="fr.certu.chouette.service.database.impl.ExportManager">
     <property name="transporteurManager" ref="transporteurManager"/>
     <property name="reseauManager" ref="reseauManager"/>
     <property name="ligneManager" ref="ligneManager"/>
@@ -452,90 +452,97 @@
     <property name="missionManager" ref="missionManager"/>
     <property name="itlManager" ref="itlManager"/>
   </bean>
-  
+
   <bean id="massiveExportManager" class="fr.certu.chouette.service.exportateur.impl.MassiveExportManager">
-	<property name="networkManager" ref="reseauManager"/>
-	<property name="exportManager" ref="exportManager"/>
+    <property name="networkManager" ref="reseauManager"/>
+    <property name="exportManager" ref="exportManager"/>
     <property name="xmlFileReader" ref="lecteurFichierXML"/>
     <property name="notificationEmailAddress" value="${massiveExport.notification.email}"/>
     <property name="notificationSmtpServer" value="${massiveExport.notification.smtp}"/>
   </bean>
-    
+
   <bean id="exportHorairesManager"
-    		class="fr.certu.chouette.service.exportateur.monoitineraire.csv.impl.ExportHorairesManager">
+        class="fr.certu.chouette.service.exportateur.monoitineraire.csv.impl.ExportHorairesManager">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="arretItineraireManager" ref="arretItineraireManager"/>
   </bean>
-    
+
   <bean id="exportCorrespondances"
-    		class="fr.certu.chouette.service.exportateur.impl.ExportCorrespondances">
+        class="fr.certu.chouette.service.exportateur.impl.ExportCorrespondances">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
   </bean>
 
   <bean id="importCorrespondances"
-               class="fr.certu.chouette.service.importateur.impl.ImportCorrespondances">
+        class="fr.certu.chouette.service.importateur.impl.ImportCorrespondances">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     <property name="correspondanceManager" ref="correspondanceManager" />
   </bean>
 
   <bean id="importHorairesManager"
-    		class="fr.certu.chouette.service.importateur.monoitineraire.csv.impl.ImportHorairesManager">
+        class="fr.certu.chouette.service.importateur.monoitineraire.csv.impl.ImportHorairesManager">
     <property name="courseManager" ref="courseManager"/>
     <property name="horaireManager" ref="horaireManager"/>
     <property name="modificationSpecifique" ref="modificationSpecifique"/>
   </bean>
 
   <bean id="lecteurFichierXML"
-    		class="fr.certu.chouette.service.xml.LecteurFichierXML">
+        class="fr.certu.chouette.service.xml.LecteurFichierXML">
   </bean>
-  
+
   <bean id="databasePurgeManager" class="fr.certu.chouette.service.database.impl.DatabasePurgeManager">
-      <property name="purge" ref="purge"/>
+    <property name="purge" ref="purge"/>
   </bean>
-  
+
   <!-- Modules struts -->
   <bean id="actionLock" class="fr.certu.chouette.service.actionLock.ActionLock"
-  		scope="singleton">
+        scope="singleton">
     <property name="timeout" value="${action.lock.timeout}" />
   </bean>
 
   <bean id="GeneriqueAction"
         abstract="true"
-    	scope="prototype"
-      class="fr.certu.chouette.struts.GeneriqueAction">
+        scope="prototype"
+        class="fr.certu.chouette.struts.GeneriqueAction">
     <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
   </bean>
 
   <bean id="RouteActionBean" scope="prototype"
-    parent="GeneriqueAction"
-    class="fr.certu.chouette.struts.route.RouteAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.route.RouteAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="ligneManager" ref="ligneManager"/>
   </bean>
-    
+
   <bean id="JourneyPatternActionBean" scope="prototype"
-    parent="GeneriqueAction"
-	class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
     <property name="missionManager" ref="missionManager"/>
   </bean>
-    
+
   <bean id="StoppointOnRouteActionBean" scope="prototype"
-  	parent="GeneriqueAction"
-    class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
   </bean>
-    
+
+  <bean id="JSONStopPointOnRouteActionBean" scope="prototype"
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.json.JSONStopPointOnRouteAction">
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+  </bean>
+
+
   <bean id="Pagination" scope="prototype"
-    		class="fr.certu.chouette.struts.outil.pagination.Pagination">
+        class="fr.certu.chouette.struts.outil.pagination.Pagination">
     <property name="nbColonnesParPage" value="${vehicleJourney.displayed}"/>
     <property name="nbTotalPages" value="${page.displayed}"/>
   </bean>
-    
+
   <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
-    parent="GeneriqueAction"
-    class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="horaireManager" ref="horaireManager"/>
     <property name="courseManager" ref="courseManager"/>
@@ -545,19 +552,19 @@
     <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
     <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
   </bean>
-    
+
   <bean id="VehicleJourneyActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.vehicleJourney.VehicleJourneyAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.vehicleJourney.VehicleJourneyAction">
     <property name="itineraireManager" ref="itineraireManager"/>
     <property name="courseManager" ref="courseManager"/>
     <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
     <property name="ligneManager" ref="ligneManager"/>
   </bean>
-    
+
   <bean id="LineActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.line.LineAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.line.LineAction">
     <property name="ligneManager" ref="ligneManager"/>
     <property name="reseauManager" ref="reseauManager"/>
     <property name="transporteurManager" ref="transporteurManager"/>
@@ -569,58 +576,64 @@
     <property name="detruireAvecTransporteur" value="${destructionLigne.detruireAvecTransporteur}"/>
     <property name="detruireAvecReseau" value="${destructionLigne.detruireAvecReseau}"/>
   </bean>
-    
+
   <bean id="CompanyActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.company.CompanyAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.company.CompanyAction">
     <property name="transporteurManager" ref="transporteurManager"/>
     <property name="exportManager" ref="exportManager"/>
     <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
   </bean>
-    
+
   <bean id="NetworkActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.network.NetworkAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.network.NetworkAction">
     <property name="reseauManager" ref="reseauManager"/>
     <property name="exportManager" ref="exportManager"/>
     <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
   </bean>
-    
+
   <bean id="TimeTableActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.timeTable.TimeTableAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.timeTable.TimeTableAction">
     <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
     <property name="reseauManager" ref="reseauManager"/>
   </bean>
-    
+
   <bean id="StopAreaActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.stopArea.StopAreaAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.stopArea.StopAreaAction">
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="reseauManager" ref="reseauManager"/>
   </bean>
-    
+
+  <bean id="JSONBoardingPositionActionBean" scope="prototype"
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.json.JSONBoardingPositionAction">
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+  </bean>
+
   <bean id="ConnectionLinkActionBean" scope="prototype"
-    parent="GeneriqueAction"
-		class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
     <property name="correspondanceManager" ref="correspondanceManager"/>
     <property name="importCorrespondances" ref="importCorrespondances"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
-    
+
   <bean id="RoutingConstraintActionBean" scope="prototype"
-    parent="GeneriqueAction"
-    class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
     <property name="itlManager" ref="itlManager"/>
     <property name="ligneManager" ref="ligneManager"/>
     <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
   </bean>
-    
+
   <bean id="ImportActionBean" scope="prototype"
-    parent="GeneriqueAction"
-    class="fr.certu.chouette.struts.upload.ImportAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.upload.ImportAction">
     <property name="importateur" ref="importateur"/>
     <property name="lecteurCSV" ref="lecteurCSV"/>
     <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
@@ -641,14 +654,14 @@
     <property name="useAltibus" value="${import.xml.altibus}"/>
     <property name="usePegase" value="${import.csv.pegase}"/>
   </bean>
-    
+
   <bean id="LineFilesComparisonServiceBean" scope="prototype"
-    parent="GeneriqueAction"
-	class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
     <property name="identificationManager" ref="identificationManager"/>
     <property name="exchangeFormat" value="Chouette"/>
     <property name="enableVerboseMode" value="false"/>
-         
+
     <property name="availableExchangeFormats">
       <map>
         <entry key="Chouette">
@@ -662,17 +675,17 @@
   </bean>
 
   <bean id="Validation" scope="prototype"
-    parent="GeneriqueAction"
-	class="fr.certu.chouette.struts.ValidationAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.ValidationAction">
     <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
     <property name="databasePurgeManager" ref="databasePurgeManager"/>
     <property name="useGeometry" value="${validation.tm.geometry}"/>
     <property name="inclusif" value="${validation.tm.inclusif}"/>
   </bean>
-    
+
   <bean id="ExportActionBean" scope="prototype"
-    parent="GeneriqueAction"
-	class="fr.certu.chouette.struts.export.ExportAction">
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.export.ExportAction">
     <property name="exportManager" ref="exportManager"/>
     <property name="exportHorairesManager" ref="exportHorairesManager"/>
     <property name="exportCorrespondances" ref="exportCorrespondances"/>
@@ -686,28 +699,28 @@
   </bean>
 
   <bean id="MassiveExportActionBean" scope="prototype"
-    parent="GeneriqueAction"
-	class="fr.certu.chouette.struts.massiveExport.MassiveExportAction">
-	<property name="networkManager" ref="reseauManager"/>
-	<property name="massiveExportManager" ref="massiveExportManager"/>
-	<property name="excludeConnectionLinks" value="${massiveExport.ihm.excludeConnectionLinks}"/>
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.massiveExport.MassiveExportAction">
+    <property name="networkManager" ref="reseauManager"/>
+    <property name="massiveExportManager" ref="massiveExportManager"/>
+    <property name="excludeConnectionLinks" value="${massiveExport.ihm.excludeConnectionLinks}"/>
   </bean>
-        
+
   <bean id="Deconnexion" scope="prototype"
-		class="fr.certu.chouette.struts.DeconnexionAction">
+        class="fr.certu.chouette.struts.DeconnexionAction">
   </bean>
 
   <bean id="AProposDe" scope="prototype"
-		class="fr.certu.chouette.struts.AProposDeAction">
+        class="fr.certu.chouette.struts.AProposDeAction">
     <property name="versionApplication" value="${applie.version}"/>
   </bean>
 
   <bean id="DownloadFileAction" scope="prototype"
-		class="fr.certu.chouette.struts.DownloadFileAction">
+        class="fr.certu.chouette.struts.DownloadFileAction">
   </bean>
 
   <bean id="version" scope="prototype"
-		class="fr.certu.chouette.shell.Version">
+        class="fr.certu.chouette.shell.Version">
     <property name="version" value="${applie.version}"/>
   </bean>
 </beans>
