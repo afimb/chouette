@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-<s:include value="/jsp/commun/scriptaculous.jsp" />
+<s:include value="/jsp/commun/autocompleteJavascript.jsp" />
 <%-- Titre et barre de navigation --%>
 <s:url id="urlCourseUpdate" action="edit" namespace="/vehicleJourney">
   <s:param name="idCourse" value="%{id}"/>
@@ -74,7 +74,7 @@
       <s:hidden name="operationMode" value="%{'STORE'}" />
       <s:textfield name="saisieTableauMarche" id="tableauMarches_auto_complete" size="60" value="" />
       <s:hidden name="saisieTableauMarcheKey" id="saisieTableauMarcheKey" value=""/>
-      <div id="tableauMarches_auto_complete_list" class="tableauMarches_auto_complete_list" style="display:none;"></div>
+      <div id="tableauMarches_auto_complete_list" class="autocomplete"></div>
 
       <s:submit value="%{getText('course.add.timetable')}" formId="associerTableauMarcheForm" />
     </s:form>

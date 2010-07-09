@@ -1,9 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-<script language="JavaScript" type="text/javascript" src="<s:url value='/js/scriptaculous/effects.js' includeParams='none'/>" ></script>
-<script language="JavaScript" type="text/javascript" src="<s:url value='/js/scriptaculous/controls.js' includeParams='none'/>" ></script>
-<script language="JavaScript" type="text/javascript" src="<s:url value='/js/scriptaculous/dragdrop.js' includeParams='none'/>" ></script>
+<s:include value="/jsp/commun/autocompleteJavascript.jsp" />
 
 <SCRIPT type="text/javascript" >
 
@@ -61,10 +59,15 @@
   <s:form id="fusionnerArretForm" theme="simple" validate="true" namespace="/boardingPosition">
     <div style="padding-left:2px"><s:text name="text.boardingPosition.stoppoints.merge"/></div>
     <div>
-      <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
       <s:hidden name="idArretDestination" id="idArretDestination" value=""/>
       <s:hidden name="idArretSource" id="idArretSource" value=""/>
-      <s:param name="operationMode" value="%{'STORE'}" />
+      <s:hidden name="operationMode" value="%{'STORE'}" />
+      <p>
+        <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
+        <span id="indicator" style="display: none">
+          <img src="<s:url value='/images/ajax-loader.gif'/>" alt="Working..." />
+        </span>
+      </p>
       <div id="listeArrets" class="autocomplete"></div>
     </div>
     <div>
@@ -121,6 +124,7 @@
     paramName: 'boardingPositionName',  // Nom du paramètre reçu par le script serveur
     minChars: 1,   // Nombre de caractères minimum avant que des appels serveur ne soient effectués
     method:'get',
+    indicator: 'indicator',
     afterUpdateElement: hiddenFields
   });
 
