@@ -85,11 +85,6 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
     arrets = itineraireManager.getArretsItineraire(idItineraire);
     arretsModifies = ArretItineraire.dupliquer(arrets);
     arretPhysiqueParIdArret = positionGeographiqueManager.getArretPhysiqueParIdArret(arrets);
-    //	Mise à disposition si la liste des arrets physiques est vide pour le Javascript
-    request.put("arretsVide", (arrets == null || arrets.isEmpty()));
-    //	Mise à disposition de la liste de tous les arrets physiques sous format JSON pour le Javascript
-    request.put("jsonArrets", getJsonArrets());
-
   }
 
   /********************************************************
@@ -244,85 +239,6 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
   public String getActionMethod()
   {
     return mappedRequest;
-  }
-
-  /********************************************************
-   *                    JSON                              *
-   ********************************************************/
-  public String getJsonArrets()
-  {
-    StringBuffer resultat = new StringBuffer("{");
-    PositionGeographique dernier = null;
-    List<PositionGeographique> arretsPhysiques = positionGeographiqueManager.lireArretsPhysiques();
-    if (arretsPhysiques.size() > 0)
-    {
-      dernier = arretsPhysiques.remove(arretsPhysiques.size() - 1);
-    }
-    for (PositionGeographique arretPhysique : arretsPhysiques)
-    {
-      resultat.append("\"");
-      if (arretPhysique.getName() != null)
-      {
-        resultat.append(arretPhysique.getName());
-      }
-      resultat.append("(");
-      if (arretPhysique.getCountryCode() != null)
-      {
-        resultat.append(arretPhysique.getCountryCode());
-      }
-      if (arretPhysique.getStreetName() != null)
-      {
-        if (arretPhysique.getCountryCode() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(arretPhysique.getStreetName());
-      }
-      if (arretPhysique.getObjectId() != null)
-      {
-        if (arretPhysique.getCountryCode() != null || arretPhysique.getStreetName() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(arretPhysique.getObjectId());
-      }
-      resultat.append(")\": ");
-      resultat.append(arretPhysique.getId());
-      resultat.append(",");
-    }
-    if (dernier != null)
-    {
-      resultat.append("\"");
-      if (dernier.getName() != null)
-      {
-        resultat.append(dernier.getName());
-      }
-      resultat.append("(");
-      if (dernier.getCountryCode() != null)
-      {
-        resultat.append(dernier.getCountryCode());
-      }
-      if (dernier.getStreetName() != null)
-      {
-        if (dernier.getCountryCode() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(dernier.getStreetName());
-      }
-      if (dernier.getObjectId() != null)
-      {
-        if (dernier.getCountryCode() != null || dernier.getStreetName() != null)
-        {
-          resultat.append(", ");
-        }
-        resultat.append(dernier.getObjectId());
-      }
-      resultat.append(")\": ");
-      resultat.append(dernier.getId());
-    }
-    resultat.append("}");
-    return resultat.toString();
   }
 
   private List<EtatMajArretItineraire> creerListeEtatMajArret()

@@ -76,7 +76,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private String nomArretDestination = null;
   private Long idArretSource = null;
   private String boardingPositionName = "";
-  private String stopPlaceName = "";
 
   public Long getIdItineraire()
   {
