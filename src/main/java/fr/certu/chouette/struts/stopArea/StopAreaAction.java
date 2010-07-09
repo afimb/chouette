@@ -77,6 +77,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private Long idArretSource = null;
   private String boardingPositionName = "";
 
+  private Integer START_INDEX_AJAX_LIST = 0;
+  private Integer END_INDEX_AJAX_LIST = 10;
+
   public Long getIdItineraire()
   {
     return idItineraire;
@@ -696,17 +699,21 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   {
     List<PositionGeographique> boardingPositions = positionGeographiqueManager.lireArretsPhysiques();
 
+    // Filter boarding position with the name in request
     List<PositionGeographique> boardingPositionsAfterFilter = new ArrayList<PositionGeographique>();
     for (PositionGeographique boardingPosition : boardingPositions)
     {
-      String name = boardingPosition.getName();
+      String name = boardingPosition.getName() + " " + boardingPosition.getCountryCode() + " " + boardingPosition.getStreetName() + " " + boardingPosition.getObjectId();
       if (name.contains(boardingPositionName))
       {
         boardingPositionsAfterFilter.add(boardingPosition);
       }
     }
 
-    request.put("boardingPositions", boardingPositionsAfterFilter);
+    //  Get only first n results
+    List<PositionGeographique> boardingPositionsSubList = boardingPositionsAfterFilter.subList(START_INDEX_AJAX_LIST, END_INDEX_AJAX_LIST);
+
+    request.put("boardingPositions", boardingPositionsSubList);
     return AUTOCOMPLETE;
   }
 
