@@ -60,6 +60,10 @@ public class ItineraireManager implements IItineraireManager
 	public List<TableauMarche> getTableauxMarcheItineraires(Collection<Long> idItineraires) {
 		return selectionSpecifique.getTableauxMarcheItineraires(idItineraires);
 	}
+  public Map<Long,String> getCommentParTMId(final Long idItineraire) {
+		return selectionSpecifique.getCommentParTMId(idItineraire);
+  }
+
 
 	public List<Course> getCoursesItineraire(Long idItineraire) {
 		return selectionSpecifique.getCoursesItineraire(idItineraire);

@@ -68,4 +68,5 @@ public interface ISelectionSpecifique {
 	List<Course> getCoursesFiltrees(Long idItineraire, Long idTableauMarche, Date seuilDateDepartCourses);
 
   Map<Long, List<Long>> getTMsParCourseId(final Long idItineraire);
+  Map<Long, String> getCommentParTMId(final Long idItineraire);
 }

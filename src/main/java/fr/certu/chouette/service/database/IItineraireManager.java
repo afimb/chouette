@@ -12,6 +12,7 @@ import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.database.impl.modele.EtatMajArretItineraire;
+import java.util.Map;
 
 public interface IItineraireManager
 {
@@ -45,4 +46,6 @@ public interface IItineraireManager
 	void modifierArretsItineraire(Long idItineraire, List<EtatMajArretItineraire> majArretsItineraire);
 	void associerItineraire(Long idRoute1, Long idRoute2);
 	void dissocierItineraire(Long idRoute1);
+
+  Map<Long, String> getCommentParTMId(final Long idItineraire);
 }

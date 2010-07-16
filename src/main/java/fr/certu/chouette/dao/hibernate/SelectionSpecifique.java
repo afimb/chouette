@@ -1198,7 +1198,32 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		criteria.createCriteria("positionGeographique");
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
-	public Map<Long,List<Long>> getTMsParCourseId(final Long idItineraire) {
+  public Map<Long,String> getCommentParTMId(final Long idItineraire) {
+    long start = System.currentTimeMillis();
+    StringBuffer queryString = new StringBuffer();
+		queryString.append("SELECT t.id, t.comment ");
+		queryString.append("FROM Course c, LienTMCourse tv, TableauMarche t ");
+		queryString.append("WHERE c.idItineraire =  ");
+		queryString.append(idItineraire);
+		queryString.append(" AND tv.idCourse = c.id ");
+		queryString.append(" AND t.id = tv.idTableauMarche ");
+
+    List<Object[]> rows = getHibernateTemplate().find(queryString.toString());
+
+    Map<Long,String> result = new HashMap<Long, String>();
+    for( Object[] row : rows) {
+      Long tmId = (Long)row[0];
+      String comment = (String)row[1];
+
+      result.put(tmId, comment);
+    }
+
+    logger.info( "BENCH getCommentParTMId(idItineraire="+idItineraire+
+                  ") elapse "+(System.currentTimeMillis()-start));
+    return result;
+  }
+
+  public Map<Long,List<Long>> getTMsParCourseId(final Long idItineraire) {
     long start = System.currentTimeMillis();
     StringBuffer queryString = new StringBuffer();
 		queryString.append("SELECT new fr.certu.chouette.dao.hibernate.Couple(c.id, tv.idTableauMarche) ");

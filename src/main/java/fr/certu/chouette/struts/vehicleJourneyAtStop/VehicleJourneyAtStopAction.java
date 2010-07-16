@@ -99,15 +99,25 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       log.debug("arretsItineraire.size()                  : " + arretsItineraire.size());
       model.setArretsItineraire(arretsItineraire);
       Map<Long, PositionGeographique> arretPhysiqueParIdArret = positionGeographiqueManager.getArretPhysiqueParIdArret(arretsItineraire);
+
       model.setArretPhysiqueParIdArret(arretPhysiqueParIdArret);
       // PREPARATION DE LA LISTE DES TM POUR LE FILTRE
-      model.setTableauxMarche(itineraireManager.getTableauxMarcheItineraire(idItineraire));
+      Map<Long, String> commentParTMid = itineraireManager.getCommentParTMId(idItineraire);
+      List<TableauMarche> calendriers = new ArrayList<TableauMarche>(commentParTMid.size());
+      for ( Long tmId : commentParTMid.keySet()) {
+        TableauMarche calendrier = new TableauMarche();
+        calendrier.setId(tmId);
+        calendrier.setComment(commentParTMid.get(tmId));
+        calendriers.add(calendrier);
+      }
+      model.setTableauxMarche(calendriers);
       // PREPARATION DES ELEMENTS NECESSAIRES A L'AFFICHAGE
       // DE L'ENTETE DU TABLEAU
       prepareMapPositionArretParIdArret(arretsItineraire);
       prepareHoraires(arretsItineraire, coursesPage);
       prepareMapMissionParIdCourse(coursesPage);
       prepareMapsTableauxMarche();
+
     }
   }
 
