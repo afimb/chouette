@@ -7,6 +7,7 @@ import java.util.List;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
 import fr.certu.chouette.modele.TableauMarche;
+import java.util.Map;
 
 public interface ICourseManager
 {
@@ -26,4 +27,6 @@ public interface ICourseManager
 	
 	List<Horaire> getHorairesCourseOrdonnes(Long idCourse);
 	List <Course> getCoursesFiltrees (Long idItineraire, Long idTableauMarche, Date seuilDateDepartCourses);
+
+  Map<Long, List<Long>> getTMsParCourseId(final Long idItineraire);
 }

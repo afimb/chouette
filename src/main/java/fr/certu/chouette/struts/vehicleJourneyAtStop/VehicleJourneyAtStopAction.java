@@ -401,28 +401,37 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       missionParIdCourse.put(mission.getId(), mission);
     }
     model.setMissionParIdCourse(missionParIdCourse);
+    log.debug("fin prepareMapMissionParIdCourse");
   }
 
   private void prepareMapsTableauxMarche()
   {
+    log.debug("appel prepareMapsTableauxMarche");
     Map<Long, List<TableauMarche>> tableauxMarcheParIdCourse = new HashMap<Long, List<TableauMarche>>();
     Map<Long, Integer> referenceTableauMarcheParIdTableauMarche = new HashMap<Long, Integer>();
     int index = 1;
-    List<TableauMarche> tableauxMarcheCourse;
-    for (Course course : courses)
-    {
-      tableauxMarcheCourse = courseManager.getTableauxMarcheCourse(course.getId());
-      tableauxMarcheParIdCourse.put(course.getId(), tableauxMarcheCourse);
-      for (TableauMarche tableauMarche : tableauxMarcheCourse)
-      {
-        if (referenceTableauMarcheParIdTableauMarche.get(tableauMarche.getId()) == null)
+
+    Map<Long,List<Long>> tmsParCourseId = courseManager.getTMsParCourseId(idItineraire);
+    for ( Long courseId : tmsParCourseId.keySet()) {
+      List<Long> tms = tmsParCourseId.get( courseId);
+      List<TableauMarche> tmObjects = new ArrayList<TableauMarche>( tms.size());
+
+      for ( Long tm : tms) {
+        TableauMarche tmObject = new TableauMarche();
+        tmObject.setId( tm);
+        tmObjects.add( tmObject);
+
+        if (referenceTableauMarcheParIdTableauMarche.get(tm) == null)
         {
-          referenceTableauMarcheParIdTableauMarche.put(tableauMarche.getId(), index++);
+          referenceTableauMarcheParIdTableauMarche.put(tm, index++);
         }
       }
+      tableauxMarcheParIdCourse.put( courseId, tmObjects);
     }
+
     model.setTableauxMarcheParIdCourse(tableauxMarcheParIdCourse);
     model.setReferenceTableauMarcheParIdTableauMarche(referenceTableauMarcheParIdTableauMarche);
+    log.debug("fin prepareMapsTableauxMarche");
   }
 
   /********************************************************

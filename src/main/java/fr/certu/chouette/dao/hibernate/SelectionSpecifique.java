@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
@@ -1195,6 +1198,35 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		criteria.createCriteria("positionGeographique");
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
+	public Map<Long,List<Long>> getTMsParCourseId(final Long idItineraire) {
+    long start = System.currentTimeMillis();
+    StringBuffer queryString = new StringBuffer();
+		queryString.append("SELECT new fr.certu.chouette.dao.hibernate.Couple(c.id, tv.idTableauMarche) ");
+		queryString.append("FROM Course c, LienTMCourse tv ");
+		queryString.append("WHERE c.idItineraire =  ");
+		queryString.append(idItineraire);
+		queryString.append(" AND tv.idCourse = c.id ");
+
+    List<Couple> couples = getHibernateTemplate().find(queryString.toString());
+
+    Map<Long,List<Long>> result = new HashMap<Long, List<Long>>();
+    for( Couple couple : couples) {
+      Long courseId = couple.premier;
+      Long tmId = couple.deuxieme;
+
+      List<Long> tms = result.get(courseId);
+      if (tms==null) {
+        tms = new ArrayList<Long>();
+        result.put(courseId, tms);
+      }
+
+      tms.add( tmId);
+    }
+
+    logger.info( "BENCH getTMsParCourseId(idItineraire="+idItineraire+
+                  ") elapse "+(System.currentTimeMillis()-start));
+    return result;
+  }
 
 	public List<Course> getCoursesFiltrees(final Long idItineraire, final Long idTableauMarche, final Date seuilDateDepartCourses) {
 		StringBuffer queryString = new StringBuffer();

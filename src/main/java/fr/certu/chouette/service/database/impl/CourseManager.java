@@ -54,6 +54,10 @@ public class CourseManager implements ICourseManager
 		return selectionSpecifique.getTableauxMarcheCourses(idCourses);
 	}
 
+	public Map<Long,List<Long>> getTMsParCourseId(final Long idItineraire) {
+    return selectionSpecifique.getTMsParCourseId(idItineraire);
+  }
+
 	public List<Horaire> getHorairesCourseOrdonnes(Long idCourse) 
 	{
 		Course course = lire(idCourse);

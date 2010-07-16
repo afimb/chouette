@@ -18,6 +18,7 @@ import fr.certu.chouette.modele.TableauMarche;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ISelectionSpecifique {
 	
@@ -65,4 +66,6 @@ public interface ISelectionSpecifique {
 	List<TableauMarche> getCalendriersFiltres(final Date dateDebutPeriode, final Date dateFinPeriode, final String commentaire, final Long idReseau);
 	List<Object> select (final IClause clause);
 	List<Course> getCoursesFiltrees(Long idItineraire, Long idTableauMarche, Date seuilDateDepartCourses);
+
+  Map<Long, List<Long>> getTMsParCourseId(final Long idItineraire);
 }
