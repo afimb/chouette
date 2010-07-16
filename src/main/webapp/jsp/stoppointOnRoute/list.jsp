@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<s:include value="/jsp/commun/scriptaculous.jsp" />
+<s:include value="/jsp/commun/autocompleteJavascript.jsp" />
 
 <SCRIPT type="text/javascript" >
-		 
+
   /**
    * Fonction permettant de rendre disponible ou pas le bouton de validation des permutations :
    * - si 2 cases coches disponible
@@ -19,9 +19,9 @@
       $('Bpermutation').disable();
     }
   }
-		 
+
   var trSelectionne = undefined;
-		
+
   function initialiserCreationArret (positionArretSelectionne, noeudSelectionne) {
     if (trSelectionne != undefined) $(trSelectionne).removeClassName('selected');
     trSelectionne = noeudSelectionne.parentNode.parentNode;
@@ -29,15 +29,15 @@
     $('positionArret').value = positionArretSelectionne;
     $('insererArret').show();
   }
-		
+
   function annulerCreationArret() {
     $('insererArret').hide();
     $(trSelectionne).removeClassName('selected');
   }
-		
+
 </SCRIPT>
 
-<%-- Titre et barre de navigation --%>	
+<%-- Titre et barre de navigation --%>
 <title><s:text name="text.arretSurItineraire.list.title" /></title>
 <s:url id="urlArretSurItineraires" action="list" namespace="/stoppointOnRoute" includeParams="none">
   <s:param name="idItineraire" value="%{idItineraire}" />
@@ -52,7 +52,7 @@
 <%-- INSERTION D'UN ARRET --%>
 <div id="insererArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
 
-  <s:form id="insererArretForm" namespace="/stoppointOnRoute" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();">
+  <s:form id="insererArretForm" namespace="/stoppointOnRoute" theme="simple">
 
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="idLigne" value="%{idLigne}" />
@@ -61,9 +61,15 @@
 
     <div style="padding-left:2px"><s:text name=""/></div>
     <div>
-      <s:textfield name="nomArretAInserer" id="nomArretAInserer" size="75" value="" />
       <s:hidden name="idArretAInserer" id="idArretAInserer" value=""/>
-      <div id="listeArrets" class="stop_areas_auto_complete_list" style="display:none;"></div>
+      <s:hidden name="operationMode" value="%{'STORE'}" />
+      <p>
+        <s:textfield name="nomArretAInserer" id="nomArretAInserer" size="75" value="" />
+        <span id="indicator" style="display: none">
+          <img src="<s:url value='/images/ajax-loader.gif'/>" alt="Working..." />
+        </span>
+      </p>
+      <div id="listeArrets" class="autocomplete"></div>
     </div>
     <div>
       <s:reset value="%{getText('action.cancel')}" onclick="annulerCreationArret();" />
@@ -97,12 +103,12 @@
           <s:iterator value="arrets" status="rangArret" id="arret">
             <s:if test="#rangArret.odd == true">
               <%
-    TRParityClass = "odd";
+                  TRParityClass = "odd";
               %>
             </s:if>
             <s:else>
               <%
-    TRParityClass = "even";
+                  TRParityClass = "even";
               %>
             </s:else>
             <TR class="${TRParityClass}">
@@ -171,29 +177,28 @@
   </s:form>
 </div>
 
-<script type="text/javascript"><!--
+<script type="text/javascript">
+  <!--
   // <![CDATA[
+  var url = '<%=request.getContextPath()%>' + "/boardingPosition/ajaxBoardingPositions";
+  new Ajax.Autocompleter(
+  "nomArretAInserer",   // id du champ de formulaire
+  "listeArrets",  // id de l'élément utilisé pour les propositions
+  url,  // URL du script côté serveur
+  {
+    paramName: 'boardingPositionName',  // Nom du paramètre reçu par le script serveur
+    minChars: 1,   // Nombre de caractères minimum avant que des appels serveur ne soient effectués
+    method:'get',
+    indicator: 'indicator',
+    afterUpdateElement: hiddenFields
+  });
 
-  var arretsPhysiques = <%=request.getAttribute("jsonArrets")%>;
-  var arretsVide = <%= request.getAttribute("arretsVide")%>;
+  $('nomArretAInserer').focus();
 
-  if(!arretsVide) checkPermutation ();
-	
-  function autocompletion() {
-    new Autocompleter.Local('nomArretAInserer', 'listeArrets', Object.keys(arretsPhysiques), {});
-    $('nomArretAInserer').focus();
+  function hiddenFields(text, li)
+  {
+    $('idArretAInserer').value = li.id;
   }
-	
-  Event.observe(window, 'load', autocompletion);
-	
-  var TridentAutoComplete = {
-    beforeSubmit : function() {
-      var value = arretsPhysiques[$('nomArretAInserer').value];
-      if (value == null) $('idArretAInserer').value="";
-      else $('idArretAInserer').value = value;
-      return true;
-    }
-  };
-	
   // ]]>
-  --></script>
+  -->
+</script>

@@ -1,8 +1,5 @@
 package fr.certu.chouette.struts;
 
-import fr.certu.chouette.manager.SingletonManager;
-import fr.certu.chouette.service.geographie.IConvertisseur;
-import fr.certu.chouette.service.geographie.ICoordonnees;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,13 +12,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+
+import fr.certu.chouette.manager.SingletonManager;
+import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
+import fr.certu.chouette.service.database.IDatabasePurgeManager;
+import fr.certu.chouette.service.geographie.IConvertisseur;
+import fr.certu.chouette.service.geographie.ICoordonnees;
 
 @SuppressWarnings("serial")
 public class ValidationAction extends GeneriqueAction
@@ -29,13 +35,15 @@ public class ValidationAction extends GeneriqueAction
 
   private static final Logger logger = Logger.getLogger(ValidationAction.class);
   private ChouetteDriverManagerDataSource managerDataSource;
+  private IDatabasePurgeManager databasePurgeManager; 
   private Connection connexion = null;
   private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
   private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
   private boolean withErrors = false;
   private String inclusif;
   private String decalage;
-  private String purge;
+  private Date purgeBoundaryDate;
+  private boolean beforeDatePurge;
   private String useGeometry;
 
   public ValidationAction()
@@ -685,179 +693,22 @@ public class ValidationAction extends GeneriqueAction
 
   public String purger()
   {
-    try
-    {
-      Date date = sdf2.parse(purge);
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(date);
-      cal.add(Calendar.DAY_OF_MONTH, 1);
-      Date nextDate = cal.getTime();
-      String nextPurge = sdf2.format(nextDate);
-      Properties props = new Properties();
-      props.setProperty("user", managerDataSource.getUsername());
-      props.setProperty("password", managerDataSource.getPassword());
-      props.setProperty("allowEncodingChanges", "true");
-      connexion = DriverManager.getConnection(managerDataSource.getUrl(), props);
-      connexion.setAutoCommit(false);
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".company DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint_stoparea DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".journeypattern DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".line DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".ptnetwork DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".route DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoparea DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoppoint DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_period DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_date DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourney DISABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop DISABLE TRIGGER ALL;");
-      String deleteDates = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable_date WHERE date <= '" + purge + "';";
-      Statement deleteDatesStatement = connexion.createStatement();
-      int numberOfDates = deleteDatesStatement.executeUpdate(deleteDates);
-      addActionMessage(getText("message.validate.purge.dates") + numberOfDates);
-      String selectDates = "SELECT timetableid, \"position\" FROM " + managerDataSource.getDatabaseSchema() + ".timetable_date ORDER BY timetableid, \"position\";";
-      Statement selectDatesStatement = connexion.createStatement();
-      ResultSet rsDates = selectDatesStatement.executeQuery(selectDates);
-      String timetableId = null;
-      int count = 0;
-      while (rsDates.next())
-      {
-        String id = rsDates.getString(1);
-        int position = rsDates.getInt(2);
-        if (id.equals(timetableId))
-        {
-          count++;
-        }
-        else
-        {
-          count = 0;
-        }
-        timetableId = id;
-        String updateDates2 = "UPDATE " + managerDataSource.getDatabaseSchema() + ".timetable_date SET \"position\" = '" + count + "' WHERE timetableid = '" + id + "' AND \"position\" = '" + position + "';";
-        Statement updateDatesStatement2 = connexion.createStatement();
-        updateDatesStatement2.executeUpdate(updateDates2);
-      }
-      String deletePeriodes = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable_period WHERE periodEnd <= '" + purge + "';";
-      Statement deletePeriodesStatement = connexion.createStatement();
-      int numberOfPeriodes = deletePeriodesStatement.executeUpdate(deletePeriodes);
-      addActionMessage(getText("message.validate.purge.periods") + numberOfPeriodes);
-      String updatePeriodes = "UPDATE " + managerDataSource.getDatabaseSchema() + ".timetable_period SET periodStart = '" + nextPurge + "' WHERE periodStart <= '" + purge + "';";
-      Statement updatePeriodesStatement = connexion.createStatement();
-      int numberOfPeriodesUpdates = updatePeriodesStatement.executeUpdate(updatePeriodes);
-      addActionMessage(getText("message.validate.purge.shorten.periods") + numberOfPeriodesUpdates);
-      String selectPeriodes = "SELECT timetableid, \"position\" FROM " + managerDataSource.getDatabaseSchema() + ".timetable_period ORDER BY timetableid, \"position\";";
-      Statement selectPeriodesStatement = connexion.createStatement();
-      ResultSet rsPeriodes = selectPeriodesStatement.executeQuery(selectPeriodes);
-      timetableId = null;
-      count = 0;
-      while (rsPeriodes.next())
-      {
-        String id = rsPeriodes.getString(1);
-        int position = rsPeriodes.getInt(2);
-        if (id.equals(timetableId))
-        {
-          count++;
-        }
-        else
-        {
-          count = 0;
-        }
-        timetableId = id;
-        String updatePeriodes2 = "UPDATE " + managerDataSource.getDatabaseSchema() + ".timetable_period SET \"position\" = '" + count + "' WHERE timetableid = '" + id + "' AND \"position\" = '" + position + "';";
-        Statement updatePeriodesStatement2 = connexion.createStatement();
-        updatePeriodesStatement2.executeUpdate(updatePeriodes2);
-      }
-      String deleteTMs = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetable WHERE id NOT IN ((SELECT timetableid FROM " + managerDataSource.getDatabaseSchema() + ".timetable_date) UNION (SELECT timetableid FROM " + managerDataSource.getDatabaseSchema() + ".timetable_period));";
-      Statement deleteTMsStatement = connexion.createStatement();
-      int numberOfTMs = deleteTMsStatement.executeUpdate(deleteTMs);
-      addActionMessage(getText("message.validate.purge.timetable") + numberOfTMs);
-      String deleteLinks = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney WHERE timetableId NOT IN (SELECT id FROM " + managerDataSource.getDatabaseSchema() + ".timetable);";
-      Statement deleteLinksStatement = connexion.createStatement();
-      int numberOfLinks = deleteLinksStatement.executeUpdate(deleteLinks);
-      addActionMessage(getText("message.validate.purge.timetable.link") + numberOfLinks);
-      String deleteCourses = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney WHERE id NOT IN (SELECT vehicleJourneyId FROM " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney);";
-      Statement deleteCoursesStatement = connexion.createStatement();
-      int numberOfCourses = deleteCoursesStatement.executeUpdate(deleteCourses);
-      addActionMessage(getText("message.validate.purge.vehicleJourney") + numberOfCourses);
-      String deleteMissions = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".journeypattern WHERE id NOT IN (SELECT journeyPatternId FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney);";
-      Statement deleteMissionsStatement = connexion.createStatement();
-      int numberOfMissions = deleteMissionsStatement.executeUpdate(deleteMissions);
-      addActionMessage(getText("message.validate.purge.journeyPattern") + numberOfMissions);
-      String deleteItineraires = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".route WHERE id NOT IN (SELECT routeId FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney);";
-      Statement deleteItinerairesStatement = connexion.createStatement();
-      int numberOfItineraires = deleteItinerairesStatement.executeUpdate(deleteItineraires);
-      addActionMessage(getText("message.validate.purge.route") + numberOfItineraires);
-      //LES RETOUR DES ITINERAIRES ????
-      String deleteHoraires = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop WHERE vehicleJourneyId NOT IN (SELECT id FROM " + managerDataSource.getDatabaseSchema() + ".vehiclejourney);";
-      Statement deleteHorairesStatement = connexion.createStatement();
-      int numberOfHoraires = deleteHorairesStatement.executeUpdate(deleteHoraires);
-      addActionMessage(getText("message.validate.purge.vehicleJourneyAtStop") + numberOfHoraires);
-      String deleteArretItineraires = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".stoppoint WHERE routeId NOT IN (SELECT id FROM " + managerDataSource.getDatabaseSchema() + ".route);";
-      Statement deleteArretItinerairesStatement = connexion.createStatement();
-      int numberOfArretItineraires = deleteArretItinerairesStatement.executeUpdate(deleteArretItineraires);
-      addActionMessage(getText("message.validate.purge.stoppointOnRoute") + numberOfArretItineraires);
-      String deleteArretPhysiques = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE (areatype = 'BoardingPosition' OR areatype = 'Quay') AND (id NOT IN (SELECT stopAreaId FROM " + managerDataSource.getDatabaseSchema() + ".stoppoint));";
-      Statement deleteArretPhysiquesStatement = connexion.createStatement();
-      int numberOfArretPhysiques = deleteArretPhysiquesStatement.executeUpdate(deleteArretPhysiques);
-      addActionMessage(getText("message.validate.purge.boardingPosition") + numberOfArretPhysiques);
-      String deleteArretCommercials = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE (areatype = 'CommercialStopPoint') AND (id NOT IN (SELECT parentId FROM " + managerDataSource.getDatabaseSchema() + ".stoparea));";
-      Statement deleteArretCommercialsStatement = connexion.createStatement();
-      int numberOfArretCommercials = deleteArretCommercialsStatement.executeUpdate(deleteArretCommercials);
-      addActionMessage(getText("message.validate.purge.commercialStopPlace") + numberOfArretCommercials);
-      String deletePolesEchangess = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".stoparea WHERE (areatype = 'StopPlace') AND (id NOT IN (SELECT parentId FROM " + managerDataSource.getDatabaseSchema() + ".stoparea));";
-      Statement deletePolesEchangessStatement = connexion.createStatement();
-      int numberOfPolesEchangess = deletePolesEchangessStatement.executeUpdate(deletePolesEchangess);
-      addActionMessage(getText("message.validate.purge.stopPlace") + numberOfPolesEchangess);
-      String deleteLignes = "DELETE FROM " + managerDataSource.getDatabaseSchema() + ".line WHERE id NOT IN (SELECT lineId FROM " + managerDataSource.getDatabaseSchema() + ".route);";
-      Statement deleteLignesStatement = connexion.createStatement();
-      int numberOfLignes = deleteLignesStatement.executeUpdate(deleteLignes);
-      addActionMessage(getText("message.validate.purge.lines") + numberOfLignes);
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".company ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".connectionlink ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint_stoparea ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".routingConstraint ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".journeypattern ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".line ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".ptnetwork ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".route ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoparea ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".stoppoint ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_period ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable_date ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetable ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".timetablevehiclejourney ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourney ENABLE TRIGGER ALL;");
-      connexion.createStatement().execute("ALTER TABLE " + managerDataSource.getDatabaseSchema() + ".vehiclejourneyatstop ENABLE TRIGGER ALL;");
-
-      connexion.commit();
-    }
-    catch (ParseException e)
-    {
-      addActionError(getText("message.validate.purge.data.error") +  getExceptionMessage(e));
-    }
-    catch (SQLException e)
-    {
-      addActionError(getText("message.validate.purge.error") +  getExceptionMessage(e));
-    }
-    finally
-    {
-      try
-      {
-        if (connexion != null)
-        {
-          connexion.close();
-        }
-      }
-      catch (Exception e)
-      {
-        logger.error("Echec de la tentative de fermeture de la connexion " + e.getMessage(), e);
-      }
-    }
-    addActionMessage(getText("message.validate.purge.success"));
+	try{
+	    HashMap<String, String> report = databasePurgeManager.purgeDatabase(purgeBoundaryDate, beforeDatePurge);
+		addActionMessage(getText("message.validate.purge.success"));
+	    Iterator<Entry<String, String>> reportIterator = report.entrySet().iterator();
+	    while(reportIterator.hasNext()){
+			Entry<String, String> entry = reportIterator.next();
+	    	addActionMessage(getText("message.validate.purge."+entry.getKey()) + entry.getValue());
+	    }
+	}
+	catch(ServiceException e){
+		addActionError(getText("message.validate.purge.error")+ e.getMessage());
+	}
+    
+    //TODO : remove these prints 
+    System.out.println("boundary date : "+purgeBoundaryDate);
+    System.out.println("before date : "+beforeDatePurge);
     return SUCCESS;
   }
 
@@ -908,12 +759,15 @@ public class ValidationAction extends GeneriqueAction
     this.decalage = decalage;
   }
 
-  public void setPurge(String purge)
-  {
-    this.purge = purge;
+  public void setPurgeBoundaryDate(Date purgeBoundaryDate) {
+    this.purgeBoundaryDate = purgeBoundaryDate;
   }
 
-  public String getUseGeometry()
+  public void setBeforeDatePurge(boolean beforeDatePurge) {
+    this.beforeDatePurge = beforeDatePurge;
+  }
+
+public String getUseGeometry()
   {
     return useGeometry;
   }
@@ -921,5 +775,9 @@ public class ValidationAction extends GeneriqueAction
   public void setUseGeometry(String useGeometry)
   {
     this.useGeometry = useGeometry;
+  }
+  
+  public void setDatabasePurgeManager(IDatabasePurgeManager databasePurgeManager) {
+	this.databasePurgeManager  = databasePurgeManager;
   }
 }

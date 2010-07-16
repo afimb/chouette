@@ -1,136 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
 
 <struts>
 
-	<!-- Constantes pour le plugin REST -->
-  <constant name="struts.codebehind.classSuffix" value="Controller" />
-  <constant name="struts.codebehind.action.checkImplementsAction"
-		value="false" />
-  <constant name="struts.codebehind.action.checkAnnotation"
-		value="false" />
-  <constant name="struts.codebehind.action.defaultMethodName"
-		value="index" />
-  <constant name="struts.configuration.classpath.defaultParentPackage"
-		value="rest-default" />
-
-	<!-- Constantes pour le plugin Convention -->
-  <constant name="struts.convention.actionConfigBuilder" value="convention" />
-  <constant name="struts.convention.actionNameBuilder" value="convention" />
-  <constant name="struts.convention.resultMapBuilder" value="convention" />
-  <constant name="struts.convention.interceptorMapBuilder"
-		value="convention" />
-  <constant name="struts.convention.conventionsService" value="convention" />
+  <!-- Constantes pour le plugin Convention -->
   <constant name="struts.convention.result.path" value="/jsp/" />
-  <constant name="struts.convention.result.flatLayout" value="true" />
-  <constant name="struts.convention.action.suffix" value="Action" />
-  <constant name="struts.convention.action.disableScanning"
-		value="false" />
+  <constant name="struts.convention.default.parent.package" value="struts" />
+  <constant name="struts.convention.action.name.lowercase" value="true" />
 
-  <constant name="struts.convention.action.mapAllMatches" value="false" />
-  <constant name="struts.convention.action.checkImplementsAction"
-		value="true" />
-  <constant name="struts.convention.default.parent.package"
-		value="struts" />
-  <constant name="struts.convention.action.name.lowercase"
-		value="true" />
-  <constant name="struts.convention.action.name.separator"
-		value="-" />
-  <constant name="struts.convention.package.locators" value="struts" />
-  <constant name="struts.convention.package.locators.disable"
-		value="false" />
-  <constant name="struts.convention.package.locators.basePackage"
-		value="" />
-  <constant name="struts.convention.exclude.packages"
-		value="org.apache.struts.*,org.apache.struts2.*,org.springframework.web.struts.*,org.springframework.web.struts2.*,org.hibernate.*" />
-  <constant name="struts.convention.relative.result.types"
-		value="dispatcher,velocity,freemarker" />
-  <constant name="struts.convention.redirect.to.slash" value="true" />
-  <constant name="struts.convention.action.alwaysMapExecute"
-		value="true" />
-  <constant name="struts.mapper.alwaysSelectFullNamespace"
-		value="true" />
-  <constant name="struts.convention.action.fileProtocols" value="jar" />
-  <constant name="struts.convention.classes.reload" value="true" />
-  <constant name="struts.convention.exclude.parentClassLoader"
-		value="true" />
-
-  <package name="struts" extends="struts-default">
+  <package name="struts" extends="json-default">
     <interceptors>
       <interceptor name="singleAction"
-				class="fr.certu.chouette.struts.interceptor.SingleActionInterceptor" />
+                   class="fr.certu.chouette.struts.interceptor.SingleActionInterceptor" />
       <interceptor name="alias"
-				class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.AliasInterceptor" />
       <interceptor name="chain"
-				class="com.opensymphony.xwork2.interceptor.ChainingInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.ChainingInterceptor" />
       <interceptor name="conversionError"
-				class="org.apache.struts2.interceptor.StrutsConversionErrorInterceptor" />
+                   class="org.apache.struts2.interceptor.StrutsConversionErrorInterceptor" />
       <interceptor name="cookie"
-				class="org.apache.struts2.interceptor.CookieInterceptor" />
+                   class="org.apache.struts2.interceptor.CookieInterceptor" />
       <interceptor name="clearSession"
-				class="org.apache.struts2.interceptor.ClearSessionInterceptor" />
+                   class="org.apache.struts2.interceptor.ClearSessionInterceptor" />
       <interceptor name="createSession"
-				class="org.apache.struts2.interceptor.CreateSessionInterceptor" />
+                   class="org.apache.struts2.interceptor.CreateSessionInterceptor" />
       <interceptor name="debugging"
-				class="org.apache.struts2.interceptor.debugging.DebuggingInterceptor" />
+                   class="org.apache.struts2.interceptor.debugging.DebuggingInterceptor" />
       <interceptor name="externalRef"
-				class="com.opensymphony.xwork2.interceptor.ExternalReferencesInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.ExternalReferencesInterceptor" />
       <interceptor name="execAndWait"
-				class="org.apache.struts2.interceptor.ExecuteAndWaitInterceptor" />
+                   class="org.apache.struts2.interceptor.ExecuteAndWaitInterceptor" />
       <interceptor name="exception"
-				class="com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor" />
       <interceptor name="fileUpload"
-				class="org.apache.struts2.interceptor.FileUploadInterceptor" />
+                   class="org.apache.struts2.interceptor.FileUploadInterceptor" />
       <interceptor name="i18n"
-				class="com.opensymphony.xwork2.interceptor.I18nInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.I18nInterceptor" />
       <interceptor name="logger"
-				class="com.opensymphony.xwork2.interceptor.LoggingInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.LoggingInterceptor" />
       <interceptor name="modelDriven"
-				class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor" />
       <interceptor name="scopedModelDriven"
-				class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.ScopedModelDrivenInterceptor" />
       <interceptor name="params"
-				class="com.opensymphony.xwork2.interceptor.ParametersInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.ParametersInterceptor" />
       <interceptor name="actionMappingParams"
-				class="org.apache.struts2.interceptor.ActionMappingParametersInteceptor" />
+                   class="org.apache.struts2.interceptor.ActionMappingParametersInteceptor" />
       <interceptor name="prepare"
-				class="com.opensymphony.xwork2.interceptor.PrepareInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.PrepareInterceptor" />
       <interceptor name="staticParams"
-				class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.StaticParametersInterceptor" />
       <interceptor name="scope"
-				class="org.apache.struts2.interceptor.ScopeInterceptor" />
+                   class="org.apache.struts2.interceptor.ScopeInterceptor" />
       <interceptor name="servletConfig"
-				class="org.apache.struts2.interceptor.ServletConfigInterceptor" />
+                   class="org.apache.struts2.interceptor.ServletConfigInterceptor" />
       <interceptor name="sessionAutowiring"
-				class="org.apache.struts2.spring.interceptor.SessionContextAutowiringInterceptor" />
+                   class="org.apache.struts2.spring.interceptor.SessionContextAutowiringInterceptor" />
       <interceptor name="timer"
-				class="com.opensymphony.xwork2.interceptor.TimerInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.TimerInterceptor" />
       <interceptor name="token"
-				class="org.apache.struts2.interceptor.TokenInterceptor" />
+                   class="org.apache.struts2.interceptor.TokenInterceptor" />
       <interceptor name="tokenSession"
-				class="org.apache.struts2.interceptor.TokenSessionStoreInterceptor" />
+                   class="org.apache.struts2.interceptor.TokenSessionStoreInterceptor" />
       <interceptor name="validation"
-				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
+                   class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
       <interceptor name="workflow"
-				class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor" />
-			
+                   class="com.opensymphony.xwork2.interceptor.DefaultWorkflowInterceptor" />
+
       <interceptor name="checkbox"
-				class="org.apache.struts2.interceptor.CheckboxInterceptor" />
+                   class="org.apache.struts2.interceptor.CheckboxInterceptor" />
       <interceptor name="profiling"
-				class="org.apache.struts2.interceptor.ProfilingActivationInterceptor" />
+                   class="org.apache.struts2.interceptor.ProfilingActivationInterceptor" />
       <interceptor name="roles"
-				class="org.apache.struts2.interceptor.RolesInterceptor" />
+                   class="org.apache.struts2.interceptor.RolesInterceptor" />
       <interceptor name="jsonValidation"
-				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
+                   class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
       <interceptor name="annotationWorkflow"
-				class="com.opensymphony.xwork2.interceptor.annotations.AnnotationWorkflowInterceptor" />
+                   class="com.opensymphony.xwork2.interceptor.annotations.AnnotationWorkflowInterceptor" />
       <interceptor name="store"
-				class="org.apache.struts2.interceptor.MessageStoreInterceptor" />
+                   class="org.apache.struts2.interceptor.MessageStoreInterceptor" />
       <interceptor name="multiselect"
-				class="org.apache.struts2.interceptor.MultiselectInterceptor" />
+                   class="org.apache.struts2.interceptor.MultiselectInterceptor" />
 
       <interceptor-stack name="crudStack">
         <interceptor-ref name="exception">
@@ -159,21 +112,21 @@
         </interceptor-ref>
         <interceptor-ref name="conversionError" />
         <interceptor-ref name="validation">
-          <param name="excludeMethods">input,edit,add,delete,list,cancel</param>
+          <param name="excludeMethods">input,edit,add,delete,list,cancel, ajaxBoardingPositions</param>
         </interceptor-ref>
         <interceptor-ref name="store"></interceptor-ref>
         <interceptor-ref name="workflow">
-          <param name="excludeMethods">input,edit,add,delete,list,cancel</param>
+          <param name="excludeMethods">input,edit,add,delete,list,cancel, ajaxBoardingPositions</param>
         </interceptor-ref>
       </interceptor-stack>
     </interceptors>
-		
+
     <default-interceptor-ref name="crudStack" />
 
-		<!-- Action par défaut -->
+    <!-- Action par défaut -->
     <default-action-ref name="ActionNotFound" />
 
-		<!-- Resultats "reutilisables" -->
+    <!-- Resultats "reutilisables" -->
     <global-results>
       <result name="busy-session" type="redirect">
         <param name="location">/</param>
@@ -182,27 +135,27 @@
       <result name="error">/jsp/error.jsp</result>
     </global-results>
 
-	<!-- Traitement des erreurs -->
+    <!-- Traitement des erreurs -->
     <global-exception-mappings>
       <exception-mapping result="error" exception="java.lang.Exception" />
     </global-exception-mappings>
 
-	<!-- Déconnexion -->
+    <!-- Déconnexion -->
     <action name="deconnexion" class="Deconnexion" method="execute">
       <result name="success" type="redirect">/</result>
     </action>
-        
-	<!-- Action non trouvée -->
+
+    <!-- Action non trouvée -->
     <action name="ActionNotFound">
       <result>/jsp/action_not_found.jsp</result>
     </action>
 
-	<!-- A propos de l'application -->
+    <!-- A propos de l'application -->
     <action name="AProposDe" class="AProposDe">
       <result name="success">/jsp/aproposde.jsp</result>
     </action>
-		
-	<!-- Validation des données -->
+
+    <!-- Validation des données -->
     <action name="Validation_*" class="Validation" method="{1}">
       <interceptor-ref name="crudStack"></interceptor-ref>
       <result name="success">/jsp/validation.jsp</result>
@@ -230,10 +183,27 @@
         <param name="contentDisposition">attachment;filename=${fileName}</param>
       </result>
     </action>
+
   </package>
 
+  <package name="json"  extends="struts" namespace="/json">
+    <action name="JSONStopPointOnRoute" class="JSONStopPointOnRouteActionBean">
+      <result type="json">
+        <param name="root">
+          stopPoints
+        </param>
+      </result>
+    </action>
+    <action name="JSONBoardingPosition" class="JSONBoardingPositionActionBean">
+      <result type="json">
+        <param name="root">
+          boardingPositions
+        </param>
+      </result>
+    </action>
+  </package>
 
-	<!-- Mise à jour des données du modèle Network -->
+  <!-- Mise à jour des données du modèle Network -->
   <package name="network" extends="struts" namespace="/network">
     <action name="*" method="{1}" class='NetworkActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -253,7 +223,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle Line -->
+  <!-- Mise à jour des données du modèle Line -->
   <package name="line" extends="struts" namespace="/line">
     <action name="*" method="{1}" class='LineActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -273,7 +243,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle Company -->
+  <!-- Mise à jour des données du modèle Company -->
   <package name="company" extends="struts" namespace="/company">
     <action name="*" method="{1}" class='CompanyActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -293,7 +263,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle ITL -->
+  <!-- Mise à jour des données du modèle ITL -->
   <package name="routingConstraint" extends="struts" namespace="/routingConstraint">
     <action name="*" method="{1}" class='RoutingConstraintActionBean'>
       <result name="redirectEdit" type="redirectAction">
@@ -314,7 +284,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle Itineraires -->
+  <!-- Mise à jour des données du modèle Itineraires -->
   <package name="route" extends="struts" namespace="/route">
     <action name="*" method="{1}" class='RouteActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -329,7 +299,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle boardingPosition -->
+  <!-- Mise à jour des données du modèle boardingPosition -->
   <package name="boardingPosition" extends="struts" namespace="/boardingPosition">
     <action name="*" method="{1}" class='StopAreaActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -341,18 +311,15 @@
         <param name="operationMode">RETRIEVE</param>
         <param name="idPositionGeographique">${idPositionGeographique}</param>
       </result>
-      <result name="edit">/jsp/boardingPosition/edit.jsp
-      </result>
-      <result name="list">/jsp/boardingPosition/list.jsp
-      </result>
-      <result name="input">/jsp/boardingPosition/edit.jsp
-      </result>
-      <result name="search">/jsp/boardingPosition/search.jsp
-      </result>
+      <result name="edit">/jsp/boardingPosition/edit.jsp</result>
+      <result name="list">/jsp/boardingPosition/list.jsp</result>
+      <result name="input">/jsp/boardingPosition/edit.jsp</result>
+      <result name="search">/jsp/boardingPosition/search.jsp</result>
+      <result name="autocomplete">/jsp/boardingPosition/autocomplete.jsp</result>
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle stopPlace -->
+  <!-- Mise à jour des données du modèle stopPlace -->
   <package name="stopPlace" extends="struts" namespace="/stopPlace">
     <action name="*" method="{1}" class='StopAreaActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -374,7 +341,7 @@
       </result>
     </action>
   </package>
-	
+
   <package name="connectionLink" extends="struts" namespace="/connectionLink">
     <action name="*" method="{1}" class='ConnectionLinkActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -397,7 +364,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle timeTable -->
+  <!-- Mise à jour des données du modèle timeTable -->
   <package name="timeTable" extends="struts" namespace="/timeTable">
     <action name="*" method="{1}" class='TimeTableActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -418,7 +385,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle ArretSurItineraire -->
+  <!-- Mise à jour des données du modèle ArretSurItineraire -->
   <package name="stoppointOnRoute" extends="struts" namespace="/stoppointOnRoute">
     <action name="*" method="{1}" class='StoppointOnRouteActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -435,9 +402,9 @@
   </package>
 
 
-	<!-- Mise à jour des données du modèle Horaires -->
+  <!-- Mise à jour des données du modèle Horaires -->
   <package name="vehicleJourneyAtStop" extends="struts"
-		namespace="/vehicleJourneyAtStop">
+           namespace="/vehicleJourneyAtStop">
     <action name="*" method="{1}" class='VehicleJourneyAtStopActionBean'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
@@ -455,7 +422,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle vehicleJourney -->
+  <!-- Mise à jour des données du modèle vehicleJourney -->
   <package name="vehicleJourney" extends="struts" namespace="/vehicleJourney">
     <action name="*" method="{1}" class='VehicleJourneyActionBean'>
       <result name="redirectEdit" type="redirectAction">
@@ -488,7 +455,7 @@
     </action>
   </package>
 
-	<!-- Mise à jour des données du modèle journeyPattern -->
+  <!-- Mise à jour des données du modèle journeyPattern -->
   <package name="journeyPattern" extends="struts" namespace="/journeyPattern">
     <action name="*" method="{1}" class='JourneyPatternActionBean'>
       <result name="redirectList" type="redirectAction">
@@ -510,9 +477,9 @@
     </action>
   </package>
 
-	<!-- ***** SERVICES NON REST ***** -->
-	
-	<!-- Export des données -->
+  <!-- ***** SERVICES NON REST ***** -->
+
+  <!-- Export des données -->
   <package name="export" extends="struts" namespace="/export">
     <action name="*" class="ExportActionBean" method="{1}">
       <result name="success" type="stream">
@@ -529,8 +496,8 @@
       </result>
     </action>
   </package>
-	
-	<!-- Import des données -->
+
+  <!-- Import des données -->
   <package name="upload" extends="struts" namespace="/upload">
     <action name="*" class="ImportActionBean" method="{1}">
       <result name="success">/jsp/upload/import.jsp</result>
@@ -550,7 +517,7 @@
     </action>
   </package>
 
-	<!-- Massive Export -->
+  <!-- Massive Export -->
   <package name="massiveExport" extends="struts" namespace="/massiveExport">
     <action name="*" class="MassiveExportActionBean" method="{1}">
       <result name="list">/jsp/massiveExport/massive_export.jsp</result>
@@ -562,8 +529,8 @@
     </action>
   </package>
 
-		
-	<!-- Service de comparaison de lignes au format Amivif -->	
+
+  <!-- Service de comparaison de lignes au format Amivif -->
   <package name="lineFilesComparisonService" extends="struts" namespace="/lineFilesComparisonService">
     <action name="*" class="LineFilesComparisonServiceBean" method="{1}">
       <result name="success">/jsp/lineFilesComparisonService/index.jsp

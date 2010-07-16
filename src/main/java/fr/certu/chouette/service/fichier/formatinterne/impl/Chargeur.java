@@ -82,17 +82,216 @@ public class Chargeur implements IChargeur {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	private void charger(Statement stmt, String nomTable, String cheminRelatif) throws SQLException {
-		File fichier = new File(cheminRelatif);
-		String chemin = fichier.getAbsolutePath();
-		if (File.separator.equals("\\")) {
-			chemin = chemin.replaceAll("\\\\", "/");
-			logger.debug("chemin="+chemin);
-		}
-		stmt.executeUpdate("COPY "+ getNettoyeurLigne().getDatabaseSchema() + "." + nomTable + " FROM '"+chemin+"';");
-		fichier.delete();
+    
+    private void charger(Statement stmt, String nomTable, String cheminRelatif) throws SQLException {
+	File fichier = new File(cheminRelatif);
+	String chemin = fichier.getAbsolutePath();
+	if (File.separator.equals("\\")) {
+	    chemin = chemin.replaceAll("\\\\", "/");
+	    logger.debug("chemin="+chemin);
 	}
+	stmt.executeUpdate("COPY "+ getNettoyeurLigne().getDatabaseSchema() + "." + nomTable +
+			   getProto(nomTable) + " FROM '"+chemin+"';");
+	fichier.delete();
+    }
+    
+    private String getProto(String nomTable) {
+	String result = "(";
+	if ("company".equals(nomTable)) {
+	    result += "id, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "name, ";
+ 	    result += "shortname, ";
+ 	    result += "organizationalunit, ";
+ 	    result += "operatingdepartmentname, ";
+ 	    result += "code, ";
+ 	    result += "phone, ";
+ 	    result += "fax, ";
+ 	    result += "email, ";
+ 	    result += "registrationnumber";
+	}
+	else if ("connectionlink".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "departureid, ";
+ 	    result += "arrivalid, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "name, ";
+ 	    result += "comment, ";
+ 	    result += "linkdistance, ";
+ 	    result += "linktype, ";
+ 	    result += "defaultduration, ";
+ 	    result += "frequenttravellerduration, ";
+ 	    result += "occasionaltravellerduration, ";
+ 	    result += "mobilityrestrictedtravellerduration, ";
+ 	    result += "mobilityrestrictedsuitability, ";
+ 	    result += "stairsavailability, ";
+ 	    result += "liftavailability";
+	}
+	else if ("ptnetwork".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "versiondate, ";
+ 	    result += "description, ";
+ 	    result += "name, ";
+ 	    result += "registrationnumber, ";
+ 	    result += "sourcename, ";
+ 	    result += "sourceidentifier, ";
+ 	    result += "comment";
+	}
+	else if ("line".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "ptnetworkid, ";
+ 	    result += "companyid, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "name, ";
+ 	    result += "number, ";
+ 	    result += "publishedname, ";
+ 	    result += "transportmodename, ";
+ 	    result += "registrationnumber, ";
+ 	    result += "comment";
+	}
+	else if ("route".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "oppositerouteid, ";
+ 	    result += "lineid, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "name, ";
+ 	    result += "publishedname, ";
+ 	    result += "number, ";
+ 	    result += "direction, ";
+ 	    result += "comment, ";
+ 	    result += "wayback";
+	}
+	else if ("stoparea".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "parentid, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "name, ";
+ 	    result += "comment, ";
+ 	    result += "areatype, ";
+ 	    result += "registrationnumber, ";
+ 	    result += "nearesttopicname, ";
+ 	    result += "farecode, ";
+ 	    result += "longitude, ";
+ 	    result += "latitude, ";
+ 	    result += "longlattype, ";
+ 	    result += "x, ";
+ 	    result += "y, ";
+ 	    result += "projectiontype, ";
+ 	    result += "countrycode, ";
+ 	    result += "streetname";
+	}
+	else if ("stoppoint".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "routeid, ";
+ 	    result += "stopareaid, ";
+ 	    result += "ismodified, ";
+ 	    result += "position, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid";
+	}
+	else if ("journeypattern".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "registrationnumber, ";
+ 	    result += "name, ";
+ 	    result += "publishedname, ";
+ 	    result += "comment";
+	}
+	else if ("vehiclejourney".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "routeid, ";
+ 	    result += "journeypatternid, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "publishedjourneyname, ";
+ 	    result += "publishedjourneyidentifier, ";
+ 	    result += "transportmode, ";
+ 	    result += "vehicletypeidentifier, ";
+ 	    result += "statusvalue, ";
+ 	    result += "facility, ";
+ 	    result += "number, ";
+ 	    result += "comment";
+	}
+	else if ("vehiclejourneyatstop".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "vehiclejourneyid, ";
+ 	    result += "stoppointid, ";
+ 	    result += "ismodified, ";
+ 	    result += "arrivaltime, ";
+ 	    result += "departuretime, ";
+ 	    result += "waitingtime, ";
+ 	    result += "connectingserviceid, ";
+ 	    result += "boardingalightingpossibility, ";
+ 	    result += "isdeparture";
+	}
+	else if ("timetable".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "objectid, ";
+ 	    result += "objectversion, ";
+ 	    result += "creationtime, ";
+ 	    result += "creatorid, ";
+ 	    result += "version, ";
+ 	    result += "comment, ";
+ 	    result += "intdaytypes";
+	}
+	else if ("timetable_date".equals(nomTable)) {
+ 	    result += "timetableid, ";
+ 	    result += "date, ";
+ 	    result += "position";
+	}
+	else if ("timetable_period".equals(nomTable)) {
+ 	    result += "timetableid, ";
+ 	    result += "periodstart, ";
+ 	    result += "periodend, ";
+ 	    result += "position";
+	}
+	else if ("timetablevehiclejourney".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "timetableid, ";
+ 	    result += "vehiclejourneyid";
+	}
+	else if ("routingConstraint".equals(nomTable)) {
+ 	    result += "id, ";
+ 	    result += "objectid, ";
+ 	    result += "lineid, ";
+ 	    result += "name";
+	}
+	else if ("routingConstraint_stoparea".equals(nomTable)) {
+ 	    result += "routingconstraintid, ";
+ 	    result += "stopareaid, ";
+ 	    result += "position";
+	}
+	else
+	    return "";
+	result += ")";
+	return result;
+    }
 	
 	public void setGestionFichier(IGestionFichier gestionFichier) {
 		this.gestionFichier = gestionFichier;

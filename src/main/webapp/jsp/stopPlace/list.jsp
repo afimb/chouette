@@ -65,27 +65,3 @@
     </display:column>
   </display:table>
 </div>
-
-<script type="text/javascript"><!--
-  // <![CDATA[
-
-  var arretsPhysiques = <%=request.getAttribute("jsonArrets")%>;
-	
-  function autocompletion() {
-    new Autocompleter.Local('nomArretDestination', 'listeArrets', Object.keys(arretsPhysiques), {});
-    $('nomArretDestination').focus();
-  }
-	
-  Event.observe(window, 'load', autocompletion);
-	
-  var TridentAutoComplete = {
-    beforeSubmit : function() {
-      var value = arretsPhysiques[$('nomArretDestination').value];
-      if (value == null) $('idArretDestination').value="";
-      else $('idArretDestination').value = value;
-      return true;
-    }
-  };
-	
-  // ]]>
-  --></script>

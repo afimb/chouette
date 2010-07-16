@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-
-<s:include value="/jsp/commun/scriptaculous.jsp" />
+<s:include value="/jsp/commun/autocompleteJavascript.jsp" />
 
 <SCRIPT type="text/javascript" >
 
@@ -57,14 +56,19 @@
 <br/>
 <%-- FUSION D'UN ARRET --%>
 <div id="fusionnerArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">
-  <s:form id="fusionnerArretForm" theme="simple" onsubmit="TridentAutoComplete.beforeSubmit();" validate="true" namespace="/boardingPosition">
-    <s:hidden name="typePositionGeographique" value="arretPhysique" />
+  <s:form id="fusionnerArretForm" theme="simple" validate="true" namespace="/boardingPosition">
     <div style="padding-left:2px"><s:text name="text.boardingPosition.stoppoints.merge"/></div>
     <div>
-      <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
       <s:hidden name="idArretDestination" id="idArretDestination" value=""/>
       <s:hidden name="idArretSource" id="idArretSource" value=""/>
-      <div id="listeArrets" class="stop_areas_auto_complete_list" style="display:none;"></div>
+      <s:hidden name="operationMode" value="%{'STORE'}" />
+      <p>
+        <s:textfield name="nomArretDestination" id="nomArretDestination" size="100" value="" />
+        <span id="indicator" style="display: none">
+          <img src="<s:url value='/images/ajax-loader.gif'/>" alt="Working..." />
+        </span>
+      </p>
+      <div id="listeArrets" class="autocomplete"></div>
     </div>
     <div>
       <s:reset value="%{getText('action.cancel')}" onclick="annulerFusionArret();" />
@@ -72,12 +76,10 @@
     </div>
   </s:form>
 </div>
-
 <br/>
 
 <%-- Tableau --%>
 <div id="displaytag"> 
-
   <display:table name="positionGeographiques" pagesize="20" requestURI="" id="positionGeographique" export="false">
 
     <display:column titleKey="table.title.action" sortable="false">
@@ -113,24 +115,24 @@
 
 <script type="text/javascript"><!--
   // <![CDATA[
+  var url = '<%=request.getContextPath()%>' + "/boardingPosition/ajaxBoardingPositions";
+  new Ajax.Autocompleter(
+  "nomArretDestination",   // id du champ de formulaire
+  "listeArrets",  // id de l'élément utilisé pour les propositions
+  url,  // URL du script côté serveur
+  {
+    paramName: 'boardingPositionName',  // Nom du paramètre reçu par le script serveur
+    minChars: 1,   // Nombre de caractères minimum avant que des appels serveur ne soient effectués
+    method:'get',
+    indicator: 'indicator',
+    afterUpdateElement: hiddenFields
+  });
 
-  var arretsPhysiques = <%=request.getAttribute("jsonArrets")%>;
-	
-  function autocompletion() {
-    new Autocompleter.Local('nomArretDestination', 'listeArrets', Object.keys(arretsPhysiques), {});
-    $('nomArretDestination').focus();
+  $('nomArretDestination').focus();
+
+  function hiddenFields(text, li)
+  {
+    $('idArretDestination').value = li.id;
   }
-	
-  Event.observe(window, 'load', autocompletion);
-	
-  var TridentAutoComplete = {
-    beforeSubmit : function() {
-      var value = arretsPhysiques[$('nomArretDestination').value];
-      if (value == null) $('idArretDestination').value="";
-      else $('idArretDestination').value = value;
-      return true;
-    }
-  };
-	
   // ]]>
   --></script>

@@ -25,7 +25,7 @@ public class MassiveExportAction extends GeneriqueAction implements Preparable
   private long networkId;
   private Date startDate;
   private Date endDate;
-  private boolean excludeConnectionLinks = false;
+  private boolean excludeConnectionLinks;
   private IReseauManager networkManager;
   private IMassiveExportManager massiveExportManager;
   private List<Reseau> networks;

@@ -44,18 +44,19 @@
   <FIELDSET style="width: 500px;">
     <LEGEND><b><s:text name="title.purge"/></b></LEGEND>
     <s:form validate="true" id="purgeForm" action="Validation_purger" enctype="multipart/form-data" method="POST">
-      <s:textfield maxlength="10" id="purge" name="purge" key="purge" required="true"/>
+      <s:textfield maxlength="10" id="purgeBoundaryDate" name="purgeBoundaryDate" key="purgeBoundaryDate" required="true"/>
       <script type="text/javascript">
         <!--//
         Calendar.setup({
           singleClick : true,
           firstDay : 1,
-          inputField : "purge",	// ID of the input field
-          ifFormat : "%Y-%m-%d"	// the date format
+          inputField : "purgeBoundaryDate",	// ID of the input field
+          ifFormat : "%d/%m/%Y"	// the date format
         }
       );
         //-->
       </script>
+      <s:radio name="beforeDatePurge" id="beforeDatePurge" list="#{'true': getText('beforeDatePurge.beforeDate'),'false': getText('beforeDatePurge.afterDate') }" value="true" label="%{getText('beforeDatePurge.label')}"/>
       <s:submit value="%{getText('action.purge')}" formId="purgeForm"/>
     </s:form>
   </FIELDSET>
