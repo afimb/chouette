@@ -45,18 +45,18 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 @SuppressWarnings("unchecked")
 public class SelectionSpecifique extends HibernateDaoSupport implements ISelectionSpecifique, IModificationSpecifique {
-	
+
 	private final static String SENS_ALLER  = "A";
 	private final static String SENS_RETOUR = "R";
 	private static final Logger logger      = Logger.getLogger(SelectionSpecifique.class);
 	private String databaseSchema;
-	
+
 	public void supprimerArretItineraire(final Long idArretItineraire) {
 		final ArretItineraire arret = (ArretItineraire)getHibernateTemplate().get(ArretItineraire.class, idArretItineraire);
 		if (arret == null)
 			throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.STOPPOINT_ID,idArretItineraire);
 		final Session session = getSession();
-		
+
 		String sqlRequeteHoraire = "DELETE Horaire h ";
 		sqlRequeteHoraire += "WHERE h.idArret = "+idArretItineraire;
 		String sqlRequetePosition = "UPDATE ArretItineraire SET position = position - 1 ";
@@ -66,7 +66,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		getHibernateTemplate().delete(arret);
 		session.createQuery(sqlRequetePosition).executeUpdate();
 	}
-	
+
 	public void supprimerCourse(final Long idCourse) {
 		final Session session = getSession();
 		String sqlRequeteLienTM = "DELETE LienTMCourse l ";
@@ -79,7 +79,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		session.createQuery(sqlRequeteHoraire).executeUpdate();
 		session.createQuery(sqlRequeteCourse).executeUpdate();
 	}
-	
+
 	public void supprimerGeoPositions(final Collection<Long> idsGeoPositions) {
 		if (isCollectionVide(idsGeoPositions))
 			return;
@@ -97,7 +97,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlSuppression += "WHERE p.id in ("+getSQLlist(idsGeoPositions)+")";
 		getSession().createQuery(sqlSuppression).executeUpdate();
 	}
-	
+
 	public void supprimerArretsItineraire(Collection<Long> idsArretsItineraire) {
 		if (isCollectionVide(idsArretsItineraire))
 			return;
@@ -110,7 +110,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		session.createQuery(sqlSuppressionHoraire).executeUpdate();
 		session.createQuery(sqlSuppressionALogique).executeUpdate();
 	}
-	
+
 	public void supprimerHorairesItineraire(final Long idItineraire) {
 		final Session session = getSession();
 		String clause = "select course.id from Course as course where course.idItineraire="+idItineraire;
@@ -118,11 +118,11 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlRequeteHoraire += "WHERE horaire.idCourse in ("+clause+")";
 		session.createQuery(sqlRequeteHoraire).executeUpdate();
 	}
-	
+
 	public void supprimerItineraire(final Long idItineraire) {
 		supprimerItineraire(idItineraire, false, false);
 	}
-		
+
 	public void supprimerItineraire(final Long idItineraire, boolean detruireAvecTMs, boolean detruireAvecArrets) {
 	//	TODO
 	//}
@@ -223,8 +223,8 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			}
 		}
 	}
-	
-	
+
+
 	public void supprimerLigne(final Long idLigne, boolean detruireAvecTMs, boolean detruireAvecArrets, boolean detruireAvecTransporteur, boolean detruireAvecReseau) {
 		final Session session = getSession();
 		long timeTo = System.currentTimeMillis();
@@ -250,14 +250,14 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		catch(HibernateQueryException e) {
 		}
-		for (Long itineraireId : itineraireIds) 
+		for (Long itineraireId : itineraireIds)
 			supprimerItineraire(itineraireId, detruireAvecTMs, detruireAvecArrets);
 		try {
 			itineraireIds = getHibernateTemplate().find("SELECT DISTINCT new java.lang.Long(i.id) FROM Itineraire i WHERE i.idLigne=?", idLigne);
 		}
 		catch(HibernateQueryException e) {
 		}
-		for (Long itineraireId : itineraireIds) 
+		for (Long itineraireId : itineraireIds)
 			supprimerItineraire(itineraireId, detruireAvecTMs, detruireAvecArrets);
 		supprimerITL(idLigne);
 		String sqlRequete = "DELETE Ligne l WHERE l.id="+idLigne;
@@ -288,12 +288,12 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			}
 		logger.debug("SUPPRESSION DE LA LIGNE "+idLigne.longValue()+" EN "+(System.currentTimeMillis()-timeTo)+" ms.");
 	}
-	
-	
+
+
 	public void supprimerLigne(final Long idLigne) {
 		supprimerLigne(idLigne, false, false, false, false);
 	}
-	
+
 	private void supprimerITL(final Long idLigne) {
 		final List<InterdictionTraficLocal> itls = getITLLigne(idLigne);
 		if (itls!=null && !itls.isEmpty()) {
@@ -309,7 +309,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			session.createSQLQuery(sqlItl).executeUpdate();
 		}
 	}
-	
+
 	public void supprimerTransporteur(final Long idTransporteur) {
 		String sqlMajLien = "UPDATE Ligne SET idTransporteur=NULL ";
 		sqlMajLien += "WHERE idTransporteur="+idTransporteur;
@@ -319,7 +319,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		session.createQuery(sqlMajLien).executeUpdate();
 		session.createQuery(sqlSuppression).executeUpdate();
 	}
-	
+
 	public void supprimerReseau(final Long idReseau) {
 		String sqlMajLien = "UPDATE Ligne SET idReseau=NULL WHERE idReseau="+idReseau;
 		String sqlSuppression = "DELETE Reseau r WHERE r.id="+idReseau;
@@ -327,12 +327,12 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		session.createQuery(sqlMajLien).executeUpdate();
 		session.createQuery(sqlSuppression).executeUpdate();
 	}
-	
+
 	public List<Horaire> getHorairesItineraire(final Long idItineraire) {
 		String clause = "SELECT c.id FROM Course c WHERE c.idItineraire="+idItineraire;
 		return getHibernateTemplate().find("FROM Horaire as h WHERE h.idCourse in ("+clause+")");
 	}
-	
+
 	public List<Horaire> getHorairesItineraires(final Collection<Long> idItineraires) {
 		if (isCollectionVide(idItineraires))
 			return new ArrayList<Horaire>();
@@ -340,28 +340,28 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		getSQLlist(idItineraires)+")";
 		return getHibernateTemplate().find("FROM Horaire as h WHERE h.idCourse in ("+clause+")");
 	}
-	
+
 	public List<Horaire> getHorairesCourse(final Long idCourse) {
 		return getHibernateTemplate().findByCriteria(DetachedCriteria.forClass(Horaire.class).add(Expression.eq("idCourse", idCourse)));
 	}
-	
+
 	public List<Horaire> getHorairesCourses(final Collection<Long> idCourses) {
 		if (isCollectionVide(idCourses))
 			return new ArrayList<Horaire>();
 		return getHibernateTemplate().find("FROM Horaire as h WHERE h.idCourse in (" + getSQLlist(idCourses) + ") ORDER BY h.idCourse");
 	}
-	
+
 	public List<Horaire> getHorairesArretItineraire(final Long idArretItineraire) {
 		return getHibernateTemplate().find("FROM Horaire as h WHERE h.idArret=?", idArretItineraire);
 	}
-	
+
 	public List<Long> getPhysiqueIdAvecItineraire() {
 		String query = "SELECT DISTINCT new java.lang.Long(sa.id) ";
 		query += "FROM PositionGeographique sa, ArretItineraire sp ";
 		query += "WHERE sa.id=sp.idPhysique ";
 		return getHibernateTemplate().find(query);
 	}
-	
+
 	public List<PositionGeographique> getArretPhysiqueLigne(final Long idLigne) {
 		String clause = "SELECT sp.idPhysique ";
 		clause += "FROM ArretItineraire sp, Itineraire r ";
@@ -369,14 +369,14 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		clause += "AND sp.idItineraire=r.id ";
 		return getHibernateTemplate().find("FROM PositionGeographique as p WHERE p.id in ("+ clause+") ORDER BY p.id");
 	}
-	
+
 	public List<PositionGeographique> getArretPhysiqueItineraire(final Long idItineraire) {
 		String clause = "SELECT sp.idPhysique ";
 		clause += "FROM ArretItineraire sp ";
 		clause += "WHERE sp.idItineraire="+idItineraire+" ";
 		return getHibernateTemplate().find("FROM PositionGeographique as p WHERE p.id in ("+ clause+") ORDER BY p.id");
 	}
-	
+
 	public List<Long> getIdsHorairesItineraire(final Long idItineraire) {
 		String query = "SELECT new java.lang.Long(h.id) ";
 		query += "FROM Course c, Horaire h ";
@@ -385,25 +385,25 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		List<Long> idHoraires = getHibernateTemplate().find(query);
 		return idHoraires;
 	}
-	
+
 	public List<Mission> getMissionsItineraire(final Long idItineraire) {
 		String clause = "SELECT c.idMission FROM Course c WHERE c.idItineraire="+idItineraire;
 		return getHibernateTemplate().find("FROM Mission as m WHERE m.id in ("+ clause+") ORDER BY m.name");
 	}
-	
+
 	public List<Mission> getMissions(final Collection<Long> idMissions) {
 		if (isCollectionVide(idMissions))
 			return new ArrayList<Mission>();
 		return getHibernateTemplate().find("FROM Mission as m WHERE m.id in ("+ getSQLlist(idMissions)+")");
 	}
-	
+
 	public List<Mission> getMissionsItineraires(final Collection<Long> idItineraires) {
 		if (isCollectionVide(idItineraires))
 			return new ArrayList<Mission>();
 		String clause = "SELECT c.idMission FROM Course c WHERE c.idItineraire in ("+getSQLlist(idItineraires)+")";
 		return getHibernateTemplate().find("FROM Mission as m WHERE m.id in ("+ clause+") ORDER BY m.name");
 	}
-	
+
 	public List<Couple> getIdMissionIdCourseType(final Long idItineraire) {
 		String query = "SELECT new fr.certu.chouette.dao.hibernate.Couple(c.idMission, MIN(c.id)) ";
 		query += "FROM Course c ";
@@ -412,7 +412,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		query += "GROUP BY c.idMission";
 		return getHibernateTemplate().find(query);
 	}
-	
+
 	public void supprimerMissionSansCourse(final Collection<Long> idMissions) {
 		if (isCollectionVide(idMissions))
 			return;
@@ -421,11 +421,11 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		query += "AND NOT EXISTS (SELECT c.id FROM Course c WHERE c.idMission=m.id)";
 		getSession().createQuery(query).executeUpdate();
 	}
-	
+
 	public List<Long> getIdsPremiersHorairesItineraire(final Long idItineraire) {
 		List<ArretItineraire> arretsItineraire = getArretsItineraire(idItineraire);
 		Map<Long, Integer> positionParIdArret = new Hashtable<Long, Integer>();
-		for (ArretItineraire arret : arretsItineraire) 
+		for (ArretItineraire arret : arretsItineraire)
 			positionParIdArret.put(arret.getId(), arret.getPosition());
 		String query = "SELECT new fr.certu.chouette.dao.hibernate.Triplet(h.id, c.id, h.idArret) ";
 		query += "FROM Course c, Horaire h ";
@@ -452,7 +452,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return new ArrayList<Long>(premierHoraireParIdCourse.values());
 	}
-	
+
 	public void referencerDepartsCourses(Long idItineraire) {
 		if (idItineraire == null)
 			return;
@@ -467,7 +467,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlRequete += "WHERE h.id in ("+getSQLlist(idsHorairesDepartCourse)+")";
 		session.createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public List<Course> getCoursesItineraireSelonHeureDepartPremiereCourse (final Long idItineraire, final Date seuilDateDepartCourses) {
 		String query = "SELECT new java.lang.Long(course.id) ";
 		query += "FROM Course course, Horaire horaire ";
@@ -479,7 +479,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		List <Long> idsCourses = getHibernateTemplate().findByNamedParam(query, "seuilDateDepartCourse", seuilDateDepartCourses);
 		return (idsCourses.size() == 0) ? new ArrayList() : getHibernateTemplate().findByCriteria(DetachedCriteria.forClass(Course.class).add(Expression.in("id", idsCourses)));
 	}
-	
+
 	public List<Course> getCoursesItineraire(final Long idItineraire) {
 		List<Course> toutesCourses = getHibernateTemplate().find("FROM Course as c WHERE c.idItineraire=? ", idItineraire);
 		String query = "SELECT new java.lang.Long(c.id) ";
@@ -496,11 +496,11 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 				courseAhoraireParId.put(course.getId(), course);
 			else
 				coursesTriees.add(course);
-		for (Long idCourseAhoraire : idCoursesAhoraireTriees) 
+		for (Long idCourseAhoraire : idCoursesAhoraireTriees)
 			coursesTriees.add(courseAhoraireParId.get(idCourseAhoraire));
 		return coursesTriees;
 	}
-	
+
 	public List<Course> getCoursesItinerairesSansHoraires(final Long idItineraire) {
 		List<Course> toutesCourses = getHibernateTemplate().find("FROM Course as c WHERE c.idItineraire=? ", idItineraire);
 		String query = "SELECT new java.lang.Long(c.id) ";
@@ -516,27 +516,27 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 				courses.add(course);
 		return courses;
 	}
-	
+
 	public List<Course> getCoursesItineraires(final Collection<Long> idItineraires) {
 		if (isCollectionVide(idItineraires))
 			return new ArrayList<Course>();
 		return getHibernateTemplate().find("FROM Course as c WHERE c.idItineraire in ("+getSQLlist(idItineraires)+") ORDER BY c.objectId");
 	}
-	
+
 	public List<ArretItineraire> getArretsItineraireParGeoPosition(final Long idGeoPosition) {
 		return getHibernateTemplate().find("FROM ArretItineraire as a WHERE a.idPhysique=? ", idGeoPosition);
 	}
-	
+
 	public List<Itineraire> getItinerairesParGeoPosition(final Long idGeoPosition) {
 		List<ArretItineraire> arrets = getArretsItineraireParGeoPosition(idGeoPosition);
 		Collection<Long> idItineraires = new HashSet<Long>();
-		for (ArretItineraire arret : arrets) 
+		for (ArretItineraire arret : arrets)
 			idItineraires.add(arret.getIdItineraire());
 		if (idItineraires.isEmpty())
 			return new ArrayList<Itineraire>();
 		return getHibernateTemplate().find("FROM Itineraire as i WHERE i.id in ("+getSQLlist(idItineraires)+")");
 	}
-	
+
 	public List<PositionGeographique> getGeoPositions(final Collection<Long> idsGeoPositions, Ordre ordre) {
 		String orderBy = "";
 		if (isCollectionVide(idsGeoPositions))
@@ -550,34 +550,34 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return getHibernateTemplate().find("FROM PositionGeographique as a WHERE a.id in ("+getSQLlist(idsGeoPositions)+") "+orderBy);
 	}
-	
+
 	public List<PositionGeographique> getGeoPositionsDirectementContenues(final Long idParent) {
 		return getHibernateTemplate().find("FROM PositionGeographique as a WHERE a.idParent="+idParent);
 	}
-	
+
 	public List<ArretItineraire> getArretsItineraire(final Long idItineraire) {
 		return getHibernateTemplate().find("FROM ArretItineraire as a WHERE a.idItineraire=? ORDER BY a.position", idItineraire);
 	}
-	
+
 	public List<ArretItineraire> getArretsItineraires(final Collection<Long> idItineraires) {
 		if (isCollectionVide(idItineraires))
 			return new ArrayList<ArretItineraire>();
 		return getHibernateTemplate().find("FROM ArretItineraire as a WHERE a.idItineraire in ("+getSQLlist(idItineraires)+") ORDER BY a.idItineraire, a.position");
 	}
-	
+
 	public List<InterdictionTraficLocal> getITLLigne(final Long idLigne) {
 		return getHibernateTemplate().find("FROM InterdictionTraficLocal as i WHERE i.idLigne=?", idLigne);
 	}
-	
+
 	public List<Itineraire> getItinerairesLigne(final Long idLigne) {
 		return getHibernateTemplate().find("FROM Itineraire as i WHERE i.idLigne=?", idLigne);
 	}
-	
+
 	public List<Itineraire> getLigneItinerairesExportables(final Long idLigne) {
 		return getHibernateTemplate().find("FROM Itineraire as i WHERE i.id IN (SELECT sp.idItineraire FROM ArretItineraire as sp, Itineraire as ii "+
 				"WHERE sp.position=1 AND sp.idItineraire=ii.id AND ii.idLigne=?) ORDER BY i.objectId", idLigne);
 	}
-	
+
 	public Ligne getLigneParRegistration(final String registrationNumber) {
 		final DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Ligne.class);
 		detachedCriteria.add(org.hibernate.criterion.Expression.eq("registrationNumber", registrationNumber));
@@ -588,37 +588,37 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			throw new ServiceException(CodeIncident.NO_REGISTRE_NON_UNIQUE, CodeDetailIncident.DEFAULT,lignes.size(),registrationNumber);
 		return lignes.get(0);
 	}
-	
+
 	private List<Ligne> getToutesLignes() {
 		return getHibernateTemplate().find("FROM Ligne as l ORDER BY l.name");
 	}
-	
+
 	private List<Ligne> getLignesReseaux(final Collection<Long> idReseaux) {
 		if (isCollectionVide(idReseaux))
 			return getToutesLignes();
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.idReseau in ("+getSQLlist(idReseaux)+") ORDER BY l.name");
 	}
-	
+
 	private List<Ligne> getLignesTransporteurs(Collection<Long> idTransporteurs) {
 		if (isCollectionVide(idTransporteurs))
 			return getToutesLignes();
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.idTransporteur in ("+getSQLlist(idTransporteurs)+") ORDER BY l.name");
 	}
-	
+
 	public List<Ligne> getLignes(final Collection<Long> idLignes) {
 		if (isCollectionVide(idLignes))
 			return new ArrayList<Ligne>();
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.id in ("+getSQLlist(idLignes)+")");
 	}
-	
-	public List<Reseau> getReseaux(final Collection<Long> idReseaux) 
+
+	public List<Reseau> getReseaux(final Collection<Long> idReseaux)
 	{
 		if (isCollectionVide(idReseaux))
 			return new ArrayList<Reseau>();
 		return getHibernateTemplate().find("FROM Reseau as r WHERE r.id in ("+getSQLlist(idReseaux)+")");
 	}
-	
-	public List<Ligne> getLignesFiltrees(final Collection<Long> idReseaux, final Collection<Long> idTransporteurs) 
+
+	public List<Ligne> getLignesFiltrees(final Collection<Long> idReseaux, final Collection<Long> idTransporteurs)
 	{
 		List<Ligne> resultat = null;
 		final boolean hasReseau = isCollectionNonVide(idReseaux);
@@ -632,17 +632,17 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			resultat = getLignesReseaux(idReseaux);
 		return resultat;
 	}
-	
-	public List<Ligne> getLignesReseau(final Long idReseau) 
+
+	public List<Ligne> getLignesReseau(final Long idReseau)
 	{
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.idReseau=?", idReseau);
 	}
-	
-	public List<Ligne> getLignesTransporteur(final Long idTransporteur) 
+
+	public List<Ligne> getLignesTransporteur(final Long idTransporteur)
 	{
 		return getHibernateTemplate().find("FROM Ligne as l WHERE l.idTransporteur=?", idTransporteur);
 	}
-	
+
 	public List<TableauMarche> getTableauxMarcheLazy() {
 		Session session = getHibernateTemplate().getSessionFactory().openSession();
 		List<Object[]> rs = session.createSQLQuery("SELECT id, objectid, comment FROM " + getDatabaseSchema() + ".timetable order by comment").list();
@@ -656,25 +656,25 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return tms;
 	}
-	
+
 	public List<TableauMarche> getTableauxMarcheCourse(final Long idCourse) {
 		List<Long> idCourses = new ArrayList<Long>(1);
 		idCourses.add(idCourse);
 		return getTableauxMarcheCourses(idCourses);
 	}
-	
+
 	public List<TableauMarche> getTableauxMarcheItineraire(final Long idItineraire) {
 		return getHibernateTemplate().find("from TableauMarche as tt WHERE tt.id in (SELECT DISTINCT t.id FROM TableauMarche as t, LienTMCourse as l, Course as c " +
 				"WHERE c.idItineraire=" + idItineraire+" AND l.idCourse=c.id AND t.id=l.idTableauMarche )");
 	}
-	
+
 	public List<TableauMarche> getTableauxMarcheItineraires(final Collection<Long> idItineraires) {
 		if (isCollectionVide(idItineraires))
 			return new ArrayList<TableauMarche>();
 		return getHibernateTemplate().find("from TableauMarche as tt WHERE tt.id in (SELECT DISTINCT t.id FROM TableauMarche as t, LienTMCourse as l, Course as c " +
 				"WHERE c.idItineraire in (" + getSQLlist(idItineraires)+") AND l.idCourse=c.id AND t.id=l.idTableauMarche )");
 	}
-	
+
 	public List<TableauMarche> getTableauxMarcheCourses(final Collection<Long> idCourses) {
 		if (isCollectionVide(idCourses))
 			return new ArrayList<TableauMarche>();
@@ -687,23 +687,23 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return resultat;
 	}
-	
+
 	public List<Course> getCoursesTableauMarche(final Long idTableauMarche) {
 		return getHibernateTemplate().find("FROM Course as c WHERE c.id in (SELECT l.idCourse FROM LienTMCourse as l WHERE l.idTableauMarche="+idTableauMarche+")");
 	}
-	
+
 	public List<Correspondance> getCorrespondancesParGeoPosition(final Long idGeoPosition) {
 		return getHibernateTemplate().find("FROM Correspondance as c WHERE c.idDepart=" + idGeoPosition + " OR c.idArrivee="+idGeoPosition);
 	}
-	
+
 	public List<PositionGeographique> getGeoPositions() {
 		return getHibernateTemplate().findByCriteria(DetachedCriteria.forClass(PositionGeographique.class).addOrder(Order.asc("name")));
 	}
-	
+
 	public List<Correspondance> getCorrespondances() {
 		return getHibernateTemplate().findByCriteria(DetachedCriteria.forClass(Correspondance.class).addOrder(Order.asc("name")));
 	}
-	
+
 	public List<PositionGeographique> getGeoPositionsParentes(final Long idGeoPositionParente) {
 		Collection<Long> idsGeoPositions = new ArrayList<Long>();
 		idsGeoPositions.add(idGeoPositionParente);
@@ -722,7 +722,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return parents;
 	}
-	
+
 	public void deplacerArrets(List<Long> arretsOrdreInitial, List<Long> arretsOrdreNouveau, List<Integer> nouvellesPositions) {
 		if (isCollectionVide(arretsOrdreInitial)) {
 			assert isCollectionVide(arretsOrdreNouveau):"la liste arrets initiaux est vide alors que celle des arrets deplaces l'est pas";
@@ -742,18 +742,18 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		echangerPositions(arretsOrdreNouveau, nouvellesPositions);
 		echangerHoraires(arretsOrdreInitial, arretsOrdreNouveau);
 	}
-	
+
 	private Set<Integer> getPositionsArretsItineraire(Collection<Long> idsArretsItineraire) {
 		Set<Integer> resultat = new HashSet<Integer>();
 		if (isCollectionVide(idsArretsItineraire))
 			return resultat;
 		String sqlIds = getSQLlist(idsArretsItineraire);
 		List<ArretItineraire> arrets = getHibernateTemplate().find("FROM ArretItineraire as a WHERE a.id in (" + sqlIds + ")");
-		for (ArretItineraire arret : arrets) 
+		for (ArretItineraire arret : arrets)
 			resultat.add(arret.getPosition());
 		return resultat;
 	}
-	
+
 	public void echangerPositions(List<Long> arretsItineraireOrdreNouveau, List<Integer> nouvellesPositions) {
 		int total = arretsItineraireOrdreNouveau.size();
 		if (total == 0)
@@ -773,7 +773,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlArret += " WHERE a.id in ("+listId+")";
 		session.createQuery(sqlArret).executeUpdate();
 	}
-	
+
 	public void echangerHoraires(List<Long> arretsItineraireOrdreInitial, List<Long> arretsItineraireOrdreNouveau) {
 		int total = arretsItineraireOrdreInitial.size();
 		if (total == 0)
@@ -793,7 +793,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlHoraire += " WHERE h.idArret in ("+listId+")";
 		session.createQuery(sqlHoraire).executeUpdate();
 	}
-	
+
 	public void associerTableauMarcheCourses(Long idTM, List<Long> idCourses) {
 		List<LienTMCourse> liensTMCourse = null;
 		List<Long> nvIdCourses = new ArrayList<Long>(idCourses);
@@ -807,7 +807,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 				idsLiensAsupprimer.add(lien.getId());
 		}
 		if (idsLiensAsupprimer.size() > 0) {
-			String supprimesIds = getSQLlist(idsLiensAsupprimer);  
+			String supprimesIds = getSQLlist(idsLiensAsupprimer);
 			String sqlRequeteSuppression = "DELETE LienTMCourse l ";
 			sqlRequeteSuppression += "WHERE l.id in ("+supprimesIds.toString()+")";
 			Session session = this.getSession();
@@ -821,7 +821,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			getHibernateTemplate().save(nouveauLien);
 		}
 	}
-	
+
 	public void associerCourseTableauxMarche(Long idCourse, List<Long> idTMs) {
 		List<LienTMCourse> liensTMCourse = null;
 		List<Long> nvIdTMs = new ArrayList<Long>(idTMs);
@@ -835,7 +835,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 				idsLiensAsupprimer.add(lien.getId());
 		}
 		if (idsLiensAsupprimer.size() > 0) {
-			String supprimesIds = getSQLlist(idsLiensAsupprimer);  
+			String supprimesIds = getSQLlist(idsLiensAsupprimer);
 			String sqlRequeteSuppression = "DELETE LienTMCourse l ";
 			sqlRequeteSuppression += "WHERE l.id in ("+supprimesIds.toString()+")";
 			Session session = this.getSession();
@@ -849,7 +849,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			getHibernateTemplate().save(nouveauLien);
 		}
 	}
-	
+
 	public void affecterMission(Long idMission, Collection<Long> idCourses) {
 		if (isCollectionVide(idCourses))
 			return;
@@ -857,7 +857,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlRequete += " WHERE id in ("+getSQLlist(idCourses)+")";
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void fusionnerMissions(Long idMission, Long idMissionPrincipale) {
 		String sqlRequete = "UPDATE Course SET idMission="+idMissionPrincipale;
 		sqlRequete += " WHERE idMission="+idMission;
@@ -865,7 +865,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 		this.getSession().createQuery(sqlSuppression).executeUpdate();
 	}
-	
+
 	public void associerItineraire(Long idRoute1, Long idRoute2) {
 		dissocierItineraire(idRoute1);
 		dissocierItineraire(idRoute2);
@@ -874,59 +874,59 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		Itineraire itineraire1 = (Itineraire)getHibernateTemplate().find("FROM Itineraire WHERE id=?", idRoute1).get(0);
 		_orienterItineraire(idRoute2, (SENS_ALLER.equals(itineraire1.getWayBack()))?SENS_RETOUR:SENS_ALLER);
 	}
-	
+
 	private void _associerItineraire(Long idRoute1, Long idRoute2) {
 		String sqlRequete = "UPDATE Itineraire r ";
 		sqlRequete += " SET r.idRetour="+idRoute2;
 		sqlRequete += " WHERE r.id="+idRoute1;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	private void _orienterItineraire(Long idRoute, String sens) {
 		String sqlRequete = "UPDATE Itineraire r ";
 		sqlRequete += " SET r.wayBack='"+sens+"'";
 		sqlRequete += " WHERE r.id="+idRoute;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void dissocierItineraire(Long idRoute1) {
 		String sqlRequete = "UPDATE Itineraire r ";
 		sqlRequete += " SET r.idRetour=null WHERE r.idRetour="+idRoute1+" OR r.id="+idRoute1;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void dissocierITLGeoPosition(Collection<Long> idGeoPositions) {
 		String sqlRequete = "DELETE FROM " + getDatabaseSchema() + ".routingConstraint_stoparea ";
 		sqlRequete += "WHERE stopareaId in ("+getSQLlist(idGeoPositions)+")";
 		getSession().createSQLQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void associerGeoPositions(Long idContenant, Long idContenue) {
 		String sqlRequete = "UPDATE PositionGeographique p ";
 		sqlRequete += " SET p.idParent="+idContenant;
 		sqlRequete += " WHERE p.id="+idContenue;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void dissocierGeoPositionParente(Long idContenue) {
 		String sqlRequete = "UPDATE PositionGeographique p ";
 		sqlRequete += " SET p.idParent=null WHERE p.id="+idContenue;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void dissocierGeoPositionsContenues(Long idContenant) {
 		String sqlRequete = "UPDATE PositionGeographique p ";
 		sqlRequete += " SET p.idParent=null WHERE p.idParent="+idContenant;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void dissocierGeoPosition(Long idGeoPosition) {
 		dissocierGeoPositionParente(idGeoPosition);
 		dissocierGeoPositionsContenues(idGeoPosition);
 	}
-	
+
 	private String getSQLlist(Collection<Long> ids) {
-		StringBuffer sqlBuff = new StringBuffer(); 
+		StringBuffer sqlBuff = new StringBuffer();
 		int total = ids.size();
 		int totalLu = 0;
 		for (Long id : ids) {
@@ -937,26 +937,26 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return sqlBuff.toString();
 	}
-	
+
 	private boolean isCollectionNonVide(final Collection<Long> ids) {
 		return !isCollectionVide(ids);
 	}
-	
+
 	private boolean isCollectionVide(final Collection<Long> ids) {
 		return ids == null || ids.isEmpty();
 	}
-	
+
 	private String getTMSQLlist(List<LienTMCourse> ids) {
 		List<Long> lesIdTM = new ArrayList<Long>(ids.size());
-		for (LienTMCourse lien : ids) 
+		for (LienTMCourse lien : ids)
 			lesIdTM.add(lien.getIdTableauMarche());
 		return getSQLlist(lesIdTM);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private String getCourseSQLlist(List<LienTMCourse> ids) {
 		List<Long> lesIdTM = new ArrayList<Long>(ids.size());
-		for (LienTMCourse lien : ids) 
+		for (LienTMCourse lien : ids)
 			lesIdTM.add(lien.getIdCourse());
 		return getSQLlist(lesIdTM);
 	}
@@ -966,7 +966,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		sqlRequete += " WHERE idPhysique = " + idAncienArretPhysique;
 		this.getSession().createQuery(sqlRequete).executeUpdate();
 	}
-	
+
 	public void substituerArretPhysiqueDansITLsAssocies(final Long idAncienArretPhysique, final Long idNouveauArretPhysique) {
 		String sqlRequete = "UPDATE routingConstraint_stoparea SET stopareaId = " + idNouveauArretPhysique;
 		sqlRequete += " WHERE stopareaId = " + idAncienArretPhysique;
@@ -1109,7 +1109,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 		}
 		return calendriers;
 	}
-	
+
 	public List<TableauMarche> getCalendriersFiltresGOOD(final Date dateDebutInterval, final Date dateFinInterval, final String commentaire, final Long idReseau) {
 		List calendriers = null;
 		StringBuffer query = new StringBuffer();
@@ -1128,7 +1128,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			query.append("itineraire.idLigne = ligne.id AND ");
 			query.append("ligne.idReseau = " + idReseau);
 			nextQueryToken = "AND ";
-		} 
+		}
 		if (commentaire != null) {
 			query.append(nextQueryToken);
 			query.append("UPPER(tableauMarche.comment) LIKE '%" + commentaire.toUpperCase() + "%' ");
@@ -1192,7 +1192,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 			calendriers = getHibernateTemplate().find(query.toString());
 		return calendriers;
 	}
-	
+
 	public List<Object> select(final IClause clause) {
 		DetachedCriteria criteria = DetachedCriteria.forClass(ArretItineraire.class);
 		criteria.createCriteria("positionGeographique");
@@ -1229,45 +1229,48 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
   }
 
 	public List<Course> getCoursesFiltrees(final Long idItineraire, final Long idTableauMarche, final Date seuilDateDepartCourses) {
-		StringBuffer queryString = new StringBuffer();
-		ArrayList <String> params = new ArrayList<String>();
-		ArrayList <Object> values = new ArrayList<Object>();
-		queryString.append("select new fr.certu.chouette.dao.hibernate.Mixin(course, horaire) ");
-		queryString.append("from Course course, Horaire horaire ");
-		queryString.append((idTableauMarche != null) ? ", LienTMCourse lienTMCourse, TableauMarche tableauMarche " : " ");
-		queryString.append("where course.idItineraire = :idItineraire ");
-		params.add("idItineraire");
-		values.add(idItineraire);
-		queryString.append("and horaire.idCourse = course.id ");
-		queryString.append("and horaire.depart = true ");
+    long start = System.currentTimeMillis();
+
+		StringBuffer sql = new StringBuffer("SELECT {c.*}, {h.*} ");
+		sql.append(" FROM ");
+    if (idTableauMarche != null) {
+			sql.append(" SPECIFIC_SCHEMA.timetablevehiclejourney tv ,");
+    }
+    sql.append(" SPECIFIC_SCHEMA.vehiclejourney c");
+		sql.append(" LEFT JOIN SPECIFIC_SCHEMA.vehiclejourneyatstop h ON h.vehiclejourneyid=c.id AND h.isdeparture = true");
 		if (seuilDateDepartCourses != null) {
-			queryString.append("and horaire.departureTime >= :seuilDateDepartCourses ");
-			params.add("seuilDateDepartCourses");
-			values.add(seuilDateDepartCourses);
+			sql.append("AND h.departureTime >= :seuilDateDepartCourses ");
 		}
-		if (idTableauMarche != null) {
-			queryString.append("and lienTMCourse.idCourse = course.id ");
-			queryString.append("and lienTMCourse.idTableauMarche = tableauMarche.id ");
-			queryString.append("and tableauMarche.id = :idTableauMarche ");
-			params.add("idTableauMarche");
-			values.add(idTableauMarche);
+
+		sql.append(" WHERE c.routeid=");
+		sql.append(idItineraire);
+    if (idTableauMarche != null) {
+      sql.append( " AND tv.timetableid = :idTableauMarche");
+    }
+		sql.append(" ORDER BY h.departureTime");
+
+    Query query = getSession().createSQLQuery(sql.toString().replaceAll( "SPECIFIC_SCHEMA", getDatabaseSchema().trim()))
+                    .addEntity("c", Course.class)
+                    .addEntity("h", Horaire.class);
+
+		if (seuilDateDepartCourses != null) {
+			query.setTime("seuilDateDepartCourses", seuilDateDepartCourses);
 		}
-		queryString.append("order by horaire.departureTime ");
-		logger.debug("QUERY / " + queryString);
-		int idx = 0;
-		String [] paramsTab = new String [params.size()];
-		for (Object param : params.toArray()) {
-			paramsTab [idx] = (String)param;
-			idx++;
-		}
-		List<Mixin> results = getHibernateTemplate().findByNamedParam(queryString.toString(), paramsTab, values.toArray());
-		Set <Course> courses = new LinkedHashSet <Course>  ();
-		for (Object result : results)
-			courses.add((Course)((Mixin)result).get((int)0));
-		// Les courses sans horaires :
-		courses.addAll(getCoursesItinerairesSansHoraires(idItineraire));
-		
-		return Arrays.asList(courses.toArray(new Course[courses.size()]));
+    if (idTableauMarche != null) {
+			query.setLong("idTableauMarche", idTableauMarche);
+    }
+
+    List<Object[]> rowCH = query.list();
+    List<Course> courses = new ArrayList<Course>(rowCH.size());
+    for( Object[] row : rowCH) {
+      courses.add( (Course)row[0]);
+    }
+
+    logger.info( "BENCH getCoursesFiltrees(idItineraire="+idItineraire+
+                  ", idTableauMarche="+idTableauMarche+
+                  ", seuilDateDepartCourses"+seuilDateDepartCourses+") elapse "+
+                  (System.currentTimeMillis()-start));
+    return courses;
 	}
 
 	public void setDatabaseSchema(String databaseSchema) {
