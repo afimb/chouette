@@ -10,7 +10,6 @@ import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.database.ICourseManager;
 import fr.certu.chouette.service.database.IHoraireManager;
 import fr.certu.chouette.service.database.IItineraireManager;
@@ -24,9 +23,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -101,18 +103,20 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       Map<Long, PositionGeographique> arretPhysiqueParIdArret = positionGeographiqueManager.getArretPhysiqueParIdArret(arretsItineraire);
 
       model.setArretPhysiqueParIdArret(arretPhysiqueParIdArret);
+
       // PREPARATION DE LA LISTE DES TM POUR LE FILTRE
       Map<Long, String> commentParTMid = itineraireManager.getCommentParTMId(idItineraire);
-      List<TableauMarche> calendriers = new ArrayList<TableauMarche>(commentParTMid.size());
-      for ( Long tmId : commentParTMid.keySet()) {
-        TableauMarche calendrier = new TableauMarche();
-        calendrier.setId(tmId);
-        calendrier.setComment(commentParTMid.get(tmId));
-        calendriers.add(calendrier);
+      Iterator timeTableIterator = commentParTMid.entrySet().iterator();
+      int index = 1;
+      while (timeTableIterator.hasNext())
+      {
+        Map.Entry pairs = (Map.Entry) timeTableIterator.next();
+        pairs.setValue("(" + index + ") " + pairs.getValue());
+        index++;
       }
-      model.setTableauxMarche(calendriers);
-      // PREPARATION DES ELEMENTS NECESSAIRES A L'AFFICHAGE
-      // DE L'ENTETE DU TABLEAU
+      model.setTableauxMarche(commentParTMid);
+
+      // PREPARATION DES ELEMENTS NECESSAIRES A L'AFFICHAGE DE L'ENTETE DU TABLEAU
       prepareMapPositionArretParIdArret(arretsItineraire);
       prepareHoraires(arretsItineraire, coursesPage);
       prepareMapMissionParIdCourse(coursesPage);
@@ -171,6 +175,54 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     }
   }
 
+  private void prepareMapMissionParIdCourse(List<Course> coursesPage)
+  {
+    List<Long> idsMissionAffichee = new ArrayList<Long>();
+    for (Course course : coursesPage)
+    {
+      idsMissionAffichee.add(course.getIdMission());
+    }
+    List<Mission> missions = missionManager.getMissions(idsMissionAffichee);
+    Map<Long, Mission> missionParIdCourse = new Hashtable<Long, Mission>();
+    for (Mission mission : missions)
+    {
+      missionParIdCourse.put(mission.getId(), mission);
+    }
+    model.setMissionParIdCourse(missionParIdCourse);
+    log.debug("fin prepareMapMissionParIdCourse");
+  }
+
+  /*
+   * Get Timetables order for Vehicle Journey from filter
+   */
+  private void prepareMapsTableauxMarche()
+  {
+    log.debug("appel prepareMapsTableauxMarche");
+    // TimeTables ids for each vehcicle journeyid
+    Map<Long, SortedSet<Integer>> tableauxMarcheParIdCourse = new HashMap<Long, SortedSet<Integer>>();
+    // TimeTables ids from filter
+    List<Long> timeTableId = new ArrayList(model.getTableauxMarche().keySet());
+
+    Map<Long, List<Long>> tmsParCourseId = courseManager.getTimeTablesIdByRouteId(idItineraire);
+    for (Long courseId : tmsParCourseId.keySet())
+    {
+      SortedSet<Integer> timeTablesOrder = new TreeSet<Integer>();
+      List<Long> tms = tmsParCourseId.get(courseId);
+
+      for (Long tm : tms)
+      {
+        if (timeTableId.contains(tm))
+        {
+          timeTablesOrder.add(timeTableId.indexOf(tm) + 1);
+        }
+      }
+      tableauxMarcheParIdCourse.put(courseId, timeTablesOrder);
+    }
+
+    model.setTableauxMarcheParIdCourse(tableauxMarcheParIdCourse);
+    log.debug("fin prepareMapsTableauxMarche");
+  }
+
   /********************************************************
    *                           CRUD                       *
    ********************************************************/
@@ -210,18 +262,14 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     Integer nbreCourseDecalage = model.getNbreCourseDecalage();
     if (idCourseADecaler != null && nbreCourseDecalage >= 1)
     {
-      // Récupération des horaires de la course qu'il faut décaler d'un
-      // certain temps
+      // Récupération des horaires de la course qu'il faut décaler d'un certain temps
       List<Horaire> horairesADecaler = model.getHorairesParIdCourse().get(idCourseADecaler);
       //log.debug("horairesADecaler : " + horairesADecaler);
       List<Horaire> horairesADecalerResultat = new ArrayList<Horaire>();
+
       //création de la liste des ids des tableaux de marche de la course de référence
-      List<Long> tableauxMarcheIds = new ArrayList<Long>();
-      List<TableauMarche> tms = model.getTableauxMarcheParIdCourse().get(idCourseADecaler);
-      for (TableauMarche tm : tms)
-      {
-        tableauxMarcheIds.add(tm.getId());
-      }
+      List<Long> tableauxMarcheIds = courseManager.getTimeTablesIdByVehicleJourneyId(idCourseADecaler);
+
       for (int i = 0; i < nbreCourseDecalage; i++)
       {
         // Création d'une course
@@ -247,8 +295,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
             horairesADecalerResultat.add(horaireResultat);
             Long idArretItineraire = getIdArretParIndice(compteurHoraire, arretsItineraire);
             majHoraires.add(EtatMajHoraire.getCreation(idArretItineraire, course.getId(), heureDepartResultat));
-          }
-          else
+          } else
           {
             horairesADecalerResultat.add(null);
           }
@@ -286,8 +333,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       if (horaireCourse == null)
       {
         log.debug("horaireCourse.getIdCourse()              : NULL");
-      }
-      else
+      } else
       {
         log.debug("idCourse : stopPointId : departureTime   : " + horaireCourse.getIdCourse() + " : " + horaireCourse.getStopPointId() + " : " + horaireCourse.getDepartureTime().toString());
       }
@@ -298,12 +344,10 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
                 getIdCourseParIndice(indexPremiereDonneeDansCollectionPaginee, arretsItineraire),
                 heureCourse);
         majHoraires.add(etatMajHoraire);
-      }
-      else if (heureCourse == null && horaireCourse != null)
+      } else if (heureCourse == null && horaireCourse != null)
       {
         majHoraires.add(EtatMajHoraire.getSuppression(horaireCourse));
-      }
-      else if (areBothDefinedAndDifferent(heureCourse, horaireCourse))
+      } else if (areBothDefinedAndDifferent(heureCourse, horaireCourse))
       {
         horaireCourse.setDepartureTime(heureCourse);
         majHoraires.add(EtatMajHoraire.getModification(horaireCourse));
@@ -329,12 +373,10 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
                 getIdArretParIndice(indexPremiereDonneePagination, arretsItineraire),
                 getIdCourseParIndice(indexPremiereDonneePagination, arretsItineraire),
                 heureDepart));
-      }
-      else if (heureDepart == null && horaire != null)
+      } else if (heureDepart == null && horaire != null)
       {
         majHoraires.add(EtatMajHoraire.getSuppression(horaire));
-      }
-      else if (areBothDefinedAndDifferent(heureDepart, horaire))
+      } else if (areBothDefinedAndDifferent(heureDepart, horaire))
       {
         horaire.setDepartureTime(heureDepart);
         majHoraires.add(EtatMajHoraire.getModification(horaire));
@@ -369,8 +411,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
         if (positionHoraire != null)
         {
           horairesCourseOrdonnees[positionHoraire] = horaireCourse;
-        }
-        else
+        } else
         {
           log.error("L'horaire " + horaireCourse.getId() + " à l'arret " + horaireCourse.getIdArret() + " n'a pas de position connue sur l'itinéraire!");
         }
@@ -395,53 +436,6 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
       horairesCourse.add(horaire);
     }
     return horairesCourseParIdCourse;
-  }
-
-  private void prepareMapMissionParIdCourse(List<Course> coursesPage)
-  {
-    List<Long> idsMissionAffichee = new ArrayList<Long>();
-    for (Course course : coursesPage)
-    {
-      idsMissionAffichee.add(course.getIdMission());
-    }
-    List<Mission> missions = missionManager.getMissions(idsMissionAffichee);
-    Map<Long, Mission> missionParIdCourse = new Hashtable<Long, Mission>();
-    for (Mission mission : missions)
-    {
-      missionParIdCourse.put(mission.getId(), mission);
-    }
-    model.setMissionParIdCourse(missionParIdCourse);
-    log.debug("fin prepareMapMissionParIdCourse");
-  }
-
-  private void prepareMapsTableauxMarche()
-  {
-    log.debug("appel prepareMapsTableauxMarche");
-    Map<Long, List<TableauMarche>> tableauxMarcheParIdCourse = new HashMap<Long, List<TableauMarche>>();
-    Map<Long, Integer> referenceTableauMarcheParIdTableauMarche = new HashMap<Long, Integer>();
-    int index = 1;
-
-    Map<Long,List<Long>> tmsParCourseId = courseManager.getTMsParCourseId(idItineraire);
-    for ( Long courseId : tmsParCourseId.keySet()) {
-      List<Long> tms = tmsParCourseId.get( courseId);
-      List<TableauMarche> tmObjects = new ArrayList<TableauMarche>( tms.size());
-
-      for ( Long tm : tms) {
-        TableauMarche tmObject = new TableauMarche();
-        tmObject.setId( tm);
-        tmObjects.add( tmObject);
-
-        if (referenceTableauMarcheParIdTableauMarche.get(tm) == null)
-        {
-          referenceTableauMarcheParIdTableauMarche.put(tm, index++);
-        }
-      }
-      tableauxMarcheParIdCourse.put( courseId, tmObjects);
-    }
-
-    model.setTableauxMarcheParIdCourse(tableauxMarcheParIdCourse);
-    model.setReferenceTableauMarcheParIdTableauMarche(referenceTableauMarcheParIdTableauMarche);
-    log.debug("fin prepareMapsTableauxMarche");
   }
 
   /********************************************************
@@ -498,8 +492,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     if (idItineraire != null)
     {
       return itineraireManager.lire(idItineraire).getName();
-    }
-    else
+    } else
     {
       return "";
     }

@@ -67,6 +67,7 @@ public interface ISelectionSpecifique {
 	List<Object> select (final IClause clause);
 	List<Course> getCoursesFiltrees(Long idItineraire, Long idTableauMarche, Date seuilDateDepartCourses);
 
-  Map<Long, List<Long>> getTMsParCourseId(final Long idItineraire);
+  Map<Long, List<Long>> getTimeTablesIdByRouteId(final Long idItineraire);
+  List<Long> getTimeTablesIdByVehicleJourneyId(final Long vehicleJourneyId);
   Map<Long, String> getCommentParTMId(final Long idItineraire);
 }

@@ -5,21 +5,20 @@ import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.modele.TableauMarche;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 public class VehicleJourneyAtStopModel
 {
 
   private Map<Long, Mission> missionParIdCourse;
-  private Map<Long, Integer> referenceTableauMarcheParIdTableauMarche;
   private Map<Long, List<Horaire>> horairesParIdCourse;
   private Map<Long, Integer> positionArretParIdArret;
   private Map<Long, PositionGeographique> arretPhysiqueParIdArret;
-  private Map<Long, List<TableauMarche>> tableauxMarcheParIdCourse;
-  private List<TableauMarche> tableauxMarche;
+  private Map<Long, SortedSet<Integer>> tableauxMarcheParIdCourse;
+  private Map<Long, String> tableauxMarche;
   private List<Date> heuresCourses;
   private List<Integer> idsHorairesInvalides;
   private List<Horaire> horairesCourses;
@@ -31,7 +30,22 @@ public class VehicleJourneyAtStopModel
   private Date seuilDateDepartCourse = null;
   private List<Course> coursesPage;
 
+  /********************************************************
+   *                  STOPPOINTS                          *
+   ********************************************************/
+  public List<ArretItineraire> getArretsItineraire()
+  {
+    return arretsItineraire;
+  }
 
+  public void setArretsItineraire(List<ArretItineraire> arretsItineraire)
+  {
+    this.arretsItineraire = arretsItineraire;
+  }
+
+  /********************************************************
+   *                  VEHICLE JOURNEY                     *
+   ********************************************************/
   public Date getTempsDecalage()
   {
     return tempsDecalage;
@@ -62,16 +76,6 @@ public class VehicleJourneyAtStopModel
     this.idCourseADecaler = idCourseADecaler;
   }
 
-  public Long getIdTableauMarche()
-  {
-    return idTableauMarche;
-  }
-
-  public void setIdTableauMarche(Long idTableauMarche)
-  {
-    this.idTableauMarche = idTableauMarche;
-  }
-
   public Date getSeuilDateDepartCourse()
   {
     return seuilDateDepartCourse;
@@ -82,26 +86,52 @@ public class VehicleJourneyAtStopModel
     this.seuilDateDepartCourse = seuilDateDepartCourse;
   }
 
-  public List<ArretItineraire> getArretsItineraire()
+  public List<Date> getHeuresCourses()
   {
-    return arretsItineraire;
+    return heuresCourses;
   }
 
-  public void setArretsItineraire(List<ArretItineraire> arretsItineraire)
+  public void setHeuresCourses(List<Date> heuresCourses)
   {
-    this.arretsItineraire = arretsItineraire;
+    this.heuresCourses = heuresCourses;
   }
 
-  public List<Course> getCoursesPage()
+  /********************************************************
+   *                  TIME TABLE                          *
+   ********************************************************/
+  public Long getIdTableauMarche()
   {
-    return coursesPage;
+    return idTableauMarche;
   }
 
-  public void setCoursesPage(List<Course> coursesPage)
+  public void setIdTableauMarche(Long idTableauMarche)
   {
-    this.coursesPage = coursesPage;
+    this.idTableauMarche = idTableauMarche;
   }
 
+  public void setTableauxMarcheParIdCourse(Map<Long, SortedSet<Integer>> tableauxMarcheParIdCourse)
+  {
+    this.tableauxMarcheParIdCourse = tableauxMarcheParIdCourse;
+  }
+
+  public Map<Long, SortedSet<Integer>> getTableauxMarcheParIdCourse()
+  {
+    return tableauxMarcheParIdCourse;
+  }
+  
+  public Map<Long, String> getTableauxMarche()
+  {
+    return tableauxMarche;
+  }
+
+  public void setTableauxMarche(Map<Long, String> tableauxMarche)
+  {
+    this.tableauxMarche = tableauxMarche;
+  }
+
+  /********************************************************
+   *                  HOURS                               *
+   ********************************************************/
   public List<Integer> getIdsHorairesInvalides()
   {
     return idsHorairesInvalides;
@@ -132,13 +162,15 @@ public class VehicleJourneyAtStopModel
     this.horairesParIdCourse = horairesParIdCourse;
   }
 
+  /********************************************************
+   *               BOARDING POSITION                      *
+   ********************************************************/
   public Map<Long, Integer> getPositionArretParIdArret()
   {
     return positionArretParIdArret;
   }
 
-  public void setPositionArretParIdArret(
-          Map<Long, Integer> positionArretParIdArret)
+  public void setPositionArretParIdArret(Map<Long, Integer> positionArretParIdArret)
   {
     this.positionArretParIdArret = positionArretParIdArret;
   }
@@ -153,26 +185,9 @@ public class VehicleJourneyAtStopModel
     this.arretPhysiqueParIdArret = arretPhysiqueParIdArret;
   }
 
-  public Map<Long, List<TableauMarche>> getTableauxMarcheParIdCourse()
-  {
-    return tableauxMarcheParIdCourse;
-  }
-
-  public void setTableauxMarcheParIdCourse(Map<Long, List<TableauMarche>> tableauxMarcheParIdCourse)
-  {
-    this.tableauxMarcheParIdCourse = tableauxMarcheParIdCourse;
-  }
-
-  public Map<Long, Integer> getReferenceTableauMarcheParIdTableauMarche()
-  {
-    return referenceTableauMarcheParIdTableauMarche;
-  }
-
-  public void setReferenceTableauMarcheParIdTableauMarche(Map<Long, Integer> referenceTableauMarcheParIdTableauMarche)
-  {
-    this.referenceTableauMarcheParIdTableauMarche = referenceTableauMarcheParIdTableauMarche;
-  }
-
+  /********************************************************
+   *               JOURNEY PATTERN                        *
+   ********************************************************/
   public Map<Long, Mission> getMissionParIdCourse()
   {
     return missionParIdCourse;
@@ -183,25 +198,16 @@ public class VehicleJourneyAtStopModel
     this.missionParIdCourse = missionParIdCourse;
   }
 
-  public List<TableauMarche> getTableauxMarche()
+  /********************************************************
+   *               PAGE                                   *
+   ********************************************************/
+  public List<Course> getCoursesPage()
   {
-    return tableauxMarche;
+    return coursesPage;
   }
 
-  public void setTableauxMarche(List<TableauMarche> tableauxMarche)
+  public void setCoursesPage(List<Course> coursesPage)
   {
-    this.tableauxMarche = tableauxMarche;
+    this.coursesPage = coursesPage;
   }
-
-  public List<Date> getHeuresCourses()
-  {
-    return heuresCourses;
-  }
-
-  public void setHeuresCourses(List<Date> heuresCourses)
-  {
-    this.heuresCourses = heuresCourses;
-  }
-
-
 }

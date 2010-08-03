@@ -45,8 +45,6 @@
       <s:select	name="idTableauMarche"
                 label="%{getText('horairesDePassage.tableauMarcheFiltre')}"
                 list="tableauxMarche"
-                listKey="id"
-                listValue="comment"
                 headerKey=""
                 headerValue="%{getText('horairesDePassage.tableauMarcheTous')}" />
       <s:textfield name="seuilDateDepartCourse" label="%{getText('filtre.select.seuilDateDepartCourse')}"></s:textfield>

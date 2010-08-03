@@ -77,11 +77,12 @@
 <%-- CALENDRIERS --%>
 <tr>
   <td style="font-weight:bold"><s:text name="table.title.vehicleJourneyAtStop"/>&nbsp;&nbsp;</td>
-  <s:iterator value="coursesPage" >
+  <s:iterator value="coursesPage" var="vehicleJourney">
     <td>
-      <s:subset source="tableauxMarcheParIdCourse[id]" count="maxNbCalendriersParCourse">
+      <%--  count="maxNbCalendriersParCourse" --%>
+      <s:subset source="tableauxMarcheParIdCourse[#vehicleJourney.id]" var="test">
         <s:iterator>
-					(<s:property value="referenceTableauMarcheParIdTableauMarche[id]" />)&nbsp;
+          (<s:property/>)&nbsp;
         </s:iterator>
       </s:subset>
       <s:if test="tableauxMarcheParIdCourse[id].size > maxNbCalendriersParCourse">(...)</s:if>
