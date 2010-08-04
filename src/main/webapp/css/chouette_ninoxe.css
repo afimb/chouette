@@ -43,6 +43,11 @@ A:hover
   PADDING: 10px;
 }
 
+.left{float: left;}
+.right{float: right;}
+
+.spacer {clear: both;}
+
 /****************************************************************/
 /*                         HEADER                             	*/
 /****************************************************************/
@@ -455,7 +460,8 @@ div.autocomplete ul li
   BORDER: 1px solid #B0BCD6;
 }
 
-.actions  {
+.actions
+{
   FONT-SIZE: 100%;
   PADDING-LEFT: 20px;
   BACKGROUND-COLOR: #FFFFFF;
@@ -465,7 +471,8 @@ div.autocomplete ul li
   MARGIN-BOTTOM: 5px;
 }
 
-.errorMessage {
+.errorMessage
+{
   COLOR: red;
   FONT-WEIGHT: bold;
 }
@@ -481,7 +488,6 @@ div.autocomplete ul li
 /****************************************************************/
 /*                         DISPLAYTAG                          	*/
 /****************************************************************/
-
 #displaytag TABLE {
   border: 1px solid #666;
   width: 75%;
@@ -638,14 +644,26 @@ div.autocomplete ul li
 }
 
 /****************************************************************/
-/*                         MAPS                              	*/
+/*                         MAPS                              	  */
 /****************************************************************/
-
 #map
 {
+  float: left;
   border: 2px solid black;
-  width: 300px;
+  width: 500px;
   height: 300px;
 }
+
+/****************************************************************/
+/*                         STRUTS                              	*/
+/****************************************************************/
+.wwFormTable {}
+.label {font-style:italic;}
+.errorLabel {font-style:italic; color:red; }
+.errorMessage {font-weight:bold; color:red; }
+.checkboxLabel {}
+.checkboxErrorLabel {color:red; }
+.required {color:red;}
+.tdLabel {text-align:right; vertical-align:top; }
 
 
