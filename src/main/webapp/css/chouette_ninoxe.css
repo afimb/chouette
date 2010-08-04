@@ -552,7 +552,7 @@ div.autocomplete ul li
   text-align:center;
 }
 
-#displaytag tr td input{
+#displaytag tr td input[type=text]{
   width:50px;
   padding-left:2px;
   padding-right:2px;

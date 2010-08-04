@@ -98,10 +98,7 @@
       <br/>
       <div>
         <div id="displaytag">
-          <table>
-            <thead><s:include value="/jsp/vehicleJourneyAtStop/listHead.jsp" /></thead>
-            <tbody><s:include value="/jsp/vehicleJourneyAtStop/listBody.jsp" /></tbody>
-          </table>
+          <s:include value="/jsp/vehicleJourneyAtStop/listBody.jsp" />
         </div>
         <br/>
         <div ALIGN="center">
