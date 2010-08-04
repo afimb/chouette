@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<div class="informations">
 <p>
   <SPAN class="message"><s:actionmessage/></SPAN>
 </p>	
@@ -47,3 +48,4 @@
     </SPAN>
   </s:elseif>
 </p>
+</div>
