@@ -4,36 +4,7 @@
 
 <SCRIPT type="text/javascript" >
 
-  /**
-   * Fonction permettant de rendre disponible ou pas le bouton de validation des permutations :
-   * - si 2 cases coches disponible
-   * - sinon indisponible
-   */
-  function checkPermutation ()
-  {
-    var length = $$('table tr td input').select(function(el) { return el.type == "checkbox" && el.checked }).length;
-    if (length == 2) {
-      $('Bpermutation').enable();
-    } else
-    {
-      $('Bpermutation').disable();
-    }
-  }
 
-  var trSelectionne = undefined;
-
-  function initialiserCreationArret (positionArretSelectionne, noeudSelectionne) {
-    if (trSelectionne != undefined) $(trSelectionne).removeClassName('selected');
-    trSelectionne = noeudSelectionne.parentNode.parentNode;
-    $(trSelectionne).addClassName('selected');
-    $('positionArret').value = positionArretSelectionne;
-    $('insererArret').show();
-  }
-
-  function annulerCreationArret() {
-    $('insererArret').hide();
-    $(trSelectionne).removeClassName('selected');
-  }
 
 </SCRIPT>
 
@@ -82,7 +53,6 @@
 </div>
 
 <script type="text/javascript">$('insererArret').hide();</script>
-
 <br>
 
 <div id="displaytag">
@@ -98,20 +68,9 @@
         </TR>
       </THEAD>
       <TBODY>
-        <%  String TRParityClass = "";%>
         <s:if test="arrets.size > 0">
           <s:iterator value="arrets" status="rangArret" id="arret">
-            <s:if test="#rangArret.odd == true">
-              <%
-                  TRParityClass = "odd";
-              %>
-            </s:if>
-            <s:else>
-              <%
-                  TRParityClass = "even";
-              %>
-            </s:else>
-            <TR class="${TRParityClass}">
+            <TR class="<s:if test="#rangArret.odd == true ">odd</s:if><s:else>even</s:else>">
               <TD>
                 <%-- Itération sur la liste des checkbox pour le déplacement d'arrèt  --%>
                 <s:checkbox name="deplacementsArret[%{id}]" theme="simple" onclick="checkPermutation()" id="checkbox"/>
@@ -180,6 +139,43 @@
 <script type="text/javascript">
   <!--
   // <![CDATA[
+
+  /**
+   * Fonction permettant de rendre disponible ou pas le bouton de validation des permutations :
+   * - si 2 cases coches disponible
+   * - sinon indisponible
+   */
+  function checkPermutation ()
+  {
+    var length = $$('table tr td input').select(function(el) { return el.type == "checkbox" && el.checked }).length;
+    if (length == 2) {
+      $('Bpermutation').enable();
+    } else
+    {
+      $('Bpermutation').disable();
+    }
+  }
+
+  var trSelectionne = undefined;
+
+  function initialiserCreationArret (positionArretSelectionne, noeudSelectionne) {
+    if (trSelectionne != undefined) $(trSelectionne).removeClassName('selected');
+    trSelectionne = noeudSelectionne.parentNode.parentNode;
+    $(trSelectionne).addClassName('selected');
+    $('positionArret').value = positionArretSelectionne;
+    $('insererArret').show();
+  }
+
+  function annulerCreationArret() {
+    $('insererArret').hide();
+    $(trSelectionne).removeClassName('selected');
+  }
+
+  function hiddenFields(text, li)
+  {
+    $('idArretAInserer').value = li.id;
+  }
+
   var url = '<%=request.getContextPath()%>' + "/boardingPosition/ajaxBoardingPositions";
   new Ajax.Autocompleter(
   "nomArretAInserer",   // id du champ de formulaire
@@ -194,11 +190,10 @@
   });
 
   $('nomArretAInserer').focus();
+  document.observe("dom:loaded", function() {
+     checkPermutation();
+  });
 
-  function hiddenFields(text, li)
-  {
-    $('idArretAInserer').value = li.id;
-  }
   // ]]>
   -->
 </script>

@@ -144,10 +144,22 @@ A:hover
   font-size:12px;
 }
 
-/* menu */
+/****************************************************************/
+/*                      INFORMATIONS                            */
+/****************************************************************/
+.informations p
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+/****************************************************************/
+/*                        MENU                                  */
+/****************************************************************/
 #menu {
   FLOAT: left;
-  WIDTH: 190px;
+  WIDTH: 120px;
+  height: 100%;
   BORDER: 1px solid #B0BCD6;
   TEXT-ALIGN: left;
   PADDING: 2px;
@@ -185,8 +197,7 @@ A:hover
 
 /* contenu */
 #content {
-  MARGIN-LEFT: 200px;
-  PADDING: 0px 20px 0px 20px;
+  margin: 0px 20px 0px 140px;
 }
 
 #content .selection {
@@ -253,18 +264,14 @@ A:hover
 /* tableaux */
 #content TABLE {
   BORDER-COLLAPSE: collapse;
-  FONT-SIZE: 100%;
-  BORDER: 1px solid #B0BCD6;
 }
-#content TR {
-  BORDER-BOTTOM: 1px solid #B0BCD6;
-}
+
 #content TH {
   FONT-WEIGHT: bold;
   TEXT-ALIGN: left;
 }
 #content TD {
-  PADDING: 2px;
+  vertical-align: middle;
 }
 
 #content .courses {
@@ -470,13 +477,6 @@ div.autocomplete ul li
   MARGIN-RIGHT: 5px;
   MARGIN-BOTTOM: 5px;
 }
-
-.errorMessage
-{
-  COLOR: red;
-  FONT-WEIGHT: bold;
-}
-
 /****************************************************************/
 /*	Css pour les input											*/
 /****************************************************************/
@@ -490,8 +490,8 @@ div.autocomplete ul li
 /****************************************************************/
 #displaytag TABLE {
   border: 1px solid #666;
-  width: 75%;
-  margin: 20px 0 2px 0 !important;
+  width: 100%;
+  margin: 20px 0 20px 0 !important;
   border-collapse: separate;
 }
 
@@ -622,7 +622,7 @@ div.autocomplete ul li
   background-color: #eee;
   border: 1px dotted #999;
   padding: 2px 4px 2px 4px;
-  width: 79%;
+  width: 98%;
   margin-top: 10px;
   display: block;
   border-bottom: none;
@@ -632,7 +632,7 @@ div.autocomplete ul li
   background-color: #eee;
   border: 1px dotted #999;
   padding: 2px 4px 2px 4px;
-  width: 79%;
+  width: 98%;
   display: block;
   border-top: none;
   margin-bottom: -5px;
@@ -648,17 +648,17 @@ div.autocomplete ul li
 /****************************************************************/
 #map
 {
-  float: left;
+  float: right;
   border: 2px solid black;
-  width: 500px;
-  height: 300px;
+  width: 100%;
+  height: 500px;
 }
 
 /****************************************************************/
 /*                         STRUTS                              	*/
 /****************************************************************/
 .wwFormTable {}
-.label {font-style:italic;}
+.label {}
 .errorLabel {font-style:italic; color:red; }
 .errorMessage {font-weight:bold; color:red; }
 .checkboxLabel {}
