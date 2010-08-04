@@ -365,12 +365,6 @@ div.autocomplete ul li
   background-color: #fc0;
 }
 
-#horairesCourses INPUT {
-  width: 75px;
-  min-width: 75px;
-  text-align: center;
-}
-
 #horairesCourses LI
 {
   height: 25px;
@@ -549,7 +543,7 @@ div.autocomplete ul li
   background-color: #aaddff;
 }
 
-#displaytag tr.even td input {
+#displaytag tr.even td {
   background-color: #fea;
   border:none;
   width:50px;
@@ -558,7 +552,14 @@ div.autocomplete ul li
   text-align:center;
 }
 
-#displaytag tr.odd td input {
+#displaytag tr td input{
+  width:50px;
+  padding-left:2px;
+  padding-right:2px;
+  text-align:center;
+}
+
+#displaytag tr.odd td {
   background-color: #fff;
   border:none;
   width:50px;

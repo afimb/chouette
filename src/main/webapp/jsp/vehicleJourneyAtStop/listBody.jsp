@@ -2,14 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:iterator id="arretItineraire" value="arretsItineraire" status="statutArret">
-  <s:if test="#statutArret.index % 2 == 0" >
-    <s:set name="rowClass" value="'odd'" />
-  </s:if>
-  <s:else>
-    <s:set name="rowClass" value="'even'" />
-  </s:else>
-
-  <tr class="<s:property value="rowClass" />">
+  <tr class="<s:if test="#statutArret.odd == true ">odd</s:if><s:else>even</s:else>">
     <%-- NOM ARRET --%>
     <td>
       <s:url action="edit" namespace="/boardingPosition" id="arretPhysique">
