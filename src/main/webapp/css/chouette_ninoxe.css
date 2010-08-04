@@ -159,7 +159,6 @@ A:hover
 #menu {
   FLOAT: left;
   WIDTH: 120px;
-  height: 100%;
   BORDER: 1px solid #B0BCD6;
   TEXT-ALIGN: left;
   PADDING: 2px;
@@ -461,15 +460,10 @@ div.autocomplete ul li
   BORDER: 1px solid #B0BCD6;
 }
 
-.actions
+.actions a, a href
 {
-  FONT-SIZE: 100%;
-  PADDING-LEFT: 20px;
-  BACKGROUND-COLOR: #FFFFFF;
-  MARGIN-TOP: 5px;
-  MARGIN-LEFT: 5px;
-  MARGIN-RIGHT: 5px;
-  MARGIN-BOTTOM: 5px;
+  color: black;
+  margin-left: 10px;
 }
 /****************************************************************/
 /*	Css pour les input											*/
@@ -650,9 +644,8 @@ div.autocomplete ul li
 #map
 {
   float: right;
-  border: 2px solid black;
-  width: 100%;
-  height: 500px;
+  width: 350px;
+  height: 550px;
 }
 
 /****************************************************************/
