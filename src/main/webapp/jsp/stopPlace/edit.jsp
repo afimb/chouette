@@ -46,15 +46,10 @@
 
     <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
     <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
-    <s:textfield key="projectionType" />
+    <s:label key="lambert2"/>
     <s:textfield key="x" />
     <s:textfield key="y" />
-    <s:if test="id != null">
-      <s:select key="longLatType" list="longLatEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-    </s:if>
-    <s:else>
-      <s:select key="longLatType" list="longLatEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{'WGS84'}"/>
-    </s:else>
+    <s:label key="wsg84"/>
     <s:textfield key="latitude" />
     <s:textfield key="longitude" />
 

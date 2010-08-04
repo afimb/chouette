@@ -29,8 +29,8 @@
       <s:hidden name="operationMode" value="%{'STORE'}" />
       <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
-      <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 300px;"/>
-      <s:textfield key="name" required="true" cssStyle="width: 300px;" />
+      <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable"/>
+      <s:textfield key="name" required="true" />
       <s:textfield key="comment" />
       <s:textfield key="nearestTopicName" />
       <s:textfield key="streetName" />
@@ -47,15 +47,10 @@
 
       <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
       <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
-      <s:textfield key="projectionType" name="projectionType"/>
+      <tr><td><s:text name="lambert2"/></td></tr>
       <s:textfield key="x" />
       <s:textfield key="y" />
-      <s:if test="id != null">
-        <s:select key="longLatType" list="longLatEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-      </s:if>
-      <s:else>
-        <s:select key="longLatType" list="longLatEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{'WGS84'}"/>
-      </s:else>
+      <tr><td><s:text name="wsg84"/></td></tr>
       <s:textfield key="latitude" />
       <s:textfield key="longitude" />
 

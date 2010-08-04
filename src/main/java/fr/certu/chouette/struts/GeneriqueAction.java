@@ -253,42 +253,6 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     return dayType;
   }
 
-  public List<ObjetEnumere> getLongLatEnum()
-  {
-    Map<String, String> cleParTraduction = new Hashtable<String, String>();
-    SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-
-    ResourceBundle rsDir = ResourceBundle.getBundle("longitudeLatitude", getLocale());
-
-    Enumeration<String> rsDirEnum = rsDir.getKeys();
-    while (rsDirEnum.hasMoreElements())
-    {
-      String cle = rsDirEnum.nextElement();
-      String traduction = rsDir.getString(cle);
-      if (traduction != null && !traduction.isEmpty())
-      {
-        cleParTraduction.put(traduction, cle);
-      }
-    }
-    traductionTriees.addAll(cleParTraduction.keySet());
-
-    List<ObjetEnumere> longitudeLatitude = new ArrayList<ObjetEnumere>();
-    for (String traduction : traductionTriees)
-    {
-      LongLatTypeType longLatType = null;
-      try
-      {
-        longLatType = LongLatTypeType.fromValue(cleParTraduction.get(traduction));
-      } catch (Exception e)
-      {
-        log.error(e.getMessage(), e);
-      }
-      longitudeLatitude.add(new ObjetEnumere(longLatType, traduction));
-      //log.debug( "longLatType="+longLatType+" "+traduction);
-    }
-    return longitudeLatitude;
-  }
-
   public List<ObjetEnumere> getServiceStatusEnum()
   {
     Map<String, String> cleParTraduction = new Hashtable<String, String>();
