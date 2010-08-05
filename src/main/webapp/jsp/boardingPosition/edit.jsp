@@ -2,7 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <s:include value="/jsp/commun/mapJavascript.jsp" />
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/boardingPosition">
   <s:param name="idPositionGeographique" value="%{id}"/>

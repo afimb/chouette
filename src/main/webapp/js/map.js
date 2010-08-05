@@ -136,13 +136,13 @@ function toggleDrawControl(element) {
 };
 
 function updateStopPlaceMarker(){
-	if($("edit_latitude").value != "" && $("edit_longitude").value != ""){
+	if($("stoparea_latitude").value != "" && $("stoparea_longitude").value != ""){
 		if(stopPlaceMarker != null){
-			var newCoords = new OpenLayers.LonLat($("edit_longitude").value,$("edit_latitude").value).transform(wgsProjection,geoportalProjection);
+			var newCoords = new OpenLayers.LonLat($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,geoportalProjection);
 			stopPlaceMarker.move(newCoords);
 		}
 		else{
-			stopPlaceMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($("edit_longitude").value,$("edit_latitude").value).transform(wgsProjection,geoportalProjection));
+			stopPlaceMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,geoportalProjection));
 			drawControls.draw.deactivate();
 			drawControls.modify.activate();
 			vectorLayer.addFeatures([stopPlaceMarker]);
@@ -168,80 +168,80 @@ function updateCoordsFields(){
 	var point = stopPlaceMarker.geometry.clone();
 	
 	point.transform(geoportalProjection,wgsProjection);
-	$("edit_latitude").value=point.y.toFixed(6);
-	$("edit_longitude").value=point.x.toFixed(6);
+	$("stoparea_latitude").value=point.y.toFixed(6);
+	$("stoparea_longitude").value=point.x.toFixed(6);
 	
 	point.transform(wgsProjection,lambertProjection);
-	$("edit_x").value=point.x.toFixed(2);
-	$("edit_y").value=point.y.toFixed(2);
+	$("stoparea_x").value=point.x.toFixed(2);
+	$("stoparea_y").value=point.y.toFixed(2);
 };
 
 function updateLatLngFieldsCoords(){
-	var coords = new OpenLayers.LonLat($("edit_x").value,$("edit_y").value).transform(lambertProjection,wgsProjection);
-	$("edit_latitude").value=coords.lat.toFixed(6);
-	$("edit_longitude").value=coords.lon.toFixed(6);
+	var coords = new OpenLayers.LonLat($("stoparea_x").value,$("stoparea_y").value).transform(lambertProjection,wgsProjection);
+	$("stoparea_latitude").value=coords.lat.toFixed(6);
+	$("stoparea_longitude").value=coords.lon.toFixed(6);
 };
 
 function updateXYFieldsCoords(){
-	var coords = new OpenLayers.LonLat($("edit_longitude").value,$("edit_latitude").value).transform(wgsProjection,lambertProjection);
-	$("edit_x").value=coords.lon.toFixed(2);
-	$("edit_y").value=coords.lat.toFixed(2);
+	var coords = new OpenLayers.LonLat($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,lambertProjection);
+	$("stoparea_x").value=coords.lon.toFixed(2);
+	$("stoparea_y").value=coords.lat.toFixed(2);
 };
 
 function updateCoordsFrom(field){
 	switch(field){
 		case 'x' :
-			console.log("x : "+$("edit_x").value);
-			var x = parseFloat($("edit_x").value);
+			console.log("x : "+$("stoparea_x").value);
+			var x = parseFloat($("stoparea_x").value);
 			if(isNaN(x)){
-				$("edit_x").value = "";
-				$("edit_longitude").value = "";
+				$("stoparea_x").value = "";
+				$("stoparea_longitude").value = "";
 			}
 			else{
-				$("edit_x").value = x.toFixed(2);
-				if($("edit_y").value != ""){
+				$("stoparea_x").value = x.toFixed(2);
+				if($("stoparea_y").value != ""){
 					updateLatLngFieldsCoords();
 				}
 			}
 			break;
 		case 'y' :
-			console.log("y : "+$("edit_y").value);
-			var y = parseFloat($("edit_y").value);
+			console.log("y : "+$("stoparea_y").value);
+			var y = parseFloat($("stoparea_y").value);
 			if(isNaN(y)){
-				$("edit_y").value = "";
-				$("edit_latitude").value = "";
+				$("stoparea_y").value = "";
+				$("stoparea_latitude").value = "";
 			}
 			else{
-				$("edit_y").value = y.toFixed(2);
-				if($("edit_x").value != ""){
+				$("stoparea_y").value = y.toFixed(2);
+				if($("stoparea_x").value != ""){
 					updateLatLngFieldsCoords();
 				}
 			}
 			break;
 		case 'lat' :
-			console.log("lat : "+$("edit_latitude").value);
-			var lat = parseFloat($("edit_latitude").value);
+			console.log("lat : "+$("stoparea_latitude").value);
+			var lat = parseFloat($("stoparea_latitude").value);
 			if(isNaN(lat)){
-				$("edit_latitude").value = "";
-				$("edit_y").value = "";
+				$("stoparea_latitude").value = "";
+				$("stoparea_y").value = "";
 			}
 			else{
-				$("edit_latitude").value = lat.toFixed(6);
-				if($("edit_longitude").value != ""){
+				$("stoparea_latitude").value = lat.toFixed(6);
+				if($("stoparea_longitude").value != ""){
 					updateXYFieldsCoords();;
 				}
 			}
 			break;
 		case 'lon' :
-			console.log("lon : "+$("edit_longitude").value);
-			var lon = parseFloat($("edit_longitude").value);
+			console.log("lon : "+$("stoparea_longitude").value);
+			var lon = parseFloat($("stoparea_longitude").value);
 			if(isNaN(lon)){
-				$("edit_longitude").value = "";
-				$("edit_x").value = "";
+				$("stoparea_longitude").value = "";
+				$("stoparea_x").value = "";
 			}
 			else{
-				$("edit_longitude").value = lon.toFixed(6);
-				if($("edit_latitude").value != ""){
+				$("stoparea_longitude").value = lon.toFixed(6);
+				if($("stoparea_latitude").value != ""){
 					updateXYFieldsCoords();
 				}
 			}
