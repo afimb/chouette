@@ -48,11 +48,11 @@
       <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
       <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
       <tr><td><s:text name="lambert2"/></td></tr>
-      <s:textfield key="x" />
-      <s:textfield key="y" />
+      <s:textfield key="x" onblur="updateCoordsFrom('x')"/>
+      <s:textfield key="y" onblur="updateCoordsFrom('y')"/>
       <tr><td><s:text name="wsg84"/></td></tr>
-      <s:textfield key="latitude" />
-      <s:textfield key="longitude" />
+      <s:textfield key="latitude" onblur="updateCoordsFrom('lat')"/>
+      <s:textfield key="longitude" onblur="updateCoordsFrom('lon')"/>
 
       <%-- Actions --%>
       <tr>
