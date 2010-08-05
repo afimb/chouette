@@ -51,7 +51,7 @@
   <s:url action="add"  namespace="/boardingPosition" id="editPositionGeographique">
     <s:param name="typePositionGeographique" value="%{typePositionGeographique}" />
   </s:url>
-  <s:a href="%{editPositionGeographique}"><b><s:text name="text.arretPhysique.create.button"/></b></s:a>
+  <s:a href="%{editPositionGeographique}"><b><s:text name="%{getText('text.arretPhysique.create.button')}" /></b></s:a>
 </div>
 <br/>
 <%-- FUSION D'UN ARRET --%>
