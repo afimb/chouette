@@ -1,2 +1,2 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<div style="color: red;"><s:text name="explication.asterisque"/></div>
+<div class="asterisque"><s:text name="explication.asterisque"/></div>

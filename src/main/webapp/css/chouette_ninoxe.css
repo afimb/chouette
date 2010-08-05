@@ -156,23 +156,29 @@ A:hover
 /****************************************************************/
 /*                        MENU                                  */
 /****************************************************************/
-#menu {
+#menu
+{
   FLOAT: left;
   WIDTH: 120px;
   BORDER: 1px solid #B0BCD6;
   TEXT-ALIGN: left;
   PADDING: 2px;
 }
-#menu .submenu {
+
+#menu .submenu
+{
   MARGIN-BOTTOM: 30px;
 }
-#menu .submenu DIV {
-  FONT-SIZE: 120%;
+
+#menu .submenu DIV
+{
   PADDING-LEFT: 15px;
   BACKGROUND-COLOR: #F2F3F8;
   BORDER-BOTTOM: 1px solid #B0BCD6;
   FONT-WEIGHT: bold;
+  font-size: 14px;
 }
+
 #menu .submenu UL {
   LIST-STYLE: none;
   MARGIN: 0px 0px 0px 15px;
@@ -194,7 +200,9 @@ A:hover
   FLOAT: right;
 }
 
-/* contenu */
+/****************************************************************/
+/*                        CONTENT                               */
+/****************************************************************/
 #content {
   margin: 0px 20px 0px 140px;
 }
@@ -203,7 +211,6 @@ A:hover
   BORDER: 1px solid #B0BCD6;
   PADDING: 2px;
   FONT-WEIGHT: bold;
-  FONT-SIZE: 120%;
 }
 #content .selection .selprinc {
   BACKGROUND-COLOR: #FB9D1F;
@@ -225,7 +232,6 @@ A:hover
   TEXT-ALIGN: center;
   MARGIN: 20px 0px 20px 0px;
   FONT-WEIGHT: bold;
-  FONT-SIZE: 120%;
   COLOR: #5A73AB;
 }
 
@@ -236,7 +242,6 @@ A:hover
   MARGIN-LEFT: 20px;
   BORDER: 1px solid #FA980F;
   BACKGROUND-COLOR: #FDDDB4;
-  FONT-SIZE: 100%;
   FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
   COLOR: #1A408B;
 }
@@ -268,9 +273,10 @@ A:hover
 #content TH {
   FONT-WEIGHT: bold;
   TEXT-ALIGN: left;
+  padding: 5px;
 }
 #content TD {
-  vertical-align: middle;
+
 }
 
 #content .courses {
@@ -281,7 +287,6 @@ A:hover
 #content .shortcuts {
   MARGIN-LEFT: 35px;
   MARGIN-TOP: 5px;
-  FONT-SIZE: 93%;
   FONT-WEIGHT: bold;
 }
 #content .shortcuts A {
@@ -354,7 +359,7 @@ div.autocomplete ul li
   margin: 20px 0 2px 0 !important;
 }
 
-#horairesCourses TH,TD {
+#horairesCourses th, #horairesCourses td {
   padding: 2px 4px 2px 4px !important;
   text-align: center;
   vertical-align: top;
@@ -393,7 +398,7 @@ div.autocomplete ul li
   font-size:16px;
 }
 
-#pagination th,td
+#pagination th, #pagination td
 {
   padding: 1px 2px 1px 2px !important;
   text-align: center;
@@ -420,23 +425,21 @@ div.autocomplete ul li
   list-style-type: none;
 }
 
-.panelData  {
-  FONT-SIZE: 120%;
-  PADDING-LEFT: 15px;
+.panelData
+{
   BACKGROUND-COLOR: #F2F3F8;
   BORDER-BOTTOM: 1px solid #B0BCD6;
   FONT-WEIGHT: bold;
+  font-size: 14px;
   MARGIN-TOP: 2px;
 }
 
-.panelDataSection  {
-  FONT-SIZE: 100%;
-  PADDING-LEFT: 20px;
+.panelDataSection
+{
+  font-size: 14px;
+  padding: 3px 0px 3px 20px;
   BACKGROUND-COLOR: #FaFaFa;
-  MARGIN-TOP: 10px;
-  MARGIN-LEFT: 0px;
-  MARGIN-RIGHT: 0px;
-  MARGIN-BOTTOM: 0px;
+  margin: 10px 0px 0px 0px;
   BORDER-LEFT: 1px solid #B0BCD6;
   BORDER-RIGHT: 1px solid #B0BCD6;
   BORDER-TOP: 1px solid #B0BCD6;
@@ -449,21 +452,16 @@ div.autocomplete ul li
   margin: 2px 0 2px 0 !important;
 }
 
-.panel  {
-  FONT-SIZE: 100%;
+.panel
+{
   PADDING-LEFT: 20px;
   BACKGROUND-COLOR: #FFFFFF;
-  MARGIN-TOP: 0px;
-  MARGIN-LEFT: 0px;
-  MARGIN-RIGHT: 0px;
-  MARGIN-BOTTOM: 2px;
+  margin: 0px 0px 2px 0px;
   BORDER: 1px solid #B0BCD6;
 }
 
 .actions a, a href
 {
-  color: black;
-  margin-left: 10px;
 }
 /****************************************************************/
 /*	Css pour les input											*/
@@ -483,7 +481,7 @@ div.autocomplete ul li
   border-collapse: separate;
 }
 
-#displaytag TH,TD {
+#displaytag TH, #displaytag TD {
   padding: 2px 4px 2px 4px !important;
   text-align: center;
   vertical-align: middle;
@@ -497,7 +495,7 @@ div.autocomplete ul li
   background-color: orange;
 }
 
-#displaytag th a,th a:visited {
+#displaytag th a, #displaytag th a:visited {
   color: black;
 }
 
@@ -506,7 +504,7 @@ div.autocomplete ul li
   color: black;
 }
 
-#displaytag th.sorted a,th.sortable a {
+#displaytag th.sorted a, #displaytag th.sortable a {
   background-position: right;
   background-repeat: no-repeat;
   display: block;
@@ -643,15 +641,24 @@ div.autocomplete ul li
 /****************************************************************/
 #map
 {
-  float: right;
-  width: 350px;
   height: 550px;
 }
 
+.map-wrapper
+{
+  margin-left: 420px;
+}
+
 /****************************************************************/
-/*                         STRUTS                              	*/
+/*                  STRUTS THEME XHTML                         	*/
 /****************************************************************/
-.wwFormTable {}
+.wwFormTable
+{}
+.wwFormTable td
+{
+  vertical-align: middle;
+  padding: 5px;
+}
 .label {}
 .errorLabel {font-style:italic; color:red; }
 .errorMessage {font-weight:bold; color:red; }
@@ -660,4 +667,71 @@ div.autocomplete ul li
 .required {color:red;}
 .tdLabel {text-align:right; vertical-align:top; }
 
+/****************************************************************/
+/*                  STRUTS THEME CSS_XHTML                    	*/
+/****************************************************************/
+.wwgrp
+{
+  margin: 5px 0px 5px 0px;
+}
 
+.wwgrp:after
+{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+}
+
+.wwlbl
+{
+  float: left;
+  width: 200px;
+  text-align: right;
+  line-height: 25px;
+}
+
+.wwctrl
+{
+  padding-left: 5px;
+  float: left;
+  text-align: left;
+  height: 25px;
+}
+
+
+/****************************************************************/
+/*                        MAIN                                 	*/
+/****************************************************************/
+.asterisque
+{
+  margin: 5px 0px 5px 0px;
+  text-align: center;
+  color: red;
+  line-height: 25px;
+}
+
+.submit input
+{
+  margin: 5px;
+}
+
+#stoparea fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#stoparea fieldset .wwlbl
+{
+  width: 100px;
+}
+
+
+#stoparea legend
+{
+  font-weight: bold
+}

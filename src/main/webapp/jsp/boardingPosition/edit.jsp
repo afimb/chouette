@@ -2,6 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <s:include value="/jsp/commun/mapJavascript.jsp" />
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/boardingPosition">
   <s:param name="idPositionGeographique" value="%{id}"/>
@@ -21,7 +22,7 @@
 <div class="panelDataSection"><s:text name="text.arretPhysique" /></div>
 <div class="panel">
   <div class="left">
-    <s:form>
+    <s:form theme="css_xhtml" id="stoparea">
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
       <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
@@ -44,34 +45,31 @@
       <s:else>
         <s:select key="areaType" required="true" list="%{getStopAreaEnum('QuayBoardingPosition')}" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
       </s:else>
-
-      <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
-      <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
-      <tr><td><s:text name="lambert2"/></td></tr>
-      <s:textfield key="x" />
-      <s:textfield key="y" />
-      <tr><td><s:text name="wsg84"/></td></tr>
-      <s:textfield key="latitude" />
-      <s:textfield key="longitude" />
-
-      <%-- Actions --%>
-      <tr>
-        <td colspan="2">
-          <s:if test="id != null">
-            <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
-          </s:if>
-          <s:else>
-            <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
-          </s:else>
-          <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
-        </td>
-      </tr>
+      <fieldset>
+        <legend><s:text name="text.positionGeographique.dataGeo.fieldset"/></legend>
+        <s:text name="lambert2"/>
+        <s:textfield key="x" />
+        <s:textfield key="y" />
+        <s:text name="wsg84"/>
+        <s:textfield key="latitude" />
+        <s:textfield key="longitude" />
+      </fieldset>
 
       <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
-      <tr><td colspan="2"><s:include value="/jsp/commun/asterisque.jsp" /></td></tr>
+      <s:include value="/jsp/commun/asterisque.jsp" />
+      <%-- Actions --%>
+      <div class="submit">
+        <s:if test="id != null">
+          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssClass="right"/>
+        </s:if>
+        <s:else>
+          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssClass="right"/>
+        </s:else>
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssClass="right"/>
+      </div>
     </s:form>
   </div>
-  <div id="map"></div>
+  <div class="map-wrapper"><div id="map"></div></div>
   <div class="spacer"></div>
 </div>
 
