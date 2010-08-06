@@ -1,14 +1,6 @@
 /****************************************************************/
 /*                         BASE                               	*/
 /****************************************************************/
-
-.checkboxlist
-{
-  display: table-column-group;
-  text-decoration: underline;
-  color: fuchsia;
-}
-
 BODY
 {
   BACKGROUND-COLOR: #7B89A6;
@@ -16,6 +8,17 @@ BODY
   FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
   COLOR: #1A408B;
   PADDING: 10px;
+}
+
+
+img{
+  border-style: none;
+  border-width: 0px;
+}
+
+table
+{
+  border-collapse: collapse;
 }
 
 FORM
@@ -35,6 +38,9 @@ A:hover
   TEXT-DECORATION: underline;
 }
 
+/****************************************************************/
+/*                         DECORATOR                           	*/
+/****************************************************************/
 #global
 {
   BACKGROUND-COLOR: #FFFFFF;
@@ -42,91 +48,6 @@ A:hover
   MARGIN: auto;
   PADDING: 10px;
 }
-
-.left{float: left;}
-.right{float: right;}
-
-.spacer {clear: both;}
-
-/****************************************************************/
-/*                         HEADER                             	*/
-/****************************************************************/
-#header {
-  TEXT-ALIGN: left;
-}
-
-#title {
-  FLOAT: left;
-  FONT-WEIGHT: bold;
-}
-
-
-#logoImg {
-  FLOAT: left;
-  vertical-align:top;
-  margin:0px;
-  padding:0px;
-}
-#logoMedad {
-
-  WIDTH:85px;
-  HEIGHT:108px;
-  vertical-align:top;
-  margin-top:0px;
-  PADDING: 0px;
-}
-
-#logoCertu {
-  vertical-align:top;
-  margin-top:0px;
-  PADDING: 0px;
-  WIDTH:108px;
-  HEIGHT:108px;
-}
-
-#logo {
-  height:108px;
-  WIDTH: 500px;
-  BACKGROUND-COLOR: #657CB0;
-  COLOR: #FFFFFF;
-  PADDING: 10px;
-
-}
-
-#chouette {
-  FONT-WEIGHT: bolder;
-  font-size:16px;
-}
-
-#definition {
-  font-size:14px;
-}
-
-
-#tools
-{
-  padding: 10px;
-  float: right;
-  font-weight: bold;
-  font-size:12px;
-
-}
-
-#tools UL
-{
-  list-style: none;
-  padding: 0px;
-  margin: 0px;
-  text-align:center;
-}
-
-#tools LI
-{
-  padding:5px;
-  DISPLAY: inline;
-}
-
-
 
 #baseline {
   PADDING: 10px;
@@ -144,14 +65,101 @@ A:hover
   font-size:12px;
 }
 
+
 /****************************************************************/
-/*                      INFORMATIONS                            */
+/*                         HEADER                             	*/
 /****************************************************************/
-.informations p
+#header
 {
-  margin: 0px;
-  padding: 0px;
 }
+
+#header .layout
+{
+  border: 1px solid #657CB0;
+  height: 108px;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+#header .ministere
+{
+  width: 85px;
+  padding: 0px;
+  margin: 0px;
+}
+
+#header .medad
+{
+  display: block;
+  height: 108px;
+  width: 85px;
+}
+
+#header .partners
+{
+  width: 114px;
+  padding: 0px;
+  margin: 0px;
+}
+
+#header .certu
+{
+  display: block;
+  height: 52px;
+  width: 114px;
+}
+
+#header .predim
+{
+  display: block;
+  height: 56px;
+  width: 114px;
+}
+
+
+.logo
+{
+  background-color: #657CB0;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.chouette
+{
+  font-size:24px;
+  text-align: center;
+}
+
+.definition
+{
+  font-size:14px;
+  text-align: center;
+}
+
+
+.languages
+{
+  height: 106px;
+  width: 180px;
+  font-weight: bold;
+  font-size:12px;
+}
+
+.languages UL
+{
+  list-style: none;
+  text-align:center;
+  padding-left: 15px;
+}
+
+.languages LI
+{
+  margin:5px;
+  DISPLAY: inline;
+}
+
+
 
 /****************************************************************/
 /*                        MENU                                  */
@@ -734,4 +742,22 @@ div.autocomplete ul li
 #stoparea legend
 {
   font-weight: bold
+}
+
+.informations p
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+.left{float: left;}
+.right{float: right;}
+
+.spacer {clear: both;}
+
+.checkboxlist
+{
+  display: table-column-group;
+  text-decoration: underline;
+  color: fuchsia;
 }
