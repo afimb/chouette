@@ -31,7 +31,6 @@ import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.struts.GeneriqueAction;
 import java.util.HashMap;
-import org.springframework.context.ApplicationContext;
 
 public class StopAreaAction extends GeneriqueAction implements ModelDriven<PositionGeographique>, Preparable
 {
