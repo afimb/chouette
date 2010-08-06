@@ -201,6 +201,13 @@
         </param>
       </result>
     </action>
+    <action name="JSONStopPlace" class="JSONStopPlaceActionBean">
+      <result type="json">
+        <param name="root">
+          stopAreaChildrens
+        </param>
+      </result>
+    </action>
   </package>
 
   <!-- Mise à jour des données du modèle Network -->

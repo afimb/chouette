@@ -89,6 +89,11 @@
       <artifactId>struts2-json-plugin</artifactId>
       <version>2.1.8.1</version>
     </dependency>
+    <dependency>
+      <groupId>oro</groupId>
+      <artifactId>oro</artifactId>
+      <version>2.0.8</version>
+    </dependency>
     <!--  Spring -->
     <dependency>
       <groupId>org.springframework</groupId>

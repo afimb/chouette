@@ -18,6 +18,8 @@
         <pattern>/hangman/ajax/*</pattern>
         <pattern>/nodecorate/*</pattern>
         <pattern>/boardingPosition/ajax*</pattern>
+        <pattern>/stopPlace/ajax*</pattern>
+        <pattern>/config-browser/*</pattern>
     </excludes>
 
     <decorator name="main" page="main.jsp" >
