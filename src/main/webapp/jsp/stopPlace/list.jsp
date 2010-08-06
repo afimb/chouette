@@ -2,8 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
-<s:include value="/jsp/commun/scriptaculous.jsp" />
-
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiques" action="list" namespace="/stopPlace" includeParams="none">
   <s:param name="typePositionGeographique" value="%{typePositionGeographique}"/>
