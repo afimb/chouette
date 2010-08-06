@@ -73,9 +73,14 @@ function init(){
 		}
 	);
 	
-	vectorLayer = new OpenLayers.Layer.Vector("Vector Layer");
+	var symbolizer = OpenLayers.Util.applyDefaults(
+        {externalGraphic: "../js/openlayers/img/green_round_marker.png", pointRadius: 10, fillOpacity: 1},
+        OpenLayers.Feature.Vector.style["default"]);
+	var styleMap = new OpenLayers.StyleMap({"default": symbolizer, "select": {}});
+	
+	vectorLayer = new OpenLayers.Layer.Vector("Vector Layer", {styleMap: styleMap});
 
-	OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
+	//OpenLayers.Feature.Vector.style['default']['strokeWidth'] = '2';
 	
 	vectorLayer.events.on({
 //		"beforefeaturemodified": report,
