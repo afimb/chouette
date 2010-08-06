@@ -25,8 +25,8 @@
               </a>
             </td>
             <td class="logo">
-              <div class="chouette"><s:text name="app.title"/></div>
-              <div class="definition"><s:text name="app.definition"/></div>
+              <div class="chouette">Chouette</div>
+              <div class="definition">(Cr&eacute;ation d'horaires avec un outil d'&eacute;change de donn&eacute;es TC selon le format Trident Europ&eacute;en)</div>
             </td>
             <td class="languages">
             </td>
