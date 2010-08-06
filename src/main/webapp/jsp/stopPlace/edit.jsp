@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
+<s:include value="/jsp/commun/mapJavascript.jsp" />
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/stopPlace">
   <s:param name="idPositionGeographique" value="%{id}"/>
@@ -20,55 +21,57 @@
 <%-- Caractéristiques des zones --%>
 <div class="panelDataSection"><s:text name="text.zone" /></div>
 <div class="panel">
-  <s:form cssClass="panelDataInnerForm">
-    <s:hidden name="idLigne" value="%{idLigne}"/>
-    <s:hidden name="idItineraire" value="%{idItineraire}"/>
-    <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
-    <s:hidden name="idPositionGeographique" value="%{id}" />
-    <s:hidden name="operationMode" value="STORE" />
-    <s:hidden key="actionMethod" value="%{actionMethod}"/>
+  <div class="left">
+    <s:form  theme="css_xhtml" id="stoparea">
+      <s:hidden name="idLigne" value="%{idLigne}"/>
+      <s:hidden name="idItineraire" value="%{idItineraire}"/>
+      <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
+      <s:hidden name="idPositionGeographique" value="%{id}" />
+      <s:hidden name="operationMode" value="STORE" />
+      <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
-    <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 300px;"/>
-    <s:textfield key="name" required="true" cssStyle="width: 300px;" />
-    <s:textfield key="comment"/>
-    <s:textfield key="nearestTopicName" />
-    <s:textfield key="streetName" />
-    <s:textfield key="countryCode" />
-    <s:textfield key="fareCode" />
-    <s:textfield key="registrationNumber" />
+      <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable"/>
+      <s:textfield key="name" required="true"/>
+      <s:textfield key="comment"/>
+      <s:textfield key="nearestTopicName" />
+      <s:textfield key="streetName" />
+      <s:textfield key="countryCode" />
+      <s:textfield key="fareCode" />
+      <s:textfield key="registrationNumber" />
 
-    <s:if test="id != null">
-      <s:select key="areaType" required="true" list="%{getStopAreaEnum('CommercialStopStopPlace')}" listKey="enumeratedTypeAccess" listValue="textePropriete" disabled="true"/>
-    </s:if>
-    <s:else>
-      <s:select key="areaType" required="true" list="%{getStopAreaEnum('CommercialStopStopPlace')}" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-    </s:else>
+      <s:if test="id != null">
+        <s:select key="areaType" required="true" list="%{getStopAreaEnum('CommercialStopStopPlace')}" listKey="enumeratedTypeAccess" listValue="textePropriete" disabled="true"/>
+      </s:if>
+      <s:else>
+        <s:select key="areaType" required="true" list="%{getStopAreaEnum('CommercialStopStopPlace')}" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      </s:else>
 
-    <tr style="border: none;"><TD style="border: none; height: 40px;"></TD></tr>
-    <tr><TD style="text-align: center;"><b><s:text name="text.positionGeographique.dataGeo.fieldset"/></b></TD></tr>
-    <s:label key="lambert2"/>
-    <s:textfield key="x" />
-    <s:textfield key="y" />
-    <s:label key="wsg84"/>
-    <s:textfield key="latitude" />
-    <s:textfield key="longitude" />
+      <fieldset>
+        <legend><s:text name="text.positionGeographique.dataGeo.fieldset"/></legend>
+        <s:text name="lambert2"/>
+        <s:textfield key="x"  onblur="updateCoordsFrom('x')"/>
+        <s:textfield key="y" onblur="updateCoordsFrom('y')"/>
+        <s:text name="wsg84"/>
+        <s:textfield key="latitude" onblur="updateCoordsFrom('lat')"/>
+        <s:textfield key="longitude" onblur="updateCoordsFrom('lon')"/>
+      </fieldset>
 
-    <%-- Actions --%>
-    <tr>
-      <td colspan="2">
+      <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
+      <s:include value="/jsp/commun/asterisque.jsp" />
+      <%-- Actions --%>
+      <div class="submit">
         <s:if test="id != null">
-          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
+          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssClass="right"/>
         </s:if>
         <s:else>
-          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssClass="right"/>
         </s:else>
-        <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
-      </td>
-    </tr>
-
-    <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
-    <tr><td colspan="2"><s:include value="/jsp/commun/asterisque.jsp" /></td></tr>
-  </s:form>
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssClass="right"/>
+      </div>
+    </s:form>
+  </div>
+  <div class="map-wrapper"><div id="map"></div></div>
+  <div class="spacer"></div>
 </div>
 
 <s:if test="id != null">
