@@ -25,10 +25,23 @@ public class FilAriane
     StringBuffer texteFilAriane = new StringBuffer("");
     for (ElementFilAriane elementFilAriane : filAriane)
     {
-      texteFilAriane.append("/ ");
-      // Si dernier élément pas de lien url
-      if (filAriane.lastElement().equals(elementFilAriane))
+      if (filAriane.firstElement().equals(elementFilAriane))
       {
+        texteFilAriane.append("<a href='");
+        texteFilAriane.append(elementFilAriane.getUrl());
+        texteFilAriane.append("'>");
+        texteFilAriane.append(elementFilAriane.getCleTexte());
+        if (elementFilAriane.getParametreTexte() != null && !elementFilAriane.getParametreTexte().equals(""))
+        {
+          texteFilAriane.append(" ");
+          texteFilAriane.append(elementFilAriane.getParametreTexte());
+        }
+        texteFilAriane.append("</a>");
+      }
+      // Si dernier élément pas de lien url
+      else if(filAriane.lastElement().equals(elementFilAriane))
+      {
+        texteFilAriane.append(" > ");
         texteFilAriane.append(elementFilAriane.getCleTexte());
         if (elementFilAriane.getParametreTexte() != null && !elementFilAriane.getParametreTexte().equals(""))
         {
@@ -38,6 +51,7 @@ public class FilAriane
       }
       else
       {
+        texteFilAriane.append(" > ");
         texteFilAriane.append("<a href='");
         texteFilAriane.append(elementFilAriane.getUrl());
         texteFilAriane.append("'>");
