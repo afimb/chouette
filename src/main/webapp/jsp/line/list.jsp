@@ -17,7 +17,7 @@
 
   <s:form action="list">
 
-    <s:select	name="idReseau"
+    <s:select	name="filterNetworkId"
               label="%{getText('filtre.select.reseau')}"
               list="reseaux"
               listKey="id"
@@ -25,7 +25,7 @@
               headerKey=""
               headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
 
-    <s:select 	name="idTransporteur"
+    <s:select 	name="filterCompanyId"
                label="%{getText('filtre.select.transporteur')}"
                list="transporteurs"
                listKey="id"
@@ -33,7 +33,7 @@
                headerKey=""
                headerValue="%{getText('filtre.transporteur.dropDownListItem.tous')}" />
 
-    <s:textfield name="name" label="%{getText('filtre.select.nomLigne')}"></s:textfield>
+    <s:textfield name="filterLineName" label="%{getText('filtre.select.nomLigne')}"></s:textfield>
 
     <s:submit value="%{getText('action.filtrer')}"/>
 
@@ -53,7 +53,7 @@
 
 <%-- Tableau --%>
 <div id="displaytag">
-  <display:table name="lignes" sort="list" pagesize="20" requestURI="" id="ligne" export="false">
+  <display:table name="lignes" sort="list" pagesize="20" requestURI="" id="ligne"  export="false">
     <display:column titleKey="table.title.action" sortable="false">
       <s:url id="editUrl" action="edit" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
@@ -132,13 +132,13 @@
       <s:url id="editReseau" action="edit" namespace="/network">
         <s:param name="idReseau">${ligne.idReseau}</s:param>
       </s:url>
-      <s:a href="%{editReseau}"><s:property value="%{getReseau(#attr.ligne.idReseau)}"/></s:a>
+      <s:a href="%{editReseau}"><s:property value="getReseau(#attr.ligne.idReseau)"/></s:a>
     </display:column>
     <display:column titleKey="table.title.company" sortable="true" headerClass="sortable">
       <s:url id="editTransporteur" action="edit"  namespace="/company">
         <s:param name="idTransporteur"> ${ligne.idTransporteur}</s:param>
       </s:url>
-      <s:a href="%{editTransporteur}" ><s:property value="%{getTransporteur(#attr.ligne.idTransporteur)}"/></s:a>
+      <s:a href="%{editTransporteur}" ><s:property value="getTransporteur(#attr.ligne.idTransporteur)"/></s:a>
     </display:column>
     <display:column titleKey="table.title.route">
       <s:a href="%{itinerary}"><s:text name="table.text.route"/></s:a>

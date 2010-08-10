@@ -34,13 +34,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Set;
 
-public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
-        Preparable
+public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>, Preparable
 {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = -7602165137555108469L;
   private static final Log log = LogFactory.getLog(LineAction.class);
   private Ligne lineModel = new Ligne();
@@ -63,6 +59,10 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
   private ExportMode exportMode;
   private File temp;
   private String nomFichier;
+  // Filter
+  private Long filterNetworkId;
+  private Long filterCompanyId;
+  private String filterLineName;
 
   public Long getIdLigne()
   {
@@ -88,8 +88,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
     if (getIdLigne() == null)
     {
       lineModel = new Ligne();
-    }
-    else
+    } else
     {
       lineModel = ligneManager.lire(getIdLigne());
     }
@@ -106,9 +105,9 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
   {
     log.debug("List of lines");
     IClause clauseFiltre = new AndClause().add(
-            ScalarClause.newEqualsClause("idReseau", lineModel.getIdReseau())).add(
-            ScalarClause.newEqualsClause("idTransporteur", lineModel.getIdTransporteur())).add(
-            ScalarClause.newIlikeClause("name", lineModel.getName()));
+            ScalarClause.newEqualsClause("idReseau", filterNetworkId)).add(
+            ScalarClause.newEqualsClause("idTransporteur", filterCompanyId)).add(
+            ScalarClause.newIlikeClause("name", filterLineName));
     this.request.put("lignes", ligneManager.select(clauseFiltre));
     return LIST;
   }
@@ -226,8 +225,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
         //	Nom du fichier de sortie
         nomFichier = "C_" + exportMode + "_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
         lecteurFichierXML.ecrire(ligneLue, temp);
-      }
-      catch (ValidationException e)
+      } catch (ValidationException e)
       {
         List<TypeInvalidite> categories = e.getCategories();
         if (categories != null)
@@ -245,8 +243,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
         nomFichier = "C_INVALIDE_" + exportMode + "_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
         lecteurFichierXML.ecrire(ligneLue, temp);
       }
-    }
-    catch (ServiceException exception)
+    } catch (ServiceException exception)
     {
       log.error("ServiceException : " + exception.getMessage());
       addActionError(getText(exception.getCode().name()));
@@ -269,8 +266,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
       nomFichier = "S_" + exportMode + "_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
       lecteurFichierXML.ecrire(ligneLue, temp);
       ligneManager.supprimer(idLigne);
-    }
-    catch (ServiceException exception)
+    } catch (ServiceException exception)
     {
       log.debug("ServiceException : " + exception.getMessage());
       addActionError(getText(exception.getCode().name()));
@@ -281,7 +277,40 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
   }
 
   /********************************************************
-   * MANAGER *
+   *                    FILTER                            *
+   ********************************************************/
+  public Long getFilterCompanyId()
+  {
+    return filterCompanyId;
+  }
+
+  public void setFilterCompanyId(Long filterCompanyId)
+  {
+    this.filterCompanyId = filterCompanyId;
+  }
+
+  public Long getFilterNetworkId()
+  {
+    return filterNetworkId;
+  }
+
+  public void setFilterNetworkId(Long filterNetworkId)
+  {
+    this.filterNetworkId = filterNetworkId;
+  }
+
+  public String getFilterLineName()
+  {
+    return filterLineName;
+  }
+
+  public void setFilterLineName(String filterLineName)
+  {
+    this.filterLineName = filterLineName;
+  }
+
+  /********************************************************
+   *                    MANAGER                           *
    ********************************************************/
   public void setLigneManager(ILigneManager ligneManager)
   {
@@ -354,21 +383,24 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
   /********************************************************
    * OTHERS METHODS *
    ********************************************************/
-  public String getReseau(
-          Long networkId)
+  public String getReseau(Long networkId)
   {
-    for (Reseau network : networks)
+    if (networkId != null)
     {
-      if (network.getId().equals(networkId))
+      for (Reseau network : networks)
       {
-        networkName = network.getName();
-        break;
-
+        log.debug("networkId : " + networkId);
+        if (network.getId().equals(networkId))
+        {
+          networkName = network.getName();
+          break;
+        }
       }
-
-
+      return networkName;
+    } else
+    {
+      return "";
     }
-    return networkName;
   }
 
   public void setReseaux(List<Reseau> reseaux)
@@ -381,18 +413,23 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>,
     return networks;
   }
 
-  public String getTransporteur(
-          Long companyId)
+  public String getTransporteur(Long companyId)
   {
-    for (Transporteur company : companies)
+    if (companyId != null)
     {
-      if (company.getId().equals(companyId))
+      for (Transporteur company : companies)
       {
-        companyName = company.getName();
-      }
+        if (company.getId().equals(companyId))
+        {
+          companyName = company.getName();
+        }
 
+      }
+      return companyName;
+    } else
+    {
+      return "";
     }
-    return companyName;
   }
 
   public List<Transporteur> getTransporteurs()
