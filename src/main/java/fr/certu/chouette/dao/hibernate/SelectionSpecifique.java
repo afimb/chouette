@@ -1542,6 +1542,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
 
   public List<Course> getCoursesFiltrees(final Long idItineraire, final Long idTableauMarche, final Date seuilDateDepartCourses)
   {
+    logger.error("idItineraire : " + idItineraire + ", idTableauMarche : " +idTableauMarche + ", seuilDateDepartCourses : " +  seuilDateDepartCourses);
     long start = System.currentTimeMillis();
 
     StringBuffer sql = new StringBuffer("SELECT {c.*}, {h.*} ");
@@ -1554,7 +1555,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
     sql.append(" LEFT JOIN SPECIFIC_SCHEMA.vehiclejourneyatstop h ON h.vehiclejourneyid=c.id AND h.isdeparture = true");
     if (seuilDateDepartCourses != null)
     {
-      sql.append("AND h.departureTime >= :seuilDateDepartCourses ");
+      sql.append(" AND h.departureTime >= :seuilDateDepartCourses ");
     }
 
     sql.append(" WHERE c.routeid=");
@@ -1562,6 +1563,7 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
     if (idTableauMarche != null)
     {
       sql.append(" AND tv.timetableid = :idTableauMarche");
+      sql.append(" AND tv.vehiclejourneyid = c.id");
     }
     sql.append(" ORDER BY h.departureTime");
 
