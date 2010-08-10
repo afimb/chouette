@@ -38,8 +38,9 @@
   <s:a href="%{editCourse}"><b><s:text name="text.course.create.button"/></b></s:a>
 </div>
 <br>
+
 <s:if test="arretsItineraire.size > 0 && coursesPage.size >= 0">
-  <%-- BLOQUE FILTRE --%>
+  <%-- BLOC FILTRE --%>
   <div id="filtrageTableauMarche">
     <s:form namespace="/vehicleJourneyAtStop" id="filtrageTableauMarcheForm">
       <s:select	name="idTableauMarche"
@@ -50,22 +51,20 @@
       <s:textfield name="seuilDateDepartCourse" label="%{getText('filtre.select.seuilDateDepartCourse')}"></s:textfield>
       <s:hidden name="idItineraire" value="%{idItineraire}" />
       <s:hidden name="idLigne" value="%{idLigne}" />
-      <%-- FORCER LE NUMERO DE PAGE A 1 --%>
-      <%-- CAR UNE NOUVELLE RECHERCHE NECESSITE --%>
-      <%-- D'ALLER SUR LA PREMIERE PAGE DE RESULTAT DE RECHERCHE --%>
+      <%-- FORCER LE NUMERO DE PAGE A 1 CAR UNE NOUVELLE RECHERCHE NECESSITE D'ALLER SUR LA PREMIERE PAGE DE RESULTAT DE RECHERCHE --%>
       <s:hidden name="page" value="1" />
       <tr>
         <td colspan="2">
-          <s:submit value="%{getText('action.filtrer')}" action="list" theme="simple" cssStyle="float:right;" />
-          <s:submit value="%{getText('action.cancel.filter')}" action="cancel" theme="simple" cssStyle="float:right;"/>
+          <s:submit value="%{getText('action.filtrer')}" action="list" theme="simple" cssClass="right" />
+          <s:submit value="%{getText('action.cancel.filter')}" action="cancel" theme="simple" cssClass="right"/>
         </td>
       </tr>
     </s:form>
   </div>
 
-  <%-- BLOQUE AJOUT COURSE AVEC DECALAGE TEMPS --%>
+  <%-- BLOC AJOUT COURSE AVEC DECALAGE TEMPS --%>
   <div id="decalageTemps">
-    <s:form id="ajoutCourseAvecDecalageTempsForm" namespace="/vehicleJourneyAtStop">
+    <s:form namespace="/vehicleJourneyAtStop">
       <s:textfield name="tempsDecalage" label="%{getText('horairesDePassage.tempsDecalage')}" value="00:00"/>
       <s:textfield name="nbreCourseDecalage" label="%{getText('horairesDePassage.nbreCourseDecalage')}" value="1"/>
       <s:hidden name="idCourseADecaler" id="idCourseADecaler"/>
@@ -76,8 +75,8 @@
       <s:hidden name="page" value="%{page}"/>
       <tr>
         <td colspan="2">
-          <s:submit value="%{getText('action.validate')}" action="ajoutCourseAvecDecalageTemps" theme="simple" cssStyle="float: right;" formId="ajoutCourseAvecDecalageTempsForm" onclick="cacherDecalageTemps()"/>
-          <s:submit value="%{getText('action.cancel')}" action="cancel" theme="simple" cssStyle="float: right;" formId="ajoutCourseAvecDecalageTempsForm" onclick="cacherDecalageTemps()"/>
+          <s:submit value="%{getText('action.validate')}" action="ajoutCourseAvecDecalageTemps" theme="simple" cssClass="right" onclick="cacherDecalageTemps()"/>
+          <s:submit value="%{getText('action.cancel')}" action="cancel" theme="simple" cssClass="right" onclick="cacherDecalageTemps()"/>
         </td>
       </tr>
     </s:form>

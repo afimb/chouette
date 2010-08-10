@@ -132,7 +132,7 @@ public class Pagination
 
   public void setNbColonnesParPage(Integer nbColonnesParPage)
   {
-    log.error("nbColonnesParPage : " + nbColonnesParPage);
+    log.debug("Columns for 1 page : " + nbColonnesParPage);
     this.nbColonnesParPage = nbColonnesParPage;
   }
 

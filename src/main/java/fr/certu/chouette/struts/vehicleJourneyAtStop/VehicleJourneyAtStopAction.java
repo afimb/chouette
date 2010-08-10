@@ -49,6 +49,8 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
   private VehicleJourneyAtStopModel model = new VehicleJourneyAtStopModel();
   private Long idItineraire;
   private Long idLigne;
+  private Long idTableauMarche;
+  private Date seuilDateDepartCourse = null;
 
   public void setIdItineraire(Long idItineraire)
   {
@@ -70,6 +72,27 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
     return idLigne;
   }
 
+  public Long getIdTableauMarche()
+  {
+    String timetableId = idTableauMarche == null ? "null" : idTableauMarche.toString();
+    return idTableauMarche;
+  }
+
+  public void setIdTableauMarche(Long idTableauMarche)
+  {
+    this.idTableauMarche = idTableauMarche;
+  }
+
+  public Date getSeuilDateDepartCourse()
+  {
+    return seuilDateDepartCourse;
+  }
+
+  public void setSeuilDateDepartCourse(Date seuilDateDepartCourse)
+  {
+    this.seuilDateDepartCourse = seuilDateDepartCourse;
+  }
+
   /********************************************************
    *                  MODEL + PREPARE                     *
    ********************************************************/
@@ -82,16 +105,17 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
   {
     if (idItineraire != null)
     {
-      log.debug("idItineraire                             : " + idItineraire.longValue());
+      log.debug("Filter for vehicle journey with itinerary : " + idItineraire + ", and timetable : " + getIdTableauMarche() + ", and begin hour : " + getSeuilDateDepartCourse());
       // RECUPERATION DES COURSES
-      courses = courseManager.getCoursesFiltrees(idItineraire, model.getIdTableauMarche(), model.getSeuilDateDepartCourse());
-      log.debug("courses.size()                           : " + courses.size());
-      log.debug(pagination);
+      courses = courseManager.getCoursesFiltrees(idItineraire, getIdTableauMarche(), getSeuilDateDepartCourse());
+      log.debug("Courses size: " + courses.size());
+
       // GESTION DE LA PAGINATION
       if (pagination.getNumeroPage() == null || pagination.getNumeroPage() < 1)
       {
         pagination.setNumeroPage(1);
       }
+      log.debug("Page number : " + pagination.getNumeroPage());
       pagination.setNbTotalColonnes(courses.size());
       List<Course> coursesPage = (List<Course>) pagination.getCollectionPageCourante(courses);
       log.debug("coursesPage.size()                       : " + coursesPage.size());
@@ -240,8 +264,8 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 
   public String cancel()
   {
-    model.setIdTableauMarche(null);
-    model.setSeuilDateDepartCourse(null);
+    setIdTableauMarche(null);
+    setSeuilDateDepartCourse(null);
     addActionMessage(getText("horairesDePassage.cancel.ok"));
     return REDIRECTLIST;
   }
@@ -443,7 +467,6 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
    ********************************************************/
   public void setCourseManager(ICourseManager courseManager)
   {
-    log.debug("set courseManager : " + courseManager);
     this.courseManager = courseManager;
   }
 
@@ -549,7 +572,6 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 
   public void setPagination(Pagination pagination)
   {
-    log.debug("set pagination : " + pagination);
     this.pagination = pagination;
   }
 
@@ -560,7 +582,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 
   public void setMaxNbCoursesParPage(int maxNbCoursesParPage)
   {
-    log.error("setMaxNbCoursesParPage : " + maxNbCoursesParPage);
+    log.debug("Number Vehicle Journey maximum for 1 page : " + maxNbCoursesParPage);
     this.maxNbCoursesParPage = maxNbCoursesParPage;
   }
 

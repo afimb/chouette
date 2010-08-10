@@ -9,10 +9,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class VehicleJourneyAtStopModel
 {
 
+  private static final Log log = LogFactory.getLog(VehicleJourneyAtStopModel.class);
   private Map<Long, Mission> missionParIdCourse;
   private Map<Long, List<Horaire>> horairesParIdCourse;
   private Map<Long, Integer> positionArretParIdArret;
@@ -26,8 +29,7 @@ public class VehicleJourneyAtStopModel
   private Date tempsDecalage;
   private Integer nbreCourseDecalage;
   private Long idCourseADecaler;
-  private Long idTableauMarche;
-  private Date seuilDateDepartCourse = null;
+
   private List<Course> coursesPage;
 
   /********************************************************
@@ -76,16 +78,6 @@ public class VehicleJourneyAtStopModel
     this.idCourseADecaler = idCourseADecaler;
   }
 
-  public Date getSeuilDateDepartCourse()
-  {
-    return seuilDateDepartCourse;
-  }
-
-  public void setSeuilDateDepartCourse(Date seuilDateDepartCourse)
-  {
-    this.seuilDateDepartCourse = seuilDateDepartCourse;
-  }
-
   public List<Date> getHeuresCourses()
   {
     return heuresCourses;
@@ -99,15 +91,6 @@ public class VehicleJourneyAtStopModel
   /********************************************************
    *                  TIME TABLE                          *
    ********************************************************/
-  public Long getIdTableauMarche()
-  {
-    return idTableauMarche;
-  }
-
-  public void setIdTableauMarche(Long idTableauMarche)
-  {
-    this.idTableauMarche = idTableauMarche;
-  }
 
   public void setTableauxMarcheParIdCourse(Map<Long, SortedSet<Integer>> tableauxMarcheParIdCourse)
   {
@@ -118,7 +101,7 @@ public class VehicleJourneyAtStopModel
   {
     return tableauxMarcheParIdCourse;
   }
-  
+
   public Map<Long, String> getTableauxMarche()
   {
     return tableauxMarche;
