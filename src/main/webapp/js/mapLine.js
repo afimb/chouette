@@ -6,14 +6,14 @@ function init(){
   initMap();
 
   //show marker layer
-  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
+  showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
   {
     externalGraphic: "../js/openlayers/img/marker-blue.png",
     pointRadius: 20,
     fillOpacity: 1
   },
   OpenLayers.Feature.Vector.style["default"]);
-  var showMarkerStyleMap = new OpenLayers.StyleMap({
+  showMarkerStyleMap = new OpenLayers.StyleMap({
     "default": showMarkerSymbolizer,
     "select": {}
   });
@@ -27,7 +27,7 @@ function init(){
     });
 
   // === INIT CONTROLS ===
-  var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
+  highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
     hover: true,
     highlightOnly: true,
     renderIntent: "",
@@ -89,9 +89,9 @@ function onPopupClose(event)
 function initLineLayer(){
   if(	$("line_idLigne").value != null)
   {
-    var url = "../json/JSONLine?lineId="+$("line_idLigne").value;
-    var bounds = new OpenLayers.Bounds();
-    var markPoints = new Array();
+    url = "../json/JSONLine?lineId="+$("line_idLigne").value;
+    bounds = new OpenLayers.Bounds();
+    markPoints = new Array();
       
     new Ajax.Request(url, {
       method: 'get',
@@ -100,11 +100,11 @@ function initLineLayer(){
         stopPlaces.each(function(area){
           if(area.latitude != null && area.longitude != null)
           {
-            var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
-            var markPointXY = markPoint.transform(wgsProjection,geoportalProjection)
+            markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
+            markPointXY = markPoint.transform(wgsProjection,geoportalProjection)
 
             bounds.extend(markPointXY);
-            var mark = new OpenLayers.Feature.Vector(markPointXY, {
+            mark = new OpenLayers.Feature.Vector(markPointXY, {
               'area':area
             });
             markPoints.push(mark.geometry);
@@ -115,8 +115,9 @@ function initLineLayer(){
         map.addLayers([showMarkerLayer]);
         if(bounds.left != null) // If line has stop areas
         {
-          var zoom = map.getZoomForExtent(bounds, true);
-          var point = barycentre(markPoints);
+          // Hack : reduce zoom to see marker picture
+          zoom = map.getZoomForExtent(bounds, true) - 1;
+          point = barycentre(markPoints);
           map.setCenter(point, zoom);
         }
         else // If line has no stop areas
