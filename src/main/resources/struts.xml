@@ -187,6 +187,13 @@
   </package>
 
   <package name="json"  extends="struts" namespace="/json">
+    <action name="JSONLine" class="JSONLineActionBean">
+      <result type="json">
+        <param name="root">
+          stopPlaces
+        </param>
+      </result>
+    </action>
     <action name="JSONStopPointOnRoute" class="JSONStopPointOnRouteActionBean">
       <result type="json">
         <param name="root">
