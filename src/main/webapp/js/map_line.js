@@ -101,16 +101,22 @@ function initLineLayer(){
             var mark = new OpenLayers.Feature.Vector(markPointXY, {
               'area':area
             });
-            //alert(mark.geometry);
             markPoints.push(mark.geometry);
             showMarkerLayer.addFeatures([mark]);
           }
         });
 
         map.addLayers([showMarkerLayer]);
-        var zoom = map.getZoomForExtent(bounds, true);
-        var point = barycentre(markPoints);
-        map.setCenter(point, zoom);
+        if(bounds.left != null) // If line has stop areas
+        {
+          var zoom = map.getZoomForExtent(bounds, true);
+          var point = barycentre(markPoints);
+          map.setCenter(point, zoom);
+        }
+        else // If line has no stop areas
+        {
+          map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),20);
+        }
       }
     });
   }
