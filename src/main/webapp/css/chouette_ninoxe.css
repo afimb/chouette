@@ -714,7 +714,6 @@ div.autocomplete ul li
   height: 25px;
 }
 
-
 /****************************************************************/
 /*                        MAIN                                 	*/
 /****************************************************************/
@@ -729,23 +728,6 @@ div.autocomplete ul li
 .submit input
 {
   margin: 5px;
-}
-
-#stoparea fieldset
-{
-  margin-top: 10px;
-  border: 1px solid #B0BCD6;
-}
-
-#stoparea fieldset .wwlbl
-{
-  width: 100px;
-}
-
-
-#stoparea legend
-{
-  font-weight: bold
 }
 
 .informations p
@@ -764,4 +746,20 @@ div.autocomplete ul li
   display: table-column-group;
   text-decoration: underline;
   color: fuchsia;
+}
+
+#stoparea fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#stoparea fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#stoparea legend
+{
+  font-weight: bold
 }
