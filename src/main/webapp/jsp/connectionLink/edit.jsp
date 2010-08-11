@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-<s:include value="/jsp/commun/scriptaculous.jsp" />
+<s:include value="/jsp/commun/mapConnectionLinkJavascript.jsp" />
 
 <%-- Titre et barre de navigation --%>
 <s:url id="urlCorrespondanceUpdate" action="edit" namespace="/connectionLink">
@@ -21,39 +21,39 @@
 <br>
 <div class="panelDataSection"><s:text name="connectionlink"/></div>
 <div class="panel">
-  <s:form id="connectionLinkForm"  namespace="/connectionLink">
-    <s:hidden name="idCorrespondance" value="%{id}"/>
-    <s:hidden name="operationMode" value="STORE" />
-    <s:hidden key="actionMethod" value="%{actionMethod}"/>
-    <s:textfield key="name" required="true"/>
-    <s:textfield key="comment" required="false"/>
-    <s:textfield name="strutsDefaultDuration" value="%{strutsDefaultDuration}" label="%{getText('defaultDuration')}" />
-    <s:textfield name="strutsMobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" label="%{getText('mobilityRestrictedTravellerDuration')}"/>
-    <s:textfield name="strutsOccasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" label="%{getText('occasionalTravellerDuration')}"/>
-    <s:textfield name="strutsFrequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" label="%{getText('frequentTravellerDuration')}"/>
-    <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-    <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="liftAvailability"/>
-    <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="mobilityRestrictedSuitability"/>
-    <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="stairsAvailability"/>
-    <s:textfield key="linkDistance" />
+  <div class="left">
+    <s:form theme="css_xhtml" id="connectionLink"  namespace="/connectionLink">
+      <s:hidden name="idCorrespondance" value="%{id}"/>
+      <s:hidden name="operationMode" value="STORE" />
+      <s:hidden key="actionMethod" value="%{actionMethod}"/>
+      <s:textfield key="name" required="true"/>
+      <s:textfield key="comment" required="false"/>
+      <s:textfield name="strutsDefaultDuration" value="%{strutsDefaultDuration}" label="%{getText('defaultDuration')}" />
+      <s:textfield name="strutsMobilityRestrictedTravellerDuration" value="%{strutsMobilityRestrictedTravellerDuration}" label="%{getText('mobilityRestrictedTravellerDuration')}"/>
+      <s:textfield name="strutsOccasionalTravellerDuration" value="%{strutsOccasionalTravellerDuration}" label="%{getText('occasionalTravellerDuration')}"/>
+      <s:textfield name="strutsFrequentTravellerDuration" value="%{strutsFrequentTravellerDuration}" label="%{getText('frequentTravellerDuration')}"/>
+      <s:select emptyOption="false" key="linkType" list="connectionLinkTypeEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select emptyOption="false" key="liftAvailability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="liftAvailability"/>
+      <s:select emptyOption="false" key="mobilityRestrictedSuitability" list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="mobilityRestrictedSuitability"/>
+      <s:select emptyOption="false" key="stairsAvailability"list="#@java.util.HashMap@{'true':getText('text.yes'), 'false':getText('text.no')}" value="stairsAvailability"/>
+      <s:textfield key="linkDistance" />
 
-    <%-- Actions --%>
-    <tr>
-      <td colspan="2">
+      <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
+      <s:include value="/jsp/commun/asterisque.jsp" />
+      <%-- Actions --%>
+      <div class="submit">
         <s:if test="id != null">
-          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"  validate="true"/>
+          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssClass="right"/>
         </s:if>
         <s:else>
-          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"  validate="true"/>
+          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssClass="right"/>
         </s:else>
-        <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
-      </td>
-    </tr>
-
-    <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
-    <tr><td colspan="2"><s:include value="/jsp/commun/asterisque.jsp" /></td></tr>
-  </s:form>
-
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssClass="right"/>
+      </div>
+    </s:form>
+  </div>
+  <div class="map-wrapper"><div id="map"></div></div>
+  <div class="spacer"></div>
 </div>
 
 <%-- Zones depart --%>

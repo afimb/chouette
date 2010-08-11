@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
-<s:include value="/jsp/commun/mapJavascript.jsp" />
+<s:include value="/jsp/commun/mapStopPlaceJavascript.jsp" />
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/stopPlace">
   <s:param name="idPositionGeographique" value="%{id}"/>

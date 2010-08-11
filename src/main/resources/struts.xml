@@ -194,6 +194,13 @@
         </param>
       </result>
     </action>
+    <action name="JSONConnectionLink" class="JSONConnectionLinkActionBean">
+      <result type="json">
+        <param name="root">
+          stopPlaces
+        </param>
+      </result>
+    </action>
     <action name="JSONStopPointOnRoute" class="JSONStopPointOnRouteActionBean">
       <result type="json">
         <param name="root">

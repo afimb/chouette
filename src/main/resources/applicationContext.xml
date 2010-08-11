@@ -636,6 +636,13 @@
     <property name="useHastus" value="${import.csv.hastus}"/>
   </bean>
 
+  <bean id="JSONConnectionLinkActionBean" scope="prototype"
+        parent="GeneriqueAction"
+        class="fr.certu.chouette.struts.json.JSONConnectionLinkAction">
+    <property name="correspondanceManager" ref="correspondanceManager"/>
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+  </bean>
+
   <bean id="RoutingConstraintActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
