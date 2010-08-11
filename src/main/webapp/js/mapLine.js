@@ -49,10 +49,16 @@ function init(){
 function showTooltipOnEvent(event)
 {
   feature = event.feature;
+  text =  "<h2>"+feature.attributes.area.name + "</h2>";
+  if(feature.attributes.area.streetName != null)
+    text += "<p>"+feature.attributes.area.streetName + "</p>";
+  if(feature.attributes.area.countryCode != null)
+    text +="<p>"+feature.attributes.area.countryCode + "</p>";
+
   popup = new OpenLayers.Popup.FramedCloud("featurePopup",
     feature.geometry.getBounds().getCenterLonLat(),
     new OpenLayers.Size(100,100),
-    "<h2>"+feature.attributes.area.name + "</h2>",
+    text,
     null, true, onPopupClose);
   feature.popup = popup;
   popup.feature = feature;
