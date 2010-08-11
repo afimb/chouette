@@ -4,6 +4,15 @@ var drawControls, stopPlaceMarker, editMarkerLayer, showMarkerLayer, childrenAre
 function init(){
   initMap();
 
+  // Add button for barycentre
+  var barycentre = new OpenLayers.Control.Button({
+    displayClass: "mapBarycentre",
+    trigger: barycentreStopPlaceMarker
+  });
+  var panel = new OpenLayers.Control.Panel();
+  panel.addControls([barycentre]);
+  map.addControl(panel);
+  
   // edit marker layer
   var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
   {
@@ -109,7 +118,7 @@ function toggleDrawControl(element) {
       drawControls.modify.selectControl.select(editMarkerLayer.features[0]);
     }
   }
-};
+}
 
 
 //////////////////////
@@ -173,19 +182,6 @@ function centerOnMarker(){
     var newCoords = new OpenLayers.LonLat(geom.x,geom.y);
     map.panTo(newCoords);
   }
-}
-
-function barycentreStopPlaceMarker(){
-  var childrenPoints = showMarkerLayer.features.collect(function(feature){
-    return feature.geometry;
-  });
-  var point = barycentre(childrenPoints);
-
-  $("stoparea_latitude").value=point.y.toFixed(6);
-  $("stoparea_longitude").value=point.x.toFixed(6);
-
-  updateXYFieldsCoordsFromLatLon();
-  updateStopPlaceMarker();
 }
 
 ////////////////////////////
@@ -348,5 +344,18 @@ function onPopupClose(event)
   selectControl.unselect(this.feature);
 }
 
+function barycentreStopPlaceMarker()
+{
+  var childrenPoints = showMarkerLayer.features.collect(function(feature){
+    return feature.geometry;
+  });
+  var point = barycentre(childrenPoints).transform(geoportalProjection, lambertProjection);
+
+  $("stoparea_x").value=point.lon;
+  $("stoparea_y").value=point.lat;
+
+  updateLatLonFieldsCoordsFromXY();
+  updateStopPlaceMarker();
+}
 
 window.onload = init;

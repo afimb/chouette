@@ -763,3 +763,14 @@ div.autocomplete ul li
 {
   font-weight: bold
 }
+
+/****************************************************************/
+/*                        MAP                                 	*/
+/****************************************************************/
+.mapBarycentreItemInactive
+{
+  background-color: blue;
+  height: 20px;
+  width: 20px;
+  margin: 260px 0px 0px 15px;
+}
