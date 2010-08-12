@@ -1,17 +1,17 @@
 //define global vars
-var drawControls, stopPlaceMarker, editMarkerLayer, showMarkerLayer, childrenAreas;
+var drawControls, boardingPositionMarker, editMarkerLayer;
 
 function init(){
   initMap();
 	
   // edit marker layer
-  var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
+  var editMarkerSymbolizer = OpenLayers.Util.applyDefaults({
     externalGraphic: "../js/openlayers/img/green_round_marker.png",
     pointRadius: 10,
     fillOpacity: 1
   },
-  OpenLayers.Feature.Vector.style["default"]);
+  OpenLayers.Feature.Vector.style["default"]
+  );
   var editMarkerStyleMap = new OpenLayers.StyleMap({
     "default": editMarkerSymbolizer,
     "select": {}
@@ -23,33 +23,11 @@ function init(){
       styleMap: editMarkerStyleMap,
       displayInLayerSwitcher: false
     });
-	
-  //show marker layer
-  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
-    externalGraphic: "../js/openlayers/img/marker-blue.png",
-    pointRadius: 20,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]);
-  var showMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": showMarkerSymbolizer,
-    "select": {}
-  });
-	
-	
-  showMarkerLayer = new OpenLayers.Layer.Vector(
-    "Show Marker Layer",
-    {
-      styleMap: showMarkerStyleMap,
-      displayInLayerSwitcher: false
-    });
 
-  map.addLayers([editMarkerLayer,showMarkerLayer]);
+  map.addLayers([editMarkerLayer]);
   map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
 
   // === INIT EVENTS MANAGEMENT ===
-
   editMarkerLayer.events.on({
     //		"beforefeaturemodified": report,
     //		"afterfeaturemodified": report,
@@ -59,21 +37,6 @@ function init(){
     "featuremodified": report,
     "sketchcomplete": report
   });
-		
-  // === INIT CONTROLS ===
-	
-  var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
-    hover: true,
-    highlightOnly: true,
-    renderIntent: "",
-    eventListeners: {
-      featurehighlighted: showTooltipOnEvent,
-      featureunhighlighted: hideTooltipOnEvent
-    }
-  });
-	
-  map.addControl(highlightCtrl);
-  highlightCtrl.activate();
 	
   drawControls = {
     draw: new OpenLayers.Control.DrawFeature(editMarkerLayer,OpenLayers.Handler.Point),
@@ -87,8 +50,7 @@ function init(){
     map.addControl(drawControls[key]);
   }
 	
-  initShowMarkerLayer();
-  updateStopPlaceMarker();
+  updateboardingPositionMarker();
 }
 
 
@@ -101,7 +63,7 @@ function toggleDrawControl(element) {
     drawControls[key].deactivate();
   }
   if(element.value != 'none'){
-    if(stopPlaceMarker == null){
+    if(boardingPositionMarker == null){
       drawControls.draw.activate();
     }
     else{
@@ -109,8 +71,7 @@ function toggleDrawControl(element) {
       drawControls.modify.selectControl.select(editMarkerLayer.features[0]);
     }
   }
-};
-
+}
 
 //////////////////////
 // EVENT MANAGEMENT //
@@ -119,12 +80,12 @@ function toggleDrawControl(element) {
 function report(event) {
   //console.log(event.type, event.feature ? event.feature.id : event.components);
   if(event.type == "sketchcomplete"){
-    stopPlaceMarker = event.feature;
-    updateCoordsFieldsFromMarker(stopPlaceMarker);
+    boardingPositionMarker = event.feature;
+    updateCoordsFieldsFromMarker(boardingPositionMarker);
     drawControls.draw.deactivate();
     drawControls.modify.activate();
-    editMarkerLayer.addFeatures([stopPlaceMarker]);
-    drawControls.modify.selectControl.select(stopPlaceMarker);
+    editMarkerLayer.addFeatures([boardingPositionMarker]);
+    drawControls.modify.selectControl.select(boardingPositionMarker);
     //prevents API from adding feature to the layer a second time
     return false;
   }
@@ -133,29 +94,34 @@ function report(event) {
   }
 }
 
-
 //////////////////////////////////
 // STOP PLACE MARKER MANAGEMENT // 
 //////////////////////////////////
 
-function updateStopPlaceMarker(){
-  if($("stoparea_latitude").value != "" && $("stoparea_longitude").value != ""){
-    if(stopPlaceMarker != null){
-      var newCoords = new OpenLayers.LonLat($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,geoportalProjection);
-      stopPlaceMarker.move(newCoords);
+function updateboardingPositionMarker()
+{
+  if($("boardingPosition_latitude").value != "" && $("boardingPosition_longitude").value != "")
+  {
+    if(boardingPositionMarker != null)
+    {
+      var newCoords = new OpenLayers.LonLat($("boardingPosition_longitude").value,$("boardingPosition_latitude").value).transform(wgsProjection,geoportalProjection);
+      boardingPositionMarker.move(newCoords);
     }
-    else{
-      stopPlaceMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,geoportalProjection));
+    else
+    {
+      boardingPositionMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($("boardingPosition_longitude").value,$("boardingPosition_latitude").value).transform(wgsProjection,geoportalProjection));
       drawControls.draw.deactivate();
       drawControls.modify.activate();
-      editMarkerLayer.addFeatures([stopPlaceMarker]);
-      drawControls.modify.selectControl.select(stopPlaceMarker);
+      editMarkerLayer.addFeatures([boardingPositionMarker]);
+      drawControls.modify.selectControl.select(boardingPositionMarker);
     }
   }
-  else{
-    if(stopPlaceMarker != null){
-      editMarkerLayer.removeFeatures([stopPlaceMarker]);
-      stopPlaceMarker = null;
+  else
+  {
+    if(boardingPositionMarker != null)
+    {
+      editMarkerLayer.removeFeatures([boardingPositionMarker]);
+      boardingPositionMarker = null;
     }
     drawControls.modify.deactivate();
     drawControls.draw.activate();
@@ -167,109 +133,101 @@ function updateStopPlaceMarker(){
   return false;
 }
 
-function centerOnMarker(){
-  if(stopPlaceMarker != null){
-    var geom = stopPlaceMarker.geometry;
+function centerOnMarker()
+{
+  if(boardingPositionMarker != null){
+    var geom = boardingPositionMarker.geometry;
     var newCoords = new OpenLayers.LonLat(geom.x,geom.y);
     map.panTo(newCoords);
   }
-}
-
-function barycentreStopPlaceMarker(){
-  var childrenPoints = showMarkerLayer.features.collect(function(feature){
-    return feature.geometry;
-  });
-  var point = barycentre(childrenPoints);
-	
-  $("stoparea_latitude").value=point.y.toFixed(6);
-  $("stoparea_longitude").value=point.x.toFixed(6);
-	
-  updateXYFieldsCoordsFromLatLon();
-  updateStopPlaceMarker();
 }
 
 ////////////////////////////
 // FORM FIELDS MANAGEMENT //
 ////////////////////////////
 
-function updateCoordsFieldsFromMarker(){
-  var point = stopPlaceMarker.geometry.clone();
+function updateCoordsFieldsFromMarker()
+{
+  var point = boardingPositionMarker.geometry.clone();
 	
   point.transform(geoportalProjection,wgsProjection);
-  $("stoparea_latitude").value=point.y.toFixed(6);
-  $("stoparea_longitude").value=point.x.toFixed(6);
+  $("boardingPosition_latitude").value=point.y.toFixed(6);
+  $("boardingPosition_longitude").value=point.x.toFixed(6);
 	
   point.transform(wgsProjection,lambertProjection);
-  $("stoparea_x").value=point.x.toFixed(2);
-  $("stoparea_y").value=point.y.toFixed(2);
+  $("boardingPosition_x").value=point.x.toFixed(2);
+  $("boardingPosition_y").value=point.y.toFixed(2);
 }
 
-function updateLatLonFieldsCoordsFromXY(){
-  var coords = new OpenLayers.LonLat($("stoparea_x").value,$("stoparea_y").value).transform(lambertProjection,wgsProjection);
-  $("stoparea_latitude").value=coords.lat.toFixed(6);
-  $("stoparea_longitude").value=coords.lon.toFixed(6);
+function updateLatLonFieldsCoordsFromXY()
+{
+  var coords = new OpenLayers.LonLat($("boardingPosition_x").value,$("boardingPosition_y").value).transform(lambertProjection,wgsProjection);
+  $("boardingPosition_latitude").value=coords.lat.toFixed(6);
+  $("boardingPosition_longitude").value=coords.lon.toFixed(6);
 }
 
-function updateXYFieldsCoordsFromLatLon(){
-  var coords = new OpenLayers.LonLat($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,lambertProjection);
-  $("stoparea_x").value=coords.lon.toFixed(2);
-  $("stoparea_y").value=coords.lat.toFixed(2);
+function updateXYFieldsCoordsFromLatLon()
+{
+  var coords = new OpenLayers.LonLat($("boardingPosition_longitude").value,$("boardingPosition_latitude").value).transform(wgsProjection,lambertProjection);
+  $("boardingPosition_x").value=coords.lon.toFixed(2);
+  $("boardingPosition_y").value=coords.lat.toFixed(2);
 }
 
-function updateCoordsFrom(field){
+function updateCoordsFrom(field)
+{
   switch(field){
     case 'x' :
-      console.log("x : "+$("stoparea_x").value);
-      var x = parseFloat($("stoparea_x").value);
+      console.log("x : "+$("boardingPosition_x").value);
+      var x = parseFloat($("boardingPosition_x").value);
       if(isNaN(x)){
-        $("stoparea_x").value = "";
-        $("stoparea_longitude").value = "";
+        $("boardingPosition_x").value = "";
+        $("boardingPosition_longitude").value = "";
       }
       else{
-        $("stoparea_x").value = x.toFixed(2);
-        if($("stoparea_y").value != ""){
+        $("boardingPosition_x").value = x.toFixed(2);
+        if($("boardingPosition_y").value != ""){
           updateLatLonFieldsCoordsFromXY();
         }
       }
       break;
     case 'y' :
-      console.log("y : "+$("stoparea_y").value);
-      var y = parseFloat($("stoparea_y").value);
+      console.log("y : "+$("boardingPosition_y").value);
+      var y = parseFloat($("boardingPosition_y").value);
       if(isNaN(y)){
-        $("stoparea_y").value = "";
-        $("stoparea_latitude").value = "";
+        $("boardingPosition_y").value = "";
+        $("boardingPosition_latitude").value = "";
       }
       else{
-        $("stoparea_y").value = y.toFixed(2);
-        if($("stoparea_x").value != ""){
+        $("boardingPosition_y").value = y.toFixed(2);
+        if($("boardingPosition_x").value != ""){
           updateLatLonFieldsCoordsFromXY();
         }
       }
       break;
     case 'lat' :
-      console.log("lat : "+$("stoparea_latitude").value);
-      var lat = parseFloat($("stoparea_latitude").value);
+      console.log("lat : "+$("boardingPosition_latitude").value);
+      var lat = parseFloat($("boardingPosition_latitude").value);
       if(isNaN(lat)){
-        $("stoparea_latitude").value = "";
-        $("stoparea_y").value = "";
+        $("boardingPosition_latitude").value = "";
+        $("boardingPosition_y").value = "";
       }
       else{
-        $("stoparea_latitude").value = lat.toFixed(6);
-        if($("stoparea_longitude").value != ""){
+        $("boardingPosition_latitude").value = lat.toFixed(6);
+        if($("boardingPosition_longitude").value != ""){
           updateXYFieldsCoordsFromLatLon();
         }
       }
       break;
     case 'lon' :
-      console.log("lon : "+$("stoparea_longitude").value);
-      var lon = parseFloat($("stoparea_longitude").value);
+      console.log("lon : "+$("boardingPosition_longitude").value);
+      var lon = parseFloat($("boardingPosition_longitude").value);
       if(isNaN(lon)){
-        $("stoparea_longitude").value = "";
-        $("stoparea_x").value = "";
+        $("boardingPosition_longitude").value = "";
+        $("boardingPosition_x").value = "";
       }
       else{
-        $("stoparea_longitude").value = lon.toFixed(6);
-        if($("stoparea_latitude").value != ""){
+        $("boardingPosition_longitude").value = lon.toFixed(6);
+        if($("boardingPosition_latitude").value != ""){
           updateXYFieldsCoordsFromLatLon();
         }
       }
@@ -278,74 +236,7 @@ function updateCoordsFrom(field){
       alert("error !!!");
       break;
   }
-  updateStopPlaceMarker();
+  updateboardingPositionMarker();
 }
-
-//////////////////////////////////
-// SHOW MARKER LAYER MANAGEMENT //
-//////////////////////////////////
-
-function initShowMarkerLayer(){
-  if(	$("stoparea_idPositionGeographique").value != null){
-    var url = "../json/JSONStopPlace?stopPlaceId="+$("stoparea_idPositionGeographique").value;
-		
-    new Ajax.Request(url, {
-      method: 'get',
-      onSuccess: function(transport) {
-        childrenAreas = eval(transport.responseText);
-        childrenAreas.each(function(area){
-          if(area.latitude != null && area.longitude != null){
-            var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
-            var popup = new OpenLayers.Popup("tooltip",
-              markPoint.getBounds().getCenterLonLat(),
-              null,
-              "<div class='tooltip'>"+area.name+"</div>",
-              false);
-            popup.autoSize = true;
-            var mark = new OpenLayers.Feature.Vector(markPoint.transform(wgsProjection,geoportalProjection), {
-              'area':area,
-              'popup' : popup
-            });
-            showMarkerLayer.addFeatures([mark]);
-          }
-        });
-      }
-    });
-  }
-}
-
-//////////////////////
-// POPUP MANAGEMENT //
-//////////////////////
-function showTooltipOnEvent(event)
-{
-  feature = event.feature;
-  popup = new OpenLayers.Popup.FramedCloud("featurePopup",
-    feature.geometry.getBounds().getCenterLonLat(),
-    new OpenLayers.Size(100,100),
-    "<h2>"+feature.attributes.area.name + "</h2>",
-    null, true, onPopupClose);
-  feature.popup = popup;
-  popup.feature = feature;
-  map.addPopup(popup);
-}
-
-function hideTooltipOnEvent(event)
-{
-  feature = event.feature;
-  if (feature.popup) {
-    popup.feature = null;
-    map.removePopup(feature.popup);
-    feature.popup.destroy();
-    feature.popup = null;
-  }
-}
-
-function onPopupClose(event)
-{
-  // 'this' is the popup.
-  selectControl.unselect(this.feature);
-}
-
 
 window.onload = init;

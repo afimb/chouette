@@ -466,7 +466,7 @@ div.autocomplete ul li
 
 .panel
 {
-  PADDING-LEFT: 20px;
+  PADDING: 0px 20px 0px 20px;
   BACKGROUND-COLOR: #FFFFFF;
   margin: 0px 0px 2px 0px;
   BORDER: 1px solid #B0BCD6;
@@ -627,7 +627,6 @@ div.autocomplete ul li
   background-color: #eee;
   border: 1px dotted #999;
   padding: 2px 4px 2px 4px;
-  width: 98%;
   margin-top: 10px;
   display: block;
   border-bottom: none;
@@ -637,7 +636,6 @@ div.autocomplete ul li
   background-color: #eee;
   border: 1px dotted #999;
   padding: 2px 4px 2px 4px;
-  width: 98%;
   display: block;
   border-top: none;
   margin-bottom: -5px;

@@ -21,7 +21,7 @@
 <div class="panelDataSection"><s:text name="text.arretPhysique" /></div>
 <div class="panel">
   <div class="left">
-    <s:form theme="css_xhtml" id="stoparea">
+    <s:form theme="css_xhtml" id="boardingPosition">
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
       <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
@@ -79,7 +79,7 @@
     <s:text name="text.stopPlace.routes"/>
   </div>
   <div class="panel">
-    <s:div label="Iti" id="displaytag">
+    <div label="Iti" id="displaytag">
       <display:table name="itineraires" uid="itineraire" sort="list" pagesize="10" export="false">
         <display:column titleKey="route.title.name" sortable="true" headerClass="sortable">
           <s:url id="arretSurItineraire" action="list" namespace="/stoppointOnRoute" includeParams="none">
@@ -108,7 +108,7 @@
           <s:a href="%{editReseau}"><s:property value="%{getReseau(#attr.itineraire.idLigne).name}" /></s:a>
         </display:column>
       </display:table>
-    </s:div>
+    </div>
   </div>
 
 
@@ -118,7 +118,7 @@
   </div>
 
   <div class="panel">
-    <s:div label="father" id="displaytag">
+    <div label="father" id="displaytag">
       <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
         <display:column titleKey="table.title.action">
           <s:url id="editUrl" action="edit" namespace="/boardingPosition">
@@ -145,7 +145,7 @@
           <s:text name="%{#attr.father.areaType}"/>
         </display:column>
       </display:table>
-    </s:div>
+    </div>
     <%-- Formulaire de recherche de zone parente --%>
     <div ID="father">
       <s:form id="areaSearchForm" action="search" namespace="/boardingPosition">
