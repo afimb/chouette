@@ -33,20 +33,20 @@ function initMap(){
 
   // === INIT LAYERS ===
   //geographic map layer
-  var geoMapLayer= create_layer("GEOGRAPHICALGRIDSYSTEMS.MAPS");
+  var geoMapLayer= createGeoportalLayer("GEOGRAPHICALGRIDSYSTEMS.MAPS", "Plan");
   // orthophoto layer
-  var orthoPhotoLayer= create_layer("ORTHOIMAGERY.ORTHOPHOTOS");
+  var orthoPhotoLayer= createGeoportalLayer("ORTHOIMAGERY.ORTHOPHOTOS", "Satellite");
 
    map.addLayers([geoMapLayer,orthoPhotoLayer]);
 }
 
-function create_layer(layer_type)
+function createGeoportalLayer(layerType, layerName)
 {
   return new Geoportal.Layer.WMSC(
-    "Plan",
-    gGEOPORTALRIGHTSMANAGEMENT[gGEOPORTALRIGHTSMANAGEMENT.apiKey].resources[layer_type + ':WMSC'].url,
+    layerName,
+    gGEOPORTALRIGHTSMANAGEMENT[gGEOPORTALRIGHTSMANAGEMENT.apiKey].resources[layerType + ':WMSC'].url,
     {
-      layers: layer_type,
+      layers: layerType,
       format:'image/jpeg',
       exceptions:"text/xml"
     },
@@ -56,7 +56,7 @@ function create_layer(layer_type)
       resolutions: Geoportal.Catalogue.RESOLUTIONS.slice(5,18),
       alwaysInRange: true,
       projection: geoportalProjection,
-      maxExtent: new OpenLayers.Bounds(-180, -57, 180, 72).transform(wgsProjection,geoportalProjection, true),
+      //maxExtent: new OpenLayers.Bounds(-180, -57, 180, 72).transform(wgsProjection,geoportalProjection, true),
       units: geoportalProjection.getUnits(),
       GeoRM: Geoportal.GeoRMHandler.addKey(
         gGEOPORTALRIGHTSMANAGEMENT.apiKey,
