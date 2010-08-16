@@ -770,5 +770,11 @@ div.autocomplete ul li
   background-color: blue;
   height: 20px;
   width: 20px;
-  margin: 260px 0px 0px 15px;
+}
+
+.mapBarycentreItemActive
+{
+  background-color: blue;
+  height: 20px;
+  width: 20px;
 }

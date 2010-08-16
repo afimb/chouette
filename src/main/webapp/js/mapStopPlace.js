@@ -11,7 +11,8 @@ function init(){
   });
   var panel = new OpenLayers.Control.Panel();
   panel.addControls([barycentre]);
-  map.addControl(panel);
+  var pixel = new OpenLayers.Pixel(15, 260);
+  map.addControl(panel, pixel);
   
   // edit marker layer
   var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
@@ -41,6 +42,7 @@ function init(){
     fillOpacity: 1
   },
   OpenLayers.Feature.Vector.style["default"]);
+  
   var showMarkerStyleMap = new OpenLayers.StyleMap({
     "default": showMarkerSymbolizer,
     "select": {}
