@@ -7,6 +7,8 @@ function init(){
 
   //show marker layer
   showMarkerLayer = createShowMarkerLayer();
+  map.addLayers([showMarkerLayer]);
+  
 
   // === INIT CONTROLS ===
   var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
@@ -21,8 +23,11 @@ function init(){
 	
   map.addControl(highlightCtrl);
   highlightCtrl.activate();
-	
-  initLineLayer();
+  
+  var lineId = $("line_idLigne").value ;
+  if(lineId != null){
+    initShowMarkerLayer("../json/JSONLine?lineId="+lineId);
+  }
 }
 
 //////////////////////
@@ -62,53 +67,6 @@ function onPopupClose(event)
 {
   // 'this' is the popup.
   selectControl.unselect(this.feature);
-}
-
-//////////////////////////////////
-// SHOW MARKER LAYER MANAGEMENT //
-//////////////////////////////////
-
-function initLineLayer(){
-  if(	$("line_idLigne").value != null)
-  {
-    var url = "../json/JSONLine?lineId="+$("line_idLigne").value;
-    var bounds = new OpenLayers.Bounds();
-    var markPoints = new Array();
-      
-    new Ajax.Request(url, {
-      method: 'get',
-      onSuccess: function(transport) {
-        var stopPlaces = eval(transport.responseText);
-        stopPlaces.each(function(area){
-          if(area.latitude != null && area.longitude != null)
-          {
-            var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
-            var markPointXY = markPoint.transform(wgsProjection,geoportalProjection)
-
-            bounds.extend(markPointXY);
-            var mark = new OpenLayers.Feature.Vector(markPointXY, {
-              'area':area
-            });
-            markPoints.push(mark.geometry);
-            showMarkerLayer.addFeatures([mark]);
-          }
-        });
-
-        map.addLayers([showMarkerLayer]);
-        if(bounds.left != null) // If line has stop areas
-        {
-          // Hack : reduce zoom to see marker picture
-          var zoom = map.getZoomForExtent(bounds, true) - 1;
-          var point = barycentre(markPoints);
-          map.setCenter(point, zoom);
-        }
-        else // If line has no stop areas
-        {
-          map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),20);
-        }
-      }
-    });
-  }
 }
 
 window.onload = init;

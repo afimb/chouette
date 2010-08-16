@@ -79,7 +79,10 @@ function init(){
     map.addControl(drawControls[key]);
   }
 
-  initShowMarkerLayer();
+  var stopPlaceId = $("stoparea_idPositionGeographique").value ;
+  if(stopPlaceId != null){
+    initShowMarkerLayer("../json/JSONStopPlace?stopPlaceId="+stopPlaceId);
+  }
   updateStopPlaceMarker();
 }
 
@@ -258,39 +261,6 @@ function updateCoordsFrom(field){
       break;
   }
   updateStopPlaceMarker();
-}
-
-//////////////////////////////////
-// SHOW MARKER LAYER MANAGEMENT //
-//////////////////////////////////
-
-function initShowMarkerLayer(){
-  if(	$("stoparea_idPositionGeographique").value != null){
-    var url = "../json/JSONStopPlace?stopPlaceId="+$("stoparea_idPositionGeographique").value;
-
-    new Ajax.Request(url, {
-      method: 'get',
-      onSuccess: function(transport) {
-        childrenAreas = eval(transport.responseText);
-        childrenAreas.each(function(area){
-          if(area.latitude != null && area.longitude != null){
-            var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
-            var popup = new OpenLayers.Popup("tooltip",
-              markPoint.getBounds().getCenterLonLat(),
-              null,
-              "<div class='tooltip'>"+area.name+"</div>",
-              false);
-            popup.autoSize = true;
-            var mark = new OpenLayers.Feature.Vector(markPoint.transform(wgsProjection,geoportalProjection), {
-              'area':area,
-              'popup' : popup
-            });
-            showMarkerLayer.addFeatures([mark]);
-          }
-        });
-      }
-    });
-  }
 }
 
 //////////////////////

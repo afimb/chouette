@@ -23,7 +23,10 @@ function init(){
   map.addControl(highlightCtrl);
   highlightCtrl.activate();
 	
-  initConnectionLinkLayer();
+  var connectionLinkId = $("connectionLink_idCorrespondance").value ;
+  if(connectionLinkId != null){
+    initShowMarkerLayer("../json/JSONConnectionLink?connectionLinkId="+connectionLinkId);
+  }
 }
 
 //////////////////////
@@ -64,57 +67,6 @@ function onPopupClose(event)
 {
   // 'this' is the popup.
   selectControl.unselect(this.feature);
-}
-
-//////////////////////////////////
-// SHOW MARKER LAYER MANAGEMENT //
-//////////////////////////////////
-
-function initConnectionLinkLayer(){
-  if(	$("connectionLink_idCorrespondance").value != null)
-  {
-    var url = "../json/JSONConnectionLink?connectionLinkId="+$("connectionLink_idCorrespondance").value;
-    var bounds = new OpenLayers.Bounds();
-    var markPoints = new Array();
-
-    new Ajax.Request(url, {
-      method: 'get',
-      onSuccess: function(transport) {
-        var stopPlaces = eval(transport.responseText);
-        stopPlaces.each(function(area){
-          if(area.latitude != null && area.longitude != null)
-          {
-            var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
-            var markPointXY = markPoint.transform(wgsProjection,geoportalProjection)
-
-            bounds.extend(markPointXY);
-            var mark = new OpenLayers.Feature.Vector(markPointXY, {
-              'area':area
-            });
-            markPoints.push(mark.geometry);
-            showMarkerLayer.addFeatures([mark]);
-          }
-        });
-
-        if(bounds.left != null) // If line has stop areas
-        {
-          // Hack : reduce zoom to see marker picture
-          var zoom = map.getZoomForExtent(bounds, true) - 1;
-          var point = barycentre(markPoints);
-          map.setCenter(point, zoom);
-        }
-        else // If line has no stop areas
-        {
-          map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),20);
-        }
-      }
-    });
-  }
-}
-
-function test()
-{
-
 }
 
 window.onload = init;
