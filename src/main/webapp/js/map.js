@@ -71,7 +71,8 @@ function createGeoportalLayer(layerType, layerName)
 function createShowMarkerLayer(){
   var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
   {
-    externalGraphic: "../js/openlayers/img/marker-blue.png",
+    externalGraphic: "../js/openlayers/img/${thumbnail}.png",
+    graphicYOffset: -38,
     pointRadius: 20,
     fillOpacity: 1
   },
@@ -112,7 +113,8 @@ function initShowMarkerLayer(url){
 
           bounds.extend(markPointXY);
           var mark = new OpenLayers.Feature.Vector(markPointXY, {
-            'area':area
+            'area':area,
+            'thumbnail':area.areaType.toLowerCase()
           });
           markPoints.push(mark.geometry);
           showMarkerLayer.addFeatures([mark]);
