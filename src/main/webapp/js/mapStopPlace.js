@@ -35,26 +35,7 @@ function init(){
     });
 
   //show marker layer
-  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
-    externalGraphic: "../js/openlayers/img/marker-blue.png",
-    pointRadius: 20,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]);
-  
-  var showMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": showMarkerSymbolizer,
-    "select": {}
-  });
-
-
-  showMarkerLayer = new OpenLayers.Layer.Vector(
-    "Show Marker Layer",
-    {
-      styleMap: showMarkerStyleMap,
-      displayInLayerSwitcher: false
-    });
+  showMarkerLayer = createShowMarkerLayer();
 
   map.addLayers([editMarkerLayer,showMarkerLayer]);
   map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);

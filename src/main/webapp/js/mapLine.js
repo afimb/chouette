@@ -6,25 +6,7 @@ function init(){
   initMap();
 
   //show marker layer
-  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
-    externalGraphic: "../js/openlayers/img/marker-blue.png",
-    pointRadius: 20,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]);
-  var showMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": showMarkerSymbolizer,
-    "select": {}
-  });
-	
-	
-  showMarkerLayer = new OpenLayers.Layer.Vector(
-    "Show Marker Layer",
-    {
-      styleMap: showMarkerStyleMap,
-      displayInLayerSwitcher: false
-    });
+  showMarkerLayer = createShowMarkerLayer();
 
   // === INIT CONTROLS ===
   var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {

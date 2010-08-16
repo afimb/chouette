@@ -6,26 +6,9 @@ function init(){
   initMap();
 
   //show marker layer
-  showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
-    externalGraphic: "../js/openlayers/img/marker-blue.png",
-    pointRadius: 20,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]);
-  showMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": showMarkerSymbolizer,
-    "select": {}
-  });
-	
-	
-  var showMarkerLayer = new OpenLayers.Layer.Vector(
-    "Show Marker Layer",
-    {
-      styleMap: showMarkerStyleMap,
-      displayInLayerSwitcher: false
-    });
-
+  showMarkerLayer = createShowMarkerLayer();
+  map.addLayers([showMarkerLayer]);
+  
   // === INIT CONTROLS ===
   var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
     hover: true,
@@ -113,7 +96,6 @@ function initConnectionLinkLayer(){
           }
         });
 
-        map.addLayers([showMarkerLayer]);
         if(bounds.left != null) // If line has stop areas
         {
           // Hack : reduce zoom to see marker picture

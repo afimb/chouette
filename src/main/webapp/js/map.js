@@ -65,7 +65,30 @@ function createGeoportalLayer(layerType, layerName)
         map
         )
     });
-}
+};
+
+function createShowMarkerLayer(){
+  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
+  {
+    externalGraphic: "../js/openlayers/img/marker-blue.png",
+    pointRadius: 20,
+    fillOpacity: 1
+  },
+  OpenLayers.Feature.Vector.style["default"]);
+  
+  var showMarkerStyleMap = new OpenLayers.StyleMap({
+    "default": showMarkerSymbolizer,
+    "select": {}
+  });
+
+
+  return new OpenLayers.Layer.Vector(
+    "Show Marker Layer",
+    {
+      styleMap: showMarkerStyleMap,
+      displayInLayerSwitcher: false
+    });
+};
 
 ////////////////
 // MATH TOOLS //
