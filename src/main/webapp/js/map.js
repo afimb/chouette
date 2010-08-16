@@ -11,12 +11,13 @@ var lambertProjection= new OpenLayers.Projection("EPSG:27582");
 var geoportalProjection= new OpenLayers.Projection("IGNF:GEOPORTALFXX");
 
 function initMap(){
-
+  var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(wgsProjection,geoportalProjection, true);
   // === INIT MAP ===
   map = new OpenLayers.Map('map', {
     resolutions: Geoportal.Catalogue.RESOLUTIONS,
     projection: geoportalProjection,
-    maxExtent: new OpenLayers.Bounds(-180, -57, 180, 72).transform(wgsProjection,geoportalProjection, true),
+    maxExtent: mapBounds,
+    restrictedExtent: mapBounds,
     units: geoportalProjection.getUnits(),
     controls:[
     new OpenLayers.Control.PanZoomBar(),
@@ -56,7 +57,6 @@ function createGeoportalLayer(layerType, layerName)
       resolutions: Geoportal.Catalogue.RESOLUTIONS.slice(5,18),
       alwaysInRange: true,
       projection: geoportalProjection,
-      //maxExtent: new OpenLayers.Bounds(-180, -57, 180, 72).transform(wgsProjection,geoportalProjection, true),
       units: geoportalProjection.getUnits(),
       GeoRM: Geoportal.GeoRMHandler.addKey(
         gGEOPORTALRIGHTSMANAGEMENT.apiKey,
