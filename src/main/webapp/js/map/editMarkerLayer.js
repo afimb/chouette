@@ -1,5 +1,5 @@
 var EDIT_MARKER_TYPE;
-var editMarker;
+var editMarker, drawControls;
 
 function createEditMarkerLayer(){
   var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(

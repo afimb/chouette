@@ -1,6 +1,3 @@
-//define global vars
-var drawControls;
-
 function init(){
   initMap();
 

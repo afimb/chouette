@@ -1,6 +1,3 @@
-//define global vars
-var drawControls, boardingPositionMarker;
-
 function init(){
   initMap();
 	
