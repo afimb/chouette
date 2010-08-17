@@ -119,7 +119,7 @@ public class LecteurArret implements ILecteurArret {
 		addObjectIdParParentObjectId(arretPhysique.getObjectId(), zone.getObjectId());
 		if (ligneCSV.length == 9)
 			if ((ligneCSV[8] != null) || (ligneCSV[8].trim().length() != 0))
-				arretPhysique.setComment(ligneCSV[8].trim());
+			    arretPhysique.setComment(ligneCSV[8].trim());
 		//arretPhysique.setCountryCode("51100");
 	}
 	

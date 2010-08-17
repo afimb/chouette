@@ -38,6 +38,7 @@
 		<property name="cleLambert2" value="LAMBERT II"/>
 		<property name="cleLambert3" value="LAMBERT III"/>
 		<property name="cleLambert4" value="LAMBERT IV"/>
+		<property name="cleWGS84" value="WGS84"/>
 		<property name="hastusCode" value="${hastus.code}" />
 		<property name="special" value="${hastus.special}" />
 		<property name="space" value="${hastus.space}" />
