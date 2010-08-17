@@ -5,7 +5,7 @@ function init(){
   initMap();
 	
   // edit marker layer
-  editMarkerLayer = createEditMarkerLayer();
+  var editMarkerLayer = createEditMarkerLayer();
 
   map.addLayers([editMarkerLayer]);
   map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
@@ -42,6 +42,7 @@ function init(){
 /////////////////////////
 
 function toggleDrawControl(element) {
+  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
   for(key in controls) {
     drawControls[key].deactivate();
   }
@@ -61,6 +62,7 @@ function toggleDrawControl(element) {
 //////////////////////
 
 function report(event) {
+  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
   //console.log(event.type, event.feature ? event.feature.id : event.components);
   if(event.type == "sketchcomplete"){
     boardingPositionMarker = event.feature;
@@ -83,6 +85,7 @@ function report(event) {
 
 function updateboardingPositionMarker()
 {
+  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
   if($("boardingPosition_latitude").value != "" && $("boardingPosition_longitude").value != "")
   {
     if(boardingPositionMarker != null)

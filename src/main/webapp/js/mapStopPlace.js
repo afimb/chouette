@@ -15,10 +15,10 @@ function init(){
   map.addControl(panel, pixel);
   
   // edit marker layer
-  editMarkerLayer = createEditMarkerLayer();
+  var editMarkerLayer = createEditMarkerLayer();
 
   //show marker layer
-  showMarkerLayer = createShowMarkerLayer();
+  var showMarkerLayer = createShowMarkerLayer();
 
   map.addLayers([editMarkerLayer,showMarkerLayer]);
   map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
@@ -75,6 +75,7 @@ function init(){
 /////////////////////////
 
 function toggleDrawControl(element) {
+  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
   for(key in controls) {
     drawControls[key].deactivate();
   }
@@ -95,6 +96,7 @@ function toggleDrawControl(element) {
 //////////////////////
 
 function report(event) {
+  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
   //console.log(event.type, event.feature ? event.feature.id : event.components);
   if(event.type == "sketchcomplete"){
     stopPlaceMarker = event.feature;
@@ -117,6 +119,7 @@ function report(event) {
 //////////////////////////////////
 
 function updateStopPlaceMarker(){
+  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
   if($("stoparea_latitude").value != "" && $("stoparea_longitude").value != ""){
     if(stopPlaceMarker != null){
       var newCoords = new OpenLayers.LonLat($("stoparea_longitude").value,$("stoparea_latitude").value).transform(wgsProjection,geoportalProjection);
@@ -282,6 +285,7 @@ function onPopupClose(event)
 
 function barycentreStopPlaceMarker()
 {
+  var showMarkerLayer = map.getLayersByName("Show Marker Layer")[0];
   var childrenPoints = showMarkerLayer.features.collect(function(feature){
     return feature.geometry;
   });

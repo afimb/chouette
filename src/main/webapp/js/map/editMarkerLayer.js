@@ -1,5 +1,3 @@
-var editMarkerLayer;
-
 function createEditMarkerLayer(){
   var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
     {
@@ -9,7 +7,7 @@ function createEditMarkerLayer(){
     },
     OpenLayers.Feature.Vector.style["default"]);
   
-  return createMarkerLayer(editMarkerSymbolizer,"Show Marker Layer");
+  return createMarkerLayer(editMarkerSymbolizer,"Edit Marker Layer");
 };
 
 

@@ -3,7 +3,7 @@ function init(){
   initMap();
 
   //show marker layer
-  showMarkerLayer = createShowMarkerLayer();
+  var showMarkerLayer = createShowMarkerLayer();
   map.addLayers([showMarkerLayer]);
   
   // === INIT CONTROLS ===

@@ -2,9 +2,6 @@
 // SHOW MARKER LAYER MANAGEMENT //
 //////////////////////////////////
 
-//define global vars
-var showMarkerLayer;
-
 function createShowMarkerLayer(){
   var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
     {
@@ -21,6 +18,7 @@ function createShowMarkerLayer(){
 function initShowMarkerLayer(url){
   var bounds = new OpenLayers.Bounds();
   var markPoints = new Array();
+  var showMarkerLayer = map.getLayersByName("Show Marker Layer")[0];
     
   new Ajax.Request(url, {
     method: 'get',
