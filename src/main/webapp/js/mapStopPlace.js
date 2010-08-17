@@ -37,19 +37,6 @@ function init(){
 
   // === INIT CONTROLS ===
 
-  var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
-    hover: true,
-    highlightOnly: true,
-    renderIntent: "",
-    eventListeners: {
-      featurehighlighted: showTooltipOnEvent,
-      featureunhighlighted: hideTooltipOnEvent
-    }
-  });
-
-  map.addControl(highlightCtrl);
-  highlightCtrl.activate();
-
   drawControls = {
     draw: new OpenLayers.Control.DrawFeature(editMarkerLayer,OpenLayers.Handler.Point),
     modify: new OpenLayers.Control.ModifyFeature(editMarkerLayer,{
@@ -247,40 +234,6 @@ function updateCoordsFrom(field){
       break;
   }
   updateStopPlaceMarker();
-}
-
-//////////////////////
-// POPUP MANAGEMENT //
-//////////////////////
-
-function showTooltipOnEvent(event)
-{
-  feature = event.feature;
-  popup = new OpenLayers.Popup.FramedCloud("featurePopup",
-    feature.geometry.getBounds().getCenterLonLat(),
-    new OpenLayers.Size(100,100),
-    "<h2>"+feature.attributes.area.name + "</h2>",
-    null, true, onPopupClose);
-  feature.popup = popup;
-  popup.feature = feature;
-  map.addPopup(popup);
-}
-
-function hideTooltipOnEvent(event)
-{
-  feature = event.feature;
-  if (feature.popup) {
-    popup.feature = null;
-    map.removePopup(feature.popup);
-    feature.popup.destroy();
-    feature.popup = null;
-  }
-}
-
-function onPopupClose(event)
-{
-  // 'this' is the popup.
-  selectControl.unselect(this.feature);
 }
 
 function barycentreStopPlaceMarker()
