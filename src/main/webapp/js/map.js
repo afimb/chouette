@@ -68,28 +68,45 @@ function createGeoportalLayer(layerType, layerName)
 };
 
 
-function createShowMarkerLayer(){
-  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
-    externalGraphic: "../js/openlayers/img/${thumbnail}.png",
-    graphicYOffset: -38,
-    pointRadius: 20,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]);
-  
-  var showMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": showMarkerSymbolizer,
+function createMarkerLayer(symbolizer,layerName){  
+  var styleMap = new OpenLayers.StyleMap({
+    "default": symbolizer,
     "select": {}
   });
 
-
   return new OpenLayers.Layer.Vector(
-    "Show Marker Layer",
+    layerName,
     {
-      styleMap: showMarkerStyleMap,
+      styleMap: styleMap,
       displayInLayerSwitcher: false
-    });
+    });	
+};
+
+
+function createShowMarkerLayer(){
+  var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
+    {
+      externalGraphic: "../js/openlayers/img/${thumbnail}.png",
+      graphicYOffset: -38,
+      pointRadius: 20,
+      fillOpacity: 1
+    },
+    OpenLayers.Feature.Vector.style["default"]);
+  
+  return createMarkerLayer(showMarkerSymbolizer,"Show Marker Layer");
+};
+
+
+function createEditMarkerLayer(){
+  var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
+    {
+      externalGraphic: "../js/openlayers/img/green_round_marker.png",
+      pointRadius: 10,
+      fillOpacity: 1
+    },
+    OpenLayers.Feature.Vector.style["default"]);
+  
+  return createMarkerLayer(editMarkerSymbolizer,"Show Marker Layer");
 };
 
 

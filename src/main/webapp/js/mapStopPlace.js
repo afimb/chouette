@@ -15,24 +15,7 @@ function init(){
   map.addControl(panel, pixel);
   
   // edit marker layer
-  var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-  {
-    externalGraphic: "../js/openlayers/img/green_round_marker.png",
-    pointRadius: 10,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]);
-  var editMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": editMarkerSymbolizer,
-    "select": {}
-  });
-
-  editMarkerLayer = new OpenLayers.Layer.Vector(
-    "Edit Marker Layer",
-    {
-      styleMap: editMarkerStyleMap,
-      displayInLayerSwitcher: false
-    });
+  editMarkerLayer = createEditMarkerLayer();
 
   //show marker layer
   showMarkerLayer = createShowMarkerLayer();

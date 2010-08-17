@@ -5,24 +5,7 @@ function init(){
   initMap();
 	
   // edit marker layer
-  var editMarkerSymbolizer = OpenLayers.Util.applyDefaults({
-    externalGraphic: "../js/openlayers/img/green_round_marker.png",
-    pointRadius: 10,
-    fillOpacity: 1
-  },
-  OpenLayers.Feature.Vector.style["default"]
-  );
-  var editMarkerStyleMap = new OpenLayers.StyleMap({
-    "default": editMarkerSymbolizer,
-    "select": {}
-  });
-	
-  editMarkerLayer = new OpenLayers.Layer.Vector(
-    "Edit Marker Layer",
-    {
-      styleMap: editMarkerStyleMap,
-      displayInLayerSwitcher: false
-    });
+  editMarkerLayer = createEditMarkerLayer();
 
   map.addLayers([editMarkerLayer]);
   map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
