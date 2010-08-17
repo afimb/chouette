@@ -1,5 +1,5 @@
 //define global vars
-var drawControls, stopPlaceMarker, editMarkerLayer, showMarkerLayer, childrenAreas;
+var drawControls, stopPlaceMarker, childrenAreas;
 
 function init(){
   initMap();

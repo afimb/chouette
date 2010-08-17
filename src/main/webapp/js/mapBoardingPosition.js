@@ -1,5 +1,5 @@
 //define global vars
-var drawControls, boardingPositionMarker, editMarkerLayer;
+var drawControls, boardingPositionMarker;
 
 function init(){
   initMap();

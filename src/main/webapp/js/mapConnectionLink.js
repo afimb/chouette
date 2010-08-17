@@ -1,6 +1,3 @@
-//define global vars
-var showMarkerLayer;
-
 function init(){
   // Call to function init in map.js
   initMap();
