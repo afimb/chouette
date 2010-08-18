@@ -4,13 +4,13 @@
 
 function createShowMarkerLayer(){
   var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
-    {
-      externalGraphic: "../js/openlayers/img/${thumbnail}.png",
-      graphicYOffset: -38,
-      pointRadius: 20,
-      fillOpacity: 1
-    },
-    OpenLayers.Feature.Vector.style["default"]);
+  {
+    externalGraphic: "../js/openlayers/img/${thumbnail}.png",
+    graphicYOffset: -38,
+    pointRadius: 20,
+    fillOpacity: 1
+  },
+  OpenLayers.Feature.Vector.style["default"]);
   
   return createMarkerLayer(showMarkerSymbolizer,"Show Marker Layer");
 };
@@ -48,7 +48,7 @@ function initShowMarkerLayer(url){
           bounds.extend(markPointXY);
           var mark = new OpenLayers.Feature.Vector(markPointXY, {
             'area':area,
-            'thumbnail':area.areaType.toLowerCase()
+            'thumbnail':area.areaType.toLowerCase(),
           });
           markPoints.push(mark.geometry);
           showMarkerLayer.addFeatures([mark]);
@@ -81,31 +81,27 @@ function showTooltipOnEvent(event)
     text += "<p>"+feature.attributes.area.streetName + "</p>";
   if(feature.attributes.area.countryCode != null)
     text +="<p>"+feature.attributes.area.countryCode + "</p>";
-
-  var popup = new OpenLayers.Popup.FramedCloud("featurePopup",
+  
+  var anchoredBubble = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {
+    'autoSize': true,
+    'minSize': new OpenLayers.Size(100,100)
+  });
+  
+  var popup = new anchoredBubble("featurePopup",
     feature.geometry.getBounds().getCenterLonLat(),
     new OpenLayers.Size(100,100),
     text,
-    null, true, onPopupClose);
+    null, false, null);
   feature.popup = popup;
-  popup.feature = feature;
   map.addPopup(popup);
-};
+}
 
 function hideTooltipOnEvent(event)
 {
   var feature = event.feature;
   if (feature.popup) {
-    popup.feature = null;
     map.removePopup(feature.popup);
     feature.popup.destroy();
     feature.popup = null;
   }
-};
-
-function onPopupClose(event)
-{
-  // 'this' is the popup.
-  selectControl.unselect(this.feature);
-};
-
+}
