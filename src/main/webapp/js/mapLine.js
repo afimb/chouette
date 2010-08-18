@@ -1,15 +1,15 @@
-function init(){
+Chouette.Map.init = function(){
   // Call to function init in map.js
-  initMap();
+  Chouette.Map.initMap();
 
   //show marker layer
-  var showMarkerLayer = createShowMarkerLayer();
-  map.addLayers([showMarkerLayer]);
+  var showMarkerLayer = Chouette.Map.createShowMarkerLayer();
+  Chouette.Map.map.addLayers([showMarkerLayer]);
 
   var lineId = $("line_idLigne").value ;
   if(lineId != null){
-    initShowMarkerLayer("../json/JSONLine?lineId="+lineId);
+    Chouette.Map.initShowMarkerLayer("../json/JSONLine?lineId="+lineId);
   }
-}
+};
 
-window.onload = init;
+window.onload = Chouette.Map.init;

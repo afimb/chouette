@@ -2,7 +2,7 @@
 // SHOW MARKER LAYER MANAGEMENT //
 //////////////////////////////////
 
-function createShowMarkerLayer(){
+Chouette.Map.createShowMarkerLayer = function(){
   var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
   {
     externalGraphic: "../js/openlayers/img/${thumbnail}.png",
@@ -12,13 +12,13 @@ function createShowMarkerLayer(){
   },
   OpenLayers.Feature.Vector.style["default"]);
   
-  return createMarkerLayer(showMarkerSymbolizer,"Show Marker Layer");
+  return this.createMarkerLayer(showMarkerSymbolizer,"Show Marker Layer");
 };
 
-function initShowMarkerLayer(url){
+Chouette.Map.initShowMarkerLayer = function(url){
   var bounds = new OpenLayers.Bounds();
   var markPoints = new Array();
-  var showMarkerLayer = map.getLayersByName("Show Marker Layer")[0];
+  var showMarkerLayer = this.map.getLayersByName("Show Marker Layer")[0];
   
   //init highlight control on Show Marker Layer
   var highlightCtrl = new OpenLayers.Control.SelectFeature(showMarkerLayer, {
@@ -26,12 +26,12 @@ function initShowMarkerLayer(url){
     highlightOnly: true,
     renderIntent: "",
     eventListeners: {
-      featurehighlighted: showTooltipOnEvent,
-      featureunhighlighted: hideTooltipOnEvent
+      featurehighlighted: this.showTooltipOnEvent,
+      featureunhighlighted: this.hideTooltipOnEvent
     }
   });
 	
-  map.addControl(highlightCtrl);
+  this.map.addControl(highlightCtrl);
   highlightCtrl.activate();
   
   //get data for Show Marker Layer
@@ -42,8 +42,9 @@ function initShowMarkerLayer(url){
       stopPlaces.each(function(area){
         if(area.latitude != null && area.longitude != null)
         {
+          var showMarkerLayer = Chouette.Map.map.getLayersByName("Show Marker Layer")[0];
           var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
-          var markPointXY = markPoint.transform(wgsProjection,geoportalProjection)
+          var markPointXY = markPoint.transform(Chouette.Map.wgsProjection,Chouette.Map.geoportalProjection)
 
           bounds.extend(markPointXY);
           var mark = new OpenLayers.Feature.Vector(markPointXY, {
@@ -58,13 +59,13 @@ function initShowMarkerLayer(url){
       if(bounds.left != null) // If there is markers
       {
         // Hack : reduce zoom to see marker picture
-        var zoom = map.getZoomForExtent(bounds, true) - 1;
-        var point = barycentre(markPoints);
-        map.setCenter(point, zoom);
+        var zoom = Chouette.Map.map.getZoomForExtent(bounds, true) - 1;
+        var point = Chouette.Map.barycentre(markPoints);
+        Chouette.Map.map.setCenter(point, zoom);
       }
       else // If there is no markers
       {
-        map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),20);
+        Chouette.Map.map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),20);
       }
     }
   });
@@ -73,7 +74,7 @@ function initShowMarkerLayer(url){
 //////////////////////
 // POPUP MANAGEMENT //
 //////////////////////
-function showTooltipOnEvent(event)
+Chouette.Map.showTooltipOnEvent = function(event)
 {
   var feature = event.feature;
   var text =  "<h2>"+feature.attributes.area.name + "</h2>";
@@ -93,15 +94,15 @@ function showTooltipOnEvent(event)
     text,
     null, false, null);
   feature.popup = popup;
-  map.addPopup(popup);
-}
+  this.map.addPopup(popup);
+};
 
-function hideTooltipOnEvent(event)
+Chouette.Map.hideTooltipOnEvent = function(event)
 {
   var feature = event.feature;
   if (feature.popup) {
-    map.removePopup(feature.popup);
+    this.map.removePopup(feature.popup);
     feature.popup.destroy();
     feature.popup = null;
   }
-}
+};

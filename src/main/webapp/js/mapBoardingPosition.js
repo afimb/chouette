@@ -1,15 +1,15 @@
-function init(){
-  initMap();
+Chouette.Map.init = function(){
+  Chouette.Map.initMap();
 	
   // edit marker layer
-  var editMarkerLayer = createEditMarkerLayer();
+  var editMarkerLayer = Chouette.Map.createEditMarkerLayer();
 
-  map.addLayers([editMarkerLayer]);
-  map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
+  Chouette.Map.map.addLayers([editMarkerLayer]);
+  Chouette.Map.map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
 
-  initEditMarkerLayer("boardingPosition");
+  Chouette.Map.initEditMarkerLayer("boardingPosition");
 	
-  updateEditMarker();
+  Chouette.Map.updateEditMarker();
 }
 
-window.onload = init;
+window.onload = Chouette.Map.init;

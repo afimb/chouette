@@ -1,7 +1,8 @@
-var EDIT_MARKER_TYPE;
-var editMarker, drawControls;
+Chouette.Map.EDIT_MARKER_TYPE;
+Chouette.Map.editMarker;
+Chouette.Map.drawControls;
 
-function createEditMarkerLayer(){
+Chouette.Map.createEditMarkerLayer = function(){
   var editMarkerSymbolizer = OpenLayers.Util.applyDefaults(
     {
       externalGraphic: "../js/openlayers/img/green_round_marker.png",
@@ -10,12 +11,12 @@ function createEditMarkerLayer(){
     },
     OpenLayers.Feature.Vector.style["default"]);
   
-  return createMarkerLayer(editMarkerSymbolizer,"Edit Marker Layer");
+  return this.createMarkerLayer(editMarkerSymbolizer,"Edit Marker Layer");
 };
 
-function initEditMarkerLayer(editMarkerType){
-  EDIT_MARKER_TYPE = editMarkerType;
-  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
+Chouette.Map.initEditMarkerLayer = function(editMarkerType){
+  this.EDIT_MARKER_TYPE = editMarkerType;
+  var editMarkerLayer = this.map.getLayersByName("Edit Marker Layer")[0];
   
   // === INIT EVENTS MANAGEMENT ===
   editMarkerLayer.events.on({
@@ -23,23 +24,23 @@ function initEditMarkerLayer(editMarkerType){
     //		"afterfeaturemodified": report,
     //		"sketchmodified": report,
     //		"sketchstarted": report,
-    "vertexmodified": report,
-    "featuremodified": report,
-    "sketchcomplete": report
+    "vertexmodified": this.report,
+    "featuremodified": this.report,
+    "sketchcomplete": this.report
   });
 
   // === INIT CONTROLS ===
 
-  drawControls = {
+  this.drawControls = {
     draw: new OpenLayers.Control.DrawFeature(editMarkerLayer,OpenLayers.Handler.Point),
     modify: new OpenLayers.Control.ModifyFeature(editMarkerLayer,{
       clickout: false
     })
   };
 
-  for(var key in drawControls)
+  for(var key in this.drawControls)
   {
-    map.addControl(drawControls[key]);
+    this.map.addControl(this.drawControls[key]);
   }
 };
 
@@ -47,18 +48,18 @@ function initEditMarkerLayer(editMarkerType){
 // CONTROLS MANAGEMENT //
 /////////////////////////
 
-function toggleDrawControl(element) {
-  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
-  for(key in controls) {
-    drawControls[key].deactivate();
+Chouette.Map.toggleDrawControl = function(element) {
+  var editMarkerLayer = this.map.getLayersByName("Edit Marker Layer")[0];
+  for(key in this.drawControls) {
+    this.drawControls[key].deactivate();
   }
   if(element.value != 'none'){
-    if(editMarker == null){
-      drawControls.draw.activate();
+    if(this.editMarker == null){
+      this.drawControls.draw.activate();
     }
     else{
-      drawControls.modify.activate();
-      drawControls.modify.selectControl.select(editMarkerLayer.features[0]);
+      this.drawControls.modify.activate();
+      this.drawControls.modify.selectControl.select(editMarkerLayer.features[0]);
     }
   }
 };
@@ -68,21 +69,21 @@ function toggleDrawControl(element) {
 // EVENT MANAGEMENT //
 //////////////////////
 
-function report(event) {
-  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
+Chouette.Map.report = function(event) {
+  var editMarkerLayer = Chouette.Map.map.getLayersByName("Edit Marker Layer")[0];
   //console.log(event.type, event.feature ? event.feature.id : event.components);
   if(event.type == "sketchcomplete"){
-    editMarker = event.feature;
-    updateCoordsFieldsFromMarker(editMarker);
-    drawControls.draw.deactivate();
-    drawControls.modify.activate();
-    editMarkerLayer.addFeatures([editMarker]);
-    drawControls.modify.selectControl.select(editMarker);
+    Chouette.Map.editMarker = event.feature;
+    Chouette.Map.updateCoordsFieldsFromMarker(Chouette.Map.editMarker);
+    Chouette.Map.drawControls.draw.deactivate();
+    Chouette.Map.drawControls.modify.activate();
+    editMarkerLayer.addFeatures([Chouette.Map.editMarker]);
+    Chouette.Map.drawControls.modify.selectControl.select(Chouette.Map.editMarker);
     //prevents API from adding feature to the layer a second time
     return false;
   }
   else if(event.type == "featuremodified" || event.type == "vertexmodified"){
-    updateCoordsFieldsFromMarker();
+    Chouette.Map.updateCoordsFieldsFromMarker();
   }
 };
 
@@ -91,41 +92,41 @@ function report(event) {
 // STOP PLACE MARKER MANAGEMENT //
 //////////////////////////////////
 
-function updateEditMarker(){
-  var editMarkerLayer = map.getLayersByName("Edit Marker Layer")[0];
-  if($(EDIT_MARKER_TYPE+"_latitude").value != "" && $(EDIT_MARKER_TYPE+"_longitude").value != ""){
-    if(editMarker != null){
-      var newCoords = new OpenLayers.LonLat($(EDIT_MARKER_TYPE+"_longitude").value,$(EDIT_MARKER_TYPE+"_latitude").value).transform(wgsProjection,geoportalProjection);
-      editMarker.move(newCoords);
+Chouette.Map.updateEditMarker = function(){
+  var editMarkerLayer = this.map.getLayersByName("Edit Marker Layer")[0];
+  if($(this.EDIT_MARKER_TYPE+"_latitude").value != "" && $(this.EDIT_MARKER_TYPE+"_longitude").value != ""){
+    if(this.editMarker != null){
+      var newCoords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.geoportalProjection);
+      this.editMarker.move(newCoords);
     }
     else{
-      editMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($(EDIT_MARKER_TYPE+"_longitude").value,$(EDIT_MARKER_TYPE+"_latitude").value).transform(wgsProjection,geoportalProjection));
-      drawControls.draw.deactivate();
-      drawControls.modify.activate();
-      editMarkerLayer.addFeatures([editMarker]);
-      drawControls.modify.selectControl.select(editMarker);
+      this.editMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.geoportalProjection));
+      this.drawControls.draw.deactivate();
+      this.drawControls.modify.activate();
+      editMarkerLayer.addFeatures([this.editMarker]);
+      this.drawControls.modify.selectControl.select(this.editMarker);
     }
   }
   else{
-    if(editMarker != null){
-      editMarkerLayer.removeFeatures([editMarker]);
-      editMarker = null;
+    if(this.editMarker != null){
+      editMarkerLayer.removeFeatures([this.editMarker]);
+      this.editMarker = null;
     }
-    drawControls.modify.deactivate();
-    drawControls.draw.activate();
+    this.drawControls.modify.deactivate();
+    this.drawControls.draw.activate();
   }
 
-  centerOnMarker();
+  this.centerOnMarker();
 
   //prevents API from adding feature to the layer a second time
   return false;
 };
 
-function centerOnMarker(){
-  if(editMarker != null){
-    var geom = editMarker.geometry;
+Chouette.Map.centerOnMarker = function(){
+  if(this.editMarker != null){
+    var geom = this.editMarker.geometry;
     var newCoords = new OpenLayers.LonLat(geom.x,geom.y);
-    map.panTo(newCoords);
+    this.map.panTo(newCoords);
   }
 };
 
@@ -133,85 +134,81 @@ function centerOnMarker(){
 // FORM FIELDS MANAGEMENT //
 ////////////////////////////
 
-function updateCoordsFieldsFromMarker(){
-  var point = editMarker.geometry.clone();
+Chouette.Map.updateCoordsFieldsFromMarker = function(){
+  var point = this.editMarker.geometry.clone();
 
-  point.transform(geoportalProjection,wgsProjection);
-  $(EDIT_MARKER_TYPE+"_latitude").value=point.y.toFixed(6);
-  $(EDIT_MARKER_TYPE+"_longitude").value=point.x.toFixed(6);
+  point.transform(this.geoportalProjection,this.wgsProjection);
+  $(this.EDIT_MARKER_TYPE+"_latitude").value=point.y.toFixed(6);
+  $(this.EDIT_MARKER_TYPE+"_longitude").value=point.x.toFixed(6);
 
-  point.transform(wgsProjection,lambertProjection);
-  $(EDIT_MARKER_TYPE+"_x").value=point.x.toFixed(2);
-  $(EDIT_MARKER_TYPE+"_y").value=point.y.toFixed(2);
+  point.transform(this.wgsProjection,this.lambertProjection);
+  $(this.EDIT_MARKER_TYPE+"_x").value=point.x.toFixed(2);
+  $(this.EDIT_MARKER_TYPE+"_y").value=point.y.toFixed(2);
 };
 
-function updateLatLonFieldsCoordsFromXY(){
-  var coords = new OpenLayers.LonLat($(EDIT_MARKER_TYPE+"_x").value,$(EDIT_MARKER_TYPE+"_y").value).transform(lambertProjection,wgsProjection);
-  $(EDIT_MARKER_TYPE+"_latitude").value=coords.lat.toFixed(6);
-  $(EDIT_MARKER_TYPE+"_longitude").value=coords.lon.toFixed(6);
+Chouette.Map.updateLatLonFieldsCoordsFromXY = function(){
+  var coords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_x").value,$(this.EDIT_MARKER_TYPE+"_y").value).transform(this.lambertProjection,this.wgsProjection);
+  $(this.EDIT_MARKER_TYPE+"_latitude").value=coords.lat.toFixed(6);
+  $(this.EDIT_MARKER_TYPE+"_longitude").value=coords.lon.toFixed(6);
 };
 
-function updateXYFieldsCoordsFromLatLon(){
-  var coords = new OpenLayers.LonLat($(EDIT_MARKER_TYPE+"_longitude").value,$(EDIT_MARKER_TYPE+"_latitude").value).transform(wgsProjection,lambertProjection);
-  $(EDIT_MARKER_TYPE+"_x").value=coords.lon.toFixed(2);
-  $(EDIT_MARKER_TYPE+"_y").value=coords.lat.toFixed(2);
+Chouette.Map.updateXYFieldsCoordsFromLatLon = function(){
+  var coords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.lambertProjection);
+  $(this.EDIT_MARKER_TYPE+"_x").value=coords.lon.toFixed(2);
+  $(this.EDIT_MARKER_TYPE+"_y").value=coords.lat.toFixed(2);
 };
 
-function updateCoordsFrom(field){
+Chouette.Map.updateCoordsFrom = function(field){
   switch(field){
     case 'x' :
-      console.log("x : "+$(EDIT_MARKER_TYPE+"_x").value);
-      var x = parseFloat($(EDIT_MARKER_TYPE+"_x").value);
+      var x = parseFloat($(this.EDIT_MARKER_TYPE+"_x").value);
       if(isNaN(x)){
-        $(EDIT_MARKER_TYPE+"_x").value = "";
-        $(EDIT_MARKER_TYPE+"_longitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_x").value = "";
+        $(this.EDIT_MARKER_TYPE+"_longitude").value = "";
       }
       else{
-        $(EDIT_MARKER_TYPE+"_x").value = x.toFixed(2);
-        if($(EDIT_MARKER_TYPE+"_y").value != ""){
-          updateLatLonFieldsCoordsFromXY();
+        $(this.EDIT_MARKER_TYPE+"_x").value = x.toFixed(2);
+        if($(this.EDIT_MARKER_TYPE+"_y").value != ""){
+          this.updateLatLonFieldsCoordsFromXY();
         }
       }
       break;
     case 'y' :
-      console.log("y : "+$(EDIT_MARKER_TYPE+"_y").value);
-      var y = parseFloat($(EDIT_MARKER_TYPE+"_y").value);
+      var y = parseFloat($(this.EDIT_MARKER_TYPE+"_y").value);
       if(isNaN(y)){
-        $(EDIT_MARKER_TYPE+"_y").value = "";
-        $(EDIT_MARKER_TYPE+"_latitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_y").value = "";
+        $(this.EDIT_MARKER_TYPE+"_latitude").value = "";
       }
       else{
-        $(EDIT_MARKER_TYPE+"_y").value = y.toFixed(2);
-        if($(EDIT_MARKER_TYPE+"_x").value != ""){
-          updateLatLonFieldsCoordsFromXY();
+        $(this.EDIT_MARKER_TYPE+"_y").value = y.toFixed(2);
+        if($(this.EDIT_MARKER_TYPE+"_x").value != ""){
+          this.updateLatLonFieldsCoordsFromXY();
         }
       }
       break;
     case 'lat' :
-      console.log("lat : "+$(EDIT_MARKER_TYPE+"_latitude").value);
-      var lat = parseFloat($(EDIT_MARKER_TYPE+"_latitude").value);
+      var lat = parseFloat($(this.EDIT_MARKER_TYPE+"_latitude").value);
       if(isNaN(lat)){
-        $(EDIT_MARKER_TYPE+"_latitude").value = "";
-        $(EDIT_MARKER_TYPE+"_y").value = "";
+        $(this.EDIT_MARKER_TYPE+"_latitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_y").value = "";
       }
       else{
-        $(EDIT_MARKER_TYPE+"_latitude").value = lat.toFixed(6);
-        if($(EDIT_MARKER_TYPE+"_longitude").value != ""){
-          updateXYFieldsCoordsFromLatLon();
+        $(this.EDIT_MARKER_TYPE+"_latitude").value = lat.toFixed(6);
+        if($(this.EDIT_MARKER_TYPE+"_longitude").value != ""){
+          this.updateXYFieldsCoordsFromLatLon();
         }
       }
       break;
     case 'lon' :
-      console.log("lon : "+$(EDIT_MARKER_TYPE+"_longitude").value);
-      var lon = parseFloat($(EDIT_MARKER_TYPE+"_longitude").value);
+      var lon = parseFloat($(this.EDIT_MARKER_TYPE+"_longitude").value);
       if(isNaN(lon)){
-        $(EDIT_MARKER_TYPE+"_longitude").value = "";
-        $(EDIT_MARKER_TYPE+"_x").value = "";
+        $(this.EDIT_MARKER_TYPE+"_longitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_x").value = "";
       }
       else{
-        $(EDIT_MARKER_TYPE+"_longitude").value = lon.toFixed(6);
-        if($(EDIT_MARKER_TYPE+"_latitude").value != ""){
-          updateXYFieldsCoordsFromLatLon();
+        $(this.EDIT_MARKER_TYPE+"_longitude").value = lon.toFixed(6);
+        if($(this.EDIT_MARKER_TYPE+"_latitude").value != ""){
+          this.updateXYFieldsCoordsFromLatLon();
         }
       }
       break;
@@ -219,5 +216,5 @@ function updateCoordsFrom(field){
       alert("error !!!");
       break;
   }
-  updateEditMarker();
+  this.updateEditMarker();
 };

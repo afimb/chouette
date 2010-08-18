@@ -1,47 +1,46 @@
-function init(){
-  initMap();
+Chouette.Map.init = function(){
+  Chouette.Map.initMap();
 
   // Add button for barycentre
   var barycentre = new OpenLayers.Control.Button({
     displayClass: "mapBarycentre",
-    trigger: barycentreStopPlaceMarker
+    trigger: Chouette.Map.barycentreStopPlaceMarker
   });
   var panel = new OpenLayers.Control.Panel();
   panel.addControls([barycentre]);
   var pixel = new OpenLayers.Pixel(15, 260);
-  map.addControl(panel, pixel);
+  Chouette.Map.map.addControl(panel, pixel);
   
   // edit marker layer
-  var editMarkerLayer = createEditMarkerLayer();
+  var editMarkerLayer = Chouette.Map.createEditMarkerLayer();
 
   //show marker layer
-  var showMarkerLayer = createShowMarkerLayer();
+  var showMarkerLayer = Chouette.Map.createShowMarkerLayer();
 
-  map.addLayers([editMarkerLayer,showMarkerLayer]);
-  map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
+  Chouette.Map.map.addLayers([editMarkerLayer,showMarkerLayer]);
+  Chouette.Map.map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),10);
 
-  initEditMarkerLayer("stoparea");
+  Chouette.Map.initEditMarkerLayer("stoparea");
 
   var stopPlaceId = $("stoparea_idPositionGeographique").value ;
   if(stopPlaceId != null){
-    initShowMarkerLayer("../json/JSONStopPlace?stopPlaceId="+stopPlaceId);
+    Chouette.Map.initShowMarkerLayer("../json/JSONStopPlace?stopPlaceId="+stopPlaceId);
   }
-  updateEditMarker();
-}
+  Chouette.Map.updateEditMarker();
+};
 
-function barycentreStopPlaceMarker()
-{
-  var showMarkerLayer = map.getLayersByName("Show Marker Layer")[0];
+Chouette.Map.barycentreStopPlaceMarker = function(){
+  var showMarkerLayer = Chouette.Map.map.getLayersByName("Show Marker Layer")[0];
   var childrenPoints = showMarkerLayer.features.collect(function(feature){
     return feature.geometry;
   });
-  var point = barycentre(childrenPoints).transform(geoportalProjection, lambertProjection);
+  var point = Chouette.Map.barycentre(childrenPoints).transform(Chouette.Map.geoportalProjection, Chouette.Map.lambertProjection);
 
   $("stoparea_x").value=point.lon;
   $("stoparea_y").value=point.lat;
 
-  updateLatLonFieldsCoordsFromXY();
-  updateEditMarker();
+  Chouette.Map.updateLatLonFieldsCoordsFromXY();
+  Chouette.Map.updateEditMarker();
 }
 
-window.onload = init;
+window.onload = Chouette.Map.init;
