@@ -49,7 +49,7 @@ public class LecteurLigne implements ILecteurLigne {
 	    leReseau.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "PtNetwork", toTrident(ligneCSV[1].trim())));
 	    leReseau.setObjectVersion(1);
 	    leReseau.setCreationTime(new Date(System.currentTimeMillis()));
-	    leReseau.setRegistrationNumber("TUR-HASTUS-"+leReseau.getName());
+	    leReseau.setRegistrationNumber("HASTUS-"+leReseau.getName());
 	    leReseau.setVersionDate(Calendar.getInstance().getTime());
 	}
 	if ((ligneCSV[2] == null) || (ligneCSV[2].trim().length() <= 0))
@@ -61,18 +61,18 @@ public class LecteurLigne implements ILecteurLigne {
 	    leTransporteur.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Company", toTrident(ligneCSV[2].trim())));
 	    leTransporteur.setObjectVersion(1);
 	    leTransporteur.setCreationTime(new Date(System.currentTimeMillis()));
-	    leTransporteur.setRegistrationNumber("TUR-HASTUS-"+leTransporteur.getName());
+	    leTransporteur.setRegistrationNumber("HASTUS-"+leTransporteur.getName());
 	}
 	if ((ligneCSV[3] == null) || (ligneCSV[3].trim().length() <= 0))
 	    throw new ServiceException(CodeIncident.NULL_NAME_LINE, "Cette \"Ligne\" ne possède de nom.");
 	logger.debug("CREATION DE LIGNE "+ligneCSV[3].trim());
 	Ligne ligne = new Ligne();
-	ligne.setName(ligneCSV[3].trim());
+	ligne.setPublishedName(ligneCSV[3].trim());
 	ligne.setObjectVersion(1);
 	ligne.setCreationTime(new Date(System.currentTimeMillis()));
 	if ((ligneCSV[4] == null) || (ligneCSV[4].trim().length() <= 0))
 	    throw new ServiceException(CodeIncident.NULL_REGISTRATION_LINE, "Pas de \"Nom Publique\" pour cette \"Ligne\".");
-	ligne.setPublishedName(ligneCSV[4].trim());
+	ligne.setName(ligneCSV[4].trim());
 	if ((ligneCSV[6] == null) || (ligneCSV[6].trim().length() <= 0))
 	    throw new ServiceException(CodeIncident.NULL_REGISTRATION_LINE, "Pas de \"Registration\" pour cette \"Ligne\".");
 	ligne.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Line", toTrident(ligneCSV[6].trim())));
