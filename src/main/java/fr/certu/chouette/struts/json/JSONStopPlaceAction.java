@@ -3,6 +3,7 @@ package fr.certu.chouette.struts.json;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.struts.GeneriqueAction;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +26,19 @@ public class JSONStopPlaceAction extends GeneriqueAction
 
   public List<PositionGeographique> getStopAreaChildrens()
   {
-    return positionGeographiqueManager.getGeoPositionsDirectementContenues(stopPlaceId);
+    List<PositionGeographique> stopPlaces = positionGeographiqueManager.getGeoPositionsDirectementContenues(stopPlaceId);
+    List<PositionGeographique> stopPlacesWithCoordinates = new ArrayList<PositionGeographique>();
+
+    for (PositionGeographique positionGeographique : stopPlaces)
+    {
+      if ((positionGeographique.getLongitude() != null && positionGeographique.getLatitude() != null)
+         || (positionGeographique.getX() != null && positionGeographique.getY() != null))
+      {
+        stopPlacesWithCoordinates.add(positionGeographique);
+      }
+    }
+
+    return stopPlacesWithCoordinates;
   }
 
   public void setStopAreaChildrens(List<PositionGeographique> stopAreaChildrens)

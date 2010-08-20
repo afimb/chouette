@@ -30,7 +30,6 @@ import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.struts.GeneriqueAction;
-import java.util.HashMap;
 
 public class StopAreaAction extends GeneriqueAction implements ModelDriven<PositionGeographique>, Preparable
 {
@@ -75,7 +74,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   private String nomArretDestination = null;
   private Long idArretSource = null;
   private String boardingPositionName = "";
-
   private Integer START_INDEX_AJAX_LIST = 0;
   private Integer END_INDEX_AJAX_LIST = 10;
 
@@ -263,6 +261,22 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
   @SkipValidation
   public String edit()
   {
+    // Get namspace to know if it's a stop place or a boarding position
+    String namespace = ActionContext.getContext().getActionInvocation().getProxy().getNamespace();
+
+    if (ZONE.equals(namespace))
+    {
+      for (PositionGeographique positionGeographique : children)
+      {
+        if ((positionGeographique.getLongitude() != null && positionGeographique.getLatitude() != null)
+         || (positionGeographique.getX() != null && positionGeographique.getY() != null))
+        {
+          addActionMessage(getText("stopplace.children.nocoordinates"));
+          break;
+        }
+      }
+    }
+
     setMappedRequest(UPDATE);
     return EDIT;
   }

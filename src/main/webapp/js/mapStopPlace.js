@@ -34,13 +34,17 @@ Chouette.Map.barycentreStopPlaceMarker = function(){
   var childrenPoints = showMarkerLayer.features.collect(function(feature){
     return feature.geometry;
   });
-  var point = Chouette.Map.barycentre(childrenPoints).transform(Chouette.Map.geoportalProjection, Chouette.Map.lambertProjection);
 
-  $("stoparea_x").value=point.lon;
-  $("stoparea_y").value=point.lat;
+  if(childrenPoints.length > 1)
+  {
+    var point = Chouette.Map.barycentre(childrenPoints).transform(Chouette.Map.geoportalProjection, Chouette.Map.lambertProjection);
 
-  Chouette.Map.updateLatLonFieldsCoordsFromXY();
-  Chouette.Map.updateEditMarker();
+    $("stoparea_x").value=point.lon;
+    $("stoparea_y").value=point.lat;
+
+    Chouette.Map.updateLatLonFieldsCoordsFromXY();
+    Chouette.Map.updateEditMarker();
+  }
 }
 
 window.onload = Chouette.Map.init;
