@@ -44,7 +44,6 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final String SEARCH = "search";
   public static final String EXPORT = "export";
   public static final String AUTOCOMPLETE = "autocomplete";
-  
   protected Map session;
   protected Map request;
   protected PrincipalProxy principalProxy;
@@ -66,9 +65,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final int SCHOOLHOLLIDAY_TYPE = 9;
   public static final int PUBLICHOLLIDAY_TYPE = 10;
   public static final int MARKETDAY_TYPE = 11;
-
   private boolean menuComparisonEnabled;
-
+  private String geoportalApiKey;
 
   public void setSession(Map session)
   {
@@ -237,7 +235,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       try
       {
         dayTypeType = DayTypeType.fromValue(cleParTraduction.get(traduction));
-        
+
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -505,13 +503,26 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   {
     this.menuComparisonEnabled = menuComparisonEnabled;
   }
-  
+
+  /********************************************************
+   *           Geoportal api key                          *
+   ********************************************************/
+  public String getGeoportalApiKey()
+  {
+    return geoportalApiKey;
+  }
+
+  public void setGeoportalApiKey(String geoportalApiKey)
+  {
+    this.geoportalApiKey = geoportalApiKey;
+  }
+
   public synchronized String getExceptionMessage(Throwable ex)
   {
-	  Locale defaultLocale = Locale.getDefault();
-	  Locale.setDefault(getLocale());
-	  String message = ex.getLocalizedMessage();
-	  Locale.setDefault(defaultLocale);
-	  return message;
+    Locale defaultLocale = Locale.getDefault();
+    Locale.setDefault(getLocale());
+    String message = ex.getLocalizedMessage();
+    Locale.setDefault(defaultLocale);
+    return message;
   }
 }

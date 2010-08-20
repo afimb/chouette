@@ -504,6 +504,7 @@
         scope="prototype"
         class="fr.certu.chouette.struts.GeneriqueAction">
     <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
+    <property name="geoportalApiKey" value="${geoportal.api.key}"/>
   </bean>
 
   <bean id="RouteActionBean" scope="prototype"
