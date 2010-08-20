@@ -52,8 +52,8 @@
         <s:textfield key="x"  onblur="Chouette.Map.updateCoordsFrom('x')"/>
         <s:textfield key="y" onblur="Chouette.Map.updateCoordsFrom('y')"/>
         <s:text name="wsg84"/>
-        <s:textfield key="latitude" onblur="Chouette.Map.updateCoordsFrom('lat')"/>
         <s:textfield key="longitude" onblur="Chouette.Map.updateCoordsFrom('lon')"/>
+        <s:textfield key="latitude" onblur="Chouette.Map.updateCoordsFrom('lat')"/>
       </fieldset>
 
       <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
