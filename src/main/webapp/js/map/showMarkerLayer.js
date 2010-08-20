@@ -49,7 +49,7 @@ Chouette.Map.initShowMarkerLayer = function(url){
           bounds.extend(markPointXY);
           var mark = new OpenLayers.Feature.Vector(markPointXY, {
             'area':area,
-            'thumbnail':area.areaType.toLowerCase(),
+            'thumbnail':area.areaType.toLowerCase()
           });
           markPoints.push(mark.geometry);
           showMarkerLayer.addFeatures([mark]);
@@ -65,7 +65,7 @@ Chouette.Map.initShowMarkerLayer = function(url){
       }
       else // If there is no markers
       {
-        Chouette.Map.map.setCenter(new OpenLayers.LonLat(177169.0,5441595.0),20);
+        Chouette.Map.map.zoomToMaxExtent();
       }
     }
   });
