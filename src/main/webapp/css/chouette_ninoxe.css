@@ -68,7 +68,6 @@ A:hover
   TEXT-ALIGN: left;
   CLEAR: both;
   PADDING-TOP: 15px;
-  font-size:12px;
 }
 
 
@@ -177,6 +176,7 @@ A:hover
   BORDER: 1px solid #B0BCD6;
   TEXT-ALIGN: left;
   PADDING: 2px;
+  font-size:12px;
 }
 
 #menu .submenu
@@ -426,6 +426,7 @@ div.autocomplete ul li
 .message
 {
   color: green;
+  font-size: 12px;
   font-weight: bold;
   list-style: none;
   list-style-type: none;
@@ -434,9 +435,17 @@ div.autocomplete ul li
 .erreur
 {
   color: red;
+  font-size: 12px;
   font-weight: bold;
   list-style: none;
   list-style-type: none;
+}
+
+.edit
+{
+  width: 700px;
+  padding-top: 20px;
+  margin: auto;
 }
 
 .panelData
@@ -486,6 +495,11 @@ div.autocomplete ul li
 /****************************************************************/
 /*                         DISPLAYTAG                          	*/
 /****************************************************************/
+#displaytag
+{
+  font-size: 12px;
+}
+
 #displaytag TABLE {
   border: 1px solid #666;
   width: 100%;
@@ -647,19 +661,6 @@ div.autocomplete ul li
 }
 
 /****************************************************************/
-/*                         MAPS                              	  */
-/****************************************************************/
-#map
-{
-  height: 550px;
-}
-
-.map-wrapper
-{
-  margin-left: 420px;
-}
-
-/****************************************************************/
 /*                  STRUTS THEME XHTML                         	*/
 /****************************************************************/
 .wwFormTable
@@ -669,9 +670,9 @@ div.autocomplete ul li
   vertical-align: middle;
   padding: 5px;
 }
-.label {}
-.errorLabel {font-style:italic; color:red; }
-.errorMessage {font-weight:bold; color:red; }
+.label {font-size: 12px;}
+.errorLabel {  font-size: 12px;font-style:italic; color:red; }
+.errorMessage {  font-size: 12px;font-weight:bold; color:red; }
 .checkboxLabel {}
 .checkboxErrorLabel {color:red; }
 .required {color:red;}
@@ -682,10 +683,11 @@ div.autocomplete ul li
 /****************************************************************/
 .wwgrp
 {
-  margin: 5px 0px 5px 0px;
+  padding: 5px 0px 5px 0px;
+  display: inline-block;
 }
 
-.wwgrp:after
+/*.wwgrp:after
 {
   clear: both;
   content: ".";
@@ -694,7 +696,7 @@ div.autocomplete ul li
   visibility: hidden;
   font-size: 0;
   line-height: 0;
-}
+}*/
 
 .wwlbl
 {
@@ -719,6 +721,8 @@ div.autocomplete ul li
 {
   margin: 5px 0px 5px 0px;
   text-align: center;
+  font-size: 12px;
+  font-weight: bold;
   color: red;
   line-height: 25px;
 }
@@ -746,6 +750,9 @@ div.autocomplete ul li
   color: fuchsia;
 }
 
+/****************************************************************/
+/*                        STOPAREA                            	*/
+/****************************************************************/
 #stoparea fieldset
 {
   margin-top: 10px;
@@ -759,12 +766,43 @@ div.autocomplete ul li
 
 #stoparea legend
 {
+  font-size: 12px;
   font-weight: bold
 }
 
 /****************************************************************/
+/*                        NETWORK                              	*/
+/****************************************************************/
+#network .wwlbl
+{
+  width: 250px;
+}
+
+/****************************************************************/
+/*                        COMPANY                              	*/
+/****************************************************************/
+#company .wwlbl
+{
+  width: 250px;
+}
+
+/****************************************************************/
+/*                        STOPAREA                            	*/
+/****************************************************************/
+
+/****************************************************************/
 /*                        MAP                                 	*/
 /****************************************************************/
+#map
+{
+  height: 550px;
+}
+
+.map-wrapper
+{
+  margin-left: 440px;
+}
+
 .mapBarycentreItemInactive
 {
   background-color: blue;

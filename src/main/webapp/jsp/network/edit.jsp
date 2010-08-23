@@ -17,47 +17,47 @@
 </s:else>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
-</div>	
-<br>
+</div>
 
-<%-- Formulaire --%>	
-<s:form id="network_form">
-  <s:hidden name="idReseau" value="%{id}" />
-  <s:hidden name="operationMode" value="STORE" />
-  <s:hidden key="actionMethod" value="%{actionMethod}"/>
-  <s:textfield key="name"  required="true" />
-  <s:textfield key="registrationNumber" required="true" />
-  <s:textfield key="comment" />
-  <s:textfield key="versionDate" id="versionDate" required="true"/>
-  <script type="text/javascript">
-    <!--//
-    Calendar.setup(
-    {
-      singleClick : true,
-      firstDay : 1,
-      inputField : "versionDate",    	// ID of the input field
-      ifFormat : "%d/%m/%Y"  			// the date format
-    }
-  );
-    //-->
-  </script>
-  <s:textfield key="description" />
-  <s:textfield key="sourceName" />
-  <s:textfield key="sourceIdentifier"/>
+<s:include value="/jsp/commun/messages.jsp" />
 
-  <%-- Actions --%>
-  <tr>
-    <td colspan="2">
+<div class="edit">
+  <%-- Formulaire --%>
+  <s:form theme="css_xhtml" id="network">
+    <s:hidden name="idReseau" value="%{id}" />
+    <s:hidden name="operationMode" value="%{'STORE'}" />
+    <s:hidden key="actionMethod" value="%{actionMethod}"/>
+    <s:textfield key="name"  required="true" />
+    <s:textfield key="registrationNumber" required="true" />
+    <s:textfield key="comment" />
+    <s:textfield key="versionDate" id="versionDate" required="true"/>
+    <script type="text/javascript">
+      <!--//
+      Calendar.setup(
+      {
+        singleClick : true,
+        firstDay : 1,
+        inputField : "versionDate",    	// ID of the input field
+        ifFormat : "%d/%m/%Y"  			// the date format
+      }
+    );
+      //-->
+    </script>
+    <s:textfield key="description" />
+    <s:textfield key="sourceName" />
+    <s:textfield key="sourceIdentifier"/>
+
+    <s:include value="/jsp/commun/asterisque.jsp" />
+    <%-- Actions --%>
+    <div class="submit">
       <s:if test="id != null">
-        <s:submit key="action.update" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssClass="right"/>
       </s:if>
       <s:else>
-        <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+        <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssClass="right"/>
       </s:else>
-      <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
-    </td>
-  </tr>
+      <s:submit key="action.cancel" action="cancel" theme="simple" cssClass="right"/>
+    </div>
+  </s:form>
+</div>
 
-  <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
-  <tr><td colspan="2"><s:include value="/jsp/commun/asterisque.jsp" /></td></tr>
-</s:form>
