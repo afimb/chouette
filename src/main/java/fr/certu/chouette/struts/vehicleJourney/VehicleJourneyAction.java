@@ -6,16 +6,24 @@ import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.service.commun.CodeDetailIncident;
+import fr.certu.chouette.service.commun.CodeIncident;
+import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ICourseManager;
 import fr.certu.chouette.service.database.IItineraireManager;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.ITableauMarcheManager;
 import fr.certu.chouette.struts.GeneriqueAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -24,6 +32,13 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
 {
 
   private static final Log log = LogFactory.getLog(VehicleJourneyAction.class);
+  
+  private static final Set<String> PARTICULARITES_VALIDES;
+  static {
+    PARTICULARITES_VALIDES = new HashSet<String>();
+    PARTICULARITES_VALIDES.add("TAD");
+  }
+  
   //	Managers
   private ICourseManager courseManager;
   private IItineraireManager itineraireManager;
@@ -34,6 +49,7 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   private Long idLigne;
   private Long idItineraire;
   private Long idTableauMarche;
+  private List<String> particularites = new ArrayList<String>();
   private Date seuilDateDepartCourse;
   private Long page;
   //	Liste des courses et course sélectionnée
@@ -103,6 +119,9 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     } else
     {
       model = courseManager.lire(getIdCourse());
+      String vehicleTypeIdentifier = model.getVehicleTypeIdentifier();
+      if(vehicleTypeIdentifier != null)
+    	  particularites = Arrays.asList(vehicleTypeIdentifier.split(","));
     }
 
     if (idCourse != null)
@@ -157,6 +176,12 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     // ré-affecter l'identifiant de l'itinéraire sur la course
     model.setIdItineraire(idItineraire);
 
+    //remplissage du champ vehicleTypeIdentifier avec les particularites
+    if(particularites.size() > 0)
+    	model.setVehicleTypeIdentifier(StringUtils.join(particularites,','));
+    else
+    	model.setVehicleTypeIdentifier(null);
+
     courseManager.creer(model);
     addActionMessage(getText("course.create.ok"));
     setMappedRequest(SAVE);
@@ -176,6 +201,12 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
 
     // ré-affecter l'identifiant de l'itinéraire sur la course
     model.setIdItineraire(idItineraire);
+
+    //remplissage du champ vehicleTypeIdentifier avec les particularites
+    if(particularites.size() > 0)
+    	model.setVehicleTypeIdentifier(StringUtils.join(particularites,','));
+    else
+    	model.setVehicleTypeIdentifier(null);
 
     courseManager.modifier(model);
     setMappedRequest(UPDATE);
@@ -386,4 +417,20 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   {
     return seuilDateDepartCourse;
   }
+  
+  public void setParticularites(List<String> particularites) {
+	//hack : remove empty strings from list
+    while(particularites.contains(""))
+    	particularites.remove("");
+    this.particularites = particularites;
+  }
+  
+  public List<String> getParticularites() {
+	return particularites;
+  }
+  
+  public static Set<String> getParticularitesValides() {
+	return PARTICULARITES_VALIDES;
+  }
+  
 }

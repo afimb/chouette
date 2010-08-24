@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+
+import chouette.schema.types.ServiceStatusValueType;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.TableauMarche;
@@ -16,12 +18,19 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurCourse;
+import fr.certu.chouette.service.validation.amivif.VehicleJourney.StatusValue;
 
 public class LecteurCourse implements ILecteurCourse {
 	
 	private static final Logger                     logger                = Logger.getLogger(LecteurCourse.class);
 	private static final String                     ALLER                 = "ALLER";
 	private static final String                     RETOUR                = "RETOUR";
+	private static final Set<String>				PARTICULARITES_VALIDES;
+	static {
+		PARTICULARITES_VALIDES = new HashSet<String>();
+		PARTICULARITES_VALIDES.add("TAD");
+	}
+	
 	private static       int                        len;
 	private              Map<Ligne, List<Course>>   coursesParLigne;
 	private              Ligne                      ligneEnCours;
@@ -34,6 +43,7 @@ public class LecteurCourse implements ILecteurCourse {
 	private              IIdentificationManager     identificationManager; //
 	private              String                     cleDirection;          // "Direction (ALLER/RETOUR)"
 	private              String                     cleCalendrier;         // "Calendriers d'application"
+	private              String                     cleParticularite;              // "Particularités"
 	private              String                     cleListe;              // "Liste des arrêts"
 	private              String                     cleX;                  // "X"
 	private              String                     cleY;                  // "Y"
@@ -77,6 +87,7 @@ public class LecteurCourse implements ILecteurCourse {
 		titres = new HashSet<String>();
 		titres.add(cleDirection);
 		titres.add(cleCalendrier);
+		titres.add(cleParticularite);
 		titres.add(cleListe);
 		cellulesNonRenseignees = new HashSet<String>(titres);
 	}
@@ -138,6 +149,14 @@ public class LecteurCourse implements ILecteurCourse {
 				}
 			}
 		}
+		if (cleParticularite.equals(titre)) {
+			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
+				if(i >= colonneDesTitres + 1 + coursesEnCours.size())
+					break;
+				String value = ligneCSV[i];
+				associerParticulariteCourse(value, coursesEnCours, i-(colonneDesTitres+1));
+			}
+		}
 		if (cleListe.equals(titre)) {
 			if (!ligneCSV[0].equals(cleX))
 				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.MISSING_DATA,cleX);
@@ -186,6 +205,28 @@ public class LecteurCourse implements ILecteurCourse {
 		//course.setTransportMode(transportMode);
 		//course.setVehicleTypeIdentifier(vehicleTypeIdentifier);
 		return course;
+	}
+	
+	private void associerParticulariteCourse(String value, List<Course> courses, int indiceDeCourse) {
+		if (indiceDeCourse >= courses.size())
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATA);
+		Course course = courses.get(indiceDeCourse);
+		String[] aliases = value.split(",");
+		StringBuilder particularites = new StringBuilder();
+		for (int i = 0; i < aliases.length; i++) {
+			String alias = aliases[i];
+			if(alias.length() > 0){
+				if (!PARTICULARITES_VALIDES.contains(alias))
+					throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.UNKNOWN_ALIAS,alias);
+				particularites.append(alias).append(",");
+			}
+		}
+		if(particularites.length() > 0 && particularites.lastIndexOf(",") == particularites.length() -1){
+			particularites.deleteCharAt(particularites.length()-1);
+		}
+		
+		course.setVehicleTypeIdentifier(particularites.toString());
+		logger.debug("Particularites : "+particularites.toString()+". Course : "+course.getObjectId());
 	}
 	
 	private void associerCalendriersCourse(String value, List<Course> courses, int indiceDeCourse) {
@@ -237,6 +278,14 @@ public class LecteurCourse implements ILecteurCourse {
 		return cleCalendrier;
 	}
 	
+	public void setCleParticularite(String cleParticularite) {
+		this.cleParticularite = cleParticularite;
+	}
+	
+	public String getCleParticularite() {
+		return cleParticularite;
+	}
+		
 	public void setCleListe(String cleListe) {
 		this.cleListe = cleListe;
 	}

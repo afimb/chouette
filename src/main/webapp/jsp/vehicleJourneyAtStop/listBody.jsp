@@ -52,6 +52,18 @@
     </tr>
 
 
+    <%-- PARTICULARITES --%>
+    <tr>
+      <td style="font-weight:bold"><s:text name="table.title.peculiarities"/>&nbsp;&nbsp;</td>
+      <s:iterator value="coursesPage" >
+        <td>
+          <s:if test="vehicleTypeIdentifier != null">
+            <s:text name="vehicleTypeIdentifier"/>
+          </s:if>
+        </td>
+      </s:iterator>
+    </tr>
+
     <%-- MISSIONS --%>
     <tr>
       <td style="font-weight:bold"><s:text name="table.title.journeyPattern"/>&nbsp;&nbsp;</td>

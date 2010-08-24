@@ -43,6 +43,7 @@
 ;;;;;;;"Commentaire de la ligne";"Ligne 01 (Gare SNCF / Collège Paul Valéry)";;;;;
 ;;;;;;;"Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";"BUS";;;;;
 ;;;;;;;"Direction (ALLER/RETOUR)";"ALLER";"ALLER";"ALLER";"RETOUR";"RETOUR";"RETOUR"
+;;;;;;;"Particularités";;"TAD";;"TAD";"TAD";
 ;;;;;;;"Calendriers d'application";"C1,C2";"C1";"C1";"C1,C2";"C1";"C1"
 "X";"Y";"Latitude";"Longitude";"Adresse";"Code Postal";"Zone";"Liste des arrêts";;;;;;
 1002;103;"0.8514525548209622";"0.0392068371157694";"place de la gare";91377;"Gare SNCF";"Gare SNCF (A)";08:00;;20:30;;;
@@ -64,6 +65,7 @@
 ;;;;;;;"Commentaire de la ligne";"Ligne 01 (Lycée Choiseul / Collège Paul Valéry)";;;;;
 ;;;;;;;"Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";"BUS";;;;;
 ;;;;;;;"Direction (ALLER/RETOUR)";"ALLER";"RETOUR";"RETOUR";"RETOUR";;
+;;;;;;;"Particularités";"TAD";;"TAD";;;"TAD"
 ;;;;;;;"Calendriers d'application";"C1,C2";"C1,C2";"C1";"C1";;
 "X";"Y";"Latitude";"Longitude";"Adresse";"Code Postal";"Zone";"Liste des arrêts";;;;;;
 1002;103;"0.8514525548209622";"0.0392068371157694";"place Choiseul";91600;"Lycée Choiseul";"Lycée Choiseul (A)";08:00;;;;;

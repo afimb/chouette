@@ -84,6 +84,7 @@
         <property name="identificationManager" ref="identificationManager"/>
         <property name="cleDirection" value="Direction (ALLER/RETOUR)"/>
         <property name="cleCalendrier" value="Calendriers d'application"/>
+        <property name="cleParticularite" value="Particularités"/>
         <property name="cleListe" value="Liste des arrêts"/>
         <property name="cleX" value="X"/>
         <property name="cleY" value="Y"/>
