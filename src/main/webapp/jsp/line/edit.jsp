@@ -16,7 +16,7 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<div class="left">
+<div class="editLine">
   <s:form theme="css_xhtml" id="line">
     <s:hidden name="idLigne" value="%{id}"/>
     <s:hidden name="operationMode" value="STORE" />

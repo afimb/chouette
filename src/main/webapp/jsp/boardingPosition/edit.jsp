@@ -20,7 +20,7 @@
 <%-- Caractéristiques des PositionGeographiques --%>
 <div class="panelDataSection"><s:text name="text.arretPhysique" /></div>
 <div class="panel">
-  <div class="left">
+  <div class="editBoardingPosition">
     <s:form theme="css_xhtml" id="boardingPosition">
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
@@ -55,7 +55,6 @@
         <s:textfield key="latitude" onblur="Chouette.Map.updateCoordsFrom('lat')"/>
       </fieldset>
 
-      <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
       <s:include value="/jsp/commun/asterisque.jsp" />
       <%-- Actions --%>
       <div class="submit">

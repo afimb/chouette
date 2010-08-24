@@ -21,7 +21,7 @@
 <%-- Caractéristiques des zones --%>
 <div class="panelDataSection"><s:text name="text.zone" /></div>
 <div class="panel">
-  <div class="left">
+  <div class="editStopPlace">
     <s:form  theme="css_xhtml" id="stoparea">
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:hidden name="idItineraire" value="%{idItineraire}"/>

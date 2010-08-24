@@ -448,6 +448,8 @@ div.autocomplete ul li
   margin: auto;
 }
 
+
+
 .panelData
 {
   FONT-WEIGHT: bold;
@@ -753,6 +755,60 @@ div.autocomplete ul li
 /****************************************************************/
 /*                        STOPAREA                            	*/
 /****************************************************************/
+.editStopPlace
+{
+  float: left;
+  width: 440px;
+  padding-top: 20px;
+}
+
+#stoparea fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#stoparea fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#stoparea legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                        BOARDING POSITION                    	*/
+/****************************************************************/
+.editBoardingPosition
+{
+  float: left;
+  width: 440px;
+  padding-top: 20px;
+}
+
+#boardingPosition fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#boardingPosition fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#boardingPosition legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                        STOPAREA                            	*/
+/****************************************************************/
 #stoparea fieldset
 {
   margin-top: 10px;
@@ -787,20 +843,73 @@ div.autocomplete ul li
 }
 
 /****************************************************************/
-/*                        STOPAREA                            	*/
+/*                        LINE                                	*/
 /****************************************************************/
+.editLine
+{
+  float: left;
+  width: 440px;
+  padding-top: 20px;
+}
+
+#line fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#line fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#line legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                   CONNECTION LINK                           	*/
+/****************************************************************/
+.editConnectionLink
+{
+  float: left;
+  width: 440px;
+  padding-top: 20px;
+}
+
+
+#connectionLink fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#connectionLink fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#connectionLink legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
 
 /****************************************************************/
 /*                        MAP                                 	*/
 /****************************************************************/
-#map
-{
-  height: 550px;
-}
 
 .map-wrapper
 {
   margin-left: 440px;
+  float: left;
+}
+
+#map
+{
+  height: 550px;
 }
 
 .mapBarycentreItemInactive

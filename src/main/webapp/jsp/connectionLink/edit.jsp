@@ -21,7 +21,7 @@
 <br>
 <div class="panelDataSection"><s:text name="connectionlink"/></div>
 <div class="panel">
-  <div class="left">
+  <div class="editConnectionLink">
     <s:form theme="css_xhtml" id="connectionLink"  namespace="/connectionLink">
       <s:hidden name="idCorrespondance" value="%{id}"/>
       <s:hidden name="operationMode" value="STORE" />
