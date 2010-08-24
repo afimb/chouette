@@ -478,7 +478,6 @@ div.autocomplete ul li
 
 .panel
 {
-  PADDING: 0px 20px 0px 20px;
   BACKGROUND-COLOR: #FFFFFF;
   margin: 0px 0px 2px 0px;
   BORDER: 1px solid #B0BCD6;
@@ -501,6 +500,7 @@ div.autocomplete ul li
 #displaytag
 {
   font-size: 12px;
+  margin: 0px 20px 0px 20px;
 }
 
 #displaytag TABLE {
@@ -758,9 +758,9 @@ div.autocomplete ul li
 /****************************************************************/
 .editStopPlace
 {
-  float: left;
+  position: absolute;
   width: 440px;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 #stoparea fieldset
@@ -785,9 +785,9 @@ div.autocomplete ul li
 /****************************************************************/
 .editBoardingPosition
 {
-  float: left;
+  position: absolute;
   width: 440px;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 #boardingPosition fieldset
@@ -802,26 +802,6 @@ div.autocomplete ul li
 }
 
 #boardingPosition legend
-{
-  font-size: 12px;
-  font-weight: bold
-}
-
-/****************************************************************/
-/*                        STOPAREA                            	*/
-/****************************************************************/
-#stoparea fieldset
-{
-  margin-top: 10px;
-  border: 1px solid #B0BCD6;
-}
-
-#stoparea fieldset .wwlbl
-{
-  width: 100px;
-}
-
-#stoparea legend
 {
   font-size: 12px;
   font-weight: bold
@@ -848,9 +828,9 @@ div.autocomplete ul li
 /****************************************************************/
 .editLine
 {
-  float: left;
+  position: absolute;
   width: 440px;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 #line fieldset
@@ -875,9 +855,9 @@ div.autocomplete ul li
 /****************************************************************/
 .editConnectionLink
 {
-  float: left;
+  position: absolute;
   width: 440px;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 
@@ -904,13 +884,13 @@ div.autocomplete ul li
 
 .map-wrapper
 {
-  margin-left: 440px;
-  float: left;
+  margin-left:450px
 }
 
 #map
 {
-  height: 550px;
+  height: 625px;
+  border-left: 1px solid #B0BCD6;
 }
 
 .mapBarycentreItemInactive
