@@ -54,7 +54,7 @@
   </s:form>
 </div>
 <br>
-<div class="panel" id="displaytag">
+<div id="displaytag">
   <display:table name="tableauxMarche"  pagesize="20"  requestURI="" id="tableauMarche" export="false">
     <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/timeTable">

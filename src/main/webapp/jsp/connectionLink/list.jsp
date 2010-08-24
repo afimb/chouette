@@ -42,7 +42,7 @@
 </div>
 
 <br>
-<div class="panel" id="displaytag">
+<div id="displaytag">
   <display:table name="correspondances" pagesize="20"  requestURI="" id="correspondance" export="false">
     <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/connectionLink">

@@ -73,7 +73,6 @@
     </s:form>
   </div>
   <div class="map-wrapper"><div id="map"></div></div>
-  <div class="spacer"></div>
 </div>
 
 <s:if test="id != null">

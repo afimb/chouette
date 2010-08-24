@@ -33,7 +33,7 @@
 <br>
 
 <%-- Tableau résultat --%>
-<div class="panel" id="displaytag">
+<div id="displaytag">
   <display:table name="positionGeographiquesResultat" pagesize="15" requestURI="" id="positionGeographique">
     <display:column titleKey="table.title.action" sortable="false">
       <s:url id="addUrl" action="%{actionSuivante}" namespace="/connectionLink">

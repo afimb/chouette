@@ -16,7 +16,7 @@
   <s:a href="%{addURL}"><b><s:text name="text.itl.create.button"/></b></s:a>
 </div>
 
-<div class="panel" id="displaytag"> 
+<div id="displaytag"> 
   <display:table name="itls" pagesize="20" requestURI="" uid="itl" export="false">
     <display:column titleKey="table.title.action" sortable="false">
       <s:url id="removeUrl" action="delete" namespace="/routingConstraint">
