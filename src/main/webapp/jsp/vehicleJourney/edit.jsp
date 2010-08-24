@@ -42,6 +42,11 @@
     <s:else>
       <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{modeTransportLigne}"/>
     </s:else>
+    
+    <%-- hack to be able to unselect all items of the checkboxlist--%>
+    <s:hidden id="hack_peculiarities" name="particularites" value="" />
+    <s:checkboxlist key="peculiarities" list="particularitesValides" name="particularites" />
+    
     <s:textfield key="comment" />
     <%-- Actions --%>
     <tr>

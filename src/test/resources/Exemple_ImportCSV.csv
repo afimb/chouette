@@ -56,6 +56,7 @@
 ;;;;;;;"Commentaire de la ligne";"CHAMONIX - LA FLEGERE - LE TOUR – CHAMONIX";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;"Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";"BUS";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;"Direction (ALLER/RETOUR)";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";;;;;;;;;;;;;;
+;;;;;;;"Particularités";"TAD";;;"TAD";;;"TAD";"TAD";;;;;"TAD";;;"TAD";;;;"TAD";;"TAD";;;;"TAD";;;;;"TAD";;;;;;"TAD";;;;;;;;;;;;;;
 ;;;;;;;"Calendriers d'application";"C1,C2";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1,C2";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";;;;;;;;;;;;;;
 "X";"Y";"Latitude";"Longitude";"Adresse";"Code Postal";"Zone";"Liste des arrêts";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;"place de la gare";74056;"Chamonix Montenvers";"CHAMONIX (A) L1";07:00;08:00;08:45;09:15;09:45;10:15;10:45;11:30;12:10;12:50;13:25;13:55;14:35;15:15;15:45;16:15;17:05;17:40;18:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -99,6 +100,7 @@
 ;;;;;;;"Commentaire de la ligne";"Ligne 01 (Lycée Choiseul / Collège Paul Valéry)";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;"Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";"BUS";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;"Direction (ALLER/RETOUR)";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"ALLER";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR";"RETOUR"
+;;;;;;;"Particularités";;"TAD";;;"TAD";;;;"TAD";;"TAD";;;"TAD";;"TAD";;;;;"TAD";;;;"TAD";;;;"TAD";;;;;"TAD";;"TAD";;;;;;"TAD";;;;;"TAD";;"TAD";"TAD";
 ;;;;;;;"Calendriers d'application";"C1,C2";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C3";"C3";"C1";"C1,C2";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C1";"C3";"C1"
 "X";"Y";"Latitude";"Longitude";"Adresse";"Code Postal";"Zone";"Liste des arrêts";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;74056;"Chamonix Montenvers";"CHAMONIX (A) L2";07:20;07:55;08:35;08:55;09:15;09:35;09:55;10:15;10:35;11:05;11:45;12:25;13:05;13:25;13:45;14:25;15:05;15:30;15:50;16:10;16:30;17:00;17:20;17:40;17:50;19:10;;;;;;;;;;;;;;;;;;;;;;;;;
