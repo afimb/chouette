@@ -11,7 +11,9 @@
 <div class="panelData">
 	<s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Formulaire de recherche --%>
 <div class="panel">
   <s:form cssClass="panelDataInnerForm" action="searchResults" namespace="/boardingPosition">

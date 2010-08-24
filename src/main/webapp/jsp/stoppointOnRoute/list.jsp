@@ -2,12 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:include value="/jsp/commun/autocompleteJavascript.jsp" />
 
-<SCRIPT type="text/javascript" >
-
-
-
-</SCRIPT>
-
 <%-- Titre et barre de navigation --%>
 <title><s:text name="text.arretSurItineraire.list.title" /></title>
 <s:url id="urlArretSurItineraires" action="list" namespace="/stoppointOnRoute" includeParams="none">
@@ -18,7 +12,7 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 
-<br/>
+<s:include value="/jsp/commun/messages.jsp" />
 
 <%-- INSERTION D'UN ARRET --%>
 <div id="insererArret" style="margin:0px; padding:0px; display:none; border:solid 0px black;">

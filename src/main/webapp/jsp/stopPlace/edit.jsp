@@ -18,6 +18,8 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Caractéristiques des zones --%>
 <div class="panelDataSection"><s:text name="text.zone" /></div>
 <div class="panel">

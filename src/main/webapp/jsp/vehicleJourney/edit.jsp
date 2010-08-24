@@ -17,7 +17,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <div>
   <s:form id="creerCourseForm" method="POST">
 

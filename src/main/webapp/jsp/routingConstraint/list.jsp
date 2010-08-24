@@ -8,7 +8,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <div class="actions">
   <s:url action="add" namespace="/routingConstraint" id="addURL"/>
   <s:a href="%{addURL}"><b><s:text name="text.itl.create.button"/></b></s:a>

@@ -7,7 +7,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Import de différents fichiers --%>
 <div>
   <FIELDSET align="center" style="width: 500px;">

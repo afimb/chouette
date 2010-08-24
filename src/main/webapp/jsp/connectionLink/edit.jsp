@@ -18,7 +18,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <div class="panelDataSection"><s:text name="connectionlink"/></div>
 <div class="panel">
   <div class="editConnectionLink">

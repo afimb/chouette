@@ -10,11 +10,10 @@
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
 
-<br>
+<s:include value="/jsp/commun/messages.jsp" />
 
 <%-- Filtre sur les réseaux et les transporteurs --%>
 <div>
-
   <s:form action="list">
 
     <s:select	name="filterNetworkId"

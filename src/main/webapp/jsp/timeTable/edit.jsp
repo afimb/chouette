@@ -18,7 +18,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Formulaire --%>
 <div class="panelDataSection"><s:text name="tableauMarche"/></div>
 <div class="panel">

@@ -10,7 +10,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Ajouter itinéraire --%>
 <div>
   <s:url id="editItineraire" action="add" namespace="/route" includeParams="none">

@@ -15,7 +15,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Formulaire --%>
 <s:form id="" method="POST" namespace="/journeyPattern">
   <s:if test="id != null">

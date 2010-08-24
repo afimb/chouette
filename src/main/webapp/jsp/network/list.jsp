@@ -9,7 +9,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Ajouter réseau --%>
 <div>
   <s:url action="add" namespace="/network" id="ajoutReseau"/>

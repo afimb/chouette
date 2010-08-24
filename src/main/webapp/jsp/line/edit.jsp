@@ -16,6 +16,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <div class="editLine">
   <s:form theme="css_xhtml" id="line">
     <s:hidden name="idLigne" value="%{id}"/>

@@ -452,9 +452,10 @@ div.autocomplete ul li
 
 .panelData
 {
-  FONT-WEIGHT: bold;
+  font-weight: bold;
   font-size: 12px;
-  MARGIN-TOP: 2px;
+  margin: 2px 0px 10px 0px;
+
 }
 
 .panelDataSection

@@ -8,7 +8,8 @@
 <div class="panelData">
 	<s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
 
 <%-- Report backup --%>
 <!-- <div style="width: 500px;" ><h2><s:text name="reporting.subtitle.availableActions"></s:text></h2>

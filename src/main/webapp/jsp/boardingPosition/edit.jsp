@@ -17,6 +17,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Caractéristiques des PositionGeographiques --%>
 <div class="panelDataSection"><s:text name="text.arretPhysique" /></div>
 <div class="panel">

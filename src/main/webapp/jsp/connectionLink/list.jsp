@@ -8,7 +8,9 @@
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
 </div>
-<br>
+
+<s:include value="/jsp/commun/messages.jsp" />
+
 <%-- Ajouter une correspondance --%>
 <div class="actions">
   <s:url action="add" namespace="/connectionLink" id="createCorrespondance"/>
