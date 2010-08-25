@@ -74,7 +74,7 @@ Chouette.Map.report = function(event) {
   //console.log(event.type, event.feature ? event.feature.id : event.components);
   if(event.type == "sketchcomplete"){
     Chouette.Map.editMarker = event.feature;
-    Chouette.Map.updateCoordsFieldsFromMarker(Chouette.Map.editMarker);
+    Chouette.Map.updateCoordsFieldsFromMarker();
     Chouette.Map.drawControls.draw.deactivate();
     Chouette.Map.drawControls.modify.activate();
     editMarkerLayer.addFeatures([Chouette.Map.editMarker]);
@@ -127,6 +127,14 @@ Chouette.Map.centerOnMarker = function(){
     var geom = this.editMarker.geometry;
     var newCoords = new OpenLayers.LonLat(geom.x,geom.y);
     this.map.panTo(newCoords);
+  }
+};
+
+Chouette.Map.zoomOnMarker = function(){
+  if(this.editMarker != null){
+    var geom = this.editMarker.geometry;
+    var newCoords = new OpenLayers.LonLat(geom.x,geom.y);
+    this.map.setCenter(newCoords,this.map.getNumZoomLevels()-1);
   }
 };
 
