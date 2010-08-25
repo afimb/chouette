@@ -268,8 +268,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
     {
       for (PositionGeographique positionGeographique : children)
       {
-        if ((positionGeographique.getLongitude() != null && positionGeographique.getLatitude() != null)
-         || (positionGeographique.getX() != null && positionGeographique.getY() != null))
+        if (!((positionGeographique.getLongitude() != null && positionGeographique.getLatitude() != null)
+         || (positionGeographique.getX() != null && positionGeographique.getY() != null)))
         {
           addActionMessage(getText("stopplace.children.nocoordinates"));
           break;
