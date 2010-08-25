@@ -123,7 +123,7 @@
     <div label="father" id="displaytag">
       <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
         <display:column titleKey="table.title.action">
-          <s:url id="editUrl" action="edit" namespace="/boardingPosition">
+          <s:url id="editUrl" action="edit" namespace="/stopPlace">
             <s:param name="idPositionGeographique" value="%{father.id}" />
           </s:url>
           <s:a href="%{editUrl}">
