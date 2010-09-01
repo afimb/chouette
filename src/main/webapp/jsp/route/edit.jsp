@@ -24,7 +24,7 @@
   <s:hidden name="idLigne" value="%{idLigne}"/>
   <s:hidden name="operationMode" value="STORE" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
-  <s:select name="idRetour" label="%{getText('idRetour')}" list="itinerairesSansItineraireEdite" listKey="id" listValue="publishedName" headerKey="-1" headerValue="%{getText('aucunRetour')}" />
+  <s:select name="idRetour" label="%{getText('idRetour')}" list="itinerairesSansItineraireEdite" listKey="id" listValue="publishedName" headerValue="%{getText('aucunRetour')}" />
   <s:textfield key="name" required="true"/>
   <s:textfield key="publishedName" />
   <s:select key="direction" list="directionsEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
