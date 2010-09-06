@@ -8,7 +8,7 @@ Chouette.Map.init = function(){
   });
   var panel = new OpenLayers.Control.Panel();
   panel.addControls([barycentre]);
-  var pixel = new OpenLayers.Pixel(15, 260);
+  var pixel = new OpenLayers.Pixel(17, 258);
   Chouette.Map.map.addControl(panel, pixel);
   
   // edit marker layer

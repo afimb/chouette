@@ -893,16 +893,20 @@ div.autocomplete ul li
   border-left: 1px solid #B0BCD6;
 }
 
-.mapBarycentreItemInactive
-{
-  background-color: blue;
-  height: 20px;
-  width: 20px;
-}
-
+.mapBarycentreItemInactive,
 .mapBarycentreItemActive
 {
-  background-color: blue;
-  height: 20px;
-  width: 20px;
+  background: transparent url(../images/map/barycentre.png) no-repeat 50% 50%;
+  height: 18px;
+  width: 18px;
+}
+
+.olControlLayerSwitcher span
+{
+  background-color: #1A408B !important; // override element.style set by openlayers
+}
+
+.olControlLayerSwitcher .layersDiv
+{
+  background-color: #1A408B;
 }

@@ -15,6 +15,7 @@ Chouette.Map.lambertProjection = new OpenLayers.Projection("EPSG:27582");
 Chouette.Map.geoportalProjection = new OpenLayers.Projection("IGNF:GEOPORTALFXX");
 
 Chouette.Map.initMap = function(){
+  OpenLayers.ImgPath = "/chouette/images/map/"
   var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.geoportalProjection, true);
   // === INIT MAP ===
   this.map = new OpenLayers.Map('map', {
@@ -33,7 +34,8 @@ Chouette.Map.initMap = function(){
     //new OpenLayers.Control.KeyboardDefaults(),
     new OpenLayers.Control.Navigation(),
     new OpenLayers.Control.LoadingPanel()
-    ]
+    ],
+    theme : null
   });
 
   // === INIT LAYERS ===
