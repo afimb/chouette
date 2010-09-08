@@ -1,6 +1,3 @@
-var Chouette = {};
-Chouette.Map = {};
-
 //define Projection "Lambert II Etendu" 
 Proj4js.defs['EPSG:27582'] = "+title=NTF (Paris) / France II (deprecated) +proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=0 +k_0=0.99987742 +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m";
 
@@ -8,22 +5,19 @@ Proj4js.defs['EPSG:27582'] = "+title=NTF (Paris) / France II (deprecated) +proj=
 Chouette.Map.map = null ;
 
 
-
 // === INIT MAP PROJECTIONS ===
 Chouette.Map.wgsProjection = new OpenLayers.Projection("EPSG:4326");
 Chouette.Map.lambertProjection = new OpenLayers.Projection("EPSG:27582");
-Chouette.Map.geoportalProjection = new OpenLayers.Projection("IGNF:GEOPORTALFXX");
 
 Chouette.Map.initMap = function(){
-  OpenLayers.ImgPath = "/chouette/images/map/"
-  var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.geoportalProjection, true);
+  OpenLayers.ImgPath = "../images/map/"
+  var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.baseLayerProjection, true);
   // === INIT MAP ===
   this.map = new OpenLayers.Map('map', {
-    resolutions: Geoportal.Catalogue.RESOLUTIONS,
-    projection: this.geoportalProjection,
+    projection: this.baseLayerProjection,
     maxExtent: mapBounds,
     restrictedExtent: mapBounds,
-    units: this.geoportalProjection.getUnits(),
+    units: this.baseLayerProjection.getUnits(),
     controls:[
     new OpenLayers.Control.PanZoomBar(),
     new OpenLayers.Control.LayerSwitcher({
@@ -39,40 +33,8 @@ Chouette.Map.initMap = function(){
   });
 
   // === INIT LAYERS ===
-  //geographic map layer
-  var geoMapLayer= this.createGeoportalLayer("GEOGRAPHICALGRIDSYSTEMS.MAPS", "Plan");
-  // orthophoto layer
-  var orthoPhotoLayer= this.createGeoportalLayer("ORTHOIMAGERY.ORTHOPHOTOS", "Satellite");
-
-   this.map.addLayers([geoMapLayer,orthoPhotoLayer]);
+  Chouette.Map.initBaseLayers();
 };
-
-Chouette.Map.createGeoportalLayer = function(layerType, layerName)
-{
-  return new Geoportal.Layer.WMSC(
-    layerName,
-    gGEOPORTALRIGHTSMANAGEMENT[gGEOPORTALRIGHTSMANAGEMENT.apiKey].resources[layerType + ':WMSC'].url,
-    {
-      layers: layerType,
-      format:'image/jpeg',
-      exceptions:"text/xml"
-    },
-    {
-      gridOrigin: new OpenLayers.LonLat(0,0),
-      isBaseLayer: true,
-      resolutions: Geoportal.Catalogue.RESOLUTIONS.slice(5,18),
-      alwaysInRange: true,
-      projection: this.geoportalProjection,
-      units: this.geoportalProjection.getUnits(),
-      GeoRM: Geoportal.GeoRMHandler.addKey(
-        gGEOPORTALRIGHTSMANAGEMENT.apiKey,
-        gGEOPORTALRIGHTSMANAGEMENT[gGEOPORTALRIGHTSMANAGEMENT.apiKey].tokenServer.url,
-        gGEOPORTALRIGHTSMANAGEMENT[gGEOPORTALRIGHTSMANAGEMENT.apiKey].tokenServer.ttl,
-        this.map
-        )
-    });
-};
-
 
 Chouette.Map.createMarkerLayer = function(symbolizer,layerName){  
   var styleMap = new OpenLayers.StyleMap({

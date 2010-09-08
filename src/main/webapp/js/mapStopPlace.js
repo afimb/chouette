@@ -37,7 +37,7 @@ Chouette.Map.barycentreStopPlaceMarker = function(){
 
   if(childrenPoints.length > 1)
   {
-    var point = Chouette.Map.barycentre(childrenPoints).transform(Chouette.Map.geoportalProjection, Chouette.Map.lambertProjection);
+    var point = Chouette.Map.barycentre(childrenPoints).transform(Chouette.Map.baseLayerProjection, Chouette.Map.lambertProjection);
 
     $("stoparea_x").value=point.lon.toFixed(2);
     $("stoparea_y").value=point.lat.toFixed(2);

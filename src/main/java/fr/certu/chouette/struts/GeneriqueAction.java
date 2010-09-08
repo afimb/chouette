@@ -67,7 +67,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final int MARKETDAY_TYPE = 11;
   private boolean menuComparisonEnabled;
   private String geoportalApiKey;
-
+  private String baseLayerSource;
+  
   public void setSession(Map session)
   {
     this.session = session;
@@ -517,6 +518,17 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     this.geoportalApiKey = geoportalApiKey;
   }
 
+  /********************************************************
+   *           Base Layer Source                          *
+   ********************************************************/
+  public String getBaseLayerSource() {
+	return baseLayerSource;
+  }
+
+  public void setBaseLayerSource(String baseLayerSource) {
+	this.baseLayerSource = baseLayerSource;
+  }
+  
   public synchronized String getExceptionMessage(Throwable ex)
   {
     Locale defaultLocale = Locale.getDefault();

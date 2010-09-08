@@ -401,7 +401,7 @@ div.olControlSaveFeaturesItemInactive {
  */
  
 .olControlLoadingPanel {
-	background-image:url("img/loading.gif");
+	background-image:url("../images/map/loading.gif");
 	background-position:center;
 	background-repeat:no-repeat;
 }

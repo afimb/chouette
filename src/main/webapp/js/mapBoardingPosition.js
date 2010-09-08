@@ -1,4 +1,5 @@
 Chouette.Map.init = function(){
+  // Call to function init in map.js
   Chouette.Map.initMap();
 	
   // edit marker layer

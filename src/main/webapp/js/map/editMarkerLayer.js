@@ -96,11 +96,11 @@ Chouette.Map.updateEditMarker = function(){
   var editMarkerLayer = this.map.getLayersByName("Edit Marker Layer")[0];
   if($(this.EDIT_MARKER_TYPE+"_latitude").value != "" && $(this.EDIT_MARKER_TYPE+"_longitude").value != ""){
     if(this.editMarker != null){
-      var newCoords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.geoportalProjection);
+      var newCoords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.baseLayerProjection);
       this.editMarker.move(newCoords);
     }
     else{
-      this.editMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.geoportalProjection));
+      this.editMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.baseLayerProjection));
       this.drawControls.draw.deactivate();
       this.drawControls.modify.activate();
       editMarkerLayer.addFeatures([this.editMarker]);
@@ -145,7 +145,7 @@ Chouette.Map.zoomOnMarker = function(){
 Chouette.Map.updateCoordsFieldsFromMarker = function(){
   var point = this.editMarker.geometry.clone();
 
-  point.transform(this.geoportalProjection,this.wgsProjection);
+  point.transform(this.baseLayerProjection,this.wgsProjection);
   $(this.EDIT_MARKER_TYPE+"_latitude").value=point.y.toFixed(6);
   $(this.EDIT_MARKER_TYPE+"_longitude").value=point.x.toFixed(6);
 
