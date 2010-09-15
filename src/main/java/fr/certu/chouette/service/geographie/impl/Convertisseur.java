@@ -13,10 +13,10 @@ public class Convertisseur implements IConvertisseur {
 	
 	private static final Logger                  logger             = Logger.getLogger(Convertisseur.class);
 	private              ChouetteDriverManagerDataSource managerDataSource;
-	private              int                     lambert2SRID;      // 27561
+	private              int                     lambertSRID;      // 27561
 	private              int                     wgs84SRID;         // 4326
 	
-	public void deLambert2AWGS84() {
+	public void deLambertAWGS84() {
 		Connection connexion = null;
 		try {
 			Properties props = new Properties();
@@ -42,9 +42,9 @@ public class Convertisseur implements IConvertisseur {
 					continue;				
 				String update = "UPDATE " + managerDataSource.getDatabaseSchema() + ".stoparea";
 				update += " SET longitude = x(transform(GeometryFromText('POINT(" + x + " " + y + ")', " 
-					+ lambert2SRID + "), " + wgs84SRID +")), " 
+					+ lambertSRID + "), " + wgs84SRID +")), " 
 					+ "latitude = y(transform(GeometryFromText('POINT("+x+" "+y+")', "
-					+ lambert2SRID + "), " + wgs84SRID + ")) " + "WHERE id='"+id+"';";			
+					+ lambertSRID + "), " + wgs84SRID + ")) " + "WHERE id='"+id+"';";			
 				Statement statement = connexion.createStatement();
 				statement.executeUpdate(update);
 			}
@@ -52,7 +52,7 @@ public class Convertisseur implements IConvertisseur {
 		}
 		catch(Exception e) {
 			try {
-				logger.debug("Annuler conversion Lambert2 à WGS84 :"+e.getMessage(), e);
+				logger.debug("Annuler conversion Lambert à WGS84 :"+e.getMessage(), e);
 				if (connexion != null)
 					connexion.rollback();
 			}
@@ -76,8 +76,8 @@ public class Convertisseur implements IConvertisseur {
 		this.managerDataSource = managerDataSource;
 	}
 	
-	public void setLambert2SRID(int lambert2SRID) {
-		this.lambert2SRID = lambert2SRID;
+	public void setLambertSRID(int LambertSRID) {
+		this.lambertSRID = LambertSRID;
 	}
 	
 	public void setWgs84SRID(int wgs84SRID) {

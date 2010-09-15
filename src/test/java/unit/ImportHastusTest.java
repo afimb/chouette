@@ -85,6 +85,6 @@ public class ImportHastusTest {
 				System.exit(1);
 			}
 		}
-		convertisseur.deLambert2AWGS84();
+		convertisseur.deLambertAWGS84();
 	}
 }

@@ -734,7 +734,7 @@ public class ValidationAction extends GeneriqueAction
     {
       ApplicationContext applicationContext = SingletonManager.getApplicationContext();
       IConvertisseur convertisseur = (IConvertisseur) applicationContext.getBean("convertisseur");
-      convertisseur.deLambert2AWGS84();
+      convertisseur.deLambertAWGS84();
       addActionMessage(getText("message.validate.convert"));
     }
     catch (RuntimeException e)

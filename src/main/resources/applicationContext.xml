@@ -506,6 +506,7 @@
     <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
     <property name="baseLayerSource" value="${map.baseLayerSource}"/>
     <property name="geoportalApiKey" value="${map.geoportalApiKey}"/>
+    <property name="lambertSRID" value="${Lambert.SRID}"/>
   </bean>
 
   <bean id="RouteActionBean" scope="prototype"

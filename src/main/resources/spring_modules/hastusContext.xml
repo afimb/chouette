@@ -89,7 +89,7 @@
 	
 	<bean id="convertisseur" class="fr.certu.chouette.service.geographie.impl.Convertisseur">
         <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
-		<property name="lambert2SRID" value="${Lambert2.SRID}" />
+		<property name="lambertSRID" value="${Lambert.SRID}" />
 		<property name="wgs84SRID" value="${WGS84.SRID}" />
 	</bean>
 	

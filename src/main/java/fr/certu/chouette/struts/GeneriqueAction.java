@@ -68,6 +68,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   private boolean menuComparisonEnabled;
   private String geoportalApiKey;
   private String baseLayerSource;
+  private String lambertSRID;
   
   public void setSession(Map session)
   {
@@ -527,6 +528,17 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 
   public void setBaseLayerSource(String baseLayerSource) {
 	this.baseLayerSource = baseLayerSource;
+  }
+  
+  /********************************************************
+   *           LambertSRID                                *
+   ********************************************************/
+  public String getLambertSRID() {
+	return lambertSRID;
+  }
+  
+  public void setLambertSRID(String lambertSRID) {
+	this.lambertSRID = lambertSRID;
   }
   
   public synchronized String getExceptionMessage(Throwable ex)

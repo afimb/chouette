@@ -50,7 +50,7 @@
       
       <fieldset>
         <legend><s:text name="text.positionGeographique.dataGeo.fieldset"/></legend>
-        <p><s:text name="lambert2"/></p>
+        <p><s:text name="lambert.%{lambertSRID}"/></p>
         <s:textfield key="x"  onblur="Chouette.Map.updateCoordsFrom('x')"/>
         <s:textfield key="y" onblur="Chouette.Map.updateCoordsFrom('y')"/>
         <p><s:text name="wsg84"/></p>
