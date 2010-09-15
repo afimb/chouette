@@ -2,6 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <s:include value="/jsp/commun/mapStopPlaceJavascript.jsp" />
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/showMap.js' includeParams='none'/>" ></script>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/stopPlace">
   <s:param name="idPositionGeographique" value="%{id}"/>
@@ -72,7 +73,10 @@
       </div>
     </s:form>
   </div>
-  <div class="map-wrapper"><div id="map"></div></div>
+  <div class="map-wrapper">
+    <div id="map-view" onclick="Chouette.Map.showMap()"><div id="map-view-text"></div></div>
+    <div id="map"></div>
+  </div>
 </div>
 
 <s:if test="id != null">

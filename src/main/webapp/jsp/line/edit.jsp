@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <s:include value="/jsp/commun/mapLineJavascript.jsp" />
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/showMap.js' includeParams='none'/>" ></script>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlLigneUpdate" action="edit" namespace="/line">
   <s:param name="idLigne" value="%{id}"/>
@@ -56,5 +57,7 @@
     </div>
   </s:form>
 </div>
-<div class="map-wrapper"><div id="map"></div></div>
-<div class="spacer"></div>
+<div class="map-wrapper">
+  <div id="map-view" onclick="Chouette.Map.showMap()"><div id="map-view-text"></div></div>
+  <div id="map"></div>
+</div>

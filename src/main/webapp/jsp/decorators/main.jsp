@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="<s:url value='/css/map.css' includeParams='none'/>"/>
     <link rel="stylesheet" type="text/css" href="<s:url value='/css/chouette_ninoxe.css' includeParams='none'/>"/>
     <script language="JavaScript" type="text/javascript" src="<s:url value='/js/prototype/prototype.js' includeParams='none'/>" ></script>
+    <script language="JavaScript" type="text/javascript" src="<s:url value='/js/cookie.js' includeParams='none'/>" ></script>
     <script language="JavaScript" type="text/javascript" src="<s:url value='/js/chouette.js' includeParams='none'/>" ></script>
     <decorator:head />
     <title><s:text name="main.title"/><decorator:title default="Bienvenue" /></title>
