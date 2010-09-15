@@ -78,7 +78,6 @@ Chouette.Map.barycentre = function(points)
 	points.each(function(point){
 		x+=point.x;
 		y+=point.y;
-		console.log(x+" "+y);
 	});
 	x = x/points.length;
 	y = y/points.length;
