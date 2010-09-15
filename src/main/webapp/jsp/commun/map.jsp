@@ -9,7 +9,8 @@
 </s:if>
 
 <s:if test="baseLayerSource == 'geoportal' && geoportalApiKey != '' ">
-  <script language="JavaScript" type="text/javascript" src="<s:url value='http://api.ign.fr/geoportail/api?v=1.1-m&key=%{geoportalApiKey}&includeEngine=true' includeParams='none'/>" ></script>
+  <script language="JavaScript" type="text/javascript" src="<s:url value='/js/geoportal/GeoportalMin.js' includeParams='none'/>" ></script>
+  <script language="JavaScript" type="text/javascript" src="<s:url value='http://api.ign.fr/geoportail/api?v=1.1-m&key=%{geoportalApiKey}&includeEngine=false' includeParams='none'/>" ></script>
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/map/baseLayer/geoportalMap.js' includeParams='none'/>" ></script>
 </s:if>
 <s:elseif test="baseLayerSource == 'osm'">
