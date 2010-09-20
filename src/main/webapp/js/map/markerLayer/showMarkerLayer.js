@@ -76,7 +76,7 @@ Chouette.Map.initShowMarkerLayer = function(url){
 Chouette.Map.showTooltipOnEvent = function(event)
 {
   var feature = event.feature;
-  var text =  "<h2>"+feature.attributes.area.name + "</h2>";
+  var text =  "<p class='popup_title'>"+feature.attributes.area.name + "</p>";
   if(feature.attributes.area.streetName != null)
     text += "<p>"+feature.attributes.area.streetName + "</p>";
   if(feature.attributes.area.countryCode != null)
@@ -84,12 +84,12 @@ Chouette.Map.showTooltipOnEvent = function(event)
   
   var anchoredBubble = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {
     'autoSize': true,
-    'minSize': new OpenLayers.Size(100,100)
+    'minSize': new OpenLayers.Size(10,10)
   });
   
   var popup = new anchoredBubble("featurePopup",
     feature.geometry.getBounds().getCenterLonLat(),
-    new OpenLayers.Size(100,100),
+    null,
     text,
     null, false, null);
   feature.popup = popup;

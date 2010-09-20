@@ -2,6 +2,7 @@
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <s:include value="/jsp/commun/mapConnectionLinkJavascript.jsp" />
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/showMap.js' includeParams='none'/>" ></script>
 
 <%-- Titre et barre de navigation --%>
 <s:url id="urlCorrespondanceUpdate" action="edit" namespace="/connectionLink">
@@ -54,8 +55,10 @@
       </div>
     </s:form>
   </div>
-  <div class="map-wrapper"><div id="map"></div></div>
-  <div class="spacer"></div>
+  <div class="map-wrapper">
+    <div id="map-view" onclick="Chouette.Map.showMap()"><div id="map-view-text"></div></div>
+    <div id="map"></div>
+  </div>
 </div>
 
 <%-- Zones depart --%>

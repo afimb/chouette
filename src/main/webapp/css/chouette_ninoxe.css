@@ -218,7 +218,7 @@ A:hover
 /*                        CONTENT                               */
 /****************************************************************/
 #content {
-  margin: 0px 20px 0px 140px;
+  margin: 0px 0px 0px 140px;
 }
 
 #content .selection {
@@ -881,32 +881,26 @@ div.autocomplete ul li
 /****************************************************************/
 /*                        MAP                                 	*/
 /****************************************************************/
+#map-view
+{
+  position: absolute;
+  width: 20px;
+  height: 700px;
+  background-color: #B0BCD6;
+}
+
+#map-view-text
+{
+
+  font-weight: bold;
+  font-size: 28px;
+  color: white;
+  text-align: center;
+  padding-top: 340px;
+}
 
 .map-wrapper
 {
-  margin-left:450px
-}
-
-#map
-{
+  margin-left: 450px;
   height: 700px;
-  border-left: 1px solid #B0BCD6;
-}
-
-.mapBarycentreItemInactive,
-.mapBarycentreItemActive
-{
-  background: transparent url(../images/map/barycentre.png) no-repeat 50% 50%;
-  height: 18px;
-  width: 18px;
-}
-
-.olControlLayerSwitcher span
-{
-  background-color: #1A408B !important; // override element.style set by openlayers
-}
-
-.olControlLayerSwitcher .layersDiv
-{
-  background-color: #1A408B;
 }

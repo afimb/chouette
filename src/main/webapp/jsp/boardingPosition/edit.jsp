@@ -2,6 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <s:include value="/jsp/commun/mapBoardingPositionJavascript.jsp" />
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/showMap.js' includeParams='none'/>" ></script>
 <%-- Titre et barre de navigation --%>
 <s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/boardingPosition">
   <s:param name="idPositionGeographique" value="%{id}"/>
@@ -47,7 +48,7 @@
       <s:else>
         <s:select key="areaType" required="true" list="%{getStopAreaEnum('QuayBoardingPosition')}" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
       </s:else>
-      
+
       <fieldset>
         <legend><s:text name="text.positionGeographique.dataGeo.fieldset"/></legend>
         <p><s:text name="lambert.%{lambertSRID}"/></p>
@@ -71,8 +72,10 @@
       </div>
     </s:form>
   </div>
-  <div class="map-wrapper"><div id="map"></div></div>
-  <div class="spacer"></div>
+  <div class="map-wrapper">
+    <div id="map-view" onclick="Chouette.Map.showMap()"><div id="map-view-text"></div></div>
+    <div id="map"></div>
+  </div>
 </div>
 
 <s:if test="id != null">

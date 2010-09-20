@@ -4,7 +4,6 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.struts.GeneriqueAction;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class JSONStopPlaceAction extends GeneriqueAction
@@ -26,19 +25,26 @@ public class JSONStopPlaceAction extends GeneriqueAction
 
   public List<PositionGeographique> getStopAreaChildrens()
   {
-    List<PositionGeographique> stopPlaces = positionGeographiqueManager.getGeoPositionsDirectementContenues(stopPlaceId);
-    List<PositionGeographique> stopPlacesWithCoordinates = new ArrayList<PositionGeographique>();
-
-    for (PositionGeographique positionGeographique : stopPlaces)
+    if (stopPlaceId != null)
     {
-      if ((positionGeographique.getLongitude() != null && positionGeographique.getLatitude() != null)
-         || (positionGeographique.getX() != null && positionGeographique.getY() != null))
-      {
-        stopPlacesWithCoordinates.add(positionGeographique);
-      }
-    }
+      List<PositionGeographique> stopPlaces = positionGeographiqueManager.getGeoPositionsDirectementContenues(stopPlaceId);
+      List<PositionGeographique> stopPlacesWithCoordinates = new ArrayList<PositionGeographique>();
 
-    return stopPlacesWithCoordinates;
+      for (PositionGeographique positionGeographique : stopPlaces)
+      {
+        if ((positionGeographique.getLongitude() != null && positionGeographique.getLatitude() != null)
+                || (positionGeographique.getX() != null && positionGeographique.getY() != null))
+        {
+          stopPlacesWithCoordinates.add(positionGeographique);
+        }
+      }
+
+      return stopPlacesWithCoordinates;
+    } else
+    {
+      return null;
+
+    }
   }
 
   public void setStopAreaChildrens(List<PositionGeographique> stopAreaChildrens)
