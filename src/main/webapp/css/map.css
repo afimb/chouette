@@ -425,3 +425,22 @@ div.olControlSaveFeaturesItemInactive {
   background-repeat:no-repeat;
 }
 
+/**
+ * POPUP
+*/
+.olPopupContent
+{
+  padding: 1px 5px 1px 5px;
+}
+
+.olPopupContent p
+{
+  font-size: 12px;
+  margin: 5px 0px 5px 0px;
+  padding: 0px;
+}
+
+.olPopupContent p.popup_title
+{
+  font-weight: bold;
+}
