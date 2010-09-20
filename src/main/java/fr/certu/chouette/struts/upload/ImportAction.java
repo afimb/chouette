@@ -290,109 +290,104 @@ public class ImportAction extends GeneriqueAction {
 		return SUCCESS;
 	}
 	
-	public String importCSVGeneric() 
-	{
-		String canonicalPath = null;
-		try 
-		{
-			canonicalPath = fichier.getCanonicalPath();
-		}
-		catch (Exception e) 
-		{
-			addActionError(getExceptionMessage(e));
-			return INPUT;
-		}
-		try 
-		{
-			lecteurCSVPrincipal.lireCheminFichier(canonicalPath);
-		}
-		catch (ServiceException e) 
-		{
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
-			{
-				String message = getText("import.csv.fichier.introuvable");
-				message += getExceptionMessage(e);
-				addActionError(message);
-			}
-			else 
-			{
-				List<String> args = new ArrayList<String>();								
-				args.add(canonicalPath);
-				String message = getText("import.csv.format.multilines.ko", args.toArray(new String[0]));
-				message += getExceptionMessage(e);
-				addActionError(message);
-				//e.printStackTrace();
-			}
-			return INPUT;
-		}
-		List<ILectureEchange> lecturesEchange = lecteurCSVPrincipal.getLecturesEchange();
-		Map<String, String> oldTableauxMarcheObjectIdParRef = new HashMap<String, String>();
-		Map<String, String> oldPositionsGeographiquesObjectIdParRef = new HashMap<String, String>();
-		Map<String, String> oldObjectIdParOldObjectId = new HashMap<String, String>();
-		for (ILectureEchange lectureEchange : lecturesEchange) 
-		{
-			try 
-			{
-				List<TableauMarche> tableauxMarche = lectureEchange.getTableauxMarche();
-				for (TableauMarche tableauMarche : tableauxMarche)
-					if (oldTableauxMarcheObjectIdParRef.get(tableauMarche.getComment()) != null)
-						tableauMarche.setObjectId(oldTableauxMarcheObjectIdParRef.get(tableauMarche.getComment()));
-				lectureEchange.setTableauxMarche(tableauxMarche);
-				
-				List<PositionGeographique> positionsGeographiques = lectureEchange.getZonesCommerciales();
-				for (PositionGeographique positionGeographique : positionsGeographiques) {
-					if (oldPositionsGeographiquesObjectIdParRef.get(positionGeographique.getName()) != null)
-						positionGeographique.setObjectId(oldPositionsGeographiquesObjectIdParRef.get(positionGeographique.getName()));
-				}
-				lectureEchange.setZonesCommerciales(positionsGeographiques);
-				
-				List<String> objectIdZonesGeneriques = lectureEchange.getObjectIdZonesGeneriques();
-				List<String> tmpObjectIdZonesGeneriques = new ArrayList<String>();
-				for (String objectId : objectIdZonesGeneriques)
-					if (oldObjectIdParOldObjectId.get(objectId) == null)
-						tmpObjectIdZonesGeneriques.add(objectId);
-					else
-						tmpObjectIdZonesGeneriques.add(oldObjectIdParOldObjectId.get(objectId));
-				lectureEchange.setObjectIdZonesGeneriques(tmpObjectIdZonesGeneriques);
-				
-				Map<String, String> zoneParenteParObjectId = lectureEchange.getZoneParenteParObjectId();
-				Map<String, String> newZoneParenteParObjectId = new HashMap<String,String>();
-				for (String objId : zoneParenteParObjectId.keySet()) {
-					String commObjectId = zoneParenteParObjectId.get(objId);
-					String newCommObjectId = oldObjectIdParOldObjectId.get(commObjectId);
-					if (newCommObjectId == null)
-						newZoneParenteParObjectId.put(objId, commObjectId);
-					else
-						newZoneParenteParObjectId.put(objId, newCommObjectId);
-				}
-				lectureEchange.setZoneParenteParObjectId(newZoneParenteParObjectId);
-				
-				importateur.importer(true, lectureEchange);
-				
-				Map<String, String> _oldTableauxMarcheObjectIdParRef = identificationManager.getDictionaryObjectId().getTableauxMarcheObjectIdParRef();
-				for (String key : _oldTableauxMarcheObjectIdParRef.keySet())
-					oldTableauxMarcheObjectIdParRef.put(key, _oldTableauxMarcheObjectIdParRef.get(key));
-				
-				Map<String, String> _oldPositionsGeographiquesObjectIdParRef = identificationManager.getDictionaryObjectId().getPositionsGeographiquesObjectIdParRef();
-				for (String key : _oldPositionsGeographiquesObjectIdParRef.keySet())
-					oldPositionsGeographiquesObjectIdParRef.put(key, _oldPositionsGeographiquesObjectIdParRef.get(key));
-				
-				Map<String, String> _oldObjectIdParOldObjectId = identificationManager.getDictionaryObjectId().getObjectIdParOldObjectId();
-				for (String key : _oldObjectIdParOldObjectId.keySet())
-					oldObjectIdParOldObjectId.put(key, _oldObjectIdParOldObjectId.get(key));
-			}
-			catch(Exception e) 
-			{
-				addActionMessage(getText("message.import.generical.csv.failure"));
-				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
-				return INPUT;
-			}
-		}
-		identificationManager.getDictionaryObjectId().completion();
-		addActionMessage(getText("message.import.generical.csv.success"));
-		return SUCCESS;
+    public String importCSVGeneric() {
+	String canonicalPath = null;
+	try {
+	    canonicalPath = fichier.getCanonicalPath();
 	}
-	
+	catch (Exception e) {
+	    addActionError(getExceptionMessage(e));
+	    return INPUT;
+	}
+	try {
+	    lecteurCSVPrincipal.lireCheminFichier(canonicalPath);
+	}
+	catch (ServiceException e) {
+	    StackTraceElement[] ste = e.getStackTrace();
+	    String txt = "";
+	    if (ste != null)
+		for (int kk = 0; kk < ste.length; kk++)
+		    txt += ste[kk].getClassName() + ":"+ste[kk].getLineNumber()+"\n";
+	    logger.error(txt);
+	    if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) {
+		String message = getText("import.csv.fichier.introuvable");
+		message += getExceptionMessage(e);
+		addActionError(message);
+	    }
+	    else {
+		List<String> args = new ArrayList<String>();
+		args.add(canonicalPath);
+		String message = getText("import.csv.format.multilines.ko", args.toArray(new String[0]));
+		message += getExceptionMessage(e);
+		addActionError(message);
+		//e.printStackTrace();
+	    }
+	    return INPUT;
+	}
+	List<ILectureEchange> lecturesEchange = lecteurCSVPrincipal.getLecturesEchange();
+	//Map<String, String> oldTableauxMarcheObjectIdParRef = new HashMap<String, String>();
+	//Map<String, String> oldPositionsGeographiquesObjectIdParRef = new HashMap<String, String>();
+	//Map<String, String> oldObjectIdParOldObjectId = new HashMap<String, String>();
+	for (ILectureEchange lectureEchange : lecturesEchange) {
+	    try {
+		/*
+		List<TableauMarche> tableauxMarche = lectureEchange.getTableauxMarche();
+		for (TableauMarche tableauMarche : tableauxMarche)
+		    if (oldTableauxMarcheObjectIdParRef.get(tableauMarche.getComment()) != null)
+			tableauMarche.setObjectId(oldTableauxMarcheObjectIdParRef.get(tableauMarche.getComment()));
+		lectureEchange.setTableauxMarche(tableauxMarche);
+		List<PositionGeographique> positionsGeographiques = lectureEchange.getZonesCommerciales();
+		for (PositionGeographique positionGeographique : positionsGeographiques) {
+		    if (oldPositionsGeographiquesObjectIdParRef.get(positionGeographique.getName()) != null)
+			positionGeographique.setObjectId(oldPositionsGeographiquesObjectIdParRef.get(positionGeographique.getName()));
+		}
+		lectureEchange.setZonesCommerciales(positionsGeographiques);
+		List<String> objectIdZonesGeneriques = lectureEchange.getObjectIdZonesGeneriques();
+		List<String> tmpObjectIdZonesGeneriques = new ArrayList<String>();
+		for (String objectId : objectIdZonesGeneriques)
+		    if (oldObjectIdParOldObjectId.get(objectId) == null)
+			tmpObjectIdZonesGeneriques.add(objectId);
+		    else
+			tmpObjectIdZonesGeneriques.add(oldObjectIdParOldObjectId.get(objectId));
+		lectureEchange.setObjectIdZonesGeneriques(tmpObjectIdZonesGeneriques);
+		Map<String, String> zoneParenteParObjectId = lectureEchange.getZoneParenteParObjectId();
+		Map<String, String> newZoneParenteParObjectId = new HashMap<String,String>();
+		for (String objId : zoneParenteParObjectId.keySet()) {
+		    String commObjectId = zoneParenteParObjectId.get(objId);
+		    String newCommObjectId = oldObjectIdParOldObjectId.get(commObjectId);
+		    if (newCommObjectId == null)
+			newZoneParenteParObjectId.put(objId, commObjectId);
+		    else
+			newZoneParenteParObjectId.put(objId, newCommObjectId);
+		}
+		lectureEchange.setZoneParenteParObjectId(newZoneParenteParObjectId);
+		*/
+		importateur.importer(false, lectureEchange);
+		/*
+		Map<String, String> _oldTableauxMarcheObjectIdParRef = identificationManager.getDictionaryObjectId().getTableauxMarcheObjectIdParRef();
+		for (String key : _oldTableauxMarcheObjectIdParRef.keySet())
+		    oldTableauxMarcheObjectIdParRef.put(key, _oldTableauxMarcheObjectIdParRef.get(key));
+		
+		Map<String, String> _oldPositionsGeographiquesObjectIdParRef = identificationManager.getDictionaryObjectId().getPositionsGeographiquesObjectIdParRef();
+		for (String key : _oldPositionsGeographiquesObjectIdParRef.keySet())
+		    oldPositionsGeographiquesObjectIdParRef.put(key, _oldPositionsGeographiquesObjectIdParRef.get(key));
+		
+		Map<String, String> _oldObjectIdParOldObjectId = identificationManager.getDictionaryObjectId().getObjectIdParOldObjectId();
+		for (String key : _oldObjectIdParOldObjectId.keySet())
+		    oldObjectIdParOldObjectId.put(key, _oldObjectIdParOldObjectId.get(key));
+		*/
+	    }
+	    catch(Exception e) {
+		addActionMessage(getText("message.import.generical.csv.failure"));
+		log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+		return INPUT;
+	    }
+	}
+	//identificationManager.getDictionaryObjectId().completion();
+	addActionMessage(getText("message.import.generical.csv.success"));
+	return SUCCESS;
+    }
+    
 	public String importCSV() 
 	{
 		String canonicalPath = null;

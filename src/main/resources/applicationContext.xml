@@ -601,6 +601,9 @@
     <property name="reseauManager" ref="reseauManager"/>
     <property name="exportManager" ref="exportManager"/>
     <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+    <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
+    <property name="gtfsFileWriter" ref="gtfsFileWriter"/>
+    <property name="useGtfs" value="${network.gtfs}"/>
   </bean>
 
   <bean id="TimeTableActionBean" scope="prototype"
@@ -746,4 +749,8 @@
         class="fr.certu.chouette.shell.Version">
     <property name="version" value="${applie.version}"/>
   </bean>
+
+  <bean id="gtfsFileWriter" class="fr.certu.chouette.service.export.gtfs.GTFSFileWriter">
+  </bean>
+
 </beans>

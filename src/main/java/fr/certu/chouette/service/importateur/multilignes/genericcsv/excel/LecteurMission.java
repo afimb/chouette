@@ -14,68 +14,68 @@ import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurMiss
 
 public class LecteurMission implements ILecteurMission {
 	
-	private static final Logger                            logger                 = Logger.getLogger(LecteurMission.class);
-	private              IIdentificationManager            identificationManager; // 
-	private              Map<String, Mission>              missions;
-	private              Map<Ligne, List<Mission>>         missionsParLigne;
-	private static       int                               counter;
+    private static final Logger                            logger                 = Logger.getLogger(LecteurMission.class);
+    private              IIdentificationManager            identificationManager; // 
+    private              Map<String, Mission>              missions;
+    private              Map<Ligne, List<Mission>>         missionsParLigne;
+    private static       int                               counter;
+    
+    public Map<Ligne, List<Mission>> getMissions() {
+	return missionsParLigne;
+    }
+    
+    public Map<String, Mission> getMissionByCode() {
+	return missions;
+    }
+    
+    public void reinit() {
+	missionsParLigne = new HashMap<Ligne, List<Mission>>();
+	init();
+	counter = 0;
+    }
+    
+    public void init() {
+	missions = new HashMap<String, Mission>();
+    }
 	
-	public Map<Ligne, List<Mission>> getMissions() {
-		return missionsParLigne;
+    public void lire(Map<Course, List<String>> arretsPhysiquesParCourse, Ligne ligne) {
+	logger.debug("CREATION DES MISSIONS.");
+	init();
+	if (missionsParLigne.get(ligne) == null)
+	    missionsParLigne.put(ligne, new ArrayList<Mission>());
+	Set<Course> courses = arretsPhysiquesParCourse.keySet();
+	for (Course course : courses) {
+	    List<String> arretsPhysiques = arretsPhysiquesParCourse.get(course);
+	    String code = "";
+	    for (String arretPhysique : arretsPhysiques)
+		if (arretPhysique.length() == 0)
+		    code += "0";
+		else
+		    code += "1";
+	    Mission mission = missions.get(code);
+	    if (mission == null) {
+		mission = new Mission();
+		missionsParLigne.get(ligne).add(mission);
+		mission.setObjectId(identificationManager.getIdFonctionnel("JourneyPattern", String.valueOf(counter++)));
+		missions.put(code, mission);
+	    }
+	    course.setJourneyPatternId(mission.getObjectId());
 	}
-	
-	public Map<String, Mission> getMissionByCode() {
-		return missions;
-	}
-	
-	public void reinit() {
-		missionsParLigne = new HashMap<Ligne, List<Mission>>();
-		init();
-		counter = 0;
-	}
-	
-	public void init() {
-		missions = new HashMap<String, Mission>();
-	}
-	
-	public void lire(Map<Course, List<String>> arretsPhysiquesParCourse, Ligne ligne) {
-		logger.debug("CREATION DES MISSIONS.");
-		init();
-		if (missionsParLigne.get(ligne) == null)
-			missionsParLigne.put(ligne, new ArrayList<Mission>());
-		Set<Course> courses = arretsPhysiquesParCourse.keySet();
-		for (Course course : courses) {
-			List<String> arretsPhysiques = arretsPhysiquesParCourse.get(course);
-			String code = "";
-			for (String arretPhysique : arretsPhysiques)
-				if (arretPhysique.length() == 0)
-					code += "0";
-				else
-					code += "1";
-			Mission mission = missions.get(code);
-			if (mission == null) {
-				mission = new Mission();
-				missionsParLigne.get(ligne).add(mission);
-				mission.setObjectId(identificationManager.getIdFonctionnel("JourneyPattern", String.valueOf(counter++)));
-				missions.put(code, mission);
-			}
-			course.setJourneyPatternId(mission.getObjectId());
-		}
-		logger.debug("FIN DE CREATION DES MISSIONS.");
-	}
-
-	public boolean isTitreReconnu(String[] ligneCSV) {
-		return true;
-	}
-
-	public void validerCompletude() {
-	}
-	
-	public IIdentificationManager getIdentificationManager() {
-		return identificationManager;
-	}
-
-	public void setIdentificationManager(IIdentificationManager identificationManager) {
-		this.identificationManager = identificationManager;
-	}
+	logger.debug("FIN DE CREATION DES MISSIONS.");
+    }
+    
+    public boolean isTitreReconnu(String[] ligneCSV) {
+	return true;
+    }
+    
+    public void validerCompletude() {
+    }
+    
+    public IIdentificationManager getIdentificationManager() {
+	return identificationManager;
+    }
+    
+    public void setIdentificationManager(IIdentificationManager identificationManager) {
+	this.identificationManager = identificationManager;
+    }
 }

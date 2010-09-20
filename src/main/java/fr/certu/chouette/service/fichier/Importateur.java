@@ -45,6 +45,7 @@ public class Importateur implements IImportateur {
 				gestionModification.modifier(lectureEchange, incremental);
 			}
 			connexion.commit();
+                        connexion.close();
 		}
 		catch(Exception e) {
 			try {

@@ -1,135 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<web-app id="WebApp_ID" version="2.4"
-	xmlns="http://java.sun.com/xml/ns/j2ee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-
-  <display-name>chouette</display-name>
-
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>classpath*:applicationContext.xml</param-value>
-  </context-param>
-  
-  <!-- encodage utf-8 -->
-  <filter>
-    <filter-name>Spring character encoding filter</filter-name>
-    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>UTF-8</param-value>
-    </init-param>
-    <init-param>
-      <param-name>forceEncoding</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
- 
-  <filter-mapping>
-    <filter-name>Spring character encoding filter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
-
-  <filter>
-    <filter-name>struts-prepare</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>
-  </filter>
-
-
-  <filter>
-    <filter-name>struts-execute</filter-name>
-    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>
-  </filter>
-
-  <filter>
-    <filter-name>sitemesh</filter-name>
-    <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
-  </filter>
-	
-  <filter-mapping>
-    <filter-name>struts-prepare</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>sitemesh</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>struts-execute</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-
-	<!--
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <description>An open source software financed by the French Ministry of Ecology, Energy and Sustainable
+development (MEEDDM). Its main purpose is to enter and exchange data, describing the theoretical
+timetables of public transport networks, in accordance with a standard exchange profile.</description>
+    <display-name>chouette</display-name>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:applicationContext.xml</param-value>
+    </context-param>
+    <!-- encodage utf-8 -->
+    <filter>
+        <filter-name>Spring character encoding filter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>Spring character encoding filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>struts-prepare</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>struts-execute</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>struts-prepare</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>struts-execute</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!--
   <listener>
     <listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
   </listener>
 	-->
-	<!-- Welcome file lists -->
-  <!-- Liste des pages non protégées -->
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>
+    <!-- Welcome file lists -->
+    <!-- Liste des pages non protégées -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>
 				The Entire Web Application
       </web-resource-name>
-      <url-pattern>/images/*</url-pattern>
-      <url-pattern>/css/*</url-pattern>
-    </web-resource-collection>
-  </security-constraint>
+            <url-pattern>/images/*</url-pattern>
+            <url-pattern>/css/*</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
     <!-- Liste des pages protégées -->
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>
 				The Entire Web Application
       </web-resource-name>
-      <url-pattern>/*</url-pattern>
-    </web-resource-collection>
-    <!-- Rôles des utilisateurs ayant le droit d'y accéder -->
-    <auth-constraint>
-      <role-name>chouette-role</role-name>
-    </auth-constraint>
-  </security-constraint>
-  <login-config>
-		<!-- Type d'authentification -->
-    <auth-method>FORM</auth-method>
-    <realm-name>Espace membres</realm-name>
-    <form-login-config>
-      <form-login-page>/jsp/Login/login.jsp</form-login-page>
-      <form-error-page>/jsp/Login/error_login.jsp</form-error-page>
-    </form-login-config>
-  </login-config>
-
-  <jsp-config>
-    <jsp-property-group>
-      <description>Toutes les pages</description>
-      <url-pattern>*.jsp</url-pattern>
-      <page-encoding>UTF-8</page-encoding>
-    </jsp-property-group>
-  </jsp-config>
-
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
-  <error-page>
-    <error-code>403</error-code>
-    <location>/jsp/Login/error_login.jsp</location>
-  </error-page>
-	<!-- Rôles utilisés dans l'application -->
-  <security-role>
-    <description>Utilisateurs de l'application</description>
-    <role-name>chouette-role</role-name>
-  </security-role>
-
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <!-- Rôles des utilisateurs ayant le droit d'y accéder -->
+        <auth-constraint>
+            <role-name>chouette-role</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <login-config>
+        <!-- Type d'authentification -->
+        <auth-method>FORM</auth-method>
+        <realm-name>Espace membres</realm-name>
+        <form-login-config>
+            <form-login-page>/jsp/Login/login.jsp</form-login-page>
+            <form-error-page>/jsp/Login/error_login.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+    <jsp-config>
+        <jsp-property-group>
+            <description>Toutes les pages</description>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>default.html</welcome-file>
+        <welcome-file>default.htm</welcome-file>
+        <welcome-file>default.jsp</welcome-file>
+    </welcome-file-list>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/jsp/Login/error_login.jsp</location>
+    </error-page>
+    <!-- Rôles utilisés dans l'application -->
+    <security-role>
+        <description>Utilisateurs de l'application</description>
+        <role-name>chouette-role</role-name>
+    </security-role>
 </web-app>

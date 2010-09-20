@@ -1,5 +1,6 @@
 package fr.certu.chouette.service.database;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -90,4 +91,6 @@ public interface IPositionGeographiqueManager {
 	void fusionnerPositionsGeographiques(Long idArretSource, Long idArretDestination);
 	
 	List<PositionGeographique> lire(String nomArret, String code, Long idReseau, List <ChouetteAreaType> areaTypes);
+
+    public void setBounds(BigDecimal maxLat, BigDecimal maxLong, BigDecimal minLat, BigDecimal minLong);
 }

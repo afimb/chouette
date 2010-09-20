@@ -9,8 +9,10 @@ import chouette.schema.types.ServiceStatusValueType;
 import chouette.schema.types.TransportModeNameType;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import fr.certu.chouette.struts.outil.filAriane.FilAriane;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -69,9 +71,20 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   private String geoportalApiKey;
   private String baseLayerSource;
   private String lambertSRID;
+  private IPositionGeographiqueManager positionGeographiqueManager;
+  private static BigDecimal maxLat, maxLong, minLat, minLong;
   
-  public void setSession(Map session)
-  {
+  public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager) {
+    this.positionGeographiqueManager = positionGeographiqueManager;
+    if (maxLat == null)
+        this.setBounds();
+  }
+
+  private void setBounds() {
+    positionGeographiqueManager.setBounds(maxLat, maxLong, minLat, minLong);
+  }
+  
+  public void setSession(Map session) {
     this.session = session;
   }
 

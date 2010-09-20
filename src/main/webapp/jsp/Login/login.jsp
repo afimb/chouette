@@ -26,7 +26,8 @@
             </td>
             <td class="logo">
               <div class="chouette">Chouette</div>
-              <div class="definition">(Cr&eacute;ation d'horaires avec un outil d'&eacute;change de donn&eacute;es TC selon le format Trident Europ&eacute;en)</div>
+              <!--div class="definition">(Cr&eacute;ation d'horaires avec un outil d'&eacute;change de donn&eacute;es TC selon le format Trident Europ&eacute;en)</div-->
+              <div class="definition">(logiciel libre de r&eacute;f&eacute;rence pour l'&eacute;CHange normalis&eacute; de donn&eacute;es d'Offre de TransporT collEctif)</div>
             </td>
             <td class="languages">
             </td>
