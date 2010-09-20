@@ -5,9 +5,8 @@
 Chouette.Map.createShowMarkerLayer = function(){
   var showMarkerSymbolizer = OpenLayers.Util.applyDefaults(
   {
-    externalGraphic: "../js/openlayers/img/${thumbnail}.png",
-    graphicYOffset: -38,
-    pointRadius: 20,
+    externalGraphic: "../images/map/${thumbnail}.png",
+    pointRadius: 10,
     fillOpacity: 1
   },
   OpenLayers.Feature.Vector.style["default"]);
