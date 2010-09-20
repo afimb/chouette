@@ -42,6 +42,7 @@ Chouette.Map.initMap = function(){
     }),
     new OpenLayers.Control.ScaleLine(),
     new OpenLayers.Control.MousePosition(),
+    new OpenLayers.Control.Attribution(),
     //new OpenLayers.Control.KeyboardDefaults(),
     new OpenLayers.Control.Navigation(),
     new OpenLayers.Control.LoadingPanel()

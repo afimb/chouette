@@ -35,6 +35,7 @@ Chouette.Map.createGeoportalLayer = function(layerType, layerName, isBaseLayer, 
     },
     {
       gridOrigin: new OpenLayers.LonLat(0,0),
+      attribution : "Data by Geoportal",
       isBaseLayer: isBaseLayer,
       resolutions: Geoportal.Catalogue.RESOLUTIONS.slice(5,18),
       visibility: isVisible,
