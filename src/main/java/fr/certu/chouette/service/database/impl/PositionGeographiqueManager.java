@@ -1,5 +1,6 @@
 package fr.certu.chouette.service.database.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -407,4 +408,30 @@ public class PositionGeographiqueManager implements IPositionGeographiqueManager
 	public List<PositionGeographique> lire(String nomArret, String code, Long idReseau, List <ChouetteAreaType> areaTypes) {
 		return selectionSpecifique.getArretsFiltres(nomArret, code, idReseau, areaTypes);
 	}
+
+    public void setBounds(BigDecimal maxLat, BigDecimal maxLong, BigDecimal minLat, BigDecimal minLong) {
+        List<PositionGeographique> stopAreas = lire();
+        maxLat  = null;
+        maxLong = null;
+        minLat = null;
+        minLong = null;
+        for (PositionGeographique stopArea : stopAreas) {
+            BigDecimal latitude = stopArea.getLatitude();
+            BigDecimal longitude = stopArea.getLongitude();
+            if ((latitude == null) || (longitude == null))
+                continue;
+            if (maxLat == null) {
+                maxLat = latitude;
+                minLat = latitude;
+                maxLong = longitude;
+                maxLong = longitude;
+            }
+            else {
+                maxLat = latitude.max(maxLat);
+                minLat = latitude.min(minLat);
+                maxLong = longitude.max(maxLong);
+                minLong = longitude.min(minLong);
+            }
+        }
+    }
 }

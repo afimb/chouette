@@ -60,9 +60,9 @@ public class TransporteurManager implements ITransporteurManager
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.service.database.TransporteurManager#lire(java.lang.Long)
 	 */
-	public Transporteur lire( Long idReseau)
+	public Transporteur lire( Long idTransporteur)
 	{
-		return transporteurDao.get( idReseau);
+		return transporteurDao.get( idTransporteur);
 	}
 
 	/* (non-Javadoc)

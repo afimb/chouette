@@ -19,338 +19,338 @@ import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurCalendrier;
 
 public class LecteurCalendrier implements ILecteurCalendrier {
-	
-	private static final Logger                     logger                = Logger.getLogger(LecteurCalendrier.class);
-	private              Map<String, TableauMarche> caldendriersParRef;
-	private static final SimpleDateFormat           sdf                   = new SimpleDateFormat("dd/MM/yy");
-	private              int                        colonneDesTitres;     // 7
-	private              IIdentificationManager     identificationManager;// 
-	private              String                     cleAlias;             // "Alias"
-	private              String                     cleJour;              // "Jour d'application"
-	private              String                     cleDebut;             // "Date de début d'application"
-	private              String                     cleFin;               // "Date de fin d'application"
-	private              String                     cleLundi;             // "Lundi (O/N)"
-	private              String                     cleMardi;             // "Mardi (O/N)"
-	private              String                     cleMercredi;          // "Mercredi (O/N)"
-	private              String                     cleJeudi;             // "Jeudi (O/N)"
-	private              String                     cleVendredi;          // "Vendredi (O/N)"
-	private              String                     cleSamedi;            // "Samedi (O/N)"
-	private              String                     cleDimanche;          // "Dimanche (O/N)"
-	private              String                     cleCommentaire;       // "Libellé du tableau de marche"
-	private              TableauMarche              calendrierEnCours;
-	private              Set<String>                cellulesNonRenseignees;
-	private              Set<String>                titres;
-	
-	public void reinit() {
-		calendrierEnCours = null;
-		caldendriersParRef = new Hashtable<String, TableauMarche>();
-		titres = new HashSet<String>();
-		titres.add(cleCommentaire);
-		titres.add(cleAlias);
-		titres.add(cleJour);
-		titres.add(cleDebut);
-		titres.add(cleFin);
-		titres.add(cleLundi);
-		titres.add(cleMardi);
-		titres.add(cleMercredi);
-		titres.add(cleJeudi);
-		titres.add(cleVendredi);
-		titres.add(cleSamedi);
-		titres.add(cleDimanche);
-		cellulesNonRenseignees = new HashSet<String>(titres);
+    
+    private static final Logger                     logger                = Logger.getLogger(LecteurCalendrier.class);
+    private              Map<String, TableauMarche> caldendriersParRef;
+    private static final SimpleDateFormat           sdf                   = new SimpleDateFormat("dd/MM/yyyy");
+    private              int                        colonneDesTitres;     // 7
+    private              IIdentificationManager     identificationManager;// 
+    private              String                     cleAlias;             // "Alias"
+    private              String                     cleJour;              // "Jour d'application"
+    private              String                     cleDebut;             // "Date de début d'application"
+    private              String                     cleFin;               // "Date de fin d'application"
+    private              String                     cleLundi;             // "Lundi (O/N)"
+    private              String                     cleMardi;             // "Mardi (O/N)"
+    private              String                     cleMercredi;          // "Mercredi (O/N)"
+    private              String                     cleJeudi;             // "Jeudi (O/N)"
+    private              String                     cleVendredi;          // "Vendredi (O/N)"
+    private              String                     cleSamedi;            // "Samedi (O/N)"
+    private              String                     cleDimanche;          // "Dimanche (O/N)"
+    private              String                     cleCommentaire;       // "Libellé du tableau de marche"
+    private              TableauMarche              calendrierEnCours;
+    private              Set<String>                cellulesNonRenseignees;
+    private              Set<String>                titres;
+    
+    public void reinit() {
+	calendrierEnCours = null;
+	caldendriersParRef = new Hashtable<String, TableauMarche>();
+	titres = new HashSet<String>();
+	titres.add(cleCommentaire);
+	titres.add(cleAlias);
+	titres.add(cleJour);
+	titres.add(cleDebut);
+	titres.add(cleFin);
+	titres.add(cleLundi);
+	titres.add(cleMardi);
+	titres.add(cleMercredi);
+	titres.add(cleJeudi);
+	titres.add(cleVendredi);
+	titres.add(cleSamedi);
+	titres.add(cleDimanche);
+	cellulesNonRenseignees = new HashSet<String>(titres);
+    }
+    
+    private boolean isTitreNouvelleDonnee(String titre) {
+	return cleCommentaire.equals(titre);
+    }
+    
+    public void lire(String[] ligneCSV) {
+	if (ligneCSV.length < colonneDesTitres+2)
+	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
+	String titre = ligneCSV[colonneDesTitres];
+	String valeur = ligneCSV[colonneDesTitres+1];
+	if (isTitreNouvelleDonnee(titre)) {
+	    validerCompletudeDonneeEnCours();
+	    cellulesNonRenseignees = new HashSet<String>(titres);
+	    calendrierEnCours = new TableauMarche();
+	    calendrierEnCours.setObjectId(identificationManager.getIdFonctionnel("Timetable", String.valueOf(caldendriersParRef.size()+1)));
+	    calendrierEnCours.setObjectVersion(1);
+	    calendrierEnCours.setCreationTime(new Date());
+	    logger.debug("Nouveau calendrier");
 	}
-
-	private boolean isTitreNouvelleDonnee(String titre) {
-		return cleCommentaire.equals(titre);
-	}
-	
-	public void lire(String[] ligneCSV) {
-		if (ligneCSV.length < colonneDesTitres+2)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
-		String titre = ligneCSV[colonneDesTitres];
-		String valeur = ligneCSV[colonneDesTitres+1];
-		if (isTitreNouvelleDonnee(titre)) {
-			validerCompletudeDonneeEnCours();
-			cellulesNonRenseignees = new HashSet<String>(titres);
-			calendrierEnCours = new TableauMarche();
-			calendrierEnCours.setObjectId(identificationManager.getIdFonctionnel("Timetable", String.valueOf(caldendriersParRef.size()+1)));
-			calendrierEnCours.setObjectVersion(1);
-			calendrierEnCours.setCreationTime(new Date());
-			logger.debug("Nouveau calendrier");
+	if (!cellulesNonRenseignees.remove(titre))
+	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_DUPLICATEDATA,titre);
+	if (cleCommentaire.equals(titre))
+	    calendrierEnCours.setComment(valeur);
+	else if (cleJour.equals(titre)) {
+	    boolean finDeLigne = false;
+	    for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
+		valeur = ligneCSV[i];
+		if ((valeur == null) || (valeur.trim().length() == 0))
+		    finDeLigne = true;
+		else {
+		    if (finDeLigne)
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
+		    try {
+			calendrierEnCours.ajoutDate(sdf.parse(valeur));
+		    }
+		    catch(Exception e) {
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,e,valeur);
+		    }
 		}
-		if (!cellulesNonRenseignees.remove(titre))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_DUPLICATEDATA,titre);
-		if (cleCommentaire.equals(titre))
-			calendrierEnCours.setComment(valeur);
-		else if (cleJour.equals(titre)) {
-			boolean finDeLigne = false;
-			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
-				valeur = ligneCSV[i];
-				if ((valeur == null) || (valeur.trim().length() == 0))
-					finDeLigne = true;
-				else {
-					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
-					try {
-						calendrierEnCours.ajoutDate(sdf.parse(valeur));
-					}
-					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,e,valeur);
-					}
-				}
-			}
+	    }
+	}
+	else if (cleDebut.equals(titre)) {
+	    boolean finDeLigne = false;
+	    for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
+		valeur = ligneCSV[i];
+		if ((valeur == null) || (valeur.trim().length() == 0))
+		    finDeLigne = true;
+		else {
+		    if (finDeLigne)
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
+		    Periode periode = new Periode();
+		    calendrierEnCours.ajoutPeriode(periode);
+		    try {
+			periode.setDebut(sdf.parse(valeur));
+		    }
+		    catch(Exception e) {
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,e,valeur);
+		    }
 		}
-		else if (cleDebut.equals(titre)) {
-			boolean finDeLigne = false;
-			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
-				valeur = ligneCSV[i];
-				if ((valeur == null) || (valeur.trim().length() == 0))
-					finDeLigne = true;
-				else {
-					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
-					Periode periode = new Periode();
-					calendrierEnCours.ajoutPeriode(periode);
-					try {
-						periode.setDebut(sdf.parse(valeur));
-					}
-					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE,e,valeur);
-					}
-				}
-			}
+	    }
+	}
+	else if (cleFin.equals(titre)) {
+	    boolean finDeLigne = false;
+	    List<Periode> periodes = calendrierEnCours.getPeriodes();
+	    for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
+		valeur = ligneCSV[i];
+		if ((valeur == null) || (valeur.trim().length() == 0)) {
+		    finDeLigne = true;
+		    if ((periodes != null) && (periodes.size() > i-(colonneDesTitres+1)))
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.PERIOD_STARTDATE,periodes.get(i-(colonneDesTitres+1)));
 		}
-		else if (cleFin.equals(titre)) {
-			boolean finDeLigne = false;
-			List<Periode> periodes = calendrierEnCours.getPeriodes();
-			for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
-				valeur = ligneCSV[i];
-				if ((valeur == null) || (valeur.trim().length() == 0)) {
-					finDeLigne = true;
-					if ((periodes != null) && (periodes.size() > i-(colonneDesTitres+1)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.PERIOD_STARTDATE,periodes.get(i-(colonneDesTitres+1)));
-				}
-				else {
-					if (finDeLigne)
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
-					if ((periodes == null) || (periodes.size() <= i-(colonneDesTitres+1)))
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.PERIOD_ENDDATE,valeur);
-					Periode periode = periodes.get(i-(colonneDesTitres+1));
-					try {
-						periode.setFin(sdf.parse(valeur));
-					}
-					catch(Exception e) {
-						throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE, e,valeur);
-					}
-				}
-			}
+		else {
+		    if (finDeLigne)
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,valeur);
+		    if ((periodes == null) || (periodes.size() <= i-(colonneDesTitres+1)))
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.PERIOD_ENDDATE,valeur);
+		    Periode periode = periodes.get(i-(colonneDesTitres+1));
+		    try {
+			periode.setFin(sdf.parse(valeur));
+		    }
+		    catch(Exception e) {
+			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DATE_TYPE, e,valeur);
+		    }
 		}
-		else if (cleLundi.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.MONDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleMardi.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.TUESDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleMercredi.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.WEDNESDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleJeudi.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.THURSDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleVendredi.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.FRIDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleSamedi.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.SATURDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleDimanche.equals(titre)) {
-			if (isO(valeur)) {
-				Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
-				jours.add(DayTypeType.SUNDAY);
-				calendrierEnCours.setDayTypes(jours);
-			}
-		}
-		else if (cleAlias.equals(titre)) {
-			logger.debug("\talias = "+valeur);
-			if ((valeur == null) || (valeur.trim().length() == 0))
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NULL_ALIAS);
-			if (caldendriersParRef.get(valeur.trim()) != null)
-				throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DUPLICATE_ALIAS);
-			caldendriersParRef.put(valeur.trim(), calendrierEnCours);
-		}
-		//calendrierEnCours.setCreatorId(creatorId);
-		//calendrierEnCours.setId(id);
-		//calendrierEnCours.setVersion(version);
+	    }
 	}
-	
-	private boolean isO(String valeur) {
-		if ((valeur == null) || (!valeur.equals("O") && !valeur.equals("N")))
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.INVALID_DATA,valeur);
-		if (valeur.equals("O"))
-			return true;
-		return false;
+	else if (cleLundi.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.MONDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-
-	private void validerCompletudeDonneeEnCours() {
-		if (calendrierEnCours != null)
-			validerCompletude();
+	else if (cleMardi.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.TUESDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-	
-	public void validerCompletude() {
-		if (cellulesNonRenseignees.size() > 0)
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_MISSINGDATA,cellulesNonRenseignees);
+	else if (cleMercredi.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.WEDNESDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-	
-	public Map<String, TableauMarche> getTableauxMarchesParRef() {
-		return caldendriersParRef;
+	else if (cleJeudi.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.THURSDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-	
-	public void setTableauxMarchesParRef(Map<String, TableauMarche> caldendriersParRef) {
-		this.caldendriersParRef = caldendriersParRef;
+	else if (cleVendredi.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.FRIDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-
-	public boolean isTitreReconnu(String[] ligneCSV) {
-		if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
-			return false;
-		String titre = ligneCSV[colonneDesTitres];
-		if (titre == null)
-			return false;
-		return titres.contains(titre);
+	else if (cleSamedi.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.SATURDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-	
-	public IIdentificationManager getIdentificationManager() {
-		return identificationManager;
+	else if (cleDimanche.equals(titre)) {
+	    if (isO(valeur)) {
+		Set<DayTypeType> jours =  calendrierEnCours.getDayTypes();
+		jours.add(DayTypeType.SUNDAY);
+		calendrierEnCours.setDayTypes(jours);
+	    }
 	}
-
-	public void setIdentificationManager(IIdentificationManager identificationManager) {
-		this.identificationManager = identificationManager;
+	else if (cleAlias.equals(titre)) {
+	    logger.debug("\talias = "+valeur);
+	    if ((valeur == null) || (valeur.trim().length() == 0))
+		throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NULL_ALIAS);
+	    if (caldendriersParRef.get(valeur.trim()) != null)
+		throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.DUPLICATE_ALIAS);
+	    caldendriersParRef.put(valeur.trim(), calendrierEnCours);
 	}
-
-	public String getCleAlias() {
-		return cleAlias;
-	}
-
-	public void setCleAlias(String cleAlias) {
-		this.cleAlias = cleAlias;
-	}
-
-	public String getCleJour() {
-		return cleJour;
-	}
-
-	public void setCleJour(String cleJour) {
-		this.cleJour = cleJour;
-	}
-
-	public String getCleDebut() {
-		return cleDebut;
-	}
-
-	public void setCleDebut(String cleDebut) {
-		this.cleDebut = cleDebut;
-	}
-
-	public String getCleFin() {
-		return cleFin;
-	}
-
-	public void setCleFin(String cleFin) {
-		this.cleFin = cleFin;
-	}
-
-	public String getCleLundi() {
-		return cleLundi;
-	}
-
-	public void setCleLundi(String cleLundi) {
-		this.cleLundi = cleLundi;
-	}
-
-	public String getCleMardi() {
-		return cleMardi;
-	}
-
-	public void setCleMardi(String cleMardi) {
-		this.cleMardi = cleMardi;
-	}
-
-	public String getCleMercredi() {
-		return cleMercredi;
-	}
-
-	public void setCleMercredi(String cleMercredi) {
-		this.cleMercredi = cleMercredi;
-	}
-
-	public String getCleJeudi() {
-		return cleJeudi;
-	}
-
-	public void setCleJeudi(String cleJeudi) {
-		this.cleJeudi = cleJeudi;
-	}
-
-	public String getCleVendredi() {
-		return cleVendredi;
-	}
-
-	public void setCleVendredi(String cleVendredi) {
-		this.cleVendredi = cleVendredi;
-	}
-
-	public String getCleSamedi() {
-		return cleSamedi;
-	}
-
-	public void setCleSamedi(String cleSamedi) {
-		this.cleSamedi = cleSamedi;
-	}
-
-	public String getCleDimanche() {
-		return cleDimanche;
-	}
-
-	public void setCleDimanche(String cleDimanche) {
-		this.cleDimanche = cleDimanche;
-	}
-
-	public String getCleCommentaire() {
-		return cleCommentaire;
-	}
-
-	public void setCleCommentaire(String cleCommentaire) {
-		this.cleCommentaire = cleCommentaire;
-	}
-
-	public int getColonneDesTitres() {
-		return colonneDesTitres;
-	}
-
-	public void setColonneDesTitres(int colonneDesTitres) {
-		this.colonneDesTitres = colonneDesTitres;
-	}
+	//calendrierEnCours.setCreatorId(creatorId);
+	//calendrierEnCours.setId(id);
+	//calendrierEnCours.setVersion(version);
+    }
+    
+    private boolean isO(String valeur) {
+	if ((valeur == null) || (!valeur.equals("O") && !valeur.equals("N")))
+	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.INVALID_DATA,valeur);
+	if (valeur.equals("O"))
+	    return true;
+	return false;
+    }
+    
+    private void validerCompletudeDonneeEnCours() {
+	if (calendrierEnCours != null)
+	    validerCompletude();
+    }
+    
+    public void validerCompletude() {
+	if (cellulesNonRenseignees.size() > 0)
+	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_MISSINGDATA,cellulesNonRenseignees);
+    }
+    
+    public Map<String, TableauMarche> getTableauxMarchesParRef() {
+	return caldendriersParRef;
+    }
+    
+    public void setTableauxMarchesParRef(Map<String, TableauMarche> caldendriersParRef) {
+	this.caldendriersParRef = caldendriersParRef;
+    }
+    
+    public boolean isTitreReconnu(String[] ligneCSV) {
+	if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
+	    return false;
+	String titre = ligneCSV[colonneDesTitres];
+	if (titre == null)
+	    return false;
+	return titres.contains(titre);
+    }
+    
+    public IIdentificationManager getIdentificationManager() {
+	return identificationManager;
+    }
+    
+    public void setIdentificationManager(IIdentificationManager identificationManager) {
+	this.identificationManager = identificationManager;
+    }
+    
+    public String getCleAlias() {
+	return cleAlias;
+    }
+    
+    public void setCleAlias(String cleAlias) {
+	this.cleAlias = cleAlias;
+    }
+    
+    public String getCleJour() {
+	return cleJour;
+    }
+    
+    public void setCleJour(String cleJour) {
+	this.cleJour = cleJour;
+    }
+    
+    public String getCleDebut() {
+	return cleDebut;
+    }
+    
+    public void setCleDebut(String cleDebut) {
+	this.cleDebut = cleDebut;
+    }
+    
+    public String getCleFin() {
+	return cleFin;
+    }
+    
+    public void setCleFin(String cleFin) {
+	this.cleFin = cleFin;
+    }
+    
+    public String getCleLundi() {
+	return cleLundi;
+    }
+    
+    public void setCleLundi(String cleLundi) {
+	this.cleLundi = cleLundi;
+    }
+    
+    public String getCleMardi() {
+	return cleMardi;
+    }
+    
+    public void setCleMardi(String cleMardi) {
+	this.cleMardi = cleMardi;
+    }
+    
+    public String getCleMercredi() {
+	return cleMercredi;
+    }
+    
+    public void setCleMercredi(String cleMercredi) {
+	this.cleMercredi = cleMercredi;
+    }
+    
+    public String getCleJeudi() {
+	return cleJeudi;
+    }
+    
+    public void setCleJeudi(String cleJeudi) {
+	this.cleJeudi = cleJeudi;
+    }
+    
+    public String getCleVendredi() {
+	return cleVendredi;
+    }
+    
+    public void setCleVendredi(String cleVendredi) {
+	this.cleVendredi = cleVendredi;
+    }
+    
+    public String getCleSamedi() {
+	return cleSamedi;
+    }
+    
+    public void setCleSamedi(String cleSamedi) {
+	this.cleSamedi = cleSamedi;
+    }
+    
+    public String getCleDimanche() {
+	return cleDimanche;
+    }
+    
+    public void setCleDimanche(String cleDimanche) {
+	this.cleDimanche = cleDimanche;
+    }
+    
+    public String getCleCommentaire() {
+	return cleCommentaire;
+    }
+    
+    public void setCleCommentaire(String cleCommentaire) {
+	this.cleCommentaire = cleCommentaire;
+    }
+    
+    public int getColonneDesTitres() {
+	return colonneDesTitres;
+    }
+    
+    public void setColonneDesTitres(int colonneDesTitres) {
+	this.colonneDesTitres = colonneDesTitres;
+    }
 }

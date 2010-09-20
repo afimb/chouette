@@ -39,6 +39,11 @@
         <s:param name="exportMode">${'NEPTUNE'}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
+      <s:url id="exportGTFS" action="exportChouette" namespace="/network">
+        <s:param name="idReseau">${reseau.id}</s:param>
+        <s:param name="exportMode">${'GTFS'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
+      </s:url>
       <s:a href="%{editUrl}">
         <img border="0" src="<s:url value='/images/editer.png'/>" alt="Edit" title="<s:text name="tooltip.edit"/>" >
       </s:a>&nbsp;&nbsp;
@@ -50,6 +55,9 @@
     <display:column titleKey="table.title.export">
       <s:a href="%{exportChouette}"><s:text name="text.reseau.export.chouette"/></s:a><br>
       <s:a href="%{exportNeptune}"><s:text name="text.reseau.export.neptune"/></s:a>
+      <s:if test="useGtfs == 'true'">
+        <s:a href="%{exportGTFS}"><s:text name="text.reseau.export.gtfs"/></s:a>
+      </s:if>
     </display:column>
   </display:table>
 </div>
