@@ -1,9 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:hidden name="lambertSRID" value="%{lambertSRID}"/>
+<s:hidden name="currentLocale" value="%{currentLocale}"/>
 
 <s:if test="baseLayerSource != ''">
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/openlayers/OpenLayers.js' includeParams='none'/>" ></script>
+  <script language="JavaScript" type="text/javascript" src="<s:url value='/js/openlayers/fr.js' includeParams='none'/>" ></script>
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/openlayers/LoadingPanel.js' includeParams='none'/>" ></script>
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/openlayers/proj4js-compressed.js' includeParams='none'/>" ></script>
 </s:if>

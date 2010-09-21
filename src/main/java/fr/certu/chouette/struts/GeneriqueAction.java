@@ -554,6 +554,13 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 	this.lambertSRID = lambertSRID;
   }
   
+  /********************************************************
+   *           Current Locale                             *
+   ********************************************************/
+  public String getCurrentLocale(){
+	  return this.getLocale().getLanguage();
+  }
+  
   public synchronized String getExceptionMessage(Throwable ex)
   {
     Locale defaultLocale = Locale.getDefault();

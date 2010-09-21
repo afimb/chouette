@@ -1,15 +1,31 @@
 // === INIT MAP PROJECTIONS ===
 Chouette.Map.baseLayerProjection = new OpenLayers.Projection("IGNF:GEOPORTALFXX");
 
+OpenLayers.Util.extend(OpenLayers.Lang.en,{
+  'geoportal.maps':"Geoportal Maps",
+  'geoportal.orthophotos':"Geoportal Orthophotos",
+  'geoportal.railways':"Railways",
+  'geoportal.roads':"Roads",
+  'geoportal.buildings':"Buildings"
+  });
+
+OpenLayers.Util.extend(OpenLayers.Lang.fr,{
+  'geoportal.maps':"Cartes Géoportail",
+  'geoportal.orthophotos':"Orthophotos Géoportail",
+  'geoportal.railways':"Voies Ferrées",
+  'geoportal.roads':"Routes",
+  'geoportal.buildings':"Bâtiments"
+  });
+  
 Chouette.Map.initBaseLayers = function(){
   //map layer 
-  var geoMapLayer= this.createGeoportalBaseLayer("GEOGRAPHICALGRIDSYSTEMS.MAPS", "Plan");
+  var geoMapLayer= this.createGeoportalBaseLayer("GEOGRAPHICALGRIDSYSTEMS.MAPS", OpenLayers.i18n('geoportal.maps'));
   //orthophoto layer
-  var orthoPhotoLayer= this.createGeoportalBaseLayer("ORTHOIMAGERY.ORTHOPHOTOS", "Satellite");
+  var orthoPhotoLayer= this.createGeoportalBaseLayer("ORTHOIMAGERY.ORTHOPHOTOS", OpenLayers.i18n('geoportal.orthophotos'));
 
-  var railwaysLayer= this.createGeoportalOptionalLayer("TRANSPORTNETWORKS.RAILWAYS", "RailsWays");
-  var roadsLayer= this.createGeoportalOptionalLayer("TRANSPORTNETWORKS.ROADS", "Roads");
-  var buildingsLayer= this.createGeoportalOptionalLayer("BUILDINGS.BUILDINGS", "Buildings");
+  var railwaysLayer= this.createGeoportalOptionalLayer("TRANSPORTNETWORKS.RAILWAYS", OpenLayers.i18n('geoportal.railways'));
+  var roadsLayer= this.createGeoportalOptionalLayer("TRANSPORTNETWORKS.ROADS", OpenLayers.i18n('geoportal.roads'));
+  var buildingsLayer= this.createGeoportalOptionalLayer("BUILDINGS.BUILDINGS", OpenLayers.i18n('geoportal.buildings'));
 
 
    this.map.addLayers([geoMapLayer,orthoPhotoLayer,railwaysLayer,roadsLayer,buildingsLayer]);

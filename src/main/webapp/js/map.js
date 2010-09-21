@@ -21,12 +21,13 @@ Proj4js.defs['EPSG:2154'] = "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 
 //define global vars
 Chouette.Map.map = null ;
 
-
 // === INIT MAP PROJECTIONS ===
 Chouette.Map.wgsProjection = new OpenLayers.Projection("EPSG:4326");
 Chouette.Map.lambertProjection = new OpenLayers.Projection("EPSG:"+$("lambertSRID").value);
 
 Chouette.Map.initMap = function(){
+  OpenLayers.Lang.setCode($("currentLocale").value);
+  alert(OpenLayers.Lang.getCode());
   OpenLayers.ImgPath = "../images/map/"
   var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.baseLayerProjection, true);
   // === INIT MAP ===
