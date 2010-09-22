@@ -6,7 +6,7 @@ Chouette.Map.init = function(){
   var editMarkerLayer = Chouette.Map.createEditMarkerLayer();
 
   Chouette.Map.map.addLayers([editMarkerLayer]);
-  Chouette.Map.map.zoomToMaxExtent();
+  Chouette.Map.zoomToMaxDataExtent();
   
   Chouette.Map.initEditMarkerLayer("boardingPosition");
   Chouette.Map.updateEditMarker();

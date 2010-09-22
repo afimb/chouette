@@ -3,6 +3,11 @@
 <s:hidden name="lambertSRID" value="%{lambertSRID}"/>
 <s:hidden name="currentLocale" value="%{currentLocale}"/>
 
+<s:hidden name="minLat" value="%{minLat}"/>
+<s:hidden name="minLong" value="%{minLong}"/>
+<s:hidden name="maxLat" value="%{maxLat}"/>
+<s:hidden name="maxLong" value="%{maxLong}"/>
+
 <s:if test="baseLayerSource != ''">
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/openlayers/OpenLayers.js' includeParams='none'/>" ></script>
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/openlayers/fr.js' includeParams='none'/>" ></script>

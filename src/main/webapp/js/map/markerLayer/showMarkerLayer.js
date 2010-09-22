@@ -64,7 +64,7 @@ Chouette.Map.initShowMarkerLayer = function(url){
       }
       else // If there is no markers
       {
-        Chouette.Map.map.zoomToMaxExtent();
+        Chouette.Map.zoomToMaxDataExtent();
       }
     }
   });

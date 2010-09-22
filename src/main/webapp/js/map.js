@@ -27,7 +27,6 @@ Chouette.Map.lambertProjection = new OpenLayers.Projection("EPSG:"+$("lambertSRI
 
 Chouette.Map.initMap = function(){
   OpenLayers.Lang.setCode($("currentLocale").value);
-  alert(OpenLayers.Lang.getCode());
   OpenLayers.ImgPath = "../images/map/"
   var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.baseLayerProjection, true);
   // === INIT MAP ===
@@ -69,6 +68,17 @@ Chouette.Map.createMarkerLayer = function(symbolizer,layerName){
     });	
 };
 
+Chouette.Map.zoomToMaxDataExtent = function(){
+  if($('minLat').value != ""){
+    var bounds = new OpenLayers.Bounds($('minLong').value,$('minLat').value,$('maxLong').value,$('maxLat').value).transform(this.wgsProjection,this.baseLayerProjection, true);
+    var zoom = this.map.getZoomForExtent(bounds, true) - 1;
+    var point = bounds.getCenterLonLat();
+    this.map.setCenter(point, zoom);
+  }
+  else{
+    this.map.zoomToMaxExtent();
+  }
+};
 
 ////////////////
 // MATH TOOLS //

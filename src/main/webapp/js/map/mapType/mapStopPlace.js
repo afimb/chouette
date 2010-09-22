@@ -18,7 +18,7 @@ Chouette.Map.init = function(){
   var showMarkerLayer = Chouette.Map.createShowMarkerLayer();
 
   Chouette.Map.map.addLayers([editMarkerLayer,showMarkerLayer]);
-  Chouette.Map.map.zoomToMaxExtent();
+  Chouette.Map.zoomToMaxDataExtent();
 
   Chouette.Map.initEditMarkerLayer("stoparea");
 
