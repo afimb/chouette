@@ -555,6 +555,27 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   }
   
   /********************************************************
+   *           Max bounds of data                         *
+   ********************************************************/
+
+  public static BigDecimal getMinLat() {
+	return minLat;
+  }
+
+  public static BigDecimal getMinLong() {
+	return minLong;
+  }
+
+  public static BigDecimal getMaxLat() {
+	return maxLat;
+  }
+
+  public static BigDecimal getMaxLong() {
+	return maxLong;
+  }
+
+  
+  /********************************************************
    *           Current Locale                             *
    ********************************************************/
   public String getCurrentLocale(){

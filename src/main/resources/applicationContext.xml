@@ -503,6 +503,7 @@
         abstract="true"
         scope="prototype"
         class="fr.certu.chouette.struts.GeneriqueAction">
+    <property name="positionGeoManager" ref="positionGeographiqueManager"/>
     <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
     <property name="baseLayerSource" value="${map.baseLayerSource}"/>
     <property name="geoportalApiKey" value="${map.geoportalApiKey}"/>
