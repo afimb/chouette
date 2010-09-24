@@ -27,7 +27,7 @@ Chouette.Map.lambertProjection = new OpenLayers.Projection("EPSG:"+$("lambertSRI
 
 Chouette.Map.initMap = function(){
   OpenLayers.Lang.setCode($("currentLocale").value);
-  alert(OpenLayers.Lang.getCode());
+  //alert(OpenLayers.Lang.getCode());
   OpenLayers.ImgPath = "../images/map/"
   var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.baseLayerProjection, true);
   // === INIT MAP ===
