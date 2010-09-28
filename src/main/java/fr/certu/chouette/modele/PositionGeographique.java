@@ -2,7 +2,7 @@ package fr.certu.chouette.modele;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import com.vividsolutions.jts.geom.Point;
+//import com.vividsolutions.jts.geom.Point;
 import chouette.schema.Address;
 import chouette.schema.AreaCentroid;
 import chouette.schema.ProjectedPoint;
@@ -17,7 +17,7 @@ public class PositionGeographique  extends BaseObjet
 	private AreaCentroid areaCentroid;
 	public StopArea stopArea;
 	public Long idParent;
-        public Point geom;
+        /*public Point geom;
 
         public void setGeom(Point geom) {
             this.geom = geom;
@@ -25,7 +25,7 @@ public class PositionGeographique  extends BaseObjet
 
         public Point getGeom() {
             return this.geom;
-        }
+        }*/
 
 	public PositionGeographique () {
 		super();

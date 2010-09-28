@@ -3,7 +3,7 @@ package fr.certu.chouette.modele;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
-import com.vividsolutions.jts.geom.LineString;
+//import com.vividsolutions.jts.geom.LineString;
 import org.exolab.castor.types.Duration;
 
 import chouette.schema.ConnectionLink;
@@ -16,7 +16,7 @@ public class Correspondance extends BaseObjet
 	private Long idDepart;
 	private Long idArrivee;
 
-        private LineString geom;
+        /*private LineString geom;
 
         public void setGeom(LineString geom) {
             this.geom = geom;
@@ -24,7 +24,7 @@ public class Correspondance extends BaseObjet
 
         public LineString getGeom() {
             return this.geom;
-        }
+        }*/
 
 	public Correspondance() 
 	{

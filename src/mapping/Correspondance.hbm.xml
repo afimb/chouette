@@ -42,6 +42,8 @@
     <property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitability" type="boolean"/>
     <property column="stairsAvailability" name="stairsAvailability" type="boolean"/>
     <property column="liftAvailability" name="liftAvailability" type="boolean"/>
+    <!--
     <property column="geom" name="geom" type="org.hibernatespatial.GeometryUserType"/>
+    -->
   </class>
 </hibernate-mapping>
