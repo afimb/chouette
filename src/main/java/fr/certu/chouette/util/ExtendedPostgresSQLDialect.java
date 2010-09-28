@@ -3,9 +3,10 @@ package fr.certu.chouette.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
-import org.hibernate.dialect.PostgreSQLDialect;
+//import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernatespatial.postgis.PostgisDialect;
 
-public class ExtendedPostgresSQLDialect extends PostgreSQLDialect {
+public class ExtendedPostgresSQLDialect extends PostgisDialect /*PostgreSQLDialect*/ {
 	
 	private static final Log logger	= LogFactory.getLog(ExtendedPostgresSQLDialect.class);
 	

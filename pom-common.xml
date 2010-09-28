@@ -7,7 +7,7 @@
   <groupId>fr.certu.chouette</groupId>
   <artifactId>pom-common</artifactId>
   <packaging>pom</packaging>
-  <version>1.4.0.2</version>
+  <version>1.5.0</version>
   <repositories>
     <repository>
       <id>apache.snapshots</id>
@@ -40,7 +40,25 @@
       <url>http://download.java.net/maven/2/</url>
       <layout>default</layout>
     </repository>
-  </repositories>
+    <repository>
+            <id>OSGEO GeoTools repo</id>
+            <url>http://download.osgeo.org/webdav/geotools</url>
+        </repository>
+        <repository>
+            <id>Hibernate Spatial repo</id>
+            <url>http://www.hibernatespatial.org/repository</url>
+        </repository>
+        <!-- add JBOSS repository for easy access to Hibernate libraries -->
+        <repository>
+            <id>JBOSS</id>
+            <url>http://repository.jboss.com/maven2</url>
+        </repository>
+        <repository>
+     <id>refractions</id>
+     <name>Refractions Research Maven 2 Repository</name>
+     <url>http://lists.refractions.net/m2</url>
+   </repository>
+   </repositories>
   <dependencies>
     <dependency>
       <groupId>org.testng</groupId>
@@ -171,6 +189,18 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial-postgis</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- the Postgis JDBC driver -->
+        <dependency>
+            <groupId>org.postgis</groupId>
+            <artifactId>postgis-jdbc</artifactId>
+            <version>1.1.6</version>
+        </dependency>
     <!-- Librairie jta pour hibernate chargée seule car il faut accepter la licence de sun -->
     <dependency>
       <groupId>javax.transaction</groupId>

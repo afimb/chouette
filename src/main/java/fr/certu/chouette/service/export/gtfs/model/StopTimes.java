@@ -99,7 +99,19 @@ public class StopTimes {
 
 
     public String getCSVLine() {
-        String csvLine = tripId + "," + sdf.format(arrivalTime) + "," + sdf.format(departureTime) + "," + stopId + "," + stopSequence + ",";
+        String csvLine = tripId + ",";
+        if (arrivalTime == null)
+            arrivalTime = departureTime;
+        if (arrivalTime != null)
+            csvLine += sdf.format(arrivalTime);
+        csvLine += ",";
+        if (departureTime == null)
+            departureTime = arrivalTime;
+        if (departureTime != null)
+            csvLine += sdf.format(departureTime);
+        csvLine += ",";
+        csvLine += stopId + ",";
+        csvLine += stopSequence + ",";
         if (stopHeadsign != null)
             csvLine += stopHeadsign;
         csvLine += "," + pickupType + "," + dropOffType + "," ;

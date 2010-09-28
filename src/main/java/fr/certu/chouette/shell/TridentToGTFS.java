@@ -21,22 +21,26 @@ import org.springframework.core.NestedRuntimeException;
 import fr.certu.chouette.service.export.gtfs.IGTFSFileWriter;
 
 public class TridentToGTFS {
-	
-    private static final Logger             logger               = Logger.getLogger(fr.certu.chouette.shell.ImportXMLMain.class);
-    private static final String             CHEMIN_CONFIG_SPRING = "applicationContext.xml";
-    private static final String             FORMAT_XML           = ".xml";
-    private static final String             FORMAT_CSV           = ".csv";
+    
+    private static final Logger             logger                               = Logger.getLogger(fr.certu.chouette.shell.TridentToGTFS.class);
+    private static final String             CHEMIN_CONFIG_SPRING_VERIFY_IMPORTER = "applicationContextTridentToGTFS.xml";
+    private static final String             CHEMIN_CONFIG_SPRING_VERIFY          = "applicationContextTridentToGTFS.xml";
+    private static final String             CHEMIN_CONFIG_SPRING_IMPORTER        = "applicationContextTridentToGTFSI.xml";
+    private static final String             CHEMIN_CONFIG_SPRING                 = "applicationContextTridentToGTFS.xml";
+    private static final String             FORMAT_XML                           = ".xml";
+    private static final String             FORMAT_CSV                           = ".csv";
     private static       ILecteurFichierXML lecteurFichierXML;
     private static       ILecteurEchangeXML lecteurEchangeXML;
     private static       IImportateur       importateur;
     private static       Version            version;
-    private static       boolean            importer             = true;
-    private static       boolean            verify               = true;
-    private static       File               logFile              = null;
-    private static       File               valFile              = null;
-    private static       Set<String>        files                = new HashSet<String>();
-    private static       String             format               = null;
-    private static final String             JEU_CARACTERES       = "ISO-8859-1"; 
+    private static       boolean            importer                             = true;
+    private static       boolean            verify                               = true;
+    private static       File               logFile                              = null;
+    private static       File               valFile                              = null;
+    private static       File               outputFile                           = null;
+    private static       Set<String>        files                                = new HashSet<String>();
+    private static       String             format                               = null;
+    private static final String             JEU_CARACTERES                       = "ISO-8859-1";
     private IGTFSFileWriter gtfsFileWriter;
     
     public void setGtfsFileWriter(IGTFSFileWriter gtfsFileWriter) {
@@ -56,15 +60,24 @@ public class TridentToGTFS {
     
     private void getBeans() {
 	ClassPathXmlApplicationContext factory = null;
+        String fileName = "";
 	try {
-	    factory = new ClassPathXmlApplicationContext(CHEMIN_CONFIG_SPRING);
+            if (verify && importer)
+                fileName = CHEMIN_CONFIG_SPRING_VERIFY_IMPORTER;
+            else if (verify)
+                fileName = CHEMIN_CONFIG_SPRING_VERIFY;
+            else if (importer)
+                fileName = CHEMIN_CONFIG_SPRING_IMPORTER;
+            else
+                fileName = CHEMIN_CONFIG_SPRING;
+            factory = new ClassPathXmlApplicationContext(fileName);
 	}
 	catch(BeansException e) {
-	    System.out.println("Echec du chargement du context \""+CHEMIN_CONFIG_SPRING+"\"\n"+e.getMessage());
+	    System.out.println("Echec du chargement du context \""+fileName+"\"\n"+e.getMessage());
 	    System.exit(0);
 	}
 	catch(Exception e) {
-	    System.out.println("Echec de creation du context \""+CHEMIN_CONFIG_SPRING+"\"\n"+e.getMessage());
+	    System.out.println("Echec de creation du context \""+fileName+"\"\n"+e.getMessage());
 	    System.exit(1);
 	}
 	try {
@@ -89,17 +102,19 @@ public class TridentToGTFS {
 	    System.out.println("Echec de creation du Bean \"lecteurEchangeXML\"\n"+e.getMessage());
 	    System.exit(5);
 	}
-	try {
-	    importateur = (IImportateur)factory.getBean("importateur");
-	}
-	catch(BeansException e) {
-	    System.out.println("Echec du chargement du Bean \"importateur\"\n"+e.getMessage());
-	    System.exit(6);
-	}
-	catch(NestedRuntimeException e) {
-	    System.out.println("Echec de creation du Bean \"importateur\"\n"+e.getMessage());
-	    System.exit(7);
-	}
+        if (importer) {
+            try {
+                importateur = (IImportateur)factory.getBean("importateur");
+            }
+            catch(BeansException e) {
+                System.out.println("Echec du chargement du Bean \"importateur\"\n"+e.getMessage());
+                System.exit(6);
+            }
+            catch(NestedRuntimeException e) {
+                System.out.println("Echec de creation du Bean \"importateur\"\n"+e.getMessage());
+                System.exit(7);
+            }
+        }
 	try {
 	    version = (Version)factory.getBean("version");
 	}
@@ -235,6 +250,26 @@ public class TridentToGTFS {
 		    logger.setLevel(Level.DEBUG);
 		}
 	    }
+	    else if (opt.equals("o")) {
+		try {
+		    i++;
+		    if ((i == args.length) || args[i].startsWith("-")) {
+			i--;
+			throw new Exception();
+		    }
+		    else {
+			String fileName = args[i].trim();
+			if (!fileName.endsWith(".zip"))
+			    fileName += ".zip";
+			outputFile = new File(fileName);
+		    }
+		}
+		catch(Exception e) {
+		    printUsage();
+		    System.out.println("L'option \"-o\" doit spécifier un fichier de sortie.");
+		    outputFile = null;
+		}
+	    }
 	    else if (opt.equals("logFile")) {
 		try {
 		    i++;
@@ -247,7 +282,7 @@ public class TridentToGTFS {
 		}
 		catch(Exception e) {
 		    printUsage();
-		    System.out.println("L'option \"-logFile\" doit sp�cifier un fichier de log.");
+		    System.out.println("L'option \"-logFile\" doit spécifier un fichier de log.");
 		    logFile = null;
 		}
 		/*
@@ -270,7 +305,7 @@ public class TridentToGTFS {
 		}
 		catch(Exception e) {
 		    printUsage();
-		    System.out.println("L'option \"-logFile\" doit sp�cifier un fichier de log.");
+		    System.out.println("L'option \"-valFile\" doit spécifier un fichier de validation.");
 		    valFile = null;
 		}
 	    }
@@ -291,14 +326,14 @@ public class TridentToGTFS {
 		while (appenders.hasMoreElements())
 		    aLogger.addAppender((Appender)appenders.nextElement());
 		System.out.println("Echec lors de la creation du fichier de log "+logFile.getName());
-		System.out.println("Les logs seront d�rig�s vers les fichiers de log classiques de Chouette (/srv/log/chouette-ninoxe.log).");
+		System.out.println("Les logs seront dérigés vers les fichiers de log classiques de Chouette (/tmp/chouette-ninoxe.log).");
 	    }
 	}
     }
     
     public void translate(String[] args) {
-	getBeans();
 	parseArguments(args);
+	getBeans();
 	System.out.println("Chouette-ninoxe. Version : "+version.getVersion());
 	if ((files == null) || (files.size() == 0)) {
 	    System.out.println("Pas de fichier en entree.");
@@ -308,8 +343,8 @@ public class TridentToGTFS {
 	String result = "";
 	List<ILectureEchange> lectureEchanges = new ArrayList<ILectureEchange>();
 	for (String file : files) {
-	    System.out.println("Fichier : \""+file+"\"");
-	    logger.debug("Fichier : \""+file+"\"");
+	    System.out.println("Lecture du fichier : \""+file+"\"");
+	    logger.debug("Lecture du fichier : \""+file+"\"");
 	    if (format.equals(FORMAT_XML)) {
 		try {
 		    ChouettePTNetworkTypeType xmlTest = lecteurFichierXML.lire(file, verify);
@@ -345,19 +380,37 @@ public class TridentToGTFS {
 	    writeIntoFile(result, valFile);
 	
 	try {
-	    File file = new File("exportGTFS.zip");
-	    ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
+	    if (outputFile == null)
+	 	outputFile = new File("exportGTFS.zip");
+	    ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outputFile));
 	    zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
-	    
-	    write(lectureEchanges, "agency", zipOutputStream);
-	    write(lectureEchanges, "stops", zipOutputStream);
+
+            System.out.println("Ecriture du fichier : \"agency\"");
+	    logger.debug("Ecriture du fichier : \"agency\"");
+            write(lectureEchanges, "agency", zipOutputStream);
+            System.out.println("Ecriture du fichier : \"stops\"");
+	    logger.debug("Ecriture du fichier : \"stops\"");
+            write(lectureEchanges, "stops", zipOutputStream);
+            System.out.println("Ecriture du fichier : \"routes\"");
+	    logger.debug("Ecriture du fichier : \"routes\"");
 	    write(lectureEchanges, "routes", zipOutputStream);
+            System.out.println("Ecriture du fichier : \"trips\"");
+	    logger.debug("Ecriture du fichier : \"trips\"");
 	    write(lectureEchanges, "trips", zipOutputStream);
+            System.out.println("Ecriture du fichier : \"stop_times\"");
+	    logger.debug("Ecriture du fichier : \"stop_times\"");
 	    write(lectureEchanges, "stop_times", zipOutputStream);
+            System.out.println("Ecriture du fichier : \"calendar\"");
+	    logger.debug("Ecriture du fichier : \"calendar\"");
 	    write(lectureEchanges, "calendar", zipOutputStream);
+            System.out.println("Ecriture du fichier : \"calendar_dates\"");
+	    logger.debug("Ecriture du fichier : \"calendar_dates\"");
 	    write(lectureEchanges, "calendar_dates", zipOutputStream);
 	    
 	    zipOutputStream.close();
+
+            System.out.println("Fichier produit : \""+outputFile.getCanonicalPath()+"\"");
+	    logger.debug("Fichier produit : \""+outputFile.getCanonicalPath()+"\"");
 	}
 	catch (Exception exception) {
 	    exception.printStackTrace();
@@ -488,6 +541,7 @@ public class TridentToGTFS {
 	System.out.println("      -valFile <fileName> : inclure les messages de Validation dans le fichier <fileName>");
 	System.out.println("      -logLevel {DEBUG | INFO | WARN | ERROR | FATAL} : indique le niveau de log.");
 	System.out.println("");
+	System.out.println("      -o <fileName> : fichier de sortie = <fileName>");	
 	System.out.println("      -h,--help : affiche le menu d'aide");
     }
 }

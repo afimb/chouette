@@ -1,6 +1,21 @@
                         CHOUETTE RELEASE NOTES
                         ======================
 
+* Version 1.5
+  Publiée en septembre 2010, cette version de Chouette ajoute les
+  fonctionnalités suivantes :
+  - Quatres cartes géographiques dans les pages d'Edit de :
+    * Lignes
+    * Arrêts
+    * Zones d'arrêts
+    * Correspondances
+  - L'export GTFS depuis la base Chouette à travers l'IHM pages réseaux
+    et en lignes de commandes depuis des fichiers XML Neptune avec ou sans
+    enregistrement dans la base et avec ou sans validation
+  - Machine virtuelle Chouette : La posibilité de déployer une machine 
+    virtuelle Chouette à partir d'une image ISO dans un outil de virtualisation
+    tel que VirtualBox ou VMWare
+
 * Version 1.4.0.2
     
   Publiée en avril 2010, cette version de Chouette ajoute les

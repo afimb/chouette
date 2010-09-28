@@ -63,7 +63,7 @@ public class Trip {
     }
 
     public void setDirectionId(PTDirectionType pTDirectionType) {
-        if (pTDirectionType.compareTo(PTDirectionType.R) == 0)
+        if ((pTDirectionType == null) || (pTDirectionType.compareTo(PTDirectionType.R) == 0))
             setDirectionId(1);
         else
             setDirectionId(0);

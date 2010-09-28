@@ -44,5 +44,6 @@
     <property column="projectionType" name="projectionType" type="string"/>
     <property column="countryCode" name="countryCode" type="string"/>
     <property column="streetName" name="streetName" type="string"/>
+    <property column="geom" name="geom" type= "org.hibernatespatial.GeometryUserType"/>
   </class>
 </hibernate-mapping>
