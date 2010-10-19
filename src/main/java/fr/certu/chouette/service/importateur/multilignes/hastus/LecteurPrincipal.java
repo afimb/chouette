@@ -10,6 +10,7 @@ import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
+//import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
@@ -18,20 +19,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+//import java.io.IOException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+//import java.util.Collection;
+//import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+//import java.util.SortedSet;
+//import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 public class LecteurPrincipal implements ILecteurPrincipal {
@@ -50,484 +52,290 @@ public class LecteurPrincipal implements ILecteurPrincipal {
     private              String             logFileName;       // 
     private static final SimpleDateFormat   sdf                = new SimpleDateFormat("HH:mm:ss");
     
+    @Override
     public List<ILectureEchange> getLecturesEchange() {
-	FileWriter fw = null;
 	List<ILectureEchange> lecturesEchange = new ArrayList<ILectureEchange>();
-	try {
-	    fw = new FileWriter(logFileName, true);
-	    fw.write("######################################## I N T E G R A T I O N ###############################################\n");
-	    Map<String, Ligne> ligneParRegistration = lecteurLigne.getLigneParRegistration();
-	    Map<String, PositionGeographique> zones = lecteurZone.getZonesParObjectId();
-	    Map<String, PositionGeographique> arretsPhysiquesParObjectId = lecteurArret.getArretsPhysiquesParObjectId();
-	    Map<Itineraire, Map<String, ArretItineraire>> arretsItineraireParItineraire = lecteurHoraire.getArretsItineraireParItineraire();
-	    Map<Itineraire, Ligne> ligneParItineraire = lecteurItineraire.getLigneParItineraire();
-	    Set<Itineraire> itinerairesSet = ligneParItineraire.keySet();
-	    Map<Course, Ligne> ligneParCourse = lecteurCourse.getLigneParCourse();
-	    Set<Course> coursesSet = ligneParCourse.keySet();
-	    Map<String, Mission> missionParNom = lecteurHoraire.getMissionParNom();
-	    
-	    for (PositionGeographique pg : arretsPhysiquesParObjectId.values()) {
-		String tmpName = pg.getComment();
-		pg.setComment(pg.getName());
-		pg.setName(tmpName);
-	    }
-	    
-	    for (Itineraire itineraire : arretsItineraireParItineraire.keySet()) {
-		Map<String, ArretItineraire> arretsIt = arretsItineraireParItineraire.get(itineraire);
-		if (arretsIt == null)
-		    continue;
-		int size = arretsIt.size() - 1;
-		for (String key : arretsIt.keySet()) {
-		    if (arretsIt.get(key).getPosition() == size) {
-			String arretPhName = key;
-			if (arretPhName.endsWith("$"))
-			    arretPhName = arretPhName.substring(0, arretPhName.length()-1);
-			PositionGeographique posGeo = lecteurArret.getArretsPhysiques().get(arretPhName);
-			if (posGeo != null) {
-			    String fatherObjectId = lecteurArret.getObjectIdParParentObjectId().get(posGeo.getObjectId());
-			    if (fatherObjectId != null) {
-				PositionGeographique fatherZone = lecteurZone.getZonesParObjectId().get(fatherObjectId);
-				itineraire.setPublishedName(fatherZone.getName());
-			    }
-			}
-		    }
-		}
-	    }
-	    Map<String, List<String>> listeOrdonneeArretsParItineraireName = lecteurOrdre.getListeOrdonneeArretsParItineraireName();
-	    for (String itineraireName : listeOrdonneeArretsParItineraireName.keySet()) {
-		boolean isFound = false;
-		for (Itineraire itineraire : arretsItineraireParItineraire.keySet())
-		    if (itineraireName.equals(itineraire.getNumber())) {
-			isFound = true;
-			break;
-		    }
-		if (!isFound) {
-		    logger.error("Il n'existe aucun itineraire ... "+itineraireName); // ERROR
-		    fw.write("Il n'existe aucun itineraire ... "+itineraireName+"\n");
-		}
-	    }
-	    for (String registration : ligneParRegistration.keySet()) {
-		logger.debug("INTEGRATION LIGNE : "+registration);
-		Ligne ligne = ligneParRegistration.get(registration);
-		LectureEchange lectureEchange = new LectureEchange();
-		lectureEchange.setReseau(lecteurLigne.getReseau());
-		if (lectureEchange.getReseau() == null) {
-		    logger.error("La ligne "+registration+" n'a pas de réseau.");
-		    fw.write("La ligne "+registration+" n'a pas de réseau.\n");
-		    continue;
-		}
-		lectureEchange.setTransporteur(lecteurLigne.getTransporteur());
-		if (lectureEchange.getTransporteur() == null) {
-		    logger.error("La ligne "+registration+" n'a pas de transporteur.");
-		    fw.write("La ligne "+registration+" n'a pas de transporteur.\n");
-		    continue;
-		}
-		lectureEchange.setLigne(ligne);
-		List<Itineraire> itineraires = new ArrayList<Itineraire>();
-		List<Mission> missions = new ArrayList<Mission>();
-		Set<Mission> missionsSet = new HashSet<Mission>();
-		Set<Itineraire> itineraireSet = new HashSet<Itineraire>();
-		List<ArretItineraire> arretsItineraires = new ArrayList<ArretItineraire>();
-		List<PositionGeographique> arretsPhysiques = new ArrayList<PositionGeographique>();
-		Map<String, String> itineraireParArret = new HashMap<String, String>();
-		List<String> objectIdZonesGeneriques = new ArrayList<String>();
-		List<PositionGeographique> zonesCommerciales = new ArrayList<PositionGeographique>();
-		logger.debug("\tLES ITINERAIRES");
-		for (Itineraire itineraire : itinerairesSet)
-		    if ((ligneParItineraire.get(itineraire) == ligne) && (itineraireSet.add(itineraire))) {
-			String itineraireNumber = itineraire.getNumber();
-			if (itineraireNumber != null) {
-			    Mission mission = missionParNom.get(itineraireNumber);
-			    if ((mission != null) && (missionsSet.add(mission)))
-				missions.add(mission);
-			    else {
-				logger.warn("L'itinéraire "+itineraire.getName()+" n'a pas de mission.");
-				fw.write("L'itinéraire "+itineraire.getName()+" n'a pas de mission.\n");
-			    }
-			}
-			Map<String, ArretItineraire> arretsItineraire = arretsItineraireParItineraire.get(itineraire);
-			boolean itPossedeHoraires = false;
-			if (arretsItineraire != null) {
-			    Set<String> arretsItineraireNames = arretsItineraire.keySet();
-			    for (String name : arretsItineraireNames) {
-				if (arretsItineraire.get(name) != null) {
-				    arretsItineraires.add(arretsItineraire.get(name));
-				    itineraireParArret.put(arretsItineraire.get(name).getObjectId(), itineraire.getObjectId());
-				    itPossedeHoraires = true;
-				    if (arretsItineraire.get(name).getContainedIn() != null)
-					if (arretsPhysiquesParObjectId.get(arretsItineraire.get(name).getContainedIn()) != null) {
-					    if (!arretsPhysiques.contains(arretsPhysiquesParObjectId.get(arretsItineraire.get(name).getContainedIn())))
-						arretsPhysiques.add(arretsPhysiquesParObjectId.get(arretsItineraire.get(name).getContainedIn()));
-					    if (!objectIdZonesGeneriques.contains(arretsItineraire.get(name).getContainedIn()))
-						objectIdZonesGeneriques.add(arretsItineraire.get(name).getContainedIn());
-					}
-				}
-			    }
-			}
-			if (itPossedeHoraires)
-			    itineraires.add(itineraire);
-			else {
-			    logger.warn("L'itinéraire "+itineraire.getName()+" n'a pas d'horaires.");
-			    fw.write("L'itinéraire "+itineraire.getName()+" n'a pas d'horaires.\n");
-			}
-		    }
-		List<Course> courses = new ArrayList<Course>();
-		logger.debug("\tLES COURSES");
-		for (Course course : coursesSet)
-		    if (ligneParCourse.get(course) == ligne)
-			if ((course.getRouteId() == null) || (course.getJourneyPatternId() == null))
-			    continue;
-			else
-			    courses.add(course);
-		logger.debug("\tLES HORAIRES");
-		if (lecteurHoraire.getListHorairesParRegistrationLigne(registration) == null) {
-		    logger.error("La ligne "+registration+" n'a pas d'horaire.");
-		    fw.write("La ligne "+registration+" n'a pas d'horaire.\n");
-		    continue;
-		}
-		List<Horaire> horaires = lecteurHoraire.getListHorairesParRegistrationLigne(registration);
-		
-		// FUSION DES ITINERAIRES (MISSIONS, ARRETSITINERAIRES ...
-		logger.debug("Fusion des itineraires.");
-		List<Itineraire> itinerairesDest = new ArrayList<Itineraire>();
-		for (Itineraire itToAdd : itineraires) {
-		    Collection<ArretItineraire> arretsDeItToAdd = arretsItineraireParItineraire.get(itToAdd).values();
-		    Itineraire tmp = null;
-		    for (Itineraire it : itinerairesDest) {
-			Collection<ArretItineraire> arretsDeIt = arretsItineraireParItineraire.get(it).values();
-			if (arretsDeItToAdd.size() != arretsDeIt.size())
-			    continue;
-			boolean equals = true;
-			for (ArretItineraire arretDeItToAdd : arretsDeItToAdd) {
-			    for (ArretItineraire arretDeIt : arretsDeIt)
-				if (arretDeItToAdd.getPosition() == arretDeIt.getPosition()) {
-				    if (!arretDeItToAdd.getContainedIn().equals(arretDeIt.getContainedIn()))
-					equals = false;
-				    break;
-				}
-			    if (!equals)
-				break;
-			}
-			if (equals) {
-			    tmp = it;
-			    break;
-			}
-		    }
-		    if (tmp == null)
-			itinerairesDest.add(itToAdd);
-		    else { // fusionner itToAdd to tmp
-			String st1 = tmp.getName();
-			String st2 = itToAdd.getName();
-			st1 = st1 + st2.substring(st2.lastIndexOf("-"));
-			tmp.setName(st1);
-			if (!tmp.getPublishedName().equals(itToAdd.getPublishedName()))
-			    tmp.setPublishedName(tmp.getPublishedName()+"--"+itToAdd.getPublishedName());
-			String nb1 = tmp.getNumber();
-			String nb2 = itToAdd.getNumber();
-			nb1 = nb1 + nb2.substring(nb2.lastIndexOf("-"));
-			tmp.setNumber(nb2);
-			// Les courses de itToAdd passe sur tmp et sa mission
-			String missionObjectId = null;
-			for (Course cr : courses)
-			    if (cr.getRouteId().equals(tmp.getObjectId())) {
-				missionObjectId = cr.getJourneyPatternId();
-				break;
-			    }
-			String missionToRemoveObjId = null;
-			for (Course cr : courses)
-			    if (cr.getRouteId().equals(itToAdd.getObjectId())) {
-				missionToRemoveObjId = cr.getJourneyPatternId();
-				break;
-			    }
-			Mission missionToRemove = null;
-			for (Mission mission : missions)
-			    if (mission.getObjectId().equals(missionToRemoveObjId)) {
-				missionToRemove = mission;
-				break;
-			    }
-			missions.remove(missionToRemove);
-			for (Course cr : courses)
-			    if (cr.getRouteId().equals(itToAdd.getObjectId())) {
-				cr.setRouteId(tmp.getObjectId());
-				cr.setJourneyPatternId(missionObjectId);
-			    }
-			// arretsItineraires de itToAdd seront détruits
-			arretsItineraires.removeAll(arretsDeItToAdd);
-			// Les Horaires sur itToAdd passent des arrets de itToAdd aux arrets de tmp
-			for (Horaire hr : horaires)
-			    for (ArretItineraire arretItineraire : arretsDeItToAdd) {
-				boolean isSet = false;
-				if (hr.getStopPointId().equals(arretItineraire.getObjectId()))
-				    for (ArretItineraire arretItineraire2 : arretsItineraireParItineraire.get(tmp).values())
-					if (arretItineraire.getPosition() == arretItineraire2.getPosition()) {
-					    hr.setStopPointId(arretItineraire2.getObjectId());
-					    isSet = true;
-					    break;
-					}
-				if (isSet)
-				    break;
-			    }
-		    }
-		}
-		
-		// fusion des courses
-		logger.debug("Fusion des courses. Nombre de courses : "+courses.size());
-		List<TableauMarche> tableauxMarche = lecteurCourse.getTableauxMarches(ligne);
-		if (tableauxMarche == null)
-		    logger.warn("PAS DE TMs POUR LA LIGNE "+ligne.getNumber());
-		else
-		    logger.debug("NUMBER OF TMs : "+tableauxMarche.size()+", LIGNE : "+ligne.getNumber());
-		List<Course> coursesDest = new ArrayList<Course>(/*courses*/);
-		
-		Map<String, Set<Course>> equalCourses = new HashMap<String, Set<Course>>();
-		for (Course cr : courses) {
-		    String signature = cr.getRouteId();//+"#"+cr.getJourneyPatternId();
-		    Date date = null;
-		    for (Horaire hr : horaires)
-			if (hr.getVehicleJourneyId().equals(cr.getObjectId()))
-			    if ((date == null) || (date.after(hr.getDepartureTime())))
-				date = hr.getDepartureTime();
-		    if (date != null)
-			signature = signature + "#" + sdf.format(date);
-		    if (equalCourses.get(signature) == null)
-			equalCourses.put(signature, new HashSet<Course>());
-		    equalCourses.get(signature).add(cr);
-		}
-		Set<Horaire> hrToRm = new HashSet<Horaire>();
-		for (Set<Course> crs : equalCourses.values()) {
-		    if (crs.size() == 1)
-			coursesDest.add(crs.iterator().next());
-		    else {
-			Map<String, Set<Course>> tmpEqualCourses = new HashMap<String, Set<Course>>();
-			for (Course cr : crs) {
-			    String signature = cr.getRouteId();//+"#"+cr.getJourneyPatternId();
-			    SortedSet<String> hrs = new TreeSet<String>();
-			    for (Horaire hr : horaires)
-				if (hr.getVehicleJourneyId().equals(cr.getObjectId()))
-				    hrs.add(hr.getStopPointId()+"#"+sdf.format(hr.getDepartureTime()));
-			    Iterator<String> ite = hrs.iterator();
-			    while (ite.hasNext())
-				signature = signature+"#"+ite.next();
-			    if (tmpEqualCourses.get(signature) == null)
-				tmpEqualCourses.put(signature, new HashSet<Course>());
-			    tmpEqualCourses.get(signature).add(cr);
-			}
-			for (Set<Course> tmpCrs : tmpEqualCourses.values()) {
-			    Course[] crsTb = tmpCrs.toArray(new Course[tmpCrs.size()]);
-			    Course cr = crsTb[0];
-			    coursesDest.add(cr);
-			    for (int i = 1; i < crsTb.length; i++) {
-				if (crsTb[i] == cr)
-				    continue;
-				cr.setComment(cr.getComment()+"--"+crsTb[i].getComment());
-				cr.setPublishedJourneyName(cr.getPublishedJourneyName()+"--"+crsTb[i].getPublishedJourneyName());
-				for (Horaire hr : horaires)
-				    if (hrToRm.contains(hr))
-					continue;
-				    else
-					if (hr.getVehicleJourneyId().equals(crsTb[i].getObjectId()))
-					    hrToRm.add(hr);
-				for (TableauMarche tableauMarche : tableauxMarche)
-				    for (int j = 0; j < tableauMarche.getVehicleJourneyIdCount(); j++)
-					if (tableauMarche.getVehicleJourneyId(j).equals(crsTb[i].getObjectId())) {
-					    tableauMarche.getTimetable().removeVehicleJourneyId(crsTb[i].getObjectId());
-					    tableauMarche.getTimetable().removeVehicleJourneyId(cr.getObjectId());
-					    tableauMarche.getTimetable().addVehicleJourneyId(cr.getObjectId());
-					}
-			    }
-			}
-		    }
-		}
-		horaires.removeAll(hrToRm);
-		
-		// Mise à jours des noms des itinéraires et des arrets physiques
-		for (Itineraire it : itinerairesDest) {
-		    String tmpName = it.getPublishedName();
-		    it.setPublishedName(it.getName());
-		    it.setName(tmpName);
-		}
-		
-		lectureEchange.setItineraires(itinerairesDest);
-		if ((lectureEchange.getItineraires() == null) || (lectureEchange.getItineraires().size() == 0)) {
-		    logger.error("La ligne "+registration+" n'a pas d'itineraire.");
-		    fw.write("La ligne "+registration+" n'a pas d'itineraire.\n");
-		    continue;
-		}
-		lectureEchange.setMissions(missions);
-		if ((lectureEchange.getMissions() == null) || (lectureEchange.getMissions().size() == 0)) {
-		    logger.error("La ligne "+registration+" n'a pas de mission.");
-		    fw.write("La ligne "+registration+" n'a pas de mission.\n");
-		    continue;
-		}
-		lectureEchange.setArrets(arretsItineraires);
-		if ((lectureEchange.getArrets() == null) || (lectureEchange.getArrets().size() == 0)) {
-		    logger.error("La ligne "+registration+" n'a pas d'arrêt.");
-		    fw.write("La ligne "+registration+" n'a pas d'arrêt.\n");
-		    continue;
-		}
-		lectureEchange.setArretsPhysiques(arretsPhysiques);
-		if ((lectureEchange.getArretsPhysiques() == null) || (lectureEchange.getArretsPhysiques().size() == 0)) {
-		    logger.error("La ligne "+registration+" n'a pas d'arrêts physiques.");
-		    fw.write("La ligne "+registration+" n'a pas d'arrêts physiques.\n");
-		    continue;
-		}
-		lectureEchange.setCourses(coursesDest);
-		if ((lectureEchange.getCourses() == null) || (lectureEchange.getCourses().size() == 0)) {
-		    logger.error("La ligne "+registration+" n'a pas de course.");
-		    fw.write("La ligne "+registration+" n'a pas de course.\n");
-		    continue;
-		}
-		lectureEchange.setTableauxMarche(lecteurCourse.getTableauxMarches(ligne)); // TOUS LES TMs
-		lectureEchange.setItineraireParArret(itineraireParArret);
-		Map<String, String> objectIdParParentObjectId = lecteurArret.getObjectIdParParentObjectId();
-		List<String> objectIdZonesGeneriquesTmp = new ArrayList<String>(objectIdZonesGeneriques);
-		Map<String, String> _objectIdParParentObjectId = new HashMap<String, String>();
-		logger.debug("\tLES ZONES");
-		for (String objectId : objectIdZonesGeneriques)
-		    if (objectIdParParentObjectId.get(objectId) != null) {
-			_objectIdParParentObjectId.put(objectId, objectIdParParentObjectId.get(objectId));
-			if (!objectIdZonesGeneriquesTmp.contains(objectIdParParentObjectId.get(objectId)))
-			    objectIdZonesGeneriquesTmp.add(objectIdParParentObjectId.get(objectId));
-			if (!zonesCommerciales.contains(zones.get(objectIdParParentObjectId.get(objectId))))
-			    zonesCommerciales.add(zones.get(objectIdParParentObjectId.get(objectId)));
-		    }
-		lectureEchange.setZoneParenteParObjectId(_objectIdParParentObjectId);
-		lectureEchange.setObjectIdZonesGeneriques(objectIdZonesGeneriquesTmp);
-		lectureEchange.setZonesCommerciales(zonesCommerciales);
-		lectureEchange.setHoraires(horaires);
-		lecturesEchange.add(lectureEchange);
-	    }
+        Map<String, Ligne> ligneParRegistration = lecteurLigne.getLigneParRegistration();
+        Set<String> regLignes = ligneParRegistration.keySet();
+        Map<Itineraire, Ligne> ligneParItineraire = lecteurItineraire.getLigneParItineraire();
+        Map<String, Mission> missionParNom = lecteurItineraire.getMissionParNom();
+        Map<Course, Ligne> ligneParCourse = lecteurCourse.getLigneParCourse();
+        Map<String, Map<ArretItineraire, Map<Course, Horaire>>> ordre = lecteurHoraire.getOrdre();
+        Map<String, PositionGeographique> zoneParObjectId = lecteurZone.getZonesParObjectId();
+        Map<String, PositionGeographique> arretPhysiqueParObjectId = lecteurArret.getArretsPhysiquesParObjectId();
+        Map<String, String> objectIdParParentObjectId = lecteurArret.getObjectIdParParentObjectId();
+	FileWriter        fw                = null; //To write log infos into
+        try {
+            fw = new FileWriter(logFileName, true);
 	    fw.write("##############################################################################################################\n");
-	}
-	catch(IOException e) {
-	}
+	    fw.write("#                                CREATION DES LIGNES DE TRANSPORT                                            #\n");
+	    fw.write("##############################################################################################################\n");
+            for (String regLigne : regLignes) {
+                LectureEchange lectureEchange = new LectureEchange();
+                Ligne ligne = ligneParRegistration.get(regLigne);
+                lectureEchange.setLigne(ligne);
+                lectureEchange.setTransporteur(lecteurLigne.getTransporteur());
+                lectureEchange.setReseau(lecteurLigne.getReseau());
+                List<TableauMarche> tableauxMarces = lecteurCourse.getTableauxMarches(ligne);
+                if ((tableauxMarces == null) || (tableauxMarces.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas de calendrier d'application.\n");
+                    continue;
+                }
+                lectureEchange.setTableauxMarche(tableauxMarces);
+                List<Itineraire> itineraires = new ArrayList<Itineraire>();
+                List<Mission> missions = new ArrayList<Mission>();
+                Set<ArretItineraire> arretsItineraires = new HashSet<ArretItineraire>();
+                Set<Horaire> horaires = new HashSet<Horaire>();
+                Set<Course> courses = new HashSet<Course>();
+                Set<PositionGeographique> arretsPhysiques = new HashSet<PositionGeographique>();
+                Set<PositionGeographique> zones = new HashSet<PositionGeographique>();
+                Map<String, String> zoneObjectIdParArretPhysiqueObjectId = new HashMap<String, String>();
+                Map<String, String> itineraireParArret = new HashMap<String, String>();
+                Set<String> objectIdZonesGeneriques = new HashSet<String>();
+                for (Itineraire itineraire : ligneParItineraire.keySet())
+                    if (ligneParItineraire.get(itineraire) == ligne) {
+                        itineraires.add(itineraire);
+                        missions.add(missionParNom.get(itineraire.getNumber()));
+                        for (String key : ordre.keySet())
+                            if (key.indexOf(itineraire.getNumber()+";") == 0) {
+                                Set<ArretItineraire> arretsIts = ordre.get(key).keySet();
+                                arretsItineraires.addAll(arretsIts);
+                                for (ArretItineraire arretItineraire : arretsIts) {
+                                    itineraireParArret.put(arretItineraire.getObjectId(), itineraire.getObjectId());
+                                    String arretPhysiqueObjectId = arretItineraire.getContainedIn();
+                                    String zoneObjectId = objectIdParParentObjectId.get(arretPhysiqueObjectId);
+                                    zoneObjectIdParArretPhysiqueObjectId.put(arretPhysiqueObjectId, zoneObjectId);
+                                    objectIdZonesGeneriques.add(arretPhysiqueObjectId);
+                                    objectIdZonesGeneriques.add(zoneObjectId);
+                                    arretsPhysiques.add(arretPhysiqueParObjectId.get(arretPhysiqueObjectId));
+                                    zones.add(zoneParObjectId.get(zoneObjectId));
+                                    Map<Course, Horaire> horaireParCoure = ordre.get(key).get(arretItineraire);
+                                    Set<Course> tmpCourses = horaireParCoure.keySet();
+                                    courses.addAll(tmpCourses);
+                                    for (Course course : tmpCourses)
+                                        horaires.add(horaireParCoure.get(course));
+                                }
+                            }
+                    }
+                if ((itineraires == null) || (itineraires.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas d'itineraire.\n");
+                    continue;
+                }
+                lectureEchange.setItineraires(itineraires);
+                if ((missions == null) || (missions.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas de calendrier de mission.\n");
+                    continue;
+                }
+                lectureEchange.setMissions(missions);
+                if ((courses == null) || (courses.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas de course.\n");
+                    continue;
+                }
+                lectureEchange.setCourses(new ArrayList<Course>(courses));
+                if ((arretsPhysiques == null) || (arretsPhysiques.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas d'arret physique.\n");
+                    continue;
+                }
+                lectureEchange.setArretsPhysiques(new ArrayList<PositionGeographique>(arretsPhysiques));
+                if ((horaires == null) || (horaires.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas d'horaire.\n");
+                    continue;
+                }
+                lectureEchange.setHoraires(new ArrayList<Horaire>(horaires));
+                if ((arretsItineraires == null) || (arretsItineraires.isEmpty())) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas d'arret itineraire.\n");
+                    continue;
+                }
+                lectureEchange.setArrets(new ArrayList<ArretItineraire>(arretsItineraires));
+                lectureEchange.setZonesCommerciales(new ArrayList<PositionGeographique>(zones));
+                lectureEchange.setZoneParenteParObjectId(zoneObjectIdParArretPhysiqueObjectId);
+                lectureEchange.setItineraireParArret(itineraireParArret);
+                lectureEchange.setObjectIdZonesGeneriques(new ArrayList<String>(objectIdZonesGeneriques));
+
+                //lectureEchange.setCorrespondances(null);
+                //lectureEchange.setInterdictionTraficLocal(null);
+                //lectureEchange.setPhysiquesParITLId(null);
+                //lectureEchange.setZonesPlaces(null);
+                lecturesEchange.add(lectureEchange);
+            }
+        }
+        catch(IOException e) {
+        }
 	finally {
 	    try {
 		fw.flush();
 		fw.close();
 	    }
-	    catch(IOException e) {
+	    catch(Exception e) {
 	    }
 	}
 	return lecturesEchange;
     }
     
+    @Override
     public void lire(String nom) {
 	lireCheminFichier(getCheminfichier(nom));
     }
     
-    public void lireCheminFichier(String chemin) {
-	logger.debug("LECTURE DE DONNEES CSV : "+chemin);
-	CSVReader lecteur = null;
-	initialisation();
-	int ligneNumber = 0;
-	FileWriter fw = null;
+    @Override
+    public void lireCheminFichier(String chemin) throws ServiceException {
+	logger.debug("LECTURE DE DONNEES HASTUS DEPUIS : "+chemin);
+        File              inputFile         = null;
+        InputStreamReader inputStreamReader = null;
+	CSVReader         lecteur           = null;
+	FileWriter        fw                = null; //To write log infos into
+        Set<String>       aSet              = new HashSet<String>();
+	int               ligneNumber       = 0;    //Actual line number
+        int               counter           = 0;    //Actual line type
+        String[]          ligneCSV          = null; //Actual line
 	try {
-	    fw = new FileWriter(logFileName, true);
+            initialisation();
+	    fw = new FileWriter(logFileName, false);
 	    fw.write("##############################################################################################################\n");
 	    fw.write("# LECTURE DES DONNEES HASTUS \""+chemin+"\" #\n");
 	    fw.write("##############################################################################################################\n");
-	    Set<String> aSet = new HashSet<String>();
-	    InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(chemin), JeuCaracteres);
+            inputFile = new File(chemin);
+            if (!inputFile.exists()) {
+                fw.write("FATAL00001 : Le fichier '"+chemin+"' n'existe pas.\n");
+                throw new ServiceException(CodeIncident.FILE_NOT_FOUND, "FATAL00001 : Le fichier '"+chemin+"' n'existe pas.");
+            }
+            if (!inputFile.isFile()) {
+                fw.write("FATAL00001 : Le fichier '"+chemin+"' n'est pas un fichier valide.\n");
+                throw new ServiceException(CodeIncident.INVALIDE_FILE_TYPE, "FATAL00001 : Le fichier '"+chemin+"' n'est pas un fichier valide.");
+            }
+            if (!inputFile.canRead()) {
+                fw.write("FATAL00001 : Le fichier '"+chemin+"' n'est pas accessible en Lecture.\n");
+                throw new ServiceException(CodeIncident.INVALIDE_FILE_PARAMS, "FATAL00001 : Le fichier '"+chemin+"' n'est pas accessible en Lecture.");
+            }
+	    inputStreamReader = new InputStreamReader(new FileInputStream(inputFile), JeuCaracteres);
 	    lecteur = new CSVReader(inputStreamReader, separateur);
-	    int counter = 0;
-	    String[] ligneCSV = lecteur.readNext();
+	    ligneCSV = lecteur.readNext();
 	    while (ligneCSV != null) {
 		try {
 		    ligneNumber++;
 		    if (lecteurZone.isTitreReconnu(ligneCSV)) {
 			if (counter != 0)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Zones\" doivent �tre d�finies au d�but du fichier.");
+                            throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00101 : Toutes les lignes de la section '01' doivent figurer avant les autres sections.");
 			lecteurZone.lire(ligneCSV);
 		    }
 		    else if (lecteurArret.isTitreReconnu(ligneCSV)) {
 			if (counter == 0) {
-			    lecteurArret.setCounter(lecteurZone.getCounter());
+                            lecteurZone.completion();
 			    lecteurArret.setZones(lecteurZone.getZones());
 			    counter++;
 			}
 			if (counter != 1)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Arrets Physiques\" doivent �tre d�finis en deuxi�me juste apr�s les \"Zones\".");
+			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00102 : Toutes les lignes de la section '02' doivent figurer apres la section '01' et avant les autres sections.");
 			lecteurArret.lire(ligneCSV);
 		    }
 		    else if (lecteurLigne.isTitreReconnu(ligneCSV)) {
 			if (counter == 1) {
 			    lecteurArret.completion();
-			    lecteurLigne.setCounter(lecteurArret.getCounter());
 			    counter++;
 			}
 			if (counter != 2)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Lignes\" doivent �tre d�finis en troisi�me juste apr�s les \"Arrets Physiques\".");
+			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00103 : Toutes les lignes de la section '03' doivent figurer apres les sections '01' et '02', et avant les autres sections.");
 			lecteurLigne.lire(ligneCSV);
 		    }
 		    else if (lecteurItineraire.isTitreReconnu(ligneCSV)) {
 			if (counter == 2) {
-			    lecteurItineraire.setCounter(lecteurLigne.getCounter());
+                            lecteurLigne.completion();
 			    lecteurItineraire.setLigneParRegistration(lecteurLigne.getLigneParRegistration());
 			    lecteurItineraire.setZones(lecteurZone.getZones());
-			    //lecteurItineraire.setObjectIdParParentObjectId(lecteurArret.getObjectIdParParentObjectId());
-			    //lecteurItineraire.setZonesParObjectId(lecteurZone.getZonesParObjectId());
 			    counter++;
 			}
 			if (counter != 3)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Itineraires\" doivent �tre d�finis en quatri�me juste apr�s les \"Lignes\".");
+			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00104 : Toutes les lignes de la section '04' doivent figurer apres les sections '01', '02' et '03, et avant les autres sections.");
 			lecteurItineraire.lire(ligneCSV);
 		    }
 		    else if (lecteurCourse.isTitreReconnu(ligneCSV)) {
 			if (counter == 3) {
 			    lecteurItineraire.completion();
-			    lecteurCourse.setCounter(lecteurItineraire.getCounter());
 			    lecteurCourse.setLigneParRegistration(lecteurLigne.getLigneParRegistration());
+                            lecteurCourse.setZones(lecteurZone.getZones());
+                            lecteurCourse.setItineraireParNumber(lecteurItineraire.getItineraireParNumber());
+                            //lecteurCourse.setMissionParNom(lecteurItineraire.getMissionParNom());
 			    counter++;
 			}
 			if (counter != 4)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Courses\" doivent �tre d�finis en cinqi�me juste apr�s les \"Itineraires\".");
+			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00105 : Toutes les lignes de la section '05' doivent figurer apres les sections '01', '02', '03' et '04', et avant les autres sections.");
 			lecteurCourse.lire(ligneCSV);
 		    }
 		    else if (lecteurHoraire.isTitreReconnu(ligneCSV)) {
 			if (counter == 4) {
-			    lecteurHoraire.setCounter(lecteurCourse.getCounter());
-			    lecteurHoraire.setCourseParNom(lecteurCourse.getCourseParNom());
-			    lecteurHoraire.setItineraireParNom(lecteurItineraire.getItineraireParNom());
-			    lecteurHoraire.setArretsPhysiquesParNom(lecteurArret.getArretsPhysiques());
-			    lecteurHoraire.setObjectIdParParentObjectId(lecteurArret.getObjectIdParParentObjectId());
+                            lecteurCourse.completion();
+			    lecteurHoraire.setCourseParNumber(lecteurCourse.getCourseParNumber());
+			    lecteurHoraire.setItineraireParNumber(lecteurItineraire.getItineraireParNumber());
+			    lecteurHoraire.setArretsPhysiquesParRegistration(lecteurArret.getArretsPhysiques());
 			    counter++;
 			}
 			if (counter != 5)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Horaires\" doivent �tre d�finis en sixi�me juste apr�s les \"Courses\".");
+			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00106 : Toutes les lignes de la section '06' doivent figurer apres les sections '01', '02', '03', '04' et '05', et avant la section '07'.");
 			lecteurHoraire.lire(ligneCSV);
 		    }
 		    else if (lecteurOrdre.isTitreReconnu(ligneCSV)) {
 			if (counter == 5) {
 			    lecteurHoraire.completion();
-			    lecteurOrdre.setCounter(lecteurHoraire.getCounter());
+                            lecteurOrdre.setOrdre(lecteurHoraire.getOrdre());
+                            lecteurOrdre.setItineraireParNumber(lecteurItineraire.getItineraireParNumber());
+                            lecteurOrdre.setArretsPhysiquesParRegistration(lecteurArret.getArretsPhysiques());
 			    counter++;
 			}
 			if (counter != 6)
-			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "Les \"Ordres\" doivent �tre d�finis en dernier juste apr�s les \"Horaires\".");
+			    throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00107 : Toutes les lignes de la section '07' doivent figurer apres les autres sections.");
 			lecteurOrdre.lire(ligneCSV);
 		    }
 		    else if (!isEmptyLigne(ligneCSV))
-			throw new ServiceException(CodeIncident.INVALIDE_LIGNE_FORMAT, "La ligne \""+ligneCSV+"\" est invalide.");
+			throw new ServiceException(CodeIncident.INVALIDE_LIGNE_FORMAT, "FATAL00108 : Il n'y a aucune autre section que les sections '01', '02', '03', '04', '05', '06', et '07'.");
 		}
 		catch(ServiceException e) {
-		    if (aSet.add(e.getCode()+" : "+e.getMessage())) {
-			logger.error("LIGNE NUMERO "+ligneNumber+" : "+e.getCode()+" : "+e.getMessage());
-			fw.write("LIGNE NUMERO "+ligneNumber+" : "+e.getCode()+" : "+e.getMessage()+"\n");
-		    }
+                    String msg = e.getMessage();
+                    String code = e.getCode().toString();
+		    if (aSet.add(code+" : "+msg))
+                        logger.error("LIGNE NUMERO "+ligneNumber+" : "+code+" : "+msg);
+                    fw.write(msg+"\n");
+                    String ligneCSVTxt = "";
+                    if (ligneCSV != null)
+                        for (int i = 0; i < ligneCSV.length; i++) {
+                            if (i != 0)
+                                ligneCSVTxt += ";";
+                           ligneCSVTxt += ligneCSV[i];
+                        }
+                    fw.write("             Ligne "+ligneNumber+" : "+ligneCSVTxt+"\n");
+                    if (msg.startsWith("FATAL")) {
+                        fw.flush();
+                        fw.close();
+                        throw e;
+                    }
 		}
+
 		ligneCSV = lecteur.readNext();
 	    }
 	    lecteur.close();
+            try {
+                lecteurOrdre.completion();
+            }
+            catch(ServiceException e) {
+                String msg = e.getMessage();
+                String code = e.getCode().toString();
+                if (aSet.add(code+" : "+msg))
+                    logger.error("LIGNE NUMERO "+ligneNumber+" : "+code+" : "+msg);
+                fw.write(msg+"\n");
+                if (msg.startsWith("FATAL")) {
+                    fw.flush();
+                    fw.close();
+                    throw e;
+                }
+            }
 	}
 	catch (FileNotFoundException e) {
-	    e.printStackTrace();
 	    throw new ServiceException(CodeIncident.FILE_NOT_FOUND, "Le fichier \""+chemin+"\" est introuvable.");
 	}
 	catch (ServiceException e) {
 	    throw new ServiceException(e.getCode(), "LIGNE NUMERO "+ligneNumber+" : "+e.getMessage());
 	}
 	catch(Exception e) {
+            //e.printStackTrace();
 	    throw new ServiceException(CodeIncident.DONNEE_INVALIDE, "Echec initialisation", e);
 	}
 	finally {
@@ -552,7 +360,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
     
     private boolean isEmptyLigne(String[] ligneCSV) {
 	if (ligneCSV == null)
-	    return true;
+            return true;
 	if (ligneCSV.length == 0)
 	    return true;
 	for (int i = 0; i < ligneCSV.length; i++)
@@ -646,6 +454,11 @@ public class LecteurPrincipal implements ILecteurPrincipal {
     
     public void setLogFileName(String logFileName) {
 	this.logFileName = logFileName;
+    }
+
+    @Override
+    public String getLogFileName() {
+        return logFileName;
     }
     
     public void setLecteurOrdre(ILecteurOrdre lecteurOrdre) {

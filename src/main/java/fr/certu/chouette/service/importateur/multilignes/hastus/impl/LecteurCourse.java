@@ -1,9 +1,12 @@
 package fr.certu.chouette.service.importateur.multilignes.hastus.impl;
 
+import chouette.schema.types.TransportModeNameType;
 import fr.certu.chouette.modele.Course;
+import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
+import fr.certu.chouette.modele.Mission;
+import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.TableauMarche;
-import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurCourse;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
@@ -18,142 +21,137 @@ import java.util.Map;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
 
-public class LecteurCourse implements ILecteurCourse {
+public class LecteurCourse extends Lecteur implements ILecteurCourse {
     
     private static final Logger                            logger                  = Logger.getLogger(LecteurCourse.class);
-    private              int                               counter;
-    private              IIdentificationManager            identificationManager;  // 
-    private              String                            cleCode;                // "05"
-    private              String                            hastusCode;             // "HastusTUR"
-    private              String                            special;                // "SPECIAL"
-    private              String                            space;                  // "SPACE"
     private              Map<String, Ligne>                ligneParRegistration;   /// Ligne par registration (LecteurLigne)
+    private              Map<String, PositionGeographique> zones;                  /// PositionGeographique (non arrêt physique) par registrationNumber
+    private              Map<String, Itineraire>           itineraireParNumber;    /// Itineraire par number (<Ligne.registrationNumber>-<integer>)
     private              Map<Course, Ligne>                ligneParCourse;         /// Ligne par Course
-    private              Map<String, Course>               courseParNom;           /// 
+    private              Map<String, Course>               courseParNumber;        ///
     private              Map<String, TableauMarche>        tableauMarcheParValeur; /// 
-    private              Map<Ligne,List<TableauMarche>>    tableauxMarchesParLigne;/// 
+    private              Map<Ligne,List<TableauMarche>>    tableauxMarchesParLigne;///
     private static final SimpleDateFormat                  sdf1                    = new SimpleDateFormat("ddMMyy");
     private static final SimpleDateFormat                  sdf2                    = new SimpleDateFormat("dd/MM/yyyy");
     private static final SimpleDateFormat                  sdf3                    = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Override
+    public void reinit() {
+	ligneParCourse          = new HashMap<Course, Ligne>();
+	tableauMarcheParValeur  = new HashMap<String, TableauMarche>();
+	courseParNumber         = new HashMap<String, Course>();
+	tableauxMarchesParLigne = new HashMap<Ligne, List<TableauMarche>>();
+    }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length == 0))
 	    return false;
-	return ligneCSV[0].equals(getCleCode());
+        if (ligneCSV[0] == null)
+            return false;
+	return ligneCSV[0].trim().equals(getCleCode());
     }
     
+    @Override
     public void lire(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length == 0))
 	    return;
-	if (ligneCSV.length != 15)
-	    throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_COURSE, "La longeur des lignes dans \"Course\" est 15 : "+ligneCSV.length);
-	logger.debug("CREATION DE COURSES "+ligneCSV[1].trim());
-	Course course = new Course();
-	course.setObjectVersion(1);
-	course.setCreationTime(new Date(System.currentTimeMillis()));
-	String ligneRegistration = "";
-	if ((ligneCSV[13] != null) && (ligneCSV[13].trim().length() > 0) && (ligneCSV[14] != null) && (ligneCSV[14].trim().length() > 0)) {
-	    course.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "VehicleJourney", toTrident(ligneCSV[14].trim()+"-"+ligneCSV[13].trim())));
-	    course.setPublishedJourneyName(ligneCSV[14].trim()+"-"+ligneCSV[13].trim());
-	    course.setComment("Course n° "+ligneCSV[13].trim()+" du parcours "+ligneCSV[14].trim());
-	    courseParNom.put(ligneCSV[14].trim()+"-"+ligneCSV[13].trim(), course);
-	    int index = ligneCSV[14].trim().lastIndexOf('-');
-	    if (index <= 0)
-		throw new ServiceException(CodeIncident.INVALIDE_NAME_COURSE, "Le \"Nom\" de la \"Course\" doit contenir \"-\" : "+ligneCSV[14].trim());
-	    ligneRegistration = ligneCSV[14].trim().substring(0, index);
-	    if (ligneParRegistration.get(ligneRegistration) == null)
-		throw new ServiceException(CodeIncident.INVALIDE_NAME_COURSE, "Le \"Nom\" de la \"Course\" doit commencer par le nom d'une ligne suivi de \"-\" : "+ligneCSV[14].trim());
-	    ligneParCourse.put(course, ligneParRegistration.get(ligneRegistration));
-	    if (tableauxMarchesParLigne.get(ligneParRegistration.get(ligneRegistration)) == null)
-		tableauxMarchesParLigne.put(ligneParRegistration.get(ligneRegistration), new ArrayList<TableauMarche>());
-	    try {
-		int courseNumber1 = Integer.parseInt(ligneCSV[14].trim().substring(index+1));
-		int courseNumber2 = Integer.parseInt(ligneCSV[13].trim());
-		course.setNumber(courseNumber1*courseNumber2);
-	    }
-	    catch(NumberFormatException e) {
-		throw new ServiceException(CodeIncident.INVALIDE_NAME_COURSE, "Le \"Nom\" de la \"Course\" doit être de la forme <ligne registration number>-<course number> : "+ligneCSV[14].trim()+"-"+ligneCSV[13].trim());
-	    }
-	}
-	else
-	    throw new ServiceException(CodeIncident.NULL_NAME_COURSE, "Le \"Nom\" de la \"Course\" ne peut être null.");
+	if (ligneCSV.length != 18)
+	    throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_COURSE, "FATAL01005 : Mauvais nombre de champs dans la section '05'.");
+	if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() == 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_COURSE, "ERROR05001 : Le second champs de la section '05' doit etre non null.");
+	if ((ligneCSV[2] == null) || (ligneCSV[2].trim().length() == 0))
+	    throw new ServiceException(CodeIncident.NULL_LIGNE_COURSE, "ERROR05002 : Le troisieme champs de la section '05' doit etre non null.");
 	if ((ligneCSV[10] == null) || (ligneCSV[10].trim().length() == 0))
-	    throw new ServiceException(CodeIncident.NULL_JOURSVALIDITE_COURSE, "Les jours de validitês de \"TableauMarche\" ne doit pas être null.");
+	    throw new ServiceException(CodeIncident.NULL_JOURSVALIDITE_COURSE, "ERROR05003 : Le onzieme champs de la section '05' doit etre non null.");
 	if ((ligneCSV[11] == null) || (ligneCSV[11].trim().length() == 0))
-	    throw new ServiceException(CodeIncident.NULL_DATEDEBUT_COURSE, "La date de dêbut de \"TableauMarche\" ne doit pas être null.");
+	    throw new ServiceException(CodeIncident.NULL_DATEDEBUT_COURSE, "ERROR05004 : Le trezieme champs de la section '05' doit etre non null.");
 	if ((ligneCSV[12] == null) || (ligneCSV[12].trim().length() == 0))
-	    throw new ServiceException(CodeIncident.NULL_DATEFIN_COURSE, "La date de fin de \"TableauMarche\" ne doit pas être null.");
-	
+	    throw new ServiceException(CodeIncident.NULL_DATEFIN_COURSE, "ERROR05005 : Le quatorzieme champs de la section '05' doit etre non null.");
+	if ((ligneCSV[13] == null) || (ligneCSV[13].trim().length() == 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_COURSE, "ERROR05006 : Le quinzieme champs de la section '05' doit etre non null.");
+	if ((ligneCSV[14] == null) || (ligneCSV[14].trim().length() == 0))
+            throw new ServiceException(CodeIncident.NULL_ITINERAIRE_COURSE, "ERROR05007 : Le seizieme champs de la section '05' doit etre non null.");
+        int number = -1;
+        try {
+            number = Integer.parseInt(ligneCSV[13].trim());
+        }
+        catch(NumberFormatException e) {
+            throw new ServiceException(CodeIncident.NULL_NAME_COURSE, "ERROR05006 : Le quinzieme champs de la section '05' doit etre un entier.");
+        }
+        Ligne ligne = ligneParRegistration.get(ligneCSV[2].trim());
+	if (ligne == null)
+	    throw new ServiceException(CodeIncident.INVALIDE_LIGNE_COURSE, "ERROR05101 : Le troisieme champs de la section '05' doit etre egal au sixieme (ou huitieme si non nul) champs d'une ligne de la section '03'.");
+        Itineraire itineraire = itineraireParNumber.get(ligneCSV[14].trim());
+        if (itineraire == null)
+	    throw new ServiceException(CodeIncident.INVALIDE_ITINERAIRE_COURSE, "ERROR05102 : Le quinzieme champs de la section '05' doit etre egal au quatrieme champs d'une ligne de la section '04'. "+ligneCSV[14].trim());
+
+        if ((ligneCSV[3] != null) && (ligneCSV[3].trim().length() > 0))
+            ;//Numero de parcours type
+        if ((ligneCSV[4] != null) && (ligneCSV[4].trim().length() > 0))
+            if (zones.get(ligneCSV[4].trim()) == null)
+                ;//arret de depart
+        if ((ligneCSV[5] != null) && (ligneCSV[5].trim().length() > 0))
+            ;//horaire de depart de au premier arret
+        if ((ligneCSV[6] != null) && (ligneCSV[6].trim().length() > 0))
+            ;//00
+        if ((ligneCSV[7] != null) && (ligneCSV[7].trim().length() > 0))
+            ;//horaire d'arrivee de au premier arret
+        if ((ligneCSV[8] != null) && (ligneCSV[8].trim().length() > 0))
+            ;//00
+        if ((ligneCSV[9] != null) && (ligneCSV[9].trim().length() > 0))
+            if (zones.get(ligneCSV[9].trim()) == null)
+                ;//arret de depart
 	String joursValides = ligneCSV[10].trim();
 	if (!joursValides.matches("[01]+"))
-	    throw new ServiceException(CodeIncident.INVALIDE_JOURSVALIDITE_COURSE, "Le codage des jours de validitês de \"TableauMarche\" est une suite de \'0\' et de \'1\' : "+joursValides);
+	    throw new ServiceException(CodeIncident.INVALIDE_JOURSVALIDITE_COURSE, "ERROR05105 : Le onzieme champs de la section '05' est compose exclusivement de '0' et de '1'.");
+        int length = joursValides.length();
+        int firstIndex = joursValides.indexOf('1');
+        if (firstIndex < 0)
+            throw new ServiceException(CodeIncident.INVALIDE_JOURSVALIDITE_COURSE, "ERROR05105 : Le onzieme champs de la section '05' contient au moins une occurence de '1'.");
+        int lastIndex = joursValides.lastIndexOf('1');
+        String value = joursValides.substring(firstIndex, lastIndex+1);
 	Date debut = null;
 	Date fin = null;
 	try {
 	    debut = sdf2.parse(ligneCSV[11].trim());
 	}
 	catch(ParseException pe) {
-	    throw new ServiceException(CodeIncident.INVALIDE_DATEDEBUT_COURSE, "La date de début de course est invalide : "+ligneCSV[11]);
+	    throw new ServiceException(CodeIncident.INVALIDE_DATEDEBUT_COURSE, "ERROR05103 : Le douzieme champs de la section '05' doit etre une date valide au format 'jj/mm/aaa'.");
 	}
 	try {
 	    fin = sdf2.parse(ligneCSV[12].trim());
 	}
 	catch(ParseException pe) {
-	    throw new ServiceException(CodeIncident.INVALIDE_DATEFIN_COURSE, "La date de fin de course est invalide : "+ligneCSV[12]);
+	    throw new ServiceException(CodeIncident.INVALIDE_DATEFIN_COURSE, "ERROR05103 : Le treizieme champs de la section '05' doit etre une date valide au format 'jj/mm/aaa'.");
 	}
 	if (debut.after(fin))
-	    throw new ServiceException(CodeIncident.INVALIDE_DATES_COURSE, "La date de dêbut de \"TableauMarche\" doit être postêrieure ê la date de fin : "+ligneCSV[11]+" < "+ligneCSV[12]);
-	int num = 0;
-	for (int i = 0; i < joursValides.length(); i++)
-	    if (joursValides.charAt(i)=='1') {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(debut);
-		cal.add(Calendar.DAY_OF_MONTH, num);
-		debut = cal.getTime();
-		break;
-	    }
-	    else
-		num++;
-	num = 0;
-	for (int i = joursValides.length()-1; i >= 0 ; i--)
-	    if (joursValides.charAt(i)=='1') {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(fin);
-		cal.add(Calendar.DAY_OF_MONTH, num);
-		fin = cal.getTime();
-		break;
-	    }
-	    else
-		num--;
-	String value = null;
-	num = 0;
-	for (int i = 0; i < joursValides.length(); i++)
-	    if (joursValides.charAt(i) == '1') {
-		if (value == null)
-		    value = "1";
-		else {
-		    for (int j = 0; j < num; j++)
-			value += "0";
-		    value += "1";
-		}
-		num = 0;
-	    }
-	    else
-		num++;
-	if (value == null)
-	    value = "0";
-	BigInteger bigInt = new BigInteger(value, 2);
-	String key = sdf1.format(debut)+bigInt.toString()+sdf1.format(fin);
-	TableauMarche tableauMarche = tableauMarcheParValeur.get(key);
+	    throw new ServiceException(CodeIncident.INVALIDE_DATES_COURSE, "ERROR05104 : Le douzieme champs de la section '05' doit etre une date posterieure a la date du treizieme champs.");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(debut);
+        cal.add(Calendar.DAY_OF_YEAR, firstIndex);
+        debut = cal.getTime();
+        cal = Calendar.getInstance();
+        cal.setTime(fin);
+        cal.add(Calendar.DAY_OF_YEAR,  (lastIndex+1)-length);
+        fin = cal.getTime();
+        int len1 = value.length();
+        int len2 = numberOfDaysBetween(debut, fin);
+        if (len1 != len2)
+	    throw new ServiceException(CodeIncident.INVALIDE_DATES_COURSE, "ERROR05105 : Le onzieme champs de la section '05' doit etre de longueur egal au nombre de jours entre la date douzieme champs et la date du treizieme champs. "+len1+" != "+len2);
+
+        BigInteger bigInt = new BigInteger(value, 2);
+	String key = sdf1.format(debut)+bigInt.toString(10)+sdf1.format(fin);
+        TableauMarche tableauMarche = tableauMarcheParValeur.get(key);
 	if (tableauMarche == null) {
 	    tableauMarche = new TableauMarche();
 	    tableauMarcheParValeur.put(key, tableauMarche);
 	    tableauMarche.setObjectVersion(1);
 	    tableauMarche.setCreationTime(new Date(System.currentTimeMillis()));
-	    tableauMarche.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Timetable", key));
+	    tableauMarche.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "Timetable", key));
 	    tableauMarche.setComment("FROM "+sdf3.format(debut)+" TO "+sdf3.format(fin));
 	    tableauMarche.ajoutDate(debut);
-	    Calendar cal = Calendar.getInstance();
+            cal = Calendar.getInstance();
 	    cal.setTime(debut);
 	    for (int i = 1; i < value.length(); i++) {
 		cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -162,159 +160,188 @@ public class LecteurCourse implements ILecteurCourse {
 		    tableauMarche.ajoutDate(aDate);
 	    }
 	}
-	/*
-	String joursValides = ligneCSV[10].trim();
-	if (!joursValides.matches("[01]+"))
-	    throw new ServiceException(CodeIncident.INVALIDE_JOURSVALIDITE_COURSE, "Le codage des jours de validitês de \"TableauMarche\" est une suite de \'0\' et de \'1\' : "+joursValides);
-	BigInteger bigInt = new BigInteger(joursValides, 2);
-	Date debut = null;
-	Date fin = null;
-	try {
-	    debut = sdf2.parse(ligneCSV[11].trim());
-	}
-	catch(ParseException pe) {
-	    throw new ServiceException(CodeIncident.INVALIDE_DATEDEBUT_COURSE, "La date de début de course est invalide : "+ligneCSV[11]);
-	}
-	try {
-	    fin = sdf2.parse(ligneCSV[12].trim());
-	}
-	catch(ParseException pe) {
-	    throw new ServiceException(CodeIncident.INVALIDE_DATEFIN_COURSE, "La date de fin de course est invalide : "+ligneCSV[12]);
-	}
-	if (debut.after(fin))
-	    throw new ServiceException(CodeIncident.INVALIDE_DATES_COURSE, "La date de dêbut de \"TableauMarche\" doit être postêrieure ê la date de fin : "+ligneCSV[11]+" < "+ligneCSV[12]);
-	String key = sdf1.format(debut)+bigInt.toString()+sdf1.format(fin);
-	TableauMarche tableauMarche = tableauMarcheParValeur.get(key);
-	if (tableauMarche == null) {
-	    long numberOfDays = (long)1 + (fin.getTime()/((long)24*(long)60*(long)60*(long)1000) - debut.getTime()/((long)24*(long)60*(long)60*(long)1000));
-	    if (joursValides.length() != (int)numberOfDays)
-		throw new ServiceException(CodeIncident.INVALIDE_DATESJOURSVALIDITE_COURSE, "Le champs jours valides ("+joursValides+") n'est pas conforme aux dates de debut ("+ligneCSV[11].trim()+") est de fin ("+ligneCSV[12].trim()+") : "+(int)numberOfDays+" jours.");
-	    long time = debut.getTime();
-	    Date first = null;
-	    Date last = null;
-	    String value = null;
-	    tableauMarche = new TableauMarche();
-	    for (int i = 0; i < numberOfDays; i++) {
-		Date date = new Date(time);
-		if (joursValides.charAt(i) == '1') {
-		    if (first == null) {
-			first = new Date(time);
-			value = "1";
-		    }
-		    last = new Date(time);
-		    tableauMarche.ajoutDate(date);
-		}
-		if (value != null)
-		    value += joursValides.charAt(i);
-		time += (long)24*60*60*1000;
-	    }
-	    if (value == null)
-		return; // TM vide
-	    tableauMarche.setObjectVersion(1);
-	    tableauMarche.setCreationTime(new Date(System.currentTimeMillis()));
-	    tableauMarcheParValeur.put(key, tableauMarche);
-	    int index = value.length()-1;
-	    while (value.charAt(index) == '0') {
-		value = value.substring(0, index);
-		index = value.length()-1;
-	    }
-	    BigInteger bigInt2 = new BigInteger(value, 2);
-	    String firstDate = sdf1.format(first);
-	    String lastDate = sdf1.format(last);
-	    String key2 = firstDate+bigInt2.toString()+lastDate;
-	    tableauMarche.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Timetable", key2));
-	    tableauMarche.setComment("FROM "+sdf3.format(first)+" TO "+sdf3.format(last));
-	}
-	*/
-	tableauMarche.addVehicleJourneyId(course.getObjectId());
-	if (!tableauxMarchesParLigne.get(ligneParRegistration.get(ligneRegistration)).contains(tableauMarche))
-	    tableauxMarchesParLigne.get(ligneParRegistration.get(ligneRegistration)).add(tableauMarche);
+
+        logger.debug("CREATION DE COURSES "+ligneCSV[1].trim()+" : "+ligneCSV[13].trim()+" ("+ligneCSV[14].trim()+").");
+        Course course = new Course();
+        course.setNumber(number);
+        course.setPublishedJourneyName(ligneCSV[1].trim());
+        course.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "VehicleJourney", toTrident(ligneCSV[1].trim()+"-"+ligneCSV[14].trim()+"-"+ligneCSV[13].trim())));
+        course.setObjectVersion(1);
+        course.setCreationTime(new Date(System.currentTimeMillis()));
+        boolean invalideTransportMode = false;
+        course.setTransportMode(ligne.getTransportModeName());
+        if ((ligneCSV[15] == null) || (ligneCSV[15].trim().length() <= 0))
+            invalideTransportMode = true;
+        else if(ligneCSV[15].trim().equals("Autocar"))
+            course.setTransportMode(TransportModeNameType.COACH);
+        else if(ligneCSV[15].trim().equals("Avion"))
+            course.setTransportMode(TransportModeNameType.AIR);
+        else if(ligneCSV[15].trim().equals("Bac"))
+            course.setTransportMode(TransportModeNameType.WATERBORNE);
+        else if(ligneCSV[15].trim().equals("Bus"))
+            course.setTransportMode(TransportModeNameType.BUS);
+        else if(ligneCSV[15].trim().equals("Ferry"))
+            course.setTransportMode(TransportModeNameType.FERRY);
+        else if(ligneCSV[15].trim().equals("Marche à pied"))
+            course.setTransportMode(TransportModeNameType.WALK);
+        else if(ligneCSV[15].trim().equals("Métro"))
+            course.setTransportMode(TransportModeNameType.METRO);
+        else if(ligneCSV[15].trim().equals("Navette"))
+            course.setTransportMode(TransportModeNameType.SHUTTLE);
+        else if(ligneCSV[15].trim().equals("RER"))
+            course.setTransportMode(TransportModeNameType.LOCALTRAIN);
+        else if(ligneCSV[15].trim().equals("TAXI"))
+            course.setTransportMode(TransportModeNameType.TAXI);
+        else if(ligneCSV[15].trim().equals("TER"))
+            course.setTransportMode(TransportModeNameType.LOCALTRAIN);
+        else if(ligneCSV[15].trim().equals("Train"))
+            course.setTransportMode(TransportModeNameType.TRAIN);
+        else if(ligneCSV[15].trim().equals("Train grande ligne"))
+            course.setTransportMode(TransportModeNameType.LONGDISTANCETRAIN);
+        else if(ligneCSV[15].trim().equals("Tramway"))
+            course.setTransportMode(TransportModeNameType.TRAMWAY);
+        else if(ligneCSV[15].trim().equals("Trolleybus"))
+            course.setTransportMode(TransportModeNameType.TROLLEYBUS);
+        else if(ligneCSV[15].trim().equals("Voiture particulière"))
+            course.setTransportMode(TransportModeNameType.PRIVATEVEHICLE);
+        else if(ligneCSV[15].trim().equals("Autre"))
+            course.setTransportMode(TransportModeNameType.OTHER);
+        else
+            invalideTransportMode = true;
+        if ((ligneCSV[16] != null) && (ligneCSV[16].trim().length() > 0))
+            if ("TAD".equals(ligneCSV[16].trim()))
+                course.setVehicleTypeIdentifier("TAD");
+        if ((ligneCSV[17] != null) && (ligneCSV[17].trim().length() > 0))
+            course.setComment(ligneCSV[17].trim());
+        course.setRouteId(itineraire.getObjectId());
+        addCourse(course, ligne, tableauMarche);
+        addCourseToTableauMarche(course, ligne, tableauMarche);
+        if (invalideTransportMode)
+            throw new ServiceException(CodeIncident.INVALIDE_TRANSPORTMODE_LIGNE, "ERROR05201 : Le seizieme champs de la section '05' doit etre parmi \"Autocar\", \"Avion\", \"Bac\", \"Bus\", \"Ferry\", \"Marche à pied\", \"Métro\", \"Navette\", \"RER\", \"Taxi\", \"TER\", \"Train\", \"Train grande ligne\", \"Tramway\", \"Trolleybus\", \"Voiture particulière\", \"Vélo\", \"Autre\".");
     }
-    
-    private String toTrident(String str) {
-	if ((str == null) || (str.length() == 0))
-	    return "";
-	String result = "";
-	for (int i = 0; i < str.length(); i++)
-	    if (('a' <= str.charAt(i)) && (str.charAt(i) <= 'z') ||
-		('A' <= str.charAt(i)) && (str.charAt(i) <= 'Z') ||
-		('0' <= str.charAt(i)) && (str.charAt(i) <= '9'))
-		result += str.charAt(i);
-	    else if ((str.charAt(i) == ' ') || (str.charAt(i) == '\t'))
-		result += space;
-	    else
-		result += special;
-	return result;
+
+    private void addCourse(Course course, Ligne ligne, TableauMarche tableauMarche) {
+        Course tmpCourse = courseParNumber.get(""+course.getNumber());
+        if (tmpCourse != null)
+            if (theSameCourse(course, tmpCourse, ligne))
+                return;
+            else
+                throw new ServiceException(CodeIncident.DUPLICATE_NAME_ITINERAIRE, "ERROR05202 : Deux lignes quelconques de la section '05' sont soit identiques soit avec deux deuxièmes champs distincts.");
+        courseParNumber.put(""+course.getNumber(), course);
+        ligneParCourse.put(course, ligne);
     }
-    
-    public void reinit() {
-	ligneParCourse = new HashMap<Course, Ligne>();
-	tableauMarcheParValeur = new HashMap<String, TableauMarche>();
-	courseParNom = new HashMap<String, Course>();
-	tableauxMarchesParLigne = new HashMap<Ligne, List<TableauMarche>>();
+
+    private void addCourseToTableauMarche(Course course, Ligne ligne, TableauMarche tableauMarche) {
+        for (int i = 0; i < tableauMarche.getVehicleJourneyIdCount(); i++)
+            if (tableauMarche.getVehicleJourneyId(i).equals(course.getObjectId()))
+                return;
+        if (tableauxMarchesParLigne.get(ligne) == null)
+            tableauxMarchesParLigne.put(ligne, new ArrayList<TableauMarche>());
+        tableauMarche.addVehicleJourneyId(course.getObjectId());
+        if (!tableauxMarchesParLigne.get(ligne).contains(tableauMarche))
+            tableauxMarchesParLigne.get(ligne).add(tableauMarche);
     }
-    
-    public IIdentificationManager getIdentificationManager() {
-	return identificationManager;
+
+    private boolean theSameCourse(Course course1, Course course2, Ligne ligne) {
+        if ((course1 == null) || (course2 == null))
+            if ((course1 == null) && (course2 == null))
+                return true;
+            else
+                return false;
+        
+        if (course1.getNumber() != course2.getNumber())
+            return false;
+
+        if (((course1.getPublishedJourneyName() == null) || (course2.getPublishedJourneyName() == null)) &&
+            ((course1.getPublishedJourneyName() != null) || (course2.getPublishedJourneyName() != null)))
+            return false;
+        if (course1.getPublishedJourneyName() != null)
+            if (!course1.getPublishedJourneyName().equals(course2.getPublishedJourneyName()))
+                return false;
+
+        if (((course1.getVehicleTypeIdentifier() == null) || (course2.getVehicleTypeIdentifier() == null)) &&
+            ((course1.getVehicleTypeIdentifier() != null) || (course2.getVehicleTypeIdentifier() != null)))
+            return false;
+        if (course1.getVehicleTypeIdentifier() != null)
+            if (!course1.getVehicleTypeIdentifier().equals(course2.getVehicleTypeIdentifier()))
+                return false;
+
+        if (((course1.getRouteId() == null) || (course2.getRouteId() == null)) &&
+            ((course1.getRouteId() != null) || (course2.getRouteId() != null)))
+            return false;
+        if (course1.getRouteId() != null)
+            if (!course1.getRouteId().equals(course2.getRouteId()))
+                return false;
+
+        if (((course1.getComment() == null) || (course2.getComment() == null)) &&
+            ((course1.getComment() != null) || (course2.getComment() != null)))
+            return false;
+        if (course1.getComment() != null)
+            if (!course1.getComment().equals(course2.getComment()))
+                return false;
+
+        if (((course1.getTransportMode() == null) || (course2.getTransportMode() == null)) &&
+            ((course1.getTransportMode() != null) || (course2.getTransportMode() != null)))
+            return false;
+        if (course1.getTransportMode() != null)
+            if (course1.getTransportMode().compareTo(course2.getTransportMode()) != 0)
+                return false;
+
+        if (ligneParCourse.get(course2) != ligne)
+            return false;
+
+        return true;
     }
-    
-    public void setIdentificationManager(IIdentificationManager identificationManager) {
-	this.identificationManager = identificationManager;
+
+    private int numberOfDaysBetween(Date debut, Date fin) {
+        int number = -1;
+        if ((debut == null) || (fin == null))
+            return number;
+        if (debut.after(fin))
+            return number;
+        number++;//TODO . Probleme du nombre de jours entre deux dates
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(debut);
+        Date tmp = cal.getTime();
+        while (!tmp.after(fin)) {
+            number++;
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            tmp = cal.getTime();
+        }
+        return number;
     }
-    
-    public String getCleCode() {
-	return cleCode;
-    }
-    
-    public void setCleCode(String cleCode) {
-	this.cleCode = cleCode;
-    }
-    
-    public int getCounter() {
-	return counter;
-    }
-    
-    public void setCounter(int counter) {
-	this.counter = counter;
-    }
-    
-    public String getHastusCode() {
-	return hastusCode;
-    }
-    
-    public void setHastusCode(String hastusCode) {
-	this.hastusCode = hastusCode;
-    }
-    
+
+    @Override
     public void setLigneParRegistration(Map<String, Ligne> ligneParRegistration) {
-	this.ligneParRegistration = ligneParRegistration;
+        this.ligneParRegistration = ligneParRegistration;
+    }
+
+    @Override
+    public void setZones(Map<String, PositionGeographique> zones) {
+        this.zones = zones;
+    }
+
+    @Override
+    public void setItineraireParNumber(Map<String, Itineraire> itineraireParNumber) {
+	this.itineraireParNumber = itineraireParNumber;
     }
     
+    @Override
     public Map<Course, Ligne> getLigneParCourse() {
-	return ligneParCourse;
+        return ligneParCourse;
+    }
+
+    @Override
+    public Map<String, Course> getCourseParNumber() {
+        return courseParNumber;
     }
     
-    public Map<String, Course> getCourseParNom() {
-	return courseParNom;
-    }
-    
-    public String getSpecial() {
-	return special;
-    }
-    
-    public void setSpecial(String special) {
-	this.special = special;
-    }
-    
-    public String getSpace() {
-	return space;
-    }
-    
-    public void setSpace(String space) {
-	this.space = space;
-    }
-    
+    @Override
     public List<TableauMarche> getTableauxMarches(Ligne ligne) {
-	return tableauxMarchesParLigne.get(ligne);
+        return tableauxMarchesParLigne.get(ligne);
+    }
+
+    @Override
+    public void completion() {
     }
 }

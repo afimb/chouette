@@ -4,127 +4,186 @@ import chouette.schema.types.TransportModeNameType;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.Transporteur;
-import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurLigne;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
-public class LecteurLigne implements ILecteurLigne {
+public class LecteurLigne extends Lecteur implements ILecteurLigne {
     
     private static final Logger                            logger                 = Logger.getLogger(LecteurLigne.class);
-    private              int                               counter;
-    private              IIdentificationManager            identificationManager; // 
-    private              String                            cleCode;               // "03"
     private              String                            cleBus;                // "BUS"
-    private              String                            hastusCode;            // "HastusTUR"
-    private              String                            special;               // "SPECIAL"
-    private              String                            space;                 // "SPACE"
     private              Reseau                            leReseau;
     private              Transporteur                      leTransporteur;
     private              Map<String, Ligne>                lignesParRegistration; /// Ligne par registration
+
+    @Override
+    public void reinit() {
+        lignesParRegistration = new HashMap<String, Ligne>();
+    }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length == 0))
 	    return false;
-	return ligneCSV[0].equals(getCleCode());
+        if (ligneCSV[0] == null)
+            return false;
+	return ligneCSV[0].trim().equals(getCleCode());
     }
     
+    @Override
     public void lire(String[] ligneCSV) {
-	if ((ligneCSV == null) || (ligneCSV.length == 0))
-	    return;
-	if (ligneCSV.length != 7)
-	    throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_LIGNE, "La longeur des lignes dans \"Ligne\" est 7 : "+ligneCSV.length);
+        if ((ligneCSV == null) || (ligneCSV.length == 0))
+            return;
+	if (ligneCSV.length != 8)
+	    throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_LIGNE, "FATAL01003 : Mauvais nombre de champs dans la section '03'.");
 	if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_RESEAU_LIGNE, "Pas de \"Reseau\" pour cette \"Ligne\".");
-	if (leReseau == null) {
+	    throw new ServiceException(CodeIncident.NULL_RESEAU_LIGNE, "ERROR03001 : Le second champs de la section '03' doit etre non null.");
+	if ((ligneCSV[2] == null) || (ligneCSV[2].trim().length() <= 0))
+	    throw new ServiceException(CodeIncident.NULL_TRANSPORTEUR_LIGNE, "ERROR03002 : Le troisieme champs de la section '03' doit etre non null.");
+	if ((ligneCSV[3] == null) || (ligneCSV[3].trim().length() <= 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_LINE, "ERROR03003 : Le quatrieme champs de la section '03' doit etre non null.");
+	if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() <= 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_LINE, "ERROR03004 : Le sixieme champs de la section '03' doit etre non null.");
+
+        if (leReseau == null) {
 	    logger.debug("CREATION DU RESEAU "+ligneCSV[1].trim());
 	    leReseau = new Reseau();
 	    leReseau.setName(ligneCSV[1].trim());
-	    leReseau.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "PtNetwork", toTrident(ligneCSV[1].trim())));
+	    leReseau.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "PtNetwork", toTrident(ligneCSV[1].trim())));
 	    leReseau.setObjectVersion(1);
 	    leReseau.setCreationTime(new Date(System.currentTimeMillis()));
-	    leReseau.setRegistrationNumber("HASTUS-"+leReseau.getName());
+	    leReseau.setRegistrationNumber(leReseau.getName());
 	    leReseau.setVersionDate(Calendar.getInstance().getTime());
 	}
-	if ((ligneCSV[2] == null) || (ligneCSV[2].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_TRANSPORTEUR_LIGNE, "Pas de \"Transporteur\" pour cette \"Ligne\".");
+        else
+            if (!ligneCSV[1].trim().equals(leReseau.getName()))
+                throw new ServiceException(CodeIncident.DUPLICATE_NAME_RESEAU, "FATAL01013 : Tous les seconds champs de la section '03' doivent etre egaux.");
 	if (leTransporteur == null) {
 	    logger.debug("CREATION DU TRANSPORTEUR "+ligneCSV[2].trim());
 	    leTransporteur = new Transporteur();
 	    leTransporteur.setName(ligneCSV[2].trim());
-	    leTransporteur.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Company", toTrident(ligneCSV[2].trim())));
+	    leTransporteur.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "Company", toTrident(ligneCSV[2].trim())));
 	    leTransporteur.setObjectVersion(1);
 	    leTransporteur.setCreationTime(new Date(System.currentTimeMillis()));
-	    leTransporteur.setRegistrationNumber("HASTUS-"+leTransporteur.getName());
+	    leTransporteur.setRegistrationNumber(leTransporteur.getName());
 	}
-	if ((ligneCSV[3] == null) || (ligneCSV[3].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_NAME_LINE, "Cette \"Ligne\" ne possède de nom.");
+        else
+            if (!ligneCSV[2].trim().equals(leTransporteur.getName()))
+                throw new ServiceException(CodeIncident.DUPLICATE_NAME_TRANSPORTEUR, "FATAL01023 : Tous les troisiemes champs de la section '03' doivent etre egaux.");
+
 	logger.debug("CREATION DE LIGNE "+ligneCSV[3].trim());
-	Ligne ligne = new Ligne();
-	ligne.setPublishedName(ligneCSV[3].trim());
+        Ligne ligne = new Ligne();
+        ligne.setName(ligneCSV[3].trim());
 	ligne.setObjectVersion(1);
 	ligne.setCreationTime(new Date(System.currentTimeMillis()));
-	if ((ligneCSV[4] == null) || (ligneCSV[4].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_REGISTRATION_LINE, "Pas de \"Nom Publique\" pour cette \"Ligne\".");
-	ligne.setName(ligneCSV[4].trim());
-	if ((ligneCSV[6] == null) || (ligneCSV[6].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_REGISTRATION_LINE, "Pas de \"Registration\" pour cette \"Ligne\".");
-	ligne.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "Line", toTrident(ligneCSV[6].trim())));
-	ligne.setRegistrationNumber(ligneCSV[6].trim());
-	ligne.setNumber(ligneCSV[6].trim());
-	if (lignesParRegistration.get(ligne.getRegistrationNumber()) != null)
-	    throw new ServiceException(CodeIncident.DUPLICATE_REGISTRATION_LINE, "Il existe déjà une \"Ligne\" avec ce \"RegistrationNumber\" : "+ligne.getRegistrationNumber());
+	if ((ligneCSV[4] != null) && (ligneCSV[4].trim().length() > 0))
+            ligne.setPublishedName(ligneCSV[4].trim());
+        else
+            ligne.setPublishedName(ligne.getName());
+	ligne.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "Line", toTrident(ligneCSV[5].trim())));
+	ligne.setRegistrationNumber(ligneCSV[5].trim());
+        if ((ligneCSV[7] != null) && (ligneCSV[7].trim().length() > 0))
+            ligne.setNumber(ligneCSV[7].trim());
+        else
+            ligne.setNumber(ligneCSV[5].trim());
+        boolean invalideTransportMode = false;
+        ligne.setTransportModeName(TransportModeNameType.BUS);
+        if ((ligneCSV[6] == null) || (ligneCSV[6].trim().length() <= 0))
+            invalideTransportMode = true;
+        else if(ligneCSV[6].trim().equals("Autocar"))
+            ligne.setTransportModeName(TransportModeNameType.COACH);
+        else if(ligneCSV[6].trim().equals("Avion"))
+            ligne.setTransportModeName(TransportModeNameType.AIR);
+        else if(ligneCSV[6].trim().equals("Bac"))
+            ligne.setTransportModeName(TransportModeNameType.WATERBORNE);
+        else if(ligneCSV[6].trim().equals("Bus"))
+            ligne.setTransportModeName(TransportModeNameType.BUS);
+        else if(ligneCSV[6].trim().equals("Ferry"))
+            ligne.setTransportModeName(TransportModeNameType.FERRY);
+        else if(ligneCSV[6].trim().equals("Marche à pied"))
+            ligne.setTransportModeName(TransportModeNameType.WALK);
+        else if(ligneCSV[6].trim().equals("Métro"))
+            ligne.setTransportModeName(TransportModeNameType.METRO);
+        else if(ligneCSV[6].trim().equals("Navette"))
+            ligne.setTransportModeName(TransportModeNameType.SHUTTLE);
+        else if(ligneCSV[6].trim().equals("RER"))
+            ligne.setTransportModeName(TransportModeNameType.LOCALTRAIN);
+        else if(ligneCSV[6].trim().equals("TAXI"))
+            ligne.setTransportModeName(TransportModeNameType.TAXI);
+        else if(ligneCSV[6].trim().equals("TER"))
+            ligne.setTransportModeName(TransportModeNameType.LOCALTRAIN);
+        else if(ligneCSV[6].trim().equals("Train"))
+            ligne.setTransportModeName(TransportModeNameType.TRAIN);
+        else if(ligneCSV[6].trim().equals("Train grande ligne"))
+            ligne.setTransportModeName(TransportModeNameType.LONGDISTANCETRAIN);
+        else if(ligneCSV[6].trim().equals("Tramway"))
+            ligne.setTransportModeName(TransportModeNameType.TRAMWAY);
+        else if(ligneCSV[6].trim().equals("Trolleybus"))
+            ligne.setTransportModeName(TransportModeNameType.TROLLEYBUS);
+        else if(ligneCSV[6].trim().equals("Voiture particulière"))
+            ligne.setTransportModeName(TransportModeNameType.PRIVATEVEHICLE);
+        else if(ligneCSV[6].trim().equals("Autre"))
+            ligne.setTransportModeName(TransportModeNameType.OTHER);
+        else
+            invalideTransportMode = true;
+        addLigne(ligne);
+        if (invalideTransportMode)
+            throw new ServiceException(CodeIncident.INVALIDE_TRANSPORTMODE_LIGNE, "ERROR03101 : Le septieme champs de la section '03' doit etre parmi \"Autocar\", \"Avion\", \"Bac\", \"Bus\", \"Ferry\", \"Marche à pied\", \"Métro\", \"Navette\", \"RER\", \"Taxi\", \"TER\", \"Train\", \"Train grande ligne\", \"Tramway\", \"Trolleybus\", \"Voiture particulière\", \"Vélo\", \"Autre\".");
+    }
+
+    private void addLigne(Ligne ligne) {
+        Ligne tmpLigne = lignesParRegistration.get(ligne.getRegistrationNumber());
+        if (tmpLigne != null)
+            if (theSameLigne(ligne, tmpLigne))
+                return;
+            else
+                throw new ServiceException(CodeIncident.DUPLICATE_REGISTRATION_LINE, "ERROR03102 : Une autre ligne de la section '03' a le même deuxième champs que celle-ci..");
 	lignesParRegistration.put(ligne.getRegistrationNumber(), ligne);
-	if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_TRANSPORTMODE_LIGNE, "Le mode de transport d'une \"Ligne\" ne peut être null.");
-	if (!ligneCSV[5].trim().equals(getCleBus()))
-	    ;//throw new ServiceException(CodeIncident.INVALIDE_TRANSPORTMODE_LIGNE, "Le mode de transport \""+ligneCSV[5].trim()+"\" est invalide.");
-	if (ligneCSV[5].trim().toLowerCase().equals("bus") || ligneCSV[5].trim().toLowerCase().equals("autobus"))
-	    ligne.setTransportModeName(TransportModeNameType.BUS);
-	else if (ligneCSV[5].trim().toLowerCase().equals("trolley"))
-	    ligne.setTransportModeName(TransportModeNameType.TROLLEYBUS);
     }
-	
-    private String toTrident(String str) {
-	if ((str == null) || (str.length() == 0))
-	    return "";
-	String result = "";
-	for (int i = 0; i < str.length(); i++)
-	    if (('a' <= str.charAt(i)) && (str.charAt(i) <= 'z') ||
-		('A' <= str.charAt(i)) && (str.charAt(i) <= 'Z') ||
-		('0' <= str.charAt(i)) && (str.charAt(i) <= '9'))
-		result += str.charAt(i);
-	    else if ((str.charAt(i) == ' ') || (str.charAt(i) == '\t'))
-		result += space;
-	    else
-		result += special;
-	return result;
-    }
-    
-    public void reinit() {
-	lignesParRegistration = new HashMap<String, Ligne>();
-    }
-    
-    public IIdentificationManager getIdentificationManager() {
-	return identificationManager;
-    }
-    
-    public void setIdentificationManager(IIdentificationManager identificationManager) {
-	this.identificationManager = identificationManager;
-    }
-    
-    public String getCleCode() {
-	return cleCode;
-    }
-    
-    public void setCleCode(String cleCode) {
-	this.cleCode = cleCode;
+
+    private boolean theSameLigne(Ligne ligne1, Ligne ligne2) {
+        if ((ligne1 == null) || (ligne2 == null))
+            if ((ligne1 == null) && (ligne2 == null))
+                return true;
+            else
+                return false;
+        if (((ligne1.getRegistrationNumber() == null) || (ligne2.getRegistrationNumber() == null)) &&
+            ((ligne1.getRegistrationNumber() != null) || (ligne2.getRegistrationNumber() != null)))
+            return false;
+        if (ligne1.getRegistrationNumber() != null)
+            if (!ligne1.getRegistrationNumber().equals(ligne2.getRegistrationNumber()))
+                return false;
+        if (((ligne1.getName() == null) || (ligne2.getName() == null)) &&
+            ((ligne1.getName() != null) || (ligne2.getName() != null)))
+            return false;
+        if (ligne1.getName() != null)
+            if (!ligne1.getName().equals(ligne2.getName()))
+                return false;
+        if (((ligne1.getNumber() == null) || (ligne2.getNumber() == null)) &&
+            ((ligne1.getNumber() != null) || (ligne2.getNumber() != null)))
+            return false;
+        if (ligne1.getNumber() != null)
+            if (!ligne1.getNumber().equals(ligne2.getNumber()))
+                return false;
+        if (((ligne1.getPublishedName() == null) || (ligne2.getPublishedName() == null)) &&
+            ((ligne1.getPublishedName() != null) || (ligne2.getPublishedName() != null)))
+            return false;
+        if (ligne1.getPublishedName() != null)
+            if (!ligne1.getPublishedName().equals(ligne2.getPublishedName()))
+                return false;
+        if (((ligne1.getTransportModeName() == null) || (ligne2.getTransportModeName() == null)) &&
+            ((ligne1.getTransportModeName() != null) || (ligne2.getTransportModeName() != null)))
+            return false;
+        if (ligne1.getTransportModeName() != null)
+            if (ligne1.getTransportModeName().compareTo(ligne2.getTransportModeName()) != 0)
+                return false;
+        
+        return true;
     }
     
     public String getCleBus() {
@@ -135,47 +194,22 @@ public class LecteurLigne implements ILecteurLigne {
 	this.cleBus = cleBus;
     }
     
-    public int getCounter() {
-	return counter;
-    }
-    
-    public void setCounter(int counter) {
-	this.counter = counter;
-    }
-    
-    public String getHastusCode() {
-	return hastusCode;
-    }
-    
-    public void setHastusCode(String hastusCode) {
-	this.hastusCode = hastusCode;
-    }
-    
+    @Override
     public Transporteur getTransporteur() {
 	return leTransporteur;
     }
     
+    @Override
     public Reseau getReseau() {
 	return leReseau;
     }
     
+    @Override
     public Map<String, Ligne> getLigneParRegistration() {
 	return lignesParRegistration;
     }
-    
-    public String getSpecial() {
-	return special;
-    }
-    
-    public void setSpecial(String special) {
-	this.special = special;
-    }
-    
-    public String getSpace() {
-	return space;
-    }
-    
-    public void setSpace(String space) {
-	this.space = space;
+
+    @Override
+    public void completion() {
     }
 }

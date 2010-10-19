@@ -93,7 +93,7 @@
         <interceptor-ref name="alias" />
         <interceptor-ref name="servletConfig" />
         <interceptor-ref name="i18n" />
-        <interceptor-ref name="singleAction" />
+        <!-- <interceptor-ref name="singleAction" /> -->
         <interceptor-ref name="params">
           <param name="excludeParams">dojo\..*,^struts\..*</param>
         </interceptor-ref>
@@ -519,6 +519,25 @@
   </package>
 
   <!-- Import des données -->
+  <package name="uploadHastus" extends="struts" namespace="/upload">
+    <action name="importHastus" class="ImportActionBean" method="importHastus">
+      <result name="success" type="stream">
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
+        <param name="inputName">inputStream</param>
+        <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
+        <param name="contentTransferEncoding">binary</param>
+        <param name="bufferSize">4096</param>
+      </result>
+      <result name="input" type="stream">
+        <param name="contentType">text/xml; charset=ISO-8859-1</param>
+        <param name="inputName">inputStream</param>
+        <param name="contentDisposition">attachment; filename="${nomFichier}"</param>
+        <param name="contentTransferEncoding">binary</param>
+        <param name="bufferSize">4096</param>
+      </result>
+    </action>
+  </package>
+
   <package name="upload" extends="struts" namespace="/upload">
     <action name="*" class="ImportActionBean" method="{1}">
       <result name="success">/jsp/upload/import.jsp</result>

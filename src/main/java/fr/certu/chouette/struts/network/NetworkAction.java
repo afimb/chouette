@@ -31,8 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau>, Preparable
-{
+public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau>, Preparable {
 
   private static final Log log = LogFactory.getLog(NetworkAction.class);
   private Reseau model = new Reseau();
@@ -50,6 +49,10 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
 
   public void setUseGtfs(String useGtfs) {
       this.useGtfs = useGtfs;
+  }
+
+  public String getUseGtfs() {
+      return useGtfs;
   }
 
   public Long getIdReseau()
