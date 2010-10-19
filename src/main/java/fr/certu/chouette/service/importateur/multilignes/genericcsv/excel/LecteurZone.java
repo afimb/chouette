@@ -266,12 +266,12 @@ public class LecteurZone implements ILecteurZone {
 			      if (ligneCSV[1] != null)
 			      if (ligneCSV[1].trim().length() > 0)
 			      arretPhysique.setY(new BigDecimal(ligneCSV[1].trim()));*/
-			    if (ligneCSV[1] != null)
-				if (ligneCSV[1].trim().length() > 0)
-				    arretPhysique.setLatitude(new BigDecimal(ligneCSV[1].trim()));
-			    if (ligneCSV[0] != null)
-				if (ligneCSV[0].trim().length() > 0)
-				    arretPhysique.setLongitude(new BigDecimal(ligneCSV[0].trim()));
+			    if (ligneCSV[2] != null)
+				if (ligneCSV[2].trim().length() > 0)
+				    arretPhysique.setLatitude(new BigDecimal(ligneCSV[2].trim()));
+			    if (ligneCSV[3] != null)
+				if (ligneCSV[3].trim().length() > 0)
+				    arretPhysique.setLongitude(new BigDecimal(ligneCSV[3].trim()));
 			    if (ligneCSV[4] != null)
 				if (ligneCSV[4].trim().length() > 0)
 				    arretPhysique.setStreetName(ligneCSV[4].trim()); // Adresse

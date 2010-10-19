@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,15 +65,26 @@ public class ImportAction extends GeneriqueAction {
 	private              String                 useAltibus;
 	private              String                 usePegase;
 	private              IIdentificationManager identificationManager;
-	private				 IImportHorairesManager importHorairesManager;
-	private				 Long					idLigne;
+	private              IImportHorairesManager importHorairesManager;
+	private              Long                   idLigne;
 	private              String                 logFileName;
+        private              File                   logFile;
 	private              IReducteur             reducteur;
 	private              String                 baseName;
+        private              InputStream            inputStream;
 	
 	public ImportAction() {
 		super();
 	}
+
+        public void setInputStream(InputStream inputStream) {
+            this.inputStream = inputStream;
+        }
+
+        public InputStream getInputStream() throws Exception {
+            return inputStream;
+            //return new FileInputStream(logFile.getPath());
+        }
 	
 	@Override
 	public String execute() throws Exception 
@@ -206,89 +218,79 @@ public class ImportAction extends GeneriqueAction {
 		addActionMessage(getText("message.import.pegase.lines.success"));
 		return SUCCESS;
 	}
-	
-	public String importHastus() 
-	{
-		String canonicalPath = null;
-		try 
-		{
-			canonicalPath = fichier.getCanonicalPath();
-			if (incremental)
-			{
-				log.debug("IMPORT INCREMENTAL DU FICHIER : "+canonicalPath);
-			}
-			else
-			{
-				log.debug("IMPORT DU FICHIER : "+canonicalPath);
-			}
-		}
-		catch (Exception e) 
-		{
-			addActionError(getExceptionMessage(e));
-			return INPUT;
-		}
-		String newCanonicalPath = reducteur.reduire(canonicalPath, true);
-		log.debug("DECOMPRESSION VERS LE FICHIER : "+newCanonicalPath);
-		try 
-		{
-			lecteurCSVHastus.lireCheminFichier(newCanonicalPath);
-		}
-		catch (ServiceException e) 
-		{
-			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) 
-			{
-				String message = getText("import.csv.fichier.introuvable");
-				message += getExceptionMessage(e);
-				addActionError(message);
-			}
-			else 
-			{
-				List<String> args = new ArrayList<String>();
-				args.add("");
-				args.add("");
-				args.add("");
-				String message = getText("import.csv.format.ko", args.toArray(new String[0]));
-				message += getExceptionMessage(e);
-				addActionError(message);
-			}
-			return INPUT;
-		}
-		boolean echec = false;
-		List<ILectureEchange> lecturesEchange = lecteurCSVHastus.getLecturesEchange();
-		for (ILectureEchange lectureEchange : lecturesEchange) 
-		{
-			try 
-			{
-				if (!lectureEchange.getLigneRegistration().equals("SP") &&
-						!lectureEchange.getLigneRegistration().equals("88") &&
-						!lectureEchange.getLigneRegistration().equals("NAVL")) 
-				{
-					importateur.importer(false, lectureEchange, incremental);
-					String[] args = new String[1];
-			        args[0] = lectureEchange.getLigneRegistration();
-			        addActionMessage(getText("message.import.hastus.line.success", args));
-				}
-			}
-			catch(Exception e) 
-			{
-				echec = true;
-				this.addFieldError("fieldName_1", "errorMessage 1");
-				this.addFieldError("fieldName_2", "errorMessage 2");
-				
-				String[] args = new String[2];
-		        args[0] = lectureEchange.getLigneRegistration();
-		        args[1] =  getExceptionMessage(e);
-				addActionError(getText("message.import.hastus.line.failure", args));
-				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
-			}
-		}
-		if (echec)
-		{
-			return INPUT;
-		}
-		addActionMessage(getText("message.import.hastus.lines.success"));
-		return SUCCESS;
-	}
+
+        private void setLog() {
+            try {
+                inputStream = new FileInputStream("/tmp/ImportHastusNew.log");
+            }
+            catch(IOException e ) {
+            }
+        }
+        
+        public String importHastus() {
+            String canonicalPath = null;
+            try {
+                canonicalPath = fichier.getCanonicalPath();
+            }
+            catch (IOException e) {
+                addActionError(getExceptionMessage(e));
+                setLog();
+                return INPUT;
+            }
+
+            if (incremental)
+                log.debug("IMPORT INCREMENTAL DU FICHIER : "+canonicalPath);
+            else
+                log.debug("IMPORT DU FICHIER : "+canonicalPath);
+            
+            //String newCanonicalPath = reducteur.reduire(canonicalPath, true);
+            //log.debug("DECOMPRESSION VERS LE FICHIER : "+newCanonicalPath);
+            try {
+                //lecteurCSVHastus.lireCheminFichier(newCanonicalPath);
+                lecteurCSVHastus.lireCheminFichier(canonicalPath);
+            }
+            catch (Exception e) {
+                String message = "";
+                //if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode()))
+                    //message = getText("import.csv.fichier.introuvable");
+                //else
+                    message = getText("import.csv.format.ko");
+                message += " " + getExceptionMessage(e);
+                addActionError(message);
+                setLog();
+                return INPUT;
+            }
+            boolean echec = false;
+            logFileName = lecteurCSVHastus.getLogFileName();
+            logFile = new File(logFileName);
+            List<ILectureEchange> lecturesEchange = lecteurCSVHastus.getLecturesEchange();
+            for (ILectureEchange lectureEchange : lecturesEchange) {
+                try {
+                    importateur.importer(false, lectureEchange, incremental);
+                    String[] args = new String[1];
+                    args[0] = lectureEchange.getLigneRegistration();
+                    addActionMessage(getText("message.import.hastus.line.success", args));
+                }
+                //catch(ServiceException e) {
+                catch(Exception e) {
+                    echec = true;
+                    this.addFieldError("fieldName_1", "errorMessage 1");
+                    this.addFieldError("fieldName_2", "errorMessage 2");
+                    String[] args = new String[2];
+                    args[0] = lectureEchange.getLigneRegistration();
+                    args[1] =  getExceptionMessage(e);
+                    addActionError(getText("message.import.hastus.line.failure", args));
+                    log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+                }
+            }
+            if (echec) {
+                setLog();
+                return INPUT;
+            }
+            addActionMessage(getText("message.import.hastus.lines.success"));
+            setLog();
+            return SUCCESS;
+        }
 	
     public String importCSVGeneric() {
 	String canonicalPath = null;

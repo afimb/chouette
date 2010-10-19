@@ -9,5 +9,4 @@ public interface ILecteurArret extends ILecteurSpecifique {
 	public Map<String, PositionGeographique> getArretsPhysiques();
 	public Map<String, PositionGeographique> getArretsPhysiquesParObjectId();
 	public Map<String, String> getObjectIdParParentObjectId();
-	public void completion();
 }

@@ -360,4 +360,9 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 	public void setLecteurArret(ILecteurArret lecteurArret) {
 		this.lecteurArret = lecteurArret;
 	}
+
+    @Override
+    public String getLogFileName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

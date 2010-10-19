@@ -3,212 +3,180 @@ package fr.certu.chouette.service.importateur.multilignes.hastus.impl;
 import chouette.schema.types.PTDirectionType;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
+import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurItineraire;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
 import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import org.apache.log4j.Logger;
 
-public class LecteurItineraire implements ILecteurItineraire {
+public class LecteurItineraire extends Lecteur implements ILecteurItineraire {
     
     private static final Logger                            logger                 = Logger.getLogger(LecteurItineraire.class);
-    private              int                               counter;
-    private              IIdentificationManager            identificationManager; // 
-    private              String                            cleCode;               // "04"
     private              String                            cleAller;              // "Aller"
     private              String                            cleRetour;             // "Retour"
-    private              String                            hastusCode;            // "HastusTUR"
-    private              String                            special;               // "SPECIAL"
-    private              String                            space;                 // "SPACE"
     private              Map<String, Ligne>                ligneParRegistration;  /// Ligne par registration (LecteurLigne)
-    private              Set<String>                       itineraireNames;       /// Ensemble des name des Itineraire (<Ligne.registrationNumber>-<zone.registrationNumber>-<zone.registrationNumber>)
-    private              Map<String, Itineraire>           itineraireParNom;      /// Itineraire par number (<Ligne.registrationNumber>-<integer>)
+    private              Map<String, Itineraire>           itineraireParNames;    /// Ensemble des name des Itineraire (<Ligne.registrationNumber>-<zone.registrationNumber>-<zone.registrationNumber>)
+    private              Map<String, Itineraire>           itineraireParNumber;   /// Itineraire par number (<Ligne.registrationNumber>-<integer>)
     private              Map<Itineraire, Ligne>            ligneParItineraire;    /// Ligne par Itineraire
     private              Map<String, PositionGeographique> zones;                 /// PositionGeographique (non arrêt physique) par name | registrationNumber(LecteurZone)
-    private              Set<String>                       messages;
-    
+    private              Map<String, Mission>              missionParNom;         ///
+
+    @Override
+    public void reinit() {
+        ligneParItineraire  = new HashMap<Itineraire, Ligne>();
+        itineraireParNumber = new HashMap<String, Itineraire>();
+        itineraireParNames  = new HashMap<String, Itineraire>();
+	missionParNom       = new HashMap<String, Mission>();
+    }
+
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
-	if ((ligneCSV == null) || (ligneCSV.length == 0))
-	    return false;
-	return ligneCSV[0].equals(getCleCode());
+        if ((ligneCSV == null) || (ligneCSV.length == 0))
+            return false;
+        if (ligneCSV[0] == null)
+            return false;
+        return ligneCSV[0].trim().equals(getCleCode());
     }
     
+    @Override
     public void lire(String[] ligneCSV) {
-	if ((ligneCSV == null) || (ligneCSV.length == 0))
-	    return;
-	if ((ligneCSV.length != 7) && (ligneCSV.length != 8))
-	    throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ITINERAIRE, "La longeur des lignes dans \"Itineraire\" est 7 ou 8 : "+ligneCSV.length);
-	logger.debug("CREATION D'ITINERAIRE "+ligneCSV[1].trim());
+        if ((ligneCSV == null) || (ligneCSV.length == 0))
+            return;
+        if (ligneCSV.length != 8)
+            throw new ServiceException(CodeIncident.INVALIDE_LONGUEUR_ITINERAIRE, "FATAL01004 : Mauvais nombre de champs dans la section '04'.");
+	if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() <= 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_ITINERAIRE, "ERROR04001 : Le second champs de la section '04' doit etre non null.");
+	if ((ligneCSV[4] == null) || (ligneCSV[1].trim().length() <= 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_ITINERAIRE, "ERROR04002 : Le cinquieme champs de la section '04' doit etre non null.");
+	if ((ligneCSV[6] == null) || (ligneCSV[1].trim().length() <= 0))
+	    throw new ServiceException(CodeIncident.NULL_NAME_ITINERAIRE, "ERROR04003 : Le septieme champs de la section '04' doit etre non null.");
+	Ligne ligne = ligneParRegistration.get(ligneCSV[6].trim());
+	if (ligne == null)
+	    throw new ServiceException(CodeIncident.INVALIDE_LIGNE_ITINERAIRE, "ERROR04101 : Le septieme champs de la section '04' doit etre egal au sixieme (ou huitieme si non nul) champs d'une ligne de la section '03'.");
+
+        logger.debug("CREATION D'ITINERAIRE "+ligneCSV[1].trim());
 	Itineraire itineraire = new Itineraire();
 	itineraire.setObjectVersion(1);
 	itineraire.setCreationTime(new Date(System.currentTimeMillis()));
-	if ((ligneCSV[1] == null) || (ligneCSV[1].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_NAME_ITINERAIRE, "Le \"Nom\" de l'\"Itineraire\" ne peut être null.");
-	itineraire.setName(ligneCSV[1].trim());
-	if ((ligneCSV[2] != null) && (ligneCSV[2].trim().length() > 0)) {
+	itineraire.setName(ligneCSV[1].trim()+"_"+ligneCSV[4].trim());
+	if ((ligneCSV[2] != null) && (ligneCSV[2].trim().length() > 0))
 	    itineraire.setPublishedName(ligneCSV[2].trim());
-	    if (!ligneCSV[1].trim().equals(itineraire.getPublishedName()))
-		throw new ServiceException(CodeIncident.INVALIDE_PUBLISHEDNAME_ITINERAIRE, "La ligne \""+cleCode+":"+itineraire.getName()+":"+itineraire.getPublishedName()+":...\" est invalide.");
-	}
-	if ((ligneCSV[3] != null) && (ligneCSV[3].trim().length() > 0))
-	    if (ligneCSV[3].trim().equals(getCleAller())) {
+        else
+            itineraire.setPublishedName(itineraire.getName());
+        if ((ligneCSV[3] != null) && (ligneCSV[3].trim().length() > 0))
+	    if (ligneCSV[3].trim().equals(getCleAller()))
 		itineraire.setDirection(PTDirectionType.A);
-		itineraire.setWayBack("A");
-	    }
-	    else if (ligneCSV[3].trim().equals(getCleRetour())) {
+	    else if (ligneCSV[3].trim().equals(getCleRetour()))
 		itineraire.setDirection(PTDirectionType.R);
-		itineraire.setWayBack("R");
-	    }
 	    else
-		throw new ServiceException(CodeIncident.INVALIDE_DIRECTION_ITINERAIRE, "La \"Direction\" d'un \"Itineraire\" ne peut être : "+ligneCSV[3].trim());
-	if ((ligneCSV[4] != null) && (ligneCSV[4].trim().length() > 0)) {
-	    itineraire.setNumber(ligneCSV[4].trim());
-	    itineraire.setName(ligneCSV[1].trim()+"-"+ligneCSV[4].trim());
-	    itineraire.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "ChouetteRoute", toTrident(ligneCSV[1].trim()+"-"+ligneCSV[4].trim())));
-	}
-	else
-	    itineraire.setObjectId(identificationManager.getIdFonctionnel(hastusCode, "ChouetteRoute", toTrident(ligneCSV[1].trim())));
-	
-	if (!itineraireNames.add(itineraire.getName()))
-	    throw new ServiceException(CodeIncident.DUPLICATE_NAME_ITINERAIRE, "Il ne peut y avoir deux \"Itineraire\" avec le meme nom : "+itineraire.getName());
-	if (itineraire.getNumber() != null)
-	    if (itineraireParNom.get(itineraire.getNumber()) == null)
-		itineraireParNom.put(itineraire.getNumber(), itineraire);
-	if ((ligneCSV[5] == null) || (ligneCSV[5].trim().length() <= 0)) {
-	    if (itineraire.getDirection() != null)
-		if (itineraire.getDirection() != PTDirectionType.A)
-		    throw new ServiceException(CodeIncident.NULL_DIRECTION_ITINERAIRE, "La \"Direction\" de l'\"Itineraire\" ("+itineraire.getName()+") est par défaut \"Aller\".");
-	}
-	else
-	    if (ligneCSV[5].trim().equals(getCleAller())) {
-		if ((itineraire.getDirection() != null) && (itineraire.getDirection() != PTDirectionType.A))
-		    throw new ServiceException(CodeIncident.DIRECTIONS_CONTRADICTOIRES_ITINERAIRE, "La \"Direction\" d'un \"Itineraire\" est soit "+ligneCSV[3].trim()+" soit "+ligneCSV[5].trim()+".");
-		itineraire.setDirection(PTDirectionType.A);
+                itineraire.setPublishedName(itineraire.getPublishedName()+" --> "+ligneCSV[3].trim());
+        itineraire.setNumber(ligneCSV[4].trim());
+        boolean invalideSens = false;
+        if ((ligneCSV[5] != null) && (ligneCSV[5].trim().length() > 0))
+	    if (ligneCSV[5].trim().equals(getCleAller()))
 		itineraire.setWayBack("A");
-	    }
-	    else if (ligneCSV[5].trim().equals(getCleRetour())) {
-		if ((itineraire.getDirection() != null) && (itineraire.getDirection() != PTDirectionType.R))
-		    throw new ServiceException(CodeIncident.DIRECTIONS_CONTRADICTOIRES_ITINERAIRE, "La \"Direction\" d'un \"Itineraire\" est soit "+ligneCSV[3].trim()+" soit "+ligneCSV[5].trim()+".");
-		itineraire.setDirection(PTDirectionType.R);
+	    else if (ligneCSV[5].trim().equals(getCleRetour()))
 		itineraire.setWayBack("R");
-	    }
 	    else
-		throw new ServiceException(CodeIncident.INVALIDE_DIRECTION_ITINERAIRE, "La \"Direction\" d'un \"Itineraire\" ne peut être : "+ligneCSV[5].trim());
-	if ((ligneCSV[6] == null) || (ligneCSV[6].trim().length() <= 0))
-	    throw new ServiceException(CodeIncident.NULL_LIGNE_ITINERAIRE, "Le \"RegistrationNumber\" de \"Ligne\" indiqué pour cet \"Itineraire\" ("+itineraire.getName()+") est null.");
-	Ligne ligne = ligneParRegistration.get(ligneCSV[6].trim());
-	if (ligne == null)
-	    throw new ServiceException(CodeIncident.INVALIDE_LIGNE_ITINERAIRE, "Le \"RegistrationNumber\" ("+ligneCSV[6].trim()+") de \"Ligne\" indiqué pour cet \"Itineraire\" ("+itineraire.getName()+") est inconnu.");
-	ligneParItineraire.put(itineraire, ligne);
-	verifierNumberItineraire(itineraire.getNumber());
-	verifierNomItineraire(ligneCSV[1].trim());
+                invalideSens = true;
+        itineraire.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "ChouetteRoute", toTrident(itineraire.getName())));
+        
+        if ((ligneCSV[7] != null) && (ligneCSV[7].trim().length() > 0))
+            itineraire.setComment(ligneCSV[7].trim());
+
+        addItineraire(itineraire, ligne);
+        
+        if (invalideSens)
+            throw new ServiceException(CodeIncident.INVALIDE_DIRECTION_ITINERAIRE, "ERROR04103 : Le sixième champ de la section 04 doit être vide ou avoir l'une des valeur  \"Aller\" ou \"Retour\".");
     }
     
-    private String toTrident(String str) {
-	if ((str == null) || (str.length() == 0))
-	    return "";
-	String result = "";
-	for (int i = 0; i < str.length(); i++)
-	    if (('a' <= str.charAt(i)) && (str.charAt(i) <= 'z') ||
-		('A' <= str.charAt(i)) && (str.charAt(i) <= 'Z') ||
-		('0' <= str.charAt(i)) && (str.charAt(i) <= '9'))
-		result += str.charAt(i);
-	    else if ((str.charAt(i) == ' ') || (str.charAt(i) == '\t'))
-		result += space;
-	    else
-		result += special;
-	return result;
+    private void addItineraire(Itineraire itineraire, Ligne ligne) {
+        Itineraire tmpItineraire = itineraireParNames.get(itineraire.getName());
+        if (tmpItineraire != null)
+            if (theSameItineraire(itineraire, tmpItineraire, ligne))
+                return;
+            else
+                throw new ServiceException(CodeIncident.DUPLICATE_NAME_ITINERAIRE, "ERROR04102 : Deux lignes quelconques de la section '04' sont soit identiques soit avec deux deuxiemes champs distincts.");
+        tmpItineraire = itineraireParNumber.get(itineraire.getNumber());
+        if (tmpItineraire != null)
+            if (theSameItineraire(itineraire, tmpItineraire, ligne))
+                return;
+            else
+                throw new ServiceException(CodeIncident.DUPLICATE_NAME_ITINERAIRE, "ERROR04102 : Deux lignes quelconques de la section '04' sont soit identiques soit avec deux cinquiemes champs distincts.");
+        itineraireParNames.put(itineraire.getName(), itineraire);
+        itineraireParNumber.put(itineraire.getNumber(), itineraire);
+        ligneParItineraire.put(itineraire, ligne);
+        addMission(itineraire);
     }
-    
-    private void verifierNumberItineraire(String number) {
-	// <Ligne.registrationNumber>-<integer>
-	if (number != null) {
-	    String[] tab = number.split("-");
-	    if ((tab != null) && (tab.length >= 2)) {
-		String reg = tab[0];
-		for (int i = 1; i < tab.length - 1; i++)
-		    reg += "_" + tab[i];
-		if (ligneParRegistration.get(reg) != null) {
-		    try {
-			Integer.parseInt(tab[tab.length - 1]);
-			return;
-		    }
-		    catch(Exception e) {
-			if (messages.add("Le \"number\" ("+number+") est invalide."))
-			    throw new ServiceException(CodeIncident.INVALIDE_NUMBER_ITINERAIRE, "Le champ \"number\" ("+number+") est invalide, il devrait commencer par un numéro d'enregistrement d'une ligne suivit par le symbol \"-\" et par un entier.");
-		    }
-		}
-		else {
-		    if (messages.add("Le \"number\" ("+number+") est invalide."))
-			throw new ServiceException(CodeIncident.INVALIDE_NUMBER_ITINERAIRE, "Le champ \"number\" ("+number+") est invalide, il devrait commencer par un numéro d'enregistrement d'une ligne suivit par le symbol \"-\".");
-		}
-	    }
-	    else {
-		if (messages.add("Le \"number\" ("+number+") est invalide."))
-		    throw new ServiceException(CodeIncident.INVALIDE_NUMBER_ITINERAIRE, "Le champ \"number\" ("+number+") est invalide, il devrait contenir au moins une fois le symbol \"-\".");
-	    }
+
+    private void addMission(Itineraire itineraire) {
+        Mission mission = missionParNom.get(itineraire.getNumber());
+	if (mission == null) {
+	    mission = new Mission();
+	    mission.setObjectVersion(1);
+	    mission.setCreationTime(new Date(System.currentTimeMillis()));
+	    mission.setName(itineraire.getNumber());
+	    mission.setRouteId(itineraire.getObjectId());
+	    mission.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "JourneyPattern", toTrident(mission.getName())));
+	    mission.setComment("Mission du parcours type "+mission.getName());
+	    mission.setPublishedName("Mission_"+mission.getName());
+	    missionParNom.put(mission.getName(), mission);
 	}
-	else
-	    if (messages.add("Le \"number\" ("+number+") est invalide."))
-		throw new ServiceException(CodeIncident.INVALIDE_NUMBER_ITINERAIRE, "Le champ \"number\" doit être renseigné.");
     }
-    
-    private void verifierNomItineraire(String name) {
-	// <Ligne.registrationNumber>-<zone.registrationNumber>-<zone.registrationNumber>
-	if (name != null) {
-	    String[] tab = name.split("-");
-	    if ((tab != null) && (tab.length >= 3)) {
-		String reg = tab[0];
-		for (int i = 1; i < tab.length - 2; i++)
-		    reg += "_" + tab[i];
-		if (ligneParRegistration.get(reg) != null)
-		    return;
-		else {
-		    String message = "";
-		    if (ligneParRegistration.get(reg) == null)
-			message += " Il n'y a pas de ligne avec le numéro d'enregistrement "+reg+".";
-		    if (messages.add("Le \"name\" ("+name+") est invalide."))
-			throw new ServiceException(CodeIncident.INVALIDE_NAME_ITINERAIRE, "Le champ \"name\" ("+name+") est invalide." + message);
-		}
-	    }
-	    else
-		if (messages.add("Le \"name\" ("+name+") est invalide."))
-		    throw new ServiceException(CodeIncident.INVALIDE_NAME_ITINERAIRE, "Le champ \"name\" ("+name+") est invalide, il doit contenir au moins deux fois le symbol \"-\".");
-	}
-	else
-	    if (messages.add("Le \"name\" ("+name+") est invalide."))
-		throw new ServiceException(CodeIncident.INVALIDE_NAME_ITINERAIRE, "Le champ \"name\" doit être renseigné.");
+
+    private boolean theSameItineraire(Itineraire itineraire1, Itineraire itineraire2, Ligne ligne) {
+        if ((itineraire1 == null) || (itineraire2 == null))
+            if ((itineraire1 == null) && (itineraire2 == null))
+                return true;
+            else
+                return false;
+
+        if (((itineraire1.getName() == null) || (itineraire2.getName() == null)) &&
+            ((itineraire1.getName() != null) || (itineraire2.getName() != null)))
+            return false;
+        if (itineraire1.getName() != null)
+            if (!itineraire1.getName().equals(itineraire2.getName()))
+                return false;
+        if (((itineraire1.getNumber() == null) || (itineraire2.getNumber() == null)) &&
+            ((itineraire1.getNumber() != null) || (itineraire2.getNumber() != null)))
+            return false;
+        if (itineraire1.getNumber() != null)
+            if (!itineraire1.getNumber().equals(itineraire2.getNumber()))
+                return false;
+        if (((itineraire1.getPublishedName() == null) || (itineraire2.getPublishedName() == null)) &&
+            ((itineraire1.getPublishedName() != null) || (itineraire2.getPublishedName() != null)))
+            return false;
+        if (itineraire1.getPublishedName() != null)
+            if (!itineraire1.getPublishedName().equals(itineraire2.getPublishedName()))
+                return false;
+        if (((itineraire1.getDirection() == null) || (itineraire2.getDirection() == null)) &&
+            ((itineraire1.getDirection() != null) || (itineraire2.getDirection() != null)))
+            return false;
+        if (itineraire1.getDirection() != null)
+            if (itineraire1.getDirection().compareTo(itineraire2.getDirection()) != 0)
+                return false;
+        if (((itineraire1.getComment() == null) || (itineraire2.getComment() == null)) &&
+            ((itineraire1.getComment() != null) || (itineraire2.getComment() != null)))
+            return false;
+        if (itineraire1.getComment() != null)
+            if (!itineraire1.getComment().equals(itineraire2.getComment()))
+                return false;
+        if (((itineraire1.getWayBack() == null) || (itineraire2.getWayBack() == null)) &&
+            ((itineraire1.getWayBack() != null) || (itineraire2.getWayBack() != null)))
+            return false;
+        if (itineraire1.getWayBack() != null)
+            if (!itineraire1.getWayBack().equals(itineraire2.getWayBack()))
+                return false;
+        if (ligne != ligneParItineraire.get(itineraire2))
+            return false;
+
+        return true;
     }
-    
-    public void reinit() {
-	ligneParItineraire = new HashMap<Itineraire, Ligne>();
-	itineraireParNom = new HashMap<String, Itineraire>();
-	itineraireNames = new HashSet<String>();
-	messages = new HashSet<String>();
-    }
-    
-    public IIdentificationManager getIdentificationManager() {
-	return identificationManager;
-    }
-    
-    public void setIdentificationManager(IIdentificationManager identificationManager) {
-	this.identificationManager = identificationManager;
-    }
-    
-    public String getCleCode() {
-	return cleCode;
-    }
-    
-    public void setCleCode(String cleCode) {
-	this.cleCode = cleCode;
-    }
-    
+
     public String getCleAller() {
 	return cleAller;
     }
@@ -225,57 +193,34 @@ public class LecteurItineraire implements ILecteurItineraire {
 	this.cleRetour = cleRetour;
     }
     
-    public int getCounter() {
-	return counter;
-    }
-    
-    public void setCounter(int counter) {
-	this.counter = counter;
-    }
-    
-    public String getHastusCode() {
-	return hastusCode;
-    }
-    
-    public void setHastusCode(String hastusCode) {
-	this.hastusCode = hastusCode;
-    }
-    
+    @Override
     public void setLigneParRegistration(Map<String, Ligne> ligneParRegistration) {
 	this.ligneParRegistration = ligneParRegistration;
     }
     
+    @Override
     public Map<Itineraire, Ligne> getLigneParItineraire() {
 	return ligneParItineraire;
     }
     
-    public Map<String, Itineraire> getItineraireParNom() {
-	return itineraireParNom;
+    @Override
+    public Map<String, Itineraire> getItineraireParNumber() {
+	return itineraireParNumber;
+    }
+
+    @Override
+    public Map<String, Mission> getMissionParNom() {
+	return missionParNom;
     }
     
+    @Override
     public void setZones(Map<String, PositionGeographique> zones) {
 	this.zones = zones;
     }
     
+    @Override
     public void completion() {
 	this.zones.clear();
-	this.itineraireNames.clear();
-	this.messages.clear();
-    }
-    
-    public String getSpecial() {
-	return special;
-    }
-    
-    public void setSpecial(String special) {
-	this.special = special;
-    }
-    
-    public String getSpace() {
-	return space;
-    }
-    
-    public void setSpace(String space) {
-	this.space = space;
+	this.itineraireParNames.clear();
     }
 }
