@@ -38,6 +38,9 @@ Chouette.Map.initShowMarkerLayer = function(url){
     method: 'get',
     onSuccess: function(transport) {
       var stopPlaces = eval(transport.responseText);
+      if(stopPlaces == null){ //if stopplaces returns null, stoplaces.each won't work...
+      	Chouette.Map.zoomToMaxDataExtent();
+      }
       stopPlaces.each(function(area){
         if(area.latitude != null && area.longitude != null)
         {
