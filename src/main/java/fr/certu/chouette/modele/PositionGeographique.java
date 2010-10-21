@@ -59,9 +59,9 @@ public class PositionGeographique  extends BaseObjet
 		if ( contenant==null) return false;
 		
 		return 
-		(ChouetteAreaType.STOPPLACE.equals( contenant) && isZoneCategory( contenu))
+		(ChouetteAreaType.STOPPLACE.equals( contenant) && PositionGeographique.isZoneCategory( contenu))
 		||
-		(isZoneCategory( contenant) && isArretPhysiqueCategory( contenu));
+		(PositionGeographique.isZoneCategory( contenant) && PositionGeographique.isArretPhysiqueCategory( contenu));
 	}
 	
 	public boolean isEmptyAreaCentroid()
@@ -72,13 +72,21 @@ public class PositionGeographique  extends BaseObjet
 		( areaCentroid.getProjectedPoint()==null || (areaCentroid.getProjectedPoint().getX()==null && areaCentroid.getProjectedPoint().getY()==null));
 	}
 	
-	private boolean isZoneCategory(  ChouetteAreaType areaType)
+	private static boolean isZoneCategory(  ChouetteAreaType areaType)
 	{
 		return ChouetteAreaType.STOPPLACE.equals( areaType) || ChouetteAreaType.COMMERCIALSTOPPOINT.equals( areaType);
 	}
-	private boolean isArretPhysiqueCategory(  ChouetteAreaType areaType)
+	private static boolean isArretPhysiqueCategory(  ChouetteAreaType areaType)
 	{
 		return ChouetteAreaType.QUAY.equals( areaType) || ChouetteAreaType.BOARDINGPOSITION.equals( areaType);
+	}
+	
+	public boolean isArretPhysiqueCategory() {
+		return PositionGeographique.isArretPhysiqueCategory(this.getAreaType());
+	}
+
+	public boolean isZoneCategory() {
+		return PositionGeographique.isZoneCategory(this.getAreaType());
 	}
 	
 	public int getFareCode() {
