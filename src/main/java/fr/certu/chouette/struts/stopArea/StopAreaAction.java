@@ -418,6 +418,12 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
       } else if (EnumerationApplication.AUTHORIZEDTYPESET_S.equals(authorizedType))
       {
         areas.add(ChouetteAreaType.STOPPLACE.toString());
+      } else if (EnumerationApplication.AUTHORIZEDTYPESET_ALL.equals(authorizedType))
+      {
+        areas.add(ChouetteAreaType.COMMERCIALSTOPPOINT.toString());
+        areas.add(ChouetteAreaType.STOPPLACE.toString());
+        areas.add(ChouetteAreaType.BOARDINGPOSITION.toString());
+        areas.add(ChouetteAreaType.QUAY.toString());
       }
     }
 
