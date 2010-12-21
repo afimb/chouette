@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <import resource="classpath:/applicationContextTridentToGTFS"/>
+
+  <bean id="profiler" class="fr.certu.chouette.profiler.SimpleProfiler">
+      <property name="order" value="1"/>
+  </bean>
+
+  <bean id="creationControleur" class="fr.certu.chouette.profiler.CreationControleur">
+      <property name="order" value="0"/>
+  </bean>
+
+  <!-- Enable @Transactional support -->
+  <tx:annotation-driven/>
+
+  <!-- Enable @AspectJ support -->
+  <aop:aspectj-autoproxy/>
+
+  <aop:config>
+    <aop:advisor id="managerTx" advice-ref="txAdvice" pointcut="execution(* *..service.database.*Manager.*(..))" order="2"/>
+    <aop:aspect id="profilingAspect" ref="profiler">
+        <aop:pointcut id="serviceMethodWithReturnValue" expression="execution(* *..service.database.*Manager.*(..))"/>
+        <aop:around method="profile" pointcut-ref="serviceMethodWithReturnValue"/>
+    </aop:aspect>
+    <aop:aspect id="creatingAspect" ref="creationControleur">
+        <aop:pointcut id="creerMethodWithReturnValue" expression="execution(* *..service.database.*Manager.creer*(..))"/>
+        <aop:around method="creationProtect" pointcut-ref="creerMethodWithReturnValue"/>
+    </aop:aspect>
+  </aop:config>
+
+  <tx:advice id="txAdvice">
+    <tx:attributes>
+      <tx:method name="get*" read-only="true"/>
+      <tx:method name="*" rollback-for="Exception"/>
+    </tx:attributes>
+  </tx:advice>
+
+  <bean id="importateur" class="fr.certu.chouette.service.fichier.Importateur">
+    <property name="analyseurEtatInitial" ref="analyseurEtatInitial"/>
+    <property name="gestionModification" ref="gestionModification"/>
+    <property name="chargeur" ref="chargeur"/>
+    <property name="producteurFichier" ref="producteurFichier"/>
+    <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
+  </bean>
+
+  <bean id="analyseurEtatInitial" class="fr.certu.chouette.service.fichier.formatinterne.impl.AnalyseurEtatInitial">
+    <property name="gestionSequence" ref="gestionSequence"/>
+    <property name="databaseSchema" value="${database.schema}" />
+  </bean>
+
+  <bean id="gestionModification" class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionModification">
+    <property name="databaseSchema" value="${database.schema}" />
+  </bean>
+
+  <bean id="chargeur" class="fr.certu.chouette.service.fichier.formatinterne.impl.Chargeur">
+    <property name="gestionFichier" ref="gestionFichier"/>
+    <property name="nettoyeurLigne" ref="nettoyeurLigne"/>
+  </bean>
+
+  <bean id="producteurFichier" class="fr.certu.chouette.service.fichier.formatinterne.impl.ProducteurFichier" init-method="initialiser" >
+    <property name="gestionFichier" ref="gestionFichier"/>
+    <property name="gestionSequence" ref="gestionSequence"/>
+    <property name="identificationManager" ref="identificationManager"/>
+  </bean>
+
+  <bean id="chouetteDataSourceAdministrateur" class="fr.certu.chouette.service.database.ChouetteDriverManagerDataSource" >
+    <property name="driverClassName" value="${jdbc.driver}"/>
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="databaseSchema" value="${database.schema}"/>
+  </bean>
+
+  <bean id="gestionSequence" class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionSequence">
+    <property name="databaseSchema" value="${database.schema}" />
+  </bean>
+
+  <bean id="gestionFichier" class="fr.certu.chouette.service.fichier.formatinterne.impl.GestionFichier">
+    <property name="repertoireTmp" value="${dir.temp}"/>
+    <property name="ficLigne" value="tmp_ligne.csv"/>
+    <property name="ficItineraire" value="tmp_itineraires.csv"/>
+    <property name="ficArretLogique" value="tmp_arrets_logiques.csv"/>
+    <property name="ficCorrespondance" value="tmp_correspondances.csv"/>
+    <property name="ficZoneGenerique" value="tmp_zones_generiques.csv"/>
+    <property name="ficCourse" value="tmp_courses.csv"/>
+    <property name="ficMission" value="tmp_missions.csv"/>
+    <property name="ficHoraire" value="tmp_horaires.csv"/>
+    <property name="ficReseau" value="tmp_reseau.csv"/>
+    <property name="ficTransporteur" value="tmp_transporteur.csv"/>
+    <property name="ficTableauMarche" value="tmp_tableau_marche.csv"/>
+    <property name="ficTableauMarcheCourse" value="tmp_tableau_marche_course.csv"/>
+    <property name="ficTableauMarcheCalendrier" value="tmp_tableau_marche_calendrier.csv"/>
+    <property name="ficTableauMarchePeriode" value="tmp_tableau_marche_periode.csv"/>
+    <property name="ficItl" value="tmp_interdiction_trafic_local.csv"/>
+    <property name="ficItlStoparea" value="tmp_interdiction_trafic_local_stoparea.csv"/>
+  </bean>
+
+  <bean id="nettoyeurLigne" class="fr.certu.chouette.service.fichier.formatinterne.impl.NettoyeurLigne">
+    <property name="ligneManager" ref="ligneManager"/>
+    <property name="databaseSchema" value="${database.schema}" />
+  </bean>
+
+  <bean id="identificationManager" class="fr.certu.chouette.service.identification.impl.IdentificationManager">
+    <property name="systemId" value="${system.code}"/>
+    <property name="dictionaryObjectId" ref="dictionaryObjectId"/>
+  </bean>
+
+  <bean id="ligneManager" class="fr.certu.chouette.service.database.impl.LigneManager">
+    <property name="ligneDao" ref="ligneDao"/>
+    <property name="itineraireManager" ref="itineraireManager"/>
+    <property name="selectionSpecifique" ref="selectionSpecifique"/>
+    <property name="modificationSpecifique" ref="modificationSpecifique"/>
+    <property name="identificationManager" ref="identificationManager"/>
+  </bean>
+
+  <bean id="dictionaryObjectId" class="fr.certu.chouette.service.identification.impl.DictionaryObjectId">
+  </bean>
+
+  <bean id="ligneDao" class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate" factory-method="creerLigneDao">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="itineraireManager" class="fr.certu.chouette.service.database.impl.ItineraireManager">
+    <property name="itineraireDao" ref="itineraireDao"/>
+    <property name="arretItineraireManager" ref="arretItineraireManager"/>
+    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    <property name="missionManager" ref="missionManager"/>
+    <property name="selectionSpecifique" ref="selectionSpecifique"/>
+    <property name="modificationSpecifique" ref="modificationSpecifique"/>
+    <property name="identificationManager" ref="identificationManager"/>
+  </bean>
+
+  <bean id="selectionSpecifique" class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="databaseSchema" value="${database.schema}"/>
+  </bean>
+
+  <bean id="modificationSpecifique" class="fr.certu.chouette.dao.hibernate.SelectionSpecifique">
+    <property name="sessionFactory" ref="sessionFactory"/>
+    <property name="databaseSchema" value="${database.schema}"/>
+  </bean>
+
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">fr.certu.chouette.util.ExtendedPostgresSQLDialect</prop>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+        <prop key="hibernate.show_sql">false</prop>
+        <prop key="hibernate.default_schema">${database.schema}</prop>
+      </props>
+    </property>
+    <property name="dataSource" ref="chouetteDataSource"/>
+    <property name="mappingResources">
+      <list>
+        <value>fr/certu/chouette/modele/Reseau.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Ligne.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Transporteur.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Itineraire.hbm.xml</value>
+        <value>fr/certu/chouette/modele/ArretItineraire.hbm.xml</value>
+        <value>fr/certu/chouette/modele/PositionGeographique.hbm.xml</value>
+        <value>fr/certu/chouette/modele/TableauMarche.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Course.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Mission.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Horaire.hbm.xml</value>
+        <value>fr/certu/chouette/modele/LienTMCourse.hbm.xml</value>
+        <value>fr/certu/chouette/modele/Correspondance.hbm.xml</value>
+        <value>fr/certu/chouette/modele/InterdictionTraficLocal.hbm.xml</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itineraireDao" class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate" factory-method="creerItineraireDao">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="arretItineraireManager" class="fr.certu.chouette.service.database.impl.ArretItineraireManager">
+    <property name="arretItineraireDao" ref="arretItineraireDao"/>
+    <property name="selectionSpecifique" ref="selectionSpecifique"/>
+    <property name="modificationSpecifique" ref="modificationSpecifique"/>
+    <property name="identificationManager" ref="identificationManager"/>
+  </bean>
+
+  <bean id="positionGeographiqueManager" class="fr.certu.chouette.service.database.impl.PositionGeographiqueManager">
+    <property name="positionGeographiqueDao" ref="positionGeographiqueDao"/>
+    <property name="selectionSpecifique" ref="selectionSpecifique"/>
+    <property name="modificationSpecifique" ref="modificationSpecifique"/>
+    <property name="identificationManager" ref="identificationManager"/>
+    <property name="correspondanceManager" ref="correspondanceManager"/>
+    <property name="profondeurMaximum" value="4"/>
+  </bean>
+
+  <bean id="missionManager" class="fr.certu.chouette.service.database.impl.MissionManager">
+    <property name="missionDao" ref="missionDao"/>
+    <property name="selectionSpecifique" ref="selectionSpecifique"/>
+    <property name="modificationSpecifique" ref="modificationSpecifique"/>
+    <property name="identificationManager" ref="identificationManager"/>
+  </bean>
+
+  <bean id="arretItineraireDao" class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate" factory-method="creerArretItineraireDao">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="positionGeographiqueDao" class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate" factory-method="creerPositionGeographiqueDao">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="correspondanceManager" class="fr.certu.chouette.service.database.impl.CorrespondanceManager">
+    <property name="correspondanceDao" ref="correspondanceDao"/>
+    <property name="selectionSpecifique" ref="selectionSpecifique"/>
+    <property name="modificationSpecifique" ref="modificationSpecifique"/>
+    <property name="identificationManager" ref="identificationManager"/>
+  </bean>
+
+  <bean id="missionDao" class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate" factory-method="creerMissionDao">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+  <bean id="correspondanceDao" class="fr.certu.chouette.dao.hibernate.TemplateDaoHibernate" factory-method="creerCorrespondanceDao">
+    <property name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+
+</beans>

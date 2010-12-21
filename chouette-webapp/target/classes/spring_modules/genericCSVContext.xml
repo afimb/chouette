@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+
+    <bean id="lecteurCSVPrincipal"
+    		class="fr.certu.chouette.service.importateur.multilignes.genericcsv.LecteurCSVPrincipal">
+        <property name="repertoire" value="."/>
+        <property name="separateur" value="${csv.field.separator}"/>
+        <property name="colonneDesTitres" value="7"/>
+        <property name="lecteurCalendrier" ref="lecteurExcelTableauMarche"/>
+        <property name="lecteurReseau" ref="lecteurExcelReseau"/>
+        <property name="lecteurTransporteur" ref="lecteurExcelTransporteur"/>
+        <property name="lecteurLigne" ref="lecteurExcelLigne"/>
+        <property name="lecteurCourse" ref="lecteurExcelCourse"/>
+        <property name="lecteurZone" ref="lecteurExcelZone"/>
+        <property name="lecteurHoraire" ref="lecteurExcelHoraire"/>
+        <property name="lecteurMission" ref="lecteurExcelMission"/>
+        <property name="lecteurItineraire" ref="lecteurExcelItineraire"/>
+        <property name="lecteurArret" ref="lecteurExcelArret"/>
+    </bean>
+
+    <bean id="lecteurExcelTableauMarche" 
+    		class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurCalendrier">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleCommentaire" value="Libellé du tableau de marche" />
+        <property name="cleAlias" value="Alias" />
+        <property name="cleJour" value="Jour d'application" />
+        <property name="cleDebut" value="Date de début d'application" />
+        <property name="cleFin" value="Date de fin d'application" />
+        <property name="cleLundi" value="Lundi (O/N)" />
+        <property name="cleMardi" value="Mardi (O/N)" />
+        <property name="cleMercredi" value="Mercredi (O/N)" />
+        <property name="cleJeudi" value="Jeudi (O/N)" />
+        <property name="cleVendredi" value="Vendredi (O/N)" />
+        <property name="cleSamedi" value="Samedi (O/N)" />
+        <property name="cleDimanche" value="Dimanche (O/N)" />
+    </bean>
+
+    <bean id="lecteurExcelReseau"
+        class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurReseau">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleNom" value="Nom du réseau"/>
+        <property name="cleCode" value="Code Réseau"/>
+        <property name="cleDescription" value="Description du réseau"/>
+    </bean>
+
+    <bean id="lecteurExcelTransporteur"
+        class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurTransporteur">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleNom" value="Nom de l'entreprise de transport"/>
+        <property name="cleCode" value="Code Transporteur"/>
+        <property name="cleNomCourt" value="Nom court"/>
+        <property name="cleDescription" value="Description du transporteur"/>
+        <property name="cleCodePostal" value="Code postal"/>
+        <property name="cleTelephone" value="Téléphone"/>
+        <property name="cleFax" value="Fax"/>
+        <property name="cleEmail" value="Email"/>
+    </bean>
+
+    <bean id="lecteurExcelLigne"
+        class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurLigne">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleNom" value="Nom de la ligne"/>
+        <property name="cleNomPublic" value="Nom public"/>
+        <property name="cleNumero" value="Numero de la ligne"/>
+        <property name="cleComment" value="Commentaire de la ligne"/>
+        <property name="cleMode" value="Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)"/>
+    </bean>
+
+    <bean id="lecteurExcelCourse"
+        class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurCourse">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleDirection" value="Direction (ALLER/RETOUR)"/>
+        <property name="cleCalendrier" value="Calendriers d'application"/>
+        <property name="cleParticularite" value="Particularités"/>
+        <property name="cleListe" value="Liste des arrêts"/>
+        <property name="cleX" value="X"/>
+        <property name="cleY" value="Y"/>
+        <property name="cleLatitude" value="Latitude"/>
+        <property name="cleLongitude" value="Longitude"/>
+        <property name="cleAdresse" value="Adresse"/>
+        <property name="cleCode" value="Code Postal"/>
+        <property name="cleZone" value="Zone"/>
+    </bean>
+    
+    <bean id ="lecteurExcelZone"
+    	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurZone">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur" />
+    </bean>
+    
+	<bean id = "lecteurExcelHoraire"
+    	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurHoraire">
+        <property name="colonneDesTitres" value="7"/>
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+    
+	<bean id = "lecteurExcelMission"
+    	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurMission">
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+    
+	<bean id = "lecteurExcelItineraire"
+    	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurItineraire">
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+    
+	<bean id = "lecteurExcelArret"
+    	class="fr.certu.chouette.service.importateur.multilignes.genericcsv.excel.LecteurArret">
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+</beans>

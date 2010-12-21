@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2004-2005 Sun Microsystems, Inc.  All rights reserved.
+ Use is subject to license terms.
+-->
+<sun-web-app error-url="">
+  <context-root>/chouette</context-root>
+  <security-role-mapping>
+    <role-name>chouette-role</role-name>
+    <group-name>chouette-group</group-name>
+  </security-role-mapping>
+  <security-role-mapping>
+    <role-name>chouette-role</role-name>
+    <group-name>chouette-group-test-exploit</group-name>
+  </security-role-mapping>
+  <locale-charset-info>
+    <locale-charset-map charset="UTF-8" locale=""/>
+    <parameter-encoding default-charset="UTF-8"/>
+  </locale-charset-info>
+</sun-web-app>

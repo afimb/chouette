@@ -1,0 +1,85 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+  <field name="name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">name</param>
+      <message key="errors.required" />
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+  </field>
+  <field name="shortName">
+    <field-validator type="stringlength">
+      <param name="fieldName">
+				shortName
+      </param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+  </field>
+  <field
+		name="registrationNumber">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">registrationNumber</param>
+      <message key="errors.required" />
+    </field-validator>
+    <field-validator type="regex">
+      <param name="fieldName">
+				registrationNumber
+      </param>
+      <param name="expression">.+</param>
+      <message key="errors.mask" />
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">
+				registrationNumber
+      </param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+  </field>
+  <field name="organisationalUnit">
+    <field-validator type="stringlength">
+      <param name="fieldName">
+				organisationalUnit
+      </param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+  </field>
+  <field name="operatingDepartmentName">
+    <field-validator type="stringlength">
+      <param name="fieldName">
+				operatingDepartmentName
+      </param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+  </field>
+  <field name="code">
+    <field-validator type="stringlength">
+      <param name="fieldName">code</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+  </field>
+  <field name="email">
+    <field-validator type="stringlength">
+      <param name="fieldName">email</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength" />
+    </field-validator>
+    <field-validator type="email">
+      <param name="fieldName">email</param>
+      <message key="errors.email" />
+    </field-validator>
+  </field>
+</validators>

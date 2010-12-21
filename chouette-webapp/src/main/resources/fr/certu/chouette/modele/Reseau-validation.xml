@@ -1,0 +1,69 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+  <field name="name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="registrationNumber" >
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">registrationNumber</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="regex">
+      <param name="fieldName">registrationNumber</param>
+      <param name="expression">.+</param>
+      <message key="errors.mask"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">registrationNumber</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="versionDate" >
+    <field-validator type="required">
+      <param name="fieldName">versionDate</param>
+      <message key="errors.required"/>
+    </field-validator>
+  </field>
+  <field name="comment">
+    <field-validator type="stringlength">
+      <param name="fieldName">comment</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="description">
+    <field-validator type="stringlength">
+      <param name="fieldName">description</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="sourceName">
+    <field-validator type="stringlength">
+      <param name="fieldName">sourceName</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="sourceIdentifier">
+    <field-validator type="stringlength">
+      <param name="fieldName">sourceIdentifier</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+</validators>

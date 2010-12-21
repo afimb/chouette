@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+
+    <bean id="lecteurCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurCSV">
+        <property name="repertoire" value="."/>
+        <property name="separateur" value="${csv.field.separator}"/>
+        <property name="debutPartieFixe" value="0"/>
+        <property name="finPartieFixe" value="18"/>
+        <property name="debutPartieDynamique" value="20"/>
+        <property name="finPartieDynamique" value="38"/>
+        <property name="debutPartieArret" value="39"/>
+        <property name="colonneTitrePartieFixe" value="7"/>
+        <property name="lecteurTransporteurCSV" ref="lecteurTransporteurCSV"/>
+        <property name="lecteurCourseCSV" ref="lecteurCourseCSV"/>
+        <property name="lecteurItineraireCSV" ref="lecteurItineraireCSV"/>
+        <property name="lecteurMissionCSV" ref="lecteurMissionCSV"/>
+        <property name="lecteurArretPhysiqueCSV" ref="lecteurArretPhysiqueCSV"/>
+        <property name="lecteurHoraireCSV" ref="lecteurHoraireCSV"/>
+        <property name="lecteurLigneCSV" ref="lecteurLigneCSV"/>
+        <property name="lecteurReseauCSV" ref="lecteurReseauCSV"/>
+        <property name="lecteurTableauMarcheCSV" ref="lecteurTableauMarcheCSV"/>
+        <property name="reducteurItineraire" ref="reducteurItineraire"/>
+        <property name="reducteurMission" ref="reducteurMission"/>
+        <property name="reducteurTableauMarche" ref="reducteurTableauMarche"/>
+    </bean>
+
+    <bean id="reducteurItineraire"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.ReducteurItineraire">
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+
+    <bean id="reducteurTableauMarche"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.ReducteurTableauMarche">
+    </bean>
+
+    <bean id="reducteurMission"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.ReducteurMission">
+    </bean>
+
+    <bean id="lecteurLigneCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurLigneCSV">
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleNom" value="Nom de la ligne"/>
+        <property name="cleCommentaire" value="Commentaire de la ligne"/>
+        <property name="cleMode" value="Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)"/>
+        <property name="cleNomPublic" value="Nom public"/>
+        <property name="cleNumero" value="Numero de la ligne"/>
+    </bean>
+
+    <bean id="lecteurReseauCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurReseauCSV">
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleNom" value="Nom du réseau"/>
+        <property name="cleCode" value="Code Réseau"/>
+        <property name="cleDescription" value="Description du réseau"/>
+    </bean>
+
+    <bean id="lecteurTransporteurCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurTransporteurCSV">
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="cleNom" value="Nom de l'entreprise de transport"/>
+        <property name="cleRegistre" value="Code Transporteur"/>
+        <property name="cleNomCourt" value="Nom court"/>
+        <property name="cleDescription" value="Description du transporteur"/>
+        <property name="cleCodePostal" value="Code postal"/>
+        <property name="cleTelephone" value="Téléphone"/>
+        <property name="cleFax" value="Fax"/>
+        <property name="cleEmail" value="Email"/>
+    </bean>
+
+    <bean id="lecteurArretPhysiqueCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurArretPhysiqueCSV">
+        <property name="indiceCodePostal" value="0" />
+        <property name="indiceCommentaire" value="1" />
+        <property name="indiceX" value="2" />
+        <property name="indiceY" value="3" />
+        <property name="latitude" value="4" />
+        <property name="longitude" value="5" />
+        <property name="indiceNom" value="7" />
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+
+    <bean id="lecteurCourseCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurCourseCSV">
+        <property name="cleCommentaire" value="Commentaire sur la course" />
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+
+    <bean id="lecteurHoraireCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurHoraireCSV">
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+
+    <bean id="lecteurMissionCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurMissionCSV">
+        <property name="cleNom" value="Nom de la mission" />
+        <property name="cleNomPublic" value="Nom public de la mission" />
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+
+    <bean id="lecteurItineraireCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurItineraireCSV">
+        <property name="cleCommentaire" value="Commentaire de l'itinéraire" />
+        <property name="cleNom" value="Nom de l'itinéraire" />
+        <property name="cleNomPublic" value="Nom public de l'itinéraire" />
+        <property name="cleSens" value="Direction (ALLER/RETOUR)" />
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+
+    <bean id="lecteurTableauMarcheCSV"
+    		class="fr.certu.chouette.service.importateur.monoligne.csv.LecteurTableauMarcheCSV">
+        <property name="cleCommentaire" value="Libellé du tableau de marche" />
+        <property name="cleDebut" value="Date de début d'application" />
+        <property name="cleFin" value="Date de fin d'application" />
+        <property name="cleLundi" value="Lundi (O/N)" />
+        <property name="cleMardi" value="Mardi (O/N)" />
+        <property name="cleMercredi" value="Mercredi (O/N)" />
+        <property name="cleJeudi" value="Jeudi (O/N)" />
+        <property name="cleVendredi" value="Vendredi (O/N)" />
+        <property name="cleSamedi" value="Samedi (O/N)" />
+        <property name="cleDimanche" value="Dimanche (O/N)" />
+        <property name="cleFerie" value="Jour férié (O/N)" />
+        <property name="identificationManager" ref="identificationManager"/>
+    </bean>
+</beans>

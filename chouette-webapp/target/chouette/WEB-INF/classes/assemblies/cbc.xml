@@ -1,0 +1,46 @@
+
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>distribution</id>
+  <formats>
+    <format>tar.gz</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>src</directory>
+      <excludes>
+        <exclude>main/filters/*.properties</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <includes>
+        <include>dist/*CERTU_*.war</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+  <files>
+    <file>
+      <source>pom-common.xml</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+    <file>
+      <source>pom-client.xml</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>pom.xml</destName>
+    </file>
+    <file>
+      <source>LICENCE.txt</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+    <file>
+      <source>ReleaseNotes.txt</source>
+      <outputDirectory>/</outputDirectory>
+    </file>
+    <file>
+      <source>src/main/filters/filterCERTU.properties</source>
+      <outputDirectory>/src/main/filters/</outputDirectory>
+    </file>
+  </files>
+</assembly>

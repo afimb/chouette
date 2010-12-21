@@ -1,0 +1,48 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+	<field name="publishedJourneyName">
+		<field-validator type="stringlength">
+			<param name="fieldName">publishedJourneyName</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>
+	<field name="publishedJourneyIdentifier">
+		<field-validator type="stringlength">
+			<param name="fieldName">publishedJourneyIdentifier</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>	
+	<field name="vehicleTypeIdentifier">
+		<field-validator type="stringlength">
+			<param name="fieldName">vehicleTypeIdentifier</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>
+	<field name="facility">
+		<field-validator type="stringlength">
+			<param name="fieldName">facility</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>	
+	<field name="comment">
+		<field-validator type="stringlength">
+			<param name="fieldName">facility</param>
+			<param name="maxLength">255</param>
+			<message key="errors.maxlength"/>
+		</field-validator>
+	</field>				
+	<field name="number" >
+		<field-validator type="regex">
+			<param name="fieldName">number</param>
+			<param name="expression">^\d{4}$</param>
+			<message key="errors.mask"/>
+		</field-validator>
+	</field>
+</validators>

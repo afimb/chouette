@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+       
+       <bean id="lecteurCSVHastus" class="fr.certu.chouette.service.importateur.multilignes.hastus.LecteurPrincipal">
+           <property name="repertoire" value="."/>
+           <property name="separateur" value="${csv.field.separator}"/>
+           <property name="lecteurZone" ref="lecteurHastusZone"/>
+           <property name="lecteurArret" ref="lecteurHastusArret"/>
+           <property name="lecteurLigne" ref="lecteurHastusLigne"/>
+           <property name="lecteurItineraire" ref="lecteurHastusItineraire"/>
+           <property name="lecteurCourse" ref="lecteurHastusCourse"/>
+           <property name="lecteurHoraire" ref="lecteurHastusHoraire"/>
+           <property name="lecteurOrdre" ref="lecteurHastusOrdre"/>
+           <property name="logFileName" value="${import.csv.hastus.log}" />
+       </bean>
+
+       <bean id="lecteurHastusObject" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.Lecteur">
+           <property name="identificationManager" ref="identificationManager"/>
+           <property name="special" value="${hastus.special}" />
+           <property name="space" value="${hastus.space}" />
+           <property name="hastusCode" value="${hastus.code}" />
+       </bean>
+       
+       <bean id="lecteurHastusZone" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurZone" parent="lecteurHastusObject">
+           <property name="cleCode" value="01"/>
+           <property name="cleAreaType" value="CommercialStopPoint"/>
+       </bean>
+       
+       <bean id="lecteurHastusArret" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurArret" parent="lecteurHastusObject">
+           <property name="cleCode" value="02"/>
+           <property name="cleAreaType" value="BoardingPosition"/>
+           <property name="cleLambert1" value="LAMBERT I"/>
+           <property name="cleLambert2" value="LAMBERT II"/>
+           <property name="cleLambert3" value="LAMBERT III"/>
+           <property name="cleLambert4" value="LAMBERT IV"/>
+           <property name="cleWGS84" value="WGS84"/>
+       </bean>
+       
+       <bean id="lecteurHastusLigne" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurLigne" parent="lecteurHastusObject">
+           <property name="cleCode" value="03"/>
+           <property name="cleBus" value="BUS"/>
+       </bean>
+       
+       <bean id="lecteurHastusItineraire" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurItineraire" parent="lecteurHastusObject">
+           <property name="cleCode" value="04"/>
+           <property name="cleAller" value="Aller"/>
+           <property name="cleRetour" value="Retour"/>
+       </bean>
+       
+       <bean id="lecteurHastusCourse" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurCourse" parent="lecteurHastusObject">
+           <property name="cleCode" value="05"/>
+       </bean>
+       
+       <bean id="lecteurHastusHoraire" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurHoraire" parent="lecteurHastusObject">
+           <property name="cleCode" value="06"/>
+       </bean>
+       
+       <bean id="lecteurHastusOrdre" class="fr.certu.chouette.service.importateur.multilignes.hastus.impl.LecteurOrdre" parent="lecteurHastusObject">
+           <property name="cleCode" value="07"/>
+       </bean>
+       
+       <bean id="reducteur" class="fr.certu.chouette.service.importateur.multilignes.hastus.Reducteur">
+           <property name="repertoire" value="${import.csv.hastus.tmp}"/>
+       </bean>
+
+       <bean id="convertisseur" class="fr.certu.chouette.service.geographie.impl.Convertisseur">
+           <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
+           <property name="lambertSRID" value="${Lambert.SRID}" />
+           <property name="wgs84SRID" value="${WGS84.SRID}" />
+       </bean>
+       
+       <bean id="coordonnees" class="fr.certu.chouette.service.geographie.impl.Coordonnees">
+           <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
+       </bean>
+</beans>

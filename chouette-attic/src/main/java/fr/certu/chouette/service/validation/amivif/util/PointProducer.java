@@ -6,9 +6,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.components.ElseIf;
 
-import amivif.schema.types.LongLatTypeType;
 
 import fr.certu.chouette.service.validation.amivif.LocationTridentObject;
 import fr.certu.chouette.service.validation.amivif.Point;

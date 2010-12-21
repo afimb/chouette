@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+  <property name="decorators-file" value="/WEB-INF/decorators.xml"/>
+  <excludes file="${decorators-file}"/>
+  <page-parsers>
+    <parser content-type="text/html" encoding="utf-8"
+        class="com.opensymphony.module.sitemesh.parser.FastPageParser" />
+    <parser content-type="text/html;charset=UTF-8" encoding="utf-8"
+            class="com.opensymphony.module.sitemesh.parser.HTMLPageParser" />
+  </page-parsers>
+  <decorator-mappers>
+    <mapper
+        class="com.opensymphony.module.sitemesh.mapper.PageDecoratorMapper">
+      <param name="property.1" value="meta.decorator" />
+      <param name="property.2" value="decorator" />
+    </mapper>
+    <!-- Mapper for localization -->
+    <mapper
+        class="com.opensymphony.module.sitemesh.mapper.LanguageDecoratorMapper">
+      <param name="match.en" value="en" />
+      <param name="match.zh" value="zh" />
+    </mapper>
+    <!-- Mapper for browser compatibility -->
+    <mapper
+        class="com.opensymphony.module.sitemesh.mapper.AgentDecoratorMapper">
+      <param name="match.MSIE" value="ie" />
+      <param name="match.Mozilla/" value="ns" />
+    </mapper>
+    <mapper
+        class="com.opensymphony.module.sitemesh.mapper.PrintableDecoratorMapper">
+      <param name="decorator" value="printable" />
+      <param name="parameter.name" value="printable" />
+      <param name="parameter.value" value="true" />
+    </mapper>
+    <mapper
+        class="com.opensymphony.module.sitemesh.mapper.ParameterDecoratorMapper">
+      <param name="decorator.parameter" value="decorator" />
+      <param name="parameter.name" value="confirm" />
+      <param name="parameter.value" value="true" />
+    </mapper>
+    <mapper
+        class="com.opensymphony.module.sitemesh.mapper.ConfigDecoratorMapper">
+      <param name="config" value="${decorators-file}" />
+    </mapper>
+  </decorator-mappers>
+</sitemesh>

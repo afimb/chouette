@@ -1,0 +1,39 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+  <field name="name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="publishedName" >
+    <field-validator type="stringlength">
+      <param name="fieldName">publishedName</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="number">
+    <field-validator type="stringlength">
+      <param name="fieldName">number</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+  <field name="comment">
+    <field-validator type="stringlength">
+      <param name="fieldName">comment</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+</validators>

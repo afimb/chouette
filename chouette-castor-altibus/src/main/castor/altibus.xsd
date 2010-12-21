@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  
+  <xsd:element name="Altibus">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Reseau" />
+        <xsd:element ref="Exploitant" />
+        <xsd:element ref="Stations" minOccurs="2" maxOccurs="unbounded"/>
+        <xsd:element ref="Lignes" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="Calendriers" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="Intervalles" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="Bus" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="Arrets" minOccurs="2" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attribute name="xsi:schemaLocation" type="xsd:NMTOKEN" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Reseau">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="NomReseau" type="xsd:string" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Exploitant">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="NomExploitant" type="xsd:string" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Stations">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Station" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Station">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RefStation" type="xsd:string" />
+        <xsd:element name="NomStation" type="xsd:string" />
+        <xsd:element name="NumEnregistrementStation" type="xsd:string" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Lignes">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Ligne" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Ligne">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RefLigne" type="xsd:string" />
+        <xsd:element name="RefGareDepart" type="xsd:string" />
+        <xsd:element name="RefGareArrivee" type="xsd:string" />
+        <xsd:element name="NomLigne" type="xsd:string" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Calendriers">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Calendrier" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Calendrier">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RefCalendrier" type="xsd:string" />
+        <xsd:element name="NomCalendrier" type="xsd:string" minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Intervalles">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Intervalle" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:simpleType name="EType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="I" />
+      <xsd:enumeration value="E" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:element name="Intervalle">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RefIntervalle" type="xsd:string" />
+        <xsd:element name="RefCalendrier" type="xsd:string" />
+        <xsd:element name="Debut" type="xsd:date" />
+        <xsd:element name="Fin" type="xsd:date" />
+        <xsd:element name="Lundi" type="xsd:boolean" />
+        <xsd:element name="Mardi" type="xsd:boolean" />
+        <xsd:element name="Mercredi" type="xsd:boolean" />
+        <xsd:element name="Jeudi" type="xsd:boolean" />
+        <xsd:element name="Vendredi" type="xsd:boolean" />
+        <xsd:element name="Samedi" type="xsd:boolean" />
+        <xsd:element name="Dimanche" type="xsd:boolean" />
+        <xsd:element name="Type" type="EType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Bus">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="ABus" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="ABus">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="NumBus" type="xsd:string" />
+        <xsd:element name="RefLigne" type="xsd:string" />
+        <xsd:element name="RefCalendrier" type="xsd:string" />
+        <xsd:element name="Infos" type="xsd:string" minOccurs="0" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Arrets">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="Arret" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="Arret">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="RefArret" type="xsd:string" />
+        <xsd:element name="NumBus" type="xsd:string" />
+        <xsd:element name="NumProgressionBus" type="xsd:nonNegativeInteger" />
+        <xsd:element name="RefStation" type="xsd:string" />
+        <xsd:element name="Horaire" type="xsd:time" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+</xsd:schema>

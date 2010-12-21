@@ -1,0 +1,24 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+	
+  <field name="startDate">
+    <field-validator type="regex">
+      <param name="expression">^$|([0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9])</param>
+      <message key="errors.date.format"/>
+    </field-validator>
+  </field>
+  <field name="endDate">
+    <field-validator type="regex">
+      <param name="expression">^$|([0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9])</param>
+      <message key="errors.date.format"/>
+    </field-validator>
+  </field>
+  <validator type="expression">
+    <param name="expression"><![CDATA[(startDate == null || endDate == null) || (startDate != null && endDate != null && endDate.after(startDate))]]></param>
+    <message key="errors.date.interval" />
+  </validator>
+</validators> 
+	
