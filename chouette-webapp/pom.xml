@@ -133,7 +133,7 @@
                         <userRealm implementation=
       "org.mortbay.jetty.security.HashUserRealm">
                             <name>Espace membres</name>
-                            <config>${basedir}/etc/realm.properties</config>
+                            <config>${basedir}/src/main/dev/jetty.properties</config>
                         </userRealm>
                     </userRealms>
                 </configuration>
