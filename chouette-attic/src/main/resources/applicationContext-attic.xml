@@ -9,30 +9,6 @@
   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean>
-
-    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
-        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-        <property name="searchContextAttributes" value="true"/>
-        <property name="contextOverride" value="true"/>
-        <property name="ignoreResourceNotFound" value="true"/>
-        <property name="properties">
-            <props>
-                <prop key="config"></prop>
-            </props>
-        </property>
-        <property name="locations">
-            <list>
-                <value>classpath:spring.properties</value>
-                <value>classpath:spring-local.properties</value>
-                <value>${config}</value>
-            </list>
-        </property>
-    </bean>
-
   <!--  empty file : unused
   <import resource="classpath:/externalModule.xml" />
    -->

@@ -26,7 +26,7 @@
         <property name="locations">
             <list>                
                 <value>classpath:spring.properties</value>
-                <value>classpath:spring-local.properties</value>
+                <value>classpath:chouette.properties</value>
                 <value>${config}</value>
             </list>
         </property>
