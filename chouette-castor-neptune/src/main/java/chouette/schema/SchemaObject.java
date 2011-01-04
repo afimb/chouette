@@ -5,7 +5,7 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package chouette.schema.castor;
+package chouette.schema;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
