@@ -102,25 +102,18 @@
     </dependencyManagement>
     <profiles>
         <profile>
-            <id>development</id>
-            <activation>
-                <property>
-                    <name>!site</name>
-                </property>
-            </activation>
-            <properties>
-                <profile.filter>${basedir}/src/main/filters/filter.properties</profile.filter>
-                <profile.setting>default</profile.setting>
-            </properties>
-        </profile>
-        <profile>
-            <id>production</id>
+            <id>sonar</id>
             <activation>
                 <property>
                     <name>site</name>
                 </property>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
+                <sonar.jdbc.url>jdbc:postgresql://localhost/sonar</sonar.jdbc.url>
+                <sonar.jdbc.username>luc</sonar.jdbc.username>
+                <sonar.jdbc.password>monalisa</sonar.jdbc.password>
+                <sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
                 <profile.filter>${basedir}/src/main/filters/filter${site}.properties</profile.filter>
                 <profile.setting>${site}</profile.setting>
             </properties>
@@ -137,6 +130,11 @@
                     <target>1.6</target>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>1.0-beta-2</version>
             </plugin>
         </plugins>
     </build>

@@ -9,257 +9,275 @@
   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
 
-  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:/spring.properties"/>
-  </bean>
+    <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="searchContextAttributes" value="true"/>
+        <property name="contextOverride" value="true"/>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="properties">
+            <props>
+                <prop key="config"></prop>
+            </props>
+        </property>
+        <property name="locations">
+            <list>                
+                <value>classpath:spring.properties</value>
+                <value>classpath:spring-local.properties</value>
+                <value>${config}</value>
+            </list>
+        </property>
+    </bean>
 
-  <import resource="classpath:/applicationContext-attic.xml" />
+    <import resource="classpath:/applicationContext-attic.xml" />
 
-  <bean id="GeneriqueAction"
+    <bean id="GeneriqueAction"
         abstract="true"
         scope="prototype"
         class="fr.certu.chouette.struts.GeneriqueAction">
-    <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
-    <property name="baseLayerSource" value="${map.baseLayerSource}"/>
-    <property name="geoportalApiKey" value="${map.geoportalApiKey}"/>
-    <property name="lambertSRID" value="${Lambert.SRID}"/>
-  </bean>
+        <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
+        <property name="baseLayerSource" value="${map.baseLayerSource}"/>
+        <property name="geoportalApiKey" value="${map.geoportalApiKey}"/>
+        <property name="lambertSRID" value="${Lambert.SRID}"/>
+    </bean>
 
-  <bean id="RouteActionBean" scope="prototype"
+    <bean id="RouteActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.route.RouteAction">
-    <property name="itineraireManager" ref="itineraireManager"/>
-    <property name="ligneManager" ref="ligneManager"/>
-  </bean>
+        <property name="itineraireManager" ref="itineraireManager"/>
+        <property name="ligneManager" ref="ligneManager"/>
+    </bean>
 
-  <bean id="JourneyPatternActionBean" scope="prototype"
+    <bean id="JourneyPatternActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
-    <property name="missionManager" ref="missionManager"/>
-  </bean>
+        <property name="missionManager" ref="missionManager"/>
+    </bean>
 
-  <bean id="StoppointOnRouteActionBean" scope="prototype"
+    <bean id="StoppointOnRouteActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
-    <property name="itineraireManager" ref="itineraireManager"/>
-    <property name="ligneManager" ref="ligneManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="itineraireManager" ref="itineraireManager"/>
+        <property name="ligneManager" ref="ligneManager"/>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
-  <bean id="JSONStopPointOnRouteActionBean" scope="prototype"
+    <bean id="JSONStopPointOnRouteActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONStopPointOnRouteAction">
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
 
-  <bean id="Pagination" scope="prototype"
+    <bean id="Pagination" scope="prototype"
         class="fr.certu.chouette.struts.outil.pagination.Pagination">
-    <property name="nbColonnesParPage" value="${vehicleJourney.displayed}"/>
-    <property name="nbTotalPages" value="${page.displayed}"/>
-  </bean>
+        <property name="nbColonnesParPage" value="${vehicleJourney.displayed}"/>
+        <property name="nbTotalPages" value="${page.displayed}"/>
+    </bean>
 
-  <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
+    <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
-    <property name="itineraireManager" ref="itineraireManager"/>
-    <property name="horaireManager" ref="horaireManager"/>
-    <property name="courseManager" ref="courseManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-    <property name="missionManager" ref="missionManager"/>
-    <property name="pagination" ref="Pagination"/>
-    <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
-    <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
-  </bean>
+        <property name="itineraireManager" ref="itineraireManager"/>
+        <property name="horaireManager" ref="horaireManager"/>
+        <property name="courseManager" ref="courseManager"/>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+        <property name="missionManager" ref="missionManager"/>
+        <property name="pagination" ref="Pagination"/>
+        <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
+        <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
+    </bean>
 
-  <bean id="VehicleJourneyActionBean" scope="prototype"
+    <bean id="VehicleJourneyActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.vehicleJourney.VehicleJourneyAction">
-    <property name="itineraireManager" ref="itineraireManager"/>
-    <property name="courseManager" ref="courseManager"/>
-    <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
-    <property name="ligneManager" ref="ligneManager"/>
-  </bean>
+        <property name="itineraireManager" ref="itineraireManager"/>
+        <property name="courseManager" ref="courseManager"/>
+        <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
+        <property name="ligneManager" ref="ligneManager"/>
+    </bean>
 
-  <bean id="LineActionBean" scope="prototype"
+    <bean id="LineActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.line.LineAction">
-    <property name="ligneManager" ref="ligneManager"/>
-    <property name="reseauManager" ref="reseauManager"/>
-    <property name="transporteurManager" ref="transporteurManager"/>
-    <property name="exportManager" ref="exportManager"/>
-    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
-    <property name="useAmivif" value="${ligne.amivif}"/>
-    <property name="detruireAvecTMs" value="${destructionLigne.detruireAvecTMs}"/>
-    <property name="detruireAvecArrets" value="${destructionLigne.detruireAvecArrets}"/>
-    <property name="detruireAvecTransporteur" value="${destructionLigne.detruireAvecTransporteur}"/>
-    <property name="detruireAvecReseau" value="${destructionLigne.detruireAvecReseau}"/>
-  </bean>
+        <property name="ligneManager" ref="ligneManager"/>
+        <property name="reseauManager" ref="reseauManager"/>
+        <property name="transporteurManager" ref="transporteurManager"/>
+        <property name="exportManager" ref="exportManager"/>
+        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+        <property name="useAmivif" value="${ligne.amivif}"/>
+        <property name="detruireAvecTMs" value="${destructionLigne.detruireAvecTMs}"/>
+        <property name="detruireAvecArrets" value="${destructionLigne.detruireAvecArrets}"/>
+        <property name="detruireAvecTransporteur" value="${destructionLigne.detruireAvecTransporteur}"/>
+        <property name="detruireAvecReseau" value="${destructionLigne.detruireAvecReseau}"/>
+    </bean>
 
-  <bean id="JSONLineActionBean" scope="prototype"
+    <bean id="JSONLineActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONLineAction">
-    <property name="ligneManager" ref="ligneManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="ligneManager" ref="ligneManager"/>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
-  <bean id="CompanyActionBean" scope="prototype"
+    <bean id="CompanyActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.company.CompanyAction">
-    <property name="transporteurManager" ref="transporteurManager"/>
-    <property name="exportManager" ref="exportManager"/>
-    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
-  </bean>
+        <property name="transporteurManager" ref="transporteurManager"/>
+        <property name="exportManager" ref="exportManager"/>
+        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+    </bean>
 
-  <bean id="NetworkActionBean" scope="prototype"
+    <bean id="NetworkActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.network.NetworkAction">
-    <property name="reseauManager" ref="reseauManager"/>
-    <property name="exportManager" ref="exportManager"/>
-    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
-    <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
-    <property name="gtfsFileWriter" ref="gtfsFileWriter"/>
-    <property name="useGtfs" value="${network.gtfs}"/>
-  </bean>
+        <property name="reseauManager" ref="reseauManager"/>
+        <property name="exportManager" ref="exportManager"/>
+        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+        <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
+        <property name="gtfsFileWriter" ref="gtfsFileWriter"/>
+        <property name="useGtfs" value="${network.gtfs}"/>
+    </bean>
 
-  <bean id="TimeTableActionBean" scope="prototype"
+    <bean id="TimeTableActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.timeTable.TimeTableAction">
-    <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
-    <property name="reseauManager" ref="reseauManager"/>
-  </bean>
+        <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
+        <property name="reseauManager" ref="reseauManager"/>
+    </bean>
 
-  <bean id="StopAreaActionBean" scope="prototype"
+    <bean id="StopAreaActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.stopArea.StopAreaAction">
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-    <property name="ligneManager" ref="ligneManager"/>
-    <property name="reseauManager" ref="reseauManager"/>
-  </bean>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+        <property name="ligneManager" ref="ligneManager"/>
+        <property name="reseauManager" ref="reseauManager"/>
+    </bean>
 
-  <bean id="JSONBoardingPositionActionBean" scope="prototype"
+    <bean id="JSONBoardingPositionActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONBoardingPositionAction">
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
-  <bean id="JSONStopPlaceActionBean" scope="prototype"
+    <bean id="JSONStopPlaceActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONStopPlaceAction">
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
-  <bean id="ConnectionLinkActionBean" scope="prototype"
+    <bean id="ConnectionLinkActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
-    <property name="correspondanceManager" ref="correspondanceManager"/>
-    <property name="importCorrespondances" ref="importCorrespondances"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-    <property name="useHastus" value="${import.csv.hastus}"/>
-  </bean>
+        <property name="correspondanceManager" ref="correspondanceManager"/>
+        <property name="importCorrespondances" ref="importCorrespondances"/>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+        <property name="useHastus" value="${import.csv.hastus}"/>
+    </bean>
 
-  <bean id="JSONConnectionLinkActionBean" scope="prototype"
+    <bean id="JSONConnectionLinkActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONConnectionLinkAction">
-    <property name="correspondanceManager" ref="correspondanceManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="correspondanceManager" ref="correspondanceManager"/>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
-  <bean id="RoutingConstraintActionBean" scope="prototype"
+    <bean id="RoutingConstraintActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.routingConstraint.RoutingConstraintAction">
-    <property name="itlManager" ref="itlManager"/>
-    <property name="ligneManager" ref="ligneManager"/>
-    <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-  </bean>
+        <property name="itlManager" ref="itlManager"/>
+        <property name="ligneManager" ref="ligneManager"/>
+        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+    </bean>
 
-  <bean id="ImportActionBean" scope="prototype"
+    <bean id="ImportActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.upload.ImportAction">
-    <property name="importateur" ref="importateur"/>
-    <property name="lecteurCSV" ref="lecteurCSV"/>
-    <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
-    <property name="lecteurCVSHastus" ref="lecteurCSVHastus"/>
-    <property name="lecteurCVSPegase" ref="lecteurCSVPegase"/>
-    <property name="lecteurXMLAltibus" ref="lecteurXMLAltibus"/>
-    <property name="identificationManager" ref="identificationManager"/>
-    <property name="importHorairesManager" ref="importHorairesManager"/>
-    <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
-    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
-    <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
-    <property name="amivifAdapter" ref="amivifAdapter"/>
-    <property name="useAmivif" value="${ligne.amivif}"/>
-    <property name="useCSVGeneric" value="${import.csv.multilignes}"/>
-    <property name="useHastus" value="${import.csv.hastus}"/>
-    <property name="logFileName" value="${import.csv.hastus.log}" />
-    <property name="reducteur" ref="reducteur" />
-    <property name="useAltibus" value="${import.xml.altibus}"/>
-    <property name="usePegase" value="${import.csv.pegase}"/>
-  </bean>
+        <property name="importateur" ref="importateur"/>
+        <property name="lecteurCSV" ref="lecteurCSV"/>
+        <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
+        <property name="lecteurCVSHastus" ref="lecteurCSVHastus"/>
+        <property name="lecteurCVSPegase" ref="lecteurCSVPegase"/>
+        <property name="lecteurXMLAltibus" ref="lecteurXMLAltibus"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="importHorairesManager" ref="importHorairesManager"/>
+        <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
+        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+        <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
+        <property name="amivifAdapter" ref="amivifAdapter"/>
+        <property name="useAmivif" value="${ligne.amivif}"/>
+        <property name="useCSVGeneric" value="${import.csv.multilignes}"/>
+        <property name="useHastus" value="${import.csv.hastus}"/>
+        <property name="logFileName" value="${import.csv.hastus.log}" />
+        <property name="reducteur" ref="reducteur" />
+        <property name="useAltibus" value="${import.xml.altibus}"/>
+        <property name="usePegase" value="${import.csv.pegase}"/>
+    </bean>
 
-  <bean id="LineFilesComparisonServiceBean" scope="prototype"
+    <bean id="LineFilesComparisonServiceBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
-    <property name="identificationManager" ref="identificationManager"/>
-    <property name="exchangeFormat" value="Chouette"/>
-    <property name="enableVerboseMode" value="false"/>
+        <property name="identificationManager" ref="identificationManager"/>
+        <property name="exchangeFormat" value="Chouette"/>
+        <property name="enableVerboseMode" value="false"/>
 
-    <property name="availableExchangeFormats">
-      <map>
-        <entry key="Chouette">
-          <ref bean="ExchangeableChouetteLineComparator"/>
-        </entry>
-        <entry key="Stif">
-          <ref bean="ExchangeableAmivifLineComparator"/>
-        </entry>
-      </map>
-    </property>
-  </bean>
+        <property name="availableExchangeFormats">
+            <map>
+                <entry key="Chouette">
+                    <ref bean="ExchangeableChouetteLineComparator"/>
+                </entry>
+                <entry key="Stif">
+                    <ref bean="ExchangeableAmivifLineComparator"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
-  <bean id="Validation" scope="prototype"
+    <bean id="Validation" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.ValidationAction">
-    <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
-    <property name="databasePurgeManager" ref="databasePurgeManager"/>
-    <property name="useGeometry" value="${validation.tm.geometry}"/>
-    <property name="inclusif" value="${validation.tm.inclusif}"/>
-  </bean>
+        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
+        <property name="databasePurgeManager" ref="databasePurgeManager"/>
+        <property name="useGeometry" value="${validation.tm.geometry}"/>
+        <property name="inclusif" value="${validation.tm.inclusif}"/>
+    </bean>
 
-  <bean id="ExportActionBean" scope="prototype"
+    <bean id="ExportActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.export.ExportAction">
-    <property name="exportManager" ref="exportManager"/>
-    <property name="exportHorairesManager" ref="exportHorairesManager"/>
-    <property name="exportCorrespondances" ref="exportCorrespondances"/>
-    <property name="amivifAdapter" ref="amivifAdapter"/>
-    <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
-    <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
-    <property name="ligneManager" ref="ligneManager"/>
-    <property name="transporteurManager" ref="transporteurManager"/>
-    <property name="reseauManager" ref="reseauManager"/>
-    <property name="lecteurCSV" ref="lecteurCSV"/>
-  </bean>
+        <property name="exportManager" ref="exportManager"/>
+        <property name="exportHorairesManager" ref="exportHorairesManager"/>
+        <property name="exportCorrespondances" ref="exportCorrespondances"/>
+        <property name="amivifAdapter" ref="amivifAdapter"/>
+        <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
+        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+        <property name="ligneManager" ref="ligneManager"/>
+        <property name="transporteurManager" ref="transporteurManager"/>
+        <property name="reseauManager" ref="reseauManager"/>
+        <property name="lecteurCSV" ref="lecteurCSV"/>
+    </bean>
 
-  <bean id="MassiveExportActionBean" scope="prototype"
+    <bean id="MassiveExportActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.massiveExport.MassiveExportAction">
-    <property name="networkManager" ref="reseauManager"/>
-    <property name="massiveExportManager" ref="massiveExportManager"/>
-    <property name="excludeConnectionLinks" value="${massiveExport.ihm.excludeConnectionLinks}"/>
-  </bean>
+        <property name="networkManager" ref="reseauManager"/>
+        <property name="massiveExportManager" ref="massiveExportManager"/>
+        <property name="excludeConnectionLinks" value="${massiveExport.ihm.excludeConnectionLinks}"/>
+    </bean>
 
-  <bean id="Deconnexion" scope="prototype"
+    <bean id="Deconnexion" scope="prototype"
         class="fr.certu.chouette.struts.DeconnexionAction">
-  </bean>
+    </bean>
 
-  <bean id="AProposDe" scope="prototype"
+    <bean id="AProposDe" scope="prototype"
         class="fr.certu.chouette.struts.AProposDeAction">
-    <property name="versionApplication" value="${applie.version}"/>
-  </bean>
+        <property name="versionApplication" value="${chouette.version}"/>
+    </bean>
 
-  <bean id="DownloadFileAction" scope="prototype"
+    <bean id="DownloadFileAction" scope="prototype"
         class="fr.certu.chouette.struts.DownloadFileAction">
-  </bean>
+    </bean>
 
 </beans>

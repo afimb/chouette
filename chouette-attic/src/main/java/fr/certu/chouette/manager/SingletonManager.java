@@ -40,7 +40,7 @@ public class SingletonManager
          {
         	 logger.debug( "Chargement Spring Début");
             SingletonManager.applicationContext = new FileSystemXmlApplicationContext(
-                  chemin + File.separator + "applicationContext.xml");
+                  chemin + File.separator + "applicationContext-attic.xml");
             logger.debug( "Chargement Spring Fini");
          }
          catch (Exception e)

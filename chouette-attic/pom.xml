@@ -146,9 +146,6 @@
         </pluginRepository>
     </pluginRepositories>
     <build>
-        <filters>
-            <filter>${profile.filter}</filter>
-        </filters>
         <extensions>
             <extension>
                 <groupId>postgresql</groupId>
@@ -166,13 +163,6 @@
             </resource>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
-                <excludes>
-                    <exclude>filtered/**</exclude>
-                </excludes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources/filtered</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
