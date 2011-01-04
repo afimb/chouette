@@ -101,7 +101,7 @@
         <resources>
             <resource>
                 <targetPath>fr/certu/chouette/struts</targetPath>
-                <directory>${basedir}/src/main/java/fr/certu/chouette/struts</directory>
+                <directory>${basedir}/src/main/resources/fr/certu/chouette/struts</directory>
                 <includes>
                     <include>*.xml</include>
                     <include>*.properties</include>
