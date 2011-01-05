@@ -96,12 +96,7 @@ timetables of public transport networks, in accordance with a standard exchange 
         </jsp-property-group>
     </jsp-config>
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-        <welcome-file>index.htm</welcome-file>
         <welcome-file>index.jsp</welcome-file>
-        <welcome-file>default.html</welcome-file>
-        <welcome-file>default.htm</welcome-file>
-        <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
     <error-page>
         <error-code>403</error-code>
