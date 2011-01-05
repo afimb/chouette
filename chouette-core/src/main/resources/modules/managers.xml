@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	
+	xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <bean id="profiler" class="fr.certu.chouette.spring.profiler.SimpleProfiler">
+		<!-- execute before the transactional advice (hence the lower order number) -->
+    <property name="order" value="1"/>
+  </bean>
+    
+  <bean id="creationControleur" class="fr.certu.chouette.spring.profiler.CreationControleur">
+		<!-- execute before the transactional advice (hence the lower order number) -->
+    <property name="order" value="0"/>
+  </bean>
+
+    <!-- Enable @Transactional support -->
+  <tx:annotation-driven/>
+
+    <!-- Enable @AspectJ support -->
+  <aop:aspectj-autoproxy/>
+
+  <aop:config>
+		<!-- order value is higher than the profiling aspect -->
+    <aop:advisor id="managerTx" advice-ref="txAdvice" pointcut="execution(* *..manager.*Manager.*(..))" order="2"/>
+    <aop:aspect id="profilingAspect" ref="profiler">
+      <aop:pointcut id="serviceMethodWithReturnValue"
+				expression="execution(* *..manager.*Manager.*(..))"/>
+      <aop:around method="profile" pointcut-ref="serviceMethodWithReturnValue"/>
+    </aop:aspect>
+    <aop:aspect id="creatingAspect" ref="creationControleur">
+      <aop:pointcut id="creerMethodWithReturnValue"
+			expression="execution(* *..*..manager.*Manager.*(..)).*Manager.creer*(..))"/>
+      <aop:around method="creationProtect" pointcut-ref="creerMethodWithReturnValue"/>
+    </aop:aspect>
+  </aop:config>
+
+  <tx:advice id="txAdvice">
+    <tx:attributes>
+      <tx:method name="get*" read-only="true"/>
+      <tx:method name="*" rollback-for="Exception"/>
+    </tx:attributes>
+  </tx:advice>
+
+  <bean id="lineManager"
+    		class="fr.certu.chouette.manager.LineManager">
+    <property name="dao" ref="lineDao"/>
+    <property name="pluginContainer" ref="lineManagerPlugins"/>
+  </bean>
+
+</beans>
