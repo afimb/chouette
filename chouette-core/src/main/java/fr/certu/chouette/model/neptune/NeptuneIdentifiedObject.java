@@ -19,7 +19,7 @@ import lombok.Setter;
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
 	@Getter @Setter private String objectId;
-	@Getter @Setter private int objectVersion = 1; // TODO verifier la valeur par défaut
+	@Getter @Setter private int objectVersion = 1; // TODO verifier la valeur par defaut
 	@Getter @Setter private Date creationTime;
 	@Getter @Setter private String creatorId;
 	@Getter @Setter private String name;
