@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	
+	xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+	<bean id="chouetteDataSource"
+		class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${hibernate.username}" />
+		<property name="password" value="${hibernate.password}" />
+		<property name="databaseSchema" value="${database.schema}" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
+				</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop>  -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.default_schema">${database.schema}</prop>
+			</props>
+		</property>
+		<property name="dataSource" ref="chouetteDataSource" />
+    <property name="mappingResources">
+      <list>
+        <value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
+        <value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
+        <value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
+        <value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
+      </list>
+    </property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+	<!-- Modules DAO -->
+
+	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createPTNetworkDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="lineDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createLineDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="companyDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createCompanyDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="routeDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createRouteDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+</beans>

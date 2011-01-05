@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>chouette</artifactId>
+		<groupId>fr.certu.chouette</groupId>
+		<version>1.5.0</version>
+	</parent>
+	<groupId>fr.certu.chouette</groupId>
+	<artifactId>chouette-exchange-neptune</artifactId>
+	<version>1.5.0</version>
+	<name>Chouette Exchange Neptune</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette.schema</groupId>
+			<artifactId>chouette-castor-neptune</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-attic</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-core</artifactId>
+		</dependency>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>

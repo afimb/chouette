@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="file:./spring.properties" />
+	</bean>
+
+	<import resource="classpath:/modules/hibernate.xml" />
+	<import resource="classpath:/modules/neptune_exchange.xml" />
+	
+	<!-- branch plugins -->
+	<bean id="lineManagerPlugins" class="fr.certu.chouette.exchange.PluginContainer" factory-method="createLinePluginContainer" >
+	    <property name="importPlugins" >
+	       <list>
+	       <ref bean="NeptuneLineImport"/>
+	       </list>
+	    </property>
+	    <property name="exportPlugins" >
+	       <list>
+	       </list>
+	    </property>
+	</bean>
+	
+	<import resource="classpath:/modules/managers.xml" />
+
+	<bean id="Command" class="fr.certu.chouette.command.Command">
+		<property name="managers">
+			<map>
+				<entry key="line" value-ref="lineManager" />
+			</map>
+		</property>
+	</bean>
+
+
+</beans>

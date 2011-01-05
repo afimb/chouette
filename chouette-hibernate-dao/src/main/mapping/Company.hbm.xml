@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+@@LICENCE@@
+-->
+<!--
+ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DCompanyBean.hbm.xml : paramétrage DCompanyBean - company
+
+ Historique des modifications :
+ Date        | Auteur         | Libéllé
+ ============+================+==============================================
+ 2 nov. 2004 |Marc FLORISSON  | Création
+ ============+================+==============================================
+
+ Version : $Revision: 1.5 $
+-->
+<hibernate-mapping package="fr.certu.chouette.model.neptune">
+  <class name="Company" table="Company" dynamic-insert="false" dynamic-update="false" >
+    <id name="id" type="long">
+      <generator class="native"/>
+    </id>
+    <property name="objectId" type="string" unique="true" not-null="true"/>
+    <property name="objectVersion" type="int"/>
+    <property name="creationTime" type="java.util.Date"/>
+    <property name="creatorId" type="string"/>
+    <property name="name" not-null="true"/>
+    <property name="shortName"/>
+    <property name="organisationalUnit"/>
+    <property name="operatingDepartmentName"/>
+    <property name="code"/>
+    <property name="phone"/>
+    <property name="fax"/>
+    <property name="email"/>
+    <property name="registrationNumber" unique="true"/>
+  </class>
+</hibernate-mapping>
