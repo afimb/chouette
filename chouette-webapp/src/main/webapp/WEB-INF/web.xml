@@ -6,7 +6,7 @@ timetables of public transport networks, in accordance with a standard exchange 
     <display-name>chouette</display-name>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:applicationContext.xml</param-value>
+        <param-value>classpath*:applicationContext*.xml</param-value>
     </context-param>
     <!-- encodage utf-8 -->
     <filter>
