@@ -21,7 +21,7 @@ public class NeptuneConverter
 		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
 		chouette.schema.Line xmlLine = lineDescription.getLine();
 		
-		// modèle des producer : voir package fr.certu.chouette.service.validation.util
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
 		LineProducer producer = new LineProducer();
 		Line line = producer.produceLine(xmlLine);
 		

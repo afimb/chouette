@@ -41,7 +41,7 @@ public class LineProducer extends AbstractModelProducer
 			String realLineEnd = getNonEmptyTrimedString(lineEnd);
 			if (realLineEnd == null)
 			{
-				// TODO à tracer 
+				// TODO tracer 
 			}
 			else
 			{
@@ -56,7 +56,7 @@ public class LineProducer extends AbstractModelProducer
 			String realRouteId = getNonEmptyTrimedString(routeId);
 			if (realRouteId == null)
 			{
-				// TODO à tracer 
+				// TODO tracer 
 			}
 			else
 			{
