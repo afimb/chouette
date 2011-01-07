@@ -111,6 +111,11 @@
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <targetPath>${basedir}/src/main/resources</targetPath>
+                <directory>${project.parent.basedir}/config/dev</directory>
+                <filtering>true</filtering>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -164,7 +169,7 @@
                         <userRealm implementation=
       "org.mortbay.jetty.security.HashUserRealm">
                             <name>Espace membres</name>
-                            <config>${basedir}/src/main/dev/jetty.properties</config>
+                            <config>${project.parent.basedir}/config/dev/jetty.properties</config>
                         </userRealm>
                     </userRealms>
                 </configuration>
