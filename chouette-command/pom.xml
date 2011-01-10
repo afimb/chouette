@@ -138,11 +138,18 @@
 				</includes>
 				<targetPath>${project.build.directory}</targetPath>
 			</resource>
+			<!-- 
 			<resource>
 				<directory>${basedir}/src/main/resources/filtered</directory>
 				<filtering>true</filtering>
 				<targetPath>${project.build.directory}</targetPath>
 			</resource>
+			 -->
+            <resource>
+                <targetPath>${project.build.directory}</targetPath>
+                <directory>${project.parent.basedir}/config/dev</directory>
+                <filtering>false</filtering>
+            </resource>
 		</resources>
 
 		<plugins>
