@@ -50,7 +50,7 @@ public class Command
 	 */
 	public static void main(String[] args)
 	{
-		applicationContext = new ClassPathXmlApplicationContext("CommandLineApplicationContext.xml");
+		applicationContext = new ClassPathXmlApplicationContext("ApplicationContext.xml");
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory(); 
 		Command command = (Command) factory.getBean("Command");
 		command.execute(args);
