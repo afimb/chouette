@@ -33,16 +33,16 @@ public class Route extends NeptuneIdentifiedObject
 	@Override
 	public String toString(String indent,int level)
 	{
-		String s = super.toString(indent,level);
-		s += "\n"+indent+"oppositeRouteId = "+oppositeRouteId;
-		s += "\n"+indent+"lineId = "+lineId;
-		s += "\n"+indent+"publishedName = "+publishedName;
-		s += "\n"+indent+"number = "+number;
-		s += "\n"+indent+"direction = "+direction;
-		s += "\n"+indent+"comment = "+comment;
-		s += "\n"+indent+"wayBack = "+wayBack;
+		StringBuilder sb = new StringBuilder(super.toString(indent,level));
+		sb.append("\n").append(indent).append("oppositeRouteId = ").append(oppositeRouteId);
+		sb.append("\n").append(indent).append("lineId = ").append(lineId);
+		sb.append("\n").append(indent).append("publishedName = ").append(publishedName);
+		sb.append("\n").append(indent).append("number = ").append(number);
+		sb.append("\n").append(indent).append("direction = ").append(direction);
+		sb.append("\n").append(indent).append("comment = ").append(comment);
+		sb.append("\n").append(indent).append("wayBack = ").append(wayBack);
 
-		return s;
+		return sb.toString();
 	}
 
 }

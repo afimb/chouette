@@ -33,18 +33,18 @@ public class Company extends NeptuneIdentifiedObject
 	@Override
 	public String toString(String indent,int level)
 	{
-		String s = super.toString(indent,level);
-		s += "\n"+indent+"shortName = "+shortName;
-		s += "\n"+indent+"organisationalUnit = "+organisationalUnit;
-		s += "\n"+indent+"operatingDepartmentName = "+operatingDepartmentName;
-		s += "\n"+indent+"code = "+code;
-		s += "\n"+indent+"phone = "+phone;
-		s += "\n"+indent+"fax = "+fax;
-		s += "\n"+indent+"email = "+email;
-		s += "\n"+indent+"fax = "+fax;
-		s += "\n"+indent+"registrationNumber = "+registrationNumber;
+		StringBuilder sb = new StringBuilder(super.toString(indent,level));
+		sb.append("\n").append(indent).append("shortName = ").append(shortName);
+		sb.append("\n").append(indent).append("organisationalUnit = ").append(organisationalUnit);
+		sb.append("\n").append(indent).append("operatingDepartmentName = ").append(operatingDepartmentName);
+		sb.append("\n").append(indent).append("code = ").append(code);
+		sb.append("\n").append(indent).append("phone = ").append(phone);
+		sb.append("\n").append(indent).append("fax = ").append(fax);
+		sb.append("\n").append(indent).append("email = ").append(email);
+		sb.append("\n").append(indent).append("fax = ").append(fax);
+		sb.append("\n").append(indent).append("registrationNumber = ").append(registrationNumber);
 
-		return s;
+		return sb.toString();
 	}
 
 }
