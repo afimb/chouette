@@ -57,26 +57,26 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	@Override
 	public String toString(String indent,int level)
 	{
-		String s = super.toString(indent,level);
-		s += "\n"+indent+"routeId = "+routeId;
-		s += "\n"+indent+"publishedName = "+publishedName;
-		s += "\n"+indent+"origin = "+origin;
-		s += "\n"+indent+"destination = "+destination;
-		s += "\n"+indent+"registrationNumber = "+registrationNumber;
-		s += "\n"+indent+"comment = "+comment;
+		StringBuilder sb = new StringBuilder(super.toString(indent,level));
+		sb.append("\n").append(indent).append("routeId = ").append(routeId);
+		sb.append("\n").append(indent).append("publishedName = ").append("\n").append(publishedName);
+		sb.append("\n").append(indent).append("origin = ").append(origin);
+		sb.append("\n").append(indent).append("destination = ").append(destination);
+		sb.append("\n").append(indent).append("registrationNumber = ").append(registrationNumber);
+		sb.append("\n").append(indent).append("comment = ").append(comment);
 
 		if (level > 0)
 		{
 			if (stopPoints != null)
 			{
-				s+= "\n"+indent+CHILD_ARROW+"stopPointsIds";
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPointsIds");
 				for (StopPoint stopPoint : getStopPoints())
 				{
-					s+= "\n"+indent+CHILD_LIST_ARROW+""+stopPoint.getObjectId();
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.getObjectId());
 				}
 			}
 		}
-		return s;
+		return sb.toString();
 	}
 
 

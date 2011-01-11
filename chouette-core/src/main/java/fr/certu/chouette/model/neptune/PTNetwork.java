@@ -41,16 +41,16 @@ public class PTNetwork extends NeptuneIdentifiedObject
 	public String toString(String indent,int level)
 	{
 		SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-		String s = super.toString(indent,level);
+		StringBuilder sb = new StringBuilder(super.toString(indent,level));
 		if (versionDate != null)
-			s += "\n"+indent+"versionDate = "+f.format(versionDate);
-		s += "\n"+indent+"description = "+description;
-		s += "\n"+indent+"registrationNumber = "+registrationNumber;
-		s += "\n"+indent+"sourceName = "+sourceName;
-		s += "\n"+indent+"sourceIdentifier = "+sourceIdentifier;
-		s += "\n"+indent+"comment = "+comment;
+			sb.append("\n").append(indent).append("versionDate = ").append(f.format(versionDate));
+		sb.append("\n").append(indent).append("description = ").append(description);
+		sb.append("\n").append(indent).append("registrationNumber = ").append(registrationNumber);
+		sb.append("\n").append(indent).append("sourceName = ").append(sourceName);
+		sb.append("\n").append(indent).append("sourceIdentifier = ").append(sourceIdentifier);
+		sb.append("\n").append(indent).append("comment = ").append(comment);
 
-		return s;
+		return sb.toString();
 	}
 
 	public void addLineId(String lineId)

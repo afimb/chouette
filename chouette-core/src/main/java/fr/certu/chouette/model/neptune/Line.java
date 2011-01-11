@@ -8,9 +8,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,29 +83,29 @@ public class Line extends NeptuneIdentifiedObject
 	@Override
 	public String toString(String indent,int level)
 	{
-		String s = super.toString(indent,level);
-		s += "\n"+indent+"  ptNetworkId = "+ptNetworkId;
-		s += "\n"+indent+"  ptNetworkIdShortcut = "+ptNetworkIdShortcut;
-		s += "\n"+indent+"  companyId = "+companyId;
-		s += "\n"+indent+"  number = "+number;
-		s += "\n"+indent+"  publishedName = "+publishedName;
-		s += "\n"+indent+"  transportModeName = "+transportModeName;
-		s += "\n"+indent+"  registrationNumber = "+registrationNumber;
-		s += "\n"+indent+"  comment = "+comment;
+		StringBuilder sb = new StringBuilder(super.toString(indent,level));
+		sb.append("\n").append(indent).append("  ptNetworkId = ").append(ptNetworkId);
+		sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ").append(ptNetworkIdShortcut);
+		sb.append("\n").append(indent).append("  companyId = ").append(companyId);
+		sb.append("\n").append(indent).append("  number = ").append(number);
+		sb.append("\n").append(indent).append("  publishedName = ").append(publishedName);
+		sb.append("\n").append(indent).append("  transportModeName = ").append(transportModeName);
+		sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
+		sb.append("\n").append(indent).append("  comment = ").append(comment);
 		if (lineEnds != null)
 		{
-			s+= "\n"+indent+CHILD_ARROW+"lineEnds";
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("lineEnds");
 			for (String lineEnd : getLineEnds())
 			{
-				s+= "\n"+indent+CHILD_LIST_ARROW+lineEnd;
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(lineEnd);
 			}
 		}
 		if (routeIds != null)
 		{
-			s+= "\n"+indent+CHILD_ARROW+"routeIds";
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("routeIds");
 			for (String routeid : getRouteIds())
 			{
-				s+= "\n"+indent+CHILD_LIST_ARROW+routeid;
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routeid);
 			}
 		}
 
@@ -117,24 +115,24 @@ public class Line extends NeptuneIdentifiedObject
 			String childIndent = indent + CHILD_INDENT;
 			if (ptNetwork != null) 
 			{
-				s+= "\n"+indent+CHILD_ARROW+ptNetwork.toString(childIndent,0);
+				sb.append("\n").append(indent).append(CHILD_ARROW).append(ptNetwork.toString(childIndent,0));
 			}
 			if (company != null) 
 			{
-				s+= "\n"+indent+CHILD_ARROW+company.toString(childIndent,0);
+				sb.append("\n").append(indent).append(CHILD_ARROW).append(company.toString(childIndent,0));
 			}
 			childIndent = indent + CHILD_LIST_INDENT;
 			if (routes != null)
 			{
-				s+= "\n"+indent+CHILD_ARROW+"routes";
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("routes");
 				for (Route route : getRoutes())
 				{
-					s+= "\n"+indent+CHILD_LIST_ARROW+route.toString(childIndent,childLevel);
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(route.toString(childIndent,childLevel));
 				}
 			}
 		}
 
-		return s;
+		return sb.toString();
 	}
 
 	public void addRoute(Route route)
