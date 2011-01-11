@@ -8,7 +8,11 @@
 package fr.certu.chouette.model.neptune;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +30,8 @@ public class PTNetwork extends NeptuneIdentifiedObject
 	@Getter @Setter private String sourceName;
 	@Getter @Setter private String sourceIdentifier;
 	@Getter @Setter private String comment;
+	@Getter @Setter private PTNetworkSourceTypeEnum 	pTNetworkSourceType;
+	@Getter @Setter private List<String>				lineIds;
 
 
 	/* (non-Javadoc)
@@ -47,4 +53,12 @@ public class PTNetwork extends NeptuneIdentifiedObject
 		return s;
 	}
 
+	public void addLineId(String lineId)
+	{
+		if (lineIds== null) lineIds = new ArrayList<String>();
+		lineIds.add(lineId);
+	}
+	
+
+	
 }

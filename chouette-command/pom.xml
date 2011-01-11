@@ -11,6 +11,7 @@
 	<version>1.5.0</version>
 	<name>Chouette Command</name>
 
+
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -118,9 +119,11 @@
 		</profile>
 	</profiles>
 	<build>
+	<!-- 
 		<filters>
 			<filter>src/main/filters/${profile.filter}.properties</filter>
 		</filters>
+		 -->
 		<resources>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
@@ -147,8 +150,8 @@
 			 -->
             <resource>
                 <targetPath>${project.build.directory}</targetPath>
-                <directory>${project.parent.basedir}/config/dev</directory>
-                <filtering>false</filtering>
+                <directory>../config/dev</directory>
+                <filtering>true</filtering>
             </resource>
 		</resources>
 
