@@ -2,7 +2,6 @@ package fr.certu.chouette.exchange.xml.neptune;
 
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 public class LineProducer extends AbstractModelProducer 
