@@ -5,9 +5,8 @@ import java.util.List;
 
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
-import chouette.schema.TridentObjectTypeType;
+import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.Route;
 
 /**
@@ -64,6 +63,21 @@ public class NeptuneConverter
 		}
 		
 		return routes;
+	}
+
+	public List<Company> extractCompanies(ChouettePTNetworkTypeType rootObject) {
+		chouette.schema.Company[] xmlCompanies = rootObject.getCompany();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		CompanyProducer producer = new CompanyProducer();
+		List<Company> companies = new ArrayList<Company>();
+
+		for(chouette.schema.Company xmlCompany : xmlCompanies){
+			Company company = producer.produce(xmlCompany);
+			companies.add(company);
+		}
+		
+		return companies;
 	}
 
 	
