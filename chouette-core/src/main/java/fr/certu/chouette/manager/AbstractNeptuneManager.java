@@ -15,20 +15,21 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.common.report.Report;
-import fr.certu.chouette.common.report.ReportHolder;
-import fr.certu.chouette.common.report.ReportItem;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.exchange.ExchangeException;
-import fr.certu.chouette.exchange.FormatDescription;
-import fr.certu.chouette.exchange.IExportPlugin;
-import fr.certu.chouette.exchange.IImportPlugin;
-import fr.certu.chouette.exchange.ParameterValue;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
-import fr.certu.chouette.validation.ValidationStepDescription;
+import fr.certu.chouette.plugin.exchange.ExchangeException;
+import fr.certu.chouette.plugin.exchange.FormatDescription;
+import fr.certu.chouette.plugin.exchange.IExportPlugin;
+import fr.certu.chouette.plugin.exchange.IImportPlugin;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
  * 
@@ -51,37 +52,43 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportDeletionPluginMap = new HashMap<String, IExportPlugin<T>>();
+	private Map<String,IValidationPlugin<T>> validationPluginMap = new HashMap<String, IValidationPlugin<T>>();
 
 
-	/**
-	 * import plugin injection
-	 * 
-	 * @param plugin
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#addImportPlugin(fr.certu.chouette.plugin.exchange.IImportPlugin)
 	 */
+	@Override
 	public void addImportPlugin(IImportPlugin<T> plugin)
 	{
 		importPluginMap.put(plugin.getDescription().getName(),plugin);
 	}
 
-	/**
-	 * export plugin injection
-	 * 
-	 * @param plugin
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#addExportPlugin(fr.certu.chouette.plugin.exchange.IExportPlugin)
 	 */
+	@Override
 	public void addExportPlugin(IExportPlugin<T> plugin)
 	{
 		exportPluginMap.put(plugin.getDescription().getName(),plugin);
 	}
-	/**
-	 * export plugin injection
-	 * 
-	 * @param plugin
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#addExportDeletionPlugin(fr.certu.chouette.plugin.exchange.IExportPlugin)
 	 */
+	@Override
 	public void addExportDeletionPlugin(IExportPlugin<T> plugin)
 	{
 		exportDeletionPluginMap.put(plugin.getDescription().getName(),plugin);
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#addValidationPlugin(fr.certu.chouette.plugin.validation.IValidationPlugin)
+	 */
+	@Override
+	public void addValidationPlugin(IValidationPlugin<T> plugin)
+	{
+		validationPluginMap.put(plugin.getDescription().getName(),plugin);
+	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#addNew(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject)
@@ -223,7 +230,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#doExport(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.common.report.ReportHolder)
+	 * @see fr.certu.chouette.manager.INeptuneManager#doExport(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
 	 */
 	@Override
 	public void doExport(User user, List<T> beans, String formatDescriptor,
@@ -258,7 +265,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#doExportDeleted(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.common.report.ReportHolder)
+	 * @see fr.certu.chouette.manager.INeptuneManager#doExportDeleted(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
 	 */
 	@Override
 	public void doExportDeleted(User user, List<T> beans,

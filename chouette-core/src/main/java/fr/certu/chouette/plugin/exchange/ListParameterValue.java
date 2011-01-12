@@ -5,7 +5,7 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.exchange;
+package fr.certu.chouette.plugin.exchange;
 
 import java.util.Calendar;
 import java.util.List;

@@ -10,18 +10,19 @@ package fr.certu.chouette.manager;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.common.report.Report;
-import fr.certu.chouette.common.report.ReportHolder;
-import fr.certu.chouette.common.report.ReportItem;
-import fr.certu.chouette.exchange.FormatDescription;
-import fr.certu.chouette.exchange.IExportPlugin;
-import fr.certu.chouette.exchange.IImportPlugin;
-import fr.certu.chouette.exchange.ParameterValue;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
-import fr.certu.chouette.validation.ValidationStepDescription;
+import fr.certu.chouette.plugin.exchange.FormatDescription;
+import fr.certu.chouette.plugin.exchange.IExportPlugin;
+import fr.certu.chouette.plugin.exchange.IImportPlugin;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
  * the generic interface for every NeptuneBean manager
@@ -32,7 +33,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
    
    // Create
    /**
-    * instanciate a new bean but don't save or attach it in storage
+    * Instantiate a new bean but don't save or attach it in storage
     * 
     * @param user user account for security check 
     * @return a new empty bean
@@ -43,25 +44,25 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
    /**
     * insert a new bean in storage<br/>
     * the bean may include dependency beans, either existing or not<br/>
-    * when the dependeny bean exists, it may be updated (if needed)<br/>
+    * when the dependency bean exists, it may be updated (if needed)<br/>
     * in the other case, it will be added
     * 
     * @param user user account for security check 
     * @param bean the bean to insert and its dependencies
-    * @return the bean inserted (may be updated with technicals informations)
-    * @throws ChouetteException invalid user access or potentialy newly beans exist or break integrity constraints
+    * @return the bean inserted (may be updated with technical informations)
+    * @throws ChouetteException invalid user access or potentially newly beans exist or break integrity constraints
     * 
     */
    public T addNew(User user,T bean)  throws ChouetteException;
 
    /**
-    * check if a bean with attributes involved in unicity constraints exists <br/>
+    * check if a bean with attributes involved in unique constraints exists <br/>
     * only non empty attributes will be checked <br/>
-    * if multiple unicity constraints matched, true will be returned, 
+    * if multiple unique constraints matched, true will be returned, 
     * even if different objects match these constraints
     * 
     * @param user user account for security check 
-    * @param bean the ben to be checked
+    * @param bean the bean to be checked
     * @return true (exists) or false (not exists) 
     * @throws ChouetteException invalid user access 
     */
@@ -120,25 +121,25 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 
    // Delete
    /**
-    * check if an object is elligible for deletion<br/>
-    * an objet can be deleted if its deletion don't break model constraints<br/>
+    * check if an object is eligible for deletion<br/>
+    * an object can be deleted if its deletion don't break model constraints<br/>
     * strong dependencies won't be checked as they are deleted in cascade
     * 
     * @param user user account for security check 
     * @param bean the bean to delete
-    * @return true if the bean is deletable , false if not
+    * @return true if the bean is removable , false if not
     * @throws ChouetteException invalid user access or storage access problem 
     */
    public boolean isRemovable(User user,T bean)  throws ChouetteException;
 
    /**
     * delete a bean<BR/>
-    * delete a bean and its childrens<br/>
-    * delete also relationals dependencies
+    * delete a bean and its children<br/>
+    * delete also relational dependencies
     * 
     * @param user user account for security check 
     * @param bean the bean to delete
-    * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
+    * @throws ChouetteException invalid user access or constraints conflicts or storage access problem 
     */
    public void remove(User user,T bean)  throws ChouetteException;
 
@@ -197,7 +198,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
     * 
     * @param user user account for security check 
     * @param beans a collection of beans to save
-    * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
+    * @throws ChouetteException invalid user access or constraints conflicts or storage access problem 
     */
    public void saveOrUpdateAll(User user, List<T> beans) throws ChouetteException;
    
@@ -241,7 +242,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
     * @param beans beans to export
     * @param formatDescriptor name of the format found in ExportFormatDescription structure
     * @param parameters export parameter according to specified format
-    * @param report expoort reporting container
+    * @param report export reporting container
     * @throws ChouetteException invalid user access or export failure
     */
    public void doExportDeleted(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
@@ -279,23 +280,29 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
    
    
 	/**
-	 * import plugin injection
+	 * import plug'in injection
 	 * 
 	 * @param plugin
 	 */
 	public void addImportPlugin(IImportPlugin<T> plugin);
 
 	/**
-	 * export plugin injection
+	 * export plug'in injection
 	 * 
 	 * @param plugin
 	 */
 	public void addExportPlugin(IExportPlugin<T> plugin);
 	/**
-	 * export plugin injection
+	 * export plug'in injection
 	 * 
 	 * @param plugin
 	 */
 	public void addExportDeletionPlugin(IExportPlugin<T> plugin);
+	/**
+	 * validation plug'in injection
+	 * 
+	 * @param plugin
+	 */
+	public void addValidationPlugin(IValidationPlugin<T> plugin);
 
 }

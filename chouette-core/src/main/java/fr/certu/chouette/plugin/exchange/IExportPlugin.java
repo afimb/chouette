@@ -5,12 +5,12 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.exchange;
+package fr.certu.chouette.plugin.exchange;
 
 import java.util.List;
 
-import fr.certu.chouette.common.report.ReportHolder;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.plugin.report.ReportHolder;
 
 public interface IExportPlugin<T extends NeptuneIdentifiedObject> extends IExchangePlugin
 {

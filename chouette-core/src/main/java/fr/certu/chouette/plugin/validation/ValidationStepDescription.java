@@ -5,12 +5,15 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.validation;
+package fr.certu.chouette.plugin.validation;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
  */
 public class ValidationStepDescription
 {
-
+	@Getter @Setter private String name; 
 }

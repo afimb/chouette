@@ -1,4 +1,4 @@
-package fr.certu.chouette.exchange;
+package fr.certu.chouette.plugin.exchange;
 
 public interface IExchangePlugin 
 {

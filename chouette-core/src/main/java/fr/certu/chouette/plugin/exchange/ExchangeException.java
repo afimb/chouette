@@ -5,7 +5,7 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.exchange;
+package fr.certu.chouette.plugin.exchange;
 
 @SuppressWarnings("serial")
 public class ExchangeException extends Exception 

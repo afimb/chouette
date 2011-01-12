@@ -34,9 +34,9 @@
       <aop:around method="profile" pointcut-ref="serviceMethodWithReturnValue"/>
     </aop:aspect>
     <aop:aspect id="creatingAspect" ref="creationControleur">
-      <aop:pointcut id="creerMethodWithReturnValue"
-			expression="execution(* *..*..manager.*Manager.*(..)).*Manager.creer*(..))"/>
-      <aop:around method="creationProtect" pointcut-ref="creerMethodWithReturnValue"/>
+      <aop:pointcut id="createMethodWithReturnValue"
+			expression="execution(* *..*..manager.*Manager.*(..)).*Manager.addNew(..))"/>
+      <aop:around method="creationProtect" pointcut-ref="createMethodWithReturnValue"/>
     </aop:aspect>
   </aop:config>
 
