@@ -11,12 +11,14 @@ import lombok.Setter;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 
 public class ModelAssembler {
 	@Getter @Setter private List<Line> lines;
 	@Getter @Setter private List<Route> routes;
 	@Getter @Setter private List<Company> companies;
+	@Getter @Setter private PTNetwork ptNetwork;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -52,8 +54,8 @@ public class ModelAssembler {
 		for(Line line : lines){
 			//FIXME : field CompanyId not filled by import...
 			//line.setCompany(getObjectFromId(Long.toString(line.getCompanyId()), Company.class));
-			//line.setPtNetwork(ptNetwork);
 			
+			line.setPtNetwork(ptNetwork);
 			line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
 		}
 	}

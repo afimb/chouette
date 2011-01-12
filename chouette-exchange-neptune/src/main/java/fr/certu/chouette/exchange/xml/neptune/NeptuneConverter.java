@@ -7,6 +7,7 @@ import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 
 /**
@@ -78,6 +79,16 @@ public class NeptuneConverter
 		}
 		
 		return companies;
+	}
+
+	public PTNetwork extractPTNetwork(ChouettePTNetworkTypeType rootObject) {
+		chouette.schema.PTNetwork xmlPTNetwork = rootObject.getPTNetwork();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		PTNetworkProducer producer = new PTNetworkProducer();
+		PTNetwork ptNetwork = producer.produce(xmlPTNetwork);
+		
+		return ptNetwork;
 	}
 
 	
