@@ -20,12 +20,12 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.common.report.ReportHolder;
-import fr.certu.chouette.exchange.FormatDescription;
-import fr.certu.chouette.exchange.ListParameterValue;
-import fr.certu.chouette.exchange.ParameterDescription;
-import fr.certu.chouette.exchange.ParameterValue;
-import fr.certu.chouette.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.exchange.FormatDescription;
+import fr.certu.chouette.plugin.exchange.ListParameterValue;
+import fr.certu.chouette.plugin.exchange.ParameterDescription;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
