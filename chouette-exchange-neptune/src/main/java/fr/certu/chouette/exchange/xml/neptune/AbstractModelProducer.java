@@ -4,10 +4,10 @@ import chouette.schema.Registration;
 import chouette.schema.TridentObjectTypeType;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 
-public abstract class AbstractModelProducer 
+public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> 
 {
 
-	public void populateTridentObject(NeptuneIdentifiedObject target,TridentObjectTypeType source)
+	public void populateTridentObject(T target,U source)
 	{
 		// ObjectId : maybe null but not empty
 		// TODO : Mandatory ?
@@ -44,4 +44,5 @@ public abstract class AbstractModelProducer
 		return (number.length() == 0?null:number);
 	}
 
+	public abstract T produce(U o);
 }

@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.exolab.castor.xml.ValidationException;
 
 import chouette.schema.ChouettePTNetworkTypeType;
-
 import fr.certu.chouette.common.report.ReportHolder;
 import fr.certu.chouette.exchange.ExchangeException;
 import fr.certu.chouette.exchange.FormatDescription;
@@ -101,9 +100,17 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			}
 		}
 		NeptuneConverter converter = new NeptuneConverter();
-		List<Line> line = converter.extractLines(rootObject);
+		ModelAssembler modelAssembler = new ModelAssembler();
 
-		return line;
+		List<Line> lines = converter.extractLines(rootObject);
+		
+		modelAssembler.setLines(lines);
+		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
+		modelAssembler.setCompanies(converter.extractCompanies(rootObject));
+		
+		modelAssembler.connect();
+		
+		return lines;
 	}
 
 

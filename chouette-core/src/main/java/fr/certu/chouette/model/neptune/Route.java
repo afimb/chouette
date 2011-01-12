@@ -7,10 +7,13 @@
  */
 package fr.certu.chouette.model.neptune;
 
-import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
 
 /**
@@ -26,7 +29,12 @@ public class Route extends NeptuneIdentifiedObject
 	@Getter @Setter private PTDirectionEnum direction;
 	@Getter @Setter private String comment;
 	@Getter @Setter private String wayBack;
-
+	@Getter @Setter private List<String> journeyPatternIds;
+	@Getter @Setter private List<JourneyPattern> journeyPatterns;
+	@Getter @Setter private List<String> ptLinkIds;
+	@Getter @Setter private List<PTLink> ptLinks;
+	
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
 	 */
@@ -45,4 +53,40 @@ public class Route extends NeptuneIdentifiedObject
 		return sb.toString();
 	}
 
+	public void addJourneyPatternId(String journeyPatternId){
+		if(journeyPatternIds == null) journeyPatternIds = new ArrayList<String>();
+		journeyPatternIds.add(journeyPatternId);
+	}
+	
+	public void addJourneyPattern(JourneyPattern journeyPattern){
+		if(journeyPatterns == null) journeyPatterns = new ArrayList<JourneyPattern>();
+		journeyPatterns.add(journeyPattern);
+	}
+	
+	public void addPTLinkId(String ptLinkId){
+		if(ptLinkIds == null) ptLinkIds = new ArrayList<String>();
+		ptLinkIds.add(ptLinkId);
+	}
+	
+	public void addPTLink(PTLink ptLink){
+		if(ptLinks == null) ptLinks = new ArrayList<PTLink>();
+		ptLinks.add(ptLink);
+	}
+	
+	public void removeJourneyPatternId(String journeyPatternId){
+		if(journeyPatternIds != null) journeyPatternIds.remove(journeyPatternId);
+	}
+	
+	public void removeJourneyPattern(JourneyPattern journeyPattern){
+		if(journeyPatterns != null) journeyPatterns.remove(journeyPattern);
+	}
+	
+	public void removePTLinkId(String ptLinkId){
+		if(ptLinkIds != null) ptLinkIds.remove(ptLinkId);
+		ptLinkIds.add(ptLinkId);
+	}
+	
+	public void removePTLink(PTLink ptLink){
+		if(ptLinks != null) ptLinks.remove(ptLink);
+	}
 }
