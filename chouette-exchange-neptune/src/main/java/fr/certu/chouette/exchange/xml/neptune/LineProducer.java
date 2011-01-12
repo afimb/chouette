@@ -4,9 +4,10 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
-public class LineProducer extends AbstractModelProducer 
+public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Line>
 {
-	public Line produceLine(chouette.schema.Line xmlLine)
+	@Override
+	public Line produce(chouette.schema.Line xmlLine)
 	{
 		Line line = new Line();
 		// objectId, objectVersion, creatorId, creationTime

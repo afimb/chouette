@@ -23,6 +23,7 @@ import fr.certu.chouette.exchange.ParameterDescription;
 import fr.certu.chouette.exchange.ParameterValue;
 import fr.certu.chouette.exchange.SimpleParameterValue;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 
 public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> 
@@ -100,9 +101,16 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			}
 		}
 		NeptuneConverter converter = new NeptuneConverter();
-		List<Line> line = converter.extractLines(rootObject);
+		ModelAssembler modelAssembler = new ModelAssembler();
 
-		return line;
+		List<Line> lines = converter.extractLines(rootObject);
+		
+		modelAssembler.setLines(lines);
+		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
+		
+		modelAssembler.connect();
+		
+		return lines;
 	}
 
 
