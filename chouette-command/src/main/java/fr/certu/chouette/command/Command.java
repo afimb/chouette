@@ -7,7 +7,6 @@
  */
 package fr.certu.chouette.command;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.common.report.ReportHolder;
 import fr.certu.chouette.exchange.FormatDescription;
 import fr.certu.chouette.exchange.ListParameterValue;
 import fr.certu.chouette.exchange.ParameterDescription;
@@ -30,6 +30,7 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 
 /**
@@ -41,7 +42,7 @@ public class Command
 
 	private static ClassPathXmlApplicationContext applicationContext;
 
-	@Setter private Map<String,INeptuneManager<NeptuneObject>> managers;
+	@Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
 	private Map<String,List<String>> parameters;
 
@@ -50,7 +51,7 @@ public class Command
 	 */
 	public static void main(String[] args)
 	{
-		applicationContext = new ClassPathXmlApplicationContext("CommandLineApplicationContext.xml");
+		applicationContext = new ClassPathXmlApplicationContext("ApplicationContext.xml");
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory(); 
 		Command command = (Command) factory.getBean("Command");
 		command.execute(args);
@@ -75,7 +76,7 @@ public class Command
 			{
 				printHelp();
 			}
-			INeptuneManager<NeptuneObject> manager = managers.get(object);
+			INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(object);
 			if (manager == null)
 			{
 				throw new IllegalArgumentException("unknown object "+object+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
@@ -114,7 +115,7 @@ public class Command
 
 	}
 
-	private void executeImport(INeptuneManager<NeptuneObject> manager) 
+	private void executeImport(INeptuneManager<NeptuneIdentifiedObject> manager) 
 	{
 		String format = getSimpleString("format");
 		try 
@@ -184,7 +185,12 @@ public class Command
 				}
 			}
 
-			List<NeptuneObject> beans = manager.doImport(null, format, values);
+			ReportHolder holder = new ReportHolder();
+			List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
+			if (holder.getReport() != null)
+			{
+				// afficher le rapport
+			}
 			if (beans == null )
 			{
 				System.out.println("import failed");
@@ -209,7 +215,7 @@ public class Command
 
 	}
 
-	private void executeGetImportFormats(INeptuneManager<NeptuneObject> manager) 
+	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager) 
 	{
 		try 
 		{
@@ -231,7 +237,7 @@ public class Command
 	 * @param manager
 	 * @throws ChouetteException
 	 */
-	private void executeGet(INeptuneManager<NeptuneObject> manager)
+	private void executeGet(INeptuneManager<NeptuneIdentifiedObject> manager)
 	throws ChouetteException 
 	{
 
@@ -297,7 +303,7 @@ public class Command
 			}
 		}
 
-		List<NeptuneObject> beans = manager.getAll(null, filter, level);
+		List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter, level);
 
 		System.out.println("beans count = "+beans.size());
 		for (NeptuneObject bean : beans)

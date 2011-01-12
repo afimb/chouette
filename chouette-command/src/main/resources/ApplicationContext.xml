@@ -6,26 +6,19 @@
 
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="file:./spring.properties" />
+		<!-- <property name="location" value="file:./spring.properties" /> -->
+		<property name="locations">
+			<list>
+				<value>file:./spring.properties</value>
+				<value>file:./chouette.properties</value>
+			</list>
+		</property>
+
 	</bean>
 
 	<import resource="classpath:/modules/hibernate.xml" />
-	<import resource="classpath:/modules/neptune_exchange.xml" />
-	
-	<!-- branch plugins -->
-	<bean id="lineManagerPlugins" class="fr.certu.chouette.exchange.PluginContainer" factory-method="createLinePluginContainer" >
-	    <property name="importPlugins" >
-	       <list>
-	       <ref bean="NeptuneLineImport"/>
-	       </list>
-	    </property>
-	    <property name="exportPlugins" >
-	       <list>
-	       </list>
-	    </property>
-	</bean>
-	
 	<import resource="classpath:/modules/managers.xml" />
+	<import resource="classpath:/modules/neptune_exchange.xml" />
 
 	<bean id="Command" class="fr.certu.chouette.command.Command">
 		<property name="managers">

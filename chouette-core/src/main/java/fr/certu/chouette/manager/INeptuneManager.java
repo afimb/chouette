@@ -10,19 +10,23 @@ package fr.certu.chouette.manager;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.common.report.Report;
+import fr.certu.chouette.common.report.ReportHolder;
+import fr.certu.chouette.common.report.ReportItem;
 import fr.certu.chouette.exchange.FormatDescription;
+import fr.certu.chouette.exchange.IExportPlugin;
+import fr.certu.chouette.exchange.IImportPlugin;
 import fr.certu.chouette.exchange.ParameterValue;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.validation.ValidationStepDescription;
-import fr.certu.chouette.validation.ValidationStepResult;
 
 /**
  * the generic interface for every NeptuneBean manager
  */
-public interface INeptuneManager <T extends NeptuneObject>
+public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 {
 
    
@@ -167,10 +171,11 @@ public interface INeptuneManager <T extends NeptuneObject>
     * @param user user account for security check 
     * @param formatDescriptor name of the format found in ImportFormatDescription structure
     * @param parameters import parameter according to specified format
+    * @param report import reporting container
     * @return a collection of imported beans (with all imported dependencies)
     * @throws ChouetteException invalid user access or import failure
     */
-   public List<T> doImport(User user,String formatDescriptor,List<ParameterValue> parameters) throws ChouetteException;
+   public List<T> doImport(User user,String formatDescriptor,List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
    
    /**
     * save in storage the imported beans<br/>
@@ -214,9 +219,10 @@ public interface INeptuneManager <T extends NeptuneObject>
     * @param beans beans to export
     * @param formatDescriptor name of the format found in ExportFormatDescription structure
     * @param parameters export parameter according to specified format
+    * @param report export reporting container
     * @throws ChouetteException invalid user access or export failure
     */
-   public void doExport(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters) throws ChouetteException;
+   public void doExport(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
    
    /**
     * get usage information for all existing export format for deleted objects
@@ -235,9 +241,10 @@ public interface INeptuneManager <T extends NeptuneObject>
     * @param beans beans to export
     * @param formatDescriptor name of the format found in ExportFormatDescription structure
     * @param parameters export parameter according to specified format
+    * @param report expoort reporting container
     * @throws ChouetteException invalid user access or export failure
     */
-   public void doExportDeleted(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters) throws ChouetteException;
+   public void doExportDeleted(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
    
    // validation
    /**
@@ -248,7 +255,7 @@ public interface INeptuneManager <T extends NeptuneObject>
     * @return a diagnostic step by step 
     * @throws ChouetteException invalid user access or validation failure
     */
-   public List<ValidationStepResult> validate(User user,T bean) throws ChouetteException;
+   public Report validate(User user,T bean) throws ChouetteException;
    
    /**
     * get the steps description for validation
@@ -268,5 +275,27 @@ public interface INeptuneManager <T extends NeptuneObject>
     * @return the step diagnostic 
     * @throws ChouetteException invalid user access or export failure
     */
-   public ValidationStepResult validateStep(User user, T bean, String stepDescriptor) throws ChouetteException;
+   public ReportItem validateStep(User user, T bean, String stepDescriptor) throws ChouetteException;
+   
+   
+	/**
+	 * import plugin injection
+	 * 
+	 * @param plugin
+	 */
+	public void addImportPlugin(IImportPlugin<T> plugin);
+
+	/**
+	 * export plugin injection
+	 * 
+	 * @param plugin
+	 */
+	public void addExportPlugin(IExportPlugin<T> plugin);
+	/**
+	 * export plugin injection
+	 * 
+	 * @param plugin
+	 */
+	public void addExportDeletionPlugin(IExportPlugin<T> plugin);
+
 }

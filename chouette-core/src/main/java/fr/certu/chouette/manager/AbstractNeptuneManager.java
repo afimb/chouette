@@ -15,50 +15,71 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.common.report.Report;
+import fr.certu.chouette.common.report.ReportHolder;
+import fr.certu.chouette.common.report.ReportItem;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.exchange.ExchangeException;
 import fr.certu.chouette.exchange.FormatDescription;
 import fr.certu.chouette.exchange.IExportPlugin;
 import fr.certu.chouette.exchange.IImportPlugin;
 import fr.certu.chouette.exchange.ParameterValue;
-import fr.certu.chouette.exchange.PluginContainer;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.validation.ValidationStepDescription;
-import fr.certu.chouette.validation.ValidationStepResult;
 
 /**
  * 
+ */
+/**
+ * @author michel
+ *
+ * @param <T>
+ */
+/**
+ * @author michel
+ *
+ * @param <T>
  */
 public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> implements INeptuneManager<T>
 {
 	// data storage access
 	@Getter @Setter private IDaoTemplate<T> dao; 
 
-	// exchange and validation plugin
-	@Getter private PluginContainer<T> pluginContainer;
-
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
+	private Map<String,IExportPlugin<T>> exportDeletionPluginMap = new HashMap<String, IExportPlugin<T>>();
 
-	// specific setter
-	public void setPluginContainer(PluginContainer<T> container)
+
+	/**
+	 * import plugin injection
+	 * 
+	 * @param plugin
+	 */
+	public void addImportPlugin(IImportPlugin<T> plugin)
 	{
-		pluginContainer = container;
-		if (pluginContainer != null)
-		{
-			for (IImportPlugin<T> plugin : pluginContainer.getImportPlugins()) 
-			{
-				importPluginMap.put(plugin.getDescription().getName(),plugin);
-			}
-			for (IExportPlugin<T> plugin : pluginContainer.getExportPlugins()) 
-			{
-				exportPluginMap.put(plugin.getDescription().getName(),plugin);
-			}
-		}
+		importPluginMap.put(plugin.getDescription().getName(),plugin);
+	}
 
+	/**
+	 * export plugin injection
+	 * 
+	 * @param plugin
+	 */
+	public void addExportPlugin(IExportPlugin<T> plugin)
+	{
+		exportPluginMap.put(plugin.getDescription().getName(),plugin);
+	}
+	/**
+	 * export plugin injection
+	 * 
+	 * @param plugin
+	 */
+	public void addExportDeletionPlugin(IExportPlugin<T> plugin)
+	{
+		exportDeletionPluginMap.put(plugin.getDescription().getName(),plugin);
 	}
 
 
@@ -140,27 +161,23 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	throws ChouetteException 
 	{
 		List<FormatDescription> formats = new ArrayList<FormatDescription>();
-		if (pluginContainer != null)
+
+		for (IImportPlugin<T> plugin : importPluginMap.values()) 
 		{
-			for (IImportPlugin<T> plugin : pluginContainer.getImportPlugins()) 
-			{
-				formats.add(plugin.getDescription());
-			}
+			formats.add(plugin.getDescription());
 		}
+
 		return formats;
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#doImport(fr.certu.chouette.model.user.User, java.lang.String, java.util.List)
-	 */
 	@Override
-	public List<T> doImport(User user, String formatDescriptor,List<ParameterValue> parameters) throws ChouetteException 
+	public List<T> doImport(User user, String formatDescriptor,List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
 	{
 		IImportPlugin<T> plugin = importPluginMap.get(formatDescriptor);
 		if (plugin == null) throw new ChouetteException("unknown format :"+formatDescriptor);
 		try 
 		{
-			return plugin.doImport(parameters);
+			return plugin.doImport(parameters,report);
 		}
 		catch (ExchangeException e) 
 		{
@@ -196,18 +213,32 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public List<FormatDescription> getExportFormats(User user)
 	throws ChouetteException 
 	{
-		return new ArrayList<FormatDescription>();
+		List<FormatDescription> formats = new ArrayList<FormatDescription>();
+
+		for (IExportPlugin<T> plugin : exportPluginMap.values()) 
+		{
+			formats.add(plugin.getDescription());
+		}
+		return formats;
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#doExport(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List)
+	 * @see fr.certu.chouette.manager.INeptuneManager#doExport(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.common.report.ReportHolder)
 	 */
 	@Override
 	public void doExport(User user, List<T> beans, String formatDescriptor,
-			List<ParameterValue> parameters) throws ChouetteException 
+			List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
 			{
-		// TODO Auto-generated method stub
-
+		IExportPlugin<T> plugin = exportPluginMap.get(formatDescriptor);
+		if (plugin == null) throw new ChouetteException("unknown format :"+formatDescriptor);
+		try 
+		{
+			plugin.doExport(beans,parameters,report);
+		}
+		catch (ExchangeException e) 
+		{
+			throw new ChouetteException("export failed", e);
+		}
 			}
 
 	/* (non-Javadoc)
@@ -217,27 +248,42 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public List<FormatDescription> getDeleteExportFormats(User user)
 	throws ChouetteException 
 	{
-		return new ArrayList<FormatDescription>();
+		List<FormatDescription> formats = new ArrayList<FormatDescription>();
+
+		for (IExportPlugin<T> plugin : exportDeletionPluginMap.values()) 
+		{
+			formats.add(plugin.getDescription());
+		}
+		return formats;
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#doExportDeleted(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List)
+	 * @see fr.certu.chouette.manager.INeptuneManager#doExportDeleted(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.common.report.ReportHolder)
 	 */
 	@Override
 	public void doExportDeleted(User user, List<T> beans,
-			String formatDescriptor, List<ParameterValue> parameters)
+			String formatDescriptor, List<ParameterValue> parameters,ReportHolder report)
 	throws ChouetteException 
 	{
-		// TODO Auto-generated method stub
-
+		IExportPlugin<T> plugin = exportDeletionPluginMap.get(formatDescriptor);
+		if (plugin == null) throw new ChouetteException("unknown format :"+formatDescriptor);
+		try 
+		{
+			plugin.doExport(beans,parameters,report);
+		}
+		catch (ExchangeException e) 
+		{
+			throw new ChouetteException("export failed", e);
+		}
 	}
+
+
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject)
 	 */
 	@Override
-	public List<ValidationStepResult> validate(User user, T bean)
-	throws ChouetteException {
+	public Report validate(User user, T bean) throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -247,20 +293,18 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Override
 	public List<ValidationStepDescription> getValidationSteps(User user)
-	throws ChouetteException 
-	{
-		return new ArrayList<ValidationStepDescription>();
+			throws ChouetteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject, java.lang.String)
 	 */
 	@Override
-	public ValidationStepResult validateStep(User user, T bean,
-			String stepDescriptor) throws ChouetteException 
-			{
+	public ReportItem validateStep(User user, T bean, String stepDescriptor)
+			throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
-			}
-
+	}
 }

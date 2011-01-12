@@ -16,6 +16,7 @@ import org.exolab.castor.xml.ValidationException;
 
 import chouette.schema.ChouettePTNetworkTypeType;
 
+import fr.certu.chouette.common.report.ReportHolder;
 import fr.certu.chouette.exchange.ExchangeException;
 import fr.certu.chouette.exchange.FormatDescription;
 import fr.certu.chouette.exchange.IImportPlugin;
@@ -52,7 +53,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	}
 
 	@Override
-	public List<Line> doImport(List<ParameterValue> parameters)
+	public List<Line> doImport(List<ParameterValue> parameters,ReportHolder reportContainer)
 	throws ExchangeException 
 	{
 		String filePath = null;
@@ -77,12 +78,12 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			throw new ExchangeException("missing xmlFile arg");
 		}
 
-		List<Line> lines = processImport(filePath,validate);
+		List<Line> lines = processImport(filePath,validate,reportContainer);
 
 		return lines;
 	}
 
-	private List<Line> processImport(String filePath, boolean validate) throws ExchangeException 
+	private List<Line> processImport(String filePath, boolean validate,ReportHolder reportContainer) throws ExchangeException 
 	{
 		NeptuneFileReader reader = new NeptuneFileReader();
 		ChouettePTNetworkTypeType rootObject = reader.read(filePath);

@@ -50,7 +50,6 @@
   <bean id="lineManager"
     		class="fr.certu.chouette.manager.LineManager">
     <property name="dao" ref="lineDao"/>
-    <property name="pluginContainer" ref="lineManagerPlugins"/>
   </bean>
 
 </beans>

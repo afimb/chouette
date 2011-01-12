@@ -8,6 +8,7 @@
     <artifactId>chouette</artifactId>
     <version>1.5.0</version>
     <packaging>pom</packaging>
+    
     <modules>
         <module>chouette-attic</module>
         <module>chouette-webapp</module>
@@ -19,6 +20,7 @@
         <module>chouette-exchange-neptune</module>
         <module>chouette-command</module>
     </modules>
+    
     <repositories>
                 <!-- add JBOSS repository for easy access to Hibernate libraries -->
         <repository>
