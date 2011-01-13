@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.xml.neptune;
 
+import java.util.Date;
+
 import chouette.schema.Registration;
 import chouette.schema.TridentObjectTypeType;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -44,5 +46,11 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		return (number.length() == 0?null:number);
 	}
 
+	protected Date getDate(org.exolab.castor.types.Date castorDate) {
+		if(castorDate == null) return null;
+		Date date = castorDate.toDate();
+		return date;
+	}
+	
 	public abstract T produce(U o);
 }

@@ -5,38 +5,38 @@ import fr.certu.chouette.model.neptune.Company;
 public class CompanyProducer extends AbstractModelProducer<Company, chouette.schema.Company> {
 
 	@Override
-	public Company produce(chouette.schema.Company xmlCompagny) {
+	public Company produce(chouette.schema.Company xmlCompany) {
 		Company company = new Company();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(company, xmlCompagny);
+		populateTridentObject(company, xmlCompany);
 		
 		// Name mandatory
-		company.setName(getNonEmptyTrimedString(xmlCompagny.getName()));
+		company.setName(getNonEmptyTrimedString(xmlCompany.getName()));
 		
 		// ShortName optional
-		company.setShortName(getNonEmptyTrimedString(xmlCompagny.getShortName()));
+		company.setShortName(getNonEmptyTrimedString(xmlCompany.getShortName()));
 		
 		// Code optional
-		company.setCode(getNonEmptyTrimedString(xmlCompagny.getCode()));
+		company.setCode(getNonEmptyTrimedString(xmlCompany.getCode()));
 
 		// Phone optional
-		company.setPhone(getNonEmptyTrimedString(xmlCompagny.getPhone()));
+		company.setPhone(getNonEmptyTrimedString(xmlCompany.getPhone()));
 		
 		//Fax Optional
-		company.setFax(getNonEmptyTrimedString(xmlCompagny.getFax()));
+		company.setFax(getNonEmptyTrimedString(xmlCompany.getFax()));
 		
 		//Email Optional
-		company.setEmail(getNonEmptyTrimedString(xmlCompagny.getEmail()));
+		company.setEmail(getNonEmptyTrimedString(xmlCompany.getEmail()));
 		
 		//RegistrationNumber optional
-		company.setRegistrationNumber(getNonEmptyTrimedString(xmlCompagny.getRegistration().getRegistrationNumber()));
+		company.setRegistrationNumber(getNonEmptyTrimedString(xmlCompany.getRegistration().getRegistrationNumber()));
 		
 		//OperatingDepartmentName optional
-		company.setOperatingDepartmentName(getNonEmptyTrimedString(xmlCompagny.getOperatingDepartmentName()));
+		company.setOperatingDepartmentName(getNonEmptyTrimedString(xmlCompany.getOperatingDepartmentName()));
 		
 		//OrganisationalUnit optional 
-		company.setOrganisationalUnit(getNonEmptyTrimedString(xmlCompagny.getOrganisationalUnit()));
+		company.setOrganisationalUnit(getNonEmptyTrimedString(xmlCompany.getOrganisationalUnit()));
 		
 		return company;
 	}

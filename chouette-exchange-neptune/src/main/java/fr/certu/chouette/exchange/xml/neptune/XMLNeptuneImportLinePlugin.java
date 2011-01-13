@@ -15,14 +15,14 @@ import org.apache.log4j.Logger;
 import org.exolab.castor.xml.ValidationException;
 
 import chouette.schema.ChouettePTNetworkTypeType;
-import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.ExchangeException;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
-import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 
 public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> 
@@ -107,6 +107,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setLines(lines);
 		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
 		modelAssembler.setCompanies(converter.extractCompanies(rootObject));
+		modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject));
 		
 		modelAssembler.connect();
 		

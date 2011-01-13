@@ -1,0 +1,55 @@
+package fr.certu.chouette.exchange.xml.neptune;
+
+import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
+
+public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette.schema.PTNetwork> {
+
+	@Override
+	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork) {
+		PTNetwork ptNetwork = new PTNetwork();
+		
+		// objectId, objectVersion, creatorId, creationTime
+		populateTridentObject(ptNetwork, xmlPTNetwork);
+		
+		// VersionDate mandatory
+		ptNetwork.setVersionDate(getDate(xmlPTNetwork.getVersionDate()));
+		
+		// Description optional
+		ptNetwork.setDescription(getNonEmptyTrimedString(xmlPTNetwork.getDescription()));
+		
+		// Name mandatory
+		ptNetwork.setName(getNonEmptyTrimedString(xmlPTNetwork.getName()));
+		
+		// Registration optional
+		ptNetwork.setRegistrationNumber(getRegistrationNumber(xmlPTNetwork.getRegistration()));
+		
+		// SourceName optional
+		ptNetwork.setSourceName(getNonEmptyTrimedString(xmlPTNetwork.getSourceName()));
+		
+		// SourceIdentifier optional
+		ptNetwork.setSourceIdentifier(getNonEmptyTrimedString(xmlPTNetwork.getSourceIdentifier()));
+		
+		// SourceType optional
+		if(xmlPTNetwork.getSourceType() != null)
+			ptNetwork.setPTNetworkSourceType(PTNetworkSourceTypeEnum.fromValue(xmlPTNetwork.getSourceType().value()));
+		
+		// LineIds [O..w]
+		String[] castorLineIds = xmlPTNetwork.getLineId();
+		for(String castorLineId : castorLineIds){
+			String lineId = getNonEmptyTrimedString(castorLineId);
+			if(lineId == null){
+				//TODO : tracer
+			}
+			else{
+				ptNetwork.addLineId(lineId);
+			}
+		}
+		
+		//Comment optional
+		ptNetwork.setComment(getNonEmptyTrimedString(xmlPTNetwork.getComment()));
+		
+		return ptNetwork;
+	}
+
+}
