@@ -5,10 +5,10 @@
     xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="NeptuneLineImport" class="fr.certu.chouette.plugin.exchange.xml.neptune.XMLNeptuneImportLinePlugin">
+  <bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.XMLNeptuneImportLinePlugin">
   </bean>
 
-  <bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector" init-method="init" factory-method="createLinePluginInjector">
+  <bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector" init-method="init" factory-method="createLinePluginInjector" >
 		<property name="manager" ref="lineManager"/>
 		<property name="importPlugins">
 			<list>
