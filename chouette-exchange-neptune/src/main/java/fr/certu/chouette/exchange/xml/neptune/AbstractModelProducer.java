@@ -6,7 +6,7 @@ import chouette.schema.Registration;
 import chouette.schema.TridentObjectTypeType;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 
-public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> 
+public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> implements IModelProducer<T, U>
 {
 
 	public void populateTridentObject(T target,U source)

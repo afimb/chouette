@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.log4j.Logger;
 import org.exolab.castor.xml.ValidationException;
 
@@ -30,6 +33,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 	private static final Logger logger = Logger.getLogger(XMLNeptuneImportLinePlugin.class);
 	private FormatDescription description;
+	
+	@Getter @Setter private NeptuneConverter converter;
 
 	public XMLNeptuneImportLinePlugin()
 	{
@@ -99,7 +104,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				throw ex;
 			}
 		}
-		NeptuneConverter converter = new NeptuneConverter();
+		
 		ModelAssembler modelAssembler = new ModelAssembler();
 
 		List<Line> lines = converter.extractLines(rootObject);
