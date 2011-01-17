@@ -9,6 +9,7 @@ import lombok.Setter;
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
@@ -25,7 +26,7 @@ public class NeptuneConverter
 	@Getter @Setter private RouteProducer routeProducer;
 	@Getter @Setter private PTNetworkProducer networkProducer;
 	@Getter @Setter private CompanyProducer companyProducer;
-//	@Getter @Setter private JourneyPatternProducer journeyPatternProducer;
+	@Getter @Setter private JourneyPatternProducer journeyPatternProducer;
 //	@Getter @Setter private VehicleJourney vehicleJourneyProducer;
 	
 //	public List<T> extract(ChouettePTNetworkTypeType rootObject) 
@@ -98,5 +99,19 @@ public class NeptuneConverter
 		return ptNetwork;
 	}
 
-	
+	public List<JourneyPattern> extractJourneyPattern(ChouettePTNetworkTypeType rootObject) {
+		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
+		chouette.schema.JourneyPattern[] xmlJourneyPatterns = lineDescription.getJourneyPattern();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		
+		List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();
+
+		for(chouette.schema.JourneyPattern xmlJourneyPattern : xmlJourneyPatterns){
+			JourneyPattern journeyPattern = journeyPatternProducer.produce(xmlJourneyPattern);
+			journeyPatterns.add(journeyPattern);
+		}
+		
+		return journeyPatterns;
+	}	
 }

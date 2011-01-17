@@ -113,6 +113,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
 		modelAssembler.setCompanies(converter.extractCompanies(rootObject));
 		modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject));
+		modelAssembler.setJourneyPatterns(converter.extractJourneyPattern(rootObject));
 		
 		modelAssembler.connect();
 		
