@@ -50,6 +50,44 @@ public class Route extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("comment = ").append(comment);
 		sb.append("\n").append(indent).append("wayBack = ").append(wayBack);
 
+		if (journeyPatternIds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("journeyPatternIds");
+			for (String journeyPatternId : journeyPatternIds)
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(journeyPatternId);
+			}
+		}
+		if (ptLinkIds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("ptLinkIds");
+			for (String ptLinkid : ptLinkIds)
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(ptLinkid);
+			}
+		}
+		if (level > 0)
+		{
+			int childLevel = level -1;
+			String childIndent = indent + CHILD_LIST_INDENT;
+			if (journeyPatterns != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("journey patterns");
+				for (JourneyPattern journeyPattern : journeyPatterns)
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(journeyPattern.toString(childIndent,childLevel));
+				}
+			}
+			if (ptLinks != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("pt links");
+				for (PTLink ptLink : ptLinks)
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(ptLink.toString(childIndent,childLevel));
+				}
+			}
+		}
+		
 		return sb.toString();
 	}
 
