@@ -35,6 +35,8 @@
     <s:hidden name="operationMode" value="%{'STORE'}" />
 
     <s:textfield key="publishedJourneyName" />
+    <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 250px;"/>
+    <s:textfield key="publishedJourneyIdentifier" />
     <s:textfield key="publishedJourneyIdentifier" />
     <s:if test="id != null">
       <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
