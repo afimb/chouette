@@ -30,7 +30,7 @@ public class CompanyProducer extends AbstractModelProducer<Company, chouette.sch
 		company.setEmail(getNonEmptyTrimedString(xmlCompany.getEmail()));
 		
 		//RegistrationNumber optional
-		company.setRegistrationNumber(getNonEmptyTrimedString(xmlCompany.getRegistration().getRegistrationNumber()));
+		company.setRegistrationNumber(getRegistrationNumber(xmlCompany.getRegistration()));
 		
 		//OperatingDepartmentName optional
 		company.setOperatingDepartmentName(getNonEmptyTrimedString(xmlCompany.getOperatingDepartmentName()));

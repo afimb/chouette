@@ -1,5 +1,6 @@
 package fr.certu.chouette.model.neptune;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	@Getter @Setter private String destination;
 	@Getter @Setter private String publishedName;
 	@Getter @Setter private List<StopPoint>	stopPoints;
+	@Getter @Setter private List<String>	stopPointIds;
 	@Getter @Setter private String lineIdShortcut; // a confirmer
 	@Getter @Setter private String routeId;
 	@Getter @Setter private Route route;
@@ -59,12 +61,20 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	{
 		StringBuilder sb = new StringBuilder(super.toString(indent,level));
 		sb.append("\n").append(indent).append("routeId = ").append(routeId);
-		sb.append("\n").append(indent).append("publishedName = ").append("\n").append(publishedName);
+		sb.append("\n").append(indent).append("publishedName = ").append(publishedName);
 		sb.append("\n").append(indent).append("origin = ").append(origin);
 		sb.append("\n").append(indent).append("destination = ").append(destination);
 		sb.append("\n").append(indent).append("registrationNumber = ").append(registrationNumber);
 		sb.append("\n").append(indent).append("comment = ").append(comment);
 
+		if (stopPointIds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPointIds");
+			for (String stopPointId : stopPointIds)
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPointId);
+			}
+		}
 		if (level > 0)
 		{
 			if (stopPoints != null)
@@ -79,5 +89,15 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		return sb.toString();
 	}
 
-
+	public void addStopPointId(String stopPointId)
+	{
+		if (stopPointIds== null) stopPointIds = new ArrayList<String>();
+		stopPointIds.add(stopPointId);
+	}
+	
+	public void addStopPoint(StopPoint stopPoint)
+	{
+		if (stopPoints== null) stopPoints = new ArrayList<StopPoint>();
+		stopPoints.add(stopPoint);
+	}
 }

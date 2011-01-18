@@ -50,6 +50,15 @@ public class PTNetwork extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("sourceIdentifier = ").append(sourceIdentifier);
 		sb.append("\n").append(indent).append("comment = ").append(comment);
 
+		if (lineIds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("lineIds");
+			for (String lineId : lineIds)
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(lineId);
+			}
+		}
+		
 		return sb.toString();
 	}
 

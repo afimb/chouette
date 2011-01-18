@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans 	
-	xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.XMLNeptuneImportLinePlugin">
-  </bean>
 
-  <bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector" init-method="init" factory-method="createLinePluginInjector">
-		<property name="manager" ref="lineManager"/>
+	<bean id="NeptuneLineProducer" class="fr.certu.chouette.exchange.xml.neptune.LineProducer" />
+	<bean id="NeptuneRouteProducer" class="fr.certu.chouette.exchange.xml.neptune.RouteProducer" />
+	<bean id="NeptuneCompanyProducer" class="fr.certu.chouette.exchange.xml.neptune.CompanyProducer" />
+	<bean id="NeptuneNetworkProducer" class="fr.certu.chouette.exchange.xml.neptune.PTNetworkProducer" />
+	<bean id="NeptuneJourneyPatternProducer" class="fr.certu.chouette.exchange.xml.neptune.JourneyPatternProducer" />
+
+	<bean id="NeptuneConverter" class="fr.certu.chouette.exchange.xml.neptune.NeptuneConverter">
+		<property name="lineProducer" ref="NeptuneLineProducer" />
+		<property name="routeProducer" ref="NeptuneRouteProducer" />
+		<property name="companyProducer" ref="NeptuneCompanyProducer" />
+		<property name="networkProducer" ref="NeptuneNetworkProducer" />
+		<property name="journeyPatternProducer" ref="NeptuneJourneyPatternProducer" />
+	</bean>
+
+	<bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.XMLNeptuneImportLinePlugin">
+		<property name="converter" ref="NeptuneConverter" />
+	</bean>
+
+	<bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		init-method="init" factory-method="createLinePluginInjector">
+		<property name="manager" ref="lineManager" />
 		<property name="importPlugins">
 			<list>
 				<ref bean="NeptuneLineImport" />
@@ -23,7 +39,7 @@
 			<list>
 			</list>
 		</property>
-  
-  </bean>
+
+	</bean>
 
 </beans>
