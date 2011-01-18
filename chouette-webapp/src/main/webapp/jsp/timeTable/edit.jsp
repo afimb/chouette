@@ -58,22 +58,22 @@
 <s:if test="id != null">
   <div class="panelDataSection"><s:text name="tableauMarche.dates"/></div>
   <div class="panel">
-    <s:div label="Dates" id="displaytag">
-      <display:table uid="datesTable" name="dates" excludedParams="debut fin date tableauMarche.comment jour" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1"  export="false">
+    <div id="displaytag">
+      <display:table name="dates" uid="date" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1"  export="false" requestURI="">
         <display:column titleKey="table.title.date" sortable="true" headerClass="sortable" comparator="fr.certu.chouette.struts.util.DateComparator">
-          <s:property value="%{dates[#attr.datesTable_rowNum - 1]}" />
+          <s:property value="%{dates[#attr.date_rowNum - 1]}" />
         </display:column>
         <display:column titleKey="table.title.action">
           <s:url id="deleteUrl" action="deleteDate" namespace="/timeTable">
             <s:param name="idTableauMarche" value="%{id}"/>
-            <s:param name="idxDate" value="#attr.datesTable_rowNum"/>
+            <s:param name="idxDate" value="#attr.date_rowNum"/>
           </s:url>
           <s:a href="%{deleteUrl}" onclick="return confirm('%{getText('popup.confirmer')}'">
             <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
           </s:a>
         </display:column>
       </display:table>
-    </s:div>
+    </div>
     <s:form cssClass="panelDataInnerForm" action="addDate" namespace="/timeTable">
       <s:if test="id != null">
         <s:hidden name="idTableauMarche" value="%{id}"/>
@@ -104,7 +104,7 @@
   <div class="panel">
     <!-- Affichage liste des périodes -->
     <div id="displaytag">
-      <display:table uid="periodsTable" name="periodes" excludedParams="debut fin date tableauMarche.comment jour" sort="list" pagesize="10" defaultorder="ascending" defaultsort="2" export="false">
+      <display:table uid="periodsTable" name="periodes" sort="list" pagesize="10" defaultorder="ascending" defaultsort="2" export="false" requestURI="">
         <display:column titleKey="table.title.begin" sortable="true" headerClass="sortable">
           <s:property value="%{periodes[#attr.periodsTable_rowNum - 1].debut}" />
         </display:column>
