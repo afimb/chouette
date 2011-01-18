@@ -30,7 +30,7 @@
       <url>http://snapshots.dist.codehaus.org/</url>
     </repository>
     <repository>
-      <id>ibiblio</id>
+      <id>castor</id>
       <name>Castor - library and digital archive</name>
       <url>http://repository.codehaus.org</url>
     </repository>
