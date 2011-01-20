@@ -125,6 +125,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public T get(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
 	{
+		if (getDao() == null) throw new ChouetteException("no dao available");
 		// TODO : check user access
 		if (filter.getType().equals(Filter.Type.EQUALS))
 		{
@@ -150,6 +151,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public List<T> getAll(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
 	{
+		if (getDao() == null) throw new ChouetteException("no dao available");
 		// TODO : check user access
 		List<T> beans =  getDao().select(filter);
 		for (T bean : beans)
@@ -197,7 +199,9 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * @see fr.certu.chouette.manager.INeptuneManager#saveAll(fr.certu.chouette.model.user.User, java.util.List)
 	 */
 	@Override
-	public void saveAll(User user, List<T> beans) throws ChouetteException {
+	public void saveAll(User user, List<T> beans) throws ChouetteException 
+	{
+		if (getDao() == null) throw new ChouetteException("no dao available");
 		// TODO Auto-generated method stub
 
 	}
@@ -208,6 +212,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void saveOrUpdateAll(User user, List<T> beans) throws ChouetteException
 	{
+		if (getDao() == null) throw new ChouetteException("no dao available");
 		// TODO Auto-generated method stub
 
 	}

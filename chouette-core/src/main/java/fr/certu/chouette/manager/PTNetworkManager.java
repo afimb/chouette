@@ -36,6 +36,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public void update(User user, PTNetwork bean) throws ChouetteException
    {
+		if (getDao() == null) throw new ChouetteException("no dao available");
       // TODO Auto-generated method stub
       
    }
@@ -46,6 +47,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public void update(User user, PTNetwork bean, DetailLevelEnum level) throws ChouetteException
    {
+		if (getDao() == null) throw new ChouetteException("no dao available");
       // TODO Auto-generated method stub
       
    }
@@ -56,6 +58,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public boolean isRemovable(User user, PTNetwork bean) throws ChouetteException
    {
+		if (getDao() == null) throw new ChouetteException("no dao available");
       // TODO Auto-generated method stub
       return false;
    }
@@ -66,6 +69,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public void remove(User user, PTNetwork bean) throws ChouetteException
    {
+		if (getDao() == null) throw new ChouetteException("no dao available");
       // TODO Auto-generated method stub
       
    }
@@ -76,6 +80,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public int removeAll(User user, Filter filter) throws ChouetteException
    {
+		if (getDao() == null) throw new ChouetteException("no dao available");
       // TODO Auto-generated method stub
       return 0;
    }

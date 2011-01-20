@@ -49,7 +49,15 @@
 
   <bean id="lineManager"
     		class="fr.certu.chouette.manager.LineManager">
-    <property name="dao" ref="lineDao"/>
+  </bean>
+  <bean id="networkManager"
+    		class="fr.certu.chouette.manager.PTNetworkManager">
+  </bean>
+  <bean id="companyManager"
+    		class="fr.certu.chouette.manager.CompanyManager">
+  </bean>
+  <bean id="routeManager"
+    		class="fr.certu.chouette.manager.RouteManager">
   </bean>
 
 </beans>

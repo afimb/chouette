@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans 	
-	xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-	<bean id="chouetteDataSource"
-		class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource">
+	<bean id="chouetteDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource">
 		<property name="driverClassName" value="${jdbc.driver}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${hibernate.username}" />
@@ -21,20 +19,20 @@
 			<props>
 				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
 				</prop>
-				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop>  -->
+				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.default_schema">${database.schema}</prop>
 			</props>
 		</property>
 		<property name="dataSource" ref="chouetteDataSource" />
-    <property name="mappingResources">
-      <list>
-        <value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
-        <value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
-        <value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
-        <value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
-      </list>
-    </property>
+		<property name="mappingResources">
+			<list>
+				<value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="transactionManager"
@@ -65,5 +63,25 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-
+	<!-- injection dans les managers -->
+	<bean id="networkDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+		factory-method="createPTNetworkDaoInjector">
+		<property name="manager" ref="networkManager" />
+		<property name="dao" ref="networkDao" />
+	</bean>
+	<bean id="companyDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+		factory-method="createCompanyDaoInjector">
+		<property name="manager" ref="companykManager" />
+		<property name="dao" ref="companyDao" />
+	</bean>
+	<bean id="lineDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+		factory-method="createLineDaoInjector">
+		<property name="manager" ref="lineManager" />
+		<property name="dao" ref="lineDao" />
+	</bean>
+	<bean id="routeDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+		factory-method="createRouteDaoInjector">
+		<property name="manager" ref="routeManager" />
+		<property name="dao" ref="routeDao" />
+	</bean>
 </beans>
