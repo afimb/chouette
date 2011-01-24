@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+   default-init-method="init">
 
 
 	<bean id="NeptuneLineProducer" class="fr.certu.chouette.exchange.xml.neptune.LineProducer" />
@@ -24,7 +25,7 @@
 	</bean>
 
 	<bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
-		init-method="init" factory-method="createLinePluginInjector">
+		factory-method="createLinePluginInjector">
 		<property name="manager" ref="lineManager" />
 		<property name="importPlugins">
 			<list>

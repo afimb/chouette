@@ -20,18 +20,18 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.plugin.report.ReportHolder;
-import fr.certu.chouette.plugin.exchange.FormatDescription;
-import fr.certu.chouette.plugin.exchange.ListParameterValue;
-import fr.certu.chouette.plugin.exchange.ParameterDescription;
-import fr.certu.chouette.plugin.exchange.ParameterValue;
-import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.plugin.exchange.FormatDescription;
+import fr.certu.chouette.plugin.exchange.ListParameterValue;
+import fr.certu.chouette.plugin.exchange.ParameterDescription;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
  * 
@@ -51,7 +51,28 @@ public class Command
 	 */
 	public static void main(String[] args)
 	{
-		applicationContext = new ClassPathXmlApplicationContext("ApplicationContext.xml");
+		// pattern partially work 
+		// String[] context = {"classpath*:/ApplicationContext.xml"};
+		String[] context = {"classpath*:/ApplicationContext.xml",
+				"classpath*:/modules/managers.xml",
+				"classpath*:/modules/neptune_exchange.xml",
+				"classpath*:/modules/hibernate.xml"};
+		/*
+		PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver(); 
+		try 
+		{
+			Resource[] re = test.getResources("classpath*:/ApplicationContext.xml");
+			System.out.println("nb res = "+re.length);
+			for (Resource resource : re) 
+			{
+				System.out.println(resource.getURI().toString());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		applicationContext = new ClassPathXmlApplicationContext(context);
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory(); 
 		Command command = (Command) factory.getBean("Command");
 		command.execute(args);
@@ -109,6 +130,7 @@ public class Command
 			else
 			{
 				System.err.println(e.getMessage());
+				System.err.println(e.getLocalizedMessage());
 				e.printStackTrace();
 			}
 		}

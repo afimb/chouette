@@ -16,9 +16,9 @@ import org.springframework.orm.hibernate3.HibernateSystemException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import fr.certu.chouette.common.CodeIncident;
-import fr.certu.chouette.common.ServiceException;
 import fr.certu.chouette.dao.IDaoTemplate;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.model.neptune.Company;
@@ -140,7 +140,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		}
 		else if ( total>1)
 		{
-			throw new ServiceException( CodeIncident.BASE_NON_INTEGRE, total + " tableaux de marche d'identifant " + objectId);
+			throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "+type.getName()+" id =" + objectId);
 		}
 
 		return list.get( 0);

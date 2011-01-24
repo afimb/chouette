@@ -5,8 +5,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.core.Ordered;
 
 import fr.certu.chouette.model.neptune.NeptuneObject;
-import fr.certu.chouette.common.CodeIncident;
-import fr.certu.chouette.common.ServiceException;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoException;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 
 //----------------------------------------------------------------------------
 /**
@@ -54,10 +55,10 @@ public class CreationControleur implements Ordered
       {
          returnValue = call.proceed();
       }
-      catch( ServiceException e)
+      catch( HibernateDaoRuntimeException e)
       {
     	  _log.debug( "Echec création ! "+e.getMessage());
-    	  isConstraintBrocken = CodeIncident.CONTRAINTE_INVALIDE.equals( e.getCode());
+    	  isConstraintBrocken = HibernateDaoExceptionCode.INVALID_CONSTRAINT.equals( e.getExceptionCode());
     	  throw e;
       }
       finally

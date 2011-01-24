@@ -4,11 +4,8 @@ package fr.certu.chouette.exchange.xml.neptune;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
-import fr.certu.chouette.service.commun.CodeIncident;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.validation.commun.LoggingManager;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
-import fr.certu.chouette.service.validation.commun.ValidationException;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,7 +35,6 @@ public class NeptuneFileReader
 	
 	public ChouettePTNetworkTypeType read(String fileName) 
 	{
-		ValidationException validationException = new ValidationException();
 		String contenu = null;
 		try 
 		{
@@ -49,8 +45,7 @@ public class NeptuneFileReader
 		{
 			String msg = e.getMessage();
 			LoggingManager.log(logger, msg, Level.ERROR);
-			validationException.add(TypeInvalidite.FILE_NOT_FOUND, msg);
-			throw validationException;
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.FILE_NOT_FOUND, e, fileName);
 		}
 		
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
@@ -63,18 +58,18 @@ public class NeptuneFileReader
 			chouettePTNetworkType = (ChouettePTNetworkTypeType)anUnmarshaller.unmarshal(new StringReader(contenu));
 			logger.debug("END OF UNMARSHALING OF contenu");
 		}
-		catch (org.exolab.castor.xml.ValidationException e) 
+		catch (org.exolab.castor.xml.ValidationException ex) 
 		{
+			org.exolab.castor.xml.ValidationException e = ex;
 			logger.debug("ValidationException "+e.getMessage());
 			do 
 			{
 				String msg = e.getMessage();
 				LoggingManager.log(logger, msg, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALID_XML_FILE, msg);
 				e = e.getNext();
 			} 
 			while (e != null);
-			throw validationException;
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_XML_FILE,ex, fileName);
 		}
 		catch (MarshalException e) 
 		{
@@ -89,16 +84,14 @@ public class NeptuneFileReader
 					String msg1 = e1.getMessage() + " AT LINE " +e1.getLineNumber()+ " COLUMN "+ e1.getColumnNumber();
 					logger.error("SAXParseException "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
-					validationException.add(TypeInvalidite.INVALID_XML_FILE, msg1);
-					throw validationException;
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_XML_FILE,e1, fileName);
 				}
 				catch (Exception e1)
 				{
 					String msg1 = e1.getMessage();
 					logger.error("Exception "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
-					validationException.add(TypeInvalidite.INVALID_CHOUETTE_FILE, msg1);
-					throw validationException;
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE,e1, fileName);
 				}
 			}
 			String mesg = "";
@@ -118,8 +111,8 @@ public class NeptuneFileReader
 			}
 			logger.error("MarshalException "+mesg);
 			LoggingManager.log(logger, mesg, Level.ERROR);
-			validationException.add(TypeInvalidite.INVALID_CHOUETTE_FILE, mesg);
-			throw validationException;
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE, mesg);
+
 		}
 		return chouettePTNetworkType;
 	}
@@ -143,14 +136,14 @@ public class NeptuneFileReader
 		}
 		catch(IOException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
 		}
 		catch(MarshalException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_FORMAT,  e);
 		}
 		catch(org.exolab.castor.xml.ValidationException e) {
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_FORMAT,  e);
 		}
 		finally 
 		{
@@ -162,7 +155,7 @@ public class NeptuneFileReader
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
 				}
 			}
 			if (fileOutputStream != null) 
@@ -173,7 +166,7 @@ public class NeptuneFileReader
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
 				}
 			}
 		}
@@ -198,15 +191,15 @@ public class NeptuneFileReader
 		}
 		catch(IOException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
 		}
 		catch(MarshalException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_FORMAT,  e);
 		}
 		catch(org.exolab.castor.xml.ValidationException e) 
 		{
-			throw new ServiceException(CodeIncident.ERR_XML_FORMAT, e);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_FORMAT,  e);
 		} 
 		finally 
 		{
@@ -218,7 +211,7 @@ public class NeptuneFileReader
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
 				}
 			}
 			if (fileOutputStream != null) 
@@ -229,7 +222,7 @@ public class NeptuneFileReader
 				}
 				catch(IOException e) 
 				{
-					throw new ServiceException(CodeIncident.ERR_XML_ECRITURE,  e);
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
 				}
 			}
 		}

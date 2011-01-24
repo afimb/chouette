@@ -1,79 +1,108 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>fr.certu.chouette</groupId>
-        <artifactId>chouette</artifactId>
-        <version>1.5.0</version>
-    </parent>
-    <groupId>fr.certu.chouette</groupId>
-    <artifactId>chouette-hibernate-dao</artifactId>
-    <version>1.5.0</version>
-    <name>Chouette Hibernate Dao</name>
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-core</artifactId>
-        </dependency>
-        <!-- Hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>3.5.4-Final</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.transaction</groupId>
-                    <artifactId>jta</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
-    <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <targetPath>fr/certu/chouette/model/neptune</targetPath>
-                <directory>${basedir}/src/main/mapping</directory>
-                <includes>
-                    <include>*.hbm.xml</include>
-                </includes>
-            </resource>
-        </resources>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fr.certu.chouette</groupId>
+		<artifactId>chouette</artifactId>
+		<version>1.5.0</version>
+	</parent>
+	<groupId>fr.certu.chouette</groupId>
+	<artifactId>chouette-hibernate-dao</artifactId>
+	<version>1.5.0</version>
+	<name>Chouette Hibernate Dao</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-core</artifactId>
+		</dependency>
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.0.ga</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernatespatial</groupId>
+			<artifactId>hibernate-spatial-postgis</artifactId>
+			<version>1.0</version>
+		</dependency>
 
-		<!--plugins>
-			<plugin>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-maven-plugin</artifactId>
-                                <version>3.2.0.ga</version>
-				<executions>
-					<execution>
-						<phase>resources</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<components>
-						<component>
-							<name>hbm2ddl</name>
-							<implementation>configuration</implementation>
-						</component>
-					</components>
-					<componentProperties>
-						<drop>false</drop>
-						<outputfilename>schema.sql</outputfilename>
-						<configurationfile>target/classes/hibernate.cfg.xml</configurationfile>
-					</componentProperties>
-				</configuration>
-			</plugin>
-		</plugins-->
-    </build>
+		<!-- the Postgis JDBC driver -->
+		<dependency>
+			<groupId>org.postgis</groupId>
+			<artifactId>postgis-jdbc</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+		<!-- Librairie jta pour hibernate chargée seule car il faut accepter la 
+			licence de sun -->
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.0.1B</version>
+		</dependency>
+		<!--  Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<!-- AspectJ reference cglib-2.1_3.jar -->
+		<dependency>
+			<groupId>aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.5.2</version>
+			<!-- <scope>compile</scope> -->
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<targetPath>fr/certu/chouette/model/neptune</targetPath>
+				<directory>${basedir}/src/main/mapping</directory>
+				<includes>
+					<include>*.hbm.xml</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<!--plugins> <plugin> <groupId>org.hibernate</groupId> <artifactId>hibernate-maven-plugin</artifactId> 
+			<version>3.2.0.ga</version> <executions> <execution> <phase>resources</phase> 
+			</execution> </executions> <configuration> <components> <component> <name>hbm2ddl</name> 
+			<implementation>configuration</implementation> </component> </components> 
+			<componentProperties> <drop>false</drop> <outputfilename>schema.sql</outputfilename> 
+			<configurationfile>target/classes/hibernate.cfg.xml</configurationfile> </componentProperties> 
+			</configuration> </plugin> </plugins -->
+	</build>
 
 </project>

@@ -8,6 +8,8 @@
 package fr.certu.chouette.manager;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -36,7 +38,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public void update(User user, PTNetwork bean) throws ChouetteException
    {
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
       // TODO Auto-generated method stub
       
    }
@@ -47,7 +49,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public void update(User user, PTNetwork bean, DetailLevelEnum level) throws ChouetteException
    {
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
       // TODO Auto-generated method stub
       
    }
@@ -58,7 +60,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public boolean isRemovable(User user, PTNetwork bean) throws ChouetteException
    {
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
       // TODO Auto-generated method stub
       return false;
    }
@@ -69,7 +71,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public void remove(User user, PTNetwork bean) throws ChouetteException
    {
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
       // TODO Auto-generated method stub
       
    }
@@ -80,7 +82,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public int removeAll(User user, Filter filter) throws ChouetteException
    {
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
       // TODO Auto-generated method stub
       return 0;
    }

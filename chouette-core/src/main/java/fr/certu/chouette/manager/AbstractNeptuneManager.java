@@ -15,12 +15,13 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
-import fr.certu.chouette.plugin.exchange.ExchangeException;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
@@ -33,6 +34,11 @@ import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
  * 
+ */
+/**
+ * @author michel
+ *
+ * @param <T>
  */
 /**
  * @author michel
@@ -96,6 +102,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public T addNew(User user, T bean) throws ChouetteException 
 	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		getDao().save(bean);
 		return bean;
@@ -107,6 +114,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public boolean exists(User user, T bean) throws ChouetteException
 	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		if (bean.getId() != null)
 		{
@@ -125,7 +133,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public T get(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		if (filter.getType().equals(Filter.Type.EQUALS))
 		{
@@ -151,7 +159,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public List<T> getAll(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		List<T> beans =  getDao().select(filter);
 		for (T bean : beans)
@@ -183,15 +191,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public List<T> doImport(User user, String formatDescriptor,List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
 	{
 		IImportPlugin<T> plugin = importPluginMap.get(formatDescriptor);
-		if (plugin == null) throw new ChouetteException("unknown format :"+formatDescriptor);
-		try 
-		{
-			return plugin.doImport(parameters,report);
-		}
-		catch (ExchangeException e) 
-		{
-			throw new ChouetteException("import failed", e);
-		}
+		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
+
+		return plugin.doImport(parameters,report);
+
 
 	}
 
@@ -201,7 +204,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void saveAll(User user, List<T> beans) throws ChouetteException 
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 
 	}
@@ -212,7 +215,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void saveOrUpdateAll(User user, List<T> beans) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 
 	}
@@ -242,15 +245,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 			List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
 			{
 		IExportPlugin<T> plugin = exportPluginMap.get(formatDescriptor);
-		if (plugin == null) throw new ChouetteException("unknown format :"+formatDescriptor);
-		try 
-		{
-			plugin.doExport(beans,parameters,report);
-		}
-		catch (ExchangeException e) 
-		{
-			throw new ChouetteException("export failed", e);
-		}
+		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
+
+		plugin.doExport(beans,parameters,report);
+
 			}
 
 	/* (non-Javadoc)
@@ -278,15 +276,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	throws ChouetteException 
 	{
 		IExportPlugin<T> plugin = exportDeletionPluginMap.get(formatDescriptor);
-		if (plugin == null) throw new ChouetteException("unknown format :"+formatDescriptor);
-		try 
-		{
-			plugin.doExport(beans,parameters,report);
-		}
-		catch (ExchangeException e) 
-		{
-			throw new ChouetteException("export failed", e);
-		}
+		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
+
+		plugin.doExport(beans,parameters,report);
+
 	}
 
 
@@ -305,7 +298,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Override
 	public List<ValidationStepDescription> getValidationSteps(User user)
-			throws ChouetteException {
+	throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -315,7 +308,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Override
 	public ReportItem validateStep(User user, T bean, String stepDescriptor)
-			throws ChouetteException {
+	throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

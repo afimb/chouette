@@ -16,14 +16,24 @@
 
 	</bean>
 
-	<import resource="classpath:/modules/hibernate.xml" />
-	<import resource="classpath:/modules/managers.xml" />
-	<import resource="classpath:/modules/neptune_exchange.xml" />
+	<!-- <import resource="classpath:/modules/hibernate.xml" /> <import resource="classpath:/modules/managers.xml" 
+		/> <import resource="classpath:/modules/neptune_exchange.xml" /> -->
 
 	<bean id="Command" class="fr.certu.chouette.command.Command">
 		<property name="managers">
 			<map>
-				<entry key="line" value-ref="lineManager" />
+				<entry key="line">
+					<ref bean="lineManager" />
+				</entry>
+				<entry key="company">
+					<ref bean="companyManager" />
+				</entry>
+				<entry key="network">
+					<ref bean="networkManager" />
+				</entry>
+				<entry key="route">
+					<ref bean="routeManager" />
+				</entry>
 			</map>
 		</property>
 	</bean>

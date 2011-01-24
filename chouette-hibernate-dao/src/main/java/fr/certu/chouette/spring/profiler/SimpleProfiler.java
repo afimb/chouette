@@ -23,8 +23,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectRetrievalFailureException;
 
-import fr.certu.chouette.common.CodeIncident;
-import fr.certu.chouette.common.ServiceException;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 
 
 //----------------------------------------------------------------------------
@@ -62,19 +62,19 @@ public class SimpleProfiler implements Ordered
       catch( ObjectRetrievalFailureException e)
       {
           _log.debug( "ObjectRetrievalFailureException: Echec de l'opération, "+e+", msg="+e.getMessage());
-         throw new ServiceException( CodeIncident.IDENTIFIANT_INCONNU, "IDENTIFIANT_INCONNU", e);
+         throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.UNKNOWN_ID,  e);
       }
       catch( DataIntegrityViolationException e)
       {
     	  // ex: contrainte unique violée
           _log.debug( "DataIntegrityViolationException: Echec de l'opération, "+e+", msg="+e.getMessage());
-		  throw new ServiceException( CodeIncident.CONTRAINTE_INVALIDE, "CONTRAINTE_INVALIDE", e);
+		  throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.INVALID_CONSTRAINT,  e);
       }
       catch( DataAccessException e)
       {
     	  // ex: type numérique de format invalide
           _log.debug( "DataAccessException: Echec de l'opération, "+e+", msg="+e.getMessage());
-		  throw new ServiceException( CodeIncident.DONNEE_INVALIDE, "DONNEE_INVALIDE", e);
+		  throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.INVALID_DATA, e);
       }
       finally
       {

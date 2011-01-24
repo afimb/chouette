@@ -9,6 +9,7 @@ package fr.certu.chouette.plugin.exchange;
 
 import java.util.List;
 
+import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
@@ -28,5 +29,5 @@ public interface IImportPlugin<T extends NeptuneIdentifiedObject> extends IExcha
 	 * @return
 	 * @throws ExchangeException
 	 */
-	List<T> doImport(List<ParameterValue> parameters,ReportHolder report) throws ExchangeException;
+	List<T> doImport(List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
 }

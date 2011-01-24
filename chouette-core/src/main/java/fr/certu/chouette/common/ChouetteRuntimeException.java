@@ -17,17 +17,18 @@ import java.util.ResourceBundle;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class ChouetteException extends Exception
+public abstract class ChouetteRuntimeException extends RuntimeException
 {
-    public abstract String getPrefix();
-	
+	public abstract String getPrefix();
+
 	public abstract String getCode();
 
 	private String[] messageArgs;
+
 	/**
 	 * 
 	 */
-	public ChouetteException() 
+	public ChouetteRuntimeException() 
 	{
 		super();
 		messageArgs = new String[0];
@@ -35,8 +36,18 @@ public abstract class ChouetteException extends Exception
 
 	/**
 	 * @param message
+	 * @param cause
 	 */
-	public ChouetteException(String message) 
+	public ChouetteRuntimeException(String message, Throwable cause) 
+	{
+		super(cause);
+		messageArgs = new String[]{message};
+	}
+
+	/**
+	 * @param message
+	 */
+	public ChouetteRuntimeException(String message) 
 	{
 		super();
 		messageArgs = new String[]{message};
@@ -45,7 +56,7 @@ public abstract class ChouetteException extends Exception
 	/**
 	 * @param cause
 	 */
-	public ChouetteException(Throwable cause) 
+	public ChouetteRuntimeException(Throwable cause) 
 	{
 		super(cause);
 		messageArgs = new String[0];
@@ -54,7 +65,7 @@ public abstract class ChouetteException extends Exception
 	/**
 	 * @param arg0
 	 */
-	public ChouetteException(String... args)
+	public ChouetteRuntimeException(String... args)
 	{
 		super();
 		messageArgs = args;
@@ -64,21 +75,12 @@ public abstract class ChouetteException extends Exception
 	 * @param arg0
 	 * @param arg1
 	 */
-	public ChouetteException(String message, Throwable cause)
-	{
-		super(cause);
-		messageArgs = new String[]{message};
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 */
-	public ChouetteException(Throwable cause,String... args)
+	public ChouetteRuntimeException(Throwable cause,String... args)
 	{
 		super(cause);
 		messageArgs = args;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Throwable#getMessage()
@@ -89,8 +91,8 @@ public abstract class ChouetteException extends Exception
 		Locale locale = new Locale(Locale.ENGLISH.getLanguage(), Locale.UK.getCountry());
 		return getLocalizedMessage(locale);
 	}
-		
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Throwable#getLocalizedMessage()
@@ -101,10 +103,6 @@ public abstract class ChouetteException extends Exception
 		return getLocalizedMessage(Locale.getDefault());
 	}
 
-	/**
-	 * @param locale
-	 * @return
-	 */
 	public final String getLocalizedMessage(Locale locale)
 	{
 		try
@@ -113,7 +111,7 @@ public abstract class ChouetteException extends Exception
 			String message = "";
 			try
 			{
-				ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName(),locale);
+				ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName().replace("Runtime",""),locale);
 				format = bundle.getString(getCode());
 				message = MessageFormat.format(format,(Object[])messageArgs);
 			}
@@ -121,7 +119,7 @@ public abstract class ChouetteException extends Exception
 			{
 				try
 				{
-					ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+					ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName().replace("Runtime",""));
 					format = bundle.getString(getCode());
 					message = MessageFormat.format(format,(Object[])messageArgs);
 				}
@@ -136,7 +134,7 @@ public abstract class ChouetteException extends Exception
 				format = getFormat("cause",locale);
 				message += "\n"+MessageFormat.format(format,getCause().getLocalizedMessage());
 			}
-			
+
 			format = getFormat("message",locale);
 			return MessageFormat.format(format,getPrefix(),getCode(),message);
 		}
@@ -160,4 +158,5 @@ public abstract class ChouetteException extends Exception
 			return localBundle.getString(key);
 		}
 	}
+
 }

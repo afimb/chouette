@@ -18,15 +18,16 @@ import org.apache.log4j.Logger;
 import org.exolab.castor.xml.ValidationException;
 
 import chouette.schema.ChouettePTNetworkTypeType;
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.plugin.exchange.ExchangeException;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.ReportHolder;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 
 public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> 
 {
@@ -57,7 +58,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 	@Override
 	public List<Line> doImport(List<ParameterValue> parameters,ReportHolder reportContainer)
-	throws ExchangeException 
+	throws ChouetteException 
 	{
 		String filePath = null;
 		boolean validate = false;
@@ -78,7 +79,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		}
 		if (filePath == null) 
 		{
-			throw new ExchangeException("missing xmlFile arg");
+			throw new IllegalArgumentException("xmlFile required");
 		}
 
 		List<Line> lines = processImport(filePath,validate,reportContainer);
@@ -98,10 +99,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			} 
 			catch (ValidationException e) 
 			{
-
-				fr.certu.chouette.service.validation.commun.ValidationException ex = new fr.certu.chouette.service.validation.commun.ValidationException();
-				ex.add(TypeInvalidite.INVALID_XML_FILE, filePath);
-				throw ex;
+				throw new ExchangeException(ExchangeExceptionCode.INVALID_XML_FILE , filePath);
 			}
 		}
 		

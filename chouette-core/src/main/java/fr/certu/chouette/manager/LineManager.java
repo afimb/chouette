@@ -10,6 +10,8 @@ package fr.certu.chouette.manager;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Line;
@@ -40,7 +42,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void update(User user, Line bean) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 
 	}
@@ -52,7 +54,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	public void update(User user, Line bean, DetailLevelEnum level)
 	throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 
 	}
@@ -63,7 +65,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public boolean isRemovable(User user, Line bean) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -74,7 +76,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void remove(User user, Line bean) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 
 	}
@@ -85,7 +87,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException
 	{
-		if (getDao() == null) throw new ChouetteException("no dao available");
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
 		return 0;
 	}
