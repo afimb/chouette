@@ -12,6 +12,7 @@ import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -22,6 +23,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<Company> companies;
 	@Getter @Setter private PTNetwork ptNetwork;
 	@Getter @Setter private List<JourneyPattern> journeyPatterns;
+	@Getter @Setter private List<PTLink> ptLinks;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -29,6 +31,7 @@ public class ModelAssembler {
 	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
 	private Map<String, JourneyPattern> journeyPatternsDictionary = new HashMap<String, JourneyPattern>();
+	private Map<String, PTLink> ptLinksDictionary = new HashMap<String, PTLink>();
 	
 	
 	public void connect(){
@@ -36,8 +39,9 @@ public class ModelAssembler {
 		connectLines();
 		connectRoutes();
 		connectCompanies();
-		connectPtNetwork();
+		connectPTNetwork();
 		connectJourneyPatterns();
+		connectPTLinks();
 	}
 
 	private void populateDictionaries(){
@@ -45,6 +49,7 @@ public class ModelAssembler {
 		populateDictionnary(routes, routesDictionary);
 		populateDictionnary(companies, companiesDictionary);
 		populateDictionnary(journeyPatterns, journeyPatternsDictionary);
+		populateDictionnary(ptLinks, ptLinksDictionary);
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -69,7 +74,7 @@ public class ModelAssembler {
 	private void connectRoutes(){
 		for(Route route : routes){
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
-			//route.setPtLinks(ptLinks);
+			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
 		}
 	}
 	
@@ -79,7 +84,7 @@ public class ModelAssembler {
 		}
 	}
 
-	private void connectPtNetwork() {
+	private void connectPTNetwork() {
 		// nothing to do...
 	}
 	
@@ -87,6 +92,13 @@ public class ModelAssembler {
 		for(JourneyPattern journeyPattern : journeyPatterns){
 			journeyPattern.setRoute(getObjectFromId(journeyPattern.getRouteId(), Route.class));
 			//journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
+		}
+	}
+	
+	private void connectPTLinks(){
+		for(PTLink ptLink : ptLinks){
+			//ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
+			//ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 		}
 	}
 
