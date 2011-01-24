@@ -714,35 +714,29 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<Posit
    *              AJAX AUTOCOMPLETE                       *
    ********************************************************/
   @SkipValidation
-  public String ajaxBoardingPositions()
-  {
-    List<PositionGeographique> boardingPositions = positionGeographiqueManager.lireArretsPhysiques();
-
-    // Filter boarding position with the name in request
-    List<PositionGeographique> boardingPositionsAfterFilter = new ArrayList<PositionGeographique>();
-    for (PositionGeographique boardingPosition : boardingPositions)
-    {
-      String name = boardingPosition.getName() + " " + boardingPosition.getCountryCode() + " " + boardingPosition.getStreetName() + " " + boardingPosition.getObjectId();
-      if (name.contains(boardingPositionName))
-      {
-        boardingPositionsAfterFilter.add(boardingPosition);
+  public String ajaxBoardingPositions() {
+      List<PositionGeographique> boardingPositions = positionGeographiqueManager.lireArretsPhysiques();
+      // Filter boarding position with the name in request
+      int count = 0;
+      List<PositionGeographique> boardingPositionsAfterFilter = new ArrayList<PositionGeographique>();
+      for (PositionGeographique boardingPosition : boardingPositions) {
+          String name = boardingPosition.getName() + " " + boardingPosition.getCountryCode() + " " + boardingPosition.getStreetName() + " " + boardingPosition.getObjectId();
+          if (name.contains(boardingPositionName)) {
+              boardingPositionsAfterFilter.add(boardingPosition);
+              count++;
+              if (count >= 10)
+                  break;
+          }
       }
-    }
-
-    //  Get only first n results
-    List<PositionGeographique> boardingPositionsSubList = boardingPositionsAfterFilter.subList(START_INDEX_AJAX_LIST, END_INDEX_AJAX_LIST);
-
-    request.put("boardingPositions", boardingPositionsSubList);
-    return AUTOCOMPLETE;
+      request.put("boardingPositions", boardingPositionsAfterFilter);
+      return AUTOCOMPLETE;
   }
 
-  public String getBoardingPositionName()
-  {
-    return boardingPositionName;
+  public String getBoardingPositionName() {
+      return boardingPositionName;
   }
-
-  public void setBoardingPositionName(String boardingPositionName)
-  {
-    this.boardingPositionName = boardingPositionName;
+  
+  public void setBoardingPositionName(String boardingPositionName) {
+      this.boardingPositionName = boardingPositionName;
   }
 }

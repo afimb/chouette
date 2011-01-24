@@ -48,33 +48,28 @@ public class HoraireManager implements IHoraireManager {
 		horaire.setDepartureTime(depart);
 		horaireDao.save( horaire);
 	}
-	
-	public List<Integer> filtreHorairesInvalides( List<Date> horairesModifie, int totalArrets) {
-		
-		Date precedent = null;
-		List<Integer> indexsHorairesInvalides = new ArrayList<Integer>(); 
 
-		int total = horairesModifie.size();
-		
-		for (int i = 0; i < total; i++) {
-			
-			Date courant = horairesModifie.get(i);
-			
-			// sur changement de course, reinitialiser
-			if ((i%totalArrets)==0) precedent = null;
-
-			if (courant != null) {
-				
-				if ( precedent==null) precedent = courant;
-				int delta = ( ( int)( ( courant.getTime()-precedent.getTime())/1000L))%(3600*24);
-				
-				if ( delta<0 || 3600<delta) indexsHorairesInvalides.add( Integer.valueOf( i));
-
-				precedent = courant;
-			}
-		}
-		
-		return indexsHorairesInvalides;
+        public List<Integer> filtreHorairesInvalides( List<Date> horairesModifie, int totalArrets) {
+            Date precedent = null;
+            List<Integer> indexsHorairesInvalides = new ArrayList<Integer>();
+            int total = horairesModifie.size();
+            for (int i = 0; i < total; i++) {
+                Date courant = horairesModifie.get(i);
+                // sur changement de course, reinitialiser
+                if ((i%totalArrets)==0)
+                    precedent = null;
+                if (courant != null) {
+                    if (precedent==null)
+                        precedent = courant;
+                    int delta = ((int)((courant.getTime() - precedent.getTime()) / 1000L)) % (3600 * 24);
+                    if (delta < 0)
+                        delta += (3600 * 24);
+                    if (3600 < delta)
+                        indexsHorairesInvalides.add(Integer.valueOf(i));
+                    precedent = courant;
+                }
+            }
+            return indexsHorairesInvalides;
 	}
 	
 	

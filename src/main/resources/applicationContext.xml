@@ -600,6 +600,7 @@
         class="fr.certu.chouette.struts.network.NetworkAction">
     <property name="reseauManager" ref="reseauManager"/>
     <property name="exportManager" ref="exportManager"/>
+    <property name="ligneManager" ref="ligneManager"/>
     <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
     <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
     <property name="gtfsFileWriter" ref="gtfsFileWriter"/>
@@ -679,6 +680,7 @@
     <property name="reducteur" ref="reducteur" />
     <property name="useAltibus" value="${import.xml.altibus}"/>
     <property name="usePegase" value="${import.csv.pegase}"/>
+    <property name="importHastusLogFileName" value="${import.csv.hastus.log}"/>
   </bean>
 
   <bean id="LineFilesComparisonServiceBean" scope="prototype"

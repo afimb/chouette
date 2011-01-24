@@ -26,23 +26,28 @@ public class LecteurHoraire implements ILecteurHoraire {
     private              Map<Course, List<Horaire>> horaires;
     private              Map<Course, List<String>>  arretsPhysiques;      
     
+    @Override
     public Map<Course, List<Horaire>> getHoraires() {
 	return horaires;
     }
     
+    @Override
     public Map<Course, List<String>> getArretsPhysiques() {
 	return arretsPhysiques;
     }
     
+    @Override
     public void reinit() {
 	horaires = new HashMap<Course, List<Horaire>>();
 	init();
     }
     
+    @Override
     public void init() {
 	arretsPhysiques = new HashMap<Course, List<String>>();
     }
     
+    @Override
     public void lire(String[] ligneCSV, List<Course> courses) {
 	coursesEnCours = courses;
 	boolean arretSansHoraire = true;

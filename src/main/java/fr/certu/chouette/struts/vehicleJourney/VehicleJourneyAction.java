@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.exolab.castor.types.Duration;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -50,6 +51,8 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   private Long idItineraire;
   private Long idTableauMarche;
   private List<String> particularites = new ArrayList<String>();
+  private Long vehicleTimeSlotId;
+  private Duration vehicleHeadwayFreq;
   private Date seuilDateDepartCourse;
   private Long page;
   //	Liste des courses et course sélectionnée
@@ -122,6 +125,12 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
       String vehicleTypeIdentifier = model.getVehicleTypeIdentifier();
       if(vehicleTypeIdentifier != null)
     	  particularites = Arrays.asList(vehicleTypeIdentifier.split(","));
+      Long vehicleTimeSlotIdentifier = model.getVehicleTimeSlotIdentifier();
+      if (vehicleTimeSlotIdentifier != null)
+          vehicleTimeSlotId = vehicleTimeSlotIdentifier;
+      Duration vehicleHeadwayFrequency = model.getVehicleHeadwayFrequency();
+      if (vehicleHeadwayFrequency != null)
+          vehicleHeadwayFreq = vehicleHeadwayFrequency;
     }
 
     if (idCourse != null)
@@ -182,6 +191,11 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     else
     	model.setVehicleTypeIdentifier(null);
 
+    if ((vehicleTimeSlotId != null) && (vehicleHeadwayFreq != null)) {
+      model.setVehicleTimeSlotIdentifier(vehicleTimeSlotId);
+      model.setVehicleHeadwayFrequency(vehicleHeadwayFreq);
+    }
+
     courseManager.creer(model);
     addActionMessage(getText("course.create.ok"));
     setMappedRequest(SAVE);
@@ -207,6 +221,11 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     	model.setVehicleTypeIdentifier(StringUtils.join(particularites,','));
     else
     	model.setVehicleTypeIdentifier(null);
+
+    if ((vehicleTimeSlotId != null) && (vehicleHeadwayFreq != null)) {
+      model.setVehicleTimeSlotIdentifier(vehicleTimeSlotId);
+      model.setVehicleHeadwayFrequency(vehicleHeadwayFreq);
+    }
 
     courseManager.modifier(model);
     setMappedRequest(UPDATE);
@@ -432,5 +451,20 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   public static Set<String> getParticularitesValides() {
 	return PARTICULARITES_VALIDES;
   }
-  
+
+  public Long getVehicleTimeSlotId() {
+      return vehicleTimeSlotId;
+  }
+
+  public void setVehicleTimeSlotId(Long vehicleTimeSlotId) {
+      this.vehicleTimeSlotId = vehicleTimeSlotId;
+  }
+
+  public Duration getVehicleHeadwayFreq() {
+      return vehicleHeadwayFreq;
+  }
+
+  public void setVehicleHeadwayFreq() {
+      this.vehicleHeadwayFreq = vehicleHeadwayFreq;
+  }
 }

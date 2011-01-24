@@ -2,7 +2,6 @@ package fr.certu.chouette.service.importateur.multilignes.genericcsv;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,9 +23,16 @@ import fr.certu.chouette.service.commun.CodeDetailIncident;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class LecteurCSVPrincipal implements ILecteurPrincipal {
-    
+
     private static final Logger               logger              = Logger.getLogger(LecteurCSVPrincipal.class);
     private static final String               JeuCaracteres       = "UTF-8";//ISO-8859-1";
     private              String               repertoire;         // "."
@@ -42,17 +48,21 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
     private              ILecteurMission      lecteurMission;     // 
     private              ILecteurItineraire   lecteurItineraire;  // 
     private              ILecteurArret        lecteurArret;       // 
+    private              String               logFileName;        //
+    private              ResourceBundle       bundle;
     
+    @Override
     public void lire(String nom) {
 	lireCheminFichier(getCheminfichier(nom));
     }
     
+    @Override
     public List<ILectureEchange> getLecturesEchange() {
-	List<Ligne> lignes = lecteurLigne.getLignes();
-	if ((lignes == null) || (lignes.size() == 0))
-	    return null;
-	List<TableauMarche> tableauxMarche = new ArrayList<TableauMarche>(lecteurCalendrier.getTableauxMarchesParRef().values());
-	Reseau reseau = lecteurReseau.getReseau();
+        List<Ligne> lignes = lecteurLigne.getLignes();
+        if ((lignes == null) || (lignes.isEmpty()))
+            return null;
+        List<TableauMarche> tableauxMarche = new ArrayList<TableauMarche>(lecteurCalendrier.getTableauxMarchesParRef().values());
+        Reseau reseau = lecteurReseau.getReseau();
 	Transporteur transporteur = lecteurTransporteur.getTransporteur();
 	List<ILectureEchange> lecturesEchange = new ArrayList<ILectureEchange>();
 	for (Ligne ligne : lignes) {
@@ -110,259 +120,317 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
     }
     
     private void initialisation() {
-	lecteurCalendrier.reinit();
-	lecteurReseau.reinit();
-	lecteurTransporteur.reinit();
-	lecteurLigne.reinit();
+        bundle = ResourceBundle.getBundle("importCSV");
+	lecteurCalendrier.reinit(bundle);
+	lecteurReseau.reinit(bundle);
+	lecteurTransporteur.reinit(bundle);
+	lecteurLigne.reinit(bundle);
 	lecteurCourse.reinit();
 	lecteurHoraire.reinit();
-	lecteurZone.reinit();
+	lecteurZone.reinit(bundle);
 	lecteurMission.reinit();
 	lecteurItineraire.reinit();
 	lecteurArret.reinit();
     }
     
+    @Override
     public void lireCheminFichier(String chemin) {
-	CSVReader lecteur = null;
-	initialisation();
-	int numLigne = 0;
+	logger.debug("LECTURE DE DONNEES CSV DEPUIS : "+chemin);
+        File              inputFile         = null;
+        InputStreamReader inputStreamReader = null;
+	CSVReader         lecteur           = null;
+	FileWriter        fw                = null; //To write log infos into
+        int               counter           = 0;
+	int               lineNumber        = 0;
+        String[]          ligneCSV          = null; //Actual line
 	try {
-	    InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(chemin), JeuCaracteres);
+            initialisation();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd__HH_mm_ss");
+            logFileName = logFileName + "_" + sdf.format(Calendar.getInstance().getTime());
+	    fw = new FileWriter(logFileName, false);
+	    fw.write("##############################################################################################################\n");
+	    fw.write("# LECTURE DES DONNEES CSV \""+chemin+"\" #\n");
+	    fw.write("##############################################################################################################\n");
+            inputFile = new File(chemin);
+            if (!inputFile.exists()) {
+                ServiceException serviceException = new ServiceException(bundle, CodeIncident.FATAL00001, CodeDetailIncident.GENERIC_CSV_FILE_NOT_FOUND, chemin);
+                fw.write(serviceException.getMessage()+"\n");
+                throw serviceException;
+            }
+            if (!inputFile.isFile()) {
+                ServiceException serviceException = new ServiceException(bundle, CodeIncident.FATAL00001, CodeDetailIncident.GENERIC_CSV_INVALIDE_FILE_TYPE, chemin);
+                fw.write(serviceException.getMessage()+"\n");
+                throw serviceException;
+            }
+            if (!inputFile.canRead()) {
+                ServiceException serviceException = new ServiceException(bundle, CodeIncident.FATAL00001, CodeDetailIncident.GENERIC_CSV_INVALIDE_FILE_PARAMS, chemin);
+                fw.write(serviceException.getMessage()+"\n");
+                throw serviceException;
+            }
+	    inputStreamReader = new InputStreamReader(new FileInputStream(inputFile), JeuCaracteres);
 	    lecteur = new CSVReader(inputStreamReader, separateur);
-	    List<String[]> contenu = lecteur.readAll();
-	    contenu.add(new String[0]);
-	    int counter = 0;
-	    for (String[] ligneCSV : contenu) {
-		numLigne++;
-		if (lecteurCalendrier.isTitreReconnu(ligneCSV))
-		    if (counter == 0)
-			lecteurCalendrier.lire(ligneCSV);
-		    else
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_POSITION);
-		else if (lecteurReseau.isTitreReconnu(ligneCSV)) {
-		    if (counter == 0) {
-			lecteurCalendrier.validerCompletude();
-			counter++;
-		    }
-		    if (counter == 1)
-			lecteurReseau.lire(ligneCSV);
-		    else
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NETWORK_POSITION);
-		}
-		else if (lecteurTransporteur.isTitreReconnu(ligneCSV)) {
-		    if (counter == 1) {
-			lecteurReseau.validerCompletude();
-			counter++;
-		    }
-		    if (counter == 2)
-			lecteurTransporteur.lire(ligneCSV);
-		    else
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_POSITION);
-		}
-		else if (lecteurLigne.isTitreReconnu(ligneCSV)) {
-		    if (counter == 2) {
-			lecteurTransporteur.validerCompletude();
-			counter++;
-		    }
-		    if (counter == 3)
-			lecteurLigne.lire(ligneCSV);
-		    else
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.LINE_POSITION);
-		}
-		else if (lecteurCourse.isTitreReconnu(ligneCSV)) {
-		    if (counter == 3) {
-			//lecteurTransporteur.validerCompletude();
-			lecteurCourse.setTableauxMarchesParRef(lecteurCalendrier.getTableauxMarchesParRef());
-			counter++;
-		    }
-		    if (counter == 4)
-			lecteurCourse.lire(ligneCSV, lecteurLigne.getLigneEnCours());
-		    else
-			;//
-		}
-		else if ((ligneCSV == null) || (ligneCSV.length == 0) || 
-			 ((ligneCSV.length == 1) && ((ligneCSV[0] == null) || (ligneCSV[0].trim().length()==0))) ||
-			 ((ligneCSV.length > colonneDesTitres) && ((ligneCSV[colonneDesTitres] == null) || (ligneCSV[colonneDesTitres].trim().length() == 0)))) {
-		    if (counter == 5) {
-			/*
-			logger.error("LIGNE "+lecteurLigne.getLigneEnCours().getResistrationNumber());
-			int coNum = 0;
-			for (Course course : lecteurHoraire.getArretsPhysiques().keySet()) {
-			    coNum++;
-			    logger.error("\tCOURSE "+coNum);
-			    for (String st : lecteurHoraire.getArretsPhysiques().get(course))
-				if (st.length() > 0)
-				    logger.error("\t\t "+st);
-			}
-			*/
-			counter = 3;
-			lecteurMission.lire(lecteurHoraire.getArretsPhysiques(), lecteurLigne.getLigneEnCours());
-			lecteurItineraire.lire(lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()), lecteurMission.getMissionByCode(), lecteurLigne.getLigneEnCours());
-			lecteurArret.init(lecteurItineraire.getItineraires().get(lecteurLigne.getLigneEnCours()),
-					  lecteurMission.getMissions().get(lecteurLigne.getLigneEnCours()),
-					  lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()),
-					  lecteurHoraire.getHoraires(),
-					  lecteurHoraire.getArretsPhysiques(),
-					  lecteurZone.getArretsPhysiques());
-			//logger.error("LIGNE "+lecteurLigne.getLigneEnCours().getPublishedName());
-			for (PositionGeographique st : lecteurZone.getArretsPhysiques())
-			    ;//logger.error("\t"+st.getName());
-			lecteurArret.lire(lecteurLigne.getLigneEnCours(), lecteurCourse.getCoursesAller(), lecteurCourse.getCoursesRetour(), lecteurZone.getArretsPhysiques());
-			;// VERIFIER QUE TOUTE LA LIGNE EST VIDE
-		    }
-		}
-		else {
-		    if (counter == 4) {
-			lecteurCourse.validerCompletude();
-			lecteurZone.init();
-			lecteurHoraire.init();
-			counter++;
-		    }
-		    if (counter == 5) {
-			lecteurZone.lire(lecteurLigne.getLigneEnCours(), ligneCSV);
-			lecteurHoraire.lire(ligneCSV, lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()));
-		    }
-		    else {
-			String ligneText = "";
-			for (int i = 0; i < ligneCSV.length; i++)
-			    ligneText += ligneCSV[i]+";";
-			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.INVALID_SYNTAX,ligneText);
-		    }
-		}
-	    }
-	} 
-	catch (FileNotFoundException e) {
-	    throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE,  e);
-	}
-	catch (ServiceException e) {
-	    throw e;
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	    throw new ServiceException(CodeIncident.DONNEE_INVALIDE, e, numLigne);
-	}
-	finally {
-	    if (lecteur != null) {
-		try {
-		    lecteur.close();
-		}
-		catch (Exception e) {
-		    logger.error("Echec cloture du fichier "+chemin+", "+e.getMessage(), e);
-		}
-	    }
-	}
+	    ligneCSV = lecteur.readNext();
+	    while (ligneCSV != null) {
+                try {
+                    lineNumber++;
+                    String _lineNumber = "" + lineNumber;
+                    int len = 6;
+                    while (_lineNumber.length() > len)
+                        len += 6;
+                    while (_lineNumber.length() <= len)
+                        _lineNumber = "0" + _lineNumber;
+                    if (lecteurCalendrier.isTitreReconnu(ligneCSV)) {
+                        if (counter != 0)
+                            throw new ServiceException(bundle, CodeIncident.FATAL00002, CodeDetailIncident.GENERIC_CSV_INVALIDE_TIMETABLE_POSITION, _lineNumber);
+                        lecteurCalendrier.lire(ligneCSV, _lineNumber);
+                    }
+                    else if (lecteurReseau.isTitreReconnu(ligneCSV)) {
+                        if (counter == 0) {
+                            lecteurCalendrier.validerCompletude();
+                            counter++;
+                        }
+                        if (counter == 1)
+                            lecteurReseau.lire(ligneCSV, _lineNumber);
+                        else
+                            throw new ServiceException(bundle, CodeIncident.FATAL00003, CodeDetailIncident.GENERIC_CSV_INVALIDE_NETWORK_POSITION, _lineNumber);
+                    }
+                    else if (lecteurTransporteur.isTitreReconnu(ligneCSV)) {
+                        if (counter == 1) {
+                            lecteurReseau.validerCompletude();
+                            counter++;
+                        }
+                        if (counter == 2)
+                            lecteurTransporteur.lire(ligneCSV, _lineNumber);
+                        else
+                            throw new ServiceException(bundle, CodeIncident.FATAL00004, CodeDetailIncident.GENERIC_CSV_INVALIDE_COMPANY_POSITION, _lineNumber);
+                    }
+                    else if (lecteurLigne.isTitreReconnu(ligneCSV)) {
+                        if (counter == 2) {
+                            lecteurTransporteur.validerCompletude();
+                            counter++;
+                        }
+                        if (counter == 3)
+                            lecteurLigne.lire(ligneCSV, _lineNumber);
+                        else
+                            throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.LINE_POSITION);
+                    }
+                    else if (lecteurCourse.isTitreReconnu(ligneCSV)) {
+                        if (counter == 3) {
+                            //lecteurTransporteur.validerCompletude();
+                            lecteurCourse.setTableauxMarchesParRef(lecteurCalendrier.getTableauxMarchesParRef());
+                            counter++;
+                        }
+                        if (counter == 4)
+                            lecteurCourse.lire(ligneCSV, lecteurLigne.getLigneEnCours());
+                        else
+                            ;//
+                    }
+                    else if ((ligneCSV == null) || (ligneCSV.length == 0) ||
+                            ((ligneCSV.length == 1) && ((ligneCSV[0] == null) || (ligneCSV[0].trim().length()==0))) ||
+                            ((ligneCSV.length > colonneDesTitres) && ((ligneCSV[colonneDesTitres] == null) || (ligneCSV[colonneDesTitres].trim().length() == 0)))) {
+                        if (counter == 5) {
+                            /*
+                             logger.error("LIGNE "+lecteurLigne.getLigneEnCours().getResistrationNumber());
+                             int coNum = 0;
+                             for (Course course : lecteurHoraire.getArretsPhysiques().keySet()) {
+                             coNum++;
+                             logger.error("\tCOURSE "+coNum);
+                             for (String st : lecteurHoraire.getArretsPhysiques().get(course))
+                             if (st.length() > 0)
+                             logger.error("\t\t "+st);
+                             }
+                             */
+                            counter = 3;
+                            lecteurMission.lire(lecteurHoraire.getArretsPhysiques(), lecteurLigne.getLigneEnCours());
+                            lecteurItineraire.lire(lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()), lecteurMission.getMissionByCode(), lecteurLigne.getLigneEnCours());
+                            lecteurArret.init(lecteurItineraire.getItineraires().get(lecteurLigne.getLigneEnCours()),
+                                    lecteurMission.getMissions().get(lecteurLigne.getLigneEnCours()),
+                                    lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()),
+                                    lecteurHoraire.getHoraires(),
+                                    lecteurHoraire.getArretsPhysiques(),
+                                    lecteurZone.getArretsPhysiques());
+                            //logger.error("LIGNE "+lecteurLigne.getLigneEnCours().getPublishedName());
+                            for (PositionGeographique st : lecteurZone.getArretsPhysiques())
+                                ;//logger.error("\t"+st.getName());
+                            lecteurArret.lire(lecteurLigne.getLigneEnCours(), lecteurCourse.getCoursesAller(), lecteurCourse.getCoursesRetour(), lecteurZone.getArretsPhysiques());
+                            ;// VERIFIER QUE TOUTE LA LIGNE EST VIDE
+                        }
+                    }
+                    else {
+                        if (counter == 4) {
+                            lecteurCourse.validerCompletude();
+                            lecteurZone.init();
+                            lecteurHoraire.init();
+                            counter++;
+                        }
+                        if (counter == 5) {
+                            lecteurZone.lire(lecteurLigne.getLigneEnCours(), ligneCSV);
+                            lecteurHoraire.lire(ligneCSV, lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()));
+                        }
+                        else {
+                            String ligneText = "";
+                            for (int i = 0; i < ligneCSV.length; i++)
+                                ligneText += ligneCSV[i]+";";
+                            throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.INVALID_SYNTAX,ligneText);
+                        }
+                    }
+                }
+                catch(Exception e) {
+                    ;
+                }
+                ligneCSV = lecteur.readNext();
+            }
+        }
+        catch(MissingResourceException e) { // No resource bundle for "importCSV" can be found
+        }
+        catch(IllegalArgumentException e) { // The pattern "yyyy_MM_dd__HH_mm_ss" is invalid
+        }
+        catch(UnsupportedEncodingException e) { // If 'JeuCaracteres' is not supported)
+        }
+        catch(IOException e) { // if the file 'logFileName' exists but is a directory rather than a regular file, does not exist but cannot be created, or cannot be opened for any other reason (new FileWriter)
+            // Or if an IO error occur (write)
+            // Or if bad things happen during the read (readNext)
+        }
+        catch(NullPointerException e) { // If the 'chemin' is null
+        }
+        catch(SecurityException e) { // If a security manager exists and its SecurityManager.checkRead(java.lang.String) method denies read access to the file or directory
+        }
+        //catch (FileNotFoundException e) {
+            //throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE,  e);
+        //}
+        catch (ServiceException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException(CodeIncident.DONNEE_INVALIDE, e, lineNumber);
+        }
+        finally {
+            if (lecteur != null) {
+                try {
+                    lecteur.close();
+                }
+                catch (Exception e) {
+                    logger.error("Echec cloture du fichier "+chemin+", "+e.getMessage(), e);
+                }
+            }
+        }
     }
     
-	private String getCheminfichier(String nom) {
-		return repertoire + File.separator + nom;
-	}
-	
-	public String getRepertoire() {
-		return repertoire;
-	}
-	
-	public void setRepertoire(String repertoire) {
-		this.repertoire = repertoire;
-	}
-	
-	public char getSeparateur() {
-		return separateur;
-	}
-	
-	public void setSeparateur(char separateur) {
-		this.separateur = separateur;
-	}
+    private String getCheminfichier(String nom) {
+        return repertoire + File.separator + nom;
+    }
 
-	public int getColonneDesTitres() {
-		return colonneDesTitres;
-	}
+    public String getRepertoire() {
+        return repertoire;
+    }
+    
+    public void setRepertoire(String repertoire) {
+        this.repertoire = repertoire;
+    }
 
-	public void setColonneDesTitres(int colonneDesTitres) {
-		this.colonneDesTitres = colonneDesTitres;
-	}
-	
-	public ILecteurCalendrier getLecteurCalendrier() {
-		return lecteurCalendrier;
-	}
-	
-	public void setLecteurCalendrier(ILecteurCalendrier lecteurCalendrier) {
-		this.lecteurCalendrier = lecteurCalendrier;
-	}
-	
-	public ILecteurReseau getLecteurReseau() {
-		return lecteurReseau;
-	}
-	
-	public void setLecteurReseau(ILecteurReseau lecteurReseau) {
-		this.lecteurReseau = lecteurReseau;
-	}
-	
-	public ILecteurTransporteur getLecteurTransporteur() {
-		return lecteurTransporteur;
-	}
-	
-	public void setLecteurTransporteur(ILecteurTransporteur lecteurTransporteur) {
-		this.lecteurTransporteur = lecteurTransporteur;
-	}
-	
-	public ILecteurLigne getLecteurLigne() {
-		return lecteurLigne;
-	}
-	
-	public void setLecteurLigne(ILecteurLigne lecteurLigne) {
-		this.lecteurLigne = lecteurLigne;
-	}
-	
-	public ILecteurCourse getLecteurCourse() {
-		return lecteurCourse;
-	}
-	
-	public void setLecteurCourse(ILecteurCourse lecteurCourse) {
-		this.lecteurCourse = lecteurCourse;
-	}
-	
-	public ILecteurHoraire getLecteurHoraire() {
-		return lecteurHoraire;
-	}
-	
-	public void setLecteurHoraire(ILecteurHoraire lecteurHoraire) {
-		this.lecteurHoraire = lecteurHoraire;
-	}
-	
-	public ILecteurZone getLecteurZone() {
-		return lecteurZone;
-	}
-	
-	public void setLecteurZone(ILecteurZone lecteurZone) {
-		this.lecteurZone = lecteurZone;
-	}
-	
-	public ILecteurMission getLecteurMission() {
-		return lecteurMission;
-	}
-	
-	public void setLecteurMission(ILecteurMission lecteurMission) {
-		this.lecteurMission = lecteurMission;
-	}
-	
-	public ILecteurItineraire getLecteurItineraire() {
-		return lecteurItineraire;
-	}
-	
-	public void setLecteurItineraire(ILecteurItineraire lecteurItineraire) {
-		this.lecteurItineraire = lecteurItineraire;
-	}
-	
-	public ILecteurArret getLecteurArret() {
-		return lecteurArret;
-	}
-	
-	public void setLecteurArret(ILecteurArret lecteurArret) {
-		this.lecteurArret = lecteurArret;
-	}
+    public char getSeparateur() {
+        return separateur;
+    }
+    
+    public void setSeparateur(char separateur) {
+        this.separateur = separateur;
+    }
+
+    public int getColonneDesTitres() {
+        return colonneDesTitres;
+    }
+    
+    public void setColonneDesTitres(int colonneDesTitres) {
+        this.colonneDesTitres = colonneDesTitres;
+    }
+
+    public ILecteurCalendrier getLecteurCalendrier() {
+        return lecteurCalendrier;
+    }
+    
+    public void setLecteurCalendrier(ILecteurCalendrier lecteurCalendrier) {
+        this.lecteurCalendrier = lecteurCalendrier;
+    }
+
+    public ILecteurReseau getLecteurReseau() {
+        return lecteurReseau;
+    }
+    
+    public void setLecteurReseau(ILecteurReseau lecteurReseau) {
+        this.lecteurReseau = lecteurReseau;
+    }
+
+    public ILecteurTransporteur getLecteurTransporteur() {
+        return lecteurTransporteur;
+    }
+    
+    public void setLecteurTransporteur(ILecteurTransporteur lecteurTransporteur) {
+        this.lecteurTransporteur = lecteurTransporteur;
+    }
+
+    public ILecteurLigne getLecteurLigne() {
+        return lecteurLigne;
+    }
+    
+    public void setLecteurLigne(ILecteurLigne lecteurLigne) {
+        this.lecteurLigne = lecteurLigne;
+    }
+
+    public ILecteurCourse getLecteurCourse() {
+        return lecteurCourse;
+    }
+    
+    public void setLecteurCourse(ILecteurCourse lecteurCourse) {
+        this.lecteurCourse = lecteurCourse;
+    }
+
+    public ILecteurHoraire getLecteurHoraire() {
+        return lecteurHoraire;
+    }
+    
+    public void setLecteurHoraire(ILecteurHoraire lecteurHoraire) {
+        this.lecteurHoraire = lecteurHoraire;
+    }
+
+    public ILecteurZone getLecteurZone() {
+        return lecteurZone;
+    }
+    
+    public void setLecteurZone(ILecteurZone lecteurZone) {
+        this.lecteurZone = lecteurZone;
+    }
+
+    public ILecteurMission getLecteurMission() {
+        return lecteurMission;
+    }
+    
+    public void setLecteurMission(ILecteurMission lecteurMission) {
+        this.lecteurMission = lecteurMission;
+    }
+
+    public ILecteurItineraire getLecteurItineraire() {
+        return lecteurItineraire;
+    }
+    
+    public void setLecteurItineraire(ILecteurItineraire lecteurItineraire) {
+        this.lecteurItineraire = lecteurItineraire;
+    }
+
+    public ILecteurArret getLecteurArret() {
+        return lecteurArret;
+    }
+    
+    public void setLecteurArret(ILecteurArret lecteurArret) {
+        this.lecteurArret = lecteurArret;
+    }
 
     @Override
     public String getLogFileName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return logFileName;
+    }
+    
+    public void setLogFileName(String logFileName) {
+        this.logFileName = logFileName;
     }
 }

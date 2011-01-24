@@ -8,8 +8,8 @@ import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.Mission;
 
 public interface ILecteurItineraire {
-	
-	public void lire(List<Course> courses, Map<String, Mission> missions, Ligne ligne);
-	public Map<Ligne, List<Itineraire>> getItineraires();
-	public void reinit();
+
+    public void lire(List<Course> courses, Map<String, Mission> missions, Ligne ligne);
+    public Map<Ligne, List<Itineraire>> getItineraires();
+    public void reinit();
 }

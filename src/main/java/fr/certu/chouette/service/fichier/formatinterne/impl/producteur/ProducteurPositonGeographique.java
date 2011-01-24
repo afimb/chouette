@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+//import org.apache.log4j.Logger;
 
 public class ProducteurPositonGeographique implements IProducteurSpecifique {
-	
+
+        //private static Logger          logger = Logger.getLogger(ProducteurPositonGeographique.class);
 	private IFournisseurId         fournisseurId;
 	private IGestionFichier        gestionFichier;
 	private IIdentificationManager identificationManager;
@@ -38,6 +40,7 @@ public class ProducteurPositonGeographique implements IProducteurSpecifique {
 		final List<PositionGeographique> zonesGeneriquesNouvelles = new ArrayList<PositionGeographique>();
 		final List<PositionGeographique> zonesGeneriques = echange.getPositionsGeographiques();
 		for (PositionGeographique geoPosition : zonesGeneriques) {
+                        //logger.debug("La position "+geoPosition);
 			Long idGeoPosition = null;
 			final String zoneGeneriqueObjectId = geoPosition.getObjectId();
 			if (etatDifference.isObjectIdZoneGeneriqueConnue(zoneGeneriqueObjectId))

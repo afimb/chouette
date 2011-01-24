@@ -6,9 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
-
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
@@ -24,6 +22,7 @@ public class LecteurItineraire implements ILecteurItineraire {
     private              Map<Ligne, List<Itineraire>> itineraires;
     private              Map<String, Itineraire>      itinerairesParCode;
     
+    @Override
     public void reinit() {
 	counter = 1;
 	itineraires = new HashMap<Ligne, List<Itineraire>>();
@@ -34,6 +33,7 @@ public class LecteurItineraire implements ILecteurItineraire {
 	itinerairesParCode = new HashMap<String, Itineraire>();
     }
     
+    @Override
     public Map<Ligne, List<Itineraire>> getItineraires() {
 	return itineraires;
     }
@@ -42,6 +42,7 @@ public class LecteurItineraire implements ILecteurItineraire {
 	return itinerairesParCode;
     }
     
+    @Override
     public void lire(List<Course> courses, Map<String, Mission> missions, Ligne ligne) {
 	init();
 	itineraires.put(ligne, new ArrayList<Itineraire>());

@@ -10,6 +10,7 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurTransporteur;
+import java.util.ResourceBundle;
 
 public class LecteurTransporteur implements ILecteurTransporteur {
     
@@ -27,12 +28,16 @@ public class LecteurTransporteur implements ILecteurTransporteur {
     private              Transporteur           transporteur;
     private              Set<String>            cellulesNonRenseignees;
     private              Set<String>            titres;
+    private              ResourceBundle         bundle;
+    private              String                 lineNumber;
     
+    @Override
     public Transporteur getTransporteur() {
 	return transporteur;
     }
     
-    public void reinit() {
+    @Override
+    public void reinit(ResourceBundle bundle) {
 	titres = new HashSet<String>();
 	transporteur = null;
 	titres.add(cleNom);
@@ -44,8 +49,10 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 	titres.add(cleFax);
 	titres.add(cleEmail);
 	cellulesNonRenseignees = new HashSet<String>(titres);
+        this.bundle = bundle;
     }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
 	    return false;
@@ -64,7 +71,9 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 	    validerCompletude();
     }
     
-    public void lire(String[] ligneCSV) {
+    @Override
+    public void lire(String[] ligneCSV, String _lineNumber) {
+        this.lineNumber = _lineNumber;
 	if (ligneCSV.length < colonneDesTitres+2)
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
 	String titre = ligneCSV[colonneDesTitres];
@@ -101,6 +110,7 @@ public class LecteurTransporteur implements ILecteurTransporteur {
 	//transporteur.setOperatingDepartmentName(operatingDepartmentName);
     }
     
+    @Override
     public void validerCompletude() {
 	if (cellulesNonRenseignees.size() > 0)
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_MISSINGDATA,cellulesNonRenseignees.toString());

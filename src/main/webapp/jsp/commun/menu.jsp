@@ -17,12 +17,20 @@
 			<li><s:a href="%{urlLignesMenu}" id="lignesMenu"><s:text name="text.lignes"/></s:a></li>
 
 			<%-- Itineraires --%>
-      <s:url id="urlItinerairesMenu" action="search" namespace="/route" includeParams="none"/>
-			<li><s:a href="%{urlItinerairesMenu}" id="itinerairesMenu"><s:text name="text.itineraires"/></s:a></li>
+                        <li>
+                            <ul id="sub_sommaire">
+                                <s:url id="urlItinerairesMenu" action="search" namespace="/route" includeParams="none"/>
+                                <li><s:a href="%{urlItinerairesMenu}" id="itinerairesMenu"><s:text name="text.itineraires"/></s:a></li>
 
-			<%-- Horaires --%>
-			<s:url id="urlHorairesMenu" action="search" namespace="/vehicleJourneyAtStop" includeParams="none"/>
-			<li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
+                                <%-- Horaires --%>
+                                <li>
+                                    <ul id="sub_sub_sommaire">
+                                        <s:url id="urlHorairesMenu" action="search" namespace="/vehicleJourneyAtStop" includeParams="none"/>
+                                        <li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
+                                    </ul>
+                                <li>
+                            </ul>
+                        </li>
 
 			<%-- Calendriers d'application --%>
       <s:url id="urlTableauMarchesMenu" action="list" namespace="/timeTable" includeParams="none"/>

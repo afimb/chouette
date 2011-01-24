@@ -519,7 +519,7 @@
   </package>
 
   <!-- Import des données -->
-  <package name="uploadHastus" extends="struts" namespace="/upload">
+  <!--package name="uploadHastus" extends="struts" namespace="/upload">
     <action name="importHastus" class="ImportActionBean" method="importHastus">
       <result name="success" type="stream">
         <param name="contentType">text/xml; charset=ISO-8859-1</param>
@@ -536,7 +536,7 @@
         <param name="bufferSize">4096</param>
       </result>
     </action>
-  </package>
+  </package-->
 
   <package name="upload" extends="struts" namespace="/upload">
     <action name="*" class="ImportActionBean" method="{1}">

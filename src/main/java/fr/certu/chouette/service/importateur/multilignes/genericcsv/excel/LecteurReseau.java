@@ -10,6 +10,7 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurReseau;
+import java.util.ResourceBundle;
 
 public class LecteurReseau implements ILecteurReseau {
     
@@ -22,16 +23,21 @@ public class LecteurReseau implements ILecteurReseau {
     private              Reseau                 reseau;
     private              Set<String>            cellulesNonRenseignees;
     private              Set<String>            titres;
+    private              ResourceBundle         bundle;
+    private              String                 lineNumber;
     
-    public void reinit() {
+    @Override
+    public void reinit(ResourceBundle bundle) {
 	titres = new HashSet<String>();
 	reseau = null;
 	titres.add(cleNom);
 	titres.add(cleCode);
 	titres.add(cleDescription);
 	cellulesNonRenseignees = new HashSet<String>(titres);
+        this.bundle = bundle;
     }
     
+    @Override
     public Reseau getReseau() {
 	return reseau;
     }
@@ -45,17 +51,25 @@ public class LecteurReseau implements ILecteurReseau {
 	    validerCompletude();
     }
     
+    @Override
     public void validerCompletude() {
-	if (cellulesNonRenseignees.size() > 0)
-	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NETWORK_MISSINGDATA,cellulesNonRenseignees.toString());
+        if (cellulesNonRenseignees.size() > 0) {
+            String[] cellsTab = cellulesNonRenseignees.toArray(new String[0]);
+            String cells = cellsTab[0];
+            for (int i = 1; i < cellsTab.length; i++)
+                cells += ", " + cellsTab[i];
+            throw new ServiceException(bundle, CodeIncident.ERROR00003, CodeDetailIncident.NETWORK_MISSINGDATA, lineNumber, cells);
+        }
 	logger.debug("FIN DE LECTURE RESEAU.");
     }
     
-    public void lire(String[] ligneCSV) {
-	if (ligneCSV.length < colonneDesTitres+2)
-	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE,CodeDetailIncident.COLUMN_COUNT, ligneCSV.length,(colonneDesTitres+2));
+    @Override
+    public void lire(String[] ligneCSV, String _lineNumber) {
+        lineNumber = _lineNumber;
 	String titre = ligneCSV[colonneDesTitres];
-	String valeur = ligneCSV[colonneDesTitres+1];
+	String valeur = null;
+        if (ligneCSV.length > (colonneDesTitres + 1))
+            valeur = ligneCSV[colonneDesTitres+1];
 	if (isTitreNouvelleDonnee(titre)) {
 	    logger.debug("DEBUT DE LECTURE RESEAU.");
 	    validerCompletudeDonneeEnCours();
@@ -67,14 +81,24 @@ public class LecteurReseau implements ILecteurReseau {
 	    reseau.setVersionDate(new Date());
 	}
 	if (!cellulesNonRenseignees.remove(titre))
-	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.NETWORK_DUPLICATELINE,titre);
-	if (cleNom.equals(titre))
-	    reseau.setName(valeur);
-	else if (cleCode.equals(titre))
-	    reseau.setRegistrationNumber(valeur);
+	    throw new ServiceException(bundle, CodeIncident.ERROR00003, CodeDetailIncident.NETWORK_DUPLICATEDATA, lineNumber, titre);
+	if (cleNom.equals(titre)) {
+            if (valeur == null || valeur.trim().length() == 0)
+                throw new ServiceException(bundle, CodeIncident.ERROR00003, CodeDetailIncident.NETWORK_NULL_NAME, lineNumber);
+            else
+                reseau.setName(valeur.trim());
+        }
+	else if (cleCode.equals(titre)) {
+            if (valeur != null && valeur.trim().length() > 0)
+                reseau.setRegistrationNumber(valeur.trim());
+            else
+                reseau.setRegistrationNumber(reseau.getName());
+        }
 	else if (cleDescription.equals(titre))
-	    reseau.setDescription(valeur);
-	//reseau.setComment(comment);
+            if (valeur != null && valeur.trim().length() > 0) {
+                reseau.setDescription(valeur.trim());
+                reseau.setComment(valeur.trim());
+            }
 	//reseau.setId(id);
 	//reseau.setCreatorId(creatorId);
 	//reseau.setSourceIdentifier(sourceIdentifier);
@@ -82,6 +106,7 @@ public class LecteurReseau implements ILecteurReseau {
 	//reseau.setSourceType(sourceType);
     }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
 	    return false;

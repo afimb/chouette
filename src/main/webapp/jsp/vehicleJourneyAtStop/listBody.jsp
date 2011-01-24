@@ -103,6 +103,21 @@
       </s:iterator>
     </tr>
 
+    <%-- FREQUENCES HORAIRES --%>
+    <tr>
+      <td style="font-weight:bold"><s:text name="table.title.frequences_horaires"/>&nbsp;&nbsp;</td>
+      <s:iterator value="coursesPage" >
+        <td>
+          <s:if test="vehicleTimeSlotIdentifier != null">
+            <s:text name="vehicleTimeSlotIdentifier"/>
+          <!--/s:if-->&nbsp;&nbsp;
+          <!--s:if test="vehicleHeadwayFrequency != null"-->
+            <s:text name="vehicleHeadwayFrequency"/>
+          </s:if>
+        </td>
+      </s:iterator>
+    </tr>
+
     <%-- ARRETS --%>
     <tr>
       <td style="font-weight:bold"><s:text name="table.title.stoppointOnRoute"/></td>

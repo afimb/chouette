@@ -5,6 +5,7 @@ import java.util.Date;
 import chouette.schema.VehicleJourney;
 import chouette.schema.types.ServiceStatusValueType;
 import chouette.schema.types.TransportModeNameType;
+import org.exolab.castor.types.Duration;
 
 public class Course extends BaseObjet
 {
@@ -154,6 +155,27 @@ public class Course extends BaseObjet
 	public void setVehicleTypeIdentifier(String vehicleTypeIdentifier) {
 		vehicleJourney.setVehicleTypeIdentifier(vehicleTypeIdentifier);
 	}
-	
+
+    public Long getVehicleTimeSlotIdentifier() {
+        if (vehicleJourney.getTimeSlotId() != null)
+            return Long.decode(vehicleJourney.getTimeSlotId());
+        return null;
+    }
+
+    public void setVehicleTimeSlotIdentifier(Long vehicleTimeSlotIdentifier) {
+        vehicleJourney.setTimeSlotId(vehicleTimeSlotIdentifier.toString());
+    }
+
+    public Duration getVehicleHeadwayFrequency() {
+        if (vehicleJourney.getVehicleJourneyAtStopCount() > 0)
+            if (vehicleJourney.getVehicleJourneyAtStop()[0].getHeadwayFrequency() != null)
+                return vehicleJourney.getVehicleJourneyAtStop()[0].getHeadwayFrequency();
+        return null;
+    }
+
+    public void setVehicleHeadwayFrequency(Duration vehicleHeadwayFrequency) {
+        for (int i = 0; i < vehicleJourney.getVehicleJourneyAtStopCount(); i++)
+            vehicleJourney.getVehicleJourneyAtStop()[i].setHeadwayFrequency(vehicleHeadwayFrequency);
+    }
 	
 }

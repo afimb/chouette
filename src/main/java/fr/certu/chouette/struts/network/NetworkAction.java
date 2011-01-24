@@ -12,6 +12,7 @@ import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.export.gtfs.IGTFSFileWriter;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.database.IExportManager.ExportMode;
+import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.validation.util.MainSchemaProducer;
@@ -41,6 +42,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   private ExportMode exportMode;
   private String nomFichier;
   private File temp;
+  private ILigneManager ligneManager;
   private IExportManager exportManager;
   private ILecteurFichierXML lecteurFichierXML;
   private ILecteurEchangeXML lecteurEchangeXML;
@@ -260,6 +262,11 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   public void setReseauManager(IReseauManager reseauManager)
   {
     this.reseauManager = reseauManager;
+  }
+
+  public void setLigneManager(ILigneManager ligneManager)
+  {
+    this.ligneManager = ligneManager;
   }
 
   public void setExportManager(IExportManager exportManager)

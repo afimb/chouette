@@ -152,7 +152,8 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 		}
 		etatDifference.setExZoneGeneriqueIdParObjectId(exZoneGeneriqueIdParObjectId);
 		final List<String> objIdZonesGeneriquesNouvelles = new ArrayList<String>(objectIdZonesGeneriques);
-		objIdZonesGeneriquesNouvelles.removeAll(exZoneGeneriqueIdParObjectId.keySet());
+                if (!exZoneGeneriqueIdParObjectId.isEmpty())
+                    objIdZonesGeneriquesNouvelles.removeAll(exZoneGeneriqueIdParObjectId.keySet());
 		etatDifference.setNvObjectIdZoneGenerique(objIdZonesGeneriquesNouvelles);
 	}
 	
@@ -440,18 +441,14 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 			logger.debug("differenceDates" + diferenceDates);
 			logger.debug("tmDates" + tmDates);
 			long newTmId = 0l;
-			for (Long key : tousDatesParTMIds.keySet())
-
-			{
-				if (equals(diferenceDates, tousDatesParTMIds.get(key))) 
-				{
-					newTmId = key.longValue();
-					//logger.debug("set newTmId to TMkey");
-					break;
-				}
-			}
-			if (newTmId == 0) 
-			{
+			for (Long key : tousDatesParTMIds.keySet()) {
+                            if (equals(diferenceDates, tousDatesParTMIds.get(key))) {
+                                newTmId = key.longValue();
+                                //logger.debug("set newTmId to TMkey");
+                                break;
+                            }
+                        }
+			if (newTmId == 0) {
 				String tmSQL = "SELECT objectid, \"comment\" from " + getDatabaseSchema() + ".timetable WHERE id = '"+tmId+"';";
 				Statement tmStatement = connexion.createStatement();
 				ResultSet tmResultSet = tmStatement.executeQuery(tmSQL);
@@ -1241,73 +1238,71 @@ public class AnalyseurEtatInitial implements IAnalyseurEtatInitial  {
 	}
 	
 	private void analyserArrets(final ILectureEchange lectureEchange, final Connection connexion, List<String> objIdItinerairesNouvelles) throws SQLException {
-		String msg = "";
-		final List<ArretItineraire> arrets = lectureEchange.getArrets();
-		List<String> objectIdArrets = new ArrayList<String>();
-		if (arrets != null)
-			for (ArretItineraire arret : arrets)
-				objectIdArrets.add(arret.getObjectId());
-		final String selectionArrets = "SELECT s.objectid, s.id, s.position from " + getDatabaseSchema() + ".stoppoint s;";
-		final Statement sqlStatement = connexion.createStatement();
+            String msg = "";
+            final List<ArretItineraire> arrets = lectureEchange.getArrets();
+            List<String> objectIdArrets = new ArrayList<String>();
+            if (arrets != null)
+                for (ArretItineraire arret : arrets)
+                    objectIdArrets.add(arret.getObjectId());
+                final String selectionArrets = "SELECT s.objectid, s.id, s.position from " + getDatabaseSchema() + ".stoppoint s;";
+                final Statement sqlStatement = connexion.createStatement();
 		final ResultSet rs = sqlStatement.executeQuery(selectionArrets);
 		final Map<String, Long> exArretIdParObjectId = new Hashtable<String, Long>();
 		final List<String> objIdArretsNouvelles = new ArrayList<String>(objectIdArrets);
 		while (rs.next()) {
-			final String objectId = rs.getObject(1).toString();
-			final Long id = Long.parseLong(rs.getObject(2).toString());
-			final int position = Integer.parseInt(rs.getString(3));
-			exArretIdParObjectId.put(objectId, id);
-			if (objIdArretsNouvelles.contains(objectId)) {
-				for (ArretItineraire arret : arrets)
-					if (arret.getObjectId().equals(objectId)) {
-						if (arret.getPosition() != position) {
-							String newMsg = arret.getObjectId();
-							for (int i = 0; i < 5; i++)
-								newMsg = newMsg.replaceFirst("SP", "_");
-							newMsg = "\tL'arret ("+newMsg+") a changer de position dans son itineraire.";
-							logger.error(newMsg);
-							msg += newMsg + "\n";
-						}
-						break;
-					}
-				objIdArretsNouvelles.remove(objectId);
-			}
-		}
+                    final String objectId = rs.getObject(1).toString();
+                    final Long id = Long.parseLong(rs.getObject(2).toString());
+                    final int position = Integer.parseInt(rs.getString(3));
+                    exArretIdParObjectId.put(objectId, id);
+                    if (objIdArretsNouvelles.contains(objectId)) {
+                        for (ArretItineraire arret : arrets)
+                            if (arret.getObjectId().equals(objectId)) {
+                                if (arret.getPosition() != position) {
+                                    String newMsg = arret.getObjectId();
+                                    for (int i = 0; i < 5; i++)
+                                        newMsg = newMsg.replaceFirst("SP", "_");
+                                    newMsg = "\tL'arret ("+newMsg+") a changer de position dans son itineraire.";
+                                    logger.error(newMsg);
+                                    msg += newMsg + "\n";
+                                }
+                                break;
+                            }
+                        objIdArretsNouvelles.remove(objectId);
+                    }
+                }
 		if (objIdArretsNouvelles.size() > 0)
-			for (String objectId : objIdArretsNouvelles) {
-				String code = objectId.substring(objectId.lastIndexOf(':'));
-				code = code.substring(0, code.lastIndexOf("SP"));
-				boolean conflict = true;
-				for (String itiObjectId : objIdItinerairesNouvelles) {
-					String newCode = itiObjectId.substring(itiObjectId.lastIndexOf(':'));
-					if (code.indexOf(newCode) >= 0) {
-						conflict = false;
-						continue;
-					}
-				}
-				if (conflict) {
-					for (int i = 0; i < 5; i++)
-						objectId = objectId.replaceFirst("SP", "_");
-					String newMsg = "\tL'arret ("+objectId+") a été ajouté à son itineraire.";
-					logger.error(newMsg);
-					msg += newMsg + "\n";
-				}
-			}
+                    for (String objectId : objIdArretsNouvelles) {
+                        String code = objectId.substring(objectId.lastIndexOf(':'));
+                        code = code.substring(0, code.lastIndexOf("SP"));
+                        boolean conflict = true;
+                        for (String itiObjectId : objIdItinerairesNouvelles) {
+                            String newCode = itiObjectId.substring(itiObjectId.lastIndexOf(':'));
+                            if (code.indexOf(newCode) >= 0) {
+                                conflict = false;
+                                continue;
+                            }
+                        }
+                        if (conflict) {
+                            for (int i = 0; i < 5; i++)
+                                objectId = objectId.replaceFirst("SP", "_");
+                            String newMsg = "\tL'arret ("+objectId+") a été ajouté à son itineraire.";
+                            logger.error(newMsg);
+                            msg += newMsg + "\n";
+                        }
+                    }
 		etatDifference.setExArretIdParObjectId(exArretIdParObjectId);
 		etatDifference.setNvObjectIdArret(objIdArretsNouvelles);
 		if (msg.length() > 0)
-			throw new SQLException(msg);
+                    ;//throw new SQLException(msg);
 	}
 
 
-	public void setDatabaseSchema(String databaseShema) 
-	{
-		this.databaseSchema = databaseShema;
-	}
+	public void setDatabaseSchema(String databaseShema) {
+            this.databaseSchema = databaseShema;
+        }
 
 
-	public String getDatabaseSchema() 
-	{
-		return databaseSchema;
-	}
+	public String getDatabaseSchema() {
+            return databaseSchema;
+        }
 }
