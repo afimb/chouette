@@ -40,7 +40,7 @@ public class ImportExcelTest {
 	
 	@Test(groups="tests unitaires", description="fichier de test Excel")
 	public void importMultiLignesExcel() {
-		String nom = "multi_lignes_excel.csv";
+		String nom = "src/test/resources/multi_lignes_excel.csv";
 		//String nom = "Exemple_ImportCSV.csv";
 		try {
 			lecteurCSV.lire(nom);
