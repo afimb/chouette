@@ -12,11 +12,11 @@
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>src/main/dev/log4j.properties</source>
+            <source>../config/dev/log4j.properties</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>src/main/resources/spring.properties</source>
+            <source>../config/dev/spring.properties</source>
             <outputDirectory>/</outputDirectory>
             <destName>chouette.properties</destName>
         </file>

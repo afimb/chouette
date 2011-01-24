@@ -32,8 +32,6 @@
         </property>
     </bean>
 
-    <import resource="classpath:/applicationContext-attic.xml" />
-
     <bean id="GeneriqueAction"
         abstract="true"
         scope="prototype"
