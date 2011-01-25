@@ -12,6 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
@@ -52,7 +53,7 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		verify(importMock);
 	}
 			
-	@Test (groups = {"importPlugins"}, description = "manager should return imported beans" )// , dependsOnMethods="verifyGetImportFormat")
+	@Test (groups = {"importPlugins"}, description = "manager should return imported beans" )
 	public void verifyDoImport() throws ChouetteException
 	{
 		List<ParameterValue> values = new ArrayList<ParameterValue>();
@@ -68,6 +69,21 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		manager.addImportPlugin(importMock);
 		List<T> retBeans = manager.doImport(null, importDescription.getName(), values, report);
 		Assert.assertEquals(retBeans, beans);
+		verify(importMock);
+	}
+
+	@Test (groups = {"importPlugins"}, description = "manager should report unknown format" , expectedExceptions={CoreException.class})
+	public void verifyDoImportUnknownFormat() throws ChouetteException
+	{
+		List<ParameterValue> values = new ArrayList<ParameterValue>();
+		SimpleParameterValue val = new SimpleParameterValue("first");
+		val.setStringValue("String value");
+		values.add(val);
+		ReportHolder report = new ReportHolder();
+		List<T> beans = new ArrayList<T>();
+		beans.add(bean);
+		manager.doImport(null, "wrongformat", values, report);
+		
 	}
 
 
