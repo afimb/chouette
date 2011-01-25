@@ -35,9 +35,6 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>5.5</version>
-            <scope>test</scope>
-            <classifier>jdk15</classifier>
         </dependency>
     <!-- AspectJ reference cglib-2.1_3.jar -->
         <dependency>
@@ -51,6 +48,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>2.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>2.5.6</version>
+            <scope>test</scope>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -136,6 +140,23 @@
         </dependency>
     </dependencies>
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>*_en.properties</include>
+                    <include>*_fr.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>../config/test</directory>
+                <filtering>false</filtering>
+            </testResource>
+        </testResources>
         <extensions>
             <extension>
                 <groupId>postgresql</groupId>
