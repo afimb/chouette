@@ -8,7 +8,6 @@ import static org.easymock.EasyMock.verify;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -20,7 +19,6 @@ import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.ReportHolder;
-@ContextConfiguration(locations={"classpath:ChouetteContext.xml"})
 public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObject> extends AbstractManagerTests<T>
 {
 

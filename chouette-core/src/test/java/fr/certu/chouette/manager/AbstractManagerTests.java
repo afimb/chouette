@@ -4,7 +4,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-@ContextConfiguration(locations={"classpath:ChouetteContext.xml"})
+@ContextConfiguration(locations={"classpath:chouetteContext.xml"})
 public abstract class AbstractManagerTests<T extends NeptuneIdentifiedObject> extends AbstractTestNGSpringContextTests {
 
 	protected AbstractNeptuneManager<T>  manager;

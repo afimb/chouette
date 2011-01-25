@@ -1,6 +1,5 @@
 package fr.certu.chouette.manager;
 
-import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -9,7 +8,6 @@ import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-@ContextConfiguration(locations={"classpath:ChouetteContext.xml"})
 public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObject> extends AbstractManagerTests<T>
 {
 

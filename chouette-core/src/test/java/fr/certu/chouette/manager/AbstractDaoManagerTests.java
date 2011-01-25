@@ -5,7 +5,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -16,7 +15,6 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.Exception.DummyRuntimeException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-@ContextConfiguration(locations={"classpath:ChouetteContext.xml"})
 public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject> extends AbstractManagerTests<T>
 {
 

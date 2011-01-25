@@ -34,7 +34,7 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
- * 
+ *
  */
 @NoArgsConstructor
 public class Command
@@ -51,19 +51,19 @@ public class Command
 	 */
 	public static void main(String[] args)
 	{
-		// pattern partially work 
-		String[] context = {"classpath*:/ChouetteContext.xml"};
+		// pattern partially work
+		String[] context = {"classpath*:/chouetteContext.xml"};
 //		String[] context = {"classpath*:/ApplicationContext.xml",
 //				"classpath*:/modules/managers.xml",
 //				"classpath*:/modules/neptune_exchange.xml",
 //				"classpath*:/modules/hibernate.xml"};
 		/*
-		PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver(); 
-		try 
+		PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
+		try
 		{
 			Resource[] re = test.getResources("classpath*:/ApplicationContext.xml");
 			System.out.println("nb res = "+re.length);
-			for (Resource resource : re) 
+			for (Resource resource : re)
 			{
 				System.out.println(resource.getURI().toString());
 			}
@@ -73,7 +73,7 @@ public class Command
 		}
 		*/
 		applicationContext = new ClassPathXmlApplicationContext(context);
-		ConfigurableBeanFactory factory = applicationContext.getBeanFactory(); 
+		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		Command command = (Command) factory.getBean("Command");
 		command.execute(args);
 	}
@@ -137,15 +137,15 @@ public class Command
 
 	}
 
-	private void executeImport(INeptuneManager<NeptuneIdentifiedObject> manager) 
+	private void executeImport(INeptuneManager<NeptuneIdentifiedObject> manager)
 	{
 		String format = getSimpleString("format");
-		try 
+		try
 		{
 			List<FormatDescription> formats = manager.getImportFormats(null);
 			FormatDescription description = null;
 
-			for (FormatDescription formatDescription : formats) 
+			for (FormatDescription formatDescription : formats)
 			{
 				if (formatDescription.getName().equalsIgnoreCase(format))
 				{
@@ -160,7 +160,7 @@ public class Command
 
 
 			List<ParameterValue> values = new ArrayList<ParameterValue>();
-			for (ParameterDescription desc : description.getParameterDescriptions()) 
+			for (ParameterDescription desc : description.getParameterDescriptions())
 			{
 				String name = desc.getName();
 				String key = name.toLowerCase();
@@ -187,7 +187,7 @@ public class Command
 					}
 					else
 					{
-						if (vals.size() != 1) 
+						if (vals.size() != 1)
 						{
 							throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getImportFormats for list ");
 						}
@@ -227,8 +227,8 @@ public class Command
 				}
 			}
 
-		} 
-		catch (ChouetteException e) 
+		}
+		catch (ChouetteException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -237,17 +237,17 @@ public class Command
 
 	}
 
-	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager) 
+	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager)
 	{
-		try 
+		try
 		{
 			List<FormatDescription> formats = manager.getImportFormats(null);
-			for (FormatDescription formatDescription : formats) 
+			for (FormatDescription formatDescription : formats)
 			{
 				System.out.println(formatDescription);
 			}
 		}
-		catch (ChouetteException e) 
+		catch (ChouetteException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -260,7 +260,7 @@ public class Command
 	 * @throws ChouetteException
 	 */
 	private void executeGet(INeptuneManager<NeptuneIdentifiedObject> manager)
-	throws ChouetteException 
+	throws ChouetteException
 	{
 
 		Filter filter = null;
@@ -292,19 +292,19 @@ public class Command
 		if (parameters.containsKey("orderby"))
 		{
 			List<String> orderFields = parameters.get("orderby");
-			
+
 			boolean desc = getBoolean("desc");
-			
+
 			if (desc)
 			{
-				for (String field : orderFields) 
+				for (String field : orderFields)
 				{
 					filter.addOrder(FilterOrder.desc(field));
 				}
 			}
 			else
 			{
-				for (String field : orderFields) 
+				for (String field : orderFields)
 				{
 					filter.addOrder(FilterOrder.asc(field));
 				}
@@ -337,7 +337,7 @@ public class Command
 
 
 	/**
-	 * 
+	 *
 	 */
 	private void printHelp()
 	{
@@ -383,18 +383,18 @@ public class Command
 		return Boolean.parseBoolean(values.get(0));
 	}
 
-	private void parseArgs(String[] args) 
+	private void parseArgs(String[] args)
 	{
 		parameters = new HashMap<String, List<String>>();
-		if (args.length == 0) 
+		if (args.length == 0)
 		{
 			List<String> list = new ArrayList<String>();
 			list.add("true");
 			parameters.put("help", list);
 		}
-		for (int i = 0; i < args.length; i++) 
+		for (int i = 0; i < args.length; i++)
 		{
-			if (args[i].startsWith("-")) 
+			if (args[i].startsWith("-"))
 			{
 				String key = args[i].substring(1).toLowerCase();
 				if (parameters.containsKey(key))
