@@ -7,8 +7,6 @@
  */
 package fr.certu.chouette.manager;
 
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
@@ -22,7 +20,6 @@ import fr.certu.chouette.model.user.User;
  */
 public class LineManager extends AbstractNeptuneManager<Line>
 {
-	private static final Logger logger = Logger.getLogger(LineManager.class);
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#getNewInstance(fr.certu.chouette.model.user.User)

@@ -27,8 +27,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
    @Override
    public PTNetwork getNewInstance(User user) throws ChouetteException
    {
-      // TODO Auto-generated method stub
-      return null;
+      return new PTNetwork();
    }
 
 

@@ -3,7 +3,8 @@
 <suite name="Factory" verbose="1" >
   <test name="Manager" >
     <packages>
-      <package name="fr.certu.chouette.manager" />
+      <package name="fr.certu.chouette.manager" >
+      </package>
    </packages>
   </test>
   
