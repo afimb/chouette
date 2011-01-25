@@ -52,5 +52,11 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		return date;
 	}
 	
+	protected Date getTime(org.exolab.castor.types.Time castorTime) {
+		if(castorTime == null) return null;
+		Date date = castorTime.toDate();
+		return date;
+	}
+	
 	public abstract T produce(U o);
 }

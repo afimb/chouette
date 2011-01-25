@@ -14,6 +14,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 
 /**
  * note : repartir du fr.certu.chouette.service.validation.util.MainSchemaProducer 
@@ -29,6 +30,7 @@ public class NeptuneConverter
 	@Getter @Setter private CompanyProducer companyProducer;
 	@Getter @Setter private JourneyPatternProducer journeyPatternProducer;
 	@Getter @Setter private PTLinkProducer ptLinkProducer;
+	@Getter @Setter private VehicleJourneyProducer vehicleJourneyProducer;
 	
 //	@Getter @Setter private VehicleJourney vehicleJourneyProducer;
 	
@@ -132,5 +134,21 @@ public class NeptuneConverter
 		}
 		
 		return ptLinks;
+	}
+	
+	public List<VehicleJourney> extractVehicleJourneys(ChouettePTNetworkTypeType rootObject) {
+		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
+		chouette.schema.VehicleJourney[] xmlVehicleJourneys = lineDescription.getVehicleJourney();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		
+		List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
+
+		for(chouette.schema.VehicleJourney xmlVehicleJourney : xmlVehicleJourneys){
+			VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(xmlVehicleJourney);
+			vehicleJourneys.add(vehicleJourney);
+		}
+		
+		return vehicleJourneys;
 	}
 }

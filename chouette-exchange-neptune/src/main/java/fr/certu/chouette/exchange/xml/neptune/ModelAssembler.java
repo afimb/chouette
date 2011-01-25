@@ -7,7 +7,6 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -16,6 +15,9 @@ import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
+import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
 public class ModelAssembler {
 	@Getter @Setter private List<Line> lines;
@@ -24,6 +26,7 @@ public class ModelAssembler {
 	@Getter @Setter private PTNetwork ptNetwork;
 	@Getter @Setter private List<JourneyPattern> journeyPatterns;
 	@Getter @Setter private List<PTLink> ptLinks;
+	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -32,6 +35,7 @@ public class ModelAssembler {
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
 	private Map<String, JourneyPattern> journeyPatternsDictionary = new HashMap<String, JourneyPattern>();
 	private Map<String, PTLink> ptLinksDictionary = new HashMap<String, PTLink>();
+	private Map<String, VehicleJourney> vehicleJourneysDictionary = new HashMap<String, VehicleJourney>();
 	
 	
 	public void connect(){
@@ -42,6 +46,7 @@ public class ModelAssembler {
 		connectPTNetwork();
 		connectJourneyPatterns();
 		connectPTLinks();
+		connectVehicleJourneys();
 	}
 
 	private void populateDictionaries(){
@@ -50,6 +55,7 @@ public class ModelAssembler {
 		populateDictionnary(companies, companiesDictionary);
 		populateDictionnary(journeyPatterns, journeyPatternsDictionary);
 		populateDictionnary(ptLinks, ptLinksDictionary);
+		populateDictionnary(vehicleJourneys, vehicleJourneysDictionary);
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -99,6 +105,19 @@ public class ModelAssembler {
 		for(PTLink ptLink : ptLinks){
 			//ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 			//ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
+		}
+	}
+	
+	private void connectVehicleJourneys(){
+		for(VehicleJourney vehicleJourney : vehicleJourneys){
+			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
+			vehicleJourney.setJourneyPattern(journeyPattern);
+			journeyPattern.addVehicleJourney(vehicleJourney);
+			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
+			for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()){
+				//vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
+			}
+			//vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
 		}
 	}
 

@@ -20,6 +20,9 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	@Getter @Setter private String lineIdShortcut; // a confirmer
 	@Getter @Setter private String routeId;
 	@Getter @Setter private Route route;
+	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
+	
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -77,12 +80,24 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		}
 		if (level > 0)
 		{
+			int childLevel = level -1;
+			String childIndent = indent + CHILD_INDENT;
+
+			childIndent = indent + CHILD_LIST_INDENT;
 			if (stopPoints != null)
 			{
-				sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPointsIds");
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPoints");
 				for (StopPoint stopPoint : getStopPoints())
 				{
-					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.getObjectId());
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.toString(childIndent,childLevel));
+				}
+			}
+			if (vehicleJourneys != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneys");
+				for (VehicleJourney vehicleJourney : getVehicleJourneys())
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourney.toString(childIndent,childLevel));
 				}
 			}
 		}
@@ -99,5 +114,11 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	{
 		if (stopPoints== null) stopPoints = new ArrayList<StopPoint>();
 		stopPoints.add(stopPoint);
+	}
+	
+	public void addVehicleJourney(VehicleJourney vehicleJourney)
+	{
+		if (vehicleJourneys== null) vehicleJourneys = new ArrayList<VehicleJourney>();
+		vehicleJourneys.add(vehicleJourney);
 	}
 }
