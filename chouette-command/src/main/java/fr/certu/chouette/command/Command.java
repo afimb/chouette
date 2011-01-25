@@ -52,11 +52,11 @@ public class Command
 	public static void main(String[] args)
 	{
 		// pattern partially work 
-		// String[] context = {"classpath*:/ApplicationContext.xml"};
-		String[] context = {"classpath*:/ApplicationContext.xml",
-				"classpath*:/modules/managers.xml",
-				"classpath*:/modules/neptune_exchange.xml",
-				"classpath*:/modules/hibernate.xml"};
+		String[] context = {"classpath*:/ChouetteContext.xml"};
+//		String[] context = {"classpath*:/ApplicationContext.xml",
+//				"classpath*:/modules/managers.xml",
+//				"classpath*:/modules/neptune_exchange.xml",
+//				"classpath*:/modules/hibernate.xml"};
 		/*
 		PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver(); 
 		try 
