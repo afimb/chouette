@@ -14,6 +14,7 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -27,6 +28,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<JourneyPattern> journeyPatterns;
 	@Getter @Setter private List<PTLink> ptLinks;
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
+	@Getter @Setter private List<StopPoint> stopPoints;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -36,6 +38,7 @@ public class ModelAssembler {
 	private Map<String, JourneyPattern> journeyPatternsDictionary = new HashMap<String, JourneyPattern>();
 	private Map<String, PTLink> ptLinksDictionary = new HashMap<String, PTLink>();
 	private Map<String, VehicleJourney> vehicleJourneysDictionary = new HashMap<String, VehicleJourney>();
+	private Map<String, StopPoint> stopPointsDictionary = new HashMap<String, StopPoint>();
 	
 	
 	public void connect(){
@@ -47,6 +50,7 @@ public class ModelAssembler {
 		connectJourneyPatterns();
 		connectPTLinks();
 		connectVehicleJourneys();
+		connectStopPoints();
 	}
 
 	private void populateDictionaries(){
@@ -56,6 +60,8 @@ public class ModelAssembler {
 		populateDictionnary(journeyPatterns, journeyPatternsDictionary);
 		populateDictionnary(ptLinks, ptLinksDictionary);
 		populateDictionnary(vehicleJourneys, vehicleJourneysDictionary);
+		populateDictionnary(stopPoints, stopPointsDictionary);
+
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -97,14 +103,14 @@ public class ModelAssembler {
 	private void connectJourneyPatterns() {
 		for(JourneyPattern journeyPattern : journeyPatterns){
 			journeyPattern.setRoute(getObjectFromId(journeyPattern.getRouteId(), Route.class));
-			//journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
+			journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
 		}
 	}
 	
 	private void connectPTLinks(){
 		for(PTLink ptLink : ptLinks){
-			//ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
-			//ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
+			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
+			ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 		}
 	}
 	
@@ -115,12 +121,25 @@ public class ModelAssembler {
 			journeyPattern.addVehicleJourney(vehicleJourney);
 			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
 			for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()){
-				//vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
+				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
 			}
 			//vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
 		}
 	}
 
+	private void connectStopPoints() {
+		for(StopPoint stopPoint : stopPoints){
+			//stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
+			stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
+			if(ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut())){
+				stopPoint.setPtNetwork(ptNetwork);
+			}
+			else{
+				//TODO : throw exception ???
+			}
+		}
+	}
+	
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass){
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
