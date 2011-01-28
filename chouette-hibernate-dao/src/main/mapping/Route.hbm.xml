@@ -30,8 +30,8 @@
     <property name="creationTime" type="java.util.Date"/>
     <property name="creatorId" type="string"/>
     <property name="name"/>
-    <property name="oppositeRouteId"/>
-    <property name="lineId"/>
+    <property name="oppositeRouteId" type="long"/>
+    <property name="lineId" type="long" column="lineId" lazy="true"/>
     <property name="publishedName"/>
     <property name="number"/>
     <property name="direction" type="fr.certu.chouette.dao.hibernate.usertype.PTDirectionUserType"/>

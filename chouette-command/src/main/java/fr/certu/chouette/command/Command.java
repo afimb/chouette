@@ -18,6 +18,8 @@ import lombok.Setter;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
@@ -57,11 +59,11 @@ public class Command
 //				"classpath*:/modules/managers.xml",
 //				"classpath*:/modules/neptune_exchange.xml",
 //				"classpath*:/modules/hibernate.xml"};
-		/*
+		
 		PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
 		try
 		{
-			Resource[] re = test.getResources("classpath*:/ApplicationContext.xml");
+			Resource[] re = test.getResources("classpath*:/chouetteContext.xml");
 			System.out.println("nb res = "+re.length);
 			for (Resource resource : re)
 			{
@@ -71,7 +73,7 @@ public class Command
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 		applicationContext = new ClassPathXmlApplicationContext(context);
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		Command command = (Command) factory.getBean("Command");

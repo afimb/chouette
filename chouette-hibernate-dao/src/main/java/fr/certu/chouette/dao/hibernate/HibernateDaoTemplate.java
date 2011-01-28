@@ -164,6 +164,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	public void remove(Long id)
 	{
 		getHibernateTemplate().delete( get( id));
+		getHibernateTemplate().flush();
 	}
 
 	/* (non-Javadoc)
@@ -189,7 +190,9 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 			if ( hse.getCause()!=null && 
 					hse.getCause() instanceof NonUniqueObjectException)
 				getHibernateTemplate().merge( object);
+			else throw hse;
 		}	
+		getHibernateTemplate().flush();
 	}
 
 	/* (non-Javadoc)
@@ -198,8 +201,15 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	@Override
 	public boolean exists(Long id)
 	{
+		try
+		{
+			return (get(id) != null);
+		}
+		catch (ObjectRetrievalFailureException e) 
+		{
+			return false;
+		}
 
-		return (get(id) != null);
 	}
 
 	/* (non-Javadoc)
@@ -208,7 +218,14 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	@Override
 	public boolean exists(String objectId)
 	{
+		try
+		{
+			return (getByObjectId(objectId) != null);
+		}
+		catch (ObjectRetrievalFailureException e) 
+		{
+			return false;
+		}
 
-		return (getByObjectId(objectId) != null);
 	}
 }
