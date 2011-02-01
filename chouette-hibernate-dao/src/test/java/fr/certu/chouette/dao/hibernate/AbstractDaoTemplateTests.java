@@ -83,7 +83,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Assert.assertTrue(newBean.getId().equals(id),"found Bean should have asked id="+id+"");
 	}
 	
-	@Test (groups = {"hibernate"}, description = "daoTemplate should ckeck id existance" )
+	@Test (groups = {"hibernate"}, description = "daoTemplate should check id existance" )
 	public void verifyExistsFromId() 
 	{
 		refreshBean();
@@ -97,7 +97,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Assert.assertFalse(ret,"asked id="+id+" should not exists");
 	}
 	
-	@Test (groups = {"hibernate"}, description = "daoTemplate should ckeck objectid existance" )
+	@Test (groups = {"hibernate"}, description = "daoTemplate should check objectid existance" )
 	public void verifyExistsFromObjectId() 
 	{
 		refreshBean();

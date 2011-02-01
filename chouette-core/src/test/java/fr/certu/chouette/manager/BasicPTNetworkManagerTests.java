@@ -11,8 +11,8 @@ public class BasicPTNetworkManagerTests extends AbstractBasicManagerTests<PTNetw
 	{
 		PTNetwork bean = new PTNetwork();
 		bean.setId(Long.valueOf(1));
-		bean.setObjectId("TestNG:GroupOfLine:1");
-		initManager("GroupOfLine","networkManager",bean);
+		bean.setObjectId("TestNG:PTNetwork:1");
+		initManager("PTNetwork","networkManager",bean);
 	}
 
 
