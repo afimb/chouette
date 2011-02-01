@@ -25,7 +25,7 @@ public class CompanyDaoTemplateTests extends AbstractDaoTemplateTests<Company> {
 	@BeforeMethod (alwaysRun=true)
 	public void createDaoTemplate() 
 	{
-		initDaoTemplate("Company", "companyDao", createCompany());
+		initDaoTemplate("Company", "companyDao");
 	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()

@@ -10,13 +10,13 @@ package fr.certu.chouette.dao.hibernate;
 
 import org.testng.annotations.BeforeMethod;
 
-import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Route;
 
 /**
  * @author michel
  *
  */
-public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
+public class RouteDaoTemplateTests extends AbstractDaoTemplateTests<Route> {
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
@@ -25,15 +25,16 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
 	@BeforeMethod (alwaysRun=true)
 	public void createDaoTemplate() 
 	{
-		initDaoTemplate("Line", "lineDao");
+		initDaoTemplate("Route", "routeDao");
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
+	 */
 	@Override
 	public void refreshBean() 
 	{
-		bean = createLine();
+		bean = createRoute();
 	}
-	
-	
 
 }
