@@ -53,13 +53,13 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void initDaoTemplate(String beanName, String daoName, T bean)
+	public void initDaoTemplate(String beanName, String daoName)
 	{
 		daoTemplate = (HibernateDaoTemplate<T>) applicationContext.getBean(daoName);
 		this.beanName = beanName;
-		this.bean = bean;
 	}
    
+
 	@Test (groups = {"hibernate"}, description = "daoTemplate should save a bean" )
 	public void verifySave() 
 	{
@@ -76,13 +76,14 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		refreshBean();
 		bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
+		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean should have id different of zero");
 		Long id = bean.getId();
 		T newBean = daoTemplate.get(id );
-		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"found Bean should have id different of zero");
+		Assert.assertFalse(newBean.getId().equals(Long.valueOf(0)),"found Bean should have id different of zero");
 		Assert.assertTrue(newBean.getId().equals(id),"found Bean should have asked id="+id+"");
 	}
 	
-	@Test (groups = {"hibernate"}, description = "daoTemplate should ckeck id existance" )
+	@Test (groups = {"hibernate"}, description = "daoTemplate should check id existance" )
 	public void verifyExistsFromId() 
 	{
 		refreshBean();
@@ -96,7 +97,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Assert.assertFalse(ret,"asked id="+id+" should not exists");
 	}
 	
-	@Test (groups = {"hibernate"}, description = "daoTemplate should ckeck objectid existance" )
+	@Test (groups = {"hibernate"}, description = "daoTemplate should check objectid existance" )
 	public void verifyExistsFromObjectId() 
 	{
 		refreshBean();
@@ -144,7 +145,6 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	@Test (groups = {"hibernate"}, description = "daoTemplate should update bean" )
 	public void verifyUpdate() 
 	{
-		// TODO : see how to put prepared objects in test database
 		refreshBean();
 		bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
@@ -212,12 +212,14 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		HibernateDaoTemplate<PTNetwork> networkTemplate = (HibernateDaoTemplate<PTNetwork>) applicationContext.getBean("networkDao");
 		networkTemplate.save(network);
 		line.setPtNetworkId(network.getId());
+		logger.info("created network with id = "+network.getId());
 		
 		Company company = createCompany();
 		line.setCompany(company);
 		HibernateDaoTemplate<Company> companyTemplate = (HibernateDaoTemplate<Company>) applicationContext.getBean("companyDao");
 		companyTemplate.save(company);
 		line.setCompanyId(company.getId());
+		logger.info("created company with id = "+company.getId());
 		return line;
 	}
 	
@@ -242,6 +244,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		HibernateDaoTemplate<Line> lineTemplate = (HibernateDaoTemplate<Line>) applicationContext.getBean("lineDao");
 		lineTemplate.save(line);
 		route.setLineId(line.getId());
+		logger.info("created line with id = "+line.getId());
 		
 		return route;
 	}

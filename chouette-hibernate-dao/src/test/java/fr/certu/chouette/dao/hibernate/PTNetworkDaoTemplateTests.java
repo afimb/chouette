@@ -26,7 +26,7 @@ public class PTNetworkDaoTemplateTests extends AbstractDaoTemplateTests<PTNetwor
 	@BeforeMethod (alwaysRun=true)
 	public void createDaoTemplate() 
 	{
-		initDaoTemplate("PTNetwork", "networkDao", createPTNetwork());
+		initDaoTemplate("PTNetwork", "networkDao");
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,6 @@ public class PTNetworkDaoTemplateTests extends AbstractDaoTemplateTests<PTNetwor
 	public void refreshBean() 
 	{
 		bean = createPTNetwork();
-		
 	}
 
 }
