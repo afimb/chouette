@@ -102,7 +102,7 @@
             </resource>
             <resource>
                 <targetPath>${basedir}/src/main/resources</targetPath>
-                <directory>${project.parent.basedir}/config/dev</directory>
+                <directory>../config/dev</directory>
                 <filtering>false</filtering>
             </resource>
         </resources>
