@@ -49,7 +49,7 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		replay(importMock);
 		manager.addImportPlugin(importMock);
 		List<FormatDescription> list = manager.getImportFormats(null);
-		assert list.contains(importDescription);
+		Assert.assertTrue(list.contains(importDescription),"list should contain expected format");
 		verify(importMock);
 	}
 			
@@ -68,7 +68,7 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		replay(importMock);
 		manager.addImportPlugin(importMock);
 		List<T> retBeans = manager.doImport(null, importDescription.getName(), values, report);
-		Assert.assertEquals(retBeans, beans);
+		Assert.assertEquals(retBeans, beans,"imported beans should match expected beans");
 		verify(importMock);
 	}
 
@@ -83,7 +83,7 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		List<T> beans = new ArrayList<T>();
 		beans.add(bean);
 		manager.doImport(null, "wrongformat", values, report);
-		
+		Assert.fail("expected exception not raised");
 	}
 
 

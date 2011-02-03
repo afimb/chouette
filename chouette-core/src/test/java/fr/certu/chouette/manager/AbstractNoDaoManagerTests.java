@@ -1,5 +1,6 @@
 package fr.certu.chouette.manager;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -22,14 +23,14 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
 	public void verifyGetWithoutDao() throws ChouetteException
 	{
 		manager.get(null, Filter.getNewEmptyFilter(), DetailLevelEnum.ATTRIBUTE);
-		assert false;  //shouldn't be invoked
+		Assert.fail("expected exception not raised");
 	}
 
 	@Test(groups = { "noDao" }, expectedExceptions={CoreException.class} , description = "manager should report no dao available")
 	public void verifyGetAllWithoutDao() throws ChouetteException
 	{
 		manager.getAll(null, Filter.getNewEmptyFilter(), DetailLevelEnum.ATTRIBUTE);
-		assert false;  //shouldn't be invoked
+		Assert.fail("expected exception not raised");
 	}
 
 	@Test(groups = { "noDao" }, expectedExceptions={CoreException.class}, description = "manager should report no dao available")
@@ -37,7 +38,7 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
 	{
 		manager.setDao(null);
 		manager.addNew(null, bean);
-		assert false;  //shouldn't be invoked
+		Assert.fail("expected exception not raised");
 	}
 
 	@Test(groups = { "noDao" }, expectedExceptions={CoreException.class}, description = "manager should report no dao available" )
@@ -45,7 +46,7 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
 	{
 		manager.setDao(null);
 		manager.update(null, bean);
-		assert false;  //shouldn't be invoked
+		Assert.fail("expected exception not raised");
 	}
 
 	@Test(groups = { "noDao" }, expectedExceptions={CoreException.class}, description = "manager should report no dao available" )
@@ -53,7 +54,7 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
 	{
 		manager.setDao(null);
 		manager.remove(null, bean);
-		assert false;  //shouldn't be invoked
+		Assert.fail("expected exception not raised");
 	}
 
 	@Test(groups = { "noDao" }, expectedExceptions={CoreException.class}, description = "manager should report no dao available" )
@@ -62,7 +63,7 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
 		manager.setDao(null);
 		Filter filter = Filter.getNewEqualsFilter("id", Long.valueOf(0));
 		manager.removeAll(null, filter);
-		assert false;  //shouldn't be invoked
+		Assert.fail("expected exception not raised");
 	}
 
 
