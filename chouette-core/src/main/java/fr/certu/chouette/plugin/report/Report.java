@@ -7,8 +7,13 @@
  */
 package fr.certu.chouette.plugin.report;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +36,36 @@ public abstract class Report
 		items.add(item);
 	}	
 
+	public final String getLocalizedMessage() 
+	{
+		return getLocalizedMessage(Locale.getDefault());
+	}
+	/**
+	 * @param locale
+	 * @return
+	 */
+	public String getLocalizedMessage(Locale locale)
+	{
+		String message = "";
+		try
+		{
+			ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName(),locale);
+			message = bundle.getString(getOriginKey());
+		}
+		catch (MissingResourceException e1)
+		{
+			try
+			{
+				ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+				message = bundle.getString(getOriginKey());
+			}
+			catch (MissingResourceException e2)
+			{
+				message = getOriginKey();
+			}
+		}
+
+		return message;
+	}
 
 }

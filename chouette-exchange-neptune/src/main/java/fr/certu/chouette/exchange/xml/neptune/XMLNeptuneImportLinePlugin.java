@@ -21,13 +21,17 @@ import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
+import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
+import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> 
 {
@@ -89,8 +93,23 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 	private List<Line> processImport(String filePath, boolean validate,ReportHolder reportContainer) throws ExchangeException 
 	{
+		Report report = new NeptuneReport(NeptuneReport.KEY.IMPORT);
+		report.setStatus(Report.STATE.OK);
+		reportContainer.setReport(report);
 		NeptuneFileReader reader = new NeptuneFileReader();
-		ChouettePTNetworkTypeType rootObject = reader.read(filePath);
+		ChouettePTNetworkTypeType rootObject = null;
+		try
+		{
+		   rootObject = reader.read(filePath);
+		}
+		catch (Exception e) 
+		{
+			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,filePath,e.getLocalizedMessage());
+			item.setStatus(Report.STATE.ERROR);
+			report.addItem(item);
+			report.setStatus(Report.STATE.ERROR);
+			return null;
+		}
 		if (validate)
 		{
 			try 
@@ -99,7 +118,19 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			} 
 			catch (ValidationException e) 
 			{
-				throw new ExchangeException(ExchangeExceptionCode.INVALID_XML_FILE , filePath);
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_ERROR,filePath);
+				item.setStatus(Report.STATE.ERROR);
+				report.addItem(item);
+				Throwable t = e;
+				while (t != null)
+				{
+					ReportItem subItem = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_CAUSE,t.getLocalizedMessage());
+					subItem.setStatus(Report.STATE.ERROR);
+					item.addItem(subItem);
+					t = t.getCause();
+				}
+				report.setStatus(Report.STATE.ERROR);
+				return null;
 			}
 		}
 		
@@ -117,6 +148,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setStopPoints(converter.extractStopPoints(rootObject));
 		
 		modelAssembler.connect();
+		
+		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,filePath,Integer.toString(lines.size()));
+		item.setStatus(Report.STATE.OK);
+		report.addItem(item);
 		
 		return lines;
 	}

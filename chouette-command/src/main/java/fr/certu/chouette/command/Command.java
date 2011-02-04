@@ -33,7 +33,9 @@ import fr.certu.chouette.plugin.exchange.ListParameterValue;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  *
@@ -213,7 +215,10 @@ public class Command
 			List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
 			if (holder.getReport() != null)
 			{
-				// afficher le rapport
+				Report r = holder.getReport();
+				System.out.println(r.getLocalizedMessage());
+				printItems(r.getItems());
+				
 			}
 			if (beans == null )
 			{
@@ -232,11 +237,28 @@ public class Command
 		}
 		catch (ChouetteException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			
+			Throwable caused = e.getCause();
+			while (caused != null)
+			{
+				System.err.println("caused by "+ caused.getMessage());
+				caused = caused.getCause();
+			}
 		}
 
 
+	}
+
+	private void printItems(List<ReportItem> items) 
+	{
+		if (items == null) return;
+		for (ReportItem item : items) 
+		{
+			System.out.println(item.getLocalizedMessage());
+			printItems(item.getItems());
+		}
+		
 	}
 
 	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager)
