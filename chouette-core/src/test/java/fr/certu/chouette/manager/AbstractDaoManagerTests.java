@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -41,8 +42,8 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 		expect(daoMock.get(bean.getId())).andReturn(bean);
 		replay(daoMock);
 		T retBean = manager.get(null, Filter.getNewEqualsFilter("id", bean.getId()), DetailLevelEnum.ATTRIBUTE);
-		assert retBean != null;
-		assert retBean.getId() == bean.getId();
+		Assert.assertTrue(retBean != null,"bean should not be null");
+		Assert.assertTrue(retBean.getId() == bean.getId(),"bean should have expected id");
 		verify(daoMock);
 	}
 	
@@ -54,8 +55,8 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 		expect(daoMock.getByObjectId(bean.getObjectId())).andReturn(bean);
 		replay(daoMock);
 		T retBean = manager.get(null, Filter.getNewEqualsFilter("objectId", bean.getObjectId()), DetailLevelEnum.ATTRIBUTE);
-		assert retBean != null;
-		assert retBean.getObjectId() == bean.getObjectId();
+		Assert.assertTrue(retBean != null,"bean should not be null");
+		Assert.assertTrue(retBean.getId() == bean.getId(),"bean should have expected objectid");
 		verify(daoMock);
 	}
 	@Test (groups = {"withDao"} , expectedExceptions={ChouetteRuntimeException.class}, description = "manager should report bean not found from id")

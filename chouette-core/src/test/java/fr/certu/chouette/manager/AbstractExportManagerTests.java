@@ -8,6 +8,7 @@ import static org.easymock.EasyMock.verify;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -52,7 +53,7 @@ public abstract class AbstractExportManagerTests<T extends NeptuneIdentifiedObje
 		replay(exportMock);
 		manager.addExportPlugin(exportMock);
 		List<FormatDescription> list = manager.getExportFormats(null);
-		assert list.contains(exportDescription);
+		Assert.assertTrue(list.contains(exportDescription),"list should contain expected format");
 		verify(exportMock);
 	}
 			
@@ -85,6 +86,7 @@ public abstract class AbstractExportManagerTests<T extends NeptuneIdentifiedObje
 		List<T> beans = new ArrayList<T>();
 		beans.add(bean);
 		manager.doExport(null, beans, "wrongformat", values, report);
+		Assert.fail("expected exception not raised");
 	}
 
 
