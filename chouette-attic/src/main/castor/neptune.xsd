@@ -186,7 +186,7 @@ Cette strucuture contient la totalité des données qui décrivent la ligne.</xsd:d
 					<xsd:documentation>Le réseau de la ligne</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="GroupOfLine" type="GroupOfLineType" minOccurs="0">
+			<xsd:element name="GroupOfLine" type="GroupOfLineType" minOccurs="0" maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>Groupe de ligne auquel appartient la ligne décrite</xsd:documentation>
 				</xsd:annotation>
