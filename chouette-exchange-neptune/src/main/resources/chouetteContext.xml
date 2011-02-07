@@ -14,6 +14,7 @@
 	<bean id="NeptunePTLinkProducer" class="fr.certu.chouette.exchange.xml.neptune.PTLinkProducer" />
 	<bean id="NeptuneVehicleJourneyProducer" class="fr.certu.chouette.exchange.xml.neptune.VehicleJourneyProducer" />
 	<bean id="NeptuneStopPointProducer" class="fr.certu.chouette.exchange.xml.neptune.StopPointProducer" />
+	<bean id="NeptuneStopAreaProducer" class="fr.certu.chouette.exchange.xml.neptune.StopAreaProducer" />
 
 	<bean id="NeptuneConverter" class="fr.certu.chouette.exchange.xml.neptune.NeptuneConverter">
 		<property name="lineProducer" ref="NeptuneLineProducer" />
@@ -24,6 +25,7 @@
 		<property name="ptLinkProducer" ref="NeptunePTLinkProducer" />
 		<property name="vehicleJourneyProducer" ref="NeptuneVehicleJourneyProducer" />
 		<property name="stopPointProducer" ref="NeptuneStopPointProducer" />
+		<property name="stopAreaProducer" ref="NeptuneStopAreaProducer" />
 	</bean>
 
 	<bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.XMLNeptuneImportLinePlugin">

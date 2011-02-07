@@ -14,6 +14,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
@@ -33,6 +34,7 @@ public class NeptuneConverter
 	@Getter @Setter private PTLinkProducer ptLinkProducer;
 	@Getter @Setter private VehicleJourneyProducer vehicleJourneyProducer;
 	@Getter @Setter private StopPointProducer stopPointProducer;
+	@Getter @Setter private StopAreaProducer stopAreaProducer;
 	
 //	@Getter @Setter private VehicleJourney vehicleJourneyProducer;
 	
@@ -169,5 +171,19 @@ public class NeptuneConverter
 		
 		return stopPoints;
 	}
-	
+
+	public List<StopArea> extractStopAreas(ChouettePTNetworkTypeType rootObject) {
+		chouette.schema.StopArea[] xmlStopAreas = rootObject.getChouetteArea().getStopArea();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		
+		List<StopArea> stopAreas = new ArrayList<StopArea>();
+
+		for(chouette.schema.StopArea xmlStopArea : xmlStopAreas){
+			StopArea stopArea = stopAreaProducer.produce(xmlStopArea);
+			stopAreas.add(stopArea);
+		}
+		
+		return stopAreas;
+	}
 }

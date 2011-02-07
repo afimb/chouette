@@ -20,7 +20,6 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -62,8 +61,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	private Map<String,IExportPlugin<T>> exportDeletionPluginMap = new HashMap<String, IExportPlugin<T>>();
 	private Map<String,IValidationPlugin<T>> validationPluginMap = new HashMap<String, IValidationPlugin<T>>();
 
-    private static Map<Class<?>,INeptuneManager<?>> managers;
-	
+    private static Map<Class<?>,INeptuneManager<?>> managers = new HashMap<Class<?>, INeptuneManager<?>>();
+    
 	public AbstractNeptuneManager(Class<?> neptuneType) 
 	{
 		managers.put(neptuneType, this);
