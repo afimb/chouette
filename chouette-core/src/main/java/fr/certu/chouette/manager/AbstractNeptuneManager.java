@@ -20,6 +20,7 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -30,6 +31,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
@@ -60,6 +62,17 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	private Map<String,IExportPlugin<T>> exportDeletionPluginMap = new HashMap<String, IExportPlugin<T>>();
 	private Map<String,IValidationPlugin<T>> validationPluginMap = new HashMap<String, IValidationPlugin<T>>();
 
+    private static Map<Class<?>,INeptuneManager<?>> managers;
+	
+	public AbstractNeptuneManager(Class<?> neptuneType) 
+	{
+		managers.put(neptuneType, this);
+	}
+	
+	public static INeptuneManager<?> getManager(Class<?> neptuneType)
+	{
+		return managers.get(neptuneType);
+	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#addImportPlugin(fr.certu.chouette.plugin.exchange.IImportPlugin)
@@ -282,15 +295,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 	}
 
-
-
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject)
+	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public Report validate(User user, T bean) throws ChouetteException {
+	public Report validate(User user, T bean, ValidationParameters parameters) throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return null;
+
 	}
 
 	/* (non-Javadoc)
@@ -304,10 +317,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject, java.lang.String)
+	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, java.lang.String, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public ReportItem validateStep(User user, T bean, String stepDescriptor)
+	public ReportItem validateStep(User user, T bean, String stepDescriptor, ValidationParameters parameters)
 	throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;

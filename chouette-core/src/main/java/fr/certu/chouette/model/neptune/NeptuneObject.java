@@ -28,6 +28,8 @@ public abstract class NeptuneObject
 	@Getter @Setter private Long id;
 	@Getter private DetailLevelEnum level = DetailLevelEnum.UNINITIALIZED;
 
+	private boolean validationProceeded = false;
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -82,5 +84,17 @@ public abstract class NeptuneObject
 		if (id != null) return id.hashCode();
 		return super.hashCode();
 	} 
+	
+	/**
+	 * check if validation can check this object
+	 * 
+	 * @return true at first check and false after
+	 */
+	public final boolean checkValidationProcess()
+	{
+		boolean check = !validationProceeded;
+		validationProceeded = true;
+		return check;
+	}
 	
 }

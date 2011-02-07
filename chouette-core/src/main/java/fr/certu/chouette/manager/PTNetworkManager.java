@@ -12,6 +12,7 @@ import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.user.User;
 
@@ -21,6 +22,14 @@ import fr.certu.chouette.model.user.User;
 public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 {
 
+
+	public PTNetworkManager() 
+	{
+		super(PTNetwork.class);
+	}
+
+
+	
    /* (non-Javadoc)
     * @see fr.certu.chouette.manager.INeptuneManager#getNewInstance(fr.certu.chouette.model.user.User)
     */

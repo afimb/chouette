@@ -23,6 +23,12 @@ import fr.certu.chouette.model.user.User;
 public class CompanyManager extends AbstractNeptuneManager<Company> 
 {
 
+	public CompanyManager()
+	{
+		super(Company.class);
+	}
+
+	
 	@Override
 	public Company getNewInstance(User user) throws ChouetteException {
 		// TODO Auto-generated method stub

@@ -107,7 +107,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,filePath,e.getLocalizedMessage());
 			item.setStatus(Report.STATE.ERROR);
 			report.addItem(item);
-			report.setStatus(Report.STATE.ERROR);
+			report.setStatus(Report.STATE.FATAL);
 			return null;
 		}
 		if (validate)
@@ -129,7 +129,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 					item.addItem(subItem);
 					t = t.getCause();
 				}
-				report.setStatus(Report.STATE.ERROR);
+				report.setStatus(Report.STATE.FATAL);
 				return null;
 			}
 		}

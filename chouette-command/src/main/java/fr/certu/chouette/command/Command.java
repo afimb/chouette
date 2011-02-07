@@ -50,6 +50,16 @@ public class Command
 
 	private Map<String,List<String>> parameters;
 
+	private static Map<String,String> shortCuts ;
+
+	static
+	{
+		shortCuts = new HashMap<String, String>();
+		shortCuts.put("c", "command");
+		shortCuts.put("h", "help");
+		shortCuts.put("o", "object");
+	}
+
 	/**
 	 * @param args
 	 */
@@ -57,25 +67,34 @@ public class Command
 	{
 		// pattern partially work
 		String[] context = {"classpath*:/chouetteContext.xml"};
-//		String[] context = {"classpath*:/ApplicationContext.xml",
-//				"classpath*:/modules/managers.xml",
-//				"classpath*:/modules/neptune_exchange.xml",
-//				"classpath*:/modules/hibernate.xml"};
-		
-		PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
-		try
+
+		if (args.length >= 1) 
 		{
-			Resource[] re = test.getResources("classpath*:/chouetteContext.xml");
-			System.out.println("nb res = "+re.length);
-			for (Resource resource : re)
+			if (args[0].equalsIgnoreCase("-noDao"))
 			{
-				System.out.println(resource.getURI().toString());
+				List<String> newContext = new ArrayList<String>();
+				PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
+				try
+				{
+					Resource[] re = test.getResources("classpath*:/chouetteContext.xml");
+					for (Resource resource : re)
+					{
+						if (! resource.getURL().toString().contains("dao"))
+						{
+							newContext.add(resource.getURL().toString());
+						}
+					}
+					context = newContext.toArray(new String[0]);
+
+				} 
+				catch (Exception e) 
+				{
+
+					System.err.println("cannot remove dao : "+e.getLocalizedMessage());
+				}
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
+
 		applicationContext = new ClassPathXmlApplicationContext(context);
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		Command command = (Command) factory.getBean("Command");
@@ -218,7 +237,7 @@ public class Command
 				Report r = holder.getReport();
 				System.out.println(r.getLocalizedMessage());
 				printItems(r.getItems());
-				
+
 			}
 			if (beans == null )
 			{
@@ -238,7 +257,7 @@ public class Command
 		catch (ChouetteException e)
 		{
 			System.err.println(e.getMessage());
-			
+
 			Throwable caused = e.getCause();
 			while (caused != null)
 			{
@@ -258,7 +277,7 @@ public class Command
 			System.out.println(item.getLocalizedMessage());
 			printItems(item.getItems());
 		}
-		
+
 	}
 
 	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager)
@@ -366,11 +385,12 @@ public class Command
 	private void printHelp()
 	{
 		System.out.println("Arguments : ");
-		System.out.println("  -help for general syntax ");
-		System.out.println("  -object [name] [options]  ");
+		System.out.println("  -h(elp) for general syntax ");
+		System.out.println("  -noDao to invalidate database access (MUST BE FIRST ARGUMENT) ");
+		System.out.println("  -o(bject) [name] [options]  ");
 		System.out.println("  options : ");
 		System.out.println("     -help for specific options upon object ");
-		System.out.println("     -command [commandName] : get, getImportFormats, import");
+		System.out.println("     -c(ommand) [commandName] : get, getImportFormats, import");
 		System.out.println("     get : ");
 		System.out.println("        -id [value+] : object technical id ");
 		System.out.println("        -objectId [value+] : object neptune id ");
@@ -421,6 +441,11 @@ public class Command
 			if (args[i].startsWith("-"))
 			{
 				String key = args[i].substring(1).toLowerCase();
+				if (key.length() == 1) 
+				{
+					String alias = shortCuts.get(key);
+					if (alias != null) key = alias;
+				}
 				if (parameters.containsKey(key))
 				{
 					System.err.println("duplicate parameter : -"+key);

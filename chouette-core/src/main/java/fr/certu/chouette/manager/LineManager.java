@@ -21,6 +21,11 @@ import fr.certu.chouette.model.user.User;
 public class LineManager extends AbstractNeptuneManager<Line>
 {
 
+	public LineManager()
+	{
+		super(Line.class);
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#getNewInstance(fr.certu.chouette.model.user.User)
 	 */

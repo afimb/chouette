@@ -34,6 +34,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
@@ -343,33 +344,30 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 
 	}
 
-
-
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject)
+	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public Report validate(User user, T bean) throws ChouetteException {
+	public Report validate(User user, T bean, ValidationParameters parameters)
+			throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getValidationSteps(fr.certu.chouette.model.user.User)
 	 */
 	@Override
 	public List<ValidationStepDescription> getValidationSteps(User user)
-	throws ChouetteException {
+			throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject, java.lang.String)
+	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, java.lang.String, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public ReportItem validateStep(User user, T bean, String stepDescriptor)
-	throws ChouetteException {
+	public ReportItem validateStep(User user, T bean, String stepDescriptor,
+			ValidationParameters parameters) throws ChouetteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

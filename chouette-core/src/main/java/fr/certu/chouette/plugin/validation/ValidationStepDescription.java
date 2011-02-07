@@ -13,7 +13,7 @@ import lombok.Setter;
 /**
  * 
  */
-public class ValidationStepDescription
+public abstract class ValidationStepDescription
 {
 	@Getter @Setter private String name; 
 }

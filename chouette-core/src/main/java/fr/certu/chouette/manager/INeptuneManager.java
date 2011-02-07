@@ -23,6 +23,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
@@ -260,10 +261,11 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * 
 	 * @param user user account for security check 
 	 * @param bean bean to be validate
+	 * @param parameters validation parameters
 	 * @return a diagnostic step by step 
 	 * @throws ChouetteException invalid user access or validation failure
 	 */
-	Report validate(User user,T bean) throws ChouetteException;
+	Report validate(User user,T bean,ValidationParameters parameters) throws ChouetteException;
 
 	/**
 	 * get the steps description for validation
@@ -280,10 +282,11 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param user user account for security check 
 	 * @param bean bean to be validate 
 	 * @param stepDescriptor the step to execute
+	 * @param parameters validation parameters
 	 * @return the step diagnostic 
 	 * @throws ChouetteException invalid user access or export failure
 	 */
-	ReportItem validateStep(User user, T bean, String stepDescriptor) throws ChouetteException;
+	ReportItem validateStep(User user, T bean, String stepDescriptor,ValidationParameters parameters) throws ChouetteException;
 
 
 	/**

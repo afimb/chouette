@@ -22,7 +22,11 @@ import fr.certu.chouette.model.user.User;
  */
 public class RouteManager extends AbstractNeptuneManager<Route> 
 {
-
+    public RouteManager() 
+    {
+		super(Route.class);
+	}
+	
 	@Override
 	public Route getNewInstance(User user) throws ChouetteException {
 		// TODO Auto-generated method stub

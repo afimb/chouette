@@ -25,9 +25,5 @@ public class NeptuneReport extends Report
     	setOriginKey(key.name());
     }
     
-    public NeptuneReport(KEY key, String...  args)
-    {
-    	setOriginKey(key.name());
-    }
 
 }

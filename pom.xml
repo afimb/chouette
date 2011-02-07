@@ -401,6 +401,12 @@
 				<version>0.9.3</version>
 				<scope>provided</scope>
 			</dependency>
+			<!-- geometry objects -->
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>1.11</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<profiles>
