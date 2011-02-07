@@ -7,6 +7,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -16,7 +17,6 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
@@ -29,6 +29,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<PTLink> ptLinks;
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
 	@Getter @Setter private List<StopPoint> stopPoints;
+	@Getter @Setter private List<StopArea> stopAreas;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -39,6 +40,7 @@ public class ModelAssembler {
 	private Map<String, PTLink> ptLinksDictionary = new HashMap<String, PTLink>();
 	private Map<String, VehicleJourney> vehicleJourneysDictionary = new HashMap<String, VehicleJourney>();
 	private Map<String, StopPoint> stopPointsDictionary = new HashMap<String, StopPoint>();
+	private Map<String, StopArea> stopAreasDictionary = new HashMap<String, StopArea>();
 	
 	
 	public void connect(){
@@ -51,6 +53,7 @@ public class ModelAssembler {
 		connectPTLinks();
 		connectVehicleJourneys();
 		connectStopPoints();
+		connectStopAreas();
 	}
 
 	private void populateDictionaries(){
@@ -61,7 +64,7 @@ public class ModelAssembler {
 		populateDictionnary(ptLinks, ptLinksDictionary);
 		populateDictionnary(vehicleJourneys, vehicleJourneysDictionary);
 		populateDictionnary(stopPoints, stopPointsDictionary);
-
+		populateDictionnary(stopAreas, stopAreasDictionary);
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -129,7 +132,7 @@ public class ModelAssembler {
 
 	private void connectStopPoints() {
 		for(StopPoint stopPoint : stopPoints){
-			//stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
+			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
 			stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
 			if(ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut())){
 				stopPoint.setPtNetwork(ptNetwork);
@@ -139,13 +142,22 @@ public class ModelAssembler {
 			}
 		}
 	}
+
+	private void connectStopAreas() {
+		for(StopArea stopArea : stopAreas){
+			//stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
+		}
+	}
 	
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass){
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
 		
 		for(String id : ids){
-			objects.add((T)dictionary.get(id));
+			T object = (T)dictionary.get(id);
+			if(object != null){
+				objects.add(object);
+			}
 		}
 		
 		return objects;

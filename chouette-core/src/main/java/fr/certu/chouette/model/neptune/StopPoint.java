@@ -47,6 +47,16 @@ public class StopPoint extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  containedInStopAreaId = ").append(containedInStopAreaId);
 		sb.append("\n").append(indent).append("  lineIdShortcut = ").append(lineIdShortcut);
 		sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ").append(ptNetworkIdShortcut);
+		
+		if (level > 0)
+		{
+			int childLevel = level -1;
+			String childIndent = indent + CHILD_INDENT;
+			if (containedInStopArea != null) 
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append(containedInStopArea.toString(childIndent,0));
+			}
+		}
 
 		return sb.toString();
 	}
