@@ -8,15 +8,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import amivif.schema.RespPTLineStructTimetableTypeType;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRoute;
 import chouette.schema.VehicleJourney;
 import chouette.schema.VehicleJourneyAtStop;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.amivif.IAmivifAdapter;
 import fr.certu.chouette.service.amivif.ILecteurAmivifXML;
 import fr.certu.chouette.service.database.IExportManager;
@@ -25,8 +22,12 @@ import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.util.MainSchemaProducer;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class ImportExportTest {
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class ImportExportTest extends AbstractTestNGSpringContextTests{
 	/**
 	 * Logger for this class
 	 */
@@ -40,11 +41,9 @@ public class ImportExportTest {
 	private ILecteurAmivifXML lecteurAmivifXML;
 	private ILecteurEchangeXML lecteurEchangeXML;
 	
-	@BeforeSuite
-	public void initialisation()
+	@BeforeMethod
+	public void getBeans()
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
 		exportManager = ( IExportManager)applicationContext.getBean( "exportManager");
 		importateur = ( IImportateur)applicationContext.getBean( "importateur");
 		amivifAdapter = ( IAmivifAdapter)applicationContext.getBean( "amivifAdapter");

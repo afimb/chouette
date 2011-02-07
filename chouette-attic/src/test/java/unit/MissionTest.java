@@ -30,9 +30,12 @@ import fr.certu.chouette.service.database.IMissionManager;
 import fr.certu.chouette.service.database.IPositionGeographiqueManager;
 import fr.certu.chouette.service.database.impl.modele.EtatMajArretItineraire;
 import fr.certu.chouette.service.database.impl.modele.EtatMajHoraire;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class MissionTest 
-{
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class MissionTest extends AbstractTestNGSpringContextTests { 
 	/**
 	 * Logger for this class
 	 */
@@ -49,11 +52,9 @@ public class MissionTest
 	private IPositionGeographiqueManager positionGeographiqueManager;
 	private IHoraireManager horaireManager;
 
-	@BeforeSuite
-	protected void setUp() throws Exception 
+	@BeforeMethod
+	protected void getBeans() throws Exception
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
 		itineraireManager = ( IItineraireManager)applicationContext.getBean( "itineraireManager");
 		ligneManager = ( ILigneManager)applicationContext.getBean( "ligneManager");
 		courseManager = ( ICourseManager)applicationContext.getBean( "courseManager");

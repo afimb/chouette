@@ -17,23 +17,14 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.exolab.castor.types.Duration;
 import org.exolab.castor.types.Time;
-import org.springframework.context.ApplicationContext;
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.Address;
-import fr.certu.chouette.critere.AndClause;
-import fr.certu.chouette.critere.IClause;
-import fr.certu.chouette.critere.NotClause;
-import fr.certu.chouette.critere.OrClause;
 import fr.certu.chouette.critere.Ordre;
-import fr.certu.chouette.critere.ScalarClause;
-import fr.certu.chouette.critere.VectorClause;
 import fr.certu.chouette.dao.ISelectionSpecifique;
 import fr.certu.chouette.dao.ITemplateDao;
 import fr.certu.chouette.dao.hibernate.SelectionSpecifique;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Correspondance;
 import fr.certu.chouette.modele.Course;
@@ -45,9 +36,12 @@ import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.Transporteur;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class TemplateDaoTestCase
-{
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class TemplateDaoTestCase extends AbstractTestNGSpringContextTests {
 	/**
 	 * Logger for this class
 	 */
@@ -70,10 +64,8 @@ public class TemplateDaoTestCase
 	public TemplateDaoTestCase() {
 	}
 
-	@BeforeSuite
-	protected void setUp() throws Exception {
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
+	@BeforeMethod
+	protected void getBeans() throws Exception {
 		reseauDao = (ITemplateDao<Reseau>)applicationContext.getBean( "reseauDao");
 		ligneDao = (ITemplateDao<Ligne>)applicationContext.getBean( "ligneDao");
 		transporteurDao = (ITemplateDao<Transporteur>)applicationContext.getBean( "transporteurDao");

@@ -2,30 +2,32 @@ package unit;
 
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
 import java.io.File;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class ImportXML {
+
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class ImportXML extends AbstractTestNGSpringContextTests {
 	
 	private static final Logger             logger            = Logger.getLogger(ImportXML.class);
 	private              ILecteurFichierXML lecteurFichierXML = null;
 	private              ILecteurEchangeXML lecteurEchangeXML = null;
 	private              IImportateur       importateur       = null;
 	
-	@BeforeSuite
-	protected void initialise() {
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-		lecteurFichierXML = (ILecteurFichierXML)applicationContext.getBean("lecteurFichierXML");
-		lecteurEchangeXML = (ILecteurEchangeXML)applicationContext.getBean("lecteurEchangeXML");
-		importateur = (IImportateur)applicationContext.getBean("importateur");
+	@BeforeMethod
+	protected void getBeans()
+        {
+            lecteurFichierXML = (ILecteurFichierXML) applicationContext.getBean("lecteurFichierXML");
+            lecteurEchangeXML = (ILecteurEchangeXML) applicationContext.getBean("lecteurEchangeXML");
+            importateur = (IImportateur) applicationContext.getBean("importateur");
 	}
 	
 	@Test(groups="tests unitaires", description="Import de données XML / Chouette.")

@@ -1,7 +1,6 @@
 package unit;
 
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
@@ -18,11 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class ImportCSV  {
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class ImportCSV extends AbstractTestNGSpringContextTests {
 	
 	private static final Logger logger = Logger.getLogger(ImportCSV.class);
 	private final static String REP = "target/test-classes";
@@ -30,11 +31,10 @@ public class ImportCSV  {
 	private ILecteurCSV lecteurCSV;
 	private IImportateur importateur = null;
 	
-	@BeforeSuite
-	protected void initialise() {
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-		lecteurCSV = ( ILecteurCSV)applicationContext.getBean( "lecteurCSV");
-		importateur = ( IImportateur)applicationContext.getBean( "importateur");
+	@BeforeMethod
+	protected void getBeans() {
+            lecteurCSV = (ILecteurCSV) applicationContext.getBean("lecteurCSV");
+            importateur = (IImportateur) applicationContext.getBean("importateur");
 	}
 	
 	@Test(groups="tests unitaires", description="les 2 (le 1 et le 4) allers suivent un meme itineraire, mais sont distincts, il n'y a que des aller")

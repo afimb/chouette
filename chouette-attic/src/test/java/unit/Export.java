@@ -19,8 +19,6 @@ import org.apache.log4j.Logger;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import util.DataFilesManager;
@@ -34,7 +32,6 @@ import chouette.schema.StopPoint;
 import chouette.schema.types.ChouetteAreaType;
 import fr.certu.chouette.critere.ScalarClause;
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.modele.BaseObjet;
 import fr.certu.chouette.modele.InterdictionTraficLocal;
 import fr.certu.chouette.modele.Ligne;
@@ -54,9 +51,12 @@ import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.util.MainSchemaProducer;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-
-public class Export 
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class Export extends AbstractTestNGSpringContextTests
 {
 	private static final Logger logger = Logger.getLogger(Export.class);
 	private IExportManager exportManager;
@@ -71,11 +71,10 @@ public class Export
 	
 	private DataFilesManager dataFilesManager;
 	
-;	@BeforeSuite
-	public void initialisation() throws Exception
+	@BeforeMethod
+	public void getBeans() throws Exception
 	{
 		dataFilesManager = new DataFilesManager();
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
 		exportManager = (IExportManager)applicationContext.getBean("exportManager");
 		importateur = (IImportateur)applicationContext.getBean("importateur");
 		identification = (IIdentificationManager)applicationContext.getBean("identificationManager");

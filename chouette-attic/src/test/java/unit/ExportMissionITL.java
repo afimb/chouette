@@ -12,22 +12,24 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class ExportMissionITL {
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class ExportMissionITL extends AbstractTestNGSpringContextTests
+{
 	private static final Logger logger = Logger
 			.getLogger(ExportMissionITL.class);
 	
@@ -45,24 +47,22 @@ public class ExportMissionITL {
 	private String 					logFile 			= "validationLog.txt";
 	private String					schemaLocaction		= "http://www.trident.org/schema/trident";
 		
-	@BeforeSuite
-	public void setUpMethod() {
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-		exportManager = (IExportManager)applicationContext.getBean("exportManager");
-		importateur = (IImportateur)applicationContext.getBean("importateur");
-		lecteurEchangeXML = (ILecteurEchangeXML)applicationContext.getBean("lecteurEchangeXML");
-		lecteurFichierXML = ( ILecteurFichierXML)applicationContext.getBean( "lecteurFichierXML");
-		try {
-			Logger.getRootLogger().addAppender(new FileAppender(new SimpleLayout(), logFile));
-    	}
-    	catch(Exception e) {
-    		e.printStackTrace();
-    	}
-    	//Logger.getRootLogger().addAppender(new ConsoleAppender());
-    	Logger.getRootLogger().setLevel(Level.WARN);
-    	schemaLocaction += " ../../../main/castor/Chouette.xsd";
-	}
-	
+	@BeforeMethod
+	public void getBeans() {
+            exportManager = (IExportManager) applicationContext.getBean("exportManager");
+            importateur = (IImportateur) applicationContext.getBean("importateur");
+            lecteurEchangeXML = (ILecteurEchangeXML) applicationContext.getBean("lecteurEchangeXML");
+            lecteurFichierXML = (ILecteurFichierXML) applicationContext.getBean("lecteurFichierXML");
+            try {
+                Logger.getRootLogger().addAppender(new FileAppender(new SimpleLayout(), logFile));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Logger.getRootLogger().addAppender(new ConsoleAppender());
+            Logger.getRootLogger().setLevel(Level.WARN);
+            schemaLocaction += " ../../../main/castor/Chouette.xsd";
+    }
+
 	@Test(groups="test d'export avec Mission", description="export d'une ligne avec missions.")
 	public void exportMission() {
 		for (int i = 0; i < 1/*fileNames.length*/; i++) {
