@@ -13,8 +13,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.exolab.castor.types.Time;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.types.ChouetteAreaType;
@@ -22,7 +20,6 @@ import fr.certu.chouette.critere.AndClause;
 import fr.certu.chouette.critere.IClause;
 import fr.certu.chouette.critere.ScalarClause;
 import fr.certu.chouette.dao.ISelectionSpecifique;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Correspondance;
 import fr.certu.chouette.modele.Course;
@@ -48,8 +45,12 @@ import fr.certu.chouette.service.database.ITransporteurManager;
 import fr.certu.chouette.service.database.impl.modele.EtatMajArretItineraire;
 import fr.certu.chouette.service.database.impl.modele.EtatMajHoraire;
 import fr.certu.chouette.service.identification.IIdentificationManager;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class DBServiceTestCase
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class DBServiceTestCase extends AbstractTestNGSpringContextTests
 {
 	/**
 	 * Logger for this class
@@ -74,11 +75,9 @@ public class DBServiceTestCase
 	public DBServiceTestCase() {
 	}
 
-	@BeforeSuite
-	protected void setUp() throws Exception 
+	@BeforeMethod
+	protected void getbeans() throws Exception
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
 		itineraireManager = ( IItineraireManager)applicationContext.getBean( "itineraireManager");
 		ligneManager = ( ILigneManager)applicationContext.getBean( "ligneManager");
 		arretItineraireManager = ( IArretItineraireManager)applicationContext.getBean( "arretItineraireManager");

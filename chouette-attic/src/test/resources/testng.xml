@@ -1,11 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Factory"  verbose="5" >
-  <test name="SpringBeans">
+
+ <test name="SpringBeans" enabled="false">
       <classes>
           <class name="unit.BeanTest"/>
       </classes>
   </test>
+  
   <test name="Unitaires">
     <classes>
       <class name="unit.DBServiceTestCase"/>
@@ -15,13 +17,13 @@
       <class name="unit.TestImportateur"/>
       <class name="unit.TemplateDaoTestCase"/>
       <class name="unit.HoraireDepartTest"/>
-      <class name="unit.Export"/>
+      <!--class name="unit.Export"/-->
       <class name="unit.ITLTest"/>
       <class name="unit.ExportMissionITL"/>
     </classes>
   </test>
 
-  <test name="Validation">
+  <test name="Validation" enabled="false">
     <classes>
       <class name="unit.TestValidation"/>
       </classes>

@@ -8,12 +8,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.exolab.castor.types.Time;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.dao.hibernate.SelectionSpecifique;
-import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
@@ -25,9 +22,12 @@ import fr.certu.chouette.service.database.IItineraireManager;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.impl.modele.EtatMajArretItineraire;
 import fr.certu.chouette.service.database.impl.modele.EtatMajHoraire;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class HoraireDepartTest 
-{
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class HoraireDepartTest extends AbstractTestNGSpringContextTests {
 	/**
 	 * Logger for this class
 	 */
@@ -39,11 +39,9 @@ public class HoraireDepartTest
 	private IHoraireManager horaireManager;
 	private SelectionSpecifique modificationSpecifique;
 
-	@BeforeSuite
-	protected void setUp() throws Exception 
+	@BeforeMethod
+	protected void getBeans() throws Exception
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
 		itineraireManager = ( IItineraireManager)applicationContext.getBean( "itineraireManager");
 		ligneManager = ( ILigneManager)applicationContext.getBean( "ligneManager");
 		courseManager = ( ICourseManager)applicationContext.getBean( "courseManager");

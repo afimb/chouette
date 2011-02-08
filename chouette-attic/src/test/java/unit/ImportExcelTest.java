@@ -6,23 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.manager.SingletonManager;
-import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.modele.Reseau;
 import fr.certu.chouette.modele.TableauMarche;
-import fr.certu.chouette.modele.Transporteur;
 import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.identification.IDictionaryObjectId;
 import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class ImportExcelTest {
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class ImportExcelTest extends AbstractTestNGSpringContextTests{
 	
 	private static final Logger              logger             = Logger.getLogger(ImportExcelTest.class);
 	private static final String              REP                = "target/test-classes";
@@ -30,9 +28,8 @@ public class ImportExcelTest {
 	private              IImportateur        importateur        = null;
 	private              IDictionaryObjectId dictionaryObjectId = null;
 	
-	@BeforeSuite
+	@BeforeMethod
 	protected void initialise() {
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
 		lecteurCSV = (ILecteurPrincipal)applicationContext.getBean("lecteurCSVPrincipal");
 		importateur = (IImportateur)applicationContext.getBean("importateur");
 		dictionaryObjectId = (IDictionaryObjectId)applicationContext.getBean("dictionaryObjectId");

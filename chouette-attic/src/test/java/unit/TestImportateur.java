@@ -10,7 +10,6 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import chouette.schema.ChouettePTNetworkTypeType;
@@ -31,14 +30,16 @@ import fr.certu.chouette.service.database.ITransporteurManager;
 import fr.certu.chouette.service.fichier.IImportateur;
 import fr.certu.chouette.service.xml.ILecteurEchangeXML;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeMethod;
 
-public class TestImportateur 
-{
+@ContextConfiguration(locations = {"classpath:testContext.xml"})
+public class TestImportateur extends AbstractTestNGSpringContextTests {
 	/**
 	 * Logger for this class
 	 */
-	private static final Logger logger = Logger
-			.getLogger(TestImportateur.class);
+	private static final Logger logger = Logger.getLogger(TestImportateur.class);
 	
 	private IImportateur importateur = null;
 	private ITransporteurManager transporteurManager;
@@ -49,11 +50,9 @@ public class TestImportateur
 	private IPositionGeographiqueManager positionGeographiqueManager;
 	private GenerateurDonnee generateurDonnee = new GenerateurDonnee();
 	
-	@BeforeSuite
-	public void initialisation()
+	@BeforeMethod
+	public void getBeans()
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-
 		importateur = ( IImportateur)applicationContext.getBean( "importateur");
 		lecteurEchangeXML = ( ILecteurEchangeXML)applicationContext.getBean( "lecteurEchangeXML");
 		positionGeographiqueManager = ( IPositionGeographiqueManager)applicationContext.getBean( "positionGeographiqueManager");
