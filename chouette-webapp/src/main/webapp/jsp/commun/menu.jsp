@@ -56,6 +56,10 @@
 			<s:url id="urlValidationMenu" action="Validation_execute" namespace="/" includeParams="none"/>
 			<li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>
 			
+			<%--Neptune validation --%>
+			<s:url id="urlNeptuneMenu" action="execute" namespace="/neptune-validation" includeParams="none"/>
+			<li><s:a href="%{urlNeptuneMenu}" id="neptuneMenu"><s:text name="text.neptune.import"/></s:a></li>
+			
 			<%-- Comparaison --%>
       <s:if test="menuComparisonEnabled == true">
         <s:url id="urlComparaisonMenu" action="index" namespace="/lineFilesComparisonService" includeParams="none"/>

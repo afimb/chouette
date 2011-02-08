@@ -1,0 +1,69 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+<title><s:text name="import.index.title" /></title>
+<s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
+
+	<div style="width: 700px;">
+	 <div class="panelDataSection"><s:text name="import.index.title"/></div>
+	  	<div class="panel">
+		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST">
+			<br />
+		   <s:text name="fieldset.legend.import" />
+		   <s:file name="file" label="%{getText('action.browse')}" />
+		   <s:submit value="%{getText('submit.import.xml')}" formId="NeptuneValidation"/>
+		</s:form>
+		<s:property value="%{report.getStatus().name()}"/><br />
+		 
+		 <s:iterator value="report.items">
+		 	<s:property value="messageKey"/><br />
+		 	<s:property value="getLocalizedMessage(getLocale())" />
+		 </s:iterator>
+	</div>
+	<br />
+	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
+		<div class="panel">
+		<s:include value="/jsp/commun/messages.jsp" />
+		<div>
+		<br />
+		<s:property value="%{reportValidation.getStatus().name()}"/><br />
+		 
+		<s:iterator value="reportValidation.items">
+		 	<s:property value="messageKey"/><br />
+		 	<s:property value="getLocalizedMessage(getLocale())" />
+		 </s:iterator>
+		
+  <s:form action="validation" namespace="/neptune-validation" >
+	   <s:textfield name="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
+	   <s:textfield name="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
+	   
+	   <s:textarea cols="30" name="test3_2_Polygon" label="%{getText('neptune.field.polygon.3.6')}" rows="10"></s:textarea>
+		
+		<s:textfield name=" test3_7_MinimalDistance" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" size="4"/>
+		<s:textfield name=" test3_7_MaximalDistance" size="4" label="/"/>
+		
+		<s:textfield name=" test3_8a_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8a')}" size="4"/>
+		<s:textfield name=" test3_8a_MaximalSpeed"  size="4" label="/"/>
+		
+		<s:textfield name=" test3_8b_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8b')}" size="4"/>
+		<s:textfield name=" test3_8b_MaximalSpeed" size="4" label="/"/>
+		
+		<s:textfield name=" test3_8c_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8c')}" size="4"/>
+		<s:textfield name=" test3_8c_MaximalSpeed" size="4" label="/"/>
+		
+		<s:textfield name=" test3_8d_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8d')}" size="4"/>
+		<s:textfield name=" test3_8d_MaximalSpeed" size="4" label="/"/>
+		
+		
+		<s:textfield name=" test3_9_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.9')}" size="4"/>
+		<s:textfield name=" test3_9_MaximalSpeed" size="4" label="/"/>
+		
+		 <s:textfield name=" test3_10_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.10')}" size="4"/>
+		 
+		<s:textfield name=" test3_16c_MinimalTime" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" size="8"/>
+		<s:textfield name=" test3_16c_MaximalTime" size="8" label="/"/>	
+		 	
+    <s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}" disabled="#session.imported != true"/>
+  </s:form>
+</div>
+</div>
+	</div>

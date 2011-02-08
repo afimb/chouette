@@ -150,5 +150,5 @@
     <action name="ActionNotFound">
       <result>/jsp/action_not_found.jsp</result>
     </action>
-
+</package>
 </struts>

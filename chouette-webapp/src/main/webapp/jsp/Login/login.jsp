@@ -47,6 +47,9 @@
               }
             }
         %>
+        <%--Neptune validation --%>
+        <a href="<%=request.getContextPath()%>/neptune-validation/execute.action"><b>Validation neptune</b></a>
+			
         <div id="login">
           <form action="j_security_check" method="post">
             <table>

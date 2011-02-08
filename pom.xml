@@ -9,17 +9,18 @@
     <version>1.5.0</version>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>chouette-attic</module>
-        <module>chouette-webapp</module>
-        <module>chouette-castor-altibus</module>
-        <module>chouette-castor-amivif</module>
-        <module>chouette-castor-neptune</module>
-        <module>chouette-core</module>
-        <module>chouette-hibernate-dao</module>
-        <module>chouette-exchange-neptune</module>
-        <module>chouette-command</module>
-    </modules>
+	<modules>
+		<module>chouette-attic</module>
+		<module>chouette-webapp</module>
+		<module>chouette-castor-altibus</module>
+		<module>chouette-castor-amivif</module>
+		<module>chouette-castor-neptune</module>
+		<module>chouette-core</module>
+		<module>chouette-hibernate-dao</module>
+		<module>chouette-exchange-neptune</module>
+		<module>chouette-command</module>
+		<module>chouette-neptune</module>
+	</modules>
 
     <repositories>
 		<!-- add JBOSS repository for easy access to Hibernate libraries -->
@@ -170,6 +171,11 @@
                 <scope>test</scope>
             </dependency>
 
+			<dependency>
+				<groupId>fr.certu.chouette</groupId>
+				<artifactId>chouette-neptune</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- Apache commons -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
