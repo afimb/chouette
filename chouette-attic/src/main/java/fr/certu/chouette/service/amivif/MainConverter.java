@@ -152,7 +152,7 @@ public class MainConverter implements IAmivifAdapter
 		logger.debug("EVOCASTOR --> new RespPTLineStructTimetable()");
 		RespPTLineStructTimetableTypeType amivif = new RespPTLineStructTimetable();
 		amivif.setTransportNetwork(transportNetworkConverter.cta(chouette.getPTNetwork()));
-		List<GroupOfLine> groupOfLines = chouette.getGroupOfLines();
+		List<chouette.schema.GroupOfLine> groupOfLines = chouette.getGroupOfLineAsReference();
 		if (groupOfLines != null)
 			for (int i = 0; i < groupOfLines.size(); i++)
 				amivif.addGroupOfLine(groupOfLineConverter.cta(chouette.getGroupOfLine(i)));
