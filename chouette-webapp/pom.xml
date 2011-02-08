@@ -49,6 +49,11 @@
             <groupId>oro</groupId>
             <artifactId>oro</artifactId>
         </dependency>
+	<!-- Display Tag for Struts 2 -->
+        <dependency>
+          <groupId>displaytag</groupId>
+          <artifactId>displaytag</artifactId>
+        </dependency>
                     <!-- Servlet & Jsp -->
         <dependency>
             <groupId>javax.servlet</groupId>

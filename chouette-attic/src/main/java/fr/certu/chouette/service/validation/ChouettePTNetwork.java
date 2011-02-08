@@ -9,7 +9,7 @@ public class ChouettePTNetwork {
 	private ChouetteLineDescription 	chouetteLineDescription;
 	private List<Company> 				companies 					= new ArrayList<Company>();
 	private List<ConnectionLink> 		connectionLinks 			= new ArrayList<ConnectionLink>();
-	private GroupOfLine 				groupOfLine;
+	private List<GroupOfLine> 			groupOfLines;
 	private PTNetwork 					pTNetwork;
 	private List<TimeSlot> 				timeSlots 					= new ArrayList<TimeSlot>();
 	private List<Timetable> 			timetables 					= new ArrayList<Timetable>();
@@ -154,13 +154,67 @@ public class ChouettePTNetwork {
     	connectionLinks.set(index, connectionLink);
     }
 	
-	public void setGroupOfLine(GroupOfLine groupOfLine) {
-		this.groupOfLine = groupOfLine;
+	public void addGroupOfLine(GroupOfLine groupOfLine) throws IndexOutOfBoundsException {
+		groupOfLines.add(groupOfLine);
 	}
 	
-	public GroupOfLine getGroupOfLine() {
-		return groupOfLine;
+	public void addGroupOfLine(int index, GroupOfLine groupOfLine) throws IndexOutOfBoundsException {
+		groupOfLines.add(index, groupOfLine);
 	}
+	
+	public void removeGroupOfLine(int index) throws IndexOutOfBoundsException {
+		groupOfLines.remove(index);
+	}
+	
+	public void removeGroupOfLine(GroupOfLine groupOfLine) {
+		groupOfLines.remove(groupOfLine);
+	}
+	
+	public void clearGroupOfLines() {
+		groupOfLines.clear();
+	}
+	
+	public void setGroupOfLines(List<GroupOfLine> groupOfLines) {
+		this.groupOfLines = groupOfLines;
+	}
+	
+	public List<GroupOfLine> getGroupOfLines() {
+		return groupOfLines;
+	}
+	
+	public GroupOfLine[] getGroupOfLineAsTable() {
+		int size = groupOfLines.size();
+		GroupOfLine[] mArray = new GroupOfLine[size];
+		for (int index = 0; index < size; index++)
+			mArray[index] = (GroupOfLine)groupOfLines.get(index);
+		return mArray;
+	}
+	
+	public GroupOfLine getGroupOfLine(int index) throws IndexOutOfBoundsException {
+		if ((index < 0) || (index > groupOfLines.size()))
+            throw new IndexOutOfBoundsException();
+		return (GroupOfLine) groupOfLines.get(index);
+	}
+	
+	public int getGroupOfLineCount() {
+        return groupOfLines.size();
+    }
+	
+	public void setGroupOfLines(ArrayList<GroupOfLine> groupOfLines) {
+        this.groupOfLines = groupOfLines;
+    }
+	
+    public void setGroupOfLines(GroupOfLine[] arrayOfGroupOfLines) {
+    	groupOfLines.clear();
+        for (int i = 0; i < arrayOfGroupOfLines.length; i++)
+        	groupOfLines.add(arrayOfGroupOfLines[i]);
+    }
+    
+    public void setGroupOfLine(int index, GroupOfLine groupOfLine) throws IndexOutOfBoundsException {
+    	if ((index < 0) || (index > groupOfLines.size()))
+    		throw new IndexOutOfBoundsException();
+    	groupOfLines.set(index, groupOfLine);
+    }
 	
 	public void setPTNetwork(PTNetwork pTNetwork) {
 		this.pTNetwork = pTNetwork;
@@ -299,8 +353,9 @@ public class ChouettePTNetwork {
 		stb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 		stb.append("<ChouettePTNetwork>\n");
 		stb.append(pTNetwork.toString());
-		if (groupOfLine != null)
-			stb.append(groupOfLine.toString());
+		if (groupOfLines != null)
+			for (int i = 0; i < groupOfLines.size(); i++)
+				stb.append(groupOfLines.get(i).toString());
 		for (int i = 0; i < companies.size(); i++)
 			stb.append(companies.get(i).toString());
 		stb.append(chouetteArea.toString());
@@ -326,8 +381,9 @@ public class ChouettePTNetwork {
 				stb.append(" ");
 		stb.append("<ChouettePTNetwork>\n");
 		stb.append(pTNetwork.toString(indent+1, indentSize));
-		if (groupOfLine != null)
-			stb.append(groupOfLine.toString(indent+1, indentSize));
+		if (groupOfLines != null)
+			for (int i = 0; i < groupOfLines.size(); i++)
+				stb.append(groupOfLines.get(i).toString(indent+1, indentSize));
 		for (int i = 0; i < companies.size(); i++)
 			stb.append(companies.get(i).toString(indent+1, indentSize));
 		stb.append(chouetteArea.toString(indent+1, indentSize));

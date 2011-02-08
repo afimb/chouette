@@ -69,7 +69,7 @@ public class MainConverter implements IAmivifAdapter
 		chouette.setPTNetwork(transportNetworkConverter.atc(amivif.getTransportNetwork()));
 		for (int i = 0; i < amivif.getGroupOfLineCount(); i++)
 			if ( amivif.getGroupOfLine(i) != null) {
-				chouette.setGroupOfLine(groupOfLineConverter.atc(amivif.getGroupOfLine(i))) ;
+				chouette.addGroupOfLine(groupOfLineConverter.atc(amivif.getGroupOfLine(i))) ;
 				break;
 			}
 		chouette.setCompany(companyConverter.atc(amivif.getCompany()));
