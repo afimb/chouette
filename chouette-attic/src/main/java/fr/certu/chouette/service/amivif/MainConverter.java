@@ -30,6 +30,7 @@ import fr.certu.chouette.service.amivif.base.StopPointConverter;
 import fr.certu.chouette.service.amivif.base.TimetableConverter;
 import fr.certu.chouette.service.amivif.base.TransportNetworkConverter;
 import fr.certu.chouette.service.amivif.base.VehicleConverter;
+import fr.certu.chouette.service.validation.amivif.GroupOfLine;
 
 
 
@@ -151,7 +152,10 @@ public class MainConverter implements IAmivifAdapter
 		logger.debug("EVOCASTOR --> new RespPTLineStructTimetable()");
 		RespPTLineStructTimetableTypeType amivif = new RespPTLineStructTimetable();
 		amivif.setTransportNetwork(transportNetworkConverter.cta(chouette.getPTNetwork()));
-		amivif.addGroupOfLine(groupOfLineConverter.cta(chouette.getGroupOfLine()));
+		List<GroupOfLine> groupOfLines = chouette.getGroupOfLines();
+		if (groupOfLines != null)
+			for (int i = 0; i < groupOfLines.size(); i++)
+				amivif.addGroupOfLine(groupOfLineConverter.cta(chouette.getGroupOfLine(i)));
 		amivif.setCompany(companyConverter.cta(chouette.getCompany()));
 		
 		//OBLIGATION : chouette.getChouetteLineDescription() != null
