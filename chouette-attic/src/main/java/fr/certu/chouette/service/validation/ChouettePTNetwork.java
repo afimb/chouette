@@ -155,6 +155,7 @@ public class ChouettePTNetwork {
     }
 	
 	public void addGroupOfLine(GroupOfLine groupOfLine) throws IndexOutOfBoundsException {
+	    if (groupOfLine != null)
 		groupOfLines.add(groupOfLine);
 	}
 	
