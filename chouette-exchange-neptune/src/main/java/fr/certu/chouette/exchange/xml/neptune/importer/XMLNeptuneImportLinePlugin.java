@@ -5,7 +5,7 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.exchange.xml.neptune;
+package fr.certu.chouette.exchange.xml.neptune.importer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

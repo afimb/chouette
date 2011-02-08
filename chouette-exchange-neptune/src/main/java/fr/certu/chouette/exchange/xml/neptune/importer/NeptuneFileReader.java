@@ -1,9 +1,10 @@
-package fr.certu.chouette.exchange.xml.neptune;
+package fr.certu.chouette.exchange.xml.neptune.importer;
 
 
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
+import fr.certu.chouette.exchange.xml.neptune.LoggingManager;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 import java.io.File;

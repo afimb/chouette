@@ -1,4 +1,4 @@
-package fr.certu.chouette.exchange.xml.neptune;
+package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.util.Date;
 

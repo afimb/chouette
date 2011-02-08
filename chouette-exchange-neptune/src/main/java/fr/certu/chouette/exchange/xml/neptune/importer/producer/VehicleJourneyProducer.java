@@ -1,6 +1,7 @@
-package fr.certu.chouette.exchange.xml.neptune;
+package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.util.Date;
+
 
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;
 import fr.certu.chouette.model.neptune.VehicleJourney;

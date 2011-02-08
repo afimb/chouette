@@ -1,4 +1,4 @@
-package fr.certu.chouette.exchange.xml.neptune;
+package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.StopAreaExtension;

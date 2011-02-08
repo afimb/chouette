@@ -1,13 +1,25 @@
-package fr.certu.chouette.exchange.xml.neptune;
+package fr.certu.chouette.exchange.xml.neptune.importer;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 import lombok.Getter;
 import lombok.Setter;
 
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
