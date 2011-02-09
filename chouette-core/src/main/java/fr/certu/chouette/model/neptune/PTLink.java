@@ -2,6 +2,8 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
+import fr.certu.chouette.filter.DetailLevelEnum;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +15,32 @@ public class PTLink extends NeptuneIdentifiedObject
 	@Getter @Setter private StopPoint startOfLink;
 	@Getter @Setter private String endOfLinkId;
 	@Getter @Setter private StopPoint endOfLink;
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	 */
+	@Override
+	public void expand(DetailLevelEnum level)
+	{
+		// to avoid circular call check if level is already set according to this level
+		if (getLevel().ordinal() >= level.ordinal()) return;
+		super.expand(level);
+		switch (level)
+		{
+		case ATTRIBUTE : 
+			startOfLink = null;
+			endOfLink = null;
+			break;
+		case NARROW_DEPENDENCIES : 
+			if (getStartOfLink() != null) getStartOfLink().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getEndOfLink() != null) getEndOfLink().expand(DetailLevelEnum.ATTRIBUTE);
+			break;
+		case STRUCTURAL_DEPENDENCIES : 
+		case ALL_DEPENDENCIES :
+			if (getStartOfLink() != null) getStartOfLink().expand(level);
+			if (getEndOfLink() != null) getEndOfLink().expand(level);
+		}
+	}
 	
 	@Override
 	public String toString(String indent, int level) {

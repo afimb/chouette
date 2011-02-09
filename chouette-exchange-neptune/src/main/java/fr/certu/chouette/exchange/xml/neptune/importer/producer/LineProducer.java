@@ -73,7 +73,6 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 		// Comment optional
 		line.setComment(getNonEmptyTrimedString(xmlLine.getComment()));
 
-		line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 		return line;
 	}
 

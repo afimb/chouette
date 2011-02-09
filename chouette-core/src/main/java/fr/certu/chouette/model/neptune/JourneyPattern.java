@@ -37,6 +37,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		case ATTRIBUTE : 
 			stopPoints = null;
 			route = null;
+			vehicleJourneys = null;
 			break;
 		case NARROW_DEPENDENCIES : 
 			getRoute().expand(DetailLevelEnum.ATTRIBUTE);
@@ -44,15 +45,22 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 			{
 				stopPoint.expand(DetailLevelEnum.ATTRIBUTE);
 			}
+			for (VehicleJourney vehicleJourney : getVehicleJourneys())
+			{
+				vehicleJourney.expand(DetailLevelEnum.ATTRIBUTE);
+			}
 			break;
 		case STRUCTURAL_DEPENDENCIES : 
 		case ALL_DEPENDENCIES :
-			getRoute().expand(DetailLevelEnum.ATTRIBUTE);
+			getRoute().expand(level);
 			for (StopPoint stopPoint : getStopPoints())
 			{
 				stopPoint.expand(level);
 			}
-
+			for (VehicleJourney vehicleJourney : getVehicleJourneys())
+			{
+				vehicleJourney.expand(level);
+			}
 		}
 	} 
 

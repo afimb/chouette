@@ -37,7 +37,6 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private Company company;
 	@Getter @Setter private List<Route> routes;
 
-
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -67,8 +66,8 @@ public class Line extends NeptuneIdentifiedObject
 			break;
 		case STRUCTURAL_DEPENDENCIES : 
 		case ALL_DEPENDENCIES :
-			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getPtNetwork() != null) getPtNetwork().expand(level);
+			if (getCompany() != null) getCompany().expand(level);
 			if (getRoutes() != null)
 			{
 				for (Route route : getRoutes())

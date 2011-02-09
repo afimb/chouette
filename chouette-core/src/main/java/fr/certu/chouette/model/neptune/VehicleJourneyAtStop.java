@@ -6,6 +6,7 @@ import java.util.Date;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 
 public class VehicleJourneyAtStop extends NeptuneObject {
@@ -21,6 +22,32 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter @Setter private Date waitingTime;
 	@Getter @Setter private Date elapseDuration;
 	@Getter @Setter private Date headwayFrequency;
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	 */
+	@Override
+	public void expand(DetailLevelEnum level)
+	{
+		// to avoid circular call check if level is already set according to this level
+		if (getLevel().ordinal() >= level.ordinal()) return;
+		super.expand(level);
+		switch (level)
+		{
+		case ATTRIBUTE : 
+			stopPoint = null;
+			vehicleJourney = null;
+			break;
+		case NARROW_DEPENDENCIES : 
+			if (getStopPoint() != null) getStopPoint().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getVehicleJourney() != null) getVehicleJourney().expand(DetailLevelEnum.ATTRIBUTE);
+			break;
+		case STRUCTURAL_DEPENDENCIES : 
+		case ALL_DEPENDENCIES :
+			if (getStopPoint() != null) getStopPoint().expand(level);
+			if (getVehicleJourney() != null) getVehicleJourney().expand(level);
+		}
+	} 
 	
 	@Override
 	public String toString(String indent, int level) {

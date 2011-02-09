@@ -22,6 +22,8 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
@@ -136,7 +138,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		ModelAssembler modelAssembler = new ModelAssembler();
 
 		List<Line> lines = converter.extractLines(rootObject);
-		
 		modelAssembler.setLines(lines);
 		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
 		modelAssembler.setCompanies(converter.extractCompanies(rootObject));
@@ -147,9 +148,19 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setStopPoints(converter.extractStopPoints(rootObject));
 		modelAssembler.setStopAreas(converter.extractStopAreas(rootObject));
 		modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject));
-		modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject));
+		
+		List<ConnectionLink> connectionLinks = converter.extractConnectionLinks(rootObject);
+		modelAssembler.setConnectionLinks(connectionLinks);
 		
 		modelAssembler.connect();
+		
+		for(Line line : lines){
+			line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
+		}
+		
+		for(ConnectionLink connectionLink : connectionLinks){
+			connectionLink.expand(DetailLevelEnum.ALL_DEPENDENCIES);
+		}
 		
 		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,filePath,Integer.toString(lines.size()));
 		item.setStatus(Report.STATE.OK);

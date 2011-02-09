@@ -2,7 +2,6 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.StopAreaExtension;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -85,7 +84,6 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 
 		}
 		
-		stopArea.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 		return stopArea;
 	}
 

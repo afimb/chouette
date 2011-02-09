@@ -7,6 +7,7 @@
  */
 package fr.certu.chouette.model.neptune;
 
+import fr.certu.chouette.filter.DetailLevelEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,26 @@ public class Company extends NeptuneIdentifiedObject
 	@Getter @Setter private String email;
 	@Getter @Setter private String registrationNumber;
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	 */
+	@Override
+	public void expand(DetailLevelEnum level)
+	{
+		// to avoid circular call check if level is already set according to this level
+		if (getLevel().ordinal() >= level.ordinal()) return;
+		super.expand(level);
+		switch (level)
+		{
+		case ATTRIBUTE : 
+			break;
+		case NARROW_DEPENDENCIES :
+			break;
+		case STRUCTURAL_DEPENDENCIES : 
+		case ALL_DEPENDENCIES :
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
 	 */

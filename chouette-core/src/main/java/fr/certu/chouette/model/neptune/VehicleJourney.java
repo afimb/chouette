@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
@@ -27,7 +28,51 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private String operatorId;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
 
-
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	 */
+	@Override
+	public void expand(DetailLevelEnum level)
+	{
+		// to avoid circular call check if level is already set according to this level
+		if (getLevel().ordinal() >= level.ordinal()) return;
+		super.expand(level);
+		switch (level)
+		{
+		case ATTRIBUTE : 
+			route = null;
+			journeyPattern = null;
+			timeSlot = null;
+			vehicleJourneyAtStops = null;
+			break;
+		case NARROW_DEPENDENCIES : 
+			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getTimeSlot() != null) getTimeSlot().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getVehicleJourneyAtStops() != null)
+			{
+				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
+				{
+					vehicleJourneyAtStop.expand(DetailLevelEnum.ATTRIBUTE);
+				}
+			}
+			break;
+		case STRUCTURAL_DEPENDENCIES : 
+		case ALL_DEPENDENCIES :
+			if (getRoute() != null) getRoute().expand(level);
+			if (getJourneyPattern() != null) getJourneyPattern().expand(level);
+			if (getTimeSlot() != null) getTimeSlot().expand(level);
+			if (getVehicleJourneyAtStops() != null)
+			{
+				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
+				{
+					vehicleJourneyAtStop.expand(level);
+				}
+			}
+			break;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

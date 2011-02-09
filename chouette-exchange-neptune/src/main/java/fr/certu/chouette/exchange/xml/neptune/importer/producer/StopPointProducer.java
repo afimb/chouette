@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -63,7 +62,6 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 			projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
 		}
 		
-		stopPoint.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 		return stopPoint;
 	}
 
