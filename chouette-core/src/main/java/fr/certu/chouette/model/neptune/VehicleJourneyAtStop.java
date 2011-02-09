@@ -42,7 +42,7 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	private String formatDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		if(date != null){
-			return dateFormat.format(arrivalTime);
+			return dateFormat.format(date);
 		}
 		else{
 			return null;

@@ -23,13 +23,11 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter int fareCode;
 	@Getter @Setter boolean liftAvailable;
 	@Getter @Setter boolean mobilityRestrictedSuitable;
+	@Getter @Setter boolean stairsAvailable;
 	@Getter @Setter String nearestTopicName;
 	@Getter @Setter String registrationNumber;
-	@Getter @Setter boolean stairsAvailable;
 	@Getter @Setter List<UserNeedEnum> userNeeds;
 	
-//	TODO : find a solution for : accessibilitySuitabilityDetails
-
 	public void addBoundaryPoint(String boundaryPoint)
 	{
 		if (boundaryPoints == null) boundaryPoints = new ArrayList<String>();

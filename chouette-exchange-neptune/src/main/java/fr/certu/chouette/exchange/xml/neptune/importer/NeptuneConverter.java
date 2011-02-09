@@ -4,15 +4,13 @@ package fr.certu.chouette.exchange.xml.neptune.importer;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import lombok.Getter;
 import lombok.Setter;
-
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.ConnectionLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer;
@@ -23,6 +21,7 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProduce
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
@@ -50,6 +49,7 @@ public class NeptuneConverter
 	@Getter @Setter private StopPointProducer stopPointProducer;
 	@Getter @Setter private StopAreaProducer stopAreaProducer;
 	@Getter @Setter private AreaCentroidProducer areaCentroidProducer;
+	@Getter @Setter private ConnectionLinkProducer connectionLinkProducer;
 	
 //	@Getter @Setter private VehicleJourney vehicleJourneyProducer;
 	
@@ -215,6 +215,21 @@ public class NeptuneConverter
 		}
 		
 		return areaCentroids;
-
 	}
+	
+
+	public List<ConnectionLink> extractConnectionLinks(ChouettePTNetworkTypeType rootObject) {
+		chouette.schema.ConnectionLink[] xmlConnectionLinks = rootObject.getConnectionLink();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		
+		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
+
+		for(chouette.schema.ConnectionLink xmlConnectionLink : xmlConnectionLinks){
+			ConnectionLink connectionLink = connectionLinkProducer.produce(xmlConnectionLink);
+			connectionLinks.add(connectionLink);
+		}
+		
+		return connectionLinks;
+	} 
 }

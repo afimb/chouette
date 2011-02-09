@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -31,6 +32,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<StopPoint> stopPoints;
 	@Getter @Setter private List<StopArea> stopAreas;
 	@Getter @Setter private List<AreaCentroid> areaCentroids;
+	@Getter @Setter private List<ConnectionLink> connectionLinks;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -43,7 +45,8 @@ public class ModelAssembler {
 	private Map<String, StopPoint> stopPointsDictionary = new HashMap<String, StopPoint>();
 	private Map<String, StopArea> stopAreasDictionary = new HashMap<String, StopArea>();
 	private Map<String, AreaCentroid> areaCentroidsDictionary = new HashMap<String, AreaCentroid>();
-	
+	private Map<String, ConnectionLink> connectionLinksDictionary = new HashMap<String, ConnectionLink>();
+
 	
 	public void connect(){
 		populateDictionaries();
@@ -57,6 +60,7 @@ public class ModelAssembler {
 		connectStopPoints();
 		connectStopAreas();
 		connectAreaCentroids();
+		connectConnectionLinks();
 	}
 
 	private void populateDictionaries(){
@@ -69,6 +73,7 @@ public class ModelAssembler {
 		populateDictionnary(stopPoints, stopPointsDictionary);
 		populateDictionnary(stopAreas, stopAreasDictionary);
 		populateDictionnary(areaCentroids, areaCentroidsDictionary);
+		populateDictionnary(connectionLinks, connectionLinksDictionary);
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -164,6 +169,13 @@ public class ModelAssembler {
 	private void connectAreaCentroids() {
 		for(AreaCentroid areaCentroid : areaCentroids){
 			areaCentroid.setContainedInStopArea(getObjectFromId(areaCentroid.getContainedInStopAreaId(), StopArea.class));
+		}
+	}
+	
+	private void connectConnectionLinks() {
+		for(ConnectionLink connectionLink : connectionLinks){
+			connectionLink.setStartOfLink(getObjectFromId(connectionLink.getStartOfLinkId(), StopArea.class));
+			connectionLink.setEndOfLink(getObjectFromId(connectionLink.getEndOfLinkId(), StopArea.class));
 		}
 	}
 	

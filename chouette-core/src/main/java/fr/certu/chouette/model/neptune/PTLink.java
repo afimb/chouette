@@ -37,6 +37,6 @@ public class PTLink extends NeptuneIdentifiedObject
 			}
 		}
 
-		return super.toString(indent, level);
+		return sb.toString();
 	}
 }
