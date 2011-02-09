@@ -24,8 +24,10 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,cho
 		if(xmlAreaCentroid.getLongLatType() != null){
 			try {
 				areaCentroid.setLongLatType(LongLatTypeEnum.fromValue(xmlAreaCentroid.getLongLatType().value()));
-			} catch (IllegalArgumentException e) {
-				// TODO: handle exception
+			}
+			catch (IllegalArgumentException e) 
+			{
+				// TODO: traiter le cas de non correspondance
 				e.printStackTrace();
 			}
 		}

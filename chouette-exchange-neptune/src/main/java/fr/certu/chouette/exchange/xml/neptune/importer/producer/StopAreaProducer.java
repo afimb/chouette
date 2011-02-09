@@ -41,7 +41,14 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 		if(xmlStopAreaExtension != null){
 			// AreaType mandatory
 			if(xmlStopAreaExtension.getAreaType() != null){
-				stopArea.setAreaType(ChouetteAreaEnum.fromValue(xmlStopAreaExtension.getAreaType().value()));
+				try{
+					stopArea.setAreaType(ChouetteAreaEnum.fromValue(xmlStopAreaExtension.getAreaType().value()));
+				}
+				catch (IllegalArgumentException e) 
+				{
+					// TODO: traiter le cas de non correspondance
+					e.printStackTrace();
+				}
 			}
 			
 			// FareCode optional
@@ -65,7 +72,13 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 			if(xmlStopAreaExtension.getAccessibilitySuitabilityDetails() != null){
 				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlStopAreaExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
 					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
-						stopArea.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
+						try{
+							stopArea.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
+						}
+						catch (IllegalArgumentException e) 
+						{
+							// TODO: traiter le cas de non correspondance
+						}
 					}
 				}
 			}

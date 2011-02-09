@@ -45,7 +45,13 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 		
 		// ServiceStatusValue optional
 		if(xmlVehicleJourney.getStatusValue() != null){
-			vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum.fromValue(xmlVehicleJourney.getStatusValue().value()));
+			try{
+				vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum.fromValue(xmlVehicleJourney.getStatusValue().value()));
+			}
+			catch (IllegalArgumentException e) 
+			{
+				// TODO: traiter le cas de non correspondance
+			}
 		}
 		
 		// TimeSlotId optional
@@ -53,7 +59,13 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 		
 		// TransportMode optional
 		if(xmlVehicleJourney.getTransportMode() != null){
-			vehicleJourney.setTransportMode(TransportModeNameEnum.fromValue(xmlVehicleJourney.getTransportMode().value()));
+			try{
+				vehicleJourney.setTransportMode(TransportModeNameEnum.fromValue(xmlVehicleJourney.getTransportMode().value()));
+			}
+			catch (IllegalArgumentException e) 
+			{
+				// TODO: traiter le cas de non correspondance
+			}
 		}
 		
 		// VehicleTypeIdentifier optional
@@ -68,7 +80,13 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 			vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			
 			if (xmlVehicleJourneyAtStop.getBoardingAlightingPossibility() != null) {
-				vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.fromValue(xmlVehicleJourneyAtStop.getBoardingAlightingPossibility().value()));
+				try{
+					vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.fromValue(xmlVehicleJourneyAtStop.getBoardingAlightingPossibility().value()));
+				}
+				catch (IllegalArgumentException e) 
+				{
+					// TODO: traiter le cas de non correspondance
+				}
 			}
 			
 			// ConnectingServiceId

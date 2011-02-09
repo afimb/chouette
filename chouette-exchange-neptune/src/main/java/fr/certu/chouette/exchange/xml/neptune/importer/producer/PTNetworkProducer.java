@@ -31,8 +31,15 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette
 		ptNetwork.setSourceIdentifier(getNonEmptyTrimedString(xmlPTNetwork.getSourceIdentifier()));
 		
 		// SourceType optional
-		if(xmlPTNetwork.getSourceType() != null)
-			ptNetwork.setPTNetworkSourceType(PTNetworkSourceTypeEnum.fromValue(xmlPTNetwork.getSourceType().value()));
+		if(xmlPTNetwork.getSourceType() != null){
+			try{
+				ptNetwork.setPTNetworkSourceType(PTNetworkSourceTypeEnum.fromValue(xmlPTNetwork.getSourceType().value()));
+			}
+			catch (IllegalArgumentException e) 
+			{
+			// TODO: traiter le cas de non correspondance
+			}
+		}
 		
 		// LineIds [O..w]
 		String[] castorLineIds = xmlPTNetwork.getLineId();
