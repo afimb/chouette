@@ -74,7 +74,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
 	}
 	
-	@Test (groups = {"ImportLine"}, description = "Import Plugin should validate an xml file",dependsOnMethods={"getBean","verifyImportLine"}, 
+	/*@Test (groups = {"ImportLine"}, description = "Import Plugin should validate an xml file",dependsOnMethods={"getBean","verifyImportLine"}, 
 			expectedExceptions=ValidationException.class)
 	public void verifyValidation() throws ChouetteException
 	{
@@ -93,5 +93,5 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
 		Assert.assertNotNull(lines,"lines cant't be null");
 		
-	}
+	}*/
 }
