@@ -82,7 +82,9 @@ public class ModelAssembler {
 				dictionnary.put(item.getObjectId(), item);
 			}
 		}
-		populatedDictionaries.put(list.get(0).getClass(), dictionnary);
+		if(list.size() > 0){
+			populatedDictionaries.put(list.get(0).getClass(), dictionnary);
+		}
 	}
 	
 	private void connectLines(){
@@ -183,10 +185,12 @@ public class ModelAssembler {
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
 		
-		for(String id : ids){
-			T object = (T)dictionary.get(id);
-			if(object != null){
-				objects.add(object);
+		if(dictionary != null){
+			for(String id : ids){
+				T object = (T)dictionary.get(id);
+				if(object != null){
+					objects.add(object);
+				}
 			}
 		}
 		
