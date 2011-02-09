@@ -150,6 +150,14 @@ public class ModelAssembler {
 	private void connectStopAreas() {
 		for(StopArea stopArea : stopAreas){
 			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
+			stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
+			if(stopArea.getContainedStopAreas() != null){
+				for(StopArea childStopArea : stopArea.getContainedStopAreas()){
+					childStopArea.setParentStopArea(stopArea);
+				}
+			}
+			stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
+			//no need to set containedInStopArea in StopPoint : it is already done in connectStopPoints method...
 		}
 	}
 	
@@ -168,6 +176,10 @@ public class ModelAssembler {
 			if(object != null){
 				objects.add(object);
 			}
+		}
+		
+		if(objects.size() == 0){
+			objects = null;
 		}
 		
 		return objects;

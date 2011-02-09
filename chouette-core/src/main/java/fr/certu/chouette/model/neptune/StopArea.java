@@ -16,6 +16,8 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter AreaCentroid areaCentroid;
 	@Getter @Setter String comment;
 	@Getter @Setter List<String> containedStopIds;
+	@Getter @Setter List<StopArea> containedStopAreas;
+	@Getter @Setter List<StopPoint> containedStopPoints;
 	@Getter @Setter StopArea parentStopArea;
 	@Getter @Setter ChouetteAreaEnum areaType;
 	@Getter @Setter int fareCode;
@@ -38,6 +40,18 @@ public class StopArea extends NeptuneIdentifiedObject {
 	{
 		if (containedStopIds == null) containedStopIds = new ArrayList<String>();
 		containedStopIds.add(containedStopAreaId);
+	}
+
+	public void addContainedStopArea(StopArea containedStopArea)
+	{
+		if (containedStopAreas == null) containedStopAreas = new ArrayList<StopArea>();
+		containedStopAreas.add(containedStopArea);
+	}
+	
+	public void addContainedStopPoint(StopPoint containedStopPoint)
+	{
+		if (containedStopPoints == null) containedStopPoints = new ArrayList<StopPoint>();
+		containedStopPoints.add(containedStopPoint);
 	}
 	
 	public void addUserNeed(UserNeedEnum userNeed)
@@ -77,10 +91,10 @@ public class StopArea extends NeptuneIdentifiedObject {
 		}
 		
 		if(containedStopIds != null){
-			sb.append("\n").append(indent).append(CHILD_ARROW).append("containedStopAreaIds");
-			for (String containedStopAreaId : getContainedStopIds())
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("containedStopIds");
+			for (String containedStopId : getContainedStopIds())
 			{
-				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(containedStopAreaId);
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(containedStopId);
 			}
 		}
 		
