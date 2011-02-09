@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
@@ -20,6 +21,7 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -47,6 +49,7 @@ public class NeptuneConverter
 	@Getter @Setter private VehicleJourneyProducer vehicleJourneyProducer;
 	@Getter @Setter private StopPointProducer stopPointProducer;
 	@Getter @Setter private StopAreaProducer stopAreaProducer;
+	@Getter @Setter private AreaCentroidProducer areaCentroidProducer;
 	
 //	@Getter @Setter private VehicleJourney vehicleJourneyProducer;
 	
@@ -197,5 +200,21 @@ public class NeptuneConverter
 		}
 		
 		return stopAreas;
+	}
+	
+	public List<AreaCentroid> extractAreaCentroids(ChouettePTNetworkTypeType rootObject) {
+	chouette.schema.AreaCentroid[] xmlAreaCentroids = rootObject.getChouetteArea().getAreaCentroid();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		
+		List<AreaCentroid> areaCentroids = new ArrayList<AreaCentroid>();
+
+		for(chouette.schema.AreaCentroid xmlAreaCentroid : xmlAreaCentroids){
+			AreaCentroid areaCentroid = areaCentroidProducer.produce(xmlAreaCentroid);
+			areaCentroids.add(areaCentroid);
+		}
+		
+		return areaCentroids;
+
 	}
 }

@@ -54,7 +54,7 @@ public class StopPoint extends NeptuneIdentifiedObject
 			String childIndent = indent + CHILD_INDENT;
 			if (containedInStopArea != null) 
 			{
-				sb.append("\n").append(indent).append(CHILD_ARROW).append(containedInStopArea.toString(childIndent,0));
+				sb.append("\n").append(indent).append(CHILD_ARROW).append(containedInStopArea.toString(childIndent,childLevel));
 			}
 		}
 

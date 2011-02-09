@@ -20,7 +20,6 @@ import org.exolab.castor.xml.ValidationException;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.Line;
@@ -147,12 +146,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(rootObject));
 		modelAssembler.setStopPoints(converter.extractStopPoints(rootObject));
 		modelAssembler.setStopAreas(converter.extractStopAreas(rootObject));
+		modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject));
 		
 		modelAssembler.connect();
 		
 		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,filePath,Integer.toString(lines.size()));
 		item.setStatus(Report.STATE.OK);
 		report.addItem(item);
+		
+		rootObject.toString();
 		
 		return lines;
 	}

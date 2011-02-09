@@ -17,4 +17,30 @@ public class AreaCentroid extends NeptuneIdentifiedObject {
 	@Getter @Setter private String comment;
 	@Getter @Setter private String containedInStopAreaId;
 	@Getter @Setter private StopArea containedInStopArea;
+	
+	@Override
+	public String toString(String indent,int level)
+	{
+		StringBuilder sb = new StringBuilder(super.toString(indent,level));
+		
+		if (address != null) {
+			sb.append("\n").append(indent).append("  address = ").append(address);			
+		}
+		
+		if(longLatType != null){
+			sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);			
+		}
+		
+		sb.append("\n").append(indent).append("  latitude = ").append(latitude);
+		sb.append("\n").append(indent).append("  longitude = ").append(longitude);
+		
+		if(projectedPoint != null){
+			sb.append("\n").append(indent).append("  projectedPoint = ").append(projectedPoint);
+		}
+		
+		sb.append("\n").append(indent).append("  comment = ").append(comment);
+		sb.append("\n").append(indent).append("  containedInStopAreaId = ").append(containedInStopAreaId);
+		
+		return sb.toString();
+	}
 }

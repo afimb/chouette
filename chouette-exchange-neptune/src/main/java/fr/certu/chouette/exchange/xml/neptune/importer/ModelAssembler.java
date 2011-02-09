@@ -30,6 +30,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
 	@Getter @Setter private List<StopPoint> stopPoints;
 	@Getter @Setter private List<StopArea> stopAreas;
+	@Getter @Setter private List<AreaCentroid> areaCentroids;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -41,6 +42,7 @@ public class ModelAssembler {
 	private Map<String, VehicleJourney> vehicleJourneysDictionary = new HashMap<String, VehicleJourney>();
 	private Map<String, StopPoint> stopPointsDictionary = new HashMap<String, StopPoint>();
 	private Map<String, StopArea> stopAreasDictionary = new HashMap<String, StopArea>();
+	private Map<String, AreaCentroid> areaCentroidsDictionary = new HashMap<String, AreaCentroid>();
 	
 	
 	public void connect(){
@@ -54,6 +56,7 @@ public class ModelAssembler {
 		connectVehicleJourneys();
 		connectStopPoints();
 		connectStopAreas();
+		connectAreaCentroids();
 	}
 
 	private void populateDictionaries(){
@@ -65,6 +68,7 @@ public class ModelAssembler {
 		populateDictionnary(vehicleJourneys, vehicleJourneysDictionary);
 		populateDictionnary(stopPoints, stopPointsDictionary);
 		populateDictionnary(stopAreas, stopAreasDictionary);
+		populateDictionnary(areaCentroids, areaCentroidsDictionary);
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -145,7 +149,13 @@ public class ModelAssembler {
 
 	private void connectStopAreas() {
 		for(StopArea stopArea : stopAreas){
-			//stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
+			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
+		}
+	}
+	
+	private void connectAreaCentroids() {
+		for(AreaCentroid areaCentroid : areaCentroids){
+			areaCentroid.setContainedInStopArea(getObjectFromId(areaCentroid.getContainedInStopAreaId(), StopArea.class));
 		}
 	}
 	

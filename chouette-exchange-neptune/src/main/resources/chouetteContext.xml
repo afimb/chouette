@@ -15,6 +15,7 @@
 	<bean id="NeptuneVehicleJourneyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer" />
 	<bean id="NeptuneStopPointProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer" />
 	<bean id="NeptuneStopAreaProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer" />
+	<bean id="NeptuneAreaCentroidProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer" />
 
 	<bean id="NeptuneConverter" class="fr.certu.chouette.exchange.xml.neptune.importer.NeptuneConverter">
 		<property name="lineProducer" ref="NeptuneLineProducer" />
@@ -26,6 +27,7 @@
 		<property name="vehicleJourneyProducer" ref="NeptuneVehicleJourneyProducer" />
 		<property name="stopPointProducer" ref="NeptuneStopPointProducer" />
 		<property name="stopAreaProducer" ref="NeptuneStopAreaProducer" />
+		<property name="areaCentroidProducer" ref="NeptuneAreaCentroidProducer" />
 	</bean>
 
 	<bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.importer.XMLNeptuneImportLinePlugin">
