@@ -92,25 +92,31 @@ public class MainSchemaProducer implements IMainSchemaProducer {
                 pTNetwork.setChouettePTNetwork(chouettePTNetwork);
             }
         }
-        
-        // GroupOfLine 0..1
-        LoggingManager.log(logger, "\tCREATION DU GroupOfLine.", Level.DEBUG);
-        chouette.schema.GroupOfLine castorGroupOfLine = castorChouettePTNetwork.getGroupOfLine();
-        if (castorGroupOfLine == null)
-            LoggingManager.log(logger, "Il n'y a pas de \"GroupOfLine\" pour ce \"ChouettePTNetwork\".", Level.INFO);
-        else {
-            GroupOfLine groupOfLine = (new GroupOfLineProducer(validationException)).getASG(castorGroupOfLine);
-            if (groupOfLine == null) {
-                params = null;
-                if (castorGroupOfLine.getObjectId() != null)
-                    params = new String[]{castorPTNetwork.getObjectId()};
-                LoggingManager.log(logger, "Une erreure s'est produite lors de la construction d'un objet \"GroupOfLine\".", params, Level.ERROR);
-            }
-            else {
-                chouettePTNetwork.setGroupOfLine(groupOfLine);
-                groupOfLine.setChouettePTNetwork(chouettePTNetwork);
-            }
-        }
+	
+	// GroupOfLine 0..w
+	LoggingManager.log(logger, "\tCREATION DU GroupOfLine.", Level.DEBUG);
+	int numberOfGroupOfLines = castorChouettePTNetwork.getGroupOfLineCount();
+	if (numberOfGroupOfLines <= 0)
+	    LoggingManager.log(logger, "Il n'y a pas de \"GroupOfLine\" pour ce \"ChouettePTNetwork\".", Level.INFO);
+	for (int i = 0; i < numberOfGroupOfLines; i++) {
+	    chouette.schema.GroupOfLine castorGroupOfLine = castorChouettePTNetwork.getGroupOfLine(i);
+	    if (castorGroupOfLine == null) {
+		LoggingManager.log(logger, "Un objet de type \"GroupOfLine\" est null.", Level.WARN);
+		validationException.add(TypeInvalidite.NULL_GROUPOFLINE, "Un objet de type \"GroupOfLine\" est null.");
+		continue;
+	    }
+	    GroupOfLine groupOfLine = (new GroupOfLineProducer(validationException)).getASG(castorGroupOfLine);
+	    if (groupOfLine == null) {
+		params = null;
+		if (groupOfLine.getObjectId() != null)
+		    params = new String[]{castorPTNetwork.getObjectId()};
+		LoggingManager.log(logger, "Une erreure s'est produite lors de la construction d'un objet \"GroupOfLine\" ().", params, Level.ERROR);
+	    }
+	    else {
+		chouettePTNetwork.addGroupOfLine(groupOfLine);
+		groupOfLine.setChouettePTNetwork(chouettePTNetwork);				
+	    }
+	}
         
         // Company[0..w]
         LoggingManager.log(logger, "\tCREATION DES Company.", Level.DEBUG);

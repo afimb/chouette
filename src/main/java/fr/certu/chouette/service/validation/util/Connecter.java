@@ -339,31 +339,34 @@ class Connecter {
     }
     
     private void connectLineIdsInGroupOfLineToLine(ChouettePTNetwork chouettePTNetwork) {
-        GroupOfLine groupOfLine = chouettePTNetwork.getGroupOfLine();
-        if (groupOfLine == null)
+        List<GroupOfLine> groupOfLines = chouettePTNetwork.getGroupOfLines();
+        if (groupOfLines == null)
         	return;
-        String[] lineIds = groupOfLine.getLineIds();
-        if (lineIds == null)
-        	return;
-        ChouetteLineDescription chouetteLineDescription = chouettePTNetwork.getChouetteLineDescription();
-        if (chouetteLineDescription == null)
-        	return;
-        Line line = chouetteLineDescription.getLine();
-        if (line == null)
-        	return;
-        String objectId = line.getObjectId();
-        if (objectId == null)
-        	return;
-    	objectId = objectId.trim();
-    	if (objectId.length() == 0)
-    		return;
-        for (int i = 0; i < lineIds.length; i++)
-        	if (lineIds[i] != null)
-        		if (lineIds[i].trim().equals(objectId))
-        			return;
-        params = new String[]{objectId};
-        LoggingManager.log(logger, "L'\"ObjectId\" () de la \"Line\" n'est pas dans la liste \"LineId\" du \"GroupOfLine\".", params, Level.ERROR);
-        validationException.add(TypeInvalidite.NOLINEIDREF_GROUPOFLINE, "L'\"ObjectId\" () de la \"Line\" n'est pas dans la liste \"LineId\" du \"GroupOfLine\".", params);
+        int groupOfLinesCount = chouettePTNetwork.getGroupOfLineCount();
+        for (int i = 0; i < groupOfLinesCount; i++) {
+        	String[] lineIds = chouettePTNetwork.getGroupOfLine(i).getLineIds();
+        	if (lineIds == null)
+        		return;
+        	ChouetteLineDescription chouetteLineDescription = chouettePTNetwork.getChouetteLineDescription();
+        	if (chouetteLineDescription == null)
+        		return;
+        	Line line = chouetteLineDescription.getLine();
+        	if (line == null)
+        		return;
+        	String objectId = line.getObjectId();
+        	if (objectId == null)
+        		return;
+        	objectId = objectId.trim();
+        	if (objectId.length() == 0)
+        		return;
+        	for (int j = 0; j < lineIds.length; j++)
+        		if (lineIds[j] != null)
+        			if (lineIds[j].trim().equals(objectId))
+        				return;
+        	params = new String[]{objectId};
+        	LoggingManager.log(logger, "L'\"ObjectId\" () de la \"Line\" n'est pas dans la liste \"LineId\" du \"GroupOfLine\".", params, Level.ERROR);
+        	validationException.add(TypeInvalidite.NOLINEIDREF_GROUPOFLINE, "L'\"ObjectId\" () de la \"Line\" n'est pas dans la liste \"LineId\" du \"GroupOfLine\".", params);
+        }
     }
     
     private void connectStopPointsLineIdShortCutToLine(ChouettePTNetwork chouettePTNetwork) {
