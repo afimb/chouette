@@ -20,6 +20,7 @@
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-command</module>
 		<module>chouette-neptune</module>
+		<module>chouette-validation</module>
 	</modules>
 
     <repositories>
@@ -134,6 +135,11 @@
             <dependency>
                 <groupId>fr.certu.chouette</groupId>
                 <artifactId>chouette-exchange-neptune</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fr.certu.chouette</groupId>
+                <artifactId>chouette-validation</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -332,7 +332,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 		for (ValidationClassReportItem item : validationClasses) 
 		{
-			if (item.getItems().size() > 0)
+			if (item.getItems() != null && !item.getItems().isEmpty())
 			{
 				r.addItem(item);
 			}

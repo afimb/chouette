@@ -26,11 +26,10 @@ import lombok.Setter;
 public abstract class ReportItem extends Report
 {
 	@Getter @Setter private String messageKey;
-	@Getter @Setter private List<String> messageArgs;
+	@Getter @Setter private List<String> messageArgs = new ArrayList<String>();
 
 	public void addMessageArgs(String... args)
 	{
-		if (messageArgs == null) messageArgs= new ArrayList<String>();
 		for (String arg : args) 
 		{
 			messageArgs.add(arg);

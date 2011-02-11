@@ -15,7 +15,7 @@ import lombok.Setter;
  * 
  */
 @AllArgsConstructor
-public abstract class ValidationStepDescription
+public class ValidationStepDescription
 {
 	@Getter @Setter private String name; 
 	@Getter @Setter private int classRank;

@@ -18,6 +18,10 @@
 	<!-- <import resource="classpath:/modules/hibernate.xml" /> <import resource="classpath:/modules/managers.xml" 
 		/> <import resource="classpath:/modules/neptune_exchange.xml" /> -->
 
+    <bean id="Validation" class="fr.certu.chouette.plugin.validation.ValidationParameters" >
+      <property name="test3_1_MinimalDistance" value="0.1"/>
+    </bean>
+
 	<bean id="Command" class="fr.certu.chouette.command.Command">
 		<property name="managers">
 			<map>
@@ -35,6 +39,7 @@
 				</entry>
 			</map>
 		</property>
+		<property name="validationParameters" ref="Validation"/>
 	</bean>
 
 

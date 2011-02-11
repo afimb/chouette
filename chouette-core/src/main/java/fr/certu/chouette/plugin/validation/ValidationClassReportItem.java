@@ -24,6 +24,7 @@ public class ValidationClassReportItem extends ReportItem
 	public ValidationClassReportItem(CLASS validationClass) 
 	{
 		setMessageKey(validationClass.name());
+		setStatus(STATE.OK);
 	}
 	
 	/* (non-Javadoc)

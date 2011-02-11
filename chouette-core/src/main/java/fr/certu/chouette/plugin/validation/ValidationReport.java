@@ -24,6 +24,7 @@ public class ValidationReport extends Report
 	public ValidationReport() 
 	{
 		setOriginKey(ORIGIN.DEFAULT.name());
+		setStatus(STATE.OK);
 	}
 	
 	/* (non-Javadoc)

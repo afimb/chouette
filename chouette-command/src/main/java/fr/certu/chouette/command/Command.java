@@ -36,6 +36,7 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 
 /**
  *
@@ -48,6 +49,8 @@ public class Command
 
 	@Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
+	@Setter private ValidationParameters validationParameters;
+	
 	private Map<String,List<String>> parameters;
 
 	private static Map<String,String> shortCuts ;
@@ -249,7 +252,19 @@ public class Command
 				System.out.println("beans count = "+beans.size());
 				for (NeptuneObject bean : beans)
 				{
-					System.out.println(bean.toString("", 99));
+					System.out.println(bean.toString("", 1));
+				}
+				
+				if (getBoolean("validate"))
+				{
+					for (NeptuneIdentifiedObject bean : beans) 
+					{
+						
+						Report valReport = manager.validate(null, bean, validationParameters);
+						System.out.println(valReport.getLocalizedMessage());
+						printItems(valReport.getItems());
+					}
+					
 				}
 			}
 
@@ -274,7 +289,7 @@ public class Command
 		if (items == null) return;
 		for (ReportItem item : items) 
 		{
-			System.out.println(item.getLocalizedMessage());
+			System.out.println(item.getStatus().name()+" : "+item.getLocalizedMessage());
 			printItems(item.getItems());
 		}
 

@@ -33,6 +33,10 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-hibernate-dao</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-validation</artifactId>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
