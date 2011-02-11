@@ -256,6 +256,14 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	void doExportDeleted(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
 
 	// validation
+	
+	/**
+	 * check if any validate plug'in is available
+	 * 
+	 * @return true if a plug'in is available
+	 */
+	boolean canValidate();
+	
 	/**
 	 * validate a bean according to model rules
 	 * 

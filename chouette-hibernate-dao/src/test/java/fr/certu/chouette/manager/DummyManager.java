@@ -76,9 +76,7 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	
 	
 	// data storage access
-	@Getter @Setter
-
- private IDaoTemplate<T> dao; 
+	@Getter @Setter private IDaoTemplate<T> dao; 
 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
@@ -342,6 +340,15 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 
 		plugin.doExport(beans,parameters,report);
 
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#canValidate()
+	 */
+	@Override
+	public boolean canValidate() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	/* (non-Javadoc)

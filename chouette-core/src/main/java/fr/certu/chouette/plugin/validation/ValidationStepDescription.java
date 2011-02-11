@@ -7,13 +7,17 @@
  */
 package fr.certu.chouette.plugin.validation;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 
  */
+@AllArgsConstructor
 public abstract class ValidationStepDescription
 {
 	@Getter @Setter private String name; 
+	@Getter @Setter private int classRank;
+	
 }

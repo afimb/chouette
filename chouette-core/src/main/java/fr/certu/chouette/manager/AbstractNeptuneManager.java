@@ -30,7 +30,9 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.plugin.validation.ValidationReport;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
@@ -59,15 +61,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportDeletionPluginMap = new HashMap<String, IExportPlugin<T>>();
-	private Map<String,IValidationPlugin<T>> validationPluginMap = new HashMap<String, IValidationPlugin<T>>();
+	private List<IValidationPlugin<T>> validationPluginList = new ArrayList<IValidationPlugin<T>>();
 
-    private static Map<Class<?>,INeptuneManager<?>> managers = new HashMap<Class<?>, INeptuneManager<?>>();
-    
+	private static Map<Class<?>,INeptuneManager<?>> managers = new HashMap<Class<?>, INeptuneManager<?>>();
+
 	public AbstractNeptuneManager(Class<?> neptuneType) 
 	{
 		managers.put(neptuneType, this);
 	}
-	
+
 	public static INeptuneManager<?> getManager(Class<?> neptuneType)
 	{
 		return managers.get(neptuneType);
@@ -105,7 +107,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void addValidationPlugin(IValidationPlugin<T> plugin)
 	{
-		validationPluginMap.put(plugin.getDescription().getName(),plugin);
+		validationPluginList.add(plugin);
 	}
 
 	/* (non-Javadoc)
@@ -254,14 +256,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Override
 	public void doExport(User user, List<T> beans, String formatDescriptor,
-			List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
-			{
+			List<ParameterValue> parameters,ReportHolder report) 
+	throws ChouetteException 
+	{
 		IExportPlugin<T> plugin = exportPluginMap.get(formatDescriptor);
 		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
 
 		plugin.doExport(beans,parameters,report);
 
-			}
+	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getDeleteExportFormats(fr.certu.chouette.model.user.User)
@@ -295,14 +298,46 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#canValidate()
+	 */
+	@Override
+	public boolean canValidate()
+	{
+		return validationPluginList.size() > 0;
+
+	}
+
+
+	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
 	public Report validate(User user, T bean, ValidationParameters parameters) throws ChouetteException 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (validationPluginList.size() == 0) throw new CoreException(CoreExceptionCode.NO_VALIDATION_PLUGIN_AVAILABLE,"");
 
+		Report r = new ValidationReport();
+		ValidationClassReportItem[] validationClasses = new ValidationClassReportItem[ValidationClassReportItem.CLASS.values().length]; // see how manage max enum
+		for (int i = 0; i < validationClasses.length; i++)
+		{
+			validationClasses[i] = new ValidationClassReportItem(ValidationClassReportItem.CLASS.values()[i]);
+		}
+
+		for (IValidationPlugin<T> plugin : validationPluginList)
+		{
+			ReportItem stepItem = plugin.doValidate(bean);
+			int rank = plugin.getDescription().getClassRank();
+			validationClasses[rank].addItem(stepItem);
+		}
+
+		for (ValidationClassReportItem item : validationClasses) 
+		{
+			if (item.getItems().size() > 0)
+			{
+				r.addItem(item);
+			}
+		}
+		return r;
 	}
 
 	/* (non-Javadoc)
@@ -310,7 +345,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Override
 	public List<ValidationStepDescription> getValidationSteps(User user)
-	throws ChouetteException {
+	throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -320,7 +356,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Override
 	public ReportItem validateStep(User user, T bean, String stepDescriptor, ValidationParameters parameters)
-	throws ChouetteException {
+	throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}

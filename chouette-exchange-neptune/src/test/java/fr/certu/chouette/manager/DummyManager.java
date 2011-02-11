@@ -73,8 +73,8 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	{
 		return new DummyManager<Route>();
 	}
-	
-	
+
+
 	// data storage access
 	@Getter @Setter private IDaoTemplate<T> dao; 
 
@@ -202,14 +202,14 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	@Override
 	public void update(User user, T bean) throws ChouetteException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(User user, T bean, DetailLevelEnum level)
-			throws ChouetteException {
+	throws ChouetteException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -219,17 +219,19 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	}
 
 	@Override
-	public void remove(User user, T bean) throws ChouetteException {
+	public void remove(User user, T bean) throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public int removeAll(User user, Filter filter) throws ChouetteException {
+	public int removeAll(User user, Filter filter) throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getImportFormats(fr.certu.chouette.model.user.User)
 	 */
@@ -302,14 +304,15 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	 */
 	@Override
 	public void doExport(User user, List<T> beans, String formatDescriptor,
-			List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
-			{
+			List<ParameterValue> parameters,ReportHolder report) 
+	throws ChouetteException 
+	{
 		IExportPlugin<T> plugin = exportPluginMap.get(formatDescriptor);
 		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
 
 		plugin.doExport(beans,parameters,report);
 
-			}
+	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getDeleteExportFormats(fr.certu.chouette.model.user.User)
@@ -343,20 +346,33 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	}
 
 	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#canValidate()
+	 */
+	@Override
+	public boolean canValidate() 
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
 	public Report validate(User user, T bean, ValidationParameters parameters)
-			throws ChouetteException {
+	throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getValidationSteps(fr.certu.chouette.model.user.User)
 	 */
 	@Override
 	public List<ValidationStepDescription> getValidationSteps(User user)
-			throws ChouetteException {
+	throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -365,7 +381,9 @@ public class DummyManager<T extends NeptuneIdentifiedObject> implements INeptune
 	 */
 	@Override
 	public ReportItem validateStep(User user, T bean, String stepDescriptor,
-			ValidationParameters parameters) throws ChouetteException {
+			ValidationParameters parameters) 
+	throws ChouetteException 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
