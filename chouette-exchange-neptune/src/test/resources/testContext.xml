@@ -22,12 +22,6 @@
 
 	</bean>
 	
-	<!--  dummy managers for DaoInjector to process with test -->
-	<bean id="networkManager" class="fr.certu.chouette.manager.DummyManager" factory-method="createPTNetworkManager"/>
-	<bean id="lineManager" class="fr.certu.chouette.manager.DummyManager" factory-method="createLineManager"/>
-	<bean id="companyManager" class="fr.certu.chouette.manager.DummyManager" factory-method="createCompanyManager"/>
-	<bean id="routeManager" class="fr.certu.chouette.manager.DummyManager" factory-method="createRouteManager"/>
-	
-	<import resource="chouetteContext.xml"/>
+	<import resource="NeptuneImportContext.xml"/>
 	
 </beans>
