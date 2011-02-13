@@ -3,12 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
-   default-init-method="init">
+	default-init-method="init">
 
-
-	<bean id="Test2_1" class="fr.certu.chouette.validation.test2.Sheet1">
-		
-	</bean>
+	<import resource="ValidationContext.xml" />
 
 	<bean id="LineValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createLinePluginInjector">
