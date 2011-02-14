@@ -34,6 +34,7 @@ import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -239,7 +240,7 @@ public class Command
 			{
 				Report r = holder.getReport();
 				System.out.println(r.getLocalizedMessage());
-				printItems(r.getItems());
+				printItems("",r.getItems());
 
 			}
 			if (beans == null )
@@ -262,7 +263,31 @@ public class Command
 						
 						Report valReport = manager.validate(null, bean, validationParameters);
 						System.out.println(valReport.getLocalizedMessage());
-						printItems(valReport.getItems());
+						printItems("",valReport.getItems());
+						int nbOK = 0;
+						int nbWARN = 0;
+						int nbERROR = 0;
+						int nbFATAL = 0;
+						for (ReportItem item1  : valReport.getItems()) // Categorie
+						{
+							for (ReportItem item2 : item1.getItems()) // fiche
+							{
+								for (ReportItem item3 : item2.getItems()) //test
+								{
+									STATE status = item3.getStatus();
+									switch (status)
+									{
+									case OK : nbOK++; break;
+									case WARNING : nbWARN++; break;
+									case ERROR : nbERROR++; break;
+									case FATAL : nbFATAL++; break;
+									}
+									
+								}
+								
+							}
+						}
+						System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs");
 					}
 					
 				}
@@ -284,13 +309,13 @@ public class Command
 
 	}
 
-	private void printItems(List<ReportItem> items) 
+	private void printItems(String indent,List<ReportItem> items) 
 	{
 		if (items == null) return;
 		for (ReportItem item : items) 
 		{
-			System.out.println(item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(item.getItems());
+			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			printItems(indent+"   ",item.getItems());
 		}
 
 	}

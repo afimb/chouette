@@ -11,7 +11,7 @@
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
-        <property name="">
+        <property name=""/>
     </bean>
 
     <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
