@@ -75,9 +75,6 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 		// Comment optional
 		line.setComment(getNonEmptyTrimedString(xmlLine.getComment()));
 		
-		xmlLine.getLineExtension().getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem(0).getUserNeedGroup();
-		xmlLine.getLineExtension().getMobilityRestrictedSuitability();
-
 		// LineExtension optional
 		LineExtension xmlLineExtension = xmlLine.getLineExtension();
 		if(xmlLineExtension != null){
