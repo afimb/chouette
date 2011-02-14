@@ -23,6 +23,12 @@
                    class="org.apache.struts2.interceptor.StrutsConversionErrorInterceptor" />
       <interceptor name="cookie"
                    class="org.apache.struts2.interceptor.CookieInterceptor" />
+                   
+       <interceptor-stack name="defaultCookie">
+           <interceptor-ref name="defaultStack" />
+           <interceptor-ref name="cookie" />
+       </interceptor-stack>             
+                    
       <interceptor name="clearSession"
                    class="org.apache.struts2.interceptor.ClearSessionInterceptor" />
       <interceptor name="createSession"
@@ -590,6 +596,10 @@
     <action name="*" class="NeptuneValidationAction" method="{1}">
       <result name="success">/jsp/neptune-validation/neptune-validation.jsp</result>
       <result name="input">/jsp/neptune-validation/neptune-validation.jsp</result>
-    </action>
+      <result name="list">/jsp/neptune-validation/list.jsp</result><!--
+       <interceptor-ref name="defaultCookie" />
+        <param name="cookiesName">*</param>
+        <param name="cookiesValue">*</param>
+    --></action>
   </package>
 </struts>
