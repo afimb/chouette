@@ -255,11 +255,11 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		// }
 
 		// Save to cookie
-		saveCookie("test3_1_MinimalDistance", String.valueOf(test3_1_MinimalDistance));
+		saveCookie("test3_1_MinimalDistance", String.valueOf(validationParam.getTest3_1_MinimalDistance()));
 		saveCookie("polygonWorkFlow", polygonWorkFlow);
-		saveCookie("test3_10_MinimalDistance", String.valueOf(test3_10_MinimalDistance));
-		saveCookie("test3_16c_MaximalTime", String.valueOf(test3_16c_MaximalTime));
-		saveCookie("test3_16c_MinimalTime", String.valueOf(test3_16c_MinimalTime));
+		saveCookie("test3_10_MinimalDistance", String.valueOf(validationParam.getTest3_10_MinimalDistance()));
+		saveCookie("test3_16c_MaximalTime", String.valueOf(validationParam.getTest3_16c_MaximalTime()));
+		saveCookie("test3_16c_MinimalTime", String.valueOf(validationParam.getTest3_16c_MinimalTime()));
 
 		
 		//Adding validation parameters values in a session scope
