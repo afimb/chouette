@@ -9,7 +9,7 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
    default-init-method="init">
 
-   <import resource="HibernateDaoCOntext.xml"/>
+   <import resource="HibernateDaoContext.xml"/>
 
 	<!-- injection dans les managers -->
 	<bean id="networkDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
