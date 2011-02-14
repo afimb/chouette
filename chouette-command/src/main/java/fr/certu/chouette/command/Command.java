@@ -250,14 +250,14 @@ public class Command
 
 			else
 			{
-				System.out.println("beans count = "+beans.size());
-				for (NeptuneObject bean : beans)
-				{
-					System.out.println(bean.toString("", 1));
-				}
-
 				if (getBoolean("validate"))
 				{
+					System.out.println("beans count = "+beans.size());
+					for (NeptuneObject bean : beans)
+					{
+						System.out.println(bean.toString("", 1));
+					}
+					
 					Report valReport = manager.validate(null, beans, validationParameters);
 					System.out.println(valReport.getLocalizedMessage());
 					printItems("",valReport.getItems());
@@ -289,6 +289,13 @@ public class Command
 					System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
 
 
+				}
+				else{
+					System.out.println("beans count = "+beans.size());
+					for (NeptuneObject bean : beans)
+					{
+						System.out.println(bean.toString("", 99));
+					}
 				}
 			}
 
