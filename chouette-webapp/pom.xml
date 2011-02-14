@@ -91,6 +91,10 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-exchange-neptune</artifactId>
 		</dependency>
+		 <dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-validation</artifactId>
+		</dependency>
     </dependencies>
     <pluginRepositories>
         <pluginRepository>
