@@ -19,6 +19,10 @@
             <groupId>fr.certu.chouette</groupId>
             <artifactId>chouette-attic</artifactId>
         </dependency>
+	 <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+	</dependency>
                 <!--  Struts 2 -->
         <dependency>
             <groupId>org.apache.struts</groupId>

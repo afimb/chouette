@@ -309,6 +309,9 @@
           
           <property name="test3_16c_MinimalTime" value="${test3_16c_MinimalTime}"/>
           <property name="test3_16c_MaximalTime" value="${test3_16c_MaximalTime}"/>
+          
+          <property name="cookieExpires" value="${cookieExpires}"/>
+          
     </bean>
 
 </beans>
