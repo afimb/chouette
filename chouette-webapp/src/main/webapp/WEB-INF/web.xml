@@ -64,6 +64,7 @@ timetables of public transport networks, in accordance with a standard exchange 
             <web-resource-name>The Entire Web Application</web-resource-name>
             <url-pattern>/images/*</url-pattern>
             <url-pattern>/css/*</url-pattern>
+            <url-pattern>/js/*</url-pattern>
             <url-pattern>/neptune-validation/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
