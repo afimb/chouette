@@ -83,6 +83,17 @@
 	</SCRIPT>	
 </s:else>
 
+<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.neptune.import')">
+	<SCRIPT type="text/javascript">
+		$('neptuneMenu').className='selectionne';
+	</SCRIPT>	
+</s:if>
+<s:else>
+	<SCRIPT type="text/javascript">
+		$('neptuneMenu').className='';
+	</SCRIPT>	
+</s:else>
+
 <%-- Transporteurs --%>
 <s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.transporteur.list.title')
 || filAriane.cleTexteDernierElementFilAriane == getText('text.transporteur.create.title')
