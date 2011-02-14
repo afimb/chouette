@@ -309,10 +309,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, fr.certu.chouette.plugin.validation.ValidationParameters)
+	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, java.util.List, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public Report validate(User user, T bean, ValidationParameters parameters) throws ChouetteException 
+	public Report validate(User user, List<T> beans, ValidationParameters parameters) throws ChouetteException 
 	{
 		if (validationPluginList.size() == 0) throw new CoreException(CoreExceptionCode.NO_VALIDATION_PLUGIN_AVAILABLE,"");
 
@@ -325,7 +325,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 		for (IValidationPlugin<T> plugin : validationPluginList)
 		{
-			ReportItem stepItem = plugin.doValidate(bean);
+			ReportItem stepItem = plugin.doValidate(beans);
 			int rank = plugin.getDescription().getClassRank();
 			validationClasses[rank].addItem(stepItem);
 		}
@@ -352,10 +352,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, java.lang.String, fr.certu.chouette.plugin.validation.ValidationParameters)
+	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public ReportItem validateStep(User user, T bean, String stepDescriptor, ValidationParameters parameters)
+	public ReportItem validateStep(User user, List<T> beans, String stepDescriptor, ValidationParameters parameters)
 	throws ChouetteException 
 	{
 		// TODO Auto-generated method stub

@@ -265,15 +265,15 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	boolean canValidate();
 	
 	/**
-	 * validate a bean according to model rules
+	 * validate a list of beans according to model rules
 	 * 
 	 * @param user user account for security check 
-	 * @param bean bean to be validate
+	 * @param beans beans to be validate
 	 * @param parameters validation parameters
 	 * @return a diagnostic step by step 
 	 * @throws ChouetteException invalid user access or validation failure
 	 */
-	Report validate(User user,T bean,ValidationParameters parameters) throws ChouetteException;
+	Report validate(User user,List<T> beans,ValidationParameters parameters) throws ChouetteException;
 
 	/**
 	 * get the steps description for validation
@@ -285,16 +285,16 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	List<ValidationStepDescription> getValidationSteps(User user) throws ChouetteException;
 
 	/**
-	 * validate a bean according to one step of the model rules
+	 * validate a list of beans according to one step of the model rules
 	 * 
 	 * @param user user account for security check 
-	 * @param bean bean to be validate 
+	 * @param beans beans to be validate 
 	 * @param stepDescriptor the step to execute
 	 * @param parameters validation parameters
 	 * @return the step diagnostic 
 	 * @throws ChouetteException invalid user access or export failure
 	 */
-	ReportItem validateStep(User user, T bean, String stepDescriptor,ValidationParameters parameters) throws ChouetteException;
+	ReportItem validateStep(User user, List<T> beans, String stepDescriptor,ValidationParameters parameters) throws ChouetteException;
 
 
 	/**

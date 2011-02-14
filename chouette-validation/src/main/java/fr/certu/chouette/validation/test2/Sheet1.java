@@ -31,35 +31,44 @@ public class Sheet1 implements IValidationPlugin<Line>
 	{
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void init()
 	{
 		description = new ValidationStepDescription("Test 2.1",ValidationClassReportItem.CLASS.TWO.ordinal());
 	}
 
 	@Override
-	public ReportItem doValidate(Line line) 
+	public ReportItem doValidate(List<Line> lines) 
 	{
 		ReportItem report = new SheetReportItem("Test2_Sheet1");
-		report.addItem(step2_2_1(line));
+		report.addItem(step2_2_1(lines));
 		return report;
 	}
-	
-    private ReportItem step2_2_1(Line line) 
-    {
+
+	private ReportItem step2_2_1(List<Line> lines) 
+	{
 		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step1");
 
-		PTNetwork network = line.getPtNetwork();
-		List<String> lineIds = network.getLineIds();
-		if (lineIds != null && !lineIds.isEmpty())
+		boolean checked = false;
+		for (Line line : lines) 
 		{
-			if (!lineIds.contains(line.getObjectId()))
+			PTNetwork network = line.getPtNetwork();
+			List<String> lineIds = network.getLineIds();
+			if (lineIds != null && !lineIds.isEmpty())
 			{
-				ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step1_error");
-				failedItem.setStatus(Report.STATE.ERROR);
-				failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
-				reportStep.addItem(failedItem);
+				checked = true;
+				if (!lineIds.contains(line.getObjectId()))
+				{
+					ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step1_error");
+					failedItem.setStatus(Report.STATE.ERROR);
+					failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
+					reportStep.addItem(failedItem);
+				}
 			}
+		}
+		if (!checked)
+		{
+			reportStep.setStatus(Report.STATE.UNCHECK);
 		}
 		return reportStep;
 	}

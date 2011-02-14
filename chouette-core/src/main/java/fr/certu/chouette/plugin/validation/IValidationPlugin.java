@@ -8,6 +8,8 @@
 
 package fr.certu.chouette.plugin.validation;
 
+import java.util.List;
+
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -19,5 +21,5 @@ public interface IValidationPlugin<T extends NeptuneIdentifiedObject>
 {
     ValidationStepDescription getDescription();
     
-    ReportItem doValidate(T bean);
+    ReportItem doValidate(List<T> beans);
 }

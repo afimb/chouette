@@ -240,10 +240,11 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		lines = (List<Line>)session.get("lines");
 
-		for(Line line : lines){
+		//for(Line line : lines)
+		// {
 			//LOGGER.info("Line : "+line.toString("\t",89));
 
-			reportValidation = lineManager.validate(null,line,validationParam);
+			reportValidation = lineManager.validate(null,lines,validationParam);
 
 			if(reportValidation != null){
 				LOGGER.info("Report "+reportValidation.toString());
@@ -251,7 +252,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 				reports.add(reportValidation);
 			}
 
-		}
+		// }
 
 		// Save to cookie
 		saveCookie("test3_1_MinimalDistance", String.valueOf(test3_1_MinimalDistance));

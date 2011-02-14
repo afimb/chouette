@@ -23,7 +23,7 @@ import lombok.Setter;
 
 public abstract class Report 
 {
-	public enum STATE {OK, WARNING, ERROR, FATAL} ;
+	public enum STATE {UNCHECK, OK, WARNING, ERROR, FATAL} ;
 	@Getter @Setter private String originKey;
 	@Getter @Setter private STATE status;
 	@Getter @Setter private List<ReportItem> items;

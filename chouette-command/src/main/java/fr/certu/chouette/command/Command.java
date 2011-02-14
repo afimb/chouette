@@ -51,7 +51,7 @@ public class Command
 	@Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
 	@Setter private ValidationParameters validationParameters;
-	
+
 	private Map<String,List<String>> parameters;
 
 	private static Map<String,String> shortCuts ;
@@ -255,41 +255,40 @@ public class Command
 				{
 					System.out.println(bean.toString("", 1));
 				}
-				
+
 				if (getBoolean("validate"))
 				{
-					for (NeptuneIdentifiedObject bean : beans) 
+					Report valReport = manager.validate(null, beans, validationParameters);
+					System.out.println(valReport.getLocalizedMessage());
+					printItems("",valReport.getItems());
+					int nbUNCHECK = 0;
+					int nbOK = 0;
+					int nbWARN = 0;
+					int nbERROR = 0;
+					int nbFATAL = 0;
+					for (ReportItem item1  : valReport.getItems()) // Categorie
 					{
-						
-						Report valReport = manager.validate(null, bean, validationParameters);
-						System.out.println(valReport.getLocalizedMessage());
-						printItems("",valReport.getItems());
-						int nbOK = 0;
-						int nbWARN = 0;
-						int nbERROR = 0;
-						int nbFATAL = 0;
-						for (ReportItem item1  : valReport.getItems()) // Categorie
+						for (ReportItem item2 : item1.getItems()) // fiche
 						{
-							for (ReportItem item2 : item1.getItems()) // fiche
+							for (ReportItem item3 : item2.getItems()) //test
 							{
-								for (ReportItem item3 : item2.getItems()) //test
+								STATE status = item3.getStatus();
+								switch (status)
 								{
-									STATE status = item3.getStatus();
-									switch (status)
-									{
-									case OK : nbOK++; break;
-									case WARNING : nbWARN++; break;
-									case ERROR : nbERROR++; break;
-									case FATAL : nbFATAL++; break;
-									}
-									
+								case UNCHECK : nbUNCHECK++; break;
+								case OK : nbOK++; break;
+								case WARNING : nbWARN++; break;
+								case ERROR : nbERROR++; break;
+								case FATAL : nbFATAL++; break;
 								}
-								
+
 							}
+
 						}
-						System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs");
 					}
-					
+					System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
+
+
 				}
 			}
 
