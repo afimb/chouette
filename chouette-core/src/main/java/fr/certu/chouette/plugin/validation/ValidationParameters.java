@@ -40,11 +40,26 @@ public class ValidationParameters
 	@Getter @Setter private float test3_10_MinimalDistance;
 	@Getter @Setter private long test3_16c_MinimalTime;
 	@Getter @Setter private long test3_16c_MaximalTime;
-	
+
 
 	public void addTest3_2_PolygonPoint(Coordinate coordinate)
 	{
 		if (test3_2_Polygon == null) test3_2_Polygon = new ArrayList<Coordinate>();
 		test3_2_Polygon.add(coordinate);
+	}
+
+	public void setTest3_2_PolygonPoints(String pointAsString)
+	{
+		String[] points = pointAsString.split(" ");
+		for (String point : points) 
+		{
+			String[] coord = point.split(",");
+			if (coord.length == 2)
+			{
+				double x = Double.parseDouble(coord[0]);
+				double y = Double.parseDouble(coord[1]);
+				addTest3_2_PolygonPoint(new Coordinate(x,y));
+			}
+		}
 	}
 }

@@ -52,7 +52,7 @@ public class Command
 
 	@Setter private ValidationParameters validationParameters;
 
-	private Map<String,List<String>> parameters;
+	private Map<String,List<String>> globals = new HashMap<String, List<String>>();;
 
 	private static Map<String,String> shortCuts ;
 
@@ -74,6 +74,12 @@ public class Command
 
 		if (args.length >= 1) 
 		{
+			if (args[0].equalsIgnoreCase("-help") ||  args[0].equalsIgnoreCase("-h") )
+			{
+				printHelp();
+				System.exit(0);
+			}
+
 			if (args[0].equalsIgnoreCase("-noDao"))
 			{
 				List<String> newContext = new ArrayList<String>();
@@ -97,12 +103,15 @@ public class Command
 					System.err.println("cannot remove dao : "+e.getLocalizedMessage());
 				}
 			}
+			applicationContext = new ClassPathXmlApplicationContext(context);
+			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
+			Command command = (Command) factory.getBean("Command");
+			command.execute(args);
 		}
-
-		applicationContext = new ClassPathXmlApplicationContext(context);
-		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
-		Command command = (Command) factory.getBean("Command");
-		command.execute(args);
+		else
+		{
+			printHelp();
+		}
 	}
 
 	/**
@@ -110,47 +119,74 @@ public class Command
 	 */
 	private void execute(String[] args)
 	{
-		parseArgs(args);
+		List<CommandArgument> commands = parseArgs(args);
 
-		for (String key : parameters.keySet())
+		for (String key : globals.keySet())
 		{
-			System.out.println("parameter "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+			System.out.println("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
 		}
 
 		try
 		{
-			String object = getSimpleString("object");
-			if (getBoolean("help"))
+			if (getBoolean(globals,"help"))
 			{
 				printHelp();
+				return;
 			}
-			INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(object);
-			if (manager == null)
+			List<NeptuneIdentifiedObject> beans = null;
+			for (CommandArgument command : commands) 
 			{
-				throw new IllegalArgumentException("unknown object "+object+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
-			}
-			String command = getSimpleString("command");
-			if (command.equals("get"))
-			{
-				executeGet(manager);
-			}
-			else if (command.equals("getImportFormats"))
-			{
-				executeGetImportFormats(manager);
-			}
-			else if (command.equals("import"))
-			{
-				executeImport(manager);
-			}
-			else
-			{
-				System.out.println("invalid command :" +command);
+				String name = command.getName();
+				Map<String, List<String>> parameters = command.getParameters();
+				System.out.println("Command "+name);
+				for (String key : parameters.keySet())
+				{
+					System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+				}
+
+				INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
+
+				if (name.equals("get"))
+				{
+					beans = executeGet(manager,parameters);
+				}
+				else if (name.equals("getImportFormats"))
+				{
+					executeGetImportFormats(manager,parameters);
+				}
+				else if (name.equals("import"))
+				{
+					beans = executeImport(manager,parameters);
+				}
+				else if (name.equals("print"))
+				{
+					if (beans == null) throw new Exception("Invalid command sequence : print must follow a loading command");
+					executePrint(beans,parameters);
+				}
+				else if (name.equals("validate"))
+				{
+					if (beans == null) throw new Exception("Invalid command sequence : validate must follow a loading command");
+					executeValidate(beans,manager,parameters);
+				}
+				else if (name.equals("getExportFormats"))
+				{
+					executeGetExportFormats(manager,parameters);
+				}
+				else if (name.equals("export"))
+				{
+					if (beans == null) throw new Exception("Invalid command sequence : export must follow a loading command");
+					executeExport(beans,manager,parameters);
+				}
+				else
+				{
+					System.out.println("invalid command :" +command);
+				}
 			}
 
 		}
 		catch (Exception e)
 		{
-			if (getBoolean("help"))
+			if (getBoolean(globals,"help"))
 			{
 				printHelp();
 			}
@@ -164,9 +200,142 @@ public class Command
 
 	}
 
-	private void executeImport(INeptuneManager<NeptuneIdentifiedObject> manager)
+	private void executeExport(List<NeptuneIdentifiedObject> beans,
+			INeptuneManager<NeptuneIdentifiedObject> manager,
+			Map<String, List<String>> parameters) 
 	{
-		String format = getSimpleString("format");
+		String format = getSimpleString(parameters,"format");
+		try
+		{
+			List<FormatDescription> formats = manager.getExportFormats(null);
+			FormatDescription description = null;
+
+			for (FormatDescription formatDescription : formats)
+			{
+				if (formatDescription.getName().equalsIgnoreCase(format))
+				{
+					description=formatDescription;
+					break;
+				}
+			}
+			if (description == null)
+			{
+				throw new IllegalArgumentException("format "+format+" unavailable, check command getImportFormats for list ");
+			}
+
+
+			List<ParameterValue> values = new ArrayList<ParameterValue>();
+			for (ParameterDescription desc : description.getParameterDescriptions())
+			{
+				String name = desc.getName();
+				String key = name.toLowerCase();
+				List<String> vals = parameters.get(key);
+				if (vals == null)
+				{
+					if (desc.isMandatory())
+					{
+						throw new IllegalArgumentException("parameter -"+name+" is required, check command getImportFormats for list ");
+					}
+				}
+				else
+				{
+					if (desc.isCollection())
+					{
+						ListParameterValue val = new ListParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathList(vals); break;
+						case STRING : val.setStringList(vals); break;
+						case FILENAME : val.setFilenameList(vals); break;
+						}
+						values.add(val);
+					}
+					else
+					{
+						if (vals.size() != 1)
+						{
+							throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getImportFormats for list ");
+						}
+						String simpleval = vals.get(0);
+
+						SimpleParameterValue val = new SimpleParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathValue(simpleval); break;
+						case STRING : val.setStringValue(simpleval); break;
+						case FILENAME : val.setFilenameValue(simpleval); break;
+						case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
+						case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+						}
+						values.add(val);
+					}
+				}
+			}
+
+			ReportHolder holder = new ReportHolder();
+			manager.doExport(null, beans, format, values, holder );
+			if (holder.getReport() != null)
+			{
+				Report r = holder.getReport();
+				System.out.println(r.getLocalizedMessage());
+				printItems("",r.getItems());
+			}
+		}
+		catch (ChouetteException e)
+		{
+			System.err.println(e.getMessage());
+
+			Throwable caused = e.getCause();
+			while (caused != null)
+			{
+				System.err.println("caused by "+ caused.getMessage());
+				caused = caused.getCause();
+			}
+			throw new RuntimeException("export failed");
+		}
+	}
+
+	private void executeGetExportFormats(
+			INeptuneManager<NeptuneIdentifiedObject> manager,
+			Map<String, List<String>> parameters) 
+	throws ChouetteException 
+	{
+
+		List<FormatDescription> formats = manager.getExportFormats(null);
+		for (FormatDescription formatDescription : formats)
+		{
+			System.out.println(formatDescription);
+		}
+
+
+	}
+
+	/**
+	 * @param parameters
+	 * @return
+	 */
+	private INeptuneManager<NeptuneIdentifiedObject> getManager(Map<String, List<String>> parameters) 
+	{
+		String object = null;
+		try
+		{
+			object = getSimpleString(parameters,"object");
+		}
+		catch (IllegalArgumentException e)
+		{
+			object = getSimpleString(globals,"object");
+		}
+		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(object);
+		if (manager == null)
+		{
+			throw new IllegalArgumentException("unknown object "+object+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
+		}
+		return manager;
+	}
+
+	private List<NeptuneIdentifiedObject> executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
+	{
+		String format = getSimpleString(parameters,"format");
 		try
 		{
 			List<FormatDescription> formats = manager.getImportFormats(null);
@@ -251,46 +420,16 @@ public class Command
 			else
 			{
 				System.out.println("beans count = "+beans.size());
-				for (NeptuneObject bean : beans)
+
+				if (getBoolean(parameters,"validate"))
 				{
-					System.out.println(bean.toString("", 1));
-				}
-
-				if (getBoolean("validate"))
-				{
-					Report valReport = manager.validate(null, beans, validationParameters);
-					System.out.println(valReport.getLocalizedMessage());
-					printItems("",valReport.getItems());
-					int nbUNCHECK = 0;
-					int nbOK = 0;
-					int nbWARN = 0;
-					int nbERROR = 0;
-					int nbFATAL = 0;
-					for (ReportItem item1  : valReport.getItems()) // Categorie
-					{
-						for (ReportItem item2 : item1.getItems()) // fiche
-						{
-							for (ReportItem item3 : item2.getItems()) //test
-							{
-								STATE status = item3.getStatus();
-								switch (status)
-								{
-								case UNCHECK : nbUNCHECK++; break;
-								case OK : nbOK++; break;
-								case WARNING : nbWARN++; break;
-								case ERROR : nbERROR++; break;
-								case FATAL : nbFATAL++; break;
-								}
-
-							}
-
-						}
-					}
-					System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
+					executeValidate(beans, manager,parameters);
 
 
 				}
 			}
+
+			return beans;
 
 		}
 		catch (ChouetteException e)
@@ -303,9 +442,52 @@ public class Command
 				System.err.println("caused by "+ caused.getMessage());
 				caused = caused.getCause();
 			}
+			throw new RuntimeException("import failed");
 		}
 
 
+	}
+
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters 
+	 * @throws ChouetteException
+	 */
+	private void executeValidate(List<NeptuneIdentifiedObject> beans,
+			INeptuneManager<NeptuneIdentifiedObject> manager, 
+			Map<String, List<String>> parameters)
+	throws ChouetteException 
+	{
+		Report valReport = manager.validate(null, beans, validationParameters);
+		System.out.println(valReport.getLocalizedMessage());
+		printItems("",valReport.getItems());
+		int nbUNCHECK = 0;
+		int nbOK = 0;
+		int nbWARN = 0;
+		int nbERROR = 0;
+		int nbFATAL = 0;
+		for (ReportItem item1  : valReport.getItems()) // Categorie
+		{
+			for (ReportItem item2 : item1.getItems()) // fiche
+			{
+				for (ReportItem item3 : item2.getItems()) //test
+				{
+					STATE status = item3.getStatus();
+					switch (status)
+					{
+					case UNCHECK : nbUNCHECK++; break;
+					case OK : nbOK++; break;
+					case WARNING : nbWARN++; break;
+					case ERROR : nbERROR++; break;
+					case FATAL : nbFATAL++; break;
+					}
+
+				}
+
+			}
+		}
+		System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
 	}
 
 	private void printItems(String indent,List<ReportItem> items) 
@@ -319,29 +501,25 @@ public class Command
 
 	}
 
-	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager)
+	private void executeGetImportFormats(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters) throws ChouetteException
 	{
-		try
+
+		List<FormatDescription> formats = manager.getImportFormats(null);
+		for (FormatDescription formatDescription : formats)
 		{
-			List<FormatDescription> formats = manager.getImportFormats(null);
-			for (FormatDescription formatDescription : formats)
-			{
-				System.out.println(formatDescription);
-			}
+			System.out.println(formatDescription);
 		}
-		catch (ChouetteException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 
 	}
 
 	/**
 	 * @param manager
+	 * @param parameters 
+	 * @return 
 	 * @throws ChouetteException
 	 */
-	private void executeGet(INeptuneManager<NeptuneIdentifiedObject> manager)
+	private List<NeptuneIdentifiedObject> executeGet(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	throws ChouetteException
 	{
 
@@ -375,7 +553,7 @@ public class Command
 		{
 			List<String> orderFields = parameters.get("orderby");
 
-			boolean desc = getBoolean("desc");
+			boolean desc = getBoolean(parameters,"desc");
 
 			if (desc)
 			{
@@ -396,7 +574,7 @@ public class Command
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		if (parameters.containsKey("level"))
 		{
-			String slevel = getSimpleString("level");
+			String slevel = getSimpleString(parameters,"level");
 			if (slevel.equalsIgnoreCase("narrow"))
 			{
 				level = DetailLevelEnum.NARROW_DEPENDENCIES;
@@ -410,43 +588,57 @@ public class Command
 		List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter, level);
 
 		System.out.println("beans count = "+beans.size());
+		return beans;
+	}
+
+	/**
+	 * @param beans
+	 * @param parameters 
+	 */
+	private void executePrint(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) 
+	{
+		String slevel = getSimpleString(parameters, "level", "99");
+		int level = Integer.parseInt(slevel);
 		for (NeptuneObject bean : beans)
 		{
-			System.out.println(bean.toString("", 99));
+			System.out.println(bean.toString("", level));
 		}
-
 	}
 
 
 	/**
 	 *
 	 */
-	private void printHelp()
+	private static void printHelp()
 	{
 		System.out.println("Arguments : ");
 		System.out.println("  -h(elp) for general syntax ");
 		System.out.println("  -noDao to invalidate database access (MUST BE FIRST ARGUMENT) ");
-		System.out.println("  -o(bject) [name] [options]  ");
-		System.out.println("  options : ");
-		System.out.println("     -help for specific options upon object ");
-		System.out.println("     -c(ommand) [commandName] : get, getImportFormats, import");
+		System.out.println("  -o(bject) neptuneObjectName (default object for commands)");
+		System.out.println("  -c(ommand) [commandName] : get, getImportFormats, import, validate, getExportFormats, export, print");
 		System.out.println("     get : ");
 		System.out.println("        -id [value+] : object technical id ");
 		System.out.println("        -objectId [value+] : object neptune id ");
 		System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
 		System.out.println("        -orderBy [value+] : sort fields ");
 		System.out.println("        -asc|-desc sort order (default = asc) ");
-		System.out.println("     import : ");
+		System.out.println("     import|export : ");
 		System.out.println("        -format formatName : format name");
-		System.out.println("        launch getImportFormats for other parameters");
-
+		System.out.println("        launch getImportFormats or getExportFormats for other parameters");
+		System.out.println("     print : ");
+		System.out.println("        -level level : deep level for recursive print (default = 99)");
+		System.out.println("Notes: ");
+		System.out.println("    -c(ommand) can be chained : new occurence of command must be followed by it's specific argument");
+		System.out.println("               commands are executed in argument order ");
+		System.out.println("               last returned objects of reading commands are send to command wich needs objects as imput");
+		System.out.println("    -o(bject) argument may be added for each command to switch object types");
 	}
 
 	/**
 	 * @param string
 	 * @return
 	 */
-	private String getSimpleString(String key)
+	private String getSimpleString(Map<String, List<String>> parameters,String key)
 	{
 		List<String> values = parameters.get(key);
 		if (values == null) throw new IllegalArgumentException("parameter -"+key+" of String type is required");
@@ -458,7 +650,19 @@ public class Command
 	 * @param string
 	 * @return
 	 */
-	private boolean getBoolean(String key)
+	private String getSimpleString(Map<String, List<String>> parameters,String key,String defaultValue)
+	{
+		List<String> values = parameters.get(key);
+		if (values == null) return defaultValue;
+		if (values.size() > 1) throw new IllegalArgumentException("parameter -"+key+" of String type must be unique");
+		return values.get(0);
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	private boolean getBoolean(Map<String, List<String>> parameters,String key)
 	{
 		List<String> values = parameters.get(key);
 		if (values == null) return false;
@@ -466,9 +670,11 @@ public class Command
 		return Boolean.parseBoolean(values.get(0));
 	}
 
-	private void parseArgs(String[] args)
+	private List<CommandArgument> parseArgs(String[] args)
 	{
-		parameters = new HashMap<String, List<String>>();
+		Map<String, List<String>> parameters = globals;
+		List<CommandArgument> commands = new ArrayList<CommandArgument>();
+		CommandArgument command = null;
 		if (args.length == 0)
 		{
 			List<String> list = new ArrayList<String>();
@@ -485,27 +691,49 @@ public class Command
 					String alias = shortCuts.get(key);
 					if (alias != null) key = alias;
 				}
-				if (parameters.containsKey(key))
+				if (key.equals("command")) 
 				{
-					System.err.println("duplicate parameter : -"+key);
-					System.exit(2);
-				}
-				List<String> list = new ArrayList<String>();
-
-				if (i == args.length -1 || args[i+1].startsWith("-"))
-				{
-					list.add("true");
+					if (i == args.length -1) 
+					{
+						System.err.println("missing command name");
+						System.exit(2);
+					}
+					String name = args[++i];
+					if (name.startsWith("-"))
+					{
+						System.err.println("missing command name before "+name);
+						System.exit(2);						
+					}
+					command = new CommandArgument(name);
+					parameters = command.getParameters();
+					commands.add(command);
 				}
 				else
 				{
-					while ((i+1 < args.length && !args[i+1].startsWith("-")))
+					if (parameters.containsKey(key))
 					{
-						list.add(args[++i]);
+						System.err.println("duplicate parameter : -"+key);
+						System.exit(2);
 					}
+					List<String> list = new ArrayList<String>();
+
+					if (i == args.length -1 || args[i+1].startsWith("-"))
+					{
+						list.add("true");
+					}
+					else
+					{
+						while ((i+1 < args.length && !args[i+1].startsWith("-")))
+						{
+							list.add(args[++i]);
+						}
+					}
+					parameters.put(key,list);
 				}
-				parameters.put(key,list);
 			}
 		}
+
+		return commands;
 	}
 
 }
