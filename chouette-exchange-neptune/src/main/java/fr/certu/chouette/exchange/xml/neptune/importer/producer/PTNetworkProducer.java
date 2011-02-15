@@ -10,7 +10,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette
 		PTNetwork ptNetwork = new PTNetwork();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(ptNetwork, xmlPTNetwork);
+		populateFromCastorNeptune(ptNetwork, xmlPTNetwork);
 		
 		// VersionDate mandatory
 		ptNetwork.setVersionDate(getDate(xmlPTNetwork.getVersionDate()));

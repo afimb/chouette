@@ -9,7 +9,7 @@ public class PTLinkProducer extends AbstractModelProducer<PTLink, chouette.schem
 		PTLink ptLink= new PTLink();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(ptLink, xmlPTLink);
+		populateFromCastorNeptune(ptLink, xmlPTLink);
 				
 		// Name optional
 		ptLink.setName(getNonEmptyTrimedString(xmlPTLink.getName()));

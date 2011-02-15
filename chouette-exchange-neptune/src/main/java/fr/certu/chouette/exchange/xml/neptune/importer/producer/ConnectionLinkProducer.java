@@ -15,7 +15,7 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 		ConnectionLink connectionLink= new ConnectionLink();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(connectionLink, xmlConnectionLink);
+		populateFromCastorNeptune(connectionLink, xmlConnectionLink);
 				
 		// Name optional
 		connectionLink.setName(getNonEmptyTrimedString(xmlConnectionLink.getName()));

@@ -12,7 +12,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 	{
 		StopPoint stopPoint = new StopPoint();
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(stopPoint, xmlStopPoint);
+		populateFromCastorNeptune(stopPoint, xmlStopPoint);
 
 		// Name mandatory
 		stopPoint.setName(getNonEmptyTrimedString(xmlStopPoint.getName()));

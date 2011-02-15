@@ -14,7 +14,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 		StopArea stopArea = new StopArea();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(stopArea, xmlStopArea);
+		populateFromCastorNeptune(stopArea, xmlStopArea);
 		
 		// AreaCentroid optional
 		stopArea.setAreaCentroidId(getNonEmptyTrimedString(xmlStopArea.getCentroidOfArea()));

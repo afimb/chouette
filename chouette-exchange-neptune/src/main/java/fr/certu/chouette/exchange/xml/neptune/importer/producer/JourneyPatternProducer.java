@@ -9,7 +9,7 @@ public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern
 		JourneyPattern journeyPattern = new JourneyPattern();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(journeyPattern, xmlJourneyPattern);
+		populateFromCastorNeptune(journeyPattern, xmlJourneyPattern);
 		
 		// Name optional
 		journeyPattern.setName(getNonEmptyTrimedString(xmlJourneyPattern.getName()));

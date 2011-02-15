@@ -13,7 +13,7 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 	{
 		Line line = new Line();
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(line, xmlLine);
+		populateFromCastorNeptune(line, xmlLine);
 
 		// Name optional
 		line.setName(getNonEmptyTrimedString(xmlLine.getName()));

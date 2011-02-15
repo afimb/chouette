@@ -9,7 +9,7 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> implements IModelProducer<T, U>
 {
 
-	public void populateTridentObject(T target,U source)
+	public void populateFromCastorNeptune(T target,U source)
 	{
 		// ObjectId : maybe null but not empty
 		// TODO : Mandatory ?

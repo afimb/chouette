@@ -8,7 +8,7 @@ public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.
 		Route route = new Route();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(route, xmlRoute);
+		populateFromCastorNeptune(route, xmlRoute);
 		
 		// Name optional
 		route.setName(getNonEmptyTrimedString(xmlRoute.getName()));

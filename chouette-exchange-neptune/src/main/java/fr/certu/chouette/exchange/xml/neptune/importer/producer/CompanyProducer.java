@@ -9,7 +9,7 @@ public class CompanyProducer extends AbstractModelProducer<Company, chouette.sch
 		Company company = new Company();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(company, xmlCompany);
+		populateFromCastorNeptune(company, xmlCompany);
 		
 		// Name mandatory
 		company.setName(getNonEmptyTrimedString(xmlCompany.getName()));

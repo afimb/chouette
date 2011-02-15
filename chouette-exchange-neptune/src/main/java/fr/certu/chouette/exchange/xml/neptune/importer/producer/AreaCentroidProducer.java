@@ -12,7 +12,7 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,cho
 	{
 		AreaCentroid areaCentroid = new AreaCentroid();
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(areaCentroid, xmlAreaCentroid);
+		populateFromCastorNeptune(areaCentroid, xmlAreaCentroid);
 
 		// Name mandatory
 		areaCentroid.setName(getNonEmptyTrimedString(xmlAreaCentroid.getName()));

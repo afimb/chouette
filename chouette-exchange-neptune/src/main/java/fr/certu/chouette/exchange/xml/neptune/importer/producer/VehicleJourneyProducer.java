@@ -17,7 +17,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 		VehicleJourney vehicleJourney = new VehicleJourney();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateTridentObject(vehicleJourney, xmlVehicleJourney);
+		populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney);
 		
 		// Comment optional
 		vehicleJourney.setComment(getNonEmptyTrimedString(xmlVehicleJourney.getComment()));
