@@ -15,7 +15,9 @@ import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -30,7 +32,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	private FormatDescription description;
 	@Setter private LineProducer lineProducer;
 	@Setter private PTNetworkProducer networkProducer;
-	
+	@Setter private RouteProducer routeProducer;
 	
 	public XMLNeptuneExportLinePlugin() {
 		description = new FormatDescription();
@@ -100,10 +102,20 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 				rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork()));
 			}
 			
+			//rootObject.setCompany();
+			
+			//ChouetteArea chouetteArea = new ChouetteArea();
+			//chouetteArea.setAreaCentroid();
+			//chouetteArea.setStopArea();
+			//rootObject.setChouetteArea(chouetteArea);
+			
 			ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
 			chouette.schema.Line castorLine = lineProducer.produce(line);
 			chouetteLineDescription.setLine(castorLine);
-			rootObject.setChouetteLineDescription(chouetteLineDescription );
+			for(Route route : line.getRoutes()){
+				chouetteLineDescription.addChouetteRoute(routeProducer.produce(route));
+			}
+			rootObject.setChouetteLineDescription(chouetteLineDescription);
 		}
 		
 		return rootObject;
