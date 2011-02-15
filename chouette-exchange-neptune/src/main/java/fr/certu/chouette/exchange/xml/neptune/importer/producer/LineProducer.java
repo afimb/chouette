@@ -1,8 +1,10 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
+import chouette.schema.AccessibilitySuitabilityDetailsItem;
+import chouette.schema.LineExtension;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Line>
 {
@@ -72,7 +74,30 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 
 		// Comment optional
 		line.setComment(getNonEmptyTrimedString(xmlLine.getComment()));
+		
+		// LineExtension optional
+		LineExtension xmlLineExtension = xmlLine.getLineExtension();
+		if(xmlLineExtension != null){
+			
+			// MobilityRestrictedSuitability
+			line.setMobilityRestrictedSuitable(xmlLineExtension.getMobilityRestrictedSuitability());
+			
+			if(xmlLineExtension.getAccessibilitySuitabilityDetails() != null){
+				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlLineExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
+					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
+						try{
+							line.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
+						}
+						catch (IllegalArgumentException e) 
+						{
+							// TODO: traiter le cas de non correspondance
+						}
+					}
+				}
+			}
 
+		}
+		
 		return line;
 	}
 

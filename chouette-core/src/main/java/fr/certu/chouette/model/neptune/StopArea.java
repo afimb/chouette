@@ -28,6 +28,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter String nearestTopicName;
 	@Getter @Setter String registrationNumber;
 	@Getter @Setter List<UserNeedEnum> userNeeds;
+	@Getter @Setter List<ConnectionLink> connectionLinks;
 	
 	public void addBoundaryPoint(String boundaryPoint)
 	{
@@ -59,6 +60,12 @@ public class StopArea extends NeptuneIdentifiedObject {
 		userNeeds.add(userNeed);
 	}
 	
+	public void addConnectionLink(ConnectionLink connectionLink)
+	{
+		if (connectionLinks == null) connectionLinks = new ArrayList<ConnectionLink>();
+		connectionLinks.add(connectionLink);
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -74,6 +81,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 			containedStopAreas = null;
 			containedStopPoints = null;
 			parentStopArea = null;
+			connectionLinks = null;
 			break;
 		case NARROW_DEPENDENCIES : 
 			if (getParentStopArea() != null) getParentStopArea().expand(DetailLevelEnum.ATTRIBUTE);
@@ -89,6 +97,13 @@ public class StopArea extends NeptuneIdentifiedObject {
 				for (StopPoint containedStopPoint : getContainedStopPoints())
 				{
 					containedStopPoint.expand(DetailLevelEnum.ATTRIBUTE);
+				}
+			}
+			if (getConnectionLinks() != null)
+			{
+				for (ConnectionLink connectionLink : getConnectionLinks())
+				{
+					connectionLink.expand(DetailLevelEnum.ATTRIBUTE);
 				}
 			}
 			break;
@@ -107,6 +122,13 @@ public class StopArea extends NeptuneIdentifiedObject {
 				for (StopPoint containedStopPoint : getContainedStopPoints())
 				{
 					containedStopPoint.expand(level);
+				}
+			}
+			if (getConnectionLinks() != null)
+			{
+				for (ConnectionLink connectionLink : getConnectionLinks())
+				{
+					connectionLink.expand(level);
 				}
 			}
 		}
@@ -162,6 +184,15 @@ public class StopArea extends NeptuneIdentifiedObject {
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(parentStopArea.toString(childIndent,childLevel));
 				
+			}
+			childIndent = indent + CHILD_LIST_INDENT;
+			if (connectionLinks != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("connectionLinks");
+				for (ConnectionLink connectionLink : getConnectionLinks())
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(connectionLink.toString(childIndent,0));
+				}
 			}
 		}
 

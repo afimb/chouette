@@ -148,18 +148,12 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setStopPoints(converter.extractStopPoints(rootObject));
 		modelAssembler.setStopAreas(converter.extractStopAreas(rootObject));
 		modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject));
-		
-		List<ConnectionLink> connectionLinks = converter.extractConnectionLinks(rootObject);
-		modelAssembler.setConnectionLinks(connectionLinks);
+		modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject));
 		
 		modelAssembler.connect();
 		
 		for(Line line : lines){
 			line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
-		}
-		
-		for(ConnectionLink connectionLink : connectionLinks){
-			connectionLink.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 		}
 		
 		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,filePath,Integer.toString(lines.size()));

@@ -80,7 +80,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  frequentTravellerDuration = ").append(formatDate(frequentTravellerDuration));
 		sb.append("\n").append(indent).append("  occasionalTravellerDuration = ").append(formatDate(occasionalTravellerDuration));
 		sb.append("\n").append(indent).append("  mobilityRestrictedTravellerDuration = ").append(formatDate(mobilityRestrictedTravellerDuration));
-		sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(linkType);
+		sb.append("\n").append(indent).append("  linkType = ").append(linkType);
 		
 		if(userNeeds != null){
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");

@@ -176,8 +176,16 @@ public class ModelAssembler {
 	
 	private void connectConnectionLinks() {
 		for(ConnectionLink connectionLink : connectionLinks){
-			connectionLink.setStartOfLink(getObjectFromId(connectionLink.getStartOfLinkId(), StopArea.class));
-			connectionLink.setEndOfLink(getObjectFromId(connectionLink.getEndOfLinkId(), StopArea.class));
+			StopArea startOfLink = getObjectFromId(connectionLink.getStartOfLinkId(), StopArea.class);
+			if(startOfLink != null){
+				connectionLink.setStartOfLink(startOfLink);
+				startOfLink.addConnectionLink(connectionLink);
+			}
+			StopArea endOfLink = getObjectFromId(connectionLink.getEndOfLinkId(), StopArea.class);
+			if(endOfLink != null){
+				connectionLink.setEndOfLink(endOfLink);
+				endOfLink.addConnectionLink(connectionLink);
+			}
 		}
 	}
 	

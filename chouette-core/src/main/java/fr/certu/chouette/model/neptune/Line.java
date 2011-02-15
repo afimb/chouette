@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
  * 
@@ -36,7 +37,14 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private PTNetwork ptNetwork;
 	@Getter @Setter private Company company;
 	@Getter @Setter private List<Route> routes;
+	@Getter @Setter boolean mobilityRestrictedSuitable;
+	@Getter @Setter List<UserNeedEnum> userNeeds;
 
+	public void addUserNeed(UserNeedEnum userNeed){
+		if(userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
+		userNeeds.add(userNeed);
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -91,6 +99,7 @@ public class Line extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  transportModeName = ").append(transportModeName);
 		sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
 		sb.append("\n").append(indent).append("  comment = ").append(comment);
+		sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
 		if (lineEnds != null)
 		{
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("lineEnds");
@@ -105,6 +114,14 @@ public class Line extends NeptuneIdentifiedObject
 			for (String routeid : getRouteIds())
 			{
 				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routeid);
+			}
+		}
+		if (userNeeds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");
+			for (UserNeedEnum userNeed : getUserNeeds())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(userNeed);
 			}
 		}
 
