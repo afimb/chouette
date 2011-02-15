@@ -1,26 +1,10 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import chouette.schema.AccessibilitySuitabilityDetails;
-import chouette.schema.AccessibilitySuitabilityDetailsItem;
-import chouette.schema.LineExtension;
 import chouette.schema.RouteExtension;
-import chouette.schema.UserNeedGroup;
-import chouette.schema.types.EncumbranceEnumeration;
-import chouette.schema.types.MedicalNeedEnumeration;
-import chouette.schema.types.MobilityEnumeration;
 import chouette.schema.types.PTDirectionType;
-import chouette.schema.types.PyschosensoryNeedEnumeration;
-import chouette.schema.types.TransportModeNameType;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
-import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 public class RouteProducer extends AbstractCastorNeptuneProducer<chouette.schema.ChouetteRoute, Route> {
 
