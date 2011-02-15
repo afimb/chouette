@@ -41,11 +41,12 @@ public class Sheet1 implements IValidationPlugin<Line>
 	public ReportItem doValidate(List<Line> lines) 
 	{
 		ReportItem report = new SheetReportItem("Test2_Sheet1");
-		report.addItem(step2_2_1(lines));
+		report.addItem(step2_1_1(lines));
+		report.addItem(step2_1_2(lines));
 		return report;
 	}
 
-	private ReportItem step2_2_1(List<Line> lines) 
+	private ReportItem step2_1_1(List<Line> lines) 
 	{
 		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step1");
 
@@ -53,6 +54,17 @@ public class Sheet1 implements IValidationPlugin<Line>
 		for (Line line : lines) 
 		{
 			PTNetwork network = line.getPtNetwork();
+			if (network == null)
+			{
+				checked = true;
+				ReportItem failedItem = new DetailReportItem("Test2_Sheet1_fatal");
+				failedItem.setStatus(Report.STATE.FATAL);
+				failedItem.addMessageArgs(line.getObjectId());
+				reportStep.addItem(failedItem);
+				
+			}
+			else
+			{
 			List<String> lineIds = network.getLineIds();
 			if (lineIds != null && !lineIds.isEmpty())
 			{
@@ -65,6 +77,7 @@ public class Sheet1 implements IValidationPlugin<Line>
 					reportStep.addItem(failedItem);
 				}
 			}
+			}
 		}
 		if (!checked)
 		{
@@ -73,6 +86,44 @@ public class Sheet1 implements IValidationPlugin<Line>
 		return reportStep;
 	}
 
+	private ReportItem step2_1_2(List<Line> lines) 
+	{
+		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step2");
+
+		boolean checked = false;
+		for (Line line : lines) 
+		{
+			PTNetwork network = line.getPtNetwork();
+			if (network == null)
+			{
+				checked = true;
+				ReportItem failedItem = new DetailReportItem("Test2_Sheet1_fatal");
+				failedItem.setStatus(Report.STATE.FATAL);
+				failedItem.addMessageArgs(line.getObjectId());
+				reportStep.addItem(failedItem);
+				
+			}else {
+				String ptNeworkId = line.getPtNetworkIdShortcut();
+				if (ptNeworkId != null)
+				{
+					checked = true;
+					if (!ptNeworkId.equals(network.getObjectId()))
+					{
+						ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step2_error");
+						failedItem.setStatus(Report.STATE.ERROR);
+						failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
+						reportStep.addItem(failedItem);
+					}
+				}
+			}
+		
+		}
+		if (!checked)
+		{
+			reportStep.setStatus(Report.STATE.UNCHECK);
+		}
+		return reportStep;
+	}
 
 
 }

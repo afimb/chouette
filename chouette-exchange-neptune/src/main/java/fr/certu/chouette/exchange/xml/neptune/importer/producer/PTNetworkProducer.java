@@ -6,7 +6,9 @@ import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette.schema.PTNetwork> {
 
 	@Override
-	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork) {
+	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork) 
+	{
+		if (xmlPTNetwork == null) return null;
 		PTNetwork ptNetwork = new PTNetwork();
 		
 		// objectId, objectVersion, creatorId, creationTime
