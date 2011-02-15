@@ -6,7 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -33,6 +36,7 @@ import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -52,7 +56,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter private String fileFileName;
 	@Getter @Setter private INeptuneManager<Line> lineManager;
 	@Getter @Setter private boolean validate;
-	@Getter @Setter private List<Report> reports;
 	@Getter @Setter private List<FormatDescription> formats;
 	@Getter @Setter private boolean imported;
 	@Getter @Setter private Report report;
@@ -80,47 +83,131 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter private long test3_16c_MinimalTime;
 	@Getter @Setter private long test3_16c_MaximalTime;
 	@Getter @Setter private int cookieExpires;
-	@Getter @Setter private ValidationParameters validationParam;
+	@Getter @Setter private ValidationParameters validationParam = new ValidationParameters();
 	@Getter @Setter private String polygonWorkFlow;
-
+	// For access to the raw servlet request / response, eg for cookies
+	@Getter @Setter protected HttpServletResponse servletResponse;
+	@Getter @Setter protected HttpServletRequest servletRequest;
 
 	@Override
 	public void prepare() throws Exception {
-		
 		test3_2_Polygon=test3_2_Polygon.replace(" ", "\t");
-		validationParam = new ValidationParameters();
-
 		// Load from cookie if any
-		if(servletRequest != null && servletRequest.getCookies() != null){
-			for(Cookie c : servletRequest.getCookies()) {
-				if (c.getName().equals("test3_1_MinimalDistance"))
-					validationParam.setTest3_1_MinimalDistance(Float.valueOf(c.getValue()));
-				else
-					validationParam.setTest3_1_MinimalDistance(test3_1_MinimalDistance);
-				
-				
-				if(c.getName().equals("polygonWorkFlow"))
-					polygonWorkFlow=c.getValue();
-				else
-					polygonWorkFlow=test3_2_Polygon;
-				if(c.getName().equals("test3_2_MinimalDistance"))
-					validationParam.setTest3_2_MinimalDistance(Float.valueOf(c.getValue()));
-				else
-					validationParam.setTest3_2_MinimalDistance(test3_2_MinimalDistance);
-			}
-		}
-		
-		validationParam.setTest3_2_Polygon(getPolygonCoordinatesFromString(polygonWorkFlow));
-
+		loadFromCookie(validationParam);
 	}
 
-	public String execute(){
 
+	public String execute(){
 		if(session.get("imported") != null)
 			session.remove("imported");
 		return SUCCESS;
 	}
 
+	/**
+	 * Loading from cookie if any
+	 */
+	private void loadFromCookie(ValidationParameters validationParam){
+
+		for(Cookie c : servletRequest.getCookies()) {
+			String cookieName = c.getName();
+			String cookieValue = c.getValue();
+
+			//LOGGER.info("Cookie name : "+cookieName+" Cookie value : "+cookieValue+" Cookie expires "+cookieExpires);
+
+			if (cookieName.equals("test3_1_MinimalDistance")){
+				validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
+				LOGGER.info(">>> "+validationParam.getTest3_1_MinimalDistance()+" >>> "+cookieValue);
+			}
+
+			else
+				validationParam.setTest3_1_MinimalDistance(test3_1_MinimalDistance);
+
+			if(cookieName.equals("polygonWorkFlow"))
+				polygonWorkFlow=cookieValue;
+			else
+				polygonWorkFlow=test3_2_Polygon;
+
+			if(cookieName.equals("test3_2_MinimalDistance"))
+				validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_2_MinimalDistance(test3_2_MinimalDistance);
+
+			if(cookieName.equals("test3_10_MinimalDistance"))
+				validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_10_MinimalDistance(test3_10_MinimalDistance);
+
+			if(cookieName.equals("test3_16c_MaximalTime"))
+				validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
+			else
+				validationParam.setTest3_16c_MaximalTime(test3_16c_MaximalTime);
+
+			if(cookieName.equals("test3_16c_MinimalTime"))
+				validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
+			else
+				validationParam.setTest3_16c_MinimalTime(test3_16c_MinimalTime);
+
+			if(cookieName.equals("test3_7_MaximalDistance"))
+				validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_7_MaximalDistance(test3_7_MaximalDistance);
+
+			if(cookieName.equals("test3_7_MinimalDistance"))
+				validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_7_MinimalDistance(test3_7_MinimalDistance);
+
+			if(cookieName.equals("test3_8a_MaximalSpeed"))
+				validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8a_MaximalSpeed(test3_8a_MaximalSpeed);
+
+			if(cookieName.equals("test3_8a_MinimalSpeed"))
+				validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8a_MinimalSpeed(test3_8a_MinimalSpeed);
+			if(cookieName.equals("test3_8b_MaximalSpeed"))
+				validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8b_MaximalSpeed(test3_8b_MaximalSpeed);
+
+			if(cookieName.equals("test3_8b_MinimalSpeed"))
+				validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8b_MinimalSpeed(test3_8b_MinimalSpeed);
+
+			if(cookieName.equals("test3_8c_MaximalSpeed"))
+				validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8c_MaximalSpeed(test3_8c_MaximalSpeed);
+
+			if(cookieName.equals("test3_8c_MinimalSpeed"))
+				validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8c_MinimalSpeed(test3_8c_MinimalSpeed);
+
+			if(cookieName.equals("test3_8d_MaximalSpeed"))
+				validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8d_MaximalSpeed(test3_8d_MaximalSpeed);
+
+			if(cookieName.equals("test3_8d_MinimalSpeed"))
+				validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_8d_MinimalSpeed(test3_8d_MinimalSpeed);
+
+			if(cookieName.equals("test3_9_MaximalSpeed"))
+				validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_9_MaximalSpeed(test3_9_MaximalSpeed);
+
+			if(cookieName.equals("test3_9_MinimalSpeed"))
+				validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
+			else
+				validationParam.setTest3_9_MinimalSpeed(test3_9_MinimalSpeed);
+		}
+
+	}
 	/**
 	 * Neptune import
 	 * @return
@@ -168,6 +255,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		}
 
 		session.put("lines", lines);
+		loadFromCookie(validationParam);
 		return result;
 	}
 
@@ -242,41 +330,61 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		//for(Line line : lines)
 		// {
-			//LOGGER.info("Line : "+line.toString("\t",89));
+		//LOGGER.info("Line : "+line.toString("\t",89));
 
-			reportValidation = lineManager.validate(null,lines,validationParam);
+		reportValidation = lineManager.validate(null,lines,validationParam);
 
-			if(reportValidation != null){
-				LOGGER.info("Report "+reportValidation.toString());
-
-				reports.add(reportValidation);
-			}
+		if(reportValidation != null){
+			LOGGER.info("Report "+reportValidation.getLocalizedMessage(getLocale()));
+			getReportItemDetails(reportValidation.getItems());
+		}
 
 		// }
 
 		// Save to cookie
-		saveCookie("test3_1_MinimalDistance", String.valueOf(validationParam.getTest3_1_MinimalDistance()));
+		saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
 		saveCookie("polygonWorkFlow", polygonWorkFlow);
-		saveCookie("test3_10_MinimalDistance", String.valueOf(validationParam.getTest3_10_MinimalDistance()));
-		saveCookie("test3_16c_MaximalTime", String.valueOf(validationParam.getTest3_16c_MaximalTime()));
-		saveCookie("test3_16c_MinimalTime", String.valueOf(validationParam.getTest3_16c_MinimalTime()));
+		saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
 
-		
+		saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
+		saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
+
+		saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
+
+		saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
+		saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
+
+		saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
+		saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
+
+		saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
+		saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
+
+		saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
+		saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
+
+		saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
+		saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
+
+		saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
+		saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
+
+
 		//Adding validation parameters values in a session scope
-
+		session.put("validationParam", validationParam);
+		session.put("polygonWorkFlow", polygonWorkFlow);
 
 		return LIST;
 	}
-	
+
 	/**
 	 * Saving to cookie
 	 * @param name
 	 * @param value
 	 */
-	private void saveCookie(String name, String value){
-		Cookie cookie = new Cookie(name, value);
-		cookie.setMaxAge((int)new Date().getTime()+cookieExpires); 
-		cookie.setValue(value);
+	private void saveCookie(String name, Object value){
+		Cookie cookie = new Cookie(name, String.valueOf(value));
+		cookie.setMaxAge((int) (new Date().getTime()+cookieExpires)); 
 		servletResponse.addCookie(cookie);
 	}
 
@@ -304,7 +412,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		validationParam.setTest3_8d_MinimalSpeed(test3_8d_MinimalSpeed);
 		validationParam.setTest3_9_MaximalSpeed(test3_9_MaximalSpeed);
 		validationParam.setTest3_9_MinimalSpeed(test3_9_MinimalSpeed);
-	
+
 		addActionMessage(getText("neptune.field.restore.default.value.success"));
 
 		return SUCCESS;
@@ -313,11 +421,10 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 	private void getReportItemDetails(List<ReportItem> reportItems){
 		for(ReportItem reportItem : reportItems){
-			LOGGER.info("ReportItem Origin "+reportItem.getOriginKey());
-			LOGGER.info("ReportItem Message "+reportItem.getLocalizedMessage(getLocale())+" STATUS "+reportItem.getStatus().name());
+			LOGGER.info("\tReportItem Message "+reportItem.getLocalizedMessage(getLocale())+" STATUS "+reportItem.getStatus().name());
 			if(reportItem.getMessageArgs() != null){
 				for(String arg : reportItem.getMessageArgs())
-					LOGGER.info("ReportItem message arg "+arg);
+					LOGGER.info("\tReportItem message arg "+arg);
 			}
 
 			if(reportItem.getItems() != null && reportItem.getItems().size()>0)
@@ -334,47 +441,64 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	private List<Coordinate> getPolygonCoordinatesFromString(String text){
 		List<Coordinate> coordinates = new ArrayList<Coordinate>();
 
-		String coordinateAsStringTab[] = text.split("\t");
-		for(String coordinateAsString : coordinateAsStringTab){
-			double x = Double.valueOf(coordinateAsString.split(",")[0]);
-			double y = Double.valueOf(coordinateAsString.split(",")[1]);
-			Coordinate coordinate = new Coordinate(x, y);
-			coordinates.add(coordinate);
+		if(text != null && text.length()>0){
+			String coordinateAsStringTab[] = text.split("\t");
+			for(String coordinateAsString : coordinateAsStringTab){
+				double x = Double.valueOf(coordinateAsString.split(",")[0]);
+				double y = Double.valueOf(coordinateAsString.split(",")[1]);
+				Coordinate coordinate = new Coordinate(x, y);
+				coordinates.add(coordinate);
+			}	
 		}
 
 		return coordinates;
 	}
-
-	// For access to the raw servlet request / response, eg for cookies
-	protected HttpServletResponse servletResponse;
-
-	@Override
-	public void setServletResponse(HttpServletResponse servletResponse) {
-		this.servletResponse = servletResponse;
+	/**
+	 * 
+	 * @param report
+	 * @return
+	 */
+	public Map<STATE, Integer> getCountMap(){
+		Map<STATE, Integer> countMap = new TreeMap<Report.STATE, Integer>();
+		int nbUNCHECK = 0;
+		int nbOK = 0;
+		int nbWARN = 0;
+		int nbERROR = 0;
+		int nbFATAL = 0;
+		for (ReportItem item1  : reportValidation.getItems()) // Categories
+		{
+			for (ReportItem item2 : item1.getItems()) // fiche
+			{
+				for (ReportItem item3 : item2.getItems()) //test
+				{
+					STATE status = item3.getStatus();
+					switch (status)
+					{
+					case UNCHECK : 
+						nbUNCHECK++;						
+					break;
+					case OK : 
+						nbOK++;						
+					break;
+					case WARNING : 
+						nbWARN++; 						
+					break;
+					case ERROR : 
+						nbERROR++;	
+					break;
+					case FATAL : 
+						nbFATAL++;		
+					break;
+					}
+				}
+			}
+		}
+		countMap.put(STATE.OK, nbOK);
+		countMap.put(STATE.WARNING, nbWARN);
+		countMap.put(STATE.ERROR, nbERROR);
+		countMap.put(STATE.FATAL, nbFATAL);
+		countMap.put(STATE.UNCHECK, nbUNCHECK);
+		return countMap;
 	}
-
-	protected HttpServletRequest servletRequest;
-	@Override
-	public void setServletRequest(HttpServletRequest servletRequest) {
-		this.servletRequest = servletRequest;
-	}
-
-	/*	@Override
-	public List<CookieBean> getCookies() {
-		 List<CookieBean> cookies = new ArrayList<CookieBean>();
-
-		  CookieBean cookie = new CookieBean();
-		  cookie.setCookieName("test3_10_MinimalDistance");
-		  cookie.setCookieValue(String.valueOf(test3_10_MinimalDistance));
-		  cookie.setPath("/chouette-webapp");
-		  cookie.setComment("");
-		  cookie.setDomain("");
-		  cookie.setMaxAge((int) (new Date().getTime()  * 86400000));
-		  cookie.setSecure(false);
-		  cookie.setVersion(1);
-
-		  cookies.add(cookie);
-		  return cookies;
-	} */
 
 }
