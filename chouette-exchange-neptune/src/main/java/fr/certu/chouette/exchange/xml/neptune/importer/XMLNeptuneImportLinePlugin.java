@@ -23,7 +23,6 @@ import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.filter.DetailLevelEnum;
-import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;

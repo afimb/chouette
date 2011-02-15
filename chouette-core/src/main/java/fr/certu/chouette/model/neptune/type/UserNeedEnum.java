@@ -2,174 +2,263 @@ package fr.certu.chouette.model.neptune.type;
 
 public enum UserNeedEnum implements java.io.Serializable {
 
+	// ------------------/
+	// - Enum Constants -/
+	// ------------------/
 
-      //------------------/
-     //- Enum Constants -/
-    //------------------/
+	/**
+	 * Constant ALLERGIC
+	 */
+	ALLERGIC("allergic",NeedCategoryEnum.MEDICAL),
+	/**
+	 * Constant HEARTCONDITION
+	 */
+	HEARTCONDITION("heartCondition",NeedCategoryEnum.MEDICAL),
+	/**
+	 * Constant OTHERMEDICALNEED
+	 */
+	OTHERMEDICALNEED("otherMedicalNeed",NeedCategoryEnum.MEDICAL),
+	/**
+	 * Constant VISUALIMPAIRMENT
+	 */
+	VISUALIMPAIRMENT("visualImpairment",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant AUDITORYIMPAIRMENT
+	 */
+	AUDITORYIMPAIRMENT("auditoryImpairment",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant COGNITIVEINPUTIMPAIRMENT
+	 */
+	COGNITIVEINPUTIMPAIRMENT("cognitiveInputImpairment",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant AVERSETOLIFTS
+	 */
+	AVERSETOLIFTS("averseToLifts",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant AVERSETOESCALATORS
+	 */
+	AVERSETOESCALATORS("averseToEscalators",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant AVERSETOCONFINEDSPACES
+	 */
+	AVERSETOCONFINEDSPACES("averseToConfinedSpaces",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant AVERSETOCROWDS
+	 */
+	AVERSETOCROWDS("averseToCrowds",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant OTHERPSYCHOSENSORYNEED
+	 */
+	OTHERPSYCHOSENSORYNEED("otherPsychosensoryNeed",NeedCategoryEnum.PSYCHOSENSORY),
+	/**
+	 * Constant LUGGAGEENCUMBERED
+	 */
+	LUGGAGEENCUMBERED("luggageEncumbered",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant PUSHCHAIR
+	 */
+	PUSHCHAIR("pushchair",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant BAGGAGETROLLEY
+	 */
+	BAGGAGETROLLEY("baggageTrolley",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant OVERSIZEBAGGAGE
+	 */
+	OVERSIZEBAGGAGE("oversizeBaggage",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant GUIDEDOG
+	 */
+	GUIDEDOG("guideDog",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant OTHERANIMAL
+	 */
+	OTHERANIMAL("otherAnimal",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant OTHERENCUMBRANCE
+	 */
+	OTHERENCUMBRANCE("otherEncumbrance",NeedCategoryEnum.ENCUMBRANCE),
+	/**
+	 * Constant WHEELCHAIR
+	 */
+	WHEELCHAIR("wheelchair",NeedCategoryEnum.MOBILITY),
+	/**
+	 * Constant ASSISTEDWHEELCHAIR
+	 */
+	ASSISTEDWHEELCHAIR("assistedWheelchair",NeedCategoryEnum.MOBILITY),
+	/**
+	 * Constant MOTORIZEDWHEELCHAIR
+	 */
+	MOTORIZEDWHEELCHAIR("motorizedWheelchair",NeedCategoryEnum.MOBILITY),
+	/**
+	 * Constant WALKINGFRAME
+	 */
+	WALKINGFRAME("walkingFrame",NeedCategoryEnum.MOBILITY),
+	/**
+	 * Constant RESTRICTEDMOBILITY
+	 */
+	RESTRICTEDMOBILITY("restrictedMobility",NeedCategoryEnum.MOBILITY),
+	/**
+	 * Constant OTHERMOBILITYNEED
+	 */
+	OTHERMOBILITYNEED("otherMobilityNeed",NeedCategoryEnum.MOBILITY);
 
-    /**
-     * Constant ALLERGIC
-     */
-    ALLERGIC("allergic"),
-    /**
-     * Constant HEARTCONDITION
-     */
-    HEARTCONDITION("heartCondition"),
-    /**
-     * Constant OTHERMEDICALNEED
-     */
-    OTHERMEDICALNEED("otherMedicalNeed"),
-    /**
-     * Constant VISUALIMPAIRMENT
-     */
-    VISUALIMPAIRMENT("visualImpairment"),
-    /**
-     * Constant AUDITORYIMPAIRMENT
-     */
-    AUDITORYIMPAIRMENT("auditoryImpairment"),
-    /**
-     * Constant COGNITIVEINPUTIMPAIRMENT
-     */
-    COGNITIVEINPUTIMPAIRMENT("cognitiveInputImpairment"),
-    /**
-     * Constant AVERSETOLIFTS
-     */
-    AVERSETOLIFTS("averseToLifts"),
-    /**
-     * Constant AVERSETOESCALATORS
-     */
-    AVERSETOESCALATORS("averseToEscalators"),
-    /**
-     * Constant AVERSETOCONFINEDSPACES
-     */
-    AVERSETOCONFINEDSPACES("averseToConfinedSpaces"),
-    /**
-     * Constant AVERSETOCROWDS
-     */
-    AVERSETOCROWDS("averseToCrowds"),
-    /**
-     * Constant OTHERPSYCHOSENSORYNEED
-     */
-    OTHERPSYCHOSENSORYNEED("otherPsychosensoryNeed"),
-    /**
-     * Constant LUGGAGEENCUMBERED
-     */
-    LUGGAGEENCUMBERED("luggageEncumbered"),
-    /**
-     * Constant PUSHCHAIR
-     */
-    PUSHCHAIR("pushchair"),
-    /**
-     * Constant BAGGAGETROLLEY
-     */
-    BAGGAGETROLLEY("baggageTrolley"),
-    /**
-     * Constant OVERSIZEBAGGAGE
-     */
-    OVERSIZEBAGGAGE("oversizeBaggage"),
-    /**
-     * Constant GUIDEDOG
-     */
-    GUIDEDOG("guideDog"),
-    /**
-     * Constant OTHERANIMAL
-     */
-    OTHERANIMAL("otherAnimal"),
-    /**
-     * Constant OTHERENCUMBRANCE
-     */
-    OTHERENCUMBRANCE("otherEncumbrance"),
-    /**
-     * Constant WHEELCHAIR
-     */
-    WHEELCHAIR("wheelchair"),
-    /**
-     * Constant ASSISTEDWHEELCHAIR
-     */
-    ASSISTEDWHEELCHAIR("assistedWheelchair"),
-    /**
-     * Constant MOTORIZEDWHEELCHAIR
-     */
-    MOTORIZEDWHEELCHAIR("motorizedWheelchair"),
-    /**
-     * Constant WALKINGFRAME
-     */
-    WALKINGFRAME("walkingFrame"),
-    /**
-     * Constant RESTRICTEDMOBILITY
-     */
-    RESTRICTEDMOBILITY("restrictedMobility"),
-    /**
-     * Constant OTHERMOBILITYNEED
-     */
-    OTHERMOBILITYNEED("otherMobilityNeed");
+	// --------------------------/
+	// - Class/Member Variables -/
+	// --------------------------/
 
-      //--------------------------/
-     //- Class/Member Variables -/
-    //--------------------------/
+	/**
+	 * Field value.
+	 */
+	private final java.lang.String value;
+	private final NeedCategoryEnum category;
+	
+	// ----------------/
+	// - Constructors -/
+	// ----------------/
 
-    /**
-     * Field value.
-     */
-    private final java.lang.String value;
+	private UserNeedEnum(final java.lang.String value,NeedCategoryEnum category) {
+		this.value = value;
+		this.category = category;
+	}
 
+	// -----------/
+	// - Methods -/
+	// -----------/
 
-      //----------------/
-     //- Constructors -/
-    //----------------/
+	/**
+	 * Method fromValue.
+	 * 
+	 * @param value
+	 * @return the constant for this value
+	 */
+	public static UserNeedEnum fromValue(final java.lang.String value) {
+		for (UserNeedEnum c : UserNeedEnum.values()) {
+			if (c.value.equals(value)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(value);
+	}
 
-    private UserNeedEnum(final java.lang.String value) {
-        this.value = value;
-    }
+	/**
+	 * 
+	 * 
+	 * @param value
+	 */
+	public void setValue(final java.lang.String value) {
+	}
 
+	/**
+	 * Method toString.
+	 * 
+	 * @return the value of this constant
+	 */
+	public java.lang.String toString() {
+		return this.value;
+	}
 
-      //-----------/
-     //- Methods -/
-    //-----------/
+	/**
+	 * Method value.
+	 * 
+	 * @return the value of this constant
+	 */
+	public java.lang.String value() {
+		return this.value;
+	}
+	
+	/**
+	 * Method category.
+	 * 
+	 * @return the category of this constant
+	 */
+	public NeedCategoryEnum category() {
+		return this.category;
+	}
 
-    /**
-     * Method fromValue.
-     * 
-     * @param value
-     * @return the constant for this value
-     */
-    public static UserNeedEnum fromValue(
-            final java.lang.String value) {
-        for (UserNeedEnum c: UserNeedEnum.values()) {
-            if (c.value.equals(value)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(value);
-    }
+	public enum NeedCategoryEnum implements java.io.Serializable {
 
-    /**
-     * 
-     * 
-     * @param value
-     */
-    public void setValue(
-            final java.lang.String value) {
-    }
+		// ------------------/
+		// - Enum Constants -/
+		// ------------------/
 
-    /**
-     * Method toString.
-     * 
-     * @return the value of this constant
-     */
-    public java.lang.String toString(
-    ) {
-        return this.value;
-    }
+		/**
+		 * Constant MEDICAL
+		 */
+		MEDICAL("medical"),
+		/**
+		 * Constant PSYCHOSENSORY
+		 */
+		PSYCHOSENSORY("psychosensory"),
+		/**
+		 * Constant ENCUMBRANCE
+		 */
+		ENCUMBRANCE("encumbrance"),
+		/**
+		 * Constant MOBILITY
+		 */
+		MOBILITY("mobility");
 
-    /**
-     * Method value.
-     * 
-     * @return the value of this constant
-     */
-    public java.lang.String value(
-    ) {
-        return this.value;
-    }
+		// --------------------------/
+		// - Class/Member Variables -/
+		// --------------------------/
 
+		/**
+		 * Field value.
+		 */
+		private final java.lang.String value;
+
+		// ----------------/
+		// - Constructors -/
+		// ----------------/
+
+		private NeedCategoryEnum(final java.lang.String value) {
+			this.value = value;
+		}
+
+		// -----------/
+		// - Methods -/
+		// -----------/
+
+		/**
+		 * Method fromValue.
+		 * 
+		 * @param value
+		 * @return the constant for this value
+		 */
+		public static NeedCategoryEnum fromValue(final java.lang.String value) {
+			for (NeedCategoryEnum c : NeedCategoryEnum.values()) {
+				if (c.value.equals(value)) {
+					return c;
+				}
+			}
+			throw new IllegalArgumentException(value);
+		}
+
+		/**
+		 * 
+		 * 
+		 * @param value
+		 */
+		public void setValue(final java.lang.String value) {
+		}
+
+		/**
+		 * Method toString.
+		 * 
+		 * @return the value of this constant
+		 */
+		public java.lang.String toString() {
+			return this.value;
+		}
+
+		/**
+		 * Method value.
+		 * 
+		 * @return the value of this constant
+		 */
+		public java.lang.String value() {
+			return this.value;
+		}
+	}
 }
