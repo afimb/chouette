@@ -10,7 +10,6 @@ package fr.certu.chouette.model.neptune;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
@@ -49,15 +48,17 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 
 	public static List<String> extractObjectIds(List<? extends NeptuneIdentifiedObject> neptuneObjects){
 		List<String> objectIds = new ArrayList<String>();
-		for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) {
-			if(neptuneObject != null){
-				String objectId = neptuneObject.getObjectId();
-				if(objectId != null){
-					objectIds.add(objectId);
+			if(neptuneObjects != null){
+			for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) {
+				if(neptuneObject != null){
+					String objectId = neptuneObject.getObjectId();
+					if(objectId != null){
+						objectIds.add(objectId);
+					}
 				}
 			}
 		}
-		
+			
 		return objectIds;
 	}
 	
