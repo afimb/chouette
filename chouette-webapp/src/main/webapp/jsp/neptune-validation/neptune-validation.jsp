@@ -4,7 +4,7 @@
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
 
-	<div style="width: 700px;">
+	<div style="width: 80%;">
 	 <div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="panel">
 		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST">
@@ -16,7 +16,6 @@
 		<s:property value="%{report.getStatus().name()}"/><br />
 		 
 		 <s:iterator value="report.items">
-		 	<s:property value="messageKey"/><br />
 		 	<s:property value="getLocalizedMessage(getLocale())" />
 		 </s:iterator>
 	</div>
@@ -25,17 +24,10 @@
 	<div class="panel">
 	<s:include value="/jsp/commun/messages.jsp" />
 		<div>
-		<br />
-		<s:property value="%{reportValidation.getStatus().name()}"/><br />
-		 
-		<s:iterator value="reportValidation.items">
-		 	<s:property value="messageKey"/><br />
-		 	<s:property value="getLocalizedMessage(getLocale())" />
-		 </s:iterator>
 		
   <s:form action="validation" namespace="/neptune-validation" >
-	   <s:textfield name="validationParam.test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
-	   <s:textfield name="validationParam.test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
+	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
+	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
 	   
 	   <s:textarea cols="30" name="polygonWorkFlow" label="%{getText('neptune.field.polygon.3.6')}" rows="10"></s:textarea>
 		
@@ -64,18 +56,10 @@
 		<s:textfield name="validationParam.test3_16c_MaximalTime" size="8" label="/"/>	
 	
      	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}" disabled="#session.imported != true"/>
-   		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}" />
+   		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}" disabled="#session.imported != true" />
    
   </s:form>
   
 </div>
 </div>
 </div>
-<script type="text/javascript">
-	function cookie(id, value){
-		Cookie.init({name: 'chuette', expires: 90});
-		Cookie.setData(id, value);
-		Cookie.store();
-		alert("Cookie stored value "+Cookie.getData(id));	
-	}
-</script>
