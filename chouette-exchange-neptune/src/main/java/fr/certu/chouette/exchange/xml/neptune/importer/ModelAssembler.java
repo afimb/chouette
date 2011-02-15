@@ -145,7 +145,7 @@ public class ModelAssembler {
 		for(StopPoint stopPoint : stopPoints){
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
 			stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
-			if(ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut())){
+			if(ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut())){
 				stopPoint.setPtNetwork(ptNetwork);
 			}
 			else{
