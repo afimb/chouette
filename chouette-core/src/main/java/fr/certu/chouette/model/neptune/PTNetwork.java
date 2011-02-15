@@ -33,6 +33,7 @@ public class PTNetwork extends NeptuneIdentifiedObject
 	@Getter @Setter private String comment;
 	@Getter @Setter private PTNetworkSourceTypeEnum 	pTNetworkSourceType;
 	@Getter @Setter private List<String>				lineIds;
+	@Getter @Setter private List<Line>				lines;
 
 
 	/* (non-Javadoc)
@@ -88,6 +89,12 @@ public class PTNetwork extends NeptuneIdentifiedObject
 	{
 		if (lineIds== null) lineIds = new ArrayList<String>();
 		lineIds.add(lineId);
+	}
+	
+	public void addLine(Line line)
+	{
+		if (lines== null) lines = new ArrayList<Line>();
+		lines.add(line);
 	}
 	
 
