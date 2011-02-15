@@ -420,20 +420,6 @@ public class Command
 			else
 			{
 				System.out.println("beans count = "+beans.size());
-
-				if (getBoolean(parameters,"validate"))
-				{
-					executeValidate(beans, manager,parameters);
-
-
-				}
-				else{
-					System.out.println("beans count = "+beans.size());
-					for (NeptuneObject bean : beans)
-					{
-						System.out.println(bean.toString("", 99));
-					}
-				}
 			}
 
 			return beans;
