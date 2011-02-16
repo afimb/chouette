@@ -18,10 +18,13 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternPr
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -40,6 +43,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private RouteProducer routeProducer;
 	@Setter private JourneyPatternProducer journeyPatternProducer;
 	@Setter private VehicleJourneyProducer vehicleJourneyProducer;
+	@Setter private StopPointProducer stopPointProducer;
+	
 	
 	public XMLNeptuneExportLinePlugin() {
 		description = new FormatDescription();
@@ -121,24 +126,40 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			chouetteLineDescription.setLine(castorLine);
 			
 			HashSet<JourneyPattern> journeyPatterns = new HashSet<JourneyPattern>();
+			HashSet<PTLink> ptLinks = new HashSet<PTLink>();
 			for(Route route : line.getRoutes()){
 				chouetteLineDescription.addChouetteRoute(routeProducer.produce(route));
 				if(route.getJourneyPatterns() != null){
 					journeyPatterns.addAll(route.getJourneyPatterns());
 				}
+				if(route.getPtLinks() != null){
+					ptLinks.addAll(route.getPtLinks());
+				}
 			}
 			
 			HashSet<VehicleJourney> vehicleJourneys = new HashSet<VehicleJourney>();
+			HashSet<StopPoint> stopPoints = new HashSet<StopPoint>();
 			for(JourneyPattern journeyPattern : journeyPatterns){
 				chouetteLineDescription.addJourneyPattern(journeyPatternProducer.produce(journeyPattern));
 				if(journeyPattern.getVehicleJourneys() != null){
 					vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
+				}
+				if(journeyPattern.getStopPoints() != null){
+					stopPoints.addAll(journeyPattern.getStopPoints());
 				}
 			}
 			
 			for(VehicleJourney vehicleJourney : vehicleJourneys){
 				chouetteLineDescription.addVehicleJourney(vehicleJourneyProducer.produce(vehicleJourney));
 			}
+			
+			for(StopPoint stopPoint : stopPoints){
+				chouetteLineDescription.addStopPoint(stopPointProducer.produce(stopPoint));
+			}
+			
+//			for(PTLink ptLink : ptLinks){
+//				chouetteLineDescription.addPtLink();
+//			}
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
 		}
