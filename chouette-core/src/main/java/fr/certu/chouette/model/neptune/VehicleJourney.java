@@ -94,7 +94,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("publishedJourneyName = ").append(publishedJourneyName);
 		sb.append("\n").append(indent).append("publishedJourneyIdentifier = ").append(publishedJourneyIdentifier);
 		sb.append("\n").append(indent).append("vehicleTypeIdentifier = ").append(vehicleTypeIdentifier);
-		sb.append("\n").append(indent).append("operatorId = ").append(companyId);
+		sb.append("\n").append(indent).append("companyId = ").append(companyId);
 
 		if (level > 0)
 		{
