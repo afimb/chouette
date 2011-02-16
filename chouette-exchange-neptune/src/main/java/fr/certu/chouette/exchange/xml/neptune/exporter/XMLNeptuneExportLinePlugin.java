@@ -16,6 +16,7 @@ import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
@@ -44,6 +45,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private JourneyPatternProducer journeyPatternProducer;
 	@Setter private VehicleJourneyProducer vehicleJourneyProducer;
 	@Setter private StopPointProducer stopPointProducer;
+	@Setter private PTLinkProducer ptLinkProducer;
 	
 	
 	public XMLNeptuneExportLinePlugin() {
@@ -157,9 +159,9 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 				chouetteLineDescription.addStopPoint(stopPointProducer.produce(stopPoint));
 			}
 			
-//			for(PTLink ptLink : ptLinks){
-//				chouetteLineDescription.addPtLink();
-//			}
+			for(PTLink ptLink : ptLinks){
+				chouetteLineDescription.addPtLink(ptLinkProducer.produce(ptLink));
+			}
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
 		}
