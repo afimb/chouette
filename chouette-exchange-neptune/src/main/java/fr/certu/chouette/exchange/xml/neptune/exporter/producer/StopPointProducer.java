@@ -27,9 +27,7 @@ public class StopPointProducer extends AbstractCastorNeptuneProducer<chouette.sc
 			castorStopPoint.setAddress(castorAddress);
 		}
 		
-		if(stopPoint.getContainedInStopArea() != null){
-			castorStopPoint.setContainedIn(stopPoint.getContainedInStopArea().getObjectId());
-		}
+		castorStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
 		castorStopPoint.setLatitude(stopPoint.getLatitude());
 		castorStopPoint.setLongitude(stopPoint.getLongitude());
 		

@@ -26,17 +26,13 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 		
 		castorVehicleJourney.setComment(vehicleJourney.getComment());
 		castorVehicleJourney.setFacility(vehicleJourney.getFacility());
-		if(vehicleJourney.getJourneyPattern() != null){
-			castorVehicleJourney.setJourneyPatternId(vehicleJourney.getJourneyPattern().getObjectId());
-		}
+		castorVehicleJourney.setJourneyPatternId(getNonEmptyObjectId(vehicleJourney.getJourneyPattern()));
 		castorVehicleJourney.setLineIdShortcut(vehicleJourney.getLineIdShortcut());
 		castorVehicleJourney.setNumber(vehicleJourney.getNumber());
 		castorVehicleJourney.setOperatorId(vehicleJourney.getOperatorId());
 		castorVehicleJourney.setPublishedJourneyIdentifier(vehicleJourney.getPublishedJourneyIdentifier());
 		castorVehicleJourney.setPublishedJourneyName(vehicleJourney.getPublishedJourneyName());
-		if(vehicleJourney.getRoute() != null){
-			castorVehicleJourney.setRouteId(vehicleJourney.getRoute().getObjectId());
-		}
+		castorVehicleJourney.setRouteId(getNonEmptyObjectId(vehicleJourney.getRoute()));
 		if(vehicleJourney.getServiceStatusValue() != null){
 			ServiceStatusValueEnum serviceStatusValue = vehicleJourney.getServiceStatusValue();
 			try {
@@ -45,9 +41,7 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 				// TODO generate report
 			}
 		}
-		if(vehicleJourney.getTimeSlot() != null){
-			castorVehicleJourney.setTimeSlotId(vehicleJourney.getTimeSlot().getObjectId());
-		}
+		castorVehicleJourney.setTimeSlotId(getNonEmptyObjectId(vehicleJourney.getTimeSlot()));
 		if(vehicleJourney.getTransportMode() != null){
 			TransportModeNameEnum transportMode = vehicleJourney.getTransportMode();
 			try {
@@ -75,12 +69,8 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 						castorVehicleJourneyAtStop.setHeadwayFrequency(new Duration(vehicleJourneyAtStop.getHeadwayFrequency().getTime()));
 					}
 					castorVehicleJourneyAtStop.setOrder(vehicleJourneyAtStop.getOrder());
-					if(vehicleJourneyAtStop.getStopPoint() != null){
-						castorVehicleJourneyAtStop.setStopPointId(vehicleJourneyAtStop.getStopPoint().getObjectId());
-					}
-					if(vehicleJourneyAtStop.getVehicleJourney() != null){
-						castorVehicleJourneyAtStop.setVehicleJourneyId(vehicleJourneyAtStop.getVehicleJourney().getObjectId());
-					}
+					castorVehicleJourneyAtStop.setStopPointId(getNonEmptyObjectId(vehicleJourneyAtStop.getStopPoint()));
+					castorVehicleJourneyAtStop.setVehicleJourneyId(getNonEmptyObjectId(vehicleJourneyAtStop.getVehicleJourney()));
 
 					VehicleJourneyAtStopTypeChoice castorVehicleJourneyAtStopTypeChoice = new VehicleJourneyAtStopTypeChoice();
 					VehicleJourneyAtStopTypeChoiceSequence castorVehicleJourneyAtStopTypeChoiceSequence = new VehicleJourneyAtStopTypeChoiceSequence();

@@ -19,9 +19,7 @@ public class JourneyPatternProducer extends AbstractCastorNeptuneProducer<chouet
 		castorJourneyPattern.setLineIdShortcut(journeyPattern.getLineIdShortcut()); //FIXME why not a model object ???
 		castorJourneyPattern.setOrigin(journeyPattern.getOrigin());
 		castorJourneyPattern.setRegistration(getRegistration(journeyPattern.getRegistrationNumber()));
-		if(journeyPattern.getRoute() != null){
-			castorJourneyPattern.setRouteId(journeyPattern.getRoute().getObjectId());
-		}
+		castorJourneyPattern.setRouteId(getNonEmptyObjectId(journeyPattern.getRoute()));
 		castorJourneyPattern.setStopPointList(NeptuneIdentifiedObject.extractObjectIds(journeyPattern.getStopPoints()));
 				
 		return castorJourneyPattern;
