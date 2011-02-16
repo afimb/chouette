@@ -25,7 +25,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private String publishedJourneyName;
 	@Getter @Setter private String publishedJourneyIdentifier;
 	@Getter @Setter private String vehicleTypeIdentifier;
-	@Getter @Setter private String operatorId;
+	@Getter @Setter private String companyId;
+	@Getter @Setter private Company company;
 	@Getter @Setter private String lineIdShortcut;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
 
@@ -93,7 +94,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("publishedJourneyName = ").append(publishedJourneyName);
 		sb.append("\n").append(indent).append("publishedJourneyIdentifier = ").append(publishedJourneyIdentifier);
 		sb.append("\n").append(indent).append("vehicleTypeIdentifier = ").append(vehicleTypeIdentifier);
-		sb.append("\n").append(indent).append("operatorId = ").append(operatorId);
+		sb.append("\n").append(indent).append("operatorId = ").append(companyId);
 
 		if (level > 0)
 		{
@@ -103,6 +104,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			if (timeSlot != null) 
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(timeSlot.toString(childIndent,0));
+			}
+
+			if (company != null) 
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append(company.toString(childIndent,0));
 			}
 			
 			childIndent = indent + CHILD_LIST_INDENT;

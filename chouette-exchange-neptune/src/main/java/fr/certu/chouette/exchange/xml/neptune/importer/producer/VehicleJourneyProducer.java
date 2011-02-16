@@ -31,8 +31,8 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 		// Number optional
 		vehicleJourney.setNumber(xmlVehicleJourney.getNumber());
 		
-		// OperatorId optional
-		vehicleJourney.setOperatorId(getNonEmptyTrimedString(xmlVehicleJourney.getOperatorId()));
+		// CompanyId optional
+		vehicleJourney.setCompanyId(getNonEmptyTrimedString(xmlVehicleJourney.getOperatorId()));
 		
 		// PublishedJourneyIdentifier optional
 		vehicleJourney.setPublishedJourneyIdentifier(getNonEmptyTrimedString(xmlVehicleJourney.getPublishedJourneyIdentifier()));

@@ -130,6 +130,7 @@ public class ModelAssembler {
 	
 	private void connectVehicleJourneys(){
 		for(VehicleJourney vehicleJourney : vehicleJourneys){
+			vehicleJourney.setCompany(getObjectFromId(vehicleJourney.getCompanyId(), Company.class));
 			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
 			vehicleJourney.setJourneyPattern(journeyPattern);
 			journeyPattern.addVehicleJourney(vehicleJourney);
