@@ -43,6 +43,9 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 		// RouteId mandatory
 		vehicleJourney.setRouteId(getNonEmptyTrimedString(xmlVehicleJourney.getRouteId()));
 		
+		// LineIdShortcut
+		vehicleJourney.setLineIdShortcut(getNonEmptyTrimedString(xmlVehicleJourney.getLineIdShortcut()));
+		
 		// ServiceStatusValue optional
 		if(xmlVehicleJourney.getStatusValue() != null){
 			try{

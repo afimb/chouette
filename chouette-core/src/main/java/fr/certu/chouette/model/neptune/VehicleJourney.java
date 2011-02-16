@@ -26,8 +26,10 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private String publishedJourneyIdentifier;
 	@Getter @Setter private String vehicleTypeIdentifier;
 	@Getter @Setter private String operatorId;
+	@Getter @Setter private String lineIdShortcut;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
 
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */

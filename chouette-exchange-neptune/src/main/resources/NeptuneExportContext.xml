@@ -10,10 +10,9 @@
 	<bean id="NeptuneNetworkExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer" />
  	<bean id="NeptuneRouteExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer" />
  	<bean id="NeptuneJourneyPatternExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer" />
-<!--	<bean id="NeptuneCompanyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer" />
-	
+	<bean id="NeptuneVehicleJourneyExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer" />
+<!--	<bean id="NeptuneCompanyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer" />	
 	<bean id="NeptunePTLinkProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer" />
-	<bean id="NeptuneVehicleJourneyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer" />
 	<bean id="NeptuneStopPointProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer" />
 	<bean id="NeptuneStopAreaProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer" />
 	<bean id="NeptuneAreaCentroidProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer" />
@@ -24,10 +23,9 @@
 		<property name="networkProducer" ref="NeptuneNetworkExportProducer" />
 		<property name="routeProducer" ref="NeptuneRouteExportProducer" />
 		<property name="journeyPatternProducer" ref="NeptuneJourneyPatternExportProducer" />
+		<property name="vehicleJourneyProducer" ref="NeptuneVehicleJourneyExportProducer" />
 <!--		<property name="companyProducer" ref="NeptuneCompanyProducer" />
-		<property name="journeyPatternProducer" ref="NeptuneJourneyPatternProducer" />
 		<property name="ptLinkProducer" ref="NeptunePTLinkProducer" />
-		<property name="vehicleJourneyProducer" ref="NeptuneVehicleJourneyProducer" />
 		<property name="stopPointProducer" ref="NeptuneStopPointProducer" />
 		<property name="stopAreaProducer" ref="NeptuneStopAreaProducer" />
 		<property name="areaCentroidProducer" ref="NeptuneAreaCentroidProducer" />

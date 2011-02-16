@@ -18,9 +18,11 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternPr
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -37,6 +39,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private PTNetworkProducer networkProducer;
 	@Setter private RouteProducer routeProducer;
 	@Setter private JourneyPatternProducer journeyPatternProducer;
+	@Setter private VehicleJourneyProducer vehicleJourneyProducer;
 	
 	public XMLNeptuneExportLinePlugin() {
 		description = new FormatDescription();
@@ -124,8 +127,17 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 					journeyPatterns.addAll(route.getJourneyPatterns());
 				}
 			}
+			
+			HashSet<VehicleJourney> vehicleJourneys = new HashSet<VehicleJourney>();
 			for(JourneyPattern journeyPattern : journeyPatterns){
 				chouetteLineDescription.addJourneyPattern(journeyPatternProducer.produce(journeyPattern));
+				if(journeyPattern.getVehicleJourneys() != null){
+					vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
+				}
+			}
+			
+			for(VehicleJourney vehicleJourney : vehicleJourneys){
+				chouetteLineDescription.addVehicleJourney(vehicleJourneyProducer.produce(vehicleJourney));
 			}
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
