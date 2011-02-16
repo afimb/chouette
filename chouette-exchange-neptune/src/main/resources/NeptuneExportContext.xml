@@ -7,10 +7,11 @@
 
 
 	<bean id="NeptuneLineExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer" />
-<!-- 	<bean id="NeptuneRouteProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer" />
-	<bean id="NeptuneCompanyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer" />
-	<bean id="NeptuneNetworkProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProducer" />
-	<bean id="NeptuneJourneyPatternProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternProducer" />
+	<bean id="NeptuneNetworkExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer" />
+ 	<bean id="NeptuneRouteExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer" />
+ 	<bean id="NeptuneJourneyPatternExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer" />
+<!--	<bean id="NeptuneCompanyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer" />
+	
 	<bean id="NeptunePTLinkProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer" />
 	<bean id="NeptuneVehicleJourneyProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer" />
 	<bean id="NeptuneStopPointProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer" />
@@ -20,9 +21,10 @@
 	 -->
 	<bean id="NeptuneLineExport" class="fr.certu.chouette.exchange.xml.neptune.exporter.XMLNeptuneExportLinePlugin">
 		<property name="lineProducer" ref="NeptuneLineExportProducer" />
-		<!-- <property name="routeProducer" ref="NeptuneRouteProducer" />
-		<property name="companyProducer" ref="NeptuneCompanyProducer" />
-		<property name="networkProducer" ref="NeptuneNetworkProducer" />
+		<property name="networkProducer" ref="NeptuneNetworkExportProducer" />
+		<property name="routeProducer" ref="NeptuneRouteExportProducer" />
+		<property name="journeyPatternProducer" ref="NeptuneJourneyPatternExportProducer" />
+<!--		<property name="companyProducer" ref="NeptuneCompanyProducer" />
 		<property name="journeyPatternProducer" ref="NeptuneJourneyPatternProducer" />
 		<property name="ptLinkProducer" ref="NeptunePTLinkProducer" />
 		<property name="vehicleJourneyProducer" ref="NeptuneVehicleJourneyProducer" />

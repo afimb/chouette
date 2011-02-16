@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.xml.neptune.exporter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import lombok.Setter;
@@ -13,8 +14,13 @@ import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -28,8 +34,9 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 
 	private FormatDescription description;
 	@Setter private LineProducer lineProducer;
-	
-	
+	@Setter private PTNetworkProducer networkProducer;
+	@Setter private RouteProducer routeProducer;
+	@Setter private JourneyPatternProducer journeyPatternProducer;
 	
 	public XMLNeptuneExportLinePlugin() {
 		description = new FormatDescription();
@@ -93,10 +100,37 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 
 	private ChouettePTNetworkTypeType exportLine(Line line) {
 		ChouettePTNetwork rootObject = new ChouettePTNetwork();
-		ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
-		chouette.schema.Line castorLine = lineProducer.produce(line);
-		chouetteLineDescription.setLine(castorLine);
-		rootObject.setChouetteLineDescription(chouetteLineDescription );
+		
+		if(line != null){
+			if(line.getPtNetwork() != null){
+				rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork()));
+			}
+			
+			//rootObject.setCompany();
+			
+			//ChouetteArea chouetteArea = new ChouetteArea();
+			//chouetteArea.setAreaCentroid();
+			//chouetteArea.setStopArea();
+			//rootObject.setChouetteArea(chouetteArea);
+			
+			ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
+			chouette.schema.Line castorLine = lineProducer.produce(line);
+			chouetteLineDescription.setLine(castorLine);
+			
+			HashSet<JourneyPattern> journeyPatterns = new HashSet<JourneyPattern>();
+			for(Route route : line.getRoutes()){
+				chouetteLineDescription.addChouetteRoute(routeProducer.produce(route));
+				if(route.getJourneyPatterns() != null){
+					journeyPatterns.addAll(route.getJourneyPatterns());
+				}
+			}
+			for(JourneyPattern journeyPattern : journeyPatterns){
+				chouetteLineDescription.addJourneyPattern(journeyPatternProducer.produce(journeyPattern));
+			}
+			
+			rootObject.setChouetteLineDescription(chouetteLineDescription);
+		}
+		
 		return rootObject;
 	}
 
