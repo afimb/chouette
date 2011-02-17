@@ -273,6 +273,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@SuppressWarnings("unchecked")
 	public String validation() throws ChouetteException{
 		lines = (List<Line>)session.get("lines");
+		validationParam.setTest3_2_PolygonPoints(polygonCoordinatesAsString);
 		reportValidation = lineManager.validate(null,lines,validationParam);
 
 		if(reportValidation != null){
