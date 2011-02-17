@@ -50,11 +50,6 @@
             <artifactId>struts2-json-plugin</artifactId>
         </dependency>
         <dependency>
-	   		<groupId>org.apache.struts</groupId>
-	   		<artifactId>struts2-dojo-plugin</artifactId>
-	   		<version>2.1.8.1</version>
-		</dependency>
-        <dependency>
             <groupId>oro</groupId>
             <artifactId>oro</artifactId>
         </dependency>
@@ -63,6 +58,12 @@
           <groupId>displaytag</groupId>
           <artifactId>displaytag</artifactId>
         </dependency>
+        <dependency>
+    <groupId>commons-beanutils</groupId>
+    <artifactId>commons-beanutils</artifactId>
+    <version>1.7.0</version>
+</dependency>
+        
                     <!-- Servlet & Jsp -->
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="sx" uri="/struts-dojo-tags" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
 <title><s:text name="validation.result.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
@@ -9,6 +7,8 @@
 	<div style="width: 90%;">
 	 <div class="panelDataSection"><s:text name="validation.result.title"/></div>
 	  	<div class="neptune-panel">
+	  	<br />
+	  	<s:label label="%{getText('validation.title')}" value="%{#session.fileFileName}"/>
 		<table border="0" cellpadding="20">
 			<tr>
 				<s:iterator value="countMap">
@@ -45,10 +45,10 @@
 					      <s:div cssClass="neptune-panel" id="%{status}">
 					     	 <br />
 						     <s:iterator value="items" id="test" status="itemsStatus">
-							     	<s:div cssClass="%{status}" >
+							     	<s:div cssClass="%{status}" cssStyle="display:%{status} == 'OK' ? none : block;">
 							     		<s:property value="getLocalizedMessage(getLocale())"/>
 							     	
-							     	<br /><br />
+							     	<br />
 							     	<s:div cssClass="detail">
 							     	<s:a href="#" onclick="showIt('detail_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
 							     		id="showIt_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
@@ -68,21 +68,21 @@
 							     	</s:div>
 							     	</s:div>
 						     </s:iterator>
-						     <br /><br />
+						     <br />
 			  			</s:div>
 				</s:iterator>
 				<br />	
   			</div>
 		 </s:iterator>
 	
-  	<br /><br />
+  	<br />
   	<div class="panelDataSection"><s:text name="message.parameter.title"/>
 		</div>
-	      <div class="panel">
+	      <div class="neptune-panel">
 	      <br />
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.1')}" value="%{#session.validationParam.test3_1_MinimalDistance}" /><br />
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.2')}" value="%{#session.validationParam.test3_2_MinimalDistance}"/><br />
-	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{#session.polygonWorkFlow}"/><br />
+	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{#session.polygonCoordinatesAsString}"/><br />
 	 	<s:label value="%{#session.validationParam.test3_7_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" />
 	 	<s:label value="%{#session.validationParam.test3_7_MaximalDistance}" label="/" />
 	 	<br />
@@ -112,6 +112,7 @@
 </div>
  <script type="text/javascript">
 
+ 
  function showIt(idToShow, idOrigin) {
     $(idToShow).show();
     //$(idOrigin).hide();
@@ -133,7 +134,7 @@
 	 for (var index = 0; index < $$('div[class='+cssClass+']').length; ++index) {
 		  var item = $$('div[class='+cssClass+']')[index];
 		  item.hide();
-		}
-		
+		}		
  }
+ 
  </script> 

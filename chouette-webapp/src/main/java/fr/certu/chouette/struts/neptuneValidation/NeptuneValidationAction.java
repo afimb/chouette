@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,45 +63,26 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter private Report report;
 	@Getter @Setter private Report reportValidation;
 	@Getter @Setter private List<Line> lines;
-	//@Getter @Setter private Map<String, String> cookiesMap;
-
-	//Validation parameters
-	@Getter @Setter private float test3_1_MinimalDistance;
-	@Getter @Setter private float test3_2_MinimalDistance;
-	@Getter @Setter private String test3_2_Polygon;
-	@Getter @Setter private float test3_7_MinimalDistance;
-	@Getter @Setter private float test3_7_MaximalDistance;
-	@Getter @Setter private float test3_8a_MinimalSpeed;
-	@Getter @Setter private float test3_8a_MaximalSpeed;
-	@Getter @Setter private float test3_8b_MinimalSpeed;
-	@Getter @Setter private float test3_8b_MaximalSpeed;
-	@Getter @Setter private float test3_8c_MinimalSpeed;
-	@Getter @Setter private float test3_8c_MaximalSpeed;
-	@Getter @Setter private float test3_8d_MinimalSpeed;
-	@Getter @Setter private float test3_8d_MaximalSpeed;
-	@Getter @Setter private float test3_9_MinimalSpeed;
-	@Getter @Setter private float test3_9_MaximalSpeed;
-	@Getter @Setter private float test3_10_MinimalDistance;
-	@Getter @Setter private long test3_16c_MinimalTime;
-	@Getter @Setter private long test3_16c_MaximalTime;
 	@Getter @Setter private int cookieExpires;
-	@Getter @Setter private ValidationParameters validationParam = new ValidationParameters();
-	@Getter @Setter private String polygonWorkFlow;
+	@Getter @Setter private ValidationParameters validationParam ;
+	@Getter @Setter private ValidationParameters validationParamDefault ;
+	@Setter private String polygonCoordinatesAsString;
+
 	// For access to the raw servlet request / response, eg for cookies
 	@Getter @Setter protected HttpServletResponse servletResponse;
 	@Getter @Setter protected HttpServletRequest servletRequest;
 
 	@Override
 	public void prepare() throws Exception {
-		test3_2_Polygon=test3_2_Polygon.replace(" ", "\t");
-		// Load from cookie if any
-		loadFromCookie(validationParam);
+		validationParam = new ValidationParameters();
 	}
 
 
 	public String execute(){
 		if(session.get("imported") != null)
 			session.remove("imported");
+		// Load from cookie if any
+		loadFromCookie(validationParam);
 		return SUCCESS;
 	}
 
@@ -107,106 +90,73 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 * Loading from cookie if any
 	 */
 	private void loadFromCookie(ValidationParameters validationParam){
-
-		for(Cookie c : servletRequest.getCookies()) {
-			String cookieName = c.getName();
-			String cookieValue = c.getValue();
-
-			//LOGGER.info("Cookie name : "+cookieName+" Cookie value : "+cookieValue+" Cookie expires "+cookieExpires);
-
-			if (cookieName.equals("test3_1_MinimalDistance")){
-				validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
-				LOGGER.info(">>> "+validationParam.getTest3_1_MinimalDistance()+" >>> "+cookieValue);
-			}
-
-			else
-				validationParam.setTest3_1_MinimalDistance(test3_1_MinimalDistance);
-
-			if(cookieName.equals("polygonWorkFlow"))
-				polygonWorkFlow=cookieValue;
-			else
-				polygonWorkFlow=test3_2_Polygon;
-
-			if(cookieName.equals("test3_2_MinimalDistance"))
-				validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_2_MinimalDistance(test3_2_MinimalDistance);
-
-			if(cookieName.equals("test3_10_MinimalDistance"))
-				validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_10_MinimalDistance(test3_10_MinimalDistance);
-
-			if(cookieName.equals("test3_16c_MaximalTime"))
-				validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
-			else
-				validationParam.setTest3_16c_MaximalTime(test3_16c_MaximalTime);
-
-			if(cookieName.equals("test3_16c_MinimalTime"))
-				validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
-			else
-				validationParam.setTest3_16c_MinimalTime(test3_16c_MinimalTime);
-
-			if(cookieName.equals("test3_7_MaximalDistance"))
-				validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_7_MaximalDistance(test3_7_MaximalDistance);
-
-			if(cookieName.equals("test3_7_MinimalDistance"))
-				validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_7_MinimalDistance(test3_7_MinimalDistance);
-
-			if(cookieName.equals("test3_8a_MaximalSpeed"))
-				validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8a_MaximalSpeed(test3_8a_MaximalSpeed);
-
-			if(cookieName.equals("test3_8a_MinimalSpeed"))
-				validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8a_MinimalSpeed(test3_8a_MinimalSpeed);
-			if(cookieName.equals("test3_8b_MaximalSpeed"))
-				validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8b_MaximalSpeed(test3_8b_MaximalSpeed);
-
-			if(cookieName.equals("test3_8b_MinimalSpeed"))
-				validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8b_MinimalSpeed(test3_8b_MinimalSpeed);
-
-			if(cookieName.equals("test3_8c_MaximalSpeed"))
-				validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8c_MaximalSpeed(test3_8c_MaximalSpeed);
-
-			if(cookieName.equals("test3_8c_MinimalSpeed"))
-				validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8c_MinimalSpeed(test3_8c_MinimalSpeed);
-
-			if(cookieName.equals("test3_8d_MaximalSpeed"))
-				validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8d_MaximalSpeed(test3_8d_MaximalSpeed);
-
-			if(cookieName.equals("test3_8d_MinimalSpeed"))
-				validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_8d_MinimalSpeed(test3_8d_MinimalSpeed);
-
-			if(cookieName.equals("test3_9_MaximalSpeed"))
-				validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_9_MaximalSpeed(test3_9_MaximalSpeed);
-
-			if(cookieName.equals("test3_9_MinimalSpeed"))
-				validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
-			else
-				validationParam.setTest3_9_MinimalSpeed(test3_9_MinimalSpeed);
+		try {
+			BeanUtils.copyProperties(validationParam, validationParamDefault);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
 
+		if(servletRequest != null && servletRequest.getCookies() != null && servletRequest.getCookies().length>0)
+			for(Cookie c : servletRequest.getCookies()) {
+				String cookieName = c.getName();
+				String cookieValue = c.getValue();
+			
+				if (cookieName.equals("test3_1_MinimalDistance"))
+					validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_2_Polygon"))
+					validationParam.setTest3_2_PolygonPoints(cookieValue);
+
+				if(cookieName.equals("test3_2_MinimalDistance"))
+					validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_10_MinimalDistance"))
+					validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_16c_MaximalTime"))
+					validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_16c_MinimalTime"))
+					validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_7_MaximalDistance"))
+					validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_7_MinimalDistance"))
+					validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8a_MaximalSpeed"))
+					validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8a_MinimalSpeed"))
+					validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8b_MaximalSpeed"))
+					validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8b_MinimalSpeed"))
+					validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8c_MaximalSpeed"))
+					validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8c_MinimalSpeed"))
+					validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8d_MaximalSpeed"))
+					validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_8d_MinimalSpeed"))
+					validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_9_MaximalSpeed"))
+					validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_9_MinimalSpeed"))
+					validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
+			}
 	}
 	/**
 	 * Neptune import
@@ -216,8 +166,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 */
 	@SuppressWarnings("unchecked")
 	public String importNeptune() throws ChouetteException, IOException {
-		//fileName = "The file name...";
-
 		String result = null;
 		if(session.get("lines") != null)
 			session.remove("lines");
@@ -253,8 +201,8 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			addActionError(getText("error.import.file.require"));
 			result = INPUT;
 		}
-
 		session.put("lines", lines);
+		session.put("fileFileName", fileFileName);
 		loadFromCookie(validationParam);
 		return result;
 	}
@@ -290,7 +238,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 * @throws ChouetteException
 	 */
 	private boolean importZip(File file) throws ChouetteException{
-
 		try{
 			boolean result = true;
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
@@ -325,54 +272,50 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 */
 	@SuppressWarnings("unchecked")
 	public String validation() throws ChouetteException{
-
 		lines = (List<Line>)session.get("lines");
-
-		//for(Line line : lines)
-		// {
-		//LOGGER.info("Line : "+line.toString("\t",89));
-
 		reportValidation = lineManager.validate(null,lines,validationParam);
 
 		if(reportValidation != null){
 			LOGGER.info("Report "+reportValidation.getLocalizedMessage(getLocale()));
 			getReportItemDetails(reportValidation.getItems());
+		}		
+		boolean isDefault = false;
+		if(session.get("isDefault") != null)
+			isDefault = (Boolean)session.get("isDefault");
+		if(!isDefault){
+			// Save to cookie
+			saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
+			saveCookie("test3_2_Polygon", polygonCoordinatesAsString);
+			saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
+
+			saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
+			saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
+
+			saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
+
+			saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
+			saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
+
+			saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
+			saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
+
+			saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
+			saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
+
+			saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
+			saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
+
+			saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
+			saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
+
+			saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
+			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
 		}
-
-		// }
-
-		// Save to cookie
-		saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
-		saveCookie("polygonWorkFlow", polygonWorkFlow);
-		saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
-
-		saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
-		saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
-
-		saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
-
-		saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
-		saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
-
-		saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
-		saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
-
-		saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
-		saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
-
-		saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
-		saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
-
-		saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
-		saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
-
-		saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
-		saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
-
+		
 
 		//Adding validation parameters values in a session scope
 		session.put("validationParam", validationParam);
-		session.put("polygonWorkFlow", polygonWorkFlow);
+		session.put("polygonCoordinatesAsString", polygonCoordinatesAsString);
 
 		return LIST;
 	}
@@ -384,40 +327,24 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 */
 	private void saveCookie(String name, Object value){
 		Cookie cookie = new Cookie(name, String.valueOf(value));
-		cookie.setMaxAge((int) (new Date().getTime()+cookieExpires)); 
+		int month = 60*60*24*30;
+		cookie.setMaxAge(month*cookieExpires);
 		servletResponse.addCookie(cookie);
 	}
 
 	/**
 	 * Restore the validation parameters default values
 	 * @return
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
-	public String defaultValue(){
-		validationParam.setTest3_10_MinimalDistance(test3_10_MinimalDistance);
-		validationParam.setTest3_16c_MaximalTime(test3_16c_MaximalTime);
-		validationParam.setTest3_16c_MinimalTime(test3_16c_MinimalTime);
-		validationParam.setTest3_1_MinimalDistance(test3_1_MinimalDistance);
-		validationParam.setTest3_2_MinimalDistance(test3_2_MinimalDistance);
-		polygonWorkFlow=test3_2_Polygon;
-		validationParam.setTest3_2_Polygon(getPolygonCoordinatesFromString(polygonWorkFlow));
-		validationParam.setTest3_7_MaximalDistance(test3_7_MaximalDistance);
-		validationParam.setTest3_7_MinimalDistance(test3_7_MinimalDistance);
-		validationParam.setTest3_8a_MaximalSpeed(test3_8a_MaximalSpeed);
-		validationParam.setTest3_8a_MinimalSpeed(test3_8a_MinimalSpeed);
-		validationParam.setTest3_8b_MaximalSpeed(test3_8b_MaximalSpeed);
-		validationParam.setTest3_8b_MinimalSpeed(test3_8b_MinimalSpeed);
-		validationParam.setTest3_8c_MaximalSpeed(test3_8c_MaximalSpeed);
-		validationParam.setTest3_8c_MinimalSpeed(test3_8c_MinimalSpeed);
-		validationParam.setTest3_8d_MaximalSpeed(test3_8d_MaximalSpeed);
-		validationParam.setTest3_8d_MinimalSpeed(test3_8d_MinimalSpeed);
-		validationParam.setTest3_9_MaximalSpeed(test3_9_MaximalSpeed);
-		validationParam.setTest3_9_MinimalSpeed(test3_9_MinimalSpeed);
-
+	@SuppressWarnings("unchecked")
+	public String defaultValue() throws IllegalAccessException, InvocationTargetException{
+		BeanUtils.copyProperties(validationParam, validationParamDefault);
 		addActionMessage(getText("neptune.field.restore.default.value.success"));
-
+		session.put("isDefault", true);
 		return SUCCESS;
 	}
-
 
 	private void getReportItemDetails(List<ReportItem> reportItems){
 		for(ReportItem reportItem : reportItems){
@@ -430,28 +357,19 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			if(reportItem.getItems() != null && reportItem.getItems().size()>0)
 				getReportItemDetails(reportItem.getItems());
 		}
-
 	}
-
 	/**
 	 * Get the polygon coordinates from a string
 	 * @param text
 	 * @return
 	 */
-	private List<Coordinate> getPolygonCoordinatesFromString(String text){
-		List<Coordinate> coordinates = new ArrayList<Coordinate>();
-
-		if(text != null && text.length()>0){
-			String coordinateAsStringTab[] = text.split("\t");
-			for(String coordinateAsString : coordinateAsStringTab){
-				double x = Double.valueOf(coordinateAsString.split(",")[0]);
-				double y = Double.valueOf(coordinateAsString.split(",")[1]);
-				Coordinate coordinate = new Coordinate(x, y);
-				coordinates.add(coordinate);
-			}	
+	public String getPolygonCoordinatesAsString(){
+		List<Coordinate> coordinates = validationParam.getTest3_2_Polygon();
+		String coodinatesAsString = "";
+		for(Coordinate coordinate : coordinates){
+			coodinatesAsString =coodinatesAsString.concat(coordinate.x+","+coordinate.y+"\t");
 		}
-
-		return coordinates;
+		return coodinatesAsString;
 	}
 	/**
 	 * 
@@ -476,19 +394,19 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 					{
 					case UNCHECK : 
 						nbUNCHECK++;						
-					break;
+						break;
 					case OK : 
 						nbOK++;						
-					break;
+						break;
 					case WARNING : 
 						nbWARN++; 						
-					break;
+						break;
 					case ERROR : 
 						nbERROR++;	
-					break;
+						break;
 					case FATAL : 
 						nbFATAL++;		
-					break;
+						break;
 					}
 				}
 			}
@@ -500,5 +418,4 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		countMap.put(STATE.UNCHECK, nbUNCHECK);
 		return countMap;
 	}
-
 }

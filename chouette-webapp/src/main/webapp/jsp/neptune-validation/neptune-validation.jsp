@@ -1,9 +1,8 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
-
+<s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
 	<div style="width: 80%;">
 	 <div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="panel">
@@ -29,7 +28,7 @@
 	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
 	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
 	   
-	   <s:textarea cols="30" name="polygonWorkFlow" label="%{getText('neptune.field.polygon.3.6')}" rows="10"></s:textarea>
+	   <s:textarea cols="30" name="polygonCoordinatesAsString" label="%{getText('neptune.field.polygon.3.6')}" rows="10"></s:textarea>
 		
 		<s:textfield name="validationParam.test3_7_MinimalDistance" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" size="4"/>
 		<s:textfield name="validationParam.test3_7_MaximalDistance" size="4" label="/"/>
