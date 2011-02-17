@@ -23,17 +23,18 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 @NoArgsConstructor
 public class Route extends NeptuneIdentifiedObject
 {
-	@Getter @Setter private Long oppositeRouteId;
-	@Getter @Setter private Long lineId;
-	@Getter @Setter private String publishedName;
-	@Getter @Setter private String number; 
-	@Getter @Setter private PTDirectionEnum direction;
-	@Getter @Setter private String comment;
-	@Getter @Setter private String wayBack;
-	@Getter @Setter private List<String> journeyPatternIds;
-	@Getter @Setter private List<JourneyPattern> journeyPatterns;
-	@Getter @Setter private List<String> ptLinkIds;
-	@Getter @Setter private List<PTLink> ptLinks;
+	@Getter @Setter private Long oppositeRouteId; // FK 
+	@Getter @Setter private Long lineId;          // FK 
+	@Getter @Setter private String publishedName; // BD
+	@Getter @Setter private String number;        //  BD
+	@Getter @Setter private PTDirectionEnum direction; // BD 
+	@Getter @Setter private String comment; // BD
+	@Getter @Setter private String wayBack; // BD 
+	@Getter @Setter private List<String> journeyPatternIds; 
+	@Getter @Setter private List<JourneyPattern> journeyPatterns; // FK inverse manquante à ajouter 
+	@Getter @Setter private List<String> ptLinkIds; 
+	@Getter @Setter private List<PTLink> ptLinks; // Table + FK inverse 
+	
 	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
@@ -179,4 +180,6 @@ public class Route extends NeptuneIdentifiedObject
 	public void removePTLink(PTLink ptLink){
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}
+	
+	
 }

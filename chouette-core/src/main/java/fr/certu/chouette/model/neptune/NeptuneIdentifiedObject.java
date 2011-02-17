@@ -21,11 +21,26 @@ import lombok.Setter;
  */
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
-	@Getter @Setter private String objectId;
-	@Getter @Setter private int objectVersion = 1; // TODO verifier la valeur par defaut
-	@Getter @Setter private Date creationTime;
-	@Getter @Setter private String creatorId;
-	@Getter @Setter private String name;
+	/**
+	 * Neptune unique identifier : mandatory
+	 */
+	@Getter @Setter private String objectId;  // BD
+	/**
+	 * Version of Neptune Object (default = 1) 
+	 */
+	@Getter @Setter private int objectVersion = 1; // BD
+	/**
+	 * Creation time
+	 */
+	@Getter @Setter private Date creationTime;  // BD
+	/**
+	 * Creator Reference 
+	 */
+	@Getter @Setter private String creatorId; // BD
+	/**
+	 * Object Name
+	 */
+	@Getter @Setter private String name; // BD
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneObject#toString(java.lang.String, int)

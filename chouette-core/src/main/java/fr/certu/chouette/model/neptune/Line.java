@@ -24,21 +24,21 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 public class Line extends NeptuneIdentifiedObject
 {
 
-	@Getter @Setter private Long ptNetworkId;
-	@Getter @Setter private Long companyId;
-	@Getter @Setter private String number;
-	@Getter @Setter private String publishedName;
-	@Getter @Setter private TransportModeNameEnum transportModeName;
-	@Getter @Setter private String registrationNumber;
-	@Getter @Setter private String comment;
-	@Getter @Setter private String ptNetworkIdShortcut;
-	@Getter @Setter private List<String> routeIds;
-	@Getter @Setter private List<String> lineEnds;
-	@Getter @Setter private PTNetwork ptNetwork;
-	@Getter @Setter private Company company;
-	@Getter @Setter private List<Route> routes;
-	@Getter @Setter boolean mobilityRestrictedSuitable;
-	@Getter @Setter List<UserNeedEnum> userNeeds;
+	@Getter @Setter private Long ptNetworkId; // BD FK directe
+	@Getter @Setter private Long companyId;   // BD Fk directe hors modèle (compagnie par défaut à usage interne) 
+	@Getter @Setter private String number;    // BD
+	@Getter @Setter private String publishedName; // BD
+	@Getter @Setter private TransportModeNameEnum transportModeName; // BD
+	@Getter @Setter private String registrationNumber; // BD 
+	@Getter @Setter private String comment; // BD
+	@Getter @Setter private String ptNetworkIdShortcut; // Hors BD, habillé par la relation FK
+	@Getter @Setter private List<String> routeIds; // résolu par la FK
+	@Getter @Setter private List<String> lineEnds; // calculé quand nécessaire (StopPoints)
+	@Getter @Setter private PTNetwork ptNetwork; // FK
+	@Getter @Setter private Company company; // FK 
+	@Getter @Setter private List<Route> routes; // FK 
+	@Getter @Setter boolean mobilityRestrictedSuitable; // Ajout en base init à false
+	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
 
 	public void addUserNeed(UserNeedEnum userNeed){
 		if(userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();

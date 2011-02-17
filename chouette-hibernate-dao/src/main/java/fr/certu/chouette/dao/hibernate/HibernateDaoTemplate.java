@@ -103,10 +103,10 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		}
 		HibernateTemplate ht = getHibernateTemplate();
 		List<T> beans = null; 
-		if (filter.getLimit() > 0)
+		if (filter.getLimit() > 0 || filter.getStart() > 0)
 		{
 			logger.debug("call with limit");
-			beans = ht.findByCriteria(criteria,1,filter.getLimit());
+			beans = ht.findByCriteria(criteria,filter.getStart(),filter.getLimit());
 		}
 		else
 		{

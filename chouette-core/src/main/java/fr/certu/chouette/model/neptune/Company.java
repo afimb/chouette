@@ -19,14 +19,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Company extends NeptuneIdentifiedObject
 {
-	@Getter @Setter private String shortName;
-	@Getter @Setter private String organisationalUnit;
-	@Getter @Setter private String operatingDepartmentName;
-	@Getter @Setter private String code;
-	@Getter @Setter private String phone;
-	@Getter @Setter private String fax;
-	@Getter @Setter private String email;
-	@Getter @Setter private String registrationNumber;
+	@Getter @Setter private String shortName; // BD
+	@Getter @Setter private String organisationalUnit; // BD
+	@Getter @Setter private String operatingDepartmentName; // BD
+	@Getter @Setter private String code; // BD
+	@Getter @Setter private String phone; // BD
+	@Getter @Setter private String fax; // BD
+	@Getter @Setter private String email; // BD
+	@Getter @Setter private String registrationNumber; // BD
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)

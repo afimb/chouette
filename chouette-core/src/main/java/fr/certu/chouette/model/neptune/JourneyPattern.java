@@ -10,17 +10,17 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 public class JourneyPattern extends NeptuneIdentifiedObject
 {
 
-	@Getter @Setter private String registrationNumber;
-	@Getter @Setter private String comment;
-	@Getter @Setter private String origin;
-	@Getter @Setter private String destination;
-	@Getter @Setter private String publishedName;
+	@Getter @Setter private String registrationNumber; //  BD
+	@Getter @Setter private String comment; //  BD
+	@Getter @Setter private String origin;   // StopPointId départ (déterminé par algo ? 
+	@Getter @Setter private String destination; // StopPointId arrivée (déterminé par algo ?
+	@Getter @Setter private String publishedName; //  BD
 	@Getter @Setter private List<StopPoint>	stopPoints;
-	@Getter @Setter private List<String>	stopPointIds;
-	@Getter @Setter private String lineIdShortcut; // a confirmer
-	@Getter @Setter private String routeId;
-	@Getter @Setter private Route route;
-	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
+	@Getter @Setter private List<String>	stopPointIds;  // StopPointId (déterminé par algo ?
+	@Getter @Setter private String lineIdShortcut; //(déterminé par algo : remontée de route)
+	@Getter @Setter private String routeId; // FK
+	@Getter @Setter private Route route;   // FK 
+	@Getter @Setter private List<VehicleJourney> vehicleJourneys; // FK inverse
 	
 	
 	/* (non-Javadoc)

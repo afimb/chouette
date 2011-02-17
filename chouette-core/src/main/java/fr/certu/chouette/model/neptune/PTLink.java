@@ -8,13 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class PTLink extends NeptuneIdentifiedObject
-{
-	@Getter @Setter private String comment;
-	@Getter @Setter private BigDecimal linkDistance;
+{// TODO add table  PTLink
+	@Getter @Setter private String comment;  // BD
+	@Getter @Setter private BigDecimal linkDistance; // BD 
 	@Getter @Setter private String startOfLinkId;
-	@Getter @Setter private StopPoint startOfLink;
+	@Getter @Setter private StopPoint startOfLink; // FK 
 	@Getter @Setter private String endOfLinkId;
-	@Getter @Setter private StopPoint endOfLink;
+	@Getter @Setter private StopPoint endOfLink; // FK 
+	@Getter @Setter private String routeId; 
+	@Getter @Setter private Route route; // FK 
 	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)

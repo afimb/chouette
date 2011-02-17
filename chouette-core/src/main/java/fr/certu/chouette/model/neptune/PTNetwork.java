@@ -25,14 +25,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PTNetwork extends NeptuneIdentifiedObject
 {
-	@Getter @Setter private Date versionDate;
-	@Getter @Setter private String description;
-	@Getter @Setter private String registrationNumber;
-	@Getter @Setter private String sourceName;
-	@Getter @Setter private String sourceIdentifier;
-	@Getter @Setter private String comment;
-	@Getter @Setter private PTNetworkSourceTypeEnum 	pTNetworkSourceType;
-	@Getter @Setter private List<String>				lineIds;
+	/**
+	 * 
+	 */
+	@Getter @Setter private Date versionDate; // BD
+	@Getter @Setter private String description; // BD
+	@Getter @Setter private String registrationNumber; // BD
+	@Getter @Setter private String sourceName; // BD 
+	@Getter @Setter private String sourceIdentifier; // BD
+	@Getter @Setter private String comment; // BD 
+	@Getter @Setter private PTNetworkSourceTypeEnum 	pTNetworkSourceType; // Ajout BD
+	@Getter @Setter private List<String>				lineIds; // FK inverse non alimenté par la BD TODO à voir
 
 
 	/* (non-Javadoc)
