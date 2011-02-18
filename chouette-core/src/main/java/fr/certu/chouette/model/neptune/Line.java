@@ -18,31 +18,111 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
- * 
+ * Neptune Line 
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
  */
+@SuppressWarnings("serial")
 @NoArgsConstructor
 public class Line extends NeptuneIdentifiedObject
 {
-
+    
+	/**
+	 * Database foreign key referring to the line's network<br/>
+	 * Meaningless after import action
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private Long ptNetworkId; // BD FK directe
+	/**
+	 * Database foreign key referring to the line's company<br/>
+	 * Not in Neptune model, it's a shortcut to default VehicleJourney operatorId <br/>
+	 * Meaningless after import action
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private Long companyId;   // BD Fk directe hors modèle (compagnie par défaut à usage interne) 
+	/**
+	 * Number of the line (characters) 
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String number;    // BD
+	/**
+	 * Public name for travellers
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String publishedName; // BD
+	/**
+	 * Transport Mode (Bus, Train, ...)
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private TransportModeNameEnum transportModeName; // BD
+	/**
+	 * Registration number
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String registrationNumber; // BD 
+	/**
+	 * Comment
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String comment; // BD
+	/**
+	 * Neptune identification referring to the line's network
+	 * <br/><i>readable/writable</i>
+	 * 
+	 */
 	@Getter @Setter private String ptNetworkIdShortcut; // Hors BD, habillé par la relation FK
+	/**
+	 * Neptune identification referring to the line's routes
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<String> routeIds; // résolu par la FK
+	/**
+	 * Neptune identification referring to the departures/arrivals stoppoints of the line's JourneyPatterns<br/>
+	 * Meaningless after database read
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<String> lineEnds; // calculé quand nécessaire (StopPoints)
+	/**
+	 * The line's network object <br/>
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private PTNetwork ptNetwork; // FK
+	/**
+	 * The line's company object <br/>
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private Company company; // FK 
+	/**
+	 * The line's route objects <br/>
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<Route> routes; // FK 
+	/**
+	 * 
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter boolean mobilityRestrictedSuitable; // Ajout en base init à false
+	/**
+	 * 
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
 
-	public void addUserNeed(UserNeedEnum userNeed){
-		if(userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
-		userNeeds.add(userNeed);
+	/**
+	 * add a user needs enumeration value to the line<br/>
+	 * do nothing if user need is already present
+	 * 
+	 * @param userNeed
+	 */
+	public void addUserNeed(UserNeedEnum userNeed)
+	{
+		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
+		if (!userNeeds.contains(userNeed)) userNeeds.add(userNeed);
 	}
 	
 	/* (non-Javadoc)
@@ -151,22 +231,48 @@ public class Line extends NeptuneIdentifiedObject
 		return sb.toString();
 	}
 
+	/**
+	 * add a route to the line
+	 * 
+	 * @param route the route to be added
+	 */
 	public void addRoute(Route route)
 	{
 		if (routes == null) routes = new ArrayList<Route>();
 		routes.add(route);
 	}
 	
+	/**
+	 * add a routeid to the line
+	 * 
+	 * @param routeId the routeId to add
+	 */
 	public void addRouteId(String routeId)
 	{
 		if (routeIds== null) routeIds = new ArrayList<String>();
 		routeIds.add(routeId);
 	}
 	
+	/**
+	 *  add a lienEndid to the line
+	 * 
+	 * @param lineEndId 
+	 */
 	public void addLineEnd(String lineEndId)
 	{
 		if (lineEnds== null) lineEnds = new ArrayList<String>();
 		lineEnds.add(lineEndId);
+	}
+	
+	/**
+	 * build or refresh lineEndList with JourneyPattern relationship
+	 * <p/>
+	 * line must be loaded form database with DetailLevel of 
+	 * STRUCTURAL_DEPENDENCIES mimimun for this method to operate
+	 */
+	public void buildLineEndList()
+	{
+		// TODO 
 	}
 
 }

@@ -16,8 +16,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ * Abstract object used for all Identified Neptune Object
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
  */
+@SuppressWarnings("serial")
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
 	/**
@@ -61,6 +66,12 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 		return s;
 	}
 
+	/**
+	 * Build a list of Neptune Ids (ObjectId) from a list of Neptune Objects 
+	 * 
+	 * @param neptuneObjects the list to parse
+	 * @return the object ids list
+	 */
 	public static List<String> extractObjectIds(List<? extends NeptuneIdentifiedObject> neptuneObjects){
 		List<String> objectIds = new ArrayList<String>();
 			if(neptuneObjects != null){

@@ -20,22 +20,65 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 
+ * Neptune Public Transport Network 
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
  */
+@SuppressWarnings("serial")
 @NoArgsConstructor
 public class PTNetwork extends NeptuneIdentifiedObject
 {
 	/**
-	 * 
+	 * Date when the network and it's dependencies has been referenced
+	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private Date versionDate; // BD
+	/**
+	 * A description of the network
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String description; // BD
+	/**
+	 * Registration Number
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String registrationNumber; // BD
+	/**
+	 * Source Name
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String sourceName; // BD 
+	/**
+	 * Source Identifier
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String sourceIdentifier; // BD
+	/**
+	 * Database foreign key referring to the line's network<br/>
+	 * Meaningless after import action
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String comment; // BD 
+	/**
+	 * Source Type 
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private PTNetworkSourceTypeEnum 	pTNetworkSourceType; // Ajout BD
+	/**
+	 * List of the network lines Neptune Ids<br/>
+	 * After import, may content only lines imported<br/>
+	 * Meaningless after database loading
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<String>				lineIds; // FK inverse non alimenté par la BD TODO à voir
+	/**
+	 * List of the network lines <br/>
+	 * After import, may content only lines imported<br/>
+	 * Meaningless after database loading
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<Line>				lines;
 
 
@@ -88,18 +131,26 @@ public class PTNetwork extends NeptuneIdentifiedObject
 		return sb.toString();
 	}
 
+	/**
+	 * add a line Id to the network
+	 * 
+	 * @param lineId the line id to add
+	 */
 	public void addLineId(String lineId)
 	{
 		if (lineIds== null) lineIds = new ArrayList<String>();
 		lineIds.add(lineId);
 	}
 	
+	/**
+	 * add a line Id to the network
+	 * 
+	 * @param line the line to add
+	 */
 	public void addLine(Line line)
 	{
 		if (lines== null) lines = new ArrayList<Line>();
 		lines.add(line);
 	}
-	
-
 	
 }
