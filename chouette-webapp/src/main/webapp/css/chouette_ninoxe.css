@@ -904,3 +904,45 @@ div.autocomplete ul li
   margin-left: 450px;
   height: 700px;
 }
+
+/****************************************************************/
+/*	css Neptune validation
+/****************************************************************/
+.neptune-panel-inSide
+{
+ 	background-color: #FFFFFF;
+  	padding: 10px 10px;
+  	margin:0 0 5px 100px;
+  	width: 60%;
+  	font-size: 12px;
+  	border: 1px solid #B0BCD6;
+}
+.neptune-panel{
+	font-size: 14px;
+	background-color: #FFFFFF;
+  	margin: 0px 0px 2px 0px;
+  	 padding: 10px 10px 10px 10px;
+ 	border: 1px solid #B0BCD6;
+	}
+.OK{
+	background: url(../images/OK.png) no-repeat 90% 0%;
+	}
+	
+.UNCHECK {
+	background: url(../images/UNCHECK.png) no-repeat 90% 0%;
+	}
+	
+.WARNING{
+	background: url(../images/WARNING.png) no-repeat 90% 0%;
+	}		
+
+.ERROR{
+	background: url(../images/ERROR.png) no-repeat 90% 0%;
+	}
+.FATAL{
+	background: url(../images/FATAL.png) no-repeat 90% 0%;
+	}
+.detail {
+	margin: 0 0 0 660px;
+	padding: 10px 0 0 0;
+	}				

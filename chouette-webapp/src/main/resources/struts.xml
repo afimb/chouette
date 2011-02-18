@@ -596,10 +596,7 @@
     <action name="*" class="NeptuneValidationAction" method="{1}">
       <result name="success">/jsp/neptune-validation/neptune-validation.jsp</result>
       <result name="input">/jsp/neptune-validation/neptune-validation.jsp</result>
-      <result name="list">/jsp/neptune-validation/list.jsp</result><!--
-       <interceptor-ref name="defaultCookie" />
-        <param name="cookiesName">*</param>
-        <param name="cookiesValue">*</param>
-    --></action>
+      <result name="list">/jsp/neptune-validation/list.jsp</result>
+    </action>
   </package>
 </struts>

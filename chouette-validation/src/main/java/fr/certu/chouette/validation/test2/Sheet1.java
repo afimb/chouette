@@ -102,19 +102,21 @@ public class Sheet1 implements IValidationPlugin<Line>
 				failedItem.addMessageArgs(line.getObjectId());
 				reportStep.addItem(failedItem);
 				
-			}
-			String ptNeworkId = line.getPtNetworkIdShortcut();
-			if (ptNeworkId != null)
-			{
-				checked = true;
-				if (ptNeworkId.equals(network.getObjectId()))
+			}else {
+				String ptNeworkId = line.getPtNetworkIdShortcut();
+				if (ptNeworkId != null)
 				{
-					ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step2_error");
-					failedItem.setStatus(Report.STATE.ERROR);
-					failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
-					reportStep.addItem(failedItem);
+					checked = true;
+					if (!ptNeworkId.equals(network.getObjectId()))
+					{
+						ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step2_error");
+						failedItem.setStatus(Report.STATE.ERROR);
+						failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
+						reportStep.addItem(failedItem);
+					}
 				}
 			}
+		
 		}
 		if (!checked)
 		{

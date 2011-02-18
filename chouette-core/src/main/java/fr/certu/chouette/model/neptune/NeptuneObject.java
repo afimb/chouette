@@ -7,6 +7,8 @@
  */
 package fr.certu.chouette.model.neptune;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -18,7 +20,8 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 /**
  * 
  */
-public abstract class NeptuneObject
+@SuppressWarnings("serial")
+public abstract class NeptuneObject implements Serializable
 {
 	protected static final String CHILD_INDENT = "        ";
 	protected static final String CHILD_ARROW = "  -->";

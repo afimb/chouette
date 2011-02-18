@@ -58,6 +58,12 @@
           <groupId>displaytag</groupId>
           <artifactId>displaytag</artifactId>
         </dependency>
+        <dependency>
+    <groupId>commons-beanutils</groupId>
+    <artifactId>commons-beanutils</artifactId>
+    <version>1.7.0</version>
+</dependency>
+        
                     <!-- Servlet & Jsp -->
         <dependency>
             <groupId>javax.servlet</groupId>

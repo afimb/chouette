@@ -111,7 +111,7 @@ public class ModelAssembler {
 	}
 
 	private void connectPTNetwork() {
-		// nothing to do...
+		ptNetwork.setLines(getObjectsFromIds(ptNetwork.getLineIds(), Line.class));
 	}
 	
 	private void connectJourneyPatterns() {
@@ -130,6 +130,7 @@ public class ModelAssembler {
 	
 	private void connectVehicleJourneys(){
 		for(VehicleJourney vehicleJourney : vehicleJourneys){
+			vehicleJourney.setCompany(getObjectFromId(vehicleJourney.getCompanyId(), Company.class));
 			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
 			vehicleJourney.setJourneyPattern(journeyPattern);
 			journeyPattern.addVehicleJourney(vehicleJourney);
@@ -193,7 +194,7 @@ public class ModelAssembler {
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
 		
-		if(dictionary != null){
+		if(dictionary != null && ids != null){
 			for(String id : ids){
 				T object = (T)dictionary.get(id);
 				if(object != null){

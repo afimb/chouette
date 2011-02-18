@@ -31,11 +31,7 @@ public class LineProducer extends AbstractCastorNeptuneProducer<chouette.schema.
 		castorLine.setName(line.getName());
 		castorLine.setNumber(line.getNumber());
 		castorLine.setPublishedName(line.getPublishedName());
-		PTNetwork ptNetwork = line.getPtNetwork();
-		if(ptNetwork != null){
-			castorLine.setPtNetworkIdShortcut(ptNetwork.getObjectId());
-		}
-		
+		castorLine.setPtNetworkIdShortcut(getNonEmptyObjectId(line.getPtNetwork()));
 		
 		try {
 			TransportModeNameEnum transportModeName = line.getTransportModeName();

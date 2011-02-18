@@ -32,5 +32,11 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 		return registration;
 	}
 	
+	protected String getNonEmptyObjectId(NeptuneIdentifiedObject object) 
+	{
+		if (object == null) return null;
+		return object.getObjectId();
+	}
+	
 	public abstract T produce(U o);
 }
