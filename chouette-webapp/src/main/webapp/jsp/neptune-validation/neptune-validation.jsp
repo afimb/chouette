@@ -3,9 +3,9 @@
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
-	<div style="width: 80%;">
+	<div style="width: 60%;">
 	 <div class="panelDataSection"><s:text name="import.index.title"/></div>
-	  	<div class="panel">
+	  	<div class="neptune-panel">
 		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST">
 			<br />
 		   <s:text name="fieldset.legend.import" />
@@ -20,11 +20,12 @@
 	</div>
 	<br />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
-	<div class="panel">
+	<div class="neptune-panel">
 	<s:include value="/jsp/commun/messages.jsp" />
 	<s:div disabled="#session.imported != true">
-		
-  <s:form action="validation" namespace="/neptune-validation">
+	
+	<s:fielderror />	
+  <s:form action="validation" namespace="/neptune-validation" validate="true">
 	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
 	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
 	   
