@@ -5,57 +5,63 @@ import java.util.List;
 
 import chouette.schema.AccessibilitySuitabilityDetails;
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
-import chouette.schema.LineExtension;
+import chouette.schema.StopAreaExtension;
 import chouette.schema.UserNeedGroup;
+import chouette.schema.types.ChouetteAreaType;
 import chouette.schema.types.EncumbranceEnumeration;
 import chouette.schema.types.MedicalNeedEnumeration;
 import chouette.schema.types.MobilityEnumeration;
 import chouette.schema.types.PyschosensoryNeedEnumeration;
-import chouette.schema.types.TransportModeNameType;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class LineProducer extends AbstractCastorNeptuneProducer<chouette.schema.Line, Line> {
+public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.schema.StopArea, StopArea> {
 
 	@Override
-	public chouette.schema.Line produce(Line line) {
-		chouette.schema.Line castorLine = new chouette.schema.Line();
+	public chouette.schema.StopArea produce(StopArea stopArea) {
+		chouette.schema.StopArea castorStopArea = new chouette.schema.StopArea();
 		
 		//
-		populateFromModel(castorLine, line);
+		populateFromModel(castorStopArea, stopArea);
 		
-		castorLine.setComment(line.getComment());
-		castorLine.setName(line.getName());
-		castorLine.setNumber(line.getNumber());
-		castorLine.setPublishedName(line.getPublishedName());
-		castorLine.setPtNetworkIdShortcut(getNonEmptyObjectId(line.getPtNetwork()));
+		castorStopArea.setComment(stopArea.getComment());
+		castorStopArea.setName(stopArea.getName());
+		if(stopArea.getBoundaryPoints() != null){
+			castorStopArea.setBoundaryPoint(stopArea.getBoundaryPoints());
+		}
+		castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
+		
+		List<String> containsList = new ArrayList<String>();
+		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
+		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));
+		castorStopArea.setContains(containsList);
+		
+		StopAreaExtension stopAreaExtension = new StopAreaExtension();
+		stopAreaExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea.getUserNeeds()));
 		
 		try {
-			TransportModeNameEnum transportModeName = line.getTransportModeName();
-			if(transportModeName != null){
-				castorLine.setTransportModeName(TransportModeNameType.fromValue(transportModeName.value()));
+			ChouetteAreaEnum areaType = stopArea.getAreaType();
+			if(areaType != null){
+				stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType.value()));
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO generate report
 		}
 		
-		castorLine.setRegistration(getRegistration(line.getRegistrationNumber()));
-		if(line.getLineEnds() != null){
-			castorLine.setLineEnd(line.getLineEnds());
-		}
-		castorLine.setRouteId(NeptuneIdentifiedObject.extractObjectIds(line.getRoutes()));
+		stopAreaExtension.setFareCode(stopArea.getFareCode());
+		stopAreaExtension.setLiftAvailability(stopArea.isLiftAvailable());
+		stopAreaExtension.setMobilityRestrictedSuitability(stopArea.isMobilityRestrictedSuitable());
+		stopAreaExtension.setNearestTopicName(stopArea.getNearestTopicName());
+		stopAreaExtension.setRegistration(getRegistration(stopArea.getRegistrationNumber()));
+		stopAreaExtension.setStairsAvailability(stopArea.isStairsAvailable());
 		
-		LineExtension castorLineExtension = new LineExtension();
-		castorLineExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(line.getUserNeeds()));
-		castorLineExtension.setMobilityRestrictedSuitability(line.isMobilityRestrictedSuitable());
-		// castorLineExtension.setStableId(stableId); ???
-		castorLine.setLineExtension(castorLineExtension);
-		
-		return castorLine;
+		castorStopArea.setStopAreaExtension(stopAreaExtension );
+						
+		return castorStopArea;
 	}
+
 	
 	private static AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
 		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
@@ -94,5 +100,4 @@ public class LineProducer extends AbstractCastorNeptuneProducer<chouette.schema.
 		details.setAccessibilitySuitabilityDetailsItem(detailsItems);
 		return details;
 	}
-
 }

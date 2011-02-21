@@ -14,8 +14,8 @@
 	<bean id="NeptuneStopPointExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer" />
 	<bean id="NeptunePTLinkExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTLinkProducer" />
 	<bean id="NeptuneCompanyExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.CompanyProducer" />	
-	<!--	<bean id="NeptuneStopAreaProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer" />
-	<bean id="NeptuneAreaCentroidProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer" />
+	<bean id="NeptuneStopAreaExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopAreaProducer" />
+	<!--	<bean id="NeptuneAreaCentroidProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer" />
 	<bean id="NeptuneConnectionLinkProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.ConnectionLinkProducer" />
 	 -->
 	<bean id="NeptuneLineExport" class="fr.certu.chouette.exchange.xml.neptune.exporter.XMLNeptuneExportLinePlugin">
@@ -27,8 +27,8 @@
 		<property name="stopPointProducer" ref="NeptuneStopPointExportProducer" />
 		<property name="ptLinkProducer" ref="NeptunePTLinkExportProducer" />
 		<property name="companyProducer" ref="NeptuneCompanyExportProducer" />
-<!--				<property name="stopAreaProducer" ref="NeptuneStopAreaProducer" />
-		<property name="areaCentroidProducer" ref="NeptuneAreaCentroidProducer" />
+		<property name="stopAreaProducer" ref="NeptuneStopAreaExportProducer" />
+		<!--	<property name="areaCentroidProducer" ref="NeptuneAreaCentroidProducer" />
 		<property name="connectionLinkProducer" ref="NeptuneConnectionLinkProducer" />
 		 -->
 	</bean>

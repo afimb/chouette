@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import org.apache.log4j.Logger;
 
+import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
@@ -20,6 +21,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.Company;
@@ -50,6 +52,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private StopPointProducer stopPointProducer;
 	@Setter private PTLinkProducer ptLinkProducer;
 	@Setter private CompanyProducer companyProducer;
+	@Setter private StopAreaProducer stopAreaProducer;
 	
 	
 	public XMLNeptuneExportLinePlugin() {
@@ -176,6 +179,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			for(Company company : companies){
 				rootObject.addCompany(companyProducer.produce(company));
 			}
+			
+			ChouetteArea chouetteArea = new ChouetteArea();
+			for(StopArea stopArea : stopAreas){
+				chouetteArea.addStopArea(stopAreaProducer.produce(stopArea));
+			}
+			
+			rootObject.setChouetteArea(chouetteArea);
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
 		}
