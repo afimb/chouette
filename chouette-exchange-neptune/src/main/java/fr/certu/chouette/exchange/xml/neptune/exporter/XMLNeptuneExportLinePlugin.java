@@ -14,6 +14,7 @@ import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.CompanyProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTLinkProducer;
@@ -21,10 +22,12 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
+import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -46,6 +49,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private VehicleJourneyProducer vehicleJourneyProducer;
 	@Setter private StopPointProducer stopPointProducer;
 	@Setter private PTLinkProducer ptLinkProducer;
+	@Setter private CompanyProducer companyProducer;
 	
 	
 	public XMLNeptuneExportLinePlugin() {
@@ -151,16 +155,26 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 				}
 			}
 			
+			HashSet<Company> companies = new HashSet<Company>();
 			for(VehicleJourney vehicleJourney : vehicleJourneys){
 				chouetteLineDescription.addVehicleJourney(vehicleJourneyProducer.produce(vehicleJourney));
+				if(vehicleJourney.getCompany() != null){
+					companies.add(vehicleJourney.getCompany());
+				}
 			}
 			
+			HashSet<StopArea> stopAreas = new HashSet<StopArea>();
 			for(StopPoint stopPoint : stopPoints){
 				chouetteLineDescription.addStopPoint(stopPointProducer.produce(stopPoint));
+				stopAreas.addAll(extractStopAreaHierarchy(stopPoint.getContainedInStopArea()));
 			}
 			
 			for(PTLink ptLink : ptLinks){
 				chouetteLineDescription.addPtLink(ptLinkProducer.produce(ptLink));
+			}
+			
+			for(Company company : companies){
+				rootObject.addCompany(companyProducer.produce(company));
 			}
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
@@ -169,4 +183,17 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 		return rootObject;
 	}
 
+	private List<StopArea> extractStopAreaHierarchy(StopArea stopArea){
+		List<StopArea> stopAreas = new ArrayList<StopArea>();
+		if(stopArea!= null){
+			stopAreas.add(stopArea);
+			StopArea parent = stopArea.getParentStopArea();
+			while (parent != null) {
+				stopAreas.add(parent);
+				parent = parent.getParentStopArea();
+			}
+		}
+		
+		return stopAreas;
+	}
 }
