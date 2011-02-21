@@ -15,6 +15,7 @@ import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.CompanyProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
@@ -24,6 +25,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -53,7 +55,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private PTLinkProducer ptLinkProducer;
 	@Setter private CompanyProducer companyProducer;
 	@Setter private StopAreaProducer stopAreaProducer;
-	
+	@Setter private AreaCentroidProducer areaCentroidProducer;
+
 	
 	public XMLNeptuneExportLinePlugin() {
 		description = new FormatDescription();
@@ -181,8 +184,16 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			}
 			
 			ChouetteArea chouetteArea = new ChouetteArea();
+			HashSet<AreaCentroid> areaCentroids = new HashSet<AreaCentroid>();
 			for(StopArea stopArea : stopAreas){
 				chouetteArea.addStopArea(stopAreaProducer.produce(stopArea));
+				if(stopArea.getAreaCentroid() != null){
+					areaCentroids.add(stopArea.getAreaCentroid());
+				}
+			}
+			
+			for(AreaCentroid areaCentroid : areaCentroids){
+				chouetteArea.addAreaCentroid(areaCentroidProducer.produce(areaCentroid));
 			}
 			
 			rootObject.setChouetteArea(chouetteArea);
