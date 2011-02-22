@@ -8,7 +8,11 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +32,7 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 @NoArgsConstructor
 public class Line extends NeptuneIdentifiedObject
 {
-    
+
 	/**
 	 * Database foreign key referring to the line's network<br/>
 	 * Meaningless after import action
@@ -75,18 +79,21 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private String ptNetworkIdShortcut; // Hors BD, habillé par la relation FK
 	/**
 	 * Neptune identification referring to the line's routes
+	 * Changes have no effect on database (see ptNetwork)
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<String> routeIds; // résolu par la FK
 	/**
 	 * Neptune identification referring to the departures/arrivals stoppoints of the line's JourneyPatterns<br/>
-	 * Meaningless after database read
+	 * Meaningless after database read<br/>
+	 * Changes have no effect on database (see routes)
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<String> lineEnds; // calculé quand nécessaire (StopPoints)
 	/**
 	 * The line's network object <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES<br/>
+	 * Changes have no effect on database
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private PTNetwork ptNetwork; // FK
@@ -103,12 +110,12 @@ public class Line extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private List<Route> routes; // FK 
 	/**
-	 * 
+	 * Indicate whenever the line is suitable for mobility restricted persons
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter boolean mobilityRestrictedSuitable; // Ajout en base init à false
 	/**
-	 * 
+	 * List of the specific user needs available
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
@@ -124,7 +131,7 @@ public class Line extends NeptuneIdentifiedObject
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
 		if (!userNeeds.contains(userNeed)) userNeeds.add(userNeed);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -241,7 +248,7 @@ public class Line extends NeptuneIdentifiedObject
 		if (routes == null) routes = new ArrayList<Route>();
 		routes.add(route);
 	}
-	
+
 	/**
 	 * add a routeid to the line
 	 * 
@@ -252,7 +259,7 @@ public class Line extends NeptuneIdentifiedObject
 		if (routeIds== null) routeIds = new ArrayList<String>();
 		routeIds.add(routeId);
 	}
-	
+
 	/**
 	 *  add a lienEndid to the line
 	 * 
@@ -263,16 +270,86 @@ public class Line extends NeptuneIdentifiedObject
 		if (lineEnds== null) lineEnds = new ArrayList<String>();
 		lineEnds.add(lineEndId);
 	}
-	
+
 	/**
-	 * build or refresh lineEndList with JourneyPattern relationship
+	 * return lineEndList built with PTLink relationship
 	 * <p/>
 	 * line must be loaded form database with DetailLevel of 
-	 * STRUCTURAL_DEPENDENCIES mimimun for this method to operate
+	 * STRUCTURAL_DEPENDENCIES minimun for this method to operate
+	 * <p/>
+	 * This method does not refresh lineEnds
 	 */
-	public void buildLineEndList()
+	public List<StopPoint> getLineEndList()
 	{
-		// TODO 
+		List<StopPoint> stopPoints = new ArrayList<StopPoint>();
+		if (routes != null)
+		{
+			for (Route route : routes) 
+			{
+				if (route.getPtLinks() != null)
+				{
+					Set<String> startStopPoints = new HashSet<String>();
+					Set<String> endStopPoints = new HashSet<String>();
+					for (PTLink link : route.getPtLinks()) 
+					{
+						if (link.getStartOfLink() != null)
+							startStopPoints.add(link.getStartOfLink().getObjectId());
+						if (link.getEndOfLink() != null)
+							endStopPoints.add(link.getEndOfLink().getObjectId());
+					}
+					for (PTLink link : route.getPtLinks()) 
+					{
+						StopPoint start = link.getStartOfLink();
+						if (start != null)
+						{
+							if (!endStopPoints.contains(start.getObjectId()))
+							{
+								stopPoints.add(start);
+							}
+						}
+						StopPoint end = link.getStartOfLink();
+						if (end != null)
+						{
+							if (!startStopPoints.contains(end.getObjectId()))
+							{
+								stopPoints.add(end);
+							}
+						}
+					}
+				}
+			}
+		}
+		return stopPoints;
+	}
+
+	/**
+	 * return stopPointList built with JourneyPattern relationship
+	 * <p/>
+	 * line must be loaded form database with DetailLevel of 
+	 * STRUCTURAL_DEPENDENCIES minimun for this method to operate
+	 * <p/>
+	 * This method does not refresh anything
+	 */
+	public List<StopPoint> getStopPointList()
+	{
+		Set<StopPoint> stopPoints = new HashSet<StopPoint>();
+		if (routes != null)
+		{
+			for (Route route : routes) 
+			{
+				if (route.getJourneyPatterns() != null)
+				{
+					for (JourneyPattern jp : route.getJourneyPatterns()) 
+					{
+						if (jp.getStopPoints() != null)
+						{
+							stopPoints.addAll(jp.getStopPoints());
+						}
+					}
+				}
+			}
+		}
+		return Arrays.asList(stopPoints.toArray(new StopPoint[0]));
 	}
 
 }

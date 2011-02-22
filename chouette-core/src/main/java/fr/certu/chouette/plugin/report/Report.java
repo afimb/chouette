@@ -13,6 +13,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import fr.certu.chouette.plugin.report.Report.STATE;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,7 +35,24 @@ public abstract class Report
 		if (items == null) items= new ArrayList<ReportItem>();
 		items.add(item);
 	}	
+	
+	public void addAll(List<ReportItem> itemsToAdd) 
+	{
+		if (items == null) items= new ArrayList<ReportItem>();
+		items.addAll(itemsToAdd);
+	} 
 
+
+
+	public void updateStatus(STATE statusToApply) 
+	{
+		if (status.ordinal() < statusToApply.ordinal())
+		{
+			status = statusToApply;
+		}
+		
+	}
+	
 	public final String getLocalizedMessage() 
 	{
 		return getLocalizedMessage(Locale.getDefault());

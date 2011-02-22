@@ -17,6 +17,7 @@ import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
+import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
@@ -65,12 +66,38 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 	private static Map<Class<?>,INeptuneManager<?>> managers = new HashMap<Class<?>, INeptuneManager<?>>();
 
+	/**
+	 * 
+	 */
+	private Class<?> neptuneType ;
+	
+	
 	public AbstractNeptuneManager(Class<?> neptuneType) 
 	{
 		managers.put(neptuneType, this);
+		this.neptuneType = neptuneType;
 	}
+	
+	
 
-	public static INeptuneManager<?> getManager(Class<?> neptuneType)
+	@SuppressWarnings("unchecked")
+	public T getNewInstance(User user) throws ChouetteException 
+	{
+		try 
+		{
+			return (T) neptuneType.getConstructor(new Class[0]).newInstance(new Object[0]);
+		} 
+		catch (Exception e) 
+		{
+			throw new CoreRuntimeException(CoreExceptionCode.FATAL, e);
+		} 
+	}
+	
+	/**
+	 * @param neptuneType
+	 * @return
+	 */
+	public static INeptuneManager<? extends NeptuneIdentifiedObject> getManager(Class<? extends NeptuneIdentifiedObject> neptuneType)
 	{
 		return managers.get(neptuneType);
 	}
@@ -183,6 +210,64 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 		return beans;
 	}
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
+	 */
+	@Override
+	public void update(User user, T bean) throws ChouetteException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		// TODO Auto-generated method stub
+
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean, fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	 */
+	@Override
+	public void update(User user, T bean, DetailLevelEnum level)
+	throws ChouetteException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		// TODO Auto-generated method stub
+
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.NeptuneBeanManager#isRemovable(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
+	 */
+	@Override
+	public boolean isRemovable(User user, T bean) throws ChouetteException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.NeptuneBeanManager#remove(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
+	 */
+	@Override
+	public void remove(User user, T bean) throws ChouetteException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		// TODO Auto-generated method stub
+
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.NeptuneBeanManager#removeAll(fr.certu.chouette.model.user.User, fr.certu.chouette.manager.Filter)
+	 */
+	@Override
+	public int removeAll(User user, Filter filter) throws ChouetteException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getImportFormats(fr.certu.chouette.model.user.User)
