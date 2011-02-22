@@ -17,6 +17,7 @@ import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.CompanyProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.ConnectionLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTLinkProducer;
@@ -27,6 +28,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
@@ -56,6 +58,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private CompanyProducer companyProducer;
 	@Setter private StopAreaProducer stopAreaProducer;
 	@Setter private AreaCentroidProducer areaCentroidProducer;
+	@Setter private ConnectionLinkProducer connectionLinkProducer;
 
 	
 	public XMLNeptuneExportLinePlugin() {
@@ -185,10 +188,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			
 			ChouetteArea chouetteArea = new ChouetteArea();
 			HashSet<AreaCentroid> areaCentroids = new HashSet<AreaCentroid>();
+			HashSet<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
 			for(StopArea stopArea : stopAreas){
 				chouetteArea.addStopArea(stopAreaProducer.produce(stopArea));
 				if(stopArea.getAreaCentroid() != null){
 					areaCentroids.add(stopArea.getAreaCentroid());
+				}
+				if(stopArea.getConnectionLinks() != null){
+					connectionLinks.addAll(stopArea.getConnectionLinks());
 				}
 			}
 			
@@ -197,6 +204,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			}
 			
 			rootObject.setChouetteArea(chouetteArea);
+			
+			for(ConnectionLink connectionLink : connectionLinks){
+				rootObject.addConnectionLink(connectionLinkProducer.produce(connectionLink));
+			}
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
 		}
