@@ -61,43 +61,4 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 						
 		return castorStopArea;
 	}
-
-	
-	private static AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
-		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
-		List<AccessibilitySuitabilityDetailsItem> detailsItems = new ArrayList<AccessibilitySuitabilityDetailsItem>();
-		if(userNeeds != null){
-			for(UserNeedEnum userNeed : userNeeds){
-				if(userNeed != null){
-					UserNeedGroup userNeedGroup = new UserNeedGroup();
-					
-					switch (userNeed.category()) {
-					case ENCUMBRANCE:
-						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
-						break;
-					case MEDICAL:
-						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));					
-						break;
-					case PSYCHOSENSORY:
-						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));	
-						break;
-					case MOBILITY:
-						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));	
-						break;
-					default:
-						throw new IllegalArgumentException("bad value of userNeed");
-					}
-					
-					if(userNeedGroup.getChoiceValue() != null){
-						AccessibilitySuitabilityDetailsItem item = new AccessibilitySuitabilityDetailsItem();
-						item.setUserNeedGroup(userNeedGroup);
-						detailsItems.add(item);
-					}
-				}
-			}
-		}
-		
-		details.setAccessibilitySuitabilityDetailsItem(detailsItems);
-		return details;
-	}
 }
