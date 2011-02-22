@@ -18,21 +18,81 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
 
 /**
- * 
+ * Neptune Route 
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
  */
 @NoArgsConstructor
 public class Route extends NeptuneIdentifiedObject
 {
+	/**
+	 * Database foreign key referring to the route's wayback route<br/>
+	 * Meaningless after import action
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private Long oppositeRouteId; // FK 
+	/**
+	 * Database foreign key referring to the route's line<br/>
+	 * Meaningless after import action
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private Long lineId;          // FK 
+	/**
+	 * Public name for travellers
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String publishedName; // BD
+	/**
+	 * Number of the route (characters) 
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String number;        //  BD
+	/**
+	 * Direction (geographical, clockwise or logical)
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private PTDirectionEnum direction; // BD 
+	/**
+	 * Comment
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String comment; // BD
+	/**
+	 * A logical direction (French extension)
+	 * <ul>
+	 * <li>A for Outward (Aller)</li>
+	 * <li>R for Return  (Retour)</li>
+	 * </ul>
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String wayBack; // BD 
+	/**
+	 * Neptune identification referring to the JourneyPatterns of the route<br/>
+	 * Meaningless after database read (see journeyPatterns)
+	 * <br/>Changes have no effect on database
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<String> journeyPatternIds; 
+	/**
+	 * The route's journey patterns objects <br/>
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<JourneyPattern> journeyPatterns; // FK inverse manquante à ajouter 
+	/**
+	 * Neptune identification referring to the PTLinks of the route<br/>
+	 * Meaningless after database read (see ptLinks)
+	 * <br/>Changes have no effect on database
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<String> ptLinkIds; 
+	/**
+	 * The route's ptLink objects <br/>
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private List<PTLink> ptLinks; // Table + FK inverse 
 	
 	
@@ -144,39 +204,71 @@ public class Route extends NeptuneIdentifiedObject
 		return sb.toString();
 	}
 
+	/**
+	 * add a journeyPatternId to list only if not already present
+	 * @param journeyPatternId
+	 */
 	public void addJourneyPatternId(String journeyPatternId){
 		if(journeyPatternIds == null) journeyPatternIds = new ArrayList<String>();
 		journeyPatternIds.add(journeyPatternId);
 	}
 	
+	/**
+	 * add a journeyPattern to list only if not already present
+	 * @param journeyPattern
+	 */
 	public void addJourneyPattern(JourneyPattern journeyPattern){
 		if(journeyPatterns == null) journeyPatterns = new ArrayList<JourneyPattern>();
 		journeyPatterns.add(journeyPattern);
 	}
 	
+	/**
+	 * add a ptLinkId to list only if not already present
+	 * @param ptLinkId
+	 */
 	public void addPTLinkId(String ptLinkId){
 		if(ptLinkIds == null) ptLinkIds = new ArrayList<String>();
 		ptLinkIds.add(ptLinkId);
 	}
 	
+	/**
+	 * add a ptLink to list only if not already present
+	 * @param ptLink
+	 */
 	public void addPTLink(PTLink ptLink){
 		if(ptLinks == null) ptLinks = new ArrayList<PTLink>();
 		ptLinks.add(ptLink);
 	}
 	
+	/**
+	 * remove a journeyPatternId from list if present
+	 * @param journeyPatternId
+	 */
 	public void removeJourneyPatternId(String journeyPatternId){
 		if(journeyPatternIds != null) journeyPatternIds.remove(journeyPatternId);
 	}
 	
+	/**
+	 * remove a journeyPattern from list if present
+	 * @param journeyPattern
+	 */
 	public void removeJourneyPattern(JourneyPattern journeyPattern){
 		if(journeyPatterns != null) journeyPatterns.remove(journeyPattern);
 	}
 	
+	/**
+	 * remove a ptLinkId from list if present
+	 * @param ptLinkId
+	 */
 	public void removePTLinkId(String ptLinkId){
 		if(ptLinkIds != null) ptLinkIds.remove(ptLinkId);
 		ptLinkIds.add(ptLinkId);
 	}
 	
+	/**
+	 * remove a ptLink from list if present
+	 * @param ptLink
+	 */
 	public void removePTLink(PTLink ptLink){
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}

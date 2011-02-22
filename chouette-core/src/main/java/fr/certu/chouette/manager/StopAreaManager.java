@@ -8,20 +8,18 @@
 
 package fr.certu.chouette.manager;
 
-import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.StopArea;
 
 /**
  * @author michel
  *
  */
-public class CompanyManager extends AbstractNeptuneManager<Company> 
+public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
 {
 
-	public CompanyManager()
+	public StopAreaManager() 
 	{
-		super(Company.class);
+		super(StopArea.class);
 	}
-
-	
 
 }

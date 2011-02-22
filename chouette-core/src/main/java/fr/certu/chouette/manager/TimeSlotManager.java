@@ -8,20 +8,16 @@
 
 package fr.certu.chouette.manager;
 
-import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.TimeSlot;
 
 /**
  * @author michel
  *
  */
-public class CompanyManager extends AbstractNeptuneManager<Company> 
-{
+public class TimeSlotManager extends AbstractNeptuneManager<TimeSlot> {
 
-	public CompanyManager()
-	{
-		super(Company.class);
+	public TimeSlotManager() {
+		super(TimeSlot.class);
 	}
-
-	
 
 }

@@ -88,4 +88,23 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 		return objectIds;
 	}
 	
+	
+	@Override
+	public boolean equals(Object arg0) 
+	{
+		if (arg0 instanceof NeptuneIdentifiedObject)
+		{
+			NeptuneIdentifiedObject another = (NeptuneIdentifiedObject) arg0;
+			if (objectId != null) return objectId.equals(another.getObjectId());
+		}
+		return super.equals(arg0);
+	}
+
+
+	@Override
+	public int hashCode() 
+	{
+		if (objectId != null) return objectId.hashCode();
+		return super.hashCode();
+	} 
 }

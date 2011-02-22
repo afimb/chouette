@@ -18,5 +18,29 @@
   <bean id="routeManager"
     		class="fr.certu.chouette.manager.RouteManager">
   </bean>
+  <bean id="connectionLinkManager"
+    		class="fr.certu.chouette.manager.ConnectionLinkManager">
+  </bean>
+  <bean id="journeyPatternManager"
+    		class="fr.certu.chouette.manager.JourneyPatternManager">
+  </bean>
+  <bean id="PTLinkManager"
+    		class="fr.certu.chouette.manager.PTLinkManager">
+  </bean>
+  <bean id="stopAreaManager"
+    		class="fr.certu.chouette.manager.StopAreaManager">
+  </bean>
+  <bean id="stopPointManager"
+    		class="fr.certu.chouette.manager.StopPointManager">
+  </bean>
+  <bean id="timeSlotManager"
+    		class="fr.certu.chouette.manager.TimeSlotManager">
+  </bean>
+  <bean id="timetableManager"
+    		class="fr.certu.chouette.manager.TimetableManager">
+  </bean>
+  <bean id="vehicleJourneyManager"
+    		class="fr.certu.chouette.manager.VehicleJourneyManager">
+  </bean>
 
 </beans>

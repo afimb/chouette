@@ -8,20 +8,18 @@
 
 package fr.certu.chouette.manager;
 
-import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.PTLink;
 
 /**
  * @author michel
  *
  */
-public class CompanyManager extends AbstractNeptuneManager<Company> 
-{
+public class PTLinkManager extends AbstractNeptuneManager<PTLink> {
 
-	public CompanyManager()
+	public PTLinkManager() 
 	{
-		super(Company.class);
+		super(PTLink.class);
 	}
 
-	
 
 }

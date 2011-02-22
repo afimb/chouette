@@ -14,12 +14,18 @@ import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
@@ -54,7 +60,36 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
 	{
 		return new PluginInjector<StopPoint>();
 	}
+	
+	public static PluginInjector<ConnectionLink> createConnectionLinkPluginInjector()
+	{
+		return new PluginInjector<ConnectionLink>();
+	}
 
+	public static PluginInjector<StopArea> createStopAreaPluginInjector()
+	{
+		return new PluginInjector<StopArea>();
+	}
+
+	public static PluginInjector<PTLink> createPTLinkPluginInjector()
+	{
+		return new PluginInjector<PTLink>();
+	}
+
+	public static PluginInjector<TimeSlot> createTimeSlotPluginInjector()
+	{
+		return new PluginInjector<TimeSlot>();
+	}
+
+	public static PluginInjector<Timetable> createTimetablePluginInjector()
+	{
+		return new PluginInjector<Timetable>();
+	}
+
+	public static PluginInjector<VehicleJourney> createVehicleJourneyPluginInjector()
+	{
+		return new PluginInjector<VehicleJourney>();
+	}
 
 	@Getter @Setter private INeptuneManager<T> manager;
 	@Getter @Setter private List<IImportPlugin<T>> importPlugins;
