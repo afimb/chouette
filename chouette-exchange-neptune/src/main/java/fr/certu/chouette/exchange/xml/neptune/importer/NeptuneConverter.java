@@ -18,6 +18,7 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProduce
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
@@ -29,6 +30,7 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
 /**
@@ -50,25 +52,8 @@ public class NeptuneConverter
 	@Getter @Setter private StopAreaProducer stopAreaProducer;
 	@Getter @Setter private AreaCentroidProducer areaCentroidProducer;
 	@Getter @Setter private ConnectionLinkProducer connectionLinkProducer;
+	@Getter @Setter private TimetableProducer timetableProducer;
 	
-//	@Getter @Setter private VehicleJourney vehicleJourneyProducer;
-	
-//	public List<T> extract(ChouettePTNetworkTypeType rootObject) 
-//	{
-//		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
-//		List<U> xmlList = lineDescription.getLine();
-//		
-//		// modele des producer : voir package fr.certu.chouette.service.validation.util
-//		AbstractModelProducer<T, U> producer = ProducerFactory.getInstance().getProducer(Line.class);
-//		List<T> list = new ArrayList<T>();
-//
-//		for(U xmlItem : xmlList){
-//			T item = producer.produce(xmlItem);
-//			list.add(item);
-//		}
-//		
-//		return list;
-//	}
 	
 	public List<Line> extractLines(ChouettePTNetworkTypeType rootObject) 
 	{
@@ -231,5 +216,20 @@ public class NeptuneConverter
 		}
 		
 		return connectionLinks;
-	} 
+	}
+	
+	public List<Timetable> extractTimetables(ChouettePTNetworkTypeType rootObject) {
+		chouette.schema.Timetable[] xmlTimetables = rootObject.getTimetable();
+		
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+		
+		List<Timetable> timetables = new ArrayList<Timetable>();
+
+		for(chouette.schema.Timetable xmlTimetable : xmlTimetables){
+			Timetable timetable = timetableProducer.produce(xmlTimetable);
+			timetables.add(timetable);
+		}
+		
+		return timetables;
+	}
 }

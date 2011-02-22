@@ -29,6 +29,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private Company company;
 	@Getter @Setter private String lineIdShortcut;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
+	@Getter @Setter private List<Timetable> timetables;
 
 	
 	/* (non-Javadoc)
@@ -47,6 +48,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			journeyPattern = null;
 			timeSlot = null;
 			vehicleJourneyAtStops = null;
+			timetables = null;
 			break;
 		case NARROW_DEPENDENCIES : 
 			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
@@ -57,6 +59,13 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
 				{
 					vehicleJourneyAtStop.expand(DetailLevelEnum.ATTRIBUTE);
+				}
+			}
+			if (getTimetables() != null)
+			{
+				for (Timetable timetable : getTimetables())
+				{
+					timetable.expand(DetailLevelEnum.ATTRIBUTE);
 				}
 			}
 			break;
@@ -70,6 +79,13 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
 				{
 					vehicleJourneyAtStop.expand(level);
+				}
+			}
+			if (getTimetables() != null)
+			{
+				for (Timetable timetable : getTimetables())
+				{
+					timetable.expand(level);
 				}
 			}
 			break;
@@ -120,7 +136,14 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourneyAtStop.toString(childIndent,childLevel));
 				}
 			}
-			
+			if (timetables != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("timetables");
+				for (Timetable timetable : getTimetables())
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(timetable.toString(childIndent,0));
+				}
+			}
 		}
 		return sb.toString();
 	}
@@ -131,5 +154,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		vehicleJourneyAtStops.add(vehicleJourneyAtStop);
 	}	
 	
-
+	public void addTimetable(Timetable timetable)
+	{
+		if (timetables== null) timetables = new ArrayList<Timetable>();
+		timetables.add(timetable);
+	}
 }
