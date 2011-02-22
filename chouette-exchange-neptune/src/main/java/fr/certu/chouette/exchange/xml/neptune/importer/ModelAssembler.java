@@ -92,6 +92,10 @@ public class ModelAssembler {
 			//FIXME : field CompanyId not filled by import...
 			//line.setCompany(getObjectFromId(Long.toString(line.getCompanyId()), Company.class));
 			
+			if(companies != null && companies.size() == 1){
+				line.setCompany(companies.get(0));
+			}
+			
 			line.setPtNetwork(ptNetwork);
 			line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
 		}

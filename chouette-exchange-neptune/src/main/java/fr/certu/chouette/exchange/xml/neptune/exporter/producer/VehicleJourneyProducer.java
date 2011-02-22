@@ -29,7 +29,7 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 		castorVehicleJourney.setJourneyPatternId(getNonEmptyObjectId(vehicleJourney.getJourneyPattern()));
 		castorVehicleJourney.setLineIdShortcut(vehicleJourney.getLineIdShortcut());
 		castorVehicleJourney.setNumber(vehicleJourney.getNumber());
-		castorVehicleJourney.setOperatorId(vehicleJourney.getCompanyId());
+		castorVehicleJourney.setOperatorId(getNonEmptyObjectId(vehicleJourney.getCompany()));
 		castorVehicleJourney.setPublishedJourneyIdentifier(vehicleJourney.getPublishedJourneyIdentifier());
 		castorVehicleJourney.setPublishedJourneyName(vehicleJourney.getPublishedJourneyName());
 		castorVehicleJourney.setRouteId(getNonEmptyObjectId(vehicleJourney.getRoute()));
