@@ -15,8 +15,26 @@
 				<ref bean="Test2_1" />
 				<ref bean="Test2_2" />
 				<ref bean="Test2_6" />
+				<ref bean="Test2_7" />
 			</list>
 		</property>
 	</bean>
-
+	<bean id="StopAreaValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createStopAreaPluginInjector">
+		<property name="manager" ref="stopAreaManager" />
+		<property name="validationPlugins">
+			<list>
+				<ref bean="Test2_3" />
+			</list>
+		</property>
+	</bean>
+	<bean id="ConnectionLinkValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createConnectionLinkPluginInjector">
+		<property name="manager" ref="connectionLinkManager" />
+		<property name="validationPlugins">
+			<list>
+				<ref bean="Test2_4" />
+			</list>
+		</property>
+	</bean>
 </beans>

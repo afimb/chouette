@@ -40,7 +40,7 @@ public class Sheet1 implements IValidationPlugin<Line>
 	@Override
 	public ReportItem doValidate(List<Line> lines) 
 	{
-		ReportItem report = new SheetReportItem("Test2_Sheet1");
+		ReportItem report = new SheetReportItem("Test2_Sheet1", 1);
 		report.addItem(step2_1_1(lines));
 		report.addItem(step2_1_2(lines));
 		return report;
@@ -48,7 +48,7 @@ public class Sheet1 implements IValidationPlugin<Line>
 
 	private ReportItem step2_1_1(List<Line> lines) 
 	{
-		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step1");
+		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step1",1);
 
 		boolean checked = false;
 		for (Line line : lines) 
@@ -88,7 +88,7 @@ public class Sheet1 implements IValidationPlugin<Line>
 
 	private ReportItem step2_1_2(List<Line> lines) 
 	{
-		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step2");
+		ReportItem reportStep = new SheetReportItem("Test2_Sheet1_Step2", 2);
 
 		boolean checked = false;
 		for (Line line : lines) 
