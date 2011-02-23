@@ -11,6 +11,7 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 public class StopPoint extends NeptuneIdentifiedObject
 {
+	private static final long serialVersionUID = -4913573673645997423L;
 	@Getter @Setter private Address address;
 	@Getter @Setter private LongLatTypeEnum longLatType;
 	@Getter @Setter private BigDecimal latitude;

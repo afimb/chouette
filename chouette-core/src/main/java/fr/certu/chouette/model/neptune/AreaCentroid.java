@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class AreaCentroid extends NeptuneIdentifiedObject {
+	private static final long serialVersionUID = -5908896146442329392L;
 	@Getter @Setter private Address address;
 	@Getter @Setter private LongLatTypeEnum longLatType;
 	@Getter @Setter private BigDecimal latitude;

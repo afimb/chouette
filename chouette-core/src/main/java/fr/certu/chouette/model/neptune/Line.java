@@ -9,7 +9,6 @@ package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,11 +27,10 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
-@SuppressWarnings("serial")
 @NoArgsConstructor
 public class Line extends NeptuneIdentifiedObject
 {
-
+	private static final long serialVersionUID = -8086291270595894778L;
 	/**
 	 * Database foreign key referring to the line's network<br/>
 	 * Meaningless after import action

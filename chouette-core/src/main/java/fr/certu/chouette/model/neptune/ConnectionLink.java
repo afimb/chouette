@@ -16,6 +16,7 @@ import lombok.Setter;
 
 public class ConnectionLink extends NeptuneIdentifiedObject
 {
+	private static final long serialVersionUID = 8490105295077539089L;
 	@Getter @Setter private String comment;
 	@Getter @Setter private BigDecimal linkDistance;
 	@Getter @Setter private String startOfLinkId;

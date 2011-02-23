@@ -9,6 +9,7 @@ import lombok.Setter;
 
 public class PTLink extends NeptuneIdentifiedObject
 {// TODO add table  PTLink
+	private static final long serialVersionUID = -3089442100133439163L;
 	@Getter @Setter private String comment;  // BD
 	@Getter @Setter private BigDecimal linkDistance; // BD 
 	@Getter @Setter private String startOfLinkId;

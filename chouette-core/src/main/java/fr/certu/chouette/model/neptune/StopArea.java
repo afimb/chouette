@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class StopArea extends NeptuneIdentifiedObject {
-
+	private static final long serialVersionUID = 4548672479038099240L;
 	@Getter @Setter List<String> boundaryPoints;
 	@Getter @Setter String areaCentroidId;
 	@Getter @Setter AreaCentroid areaCentroid;
