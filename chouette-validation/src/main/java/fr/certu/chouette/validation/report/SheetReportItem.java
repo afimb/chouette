@@ -10,7 +10,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
  * @author zbouziane
  *
  */
-public class SheetReportItem extends ReportItem implements Comparable<SheetReportItem>
+public class SheetReportItem extends ReportItem implements Comparable<ReportItem>
 {
 	@Getter private int order;
 	/**
@@ -36,8 +36,15 @@ public class SheetReportItem extends ReportItem implements Comparable<SheetRepor
 	}
 
 	@Override
-	public int compareTo(SheetReportItem arg0) {
-		return order-arg0.order;
+	public int compareTo(ReportItem item) 
+	{
+		if (item instanceof SheetReportItem)
+		{
+			SheetReportItem sitem = (SheetReportItem) item;
+			return order-sitem.order;
+		}
+		return super.compareTo(item);
+		
 	}
 	
 
