@@ -2,7 +2,6 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.model.neptune.AreaCentroid;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;

@@ -13,8 +13,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import fr.certu.chouette.plugin.report.Report.STATE;
-
 import lombok.Getter;
 import lombok.Setter;
 

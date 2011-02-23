@@ -13,7 +13,6 @@ import java.util.List;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.user.User;

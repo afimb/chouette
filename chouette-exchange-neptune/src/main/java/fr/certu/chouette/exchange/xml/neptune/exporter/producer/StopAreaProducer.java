@@ -3,19 +3,11 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 import java.util.ArrayList;
 import java.util.List;
 
-import chouette.schema.AccessibilitySuitabilityDetails;
-import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.StopAreaExtension;
-import chouette.schema.UserNeedGroup;
 import chouette.schema.types.ChouetteAreaType;
-import chouette.schema.types.EncumbranceEnumeration;
-import chouette.schema.types.MedicalNeedEnumeration;
-import chouette.schema.types.MobilityEnumeration;
-import chouette.schema.types.PyschosensoryNeedEnumeration;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.schema.StopArea, StopArea> {
 

@@ -1,22 +1,11 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exolab.castor.types.Duration;
 
-import chouette.schema.AccessibilitySuitabilityDetails;
-import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.ConnectionLinkExtension;
-import chouette.schema.UserNeedGroup;
 import chouette.schema.types.ConnectionLinkTypeType;
-import chouette.schema.types.EncumbranceEnumeration;
-import chouette.schema.types.MedicalNeedEnumeration;
-import chouette.schema.types.MobilityEnumeration;
-import chouette.schema.types.PyschosensoryNeedEnumeration;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouette.schema.ConnectionLink, ConnectionLink> {
 
