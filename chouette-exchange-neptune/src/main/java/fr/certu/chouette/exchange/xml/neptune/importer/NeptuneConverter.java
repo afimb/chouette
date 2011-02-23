@@ -55,7 +55,7 @@ public class NeptuneConverter
 	@Getter @Setter private TimetableProducer timetableProducer;
 	
 	
-	public List<Line> extractLines(ChouettePTNetworkTypeType rootObject) 
+	public Line extractLine(ChouettePTNetworkTypeType rootObject) 
 	{
 		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
 		chouette.schema.Line xmlLine = lineDescription.getLine();
@@ -63,9 +63,7 @@ public class NeptuneConverter
 		// modele des producer : voir package fr.certu.chouette.service.validation.util
 		Line line = lineProducer.produce(xmlLine);
 		
-		List<Line> lines = new ArrayList<Line>();
-		lines.add(line);
-		return lines;
+		return line;
 	}
 	
 	public List<Route> extractRoutes(ChouettePTNetworkTypeType rootObject) 

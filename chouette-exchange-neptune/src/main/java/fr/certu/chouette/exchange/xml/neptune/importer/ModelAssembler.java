@@ -23,7 +23,7 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
 public class ModelAssembler {
-	@Getter @Setter private List<Line> lines;
+	@Getter @Setter private Line line;
 	@Getter @Setter private List<Route> routes;
 	@Getter @Setter private List<Company> companies;
 	@Getter @Setter private PTNetwork ptNetwork;
@@ -38,7 +38,7 @@ public class ModelAssembler {
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
-	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
+    private Map<String, Line> linesDictionary = new HashMap<String, Line>();
 	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
 	private Map<String, JourneyPattern> journeyPatternsDictionary = new HashMap<String, JourneyPattern>();
@@ -53,7 +53,7 @@ public class ModelAssembler {
 	
 	public void connect(){
 		populateDictionaries();
-		connectLines();
+		connectLine();
 		connectRoutes();
 		connectCompanies();
 		connectPTNetwork();
@@ -68,7 +68,9 @@ public class ModelAssembler {
 	}
 
 	private void populateDictionaries(){
-		populateDictionnary(lines, linesDictionary);
+	    List<Line> lines = new ArrayList<Line>();
+	    lines.add(line);
+	    populateDictionnary(lines, linesDictionary);
 		populateDictionnary(routes, routesDictionary);
 		populateDictionnary(companies, companiesDictionary);
 		populateDictionnary(journeyPatterns, journeyPatternsDictionary);
@@ -92,15 +94,15 @@ public class ModelAssembler {
 		}
 	}
 	
-	private void connectLines(){
-		for(Line line : lines){			
+	private void connectLine(){
+	    //for(Line line : lines){			
 			if(companies != null && companies.size() == 1){
 				line.setCompany(companies.get(0));
 			}
 			
 			line.setPtNetwork(ptNetwork);
 			line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
-		}
+			//}
 	}
 	
 	private void connectRoutes(){
