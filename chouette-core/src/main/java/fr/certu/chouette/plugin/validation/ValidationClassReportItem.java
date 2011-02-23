@@ -18,11 +18,14 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class ValidationClassReportItem extends ReportItem 
 {
     public enum CLASS {ZERO,ONE,TWO,THREE};
+    
+    private final CLASS validationClass;
 	/**
 	 * 
 	 */
 	public ValidationClassReportItem(CLASS validationClass) 
 	{
+		this.validationClass = validationClass;
 		setMessageKey(validationClass.name());
 		setStatus(STATE.OK);
 	}
@@ -37,6 +40,10 @@ public class ValidationClassReportItem extends ReportItem
 		int status = getStatus().ordinal();
 		int itemStatus = item.getStatus().ordinal();
 		if (itemStatus > status) setStatus(item.getStatus());
+	}
+
+	public CLASS getValidationClass() {
+		return validationClass;
 	}
 	
 	
