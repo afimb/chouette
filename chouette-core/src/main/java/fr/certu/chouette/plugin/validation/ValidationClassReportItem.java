@@ -8,6 +8,9 @@
 
 package fr.certu.chouette.plugin.validation;
 
+import java.util.Collections;
+import java.util.List;
+
 import fr.certu.chouette.plugin.report.ReportItem;
 
 
@@ -40,6 +43,12 @@ public class ValidationClassReportItem extends ReportItem
 		int status = getStatus().ordinal();
 		int itemStatus = item.getStatus().ordinal();
 		if (itemStatus > status) setStatus(item.getStatus());
+	}
+	
+	public void sortItems()
+	{
+		 List<ReportItem> items = getItems();
+		 Collections.sort(items);
 	}
 
 	public CLASS getValidationClass() {
