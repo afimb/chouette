@@ -27,6 +27,7 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 @NoArgsConstructor
 public class Route extends NeptuneIdentifiedObject
 {
+	private static final long serialVersionUID = -2249654966081042738L;
 	/**
 	 * Database foreign key referring to the route's wayback route<br/>
 	 * Meaningless after import action

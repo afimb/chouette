@@ -11,6 +11,7 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 public class VehicleJourney extends NeptuneIdentifiedObject
 {
+	private static final long serialVersionUID = 304336286208135064L;
 	@Getter @Setter private ServiceStatusValueEnum serviceStatusValue;
 	@Getter @Setter private TransportModeNameEnum transportMode;
 	@Getter @Setter private String comment;

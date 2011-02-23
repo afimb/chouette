@@ -19,6 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Company extends NeptuneIdentifiedObject
 {
+	private static final long serialVersionUID = -8086291270595894778L;
 	@Getter @Setter private String shortName; // BD
 	@Getter @Setter private String organisationalUnit; // BD
 	@Getter @Setter private String operatingDepartmentName; // BD

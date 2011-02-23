@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
 public class Timetable extends NeptuneIdentifiedObject {
+	private static final long serialVersionUID = -1598554061982685113L;
 	@Getter @Setter private String comment;
 	@Getter @Setter private String version;
 	@Getter @Setter private List<DayTypeEnum> dayTypes;

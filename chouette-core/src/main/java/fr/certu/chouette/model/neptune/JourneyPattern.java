@@ -9,7 +9,7 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 
 public class JourneyPattern extends NeptuneIdentifiedObject
 {
-
+	private static final long serialVersionUID = 7895941111990419404L;
 	@Getter @Setter private String registrationNumber; //  BD
 	@Getter @Setter private String comment; //  BD
 	@Getter @Setter private String origin;   // StopPointId départ (déterminé par algo ? 
