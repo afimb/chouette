@@ -13,6 +13,8 @@
 		<property name="validationPlugins">
 			<list>
 				<ref bean="Test2_1" />
+				<ref bean="Test2_2" />
+				<ref bean="Test2_6" />
 			</list>
 		</property>
 	</bean>

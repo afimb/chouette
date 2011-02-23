@@ -403,7 +403,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		}
 
 		Report propagationReport = propagateValidation(user, beans, parameters);
-		if (propagationReport != null)
+		if (propagationReport != null && propagationReport.getItems() != null)
 		{
 			for (ReportItem item : propagationReport.getItems()) 
 			{
