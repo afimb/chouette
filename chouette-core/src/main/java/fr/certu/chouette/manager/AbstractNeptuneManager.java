@@ -37,19 +37,6 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 
 /**
- * 
- */
-/**
- * @author michel
- *
- * @param <T>
- */
-/**
- * @author michel
- *
- * @param <T>
- */
-/**
  * @author michel
  *
  * @param <T>
@@ -415,6 +402,17 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 			validationClasses[rank].addItem(stepItem);
 		}
 
+		Report propagationReport = propagateValidation(user, beans, parameters);
+		if (propagationReport != null)
+		{
+			for (ReportItem item : propagationReport.getItems()) 
+			{
+			    ValidationClassReportItem classItem = (ValidationClassReportItem) item;
+			    validationClasses[classItem.getValidationClass().ordinal()].addAll(classItem.getItems());
+			    validationClasses[classItem.getValidationClass().ordinal()].updateStatus(classItem.getStatus());
+			}
+		}
+		
 		for (ValidationClassReportItem item : validationClasses) 
 		{
 			if (item.getItems() != null && !item.getItems().isEmpty())
@@ -424,6 +422,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		}
 		return r;
 	}
+	
+	protected Report propagateValidation(User user, List<T> beans, ValidationParameters parameters) throws ChouetteException 
+	{
+		return null;
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getValidationSteps(fr.certu.chouette.model.user.User)

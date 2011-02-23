@@ -19,6 +19,7 @@ import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.plugin.validation.ValidationReport;
 
 /**
  * 
@@ -33,59 +34,93 @@ public class LineManager extends AbstractNeptuneManager<Line>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Report validate(User user, List<Line> beans,
-			ValidationParameters parameters) throws ChouetteException 
+	protected Report propagateValidation(User user, List<Line> beans,
+			ValidationParameters parameters) 
+	throws ChouetteException 
 	{
-	    Report globalReport = super.validate(user, beans, parameters);
-	    
-	    // aggregate dependent objects for validation
-	    List<PTNetwork> networks = new ArrayList<PTNetwork>();
-	    List<Company> companies = new ArrayList<Company>();
-	    List<Route> routes = new ArrayList<Route>();
-	    for (Line line : beans) 
-	    {
-	    	if (line.getPtNetwork() != null)
-	    	   networks.add(line.getPtNetwork());
-	    	if (line.getCompany() != null)
-		    	   companies.add(line.getCompany());
-	    	if (line.getRoutes() != null)
-	    	{
-	    		routes.addAll(line.getRoutes());
-	    	}
+		Report globalReport = new ValidationReport();
+
+		// aggregate dependent objects for validation
+		List<PTNetwork> networks = new ArrayList<PTNetwork>();
+		List<Company> companies = new ArrayList<Company>();
+		List<Route> routes = new ArrayList<Route>();
+		for (Line line : beans) 
+		{
+			if (line.getPtNetwork() != null)
+				networks.add(line.getPtNetwork());
+			if (line.getCompany() != null)
+				companies.add(line.getCompany());
+			if (line.getRoutes() != null)
+			{
+				routes.addAll(line.getRoutes());
+			}
 		}
 
-	    // propagate validation on networks
-	    INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
-	    if (networkManager.canValidate())
-	    {
-	    	Report report = networkManager.validate(user, networks, parameters);
-	    	globalReport.addAll(report.getItems());
-	    	globalReport.updateStatus(report.getStatus());
-	    }
-	    
-	    // propagate validation on companies
-	    INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
-	    if (companyManager.canValidate())
-	    {
-	    	Report report = companyManager.validate(user, companies, parameters);
-	    	globalReport.addAll(report.getItems());
-	    	globalReport.updateStatus(report.getStatus());
-	    }
-	    
-	    // propagate validation on routes
-	    INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-	    if (routeManager.canValidate())
-	    {
-	    	Report report = routeManager.validate(user, routes, parameters);
-	    	globalReport.addAll(report.getItems());
-	    	globalReport.updateStatus(report.getStatus());
-	    }
-	    
-	    return globalReport;
+		// propagate validation on networks
+		if (networks.size() > 0)
+		{
+			Report report = null;
+			AbstractNeptuneManager<PTNetwork> manager = (AbstractNeptuneManager<PTNetwork>) getManager(PTNetwork.class);
+			if (manager.canValidate())
+			{
+				report = manager.validate(user, networks, parameters);
+			}
+			else
+			{
+				report = manager.propagateValidation(user, networks, parameters);
+			}
+			if (report != null)
+			{
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+
+		// propagate validation on companies
+		if (companies.size() > 0)
+		{
+			Report report = null;
+			AbstractNeptuneManager<Company> manager = (AbstractNeptuneManager<Company>) getManager(Company.class);
+			if (manager.canValidate())
+			{
+				report = manager.validate(user, companies, parameters);
+			}
+			else
+			{
+				report = manager.propagateValidation(user, companies, parameters);
+			}
+			if (report != null)
+			{
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+
+		// propagate validation on routes
+		if (routes.size() > 0)
+		{
+			Report report = null;
+			AbstractNeptuneManager<Route> manager = (AbstractNeptuneManager<Route>) getManager(Route.class);
+			if (manager.canValidate())
+			{
+				report = manager.validate(user, routes, parameters);
+			}
+			else
+			{
+				report = manager.propagateValidation(user, routes, parameters);
+			}
+			if (report != null)
+			{
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+
+		return globalReport;
 	}
-	
-	
-	
-	
+
+
+
+
 
 }
