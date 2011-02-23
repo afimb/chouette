@@ -18,6 +18,7 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
@@ -33,6 +34,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<StopArea> stopAreas;
 	@Getter @Setter private List<AreaCentroid> areaCentroids;
 	@Getter @Setter private List<ConnectionLink> connectionLinks;
+	@Getter @Setter private List<Timetable> timetables;
 	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	
@@ -46,6 +48,7 @@ public class ModelAssembler {
 	private Map<String, StopArea> stopAreasDictionary = new HashMap<String, StopArea>();
 	private Map<String, AreaCentroid> areaCentroidsDictionary = new HashMap<String, AreaCentroid>();
 	private Map<String, ConnectionLink> connectionLinksDictionary = new HashMap<String, ConnectionLink>();
+	private Map<String, Timetable> timetablesDictionary = new HashMap<String, Timetable>();
 
 	
 	public void connect(){
@@ -61,6 +64,7 @@ public class ModelAssembler {
 		connectStopAreas();
 		connectAreaCentroids();
 		connectConnectionLinks();
+		connectTimetables();
 	}
 
 	private void populateDictionaries(){
@@ -74,6 +78,7 @@ public class ModelAssembler {
 		populateDictionnary(stopAreas, stopAreasDictionary);
 		populateDictionnary(areaCentroids, areaCentroidsDictionary);
 		populateDictionnary(connectionLinks, connectionLinksDictionary);
+		populateDictionnary(timetables, timetablesDictionary);
 	}
 	
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
@@ -88,10 +93,7 @@ public class ModelAssembler {
 	}
 	
 	private void connectLines(){
-		for(Line line : lines){
-			//FIXME : field CompanyId not filled by import...
-			//line.setCompany(getObjectFromId(Long.toString(line.getCompanyId()), Company.class));
-			
+		for(Line line : lines){			
 			if(companies != null && companies.size() == 1){
 				line.setCompany(companies.get(0));
 			}
@@ -190,6 +192,17 @@ public class ModelAssembler {
 			if(endOfLink != null){
 				connectionLink.setEndOfLink(endOfLink);
 				endOfLink.addConnectionLink(connectionLink);
+			}
+		}
+	}
+	
+	private void connectTimetables() {
+		for(Timetable timetable : timetables){
+			timetable.setVehicleJourneys(getObjectsFromIds(timetable.getVehicleJourneyIds(), VehicleJourney.class));
+			if(timetable.getVehicleJourneys() != null){
+				for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys()){
+					vehicleJourney.addTimetable(timetable);
+				}
 			}
 		}
 	}

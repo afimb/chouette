@@ -17,6 +17,7 @@
 	<bean id="NeptuneStopAreaImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer" />
 	<bean id="NeptuneAreaCentroidImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer" />
 	<bean id="NeptuneConnectionLinkImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.ConnectionLinkProducer" />
+	<bean id="NeptuneTimetableImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer" />
 	
 	<bean id="NeptuneConverter" class="fr.certu.chouette.exchange.xml.neptune.importer.NeptuneConverter">
 		<property name="lineProducer" ref="NeptuneLineImportProducer" />
@@ -30,7 +31,7 @@
 		<property name="stopAreaProducer" ref="NeptuneStopAreaImportProducer" />
 		<property name="areaCentroidProducer" ref="NeptuneAreaCentroidImportProducer" />
 		<property name="connectionLinkProducer" ref="NeptuneConnectionLinkImportProducer" />
-		
+		<property name="timetableProducer" ref="NeptuneTimetableImportProducer" />		
 	</bean>
 
 	<bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.importer.XMLNeptuneImportLinePlugin">
