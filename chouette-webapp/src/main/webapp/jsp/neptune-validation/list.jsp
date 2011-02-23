@@ -40,26 +40,26 @@
 		 	<b><s:property value="getLocalizedMessage(getLocale())" /></b>
 		 	
 		 	<div id="panelValidation">
-				<s:iterator value="items">
+				<s:iterator value="items" status="status">
 					<div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 					      <s:div cssClass="neptune-panel" id="%{status}">
 					     	 <br />
 						     <s:iterator value="items" id="test" status="itemsStatus">
 							     	<s:div cssClass="%{status}" cssStyle="display:%{status} == 'OK' ? none : block;">
-							     		<s:property value="getLocalizedMessage(getLocale())"/>
+							     		<s:div cssStyle="width: 800px;"><s:property value="getLocalizedMessage(getLocale())"/></s:div>
 							     	
 							     	<br />
 							     	<s:div cssClass="detail">
-							     	<s:a href="#" onclick="showIt('detail_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
+							     	<s:a href="#" onclick="showIt('detail_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
 							     		id="showIt_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
 											<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
 									</s:a> 
-									<s:a href="#" onclick="hideIt('detail_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
+									<s:a href="#" onclick="hideIt('detail_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
 										id="hideIt_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
 											<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
 									</s:a>	
 									</s:div>
-							     	<s:div cssClass="neptune-panel-inSide" id="detail_%{#itemsStatus.index}" cssStyle="display:none;">
+							     	<s:div cssClass="neptune-panel-inSide" id="detail_%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
 								     	 <s:iterator value="items">
 								     		<s:text name="validation.test.delimiter" />
 								     		 <s:property value="getLocalizedMessage(getLocale())"/>
@@ -137,4 +137,8 @@
 		}		
  }
  
+ function changeImage(element) { 	 
+	  element.src = (element.src == "<s:url value='/images/plus.png'/>") ? 
+			  "<s:url value='/images/moins.png'/>" : "<s:url value='/images/plus.png'/>"; 
+	} 
  </script> 

@@ -86,12 +86,14 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			throw new IllegalArgumentException("xmlFile required");
 		}
 
-		List<Line> lines = processImport(filePath,validate,reportContainer);
+		Line line = processImport(filePath,validate,reportContainer);
+		List<Line> lines = new ArrayList<Line>();
+		lines.add(line);
 
 		return lines;
 	}
 
-	private List<Line> processImport(String filePath, boolean validate,ReportHolder reportContainer) throws ExchangeException 
+	private Line processImport(String filePath, boolean validate,ReportHolder reportContainer) throws ExchangeException 
 	{
 		Report report = new NeptuneReport(NeptuneReport.KEY.IMPORT);
 		report.setStatus(Report.STATE.OK);
@@ -136,8 +138,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		
 		ModelAssembler modelAssembler = new ModelAssembler();
 
-		List<Line> lines = converter.extractLines(rootObject);
-		modelAssembler.setLines(lines);
+		Line line = converter.extractLine(rootObject);
+		modelAssembler.setLine(line);
 		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
 		modelAssembler.setCompanies(converter.extractCompanies(rootObject));
 		modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject));
@@ -152,17 +154,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		
 		modelAssembler.connect();
 		
-		for(Line line : lines){
-			line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
-		}
+	        line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 		
-		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,filePath,Integer.toString(lines.size()));
+		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,filePath,line.getName());
 		item.setStatus(Report.STATE.OK);
 		report.addItem(item);
 		
 		rootObject.toString();
 		
-		return lines;
+		return line;
 	}
 
 

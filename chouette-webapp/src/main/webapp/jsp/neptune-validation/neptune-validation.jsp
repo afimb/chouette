@@ -25,7 +25,7 @@
 	<s:div disabled="#session.imported != true">
 	
 	<s:fielderror />	
-  <s:form action="validation" namespace="/neptune-validation" validate="true">
+  <s:form action="validation" namespace="/neptune-validation">
 	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
 	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
 	   

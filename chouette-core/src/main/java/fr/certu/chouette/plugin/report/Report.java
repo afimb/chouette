@@ -36,6 +36,7 @@ public abstract class Report
 	
 	public void addAll(List<ReportItem> itemsToAdd) 
 	{
+		if (itemsToAdd == null) return;
 		if (items == null) items= new ArrayList<ReportItem>();
 		items.addAll(itemsToAdd);
 	} 
