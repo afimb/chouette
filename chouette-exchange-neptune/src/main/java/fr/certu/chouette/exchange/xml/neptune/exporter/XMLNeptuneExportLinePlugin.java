@@ -25,6 +25,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTNetworkProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
@@ -35,6 +36,7 @@ import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -59,6 +61,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 	@Setter private StopAreaProducer stopAreaProducer;
 	@Setter private AreaCentroidProducer areaCentroidProducer;
 	@Setter private ConnectionLinkProducer connectionLinkProducer;
+	@Setter private TimetableProducer timetableProducer;
 
 	
 	public XMLNeptuneExportLinePlugin() {
@@ -162,6 +165,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 				}
 			}			
 			
+			HashSet<Timetable> timetables = new HashSet<Timetable>();
 			for(VehicleJourney vehicleJourney : vehicleJourneys){
 				if(vehicleJourney.getCompany() != null){
 					companies.add(vehicleJourney.getCompany());
@@ -170,6 +174,9 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 					vehicleJourney.setCompany(line.getCompany());
 				}
 				chouetteLineDescription.addVehicleJourney(vehicleJourneyProducer.produce(vehicleJourney));
+				if(vehicleJourney.getTimetables() != null){
+					timetables.addAll(vehicleJourney.getTimetables());
+				}
 			}
 			
 			HashSet<StopArea> stopAreas = new HashSet<StopArea>();
@@ -207,6 +214,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			
 			for(ConnectionLink connectionLink : connectionLinks){
 				rootObject.addConnectionLink(connectionLinkProducer.produce(connectionLink));
+			}
+			
+			for(Timetable timetable : timetables){
+				rootObject.addTimetable(timetableProducer.produce(timetable));
 			}
 			
 			rootObject.setChouetteLineDescription(chouetteLineDescription);
