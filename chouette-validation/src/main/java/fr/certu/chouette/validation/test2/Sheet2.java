@@ -18,7 +18,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class Sheet2 implements IValidationPlugin<Line>{
 
-	ValidationStepDescription validationStepDescription;
+	private ValidationStepDescription validationStepDescription;
 	
 	public void init(){
 		validationStepDescription = new ValidationStepDescription("Test2.2", ValidationClassReportItem.CLASS.TWO.ordinal());

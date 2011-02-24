@@ -1,16 +1,12 @@
 package fr.certu.chouette.struts.neptuneValidation;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -100,7 +96,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			for(Cookie c : servletRequest.getCookies()) {
 				String cookieName = c.getName();
 				String cookieValue = c.getValue();
-			
+
 				if (cookieName.equals("test3_1_MinimalDistance"))
 					validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
 
@@ -175,13 +171,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 				LOGGER.info(formatDescription.toString());
 
 			LOGGER.info("File extension "+FilenameUtils.getExtension(fileFileName));
-			if(FilenameUtils.getExtension(fileFileName).equals("xml"))
-				//An XML file
-				imported = importXmlFile(file);
-			else
-				//A zip file
-				imported =importZip(file);
-
+			imported = importXmlFile(file);
 			if(imported){
 				if(lines != null){
 					setImported(true);
@@ -215,6 +205,10 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		parameters.add(simpleParameterValue);
 		SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validateXML");
 		simpleParameterValue2.setBooleanValue(validate);
+
+		SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("fileFormat");
+		simpleParameterValue3.setStringValue(FilenameUtils.getExtension(fileFileName));
+		parameters.add(simpleParameterValue3);
 		parameters.add(simpleParameterValue2);	
 		ReportHolder reportHolder = new ReportHolder();
 
@@ -234,7 +228,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 * @param file
 	 * @return
 	 * @throws ChouetteException
-	 */
+
 	private boolean importZip(File file) throws ChouetteException{
 		try{
 			boolean result = true;
@@ -262,7 +256,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			addActionError(getExceptionMessage(e));
 			return false;
 		}
-	}
+	}*/
 	/**
 	 * Neptune validation 
 	 * @return
@@ -310,7 +304,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
 			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
 		}
-		
+
 
 		//Adding validation parameters values in a session scope
 		session.put("validationParam", validationParam);

@@ -46,12 +46,13 @@
 			</list>
 		</property>
 	</bean>
-		<bean id="RouteValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+	<bean id="RouteValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createRoutePluginInjector">
 		<property name="manager" ref="routeManager" />
 		<property name="validationPlugins">
 			<list>
 				<ref bean="Test2_8" />
+				<ref bean="Test2_9" />
 			</list>
 		</property>
 	</bean>
