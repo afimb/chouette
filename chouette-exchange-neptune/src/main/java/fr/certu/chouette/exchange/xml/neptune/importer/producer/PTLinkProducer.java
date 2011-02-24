@@ -1,15 +1,17 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.model.neptune.PTLink;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class PTLinkProducer extends AbstractModelProducer<PTLink, chouette.schema.PtLink> {
 
 	@Override
-	public PTLink produce(chouette.schema.PtLink xmlPTLink) {
+	public PTLink produce(chouette.schema.PtLink xmlPTLink,ReportItem report) 
+	{
 		PTLink ptLink= new PTLink();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(ptLink, xmlPTLink);
+		populateFromCastorNeptune(ptLink, xmlPTLink,report);
 				
 		// Name optional
 		ptLink.setName(getNonEmptyTrimedString(xmlPTLink.getName()));

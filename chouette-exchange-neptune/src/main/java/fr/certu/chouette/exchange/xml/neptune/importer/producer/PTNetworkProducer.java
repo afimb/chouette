@@ -1,18 +1,21 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette.schema.PTNetwork> {
 
 	@Override
-	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork) 
+	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork,ReportItem report) 
 	{
 		if (xmlPTNetwork == null) return null;
 		PTNetwork ptNetwork = new PTNetwork();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(ptNetwork, xmlPTNetwork);
+		populateFromCastorNeptune(ptNetwork, xmlPTNetwork,report);
 		
 		// VersionDate mandatory
 		ptNetwork.setVersionDate(getDate(xmlPTNetwork.getVersionDate()));
@@ -24,7 +27,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette
 		ptNetwork.setName(getNonEmptyTrimedString(xmlPTNetwork.getName()));
 		
 		// Registration optional
-		ptNetwork.setRegistrationNumber(getRegistrationNumber(xmlPTNetwork.getRegistration()));
+		ptNetwork.setRegistrationNumber(getRegistrationNumber(xmlPTNetwork.getRegistration(),report));
 		
 		// SourceName optional
 		ptNetwork.setSourceName(getNonEmptyTrimedString(xmlPTNetwork.getSourceName()));
@@ -39,7 +42,8 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette
 			}
 			catch (IllegalArgumentException e) 
 			{
-			// TODO: traiter le cas de non correspondance
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"SourceType",xmlPTNetwork.getSourceType().value());
+				report.addItem(item);
 			}
 		}
 		

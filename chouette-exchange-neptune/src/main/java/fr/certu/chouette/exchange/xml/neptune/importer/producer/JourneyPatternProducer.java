@@ -1,15 +1,17 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern, chouette.schema.JourneyPattern> {
 
 	@Override
-	public JourneyPattern produce(chouette.schema.JourneyPattern xmlJourneyPattern) {
+	public JourneyPattern produce(chouette.schema.JourneyPattern xmlJourneyPattern,ReportItem report) 
+	{
 		JourneyPattern journeyPattern = new JourneyPattern();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(journeyPattern, xmlJourneyPattern);
+		populateFromCastorNeptune(journeyPattern, xmlJourneyPattern,report);
 		
 		// Name optional
 		journeyPattern.setName(getNonEmptyTrimedString(xmlJourneyPattern.getName()));
@@ -42,7 +44,7 @@ public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern
 		}
 		
 		//RegistrationNumber optional
-		journeyPattern.setRegistrationNumber(getRegistrationNumber(xmlJourneyPattern.getRegistration()));
+		journeyPattern.setRegistrationNumber(getRegistrationNumber(xmlJourneyPattern.getRegistration(),report));
 		
 		//Comment optional
 		journeyPattern.setComment(getNonEmptyTrimedString(xmlJourneyPattern.getComment()));

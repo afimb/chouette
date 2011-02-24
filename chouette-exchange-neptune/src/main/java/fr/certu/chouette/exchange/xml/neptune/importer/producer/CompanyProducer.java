@@ -1,15 +1,18 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class CompanyProducer extends AbstractModelProducer<Company, chouette.schema.Company> {
 
 	@Override
-	public Company produce(chouette.schema.Company xmlCompany) {
+	public Company produce(chouette.schema.Company xmlCompany,ReportItem report) 
+	{
+
 		Company company = new Company();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(company, xmlCompany);
+		populateFromCastorNeptune(company, xmlCompany, report);
 		
 		// Name mandatory
 		company.setName(getNonEmptyTrimedString(xmlCompany.getName()));
@@ -30,7 +33,7 @@ public class CompanyProducer extends AbstractModelProducer<Company, chouette.sch
 		company.setEmail(getNonEmptyTrimedString(xmlCompany.getEmail()));
 		
 		//RegistrationNumber optional
-		company.setRegistrationNumber(getRegistrationNumber(xmlCompany.getRegistration()));
+		company.setRegistrationNumber(getRegistrationNumber(xmlCompany.getRegistration(),report));
 		
 		//OperatingDepartmentName optional
 		company.setOperatingDepartmentName(getNonEmptyTrimedString(xmlCompany.getOperatingDepartmentName()));

@@ -150,8 +150,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		}
 		catch (IOException e) 
 		{
-			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,filePath,e.getLocalizedMessage());
-			item.setStatus(Report.STATE.ERROR);
+			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
 			report.addItem(item);
 			report.setStatus(Report.STATE.FATAL);
 			logger.error("zip import failed (cannot open zip)"+e.getLocalizedMessage());
@@ -165,10 +164,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			String entryName = entry.getName();
 			if (!FilenameUtils.getExtension(entryName).toLowerCase().equals("xml"))
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_IGNORED,entryName);
-				item.setStatus(Report.STATE.WARNING);
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_IGNORED,Report.STATE.WARNING,entryName);
 				report.addItem(item);
-				report.updateStatus(Report.STATE.WARNING);
+				report.setStatus(Report.STATE.WARNING);
 				logger.info("zip entry "+entryName+" bypassed ; not a XML file");
 				continue;
 			}
@@ -180,10 +178,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			} 
 			catch (IOException e) 
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,entryName,e.getLocalizedMessage());
-				item.setStatus(Report.STATE.ERROR);
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,entryName,e.getLocalizedMessage());
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
 				logger.error("zip entry "+entryName+" import failed (get entry)"+e.getLocalizedMessage());
 				continue;
 			}
@@ -194,8 +190,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			}
 			catch (Exception e) 
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,entryName,e.getLocalizedMessage());
-				item.setStatus(Report.STATE.ERROR);
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,entryName,e.getLocalizedMessage());
 				report.addItem(item);
 				report.setStatus(Report.STATE.ERROR);
 				logger.error("zip entry "+entryName+" import failed (read XML)"+e.getLocalizedMessage());
@@ -213,8 +208,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			} 
 			catch (ExchangeException e) 
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,entryName,e.getLocalizedMessage());
-				item.setStatus(Report.STATE.ERROR);
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,entryName,e.getLocalizedMessage());
 				report.addItem(item);
 				report.setStatus(Report.STATE.ERROR);
 				logger.error("zip entry "+entryName+" import failed (convert to model)"+e.getLocalizedMessage());
@@ -250,8 +244,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		}
 		catch (Exception e) 
 		{
-			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,filePath,e.getLocalizedMessage());
-			item.setStatus(Report.STATE.ERROR);
+			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
 			report.addItem(item);
 			report.setStatus(Report.STATE.FATAL);
 			logger.error("import failed ((read XML)) "+e.getLocalizedMessage());
@@ -286,14 +279,12 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			catch (ValidationException e) 
 			{
 				logger.error("import failed for "+entryName+" : Castor validation");
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_ERROR,entryName);
-				item.setStatus(Report.STATE.ERROR);
+				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_ERROR,Report.STATE.ERROR,entryName);
 				report.addItem(item);
 				Throwable t = e;
 				while (t != null)
 				{
-					ReportItem subItem = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_CAUSE,t.getLocalizedMessage());
-					subItem.setStatus(Report.STATE.ERROR);
+					ReportItem subItem = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_CAUSE,Report.STATE.ERROR,t.getLocalizedMessage());
 					item.addItem(subItem);
 					t = t.getCause();
 				}
@@ -301,29 +292,31 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			}
 		}
 
+		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,Report.STATE.OK,entryName,"");
+		
 		ModelAssembler modelAssembler = new ModelAssembler();
 
-		Line line = converter.extractLine(rootObject);
+		Line line = converter.extractLine(rootObject,item);
 		modelAssembler.setLine(line);
-		modelAssembler.setRoutes(converter.extractRoutes(rootObject));
-		modelAssembler.setCompanies(converter.extractCompanies(rootObject));
-		modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject));
-		modelAssembler.setJourneyPatterns(converter.extractJourneyPatterns(rootObject));
-		modelAssembler.setPtLinks(converter.extractPTLinks(rootObject));
-		modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(rootObject));
-		modelAssembler.setStopPoints(converter.extractStopPoints(rootObject));
-		modelAssembler.setStopAreas(converter.extractStopAreas(rootObject));
-		modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject));
-		modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject));
-		modelAssembler.setTimetables(converter.extractTimetables(rootObject));
+		modelAssembler.setRoutes(converter.extractRoutes(rootObject,item));
+		modelAssembler.setCompanies(converter.extractCompanies(rootObject,item));
+		modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject,item));
+		modelAssembler.setJourneyPatterns(converter.extractJourneyPatterns(rootObject,item));
+		modelAssembler.setPtLinks(converter.extractPTLinks(rootObject,item));
+		modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(rootObject,item));
+		modelAssembler.setStopPoints(converter.extractStopPoints(rootObject,item));
+		modelAssembler.setStopAreas(converter.extractStopAreas(rootObject,item));
+		modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject,item));
+		modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject,item));
+		modelAssembler.setTimetables(converter.extractTimetables(rootObject,item));
 
 		modelAssembler.connect();
 
 		line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 
-		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,entryName,line.getName());
-		item.setStatus(Report.STATE.OK);
-		report.addItem(item);
+		ReportItem item2 = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,Report.STATE.OK,entryName,line.getName());
+		item2.addAll(item.getItems());
+		report.addItem(item2);
 
 		rootObject.toString();
 

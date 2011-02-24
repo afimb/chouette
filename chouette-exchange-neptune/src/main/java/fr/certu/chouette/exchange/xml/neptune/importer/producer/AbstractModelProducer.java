@@ -4,16 +4,24 @@ import java.util.Date;
 
 import chouette.schema.Registration;
 import chouette.schema.TridentObjectTypeType;
+import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> implements IModelProducer<T, U>
 {
 
-	public void populateFromCastorNeptune(T target,U source)
+	public void populateFromCastorNeptune(T target,U source ,ReportItem report)
 	{
 		// ObjectId : maybe null but not empty
 		// TODO : Mandatory ?
 		target.setObjectId(getNonEmptyTrimedString(source.getObjectId()));
+		if (target.getObjectId() == null)
+		{
+			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"ObjectId") ;
+			report.addItem(item);
+		}
 
 		// ObjectVersion
 		if (source.hasObjectVersion()) 
@@ -37,13 +45,17 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		return (target.length() ==0? null: target);
 	}
 
-	protected String getRegistrationNumber(Registration registration) 
+	protected String getRegistrationNumber(Registration registration,ReportItem report) 
 	{
 		if (registration == null) return null;
 		String number = registration.getRegistrationNumber();
-		if (number == null) return null;
-		number=number.trim();
-		return (number.length() == 0?null:number);
+		if (number == null || number.trim().length() == 0) 
+		{
+			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"RegistrationNumber") ;
+			report.addItem(item);
+			return null;
+		}
+		return number.trim();
 	}
 
 	protected Date getDate(org.exolab.castor.types.Date castorDate) {
@@ -51,12 +63,12 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		Date date = castorDate.toDate();
 		return date;
 	}
-	
+
 	protected Date getTime(org.exolab.castor.types.Time castorTime) {
 		if(castorTime == null) return null;
 		Date date = castorTime.toDate();
 		return date;
 	}
-	
-	public abstract T produce(U o);
+
+
 }

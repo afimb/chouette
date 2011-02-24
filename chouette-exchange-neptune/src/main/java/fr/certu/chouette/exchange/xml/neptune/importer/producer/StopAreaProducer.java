@@ -5,16 +5,17 @@ import chouette.schema.StopAreaExtension;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.schema.StopArea>
 {
 	@Override
-	public StopArea produce(chouette.schema.StopArea xmlStopArea)
+	public StopArea produce(chouette.schema.StopArea xmlStopArea,ReportItem report) 
 	{
 		StopArea stopArea = new StopArea();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(stopArea, xmlStopArea);
+		populateFromCastorNeptune(stopArea, xmlStopArea, report);
 		
 		// AreaCentroid optional
 		stopArea.setAreaCentroidId(getNonEmptyTrimedString(xmlStopArea.getCentroidOfArea()));
@@ -63,7 +64,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 			stopArea.setNearestTopicName(getNonEmptyTrimedString(xmlStopAreaExtension.getNearestTopicName()));
 			
 			// RegistrationNumber optional
-			stopArea.setRegistrationNumber(getRegistrationNumber(xmlStopAreaExtension.getRegistration()));
+			stopArea.setRegistrationNumber(getRegistrationNumber(xmlStopAreaExtension.getRegistration(), report));
 			
 			//StairsAvailability optional
 			stopArea.setStairsAvailable(xmlStopAreaExtension.getStairsAvailability());

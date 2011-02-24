@@ -4,15 +4,16 @@ import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,chouette.schema.AreaCentroid>
 {
 	@Override
-	public AreaCentroid produce(chouette.schema.AreaCentroid xmlAreaCentroid)
+	public AreaCentroid produce(chouette.schema.AreaCentroid xmlAreaCentroid,ReportItem report)
 	{
 		AreaCentroid areaCentroid = new AreaCentroid();
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(areaCentroid, xmlAreaCentroid);
+		populateFromCastorNeptune(areaCentroid, xmlAreaCentroid,report);
 
 		// Name mandatory
 		areaCentroid.setName(getNonEmptyTrimedString(xmlAreaCentroid.getName()));

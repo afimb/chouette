@@ -7,15 +7,18 @@ import chouette.schema.ConnectionLinkExtension;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, chouette.schema.ConnectionLink> {
 
 	@Override
-	public ConnectionLink produce(chouette.schema.ConnectionLink xmlConnectionLink) {
+	public ConnectionLink produce(chouette.schema.ConnectionLink xmlConnectionLink,ReportItem report) 
+	{
+
 		ConnectionLink connectionLink= new ConnectionLink();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(connectionLink, xmlConnectionLink);
+		populateFromCastorNeptune(connectionLink, xmlConnectionLink,report);
 				
 		// Name optional
 		connectionLink.setName(getNonEmptyTrimedString(xmlConnectionLink.getName()));
@@ -89,7 +92,7 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 				// TODO: traiter le cas de non correspondance
 			}
 		}
-				
+		
 		return connectionLink;
 	}
 

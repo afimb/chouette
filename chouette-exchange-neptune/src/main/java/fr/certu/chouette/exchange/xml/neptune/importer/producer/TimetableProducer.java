@@ -4,15 +4,17 @@ import java.util.Date;
 
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class TimetableProducer extends AbstractModelProducer<Timetable, chouette.schema.Timetable> {
 
 	@Override
-	public Timetable produce(chouette.schema.Timetable xmlTimetable) {
+	public Timetable produce(chouette.schema.Timetable xmlTimetable,ReportItem report) 
+	{
 		Timetable timetable= new Timetable();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(timetable, xmlTimetable);
+		populateFromCastorNeptune(timetable, xmlTimetable, report);
 
 		timetable.setComment(getNonEmptyTrimedString(xmlTimetable.getComment()));
 

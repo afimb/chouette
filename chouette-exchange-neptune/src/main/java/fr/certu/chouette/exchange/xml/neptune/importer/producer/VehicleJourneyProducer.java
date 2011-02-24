@@ -2,22 +2,24 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.util.Date;
 
-
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.plugin.report.ReportItem;
 
-public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, chouette.schema.VehicleJourney> {
+public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, chouette.schema.VehicleJourney> 
+{
 
 	@Override
-	public VehicleJourney produce(chouette.schema.VehicleJourney xmlVehicleJourney) {
+	public VehicleJourney produce(chouette.schema.VehicleJourney xmlVehicleJourney,ReportItem report) 
+	{
 		VehicleJourney vehicleJourney = new VehicleJourney();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney);
+		populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney, report);
 		
 		// Comment optional
 		vehicleJourney.setComment(getNonEmptyTrimedString(xmlVehicleJourney.getComment()));

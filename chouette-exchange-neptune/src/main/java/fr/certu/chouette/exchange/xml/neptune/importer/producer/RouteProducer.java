@@ -2,13 +2,15 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.ChouetteRoute> {
-	public Route produce(chouette.schema.ChouetteRoute xmlRoute){
+	public Route produce(chouette.schema.ChouetteRoute xmlRoute,ReportItem report) 
+	{
 		Route route = new Route();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(route, xmlRoute);
+		populateFromCastorNeptune(route, xmlRoute, report);
 		
 		// Name optional
 		route.setName(getNonEmptyTrimedString(xmlRoute.getName()));

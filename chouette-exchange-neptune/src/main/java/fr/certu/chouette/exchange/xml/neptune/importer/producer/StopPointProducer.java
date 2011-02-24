@@ -4,15 +4,16 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.schema.StopPoint>
 {
 	@Override
-	public StopPoint produce(chouette.schema.StopPoint xmlStopPoint)
+	public StopPoint produce(chouette.schema.StopPoint xmlStopPoint,ReportItem report) 
 	{
 		StopPoint stopPoint = new StopPoint();
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(stopPoint, xmlStopPoint);
+		populateFromCastorNeptune(stopPoint, xmlStopPoint, report);
 
 		// Name mandatory
 		stopPoint.setName(getNonEmptyTrimedString(xmlStopPoint.getName()));
