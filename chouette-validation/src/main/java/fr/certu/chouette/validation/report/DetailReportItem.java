@@ -18,9 +18,14 @@ public class DetailReportItem extends ReportItem
 	public DetailReportItem(String key)
 	{
 		setMessageKey(key);
-		setStatus(STATE.OK);
+		setStatus(STATE.UNCHECK);
 
 	}
 	
-
+	public DetailReportItem(String key, STATE state, String...args){
+		setMessageKey(key);
+		setStatus(state);
+		if(!args.equals(""))
+			addMessageArgs(args);	
+	}
 }

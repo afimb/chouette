@@ -10,6 +10,8 @@
 	<bean id="Test2_2" class="fr.certu.chouette.validation.test2.Sheet2"></bean>
 	<bean id="Test2_3" class="fr.certu.chouette.validation.test2.Sheet3"></bean>
 	<bean id="Test2_4" class="fr.certu.chouette.validation.test2.Sheet4"></bean>
+	<bean id="Test2_5" class="fr.certu.chouette.validation.test2.Sheet5"></bean>
 	<bean id="Test2_6" class="fr.certu.chouette.validation.test2.Sheet6"></bean>
 	<bean id="Test2_7" class="fr.certu.chouette.validation.test2.Sheet7"></bean>
+	<bean id="Test2_8" class="fr.certu.chouette.validation.test2.Sheet8"></bean>
 </beans>
