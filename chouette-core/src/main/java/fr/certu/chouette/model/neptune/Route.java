@@ -70,6 +70,13 @@ public class Route extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private String wayBack; // BD 
 	/**
+	 * Neptune identification referring to the wayBackRoute of the route<br/>
+	 * Meaningless after database read (see oppositeRouteId)
+	 * <br/>Changes have no effect on database
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String wayBackRouteId; 
+	/**
 	 * Neptune identification referring to the JourneyPatterns of the route<br/>
 	 * Meaningless after database read (see journeyPatterns)
 	 * <br/>Changes have no effect on database
