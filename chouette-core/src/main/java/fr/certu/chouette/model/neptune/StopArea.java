@@ -121,7 +121,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 			{
 				for (StopPoint containedStopPoint : getContainedStopPoints())
 				{
-					containedStopPoint.expand(level);
+					containedStopPoint.expand(DetailLevelEnum.ATTRIBUTE);
 				}
 			}
 			if (getConnectionLinks() != null)

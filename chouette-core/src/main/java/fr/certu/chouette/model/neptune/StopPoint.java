@@ -48,8 +48,8 @@ public class StopPoint extends NeptuneIdentifiedObject
 			break;
 		case STRUCTURAL_DEPENDENCIES : 
 		case ALL_DEPENDENCIES :
-			if (getPtNetwork() != null) getPtNetwork().expand(level);
-			if (getLine() != null) getLine().expand(level);
+			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getLine() != null) getLine().expand(DetailLevelEnum.ATTRIBUTE);
 			if (getContainedInStopArea() != null) getContainedInStopArea().expand(level);
 		}
 	}

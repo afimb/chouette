@@ -55,13 +55,10 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 			endOfLink = null;
 			break;
 		case NARROW_DEPENDENCIES : 
-			if (getStartOfLink() != null) getStartOfLink().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getEndOfLink() != null) getEndOfLink().expand(DetailLevelEnum.ATTRIBUTE);
-			break;
 		case STRUCTURAL_DEPENDENCIES : 
 		case ALL_DEPENDENCIES :
-			if (getStartOfLink() != null) getStartOfLink().expand(level);
-			if (getEndOfLink() != null) getEndOfLink().expand(level);
+			if (getStartOfLink() != null) getStartOfLink().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getEndOfLink() != null) getEndOfLink().expand(DetailLevelEnum.ATTRIBUTE);
 		}
 	} 
 	

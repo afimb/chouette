@@ -66,6 +66,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 			vehicleJourneys = null;
 			break;
 		case NARROW_DEPENDENCIES : 
+		case STRUCTURAL_DEPENDENCIES : 
+		case ALL_DEPENDENCIES :
 			if (getVehicleJourneys() != null)
 			{
 				for (VehicleJourney vehicleJourney : getVehicleJourneys())
@@ -74,15 +76,6 @@ public class Timetable extends NeptuneIdentifiedObject {
 				}
 			}
 			break;
-		case STRUCTURAL_DEPENDENCIES : 
-		case ALL_DEPENDENCIES :
-			if (getVehicleJourneys() != null)
-			{
-				for (VehicleJourney vehicleJourney : getVehicleJourneys())
-				{
-					vehicleJourney.expand(level);
-				}
-			}
 		}
 	} 
 	
