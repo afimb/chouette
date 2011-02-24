@@ -36,5 +36,24 @@
 				<ref bean="Test2_4" />
 			</list>
 		</property>
+		</bean>
+		<bean id="TimetableValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createTimetablePluginInjector">
+		<property name="manager" ref="timetableManager" />
+		<property name="validationPlugins">
+			<list>
+				<ref bean="Test2_5" />
+			</list>
+		</property>
 	</bean>
+		<bean id="RouteValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createRoutePluginInjector">
+		<property name="manager" ref="routeManager" />
+		<property name="validationPlugins">
+			<list>
+				<ref bean="Test2_8" />
+			</list>
+		</property>
+	</bean>
+	
 </beans>

@@ -19,7 +19,7 @@ public class SheetReportItem extends ReportItem implements Comparable<SheetRepor
 	public SheetReportItem(String key, int order)
 	{
 		setMessageKey(key);
-		setStatus(STATE.OK);
+		setStatus(STATE.UNCHECK);
 
 	}
 	
