@@ -97,14 +97,22 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				{
 					filePath = svalue.getFilepathValue();
 				}
-				if (svalue.getName().equals("fileFormat"))
+				else if (svalue.getName().equals("fileFormat"))
 				{
 					extension = svalue.getStringValue().toLowerCase();
 				}
-				if (svalue.getName().equals("validateXML"))
+				else if (svalue.getName().equals("validateXML"))
 				{
 					validate = svalue.getBooleanValue().booleanValue();
 				}
+				else
+				{
+					throw new IllegalArgumentException("unexpected argument "+svalue.getName());
+				}
+			}
+			else
+			{
+				throw new IllegalArgumentException("unexpected argument "+value.getName());
 			}
 		}
 		if (filePath == null) 

@@ -64,6 +64,36 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		importLine.doImport(parameters, report);
 		Assert.fail("expected exception not raised");
 	}
+	
+	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject unknown parameter",dependsOnMethods={"getBean"},expectedExceptions={IllegalArgumentException.class})
+	public void verifyCheckUnknownParameter() throws ChouetteException
+	{
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		simpleParameterValue.setFilepathValue(path+"/dummyFile.xml");
+		parameters.add(simpleParameterValue);
+		simpleParameterValue = new SimpleParameterValue("dummyParameter");
+		simpleParameterValue.setStringValue("dummy value");
+		parameters.add(simpleParameterValue);
+		ReportHolder report = new ReportHolder();
+
+		importLine.doImport(parameters, report);
+		Assert.fail("expected exception not raised");
+	}
+	
+	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject missing mandatory parameter",dependsOnMethods={"getBean"},expectedExceptions={IllegalArgumentException.class})
+	public void verifyCheckMandatoryParameter() throws ChouetteException
+	{
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("validateXML");
+		simpleParameterValue.setBooleanValue(true);
+		parameters.add(simpleParameterValue);
+		ReportHolder report = new ReportHolder();
+
+		importLine.doImport(parameters, report);
+		Assert.fail("expected exception not raised");
+	}
+
 		
 	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject wrong file type",dependsOnMethods={"getBean"},expectedExceptions={IllegalArgumentException.class})
 	public void verifyCheckFileType() throws ChouetteException
