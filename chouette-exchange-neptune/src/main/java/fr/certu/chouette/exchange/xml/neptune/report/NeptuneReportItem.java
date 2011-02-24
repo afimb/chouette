@@ -17,7 +17,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class NeptuneReportItem extends ReportItem 
 {
-	public enum KEY {OK_LINE,FILE_ERROR,VALIDATION_ERROR,VALIDATION_CAUSE} ;
+	public enum KEY {OK_LINE,FILE_ERROR,VALIDATION_ERROR,VALIDATION_CAUSE,FILE_IGNORED} ;
 
 	public NeptuneReportItem(KEY key,String... args)
 	{

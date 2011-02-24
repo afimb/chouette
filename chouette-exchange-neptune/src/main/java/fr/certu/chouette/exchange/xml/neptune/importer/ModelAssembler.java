@@ -1,3 +1,10 @@
+/**
+ * Projet CHOUETTE
+ *
+ * ce projet est sous license libre
+ * voir LICENSE.txt pour plus de details
+ *
+ */
 package fr.certu.chouette.exchange.xml.neptune.importer;
 
 import java.util.ArrayList;
@@ -22,6 +29,10 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
+/**
+ * @author michel
+ *
+ */
 public class ModelAssembler {
 	@Getter @Setter private Line line;
 	@Getter @Setter private List<Route> routes;
@@ -51,7 +62,8 @@ public class ModelAssembler {
 	private Map<String, Timetable> timetablesDictionary = new HashMap<String, Timetable>();
 
 	
-	public void connect(){
+	public void connect()
+	{
 		populateDictionaries();
 		connectLine();
 		connectRoutes();
@@ -67,7 +79,8 @@ public class ModelAssembler {
 		connectTimetables();
 	}
 
-	private void populateDictionaries(){
+	private void populateDictionaries()
+	{
 	    List<Line> lines = new ArrayList<Line>();
 	    lines.add(line);
 	    populateDictionnary(lines, linesDictionary);
@@ -83,7 +96,8 @@ public class ModelAssembler {
 		populateDictionnary(timetables, timetablesDictionary);
 	}
 	
-	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary){
+	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary)
+	{
 		for(T item : list){
 			if(item != null && item.getObjectId() != null){
 				dictionnary.put(item.getObjectId(), item);
@@ -94,50 +108,63 @@ public class ModelAssembler {
 		}
 	}
 	
-	private void connectLine(){
-	    //for(Line line : lines){			
-			if(companies != null && companies.size() == 1){
+	private void connectLine()
+	{
+	    	if(companies != null && companies.size() == 1)
+	    	{
 				line.setCompany(companies.get(0));
 			}
 			
 			line.setPtNetwork(ptNetwork);
 			line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
-			//}
+		
 	}
 	
-	private void connectRoutes(){
-		for(Route route : routes){
+	private void connectRoutes()
+	{
+		for(Route route : routes)
+		{
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
 			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
 		}
 	}
 	
-	private void connectCompanies(){
+	private void connectCompanies()
+	{
+		/*
 		for(Company company : companies){
 			//nothing to do...
 		}
+		*/
 	}
 
-	private void connectPTNetwork() {
+	private void connectPTNetwork() 
+	{
 		ptNetwork.setLines(getObjectsFromIds(ptNetwork.getLineIds(), Line.class));
 	}
 	
-	private void connectJourneyPatterns() {
-		for(JourneyPattern journeyPattern : journeyPatterns){
+	private void connectJourneyPatterns() 
+	{
+		for(JourneyPattern journeyPattern : journeyPatterns)
+		{
 			journeyPattern.setRoute(getObjectFromId(journeyPattern.getRouteId(), Route.class));
 			journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
 		}
 	}
 	
-	private void connectPTLinks(){
-		for(PTLink ptLink : ptLinks){
+	private void connectPTLinks()
+	{
+		for(PTLink ptLink : ptLinks)
+		{
 			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 			ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 		}
 	}
 	
-	private void connectVehicleJourneys(){
-		for(VehicleJourney vehicleJourney : vehicleJourneys){
+	private void connectVehicleJourneys()
+	{
+		for(VehicleJourney vehicleJourney : vehicleJourneys)
+		{
 			vehicleJourney.setCompany(getObjectFromId(vehicleJourney.getCompanyId(), Company.class));
 			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
 			vehicleJourney.setJourneyPattern(journeyPattern);
@@ -150,11 +177,14 @@ public class ModelAssembler {
 		}
 	}
 
-	private void connectStopPoints() {
-		for(StopPoint stopPoint : stopPoints){
+	private void connectStopPoints() 
+	{
+		for(StopPoint stopPoint : stopPoints)
+		{
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
 			stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
-			if(ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut())){
+			if(ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
+			{
 				stopPoint.setPtNetwork(ptNetwork);
 			}
 			else{
@@ -163,12 +193,16 @@ public class ModelAssembler {
 		}
 	}
 
-	private void connectStopAreas() {
-		for(StopArea stopArea : stopAreas){
+	private void connectStopAreas() 
+	{
+		for(StopArea stopArea : stopAreas)
+		{
 			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
 			stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
-			if(stopArea.getContainedStopAreas() != null){
-				for(StopArea childStopArea : stopArea.getContainedStopAreas()){
+			if(stopArea.getContainedStopAreas() != null)
+			{
+				for(StopArea childStopArea : stopArea.getContainedStopAreas())
+				{
 					childStopArea.setParentStopArea(stopArea);
 				}
 			}
@@ -177,59 +211,76 @@ public class ModelAssembler {
 		}
 	}
 	
-	private void connectAreaCentroids() {
-		for(AreaCentroid areaCentroid : areaCentroids){
+	private void connectAreaCentroids() 
+	{
+		for(AreaCentroid areaCentroid : areaCentroids)
+		{
 			areaCentroid.setContainedInStopArea(getObjectFromId(areaCentroid.getContainedInStopAreaId(), StopArea.class));
 		}
 	}
 	
-	private void connectConnectionLinks() {
-		for(ConnectionLink connectionLink : connectionLinks){
+	private void connectConnectionLinks() 
+	{
+		for(ConnectionLink connectionLink : connectionLinks)
+		{
 			StopArea startOfLink = getObjectFromId(connectionLink.getStartOfLinkId(), StopArea.class);
 			if(startOfLink != null){
 				connectionLink.setStartOfLink(startOfLink);
 				startOfLink.addConnectionLink(connectionLink);
 			}
 			StopArea endOfLink = getObjectFromId(connectionLink.getEndOfLinkId(), StopArea.class);
-			if(endOfLink != null){
+			if(endOfLink != null)
+			{
 				connectionLink.setEndOfLink(endOfLink);
 				endOfLink.addConnectionLink(connectionLink);
 			}
 		}
 	}
 	
-	private void connectTimetables() {
-		for(Timetable timetable : timetables){
+	private void connectTimetables() 
+	{
+		for(Timetable timetable : timetables)
+		{
 			timetable.setVehicleJourneys(getObjectsFromIds(timetable.getVehicleJourneyIds(), VehicleJourney.class));
-			if(timetable.getVehicleJourneys() != null){
-				for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys()){
+			if(timetable.getVehicleJourneys() != null)
+			{
+				for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
+				{
 					vehicleJourney.addTimetable(timetable);
 				}
 			}
 		}
 	}
 	
-	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass){
+	@SuppressWarnings("unchecked")
+	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass)
+	{
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
 		
-		if(dictionary != null && ids != null){
-			for(String id : ids){
+		if(dictionary != null && ids != null)
+		{
+			for(String id : ids)
+			{
 				T object = (T)dictionary.get(id);
-				if(object != null){
+				if(object != null)
+				{
 					objects.add(object);
 				}
 			}
 		}
 		
-		if(objects.size() == 0){
+		if(objects.size() == 0)
+		{
 			objects = null;
 		}
 		
 		return objects;
 	}
 	
-	private <T extends NeptuneIdentifiedObject> T getObjectFromId(String id, Class<T> dictionaryClass){
+	@SuppressWarnings("unchecked")
+	private <T extends NeptuneIdentifiedObject> T getObjectFromId(String id, Class<T> dictionaryClass)
+	{
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		T object = null;
 		
