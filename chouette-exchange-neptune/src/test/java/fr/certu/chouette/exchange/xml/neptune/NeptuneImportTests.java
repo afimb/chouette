@@ -10,6 +10,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
@@ -31,7 +32,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	private String neptuneZip = null;
 	private String path="src/test/resources/";
 
-	@Test(groups={"ImportLine","ImportZipLines"}, description="Get a bean from context")
+	@Test(groups={"ImportLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
 	public void getBean()
 	{
 		importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
@@ -51,6 +52,75 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		this.neptuneZip = neptuneZip;
 	}
 
+	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject wrong file extension",dependsOnMethods={"getBean"},expectedExceptions={IllegalArgumentException.class})
+	public void verifyCheckFileExtension() throws ChouetteException
+	{
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		simpleParameterValue.setFilepathValue(path+"/dummyFile.tmp");
+		parameters.add(simpleParameterValue);
+		ReportHolder report = new ReportHolder();
+
+		importLine.doImport(parameters, report);
+		Assert.fail("expected exception not raised");
+	}
+		
+	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject wrong file type",dependsOnMethods={"getBean"},expectedExceptions={IllegalArgumentException.class})
+	public void verifyCheckFileType() throws ChouetteException
+	{
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		simpleParameterValue.setFilepathValue(path+"/dummyFile.xml");
+		parameters.add(simpleParameterValue);
+		simpleParameterValue = new SimpleParameterValue("fileFormat");
+		simpleParameterValue.setStringValue("txt");
+		parameters.add(simpleParameterValue);
+		ReportHolder report = new ReportHolder();
+
+		importLine.doImport(parameters, report);
+		Assert.fail("expected exception not raised");
+	}
+		
+	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject file not found",dependsOnMethods={"getBean"})
+	public void verifyCheckXMLFileExists() throws ChouetteException
+	{
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		simpleParameterValue.setFilepathValue(path+"/dummyFile.tmp");
+		parameters.add(simpleParameterValue);
+		simpleParameterValue = new SimpleParameterValue("fileFormat");
+		simpleParameterValue.setStringValue("xml");
+		parameters.add(simpleParameterValue);
+		ReportHolder report = new ReportHolder();
+
+		List<Line> lines = importLine.doImport(parameters, report);
+		Assert.assertNull(lines,"lines must be null");
+		List<ReportItem> items = report.getReport().getItems();
+		printReport(report.getReport());
+		boolean found = false;
+		for (ReportItem reportItem : items) 
+		{
+		   if (reportItem.getMessageKey().equals("FILE_ERROR")) found = true;
+		}
+		Assert.assertTrue(found,"FILE_ERROR must be found in report");
+		
+	}
+	
+	@Test (groups = {"CheckParameters"}, description = "Import Plugin should return format description",dependsOnMethods={"getBean"})
+	public void verifyFormatDescription()
+	{
+		FormatDescription description = importLine.getDescription();
+		List<ParameterDescription> params = description.getParameterDescriptions();
+
+		Assert.assertEquals(description.getName(), "XMLNeptuneLine");
+		Assert.assertNotNull(params,"params should not be null");
+		Assert.assertEquals(params.size(), 3," params size must equal 3");
+		LOGGER.info("Description \n "+description.toString());
+		System.out.println(description.toString());
+
+	}
+		
+	
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should import file",dependsOnMethods={"getBean"})
 	public void verifyImportLine() throws ChouetteException
 	{
@@ -72,20 +142,8 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		printReport(report.getReport());		
 	}
 	
+	
 
-	@Test (groups = {"ImportLine"}, description = "Import Plugin should return format description",dependsOnMethods={"getBean"})
-	public void verifyFormatDescription()
-	{
-		FormatDescription description = importLine.getDescription();
-		List<ParameterDescription> params = description.getParameterDescriptions();
-
-		Assert.assertEquals(description.getName(), "XMLNeptuneLine");
-		Assert.assertNotNull(params,"params should not be null");
-		Assert.assertEquals(params.size(), 2," params size must equal 2");
-		LOGGER.info("Description \n "+description.toString());
-		System.out.println(description.toString());
-
-	}
 	
 	/*@Test (groups = {"ImportLine"}, description = "Import Plugin should validate an xml file",dependsOnMethods={"getBean","verifyImportLine"}, 
 			expectedExceptions=ValidationException.class)

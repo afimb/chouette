@@ -61,8 +61,11 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		ParameterDescription param1 = new ParameterDescription("xmlFile",ParameterDescription.TYPE.FILEPATH,false,true);
 		param1.setAllowedExtensions(Arrays.asList(new String[]{"xml","zip"}));
 		params.add(param1);
-		ParameterDescription param2 = new ParameterDescription("validateXML",ParameterDescription.TYPE.BOOLEAN,false,"false");
+		ParameterDescription param2 = new ParameterDescription("fileFormat",ParameterDescription.TYPE.STRING,false,"file extension");
+		param2.setAllowedExtensions(Arrays.asList(new String[]{"xml","zip"}));
 		params.add(param2);
+		ParameterDescription param3 = new ParameterDescription("validateXML",ParameterDescription.TYPE.BOOLEAN,false,"false");
+		params.add(param3);
 		description.setParameterDescriptions(params);		
 	}
 
@@ -84,6 +87,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	{
 		String filePath = null;
 		boolean validate = false;
+		String extension = "file extension";
 		for (ParameterValue value : parameters) 
 		{
 			if (value instanceof SimpleParameterValue)
@@ -92,6 +96,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				if (svalue.getName().equals("xmlFile"))
 				{
 					filePath = svalue.getFilepathValue();
+				}
+				if (svalue.getName().equals("fileFormat"))
+				{
+					extension = svalue.getStringValue().toLowerCase();
 				}
 				if (svalue.getName().equals("validateXML"))
 				{
@@ -105,11 +113,11 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			throw new IllegalArgumentException("xmlFile required");
 		}
 
-		String extension = FilenameUtils.getExtension(filePath).toLowerCase();
+		if (extension.equals("file extension")) extension = FilenameUtils.getExtension(filePath).toLowerCase();
 		if (!allowedExtensions.contains(extension))
 		{
-			logger.error("invalid argument xmlFile "+filePath+", allowed extensions : "+Arrays.toString(allowedExtensions.toArray()));
-			throw new IllegalArgumentException("invalid file type");
+			logger.error("invalid argument xmlFile "+filePath+", allowed format : "+Arrays.toString(allowedExtensions.toArray()));
+			throw new IllegalArgumentException("invalid file type : "+extension);
 		}
 
 
