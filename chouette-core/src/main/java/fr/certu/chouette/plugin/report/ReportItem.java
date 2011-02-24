@@ -23,7 +23,7 @@ import lombok.Setter;
  * @author michel
  *
  */
-public abstract class ReportItem extends Report
+public abstract  class ReportItem extends Report implements Comparable<ReportItem>
 {
 	@Getter @Setter private String messageKey;
 	@Getter @Setter private List<String> messageArgs = new ArrayList<String>();
@@ -71,5 +71,11 @@ public abstract class ReportItem extends Report
 	}
 
 
+	@Override
+	public int compareTo(ReportItem o) 
+	{
+		// default implementation always return equals
+		return 0;
+	}
 
 }

@@ -17,7 +17,9 @@ import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
@@ -27,17 +29,27 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
 	private IImportPlugin<Line> importLine = null;
 	private String neptuneFile = null;
+	private String neptuneZip = null;
 	private String path="src/test/resources/";
 
-	@Test(groups={"ImportLine"}, description="Get a bean from context")
-	public void getBean(){
+	@Test(groups={"ImportLine","ImportZipLines"}, description="Get a bean from context")
+	public void getBean()
+	{
 		importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
 	}
 
 	@Parameters({"neptuneFile"})
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should import neptune file",dependsOnMethods={"getBean"})
-	public void getNeptuneFile(String neptuneFile){
+	public void getNeptuneFile(String neptuneFile)
+	{
 		this.neptuneFile = neptuneFile;
+	}
+
+	@Parameters({"neptuneZip"})
+	@Test (groups = {"ImportZipLines"}, description = "Import Plugin should import neptune zip file",dependsOnMethods={"getBean"})
+	public void getNeptuneZip(String neptuneZip)
+	{
+		this.neptuneZip = neptuneZip;
 	}
 
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should import file",dependsOnMethods={"getBean"})
@@ -53,12 +65,14 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
 		List<Line> lines = importLine.doImport(parameters, report);
 
-		Assert.assertNotNull(lines,"lines cant't be null");
+		Assert.assertNotNull(lines,"lines can't be null");
+		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
 		for(Line line : lines){
 			System.out.println(line.toString("\t",80));
 		}
-		
+		printReport(report.getReport());		
 	}
+	
 
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should return format description",dependsOnMethods={"getBean"})
 	public void verifyFormatDescription()
@@ -94,4 +108,58 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		Assert.assertNotNull(lines,"lines cant't be null");
 		
 	}*/
+	
+	
+	@Test (groups = {"ImportZipLines"}, description = "Import Plugin should import zip file",dependsOnMethods={"getBean"})
+	public void verifyImportZipLines() throws ChouetteException
+	{
+
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		simpleParameterValue.setFilepathValue(path+"/"+neptuneZip);
+		parameters.add(simpleParameterValue);
+
+		ReportHolder report = new ReportHolder();
+
+		List<Line> lines = importLine.doImport(parameters, report);
+
+		Assert.assertNotNull(lines,"lines can't be null");
+		Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
+		for (Line line : lines)
+		{
+			System.out.println(line.toString("\t",0));
+		}
+		printReport(report.getReport());
+		
+	}
+	
+	private void printReport(Report report)
+	{
+		if (report == null)
+		{
+			System.out.println("no report");
+		}
+		else
+		{
+			System.out.println(report.getStatus().name()+" : "+report.getLocalizedMessage());
+			printItems("   ",report.getItems());
+		}
+	}
+	
+	/**
+	 * @param indent
+	 * @param items
+	 */
+	private void printItems(String indent,List<ReportItem> items) 
+	{
+		if (items == null) return;
+		for (ReportItem item : items) 
+		{
+			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			printItems(indent+"   ",item.getItems());
+		}
+
+	}
+
+
 }

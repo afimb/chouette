@@ -159,8 +159,8 @@ public class Line extends NeptuneIdentifiedObject
 			break;
 		case STRUCTURAL_DEPENDENCIES : 
 		case ALL_DEPENDENCIES :
-			if (getPtNetwork() != null) getPtNetwork().expand(level);
-			if (getCompany() != null) getCompany().expand(level);
+			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
 			if (getRoutes() != null)
 			{
 				for (Route route : getRoutes())

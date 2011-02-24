@@ -405,7 +405,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		Report propagationReport = propagateValidation(user, beans, parameters);
 		if (propagationReport != null && propagationReport.getItems() != null)
 		{
-			for (ReportItem item : propagationReport.getItems()) 
+			for (ReportItem item : propagationReport.getItems())
 			{
 			    ValidationClassReportItem classItem = (ValidationClassReportItem) item;
 			    validationClasses[classItem.getValidationClass().ordinal()].addAll(classItem.getItems());
@@ -417,6 +417,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		{
 			if (item.getItems() != null && !item.getItems().isEmpty())
 			{
+				item.sortItems();
 				r.addItem(item);
 			}
 		}

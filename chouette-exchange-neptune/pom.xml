@@ -35,7 +35,7 @@
 			<artifactId>spring-beans</artifactId>
 		</dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
 		<dependency>
@@ -56,11 +56,23 @@
 	<build>
 		<resources>
 			<resource>
+				<directory>src/main/java/</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
 				<directory>${basedir}/src/main/resources</directory>
 				<filtering>false</filtering>
 			</resource>
 		</resources>
 		<testResources>
+			<testResource>
+				<directory>src/main/java/</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</testResource>
 			<testResource>
 				<directory>src/main/resources</directory>
 			</testResource>

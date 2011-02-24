@@ -72,8 +72,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			break;
 		case STRUCTURAL_DEPENDENCIES : 
 		case ALL_DEPENDENCIES :
-			if (getRoute() != null) getRoute().expand(level);
-			if (getJourneyPattern() != null) getJourneyPattern().expand(level);
+			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
+			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
 			if (getTimeSlot() != null) getTimeSlot().expand(level);
 			if (getVehicleJourneyAtStops() != null)
 			{

@@ -51,11 +51,17 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 			}
 			break;
 		case STRUCTURAL_DEPENDENCIES : 
+			getRoute().expand(DetailLevelEnum.ATTRIBUTE);
+			for (StopPoint stopPoint : getStopPoints())
+			{
+				stopPoint.expand(level);
+			}
+			vehicleJourneys = null;
 		case ALL_DEPENDENCIES :
 			getRoute().expand(level);
 			for (StopPoint stopPoint : getStopPoints())
 			{
-				stopPoint.expand(level);
+				stopPoint.expand(DetailLevelEnum.ATTRIBUTE);
 			}
 			for (VehicleJourney vehicleJourney : getVehicleJourneys())
 			{

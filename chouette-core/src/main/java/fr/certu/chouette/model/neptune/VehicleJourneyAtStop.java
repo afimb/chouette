@@ -23,7 +23,7 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter @Setter private Date waitingTime;
 	@Getter @Setter private Date elapseDuration;
 	@Getter @Setter private Date headwayFrequency;
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -40,16 +40,14 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 			vehicleJourney = null;
 			break;
 		case NARROW_DEPENDENCIES : 
+		case STRUCTURAL_DEPENDENCIES : 
+		case ALL_DEPENDENCIES :
 			if (getStopPoint() != null) getStopPoint().expand(DetailLevelEnum.ATTRIBUTE);
 			if (getVehicleJourney() != null) getVehicleJourney().expand(DetailLevelEnum.ATTRIBUTE);
 			break;
-		case STRUCTURAL_DEPENDENCIES : 
-		case ALL_DEPENDENCIES :
-			if (getStopPoint() != null) getStopPoint().expand(level);
-			if (getVehicleJourney() != null) getVehicleJourney().expand(level);
 		}
 	} 
-	
+
 	@Override
 	public String toString(String indent, int level) {
 		StringBuilder sb = new StringBuilder(super.toString(indent,level));
@@ -63,10 +61,10 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 		sb.append("\n").append(indent).append("waitingTime = ").append(formatDate(waitingTime));
 		sb.append("\n").append(indent).append("elapseDuration = ").append(formatDate(elapseDuration));
 		sb.append("\n").append(indent).append("headwayFrequency = ").append(formatDate(headwayFrequency));
-		
+
 		return sb.toString();
 	}
-	
+
 	private String formatDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		if(date != null){
