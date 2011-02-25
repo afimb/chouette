@@ -7,13 +7,13 @@
   <parent>
     <groupId>fr.certu.chouette</groupId>
     <artifactId>pom-common</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
     <relativePath>./pom-common.xml</relativePath>
   </parent>
   <name>Projet Chouette</name>
   <groupId>fr.certu.chouette</groupId>
   <artifactId>chouette</artifactId>
-  <version>1.5.2</version>
+  <version>1.5.3</version>
   <packaging>war</packaging>
   <build>
     <plugins>

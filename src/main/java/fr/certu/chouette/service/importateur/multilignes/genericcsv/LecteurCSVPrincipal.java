@@ -59,12 +59,12 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
     @Override
     public List<ILectureEchange> getLecturesEchange() {
         List<Ligne> lignes = lecteurLigne.getLignes();
+	List<ILectureEchange> lecturesEchange = new ArrayList<ILectureEchange>();
         if ((lignes == null) || (lignes.isEmpty()))
-            return null;
+            return lecturesEchange;
         List<TableauMarche> tableauxMarche = new ArrayList<TableauMarche>(lecteurCalendrier.getTableauxMarchesParRef().values());
         Reseau reseau = lecteurReseau.getReseau();
 	Transporteur transporteur = lecteurTransporteur.getTransporteur();
-	List<ILectureEchange> lecturesEchange = new ArrayList<ILectureEchange>();
 	for (Ligne ligne : lignes) {
 	    LectureEchange lectureEchange = new LectureEchange();
 	    lectureEchange.setReseau(reseau);
@@ -242,7 +242,7 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
                              */
                             counter = 3;
                             lecteurMission.lire(lecteurHoraire.getArretsPhysiques(), lecteurLigne.getLigneEnCours());
-                            lecteurItineraire.lire(lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()), lecteurMission.getMissionByCode(), lecteurLigne.getLigneEnCours());
+                            lecteurItineraire.lire(lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()), lecteurCourse.getCoursesAller(), lecteurCourse.getCoursesRetour(), lecteurMission.getMissionByCode(), lecteurLigne.getLigneEnCours());
                             lecteurArret.init(lecteurItineraire.getItineraires().get(lecteurLigne.getLigneEnCours()),
                                     lecteurMission.getMissions().get(lecteurLigne.getLigneEnCours()),
                                     lecteurCourse.getCourses(lecteurLigne.getLigneEnCours()),
