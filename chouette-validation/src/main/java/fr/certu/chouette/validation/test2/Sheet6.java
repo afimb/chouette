@@ -3,7 +3,7 @@ package fr.certu.chouette.validation.test2;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.plugin.report.Report.STATE;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
@@ -45,19 +45,17 @@ public class Sheet6 implements IValidationPlugin<Line>{
 			if(lineEnds != null){
 				List<String> objectIds = Line.extractObjectIds(line.getStopPointList());
 				if(!objectIds.containsAll(lineEnds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step1_error", STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step1_error", Report.STATE.ERROR, "");
 					report1.addItem(detailReportItem);
 				}else {
-					ReportItem detailReportItem = new DetailReportItem("ok",STATE.OK, "");
-					report1.addItem(detailReportItem);
+					report1.setStatus(Report.STATE.OK);	
 				}
 				List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
 				if(!lineEnds.containsAll(lineEndList)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",Report.STATE.ERROR, "");
 					report2.addItem(detailReportItem);
 				}else {
-					ReportItem detailReportItem = new DetailReportItem("ok",STATE.OK, "");
-					report2.addItem(detailReportItem);
+					report2.setStatus(Report.STATE.OK);	
 				}
 			}
 		}

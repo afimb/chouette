@@ -50,6 +50,7 @@
 							     	
 							     	<br />
 							     	<s:div cssClass="detail">
+							     	
 							     	<s:a href="#" onclick="showIt('detail_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
 							     		id="showIt_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
 											<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
@@ -59,6 +60,7 @@
 											<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
 									</s:a>	
 									</s:div>
+								
 							     	<s:div cssClass="neptune-panel-inSide" id="detail_%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
 								     	 <s:iterator value="items">
 								     		<s:text name="validation.test.delimiter" />

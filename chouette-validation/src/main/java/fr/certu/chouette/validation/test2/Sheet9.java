@@ -50,8 +50,7 @@ public class Sheet9 implements IValidationPlugin<Route>{
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet9_Step1_error", Report.STATE.ERROR, "");
 							reportItem.addItem(detailReportItem);	
 						}else{
-							ReportItem detailReportItem = new DetailReportItem("", Report.STATE.OK, "");
-							reportItem.addItem(detailReportItem);	
+							reportItem.setStatus(Report.STATE.OK);
 						}
 					}
 				}

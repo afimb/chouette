@@ -16,12 +16,12 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  * @author mamadou keira
  *
  */
-public class Sheet10 implements IValidationPlugin<StopPoint>{
+public class Sheet11 implements IValidationPlugin<StopPoint>{
 
 	private ValidationStepDescription validationStepDescription;
 	
 	public void init(){
-		validationStepDescription = new ValidationStepDescription("Test2.10", ValidationClassReportItem.CLASS.TWO.ordinal());
+		validationStepDescription = new ValidationStepDescription("Test2.11", ValidationClassReportItem.CLASS.TWO.ordinal());
 	}
 	
 	@Override
@@ -30,23 +30,23 @@ public class Sheet10 implements IValidationPlugin<StopPoint>{
 	}
 	@Override
 	public ReportItem doValidate(List<StopPoint> beans) {
-		ReportItem reportItem = new SheetReportItem("Test2_Sheet10",10);
-		reportItem.addItem(step_2_10_1(beans));
+		ReportItem reportItem = new SheetReportItem("Test2_Sheet11",11);
+		reportItem.addItem(step_2_11_1(beans));
 		return reportItem;
 	}
 	
-	private ReportItem step_2_10_1(List<StopPoint> stopPoints){
-		ReportItem reportItem = new SheetReportItem("Test2_Sheet10_Step1",1);
+	private ReportItem step_2_11_1(List<StopPoint> stopPoints){
+		ReportItem reportItem = new SheetReportItem("Test2_Sheet11_Step1",1);
 	
 		for (StopPoint stopPoint : stopPoints) {
-			String lineIdShortcut = stopPoint.getLineIdShortcut();
-			if(lineIdShortcut != null){
-				String lineObjectId = stopPoint.getLine().getObjectId();
-				if(!lineIdShortcut.equals(lineObjectId)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet10_Step1_error", Report.STATE.ERROR, stopPoint.getObjectId());
+			String ptNetworkIdShortcut = stopPoint.getPtNetworkIdShortcut();
+			if(ptNetworkIdShortcut != null){
+				String ptNetworkObjectId = stopPoint.getPtNetwork().getObjectId();
+				if(!ptNetworkIdShortcut.equals(ptNetworkObjectId)){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet11_Step1_error", Report.STATE.ERROR, stopPoint.getObjectId());
 					reportItem.addItem(detailReportItem);	
 				}else {
-					reportItem.setStatus(Report.STATE.OK);	
+					reportItem.setStatus(Report.STATE.OK);		
 				}
 			}
 		}

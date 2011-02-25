@@ -56,5 +56,23 @@
 			</list>
 		</property>
 	</bean>
-	
+	<bean id="StopPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createStopPointPluginInjector">
+		<property name="manager" ref="stopPointManager" />
+		<property name="validationPlugins">
+			<list>
+			<ref bean="Test2_10" />
+			<ref bean="Test2_11" />
+			</list>
+		</property>
+	</bean>
+	<bean id="JourneyPatternValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createJourneyPatternPluginInjector">
+		<property name="manager" ref="journeyPatternManager" />
+		<property name="validationPlugins">
+			<list>
+			<ref bean="Test2_15" />
+			</list>
+		</property>
+	</bean>
 </beans>

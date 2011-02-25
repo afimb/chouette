@@ -3,7 +3,7 @@ package fr.certu.chouette.validation.test2;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.Timetable;
-import fr.certu.chouette.plugin.report.Report.STATE;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
@@ -51,21 +51,19 @@ public class Sheet5 implements IValidationPlugin<Timetable>{
 			if(vjIds != null){
 				//Test 2.5.1
 				if(!vehicleJourneyIds.containsAll(vjIds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR, "");
 					reportItem1.addItem(detailReportItem);
 				}else {
-					ReportItem detailReportItem = new DetailReportItem("ok",STATE.OK, "");
-					reportItem1.addItem(detailReportItem);
+					reportItem1.setStatus(Report.STATE.OK);	
 				}
 			}
 			//Test 2.5.2
 			if(vehicleJourneyIds != null){
 				if(!vjIds.containsAll(vehicleJourneyIds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",Report.STATE.ERROR, "");
 					reportItem2.addItem(detailReportItem);
 				}else {
-					ReportItem detailReportItem = new DetailReportItem("ok",STATE.OK, "");
-					reportItem2.addItem(detailReportItem);
+					reportItem2.setStatus(Report.STATE.OK);	
 				}
 			}
 		}

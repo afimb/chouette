@@ -3,7 +3,7 @@ package fr.certu.chouette.validation.test2;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.plugin.report.Report.STATE;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
@@ -39,11 +39,10 @@ public class Sheet7 implements IValidationPlugin<Line>{
 		for (Line line : lines) {
 			List<String> routeIds = Line.extractObjectIds(line.getRoutes());
 			if(!routeIds.containsAll(line.getRouteIds())){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet7_Step1_error",STATE.ERROR, "");
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet7_Step1_error",Report.STATE.ERROR, "");
 				report.addItem(detailReportItem);
 			}else {
-				ReportItem detailReportItem = new DetailReportItem("ok",STATE.OK, "");
-				report.addItem(detailReportItem);
+				report.setStatus(Report.STATE.OK);
 			}
 		}
 		

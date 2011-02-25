@@ -8,7 +8,6 @@ import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
-import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
 
 /**
@@ -38,8 +37,6 @@ public class Sheet2 implements IValidationPlugin<Line>{
 	private ReportItem step_2_2_1(List<Line> lines){
 		ReportItem reportItem = new SheetReportItem("Test2_Sheet2_Step1",1);
 		//TODO Not implemted 'cause GroupOfLine is required
-		ReportItem detailItem = new DetailReportItem("Test2_Sheet2_Step1_unchecked");
-		reportItem.addItem(detailItem);
 		reportItem.setStatus(Report.STATE.UNCHECK);
 		return reportItem;
 	}

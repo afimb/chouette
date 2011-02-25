@@ -15,4 +15,7 @@
 	<bean id="Test2_7" class="fr.certu.chouette.validation.test2.Sheet7"></bean>
 	<bean id="Test2_8" class="fr.certu.chouette.validation.test2.Sheet8"></bean>
 	<bean id="Test2_9" class="fr.certu.chouette.validation.test2.Sheet9"></bean>
+	<bean id="Test2_10" class="fr.certu.chouette.validation.test2.Sheet10"></bean>
+	<bean id="Test2_11" class="fr.certu.chouette.validation.test2.Sheet11"></bean>
+	<bean id="Test2_15" class="fr.certu.chouette.validation.test2.Sheet15"></bean>
 </beans>

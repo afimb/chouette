@@ -7,7 +7,6 @@ import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
@@ -52,11 +51,10 @@ public class Sheet8 implements IValidationPlugin<Route>{
 			List<String> journeyPatternIds = Route.extractObjectIds(route.getJourneyPatterns());
 			//Test 2.8.1
 			if(!route.getJourneyPatternIds().containsAll(journeyPatternIds)){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", STATE.ERROR, "");
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", Report.STATE.ERROR, "");
 				report1.addItem(detailReportItem);	
 			}else{
-				ReportItem detailReportItem = new DetailReportItem("ok", STATE.OK, "");
-				report1.addItem(detailReportItem);	
+				report1.setStatus(Report.STATE.OK);
 			}
 			//Test 2.8.2
 			if(route.getJourneyPatterns() != null){
@@ -66,8 +64,7 @@ public class Sheet8 implements IValidationPlugin<Route>{
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step2_error", Report.STATE.ERROR, "");
 						report2.addItem(detailReportItem);	
 					}else{
-						ReportItem detailReportItem = new DetailReportItem("ok", STATE.OK, "");
-						report2.addItem(detailReportItem);	
+						report2.setStatus(Report.STATE.OK);
 					}
 					//Test 2.8.3 a
 					for(StopPoint stopPoint : journeyPattern.getStopPoints()){

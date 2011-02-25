@@ -4,7 +4,7 @@ import java.util.List;
 
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.plugin.report.Report.STATE;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
@@ -48,29 +48,27 @@ public class Sheet3 implements IValidationPlugin<StopArea>{
 
 					if(stopPoints != null){
 						if(!containedStopIds.containsAll(stopPoints)){
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", STATE.ERROR,"");
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR,"");
 							report.addItem(detailReportItem);
 						}else {
-							ReportItem detailReportItem = new DetailReportItem("ok", STATE.OK,"");
-							report.addItem(detailReportItem);
+							report.setStatus(Report.STATE.OK);	
 						}
 					}
 				}else {
 					List<String> containedAreas = StopArea.extractObjectIds(stopArea.getContainedStopAreas());
 					if(containedAreas != null){
 						if(!containedStopIds.containsAll(containedAreas)){
-							ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_error",STATE.ERROR, "");
+							ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_error",Report.STATE.ERROR, "");
 							report.addItem(detailReportItem);
 						}else {
-							ReportItem detailReportItem = new DetailReportItem("ok", STATE.OK,"");
-							report.addItem(detailReportItem);
+							report.setStatus(Report.STATE.OK);	
 						}
 					}
 				}
 			}else {
-				ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_unchecked",STATE.UNCHECK, "");
+				ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_unchecked",Report.STATE.UNCHECK, "");
 				report.addItem(detailReportItem);
-				report.setStatus(STATE.UNCHECK);
+				report.setStatus(Report.STATE.UNCHECK);
 			}
 		}	
 		return report;

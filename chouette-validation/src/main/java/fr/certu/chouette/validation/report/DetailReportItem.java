@@ -28,4 +28,8 @@ public class DetailReportItem extends ReportItem
 		if(!args.equals(""))
 			addMessageArgs(args);	
 	}
+	
+	public DetailReportItem(STATE state){
+		setStatus(state);
+	}
 }

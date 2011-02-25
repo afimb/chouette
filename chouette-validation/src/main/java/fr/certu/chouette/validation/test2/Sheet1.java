@@ -9,7 +9,6 @@ import lombok.Getter;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
@@ -76,6 +75,8 @@ public class Sheet1 implements IValidationPlugin<Line>
 					failedItem.setStatus(Report.STATE.ERROR);
 					failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
 					reportStep.addItem(failedItem);
+				}else {
+					reportStep.setStatus(Report.STATE.OK);
 				}
 			}
 			}
@@ -115,8 +116,7 @@ public class Sheet1 implements IValidationPlugin<Line>
 						failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
 						reportStep.addItem(failedItem);
 					}else {
-						ReportItem okItem = new DetailReportItem("ok",STATE.OK, "");
-						reportStep.addItem(okItem);
+						reportStep.setStatus(Report.STATE.OK);
 					}
 				}
 			}
