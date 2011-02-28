@@ -40,6 +40,8 @@ public class Route extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private Long lineId;          // FK 
+	
+	@Getter @Setter private Line line;
 	/**
 	 * Public name for travellers
 	 * <br/><i>readable/writable</i>

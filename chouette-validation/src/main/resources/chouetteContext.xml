@@ -72,6 +72,17 @@
 		<property name="validationPlugins">
 			<list>
 			<ref bean="Test2_15" />
+			<ref bean="Test2_16" />
+			</list>
+		</property>
+	</bean>
+	<bean id="VehicleJourneyValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createVehicleJourneyPluginInjector">
+		<property name="manager" ref="vehicleJourneyManager" />
+		<property name="validationPlugins">
+			<list>
+			<ref bean="Test2_17" />
+			<ref bean="Test2_18" />
 			</list>
 		</property>
 	</bean>
