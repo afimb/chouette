@@ -754,5 +754,11 @@
 
   <bean id="gtfsFileWriter" class="fr.certu.chouette.service.export.gtfs.GTFSFileWriter">
   </bean>
+  
+  <bean id="exportGeoportail" class="fr.certu.chouette.service.exportateur.geoportail.ExportGeoportail">
+      <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+      <property name="reseauManager" ref="reseauManager"/>
+      <property name="transporteurManager" ref="transporteurManager"/>
+  </bean>
 
 </beans>
