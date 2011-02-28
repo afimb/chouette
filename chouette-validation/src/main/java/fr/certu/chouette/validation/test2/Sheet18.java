@@ -46,7 +46,8 @@ public class Sheet18 implements IValidationPlugin<VehicleJourney>{
 		if(vehicleJourneys != null){
 			for (VehicleJourney vehicleJourney : vehicleJourneys) {
 				String journeyPatternId = vehicleJourney.getJourneyPatternId();
-				String journeyPatternObjectId = vehicleJourney.getJourneyPattern().getObjectId(); 
+				String journeyPatternObjectId = (vehicleJourney.getJourneyPattern() != null) ? 
+						vehicleJourney.getJourneyPattern().getObjectId() : ""; 
 				//Test 2.18.1
 				if(journeyPatternId != null){
 					if(!journeyPatternObjectId.equals(journeyPatternId)){
@@ -55,9 +56,12 @@ public class Sheet18 implements IValidationPlugin<VehicleJourney>{
 					}else
 						reportItem1.setStatus(Report.STATE.OK);
 				}
-				List<String> stopPointObjectIds = VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints());
-				List<String> stopPointIds = vehicleJourney.getJourneyPattern().getStopPointIds();
-				if(stopPointObjectIds != null){
+				List<String> stopPointObjectIds = (vehicleJourney.getJourneyPattern() != null && vehicleJourney.getJourneyPattern().getStopPoints() != null) ? 
+						VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints()) : null;
+			
+				List<String> stopPointIds = (vehicleJourney.getJourneyPattern() != null) ? 
+					vehicleJourney.getJourneyPattern().getStopPointIds() : null;
+				if(stopPointObjectIds != null && stopPointIds != null){
 					//Test 2.18.2 a
 					if(!stopPointIds.containsAll(stopPointObjectIds)){
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", Report.STATE.ERROR,"");

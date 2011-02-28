@@ -40,11 +40,17 @@ public class Sheet17 implements IValidationPlugin<VehicleJourney>{
 		ReportItem reportItem = new SheetReportItem("Test2_Sheet17_Step1",1);
 		if(vehicleJourneys != null){
 			for (VehicleJourney vehicleJourney : vehicleJourneys) {
-				if(!vehicleJourney.getRouteId().equals(vehicleJourney.getRoute().getObjectId())){
+				if(vehicleJourney.getRoute() != null){
+					if(!vehicleJourney.getRouteId().equals(vehicleJourney.getRoute().getObjectId())){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+						reportItem.addItem(detailReportItem);	
+					}else
+						reportItem.setStatus(Report.STATE.OK);	
+				}else{
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
-					reportItem.addItem(detailReportItem);	
-				}else
-					reportItem.setStatus(Report.STATE.OK);
+					reportItem.addItem(detailReportItem);
+				}
+				
 			}
 		}
 		
