@@ -1,5 +1,6 @@
 package fr.certu.chouette.validation.test2;
 
+import java.util.Arrays;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -32,9 +33,7 @@ public class Sheet18 implements IValidationPlugin<VehicleJourney>{
 	@Override
 	public ReportItem doValidate(List<VehicleJourney> beans) {
 		ReportItem report = new SheetReportItem("Test2_Sheet18",18);
-		for (ReportItem reportItem : step_2_18(beans)) {
-			report.addItem(reportItem);
-		}
+		report.addAll(Arrays.asList(step_2_18(beans)));
 		return report;
 	}
 

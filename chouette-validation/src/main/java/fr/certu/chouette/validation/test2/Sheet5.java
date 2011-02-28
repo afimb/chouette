@@ -1,5 +1,6 @@
 package fr.certu.chouette.validation.test2;
 
+import java.util.Arrays;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.Timetable;
@@ -31,12 +32,7 @@ public class Sheet5 implements IValidationPlugin<Timetable>{
 	@Override
 	public ReportItem doValidate(List<Timetable> beans) {
 		ReportItem report = new SheetReportItem("Test2_Sheet5",5);
-		ReportItem[] reportItems = step_2_5(beans);
-		if(reportItems != null && reportItems.length>0){
-			for (ReportItem reportItem : reportItems){
-				report.addItem(reportItem);	
-			}	
-		}
+		report.addAll(Arrays.asList(step_2_5(beans)));
 		return report;
 	}
 	

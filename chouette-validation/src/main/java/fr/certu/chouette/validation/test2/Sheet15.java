@@ -1,5 +1,6 @@
 package fr.certu.chouette.validation.test2;
 
+import java.util.Arrays;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -31,9 +32,7 @@ public class Sheet15 implements IValidationPlugin<JourneyPattern>{
 	@Override
 	public ReportItem doValidate(List<JourneyPattern> beans) {
 		ReportItem report = new SheetReportItem("Test2_Sheet15",15);
-		for (ReportItem repItem : step_2_15(beans)) {
-			report.addItem(repItem);
-		}
+		report.addAll(Arrays.asList(step_2_15(beans)));
 		return report;
 	}
 	

@@ -45,7 +45,7 @@ public class Sheet4 implements IValidationPlugin<ConnectionLink>{
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_a",Report.STATE.ERROR, "");
 				report.addItem(detailReportItem);
 			}else if(!startOfLink.equals(connectionLink.getStartOfLink().getObjectId()) || !endOfLink.equals(connectionLink.getEndOfLink().getObjectId())){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR,startOfLink,endOfLink);
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR,"");
 				report.addItem(detailReportItem);
 			}else {
 				report.setStatus(Report.STATE.OK);

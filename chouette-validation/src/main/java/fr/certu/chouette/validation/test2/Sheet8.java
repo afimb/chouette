@@ -1,5 +1,6 @@
 package fr.certu.chouette.validation.test2;
 
+import java.util.Arrays;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -34,12 +35,7 @@ public class Sheet8 implements IValidationPlugin<Route>{
 	@Override
 	public ReportItem doValidate(List<Route> beans) {
 		ReportItem report = new SheetReportItem("Test2_Sheet8",8);
-		ReportItem[] reportItems = step_2_8(beans);
-		if(reportItems != null && reportItems.length>0){
-			for (ReportItem reportItem : reportItems){
-				report.addItem(reportItem);	
-			}	
-		}
+		report.addAll(Arrays.asList(step_2_8(beans)));
 		return report;
 	}
 
@@ -87,7 +83,7 @@ public class Sheet8 implements IValidationPlugin<Route>{
 					}
 					//Test 2.8.3 d
 					if(!route.getObjectId().equals(journeyPattern.getRouteId())){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR, route.getObjectId());
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR,"");
 						report2.addItem(detailReportItem);
 					}
 				}

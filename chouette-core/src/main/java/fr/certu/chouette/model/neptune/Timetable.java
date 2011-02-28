@@ -1,5 +1,6 @@
 package fr.certu.chouette.model.neptune;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,7 +147,11 @@ public class Timetable extends NeptuneIdentifiedObject {
 		}
 	}
 	
-	public static class Period{
+	public static class Period implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1964071056103739954L;
 		@Getter @Setter private Date startDate;
 		@Getter @Setter private Date endDate;
 		

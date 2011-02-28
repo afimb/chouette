@@ -328,7 +328,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 		modelAssembler.connect();
 
-		line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
+		//line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
 
 		ReportItem item2 = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,Report.STATE.OK,entryName,line.getName());
 		item2.addAll(item.getItems());

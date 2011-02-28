@@ -65,10 +65,6 @@ public class Sheet3 implements IValidationPlugin<StopArea>{
 						}
 					}
 				}
-			}else {
-				ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_unchecked",Report.STATE.UNCHECK, "");
-				report.addItem(detailReportItem);
-				report.setStatus(Report.STATE.UNCHECK);
 			}
 		}	
 		return report;

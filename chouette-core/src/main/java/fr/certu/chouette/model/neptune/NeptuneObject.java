@@ -20,9 +20,10 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 /**
  * 
  */
-@SuppressWarnings("serial")
+
 public abstract class NeptuneObject implements Serializable
 {
+	private static final long serialVersionUID = -1406542019260386319L;
 	protected static final String CHILD_INDENT = "        ";
 	protected static final String CHILD_ARROW = "  -->";
 	protected static final String CHILD_LIST_INDENT = "           ";

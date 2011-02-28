@@ -43,7 +43,7 @@ public class Sheet10 implements IValidationPlugin<StopPoint>{
 			if(lineIdShortcut != null){
 				String lineObjectId = stopPoint.getLine().getObjectId();
 				if(!lineIdShortcut.equals(lineObjectId)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet10_Step1_error", Report.STATE.ERROR, stopPoint.getObjectId());
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet10_Step1_error", Report.STATE.ERROR, "");
 					reportItem.addItem(detailReportItem);	
 				}else {
 					reportItem.setStatus(Report.STATE.OK);	

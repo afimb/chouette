@@ -43,7 +43,7 @@ public class Sheet11 implements IValidationPlugin<StopPoint>{
 			if(ptNetworkIdShortcut != null){
 				String ptNetworkObjectId = stopPoint.getPtNetwork().getObjectId();
 				if(!ptNetworkIdShortcut.equals(ptNetworkObjectId)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet11_Step1_error", Report.STATE.ERROR, stopPoint.getObjectId());
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet11_Step1_error", Report.STATE.ERROR,"");
 					reportItem.addItem(detailReportItem);	
 				}else {
 					reportItem.setStatus(Report.STATE.OK);		

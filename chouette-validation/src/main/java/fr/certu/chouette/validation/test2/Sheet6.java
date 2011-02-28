@@ -1,5 +1,6 @@
 package fr.certu.chouette.validation.test2;
 
+import java.util.Arrays;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.Line;
@@ -30,8 +31,7 @@ public class Sheet6 implements IValidationPlugin<Line>{
 	@Override
 	public ReportItem doValidate(List<Line> beans) {
 		ReportItem reportItem = new SheetReportItem("Test2_Sheet6",6);
-		for(ReportItem report : step_2_6(beans))
-			reportItem.addItem(report);
+		reportItem.addAll(Arrays.asList(step_2_6(beans)));
 		return reportItem;
 	}
 
