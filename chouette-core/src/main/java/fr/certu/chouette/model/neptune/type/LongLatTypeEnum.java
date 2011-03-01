@@ -8,15 +8,15 @@ public enum LongLatTypeEnum {
 	    /**
 	     * Constant WGS84
 	     */
-	    WGS84("WGS84"),
+	    WGS84("WGS84",4326),
 	    /**
 	     * Constant WGS92
 	     */
-	    WGS92("WGS92"),
+	    WGS92("WGS92",0),
 	    /**
 	     * Constant STANDARD
 	     */
-	    STANDARD("Standard");
+	    STANDARD("Standard",0);
 
 	      //--------------------------/
 	     //- Class/Member Variables -/
@@ -26,14 +26,16 @@ public enum LongLatTypeEnum {
 	     * Field value.
 	     */
 	    private final java.lang.String value;
+		private int epsgCode;
 
 
 	      //----------------/
 	     //- Constructors -/
 	    //----------------/
 
-	    private LongLatTypeEnum(final java.lang.String value) {
+	    private LongLatTypeEnum(final java.lang.String value,final int epsgCode) {
 	        this.value = value;
+	        this.epsgCode = epsgCode;
 		
 	    }
 
@@ -63,17 +65,17 @@ public enum LongLatTypeEnum {
 	     * 
 	     * @param value
 	     */
-	    public void setValue(
-	            final java.lang.String value) {
+	    public void setValue(final java.lang.String value) {
 	    }
 
+	    
+	    
 	    /**
 	     * Method toString.
 	     * 
 	     * @return the value of this constant
 	     */
-	    public java.lang.String toString(
-	    ) {
+	    public java.lang.String toString() {
 	        return this.value;
 	    }
 
@@ -82,9 +84,12 @@ public enum LongLatTypeEnum {
 	     * 
 	     * @return the value of this constant
 	     */
-	    public java.lang.String value(
-	    ) {
+	    public java.lang.String value() {
 	        return this.value;
 	    }
-
+	    
+	    public int epsgCode()
+	    {
+            return epsgCode;
+	    }
 	}
