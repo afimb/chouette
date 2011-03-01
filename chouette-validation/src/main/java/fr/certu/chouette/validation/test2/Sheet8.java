@@ -11,6 +11,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
@@ -33,7 +34,7 @@ public class Sheet8 implements IValidationPlugin<Route>{
 	}
 
 	@Override
-	public ReportItem doValidate(List<Route> beans) {
+	public ReportItem doValidate(List<Route> beans,ValidationParameters parameters) {
 		ReportItem report = new SheetReportItem("Test2_Sheet8",8);
 		report.addAll(Arrays.asList(step_2_8(beans)));
 		return report;

@@ -12,6 +12,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
@@ -38,7 +39,7 @@ public class Sheet1 implements IValidationPlugin<Line>
 	}
 
 	@Override
-	public ReportItem doValidate(List<Line> lines) 
+	public ReportItem doValidate(List<Line> lines,ValidationParameters parameters) 
 	{
 		ReportItem report = new SheetReportItem("Test2_Sheet1", 1);
 		report.addItem(step2_1_1(lines));
