@@ -63,6 +63,7 @@
 			<list>
 			<ref bean="Test2_10" />
 			<ref bean="Test2_11" />
+			<ref bean="Test3_1" />
 			</list>
 		</property>
 	</bean>

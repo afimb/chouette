@@ -51,7 +51,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter private File file;
 	@Getter @Setter private String fileFileName;
 	@Getter @Setter private INeptuneManager<Line> lineManager;
-	@Getter @Setter private boolean validate;
+	@Getter @Setter private boolean validate =true;
 	@Getter @Setter private List<FormatDescription> formats;
 	@Getter @Setter private boolean imported;
 	@Getter @Setter private Report report;

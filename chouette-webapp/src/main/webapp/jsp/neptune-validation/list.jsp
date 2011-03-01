@@ -36,7 +36,7 @@
 		</s:a>	
 	</div>
 	<br />
-		<s:iterator value="reportValidation.items" id="categorie">
+		<s:iterator value="reportValidation.items" id="categorie" status="category">
 		 	<b><s:property value="getLocalizedMessage(getLocale())" /></b>
 		 	
 		 	<div id="panelValidation" style="margin-left: 20px;">
@@ -51,17 +51,17 @@
 							     	<br />
 							     	<s:div cssClass="detail">
 							     	
-							     	<s:a href="#" onclick="showIt('detail_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
+							     	<s:a href="#" onclick="showIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
 							     		id="showIt_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
 											<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
 									</s:a> 
-									<s:a href="#" onclick="hideIt('detail_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
+									<s:a href="#" onclick="hideIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
 										id="hideIt_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
 											<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
 									</s:a>	
 									</s:div>
 								
-							     	<s:div cssClass="neptune-panel-inSide" id="detail_%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
+							     	<s:div cssClass="neptune-panel-inSide" id="detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
 								     	 <s:iterator value="items">
 								     		<s:text name="validation.test.delimiter" />
 								     		 <s:property value="getLocalizedMessage(getLocale())"/>

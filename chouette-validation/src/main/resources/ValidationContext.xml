@@ -28,4 +28,6 @@
 	<bean id="Test2_22" class="fr.certu.chouette.validation.test2.Sheet22"></bean>
 	<bean id="Test2_23" class="fr.certu.chouette.validation.test2.Sheet23"></bean>
 	<bean id="Test2_24" class="fr.certu.chouette.validation.test2.Sheet24"></bean>
+	
+	<bean id="Test3_1" class="fr.certu.chouette.validation.test3.Sheet1"></bean>
 </beans>
