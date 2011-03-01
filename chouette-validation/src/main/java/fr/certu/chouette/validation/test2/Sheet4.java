@@ -7,6 +7,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
@@ -30,7 +31,7 @@ public class Sheet4 implements IValidationPlugin<ConnectionLink>{
 	}
 
 	@Override
-	public ReportItem doValidate(List<ConnectionLink> beans) {
+	public ReportItem doValidate(List<ConnectionLink> beans,ValidationParameters parameters) {
 		ReportItem reportItem = new SheetReportItem("Test2_Sheet4",4);
 		reportItem.addItem(step_2_4_1(beans));
 		return reportItem;

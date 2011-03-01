@@ -8,6 +8,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
@@ -29,7 +30,7 @@ public class Sheet6 implements IValidationPlugin<Line>{
 	}
 
 	@Override
-	public ReportItem doValidate(List<Line> beans) {
+	public ReportItem doValidate(List<Line> beans,ValidationParameters parameters) {
 		ReportItem reportItem = new SheetReportItem("Test2_Sheet6",6);
 		reportItem.addAll(Arrays.asList(step_2_6(beans)));
 		return reportItem;

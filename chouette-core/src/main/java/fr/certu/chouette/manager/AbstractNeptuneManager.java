@@ -397,7 +397,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 		for (IValidationPlugin<T> plugin : validationPluginList)
 		{
-			ReportItem stepItem = plugin.doValidate(beans);
+			ReportItem stepItem = plugin.doValidate(beans,parameters);
 			int rank = plugin.getDescription().getClassRank();
 			validationClasses[rank].addItem(stepItem);
 		}

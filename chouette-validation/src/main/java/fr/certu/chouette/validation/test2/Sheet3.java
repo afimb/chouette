@@ -8,6 +8,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
@@ -71,7 +72,7 @@ public class Sheet3 implements IValidationPlugin<StopArea>{
 	}
 
 	@Override
-	public ReportItem doValidate(List<StopArea> beans) {
+	public ReportItem doValidate(List<StopArea> beans,ValidationParameters parameters) {
 		ReportItem reportItem = new SheetReportItem("Test2_Sheet3",3);
 		reportItem.addItem(step_2_3_1(beans));
 		return reportItem;

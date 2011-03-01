@@ -87,6 +87,8 @@
 			<ref bean="Test2_20" />
 			<ref bean="Test2_21" />
 			<ref bean="Test2_22" />
+			<ref bean="Test2_23" />
+			<ref bean="Test2_24" />
 			</list>
 		</property>
 	</bean>

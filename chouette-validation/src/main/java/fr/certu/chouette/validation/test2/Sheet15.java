@@ -8,6 +8,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
 import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
 import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
@@ -30,7 +31,7 @@ public class Sheet15 implements IValidationPlugin<JourneyPattern>{
 		return validationStepDescription;
 	}
 	@Override
-	public ReportItem doValidate(List<JourneyPattern> beans) {
+	public ReportItem doValidate(List<JourneyPattern> beans,ValidationParameters parameters) {
 		ReportItem report = new SheetReportItem("Test2_Sheet15",15);
 		report.addAll(Arrays.asList(step_2_15(beans)));
 		return report;

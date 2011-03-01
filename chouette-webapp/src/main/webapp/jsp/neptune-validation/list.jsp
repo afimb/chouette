@@ -39,7 +39,7 @@
 		<s:iterator value="reportValidation.items" id="categorie">
 		 	<b><s:property value="getLocalizedMessage(getLocale())" /></b>
 		 	
-		 	<div id="panelValidation">
+		 	<div id="panelValidation" style="margin-left: 20px;">
 				<s:iterator value="items" status="status">
 					<div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 					      <s:div cssClass="neptune-panel" id="%{status}">
