@@ -48,9 +48,9 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 		ReportItem sheet8 = new SheetReportItem("Test2_Sheet8",8);
 		ReportItem sheet9 = new SheetReportItem("Test2_Sheet9",9);
 		
-		ReportItem report2_8_1 = new SheetReportItem("Test2_Sheet8_Step1",1);
-		ReportItem report2_8_2 = new SheetReportItem("Test2_Sheet8_Step2",2);
-		ReportItem report2_9_1 = new SheetReportItem("Test2_Sheet9_Step1", 1);
+		SheetReportItem report2_8_1 = new SheetReportItem("Test2_Sheet8_Step1",1);
+		SheetReportItem report2_8_2 = new SheetReportItem("Test2_Sheet8_Step2",2);
+		SheetReportItem report2_9_1 = new SheetReportItem("Test2_Sheet9_Step1", 1);
 		
 		List<ReportItem> result = new ArrayList<ReportItem>();
 		for (Route route : routes) {
@@ -60,7 +60,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", Report.STATE.ERROR, "");
 				report2_8_1.addItem(detailReportItem);	
 			}else{
-				report2_8_1.setStatus(Report.STATE.OK);
+				report2_8_1.updateStatus(Report.STATE.OK);
 			}
 			//Test 2.8.2
 			if(route.getJourneyPatterns() != null){
@@ -70,30 +70,30 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step2_error", Report.STATE.ERROR, "");
 						report2_8_2.addItem(detailReportItem);	
 					}else{
-						report2_8_2.setStatus(Report.STATE.OK);
+						report2_8_2.updateStatus(Report.STATE.OK);
 					}
 					//Test 2.8.3 a
 					for(StopPoint stopPoint : journeyPattern.getStopPoints()){
 						if(!journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())){
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_a_error", Report.STATE.ERROR, "");
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_a_error", Report.STATE.ERROR, stopPoint.getObjectId());
 							report2_8_2.addItem(detailReportItem);
 						}
 						//Test 2.8.3 b
 						for(PTLink ptLink : route.getPtLinks()){
-							if(!stopPoint.getObjectId().equals(ptLink.getStartOfLinkId()) || !stopPoint.getObjectId().equals(ptLink.getEndOfLinkId())){
-								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_b_error", Report.STATE.ERROR, "");
+							if(!stopPoint.getObjectId().equals(ptLink.getStartOfLinkId()) && !stopPoint.getObjectId().equals(ptLink.getEndOfLinkId())){
+								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_b_error", Report.STATE.ERROR, stopPoint.getObjectId(), ptLink.getStartOfLinkId(), ptLink.getEndOfLinkId());
 								report2_8_2.addItem(detailReportItem);
 							}
 							//Test 2.8.3 c
 							if(!route.getPtLinkIds().contains(ptLink.getObjectId())){
-								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_c_error", Report.STATE.ERROR, "");
+								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_c_error", Report.STATE.ERROR, ptLink.getObjectId());
 								report2_8_2.addItem(detailReportItem);
 							}
 						}
 					}
 					//Test 2.8.3 d
 					if(!route.getObjectId().equals(journeyPattern.getRouteId())){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR,"");
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR,route.getObjectId());
 						report2_8_2.addItem(detailReportItem);
 					}
 				}
@@ -109,12 +109,17 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet9_Step1_error", Report.STATE.ERROR, "");
 							report2_9_1.addItem(detailReportItem);	
 						}else{
-							report2_9_1.setStatus(Report.STATE.OK);
+							report2_9_1.updateStatus(Report.STATE.OK);
 						}
 					}
 				}
 			}
 		}
+		
+		report2_8_1.computeDetailItemCount();
+		report2_8_2.computeDetailItemCount();
+		report2_9_1.computeDetailItemCount();
+		
 		sheet8.addItem(report2_8_1);
 		sheet8.addItem(report2_8_2);
 		sheet9.addItem(report2_9_1);

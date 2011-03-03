@@ -43,10 +43,10 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 		ReportItem sheet15 = new SheetReportItem("Test2_Sheet15",15);
 		ReportItem sheet16 = new SheetReportItem("Test2_Sheet16",16);
 		
-		ReportItem report2_15_1 = new SheetReportItem("Test2_Sheet15_Step1",1);
-		ReportItem report2_15_2 = new SheetReportItem("Test2_Sheet15_Step2",2);
+		SheetReportItem report2_15_1 = new SheetReportItem("Test2_Sheet15_Step1",1);
+		SheetReportItem report2_15_2 = new SheetReportItem("Test2_Sheet15_Step2",2);
 		
-		ReportItem report2_16_1 = new SheetReportItem("Test2_Sheet16_Step1",1);
+		SheetReportItem report2_16_1 = new SheetReportItem("Test2_Sheet16_Step1",1);
 		
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		if(journeyPatterns != null){
@@ -57,14 +57,14 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step1_error", Report.STATE.ERROR,"");
 					report2_15_1.addItem(detailReportItem);	
 				}else {
-					report2_15_1.setStatus(Report.STATE.OK);
+					report2_15_1.updateStatus(Report.STATE.OK);
 				}
 				//Test 2.15.2
 				if(!journeyPattern.getStopPointIds().containsAll(stopPointIds)){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step2_error", Report.STATE.ERROR,"");
 					report2_15_2.addItem(detailReportItem);	
 				}else {
-					report2_15_2.setStatus(Report.STATE.OK);
+					report2_15_2.updateStatus(Report.STATE.OK);
 				}
 				
 				//2.16.1
@@ -74,14 +74,18 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet16_Step1_error", Report.STATE.ERROR,"");
 						report2_16_1.addItem(detailReportItem);	
 					}else
-						report2_16_1.setStatus(Report.STATE.OK);
+						report2_16_1.updateStatus(Report.STATE.OK);
 				}
 			}
 		}
-		sheet15.addItem(report2_15_1);
-		sheet15.addItem(report2_15_2);
+		report2_15_1.computeDetailItemCount();
+		report2_15_2.computeDetailItemCount();
+		report2_16_1.computeDetailItemCount();
 		
+		sheet15.addItem(report2_15_1);
+		sheet15.addItem(report2_15_2);		
 		sheet16.addItem(report2_16_1);
+		
 		category2.addItem(sheet15);
 		category2.addItem(sheet16);
 		result.add(category2);

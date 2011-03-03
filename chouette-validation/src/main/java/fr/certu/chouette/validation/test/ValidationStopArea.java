@@ -49,7 +49,7 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 	 */
 	private List<ReportItem> validate(List<StopArea> stopAreas) {
 		ReportItem sheet3 = new SheetReportItem("Test2_Sheet3",3);
-		ReportItem report2_3 = new SheetReportItem("Test2_Sheet3_Step1", 1);
+		SheetReportItem report2_3 = new SheetReportItem("Test2_Sheet3_Step1", 1);
 		List<ReportItem> result = new ArrayList<ReportItem>();
 		for(StopArea stopArea :stopAreas){
 			List<String> containedStopIds = stopArea.getContainedStopIds(); 
@@ -65,7 +65,7 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR,"");
 							report2_3.addItem(detailReportItem);
 						}else {
-							report2_3.setStatus(Report.STATE.OK);	
+							report2_3.updateStatus(Report.STATE.OK);	
 						}
 					}
 				}else {
@@ -75,12 +75,13 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 							ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_error",Report.STATE.ERROR, "");
 							report2_3.addItem(detailReportItem);
 						}else {
-							report2_3.setStatus(Report.STATE.OK);	
+							report2_3.updateStatus(Report.STATE.OK);	
 						}
 					}
 				}
 			}
 		}
+		report2_3.computeDetailItemCount();
 		sheet3.addItem(report2_3);
 		result.add(sheet3);
 		return result;

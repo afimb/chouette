@@ -29,6 +29,7 @@ public class ValidationClassReportItem extends ReportItem
 	public ValidationClassReportItem(CLASS validationClass) 
 	{
 		this.validationClass = validationClass;
+		setOrder(validationClass.ordinal());
 		setMessageKey(validationClass.name());
 		setStatus(STATE.OK);
 	}

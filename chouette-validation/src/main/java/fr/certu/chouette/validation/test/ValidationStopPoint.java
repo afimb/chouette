@@ -53,11 +53,13 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		
 		ReportItem sheet3_1 = new SheetReportItem("Test3_Sheet1",1);
 		ReportItem sheet3_2 = new SheetReportItem("Test3_Sheet2",2);
+		ReportItem sheet3_3 = new SheetReportItem("Test3_Sheet3",3);
 		
 		SheetReportItem report2_10_1 = new SheetReportItem("Test2_Sheet10_Step1",1);
 		SheetReportItem report2_11_1 = new SheetReportItem("Test2_Sheet11_Step1",1);
 		SheetReportItem report3_1_1 = new SheetReportItem("Test3_Sheet1_Step1",1);
 		SheetReportItem report3_2_1 = new SheetReportItem("Test3_Sheet2_Step1",1);
+		SheetReportItem report3_3_1 = new SheetReportItem("Test3_Sheet3_Step1",1);
 		
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		
@@ -128,24 +130,38 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					}else
 						report3_2_1.updateStatus(Report.STATE.OK);
 				}
+				
+				//Test 3.3.1
+				if(stopPoint.getName().equals(another.getName()) && 
+						(!stopPoint.getContainedInStopAreaId().equals(another.getContainedInStopAreaId()) || 
+								stopPoint.getContainedInStopAreaId() == null || another.getContainedInStopAreaId() == null)){
+					if(stopPoint.getAddress() != null && another.getAddress() != null){
+						if(stopPoint.getAddress().equals(another.getAddress())){
+							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet3_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId(), another.getObjectId());
+							report3_3_1.addItem(detailReportItem);	
+						}else
+							report3_3_1.updateStatus(Report.STATE.OK);	
+					}
+				}
 			}		
 		}
 		report2_10_1.computeDetailItemCount();
 		report2_11_1.computeDetailItemCount();
 		report3_1_1.computeDetailItemCount();
 		report3_2_1.computeDetailItemCount();
+		report3_3_1.computeDetailItemCount();
 		
 		sheet10.addItem(report2_10_1);
-		sheet11.addItem(report2_11_1);
-		
+		sheet11.addItem(report2_11_1);		
 		sheet3_1.addItem(report3_1_1);
 		sheet3_2.addItem(report3_2_1);
+		sheet3_3.addItem(report3_3_1);
 		
 		category2.addItem(sheet10);
-		category2.addItem(sheet11);
-		
+		category2.addItem(sheet11);		
 		category3.addItem(sheet3_1);
 		category3.addItem(sheet3_2);
+		category3.addItem(sheet3_3);
 		
 		result.add(category2);
 		result.add(category3);

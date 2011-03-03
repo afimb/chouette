@@ -11,22 +11,22 @@
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" />
 		   <s:submit value="%{getText('submit.import.xml')}" formId="NeptuneValidation"/>
-		   <!-- s:checkbox label="%{getText('conforme.xsd.title')}" name="validate" /> -->
+		   <s:checkbox label="%{getText('conforme.xsd.title')}" name="validate" />
 		</s:form>
 		<s:include value="/jsp/commun/messages.jsp" />
 		<s:property value="%{report.getStatus().name()}"/><br />
-		 
 		 <s:iterator value="report.items">
-		 	<div style="font-weight: bold;"><s:property value="getLocalizedMessage(getLocale())" /></div> 
-		 	<br />
-		 	<s:iterator value="items">
-		 		<s:property value="getLocalizedMessage(getLocale())" />
-		 		<br />
-		 		<s:iterator value="items">
-		 			<s:property value="getLocalizedMessage(getLocale())" />
-		 		</s:iterator>
-		 		<br />
-		 	</s:iterator>
+		 	<s:property value="getLocalizedMessage(getLocale())" />
+		 	<s:if test="%{getStatus().name() != 'OK' }">
+			 	<s:iterator value="items">
+			 		<s:property value="getLocalizedMessage(getLocale())" />
+			 		<br />
+			 		<s:iterator value="items">
+			 			<i><s:property value="getLocalizedMessage(getLocale())" /></i>
+			 		</s:iterator>
+			 		<br />
+			 	</s:iterator>
+		 	</s:if>
 		 	<br />
 		 </s:iterator>
 	</div>

@@ -23,7 +23,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 	ValidationStepDescription validationStepDescription;
 
 	public void init(){
-		validationStepDescription = new ValidationStepDescription("Test2.4", ValidationClassReportItem.CLASS.TWO.ordinal());
+		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
 	}
 	@Override
 	public ValidationStepDescription getDescription() {
@@ -42,7 +42,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 	}
 	private List<ReportItem> validate(List<ConnectionLink> connectionLinks){
 		ReportItem sheet4 = new SheetReportItem("Test2_Sheet4",4);
-		ReportItem report2_4 = new SheetReportItem("Test2_Sheet4_Step1",1);
+		SheetReportItem report2_4 = new SheetReportItem("Test2_Sheet4_Step1",1);
 		List<ReportItem> result = new ArrayList<ReportItem>();
 		
 		for(ConnectionLink connectionLink : connectionLinks){
@@ -55,9 +55,10 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR,"");
 				report2_4.addItem(detailReportItem);
 			}else {
-				report2_4.setStatus(Report.STATE.OK);
+				report2_4.updateStatus(Report.STATE.OK);
 			}
 		}
+		report2_4.computeDetailItemCount();
 		sheet4.addItem(report2_4);
 		result.add(sheet4);
 		return result;

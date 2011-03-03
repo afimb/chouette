@@ -33,7 +33,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 	}
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<VehicleJourney> beans,ValidationParameters parameters) {	
-		System.out.println("VehicleJourneyPatternValidation");
+		System.out.println("VehicleJourneyValidation");
 		return validate(beans);	
 	}
 
@@ -49,15 +49,15 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		ReportItem sheet2_23 = new SheetReportItem("Test2_Sheet23",23);
 		ReportItem sheet2_24 = new SheetReportItem("Test2_Sheet24",24);
 		
-		ReportItem report2_17_1 = new SheetReportItem("Test2_Sheet17_Step1",1);		
-		ReportItem report2_18_1 = new SheetReportItem("Test2_Sheet18_Step1",1);
-		ReportItem report2_18_2 = new SheetReportItem("Test2_Sheet18_Step2",2);		
-		ReportItem report2_19 = new SheetReportItem("Test2_Sheet19_Step1",1);
-		ReportItem report2_20 = new SheetReportItem("Test2_Sheet20_Step1",1);
-		ReportItem report2_21 = new SheetReportItem("Test2_Sheet21_Step1",1);
-		ReportItem report2_22 = new SheetReportItem("Test2_Sheet22_Step1",1);
-		ReportItem report2_23 = new SheetReportItem("Test2_Sheet23_Step1",1);
-		ReportItem report2_24 = new SheetReportItem("Test2_Sheet24_Step1",1);
+		SheetReportItem report2_17_1 = new SheetReportItem("Test2_Sheet17_Step1",1);		
+		SheetReportItem report2_18_1 = new SheetReportItem("Test2_Sheet18_Step1",1);
+		SheetReportItem report2_18_2 = new SheetReportItem("Test2_Sheet18_Step2",2);		
+		SheetReportItem report2_19 = new SheetReportItem("Test2_Sheet19_Step1",1);
+		SheetReportItem report2_20 = new SheetReportItem("Test2_Sheet20_Step1",1);
+		SheetReportItem report2_21 = new SheetReportItem("Test2_Sheet21_Step1",1);
+		SheetReportItem report2_22 = new SheetReportItem("Test2_Sheet22_Step1",1);
+		SheetReportItem report2_23 = new SheetReportItem("Test2_Sheet23_Step1",1);
+		SheetReportItem report2_24 = new SheetReportItem("Test2_Sheet24_Step1",1);
 		
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		
@@ -68,7 +68,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
 						report2_17_1.addItem(detailReportItem);	
 					}else
-						report2_17_1.setStatus(Report.STATE.OK);	
+						report2_17_1.updateStatus(Report.STATE.OK);	
 				}else{
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
 					report2_17_1.addItem(detailReportItem);
@@ -83,7 +83,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
 						report2_18_1.addItem(detailReportItem);	
 					}else
-						report2_18_1.setStatus(Report.STATE.OK);
+						report2_18_1.updateStatus(Report.STATE.OK);
 				}
 				List<String> stopPointObjectIds = (vehicleJourney.getJourneyPattern() != null && vehicleJourney.getJourneyPattern().getStopPoints() != null) ? 
 						VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints()) : null;
@@ -96,7 +96,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", Report.STATE.ERROR,"");
 						report2_18_2.addItem(detailReportItem);	
 					}else
-						report2_18_2.setStatus(Report.STATE.OK);
+						report2_18_2.updateStatus(Report.STATE.OK);
 					//Test 2.18.2 b
 					List<VehicleJourneyAtStop> vehicleJourneyAtStopIds = vehicleJourney.getVehicleJourneyAtStops();
 					for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStopIds) {
@@ -104,7 +104,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_b", Report.STATE.ERROR,"");
 							report2_18_2.addItem(detailReportItem);	
 						}else
-							report2_18_2.setStatus(Report.STATE.OK);
+							report2_18_2.updateStatus(Report.STATE.OK);
 					}
 				}
 				//Test 2.19.1
@@ -116,7 +116,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,vehicleJourney.getObjectId());
 						report2_19.addItem(detailReportItem);	
 					}else
-						report2_19.setStatus(Report.STATE.OK);	
+						report2_19.updateStatus(Report.STATE.OK);	
 				}
 				
 				//Test 2.20.1
@@ -127,7 +127,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
 						report2_20.addItem(detailReportItem);	
 					}else
-						report2_20.setStatus(Report.STATE.OK);	
+						report2_20.updateStatus(Report.STATE.OK);	
 				}
 				
 				//Test 2.21.1
@@ -138,7 +138,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
 						report2_21.addItem(detailReportItem);	
 					}else
-						report2_21.setStatus(Report.STATE.OK);	
+						report2_21.updateStatus(Report.STATE.OK);	
 				}
 				List<VehicleJourneyAtStop> vehicleJourneyAtStops =vehicleJourney.getVehicleJourneyAtStops();
 				//Test 2.22.1
@@ -151,7 +151,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet22_Step1_error", Report.STATE.ERROR,arrivalTime);
 							report2_22.addItem(detailReportItem);	
 						}else
-							report2_22.setStatus(Report.STATE.OK);	
+							report2_22.updateStatus(Report.STATE.OK);	
 						
 						
 						//Test 2.23.1
@@ -161,7 +161,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet23_Step1_error", Report.STATE.ERROR,arrivalTime);
 							report2_23.addItem(detailReportItem);	
 						}else
-							report2_23.setStatus(Report.STATE.OK);	
+							report2_23.updateStatus(Report.STATE.OK);	
 					}
 				}
 				
@@ -172,14 +172,24 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet24_Step1_error", Report.STATE.ERROR,"");
 					report2_24.addItem(detailReportItem);	
 				}else
-					report2_24.setStatus(Report.STATE.OK);
+					report2_24.updateStatus(Report.STATE.OK);
 			}
 		}
+		
+		report2_17_1.computeDetailItemCount();
+		report2_18_1.computeDetailItemCount();
+		report2_18_2.computeDetailItemCount();
+		report2_19.computeDetailItemCount();
+		report2_20.computeDetailItemCount();
+		report2_21.computeDetailItemCount();
+		report2_22.computeDetailItemCount();
+		report2_23.computeDetailItemCount();
+		report2_24.computeDetailItemCount();
 		
 		sheet2_17.addItem(report2_17_1);
 		sheet2_18.addItem(report2_18_1);
 		sheet2_18.addItem(report2_18_2);
-		sheet2_19.addItem(sheet2_19);
+		sheet2_19.addItem(report2_19);
 		sheet2_20.addItem(report2_20);
 		sheet2_21.addItem(report2_21);
 		sheet2_22.addItem(report2_22);

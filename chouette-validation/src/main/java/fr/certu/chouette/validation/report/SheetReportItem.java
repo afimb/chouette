@@ -3,18 +3,15 @@
  */
 package fr.certu.chouette.validation.report;
 
-import lombok.Getter;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  * @author zbouziane
  *
  */
-public class SheetReportItem extends ReportItem implements Comparable<ReportItem>
+public class SheetReportItem extends ReportItem 
 {
 	private static final int MAX_DETAIL = 4;
-	
-	@Getter private int order;
 	
 	private int detailItemCount = 0;
 	/**
@@ -22,6 +19,7 @@ public class SheetReportItem extends ReportItem implements Comparable<ReportItem
 	 */
 	public SheetReportItem(String key, int order)
 	{
+		this.setOrder(order);
 		setMessageKey(key);
 		setStatus(STATE.UNCHECK);
 
@@ -42,18 +40,6 @@ public class SheetReportItem extends ReportItem implements Comparable<ReportItem
 		int status = getStatus().ordinal();
 		int itemStatus = item.getStatus().ordinal();
 		if (itemStatus > status) setStatus(item.getStatus());
-	}
-
-	@Override
-	public int compareTo(ReportItem item) 
-	{
-		if (item instanceof SheetReportItem)
-		{
-			SheetReportItem sitem = (SheetReportItem) item;
-			return order-sitem.order;
-		}
-		return super.compareTo(item);
-		
 	}
 	
 	public void computeDetailItemCount()

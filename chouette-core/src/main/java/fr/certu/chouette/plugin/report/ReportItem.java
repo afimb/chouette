@@ -27,7 +27,7 @@ public abstract  class ReportItem extends Report implements Comparable<ReportIte
 {
 	@Getter @Setter private String messageKey;
 	@Getter @Setter private List<String> messageArgs = new ArrayList<String>();
-
+	@Getter @Setter private int order;
 	public void addMessageArgs(String... args)
 	{
 		for (String arg : args) 
@@ -72,10 +72,8 @@ public abstract  class ReportItem extends Report implements Comparable<ReportIte
 
 
 	@Override
-	public int compareTo(ReportItem o) 
+	public int compareTo(ReportItem item) 
 	{
-		// default implementation always return equals
-		return 0;
+			return order-item.order;
 	}
-
 }
