@@ -21,5 +21,5 @@ public interface IValidationPlugin<T extends NeptuneIdentifiedObject>
 {
     ValidationStepDescription getDescription();
     
-    ReportItem doValidate(List<T> beans, ValidationParameters parameters);
+    List<ValidationClassReportItem> doValidate(List<T> beans, ValidationParameters parameters);
 }

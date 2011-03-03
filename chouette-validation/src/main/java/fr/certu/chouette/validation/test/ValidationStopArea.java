@@ -1,5 +1,6 @@
-package fr.certu.chouette.validation.test2;
+package fr.certu.chouette.validation.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.StopArea;
@@ -18,7 +19,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  * @author mamadou keira
  *
  */
-public class Sheet3 implements IValidationPlugin<StopArea>{
+public class ValidationStopArea implements IValidationPlugin<StopArea>{
 
 	private ValidationStepDescription validationStepDescription;
 
@@ -31,13 +32,25 @@ public class Sheet3 implements IValidationPlugin<StopArea>{
 		return validationStepDescription;
 	}
 
+
+	@Override
+	public List<ValidationClassReportItem> doValidate(List<StopArea> beans,ValidationParameters parameters) {
+		System.out.println("StopAreaValidation");
+		List<ValidationClassReportItem> validationClassReportItems = new ArrayList<ValidationClassReportItem>();
+		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
+		validationClassReportItems.add(category2);
+		category2.addAll(validate(beans));
+		return validationClassReportItems;
+	}
 	/**
 	 * The test 2.3.1
 	 * @param stopAreas
 	 * @return
 	 */
-	private ReportItem step_2_3_1(List<StopArea> stopAreas) {
-		ReportItem report = new SheetReportItem("Test2_Sheet3_Step1", 1);
+	private List<ReportItem> validate(List<StopArea> stopAreas) {
+		ReportItem sheet3 = new SheetReportItem("Test2_Sheet3",3);
+		ReportItem report2_3 = new SheetReportItem("Test2_Sheet3_Step1", 1);
+		List<ReportItem> result = new ArrayList<ReportItem>();
 		for(StopArea stopArea :stopAreas){
 			List<String> containedStopIds = stopArea.getContainedStopIds(); 
 			if(containedStopIds != null && !containedStopIds.isEmpty()){
@@ -50,9 +63,9 @@ public class Sheet3 implements IValidationPlugin<StopArea>{
 					if(stopPoints != null){
 						if(!containedStopIds.containsAll(stopPoints)){
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR,"");
-							report.addItem(detailReportItem);
+							report2_3.addItem(detailReportItem);
 						}else {
-							report.setStatus(Report.STATE.OK);	
+							report2_3.setStatus(Report.STATE.OK);	
 						}
 					}
 				}else {
@@ -60,21 +73,16 @@ public class Sheet3 implements IValidationPlugin<StopArea>{
 					if(containedAreas != null){
 						if(!containedStopIds.containsAll(containedAreas)){
 							ReportItem detailReportItem =new DetailReportItem("Test2_Sheet3_Step1_error",Report.STATE.ERROR, "");
-							report.addItem(detailReportItem);
+							report2_3.addItem(detailReportItem);
 						}else {
-							report.setStatus(Report.STATE.OK);	
+							report2_3.setStatus(Report.STATE.OK);	
 						}
 					}
 				}
 			}
-		}	
-		return report;
-	}
-
-	@Override
-	public ReportItem doValidate(List<StopArea> beans,ValidationParameters parameters) {
-		ReportItem reportItem = new SheetReportItem("Test2_Sheet3",3);
-		reportItem.addItem(step_2_3_1(beans));
-		return reportItem;
+		}
+		sheet3.addItem(report2_3);
+		result.add(sheet3);
+		return result;
 	}
 }

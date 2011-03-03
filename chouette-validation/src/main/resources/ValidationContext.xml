@@ -6,28 +6,13 @@
    default-init-method="init">
 
 
-	<bean id="Test2_1" class="fr.certu.chouette.validation.test2.Sheet1"></bean>
-	<bean id="Test2_2" class="fr.certu.chouette.validation.test2.Sheet2"></bean>
-	<bean id="Test2_3" class="fr.certu.chouette.validation.test2.Sheet3"></bean>
-	<bean id="Test2_4" class="fr.certu.chouette.validation.test2.Sheet4"></bean>
-	<bean id="Test2_5" class="fr.certu.chouette.validation.test2.Sheet5"></bean>
-	<bean id="Test2_6" class="fr.certu.chouette.validation.test2.Sheet6"></bean>
-	<bean id="Test2_7" class="fr.certu.chouette.validation.test2.Sheet7"></bean>
-	<bean id="Test2_8" class="fr.certu.chouette.validation.test2.Sheet8"></bean>
-	<bean id="Test2_9" class="fr.certu.chouette.validation.test2.Sheet9"></bean>
-	<bean id="Test2_10" class="fr.certu.chouette.validation.test2.Sheet10"></bean>
-	<bean id="Test2_11" class="fr.certu.chouette.validation.test2.Sheet11"></bean>
-	
-	<bean id="Test2_15" class="fr.certu.chouette.validation.test2.Sheet15"></bean>
-	<bean id="Test2_16" class="fr.certu.chouette.validation.test2.Sheet16"></bean>
-	<bean id="Test2_17" class="fr.certu.chouette.validation.test2.Sheet17"></bean>
-	<bean id="Test2_18" class="fr.certu.chouette.validation.test2.Sheet18"></bean>
-	<bean id="Test2_19" class="fr.certu.chouette.validation.test2.Sheet19"></bean>
-	<bean id="Test2_20" class="fr.certu.chouette.validation.test2.Sheet20"></bean>
-	<bean id="Test2_21" class="fr.certu.chouette.validation.test2.Sheet21"></bean>
-	<bean id="Test2_22" class="fr.certu.chouette.validation.test2.Sheet22"></bean>
-	<bean id="Test2_23" class="fr.certu.chouette.validation.test2.Sheet23"></bean>
-	<bean id="Test2_24" class="fr.certu.chouette.validation.test2.Sheet24"></bean>
-	
-	<bean id="Test3_1" class="fr.certu.chouette.validation.test3.Sheet1"></bean>
+	<bean id="Test_Line" class="fr.certu.chouette.validation.test.ValidationLine" />
+	<bean id="Test_StopArea" class="fr.certu.chouette.validation.test.ValidationStopArea" />
+	<bean id="Test_ConnectionLink" class="fr.certu.chouette.validation.test.ValidationConnectionLink" />
+	<bean id="Test_Timetable" class="fr.certu.chouette.validation.test.ValidationTimetable" />
+	<bean id="Test_Route" class="fr.certu.chouette.validation.test.ValidationRoute" />
+	<bean id="Test_StopPoint" class="fr.certu.chouette.validation.test.ValidationStopPoint" />
+	<bean id="Test_JourneyPattern" class="fr.certu.chouette.validation.test.ValidationJourneyPattern" />
+	<bean id="Test_VehicleJourney" class="fr.certu.chouette.validation.test.ValidationVehicleJourney" />
+
 </beans>

@@ -43,15 +43,17 @@ import fr.certu.chouette.struts.GeneriqueAction;
  * @author mamadou keira
  *
  */
-@SuppressWarnings("serial")
+
 public class NeptuneValidationAction extends GeneriqueAction implements Preparable,ServletResponseAware, ServletRequestAware{
+
+	private static final long serialVersionUID = 8449003243520401472L;
 
 	private static final Log LOGGER = LogFactory.getLog(NeptuneValidationAction.class);
 
 	@Getter @Setter private File file;
 	@Getter @Setter private String fileFileName;
 	@Getter @Setter private INeptuneManager<Line> lineManager;
-	@Getter @Setter private boolean validate =true;
+	@Getter @Setter private boolean validate = true;
 	@Getter @Setter private List<FormatDescription> formats;
 	@Getter @Setter private boolean imported;
 	@Getter @Setter private Report report;
@@ -173,7 +175,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			LOGGER.info("File extension "+FilenameUtils.getExtension(fileFileName));
 			imported = importXmlFile(file);
 			if(imported){
-				if(lines != null){
+				if(lines != null && !lines.isEmpty()){
 					setImported(true);
 					session.put("imported", true);
 					LOGGER.info("File successfully imported ");
@@ -183,6 +185,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 					addActionError(getText("error.import.file.failure"));
 					result = INPUT;
 				}
+			}else{
+				addActionError(getText("error.import.file"));
+				result = ERROR;
 			}
 
 		}else{
@@ -213,50 +218,15 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		ReportHolder reportHolder = new ReportHolder();
 
 		lines = lineManager.doImport(null,formats.get(0).getName(),parameters, reportHolder);
-		if(lines != null){
-			report = reportHolder.getReport();
-			LOGGER.info("Report STATUS "+report.getStatus().name());
-			getReportItemDetails(report.getItems());
+		report = reportHolder.getReport();
+		LOGGER.info("Report STATUS "+report.getStatus().name());
+		//getReportItemDetails(report.getItems());
+		if(lines != null && !lines.isEmpty())
 			result = true;
-		}
-
+		
 		return result;
 	}
-
-	/**
-	 * import a zip file
-	 * @param file
-	 * @return
-	 * @throws ChouetteException
-
-	private boolean importZip(File file) throws ChouetteException{
-		try{
-			boolean result = true;
-			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
-			ZipEntry zipEntry = zipInputStream.getNextEntry();
-			while (zipEntry != null) {
-				LOGGER.info("The zip file size : "+zipEntry.getSize());
-				byte[] bytes = new byte[4096];
-				int len = zipInputStream.read(bytes);
-				File tmp = new File(zipEntry.getName());
-				FileOutputStream fos = new FileOutputStream(tmp);
-				while (len > 0) {
-					fos.write(bytes, 0, len);
-					len = zipInputStream.read(bytes);
-				}
-				if(!importXmlFile(tmp)){
-					result = false;
-					break;
-				}
-				zipEntry = zipInputStream.getNextEntry();
-			}
-			return result;
-		}
-		catch (Exception e){
-			addActionError(getExceptionMessage(e));
-			return false;
-		}
-	}*/
+	
 	/**
 	 * Neptune validation 
 	 * @return
@@ -270,7 +240,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		if(reportValidation != null){
 			LOGGER.info("Report "+reportValidation.getLocalizedMessage(getLocale()));
-			getReportItemDetails(reportValidation.getItems());
+			//getReportItemDetails(reportValidation.getItems());
 		}		
 		boolean isDefault = false;
 		if(session.get("isDefault") != null)
@@ -339,7 +309,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		return SUCCESS;
 	}
 
-	private void getReportItemDetails(List<ReportItem> reportItems){
+/*	private void getReportItemDetails(List<ReportItem> reportItems){
 		for(ReportItem reportItem : reportItems){
 			LOGGER.info("\tReportItem Message "+reportItem.getLocalizedMessage(getLocale())+" STATUS "+reportItem.getStatus().name());
 			if(reportItem.getMessageArgs() != null){
@@ -350,7 +320,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			if(reportItem.getItems() != null && reportItem.getItems().size()>0)
 				getReportItemDetails(reportItem.getItems());
 		}
-	}
+	}*/
 	/**
 	 * Get the polygon coordinates from a string
 	 * @param text

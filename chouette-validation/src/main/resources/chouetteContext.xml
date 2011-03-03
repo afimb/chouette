@@ -12,10 +12,7 @@
 		<property name="manager" ref="lineManager" />
 		<property name="validationPlugins">
 			<list>
-				<ref bean="Test2_1" />
-				<ref bean="Test2_2" />
-				<ref bean="Test2_6" />
-				<ref bean="Test2_7" />
+				<ref bean="Test_Line" />
 			</list>
 		</property>
 	</bean>
@@ -24,7 +21,7 @@
 		<property name="manager" ref="stopAreaManager" />
 		<property name="validationPlugins">
 			<list>
-				<ref bean="Test2_3" />
+				<ref bean="Test_StopArea" />
 			</list>
 		</property>
 	</bean>
@@ -33,7 +30,7 @@
 		<property name="manager" ref="connectionLinkManager" />
 		<property name="validationPlugins">
 			<list>
-				<ref bean="Test2_4" />
+				<ref bean="Test_ConnectionLink" />
 			</list>
 		</property>
 		</bean>
@@ -42,7 +39,7 @@
 		<property name="manager" ref="timetableManager" />
 		<property name="validationPlugins">
 			<list>
-				<ref bean="Test2_5" />
+				<ref bean="Test_Timetable" />
 			</list>
 		</property>
 	</bean>
@@ -51,8 +48,7 @@
 		<property name="manager" ref="routeManager" />
 		<property name="validationPlugins">
 			<list>
-				<ref bean="Test2_8" />
-				<ref bean="Test2_9" />
+				<ref bean="Test_Route" />
 			</list>
 		</property>
 	</bean>
@@ -61,9 +57,7 @@
 		<property name="manager" ref="stopPointManager" />
 		<property name="validationPlugins">
 			<list>
-			<ref bean="Test2_10" />
-			<ref bean="Test2_11" />
-			<ref bean="Test3_1" />
+			<ref bean="Test_StopPoint" />
 			</list>
 		</property>
 	</bean>
@@ -72,8 +66,7 @@
 		<property name="manager" ref="journeyPatternManager" />
 		<property name="validationPlugins">
 			<list>
-			<ref bean="Test2_15" />
-			<ref bean="Test2_16" />
+			<ref bean="Test_JourneyPattern" />
 			</list>
 		</property>
 	</bean>
@@ -82,14 +75,7 @@
 		<property name="manager" ref="vehicleJourneyManager" />
 		<property name="validationPlugins">
 			<list>
-			<ref bean="Test2_17" />
-			<ref bean="Test2_18" />
-			<ref bean="Test2_19" />
-			<ref bean="Test2_20" />
-			<ref bean="Test2_21" />
-			<ref bean="Test2_22" />
-			<ref bean="Test2_23" />
-			<ref bean="Test2_24" />
+			<ref bean="Test_VehicleJourney" />
 			</list>
 		</property>
 	</bean>

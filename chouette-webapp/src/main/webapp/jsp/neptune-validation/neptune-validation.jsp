@@ -11,20 +11,30 @@
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" />
 		   <s:submit value="%{getText('submit.import.xml')}" formId="NeptuneValidation"/>
+		   <!-- s:checkbox label="%{getText('conforme.xsd.title')}" name="validate" /> -->
 		</s:form>
+		<s:include value="/jsp/commun/messages.jsp" />
 		<s:property value="%{report.getStatus().name()}"/><br />
 		 
 		 <s:iterator value="report.items">
-		 	<s:property value="getLocalizedMessage(getLocale())" />
+		 	<div style="font-weight: bold;"><s:property value="getLocalizedMessage(getLocale())" /></div> 
+		 	<br />
+		 	<s:iterator value="items">
+		 		<s:property value="getLocalizedMessage(getLocale())" />
+		 		<br />
+		 		<s:iterator value="items">
+		 			<s:property value="getLocalizedMessage(getLocale())" />
+		 		</s:iterator>
+		 		<br />
+		 	</s:iterator>
+		 	<br />
 		 </s:iterator>
 	</div>
 	<br />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
-	<s:include value="/jsp/commun/messages.jsp" />
 	<s:div disabled="#session.imported != true">
 	
-	<s:fielderror />	
   <s:form action="validation" namespace="/neptune-validation">
 	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
 	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
