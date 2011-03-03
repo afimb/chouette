@@ -12,7 +12,11 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class SheetReportItem extends ReportItem implements Comparable<ReportItem>
 {
+	private static final int MAX_DETAIL = 4;
+	
 	@Getter private int order;
+	
+	private int detailItemCount = 0;
 	/**
 	 * 
 	 */
@@ -29,6 +33,11 @@ public class SheetReportItem extends ReportItem implements Comparable<ReportItem
 	@Override
 	public void addItem(ReportItem item) 
 	{
+		if (item instanceof DetailReportItem)
+		{
+			detailItemCount ++;
+			if (detailItemCount > MAX_DETAIL) return;
+		}
 		super.addItem(item);
 		int status = getStatus().ordinal();
 		int itemStatus = item.getStatus().ordinal();
@@ -47,5 +56,13 @@ public class SheetReportItem extends ReportItem implements Comparable<ReportItem
 		
 	}
 	
+	public void computeDetailItemCount()
+	{
+		if (detailItemCount > MAX_DETAIL)
+		{
+			DetailReportItem item = new DetailReportItem("TooMuchDetails",getStatus(),Integer.toString(detailItemCount- MAX_DETAIL));
+			super.addItem(item);
+		}
+	}
 
 }

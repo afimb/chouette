@@ -54,10 +54,10 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		ReportItem sheet3_1 = new SheetReportItem("Test3_Sheet1",1);
 		ReportItem sheet3_2 = new SheetReportItem("Test3_Sheet2",2);
 		
-		ReportItem report2_10_1 = new SheetReportItem("Test2_Sheet10_Step1",1);
-		ReportItem report2_11_1 = new SheetReportItem("Test2_Sheet11_Step1",1);
-		ReportItem report3_1_1 = new SheetReportItem("Test3_Sheet1_Step1",1);
-		ReportItem report3_2_1 = new SheetReportItem("Test3_Sheet2_Step1",1);
+		SheetReportItem report2_10_1 = new SheetReportItem("Test2_Sheet10_Step1",1);
+		SheetReportItem report2_11_1 = new SheetReportItem("Test2_Sheet11_Step1",1);
+		SheetReportItem report3_1_1 = new SheetReportItem("Test3_Sheet1_Step1",1);
+		SheetReportItem report3_2_1 = new SheetReportItem("Test3_Sheet2_Step1",1);
 		
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		
@@ -69,11 +69,14 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 			String lineIdShortcut = stopPoint.getLineIdShortcut();
 			if(lineIdShortcut != null){
 				String lineObjectId = stopPoint.getLine().getObjectId();
-				if(!lineIdShortcut.equals(lineObjectId)){
+				if(!lineIdShortcut.equals(lineObjectId))
+				{
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet10_Step1_error", Report.STATE.ERROR, "");
 					report2_10_1.addItem(detailReportItem);	
-				}else {
-					report2_10_1.setStatus(Report.STATE.OK);	
+				}
+				else
+				{
+					report2_10_1.updateStatus(Report.STATE.OK);	
 				}
 			}
 			//Test2.11.1
@@ -84,7 +87,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet11_Step1_error", Report.STATE.ERROR,"");
 					report2_11_1.addItem(detailReportItem);	
 				}else {
-					report2_11_1.setStatus(Report.STATE.OK);		
+					report2_11_1.updateStatus(Report.STATE.OK);		
 				}
 			}
 			//Category 3
@@ -111,22 +114,27 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				float param = parameters.getTest3_1_MinimalDistance();
 				if(distance < param){
 					if(!stopPoint.getName().equals(another.getName())){
-						//ReportItem detailReportItem = new DetailReportItem("Test3_Sheet1_Step1_warning", Report.STATE.WARNING,String.valueOf(param), stopPoint.getObjectId(), another.getObjectId());
-						//report3_1_1.addItem(detailReportItem);	
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet1_Step1_warning", Report.STATE.WARNING,String.valueOf(param), stopPoint.getObjectId(), another.getObjectId());
+						report3_1_1.addItem(detailReportItem);	
 					}else
-						report3_1_1.setStatus(Report.STATE.OK);
+						report3_1_1.updateStatus(Report.STATE.OK);
 				}
 				//Test 3.2.1
 				float param2 = parameters.getTest3_2_MinimalDistance();
 				if(distance < param2){
 					if(!stopPoint.getContainedInStopAreaId().equals(another.getContainedInStopAreaId())){
-						//ReportItem detailReportItem = new DetailReportItem("Test3_Sheet2_Step1_warning", Report.STATE.WARNING,String.valueOf(param2), stopPoint.getObjectId(), another.getObjectId());
-						//report3_2_1.addItem(detailReportItem);	
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet2_Step1_warning", Report.STATE.WARNING,String.valueOf(param2), stopPoint.getObjectId(), another.getObjectId());
+						report3_2_1.addItem(detailReportItem);	
 					}else
-						report3_2_1.setStatus(Report.STATE.OK);
+						report3_2_1.updateStatus(Report.STATE.OK);
 				}
 			}		
 		}
+		report2_10_1.computeDetailItemCount();
+		report2_11_1.computeDetailItemCount();
+		report3_1_1.computeDetailItemCount();
+		report3_2_1.computeDetailItemCount();
+		
 		sheet10.addItem(report2_10_1);
 		sheet11.addItem(report2_11_1);
 		
