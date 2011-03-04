@@ -155,7 +155,7 @@ public class ValidationLine implements IValidationPlugin<Line>
 		category2.addItem(sheet2);
 		category2.addItem(sheet6);
 		category2.addItem(sheet7);
-		category3.addItem(report3_4_1);
+		category3.addItem(sheet3_4);
 		result.add(category2);
 		result.add(category3);
 		return result;
