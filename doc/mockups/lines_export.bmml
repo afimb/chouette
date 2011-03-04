@@ -1,0 +1,81 @@
+<mockup version="1.0" skin="sketch" measuredW="952" measuredH="666" mockupW="753" mockupH="631">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::ButtonBar" x="189" y="90" w="-1" h="-1" measuredW="327" measuredH="31" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>2</selectedIndex>
+        <text>R%E9seaux%2C%20Transporteur%2C%20Lignes%2C%20ITL...</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="25" w="753" h="96" measuredW="200" measuredH="170" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Canvas" x="189" y="115" w="577" h="541" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1"/>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="336" y="166" w="-1" h="-1" measuredW="88" measuredH="75" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%28%20%29%20STIF%0A%28o%29%20NEPTUNE%0A%28%20%29%20CSV</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="281" y="335" w="225" h="26" measuredW="204" measuredH="25" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Exclusion%20des%20corrspondances%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="496" y="334" w="-1" h="-1" measuredW="63" measuredH="50" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%28o%29%20Oui%20%20%20%0A%28%20%29%20Non</text>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::Button" x="532" y="399" w="67" h="28" measuredW="65" measuredH="28" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Export</text>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::Label" x="609" y="399" w="18" h="25" measuredW="18" measuredH="25" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>ou</text>
+      </controlProperties>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::Link" x="627" y="399" w="-1" h="-1" measuredW="53" measuredH="25" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Annuler</text>
+      </controlProperties>
+    </control>
+    <control controlID="15" controlTypeID="com.balsamiq.mockups::FieldSet" x="262" y="274" w="429" h="170" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Export%20NEPTUNE</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::BreadCrumbs" x="197" y="125" w="-1" h="-1" measuredW="159" measuredH="25" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Home%2C%20Lignes%2C%20Export</text>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Label" x="200" y="168" w="127" h="25" measuredW="125" measuredH="25" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Format%20d%27export%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::Label" x="281" y="299" w="117" h="26" measuredW="84" measuredH="25" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Intervalle%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="21" controlTypeID="com.balsamiq.mockups::TextInput" x="379" y="297" w="-1" h="-1" measuredW="91" measuredH="29" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>14/02/2001</text>
+      </controlProperties>
+    </control>
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::TextInput" x="506" y="297" w="-1" h="-1" measuredW="91" measuredH="29" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>14/02/2003</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::Label" x="477" y="299" w="22" h="26" measuredW="19" measuredH="25" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>au</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
