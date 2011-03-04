@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
@@ -27,12 +29,12 @@ import fr.certu.chouette.validation.report.SheetReportItem;
 public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 
 	private ValidationStepDescription validationStepDescription;
-	
+
 	public void init(){
 		//TODO
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
 	}
-	
+
 	@Override
 	public ValidationStepDescription getDescription() {
 		return validationStepDescription;
@@ -42,31 +44,35 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		System.out.println("StopPointValidation "+beans.size());
 		return validate(beans,parameters);	
 	}
-	
+
 	private List<ValidationClassReportItem> validate(List<StopPoint> stopPoints,ValidationParameters parameters){
-		
+
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
-		
+
 		ReportItem sheet10 = new SheetReportItem("Test2_Sheet10",10);
 		ReportItem sheet11 = new SheetReportItem("Test2_Sheet11",11);
-		
+
 		ReportItem sheet3_1 = new SheetReportItem("Test3_Sheet1",1);
 		ReportItem sheet3_2 = new SheetReportItem("Test3_Sheet2",2);
 		ReportItem sheet3_3 = new SheetReportItem("Test3_Sheet3",3);
-		
+		ReportItem sheet3_5 = new SheetReportItem("Test3_Sheet5",5);
+		ReportItem sheet3_6 = new SheetReportItem("Test3_Sheet6",6);
+
 		SheetReportItem report2_10_1 = new SheetReportItem("Test2_Sheet10_Step1",1);
 		SheetReportItem report2_11_1 = new SheetReportItem("Test2_Sheet11_Step1",1);
 		SheetReportItem report3_1_1 = new SheetReportItem("Test3_Sheet1_Step1",1);
 		SheetReportItem report3_2_1 = new SheetReportItem("Test3_Sheet2_Step1",1);
 		SheetReportItem report3_3_1 = new SheetReportItem("Test3_Sheet3_Step1",1);
-		
+		SheetReportItem report3_5_1 = new SheetReportItem("Test3_Sheet5_Step1",1);
+		SheetReportItem report3_6_1 = new SheetReportItem("Test3_Sheet6_Step1",1);
+
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
-		
+
 		int size = stopPoints.size();
 		for (int i=0;i<size;i++) {
 			StopPoint stopPoint = stopPoints.get(i);
-			
+
 			//Test2.10.1
 			String lineIdShortcut = stopPoint.getLineIdShortcut();
 			if(lineIdShortcut != null){
@@ -96,22 +102,22 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 			double x1 = (stopPoint.getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
 			double y1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
 			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
-			int SRID1 = stopPoint.getLongLatType().epsgCode();
+			int SRID1 = (stopPoint.getLongLatType()!= null) ? stopPoint.getLongLatType().epsgCode() : 0;
 			GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID1);
 			Coordinate coordinate = new Coordinate(x1, y1);
 			Point point1 = factory1.createPoint(coordinate);
-			
+
 			for(int j=i+1;j<size;j++){
 				StopPoint another = stopPoints.get(j);
 				double x2 = (another.getLatitude() != null) ? another.getLatitude().doubleValue() : 0;
 				double y2 = (another.getLongitude() != null) ? another.getLongitude().doubleValue() : 0;
-				int SRID2 = another.getLongLatType().epsgCode();
+				int SRID2 = (another.getLongLatType() != null) ? another.getLongLatType().epsgCode() : 0;
 				GeometryFactory factory2 = new GeometryFactory(precisionModel, SRID2);
 				Coordinate coordinate2 = new Coordinate(x2, y2);
 				Point point2 = factory2.createPoint(coordinate2);
 				DistanceOp distanceOp = new DistanceOp(point1, point2);
 				double distance = distanceOp.distance();
-				
+
 				//Test 3.1.1
 				float param = parameters.getTest3_1_MinimalDistance();
 				if(distance < param){
@@ -130,7 +136,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					}else
 						report3_2_1.updateStatus(Report.STATE.OK);
 				}
-				
+
 				//Test 3.3.1
 				if(stopPoint.getName().equals(another.getName()) && 
 						(!stopPoint.getContainedInStopAreaId().equals(another.getContainedInStopAreaId()) || 
@@ -143,26 +149,77 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 							report3_3_1.updateStatus(Report.STATE.OK);	
 					}
 				}
-			}		
+			}	
+			//Test 3.5.1 & Test 3.6.1 a
+			StopPoint nextStopPoint = (i<stopPoints.size()-1) ? stopPoints.get(i+1) : stopPoint;
+			if(!stopPoint.getObjectId().equals(nextStopPoint.getObjectId())){
+				final int TEST =  99999;
+				int refrencePJ1 = (stopPoint.getLongLatType() != null) ? stopPoint.getLongLatType().epsgCode() : TEST;
+				int refrencePJ2 = (nextStopPoint.getLongLatType() != null) ? nextStopPoint.getLongLatType().epsgCode() : TEST;
+				if(refrencePJ1 != TEST && refrencePJ2 != TEST){
+					if(refrencePJ1 != refrencePJ2){
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet5_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
+						report3_5_1.addItem(detailReportItem);	
+						
+						ReportItem detailReportItem6a = new DetailReportItem("Test3_Sheet6_Step1_warning_a", Report.STATE.WARNING,stopPoint.getObjectId());
+						report3_6_1.addItem(detailReportItem6a);	
+					}else {
+						report3_5_1.updateStatus(Report.STATE.OK);
+						report3_6_1.updateStatus(Report.STATE.OK);
+					}	
+				}else {
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet5_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
+					report3_5_1.addItem(detailReportItem);
+					
+					ReportItem detailReportItem6a = new DetailReportItem("Test3_Sheet6_Step1_warning_a", Report.STATE.WARNING,stopPoint.getObjectId());
+					report3_6_1.addItem(detailReportItem6a);	
+				}
+				List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+				int coodSize = listCoordinates.size();
+				Coordinate[] coordinates = new Coordinate[coodSize];
+				for (int j=0;j<coodSize;j++) {
+					coordinates[i] = listCoordinates.get(j);
+				}
+				System.err.println("polygon "+coordinates[0]+" "+listCoordinates.get(0));
+		
+				LinearRing shell = factory1.createLinearRing(coordinates);
+				System.err.println("Sheel "+shell);
+				LinearRing[] holes = null;
+				//Test 3.6.1 b
+				Polygon polygon = factory1.createPolygon(shell, holes);
+				if(polygon.distance(point1) != 0){
+					ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_warning_b", Report.STATE.WARNING,stopPoint.getObjectId());
+					report3_6_1.addItem(detailReportItem6b);	
+				}else	
+					report3_6_1.updateStatus(Report.STATE.OK);				
+			}
+			
+			
 		}
 		report2_10_1.computeDetailItemCount();
 		report2_11_1.computeDetailItemCount();
 		report3_1_1.computeDetailItemCount();
 		report3_2_1.computeDetailItemCount();
 		report3_3_1.computeDetailItemCount();
+		report3_5_1.computeDetailItemCount();
+		report3_6_1.computeDetailItemCount();
 		
 		sheet10.addItem(report2_10_1);
 		sheet11.addItem(report2_11_1);		
 		sheet3_1.addItem(report3_1_1);
 		sheet3_2.addItem(report3_2_1);
 		sheet3_3.addItem(report3_3_1);
+		sheet3_5.addItem(report3_5_1);
+		sheet3_6.addItem(report3_6_1);
 		
 		category2.addItem(sheet10);
 		category2.addItem(sheet11);		
 		category3.addItem(sheet3_1);
 		category3.addItem(sheet3_2);
 		category3.addItem(sheet3_3);
-		
+		category3.addItem(sheet3_5);
+		category3.addItem(sheet3_6);
+
 		result.add(category2);
 		result.add(category3);
 		return result;

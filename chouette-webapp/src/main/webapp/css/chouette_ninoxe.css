@@ -938,10 +938,12 @@ div.autocomplete ul li
 
 .ERROR{
 	background: url(../images/ERROR.png) no-repeat 90% 0%;
+	color: red;
 	}
 .FATAL{
 	background: url(../images/FATAL.png) no-repeat 90% 0%;
 	}
+	
 .detail {
 	margin: 0 0 0 660px;
 	padding: 5px 0 0 0;

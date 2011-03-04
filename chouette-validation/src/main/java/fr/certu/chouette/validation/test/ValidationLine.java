@@ -129,11 +129,13 @@ public class ValidationLine implements IValidationPlugin<Line>
 			Line nextLine = (i <lines.size()-1) ? lines.get(i+1) : line;
 			String refCurrent = line.getName()+""+line.getNumber();
 			String refNext = nextLine.getName()+""+nextLine.getNumber();
-			if(refCurrent.equals(refNext)){
-				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet4_Step1_error",Report.STATE.ERROR, line.getObjectId());
-				report3_4_1.addItem(detailReportItem);
-			}else 
-				report3_4_1.updateStatus(Report.STATE.OK);	
+			if(!line.getObjectId().equals(nextLine.getObjectId())){
+				if(refCurrent.equals(refNext)){
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet4_Step1_error",Report.STATE.ERROR, line.getObjectId());
+					report3_4_1.addItem(detailReportItem);
+				}else 
+					report3_4_1.updateStatus(Report.STATE.OK);	
+			}	
 		}
 		report2_1_1.computeDetailItemCount();
 		report2_1_2.computeDetailItemCount();

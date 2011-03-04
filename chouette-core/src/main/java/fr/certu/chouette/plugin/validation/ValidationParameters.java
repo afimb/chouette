@@ -50,7 +50,7 @@ public class ValidationParameters
 
 	public void setTest3_2_PolygonPoints(String pointAsString)
 	{
-		String[] points = pointAsString.split(" ");
+		String[] points = pointAsString.split("\t");
 		for (String point : points) 
 		{
 			String[] coord = point.split(",");

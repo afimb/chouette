@@ -50,6 +50,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 		
 		SheetReportItem report2_8_1 = new SheetReportItem("Test2_Sheet8_Step1",1);
 		SheetReportItem report2_8_2 = new SheetReportItem("Test2_Sheet8_Step2",2);
+		SheetReportItem report2_8_3 = new SheetReportItem("Test2_Sheet8_Step3",3);
 		SheetReportItem report2_9_1 = new SheetReportItem("Test2_Sheet9_Step1", 1);
 		
 		List<ReportItem> result = new ArrayList<ReportItem>();
@@ -77,24 +78,28 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 						if(!journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())){
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_a_error", Report.STATE.ERROR, stopPoint.getObjectId());
 							report2_8_2.addItem(detailReportItem);
-						}
+						}else
+							report2_8_2.updateStatus(Report.STATE.OK);
 						//Test 2.8.3 b
 						for(PTLink ptLink : route.getPtLinks()){
 							if(!stopPoint.getObjectId().equals(ptLink.getStartOfLinkId()) && !stopPoint.getObjectId().equals(ptLink.getEndOfLinkId())){
 								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_b_error", Report.STATE.ERROR, stopPoint.getObjectId(), ptLink.getStartOfLinkId(), ptLink.getEndOfLinkId());
-								report2_8_2.addItem(detailReportItem);
-							}
+								report2_8_3.addItem(detailReportItem);
+							}else
+								report2_8_3.updateStatus(Report.STATE.OK);
+							
 							//Test 2.8.3 c
 							if(!route.getPtLinkIds().contains(ptLink.getObjectId())){
 								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_c_error", Report.STATE.ERROR, ptLink.getObjectId());
-								report2_8_2.addItem(detailReportItem);
-							}
+								report2_8_3.addItem(detailReportItem);
+							}else
+								report2_8_3.updateStatus(Report.STATE.OK);
 						}
 					}
 					//Test 2.8.3 d
 					if(!route.getObjectId().equals(journeyPattern.getRouteId())){
 						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR,route.getObjectId());
-						report2_8_2.addItem(detailReportItem);
+						report2_8_3.addItem(detailReportItem);
 					}
 				}
 			}
@@ -118,10 +123,12 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 		
 		report2_8_1.computeDetailItemCount();
 		report2_8_2.computeDetailItemCount();
+		report2_8_3.computeDetailItemCount();
 		report2_9_1.computeDetailItemCount();
 		
 		sheet8.addItem(report2_8_1);
 		sheet8.addItem(report2_8_2);
+		sheet8.addItem(report2_8_3);
 		sheet9.addItem(report2_9_1);
 		
 		result.add(sheet8);

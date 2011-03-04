@@ -37,9 +37,17 @@
 	</div>
 	<br />
 		<s:iterator value="reportValidation.items" id="categorie" status="category">
+			 <s:a href="#-1" onclick="showIt('%{#category.index}','show_It%{#category.index}');" 
+					id="show_It%{#category.index}" title="%{getText('text.detail.show')}">
+					<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
+			</s:a> 
+			<s:a href="#-1" onclick="hideIt('%{#category.index}','hideIt_%{#category.index}');" 
+					id="hideIt_%{#category.index}" title="%{getText('text.detail.hide')}">
+					<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
+			</s:a>	
 		 	<b><s:property value="getLocalizedMessage(getLocale())" /></b>
 		 	
-		 	<div id="panelValidation" style="margin-left: 20px;" id="sheet_%{#category.index}">
+		 	<s:div cssStyle="margin-left: 20px;" id="%{#category.index}">
 				<s:iterator value="items" status="status">
 					<div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 					      <s:div cssClass="neptune-panel" id="%{status}">
@@ -47,11 +55,11 @@
 						     <s:iterator value="items" id="test" status="itemsStatus">
 								     	<s:div cssClass="%{status}">
 									     	<s:div cssStyle="width: 800px;">
-									     	 	<s:a href="#sheet_%{#category.index}" onclick="showIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
-									     		id="showIt_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
+									     	 <s:a href="#-1" onclick="showIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
+									     		id="showIt_%{itemsStatus.index}" title="%{getText('text.detail.show')}">
 													<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
 											</s:a> 
-											<s:a href="#sheet_%{#category.index}" onclick="hideIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
+											<s:a href="#-1" onclick="hideIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
 												id="hideIt_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
 													<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
 											</s:a>	
@@ -80,7 +88,8 @@
 			  			</s:div>
 				</s:iterator>
 				<br />	
-  			</div>
+  			</s:div>
+  				<br />
 		 </s:iterator>
 	
   	<br />

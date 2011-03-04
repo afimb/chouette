@@ -11,13 +11,14 @@
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" />
 		   <s:submit value="%{getText('submit.import.xml')}" formId="NeptuneValidation"/>
-		   <s:checkbox label="%{getText('conforme.xsd.title')}" name="validate" />
+		   <!-- s:checkbox label="%{getText('conforme.xsd.title')}" name="validate" /> -->
 		</s:form>
 		<s:include value="/jsp/commun/messages.jsp" />
 		<s:property value="%{report.getStatus().name()}"/><br />
 		 <s:iterator value="report.items">
+		 <s:if test="%{getStatus().name() != 'OK' }">
 		 	<s:property value="getLocalizedMessage(getLocale())" />
-		 	<s:if test="%{getStatus().name() != 'OK' }">
+		 	
 			 	<s:iterator value="items">
 			 		<s:property value="getLocalizedMessage(getLocale())" />
 			 		<br />
@@ -39,7 +40,7 @@
 	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
 	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
 	   
-	   <s:textarea cols="30" name="polygonCoordinatesAsString" label="%{getText('neptune.field.polygon.3.6')}" rows="10"></s:textarea>
+	   <s:textarea cols="40" name="polygonCoordinatesAsString" label="%{getText('neptune.field.polygon.3.6')}" rows="9"></s:textarea>
 		
 		<s:textfield name="validationParam.test3_7_MinimalDistance" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" size="4"/>
 		<s:textfield name="validationParam.test3_7_MaximalDistance" size="4" label="/"/>
