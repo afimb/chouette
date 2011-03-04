@@ -1,0 +1,225 @@
+<mockup version="1.0" skin="sketch" measuredW="1232" measuredH="757" mockupW="1033" mockupH="722">
+  <controls>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Paragraph" x="334" y="447" w="339" h="64" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%20%3A%20R%E9seau%201%0ATransporteur%20%3A%20SNCF%0ADernier%20compl%E9ment%20%3A%202%20f%E9vrier%202011</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::SubTitle" x="334" y="419" w="-1" h="-1" measuredW="305" measuredH="29" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>lignes_show%26bm%3Blignes_show.bmml%26bm%3Blignes_show.bmml%26bm%3Blignes_show.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22145%2C394%2C450%2C423%22%20href%3D%22lignes_show.bmml%22%20alt%3D%22lignes_show%22%20id%3D%224%22/%3E</map>
+        <size>16</size>
+        <text>Ligne%204%20Turquoise%20-%2024%20decembre%202010</text>
+        <underline>true</underline>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Title" x="216" y="156" w="-1" h="-1" measuredW="87" measuredH="46" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>28</size>
+        <text>Lignes</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::ButtonBar" x="189" y="90" w="-1" h="-1" measuredW="327" measuredH="31" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>2</selectedIndex>
+        <text>R%E9seaux%2C%20Transporteur%2C%20Lignes%2C%20ITL...</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="112" w="583" h="635" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="25" w="753" h="96" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::Paragraph" x="335" y="554" w="339" h="64" measuredW="200" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%20%3A%20R%E9seau%202%0ATransporteur%20%3A%20SNCF%0ADernier%20compl%E9ment%20%3A%202%20f%E9vrier%202011</text>
+      </controlProperties>
+    </control>
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::SubTitle" x="335" y="526" w="-1" h="-1" measuredW="280" measuredH="29" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>lignes_show%26bm%3Blignes_show.bmml%26bm%3Blignes_show.bmml%26bm%3Blignes_show.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22146%2C501%2C426%2C530%22%20href%3D%22lignes_show.bmml%22%20alt%3D%22lignes_show%22%20id%3D%2226%22/%3E</map>
+        <size>16</size>
+        <text>Ligne%202%20verte%20-%2002%20septembre%202010</text>
+        <underline>true</underline>
+      </controlProperties>
+    </control>
+    <control controlID="28" controlTypeID="com.balsamiq.mockups::BreadCrumbs" x="197" y="125" w="-1" h="-1" measuredW="97" measuredH="25" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Home%2C%20Lignes</text>
+      </controlProperties>
+    </control>
+    <control controlID="31" controlTypeID="com.balsamiq.mockups::FieldSet" x="216" y="219" w="491" h="180" measuredW="200" measuredH="170" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Filtre</text>
+      </controlProperties>
+    </control>
+    <control controlID="32" controlTypeID="com.balsamiq.mockups::Label" x="230" y="313" w="-1" h="-1" measuredW="66" measuredH="25" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="33" controlTypeID="com.balsamiq.mockups::Label" x="410" y="312" w="-1" h="-1" measuredW="102" measuredH="25" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Transporteur%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::Label" x="248" y="240" w="48" h="25" measuredW="48" measuredH="25" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nom%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="36" controlTypeID="com.balsamiq.mockups::TextInput" x="310" y="237" w="247" h="-1" measuredW="45" measuredH="29" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Ligne</text>
+      </controlProperties>
+    </control>
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::ComboBox" x="308" y="312" w="-1" h="-1" measuredW="90" measuredH="54" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%201%0AR%E9seau%202</text>
+      </controlProperties>
+    </control>
+    <control controlID="39" controlTypeID="com.balsamiq.mockups::ComboBox" x="512" y="312" w="-1" h="-1" measuredW="69" measuredH="25" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>SNCF</text>
+      </controlProperties>
+    </control>
+    <control controlID="40" controlTypeID="com.balsamiq.mockups::Button" x="630" y="362" w="-1" h="-1" measuredW="65" measuredH="28" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Filtrer</text>
+      </controlProperties>
+    </control>
+    <control controlID="42" controlTypeID="com.balsamiq.mockups::Image" x="224" y="419" w="-1" h="-1" measuredW="44" measuredH="44" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>../../../../bus.jpg</src>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Image" x="224" y="526" w="-1" h="-1" measuredW="44" measuredH="44" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>../../../../bus.jpg</src>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::Canvas" x="278" y="419" w="45" h="44" measuredW="100" measuredH="70" zOrder="19" locked="false" isInGroup="-1"/>
+    <control controlID="45" controlTypeID="com.balsamiq.mockups::Label" x="291" y="426" w="-1" h="-1" measuredW="15" measuredH="29" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>4</text>
+      </controlProperties>
+    </control>
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::Canvas" x="278" y="527" w="45" h="44" measuredW="100" measuredH="70" zOrder="21" locked="false" isInGroup="-1"/>
+    <control controlID="47" controlTypeID="com.balsamiq.mockups::Label" x="291" y="534" w="-1" h="-1" measuredW="15" measuredH="29" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>2</text>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::StickyNote" x="1024" y="48" w="198" h="212" measuredW="109" measuredH="123" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Une%20autre%20solution%20serait%20de%20partie%20sur%20le%20principe%20%20d%27un%20seul%20champs%20avec%20un%20scoring%20parmi%20les%20crit%E8res%3A%20nom%20de%20la%20ligne%2C%20nom%20%20de%20son%20r%E9seau%2C%20nom%20de%20son%20transporteur</text>
+      </controlProperties>
+    </control>
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::Paragraph" x="335" y="656" w="339" h="64" measuredW="200" measuredH="140" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%20%3A%20R%E9seau%202%0ATransporteur%20%3A%20SNCF%0ADernier%20compl%E9ment%20%3A%202%20f%E9vrier%202011</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::SubTitle" x="335" y="628" w="-1" h="-1" measuredW="285" measuredH="29" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <href>lignes_show%26bm%3Blignes_show.bmml%26bm%3Blignes_show.bmml%26bm%3Blignes_show.bmml</href>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%22146%2C603%2C431%2C632%22%20href%3D%22lignes_show.bmml%22%20alt%3D%22lignes_show%22%20id%3D%2250%22/%3E</map>
+        <size>16</size>
+        <text>Ligne%203%20Jaune%20-%2002%20septembre%202010</text>
+        <underline>true</underline>
+      </controlProperties>
+    </control>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::Image" x="224" y="628" w="-1" h="-1" measuredW="44" measuredH="44" zOrder="26" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>../../../../bus.jpg</src>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="52" controlTypeID="com.balsamiq.mockups::Canvas" x="278" y="629" w="45" h="44" measuredW="100" measuredH="70" zOrder="27" locked="false" isInGroup="-1"/>
+    <control controlID="53" controlTypeID="com.balsamiq.mockups::Label" x="291" y="636" w="-1" h="-1" measuredW="15" measuredH="29" zOrder="28" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>3</text>
+      </controlProperties>
+    </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::Label" x="234" y="274" w="62" h="25" measuredW="62" measuredH="25" zOrder="29" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Indice%20%3A%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::TextInput" x="308" y="273" w="87" h="-1" measuredW="79" measuredH="29" zOrder="30" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::CheckBox" x="290" y="468" w="-1" h="-1" measuredW="25" measuredH="22" zOrder="31" locked="false" isInGroup="-1">
+      <controlProperties>
+        <state>selected</state>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::CheckBox" x="290" y="575" w="-1" h="-1" measuredW="25" measuredH="22" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <state>selected</state>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::CheckBox" x="290" y="677" w="25" h="22" measuredW="25" measuredH="22" zOrder="33" locked="false" isInGroup="-1">
+      <controlProperties>
+        <state>up</state>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::Link" x="802" y="142" w="-1" h="-1" measuredW="101" measuredH="25" zOrder="34" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cr%E9er%20une%20ligne</text>
+      </controlProperties>
+    </control>
+    <control controlID="84" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="146" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="35" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>CircledPlusIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="85" controlTypeID="com.balsamiq.mockups::Link" x="802" y="168" w="-1" h="-1" measuredW="129" measuredH="25" zOrder="36" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Supprimer%20une%20ligne</text>
+      </controlProperties>
+    </control>
+    <control controlID="86" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="172" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="37" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TrashIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::Link" x="802" y="210" w="-1" h="-1" measuredW="122" measuredH="25" zOrder="38" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Importer%20une%20ligne</text>
+      </controlProperties>
+    </control>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="214" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="39" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>DataBaseIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::Link" x="802" y="234" w="-1" h="-1" measuredW="120" measuredH="25" zOrder="40" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Exporter%20une%20ligne</text>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="238" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="41" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>FileIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

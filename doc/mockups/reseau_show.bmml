@@ -1,0 +1,56 @@
+<mockup version="1.0" skin="sketch" measuredW="952" measuredH="687" mockupW="753" mockupH="652">
+  <controls>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::ButtonBar" x="189" y="90" w="-1" h="-1" measuredW="327" measuredH="31" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>0</selectedIndex>
+        <text>R%E9seaux%2C%20Transporteur%2C%20Lignes%2C%20ITL...</text>
+      </controlProperties>
+    </control>
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="25" w="753" h="96" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="28" controlTypeID="com.balsamiq.mockups::BreadCrumbs" x="197" y="121" w="-1" h="-1" measuredW="166" measuredH="25" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Home%2C%20R%E9seaux%2C%20Reims</text>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::Title" x="231" y="161" w="-1" h="-1" measuredW="347" measuredH="46" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>28</size>
+        <text>R%E9seau%20Reims%20Mars%202011</text>
+      </controlProperties>
+    </control>
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::Paragraph" x="238" y="222" w="408" h="109" measuredW="200" measuredH="140" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Date%20de%20cr%E9ation%20%3A%20aujourd%27hui%2C%20il%20y%20a%2030%20minutes%0A%20%0AIdentifiant%20Chouette%20%3A%20STIF%3APtNetwork%3ATRANSDEV%0A%20%0ACommentaire%20%3A%20zhdhduhqhdqdzhiqhdqiuzhd</text>
+      </controlProperties>
+    </control>
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::Link" x="802" y="171" w="-1" h="-1" measuredW="134" measuredH="25" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Supprimer%20ce%20r%E9seau</text>
+      </controlProperties>
+    </control>
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="176" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>TrashIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="67" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="106" w="588" h="571" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="69" controlTypeID="com.balsamiq.mockups::Link" x="802" y="142" w="-1" h="-1" measuredW="111" measuredH="25" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Editer%20ce%20r%E9seau</text>
+      </controlProperties>
+    </control>
+    <control controlID="70" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="146" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>PencilIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

@@ -1,0 +1,63 @@
+<mockup version="1.0" skin="sketch" measuredW="952" measuredH="687" mockupW="753" mockupH="652">
+  <controls>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Paragraph" x="226" y="262" w="339" h="64" measuredW="200" measuredH="140" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%20Chouette%20%3A%20stif_2010_12%0ADernier%20compl%E9ment%20%3A%202%20f%E9vrier%202011</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::SubTitle" x="226" y="234" w="-1" h="-1" measuredW="248" measuredH="29" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>R%E9seau%20STIF%20-%20decembre%202010</text>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Title" x="226" y="173" w="-1" h="-1" measuredW="115" measuredH="46" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>28</size>
+        <text>R%E9seaux</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::ButtonBar" x="189" y="90" w="-1" h="-1" measuredW="327" measuredH="31" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>0</selectedIndex>
+        <text>R%E9seaux%2C%20Transporteur%2C%20Lignes%2C%20ITL...</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="112" w="588" h="565" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::FieldSet" x="189" y="25" w="753" h="96" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::Paragraph" x="227" y="351" w="339" h="64" measuredW="200" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>R%E9seau%20Chouette%20%3A%20stif_2010_09%20%0ADernier%20compl%E9ment%20%3A%202%20f%E9vrier%202011</text>
+      </controlProperties>
+    </control>
+    <control controlID="26" controlTypeID="com.balsamiq.mockups::SubTitle" x="227" y="323" w="-1" h="-1" measuredW="255" measuredH="29" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>R%E9seau%20STIF%20-%20septembre%202010</text>
+      </controlProperties>
+    </control>
+    <control controlID="28" controlTypeID="com.balsamiq.mockups::BreadCrumbs" x="197" y="125" w="-1" h="-1" measuredW="111" measuredH="25" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Home%2C%20R%E9seaux</text>
+      </controlProperties>
+    </control>
+    <control controlID="29" controlTypeID="com.balsamiq.mockups::Link" x="802" y="142" w="-1" h="-1" measuredW="128" measuredH="25" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Importer%20un%20r%E9seau</text>
+      </controlProperties>
+    </control>
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::Icon" x="781" y="146" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>FolderIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
