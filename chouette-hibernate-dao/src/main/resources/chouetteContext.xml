@@ -32,4 +32,9 @@
 		<property name="manager" ref="routeManager" />
 		<property name="dao" ref="routeDao" />
 	</bean>
+	<bean id="stopAreaDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+		factory-method="createStopAreaDaoInjector">
+		<property name="manager" ref="stopAreaManager" />
+		<property name="dao" ref="stopAreaDao" />
+	</bean>
 </beans>

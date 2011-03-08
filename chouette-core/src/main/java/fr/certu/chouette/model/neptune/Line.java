@@ -77,7 +77,7 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private String ptNetworkIdShortcut; // Hors BD, habillé par la relation FK
 	/**
 	 * Neptune identification referring to the line's routes
-	 * Changes have no effect on database (see ptNetwork)
+	 * <br/>Changes have no effect on database (see ptNetwork)
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<String> routeIds; // résolu par la FK

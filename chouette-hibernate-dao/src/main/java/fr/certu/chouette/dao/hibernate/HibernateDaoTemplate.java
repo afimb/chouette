@@ -1,12 +1,9 @@
 package fr.certu.chouette.dao.hibernate;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueObjectException;
-import org.hibernate.classic.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -17,15 +14,23 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
+import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 
 public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoSupport implements IDaoTemplate<T>
 {
@@ -54,6 +59,39 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	{
 		return new HibernateDaoTemplate<Route>( Route.class);
 	}
+	public static HibernateDaoTemplate<JourneyPattern> createJourneyPatternDao()
+	{
+		return new HibernateDaoTemplate<JourneyPattern>( JourneyPattern.class);
+	}
+	public static HibernateDaoTemplate<PTLink> createPTLinkDao()
+	{
+		return new HibernateDaoTemplate<PTLink>( PTLink.class);
+	}
+	public static HibernateDaoTemplate<StopPoint> createStopPointDao()
+	{
+		return new HibernateDaoTemplate<StopPoint>( StopPoint.class);
+	}
+	public static HibernateDaoTemplate<StopArea> createStopAreaDao()
+	{
+		return new HibernateDaoTemplate<StopArea>( StopArea.class);
+	}
+	public static HibernateDaoTemplate<ConnectionLink> createConnectionLinkDao()
+	{
+		return new HibernateDaoTemplate<ConnectionLink>( ConnectionLink.class);
+	}
+	public static HibernateDaoTemplate<VehicleJourney> createVehicleJourneyDao()
+	{
+		return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
+	}
+	public static HibernateDaoTemplate<Timetable> createTimetableDao()
+	{
+		return new HibernateDaoTemplate<Timetable>( Timetable.class);
+	}
+	public static HibernateDaoTemplate<TimeSlot> createTimeSlotDao()
+	{
+		return new HibernateDaoTemplate<TimeSlot>( TimeSlot.class);
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
@@ -149,7 +187,6 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.IDaoTemplate#getAll()
 	 */
-	@SuppressWarnings("unchecked")
 	public List<T> getAll() 
 	{
 		// return getHibernateTemplate().loadAll(type); 

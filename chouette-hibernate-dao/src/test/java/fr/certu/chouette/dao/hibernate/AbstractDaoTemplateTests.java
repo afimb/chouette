@@ -8,6 +8,7 @@
 
 package fr.certu.chouette.dao.hibernate;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -19,11 +20,16 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.Address;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 
 /**
@@ -247,5 +253,29 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		logger.info("created line with id = "+line.getId());
 		
 		return route;
+	}
+	@SuppressWarnings("unchecked")
+	protected StopArea createStopArea()
+	{
+		StopArea stoparea = new StopArea();
+		long objectId = getNextObjectId();
+		stoparea.setCreationTime(new Date());
+		stoparea.setCreatorId("TESTNG");
+		stoparea.setObjectId("Test:StopArea:"+objectId);
+		stoparea.setObjectVersion(1);
+		stoparea.setAreaType(ChouetteAreaEnum.BOARDINGPOSITION);
+		AreaCentroid centroid = new AreaCentroid();
+		BigDecimal latitude = new BigDecimal(46.5220796582747800);
+		BigDecimal longitude = new BigDecimal(5.6110095977783200);
+		
+		centroid.setLatitude(latitude);
+		centroid.setLongitude(longitude);
+		centroid.setLongLatType(LongLatTypeEnum.WGS84);
+		Address address = new Address();
+		address.setCountryCode("39397");
+		centroid.setAddress(address);
+		stoparea.setAreaCentroid(centroid);
+		
+		return stoparea;
 	}
 }

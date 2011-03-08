@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Société DRYADE Projet chouette : paramétrage Objet - Base .hbm.xml : 
+	paramétrage DVehicleJourneyBean - VehicleJourney Historique des modifications 
+	: Date | Auteur | Libéllé ============+================+============================================== 
+	2 nov. 2004 |Marc FLORISSON | Création ============+================+============================================== 
+	Version : $Revision: 1.2 $ -->
+<hibernate-mapping>
+	<class dynamic-insert="false" dynamic-update="false"
+		name="fr.certu.chouette.model.neptune.StopArea" table="StopArea">
+		<id column="id" name="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="parentId" />
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="name" type="string" />
+		<property name="comment" type="string" />
+		<property name="areaType"
+			type="fr.certu.chouette.dao.hibernate.usertype.ChouettteAreaTypeUserType" />
+		<property name="registrationNumber" />
+		<property name="nearestTopicName" type="string" />
+		<property name="fareCode" type="int" />
+
+		<component name="areaCentroid"
+			class="fr.certu.chouette.model.neptune.AreaCentroid">
+			<property name="longitude" precision="19" scale="16"
+				type="java.math.BigDecimal" />
+			<property name="latitude" precision="19" scale="16"
+				type="java.math.BigDecimal" />
+			<property name="longLatType"
+				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType" />
+
+			<component name="projectedPoint"
+				class="fr.certu.chouette.model.neptune.type.ProjectedPoint">
+				<property name="x" type="java.math.BigDecimal" />
+				<property name="y" type="java.math.BigDecimal" />
+				<property name="projectionType" type="string" />
+			</component>
+			<component name="address"
+				class="fr.certu.chouette.model.neptune.type.Address">
+				<property name="countryCode" type="string" />
+				<property name="streetName" type="string" />
+			</component>
+		</component>
+	</class>
+</hibernate-mapping>
