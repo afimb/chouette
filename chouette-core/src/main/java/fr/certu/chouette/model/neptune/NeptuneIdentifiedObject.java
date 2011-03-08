@@ -106,5 +106,5 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	{
 		if (objectId != null) return objectId.hashCode();
 		return super.hashCode();
-	} 
+	}
 }

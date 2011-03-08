@@ -36,7 +36,7 @@
 		</s:a>	
 	</div>
 	<br />
-		<s:iterator value="reportValidation.items" id="categorie" status="category">
+		<s:iterator value="reportValidation.items" id="categorie" status="category" var="categorie">
 			 <s:a href="#-1" onclick="showIt('%{#category.index}','show_It%{#category.index}');" 
 					id="show_It%{#category.index}" title="%{getText('text.detail.show')}">
 					<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
@@ -47,29 +47,33 @@
 			</s:a>	
 		 	<b><s:property value="getLocalizedMessage(getLocale())" /></b>
 		 	
-		 	<s:div cssStyle="margin-left: 20px;" id="%{#category.index}">
-				<s:iterator value="items" status="status">
+		 	<s:div cssStyle="margin-left: 40px;" id="%{#category.index}">
+				<s:iterator value="items" status="status" var="sheet">
 					<div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 					      <s:div cssClass="neptune-panel" id="%{status}">
 					     	 <br />
-						     <s:iterator value="items" id="test" status="itemsStatus">
+						     <s:iterator value="items" id="test" status="itemsStatus" var="test">
 								     	<s:div cssClass="%{status}">
-									     	<s:div cssStyle="width: 800px;">
-									     	 <s:a href="#-1" onclick="showIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
-									     		id="showIt_%{itemsStatus.index}" title="%{getText('text.detail.show')}">
-													<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
-											</s:a> 
-											<s:a href="#-1" onclick="hideIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
-												id="hideIt_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
-													<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
-											</s:a>	
+									     	<div>
+										     	<s:a href="#-1" onclick="showIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','showIt_%{#itemsStatus.index}');" 
+										     		id="showIt_%{itemsStatus.index}" title="%{getText('text.detail.show')}">
+														<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
+												</s:a> 
+												<s:a href="#-1" onclick="hideIt('detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}','hideIt_%{#itemsStatus.index}');" 
+													id="hideIt_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
+														<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
+												</s:a>
+												<s:label value="%{#categorie.order}.%{#sheet.order}.%{#test.order}" />
+									     	</div>
+									     
+									     	<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-21px">
+									     	
 									     	<s:property value="getLocalizedMessage(getLocale())"/>
 									     	</s:div>
 									     	<s:if test="%{1 == 1}">
 									     	<s:div cssClass="detail">
 									   
 											</s:div>
-										
 									     	<s:div cssClass="neptune-panel-inSide" id="detail_%{#category.index}_%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
 										     	<ol>
 										     	 <s:iterator value="items">
@@ -91,8 +95,6 @@
   			</s:div>
   				<br />
 		 </s:iterator>
-	
-  	<br />
   	<div class="panelDataSection"><s:text name="message.parameter.title"/>
 		</div>
 	      <div class="neptune-panel">
