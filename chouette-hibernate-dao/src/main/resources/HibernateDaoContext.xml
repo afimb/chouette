@@ -75,6 +75,7 @@
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -104,6 +105,11 @@
 
 	<bean id="routeDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createRouteDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="stopAreaDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createStopAreaDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 

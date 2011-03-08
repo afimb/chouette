@@ -55,6 +55,9 @@
 				<entry key="route">
 					<ref bean="routeManager" />
 				</entry>
+				<entry key="stopArea">
+					<ref bean="stopAreaManager" />
+				</entry>
 			</map>
 		</property>
 		<property name="validationParameters" ref="Validation" />

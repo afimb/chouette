@@ -12,13 +12,18 @@ import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 
 /**
  * @author michel
@@ -53,6 +58,26 @@ public class DaoInjector <T extends NeptuneIdentifiedObject>
 	public static final DaoInjector<PTLink> createPTLinkDaoInjector()
 	{
 		return new DaoInjector<PTLink>();
+	}
+	public static DaoInjector<StopArea> createStopAreaDaoInjector()
+	{
+		return new DaoInjector<StopArea>();
+	}
+	public static DaoInjector<ConnectionLink> createConnectionLinkDaoInjector()
+	{
+		return new DaoInjector<ConnectionLink>();
+	}
+	public static DaoInjector<VehicleJourney> createVehicleJourneyDaoInjector()
+	{
+		return new DaoInjector<VehicleJourney>();
+	}
+	public static DaoInjector<Timetable> createTimetableDaoInjector()
+	{
+		return new DaoInjector<Timetable>();
+	}
+	public static DaoInjector<TimeSlot> createTimeSlotDaoInjector()
+	{
+		return new DaoInjector<TimeSlot>();
 	}
 	
 	

@@ -20,6 +20,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter List<StopArea> containedStopAreas;
 	@Getter @Setter List<StopPoint> containedStopPoints;
 	@Getter @Setter StopArea parentStopArea;
+	@Getter @Setter Long parentId;
 	@Getter @Setter ChouetteAreaEnum areaType;
 	@Getter @Setter int fareCode;
 	@Getter @Setter boolean liftAvailable;

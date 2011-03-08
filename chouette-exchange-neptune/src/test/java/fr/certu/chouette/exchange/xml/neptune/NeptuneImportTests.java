@@ -10,7 +10,6 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;

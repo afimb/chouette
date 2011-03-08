@@ -14,19 +14,55 @@ import lombok.Setter;
 
 
 /**
- * 
+ * Neptune Company 
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
  */
 @NoArgsConstructor
 public class Company extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = -8086291270595894778L;
+	/**
+	 * Short Name
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String shortName; // BD
+	/**
+	 * Organization Unit
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String organisationalUnit; // BD
+	/**
+	 * Operating Department Name
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String operatingDepartmentName; // BD
+	/**
+	 * Postal (Zip) Code
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String code; // BD
+	/**
+	 * Phone Number 
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String phone; // BD
+	/**
+	 * Fax Number
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String fax; // BD
+	/**
+	 * Email
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String email; // BD
+	/**
+	 * Registration Number
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private String registrationNumber; // BD
 
 	/* (non-Javadoc)
