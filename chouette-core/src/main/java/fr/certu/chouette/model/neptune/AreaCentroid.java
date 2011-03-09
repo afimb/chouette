@@ -53,7 +53,7 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 	 * <br/>Changes have no effect on database (see StopArea container)
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private String containedInStopAreaId;
+	@Getter private String containedInStopAreaId;
 	/**
 	 * backward reference to attached StopArea 
 	 * <br/>Changes have no effect on database (see StopArea container)
@@ -86,4 +86,16 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 		
 		return sb.toString();
 	}
+	
+	public void setContainedInStopAreaId(String stopareaId)
+	{
+		this.containedInStopAreaId = stopareaId;
+		if (getObjectId() == null && stopareaId != null)
+		{
+			String[] ids = stopareaId.split(":");
+			if (ids.length == 3)
+		       setObjectId(ids[0]+":"+AREACENTROID_KEY+":"+ids[2]);
+		}
+	}
+	
 }

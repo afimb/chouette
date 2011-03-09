@@ -25,6 +25,20 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
+	public static final String AREACENTROID_KEY="AreaCentroid";
+	public static final String COMPANY_KEY="Company";
+	public static final String JOURNEYPATTERN_KEY="journeyPattern";
+	public static final String LINE_KEY="Line";
+	public static final String PTLINK_KEY="PtLink";
+	public static final String PTNETWORK_KEY="GroupOfLine";
+	public static final String ROUTE_KEY="Route";
+	public static final String STOPAREA_KEY="StopArea";
+	public static final String STOPPOINT_KEY="StopPoint";
+	public static final String TIMESLOT_KEY="TimeSlot";
+	public static final String TIMETABLE_KEY="Timetable";
+	public static final String VEHICLEJOURNEY_KEY="VehicleJourney";
+	
+	
 	/**
 	 * Neptune unique identifier : mandatory
 	 */
