@@ -911,9 +911,9 @@ div.autocomplete ul li
 .neptune-panel-inSide
 {
  	background-color: #FFFFFF;
-  	padding: 10px 10px;
+  	padding: 5px 5px;
   	margin:0 0 5px 100px;
-  	width: 60%;
+  	width: 80%;
   	font-size: 12px;
   	border: 1px solid #B0BCD6;
 }
@@ -925,23 +925,23 @@ div.autocomplete ul li
  	border: 1px solid #B0BCD6;
 	}
 .OK{
-	background: url(../images/OK.png) no-repeat 90% 0%;
+	background: url(../images/OK.png) no-repeat 95% 0%;
 	}
 	
 .UNCHECK {
-	background: url(../images/UNCHECK.png) no-repeat 90% 0%;
+	background: url(../images/UNCHECK.png) no-repeat 95% 0%;
 	}
 	
 .WARNING{
-	background: url(../images/WARNING.png) no-repeat 90% 0%;
+	background: url(../images/WARNING.png) no-repeat 95% 0%;
 	}		
 
 .ERROR{
-	background: url(../images/ERROR.png) no-repeat 90% 0%;
+	background: url(../images/ERROR.png) no-repeat 95% 0%;
 	color: red;
 	}
 .FATAL{
-	background: url(../images/FATAL.png) no-repeat 90% 0%;
+	background: url(../images/FATAL.png) no-repeat 95% 0%;
 	}
 	
 .detail {

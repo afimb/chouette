@@ -27,7 +27,6 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  *
  */
 public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
-
 	private ValidationStepDescription validationStepDescription;
 
 	public void init(){
@@ -174,21 +173,14 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					ReportItem detailReportItem6a = new DetailReportItem("Test3_Sheet6_Step1_warning_a", Report.STATE.WARNING,stopPoint.getObjectId());
 					report3_6_1.addItem(detailReportItem6a);	
 				}
-				List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
-				int coodSize = listCoordinates.size();
-				Coordinate[] coordinates = new Coordinate[coodSize];
-				for (int j=0;j<coodSize;j++) {
-					coordinates[i] = listCoordinates.get(j);
-				}
-				System.err.println("polygon "+coordinates[0]+" "+listCoordinates.get(0));
-		
-				LinearRing shell = factory1.createLinearRing(coordinates);
-				System.err.println("Sheel "+shell);
-				LinearRing[] holes = null;
 				//Test 3.6.1 b
+				List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+				Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
+				LinearRing shell = factory1.createLinearRing(coordinates);
+				LinearRing[] holes = null;
 				Polygon polygon = factory1.createPolygon(shell, holes);
-				if(polygon.distance(point1) != 0){
-					ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_warning_b", Report.STATE.WARNING,stopPoint.getObjectId());
+				if(!polygon.intersects(point1)){
+					ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_error_b", Report.STATE.ERROR,stopPoint.getObjectId());
 					report3_6_1.addItem(detailReportItem6b);	
 				}else	
 					report3_6_1.updateStatus(Report.STATE.OK);				

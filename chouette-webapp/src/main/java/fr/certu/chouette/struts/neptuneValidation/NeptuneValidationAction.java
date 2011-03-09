@@ -88,12 +88,13 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	private void loadFromCookie(ValidationParameters validationParam){
 		try {
 			BeanUtils.copyProperties(validationParam, validationParamDefault);
+			polygonCoordinatesAsString = getPolygonCoordinatesAsString(); 
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-		}
-
+		} 
+		
 		if(servletRequest != null && servletRequest.getCookies() != null && servletRequest.getCookies().length>0)
 			for(Cookie c : servletRequest.getCookies()) {
 				String cookieName = c.getName();
@@ -103,7 +104,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 					validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
 
 				if(cookieName.equals("test3_2_Polygon"))
-					validationParam.setTest3_2_PolygonPoints(cookieValue);
+					polygonCoordinatesAsString = cookieValue;
 
 				if(cookieName.equals("test3_2_MinimalDistance"))
 					validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
@@ -235,7 +236,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@SuppressWarnings("unchecked")
 	public String validation() throws ChouetteException{
 		lines = (List<Line>)session.get("lines");
-		validationParam.setTest3_2_PolygonPoints(polygonCoordinatesAsString);
+		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
 		reportValidation = lineManager.validate(null,lines,validationParam);
 
 		if(reportValidation != null){
@@ -304,6 +305,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@SuppressWarnings("unchecked")
 	public String defaultValue() throws IllegalAccessException, InvocationTargetException{
 		BeanUtils.copyProperties(validationParam, validationParamDefault);
+		polygonCoordinatesAsString = getPolygonCoordinatesAsString();
 		addActionMessage(getText("neptune.field.restore.default.value.success"));
 		session.put("isDefault", true);
 		return SUCCESS;
@@ -328,11 +330,23 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 */
 	public String getPolygonCoordinatesAsString(){
 		List<Coordinate> coordinates = validationParam.getTest3_2_Polygon();
-		String coodinatesAsString = "";
+		String coodinatesAsString = "".trim();
 		for(Coordinate coordinate : coordinates){
 			coodinatesAsString =coodinatesAsString.concat(coordinate.x+","+coordinate.y+"\t");
 		}
 		return coodinatesAsString;
+	}
+	public List<Coordinate> getTest3_2_Polygon(String value){
+		List<Coordinate> test3_2_Polygon = new ArrayList<Coordinate>();
+		String[] tab = value.split("\t");
+		for (String string : tab) {
+			double x = Double.valueOf(string.split(",")[0]);
+			double y =  Double.valueOf(string.split(",")[1]);
+			Coordinate coordinate = new Coordinate(x, y);
+			test3_2_Polygon.add(coordinate);
+		}
+		
+		return test3_2_Polygon;
 	}
 	/**
 	 * 

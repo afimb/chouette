@@ -74,4 +74,10 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 			return null;
 		}
 	}
+	public  StopPoint getOjectByObjectId(String objectId){
+		if(stopPoint.getObjectId().equals(objectId))
+			return stopPoint;
+		else
+			return null;
+	}
 }
