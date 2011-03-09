@@ -918,7 +918,8 @@ div.autocomplete ul li
   	border: 1px solid #B0BCD6;
 }
 .neptune-panel{
-	font-size: 14px;
+	font-family: Arial, Verdana, Helvetica, sans-serif;
+	font-size: 13px;
 	background-color: #FFFFFF;
   	margin: 0px 0px 2px 0px;
   	padding: 10px 10px 10px 10px;

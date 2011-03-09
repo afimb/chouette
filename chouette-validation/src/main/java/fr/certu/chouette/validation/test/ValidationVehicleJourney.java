@@ -57,6 +57,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		ReportItem sheet2_23 = new SheetReportItem("Test2_Sheet23",23);
 		ReportItem sheet2_24 = new SheetReportItem("Test2_Sheet24",24);
 		ReportItem sheet3_7 = new SheetReportItem("Test3_Sheet7",7);
+		ReportItem sheet3_9 = new SheetReportItem("Test3_Sheet9",9);
 
 		SheetReportItem report2_17_1 = new SheetReportItem("Test2_Sheet17_Step1",1);		
 		SheetReportItem report2_18_1 = new SheetReportItem("Test2_Sheet18_Step1",1);
@@ -68,6 +69,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		SheetReportItem report2_23 = new SheetReportItem("Test2_Sheet23_Step1",1);
 		SheetReportItem report2_24 = new SheetReportItem("Test2_Sheet24_Step1",1);
 		SheetReportItem report3_7 = new SheetReportItem("Test3_Sheet7_Step1",1);
+		SheetReportItem report3_9 = new SheetReportItem("Test3_Sheet9_Step1",1);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 
@@ -173,7 +175,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 												}else
 													report2_23.updateStatus(Report.STATE.OK);	
 											}
-											//Test 3.7.1
+											//Test 3.7 && Test 3.9
 											if(vehicleJourneyAtStops.size() >1){
 												for (VehicleJourneyAtStop vJAtStop : vehicleJourneyAtStops) {
 													String stopPointId = vJAtStop.getStopPointId();
@@ -188,8 +190,9 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 														Point point1 = factory1.createPoint(coordinate);
 
 														for (VehicleJourneyAtStop vJAtStop2 : vehicleJourneyAtStops) {
-															long diff = Math.abs(vJAtStop.getOrder()-vJAtStop2.getOrder());
+															long diff = vJAtStop.getOrder()-vJAtStop2.getOrder();
 															if(diff == 1){
+																//Test 3.7.1
 																String stopPointId2 = vJAtStop2.getStopPointId();
 																StopPoint stopPoint2 = vJAtStop2.getOjectByObjectId(stopPointId2);
 																if(stopPoint2 != null){
@@ -201,13 +204,26 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 																	Point point2 = factory2.createPoint(coordinate2);
 																	DistanceOp distanceOp = new DistanceOp(point1, point2);
 																	double distance = distanceOp.distance();
-																	double min = parameters.getTest3_7_MinimalDistance();
-																	double max = parameters.getTest3_7_MaximalDistance();
-																	if(distance < min  && distance > max){
-																		ReportItem detailReportItem = new DetailReportItem("Test3_Sheet7_Step1_warning", Report.STATE.WARNING,String.valueOf(min),String.valueOf(max));
+																	double min3_7 = parameters.getTest3_7_MinimalDistance();
+																	double max3_7 = parameters.getTest3_7_MaximalDistance();
+																	if(distance < min3_7  && distance > max3_7){
+																		ReportItem detailReportItem = new DetailReportItem("Test3_Sheet7_Step1_warning", Report.STATE.WARNING,String.valueOf(min3_7),String.valueOf(max3_7));
 																		report3_7.addItem(detailReportItem);	
 																	}else
 																		report3_7.updateStatus(Report.STATE.OK);
+																	//Test 3.9.1
+																	final long DIVIDER = 1000 * 3600;
+																	long arrivalTime = (vJAtStop.getArrivalTime() != null) ? vJAtStop.getArrivalTime().getTime() /DIVIDER : 0 ;
+																	long departureTime = (vJAtStop2.getDepartureTime() != null) ? vJAtStop2.getDepartureTime().getTime() /DIVIDER : 0;
+																	double speed = distance / Math.abs(departureTime - arrivalTime);
+																	double min3_9 = parameters.getTest3_9_MinimalSpeed();
+																	double max3_9 = parameters.getTest3_9_MaximalSpeed();
+																	if(speed < min3_9 && speed > max3_9){
+																		ReportItem detailReportItem = new DetailReportItem("Test3_Sheet9_Step1_warning", Report.STATE.WARNING,
+																				stopPointId,stopPointId2,String.valueOf(min3_9),String.valueOf(max3_9));
+																		report3_9.addItem(detailReportItem);	
+																	}else
+																		report3_9.updateStatus(Report.STATE.OK);
 																}
 															}
 														}
@@ -238,6 +254,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		report2_23.computeDetailItemCount();
 		report2_24.computeDetailItemCount();
 		report3_7.computeDetailItemCount();
+		report3_9.computeDetailItemCount();
 
 		sheet2_17.addItem(report2_17_1);
 		sheet2_18.addItem(report2_18_1);
@@ -249,6 +266,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		sheet2_23.addItem(report2_23);
 		sheet2_24.addItem(report2_24);
 		sheet3_7.addItem(report3_7);
+		sheet3_9.addItem(report3_9);
 
 		category2.addItem(sheet2_17);
 		category2.addItem(sheet2_18);
@@ -259,6 +277,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		category2.addItem(sheet2_23);
 		category2.addItem(sheet2_24);
 		category3.addItem(sheet3_7);
+		category3.addItem(sheet3_9);
 
 		result.add(category2);
 		result.add(category3);
