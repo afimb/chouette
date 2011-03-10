@@ -17,8 +17,6 @@ import lombok.Setter;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
@@ -48,8 +46,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 	private static final long serialVersionUID = 8449003243520401472L;
 
-	private static final Log LOGGER = LogFactory.getLog(NeptuneValidationAction.class);
-
 	@Getter @Setter private File file;
 	@Getter @Setter private String fileFileName;
 	@Getter @Setter private INeptuneManager<Line> lineManager;
@@ -75,8 +71,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 
 	public String execute(){
-		if(session.get("imported") != null)
-			session.remove("imported");
 		// Load from cookie if any
 		loadFromCookie(validationParam);
 		return SUCCESS;
@@ -94,7 +88,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		} 
-		
+
 		if(servletRequest != null && servletRequest.getCookies() != null && servletRequest.getCookies().length>0)
 			for(Cookie c : servletRequest.getCookies()) {
 				String cookieName = c.getName();
@@ -162,40 +156,24 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
-	public String importNeptune() throws ChouetteException, IOException {
-		String result = null;
-		if(session.get("lines") != null)
-			session.remove("lines");
-		LOGGER.info("Import neptune XML file(s) ");
-
+	private String importNeptune() throws ChouetteException, IOException {
+		String result = INPUT;
 		if(file != null && file.length()>0){
 			formats = lineManager.getImportFormats(null);
-			for(FormatDescription formatDescription : formats)
-				LOGGER.info(formatDescription.toString());
-
-			LOGGER.info("File extension "+FilenameUtils.getExtension(fileFileName));
 			imported = importXmlFile(file);
-			if(imported){
+			if(imported)
 				if(lines != null && !lines.isEmpty()){
 					setImported(true);
-					session.put("imported", true);
-					LOGGER.info("File successfully imported ");
-					result =SUCCESS;	
-				}
-				else{
+					result = SUCCESS;
+				}else {
 					addActionError(getText("error.import.file.failure"));
-					result = INPUT;
+					result = ERROR;	
 				}
-			}else{
-				addActionError(getText("error.import.file"));
-				result = ERROR;
-			}
 
 		}else{
 			addActionError(getText("error.import.file.require"));
 			result = INPUT;
 		}
-		session.put("lines", lines);
 		session.put("fileFileName", fileFileName);
 		loadFromCookie(validationParam);
 		return result;
@@ -220,29 +198,30 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		lines = lineManager.doImport(null,formats.get(0).getName(),parameters, reportHolder);
 		report = reportHolder.getReport();
-		LOGGER.info("Report STATUS "+report.getStatus().name());
-		//getReportItemDetails(report.getItems());
 		if(lines != null && !lines.isEmpty())
 			result = true;
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Neptune validation 
 	 * @return
 	 * @throws ChouetteException
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
-	public String validation() throws ChouetteException{
-		lines = (List<Line>)session.get("lines");
-		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
-		reportValidation = lineManager.validate(null,lines,validationParam);
+	public String validation() throws ChouetteException, IOException{
+		String res = LIST;
+		String imported = importNeptune();
 
-		if(reportValidation != null){
-			LOGGER.info("Report "+reportValidation.getLocalizedMessage(getLocale()));
-			//getReportItemDetails(reportValidation.getItems());
-		}		
+		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
+		if(imported.equals(SUCCESS))
+			reportValidation = lineManager.validate(null,lines,validationParam);
+		else if(imported.equals(ERROR)){
+			reportValidation = report;
+			res = ERROR;
+		}
 		boolean isDefault = false;
 		if(session.get("isDefault") != null)
 			isDefault = (Boolean)session.get("isDefault");
@@ -275,13 +254,10 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
 			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
 		}
-
-
 		//Adding validation parameters values in a session scope
 		session.put("validationParam", validationParam);
 		session.put("polygonCoordinatesAsString", polygonCoordinatesAsString);
-
-		return LIST;
+		return res;
 	}
 
 	/**
@@ -310,19 +286,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		session.put("isDefault", true);
 		return SUCCESS;
 	}
-
-/*	private void getReportItemDetails(List<ReportItem> reportItems){
-		for(ReportItem reportItem : reportItems){
-			LOGGER.info("\tReportItem Message "+reportItem.getLocalizedMessage(getLocale())+" STATUS "+reportItem.getStatus().name());
-			if(reportItem.getMessageArgs() != null){
-				for(String arg : reportItem.getMessageArgs())
-					LOGGER.info("\tReportItem message arg "+arg);
-			}
-
-			if(reportItem.getItems() != null && reportItem.getItems().size()>0)
-				getReportItemDetails(reportItem.getItems());
-		}
-	}*/
 	/**
 	 * Get the polygon coordinates from a string
 	 * @param text
@@ -345,7 +308,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			Coordinate coordinate = new Coordinate(x, y);
 			test3_2_Polygon.add(coordinate);
 		}
-		
+
 		return test3_2_Polygon;
 	}
 	/**

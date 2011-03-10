@@ -51,7 +51,6 @@
 				<s:iterator value="items" status="status" var="sheet">
 					<div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 					      <s:div cssClass="neptune-panel" id="%{status}">
-					     	 <br />
 						     <s:iterator value="items" id="test" status="itemsStatus" var="test">
 								     	<s:div cssClass="%{status}">
 									     	<div>
@@ -66,11 +65,11 @@
 												<s:label value="%{#categorie.order}.%{#sheet.order}.%{#test.order}" />
 									     	</div>
 									     
-									     	<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-21px">
+									     	<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-15px">
 									     	
 									     	<s:property value="getLocalizedMessage(getLocale())"/>
 									     	</s:div>
-									     	<s:if test="%{1 == 1}">
+									     	<s:if test="%{getStatus().name() != 'OK' && getStatus().name() != 'UNCHECK' }">
 									     	<s:div cssClass="detail">
 									   
 											</s:div>
@@ -88,12 +87,11 @@
 									     	</s:if>
 								     	</s:div>
 						     </s:iterator>
-						     <br />
 			  			</s:div>
 				</s:iterator>
 				<br />	
   			</s:div>
-  				<br />
+  			<br />
 		 </s:iterator>
   	<div class="panelDataSection"><s:text name="message.parameter.title"/>
 		</div>
