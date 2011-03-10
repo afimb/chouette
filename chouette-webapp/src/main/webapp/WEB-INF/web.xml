@@ -4,9 +4,17 @@
 development (MEEDDM). Its main purpose is to enter and exchange data, describing the theoretical
 timetables of public transport networks, in accordance with a standard exchange profile.</description>
     <display-name>chouette</display-name>
+    <!--context-param>
+        <param-name>chouetteConfig</param-name>
+        <param-value>//home/zbouziane/ChouetteWorkspace/chouette/chouette-attic/src/main/filters/filterTUR.properties</param-value>
+    </context-param-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath*:chouetteContext.xml</param-value>
+    </context-param>
+        <context-param>
+        <param-name>chouetteConfigRootPath</param-name>
+        <param-value>//etc/chouette</param-value>
     </context-param>
     <!-- encodage utf-8 -->
     <filter>
