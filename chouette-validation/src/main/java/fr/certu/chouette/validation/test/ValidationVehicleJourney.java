@@ -58,6 +58,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		ReportItem sheet2_24 = new SheetReportItem("Test2_Sheet24",24);
 		ReportItem sheet3_7 = new SheetReportItem("Test3_Sheet7",7);
 		ReportItem sheet3_9 = new SheetReportItem("Test3_Sheet9",9);
+		ReportItem sheet3_15 = new SheetReportItem("Test3_Sheet15",15);
 
 		SheetReportItem report2_17_1 = new SheetReportItem("Test2_Sheet17_Step1",1);		
 		SheetReportItem report2_18_1 = new SheetReportItem("Test2_Sheet18_Step1",1);
@@ -70,6 +71,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		SheetReportItem report2_24 = new SheetReportItem("Test2_Sheet24_Step1",1);
 		SheetReportItem report3_7 = new SheetReportItem("Test3_Sheet7_Step1",1);
 		SheetReportItem report3_9 = new SheetReportItem("Test3_Sheet9_Step1",1);
+		SheetReportItem report3_15 = new SheetReportItem("Test3_Sheet15_Step1",1);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 
@@ -174,6 +176,17 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 													report2_23.addItem(detailReportItem);	
 												}else
 													report2_23.updateStatus(Report.STATE.OK);	
+												
+												//Test 3.15
+												long arrivalTime = vehicleJourneyAtStop.getArrivalTime().getTime();
+												long departureTime = vehicleJourneyAtStop.getDepartureTime().getTime();
+												long diff = Math.abs(arrivalTime - departureTime);
+												double param3_15 = parameters.getTest3_15_MinimalTime();
+												if(diff > param3_15){
+													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet15_Step1_error", Report.STATE.ERROR,String.valueOf(param3_15));
+													report3_15.addItem(detailReportItem);	
+												}else
+													report3_15.updateStatus(Report.STATE.OK);
 											}
 											//Test 3.7 && Test 3.9
 											if(vehicleJourneyAtStops.size() >1){
@@ -255,7 +268,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		report2_24.computeDetailItemCount();
 		report3_7.computeDetailItemCount();
 		report3_9.computeDetailItemCount();
-
+		report3_15.computeDetailItemCount();
+		
 		sheet2_17.addItem(report2_17_1);
 		sheet2_18.addItem(report2_18_1);
 		sheet2_18.addItem(report2_18_2);
@@ -267,6 +281,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		sheet2_24.addItem(report2_24);
 		sheet3_7.addItem(report3_7);
 		sheet3_9.addItem(report3_9);
+		sheet3_15.addItem(report3_15);
 
 		category2.addItem(sheet2_17);
 		category2.addItem(sheet2_18);
@@ -278,6 +293,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		category2.addItem(sheet2_24);
 		category3.addItem(sheet3_7);
 		category3.addItem(sheet3_9);
+		category3.addItem(sheet3_15);
 
 		result.add(category2);
 		result.add(category3);

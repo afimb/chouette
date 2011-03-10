@@ -11,6 +11,8 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
+import fr.certu.chouette.model.neptune.PTLink;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -68,7 +70,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		SheetReportItem report3_6_1 = new SheetReportItem("Test3_Sheet6_Step1",1);
 		SheetReportItem report3_10_1 = new SheetReportItem("Test3_Sheet10_Step1",1);
 		SheetReportItem report3_10_2 = new SheetReportItem("Test3_Sheet10_Step2",2);
-		SheetReportItem report3_10_3 = new SheetReportItem("Test3_Sheet10_Step2",3);
+		SheetReportItem report3_10_3 = new SheetReportItem("Test3_Sheet10_Step3",3);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 
@@ -189,15 +191,58 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				}else	
 					report3_6_1.updateStatus(Report.STATE.OK);				
 			}
-			//Test 3.10.1 a
-			
-
-			//Test 3.10.1 b
-
-			//Test 3.10.2
-
-			//Test 3.10.3
-
+			//Test 3.10
+			List<Route> routes = (stopPoint.getLine() != null) ? stopPoint.getLine().getRoutes(): null;
+			if(routes != null){
+				for (Route route : routes) {
+					List<PTLink> ptLinks = route.getPtLinks();
+					int count = 0;
+					for (PTLink ptLink : ptLinks) {
+						//Test 3.10.1 a
+						if(stopPoint.getObjectId().equals(ptLink.getStartOfLink().getObjectId()) || 
+								stopPoint.getObjectId().equals(ptLink.getEndOfLink().getObjectId())){
+							count+=1;
+						}
+						//Test 3.10.2
+						if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(ptLink.getEndOfLink().getContainedInStopAreaId())){
+							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING);
+							report3_10_2.addItem(detailReportItem);
+						}else
+							report3_10_2.updateStatus(Report.STATE.OK);
+						//Test 3.10.3
+						double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
+						StopPoint start = ptLink.getStartOfLink();
+						double xStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
+						double ySart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
+						int SRIDStart = (start != null && start.getLongLatType()!= null) ? start.getLongLatType().epsgCode() : 0;
+						GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDStart);
+						Point pointSart = factoryStart.createPoint(new Coordinate(xStart,ySart));
+						
+						StopPoint end = ptLink.getEndOfLink();
+						double xEnd = (end != null && end.getLatitude()!=null) ? end.getLatitude().doubleValue():0;
+						double yEnd = (end != null && end.getLongitude()!=null) ? end.getLongitude().doubleValue():0;
+						int SRIDEnd = (end != null && end.getLongLatType()!= null) ? end.getLongLatType().epsgCode() : 0;
+						GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDEnd);
+						Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd,yEnd));
+						
+						DistanceOp distanceOp = new DistanceOp(pointSart, pointEnd);
+						double distance = distanceOp.distance();
+						if(distance < distanceMin3_10){
+							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step3_warning", Report.STATE.WARNING, String.valueOf(distanceMin3_10));
+							report3_10_3.addItem(detailReportItem);	
+						}else
+							report3_10_3.updateStatus(Report.STATE.OK);	
+					}
+					if(count >= 2)
+						report3_10_1.updateStatus(Report.STATE.OK);
+					else{
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step1_error_a", Report.STATE.ERROR,stopPoint.getObjectId());
+						report3_10_1.addItem(detailReportItem);		
+					}
+					//Test 3.10.1 b
+					//TODO
+				}
+			}
 		}
 		report2_10_1.computeDetailItemCount();
 		report2_11_1.computeDetailItemCount();

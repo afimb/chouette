@@ -96,7 +96,6 @@
   	<div class="panelDataSection"><s:text name="message.parameter.title"/>
 		</div>
 	      <div class="neptune-panel">
-	      <br />
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.1')}" value="%{#session.validationParam.test3_1_MinimalDistance}" /><br />
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.2')}" value="%{#session.validationParam.test3_2_MinimalDistance}"/><br />
 	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{#session.polygonCoordinatesAsString}"/><br />
@@ -119,7 +118,9 @@
 	 	<s:label value="%{#session.validationParam.test3_9_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.9')}" />
 	 	<s:label value="%{#session.validationParam.test3_9_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParamtest3_10_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.3.10')}" /><br />
+	 	<s:label value="%{#session.validationParam.test3_10_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.3.10')}" /><br />
+	 	<s:label value="%{#session.validationParam.test3_15_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.15')}" /><br />
+	 	
 	 	<s:label value="%{#session.validationParam.test3_16c_MinimalTime}" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" />
 	 	<s:label value="%{#session.validationParam.test3_16c_MaximalTime}" label="/" />
 	 	<br />
