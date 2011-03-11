@@ -127,7 +127,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				float param = parameters.getTest3_1_MinimalDistance();
 				if(distance < param){
 					if(!stopPoint.getName().equals(another.getName())){
-						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet1_Step1_warning", Report.STATE.WARNING,String.valueOf(param), stopPoint.getObjectId(), another.getObjectId());
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet1_Step1_warning", Report.STATE.WARNING,String.valueOf(param), stopPoint.getObjectId(), another.getObjectId(),String.valueOf(distance));
 						report3_1_1.addItem(detailReportItem);	
 					}else
 						report3_1_1.updateStatus(Report.STATE.OK);
@@ -185,7 +185,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				LinearRing shell = factory1.createLinearRing(coordinates);
 				LinearRing[] holes = null;
 				Polygon polygon = factory1.createPolygon(shell, holes);
-				if(!polygon.intersects(point1)){
+				if(!polygon.within(point1)){
 					ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_error_b", Report.STATE.ERROR,stopPoint.getObjectId());
 					report3_6_1.addItem(detailReportItem6b);	
 				}else	
