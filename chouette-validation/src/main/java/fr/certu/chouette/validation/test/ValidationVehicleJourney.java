@@ -200,8 +200,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 													String stopPointId = vJAtStop.getStopPointId();
 													StopPoint stopPoint = vJAtStop.getOjectByObjectId(stopPointId);
 													if(stopPoint != null){
-														double x1 = (stopPoint .getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
-														double y1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
+														double y1 = (stopPoint .getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
+														double x1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
 														PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
 														int SRID1 = (stopPoint.getLongLatType()!= null) ? stopPoint.getLongLatType().epsgCode() : 0;
 														GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID1);
@@ -215,8 +215,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 																String stopPointId2 = vJAtStop2.getStopPointId();
 																StopPoint stopPoint2 = vJAtStop2.getOjectByObjectId(stopPointId2);
 																if(stopPoint2 != null){
-																	double x2 = (stopPoint2 .getLatitude()!=null) ? stopPoint2.getLatitude().doubleValue():0;
-																	double y2 = (stopPoint2.getLongitude()!=null) ? stopPoint2.getLongitude().doubleValue():0;
+																	double y2 = (stopPoint2 .getLatitude()!=null) ? stopPoint2.getLatitude().doubleValue():0;
+																	double x2 = (stopPoint2.getLongitude()!=null) ? stopPoint2.getLongitude().doubleValue():0;
 																	int SRID2 = (stopPoint2.getLongLatType()!= null) ? stopPoint2.getLongLatType().epsgCode() : 0;
 																	GeometryFactory factory2 = new GeometryFactory(precisionModel, SRID2);
 																	Coordinate coordinate2 = new Coordinate(x2, y2);

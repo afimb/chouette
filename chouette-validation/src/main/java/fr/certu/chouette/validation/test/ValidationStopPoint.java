@@ -104,8 +104,8 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				}
 			}
 			//Category 3
-			double x1 = (stopPoint.getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
-			double y1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
+			double y1 = (stopPoint.getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
+			double x1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
 			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
 			int SRID1 = (stopPoint.getLongLatType()!= null) ? stopPoint.getLongLatType().epsgCode() : 0;
 			GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID1);
@@ -114,8 +114,8 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 
 			for(int j=i+1;j<size;j++){
 				StopPoint another = stopPoints.get(j);
-				double x2 = (another.getLatitude() != null) ? another.getLatitude().doubleValue() : 0;
-				double y2 = (another.getLongitude() != null) ? another.getLongitude().doubleValue() : 0;
+				double y2 = (another.getLatitude() != null) ? another.getLatitude().doubleValue() : 0;
+				double x2 = (another.getLongitude() != null) ? another.getLongitude().doubleValue() : 0;
 				int SRID2 = (another.getLongLatType() != null) ? another.getLongLatType().epsgCode() : 0;
 				GeometryFactory factory2 = new GeometryFactory(precisionModel, SRID2);
 				Coordinate coordinate2 = new Coordinate(x2, y2);
@@ -212,21 +212,21 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 						//Test 3.10.3
 						double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
 						StopPoint start = ptLink.getStartOfLink();
-						double xStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
-						double ySart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
+						double yStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
+						double xStart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
 						int SRIDStart = (start != null && start.getLongLatType()!= null) ? start.getLongLatType().epsgCode() : 0;
 						GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDStart);
-						Point pointSart = factoryStart.createPoint(new Coordinate(xStart,ySart));
+						Point pointSart = factoryStart.createPoint(new Coordinate(xStart,yStart));
 						
 						StopPoint end = ptLink.getEndOfLink();
-						double xEnd = (end != null && end.getLatitude()!=null) ? end.getLatitude().doubleValue():0;
-						double yEnd = (end != null && end.getLongitude()!=null) ? end.getLongitude().doubleValue():0;
+						double yEnd = (end != null && end.getLatitude()!=null) ? end.getLatitude().doubleValue():0;
+						double xEnd = (end != null && end.getLongitude()!=null) ? end.getLongitude().doubleValue():0;
 						int SRIDEnd = (end != null && end.getLongLatType()!= null) ? end.getLongLatType().epsgCode() : 0;
 						GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDEnd);
 						Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd,yEnd));
 						
 						DistanceOp distanceOp = new DistanceOp(pointSart, pointEnd);
-						double distance = distanceOp.distance();
+						double distance = distanceOp.distance() * 6371 /180;
 						if(distance < distanceMin3_10){
 							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step3_warning", Report.STATE.WARNING, String.valueOf(distanceMin3_10));
 							report3_10_3.addItem(detailReportItem);	
