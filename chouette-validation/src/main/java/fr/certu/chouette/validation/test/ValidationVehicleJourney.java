@@ -222,7 +222,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 																	Coordinate coordinate2 = new Coordinate(x2, y2);
 																	Point point2 = factory2.createPoint(coordinate2);
 																	DistanceOp distanceOp = new DistanceOp(point1, point2);
-																	double distance = distanceOp.distance();
+																	double distance = distanceOp.distance()* 6371 /180;
 																	double min3_7 = parameters.getTest3_7_MinimalDistance();
 																	double max3_7 = parameters.getTest3_7_MaximalDistance();
 																	if(distance < min3_7  && distance > max3_7){

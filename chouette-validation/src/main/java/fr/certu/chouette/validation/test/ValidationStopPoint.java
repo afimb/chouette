@@ -121,7 +121,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				Coordinate coordinate2 = new Coordinate(x2, y2);
 				Point point2 = factory2.createPoint(coordinate2);
 				DistanceOp distanceOp = new DistanceOp(point1, point2);
-				double distance = distanceOp.distance();
+				double distance = distanceOp.distance() * 6371 /180;
 
 				//Test 3.1.1
 				float param = parameters.getTest3_1_MinimalDistance();
@@ -178,19 +178,19 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 
 					ReportItem detailReportItem6a = new DetailReportItem("Test3_Sheet6_Step1_warning_a", Report.STATE.WARNING,stopPoint.getObjectId());
 					report3_6_1.addItem(detailReportItem6a);	
-				}
-				//Test 3.6.1 b
-				List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
-				Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
-				LinearRing shell = factory1.createLinearRing(coordinates);
-				LinearRing[] holes = null;
-				Polygon polygon = factory1.createPolygon(shell, holes);
-				if(!polygon.within(point1)){
-					ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_error_b", Report.STATE.ERROR,stopPoint.getObjectId());
-					report3_6_1.addItem(detailReportItem6b);	
-				}else	
-					report3_6_1.updateStatus(Report.STATE.OK);				
+				}	
 			}
+			//Test 3.6.1 b
+			List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+			Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
+			LinearRing shell = factory1.createLinearRing(coordinates);
+			LinearRing[] holes = null;
+			Polygon polygon = factory1.createPolygon(shell, holes);
+			if(!polygon.contains(point1)){
+				ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_error_b", Report.STATE.ERROR,stopPoint.getObjectId());
+				report3_6_1.addItem(detailReportItem6b);	
+			}else	
+				report3_6_1.updateStatus(Report.STATE.OK);			
 			//Test 3.10
 			List<Route> routes = (stopPoint.getLine() != null) ? stopPoint.getLine().getRoutes(): null;
 			if(routes != null){
