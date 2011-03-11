@@ -124,6 +124,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 													report2_18_2.updateStatus(Report.STATE.OK);
 											}
 										}
+										System.gc();
 										//Test 2.19.1
 										String lineShortCutId = vehicleJourney.getLineIdShortcut();
 										if(lineShortCutId != null){
