@@ -75,13 +75,13 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 					VehicleJourneyAtStopTypeChoice castorVehicleJourneyAtStopTypeChoice = new VehicleJourneyAtStopTypeChoice();
 					VehicleJourneyAtStopTypeChoiceSequence castorVehicleJourneyAtStopTypeChoiceSequence = new VehicleJourneyAtStopTypeChoiceSequence();
 					if(vehicleJourneyAtStop.getArrivalTime() != null){
-						castorVehicleJourneyAtStopTypeChoiceSequence.setArrivalTime(new Time(vehicleJourneyAtStop.getArrivalTime().getTime()));
+						castorVehicleJourneyAtStopTypeChoiceSequence.setArrivalTime(toCastorTime(vehicleJourneyAtStop.getArrivalTime()));
 					}
 					if(vehicleJourneyAtStop.getDepartureTime() != null){
-						castorVehicleJourneyAtStopTypeChoiceSequence.setDepartureTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
+						castorVehicleJourneyAtStopTypeChoiceSequence.setDepartureTime(toCastorTime(vehicleJourneyAtStop.getDepartureTime()));
 					}
 					if(vehicleJourneyAtStop.getWaitingTime() != null){
-						castorVehicleJourneyAtStopTypeChoiceSequence.setWaitingTime(new Time(vehicleJourneyAtStop.getWaitingTime().getTime()));
+						castorVehicleJourneyAtStopTypeChoiceSequence.setWaitingTime(toCastorTime(vehicleJourneyAtStop.getWaitingTime()));
 					}
 					
 					VehicleJourneyAtStopTypeChoiceSequence2 castorVehicleJourneyAtStopTypeChoiceSequence2 = new VehicleJourneyAtStopTypeChoiceSequence2();

@@ -15,8 +15,6 @@
 		<property name="ignoreResourceNotFound" value="true" />
 	</bean>
 
-	<!-- <import resource="classpath:/modules/hibernate.xml" /> <import resource="classpath:/modules/managers.xml" 
-		/> <import resource="classpath:/modules/neptune_exchange.xml" /> -->
 
 	<bean id="Validation"
 		class="fr.certu.chouette.plugin.validation.ValidationParameters">

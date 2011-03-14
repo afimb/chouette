@@ -2,12 +2,12 @@
 <!-- edited with XMLSpy v2007 sp2 (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
 <!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by Christophe Duquesne (Dryade) -->
 <!--  File: trident_Global_schema.xsd  -->
-	<xsd:schema 
-		xmlns:trd="http://www.trident.org/schema/trident" 
-		xmlns="http://www.trident.org/schema/trident" 
-		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-		targetNamespace="http://www.trident.org/schema/trident" 
-		elementFormDefault="qualified" 
+	<xsd:schema
+		xmlns:trd="http://www.trident.org/schema/trident"
+		xmlns="http://www.trident.org/schema/trident"
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="http://www.trident.org/schema/trident"
+		elementFormDefault="qualified"
 		version="2.0">
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
@@ -27,10 +27,12 @@
 	Defines the way an TRIDENT ID has to be built:
 	{PeerID}:{Class name}:{Progressive integer}
 	For example: RATP:Event:12332  or  ATAC:Line:9987
+	2011-03-14 : Progressive integer may accept numeric, alphabetic, underscore and dash characters 
+	             for Siri and Netex future compatibility
       </xsd:documentation>
     </xsd:annotation>
     <xsd:restriction base="xsd:string">
-      <xsd:pattern value="(\w|_)+:\w+:[0-9A-Za-z]+"/>
+      <xsd:pattern value="(\w|_)+:\w+:([0-9A-Za-z]|_|-)+"/>
     </xsd:restriction>
   </xsd:simpleType>
   <!-- REMARK : The following 2 types are not in the DM: they are technical
@@ -349,7 +351,7 @@
 	<xsd:simpleType name="VehicleJourneyStatusValueType">
 		<xsd:annotation>
 			<xsd:documentation>
-		Enumeration containing all the possible status of a PT service 
+		Enumeration containing all the possible status of a PT service
 on a vehicle
 			</xsd:documentation>
 		</xsd:annotation>
@@ -365,7 +367,7 @@ on a vehicle
 	<xsd:simpleType name="SourceTypeType">
 		<xsd:annotation>
 			<xsd:documentation>
-		Enumeration containing all the possible type of information 
+		Enumeration containing all the possible type of information
 source
 			</xsd:documentation>
 		</xsd:annotation>
@@ -454,7 +456,7 @@ source
 	<xsd:complexType name="UnitisedQuantityType">
 		<xsd:annotation>
 			<xsd:documentation xml:lang="en">
-Value with its type 
+Value with its type
 for road trafic_
 			</xsd:documentation>
 		</xsd:annotation>
