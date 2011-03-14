@@ -1,7 +1,11 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import org.exolab.castor.types.Time;
 
 import chouette.schema.AccessibilitySuitabilityDetails;
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
@@ -86,6 +90,24 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 		details.setAccessibilitySuitabilityDetailsItem(detailsItems);
 		return details;
 	}
+	
+	
+	protected Time toCastorTime( Date neptuneTime)
+	{
+		if ( neptuneTime==null) return null;
+		
+		short[] aTimeVal = new short[ 4];
+		Calendar aCalendar = Calendar.getInstance();
+		aCalendar.setTime( neptuneTime);
+		
+		aTimeVal[ 0] = ( short)aCalendar.get( Calendar.HOUR_OF_DAY);
+		aTimeVal[ 1] = ( short)aCalendar.get( Calendar.MINUTE);
+		aTimeVal[ 2] = ( short)aCalendar.get( Calendar.SECOND);
+		aTimeVal[ 3] = ( short)aCalendar.get( Calendar.MILLISECOND);
+		
+		return new Time(aTimeVal);
+	}
+	
 	
 	public abstract T produce(U o);
 }
