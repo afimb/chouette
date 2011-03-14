@@ -29,6 +29,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
 public class ValidationConnectionLink implements IValidationPlugin<ConnectionLink>{
 
 	ValidationStepDescription validationStepDescription;
+	private final long DIVIDER = 1000 * 3600;;
 
 	public void init(){
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
@@ -74,22 +75,21 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			AreaCentroid areaCentroidEnd = (endOfLink != null) ? endOfLink.getAreaCentroid() : null;
 
 			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
-			double xStart = (areaCentroidStart != null && areaCentroidStart.getLatitude() != null) ? areaCentroidStart.getLatitude().doubleValue() : 0;
-			double yStart = (areaCentroidStart != null && areaCentroidStart.getLongitude() != null) ? areaCentroidStart.getLongitude().doubleValue() : 0;
+			double yStart = (areaCentroidStart != null && areaCentroidStart.getLatitude() != null) ? areaCentroidStart.getLatitude().doubleValue() : 0;
+			double xStart = (areaCentroidStart != null && areaCentroidStart.getLongitude() != null) ? areaCentroidStart.getLongitude().doubleValue() : 0;
 			int SRIDstart = (areaCentroidStart != null && areaCentroidStart.getLongLatType()!= null) ? areaCentroidStart.getLongLatType().epsgCode() : 0;
 			GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDstart);
 			Point pointStart = factoryStart.createPoint(new Coordinate(xStart, yStart));
 
-			double xEnd = (areaCentroidEnd != null && areaCentroidEnd.getLatitude() != null) ? areaCentroidEnd.getLatitude().doubleValue() : 0;		
-			double yEnd = (areaCentroidEnd != null && areaCentroidEnd.getLongitude() != null) ? areaCentroidEnd.getLongitude().doubleValue() : 0;				
+			double yEnd = (areaCentroidEnd != null && areaCentroidEnd.getLatitude() != null) ? areaCentroidEnd.getLatitude().doubleValue() : 0;		
+			double xEnd = (areaCentroidEnd != null && areaCentroidEnd.getLongitude() != null) ? areaCentroidEnd.getLongitude().doubleValue() : 0;				
 			int SRIDend = (areaCentroidEnd != null && areaCentroidEnd.getLongLatType()!= null) ? areaCentroidEnd.getLongLatType().epsgCode() : 0;								
 			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
 			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
 			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
 			double distance = distanceOp.distance();
-			final long DIVIDER = 1000 * 3600;
 			//Test 3.8.1  a
-			long timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER : 0 ;
+			long timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;
 			double minA = parameters.getTest3_8a_MinimalSpeed();
 			double maxA = parameters.getTest3_8a_MaximalSpeed();

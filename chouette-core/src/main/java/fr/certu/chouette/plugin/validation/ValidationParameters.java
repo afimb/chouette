@@ -41,6 +41,8 @@ public class ValidationParameters
 	@Getter @Setter private long test3_15_MinimalTime;
 	@Getter @Setter private long test3_16c_MinimalTime;
 	@Getter @Setter private long test3_16c_MaximalTime;
+	@Getter @Setter private long test3_16_3a_MinimalTime;
+	@Getter @Setter private long test3_16_3b_MinimalTime;
 
 
 	public void addTest3_2_PolygonPoint(Coordinate coordinate)

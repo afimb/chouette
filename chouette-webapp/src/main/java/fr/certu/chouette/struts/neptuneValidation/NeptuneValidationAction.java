@@ -150,6 +150,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 				
 				if(cookieName.equals("test3_15_MinimalTime"))
 					validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
+				
+				if(cookieName.equals("test3_16_3a_MinimalTime"))
+					validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
 			}
 	}
 	/**
@@ -178,7 +181,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			result = INPUT;
 		}
 		session.put("fileFileName", fileFileName);
-		loadFromCookie(validationParam);
 		return result;
 	}
 
@@ -230,6 +232,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			isDefault = (Boolean)session.get("isDefault");
 		if(!isDefault){
 			// Save to cookie
+			System.err.println("validationParam.getTest3_1_MinimalDistance() "+validationParam.getTest3_1_MinimalDistance());
 			saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
 			saveCookie("test3_2_Polygon", polygonCoordinatesAsString);
 			saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
@@ -257,6 +260,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
 			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
 			saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
+			saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
 		}
 		//Adding validation parameters values in a session scope
 		session.put("validationParam", validationParam);

@@ -7,8 +7,9 @@
 	<div style="width: 90%;">
 	 <div class="panelDataSection"><s:text name="validation.result.title"/></div>
 	  	<div class="neptune-panel">
-	  	<br />
 	  	<s:label label="%{getText('validation.title')}" value="%{#session.fileFileName}"/>
+	  	<br /><br />
+	  	<s:text name="text.save" />
 		<table border="0" cellpadding="20">
 			<tr>
 				<s:iterator value="countMap">
@@ -120,6 +121,7 @@
 	 	<br />
 	 	<s:label value="%{#session.validationParam.test3_10_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.3.10')}" /><br />
 	 	<s:label value="%{#session.validationParam.test3_15_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.15')}" /><br />
+	 	<s:label value="%{#session.validationParam.test3_16_3a_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.16')}" /><br />
 	 	
 	 	<s:label value="%{#session.validationParam.test3_16c_MinimalTime}" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" />
 	 	<s:label value="%{#session.validationParam.test3_16c_MaximalTime}" label="/" />

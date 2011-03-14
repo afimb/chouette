@@ -30,6 +30,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 	private ValidationStepDescription validationStepDescription;
+	private final double CONVERTER = 6371 /180;
 
 	public void init(){
 		//TODO
@@ -121,7 +122,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				Coordinate coordinate2 = new Coordinate(x2, y2);
 				Point point2 = factory2.createPoint(coordinate2);
 				DistanceOp distanceOp = new DistanceOp(point1, point2);
-				double distance = distanceOp.distance() * 6371 /180;
+				double distance = distanceOp.distance() * CONVERTER ;
 
 				//Test 3.1.1
 				float param = parameters.getTest3_1_MinimalDistance();

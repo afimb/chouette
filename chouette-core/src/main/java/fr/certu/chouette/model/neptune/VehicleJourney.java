@@ -160,4 +160,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		if (timetables== null) timetables = new ArrayList<Timetable>();
 		timetables.add(timetable);
 	}
+	
+	public List<VehicleJourney> getVehicleJourneysByRoute(String routeId){
+		List<VehicleJourney> res = new ArrayList<VehicleJourney>();
+		if(this.routeId.equals(routeId))
+			res.add(this);
+		return res;
+	}
 }

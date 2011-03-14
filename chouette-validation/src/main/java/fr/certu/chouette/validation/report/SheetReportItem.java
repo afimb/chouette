@@ -11,7 +11,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class SheetReportItem extends ReportItem 
 {
-	private static final int MAX_DETAIL = 4;
+	private static final int MAX_DETAIL = 10;
 	
 	private int detailItemCount = 0;
 	/**

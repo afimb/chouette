@@ -68,6 +68,8 @@
 		 <s:textfield name="validationParam.test3_10_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.10')}" size="4"/>
 		 <s:textfield name="validationParam.test3_15_MinimalTime" label="%{getText('neptune.field.minimum.time.3.15')}" size="4"/>
 		 
+		  <s:textfield name="validationParam.test3_16_3a_MinimalTime" label="%{getText('neptune.field.minimum.time.3.16')}" size="4"/>
+		   
 		<s:textfield name="validationParam.test3_16c_MinimalTime" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" size="8"/>
 		<s:textfield name="validationParam.test3_16c_MaximalTime" size="8" label="/"/>	
 	
