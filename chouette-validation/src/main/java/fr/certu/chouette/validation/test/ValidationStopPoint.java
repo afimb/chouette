@@ -54,7 +54,8 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 
 		ReportItem sheet10 = new SheetReportItem("Test2_Sheet10",10);
 		ReportItem sheet11 = new SheetReportItem("Test2_Sheet11",11);
-
+		ReportItem sheet14 = new SheetReportItem("Test2_Sheet14",14);
+		
 		ReportItem sheet3_1 = new SheetReportItem("Test3_Sheet1",1);
 		ReportItem sheet3_2 = new SheetReportItem("Test3_Sheet2",2);
 		ReportItem sheet3_3 = new SheetReportItem("Test3_Sheet3",3);
@@ -64,6 +65,8 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 
 		SheetReportItem report2_10_1 = new SheetReportItem("Test2_Sheet10_Step1",1);
 		SheetReportItem report2_11_1 = new SheetReportItem("Test2_Sheet11_Step1",1);
+		SheetReportItem report2_14_1 = new SheetReportItem("Test2_Sheet14_Step1",1);
+		
 		SheetReportItem report3_1_1 = new SheetReportItem("Test3_Sheet1_Step1",1);
 		SheetReportItem report3_2_1 = new SheetReportItem("Test3_Sheet2_Step1",1);
 		SheetReportItem report3_3_1 = new SheetReportItem("Test3_Sheet3_Step1",1);
@@ -198,11 +201,13 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				for (Route route : routes) {
 					List<PTLink> ptLinks = route.getPtLinks();
 					int count = 0;
+					boolean exists = false;
 					for (PTLink ptLink : ptLinks) {
-						//Test 3.10.1 a
+						//Test 3.10.1
 						if(stopPoint.getObjectId().equals(ptLink.getStartOfLink().getObjectId()) || 
 								stopPoint.getObjectId().equals(ptLink.getEndOfLink().getObjectId())){
 							count+=1;
+							exists = true;
 						}
 						//Test 3.10.2
 						if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(ptLink.getEndOfLink().getContainedInStopAreaId())){
@@ -234,19 +239,30 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 						}else
 							report3_10_3.updateStatus(Report.STATE.OK);	
 					}
-					if(count >= 2)
-						report3_10_1.updateStatus(Report.STATE.OK);
+					//Test 2.14.1 a
+					if(!exists){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
+						report2_14_1.addItem(detailReportItem);		
+					}else
+						report2_14_1.updateStatus(Report.STATE.OK);	
+					
+					//Test 3.10.1 a
+					if(count == 1 || count == 2){
+						report3_10_1.updateStatus(Report.STATE.OK);	
+					}
 					else{
 						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step1_error_a", Report.STATE.ERROR,stopPoint.getObjectId());
 						report3_10_1.addItem(detailReportItem);		
 					}
 					//Test 3.10.1 b
-					//TODO
+					//TODO implements Test 3.10.1 b
 				}
 			}
 		}
 		report2_10_1.computeDetailItemCount();
 		report2_11_1.computeDetailItemCount();
+		report2_14_1.computeDetailItemCount();
+		
 		report3_1_1.computeDetailItemCount();
 		report3_2_1.computeDetailItemCount();
 		report3_3_1.computeDetailItemCount();
@@ -257,7 +273,9 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		report3_10_3.computeDetailItemCount();
 
 		sheet10.addItem(report2_10_1);
-		sheet11.addItem(report2_11_1);		
+		sheet11.addItem(report2_11_1);
+		sheet14.addItem(report2_14_1);
+		
 		sheet3_1.addItem(report3_1_1);
 		sheet3_2.addItem(report3_2_1);
 		sheet3_3.addItem(report3_3_1);
@@ -268,7 +286,9 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		sheet3_10.addItem(report3_10_3);
 
 		category2.addItem(sheet10);
-		category2.addItem(sheet11);		
+		category2.addItem(sheet11);
+		category2.addItem(sheet14);
+		
 		category3.addItem(sheet3_1);
 		category3.addItem(sheet3_2);
 		category3.addItem(sheet3_3);

@@ -232,7 +232,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			isDefault = (Boolean)session.get("isDefault");
 		if(!isDefault){
 			// Save to cookie
-			System.err.println("validationParam.getTest3_1_MinimalDistance() "+validationParam.getTest3_1_MinimalDistance());
 			saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
 			saveCookie("test3_2_Polygon", polygonCoordinatesAsString);
 			saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());

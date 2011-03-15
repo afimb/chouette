@@ -1,9 +1,10 @@
 package fr.certu.chouette.validation.test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -45,7 +46,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 	}
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<VehicleJourney> beans,ValidationParameters parameters) {	
-		System.out.println("VehicleJourneyValidation");
+		System.out.println("VehicleJourneyValidation "+beans.size());
 		return validate(beans,parameters);	
 	}
 
@@ -83,18 +84,18 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		SheetReportItem report3_16_3 = new SheetReportItem("Test3_Sheet16_Step3",3);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
-		Map<String, List<VehicleJourney>> map = new TreeMap<String, List<VehicleJourney>>();
-		List<VehicleJourney> list = new ArrayList<VehicleJourney>();
+		Map<String, Set<VehicleJourney>> map = new TreeMap<String, Set<VehicleJourney>>();
+		Set<VehicleJourney> set = new HashSet<VehicleJourney>();
 		if(vehicleJourneys != null){
 			for (int i=0; i<vehicleJourneys.size();i++) {
 				VehicleJourney vehicleJourney = vehicleJourneys.get(i);
 				String key = vehicleJourney.getRouteId();
-				List<VehicleJourney> values = map.get(key); 
+				Set<VehicleJourney> values = map.get(key); 
 				if(values != null && !values.isEmpty()){
 					values.add(vehicleJourney);
 				}else {
-					list.add(vehicleJourney);
-					map.put(vehicleJourney.getRouteId(),list);	
+					set.add(vehicleJourney);
+					map.put(vehicleJourney.getRouteId(),set);	
 				}
 				if(vehicleJourney.getRoute() != null){
 					if(!vehicleJourney.getRouteId().equals(vehicleJourney.getRoute().getObjectId())){
@@ -105,8 +106,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 				}else{
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
 					report2_17_1.addItem(detailReportItem);
-				}
-
+				}				
 				String journeyPatternId = vehicleJourney.getJourneyPatternId();
 				String journeyPatternObjectId = (vehicleJourney.getJourneyPattern() != null) ? 
 						vehicleJourney.getJourneyPattern().getObjectId() : ""; 
@@ -140,7 +140,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 													report2_18_2.updateStatus(Report.STATE.OK);
 											}
 										}
-										System.gc();
 										//Test 2.19.1
 										String lineShortCutId = vehicleJourney.getLineIdShortcut();
 										if(lineShortCutId != null){
@@ -192,9 +191,13 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 										}							
 			}
 
-			for (Entry<String, List<VehicleJourney>> entry : map.entrySet()) {
-				for (VehicleJourney vehicleJourney : entry.getValue()) {
+			//
+			Map<String, Set<VehicleJourneyAtStop[]>> doubletMap = new TreeMap<String, Set<VehicleJourneyAtStop[]>>();
+			for (String key : map.keySet()) {
+				Set<VehicleJourney> vJSet = map.get(key);
+				for (VehicleJourney vehicleJourney : vJSet) {
 					List<VehicleJourneyAtStop> vehicleJourneyAtStops =vehicleJourney.getVehicleJourneyAtStops();
+					Set<VehicleJourneyAtStop[]> stopsSet = new HashSet<VehicleJourneyAtStop[]>();
 					//Test 2.22.1
 					if(vehicleJourneyAtStops != null){
 						for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops){
@@ -206,7 +209,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								report2_22.addItem(detailReportItem);	
 							}else
 								report2_22.updateStatus(Report.STATE.OK);	
-
 
 							//Test 2.23.1
 							String vehicleJourneyId = vehicleJourneyAtStop.getVehicleJourneyId();
@@ -248,6 +250,10 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 									for (VehicleJourneyAtStop vJAtStop2 : vehicleJourneyAtStops) {
 										long diff = vJAtStop2.getOrder()-vJAtStop.getOrder();
 										if(diff == 1){
+											VehicleJourneyAtStop[] vJAtStops = new VehicleJourneyAtStop[2];
+											vJAtStops[0] = vJAtStop;
+											vJAtStops[1] = vJAtStop2;
+											stopsSet.add(vJAtStops);
 											//Test 3.7.1
 											String stopPointId2 = vJAtStop2.getStopPointId();
 											StopPoint stopPoint2 = vJAtStop2.getOjectByObjectId(stopPointId2);
@@ -282,10 +288,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 													}else
 														report3_9.updateStatus(Report.STATE.OK);
 												}							
-											}
-											//Test 3.16.1 
-
-											//Test 3.16.3 a
+											}											//Test 3.16.3 a
 											long departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /DIVIDER : 0;
 											long arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /DIVIDER : DIVIDER ;
 											long param3_16_3 = parameters.getTest3_16_3a_MinimalTime();
@@ -307,6 +310,35 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 									}
 								}
 							}
+						}
+					}
+					doubletMap.put(vehicleJourney.getObjectId(), stopsSet);
+				}
+				//System.gc();
+			}
+			//Test 3.16.1
+			for (String key : doubletMap.keySet()) {
+				Set<VehicleJourneyAtStop[]> stopsSet = doubletMap.get(key);
+				for (VehicleJourneyAtStop[] vjAtStops : stopsSet) {
+					for (String key2 : doubletMap.keySet()) {
+						if(!key.equals(key2)){
+							Set<VehicleJourneyAtStop[]> stopsSet2 = doubletMap.get(key2);
+							for (VehicleJourneyAtStop[] vjAtStops2 : stopsSet2) {
+								if(vjAtStops[0].getStopPointId().equals(vjAtStops2[0].getStopPointId()) && 
+										vjAtStops[1].getStopPointId().equals(vjAtStops2[1].getStopPointId())){
+									long diffAbsolute1 = (Math.abs(vjAtStops[0].getDepartureTime().getTime() - vjAtStops[1].getArrivalTime().getTime())) / DIVIDER;
+									long diffAbsolute2 = (Math.abs(vjAtStops2[0].getDepartureTime().getTime() - vjAtStops2[1].getArrivalTime().getTime())) / DIVIDER;
+									long min = parameters.getTest3_16c_MinimalTime();
+									long max = parameters.getTest3_16c_MaximalTime();
+									long diff = diffAbsolute1-diffAbsolute2;
+									if(diff >= min && diff<=max)	
+										report3_16_1.updateStatus(Report.STATE.OK);
+									else {
+										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId());
+										report3_16_1.addItem(detailReportItem);	
+									}
+								}
+							}	
 						}
 					}
 				}
