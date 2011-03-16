@@ -155,14 +155,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 					validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
 			}
 	}
-	/**
-	 * Neptune import
-	 * @return
-	 * @throws ChouetteException
-	 * @throws IOException 
-	 */
+
 	@SuppressWarnings("unchecked")
-	private String importNeptune() throws ChouetteException, IOException {
+	public String importNeptune() throws ChouetteException, IOException {
 		String result = INPUT;
 		if(file != null && file.length()>0){
 			formats = lineManager.getImportFormats(null);
@@ -181,12 +176,18 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			result = INPUT;
 		}
 		session.put("fileFileName", fileFileName);
+		session.put("lines", lines);	
+		session.put("imported", imported);
+		// Load from cookie if any
+		loadFromCookie(validationParam);
 		return result;
 	}
 
 	private boolean importXmlFile(File file) throws ChouetteException{
-
 		boolean result = false;
+		if(!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("xml") && 
+				!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("zip"))
+			return false;
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
 		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
 
@@ -209,24 +210,13 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		return result;
 	}
 
-	/**
-	 * Neptune validation 
-	 * @return
-	 * @throws ChouetteException
-	 * @throws IOException 
-	 */
 	@SuppressWarnings("unchecked")
 	public String validation() throws ChouetteException, IOException{
 		String res = LIST;
-		String imported = importNeptune();
-
 		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
-		if(imported.equals(SUCCESS))
-			reportValidation = lineManager.validate(null,lines,validationParam);
-		else if(imported.equals(ERROR)){
-			reportValidation = report;
-			res = ERROR;
-		}
+		lines = (List<Line>)session.get("lines");
+		reportValidation = lineManager.validate(null,lines,validationParam);
+	
 		boolean isDefault = false;
 		if(session.get("isDefault") != null)
 			isDefault = (Boolean)session.get("isDefault");

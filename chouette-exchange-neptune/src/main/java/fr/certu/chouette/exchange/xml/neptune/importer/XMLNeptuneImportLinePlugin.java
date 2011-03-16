@@ -38,6 +38,8 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.SheetReportItem;
+import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
 
 public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> 
 {
@@ -49,7 +51,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	private List<String> allowedExtensions = Arrays.asList(new String[]{"xml","zip"});
 
 	@Getter @Setter private NeptuneConverter converter;
-
+	
+	private ValidationClassReportItem category1 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.ONE);
 	/**
 	 * 
 	 */
@@ -85,6 +88,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	public List<Line> doImport(List<ParameterValue> parameters,ReportHolder reportContainer)
 	throws ChouetteException 
 	{
+		
+		ReportItem sheet1_1 = new SheetReportItem("Test1_Sheet1", 1);
+		SheetReportItem report1_1 = new SheetReportItem("Test1_Sheet1_Step1", 1);
+		SheetReportItem report1_2 = new SheetReportItem("Test1_Sheet1_Step2", 2);
+		
+		sheet1_1.addItem(report1_1);
+		sheet1_1.addItem(report1_2);
+		category1.addItem(sheet1_1);
+		
 		String filePath = null;
 		boolean validate = false;
 		String extension = "file extension";
@@ -132,6 +144,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		Report report = new NeptuneReport(NeptuneReport.KEY.IMPORT);
 		report.setStatus(Report.STATE.OK);
 		reportContainer.setReport(report);
+		
 		List<Line> lines = null ; 
 
 		if (extension.equals("xml"))
@@ -169,6 +182,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
 			report.addItem(item);
 			report.setStatus(Report.STATE.FATAL);
+			
 			logger.error("zip import failed (cannot open zip)"+e.getLocalizedMessage());
 			return null;
 		}
@@ -263,6 +277,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
 			report.addItem(item);
 			report.setStatus(Report.STATE.FATAL);
+			
 			logger.error("import failed ((read XML)) "+e.getLocalizedMessage());
 			return null;
 		}

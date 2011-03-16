@@ -326,11 +326,11 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							for (VehicleJourneyAtStop[] vjAtStops2 : stopsSet2) {
 								if(vjAtStops[0].getStopPointId().equals(vjAtStops2[0].getStopPointId()) && 
 										vjAtStops[1].getStopPointId().equals(vjAtStops2[1].getStopPointId())){
-									long diffAbsolute1 = (Math.abs(vjAtStops[0].getDepartureTime().getTime() - vjAtStops[1].getArrivalTime().getTime())) / DIVIDER;
-									long diffAbsolute2 = (Math.abs(vjAtStops2[0].getDepartureTime().getTime() - vjAtStops2[1].getArrivalTime().getTime())) / DIVIDER;
+									long diffAbsolute1 = Math.abs(vjAtStops[0].getDepartureTime().getTime() - vjAtStops[1].getArrivalTime().getTime());
+									long diffAbsolute2 = Math.abs(vjAtStops2[0].getDepartureTime().getTime() - vjAtStops2[1].getArrivalTime().getTime());
 									long min = parameters.getTest3_16c_MinimalTime();
 									long max = parameters.getTest3_16c_MaximalTime();
-									long diff = diffAbsolute1-diffAbsolute2;
+									long diff = Math.abs(diffAbsolute1-diffAbsolute2)/ DIVIDER;
 									if(diff >= min && diff<=max)	
 										report3_16_1.updateStatus(Report.STATE.OK);
 									else {
