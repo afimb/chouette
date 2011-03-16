@@ -71,6 +71,8 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 
 	public String execute(){
+		if(session.get("lines") != null)
+			session.clear();
 		// Load from cookie if any
 		loadFromCookie(validationParam);
 		return SUCCESS;
