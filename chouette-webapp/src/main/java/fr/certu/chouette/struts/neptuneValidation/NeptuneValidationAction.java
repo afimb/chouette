@@ -41,7 +41,7 @@ import fr.certu.chouette.struts.GeneriqueAction;
  * @author mamadou keira
  *
  */
-
+@SuppressWarnings("unchecked")
 public class NeptuneValidationAction extends GeneriqueAction implements Preparable,ServletResponseAware, ServletRequestAware{
 
 	private static final long serialVersionUID = 8449003243520401472L;
@@ -149,16 +149,15 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 				if(cookieName.equals("test3_9_MinimalSpeed"))
 					validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
-				
+
 				if(cookieName.equals("test3_15_MinimalTime"))
 					validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
-				
+
 				if(cookieName.equals("test3_16_3a_MinimalTime"))
 					validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
 			}
 	}
 
-	@SuppressWarnings("unchecked")
 	public String importNeptune() throws ChouetteException, IOException {
 		String result = INPUT;
 		if(file != null && file.length()>0){
@@ -206,19 +205,19 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		lines = lineManager.doImport(null,formats.get(0).getName(),parameters, reportHolder);
 		report = reportHolder.getReport();
+		session.put("report",report);
 		if(lines != null && !lines.isEmpty())
 			result = true;
 
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public String validation() throws ChouetteException, IOException{
 		String res = LIST;
 		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
 		lines = (List<Line>)session.get("lines");
 		reportValidation = lineManager.validate(null,lines,validationParam);
-	
+		report = (Report)session.get("report");
 		boolean isDefault = false;
 		if(session.get("isDefault") != null)
 			isDefault = (Boolean)session.get("isDefault");
@@ -277,7 +276,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	@SuppressWarnings("unchecked")
 	public String defaultValue() throws IllegalAccessException, InvocationTargetException{
 		BeanUtils.copyProperties(validationParam, validationParamDefault);
 		polygonCoordinatesAsString = getPolygonCoordinatesAsString();
@@ -349,6 +347,37 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 					}
 				}
 			}
+		}
+		//Import report
+		for (ReportItem item1  : report.getItems()) {// Categories
+			if(item1.getItems() != null){
+				for (ReportItem item2 : item1.getItems()) {// fiche
+					if(item2.getItems() != null){
+						for (ReportItem item3 : item2.getItems()) {//test
+							if(item3 != null){
+								STATE status = item3.getStatus();
+								switch (status){
+								case UNCHECK : 
+									nbUNCHECK++;						
+									break;
+								case OK : 
+									nbOK++;						
+									break;
+								case WARNING : 
+									nbWARN++; 						
+									break;
+								case ERROR : 
+									nbERROR++;	
+									break;
+								case FATAL : 
+									nbFATAL++;		
+									break;
+								}	
+							}
+						}
+					}		
+				}
+			}	
 		}
 		countMap.put(STATE.OK, nbOK);
 		countMap.put(STATE.WARNING, nbWARN);

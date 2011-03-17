@@ -9,23 +9,38 @@
 		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST">
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" />
-		   <s:submit value="%{getText('submit.import.xml')}"/>
-		  <!-- s:checkbox label="%{getText('conforme.xsd.title')}" name="validate" /> --> 
+		   <s:submit value="%{getText('submit.import.xml')}"/> 
 		</s:form>
 		<s:include value="/jsp/commun/messages.jsp" />
-		<s:property value="%{report.getStatus().name()}"/><br />
-		 <s:iterator value="report.items">
-		 <s:if test="%{getStatus().name() != 'OK' }">
-		 	<s:property value="getLocalizedMessage(getLocale())" /><br />
-			 	<s:iterator value="items">
-			 		<s:property value="getLocalizedMessage(getLocale())" />
-			 		<s:iterator value="items">
-			 			<i><s:property value="getLocalizedMessage(getLocale())" /></i>
-			 		</s:iterator>
-			 	</s:iterator>
-		 	</s:if>
-		 </s:iterator>
 	</div>
+	<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
+	<s:div cssStyle="margin-left: 40px;">
+		 <s:iterator value="report.items" var="sheet">
+		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
+			 <s:div cssClass="neptune-panel" id="%{status}">
+			 <s:iterator value="items" var="test">
+			 	<s:div cssClass="%{status}">
+			 	<s:label value="%{report.order}.%{#sheet.order}.%{#test.order}" />
+			 		<s:property value="getLocalizedMessage(getLocale())" /><br />
+			 		<s:if test="%{getStatus().name() != 'OK' && getStatus().name() != 'UNCHECK' }">
+							<s:div cssStyle="margin-left: 20px;">
+								</s:div>
+									 <s:div cssClass="neptune-panel-inSide" id="detail">
+										<ol>
+										 <s:iterator value="items">
+										     <li>
+										    	<s:text name="validation.test.delimiter" />
+										    	 <s:property value="getLocalizedMessage(getLocale())"/>
+										   	 </li>
+										    </s:iterator>
+								 		 </ol>
+								 </s:div>
+						</s:if>
+			 		</s:div>
+			 	</s:iterator>
+			 	</s:div>
+		 </s:iterator>
+		 </s:div>
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
 	<s:div>
