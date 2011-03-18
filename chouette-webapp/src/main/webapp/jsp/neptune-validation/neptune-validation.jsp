@@ -13,16 +13,8 @@
 		</s:form>
 		<s:include value="/jsp/commun/messages.jsp" />
 	</div>
-	<s:a href="#-1" onclick="showIt('category1','show_Itcategory1');" 
-					id="showIt_category1}" title="%{getText('text.detail.show')}">
-					<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}" />	
-			</s:a> 
-			<s:a href="#-1" onclick="hideIt('category1','hideIt_category1');" 
-					id="hideIt_category1" title="%{getText('text.detail.hide')}">
-					<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
-			</s:a>	
 	<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
-	<s:div cssStyle="margin-left: 40px;" id="category1">
+	<s:div id="category1">
 		 <s:iterator value="report.items" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 			 <s:div cssClass="neptune-panel" id="%{status}">

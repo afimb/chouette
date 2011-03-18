@@ -32,6 +32,6 @@ function showIt(idToShow, idOrigin) {
  }
  
  function changeImage(element) { 	 
-	  element.src = (element.src == "<s:url value='/images/plus.png'/>") ? 
+	  element.src = (element.src == "<s:url value='../images/plus.png'/>") ? 
 			  "<s:url value='../images/moins.png'/>" : "<s:url value='../images/plus.png'/>"; 
 	} 

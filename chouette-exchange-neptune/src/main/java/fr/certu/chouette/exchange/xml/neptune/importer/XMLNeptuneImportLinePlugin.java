@@ -52,11 +52,11 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	private List<String> allowedExtensions = Arrays.asList(new String[]{"xml","zip"});
 
 	@Getter @Setter private NeptuneConverter converter;
-	
+
 	private ReportItem sheet1_1;
 	private SheetReportItem report1_1;
 	private SheetReportItem report1_2;
-	
+
 	/**
 	 * 
 	 */
@@ -100,7 +100,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		sheet1_1.addItem(report1_2);
 		category1.addItem(sheet1_1);	
 		reportContainer.setReport(category1);
-		
+
 		String filePath = null;
 		boolean validate = false;
 		String extension = "file extension";
@@ -148,7 +148,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		/*Report report = new NeptuneReport(NeptuneReport.KEY.IMPORT);
 		report.setStatus(Report.STATE.OK);
 		reportContainer.setReport(report);*/
-		
+
 		List<Line> lines = null ; 
 
 		if (extension.equals("xml"))
@@ -198,7 +198,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			String entryName = entry.getName();
 			if (!FilenameUtils.getExtension(entryName).toLowerCase().equals("xml"))
 			{
-			/*	ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_IGNORED,Report.STATE.WARNING,entryName);
+				/*	ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_IGNORED,Report.STATE.WARNING,entryName);
 				report.addItem(item);
 				report.setStatus(Report.STATE.WARNING);*/
 				ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_warning", Report.STATE.WARNING,entryName);			
@@ -240,7 +240,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			try 
 			{
 				Line line = processImport(rootObject,validate,report,entryName);
-				
+
 				if (line != null) 
 					lines.add(line);
 				else
@@ -281,7 +281,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	 */
 	private Line processFileImport(String filePath, boolean validate, Report report) 
 	throws ExchangeException 
-			{
+	{
 		ChouettePTNetworkTypeType rootObject = null;
 		NeptuneFileReader reader = new NeptuneFileReader();
 		try
@@ -347,7 +347,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		report1_2.computeDetailItemCount();
 		ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE,Report.STATE.OK,entryName,"");
 		report1_2.updateStatus(Report.STATE.OK);
-		
+
 		ModelAssembler modelAssembler = new ModelAssembler();
 
 		Line line = converter.extractLine(rootObject,item);
