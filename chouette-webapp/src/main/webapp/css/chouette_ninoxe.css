@@ -943,6 +943,7 @@ div.autocomplete ul li
 	}
 .FATAL{
 	background: url(../images/FATAL.png) no-repeat 95% 0%;
+	color: red;
 	}
 	
 .detail {

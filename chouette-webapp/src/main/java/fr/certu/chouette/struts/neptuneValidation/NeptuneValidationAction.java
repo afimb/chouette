@@ -353,28 +353,14 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			if(item1.getItems() != null){
 				for (ReportItem item2 : item1.getItems()) {// fiche
 					if(item2.getItems() != null){
-						for (ReportItem item3 : item2.getItems()) {//test
-							if(item3 != null){
-								STATE status = item3.getStatus();
-								switch (status){
-								case UNCHECK : 
-									nbUNCHECK++;						
-									break;
-								case OK : 
-									nbOK++;						
-									break;
-								case WARNING : 
-									nbWARN++; 						
-									break;
-								case ERROR : 
-									nbERROR++;	
-									break;
-								case FATAL : 
-									nbFATAL++;		
-									break;
-								}	
-							}
-						}
+						STATE status = item2.getStatus();
+						switch (status){
+						case UNCHECK : nbUNCHECK++; break;
+						case OK :nbOK++; break;
+						case WARNING :nbWARN++; break;
+						case ERROR : nbERROR++; break;
+						case FATAL : nbFATAL++; break;
+						}	
 					}		
 				}
 			}	
