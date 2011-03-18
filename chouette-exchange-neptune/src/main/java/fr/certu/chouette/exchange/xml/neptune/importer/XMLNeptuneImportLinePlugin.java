@@ -203,7 +203,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				report.setStatus(Report.STATE.WARNING);*/
 				ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_warning", Report.STATE.WARNING,entryName);			
 				report1_1.addItem(detailReportItem);
-				report1_1.computeDetailItemCount();
 				logger.info("zip entry "+entryName+" bypassed ; not a XML file");
 				continue;
 			}
@@ -219,7 +218,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				report.addItem(item);*/			
 				ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,entryName);			
 				report1_2.addItem(detailReportItem);
-				report1_2.computeDetailItemCount();
 				logger.error("zip entry "+entryName+" import failed (get entry)"+e.getLocalizedMessage());
 				continue;
 			}
@@ -258,15 +256,17 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				logger.error("zip entry "+entryName+" import failed (convert to model)"+e.getLocalizedMessage());
 				continue;
 			}
+			report1_1.computeDetailItemCount();
+			report1_2.computeDetailItemCount();
 			logger.info("zip entry imported");
 		}
 
 		if (lines.size() == 0)
 		{
 			//report.setStatus(Report.STATE.FATAL);
-			ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR);			
-			report1_1.addItem(detailReportItem);
-			report1_1.computeDetailItemCount();
+			ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_fatal", Report.STATE.FATAL);			
+			report1_2.addItem(detailReportItem);
+			report1_2.computeDetailItemCount();
 			logger.error("zip import failed (no valid entry)");
 			return null;
 		}else
