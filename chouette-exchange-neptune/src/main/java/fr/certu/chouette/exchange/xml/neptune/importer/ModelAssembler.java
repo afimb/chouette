@@ -14,6 +14,8 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -46,10 +48,13 @@ public class ModelAssembler {
 	@Getter @Setter private List<AreaCentroid> areaCentroids;
 	@Getter @Setter private List<ConnectionLink> connectionLinks;
 	@Getter @Setter private List<Timetable> timetables;
-	
+
+	@Getter @Setter private List<AccessLink> accessLinks;
+	@Getter @Setter private List<AccessPoint> accessPoints;
+
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
-	
-    private Map<String, Line> linesDictionary = new HashMap<String, Line>();
+
+	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
 	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
 	private Map<String, JourneyPattern> journeyPatternsDictionary = new HashMap<String, JourneyPattern>();
@@ -61,7 +66,9 @@ public class ModelAssembler {
 	private Map<String, ConnectionLink> connectionLinksDictionary = new HashMap<String, ConnectionLink>();
 	private Map<String, Timetable> timetablesDictionary = new HashMap<String, Timetable>();
 
-	
+	private Map<String, AccessLink> accessLinksDictionary = new HashMap<String, AccessLink>();
+	private Map<String, AccessPoint> accessPointsDictionary = new HashMap<String, AccessPoint>();
+
 	public void connect()
 	{
 		populateDictionaries();
@@ -77,13 +84,15 @@ public class ModelAssembler {
 		connectAreaCentroids();
 		connectConnectionLinks();
 		connectTimetables();
+		connectAccessLinks();
+		connectAccessPoints();
 	}
 
 	private void populateDictionaries()
 	{
-	    List<Line> lines = new ArrayList<Line>();
-	    lines.add(line);
-	    populateDictionnary(lines, linesDictionary);
+		List<Line> lines = new ArrayList<Line>();
+		lines.add(line);
+		populateDictionnary(lines, linesDictionary);
 		populateDictionnary(routes, routesDictionary);
 		populateDictionnary(companies, companiesDictionary);
 		populateDictionnary(journeyPatterns, journeyPatternsDictionary);
@@ -94,8 +103,10 @@ public class ModelAssembler {
 		populateDictionnary(areaCentroids, areaCentroidsDictionary);
 		populateDictionnary(connectionLinks, connectionLinksDictionary);
 		populateDictionnary(timetables, timetablesDictionary);
+		populateDictionnary(accessLinks, accessLinksDictionary);
+		populateDictionnary(accessPoints, accessPointsDictionary);
 	}
-	
+
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary)
 	{
 		for(T item : list){
@@ -107,19 +118,19 @@ public class ModelAssembler {
 			populatedDictionaries.put(list.get(0).getClass(), dictionnary);
 		}
 	}
-	
+
 	private void connectLine()
 	{
-	    	if(companies != null && companies.size() == 1)
-	    	{
-				line.setCompany(companies.get(0));
-			}
-			
-			line.setPtNetwork(ptNetwork);
-			line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
-		
+		if(companies != null && companies.size() == 1)
+		{
+			line.setCompany(companies.get(0));
+		}
+
+		line.setPtNetwork(ptNetwork);
+		line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
+
 	}
-	
+
 	private void connectRoutes()
 	{
 		for(Route route : routes)
@@ -128,21 +139,21 @@ public class ModelAssembler {
 			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
 		}
 	}
-	
+
 	private void connectCompanies()
 	{
 		/*
 		for(Company company : companies){
 			//nothing to do...
 		}
-		*/
+		 */
 	}
 
 	private void connectPTNetwork() 
 	{
 		ptNetwork.setLines(getObjectsFromIds(ptNetwork.getLineIds(), Line.class));
 	}
-	
+
 	private void connectJourneyPatterns() 
 	{
 		for(JourneyPattern journeyPattern : journeyPatterns)
@@ -151,7 +162,7 @@ public class ModelAssembler {
 			journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
 		}
 	}
-	
+
 	private void connectPTLinks()
 	{
 		for(PTLink ptLink : ptLinks)
@@ -160,7 +171,7 @@ public class ModelAssembler {
 			ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 		}
 	}
-	
+
 	private void connectVehicleJourneys()
 	{
 		for(VehicleJourney vehicleJourney : vehicleJourneys)
@@ -210,7 +221,7 @@ public class ModelAssembler {
 			//no need to set containedInStopArea in StopPoint : it is already done in connectStopPoints method...
 		}
 	}
-	
+
 	private void connectAreaCentroids() 
 	{
 		for(AreaCentroid areaCentroid : areaCentroids)
@@ -218,7 +229,7 @@ public class ModelAssembler {
 			areaCentroid.setContainedInStopArea(getObjectFromId(areaCentroid.getContainedInStopAreaId(), StopArea.class));
 		}
 	}
-	
+
 	private void connectConnectionLinks() 
 	{
 		for(ConnectionLink connectionLink : connectionLinks)
@@ -236,7 +247,7 @@ public class ModelAssembler {
 			}
 		}
 	}
-	
+
 	private void connectTimetables() 
 	{
 		for(Timetable timetable : timetables)
@@ -251,13 +262,39 @@ public class ModelAssembler {
 			}
 		}
 	}
-	
+
+	private void connectAccessLinks() 
+	{
+		for(AccessLink accessLink : accessLinks)
+		{
+			StopArea stopArea = (getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) != null) ? getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) :
+				getObjectFromId(accessLink.getEndOfLinkId(), StopArea.class);
+			if(stopArea != null){
+				accessLink.setStopArea(stopArea);
+				stopArea.addAccessLink(accessLink);
+			}
+			AccessPoint accessPoint = (getObjectFromId(accessLink.getStartOfLinkId(), AccessPoint.class) != null) ? getObjectFromId(accessLink.getStartOfLinkId(), AccessPoint.class) :
+				getObjectFromId(accessLink.getEndOfLinkId(), AccessPoint.class);
+			if(accessPoint != null)
+			{
+				accessLink.setAccessPoint(accessPoint);
+				accessPoint.addAccessLink(accessLink);
+			}
+		}
+	}
+
+	private void connectAccessPoints() {
+		for(AccessPoint accessPoint : accessPoints)
+		{
+
+		}
+	}
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass)
 	{
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
-		
+
 		if(dictionary != null && ids != null)
 		{
 			for(String id : ids)
@@ -269,23 +306,23 @@ public class ModelAssembler {
 				}
 			}
 		}
-		
+
 		if(objects.size() == 0)
 		{
 			objects = null;
 		}
-		
+
 		return objects;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> T getObjectFromId(String id, Class<T> dictionaryClass)
 	{
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		T object = null;
-		
+
 		object = (T)dictionary.get(id);
-		
+
 		return object;
 	}
 }

@@ -52,6 +52,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 			Address address = new Address();
 			address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
 			address.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
+			stopPoint.setAddress(address);
 		}
 		
 		// ProjectedPoint optional
@@ -61,6 +62,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 			projectedPoint.setX(xmlProjectedPoint.getX());
 			projectedPoint.setY(xmlProjectedPoint.getY());
 			projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
+			stopPoint.setProjectedPoint(projectedPoint);
 		}
 		
 		return stopPoint;
