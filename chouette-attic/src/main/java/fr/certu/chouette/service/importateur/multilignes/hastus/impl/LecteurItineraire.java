@@ -6,8 +6,8 @@ import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurItineraire;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
+import fr.certu.chouette.service.importateur.commun.CodeIncident;
+import fr.certu.chouette.service.importateur.commun.ServiceException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,9 +78,9 @@ public class LecteurItineraire extends Lecteur implements ILecteurItineraire {
         boolean invalideSens = false;
         if ((ligneCSV[5] != null) && (ligneCSV[5].trim().length() > 0))
 	    if (ligneCSV[5].trim().equals(getCleAller()))
-		itineraire.setWayBack("A");
+		itineraire.setDirection(PTDirectionType.A);
 	    else if (ligneCSV[5].trim().equals(getCleRetour()))
-		itineraire.setWayBack("R");
+		itineraire.setDirection(PTDirectionType.R);
 	    else
                 invalideSens = true;
         itineraire.setObjectId(getIdentificationManager().getIdFonctionnel(getHastusCode(), "ChouetteRoute", toTrident(itineraire.getName())));

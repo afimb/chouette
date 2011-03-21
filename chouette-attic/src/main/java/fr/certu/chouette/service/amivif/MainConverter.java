@@ -30,7 +30,6 @@ import fr.certu.chouette.service.amivif.base.StopPointConverter;
 import fr.certu.chouette.service.amivif.base.TimetableConverter;
 import fr.certu.chouette.service.amivif.base.TransportNetworkConverter;
 import fr.certu.chouette.service.amivif.base.VehicleConverter;
-import fr.certu.chouette.service.validation.amivif.GroupOfLine;
 
 
 

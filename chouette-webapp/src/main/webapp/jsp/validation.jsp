@@ -17,6 +17,8 @@
     <s:form id="validationForm" action="Validation_valider" enctype="multipart/form-data" method="POST">
       <s:submit value="%{getText('action.validate')}" formId="validationForm"/>
     </s:form>
+    <br>
+    <s:text name="text.goto.bateri"/> <s:a href="http://www.bateri.fr/">http://www.bateri.fr/</s:a>
   </FIELDSET>
   <br><br>
   <FIELDSET style="width: 500px;">

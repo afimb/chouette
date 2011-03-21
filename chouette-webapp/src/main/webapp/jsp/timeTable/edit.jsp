@@ -58,15 +58,15 @@
 <s:if test="id != null">
   <div class="panelDataSection"><s:text name="tableauMarche.dates"/></div>
   <div class="panel">
-    <div id="displaytag">
-      <display:table name="dates" uid="date" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1"  export="false" requestURI="">
+    <div label="Dates" id="displaytag">
+      <display:table uid="datesTable" name="dates" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1" requestURI="" export="false">
         <display:column titleKey="table.title.date" sortable="true" headerClass="sortable" comparator="fr.certu.chouette.struts.util.DateComparator">
-          <s:property value="%{dates[#attr.date_rowNum - 1]}" />
+          <s:property value="%{dates[#attr.datesTable_rowNum - 1]}" />
         </display:column>
         <display:column titleKey="table.title.action">
           <s:url id="deleteUrl" action="deleteDate" namespace="/timeTable">
             <s:param name="idTableauMarche" value="%{id}"/>
-            <s:param name="idxDate" value="#attr.date_rowNum"/>
+            <s:param name="idxDate" value="#attr.datesTable_rowNum"/>
           </s:url>
           <s:a href="%{deleteUrl}" onclick="return confirm('%{getText('popup.confirmer')}'">
             <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">

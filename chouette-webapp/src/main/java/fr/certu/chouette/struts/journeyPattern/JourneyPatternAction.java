@@ -135,6 +135,9 @@ public class JourneyPatternAction extends GeneriqueAction implements ModelDriven
   {
     try
     {
+        if (model.getRegistrationNumber() != null)
+            if (model.getRegistrationNumber().trim().length() == 0)
+                model.setRegistrationNumber(null);
       missionManager.modifier(model);
       addActionMessage(getText("mission.update.ok"));
     } catch (ServiceException e)

@@ -4,7 +4,7 @@ import java.util.List;
 import fr.certu.chouette.modele.Course;
 
 public interface ILecteurSpecifiqueHoraire {
-	
-	public void lire(String[] ligneCSV, List<Course> courses);
-	public void reinit();
+    
+    public void lire(String[] ligneCSV, List<Course> courses);
+    public void reinit();
 }

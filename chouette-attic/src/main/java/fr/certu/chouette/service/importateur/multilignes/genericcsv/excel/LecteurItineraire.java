@@ -1,14 +1,13 @@
 package fr.certu.chouette.service.importateur.multilignes.genericcsv.excel;
 
+import chouette.schema.types.PTDirectionType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
-
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
@@ -24,6 +23,7 @@ public class LecteurItineraire implements ILecteurItineraire {
     private              Map<Ligne, List<Itineraire>> itineraires;
     private              Map<String, Itineraire>      itinerairesParCode;
     
+    @Override
     public void reinit() {
 	counter = 1;
 	itineraires = new HashMap<Ligne, List<Itineraire>>();
@@ -34,6 +34,7 @@ public class LecteurItineraire implements ILecteurItineraire {
 	itinerairesParCode = new HashMap<String, Itineraire>();
     }
     
+    @Override
     public Map<Ligne, List<Itineraire>> getItineraires() {
 	return itineraires;
     }
@@ -42,7 +43,8 @@ public class LecteurItineraire implements ILecteurItineraire {
 	return itinerairesParCode;
     }
     
-    public void lire(List<Course> courses, Map<String, Mission> missions, Ligne ligne) {
+    @Override
+    public void lire(List<Course> courses, Set<Course> coursesAller, Set<Course> coursesRetour, Map<String, Mission> missions, Ligne ligne) {
 	init();
 	itineraires.put(ligne, new ArrayList<Itineraire>());
 	String[] codes = missions.keySet().toArray(new String[0]);
@@ -87,6 +89,18 @@ public class LecteurItineraire implements ILecteurItineraire {
 		    logger.debug("XXX Course \""+course.getObjectId()+"\" Mission \""+course.getJourneyPatternId()+"\"");
 		    if (course.getJourneyPatternId().equals(missions.get(code2).getObjectId()) &&
 			missions.get(code2).getRouteId().equals(itineraire.getObjectId())) {
+			if (itineraire.getDirection() == null)
+			    for (Course cr : coursesAller)
+				if (cr == course) {
+				    itineraire.setDirection(PTDirectionType.A);
+				    break;
+				}
+			if (itineraire.getDirection() == null)
+			    for (Course cr : coursesRetour)
+				if (cr == course) {
+				    itineraire.setDirection(PTDirectionType.A);
+				    break;
+				}
 			course.setRouteId(itineraire.getObjectId());
 			logger.debug("YYY Itineraire : \""+itineraire.getObjectId()+"\" Mission : \""+
 				     missions.get(code2).getObjectId()+"\" Course : \""+course.getObjectId()+"\"");

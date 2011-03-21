@@ -4,5 +4,5 @@ import fr.certu.chouette.modele.Transporteur;
 
 public interface ILecteurTransporteur extends ILecteurSpecifique {
 
-	public Transporteur getTransporteur();
+    public Transporteur getTransporteur();
 }

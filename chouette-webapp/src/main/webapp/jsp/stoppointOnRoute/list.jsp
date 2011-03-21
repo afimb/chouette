@@ -29,7 +29,7 @@
       <s:hidden name="idArretAInserer" id="idArretAInserer" value=""/>
       <s:hidden name="operationMode" value="%{'STORE'}" />
       <p>
-        <s:textfield name="nomArretAInserer" id="nomArretAInserer" size="75" value="" />
+        <s:textfield name="nomArretAInserer" id="nomArretAInserer"  size="75" value="" />
         <span id="indicator" style="display: none">
           <img src="<s:url value='/images/ajax-loader.gif'/>" alt="Working..." />
         </span>

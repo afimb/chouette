@@ -6,8 +6,8 @@ import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Horaire;
 
 public interface ILecteurHoraire extends ILecteurSpecifiqueHoraire {
-	
-	public Map<Course, List<Horaire>> getHoraires();
-	public Map<Course, List<String>> getArretsPhysiques();
-	public void init();
+
+    public Map<Course, List<Horaire>> getHoraires();
+    public Map<Course, List<String>> getArretsPhysiques();
+    public void init();
 }

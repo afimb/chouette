@@ -110,7 +110,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		Assert.fail("expected exception not raised");
 	}
 		
-	@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject file not found",dependsOnMethods={"getBean"})
+    //@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject file not found",dependsOnMethods={"getBean"})
 	public void verifyCheckXMLFileExists() throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();

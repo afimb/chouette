@@ -4,8 +4,8 @@ import chouette.schema.types.ChouetteAreaType;
 import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurArret;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
+import fr.certu.chouette.service.importateur.commun.CodeIncident;
+import fr.certu.chouette.service.importateur.commun.ServiceException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -253,11 +253,13 @@ public class LecteurArret extends Lecteur implements ILecteurArret {
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02103 : Le cinquieme champs de la section '02' doit commencer par Lambert ou WGS.");
             else
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02103 : Le quatrieme champs de la section '02' doit commencer par Lambert ou WGS.");
+        /*
         if (firstCoordinatesNotSet)
             if (lineLength == 12)
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02106 : Lorsque le cinquieme champs de la section '02' est non vide, le sixieme et le septieme champs ne doivent pas etre vides.");
             else
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02106 : Lorsque le quatrieme champs de la section '02' est non vide, le cinquieme et le sixieme champs ne doivent pas etre vides.");
+        */
         if (firstXSetWrong)
             if (lineLength == 12)
                 throw new ServiceException(CodeIncident.INVALIDE_NUMBER_FORMAT, "ERROR02104 : Le sixieme champs de la section '02' est soit vide soit un nombre reel.");
@@ -289,11 +291,13 @@ public class LecteurArret extends Lecteur implements ILecteurArret {
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02103 : Le dixieme champs de la section '02' doit commencer par Lambert ou WGS.");
             else
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02103 : Le neuvieme champs de la section '02' doit commencer par Lambert ou WGS.");
+        /*
         if (secondCoordinatesNotSet)
             if (lineLength == 12)
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02107 : Lorsque le dixieme champs de la section '02' est non vide, le onzieme et le douzieme champs ne doivent pas etre vides.");
             else
                 throw new ServiceException(CodeIncident.INVALIDE_CORDONEES_TYPE, "ERROR02107 : Lorsque le neuvieme champs de la section '02' est non vide, le dixieme et le onzieme champs ne doivent pas etre vides.");
+        */
         if (secondXSetWrong)
             if (lineLength == 12)
                 throw new ServiceException(CodeIncident.INVALIDE_NUMBER_FORMAT, "ERROR02105 : Le onzieme champs de la section '02' est soit vide soit un nombre reel.");

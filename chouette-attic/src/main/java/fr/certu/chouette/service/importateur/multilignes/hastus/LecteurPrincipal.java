@@ -10,30 +10,23 @@ import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
-//import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
+import fr.certu.chouette.service.importateur.commun.CodeIncident;
+import fr.certu.chouette.service.importateur.commun.ServiceException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-//import java.io.IOException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-//import java.util.Collection;
-//import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-//import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-//import java.util.SortedSet;
-//import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 public class LecteurPrincipal implements ILecteurPrincipal {
@@ -106,9 +99,11 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                                     String zoneObjectId = objectIdParParentObjectId.get(arretPhysiqueObjectId);
                                     zoneObjectIdParArretPhysiqueObjectId.put(arretPhysiqueObjectId, zoneObjectId);
                                     objectIdZonesGeneriques.add(arretPhysiqueObjectId);
-                                    objectIdZonesGeneriques.add(zoneObjectId);
+                                    if (zoneObjectId != null)
+                                        objectIdZonesGeneriques.add(zoneObjectId);
                                     arretsPhysiques.add(arretPhysiqueParObjectId.get(arretPhysiqueObjectId));
-                                    zones.add(zoneParObjectId.get(zoneObjectId));
+                                    if (zoneObjectId != null)
+                                        zones.add(zoneParObjectId.get(zoneObjectId));
                                     Map<Course, Horaire> horaireParCoure = ordre.get(key).get(arretItineraire);
                                     Set<Course> tmpCourses = horaireParCoure.keySet();
                                     courses.addAll(tmpCourses);
@@ -150,12 +145,17 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                 lectureEchange.setZonesCommerciales(new ArrayList<PositionGeographique>(zones));
                 lectureEchange.setZoneParenteParObjectId(zoneObjectIdParArretPhysiqueObjectId);
                 lectureEchange.setItineraireParArret(itineraireParArret);
+                if (objectIdZonesGeneriques.isEmpty()) {
+                    fw.write("La ligne \""+ligne.getNumber()+"\" n'a pas d'objectIdZonesGeneriques.\n");
+                    continue;
+                }
                 lectureEchange.setObjectIdZonesGeneriques(new ArrayList<String>(objectIdZonesGeneriques));
 
                 //lectureEchange.setCorrespondances(null);
                 //lectureEchange.setInterdictionTraficLocal(null);
                 //lectureEchange.setPhysiquesParITLId(null);
                 //lectureEchange.setZonesPlaces(null);
+                fw.write("La ligne \""+ligne.getNumber()+"\" est complete.\n");
                 lecturesEchange.add(lectureEchange);
             }
         }
@@ -185,7 +185,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 	CSVReader         lecteur           = null;
 	FileWriter        fw                = null; //To write log infos into
         Set<String>       aSet              = new HashSet<String>();
-	int               ligneNumber       = 0;    //Actual line number
+	int               lineNumber        = 0;    //Actual line number
         int               counter           = 0;    //Actual line type
         String[]          ligneCSV          = null; //Actual line
 	try {
@@ -212,7 +212,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 	    ligneCSV = lecteur.readNext();
 	    while (ligneCSV != null) {
 		try {
-		    ligneNumber++;
+		    lineNumber++;
 		    if (lecteurZone.isTitreReconnu(ligneCSV)) {
 			if (counter != 0)
                             throw new ServiceException(CodeIncident.INVALIDE_FILE_FORMAT, "FATAL00101 : Toutes les lignes de la section '01' doivent figurer avant les autres sections.");
@@ -254,6 +254,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 			    lecteurCourse.setLigneParRegistration(lecteurLigne.getLigneParRegistration());
                             lecteurCourse.setZones(lecteurZone.getZones());
                             lecteurCourse.setItineraireParNumber(lecteurItineraire.getItineraireParNumber());
+                            lecteurCourse.setMissionParNom(lecteurItineraire.getMissionParNom());
                             //lecteurCourse.setMissionParNom(lecteurItineraire.getMissionParNom());
 			    counter++;
 			}
@@ -292,16 +293,21 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                     String msg = e.getMessage();
                     String code = e.getCode().toString();
 		    if (aSet.add(code+" : "+msg))
-                        logger.error("LIGNE NUMERO "+ligneNumber+" : "+code+" : "+msg);
-                    fw.write(msg+"\n");
-                    String ligneCSVTxt = "";
-                    if (ligneCSV != null)
-                        for (int i = 0; i < ligneCSV.length; i++) {
-                            if (i != 0)
-                                ligneCSVTxt += ";";
-                           ligneCSVTxt += ligneCSV[i];
-                        }
-                    fw.write("             Ligne "+ligneNumber+" : "+ligneCSVTxt+"\n");
+                        logger.error("LIGNE NUMERO "+lineNumber+" : "+code+" : "+msg);
+                    //boolean dontWrite = true;
+                    //if (!(msg.startsWith("ERROR05201") || msg.startsWith("ERROR06101"))) {
+                        fw.write("Ligne "+lineNumber+" : "+msg+"\n");
+                        //dontWrite = false;
+                    //}
+                    //String ligneCSVTxt = "";
+                    //if (ligneCSV != null)
+                        //for (int i = 0; i < ligneCSV.length; i++) {
+                            //if (i != 0)
+                                //ligneCSVTxt += ";";
+                           //ligneCSVTxt += ligneCSV[i];
+                        //}
+                    //if (dontWrite)
+                        //fw.write("             Ligne "+lineNumber+" : "+ligneCSVTxt+"\n");
                     if (msg.startsWith("FATAL")) {
                         fw.flush();
                         fw.close();
@@ -319,7 +325,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                 String msg = e.getMessage();
                 String code = e.getCode().toString();
                 if (aSet.add(code+" : "+msg))
-                    logger.error("LIGNE NUMERO "+ligneNumber+" : "+code+" : "+msg);
+                    logger.error("LIGNE NUMERO "+lineNumber+" : "+code+" : "+msg);
                 fw.write(msg+"\n");
                 if (msg.startsWith("FATAL")) {
                     fw.flush();
@@ -332,7 +338,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 	    throw new ServiceException(CodeIncident.FILE_NOT_FOUND, "Le fichier \""+chemin+"\" est introuvable.");
 	}
 	catch (ServiceException e) {
-	    throw new ServiceException(e.getCode(), "LIGNE NUMERO "+ligneNumber+" : "+e.getMessage());
+	    throw new ServiceException(e.getCode(), "LIGNE NUMERO "+lineNumber+" : "+e.getMessage());
 	}
 	catch(Exception e) {
             //e.printStackTrace();
@@ -347,7 +353,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
 	    }
 	    if (lecteur != null) {
 		try {
-		    logger.error("Numero de ligne actuel :"+ligneNumber);
+		    logger.error("Numero de ligne actuel :"+lineNumber);
 		    lecteur.close();
 		}
 		catch (Exception e) {
