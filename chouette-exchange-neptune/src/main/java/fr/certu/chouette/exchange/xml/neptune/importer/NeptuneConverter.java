@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessLinkProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.ConnectionLinkProducer;
@@ -28,6 +30,8 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProduce
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -64,6 +68,8 @@ public class NeptuneConverter
 	@Getter @Setter private ConnectionLinkProducer connectionLinkProducer;
 	@Getter @Setter private TimetableProducer timetableProducer;
 
+	@Getter @Setter private AccessLinkProducer accessLinkProducer;
+	@Getter @Setter private AccessPointProducer accessPointProducer;
 
 	public Line extractLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
@@ -310,5 +316,47 @@ public class NeptuneConverter
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return timetables;
+	}
+	
+	public List<AccessLink> extractAccessLinks(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+	{
+		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"AccessLink");
+		chouette.schema.AccessLink[] xmlAccessLinks = rootObject.getAccessLink();
+
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+
+		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
+
+		for(chouette.schema.AccessLink xmlAccessLink : xmlAccessLinks){
+			AccessLink accessLink = accessLinkProducer.produce(xmlAccessLink, report);
+			accessLinks.add(accessLink);
+		}
+
+        int count = (accessLinks == null? 0 : accessLinks.size());
+        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		report.addItem(countItem);
+		parentReport.addItem(report);
+		return accessLinks;
+	}
+	
+	public List<AccessPoint> extractAccessPoints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+	{
+		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"AccessLink");
+		chouette.schema.AccessPoint[] xmlAccessPoints = rootObject.getAccessPoint();
+
+		// modele des producer : voir package fr.certu.chouette.service.validation.util
+
+		List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
+
+		for(chouette.schema.AccessPoint xmlAccessPoint : xmlAccessPoints){
+			AccessPoint accessPoint = accessPointProducer.produce(xmlAccessPoint, report);
+			accessPoints.add(accessPoint);
+		}
+
+        int count = (accessPoints == null? 0 : accessPoints.size());
+        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		report.addItem(countItem);
+		parentReport.addItem(report);
+		return accessPoints;
 	}
 }

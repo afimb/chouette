@@ -31,6 +31,8 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter List<UserNeedEnum> userNeeds;
 	@Getter @Setter List<ConnectionLink> connectionLinks;
 	
+	@Getter @Setter List<AccessLink> accessLinks;
+	
 	public void addBoundaryPoint(String boundaryPoint)
 	{
 		if (boundaryPoints == null) boundaryPoints = new ArrayList<String>();
@@ -67,6 +69,10 @@ public class StopArea extends NeptuneIdentifiedObject {
 		connectionLinks.add(connectionLink);
 	}
 	
+	public void addAccessLink(AccessLink accessLink){
+		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
+		accessLinks.add(accessLink);
+	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */

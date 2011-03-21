@@ -26,9 +26,7 @@ import org.exolab.castor.xml.ValidationException;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
-import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
@@ -363,7 +361,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject,item));
 		modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject,item));
 		modelAssembler.setTimetables(converter.extractTimetables(rootObject,item));
-
+		modelAssembler.setAccessLinks(converter.extractAccessLinks(rootObject, item));
+		modelAssembler.setAccessPoints(converter.extractAccessPoints(rootObject, item));
 		modelAssembler.connect();
 
 		//line.expand(DetailLevelEnum.ALL_DEPENDENCIES);
