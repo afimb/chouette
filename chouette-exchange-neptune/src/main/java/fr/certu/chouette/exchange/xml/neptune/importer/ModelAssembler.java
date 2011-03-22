@@ -19,6 +19,8 @@ import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -51,6 +53,8 @@ public class ModelAssembler {
 
 	@Getter @Setter private List<AccessLink> accessLinks;
 	@Getter @Setter private List<AccessPoint> accessPoints;
+	@Getter @Setter private List<GroupOfLine> groupOfLines;
+	@Getter @Setter private List<Facility> facilities;
 
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 
@@ -68,6 +72,8 @@ public class ModelAssembler {
 
 	private Map<String, AccessLink> accessLinksDictionary = new HashMap<String, AccessLink>();
 	private Map<String, AccessPoint> accessPointsDictionary = new HashMap<String, AccessPoint>();
+	private Map<String, GroupOfLine> groupOfLinesDictionary = new HashMap<String, GroupOfLine>();
+	private Map<String, Facility> facilitiesDictionary = new HashMap<String, Facility>();
 
 	public void connect()
 	{
@@ -85,7 +91,8 @@ public class ModelAssembler {
 		connectConnectionLinks();
 		connectTimetables();
 		connectAccessLinks();
-		connectAccessPoints();
+		connectGroupOfLines();
+		connectFacilities();
 	}
 
 	private void populateDictionaries()
@@ -103,8 +110,11 @@ public class ModelAssembler {
 		populateDictionnary(areaCentroids, areaCentroidsDictionary);
 		populateDictionnary(connectionLinks, connectionLinksDictionary);
 		populateDictionnary(timetables, timetablesDictionary);
+
 		populateDictionnary(accessLinks, accessLinksDictionary);
 		populateDictionnary(accessPoints, accessPointsDictionary);
+		populateDictionnary(groupOfLines, groupOfLinesDictionary);
+		populateDictionnary(facilities, facilitiesDictionary);
 	}
 
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary)
@@ -283,12 +293,21 @@ public class ModelAssembler {
 		}
 	}
 
-	private void connectAccessPoints() {
-		for(AccessPoint accessPoint : accessPoints)
-		{
-
+	private void connectGroupOfLines(){
+		for (GroupOfLine groupOfLine : groupOfLines) {
+			groupOfLine.setLines(getObjectsFromIds(groupOfLine.getLineIds(), Line.class));
 		}
 	}
+
+	private void connectFacilities() {
+		for (Facility facility : facilities) {
+			facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
+			facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
+			facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
+			facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass)
 	{

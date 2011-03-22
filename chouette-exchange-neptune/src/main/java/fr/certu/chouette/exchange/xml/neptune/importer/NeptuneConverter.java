@@ -20,6 +20,8 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessPointProdu
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.CompanyProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.ConnectionLinkProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.FacilityProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.GroupOfLineProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer;
@@ -35,6 +37,8 @@ import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
@@ -70,6 +74,8 @@ public class NeptuneConverter
 
 	@Getter @Setter private AccessLinkProducer accessLinkProducer;
 	@Getter @Setter private AccessPointProducer accessPointProducer;
+	@Getter @Setter private GroupOfLineProducer groupOfLineProducer;
+	@Getter @Setter private FacilityProducer facilityProducer;
 
 	public Line extractLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
@@ -79,11 +85,11 @@ public class NeptuneConverter
 
 		// modele des producer : voir package fr.certu.chouette.service.validation.util
 		Line line = lineProducer.produce(xmlLine,report);
-		
-        int count = (line == null? 0 : 1);
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+
+		int count = (line == null? 0 : 1);
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
-        parentReport.addItem(report);
+		parentReport.addItem(report);
 		return line;
 	}
 
@@ -103,8 +109,8 @@ public class NeptuneConverter
 			routes.add(route);
 		}
 
-        int count = (routes == null? 0 : routes.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (routes == null? 0 : routes.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return routes;
@@ -123,8 +129,8 @@ public class NeptuneConverter
 			companies.add(company);
 		}
 
-        int count = (companies == null? 0 : companies.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (companies == null? 0 : companies.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return companies;
@@ -138,8 +144,8 @@ public class NeptuneConverter
 		// modele des producer : voir package fr.certu.chouette.service.validation.util
 		PTNetwork ptNetwork = networkProducer.produce(xmlPTNetwork, report);
 
-        int count = (ptNetwork == null? 0 : 1);
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (ptNetwork == null? 0 : 1);
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return ptNetwork;
@@ -160,8 +166,8 @@ public class NeptuneConverter
 			journeyPatterns.add(journeyPattern);
 		}
 
-        int count = (journeyPatterns == null? 0 : journeyPatterns.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (journeyPatterns == null? 0 : journeyPatterns.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return journeyPatterns;
@@ -182,8 +188,8 @@ public class NeptuneConverter
 			ptLinks.add(ptLink);
 		}
 
-        int count = (ptLinks == null? 0 : ptLinks.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (ptLinks == null? 0 : ptLinks.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return ptLinks;
@@ -204,8 +210,8 @@ public class NeptuneConverter
 			vehicleJourneys.add(vehicleJourney);
 		}
 
-        int count = (vehicleJourneys == null? 0 : vehicleJourneys.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (vehicleJourneys == null? 0 : vehicleJourneys.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return vehicleJourneys;
@@ -226,8 +232,8 @@ public class NeptuneConverter
 			stopPoints.add(stopPoint);
 		}
 
-        int count = (stopPoints == null? 0 : stopPoints.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (stopPoints == null? 0 : stopPoints.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return stopPoints;
@@ -247,8 +253,8 @@ public class NeptuneConverter
 			stopAreas.add(stopArea);
 		}
 
-        int count = (stopAreas == null? 0 : stopAreas.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (stopAreas == null? 0 : stopAreas.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return stopAreas;
@@ -268,8 +274,8 @@ public class NeptuneConverter
 			areaCentroids.add(areaCentroid);
 		}
 
-        int count = (areaCentroids == null? 0 : areaCentroids.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (areaCentroids == null? 0 : areaCentroids.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return areaCentroids;
@@ -290,8 +296,8 @@ public class NeptuneConverter
 			connectionLinks.add(connectionLink);
 		}
 
-        int count = (connectionLinks == null? 0 : connectionLinks.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (connectionLinks == null? 0 : connectionLinks.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return connectionLinks;
@@ -311,13 +317,13 @@ public class NeptuneConverter
 			timetables.add(timetable);
 		}
 
-        int count = (timetables == null? 0 : timetables.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (timetables == null? 0 : timetables.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return timetables;
 	}
-	
+
 	public List<AccessLink> extractAccessLinks(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"AccessLink");
@@ -332,13 +338,13 @@ public class NeptuneConverter
 			accessLinks.add(accessLink);
 		}
 
-        int count = (accessLinks == null? 0 : accessLinks.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (accessLinks == null? 0 : accessLinks.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return accessLinks;
 	}
-	
+
 	public List<AccessPoint> extractAccessPoints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"AccessLink");
@@ -353,10 +359,42 @@ public class NeptuneConverter
 			accessPoints.add(accessPoint);
 		}
 
-        int count = (accessPoints == null? 0 : accessPoints.size());
-        ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		int count = (accessPoints == null? 0 : accessPoints.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return accessPoints;
+	}
+
+	public List<GroupOfLine> extractGroupOfLines(ChouettePTNetworkTypeType rootObject, ReportItem parentReport){
+		List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
+
+		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"GroupOfLine");
+		chouette.schema.GroupOfLine[] xmlGroupOfLines = rootObject.getGroupOfLine();
+		for (chouette.schema.GroupOfLine xmlGroupOfLine : xmlGroupOfLines) {
+			GroupOfLine groupOfLine = groupOfLineProducer.produce(xmlGroupOfLine, report);
+			groupOfLines.add(groupOfLine);
+		}
+
+		int count = (groupOfLines == null? 0 : groupOfLines.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		report.addItem(countItem);
+		parentReport.addItem(report);
+		return groupOfLines;
+	}
+	
+	public List<Facility> extractFacilities(ChouettePTNetworkTypeType rootObject, ReportItem parentReport){
+		List<Facility> facilities = new ArrayList<Facility>();
+		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"Facility");
+		chouette.schema.Facility[] xmlFacilities = rootObject.getFacility();
+		for (chouette.schema.Facility xmlFacility : xmlFacilities) {
+			Facility facility = facilityProducer.produce(xmlFacility, report);
+			facilities.add(facility);
+		}
+		int count = (facilities == null ? 0 : facilities.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		report.addItem(countItem);
+		parentReport.addItem(report);
+		return facilities;
 	}
 }

@@ -14,7 +14,16 @@ public class GroupOfLineProducer extends AbstractModelProducer<GroupOfLine, chou
 		groupOfLine.setName(getNonEmptyTrimedString(xmlGroupOfLine.getName()));		
 		// Comment optional
 		groupOfLine.setComment(getNonEmptyTrimedString(xmlGroupOfLine.getComment()));
-		
+		// LineIds [1..n]
+		String[] castorLineIds = xmlGroupOfLine.getLineId();
+		for(String castorLineId : castorLineIds){
+			String lineId = getNonEmptyTrimedString(castorLineId);
+			if(lineId != null)
+				groupOfLine.addLineId(lineId);
+			else{
+				//TODO
+			}
+		}
 		
 		return groupOfLine;
 	}

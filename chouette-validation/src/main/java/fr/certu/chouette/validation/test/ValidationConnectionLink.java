@@ -59,10 +59,10 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			String endOfLinkId = connectionLink.getEndOfLinkId();
 			//Test 2.4.1
 			if(startOfLinkId == null || endOfLinkId == null){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_a",Report.STATE.ERROR, "");
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_a",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
 			}else if(!startOfLinkId.equals(connectionLink.getStartOfLink().getObjectId()) || !endOfLinkId.equals(connectionLink.getEndOfLink().getObjectId())){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR,"");
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
 			}else {
 				report2_4.updateStatus(Report.STATE.OK);

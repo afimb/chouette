@@ -34,19 +34,17 @@ public class ValidationTimetable implements IValidationPlugin<Timetable>{
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<Timetable> beans,ValidationParameters parameters) {
 		System.out.println("TimetableValidation");
-		List<ValidationClassReportItem> validationClassReportItems = new ArrayList<ValidationClassReportItem>();
-		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
-		category2.addAll(validate(beans));
-		validationClassReportItems.add(category2);
-		return validationClassReportItems;
+		
+		return validate(beans);
 	}
 	
-	private List<ReportItem> validate(List<Timetable> timetables){
-		ReportItem sheet5 = new SheetReportItem("Test2_Sheet5",5);
+	private List<ValidationClassReportItem> validate(List<Timetable> timetables){
+		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
+		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		
+		ReportItem sheet5 = new SheetReportItem("Test2_Sheet5",5);
 		SheetReportItem reportItem1 = new SheetReportItem("Test2_Sheet5_Step1",1);
 		SheetReportItem reportItem2 = new SheetReportItem("Test2_Sheet5_Step2",2);
-		List<ReportItem> result = new ArrayList<ReportItem>();
 		
 		for (Timetable timetable: timetables) {
 			List<String> vjIds= timetable.getVehicleJourneyIds();
@@ -54,16 +52,16 @@ public class ValidationTimetable implements IValidationPlugin<Timetable>{
 			if(vjIds != null){
 				//Test 2.5.1
 				if(!vehicleJourneyIds.containsAll(vjIds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR);
 					reportItem1.addItem(detailReportItem);
 				}else {
 					reportItem1.updateStatus(Report.STATE.OK);	
 				}
 			}
 			//Test 2.5.2
-			if(vehicleJourneyIds != null){
+			if(timetable.getVehicleJourneys() != null){
 				if(!vjIds.containsAll(vehicleJourneyIds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",Report.STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",Report.STATE.ERROR);
 					reportItem2.addItem(detailReportItem);
 				}else {
 					reportItem2.updateStatus(Report.STATE.OK);	
@@ -75,7 +73,8 @@ public class ValidationTimetable implements IValidationPlugin<Timetable>{
 		
 		sheet5.addItem(reportItem1);
 		sheet5.addItem(reportItem2);
-		result.add(sheet5);
+		category2.addItem(sheet5);
+		result.add(category2);
 		return result;
 	}
 

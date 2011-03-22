@@ -2,7 +2,7 @@ package fr.certu.chouette.model.neptune.type.facility;
 
 import java.io.Serializable;
 
-public class AllFacilitiesFeatureStructureType implements Serializable {
+public class FacilityFeature implements Serializable {
 
 	private static final long serialVersionUID = 2770570120139346512L;
 
@@ -97,7 +97,7 @@ public class AllFacilitiesFeatureStructureType implements Serializable {
 	// - Constructors -/
 	// ----------------/
 
-	public AllFacilitiesFeatureStructureType() {
+	public FacilityFeature() {
 		super();
 		setReservedSpaceFacility(ReservedSpaceFacilityEnumeration
 				.fromValue("unknown"));
