@@ -167,4 +167,15 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			res.add(this);
 		return res;
 	}
+	
+	@Override
+	public boolean clean() {
+		if(vehicleJourneyAtStops == null || vehicleJourneyAtStops.isEmpty()){
+			return false;
+		}
+		if(timetables == null || timetables.isEmpty()){
+			return false;
+		}
+		return true;
+	}
 }

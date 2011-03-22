@@ -10,6 +10,7 @@ package fr.certu.chouette.model.neptune;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -350,4 +351,20 @@ public class Line extends NeptuneIdentifiedObject
 		return Arrays.asList(stopPoints.toArray(new StopPoint[0]));
 	}
 
+	@Override
+	public boolean clean() {
+		if(routes == null){
+			return false;
+		}
+		for (Iterator<Route> iterator = routes.iterator(); iterator.hasNext();) {
+			Route route = iterator.next();
+			if(route == null || !route.clean()){
+				iterator.remove();
+			}
+		}
+		if(routes.isEmpty()){
+			return false;
+		}
+		return true;
+	}
 }

@@ -60,6 +60,14 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	 */
 	@Getter @Setter private String name; // BD
 
+	/**
+	 * Clean object dependencies : if children objects are not clean, they are dereferenced.
+	 * @return true if object is clean (i.e. has valid referencies) or false if it isn't  
+	 */
+	public boolean clean(){
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneObject#toString(java.lang.String, int)
 	 */

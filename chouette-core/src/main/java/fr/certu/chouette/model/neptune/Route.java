@@ -8,6 +8,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
@@ -283,5 +284,20 @@ public class Route extends NeptuneIdentifiedObject
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}
 	
-	
+	@Override
+	public boolean clean() {
+		if(journeyPatterns == null){
+			return false;
+		}
+		for (Iterator<JourneyPattern> iterator = journeyPatterns.iterator(); iterator.hasNext();) {
+			JourneyPattern journeyPattern = iterator.next();
+			if(journeyPattern == null || !journeyPattern.clean()){
+				iterator.remove();
+			}
+		}
+		if(journeyPatterns.isEmpty()){
+			return false;
+		}
+		return true;
+	}
 }

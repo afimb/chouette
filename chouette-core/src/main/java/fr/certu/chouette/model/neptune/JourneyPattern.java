@@ -1,6 +1,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
@@ -134,5 +135,22 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	{
 		if (vehicleJourneys== null) vehicleJourneys = new ArrayList<VehicleJourney>();
 		vehicleJourneys.add(vehicleJourney);
+	}
+	
+	@Override
+	public boolean clean() {
+		if(vehicleJourneys == null){
+			return false;
+		}
+		for (Iterator<VehicleJourney> iterator = vehicleJourneys.iterator(); iterator.hasNext();) {
+			VehicleJourney vehicleJourney = iterator.next();
+			if(vehicleJourney == null || !vehicleJourney.clean()){
+				iterator.remove();
+			}
+		}
+		if(vehicleJourneys.isEmpty()){
+			return false;
+		}
+		return true;
 	}
 }
