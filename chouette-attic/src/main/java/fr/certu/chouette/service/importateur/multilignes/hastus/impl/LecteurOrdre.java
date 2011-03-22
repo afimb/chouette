@@ -7,8 +7,8 @@ import fr.certu.chouette.modele.Itineraire;
 import fr.certu.chouette.modele.PositionGeographique;
 import java.util.Map;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurOrdre;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
+import fr.certu.chouette.service.importateur.commun.CodeIncident;
+import fr.certu.chouette.service.importateur.commun.ServiceException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -115,13 +115,13 @@ public class LecteurOrdre extends Lecteur implements ILecteurOrdre {
             else if (arretsIts.size() == 2) {
                 for (ArretItineraire arretIt1 : arretsIts) {
                     for (ArretItineraire arretIt2 : arretsIts) {
-                        if ((arretIt1 != arretIt2) && (arretIt1.getObjectId().startsWith(arretIt2.getObjectId()))) {
+                        if ((arretIt1 != arretIt2) /*&& (arretIt1.getObjectId().startsWith(arretIt2.getObjectId()))*/) {
                             if ((arretIt1.getPosition() >= 0) && (arretIt1.getPosition() < arretIt2.getPosition())) {
                                 boolean switchPositions = false;
                                 Map<Course, Horaire> coursesHoraires1 = horaireCourseArretItineraire.get(arretIt1);
                                 Map<Course, Horaire> coursesHoraires2 = horaireCourseArretItineraire.get(arretIt2);
                                 Set<Course> courses1 = coursesHoraires1.keySet();
-                                Set<Course> courses2 = coursesHoraires1.keySet();
+                                Set<Course> courses2 = coursesHoraires2.keySet();
                                 for (Course course1 : courses1) {
                                     Horaire horaire1 = coursesHoraires1.get(course1);
                                     Horaire horaire2 = coursesHoraires2.get(course1);

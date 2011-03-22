@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
-
-import chouette.schema.types.ServiceStatusValueType;
 import fr.certu.chouette.modele.Course;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.TableauMarche;
@@ -18,7 +16,6 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurCourse;
-import fr.certu.chouette.service.validation.amivif.VehicleJourney.StatusValue;
 
 public class LecteurCourse implements ILecteurCourse {
 	
@@ -27,8 +24,8 @@ public class LecteurCourse implements ILecteurCourse {
     private static final String                     RETOUR                = "RETOUR";
     private static final Set<String>		    PARTICULARITES_VALIDES;
     static {
-	PARTICULARITES_VALIDES = new HashSet<String>();
-	PARTICULARITES_VALIDES.add("TAD");
+        PARTICULARITES_VALIDES = new HashSet<String>();
+        PARTICULARITES_VALIDES.add("TAD");
     }
     
     private static       int                        len;
@@ -54,6 +51,7 @@ public class LecteurCourse implements ILecteurCourse {
     private              String                     cleZone;               // "Zone"
     private              Map<String, TableauMarche> caldendriersParRef;
 	
+    @Override
     public List<Course> getCourses() {
 	List<Course> allCourses = new ArrayList<Course>();
 	for (List<Course> courses : coursesParLigne.values())
@@ -61,22 +59,27 @@ public class LecteurCourse implements ILecteurCourse {
 	return allCourses;
     }
     
+    @Override
     public List<Course> getCourses(Ligne ligne) {
 	return coursesParLigne.get(ligne);
     }
     
+    @Override
     public List<Course> getCoursesEnCours() {
 	return coursesEnCours;
     }
     
+    @Override
     public Set<Course> getCoursesAller() {
 	return coursesAller;
     }
     
+    @Override
     public Set<Course> getCoursesRetour() {
 	return coursesRetour;
     }
     
+    @Override
     public void reinit() {
 	coursesParLigne = new HashMap<Ligne, List<Course>>();
 	coursesAller = null;
@@ -92,6 +95,7 @@ public class LecteurCourse implements ILecteurCourse {
 	cellulesNonRenseignees = new HashSet<String>(titres);
     }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
 	    return false;
@@ -105,6 +109,7 @@ public class LecteurCourse implements ILecteurCourse {
 	return cleDirection.equals(titre);
     }
     
+    @Override
     public void lire(String[] ligneCSV, Ligne ligne) {
 	if (ligneCSV.length < colonneDesTitres+2)
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));

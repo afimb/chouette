@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
-
 import chouette.schema.types.TransportModeNameType;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.service.commun.CodeDetailIncident;
@@ -14,6 +13,7 @@ import fr.certu.chouette.service.commun.CodeIncident;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurLigne;
+import java.util.ResourceBundle;
 
 public class LecteurLigne implements ILecteurLigne {
     
@@ -30,11 +30,13 @@ public class LecteurLigne implements ILecteurLigne {
     private              Set<String>            cellulesNonRenseignees;
     private              Set<String>            titres;
     
+    @Override
     public List<Ligne> getLignes() {
 	return lignes;
     }
     
-    public void reinit() {
+    @Override
+    public void reinit(ResourceBundle bundle) {
 	lignes = new ArrayList<Ligne>();
 	ligneEnCours = null;
 	titres = new HashSet<String>();
@@ -46,6 +48,7 @@ public class LecteurLigne implements ILecteurLigne {
 	cellulesNonRenseignees = new HashSet<String>(titres);
     }
     
+    @Override
     public Ligne getLigneEnCours() {
 	return ligneEnCours;
     }
@@ -54,6 +57,7 @@ public class LecteurLigne implements ILecteurLigne {
 	return cleNom.equals(titre);
     }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
 	    return false;
@@ -68,13 +72,15 @@ public class LecteurLigne implements ILecteurLigne {
 	    validerCompletude();
     }
     
+    @Override
     public void validerCompletude() {
 	if (cellulesNonRenseignees.size() > 0) {
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.LINE_MISSINGDATA,cellulesNonRenseignees);
 	}
     }
     
-    public void lire(String[] ligneCSV) {
+    @Override
+    public void lire(String[] ligneCSV, String _lineNumber) {
 	if (ligneCSV.length < colonneDesTitres+2)
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
 	String titre = ligneCSV[colonneDesTitres];

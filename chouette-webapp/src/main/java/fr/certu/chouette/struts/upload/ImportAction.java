@@ -72,10 +72,15 @@ public class ImportAction extends GeneriqueAction {
 	private              IReducteur             reducteur;
 	private              String                 baseName;
         private              InputStream            inputStream;
+        private              String                 importHastusLogFileName;
 	
 	public ImportAction() {
 		super();
 	}
+
+        public File getImportHastusLogFile() {
+            return new File(importHastusLogFileName);
+        }
 
         public void setInputStream(InputStream inputStream) {
             this.inputStream = inputStream;
@@ -221,22 +226,57 @@ public class ImportAction extends GeneriqueAction {
 
         private void setLog() {
             try {
-                inputStream = new FileInputStream("/tmp/ImportHastusNew.log");
+                inputStream = new FileInputStream(importHastusLogFileName);
             }
             catch(IOException e ) {
             }
         }
         
-        public String importHastus() {
-            String canonicalPath = null;
+        public String importHastusZip() {
             try {
-                canonicalPath = fichier.getCanonicalPath();
+                setLog();
+                String result = SUCCESS;
+                ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(fichier));
+                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                if (zipEntry == null) {
+                    addActionMessage(fichierFileName + " : "+ getText("message.import.hastus.bad_zip"));
+                    //addActionMessage("Rapport : <a href://"+getImportHastusLogFileName()+">"+getImportHastusLogFileName()+"</a>");
+                    return INPUT;
+                }
+                while (zipEntry != null) {
+                    logger.error("La taille de cette entrée est : "+zipEntry.getSize());
+                    byte[] bytes = new byte[4096];
+                    int len = zipInputStream.read(bytes);
+                    File temp = new File(zipEntry.getName());
+                    FileOutputStream fos = new FileOutputStream(temp);
+                    while (len > 0) {
+                        fos.write(bytes, 0, len);
+                        len = zipInputStream.read(bytes);
+                    }
+                    if (!result.equals(importHastus(temp)))
+                        result = INPUT;
+                    zipEntry = zipInputStream.getNextEntry();
+                }
+                //addActionMessage("Rapport : <a href://"+getImportHastusLogFileName()+">"+getImportHastusLogFileName()+"</a>");
+                return result;
             }
-            catch (IOException e) {
-                addActionError(getExceptionMessage(e));
+            catch (Exception e) {
+                addActionError("PROBLEM DE LECTURE ARCHIVE : "+getExceptionMessage(e));
                 setLog();
                 return INPUT;
             }
+        }
+
+        public String importHastus(File file) {
+            String canonicalPath = null;
+            try {
+                canonicalPath = file.getCanonicalPath();
+            }
+            catch (IOException e) {
+                addActionError(getExceptionMessage(e));
+                return INPUT;
+            }
+
 
             if (incremental)
                 log.debug("IMPORT INCREMENTAL DU FICHIER : "+canonicalPath);
@@ -488,39 +528,32 @@ public class ImportAction extends GeneriqueAction {
 		}
 	}
 	
-	private String importXML(File file) throws Exception 
-	{
-		String canonicalPath = file.getCanonicalPath();
-		chouette.schema.ChouettePTNetworkTypeType chouettePTNetworkType = null;
-		try 
-		{
-			logger.debug("IMPORT XML DU FICHIER "+canonicalPath);
-			chouettePTNetworkType = lecteurFichierXML.lire(canonicalPath);
-			logger.debug("CREATION DU CHOUETTEPTNETWORKTYPE REUSSI");
-		}
-		catch (Exception exception) 
-		{
-			gestionException(exception);
-			return INPUT;
-		}
-		ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
-		try 
-		{
-			importateur.importer(false, lectureEchange);
-		}
-		catch (ServiceException serviceException) 
-		{
-			addActionError(getText("message.import.xml.failure"));
-			log.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
-			return INPUT;
-		}
-		
-		String[] args = new String[1];
+	private String importXML(File file) throws Exception {
+            String canonicalPath = file.getCanonicalPath();
+            chouette.schema.ChouettePTNetworkTypeType chouettePTNetworkType = null;
+            try {
+                logger.debug("IMPORT XML DU FICHIER "+canonicalPath);
+                chouettePTNetworkType = lecteurFichierXML.lire(canonicalPath);
+                logger.debug("CREATION DU CHOUETTEPTNETWORKTYPE REUSSI");
+            }
+            catch (Exception exception) {
+                gestionException(exception);
+                return INPUT;
+            }
+            ILectureEchange lectureEchange = lecteurEchangeXML.lire(chouettePTNetworkType);
+            try {
+                importateur.importer(false, lectureEchange);
+            }
+            catch (ServiceException serviceException) {
+                addActionError(getText("message.import.xml.failure"));
+                log.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
+                return INPUT;
+            }
+            String[] args = new String[1];
 	    args[0] = lectureEchange.getLigne().getName();
 	    addActionMessage(getText("message.import.xml.success", args));
 	    return SUCCESS;
-	    
-	}
+        }
 	
 	public String importAmivifXML() 
 	{
@@ -805,6 +838,14 @@ public class ImportAction extends GeneriqueAction {
 	{
 		return useHastus;
 	}
+
+        public void setImportHastusLogFileName(String importHastusLogFileName) {
+            this.importHastusLogFileName = importHastusLogFileName;
+        }
+
+        public String getImportHastusLogFileName() {
+            return importHastusLogFileName;
+        }
 	
 	public void setUseAltibus(String useAltibus) 
 	{

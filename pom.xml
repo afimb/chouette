@@ -6,7 +6,7 @@
 	<name>Chouette</name>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
-	<version>1.5.0</version>
+	<version>1.6.0</version>
 	<packaging>pom</packaging>
 
 	<modules>

@@ -59,7 +59,7 @@
   <div class="panelDataSection"><s:text name="itl.arretPhysiqueIds"/></div>
   <div class="panel">
     <div id="displaytag">
-      <display:table uid="arretsDansITLList" name="arretsDansITLList" sort="list" pagesize="10" export="false" requestURI="">
+        <display:table uid="arretsDansITLList" name="arretsDansITLList" sort="list" pagesize="10" export="false" requestURI="">
         <display:column titleKey="table.title.action">
           <s:url id="removeUrl" action="removeStop" namespace="/routingConstraint">
             <s:param name="idItl">${id}</s:param>

@@ -8,8 +8,8 @@ import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.importateur.multilignes.hastus.ILecteurCourse;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.CodeIncident;
-import fr.certu.chouette.service.importateur.multilignes.hastus.commun.ServiceException;
+import fr.certu.chouette.service.importateur.commun.CodeIncident;
+import fr.certu.chouette.service.importateur.commun.ServiceException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +34,7 @@ public class LecteurCourse extends Lecteur implements ILecteurCourse {
     private static final SimpleDateFormat                  sdf1                    = new SimpleDateFormat("ddMMyy");
     private static final SimpleDateFormat                  sdf2                    = new SimpleDateFormat("dd/MM/yyyy");
     private static final SimpleDateFormat                  sdf3                    = new SimpleDateFormat("yyyy-MM-dd");
+    private              Map<String, Mission>              missionParNom;         ///
 
     @Override
     public void reinit() {
@@ -85,6 +86,9 @@ public class LecteurCourse extends Lecteur implements ILecteurCourse {
         Itineraire itineraire = itineraireParNumber.get(ligneCSV[14].trim());
         if (itineraire == null)
 	    throw new ServiceException(CodeIncident.INVALIDE_ITINERAIRE_COURSE, "ERROR05102 : Le quinzieme champs de la section '05' doit etre egal au quatrieme champs d'une ligne de la section '04'. "+ligneCSV[14].trim());
+        Mission mission = missionParNom.get(ligneCSV[14].trim());
+        if (mission == null)
+            throw new ServiceException(CodeIncident.INVALIDE_MISSION_COURSE, "ERROR05102 : Le quinzieme champs de la section '05' doit etre egal au quatrieme champs d'une ligne de la section '04'. "+ligneCSV[14].trim());
 
         if ((ligneCSV[3] != null) && (ligneCSV[3].trim().length() > 0))
             ;//Numero de parcours type
@@ -170,8 +174,12 @@ public class LecteurCourse extends Lecteur implements ILecteurCourse {
         course.setCreationTime(new Date(System.currentTimeMillis()));
         boolean invalideTransportMode = false;
         course.setTransportMode(ligne.getTransportModeName());
-        if ((ligneCSV[15] == null) || (ligneCSV[15].trim().length() <= 0))
-            invalideTransportMode = true;
+        if ((ligneCSV[15] == null) || (ligneCSV[15].trim().length() <= 0)) {
+            if (ligne.getTransportModeName() != null)
+                course.setTransportMode(ligne.getTransportModeName());
+            else
+                invalideTransportMode = true;
+        }
         else if(ligneCSV[15].trim().equals("Autocar"))
             course.setTransportMode(TransportModeNameType.COACH);
         else if(ligneCSV[15].trim().equals("Avion"))
@@ -214,6 +222,7 @@ public class LecteurCourse extends Lecteur implements ILecteurCourse {
         if ((ligneCSV[17] != null) && (ligneCSV[17].trim().length() > 0))
             course.setComment(ligneCSV[17].trim());
         course.setRouteId(itineraire.getObjectId());
+        course.setJourneyPatternId(mission.getObjectId());
         addCourse(course, ligne, tableauMarche);
         addCourseToTableauMarche(course, ligne, tableauMarche);
         if (invalideTransportMode)
@@ -324,6 +333,11 @@ public class LecteurCourse extends Lecteur implements ILecteurCourse {
     @Override
     public void setItineraireParNumber(Map<String, Itineraire> itineraireParNumber) {
 	this.itineraireParNumber = itineraireParNumber;
+    }
+
+    @Override
+    public void setMissionParNom(Map<String, Mission> missionParNom) {
+        this.missionParNom = missionParNom;
     }
     
     @Override

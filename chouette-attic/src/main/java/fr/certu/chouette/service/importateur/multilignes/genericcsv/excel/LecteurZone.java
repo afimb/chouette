@@ -2,25 +2,20 @@ package fr.certu.chouette.service.importateur.multilignes.genericcsv.excel;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
-
 import chouette.schema.types.ChouetteAreaType;
-import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurZone;
+import java.util.ResourceBundle;
 
 public class LecteurZone implements ILecteurZone {
     
@@ -46,9 +41,9 @@ public class LecteurZone implements ILecteurZone {
 	String codePostal;
 	
 	Identification(String name, String adresse, String codePostal) {
-	    setName(name);
-	    setAdesse(adresse);
-	    setCodePostal(codePostal);
+	    this.name = name;
+	    this.adresse = adresse;
+	    this.codePostal = codePostal;
 	}
 	
 	void setName(String name) {
@@ -75,6 +70,7 @@ public class LecteurZone implements ILecteurZone {
 	    return codePostal;
 	}
 	
+        @Override
 	public int compareTo(Identification id) {
 	    int na = name.compareTo(id.getName());
 	    if (na != 0)
@@ -85,6 +81,7 @@ public class LecteurZone implements ILecteurZone {
 	    return codePostal.compareTo(id.getCodePostal());
 	}
 	
+        @Override
 	public boolean equals(Object obj) {
 	    if (obj != null)
 		if (obj instanceof Identification)
@@ -92,33 +89,49 @@ public class LecteurZone implements ILecteurZone {
 			return true;
 	    return false;
 	}
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
+            hash = 37 * hash + (this.adresse != null ? this.adresse.hashCode() : 0);
+            hash = 37 * hash + (this.codePostal != null ? this.codePostal.hashCode() : 0);
+            return hash;
+        }
     }
     
+    @Override
     public Map<String, String> getZoneParenteParObjectId(Ligne ligne) {
 	return zoneParenteParObjectId.get(ligne);
     }
     
+    @Override
     public List<PositionGeographique> getArretsPhysiques() {
 	return arretsPhysiquesOrdonnes;
     }
     
+    @Override
     public List<PositionGeographique> getArretsPhysiques(Ligne ligne) {
 	return arretsPhysiquesParLigne.get(ligne);
     }
     
+    @Override
     public List<PositionGeographique> getZones(Ligne ligne) {
 	return zonesParLigne.get(ligne);
     }
     
+    @Override
     public Map<PositionGeographique, Set<PositionGeographique>> getArretsPhysiquesParZoneParente() {
 	return arretsPhysiquesParZoneParente;
     }
     
+    @Override
     public Map<String, PositionGeographique> getZones() {
 	return zones;
     }
     
-    public void reinit() {
+    @Override
+    public void reinit(ResourceBundle bundle) {
 	zones = new HashMap<String, PositionGeographique>();
 	arretsPhysiquesParZoneParente = new HashMap<PositionGeographique, Set<PositionGeographique>>();
 	arretsPhysiquesParLigne = new HashMap<Ligne, List<PositionGeographique>>();
@@ -128,19 +141,23 @@ public class LecteurZone implements ILecteurZone {
 	init();
     }
     
+    @Override
     public void init() {
 	arretsPhysiques = new HashMap<Identification, PositionGeographique>();
 	arretsPhysiquesOrdonnes = new ArrayList<PositionGeographique>();
 	zonesDeLigne = new HashSet<PositionGeographique>();
     }
     
+    @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
 	return true;
     }
     
-    public void lire(String[] ligneCSV) {
+    @Override
+    public void lire(String[] ligneCSV, String _lineNumber) {
     }
     
+    @Override
     public void lire(Ligne ligne, String[] ligneCSV) {
 	PositionGeographique positionGeographique;
 	if (ligneCSV[7] != null)
@@ -301,6 +318,7 @@ public class LecteurZone implements ILecteurZone {
 	arretsPhysiquesParLigne.put(ligne, arretsPhysiquesOrdonnes);
     }
     
+    @Override
     public void validerCompletude() {
     }
     

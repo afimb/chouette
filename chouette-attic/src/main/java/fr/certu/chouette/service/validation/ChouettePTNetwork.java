@@ -9,7 +9,7 @@ public class ChouettePTNetwork {
 	private ChouetteLineDescription 	chouetteLineDescription;
 	private List<Company> 				companies 					= new ArrayList<Company>();
 	private List<ConnectionLink> 		connectionLinks 			= new ArrayList<ConnectionLink>();
-	private List<GroupOfLine> 			groupOfLines;
+	private List<GroupOfLine> 		groupOfLines;
 	private PTNetwork 					pTNetwork;
 	private List<TimeSlot> 				timeSlots 					= new ArrayList<TimeSlot>();
 	private List<Timetable> 			timetables 					= new ArrayList<Timetable>();
@@ -153,6 +153,7 @@ public class ChouettePTNetwork {
     		throw new IndexOutOfBoundsException();
     	connectionLinks.set(index, connectionLink);
     }
+	
 	
 	public void addGroupOfLine(GroupOfLine groupOfLine) throws IndexOutOfBoundsException {
 	    if (groupOfLine != null) {

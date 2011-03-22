@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
-
 import chouette.schema.types.PTDirectionType;
 import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Course;
@@ -35,14 +34,17 @@ public class LecteurArret implements ILecteurArret {
     private              Map<Ligne, List<ArretItineraire>> arretsItinerairesParLigne;
     private              Map<Ligne,Map<String, String>>    itineraireParArret;
     
+    @Override
     public Map<Ligne, List<ArretItineraire>> getArretsItinerairesParLigne() {
 	return arretsItinerairesParLigne;
     }
     
+    @Override
     public Map<Ligne, Map<String, String>> getItineraireParArret() {
 	return itineraireParArret;
     }
     
+    @Override
     public void init(List<Itineraire> itinerairesDeLigne, List<Mission> missionsDeLigne, List<Course> coursesDeLigne, Map<Course, List<Horaire>> horairesParCourse, Map<Course, List<String>> arretsPhysiquesParCourse, List<PositionGeographique> arretsPhysiques) {
 	this.itinerairesDeLigne = itinerairesDeLigne;
 	this.missionsDeLigne = missionsDeLigne;
@@ -52,12 +54,14 @@ public class LecteurArret implements ILecteurArret {
 	this.arretsPhysiques = arretsPhysiques;
     }
     
+    @Override
     public void reinit() {
 	this.arretsItinerairesParLigne = new HashMap<Ligne, List<ArretItineraire>>();
 	this.itineraireParArret = new HashMap<Ligne, Map<String, String>>();
 	this.counter = 0;
     }
     
+    @Override
     public void lire(Ligne ligne, Set<Course> coursesAller, Set<Course> coursesRetour, List<PositionGeographique> _arretsPhysiques) {
 	logger.debug("Construction des Arrets sur Itinéraire.");
 	Map<Itineraire, List<ArretItineraire>> arretsItinerairesParItineraire = new HashMap<Itineraire, List<ArretItineraire>>();
@@ -157,16 +161,16 @@ public class LecteurArret implements ILecteurArret {
 	Map<Itineraire, List<List<Horaire>>> tableauHoraires = new HashMap<Itineraire, List<List<Horaire>>>();
 	for (Course course : coursesDeLigne) {
 	    Itineraire itineraire = getItineraire(course);
-	    List<String> arretsPhysiques = arretsPhysiquesParCourse.get(course);
+	    List<String> _arretsPhysiques = arretsPhysiquesParCourse.get(course);
 	    if (tableauHoraires.get(itineraire) == null) {
 		tableauHoraires.put(itineraire, new ArrayList<List<Horaire>>());
-		for (int i = 0; i < arretsPhysiques.size(); i++)
+		for (int i = 0; i < _arretsPhysiques.size(); i++)
 		    tableauHoraires.get(itineraire).add(new ArrayList<Horaire>());
 	    }
 	    List<Horaire> horaires = horairesParCourse.get(course);
 	    int horairesCounter = 0;
-	    for (int i = 0; i < arretsPhysiques.size(); i++)
-		if (arretsPhysiques.get(i).length() != 0)
+	    for (int i = 0; i < _arretsPhysiques.size(); i++)
+		if (_arretsPhysiques.get(i).length() != 0)
 		    tableauHoraires.get(itineraire).get(i).add(horaires.get(horairesCounter++));
 	}
 	return tableauHoraires;

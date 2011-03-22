@@ -17,12 +17,20 @@
 			<li><s:a href="%{urlLignesMenu}" id="lignesMenu"><s:text name="text.lignes"/></s:a></li>
 
 			<%-- Itineraires --%>
-      <s:url id="urlItinerairesMenu" action="search" namespace="/route" includeParams="none"/>
-			<li><s:a href="%{urlItinerairesMenu}" id="itinerairesMenu"><s:text name="text.itineraires"/></s:a></li>
+                        <li>
+                            <ul id="sub_sommaire">
+                                <s:url id="urlItinerairesMenu" action="search" namespace="/route" includeParams="none"/>
+                                <li><s:a href="%{urlItinerairesMenu}" id="itinerairesMenu"><s:text name="text.itineraires"/></s:a></li>
 
-			<%-- Horaires --%>
-			<s:url id="urlHorairesMenu" action="search" namespace="/vehicleJourneyAtStop" includeParams="none"/>
-			<li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
+                                <%-- Horaires --%>
+                                <li>
+                                    <ul id="sub_sub_sommaire">
+                                        <s:url id="urlHorairesMenu" action="search" namespace="/vehicleJourneyAtStop" includeParams="none"/>
+                                        <li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
+                                    </ul>
+                                <li>
+                            </ul>
+                        </li>
 
 			<%-- Calendriers d'application --%>
       <s:url id="urlTableauMarchesMenu" action="list" namespace="/timeTable" includeParams="none"/>
@@ -48,17 +56,15 @@
 			<s:url id="urlImportMenu" action="execute" namespace="/upload" includeParams="none"/>
 			<li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>
 
-			<%-- Export Massif --%>	
+			<%-- Export Massif --%>
+<s:if test="menuComparisonEnabled == true">
 			<s:url id="urlMassiveExportMenu" action="list" namespace="/massiveExport" includeParams="none"/>
 			<li><s:a href="%{urlMassiveExportMenu}" id="massiveExportMenu"><s:text name="text.exportMassif"/></s:a></li>
+</s:if>
 
 			<%-- Validation --%>	
 			<s:url id="urlValidationMenu" action="Validation_execute" namespace="/" includeParams="none"/>
 			<li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>
-			
-			<%--Neptune validation --%>
-			<s:url id="urlNeptuneMenu" action="execute" namespace="/neptune-validation" includeParams="none"/>
-			<li><s:a href="%{urlNeptuneMenu}" id="neptuneMenu"><s:text name="text.neptune.import"/></s:a></li>
 			
 			<%-- Comparaison --%>
       <s:if test="menuComparisonEnabled == true">
@@ -82,19 +88,6 @@
 		$('reseauxMenu').className='';
 	</SCRIPT>	
 </s:else>
-
-<%-- Neptune validation --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.neptune.import')">
-	<SCRIPT type="text/javascript">
-		$('neptuneMenu').className='selectionne';
-	</SCRIPT>	
-</s:if>
-<s:else>
-	<SCRIPT type="text/javascript">
-		$('neptuneMenu').className='';
-	</SCRIPT>	
-</s:else>
-
 
 <%-- Transporteurs --%>
 <s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.transporteur.list.title')
