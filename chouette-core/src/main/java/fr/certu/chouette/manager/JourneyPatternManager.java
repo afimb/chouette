@@ -26,7 +26,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<JourneyPattern> beans,
-			ValidationParameters parameters) 
+			ValidationParameters parameters,boolean propagate) 
 	throws ChouetteException 
 	{
 		Report globalReport = new ValidationReport();
@@ -49,11 +49,11 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 			AbstractNeptuneManager<StopPoint> manager = (AbstractNeptuneManager<StopPoint>) getManager(StopPoint.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters);
+				report = manager.validate(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters,propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters);
+				report = manager.propagateValidation(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters,propagate);
 			}
 			if (report != null)
 			{
@@ -69,11 +69,11 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 			AbstractNeptuneManager<VehicleJourney> manager = (AbstractNeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, vehicleJourneys, parameters);
+				report = manager.validate(user, vehicleJourneys, parameters,propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, vehicleJourneys, parameters);
+				report = manager.propagateValidation(user, vehicleJourneys, parameters,propagate);
 			}
 			if (report != null)
 			{

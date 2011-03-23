@@ -32,6 +32,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.model.neptune.type.ImportedItems;
 
 /**
  * @author michel
@@ -138,7 +139,24 @@ public class ModelAssembler {
 
 		line.setPtNetwork(ptNetwork);
 		line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
-
+		
+		ImportedItems item = new ImportedItems();
+		item.setAccessLinks(accessLinks);
+		item.setAccessPoints(accessPoints);
+		item.setAreaCentroids(areaCentroids);
+		item.setCompanies(companies);
+		item.setConnectionLinks(connectionLinks);
+		item.setFacilities(facilities);
+		item.setGroupOfLines(groupOfLines);
+		item.setJourneyPatterns(journeyPatterns);
+		item.setPtLinks(ptLinks);
+		item.setPtNetwork(ptNetwork);
+		item.setRoutes(routes);
+		item.setStopAreas(stopAreas);
+		item.setStopPoints(stopPoints);
+		item.setTimetables(timetables);
+		item.setVehicleJourneys(vehicleJourneys);
+		line.setImportedItems(item);
 	}
 
 	private void connectRoutes()
@@ -307,7 +325,6 @@ public class ModelAssembler {
 			facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
 		}
 	}
-
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass)
 	{

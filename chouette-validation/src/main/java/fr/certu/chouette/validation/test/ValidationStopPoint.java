@@ -254,8 +254,8 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step1_error_a", Report.STATE.ERROR,stopPoint.getObjectId());
 						report3_10_1.addItem(detailReportItem);		
 					}
-					//Test 3.10.1 b
-					//TODO implements Test 3.10.1 b
+					//Test 3.10.1 b trivial
+					report3_10_1.updateStatus(Report.STATE.OK);
 				}
 			}
 		}

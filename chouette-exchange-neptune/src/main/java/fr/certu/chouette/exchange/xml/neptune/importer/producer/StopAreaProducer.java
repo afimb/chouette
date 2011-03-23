@@ -82,7 +82,6 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 					}
 				}
 			}
-
 		}
 		
 		return stopArea;

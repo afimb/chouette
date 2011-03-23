@@ -34,7 +34,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<Route> beans,
-			ValidationParameters parameters) 
+			ValidationParameters parameters,boolean propagate) 
 	throws ChouetteException 
 	{
 		Report globalReport = new ValidationReport();
@@ -58,11 +58,11 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			AbstractNeptuneManager<PTLink> manager = (AbstractNeptuneManager<PTLink>) getManager(PTLink.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, ptLinks, parameters);
+				report = manager.validate(user, ptLinks, parameters,propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, ptLinks, parameters);
+				report = manager.propagateValidation(user, ptLinks, parameters,propagate);
 			}
 			if (report != null)
 			{
@@ -78,11 +78,11 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			AbstractNeptuneManager<JourneyPattern> manager = (AbstractNeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, journeyPatterns, parameters);
+				report = manager.validate(user, journeyPatterns, parameters,propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, journeyPatterns, parameters);
+				report = manager.propagateValidation(user, journeyPatterns, parameters,propagate);
 			}
 			if (report != null)
 			{

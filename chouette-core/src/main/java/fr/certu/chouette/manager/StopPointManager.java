@@ -25,7 +25,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<StopPoint> beans,
-			ValidationParameters parameters) 
+			ValidationParameters parameters,boolean propagate) 
 	throws ChouetteException 
 	{
 		Report globalReport = new ValidationReport();
@@ -48,11 +48,11 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			AbstractNeptuneManager<StopArea> manager = (AbstractNeptuneManager<StopArea>) getManager(StopArea.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, Arrays.asList(areas.toArray(new StopArea[0])), parameters);
+				report = manager.validate(user, Arrays.asList(areas.toArray(new StopArea[0])), parameters,propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, Arrays.asList(areas.toArray(new StopArea[0])), parameters);
+				report = manager.propagateValidation(user, Arrays.asList(areas.toArray(new StopArea[0])), parameters,propagate);
 			}
 			if (report != null)
 			{

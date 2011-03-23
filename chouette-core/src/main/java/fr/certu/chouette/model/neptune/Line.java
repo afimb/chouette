@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
@@ -119,6 +120,7 @@ public class Line extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
 
+	@Getter @Setter private ImportedItems importedItems;
 	/**
 	 * add a user needs enumeration value to the line<br/>
 	 * do nothing if user need is already present

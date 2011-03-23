@@ -43,6 +43,7 @@ import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -243,13 +244,26 @@ public class NeptuneConverter
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"StopArea");
 		chouette.schema.StopArea[] xmlStopAreas = rootObject.getChouetteArea().getStopArea();
-
+		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
+		chouette.schema.ITL[] itls = lineDescription.getITL();
 		// modele des producer : voir package fr.certu.chouette.service.validation.util
 
 		List<StopArea> stopAreas = new ArrayList<StopArea>();
 
 		for(chouette.schema.StopArea xmlStopArea : xmlStopAreas){
 			StopArea stopArea = stopAreaProducer.produce(xmlStopArea, report);
+			List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
+			for (chouette.schema.ITL itl : itls) {
+				if(stopArea.getObjectId().equals(itl.getAreaId())){
+					RestrictionConstraint constraint = new RestrictionConstraint();
+					constraint.setAreaId(itl.getAreaId());
+					constraint.setLineIdShortCut(itl.getLineIdShortCut());
+					constraint.setName(itl.getName());
+					constraints.add(constraint);
+					stopArea.setRestrictionConstraints(constraints);	
+				}
+			}
+			
 			stopAreas.add(stopArea);
 		}
 

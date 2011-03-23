@@ -273,7 +273,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @return a diagnostic step by step 
 	 * @throws ChouetteException invalid user access or validation failure
 	 */
-	Report validate(User user,List<T> beans,ValidationParameters parameters) throws ChouetteException;
+	Report validate(User user,List<T> beans,ValidationParameters parameters, Boolean ... propagate) throws ChouetteException;
 
 	/**
 	 * get the steps description for validation

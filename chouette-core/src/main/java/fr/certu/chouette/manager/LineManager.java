@@ -12,9 +12,18 @@ import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -23,103 +32,175 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 /**
  * 
  */
-public class LineManager extends AbstractNeptuneManager<Line>
-{
+public class LineManager extends AbstractNeptuneManager<Line> {
 
-	public LineManager()
-	{
+	public LineManager() {
 		super(Line.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<Line> beans,
-			ValidationParameters parameters) 
-	throws ChouetteException 
-	{
+			ValidationParameters parameters, boolean propagate)
+	throws ChouetteException {
 		Report globalReport = new ValidationReport();
 
-		// aggregate dependent objects for validation
 		List<PTNetwork> networks = new ArrayList<PTNetwork>();
 		List<Company> companies = new ArrayList<Company>();
 		List<Route> routes = new ArrayList<Route>();
-		for (Line line : beans) 
-		{
-			if (line.getPtNetwork() != null)
-				networks.add(line.getPtNetwork());
-			if (line.getCompany() != null)
-				companies.add(line.getCompany());
-			if (line.getRoutes() != null)
-			{
-				routes.addAll(line.getRoutes());
+
+		List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();
+		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
+		List<PTLink> ptLinks = new ArrayList<PTLink>();
+		List<StopArea> stopAreas = new ArrayList<StopArea>();
+		List<StopPoint> stopPoints = new ArrayList<StopPoint>();
+		List<Timetable> timetables = new ArrayList<Timetable>();
+		List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
+
+		// if collection of all sub items is provided
+		if (beans.get(0).getImportedItems() != null) {
+			propagate = false;
+			for (Line line : beans) {
+				ImportedItems item = line.getImportedItems();
+
+				networks.add(item.getPtNetwork());
+				companies.addAll(item.getCompanies());
+				routes.addAll(item.getRoutes());
+
+				journeyPatterns.addAll(item.getJourneyPatterns());
+				connectionLinks.addAll(item.getConnectionLinks());
+				ptLinks.addAll(item.getPtLinks());
+				stopAreas.addAll(item.getStopAreas());
+				stopPoints.addAll(item.getStopPoints());
+				timetables.addAll(item.getTimetables());
+				vehicleJourneys.addAll(item.getVehicleJourneys());
+
+			}
+		} else {
+			// else aggregate dependent objects for validation
+			for (Line line : beans) {
+				if (line.getPtNetwork() != null)
+					networks.add(line.getPtNetwork());
+				if (line.getCompany() != null)
+					companies.add(line.getCompany());
+				if (line.getRoutes() != null) {
+					routes.addAll(line.getRoutes());
+				}
 			}
 		}
 
 		// propagate validation on networks
-		if (networks.size() > 0)
-		{
-			Report report = null;
+		if (networks.size() > 0) {
 			AbstractNeptuneManager<PTNetwork> manager = (AbstractNeptuneManager<PTNetwork>) getManager(PTNetwork.class);
-			if (manager.canValidate())
-			{
-				report = manager.validate(user, networks, parameters);
-			}
-			else
-			{
-				report = manager.propagateValidation(user, networks, parameters);
-			}
-			if (report != null)
-			{
+			Report report = validateReport(user, manager, networks, parameters, propagate);
+			if (report != null) {
 				globalReport.addAll(report.getItems());
 				globalReport.updateStatus(report.getStatus());
 			}
 		}
 
 		// propagate validation on companies
-		if (companies.size() > 0)
-		{
-			Report report = null;
+		if (companies.size() > 0) {
 			AbstractNeptuneManager<Company> manager = (AbstractNeptuneManager<Company>) getManager(Company.class);
-			if (manager.canValidate())
-			{
-				report = manager.validate(user, companies, parameters);
-			}
-			else
-			{
-				report = manager.propagateValidation(user, companies, parameters);
-			}
-			if (report != null)
-			{
+			Report report = validateReport(user, manager, companies, parameters, propagate);
+			if (report != null) {
 				globalReport.addAll(report.getItems());
 				globalReport.updateStatus(report.getStatus());
 			}
 		}
 
 		// propagate validation on routes
-		if (routes.size() > 0)
-		{
-			Report report = null;
+		if (routes.size() > 0) {
 			AbstractNeptuneManager<Route> manager = (AbstractNeptuneManager<Route>) getManager(Route.class);
-			if (manager.canValidate())
-			{
-				report = manager.validate(user, routes, parameters);
-			}
-			else
-			{
-				report = manager.propagateValidation(user, routes, parameters);
-			}
-			if (report != null)
-			{
+			Report report = validateReport(user, manager, routes, parameters, propagate);
+			if (report != null) {
 				globalReport.addAll(report.getItems());
 				globalReport.updateStatus(report.getStatus());
 			}
 		}
 
+		// propagate validation on journeyPatterns
+		if (!journeyPatterns.isEmpty()) {
+			AbstractNeptuneManager<JourneyPattern> manager = (AbstractNeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
+			Report report = validateReport(user, manager, journeyPatterns, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+
+		// propagate validation on connectionLinks
+		if (!connectionLinks.isEmpty()) {
+			AbstractNeptuneManager<ConnectionLink> manager = (AbstractNeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
+			Report report = validateReport(user, manager, connectionLinks, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+		// propagate validation on ptLinks
+		if (!ptLinks.isEmpty()) {
+			AbstractNeptuneManager<PTLink> manager = (AbstractNeptuneManager<PTLink>) getManager(PTLink.class);
+			Report report = validateReport(user, manager, ptLinks, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+
+		// propagate validation on stopAreas
+		if (!stopAreas.isEmpty()) {
+			AbstractNeptuneManager<StopArea> manager = (AbstractNeptuneManager<StopArea>) getManager(StopArea.class);
+			Report report = validateReport(user, manager, stopAreas, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}
+		}
+
+		// propagate validation on stopPoints
+		if (!stopPoints.isEmpty()) {
+			AbstractNeptuneManager<StopPoint> manager = (AbstractNeptuneManager<StopPoint>) getManager(StopPoint.class);
+			Report report = validateReport(user, manager, stopPoints, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}	
+		}
+
+		// propagate validation on timetables
+		if (!timetables.isEmpty()) {
+			AbstractNeptuneManager<Timetable> manager = (AbstractNeptuneManager<Timetable>) getManager(Timetable.class);
+			Report report = validateReport(user, manager, timetables, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}	
+		}
+
+		// propagate validation on vehicleJourneys
+		if(!vehicleJourneys.isEmpty()){
+			AbstractNeptuneManager<VehicleJourney> manager = (AbstractNeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
+			Report report = validateReport(user, manager, vehicleJourneys, parameters, propagate);
+			if (report != null) {
+				globalReport.addAll(report.getItems());
+				globalReport.updateStatus(report.getStatus());
+			}	
+		}
+
 		return globalReport;
 	}
 
-
-
-
-
+	private <T extends NeptuneIdentifiedObject> Report validateReport(User user,AbstractNeptuneManager<T> manager,List<T> list,
+			ValidationParameters parameters,boolean propagate) throws ChouetteException{
+		Report report = null;
+		if (!list.isEmpty()) {
+			if (manager.canValidate()) {
+				report = manager.validate(user, list, parameters, propagate);
+			} else {
+				report = manager.propagateValidation(user, list, parameters,propagate);
+			}
+		}
+		return report;
+	}
 }

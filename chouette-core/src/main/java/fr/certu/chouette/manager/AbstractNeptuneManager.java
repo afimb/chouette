@@ -57,15 +57,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * 
 	 */
 	private Class<?> neptuneType ;
-	
-	
+
+
 	public AbstractNeptuneManager(Class<?> neptuneType) 
 	{
 		managers.put(neptuneType, this);
 		this.neptuneType = neptuneType;
 	}
-	
-	
+
+
 
 	@SuppressWarnings("unchecked")
 	public T getNewInstance(User user) throws ChouetteException 
@@ -79,7 +79,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 			throw new CoreRuntimeException(CoreExceptionCode.FATAL, e);
 		} 
 	}
-	
+
 	/**
 	 * @param neptuneType
 	 * @return
@@ -197,7 +197,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 		return beans;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
 	 */
@@ -253,8 +253,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getImportFormats(fr.certu.chouette.model.user.User)
@@ -384,9 +384,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, java.util.List, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public Report validate(User user, List<T> beans, ValidationParameters parameters) throws ChouetteException 
+	public Report validate(User user, List<T> beans, ValidationParameters parameters, Boolean... propagate) throws ChouetteException 
 	{
 		if (validationPluginList.size() == 0) throw new CoreException(CoreExceptionCode.NO_VALIDATION_PLUGIN_AVAILABLE,"");
+
+		boolean hasToPropagate = true;
+		if (propagate.length > 0) 
+		{
+			hasToPropagate=propagate[0].booleanValue();
+		}
 
 		Report r = new ValidationReport();
 		ValidationClassReportItem[] validationClasses = new ValidationClassReportItem[ValidationClassReportItem.CLASS.values().length]; // see how manage max enum
@@ -398,26 +404,29 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		for (IValidationPlugin<T> plugin : validationPluginList)
 		{
 			List<ValidationClassReportItem> stepItems = plugin.doValidate(beans,parameters);
-			
+
 			for (ValidationClassReportItem item : stepItems) 
 			{
 				int rank=item.getValidationClass().ordinal();
 				validationClasses[rank].addAll(item.getItems());
 			}
-			
+
 		}
 
-		Report propagationReport = propagateValidation(user, beans, parameters);
-		if (propagationReport != null && propagationReport.getItems() != null)
+		if (hasToPropagate)
 		{
-			for (ReportItem item : propagationReport.getItems())
+			Report propagationReport = propagateValidation(user, beans, parameters,hasToPropagate);
+			if (propagationReport != null && propagationReport.getItems() != null)
 			{
-			    ValidationClassReportItem classItem = (ValidationClassReportItem) item;
-			    validationClasses[classItem.getValidationClass().ordinal()].addAll(classItem.getItems());
-			    validationClasses[classItem.getValidationClass().ordinal()].updateStatus(classItem.getStatus());
+				for (ReportItem item : propagationReport.getItems())
+				{
+					ValidationClassReportItem classItem = (ValidationClassReportItem) item;
+					validationClasses[classItem.getValidationClass().ordinal()].addAll(classItem.getItems());
+					validationClasses[classItem.getValidationClass().ordinal()].updateStatus(classItem.getStatus());
+				}
 			}
 		}
-		
+
 		for (ValidationClassReportItem item : validationClasses) 
 		{
 			if (item.getItems() != null && !item.getItems().isEmpty())
@@ -428,12 +437,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		}
 		return r;
 	}
-	
-	protected Report propagateValidation(User user, List<T> beans, ValidationParameters parameters) throws ChouetteException 
+
+	protected Report propagateValidation(User user, List<T> beans, ValidationParameters parameters,boolean propagate) throws ChouetteException 
 	{
 		return null;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getValidationSteps(fr.certu.chouette.model.user.User)
