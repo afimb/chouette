@@ -8,7 +8,11 @@ import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 import fr.certu.chouette.plugin.report.ReportItem;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class FacilityProducer extends AbstractModelProducer<Facility, chouette.schema.Facility>{
 
 	@Override

@@ -10,7 +10,11 @@ import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class Facility extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = -2150117548707325330L;
 	

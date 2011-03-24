@@ -19,6 +19,8 @@ import lombok.Setter;
  * Note for fields comment : <br/>
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
+ * 
+ * @author mamadou keira
  */
 public class AccessLink extends NeptuneIdentifiedObject{
 	private static final long serialVersionUID = 7835556134861322471L;

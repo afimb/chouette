@@ -2,7 +2,11 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.plugin.report.ReportItem;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class GroupOfLineProducer extends AbstractModelProducer<GroupOfLine, chouette.schema.GroupOfLine>{
 
 	@Override

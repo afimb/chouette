@@ -7,7 +7,11 @@ import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.plugin.report.ReportItem;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chouette.schema.AccessPoint>{
 
 	@Override

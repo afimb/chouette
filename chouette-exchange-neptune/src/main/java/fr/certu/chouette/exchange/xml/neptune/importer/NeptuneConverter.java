@@ -29,6 +29,7 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProduce
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimeSlotProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
@@ -47,6 +48,7 @@ import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.report.Report;
@@ -77,6 +79,7 @@ public class NeptuneConverter
 	@Getter @Setter private AccessPointProducer accessPointProducer;
 	@Getter @Setter private GroupOfLineProducer groupOfLineProducer;
 	@Getter @Setter private FacilityProducer facilityProducer;
+	@Getter @Setter private TimeSlotProducer timeSlotProducer;
 
 	public Line extractLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
@@ -410,5 +413,21 @@ public class NeptuneConverter
 		report.addItem(countItem);
 		parentReport.addItem(report);
 		return facilities;
+	}
+	
+	public List<TimeSlot> extractTimeSlots(ChouettePTNetworkTypeType rootObject,ReportItem parentReport){
+		List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
+		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"TimeSlot");
+		chouette.schema.TimeSlot[] xmlTimeSlots = rootObject.getTimeSlot();
+		for (chouette.schema.TimeSlot xmlTimeSlot : xmlTimeSlots) {
+			TimeSlot timeSlot = timeSlotProducer.produce(xmlTimeSlot, report);
+			timeSlots.add(timeSlot);			
+		}
+		int count = (timeSlots == null ? 0 : timeSlots.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		report.addItem(countItem);
+		parentReport.addItem(report);
+		
+		return timeSlots;
 	}
 }

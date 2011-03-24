@@ -28,8 +28,8 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationConnectionLink implements IValidationPlugin<ConnectionLink>{
 
-	ValidationStepDescription validationStepDescription;
-	private final long DIVIDER = 1000 * 3600;;
+	private ValidationStepDescription validationStepDescription;
+	private final long DIVIDER = 1000 * 3600;
 
 	public void init(){
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
@@ -49,7 +49,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
-		ReportItem sheet4 = new SheetReportItem("Test2_Sheet4",4);
+		ReportItem sheet2_4 = new SheetReportItem("Test2_Sheet4",4);
 		ReportItem sheet3_8 = new SheetReportItem("Test3_Sheet8",8);
 		SheetReportItem report2_4 = new SheetReportItem("Test2_Sheet4_Step1",1);
 		SheetReportItem report3_8 = new SheetReportItem("Test3_Sheet8_Step1",1);
@@ -138,9 +138,9 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 		report2_4.computeDetailItemCount();
 		report3_8.computeDetailItemCount();
 		
-		sheet4.addItem(report2_4);
+		sheet2_4.addItem(report2_4);
 		sheet3_8.addItem(report3_8);
-		category2.addItem(sheet4);
+		category2.addItem(sheet2_4);
 		category3.addItem(sheet3_8);
 		
 		res.add(category2);

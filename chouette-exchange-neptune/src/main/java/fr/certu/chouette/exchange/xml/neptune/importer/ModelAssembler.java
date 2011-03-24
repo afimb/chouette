@@ -29,6 +29,7 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
@@ -56,6 +57,7 @@ public class ModelAssembler {
 	@Getter @Setter private List<AccessPoint> accessPoints;
 	@Getter @Setter private List<GroupOfLine> groupOfLines;
 	@Getter @Setter private List<Facility> facilities;
+	@Getter @Setter private List<TimeSlot> timeSlots;
 
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 
@@ -75,7 +77,8 @@ public class ModelAssembler {
 	private Map<String, AccessPoint> accessPointsDictionary = new HashMap<String, AccessPoint>();
 	private Map<String, GroupOfLine> groupOfLinesDictionary = new HashMap<String, GroupOfLine>();
 	private Map<String, Facility> facilitiesDictionary = new HashMap<String, Facility>();
-
+	private Map<String, TimeSlot> timeSlotDictionary = new HashMap<String, TimeSlot>();
+	
 	public void connect()
 	{
 		populateDictionaries();
@@ -116,6 +119,7 @@ public class ModelAssembler {
 		populateDictionnary(accessPoints, accessPointsDictionary);
 		populateDictionnary(groupOfLines, groupOfLinesDictionary);
 		populateDictionnary(facilities, facilitiesDictionary);
+		populateDictionnary(timeSlots,timeSlotDictionary);
 	}
 
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary)
@@ -156,7 +160,11 @@ public class ModelAssembler {
 		item.setStopPoints(stopPoints);
 		item.setTimetables(timetables);
 		item.setVehicleJourneys(vehicleJourneys);
+		item.setTimeSlots(timeSlots);
+		
 		line.setImportedItems(item);
+		if(!groupOfLines.isEmpty())
+			line.setGroupOfLine(groupOfLines.get(0));
 	}
 
 	private void connectRoutes()

@@ -14,5 +14,5 @@
 	<bean id="Test_StopPoint" class="fr.certu.chouette.validation.test.ValidationStopPoint" />
 	<bean id="Test_JourneyPattern" class="fr.certu.chouette.validation.test.ValidationJourneyPattern" />
 	<bean id="Test_VehicleJourney" class="fr.certu.chouette.validation.test.ValidationVehicleJourney" />
-
+	<bean id="Test_AccessLink" class="fr.certu.chouette.validation.test.ValidationAccessLink" />
 </beans>

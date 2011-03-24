@@ -2,7 +2,11 @@ package fr.certu.chouette.model.neptune;
 
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class RestrictionConstraint extends NeptuneObject{
 	private static final long serialVersionUID = 8284408951111709673L;
 	/**

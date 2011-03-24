@@ -13,6 +13,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -91,6 +92,11 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
 		return new PluginInjector<VehicleJourney>();
 	}
 
+	public static PluginInjector<AccessLink> createAccessLinkPluginInjector()
+	{
+		return new PluginInjector<AccessLink>();
+	}
+	
 	@Getter @Setter private INeptuneManager<T> manager;
 	@Getter @Setter private List<IImportPlugin<T>> importPlugins;
 	@Getter @Setter private List<IExportPlugin<T>> exportPlugins;

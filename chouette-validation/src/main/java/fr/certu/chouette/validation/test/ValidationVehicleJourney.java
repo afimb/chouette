@@ -288,7 +288,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 													}else
 														report3_9.updateStatus(Report.STATE.OK);
 												}							
-											}											//Test 3.16.3 a
+											}
+											//Test 3.16.3 a
 											long departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /DIVIDER : 0;
 											long arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /DIVIDER : DIVIDER ;
 											long param3_16_3 = parameters.getTest3_16_3a_MinimalTime();
@@ -314,7 +315,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 					}
 					doubletMap.put(vehicleJourney.getObjectId(), stopsSet);
 				}
-				//System.gc();
 			}
 			//Test 3.16.1
 			for (String key : doubletMap.keySet()) {

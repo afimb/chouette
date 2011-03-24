@@ -42,5 +42,9 @@
   <bean id="vehicleJourneyManager"
     		class="fr.certu.chouette.manager.VehicleJourneyManager">
   </bean>
+  
+  <bean id="accessLinkManager"
+    		class="fr.certu.chouette.manager.AccessLinkManager">
+  </bean>
 
 </beans>

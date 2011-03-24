@@ -5,7 +5,11 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class GroupOfLine extends NeptuneIdentifiedObject{
 
 	private static final long serialVersionUID = 2900948915585746984L;

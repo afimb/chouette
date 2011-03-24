@@ -120,7 +120,12 @@ public class Line extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
 
+	/**
+	 * ImportedItems for import neptune process
+	 */
 	@Getter @Setter private ImportedItems importedItems;
+	
+	@Getter @Setter private GroupOfLine groupOfLine;
 	/**
 	 * add a user needs enumeration value to the line<br/>
 	 * do nothing if user need is already present

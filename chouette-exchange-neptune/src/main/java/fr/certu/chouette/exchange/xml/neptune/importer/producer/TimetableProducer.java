@@ -53,8 +53,6 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, chouette
 				timetable.addVehicleJourneyId(getNonEmptyTrimedString(vehicleJourneyId));
 			}
 		}
-		timetable.setVersion(getNonEmptyTrimedString(xmlTimetable.getVersion()));
-	
 		
 		return timetable;
 	}

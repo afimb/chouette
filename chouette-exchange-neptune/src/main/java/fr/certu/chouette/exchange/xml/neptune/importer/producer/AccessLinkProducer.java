@@ -8,7 +8,11 @@ import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 import fr.certu.chouette.plugin.report.ReportItem;
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouette.schema.AccessLink>{
 
 	@Override

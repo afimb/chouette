@@ -11,7 +11,11 @@ import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
-
+/**
+ * 
+ * @author mamadou keira
+ *
+ */
 public class AccessPoint extends NeptuneIdentifiedObject{
 	private static final long serialVersionUID = 7520070228185917225L;
 	@Getter @Setter private Address address;

@@ -366,6 +366,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setAccessPoints(converter.extractAccessPoints(rootObject, item));
 		modelAssembler.setGroupOfLines(converter.extractGroupOfLines(rootObject, item));
 		modelAssembler.setFacilities(converter.extractFacilities(rootObject, item));
+		modelAssembler.setTimeSlots(converter.extractTimeSlots(rootObject, item));
 		modelAssembler.connect();
 
 		//line.expand(DetailLevelEnum.ALL_DEPENDENCIES);

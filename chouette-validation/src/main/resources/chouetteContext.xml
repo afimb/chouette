@@ -79,4 +79,14 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="AccessLinkValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createAccessLinkPluginInjector">
+		<property name="manager" ref="accessLinkManager" />
+		<property name="validationPlugins">
+			<list>
+			<ref bean="Test_AccessLink" />
+			</list>
+		</property>
+	</bean>
 </beans>
