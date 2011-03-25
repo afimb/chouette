@@ -255,15 +255,13 @@ public class NeptuneConverter
 
 		for(chouette.schema.StopArea xmlStopArea : xmlStopAreas){
 			StopArea stopArea = stopAreaProducer.produce(xmlStopArea, report);
-			List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
 			for (chouette.schema.ITL itl : itls) {
 				if(stopArea.getObjectId().equals(itl.getAreaId())){
 					RestrictionConstraint constraint = new RestrictionConstraint();
 					constraint.setAreaId(itl.getAreaId());
 					constraint.setLineIdShortCut(itl.getLineIdShortCut());
 					constraint.setName(itl.getName());
-					constraints.add(constraint);
-					stopArea.setRestrictionConstraints(constraints);	
+					stopArea.addRestrictionConstraint(constraint);	
 				}
 			}
 			

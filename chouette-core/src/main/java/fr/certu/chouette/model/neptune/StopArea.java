@@ -30,10 +30,10 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter String registrationNumber;
 	@Getter @Setter List<UserNeedEnum> userNeeds;
 	@Getter @Setter List<ConnectionLink> connectionLinks;
-	
+
 	@Getter @Setter List<AccessLink> accessLinks;
 	@Getter @Setter List<RestrictionConstraint> restrictionConstraints;
-	
+
 	public void addBoundaryPoint(String boundaryPoint)
 	{
 		if (boundaryPoints == null) boundaryPoints = new ArrayList<String>();
@@ -51,30 +51,30 @@ public class StopArea extends NeptuneIdentifiedObject {
 		if (containedStopAreas == null) containedStopAreas = new ArrayList<StopArea>();
 		containedStopAreas.add(containedStopArea);
 	}
-	
+
 	public void addContainedStopPoint(StopPoint containedStopPoint)
 	{
 		if (containedStopPoints == null) containedStopPoints = new ArrayList<StopPoint>();
 		containedStopPoints.add(containedStopPoint);
 	}
-	
+
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
 		userNeeds.add(userNeed);
 	}
-	
+
 	public void addConnectionLink(ConnectionLink connectionLink)
 	{
 		if (connectionLinks == null) connectionLinks = new ArrayList<ConnectionLink>();
 		connectionLinks.add(connectionLink);
 	}
-	
+
 	public void addAccessLink(AccessLink accessLink){
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
 		accessLinks.add(accessLink);
 	}
-	
+
 	public void addRestrictionConstraint(RestrictionConstraint restrictionConstraint){
 		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
 		restrictionConstraints.add(restrictionConstraint);
@@ -146,7 +146,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 			}
 		}
 	} 
-	
+
 	@Override
 	public String toString(String indent,int level)
 	{
@@ -176,7 +176,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(boundaryPoint);
 			}
 		}
-		
+
 		if(containedStopIds != null){
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("containedStopIds");
 			for (String containedStopId : getContainedStopIds())
@@ -184,7 +184,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(containedStopId);
 			}
 		}
-		
+
 		if (level > 0)
 		{
 			int childLevel = level -1;
@@ -196,7 +196,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 			if (parentStopArea != null)
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(parentStopArea.toString(childIndent,childLevel));
-				
+
 			}
 			childIndent = indent + CHILD_LIST_INDENT;
 			if (connectionLinks != null)
@@ -210,5 +210,18 @@ public class StopArea extends NeptuneIdentifiedObject {
 		}
 
 		return sb.toString();
+	}
+	public List<String> extracAreaIdsFromRConstraint(){
+		List<String> areaIds = new ArrayList<String>();
+		for (RestrictionConstraint constraint : restrictionConstraints) {
+			if(constraint != null){
+				String areaId = constraint.getAreaId();
+				if(areaId != null){
+					areaIds.add(areaId);
+				}
+			}
+		}
+
+		return areaIds;
 	}
 }

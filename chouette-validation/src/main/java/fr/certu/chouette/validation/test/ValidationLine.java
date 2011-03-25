@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -46,12 +48,15 @@ public class ValidationLine implements IValidationPlugin<Line>
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
-	
+
 		ReportItem sheet1 = new SheetReportItem("Test2_Sheet1", 1);
 		ReportItem sheet2 = new SheetReportItem("Test2_Sheet2",2);
 		ReportItem sheet6 = new SheetReportItem("Test2_Sheet6",6);
 		ReportItem sheet7 = new SheetReportItem("Test2_Sheet7",7);
 		ReportItem sheet3_4 = new SheetReportItem("Test3_Sheet4",4);
+		ReportItem sheet2_26 = new SheetReportItem("Test2_Sheet26",26);
+		ReportItem sheet2_27 = new SheetReportItem("Test2_Sheet27",27);
+		ReportItem sheet2_28 = new SheetReportItem("Test2_Sheet28",28);
 
 		SheetReportItem report2_1_1 = new SheetReportItem("Test2_Sheet1_Step1",1);
 		SheetReportItem report2_1_2 = new SheetReportItem("Test2_Sheet1_Step2", 2);
@@ -60,6 +65,9 @@ public class ValidationLine implements IValidationPlugin<Line>
 		SheetReportItem report2_6_2 = new SheetReportItem("Test2_Sheet6_Step2",2);
 		SheetReportItem report2_7_1 = new SheetReportItem("Test2_Sheet7_Step1",1);
 		SheetReportItem report3_4_1 = new SheetReportItem("Test3_Sheet4_Step1",1);
+		SheetReportItem report2_26_1 = new SheetReportItem("Test2_Sheet26_Step1",1);
+		SheetReportItem report2_27_1 = new SheetReportItem("Test2_Sheet27_Step1",1);
+		SheetReportItem report2_28_1 = new SheetReportItem("Test2_Sheet28_Step1",1);
 
 		for (int i=0;i<lines.size();i++) {
 			Line line = lines.get(i);
@@ -110,12 +118,12 @@ public class ValidationLine implements IValidationPlugin<Line>
 						report2_2_1.updateStatus(Report.STATE.OK);	
 				}
 			}
-		
+
 			//Test 2.6.1
 			List<String> lineEnds = line.getLineEnds();
+			List<String> stopPointIds = Line.extractObjectIds(line.getImportedItems().getStopPoints());
 			if(lineEnds != null){
-				List<String> objectIds = Line.extractObjectIds(line.getImportedItems().getStopPoints());
-				if(!objectIds.containsAll(lineEnds)){
+				if(!stopPointIds.containsAll(lineEnds)){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step1_error", Report.STATE.ERROR);
 					report2_6_1.addItem(detailReportItem);
 				}else {
@@ -123,13 +131,13 @@ public class ValidationLine implements IValidationPlugin<Line>
 				}
 				//Test 2.6.2
 				//List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
-				if(!lineEnds.containsAll(objectIds)){
+				if(!lineEnds.containsAll(stopPointIds)){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",Report.STATE.ERROR);
 					report2_6_2.addItem(detailReportItem);
 				}else 
 					report2_6_2.updateStatus(Report.STATE.OK);	
 			}
-			
+
 			//Test 2.7
 			List<String> routeIds = Line.extractObjectIds(line.getImportedItems().getRoutes());
 			if(!routeIds.containsAll(line.getRouteIds())){
@@ -149,6 +157,67 @@ public class ValidationLine implements IValidationPlugin<Line>
 				}else 
 					report3_4_1.updateStatus(Report.STATE.OK);	
 			}	
+
+			//Test 2.26.1
+			List<AccessPoint> accessPoints = line.getImportedItems().getAccessPoints();
+			List<String> stopAreaIds = Line.extractObjectIds(line.getImportedItems().getStopAreas());
+			List<String> accessLinkIds = Line.extractObjectIds(line.getImportedItems().getAccessLinks()); 
+			for (AccessPoint accessPoint : accessPoints) {
+				String containedInId = accessPoint.getContainedIn();
+				if(stopAreaIds.contains(containedInId) || accessLinkIds.contains(containedInId)){
+					report2_26_1.updateStatus(Report.STATE.OK);	
+				}else{
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet26_Step1_error",Report.STATE.ERROR);
+					report2_26_1.addItem(detailReportItem);
+				}
+			}
+			//Test 2.27.1
+			List<Facility> facilities = line.getImportedItems().getFacilities();
+			for (Facility facility : facilities) {
+				if(facility.getFacilityLocation() != null){
+					String containedIn = facility.getFacilityLocation().getContainedIn();
+					if(containedIn != null && stopAreaIds.contains(containedIn)){
+						report2_27_1.updateStatus(Report.STATE.OK);	
+					}else{
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet27_Step1_error",Report.STATE.ERROR);
+						report2_27_1.addItem(detailReportItem);
+					}
+				}
+				
+				//Test 2.28.1
+				String stopAreaId = facility.getStopAreaId(); 
+				if(stopAreaId != null && stopAreaIds.contains(stopAreaId)){
+					report2_28_1.updateStatus(Report.STATE.OK);	
+				}else{
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step1_error",Report.STATE.ERROR);
+					report2_28_1.addItem(detailReportItem);
+				}
+				
+				//Test 2.28.2
+				if(facility.getLine() == null){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step2_error",Report.STATE.ERROR);
+					report2_28_1.addItem(detailReportItem);
+				}else
+					report2_28_1.updateStatus(Report.STATE.OK);
+				//Test 2.28.3
+				List<String> connectionLinkIds = Line.extractObjectIds(line.getImportedItems().getConnectionLinks());
+				String connectionLinkId = facility.getConnectionLinkId();
+				if(connectionLinkId != null && connectionLinkIds.contains(connectionLinkId)){
+					report2_28_1.updateStatus(Report.STATE.OK);	
+				}else{
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step3_error",Report.STATE.ERROR);
+					report2_28_1.addItem(detailReportItem);
+				}
+				//Test 2.28.4
+				String stopPointId = facility.getStopPointId();
+				if(stopPointId != null && stopPointIds.contains(stopPointId)){
+					report2_28_1.updateStatus(Report.STATE.OK);	
+				}else{
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step4_error",Report.STATE.ERROR);
+					report2_28_1.addItem(detailReportItem);
+				}
+			}
+
 		}
 		report2_1_1.computeDetailItemCount();
 		report2_1_2.computeDetailItemCount();
@@ -157,7 +226,10 @@ public class ValidationLine implements IValidationPlugin<Line>
 		report2_6_2.computeDetailItemCount();
 		report2_7_1.computeDetailItemCount();
 		report3_4_1.computeDetailItemCount();
-		
+		report2_26_1.computeDetailItemCount();
+		report2_27_1.computeDetailItemCount();
+		report2_28_1.computeDetailItemCount();
+
 		sheet1.addItem(report2_1_1);
 		sheet1.addItem(report2_1_2);
 		sheet2.addItem(report2_2_1);
@@ -165,11 +237,17 @@ public class ValidationLine implements IValidationPlugin<Line>
 		sheet6.addItem(report2_6_2);
 		sheet7.addItem(report2_7_1);
 		sheet3_4.addItem(report3_4_1);
+		sheet2_26.addItem(report2_26_1);
+		sheet2_27.addItem(report2_27_1);
+		sheet2_28.addItem(report2_28_1);
 
 		category2.addItem(sheet1);
 		category2.addItem(sheet2);
 		category2.addItem(sheet6);
 		category2.addItem(sheet7);
+		category2.addItem(sheet2_26);
+		category2.addItem(sheet2_27);
+		category2.addItem(sheet2_28);
 		category3.addItem(sheet3_4);
 		result.add(category2);
 		result.add(category3);

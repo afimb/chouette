@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.type.Address;
+import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
@@ -36,49 +37,51 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 		facility.setFreeAccess(xmlFacility.isFreeAccess());
 		//Has_freeAccess optional
 		facility.setHas_freeAccess(xmlFacility.hasFreeAccess());
-		
-		chouette.schema.FacilityLocation facilityLocation = xmlFacility.getFacilityLocation();
-		if(facilityLocation != null){
+
+		chouette.schema.FacilityLocation xmlFacilityLocation = xmlFacility.getFacilityLocation();
+		if(xmlFacilityLocation != null){
+			FacilityLocation facilityLocation = new FacilityLocation();
 			// Address optional
-			chouette.schema.Address xmlAddress = facilityLocation.getAddress();		
+			chouette.schema.Address xmlAddress = xmlFacilityLocation.getAddress();		
 			if(xmlAddress != null){
 				Address address = new Address();
 				address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
 				address.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
-				facility.setAddress(address);
+				facilityLocation.setAddress(address);
 			}
 			// LongLatType mandatory
-			if(facilityLocation.getLongLatType() != null){
+			if(xmlFacilityLocation.getLongLatType() != null){
 				try {
-					facility.setLongLatType(LongLatTypeEnum.fromValue(facilityLocation.getLongLatType().value()));
+					facilityLocation.setLongLatType(LongLatTypeEnum.fromValue(xmlFacilityLocation.getLongLatType().value()));
 				} catch (IllegalArgumentException e) {
 					// TODO: handle exception
 					e.printStackTrace();
 				}
 			}
 			// Latitude mandatory
-			facility.setLatitude(facilityLocation.getLatitude());
+			facilityLocation.setLatitude(xmlFacilityLocation.getLatitude());
 			// Longitude mandatory
-			facility.setLongitude(facilityLocation.getLongitude());
+			facilityLocation.setLongitude(xmlFacilityLocation.getLongitude());
 			// ProjectedPoint optional
-			chouette.schema.ProjectedPoint xmlProjectedPoint = facilityLocation.getProjectedPoint();
+			chouette.schema.ProjectedPoint xmlProjectedPoint = xmlFacilityLocation.getProjectedPoint();
 			if(xmlProjectedPoint != null){
 				ProjectedPoint projectedPoint = new ProjectedPoint();
 				projectedPoint.setX(xmlProjectedPoint.getX());
 				projectedPoint.setY(xmlProjectedPoint.getY());
 				projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
-				facility.setProjectedPoint(projectedPoint);
+				facilityLocation.setProjectedPoint(projectedPoint);
 			}			
 			//ContainedIn mandatory
-			facility.setContainedIn(facilityLocation.getContainedIn());
-			//FacilityFeature[1..n] mandatory
-			chouette.schema.FacilityFeature[] features = xmlFacility.getFacilityFeature();
-			for (chouette.schema.FacilityFeature xmlFeature : features) {
-				FacilityFeature facilityFeature = new FacilityFeature();
-				BeanUtils.copyProperties(xmlFeature, facilityFeature);
-			}
+			facilityLocation.setContainedIn(xmlFacilityLocation.getContainedIn());
+			facility.setFacilityLocation(facilityLocation);
 		}
-		
+		//FacilityFeature[1..n] mandatory
+		chouette.schema.FacilityFeature[] features = xmlFacility.getFacilityFeature();
+		for (chouette.schema.FacilityFeature xmlFeature : features) {
+			FacilityFeature facilityFeature = new FacilityFeature();
+			BeanUtils.copyProperties(xmlFeature, facilityFeature);
+			facility.addFacilityFeature(facilityFeature);
+		}	
 		return facility;
 	}
 

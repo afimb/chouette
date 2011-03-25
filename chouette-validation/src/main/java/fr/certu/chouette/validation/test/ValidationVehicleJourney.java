@@ -14,6 +14,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
@@ -165,9 +166,9 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 
 										//Test 2.21.1
 										String timeSlotId = vehicleJourney.getTimeSlotId();
+										TimeSlot timeSlot = vehicleJourney.getTimeSlot();
 										if(timeSlotId != null){
-											String timeSlotObjectId = (vehicleJourney.getTimeSlot() != null) ? vehicleJourney.getTimeSlot().getObjectId():null;
-											if(!timeSlotId.equals(timeSlotObjectId)){
+											if(timeSlot == null){
 												ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
 												report2_21.addItem(detailReportItem);	
 											}else
