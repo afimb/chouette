@@ -3,7 +3,7 @@
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
-	<div style="width: 80%;">
+	<div style="width: 70%;">
 	<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
 		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST">
@@ -57,39 +57,131 @@
 	<div class="neptune-panel">
 	<s:div>
 	
-  <s:form action="validation" namespace="/neptune-validation" method="POST">
-	   <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.1')}" size="4" />
-	   <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.2')}" size="4"/>
-	   
-	   <s:textarea cols="40" name="polygonCoordinatesAsString" label="%{getText('neptune.field.polygon.3.6')}" rows="9"></s:textarea>
+  <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple">
+	 	<table>
+		 	<tr>
+			 	<td> 
+			 	<s:text name="neptune.field.minimum.distance.3.1"></s:text>
+			 	</td>
+			 	<td>
+			 	 <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" size="4" />
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	<s:text name="neptune.field.minimum.distance.3.2"></s:text>
+			 	</td>
+			 	<td>
+			 	 <s:textfield name="validationParam.test3_2_MinimalDistance" id="test3_2_MinimalDistance" size="4"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.polygon.3.6"></s:text>
+			 	</td>
+			 	<td>
+			 	 <s:textarea cols="20" name="polygonCoordinatesAsString" rows="8"></s:textarea>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.distance.on.maximum.3.7"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_7_MinimalDistance"  size="4"/>
+				<s:textfield name="validationParam.test3_7_MaximalDistance" size="4" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.speed.on.maximum.3.8a"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_8a_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8a')}" size="4"/>
+				<s:textfield name="validationParam.test3_8a_MaximalSpeed"  size="4" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	  <s:text name="neptune.field.minimum.speed.on.maximum.3.8b"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_8b_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8b')}" size="4"/>
+				<s:textfield name="validationParam.test3_8b_MaximalSpeed" size="4" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	  <s:text name="neptune.field.minimum.speed.on.maximum.3.8c"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_8c_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8c')}" size="4"/>
+				<s:textfield name="validationParam.test3_8c_MaximalSpeed" size="4" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.speed.on.maximum.3.8d"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_8d_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8d')}" size="4"/>
+				<s:textfield name="validationParam.test3_8d_MaximalSpeed" size="4" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.speed.on.maximum.3.9"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_9_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.9')}" size="4"/>
+				<s:textfield name="validationParam.test3_9_MaximalSpeed" size="4" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.distance.3.10"></s:text>
+			 	</td>
+			 	<td>
+			 	 <s:textfield name="validationParam.test3_10_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.10')}" size="4"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.time.3.15"></s:text>
+			 	</td>
+			 	<td>
+			 	  <s:textfield name="validationParam.test3_15_MinimalTime" label="%{getText('neptune.field.minimum.time.3.15')}" size="4"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.time.3.16"></s:text>
+			 	</td>
+			 	<td>
+			 	   <s:textfield name="validationParam.test3_16_3a_MinimalTime" label="%{getText('neptune.field.minimum.time.3.16')}" size="4"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.time.on.maximum.3.16c"></s:text>
+			 	</td>
+			 	<td>
+			 	   <s:textfield name="validationParam.test3_16c_MinimalTime" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" size="8"/>
+				  	<s:textfield name="validationParam.test3_16c_MaximalTime" size="8" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	<s:text name="neptune.projection_reference.label"></s:text>
+			 	</td>
+			 	<td>
+					<s:textfield name="validationParam.projection_reference" label="%{getTexneptune.projection_reference.label')}" size="8"/>
+			 	</td>
+		 	</tr>
+	 	</table>
 		
-		<s:textfield name="validationParam.test3_7_MinimalDistance" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" size="4"/>
-		<s:textfield name="validationParam.test3_7_MaximalDistance" size="4" label="/"/>
+		 <br />	
 		
-		<s:textfield name="validationParam.test3_8a_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8a')}" size="4"/>
-		<s:textfield name="validationParam.test3_8a_MaximalSpeed"  size="4" label="/"/>
-		
-		<s:textfield name="validationParam.test3_8b_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8b')}" size="4"/>
-		<s:textfield name="validationParam.test3_8b_MaximalSpeed" size="4" label="/"/>
-		
-		<s:textfield name="validationParam.test3_8c_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8c')}" size="4"/>
-		<s:textfield name="validationParam.test3_8c_MaximalSpeed" size="4" label="/"/>
-		
-		<s:textfield name="validationParam.test3_8d_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8d')}" size="4"/>
-		<s:textfield name="validationParam.test3_8d_MaximalSpeed" size="4" label="/"/>
-		
-		
-		<s:textfield name="validationParam.test3_9_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.9')}" size="4"/>
-		<s:textfield name="validationParam.test3_9_MaximalSpeed" size="4" label="/"/>
-		
-		 <s:textfield name="validationParam.test3_10_MinimalDistance" label="%{getText('neptune.field.minimum.distance.3.10')}" size="4"/>
-		 <s:textfield name="validationParam.test3_15_MinimalTime" label="%{getText('neptune.field.minimum.time.3.15')}" size="4"/>
-		 
-		  <s:textfield name="validationParam.test3_16_3a_MinimalTime" label="%{getText('neptune.field.minimum.time.3.16')}" size="4"/>
-		   
-		<s:textfield name="validationParam.test3_16c_MinimalTime" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" size="8"/>
-		<s:textfield name="validationParam.test3_16c_MaximalTime" size="8" label="/"/>	
-	
      	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}" disabled="#session.imported != true"/>
    		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}" disabled="#session.imported != true" /> 
   

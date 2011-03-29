@@ -14,6 +14,7 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
@@ -55,7 +56,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		ReportItem sheet10 = new SheetReportItem("Test2_Sheet10",10);
 		ReportItem sheet11 = new SheetReportItem("Test2_Sheet11",11);
 		ReportItem sheet14 = new SheetReportItem("Test2_Sheet14",14);
-		
+
 		ReportItem sheet3_1 = new SheetReportItem("Test3_Sheet1",1);
 		ReportItem sheet3_2 = new SheetReportItem("Test3_Sheet2",2);
 		ReportItem sheet3_3 = new SheetReportItem("Test3_Sheet3",3);
@@ -66,7 +67,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		SheetReportItem report2_10_1 = new SheetReportItem("Test2_Sheet10_Step1",1);
 		SheetReportItem report2_11_1 = new SheetReportItem("Test2_Sheet11_Step1",1);
 		SheetReportItem report2_14_1 = new SheetReportItem("Test2_Sheet14_Step1",1);
-		
+
 		SheetReportItem report3_1_1 = new SheetReportItem("Test3_Sheet1_Step1",1);
 		SheetReportItem report3_2_1 = new SheetReportItem("Test3_Sheet2_Step1",1);
 		SheetReportItem report3_3_1 = new SheetReportItem("Test3_Sheet3_Step1",1);
@@ -81,14 +82,13 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		int size = stopPoints.size();
 		for (int i=0;i<size;i++) {
 			StopPoint stopPoint = stopPoints.get(i);
-
+			ImportedItems importedItems = stopPoint.getLine().getImportedItems();
 			//Test2.10.1
 			String lineIdShortcut = stopPoint.getLineIdShortcut();
 			if(lineIdShortcut != null){
-				String lineObjectId = stopPoint.getLine().getObjectId();
-				if(!lineIdShortcut.equals(lineObjectId))
+				if(stopPoint.getLine() == null)
 				{
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet10_Step1_error", Report.STATE.ERROR, "");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet10_Step1_error", Report.STATE.ERROR);
 					report2_10_1.addItem(detailReportItem);	
 				}
 				else
@@ -99,9 +99,8 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 			//Test2.11.1
 			String ptNetworkIdShortcut = stopPoint.getPtNetworkIdShortcut();
 			if(ptNetworkIdShortcut != null){
-				String ptNetworkObjectId = stopPoint.getPtNetwork().getObjectId();
-				if(!ptNetworkIdShortcut.equals(ptNetworkObjectId)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet11_Step1_error", Report.STATE.ERROR,"");
+				if(stopPoint.getPtNetwork() == null){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet11_Step1_error", Report.STATE.ERROR);
 					report2_11_1.addItem(detailReportItem);	
 				}else {
 					report2_11_1.updateStatus(Report.STATE.OK);		
@@ -194,75 +193,103 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 				ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_error_b", Report.STATE.ERROR,stopPoint.getObjectId());
 				report3_6_1.addItem(detailReportItem6b);	
 			}else	
-				report3_6_1.updateStatus(Report.STATE.OK);			
+				report3_6_1.updateStatus(Report.STATE.OK);
+
 			//Test 3.10
-			List<Route> routes = (stopPoint.getLine() != null) ? stopPoint.getLine().getRoutes(): null;
-			if(routes != null){
-				for (Route route : routes) {
-					List<PTLink> ptLinks = route.getPtLinks();
-					int count = 0;
-					boolean exists = false;
-					for (PTLink ptLink : ptLinks) {
-						//Test 3.10.1
-						if(stopPoint.getObjectId().equals(ptLink.getStartOfLink().getObjectId()) || 
-								stopPoint.getObjectId().equals(ptLink.getEndOfLink().getObjectId())){
-							count+=1;
-							exists = true;
-						}
-						//Test 3.10.2
-						if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(ptLink.getEndOfLink().getContainedInStopAreaId())){
-							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING);
-							report3_10_2.addItem(detailReportItem);
-						}else
-							report3_10_2.updateStatus(Report.STATE.OK);
-						//Test 3.10.3
-						double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
-						StopPoint start = ptLink.getStartOfLink();
-						double yStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
-						double xStart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
-						int SRIDStart = (start != null && start.getLongLatType()!= null) ? start.getLongLatType().epsgCode() : 0;
-						GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDStart);
-						Point pointSart = factoryStart.createPoint(new Coordinate(xStart,yStart));
-						
-						StopPoint end = ptLink.getEndOfLink();
-						double yEnd = (end != null && end.getLatitude()!=null) ? end.getLatitude().doubleValue():0;
-						double xEnd = (end != null && end.getLongitude()!=null) ? end.getLongitude().doubleValue():0;
-						int SRIDEnd = (end != null && end.getLongLatType()!= null) ? end.getLongLatType().epsgCode() : 0;
-						GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDEnd);
-						Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd,yEnd));
-						
-						DistanceOp distanceOp = new DistanceOp(pointSart, pointEnd);
-						double distance = distanceOp.distance() * 6371 /180;
-						if(distance < distanceMin3_10){
-							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step3_warning", Report.STATE.WARNING, String.valueOf(distanceMin3_10));
-							report3_10_3.addItem(detailReportItem);	
-						}else
-							report3_10_3.updateStatus(Report.STATE.OK);	
+			int count = 0;
+			List<PTLink> ptLinks4Route = new ArrayList<PTLink>();
+			boolean exists = false;
+			if(importedItems != null){
+				List<PTLink> ptLinks = importedItems.getPtLinks();
+				for (PTLink ptLink : ptLinks) {
+					StopPoint start = ptLink.getStartOfLink();
+					StopPoint end = ptLink.getEndOfLink();
+					//Test 3.10.1
+					if(stopPoint.getObjectId().equals(start.getObjectId()) || 
+							stopPoint.getObjectId().equals(end.getObjectId())){
+						count++;
+						ptLinks4Route.add(ptLink);
+						exists = true;
 					}
-					//Test 2.14.1 a
-					if(!exists){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
-						report2_14_1.addItem(detailReportItem);		
+					//Test 3.10.2
+					if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(ptLink.getEndOfLink().getContainedInStopAreaId())){
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING);
+						report3_10_2.addItem(detailReportItem);
+					}else
+						report3_10_2.updateStatus(Report.STATE.OK);
+					//Test 3.10.3
+					double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
+					double yStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
+					double xStart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
+					int SRIDStart = (start != null && start.getLongLatType()!= null) ? start.getLongLatType().epsgCode() : 0;
+					GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDStart);
+					Point pointSart = factoryStart.createPoint(new Coordinate(xStart,yStart));
+
+					double yEnd = (end != null && end.getLatitude()!=null) ? end.getLatitude().doubleValue():0;
+					double xEnd = (end != null && end.getLongitude()!=null) ? end.getLongitude().doubleValue():0;
+					int SRIDEnd = (end != null && end.getLongLatType()!= null) ? end.getLongLatType().epsgCode() : 0;
+					GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDEnd);
+					Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd,yEnd));
+
+					DistanceOp distanceOp = new DistanceOp(pointSart, pointEnd);
+					double distance = distanceOp.distance() * 6371 /180;
+					if(distance < distanceMin3_10){
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step3_warning", Report.STATE.WARNING, String.valueOf(distanceMin3_10));
+						report3_10_3.addItem(detailReportItem);	
+					}else
+						report3_10_3.updateStatus(Report.STATE.OK);
+
+					//Test 2.14. b 
+					List<Route> routes = importedItems.getRoutes();
+					int countPtLinkInRoute = 0;
+					for (Route route : routes) {
+						if(!route.getPtLinkIds().contains(ptLink.getObjectId())){
+							countPtLinkInRoute++;	
+						}
+					}
+					if(countPtLinkInRoute == 0){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1_error", Report.STATE.ERROR,ptLink.getObjectId());
+						report2_14_1.addItem(detailReportItem);	
 					}else
 						report2_14_1.updateStatus(Report.STATE.OK);	
-					
-					//Test 3.10.1 a
-					if(count == 1 || count == 2){
-						report3_10_1.updateStatus(Report.STATE.OK);	
-					}
-					else{
-						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step1_error_a", Report.STATE.ERROR,stopPoint.getObjectId());
-						report3_10_1.addItem(detailReportItem);		
-					}
-					//Test 3.10.1 b trivial
-					report3_10_1.updateStatus(Report.STATE.OK);
+				}	
+			}
+
+			//Test 2.14.1 a
+			if(importedItems != null){
+				if(!exists){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
+					report2_14_1.addItem(detailReportItem);		
+				}else
+					report2_14_1.updateStatus(Report.STATE.OK);	
+
+				//Test 3.10.1 a
+				if(count == 1 || count == 2){
+					report3_10_1.updateStatus(Report.STATE.OK);	
+				}else{
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step1_error_a", Report.STATE.ERROR,stopPoint.getObjectId());
+					report3_10_1.addItem(detailReportItem);		
+				}
+			}
+			//test 3.10.1 b
+			for (int k=0; k<ptLinks4Route.size();k++) {
+				PTLink ptLink = ptLinks4Route.get(k);
+				PTLink next = (k == ptLinks4Route.size()-1) ? ptLinks4Route.get(k) : ptLinks4Route.get(k+1);
+				if(ptLink.getRouteId() != null){
+					if(!ptLink.getRouteId().equals(next.getRouteId())){
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step1_error_b", Report.STATE.ERROR);
+						report3_10_1.addItem(detailReportItem);	
+						break;
+					}else
+						report3_10_1.updateStatus(Report.STATE.OK);			
 				}
 			}
 		}
+
 		report2_10_1.computeDetailItemCount();
 		report2_11_1.computeDetailItemCount();
 		report2_14_1.computeDetailItemCount();
-		
+
 		report3_1_1.computeDetailItemCount();
 		report3_2_1.computeDetailItemCount();
 		report3_3_1.computeDetailItemCount();
@@ -275,7 +302,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		sheet10.addItem(report2_10_1);
 		sheet11.addItem(report2_11_1);
 		sheet14.addItem(report2_14_1);
-		
+
 		sheet3_1.addItem(report3_1_1);
 		sheet3_2.addItem(report3_2_1);
 		sheet3_3.addItem(report3_3_1);
@@ -288,7 +315,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		category2.addItem(sheet10);
 		category2.addItem(sheet11);
 		category2.addItem(sheet14);
-		
+
 		category3.addItem(sheet3_1);
 		category3.addItem(sheet3_2);
 		category3.addItem(sheet3_3);

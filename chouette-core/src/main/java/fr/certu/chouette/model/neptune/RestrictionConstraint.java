@@ -18,6 +18,7 @@ public class RestrictionConstraint extends NeptuneObject{
      * Field lineIdShortCut.
      */
     @Getter @Setter private String lineIdShortCut;
+    @Getter @Setter private Line line;
     /**
      * Field name.
      */

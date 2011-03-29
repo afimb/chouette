@@ -1,10 +1,9 @@
 package fr.certu.chouette.validation.test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.report.Report;
@@ -52,11 +51,13 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 	private List<ReportItem> validate(List<StopArea> stopAreas) {
 		ReportItem sheet3 = new SheetReportItem("Test2_Sheet3",3);
 		ReportItem sheet2_12 = new SheetReportItem("Test2_Sheet12",12);
+		ReportItem sheet2_13 = new SheetReportItem("Test2_Sheet12",13);
+		
 		SheetReportItem report2_3 = new SheetReportItem("Test2_Sheet3_Step1", 1);
 		SheetReportItem report2_12 = new SheetReportItem("Test2_Sheet12_Step1", 1);
+		SheetReportItem report2_13 = new SheetReportItem("Test2_Sheet13_Step1", 1);
 		
 		List<ReportItem> result = new ArrayList<ReportItem>();
-		Set<String> allAreaIds = new HashSet<String>();
 		for(StopArea stopArea :stopAreas){
 			List<String> containedStopIds = stopArea.getContainedStopIds(); 
 			//Test 2.3.1
@@ -65,10 +66,10 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 				
 				if(areaType.equals(ChouetteAreaEnum.BOARDINGPOSITION) || 
 						areaType.equals(ChouetteAreaEnum.QUAY)){
-					List<String> stopPoints = StopArea.extractObjectIds(stopArea.getContainedStopPoints()) ;
+					List<String> stopPointIds = StopArea.extractObjectIds(stopArea.getContainedStopPoints()) ;
 
-					if(stopPoints != null){
-						if(!containedStopIds.containsAll(stopPoints)){
+					if(stopPointIds != null){
+						if(!containedStopIds.containsAll(stopPointIds)){
 							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR);
 							report2_3.addItem(detailReportItem);
 						}else {
@@ -87,25 +88,38 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 					}
 				}
 			}
-			
-			//Test 2.12
-			List<String> areaIds = stopArea.extracAreaIdsFromRConstraint();
-			allAreaIds.addAll(areaIds);
+			List<RestrictionConstraint> constraints = stopArea.getRestrictionConstraints();
+			if(constraints != null){
+				for (RestrictionConstraint restrictionConstraint : constraints) {
+					//Test 2.12.1
+					if(restrictionConstraint.getStopArea() == null){
+						ReportItem detailReportItem =new DetailReportItem("Test2_Sheet12_Step1_error",Report.STATE.ERROR);
+						report2_12.addItem(detailReportItem);	
+					}else{
+						report2_12.updateStatus(Report.STATE.OK);
+					}
+					//Test 2.13
+					if(restrictionConstraint.getLineIdShortCut() != null){
+						if(restrictionConstraint.getLine() == null){
+							ReportItem detailReportItem =new DetailReportItem("Test2_Sheet13_Step1_error",Report.STATE.ERROR);
+							report2_13.addItem(detailReportItem);
+						}else {
+							report2_13.updateStatus(Report.STATE.OK);	
+						}	
+					}
+				}
+			}
 		}
 		
-		//Test 2.12.1
-		if(allAreaIds != null && allAreaIds.containsAll(StopArea.extractObjectIds(stopAreas))){
-			report2_12.updateStatus(Report.STATE.OK);	
-		}else{
-			ReportItem detailReportItem =new DetailReportItem("Test2_Sheet12_Step1_error",Report.STATE.ERROR);
-			report2_12.addItem(detailReportItem);
-		}
 		report2_3.computeDetailItemCount();
 		report2_12.computeDetailItemCount();
+		report2_13.computeDetailItemCount();
 		
 		sheet3.addItem(report2_3);
 		sheet2_12.addItem(report2_12);
+		sheet2_13.addItem(report2_13);
 		result.add(sheet2_12);
+		result.add(sheet2_13);
 		result.add(sheet3);
 		return result;
 	}

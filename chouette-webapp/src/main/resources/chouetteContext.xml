@@ -289,6 +289,7 @@
 		<property name="test3_16_3a_MinimalTime"   value="${test3_16_3a_MinimalTime}" />
 		<property name="test3_16c_MinimalTime"   value="${test3_16c_MinimalTime}" />
 		<property name="test3_16c_MaximalTime"   value="${test3_16c_MaximalTime}" />
+		<property name="projection_reference"    value="${projection_reference}"/>
 	</bean>
     
      <bean id="NeptuneValidationAction" scope="prototype" parent="GeneriqueAction"

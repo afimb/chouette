@@ -26,6 +26,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -255,6 +256,12 @@ public class ModelAssembler {
 			}
 			stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
 			//no need to set containedInStopArea in StopPoint : it is already done in connectStopPoints method...
+			if(stopArea.getRestrictionConstraints() != null){
+				for (RestrictionConstraint constraint : stopArea.getRestrictionConstraints()) {
+					Line line = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
+					constraint.setLine(line);
+				}
+			}
 		}
 	}
 

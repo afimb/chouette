@@ -98,63 +98,46 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 				if (cookieName.equals("test3_1_MinimalDistance"))
 					validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_2_Polygon"))
 					polygonCoordinatesAsString = cookieValue;
-
 				if(cookieName.equals("test3_2_MinimalDistance"))
 					validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_10_MinimalDistance"))
 					validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_16c_MaximalTime"))
 					validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_16c_MinimalTime"))
 					validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_7_MaximalDistance"))
 					validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_7_MinimalDistance"))
 					validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8a_MaximalSpeed"))
 					validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8a_MinimalSpeed"))
 					validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8b_MaximalSpeed"))
 					validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8b_MinimalSpeed"))
 					validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8c_MaximalSpeed"))
 					validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8c_MinimalSpeed"))
 					validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8d_MaximalSpeed"))
 					validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_8d_MinimalSpeed"))
 					validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_9_MaximalSpeed"))
 					validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_9_MinimalSpeed"))
 					validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_15_MinimalTime"))
 					validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
-
 				if(cookieName.equals("test3_16_3a_MinimalTime"))
 					validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
+				if(cookieName.equals("projection_reference"))
+					validationParam.setProjection_reference(cookieValue);
 			}
 	}
 
@@ -251,6 +234,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
 			saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
 			saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
+			saveCookie("projection_reference", validationParam.getProjection_reference());
 		}
 		//Adding validation parameters values in a session scope
 		session.put("validationParam", validationParam);

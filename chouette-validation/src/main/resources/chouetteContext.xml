@@ -52,7 +52,7 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="StopPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+	<!--<bean id="StopPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createStopPointPluginInjector">
 		<property name="manager" ref="stopPointManager" />
 		<property name="validationPlugins">
@@ -61,7 +61,7 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="JourneyPatternValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+	--><bean id="JourneyPatternValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createJourneyPatternPluginInjector">
 		<property name="manager" ref="journeyPatternManager" />
 		<property name="validationPlugins">
@@ -86,6 +86,25 @@
 		<property name="validationPlugins">
 			<list>
 			<ref bean="Test_AccessLink" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="AccessPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createAccessPointPluginInjector">
+		<property name="manager" ref="accessPointManager" />
+		<property name="validationPlugins">
+			<list>
+			<ref bean="Test_AccessPoint" />
+			</list>
+		</property>
+	</bean>
+	<bean id="FacilityValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createFacilityPluginInjector">
+		<property name="manager" ref="facilityManager" />
+		<property name="validationPlugins">
+			<list>
+			<ref bean="Test_Facility" />
 			</list>
 		</property>
 	</bean>

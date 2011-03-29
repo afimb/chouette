@@ -335,7 +335,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 									if(diff >= min && diff<=max)	
 										report3_16_1.updateStatus(Report.STATE.OK);
 									else {
-										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId());
+										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId(), String.valueOf(diff));
 										report3_16_1.addItem(detailReportItem);	
 									}
 								}

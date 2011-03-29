@@ -213,15 +213,16 @@ public class StopArea extends NeptuneIdentifiedObject {
 	}
 	public List<String> extracAreaIdsFromRConstraint(){
 		List<String> areaIds = new ArrayList<String>();
-		for (RestrictionConstraint constraint : restrictionConstraints) {
-			if(constraint != null){
-				String areaId = constraint.getAreaId();
-				if(areaId != null){
-					areaIds.add(areaId);
+		if(restrictionConstraints != null){
+			for (RestrictionConstraint constraint : restrictionConstraints) {
+				if(constraint != null){
+					String areaId = constraint.getAreaId();
+					if(areaId != null){
+						areaIds.add(areaId);
+					}
 				}
-			}
+			}	
 		}
-
 		return areaIds;
 	}
 }

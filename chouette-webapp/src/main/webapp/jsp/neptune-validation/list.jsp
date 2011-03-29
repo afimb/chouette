@@ -173,7 +173,8 @@
 	 	<s:label value="%{#session.validationParam.test3_16_3a_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.16')}" /><br />
 	 	
 	 	<s:label value="%{#session.validationParam.test3_16c_MinimalTime}" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" />
-	 	<s:label value="%{#session.validationParam.test3_16c_MaximalTime}" label="/" />
+	 	<s:label value="%{#session.validationParam.test3_16c_MaximalTime}" label="/" /><br />
+	 	<s:label value="%{#session.validationParam.projection_reference}" label="%{getText('neptune.projection_reference.label')}"/>
 	 	<br />
 	 	
   		</div>

@@ -14,8 +14,10 @@ import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -95,6 +97,15 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
 	public static PluginInjector<AccessLink> createAccessLinkPluginInjector()
 	{
 		return new PluginInjector<AccessLink>();
+	}
+	public static PluginInjector<AccessPoint> createAccessPointPluginInjector()
+	{
+		return new PluginInjector<AccessPoint>();
+	}
+	
+	public static PluginInjector<Facility> createFacilityPluginInjector()
+	{
+		return new PluginInjector<Facility>();
 	}
 	
 	@Getter @Setter private INeptuneManager<T> manager;

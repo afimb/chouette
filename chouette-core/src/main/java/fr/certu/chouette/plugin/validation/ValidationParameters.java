@@ -43,7 +43,15 @@ public class ValidationParameters
 	@Getter @Setter private long test3_16c_MaximalTime;
 	@Getter @Setter private long test3_16_3a_MinimalTime;
 	@Getter @Setter private long test3_16_3b_MinimalTime;
-
+	@Getter @Setter private float test3_21a_MinimalSpeed;
+	@Getter @Setter private float test3_21a_MaximalSpeed;
+	@Getter @Setter private float test3_21b_MinimalSpeed;
+	@Getter @Setter private float test3_21b_MaximalSpeed;
+	@Getter @Setter private float test3_21c_MinimalSpeed;
+	@Getter @Setter private float test3_21c_MaximalSpeed;
+	@Getter @Setter private float test3_21d_MinimalSpeed;
+	@Getter @Setter private float test3_21d_MaximalSpeed;
+	@Getter @Setter private String projection_reference;
 
 	public void addTest3_2_PolygonPoint(Coordinate coordinate)
 	{

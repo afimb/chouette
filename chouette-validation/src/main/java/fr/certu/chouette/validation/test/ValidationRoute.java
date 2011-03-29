@@ -114,15 +114,18 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 			String wayBackRouteId = route.getWayBackRouteId(); 
 			if(wayBackRouteId != null){
 				//Test 2.9.1
+				int count = 0;
 				for (Route route2 : routes) {
 					if(!route.getObjectId().equals(route2.getObjectId())){
-						if(!wayBackRouteId.equals(route2.getObjectId())){
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet9_Step1_error", Report.STATE.ERROR, "");
-							report2_9_1.addItem(detailReportItem);	
-						}else
-							report2_9_1.updateStatus(Report.STATE.OK);
+						if(wayBackRouteId.equals(route2.getObjectId()))
+							count++;
 					}
 				}
+				if(count == 0){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet9_Step1_error", Report.STATE.ERROR);
+					report2_9_1.addItem(detailReportItem);	
+				}else
+					report2_9_1.updateStatus(Report.STATE.OK);
 			}
 			List<PTLink> ptLinks = route.getPtLinks();
 			//Test 3.11.1
