@@ -43,7 +43,6 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<AccessLink> beans,
 			ValidationParameters parameters) {
-		System.err.println("AccessLinkValidation");
 		return validate(beans, parameters);
 	}
 
@@ -56,6 +55,15 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 		ReportItem sheet3_21 = new SheetReportItem("Test3_Sheet21",21);
 		SheetReportItem report2_25 = new SheetReportItem("Test2_Sheet25_Step1", 1);
 		SheetReportItem report3_21 = new SheetReportItem("Test3_Sheet21_Step1", 1);
+
+		double minA = parameters.getTest3_21a_MinimalSpeed();
+		double maxA = parameters.getTest3_21a_MaximalSpeed();
+		double minB = parameters.getTest3_21b_MinimalSpeed();
+		double maxB = parameters.getTest3_21b_MaximalSpeed();
+		double minC = parameters.getTest3_21c_MinimalSpeed();
+		double maxC = parameters.getTest3_21c_MaximalSpeed();
+		double minD = parameters.getTest3_21d_MinimalSpeed();
+		double maxD = parameters.getTest3_21d_MaximalSpeed();
 		
 		for (AccessLink accessLink : accessLinks) {
 			//Test 2.25.1
@@ -90,14 +98,41 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 			//Test 3.21.1  a
 			long timeA = (accessLink.getDefaultDuration() != null) ? accessLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;
-			double minA = parameters.getTest3_8a_MinimalSpeed();
-			double maxA = parameters.getTest3_8a_MaximalSpeed();
 			if(speedA < minA && speedA > maxA){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_a",Report.STATE.ERROR,
 						String.valueOf(minA),String.valueOf(maxA),accessLink.getObjectId());
 				report3_21.addItem(detailReportItem);
 			}
+			//Test 3.21.1 b
+			long timeB = (accessLink.getFrequentTravellerDuration() != null) ? accessLink.getFrequentTravellerDuration().getTime() / DIVIDER : 0;
+			double speedB = distance/timeB;
+			if(speedB < minB && speedB > maxB){
+				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_b",Report.STATE.ERROR,
+						String.valueOf(minB),String.valueOf(maxB),accessLink.getObjectId());
+				report3_21.addItem(detailReportItem);
+			}		
+			//Test 3.21.1 c
+			long timeC = (accessLink.getOccasionalTravellerDuration() != null) ? accessLink.getOccasionalTravellerDuration().getTime() / DIVIDER: 0;
+			double speedC = distance/timeC;
 			
+			if(speedC < minC && speedC > maxC){
+				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_c",Report.STATE.ERROR,
+						String.valueOf(minC),String.valueOf(maxC),accessLink.getObjectId());
+				report3_21.addItem(detailReportItem);
+			}		
+			//Test 3.21.1 d
+			if(accessLink.getMobilityRestrictedTravellerDuration() == null)
+				report3_21.updateStatus(Report.STATE.OK);
+			else {
+				long timeD = accessLink.getMobilityRestrictedTravellerDuration().getTime() / DIVIDER;
+				double speedD = distance/timeD;
+				if(speedD < minD && speedD > maxD){
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_d",Report.STATE.ERROR,
+							String.valueOf(minD),String.valueOf(maxD),accessLink.getObjectId());
+					report3_21.addItem(detailReportItem);
+				}else 
+					report3_21.updateStatus(Report.STATE.OK);
+			}
 		}
 		report2_25.computeDetailItemCount();
 		report3_21.computeDetailItemCount();
@@ -105,7 +140,7 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 		sheet3_21.addItem(report3_21);
 		category3.addItem(sheet3_21);
 		category2.addItem(sheet2_25);
-		
+
 		res.add(category2);
 		res.add(category3);
 		return res;

@@ -71,8 +71,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 
 	public String execute(){
-		if(session.get("lines") != null)
-			session.clear();
+		session.clear();
 		// Load from cookie if any
 		loadFromCookie(validationParam);
 		return SUCCESS;
@@ -136,6 +135,24 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 					validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
 				if(cookieName.equals("test3_16_3a_MinimalTime"))
 					validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
+
+				if(cookieName.equals("test3_21a_MaximalSpeed"))
+					validationParam.setTest3_21a_MaximalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21a_MinimalSpeed"))
+					validationParam.setTest3_21a_MinimalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21b_MaximalSpeed"))
+					validationParam.setTest3_21b_MaximalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21b_MinimalSpeed"))
+					validationParam.setTest3_21b_MinimalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21c_MaximalSpeed"))
+					validationParam.setTest3_21c_MaximalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21c_MinimalSpeed"))
+					validationParam.setTest3_21c_MaximalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21d_MaximalSpeed"))
+					validationParam.setTest3_21d_MaximalSpeed(Float.valueOf(cookieValue));
+				if(cookieName.equals("test3_21d_MinimalSpeed"))
+					validationParam.setTest3_21d_MinimalSpeed(Float.valueOf(cookieValue));
+
 				if(cookieName.equals("projection_reference"))
 					validationParam.setProjection_reference(cookieValue);
 			}
@@ -168,6 +185,8 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	}
 
 	private boolean importXmlFile(File file) throws ChouetteException{
+		if(session.get("report") != null)
+			session.clear();
 		boolean result = false;
 		if(!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("xml") && 
 				!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("zip"))
@@ -234,6 +253,19 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
 			saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
 			saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
+
+			saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
+			saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
+
+			saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
+			saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
+
+			saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
+			saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
+
+			saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
+			saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
+
 			saveCookie("projection_reference", validationParam.getProjection_reference());
 		}
 		//Adding validation parameters values in a session scope

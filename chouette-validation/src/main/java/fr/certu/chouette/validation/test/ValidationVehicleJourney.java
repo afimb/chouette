@@ -47,7 +47,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 	}
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<VehicleJourney> beans,ValidationParameters parameters) {	
-		System.out.println("VehicleJourneyValidation "+beans.size());
 		return validate(beans,parameters);	
 	}
 
@@ -87,6 +86,16 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		Map<String, Set<VehicleJourney>> map = new TreeMap<String, Set<VehicleJourney>>();
 		Set<VehicleJourney> set = new HashSet<VehicleJourney>();
+
+		double param3_15 = parameters.getTest3_15_MinimalTime();
+		double min3_7 = parameters.getTest3_7_MinimalDistance();
+		double max3_7 = parameters.getTest3_7_MaximalDistance();
+		double min3_9 = parameters.getTest3_9_MinimalSpeed();
+		double max3_9 = parameters.getTest3_9_MaximalSpeed();
+		long param3_16_3 = parameters.getTest3_16_3a_MinimalTime();
+		long min = parameters.getTest3_16c_MinimalTime();
+		long max = parameters.getTest3_16c_MaximalTime();
+
 		if(vehicleJourneys != null){
 			for (int i=0; i<vehicleJourneys.size();i++) {
 				VehicleJourney vehicleJourney = vehicleJourneys.get(i);
@@ -224,8 +233,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							final long CONSTANT = 9999;
 							long arrivalTime = (vehicleJourneyAtStop.getArrivalTime() != null) ? vehicleJourneyAtStop.getArrivalTime().getTime() : CONSTANT;
 							long departureTime = vehicleJourneyAtStop.getDepartureTime().getTime();
-							long diff = Math.abs(arrivalTime - departureTime);
-							double param3_15 = parameters.getTest3_15_MinimalTime();
+							long diff = Math.abs(arrivalTime - departureTime);	
 							if(arrivalTime != CONSTANT){
 								if(diff > param3_15){
 									ReportItem detailReportItem = new DetailReportItem("Test3_Sheet15_Step1_error", Report.STATE.ERROR,String.valueOf(param3_15));
@@ -267,8 +275,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 												Point point2 = factory2.createPoint(coordinate2);
 												DistanceOp distanceOp = new DistanceOp(point1, point2);
 												double distance = distanceOp.distance()* 6371 /180;
-												double min3_7 = parameters.getTest3_7_MinimalDistance();
-												double max3_7 = parameters.getTest3_7_MaximalDistance();
 												if(distance < min3_7  && distance > max3_7){
 													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet7_Step1_warning", Report.STATE.WARNING,String.valueOf(min3_7),String.valueOf(max3_7));
 													report3_7.addItem(detailReportItem);	
@@ -279,8 +285,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 												long arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /DIVIDER : DIVIDER ;
 												long departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /DIVIDER : 0;
 												double speed = distance / Math.abs(departureTime - arrivalTime);
-												double min3_9 = parameters.getTest3_9_MinimalSpeed();
-												double max3_9 = parameters.getTest3_9_MaximalSpeed();
 												if(arrivalTime != DIVIDER){
 													if(speed < min3_9 && speed > max3_9){
 														ReportItem detailReportItem = new DetailReportItem("Test3_Sheet9_Step1_warning", Report.STATE.WARNING,
@@ -293,7 +297,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 											//Test 3.16.3 a
 											long departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /DIVIDER : 0;
 											long arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /DIVIDER : DIVIDER ;
-											long param3_16_3 = parameters.getTest3_16_3a_MinimalTime();
 											if(Math.abs(arrivalTime - departureTime) > param3_16_3){
 												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_a", Report.STATE.ERROR,String.valueOf(param3_16_3));
 												report3_16_3.addItem(detailReportItem);	
@@ -329,8 +332,6 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 										vjAtStops[1].getStopPointId().equals(vjAtStops2[1].getStopPointId())){
 									long diffAbsolute1 = Math.abs(vjAtStops[0].getDepartureTime().getTime() - vjAtStops[1].getArrivalTime().getTime());
 									long diffAbsolute2 = Math.abs(vjAtStops2[0].getDepartureTime().getTime() - vjAtStops2[1].getArrivalTime().getTime());
-									long min = parameters.getTest3_16c_MinimalTime();
-									long max = parameters.getTest3_16c_MaximalTime();
 									long diff = Math.abs(diffAbsolute1-diffAbsolute2)/ DIVIDER;
 									if(diff >= min && diff<=max)	
 										report3_16_1.updateStatus(Report.STATE.OK);

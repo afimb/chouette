@@ -52,4 +52,7 @@
   	<bean id="facilityManager"
     		class="fr.certu.chouette.manager.FacilityManager">
   	</bean>
+  	<bean id="groupOfLineManager"
+    		class="fr.certu.chouette.manager.GroupOfLineManager">
+  	</bean>
 </beans>

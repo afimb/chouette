@@ -32,7 +32,6 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 	}
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<JourneyPattern> beans,ValidationParameters parameters) {
-		System.out.println("JourneyPatternValidation");
 		return validate(beans);	
 	}
 	

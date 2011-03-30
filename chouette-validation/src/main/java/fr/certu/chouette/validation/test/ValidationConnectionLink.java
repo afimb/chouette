@@ -41,7 +41,6 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<ConnectionLink> beans,ValidationParameters parameters) {
-		System.out.println("ConnectionLinkValidation");
 		return validate(beans,parameters);
 	}
 	private List<ValidationClassReportItem> validate(List<ConnectionLink> connectionLinks, ValidationParameters parameters){
@@ -54,6 +53,15 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 		SheetReportItem report2_4 = new SheetReportItem("Test2_Sheet4_Step1",1);
 		SheetReportItem report3_8 = new SheetReportItem("Test3_Sheet8_Step1",1);
 
+		double minA = parameters.getTest3_8a_MinimalSpeed();
+		double maxA = parameters.getTest3_8a_MaximalSpeed();
+		double minB = parameters.getTest3_8b_MinimalSpeed();
+		double maxB = parameters.getTest3_8b_MaximalSpeed();
+		double minC = parameters.getTest3_8c_MinimalSpeed();
+		double maxC = parameters.getTest3_8c_MaximalSpeed();
+		double minD = parameters.getTest3_8d_MinimalSpeed();
+		double maxD = parameters.getTest3_8d_MaximalSpeed();
+
 		for(ConnectionLink connectionLink : connectionLinks){
 			String startOfLinkId = connectionLink.getStartOfLinkId();
 			String endOfLinkId = connectionLink.getEndOfLinkId();
@@ -61,7 +69,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			if(startOfLinkId == null || endOfLinkId == null){
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_a",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
-			//}else if(!startOfLinkId.equals(connectionLink.getStartOfLink().getObjectId()) || !endOfLinkId.equals(connectionLink.getEndOfLink().getObjectId())){
+				//}else if(!startOfLinkId.equals(connectionLink.getStartOfLink().getObjectId()) || !endOfLinkId.equals(connectionLink.getEndOfLink().getObjectId())){
 			}else if(connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null){
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
@@ -92,8 +100,6 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			//Test 3.8.1  a
 			long timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;
-			double minA = parameters.getTest3_8a_MinimalSpeed();
-			double maxA = parameters.getTest3_8a_MaximalSpeed();
 			if(speedA < minA && speedA > maxA){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_a",Report.STATE.ERROR,
 						String.valueOf(minA),String.valueOf(maxA),connectionLink.getObjectId());
@@ -102,8 +108,6 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			//Test 3.8.1 b
 			long timeB = (connectionLink.getFrequentTravellerDuration() != null) ? connectionLink.getFrequentTravellerDuration().getTime() / DIVIDER : 0;
 			double speedB = distance/timeB;
-			double minB = parameters.getTest3_8b_MinimalSpeed();
-			double maxB = parameters.getTest3_8b_MaximalSpeed();
 			if(speedB < minB && speedB > maxB){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_b",Report.STATE.ERROR,
 						String.valueOf(minB),String.valueOf(maxB),connectionLink.getObjectId());
@@ -112,8 +116,6 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			//Test 3.8.1 c
 			long timeC = (connectionLink.getOccasionalTravellerDuration() != null) ? connectionLink.getOccasionalTravellerDuration().getTime() / DIVIDER: 0;
 			double speedC = distance/timeC;
-			double minC = parameters.getTest3_8c_MinimalSpeed();
-			double maxC = parameters.getTest3_8c_MaximalSpeed();
 			if(speedC < minC && speedC > maxC){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_c",Report.STATE.ERROR,
 						String.valueOf(minC),String.valueOf(maxC),connectionLink.getObjectId());
@@ -125,8 +127,6 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			else {
 				long timeD = connectionLink.getMobilityRestrictedTravellerDuration().getTime() / DIVIDER;
 				double speedD = distance/timeD;
-				double minD = parameters.getTest3_8d_MinimalSpeed();
-				double maxD = parameters.getTest3_8d_MaximalSpeed();
 				if(speedD < minD && speedD > maxD){
 					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_d",Report.STATE.ERROR,
 							String.valueOf(minD),String.valueOf(maxD),connectionLink.getObjectId());
@@ -137,12 +137,12 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 		}
 		report2_4.computeDetailItemCount();
 		report3_8.computeDetailItemCount();
-		
+
 		sheet2_4.addItem(report2_4);
 		sheet3_8.addItem(report3_8);
 		category2.addItem(sheet2_4);
 		category3.addItem(sheet3_8);
-		
+
 		res.add(category2);
 		res.add(category3);
 		return res;

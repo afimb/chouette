@@ -53,9 +53,16 @@ public class ValidationAccessPoint implements IValidationPlugin<AccessPoint>{
 		
 		SheetReportItem report3_17 = new SheetReportItem("Test3_Sheet17_Step1", 1);
 		SheetReportItem report3_18 = new SheetReportItem("Test3_Sheet18_Step1", 1);
-		for (AccessPoint accessPoint : accessPoints) {
-			String param = parameters.getProjection_reference();
-			int SRIDparam = (LongLatTypeEnum.fromValue(param) != null) ? LongLatTypeEnum.fromValue(param).epsgCode():0;
+		List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+		Coordinate first = listCoordinates.get(0);
+		Coordinate last = listCoordinates.get(listCoordinates.size()-1);
+		if(!first.equals(last))
+			listCoordinates.add(first);
+		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
+		String param = parameters.getProjection_reference();
+		int SRIDparam = (LongLatTypeEnum.fromValue(param) != null) ? LongLatTypeEnum.fromValue(param).epsgCode():0;
+		
+		for (AccessPoint accessPoint : accessPoints) {			
 			int SRID = (accessPoint.getLongLatType() != null) ? accessPoint.getLongLatType().epsgCode():0; 
 			//Test 3.17.1 && Test 3.18.1.a
 			if(SRID == SRIDparam)
@@ -71,8 +78,6 @@ public class ValidationAccessPoint implements IValidationPlugin<AccessPoint>{
 			//Test 3.18.1.b
 			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
 			GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID);
-			List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
-			Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
 			LinearRing shell = factory1.createLinearRing(coordinates);
 			LinearRing[] holes = null;
 			Polygon polygon = factory1.createPolygon(shell, holes);

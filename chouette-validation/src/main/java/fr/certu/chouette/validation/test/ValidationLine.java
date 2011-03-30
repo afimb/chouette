@@ -50,7 +50,6 @@ public class ValidationLine implements IValidationPlugin<Line>
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<Line> lines,ValidationParameters parameters) 
 	{
-		System.out.println("LineValidation");
 		List<ValidationClassReportItem> items = validate(lines,parameters); 
 		return items;
 	}
@@ -80,7 +79,7 @@ public class ValidationLine implements IValidationPlugin<Line>
 		SheetReportItem report2_26_1 = new SheetReportItem("Test2_Sheet26_Step1",1);
 		SheetReportItem report2_27_1 = new SheetReportItem("Test2_Sheet27_Step1",1);
 		SheetReportItem report2_28_1 = new SheetReportItem("Test2_Sheet28_Step1",1);
-		
+
 		/**
 		 * VALIDATION STOPPOINT MIGRATED
 		 */
@@ -108,6 +107,16 @@ public class ValidationLine implements IValidationPlugin<Line>
 		SheetReportItem report3_10_2 = new SheetReportItem("Test3_Sheet10_Step2",2);
 		SheetReportItem report3_10_3 = new SheetReportItem("Test3_Sheet10_Step3",3);
 
+		float param = parameters.getTest3_1_MinimalDistance();
+		float param2 = parameters.getTest3_2_MinimalDistance();
+		List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+		Coordinate first = listCoordinates.get(0);
+		Coordinate last = listCoordinates.get(listCoordinates.size()-1);
+		if(!first.equals(last))
+			listCoordinates.add(first);
+		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
+		double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
+		
 		for (int i=0;i<lines.size();i++) {
 			Line line = lines.get(i);
 			PTNetwork network = line.getPtNetwork();
@@ -260,7 +269,7 @@ public class ValidationLine implements IValidationPlugin<Line>
 					}
 				}
 			}
-			
+
 			/**
 			 * VALIDATION STOPPOINT MIGRATED
 			 */
@@ -299,7 +308,9 @@ public class ValidationLine implements IValidationPlugin<Line>
 				GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID1);
 				Coordinate coordinate = new Coordinate(x1, y1);
 				Point point1 = factory1.createPoint(coordinate);
-
+				LinearRing shell = factory1.createLinearRing(coordinates);
+				LinearRing[] holes = null;
+				Polygon polygon = factory1.createPolygon(shell, holes);
 				for(int j=i+1;j<size;j++){
 					StopPoint another = stopPoints.get(j);
 					double y2 = (another.getLatitude() != null) ? another.getLatitude().doubleValue() : 0;
@@ -312,7 +323,6 @@ public class ValidationLine implements IValidationPlugin<Line>
 					double distance = distanceOp.distance() * CONVERTER ;
 
 					//Test 3.1.1
-					float param = parameters.getTest3_1_MinimalDistance();
 					if(distance < param){
 						if(!stopPoint.getName().equals(another.getName())){
 							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet1_Step1_warning", Report.STATE.WARNING,String.valueOf(param), stopPoint.getObjectId(), another.getObjectId(),String.valueOf(distance));
@@ -321,7 +331,6 @@ public class ValidationLine implements IValidationPlugin<Line>
 							report3_1_1.updateStatus(Report.STATE.OK);
 					}
 					//Test 3.2.1
-					float param2 = parameters.getTest3_2_MinimalDistance();
 					if(distance < param2){
 						if(!stopPoint.getContainedInStopAreaId().equals(another.getContainedInStopAreaId())){
 							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet2_Step1_warning", Report.STATE.WARNING,String.valueOf(param2), stopPoint.getObjectId(), another.getObjectId());
@@ -369,11 +378,6 @@ public class ValidationLine implements IValidationPlugin<Line>
 					}	
 				}
 				//Test 3.6.1 b
-				List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
-				Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
-				LinearRing shell = factory1.createLinearRing(coordinates);
-				LinearRing[] holes = null;
-				Polygon polygon = factory1.createPolygon(shell, holes);
 				if(!polygon.contains(point1)){
 					ReportItem detailReportItem6b = new DetailReportItem("Test3_Sheet6_Step1_error_b", Report.STATE.ERROR,stopPoint.getObjectId());
 					report3_6_1.addItem(detailReportItem6b);	
@@ -404,8 +408,8 @@ public class ValidationLine implements IValidationPlugin<Line>
 							report3_10_2.addItem(detailReportItem);
 						}else
 							report3_10_2.updateStatus(Report.STATE.OK);
+						
 						//Test 3.10.3
-						double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
 						double yStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
 						double xStart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
 						int SRIDStart = (start != null && start.getLongLatType()!= null) ? start.getLongLatType().epsgCode() : 0;
@@ -504,7 +508,7 @@ public class ValidationLine implements IValidationPlugin<Line>
 		category2.addItem(sheet2_27);
 		category2.addItem(sheet2_28);
 		category3.addItem(sheet3_4);
-		
+
 		/**
 		 * VALIDATION STOPPOINT
 		 */
@@ -545,7 +549,7 @@ public class ValidationLine implements IValidationPlugin<Line>
 		category3.addItem(sheet3_6);
 		category3.addItem(sheet3_10);
 
-		
+
 		result.add(category2);
 		result.add(category3);
 		return result;

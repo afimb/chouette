@@ -36,7 +36,6 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<Facility> facilities,ValidationParameters parameters){
-		System.out.println("FacilityValidation");
 		return validate(facilities,parameters); 
 	}
 	private List<ValidationClassReportItem> validate(List<Facility> facilities,ValidationParameters parameters) {
@@ -48,6 +47,12 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 		ReportItem sheet3_20 = new SheetReportItem("Test3_Sheet20", 20);
 		SheetReportItem report3_19_1 = new SheetReportItem("Test3_Sheet19_Step1",1);
 		SheetReportItem report3_20_1 = new SheetReportItem("Test3_Sheet20_Step1",1);
+		List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+		Coordinate first = listCoordinates.get(0);
+		Coordinate last = listCoordinates.get(listCoordinates.size()-1);
+		if(!first.equals(last))
+			listCoordinates.add(first);
+		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
 
 		String param = parameters.getProjection_reference().trim();
 		for (Facility facility : facilities) {
@@ -69,8 +74,6 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 				//Test 3.20.1.b
 				PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
 				GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID);
-				List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
-				Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
 				LinearRing shell = factory1.createLinearRing(coordinates);
 				LinearRing[] holes = null;
 				Polygon polygon = factory1.createPolygon(shell, holes);

@@ -6,16 +6,15 @@
 	<div style="width: 70%;">
 	<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
-		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST">
+		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST" theme="simple">
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" />
 		   <s:submit value="%{getText('submit.import.xml')}"/> 
 		</s:form>
-		<s:include value="/jsp/commun/messages.jsp" />
 	</div>
-	<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
+	<b><s:label value="%{#session.report.getLocalizedMessage(getLocale())}"/></b>
 	<s:div id="category1">
-		 <s:iterator value="report.items" var="sheet" status="status">
+		 <s:iterator value="#session.report.items" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 			 <s:div cssClass="neptune-panel" id="%{status}">
 			 <s:iterator value="items" var="test" status="itemsStatus">
@@ -52,11 +51,11 @@
 			 	</s:iterator>
 			 	</s:div>
 		 </s:iterator>
-		 </s:div>
+	</s:div>
+	<s:include value="/jsp/commun/messages.jsp" />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
 	<s:div>
-	
   <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple">
 	 	<table>
 		 	<tr>
@@ -80,7 +79,7 @@
 			 	 <s:text name="neptune.field.polygon.3.6"></s:text>
 			 	</td>
 			 	<td>
-			 	 <s:textarea cols="20" name="polygonCoordinatesAsString" rows="8"></s:textarea>
+			 	 <s:textarea cols="25" name="polygonCoordinatesAsString" rows="8"></s:textarea>
 			 	</td>
 		 	</tr>
 		 	<tr>
@@ -172,6 +171,42 @@
 		 	</tr>
 		 	<tr>
 			 	<td> 
+			 	 <s:text name="neptune.field.minimum.speed.on.maximum.3.21a"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_21a_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21a')}" size="5"/>/
+				<s:textfield name="validationParam.test3_21a_MaximalSpeed"  size="5" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	  <s:text name="neptune.field.minimum.speed.on.maximum.3.21b"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_21b_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21b')}" size="5"/>/
+				<s:textfield name="validationParam.test3_21b_MaximalSpeed" size="5" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	  <s:text name="neptune.field.minimum.speed.on.maximum.3.21c"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_21c_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21c')}" size="5"/>/
+				<s:textfield name="validationParam.test3_21c_MaximalSpeed" size="5" label="/"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.minimum.speed.on.maximum.3.21d"></s:text>
+			 	</td>
+			 	<td>
+			 	<s:textfield name="validationParam.test3_21d_MinimalSpeed" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21d')}" size="5"/>/
+				<s:textfield name="validationParam.test3_21d_MaximalSpeed" size="5" label="/"/>
+			 	</td>
+		 	</tr> 	
+		 	<tr>
+			 	<td> 
 			 	<s:text name="neptune.projection_reference.label"></s:text>
 			 	</td>
 			 	<td>
@@ -181,12 +216,9 @@
 	 	</table>
 		
 		 <br />	
-		
+		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}" disabled="#session.imported != true" />
      	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}" disabled="#session.imported != true"/>
-   		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}" disabled="#session.imported != true" /> 
-  
   </s:form>
-  
 </s:div>
 </div>
 </div>

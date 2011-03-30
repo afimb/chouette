@@ -27,8 +27,9 @@ import fr.certu.chouette.validation.report.SheetReportItem;
 /**
  * 
  * @author mamadou keira
- *
+ * This class is migrated in {@link ValidationLine}
  */
+@Deprecated
 public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 	private ValidationStepDescription validationStepDescription;
 	private final double CONVERTER = 6371 /180;
@@ -44,7 +45,6 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 	}
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<StopPoint> beans,ValidationParameters parameters) {	
-		System.out.println("StopPointValidation "+beans.size());
 		return validate(beans,parameters);	
 	}
 

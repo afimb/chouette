@@ -36,34 +36,30 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<StopArea> beans,ValidationParameters parameters) {
-		System.out.println("StopAreaValidation");
-		List<ValidationClassReportItem> validationClassReportItems = new ArrayList<ValidationClassReportItem>();
-		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
-		validationClassReportItems.add(category2);
-		category2.addAll(validate(beans));
-		return validationClassReportItems;
+		return validate(beans);
 	}
 	/**
 	 * The test 2.3.1
 	 * @param stopAreas
 	 * @return
 	 */
-	private List<ReportItem> validate(List<StopArea> stopAreas) {
-		ReportItem sheet3 = new SheetReportItem("Test2_Sheet3",3);
+	private List<ValidationClassReportItem> validate(List<StopArea> stopAreas) {
+		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
+		ReportItem sheet2_3 = new SheetReportItem("Test2_Sheet3",3);
 		ReportItem sheet2_12 = new SheetReportItem("Test2_Sheet12",12);
-		ReportItem sheet2_13 = new SheetReportItem("Test2_Sheet12",13);
-		
+		ReportItem sheet2_13 = new SheetReportItem("Test2_Sheet13",13);
+
 		SheetReportItem report2_3 = new SheetReportItem("Test2_Sheet3_Step1", 1);
 		SheetReportItem report2_12 = new SheetReportItem("Test2_Sheet12_Step1", 1);
 		SheetReportItem report2_13 = new SheetReportItem("Test2_Sheet13_Step1", 1);
-		
-		List<ReportItem> result = new ArrayList<ReportItem>();
+
+		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		for(StopArea stopArea :stopAreas){
 			List<String> containedStopIds = stopArea.getContainedStopIds(); 
 			//Test 2.3.1
 			if(containedStopIds != null && !containedStopIds.isEmpty()){
 				ChouetteAreaEnum areaType = stopArea.getAreaType();
-				
+
 				if(areaType.equals(ChouetteAreaEnum.BOARDINGPOSITION) || 
 						areaType.equals(ChouetteAreaEnum.QUAY)){
 					List<String> stopPointIds = StopArea.extractObjectIds(stopArea.getContainedStopPoints()) ;
@@ -110,17 +106,21 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 				}
 			}
 		}
-		
+
 		report2_3.computeDetailItemCount();
 		report2_12.computeDetailItemCount();
 		report2_13.computeDetailItemCount();
-		
-		sheet3.addItem(report2_3);
+
+		sheet2_3.addItem(report2_3);
 		sheet2_12.addItem(report2_12);
 		sheet2_13.addItem(report2_13);
-		result.add(sheet2_12);
-		result.add(sheet2_13);
-		result.add(sheet3);
+
+		category2.addItem(sheet2_3);
+		category2.addItem(sheet2_12);
+		category2.addItem(sheet2_13);
+
+		result.add(category2);
+
 		return result;
 	}
 }

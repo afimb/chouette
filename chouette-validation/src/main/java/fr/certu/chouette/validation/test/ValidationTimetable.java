@@ -32,9 +32,7 @@ public class ValidationTimetable implements IValidationPlugin<Timetable>{
 		return validationStepDescription;
 	}
 	@Override
-	public List<ValidationClassReportItem> doValidate(List<Timetable> beans,ValidationParameters parameters) {
-		System.out.println("TimetableValidation");
-		
+	public List<ValidationClassReportItem> doValidate(List<Timetable> beans,ValidationParameters parameters) {		
 		return validate(beans);
 	}
 	

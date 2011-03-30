@@ -35,8 +35,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 	}
 
 	@Override
-	public List<ValidationClassReportItem> doValidate(List<Route> beans,ValidationParameters parameters) {
-		System.out.println("RouteValidation");	
+	public List<ValidationClassReportItem> doValidate(List<Route> beans,ValidationParameters parameters) {	
 		return validate(beans);
 	}
 

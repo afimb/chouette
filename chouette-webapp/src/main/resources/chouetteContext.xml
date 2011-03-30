@@ -289,6 +289,14 @@
 		<property name="test3_16_3a_MinimalTime"   value="${test3_16_3a_MinimalTime}" />
 		<property name="test3_16c_MinimalTime"   value="${test3_16c_MinimalTime}" />
 		<property name="test3_16c_MaximalTime"   value="${test3_16c_MaximalTime}" />
+		<property name="test3_21a_MinimalSpeed"   value="${test3_21a_MinimalSpeed}" />
+		<property name="test3_21a_MaximalSpeed"   value="${test3_21a_MaximalSpeed}" />
+		<property name="test3_21b_MinimalSpeed"   value="${test3_21b_MinimalSpeed}" />
+		<property name="test3_21b_MaximalSpeed"   value="${test3_21b_MaximalSpeed}" />
+		<property name="test3_21c_MinimalSpeed"   value="${test3_21c_MinimalSpeed}" />
+		<property name="test3_21c_MaximalSpeed"   value="${test3_21c_MaximalSpeed}" />
+		<property name="test3_21d_MinimalSpeed"   value="${test3_21d_MinimalSpeed}" />
+		<property name="test3_21d_MaximalSpeed"   value="${test3_21d_MaximalSpeed}" />
 		<property name="projection_reference"    value="${projection_reference}"/>
 	</bean>
     

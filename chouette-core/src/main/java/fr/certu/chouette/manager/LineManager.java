@@ -46,7 +46,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<Line> beans,ValidationParameters parameters, boolean propagate)
-		throws ChouetteException {
+	throws ChouetteException {
 		Report globalReport = new ValidationReport();
 
 		List<PTNetwork> networks = new ArrayList<PTNetwork>();
@@ -65,7 +65,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 		List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
 		List<Facility> facilities = new ArrayList<Facility>();
 		List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
-		
+
 		// if collection of all sub items is provided
 		if (beans.get(0).getImportedItems() != null) {
 			propagate = false;
@@ -201,7 +201,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 				globalReport.updateStatus(report.getStatus());
 			}	
 		}
-		
+
 		// propagate validation on timeSlots
 		if(!timeSlots.isEmpty()){
 			AbstractNeptuneManager<TimeSlot> manager = (AbstractNeptuneManager<TimeSlot>) getManager(TimeSlot.class);
@@ -211,7 +211,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 				globalReport.updateStatus(report.getStatus());
 			}	
 		}
-		
+
 		// propagate validation on accessLinks
 		if(!accessLinks.isEmpty()){
 			AbstractNeptuneManager<AccessLink> manager = (AbstractNeptuneManager<AccessLink>) getManager(AccessLink.class);
@@ -231,7 +231,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 				globalReport.updateStatus(report.getStatus());
 			}	
 		}
-		
+
 
 		// propagate validation on facilities
 		if(!facilities.isEmpty()){
@@ -242,7 +242,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 				globalReport.updateStatus(report.getStatus());
 			}	
 		}
-		
+
 		// propagate validation on groupOfLines
 		if(!groupOfLines.isEmpty()){
 			AbstractNeptuneManager<GroupOfLine> manager = (AbstractNeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
@@ -252,7 +252,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 				globalReport.updateStatus(report.getStatus());
 			}	
 		}
-		
+
 		return globalReport;
 	}
 
@@ -273,7 +273,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 		if (!list.isEmpty()) {
 			if (manager.canValidate()) {
 				report = manager.validate(user, list, parameters, propagate);
-			} else {
+			} else if (propagate) {
 				report = manager.propagateValidation(user, list, parameters,propagate);
 			}
 		}
