@@ -239,8 +239,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			{
 				Line line = processImport(rootObject,validate,report,entryName);
 
-				if (line != null) 
+				if (line != null){
 					lines.add(line);
+					report1_1.updateStatus(Report.STATE.OK);	
+				}
 				else
 					logger.error("zip entry "+entryName+" import failed (build model)");
 

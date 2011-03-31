@@ -1,13 +1,31 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import org.springframework.beans.BeanUtils;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.AccommodationFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.AssistanceFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
+import fr.certu.chouette.model.neptune.type.facility.FareClassFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.HireFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.LuggageFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.MobilityFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.NuisanceFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.ParkingFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.PassengerCommsFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.PassengerInformationFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.RefreshmentFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.ReservedSpaceFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.RetailFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.SanitaryFacilityEnumeration;
+import fr.certu.chouette.model.neptune.type.facility.TicketingFacilityEnumeration;
 import fr.certu.chouette.plugin.report.ReportItem;
 /**
  * 
@@ -15,6 +33,26 @@ import fr.certu.chouette.plugin.report.ReportItem;
  *
  */
 public class FacilityProducer extends AbstractModelProducer<Facility, chouette.schema.Facility>{
+	private Map<Class<?>,Class<?>> facilityEnumMap;
+	public void init(){
+		facilityEnumMap = new HashMap<Class<?>, Class<?>>();
+		facilityEnumMap.put(chouette.schema.types.AccessFacilityEnumeration.class,AccessFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.AccommodationFacilityEnumeration.class, AccommodationFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.AssistanceFacilityEnumeration.class,AssistanceFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.FareClassFacilityEnumeration.class,FareClassFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.HireFacilityEnumeration.class, HireFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.LuggageFacilityEnumeration.class, LuggageFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.MobilityFacilityEnumeration.class, MobilityFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.NuisanceFacilityEnumeration.class, NuisanceFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.ParkingFacilityEnumeration.class, ParkingFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.PassengerCommsFacilityEnumeration.class, PassengerCommsFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.PassengerInformationFacilityEnumeration.class,PassengerInformationFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.RefreshmentFacilityEnumeration.class, RefreshmentFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.ReservedSpaceFacilityEnumeration.class, ReservedSpaceFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.RetailFacilityEnumeration.class, RetailFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.SanitaryFacilityEnumeration.class, SanitaryFacilityEnumeration.class);
+		facilityEnumMap.put(chouette.schema.types.TicketingFacilityEnumeration.class, TicketingFacilityEnumeration.class);
+	}
 
 	@Override
 	public Facility produce(chouette.schema.Facility xmlFacility, ReportItem report) {
@@ -79,7 +117,16 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 		chouette.schema.FacilityFeature[] features = xmlFacility.getFacilityFeature();
 		for (chouette.schema.FacilityFeature xmlFeature : features) {
 			FacilityFeature facilityFeature = new FacilityFeature();
-			BeanUtils.copyProperties(xmlFeature, facilityFeature);
+
+			Class<?> neptuneEnum = facilityEnumMap.get(xmlFeature.getChoiceValue().getClass());
+			try {
+				Method fromValueMethod = neptuneEnum.getMethod("fromValue", String.class);
+				Object value =  fromValueMethod.invoke(null, xmlFeature.getChoiceValue().toString());
+				facilityFeature.setChoiceValue(value);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
 			facility.addFacilityFeature(facilityFeature);
 		}	
 		return facility;

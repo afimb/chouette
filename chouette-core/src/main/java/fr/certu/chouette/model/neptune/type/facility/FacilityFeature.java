@@ -2,6 +2,8 @@ package fr.certu.chouette.model.neptune.type.facility;
 
 import java.io.Serializable;
 
+import lombok.Setter;
+
 public class FacilityFeature implements Serializable {
 
 	private static final long serialVersionUID = 2770570120139346512L;
@@ -9,7 +11,7 @@ public class FacilityFeature implements Serializable {
 	/**
 	 * Internal choice value storage
 	 */
-	private Object choiceValue;
+	@Setter private Object choiceValue;
 
 	/**
 	 * Classification of Access Facility

@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.Getter;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
@@ -35,10 +34,10 @@ public class ValidationLine implements IValidationPlugin<Line>{
 
 	@Override
 	public List<ValidationClassReportItem> doValidate(List<Line> lines,ValidationParameters parameters) {
-		return validate(lines,parameters);
+		return validate(lines);
 	}
 
-	private  List<ValidationClassReportItem> validate(List<Line> lines,ValidationParameters parameters){
+	private  List<ValidationClassReportItem> validate(List<Line> lines){
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
@@ -104,58 +103,53 @@ public class ValidationLine implements IValidationPlugin<Line>{
 				}
 			}	
 			//Test 2.2.1
+
+			if(line.getGroupOfLine() == null && !line.getGroupOfLine().getLineIds().contains(line.getObjectId())){
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error",Report.STATE.ERROR);
+				report2_2_1.addItem(detailReportItem);
+			}else 
+				report2_2_1.updateStatus(Report.STATE.OK);	
+
+			//Test 2.6.1
+			List<String> lineEnds = line.getLineEnds();
+			List<String> stopPointIds = Line.extractObjectIds(line.getStopPointList());
+			if(lineEnds != null){
+				if(!stopPointIds.containsAll(lineEnds)){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step1_error", Report.STATE.ERROR);
+					report2_6_1.addItem(detailReportItem);
+				}else {
+					report2_6_1.updateStatus(Report.STATE.OK);	
+				}
+				//Test 2.6.2
+				List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
+				if(!lineEndList.containsAll(lineEnds)){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",Report.STATE.ERROR);
+					report2_6_2.addItem(detailReportItem);
+				}else 
+					report2_6_2.updateStatus(Report.STATE.OK);	
+			}
+
+			//Test 2.7
+			List<String> routeIds = Line.extractObjectIds(line.getRoutes());
+			if(!line.getRouteIds().containsAll(routeIds)){
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet7_Step1_error",Report.STATE.ERROR);
+				report2_7_1.addItem(detailReportItem);
+			}else {
+				report2_7_1.updateStatus(Report.STATE.OK);
+			}
+			//Test 3.4.1
+			Line nextLine = (i <lines.size()-1) ? lines.get(i+1) : line;
+			String refCurrent = (line.getName()+""+line.getNumber()).trim();
+			String refNext = (nextLine.getName()+""+nextLine.getNumber()).trim();
+			if(!line.getObjectId().equals(nextLine.getObjectId())){
+				if(refCurrent.equals(refNext)){
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet4_Step1_error",Report.STATE.ERROR, line.getObjectId());
+					report3_4_1.addItem(detailReportItem);
+				}else 
+					report3_4_1.updateStatus(Report.STATE.OK);	
+			}	
 			ImportedItems importedItems =line.getImportedItems();
 			if(importedItems != null){
-				for (GroupOfLine groupOfLine : importedItems.getGroupOfLines()) {
-					if(groupOfLine.getObjectId().equals(line.getGroupOfLine().getObjectId())){
-						if(!groupOfLine.getLineIds().contains(line.getObjectId())){
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error",Report.STATE.ERROR);
-							report2_2_1.addItem(detailReportItem);
-						}else 
-							report2_2_1.updateStatus(Report.STATE.OK);	
-					}
-				}	
-
-
-				//Test 2.6.1
-				List<String> lineEnds = line.getLineEnds();
-				List<String> stopPointIds = Line.extractObjectIds(importedItems.getStopPoints());
-				if(lineEnds != null){
-					if(!stopPointIds.containsAll(lineEnds)){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step1_error", Report.STATE.ERROR);
-						report2_6_1.addItem(detailReportItem);
-					}else {
-						report2_6_1.updateStatus(Report.STATE.OK);	
-					}
-					//Test 2.6.2
-					List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
-					if(!lineEndList.containsAll(lineEnds)){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",Report.STATE.ERROR);
-						report2_6_2.addItem(detailReportItem);
-					}else 
-						report2_6_2.updateStatus(Report.STATE.OK);	
-				}
-
-				//Test 2.7
-				List<String> routeIds = Line.extractObjectIds(importedItems.getRoutes());
-				if(!routeIds.containsAll(line.getRouteIds())){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet7_Step1_error",Report.STATE.ERROR);
-					report2_7_1.addItem(detailReportItem);
-				}else {
-					report2_7_1.updateStatus(Report.STATE.OK);
-				}
-				//Test 3.4.1
-				Line nextLine = (i <lines.size()-1) ? lines.get(i+1) : line;
-				String refCurrent = line.getName()+""+line.getNumber();
-				String refNext = nextLine.getName()+""+nextLine.getNumber();
-				if(!line.getObjectId().equals(nextLine.getObjectId())){
-					if(refCurrent.equals(refNext)){
-						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet4_Step1_error",Report.STATE.ERROR, line.getObjectId());
-						report3_4_1.addItem(detailReportItem);
-					}else 
-						report3_4_1.updateStatus(Report.STATE.OK);	
-				}	
-
 				//Test 2.26.1
 				List<AccessPoint> accessPoints = importedItems.getAccessPoints();
 				List<String> stopAreaIds = Line.extractObjectIds(importedItems.getStopAreas());
@@ -215,7 +209,7 @@ public class ValidationLine implements IValidationPlugin<Line>{
 						report2_28_1.addItem(detailReportItem);
 					}
 				}
-			}		
+			}
 		}
 
 		report2_1_1.computeDetailItemCount();
