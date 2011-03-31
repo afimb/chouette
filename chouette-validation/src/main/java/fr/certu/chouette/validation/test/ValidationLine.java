@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
@@ -102,13 +103,6 @@ public class ValidationLine implements IValidationPlugin<Line>{
 					}
 				}
 			}	
-			//Test 2.2.1
-
-			if(line.getGroupOfLine() == null && !line.getGroupOfLine().getLineIds().contains(line.getObjectId())){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error",Report.STATE.ERROR);
-				report2_2_1.addItem(detailReportItem);
-			}else 
-				report2_2_1.updateStatus(Report.STATE.OK);	
 
 			//Test 2.6.1
 			List<String> lineEnds = line.getLineEnds();
@@ -150,6 +144,17 @@ public class ValidationLine implements IValidationPlugin<Line>{
 			}	
 			ImportedItems importedItems =line.getImportedItems();
 			if(importedItems != null){
+
+				//Test 2.2.1
+				for (GroupOfLine groupOfLine : importedItems.getGroupOfLines()) {
+					if(groupOfLine.getObjectId().equals(line.getGroupOfLine().getObjectId())){
+						if(!groupOfLine.getLineIds().contains(line.getObjectId())){
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error",Report.STATE.ERROR);
+							report2_2_1.addItem(detailReportItem);
+						}else 
+							report2_2_1.updateStatus(Report.STATE.OK);	
+					}
+				}	
 				//Test 2.26.1
 				List<AccessPoint> accessPoints = importedItems.getAccessPoints();
 				List<String> stopAreaIds = Line.extractObjectIds(importedItems.getStopAreas());

@@ -223,6 +223,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			try
 			{
 				rootObject = reader.read(stream,entryName);
+				report1_1.updateStatus(Report.STATE.OK);	
 			}
 			catch (Exception e) 
 			{
