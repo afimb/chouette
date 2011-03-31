@@ -52,7 +52,7 @@
 			</list>
 		</property>
 	</bean>
-	<!--<bean id="StopPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+	<bean id="StopPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createStopPointPluginInjector">
 		<property name="manager" ref="stopPointManager" />
 		<property name="validationPlugins">
@@ -61,7 +61,7 @@
 			</list>
 		</property>
 	</bean>
-	--><bean id="JourneyPatternValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+	<bean id="JourneyPatternValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createJourneyPatternPluginInjector">
 		<property name="manager" ref="journeyPatternManager" />
 		<property name="validationPlugins">
