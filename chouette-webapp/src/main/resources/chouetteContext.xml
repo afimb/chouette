@@ -202,6 +202,7 @@
         <property name="reducteur" ref="reducteur" />
         <property name="useAltibus" value="${import.xml.altibus}"/>
         <property name="usePegase" value="${import.csv.pegase}"/>
+	<property name="importHastusLogFileName" value="${import.csv.hastus.log}"/>
     </bean>
 
     <bean id="LineFilesComparisonServiceBean" scope="prototype"

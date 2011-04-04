@@ -72,7 +72,7 @@ public class ImportAction extends GeneriqueAction {
 	private              IReducteur             reducteur;
 	private              String                 baseName;
         private              InputStream            inputStream;
-        private              String                 importHastusLogFileName;
+    private              String                 importHastusLogFileName;
 	
 	public ImportAction() {
 		super();
