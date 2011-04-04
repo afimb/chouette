@@ -4,16 +4,14 @@
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
 	<div style="width: 70%;">
-	<div class="panelDataSection"><s:text name="import.index.title"/></div>
+	  <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple" enctype="multipart/form-data">
+		<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
-		<s:form id="NeptuneValidationUploadForm" action="importNeptune" namespace="/neptune-validation" enctype="multipart/form-data" method="POST" theme="simple">
 		   <s:text name="fieldset.legend.import" />
-		   <s:file name="file" label="%{getText('action.browse')}" />
-		   <s:submit value="%{getText('submit.import.xml')}"/> 
-		</s:form>
-	</div>
-	<b><s:label value="%{#session.report.getLocalizedMessage(getLocale())}"/></b>
-	<s:div id="category1">
+		   <s:file name="file" label="%{getText('action.browse')}" /> 
+		</div><!--
+		<b><s:label value="%{#session.report.getLocalizedMessage(getLocale())}"/></b>
+		<s:div id="category1">
 		 <s:iterator value="#session.report.items" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 			 <s:div cssClass="neptune-panel" id="%{status}">
@@ -52,18 +50,17 @@
 			 	</s:div>
 		 </s:iterator>
 	</s:div>
-	<s:include value="/jsp/commun/messages.jsp" />
+	--><s:include value="/jsp/commun/messages.jsp" />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
 	<s:div>
-  <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple">
 	 	<table>
 		 	<tr>
 			 	<td> 
 			 	<s:text name="neptune.field.minimum.distance.3.1"></s:text>
 			 	</td>
 			 	<td>
-			 	 <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" size="5" />
+			 	 <s:textfield name="validationParam.test3_1_MinimalDistance" id="test3_1_MinimalDistance" size="5"/>
 			 	</td>
 		 	</tr>
 		 	<tr>
@@ -79,7 +76,7 @@
 			 	 <s:text name="neptune.field.polygon.3.6"></s:text>
 			 	</td>
 			 	<td>
-			 	 <s:textarea cols="25" name="polygonCoordinatesAsString" rows="8"></s:textarea>
+			 	 <s:textarea cols="25" name="polygonCoordinatesAsString" rows="3"></s:textarea>
 			 	</td>
 		 	</tr>
 		 	<tr>
@@ -216,9 +213,9 @@
 	 	</table>
 		
 		 <br />	
-		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}" disabled="#session.imported != true" />
-     	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}" disabled="#session.imported != true"/>
-  </s:form>
-</s:div>
-</div>
+		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}"/>
+     	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}"/>
+	</s:div>
+	</div>
+	</s:form>
 </div>

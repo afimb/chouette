@@ -158,7 +158,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			}
 	}
 
-	public String importNeptune() throws ChouetteException, IOException {
+	private String importNeptune() throws ChouetteException, IOException {
 		String result = INPUT;
 		if(file != null && file.length()>0){
 			formats = lineManager.getImportFormats(null);
@@ -176,17 +176,12 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			addActionError(getText("error.import.file.require"));
 			result = INPUT;
 		}
-		session.put("fileFileName", fileFileName);
-		session.put("lines", lines);	
-		session.put("imported", imported);
 		// Load from cookie if any
 		loadFromCookie(validationParam);
 		return result;
 	}
 
 	private boolean importXmlFile(File file) throws ChouetteException{
-		if(session.get("report") != null)
-			session.clear();
 		boolean result = false;
 		if(!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("xml") && 
 				!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("zip"))
@@ -207,7 +202,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		lines = lineManager.doImport(null,formats.get(0).getName(),parameters, reportHolder);
 		report = reportHolder.getReport();
-		session.put("report",report);
 		if(lines != null && !lines.isEmpty())
 			result = true;
 
@@ -215,11 +209,14 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	}
 
 	public String validation() throws ChouetteException, IOException{
-		String res = LIST;
+		String fileImporter = importNeptune();
+		String res = fileImporter;
+		if(res.equals(SUCCESS))
+			 res =  LIST;
+		else 
+			return res;
 		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
-		lines = (List<Line>)session.get("lines");
 		reportValidation = lineManager.validate(null,lines,validationParam);
-		report = (Report)session.get("report");
 		boolean isDefault = false;
 		if(session.get("isDefault") != null)
 			isDefault = (Boolean)session.get("isDefault");
@@ -269,8 +266,8 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			saveCookie("projection_reference", validationParam.getProjection_reference());
 		}
 		//Adding validation parameters values in a session scope
-		session.put("validationParam", validationParam);
-		session.put("polygonCoordinatesAsString", polygonCoordinatesAsString);
+//		session.put("validationParam", validationParam);
+//		session.put("polygonCoordinatesAsString", polygonCoordinatesAsString);
 		return res;
 	}
 

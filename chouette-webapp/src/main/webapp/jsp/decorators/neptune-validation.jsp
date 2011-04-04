@@ -19,7 +19,17 @@
     <div id="global">
       <%@ include file="/jsp/commun/neptune-validation-header.jsp" %>
       <div id="main">
-        <%@ include file="/jsp/commun/menu.jsp" %>
+      <div id="menu">
+	<div class="submenu">
+		<div>Menu</div>
+		<br />
+		<ul id="sommaire">
+			<%-- Reseaux --%>
+      	<s:url id="urlConnexionMenu" action ="list" namespace="/line" includeParams="none"/>
+			<li><s:a href="%{urlConnexionMenu}" id="connexionMenu"><s:text name="text.connexion"/></s:a></li>
+			</ul>
+			</div>
+			</div>
         <div id="help"></div>
         <div id="content">
 

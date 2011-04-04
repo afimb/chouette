@@ -340,6 +340,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 					/*ReportItem subItem = new NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_CAUSE,Report.STATE.ERROR,t.getLocalizedMessage());
 					item.addItem(subItem);*/
 					logger.error(t.getLocalizedMessage());
+					//ReportItem detail2 = new DetailReportItem("",Report.STATE.ERROR, t.getLocalizedMessage());			
+					//report1_2.addItem(detail2);
 					t = t.getCause();
 				}
 				return null;

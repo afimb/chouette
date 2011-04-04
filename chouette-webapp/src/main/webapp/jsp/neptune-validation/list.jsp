@@ -7,7 +7,7 @@
 	<div style="width: 90%;">
 	 <div class="panelDataSection"><s:text name="validation.result.title"/></div>
 	  	<div class="neptune-panel">
-	  	<s:label label="%{getText('validation.title')}" value="%{#session.fileFileName}"/>
+	  	<s:label label="%{getText('validation.title')}" value="%{fileFileName}"/>
 	  	<br /><br />
 	  	<s:text name="text.save" />
 		<table border="0" cellpadding="20">
@@ -146,48 +146,48 @@
   	<div class="panelDataSection"><s:text name="message.parameter.title"/>
 		</div>
 	      <div class="neptune-panel">
-	     <s:label label="%{getText('neptune.field.minimum.distance.3.1')}" value="%{#session.validationParam.test3_1_MinimalDistance}" /><br />
-	     <s:label label="%{getText('neptune.field.minimum.distance.3.2')}" value="%{#session.validationParam.test3_2_MinimalDistance}"/><br />
-	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{#session.polygonCoordinatesAsString}"/><br />
-	 	<s:label value="%{#session.validationParam.test3_7_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" />
-	 	<s:label value="%{#session.validationParam.test3_7_MaximalDistance}" label="/" />
+	     <s:label label="%{getText('neptune.field.minimum.distance.3.1')}" value="%{validationParam.test3_1_MinimalDistance}" /><br />
+	     <s:label label="%{getText('neptune.field.minimum.distance.3.2')}" value="%{validationParam.test3_2_MinimalDistance}"/><br />
+	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{polygonCoordinatesAsString}"/><br />
+	 	<s:label value="%{validationParam.test3_7_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" />
+	 	<s:label value="%{validationParam.test3_7_MaximalDistance}" label="/" />
 	 	<br />
 	 	
-	 	<s:label value="%{#session.validationParam.test3_8a_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8a')}" />
-	 	<s:label value="%{#session.validationParam.test3_8a_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_8a_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8a')}" />
+	 	<s:label value="%{validationParam.test3_8a_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_8b_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8b')}" />
-	 	<s:label value="%{#session.validationParam.test3_8b_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_8b_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8b')}" />
+	 	<s:label value="%{validationParam.test3_8b_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_8c_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8c')}" />
-	 	<s:label value="%{#session.validationParam.test3_8c_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_8c_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8c')}" />
+	 	<s:label value="%{validationParam.test3_8c_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_8d_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8d')}" />
-	 	<s:label value="%{#session.validationParam.test3_8d_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_8d_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.8d')}" />
+	 	<s:label value="%{validationParam.test3_8d_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_9_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.9')}" />
-	 	<s:label value="%{#session.validationParam.test3_9_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_9_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.9')}" />
+	 	<s:label value="%{validationParam.test3_9_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_10_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.3.10')}" /><br />
-	 	<s:label value="%{#session.validationParam.test3_15_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.15')}" /><br />
-	 	<s:label value="%{#session.validationParam.test3_16_3a_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.16')}" /><br />
+	 	<s:label value="%{validationParam.test3_10_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.3.10')}" /><br />
+	 	<s:label value="%{validationParam.test3_15_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.15')}" /><br />
+	 	<s:label value="%{validationParam.test3_16_3a_MinimalTime}" label="%{getText('neptune.field.minimum.time.3.16')}" /><br />
 	 	
-	 	<s:label value="%{#session.validationParam.test3_16c_MinimalTime}" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" />
-	 	<s:label value="%{#session.validationParam.test3_16c_MaximalTime}" label="/" /><br />
+	 	<s:label value="%{validationParam.test3_16c_MinimalTime}" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" />
+	 	<s:label value="%{validationParam.test3_16c_MaximalTime}" label="/" /><br />
 	 	
-	 	<s:label value="%{#session.validationParam.test3_21a_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21a')}" />
-	 	<s:label value="%{#session.validationParam.test3_21a_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_21a_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21a')}" />
+	 	<s:label value="%{validationParam.test3_21a_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_21b_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21b')}" />
-	 	<s:label value="%{#session.validationParam.test3_21b_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_21b_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21b')}" />
+	 	<s:label value="%{validationParam.test3_21b_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_21c_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21c')}" />
-	 	<s:label value="%{#session.validationParam.test3_21c_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_21c_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21c')}" />
+	 	<s:label value="%{validationParam.test3_21c_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.test3_21d_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21d')}" />
-	 	<s:label value="%{#session.validationParam.test3_21d_MaximalSpeed}" label="/" />
+	 	<s:label value="%{validationParam.test3_21d_MinimalSpeed}" label="%{getText('neptune.field.minimum.speed.on.maximum.3.21d')}" />
+	 	<s:label value="%{validationParam.test3_21d_MaximalSpeed}" label="/" />
 	 	<br />
-	 	<s:label value="%{#session.validationParam.projection_reference}" label="%{getText('neptune.projection_reference.label')}"/>
+	 	<s:label value="%{validationParam.projection_reference}" label="%{getText('neptune.projection_reference.label')}"/>
 	 	
 	 	
   		</div>
