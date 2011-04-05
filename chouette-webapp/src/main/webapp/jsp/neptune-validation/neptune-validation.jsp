@@ -10,6 +10,46 @@
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" /> 
 		</div>
+				<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
+		<s:div id="category1">
+		 <s:iterator value="report.items" var="sheet" status="status">
+		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
+			 <s:div cssClass="neptune-panel" id="%{status}">
+			 <s:iterator value="items" var="test" status="itemsStatus">
+			 	<s:div cssClass="%{status}">
+			 	<div>
+					<s:a href="#-1" onclick="showIt('detail%{#status.index}_%{#itemsStatus.index}','showIt_%{#status.index}_%{#itemsStatus.index}');" 
+						id="showIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
+						<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}"/>						
+					</s:a> 
+					<s:a href="#-1" onclick="hideIt('detail%{#status.index}_%{#itemsStatus.index}','hideIt_%{#status.index}_%{#itemsStatus.index}');" 
+						id="hideIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
+						<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}"/>
+					</s:a>
+						<s:label value="%{report.order}.%{#sheet.order}.%{#test.order}" />
+				</div>
+			 		<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-15px">
+			 			<s:property value="getLocalizedMessage(getLocale())"/>
+					</s:div>
+			 		<s:if test="%{getStatus().name() != 'OK' && getStatus().name() != 'UNCHECK' }">
+							<s:div cssStyle="margin-left: 20px;">
+								</s:div>
+									 <s:div cssClass="neptune-panel-inSide" id="detail%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
+										<ol>
+										 <s:iterator value="items">
+										     <li>
+										    	<s:text name="validation.test.delimiter" />
+										    	 <s:property value="getLocalizedMessage(getLocale())"/>
+										   	 </li>
+										    </s:iterator>
+								 		 </ol>
+								 </s:div>
+						</s:if>
+			 		</s:div>
+			 	</s:iterator>
+			 	</s:div>
+		 </s:iterator>
+	</s:div>
 		<s:include value="/jsp/commun/messages.jsp" />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
