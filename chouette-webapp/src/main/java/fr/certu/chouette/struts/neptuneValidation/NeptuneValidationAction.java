@@ -163,18 +163,19 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		if(file != null && file.length()>0){
 			formats = lineManager.getImportFormats(null);
 			imported = importXmlFile(file);
-			if(imported)
+			if(imported){
 				if(lines != null && !lines.isEmpty()){
 					setImported(true);
 					result = SUCCESS;
 				}else {
 					addActionError(getText("error.import.file.failure"));
-					result = ERROR;	
+					result = SUCCESS;	
 				}
-
+			}else
+				result = ERROR;
 		}else{
 			addActionError(getText("error.import.file.require"));
-			result = INPUT;
+			result = ERROR;
 		}
 		// Load from cookie if any
 		loadFromCookie(validationParam);
@@ -211,63 +212,62 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	public String validation() throws ChouetteException, IOException{
 		String fileImporter = importNeptune();
 		String res = fileImporter;
-		if(res.equals(SUCCESS))
-			 res =  LIST;
+		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
+		if(res.equals(SUCCESS)){
+			reportValidation = lineManager.validate(null,lines,validationParam);
+			boolean isDefault = false;
+			if(session.get("isDefault") != null)
+				isDefault = (Boolean)session.get("isDefault");
+			if(!isDefault){
+				// Save to cookie
+				saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
+				saveCookie("test3_2_Polygon", polygonCoordinatesAsString);
+				saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
+
+				saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
+				saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
+
+				saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
+
+				saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
+				saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
+
+				saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
+				saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
+
+				saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
+				saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
+
+				saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
+				saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
+
+				saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
+				saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
+
+				saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
+				saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
+				saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
+				saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
+
+				saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
+				saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
+
+				saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
+				saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
+
+				saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
+				saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
+
+				saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
+				saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
+
+				saveCookie("projection_reference", validationParam.getProjection_reference());
+			}
+		}
+		if(res.equals(INPUT) || res.equals(SUCCESS))
+			res =  LIST;
 		else 
 			return res;
-		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
-		reportValidation = lineManager.validate(null,lines,validationParam);
-		boolean isDefault = false;
-		if(session.get("isDefault") != null)
-			isDefault = (Boolean)session.get("isDefault");
-		if(!isDefault){
-			// Save to cookie
-			saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
-			saveCookie("test3_2_Polygon", polygonCoordinatesAsString);
-			saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
-
-			saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
-			saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
-
-			saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
-
-			saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
-			saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
-
-			saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
-			saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
-
-			saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
-			saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
-
-			saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
-			saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
-
-			saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
-			saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
-
-			saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
-			saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
-			saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
-			saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
-
-			saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
-			saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
-
-			saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
-			saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
-
-			saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
-			saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
-
-			saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
-			saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
-
-			saveCookie("projection_reference", validationParam.getProjection_reference());
-		}
-		//Adding validation parameters values in a session scope
-//		session.put("validationParam", validationParam);
-//		session.put("polygonCoordinatesAsString", polygonCoordinatesAsString);
 		return res;
 	}
 
@@ -305,13 +305,13 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		List<Coordinate> coordinates = validationParam.getTest3_2_Polygon();
 		String coodinatesAsString = "".trim();
 		for(Coordinate coordinate : coordinates){
-			coodinatesAsString =coodinatesAsString.concat(coordinate.x+","+coordinate.y+"\t");
+			coodinatesAsString =coodinatesAsString.concat(coordinate.x+","+coordinate.y+" ");
 		}
 		return coodinatesAsString;
 	}
 	public List<Coordinate> getTest3_2_Polygon(String value){
 		List<Coordinate> test3_2_Polygon = new ArrayList<Coordinate>();
-		String[] tab = value.split("\t");
+		String[] tab = value.split(" ");
 		for (String string : tab) {
 			double x = Double.valueOf(string.split(",")[0]);
 			double y =  Double.valueOf(string.split(",")[1]);
@@ -333,49 +333,54 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		int nbWARN = 0;
 		int nbERROR = 0;
 		int nbFATAL = 0;
-		for (ReportItem item1  : reportValidation.getItems()) // Categories
-		{
-			for (ReportItem item2 : item1.getItems()) // fiche
+		if(reportValidation != null){
+			for (ReportItem item1  : reportValidation.getItems()) // Categories
 			{
-				for (ReportItem item3 : item2.getItems()) //test
+				for (ReportItem item2 : item1.getItems()) // fiche
 				{
-					STATE status = item3.getStatus();
-					switch (status)
+					for (ReportItem item3 : item2.getItems()) //test
 					{
-					case UNCHECK : 
-						nbUNCHECK++;						
-						break;
-					case OK : 
-						nbOK++;						
-						break;
-					case WARNING : 
-						nbWARN++; 						
-						break;
-					case ERROR : 
-						nbERROR++;	
-						break;
-					case FATAL : 
-						nbFATAL++;		
-						break;
+						STATE status = item3.getStatus();
+						switch (status)
+						{
+						case UNCHECK : 
+							nbUNCHECK++;						
+							break;
+						case OK : 
+							nbOK++;						
+							break;
+						case WARNING : 
+							nbWARN++; 						
+							break;
+						case ERROR : 
+							nbERROR++;	
+							break;
+						case FATAL : 
+							nbFATAL++;		
+							break;
+						}
 					}
 				}
-			}
+			}	
 		}
+
 		//Import report
-		for (ReportItem item1  : report.getItems()) {// Categories
-			if(item1.getItems() != null){
-				for (ReportItem item2 : item1.getItems()) {// fiche
-					if(item2.getItems() != null){
-						STATE status = item2.getStatus();
-						switch (status){
-						case UNCHECK : nbUNCHECK++; break;
-						case OK :nbOK++; break;
-						case WARNING :nbWARN++; break;
-						case ERROR : nbERROR++; break;
-						case FATAL : nbFATAL++; break;
-						}	
-					}		
-				}
+		if(report != null){
+			for (ReportItem item1  : report.getItems()) {// Categories
+				if(item1.getItems() != null){
+					for (ReportItem item2 : item1.getItems()) {// fiche
+						if(item2.getItems() != null){
+							STATE status = item2.getStatus();
+							switch (status){
+							case UNCHECK : nbUNCHECK++; break;
+							case OK :nbOK++; break;
+							case WARNING :nbWARN++; break;
+							case ERROR : nbERROR++; break;
+							case FATAL : nbFATAL++; break;
+							}	
+						}		
+					}
+				}	
 			}	
 		}
 		countMap.put(STATE.OK, nbOK);

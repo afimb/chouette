@@ -334,10 +334,14 @@ public class ModelAssembler {
 
 	private void connectFacilities() {
 		for (Facility facility : facilities) {
-			facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
-			facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
-			facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
-			facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
+			if(facility.getStopAreaId() != null)
+				facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
+			if(facility.getStopPointId() != null)
+				facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
+			if(facility.getConnectionLinkId() != null)
+				facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
+			if(facility.getLineId() != null)
+				facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
 		}
 	}
 	@SuppressWarnings("unchecked")

@@ -595,7 +595,7 @@
   <package name="neptuneValidation" extends="struts" namespace="/neptune-validation">
     <action name="*" class="NeptuneValidationAction" method="{1}">
       <result name="success">/jsp/neptune-validation/neptune-validation.jsp</result>
-      <result name="input">/jsp/neptune-validation/neptune-validation.jsp</result>
+      <result name="input">/jsp/neptune-validation/list.jsp</result>
       <result name="error">/jsp/neptune-validation/neptune-validation.jsp</result>
       <result name="list">/jsp/neptune-validation/list.jsp</result>
     </action>
