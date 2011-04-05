@@ -76,7 +76,7 @@
 			 	 <s:text name="neptune.field.polygon.3.6"></s:text>
 			 	</td>
 			 	<td>
-			 	 <s:textfield  name="polygonCoordinatesAsString" size="63"/>
+			 	 <s:textfield  name="validationParam.test3_2_PolygonPoints" size="63"/>
 			 	</td>
 		 	</tr>
 		 	<tr>

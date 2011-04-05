@@ -21,7 +21,6 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.opensymphony.xwork2.Preparable;
-import com.vividsolutions.jts.geom.Coordinate;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
@@ -58,7 +57,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter private int cookieExpires;
 	@Getter @Setter private ValidationParameters validationParam ;
 	@Getter @Setter private ValidationParameters validationParamDefault ;
-	@Setter private String polygonCoordinatesAsString;
 
 	// For access to the raw servlet request / response, eg for cookies
 	@Getter @Setter protected HttpServletResponse servletResponse;
@@ -83,7 +81,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	private void loadFromCookie(ValidationParameters validationParam){
 		try {
 			BeanUtils.copyProperties(validationParam, validationParamDefault);
-			polygonCoordinatesAsString = getPolygonCoordinatesAsString(); 
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
@@ -97,8 +94,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 				if (cookieName.equals("test3_1_MinimalDistance"))
 					validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_2_Polygon"))
-					polygonCoordinatesAsString = cookieValue;
+				if(cookieName.equals("test3_2_Polygon")){
+					validationParam.setTest3_2_PolygonPoints(cookieValue);
+				}
 				if(cookieName.equals("test3_2_MinimalDistance"))
 					validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
 				if(cookieName.equals("test3_10_MinimalDistance"))
@@ -177,8 +175,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			addActionError(getText("error.import.file.require"));
 			result = ERROR;
 		}
-		// Load from cookie if any
-		loadFromCookie(validationParam);
 		return result;
 	}
 
@@ -210,9 +206,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	}
 
 	public String validation() throws ChouetteException, IOException{
-		String fileImporter = importNeptune();
-		String res = fileImporter;
-		validationParam.setTest3_2_Polygon(getTest3_2_Polygon(polygonCoordinatesAsString));
+		String res = importNeptune();
 		if(res.equals(SUCCESS)){
 			reportValidation = lineManager.validate(null,lines,validationParam);
 			boolean isDefault = false;
@@ -221,7 +215,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			if(!isDefault){
 				// Save to cookie
 				saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
-				saveCookie("test3_2_Polygon", polygonCoordinatesAsString);
+				saveCookie("test3_2_Polygon", validationParam.getTest3_2_PolygonPoints());
 				saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
 
 				saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
@@ -291,35 +285,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	 */
 	public String defaultValue() throws IllegalAccessException, InvocationTargetException{
 		BeanUtils.copyProperties(validationParam, validationParamDefault);
-		polygonCoordinatesAsString = getPolygonCoordinatesAsString();
 		addActionMessage(getText("neptune.field.restore.default.value.success"));
 		session.put("isDefault", true);
 		return SUCCESS;
-	}
-	/**
-	 * Get the polygon coordinates from a string
-	 * @param text
-	 * @return
-	 */
-	public String getPolygonCoordinatesAsString(){
-		List<Coordinate> coordinates = validationParam.getTest3_2_Polygon();
-		String coodinatesAsString = "".trim();
-		for(Coordinate coordinate : coordinates){
-			coodinatesAsString =coodinatesAsString.concat(coordinate.x+","+coordinate.y+" ");
-		}
-		return coodinatesAsString;
-	}
-	public List<Coordinate> getTest3_2_Polygon(String value){
-		List<Coordinate> test3_2_Polygon = new ArrayList<Coordinate>();
-		String[] tab = value.split(" ");
-		for (String string : tab) {
-			double x = Double.valueOf(string.split(",")[0]);
-			double y =  Double.valueOf(string.split(",")[1]);
-			Coordinate coordinate = new Coordinate(x, y);
-			test3_2_Polygon.add(coordinate);
-		}
-
-		return test3_2_Polygon;
 	}
 	/**
 	 * 

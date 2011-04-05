@@ -52,6 +52,7 @@ public class ValidationParameters
 	@Getter @Setter private float test3_21d_MinimalSpeed;
 	@Getter @Setter private float test3_21d_MaximalSpeed;
 	@Getter @Setter private String projection_reference;
+	private String test3_2_PolygonPoints;
 
 	public void addTest3_2_PolygonPoint(Coordinate coordinate)
 	{
@@ -61,6 +62,7 @@ public class ValidationParameters
 
 	public void setTest3_2_PolygonPoints(String pointAsString)
 	{
+		test3_2_PolygonPoints = pointAsString;
 		String[] points = pointAsString.split(" ");
 		for (String point : points) 
 		{
@@ -72,5 +74,9 @@ public class ValidationParameters
 				addTest3_2_PolygonPoint(new Coordinate(x,y));
 			}
 		}
+	}
+
+	public String getTest3_2_PolygonPoints(){
+		return test3_2_PolygonPoints;
 	}
 }
