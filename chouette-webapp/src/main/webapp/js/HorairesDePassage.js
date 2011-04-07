@@ -56,7 +56,7 @@ function calculateTime(el) {
 			output = "12:00";	
 		}
 		input.value = output;
-	}	
+	}
 }
 
 //Fonction permettant de conserver les heures inferieures à 24 et les minutes à 60
