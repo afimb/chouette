@@ -1552,14 +1552,14 @@ public class SelectionSpecifique extends HibernateDaoSupport implements ISelecti
       sql.append(" SPECIFIC_SCHEMA.timetablevehiclejourney tv ,");
     }
     sql.append(" SPECIFIC_SCHEMA.vehiclejourney c");
-    sql.append(" LEFT JOIN SPECIFIC_SCHEMA.vehiclejourneyatstop h ON h.vehiclejourneyid=c.id AND h.isdeparture = true");
+    sql.append(" LEFT JOIN SPECIFIC_SCHEMA.vehiclejourneyatstop h ON h.vehiclejourneyid=c.id AND h.isdeparture = true ");
+
+    sql.append(" WHERE c.routeid=");
+    sql.append(idItineraire);
     if (seuilDateDepartCourses != null)
     {
       sql.append(" AND h.departureTime >= :seuilDateDepartCourses ");
     }
-
-    sql.append(" WHERE c.routeid=");
-    sql.append(idItineraire);
     if (idTableauMarche != null)
     {
       sql.append(" AND tv.timetableid = :idTableauMarche");
