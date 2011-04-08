@@ -69,11 +69,16 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			if(startOfLinkId == null || endOfLinkId == null){
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_a",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
-				//}else if(!startOfLinkId.equals(connectionLink.getStartOfLink().getObjectId()) || !endOfLinkId.equals(connectionLink.getEndOfLink().getObjectId())){
-			}else if(connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null){
+				}else if(connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null){
+					//}else if(connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null){
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
-			}else {
+			}else if(connectionLink.getStartOfLink().equals(connectionLink.getEndOfLink())){
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error",Report.STATE.ERROR,connectionLink.getObjectId(),
+						connectionLink.getStartOfLink().getObjectId(),connectionLink.getEndOfLink().getObjectId());
+				report2_4.addItem(detailReportItem);
+			}
+				else {
 				report2_4.updateStatus(Report.STATE.OK);
 			}
 			//Test 3.8.1

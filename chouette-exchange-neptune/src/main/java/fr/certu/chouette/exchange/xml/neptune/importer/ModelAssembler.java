@@ -143,7 +143,8 @@ public class ModelAssembler {
 		}
 
 		line.setPtNetwork(ptNetwork);
-		line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
+		//line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
+		line.setRoutes(routes);
 		
 		ImportedItems item = new ImportedItems();
 		item.setAccessLinks(accessLinks);
@@ -205,7 +206,7 @@ public class ModelAssembler {
 		for(PTLink ptLink : ptLinks)
 		{
 			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
-			ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
+			ptLink.setEndOfLink(getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class));
 		}
 	}
 
@@ -222,6 +223,7 @@ public class ModelAssembler {
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
 			}
 			//vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
+			vehicleJourney.setLine(line);
 		}
 	}
 
@@ -230,7 +232,8 @@ public class ModelAssembler {
 		for(StopPoint stopPoint : stopPoints)
 		{
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
-			stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
+			//stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
+			stopPoint.setLine(line);
 			if(ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
 			{
 				stopPoint.setPtNetwork(ptNetwork);

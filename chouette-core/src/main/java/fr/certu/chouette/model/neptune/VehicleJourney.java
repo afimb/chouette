@@ -29,6 +29,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private String companyId;
 	@Getter @Setter private Company company;
 	@Getter @Setter private String lineIdShortcut;
+	@Getter @Setter private Line line;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
 	@Getter @Setter private List<Timetable> timetables;
 

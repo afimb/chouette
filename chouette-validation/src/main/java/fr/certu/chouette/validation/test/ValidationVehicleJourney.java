@@ -153,13 +153,11 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 										//Test 2.19.1
 										String lineShortCutId = vehicleJourney.getLineIdShortcut();
 										if(lineShortCutId != null){
-											String lineObjectId = (vehicleJourney.getRoute() != null && vehicleJourney.getRoute().getLine() != null) ? 
-													vehicleJourney.getRoute().getLine().getObjectId() : null;
-													if(!lineShortCutId.equals(lineObjectId)){
-														ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,vehicleJourney.getObjectId());
-														report2_19.addItem(detailReportItem);	
-													}else
-														report2_19.updateStatus(Report.STATE.OK);	
+											if(vehicleJourney.getLine() == null){
+												ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,vehicleJourney.getObjectId());
+												report2_19.addItem(detailReportItem);	
+											}else
+												report2_19.updateStatus(Report.STATE.OK);	
 										}
 
 										//Test 2.20.1
@@ -212,8 +210,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 					if(vehicleJourneyAtStops != null){
 						for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops){
 							String stopPointId = vehicleJourneyAtStop.getStopPointId();
-							String stopPointObjectId = vehicleJourneyAtStop.getStopPoint().getObjectId();				
-							if(!stopPointObjectId.equals(stopPointId)){
+							String stopPointObjectId = (vehicleJourneyAtStop.getStopPoint() != null) ? vehicleJourneyAtStop.getStopPoint().getObjectId():"";				
+							if(stopPointObjectId.equals("") || !stopPointObjectId.equals(stopPointId)){
 								String arrivalTime = String.valueOf(vehicleJourneyAtStop.getArrivalTime());
 								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet22_Step1_error", Report.STATE.ERROR,arrivalTime);
 								report2_22.addItem(detailReportItem);	
