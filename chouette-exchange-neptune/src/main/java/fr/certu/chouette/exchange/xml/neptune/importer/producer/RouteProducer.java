@@ -55,6 +55,8 @@ public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.
 		route.setPublishedName(getNonEmptyTrimedString(xmlRoute.getPublishedName()));
 
 		// WayBack optional
+                
+                if (xmlRoute.getRouteExtension() != null)
 		route.setWayBack(getNonEmptyTrimedString(xmlRoute.getRouteExtension().getWayBack()));
 
 		// WayBackRouteId optional
