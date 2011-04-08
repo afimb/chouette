@@ -74,86 +74,93 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		loadFromCookie(validationParam);
 		return SUCCESS;
 	}
-
-	/**
-	 * Loading from cookie if any
-	 */
-	private void loadFromCookie(ValidationParameters validationParam){
+	private void copyProperties(ValidationParameters param1,ValidationParameters param2){
 		try {
-			BeanUtils.copyProperties(validationParam, validationParamDefault);
+			BeanUtils.copyProperties(param1, param2);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-		} 
+		}
+	}
 
+	/**
+	 * Loading from cookie if any
+	 */
+	private void loadFromCookie(ValidationParameters validationParam){ 
+		copyProperties(validationParam, validationParamDefault);
 		if(servletRequest != null && servletRequest.getCookies() != null && servletRequest.getCookies().length>0)
-			for(Cookie c : servletRequest.getCookies()) {
-				String cookieName = c.getName();
-				String cookieValue = c.getValue();
+			try {
+				for(Cookie c : servletRequest.getCookies()) {
+					String cookieName = c.getName();
+					String cookieValue = c.getValue();
 
-				if (cookieName.equals("test3_1_MinimalDistance"))
-					validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_2_Polygon")){
-					validationParam.setTest3_2_PolygonPoints(cookieValue);
+					if (cookieName.equals("test3_1_MinimalDistance"))
+						validationParam.setTest3_1_MinimalDistance(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_2_Polygon")){
+						validationParam.setTest3_2_PolygonPoints(cookieValue);
+					}
+					if(cookieName.equals("test3_2_MinimalDistance"))
+						validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_10_MinimalDistance"))
+						validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_16c_MaximalTime"))
+						validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16c_MinimalTime"))
+						validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_7_MaximalDistance"))
+						validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_7_MinimalDistance"))
+						validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8a_MaximalSpeed"))
+						validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8a_MinimalSpeed"))
+						validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8b_MaximalSpeed"))
+						validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8b_MinimalSpeed"))
+						validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8c_MaximalSpeed"))
+						validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8c_MinimalSpeed"))
+						validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8d_MaximalSpeed"))
+						validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_8d_MinimalSpeed"))
+						validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_9_MaximalSpeed"))
+						validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_9_MinimalSpeed"))
+						validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_15_MinimalTime"))
+						validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_3a_MinimalTime"))
+						validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
+
+					if(cookieName.equals("test3_21a_MaximalSpeed"))
+						validationParam.setTest3_21a_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21a_MinimalSpeed"))
+						validationParam.setTest3_21a_MinimalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21b_MaximalSpeed"))
+						validationParam.setTest3_21b_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21b_MinimalSpeed"))
+						validationParam.setTest3_21b_MinimalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21c_MaximalSpeed"))
+						validationParam.setTest3_21c_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21c_MinimalSpeed"))
+						validationParam.setTest3_21c_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21d_MaximalSpeed"))
+						validationParam.setTest3_21d_MaximalSpeed(Float.valueOf(cookieValue));
+					if(cookieName.equals("test3_21d_MinimalSpeed"))
+						validationParam.setTest3_21d_MinimalSpeed(Float.valueOf(cookieValue));
+
+					if(cookieName.equals("projection_reference"))
+						validationParam.setProjection_reference(cookieValue);
 				}
-				if(cookieName.equals("test3_2_MinimalDistance"))
-					validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_10_MinimalDistance"))
-					validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_16c_MaximalTime"))
-					validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
-				if(cookieName.equals("test3_16c_MinimalTime"))
-					validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
-				if(cookieName.equals("test3_7_MaximalDistance"))
-					validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_7_MinimalDistance"))
-					validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8a_MaximalSpeed"))
-					validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8a_MinimalSpeed"))
-					validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8b_MaximalSpeed"))
-					validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8b_MinimalSpeed"))
-					validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8c_MaximalSpeed"))
-					validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8c_MinimalSpeed"))
-					validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8d_MaximalSpeed"))
-					validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_8d_MinimalSpeed"))
-					validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_9_MaximalSpeed"))
-					validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_9_MinimalSpeed"))
-					validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_15_MinimalTime"))
-					validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
-				if(cookieName.equals("test3_16_3a_MinimalTime"))
-					validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
-
-				if(cookieName.equals("test3_21a_MaximalSpeed"))
-					validationParam.setTest3_21a_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21a_MinimalSpeed"))
-					validationParam.setTest3_21a_MinimalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21b_MaximalSpeed"))
-					validationParam.setTest3_21b_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21b_MinimalSpeed"))
-					validationParam.setTest3_21b_MinimalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21c_MaximalSpeed"))
-					validationParam.setTest3_21c_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21c_MinimalSpeed"))
-					validationParam.setTest3_21c_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21d_MaximalSpeed"))
-					validationParam.setTest3_21d_MaximalSpeed(Float.valueOf(cookieValue));
-				if(cookieName.equals("test3_21d_MinimalSpeed"))
-					validationParam.setTest3_21d_MinimalSpeed(Float.valueOf(cookieValue));
-
-				if(cookieName.equals("projection_reference"))
-					validationParam.setProjection_reference(cookieValue);
+			} catch (IllegalArgumentException e) {
+				copyProperties(validationParam, validationParamDefault);
 			}
+
 	}
 
 	private String importNeptune() throws ChouetteException, IOException {
