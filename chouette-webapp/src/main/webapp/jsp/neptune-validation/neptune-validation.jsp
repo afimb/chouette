@@ -2,15 +2,15 @@
 
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
-<s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
 	<div style="width: 75%;">
-	  <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple" enctype="multipart/form-data">
+	  <s:form action="validation" namespace="/neptune-validation" method="post" theme="simple" enctype="multipart/form-data">
 		<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
 		   <s:text name="fieldset.legend.import" />
-		   <s:file name="file" label="%{getText('action.browse')}" /> 
+		   <s:file name="file" label="%{getText('action.browse')}" />
+		   	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}"/> 
 		</div>
-				<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
+		<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
 		<s:div id="category1">
 		 <s:iterator value="report.items" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
@@ -214,7 +214,6 @@
 		
 		 <br />	
 		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}"/>
-     	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}"/>
 	</s:div>
 	</div>
 	</s:form>

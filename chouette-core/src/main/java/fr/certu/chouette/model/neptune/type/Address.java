@@ -3,19 +3,40 @@ package fr.certu.chouette.model.neptune.type;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Address {
+/**
+ * Address for accesspoints or stopareas
+ * 
+ * @author michel
+ *
+ */
+public class Address 
+{
+	/**
+	 * address street name 
+	 */
 	@Getter @Setter private String streetName;
+	/**
+	 * address city or district code
+	 */
 	@Getter @Setter private String countryCode;
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("streetName=").append(streetName).append(" contryCode=").append(countryCode);
 		return sb.toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) 
+	{
 		if (this == obj)
 			return true;
 		if (obj == null)

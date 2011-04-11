@@ -72,9 +72,8 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 		}
 		facility.setDescription(getNonEmptyTrimedString(xmlFacility.getDescription()));
 		//FreeAccess optional
-		facility.setFreeAccess(xmlFacility.isFreeAccess());
-		//Has_freeAccess optional
-		facility.setHas_freeAccess(xmlFacility.hasFreeAccess());
+		if (xmlFacility.hasFreeAccess())
+		   facility.setFreeAccess(xmlFacility.isFreeAccess());
 
 		chouette.schema.FacilityLocation xmlFacilityLocation = xmlFacility.getFacilityLocation();
 		if(xmlFacilityLocation != null){

@@ -33,17 +33,17 @@ public abstract class NeptuneObject implements Serializable
 	@Getter private DetailLevelEnum level = DetailLevelEnum.UNINITIALIZED;
 
 	private boolean validationProceeded = false;
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public final String toString()
 	{
-		
-		       return ToStringBuilder.reflectionToString(this,
-		               ToStringStyle.MULTI_LINE_STYLE);
-		
+
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.MULTI_LINE_STYLE);
+
 
 		//return toString("",0);
 	}
@@ -68,27 +68,36 @@ public abstract class NeptuneObject implements Serializable
 		this.level = level;
 		return;
 	}
-	
 
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
-	public boolean equals(Object arg0) 
+	public boolean equals(Object obj) 
 	{
-		if (arg0 instanceof NeptuneObject)
-		{
-			NeptuneObject another = (NeptuneObject) arg0;
-			if (id != null) return id.equals(another.getId());
-		}
-		return super.equals(arg0);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NeptuneObject another = (NeptuneObject) obj;
+		if (id != null) return id.equals(another.getId());
+		return false;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() 
 	{
 		if (id != null) return id.hashCode();
 		return super.hashCode();
 	} 
-	
+
 	/**
 	 * check if validation can check this object
 	 * 
@@ -100,5 +109,5 @@ public abstract class NeptuneObject implements Serializable
 		validationProceeded = true;
 		return check;
 	}
-	
+
 }

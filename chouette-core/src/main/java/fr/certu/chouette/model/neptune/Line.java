@@ -121,11 +121,16 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
 
 	/**
+	 * The optional GroupOfLine of the line
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private GroupOfLine groupOfLine;
+
+	/**
 	 * ImportedItems for import neptune process
 	 */
 	@Getter @Setter private ImportedItems importedItems;
 	
-	@Getter @Setter private GroupOfLine groupOfLine;
 	/**
 	 * add a user needs enumeration value to the line<br/>
 	 * do nothing if user need is already present
@@ -358,18 +363,26 @@ public class Line extends NeptuneIdentifiedObject
 		return Arrays.asList(stopPoints.toArray(new StopPoint[0]));
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#clean()
+	 */
 	@Override
-	public boolean clean() {
-		if(routes == null){
+	public boolean clean() 
+	{
+		if(routes == null)
+		{
 			return false;
 		}
-		for (Iterator<Route> iterator = routes.iterator(); iterator.hasNext();) {
+		for (Iterator<Route> iterator = routes.iterator(); iterator.hasNext();) 
+		{
 			Route route = iterator.next();
-			if(route == null || !route.clean()){
+			if(route == null || !route.clean())
+			{
 				iterator.remove();
 			}
 		}
-		if(routes.isEmpty()){
+		if(routes.isEmpty())
+		{
 			return false;
 		}
 		return true;

@@ -1,55 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
-@@LICENCE@@
--->
-<!--
- Société DRYADE
-
- Projet chouette : paramétrage Objet - Base
-
- DRouteBean.hbm.xml : paramétrage DRouteBean - Route
-
- Historique des modifications :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
- =============+================+==============================================
- 24 nov. 2004 |Marc FLORISSON  | Intégration de la donnée DRoutePtLinkBean
- =============+================+==============================================
-
- Version : $Revision: 1.6 $
--->
+<!-- @@LICENCE@@ -->
+<!-- Société DRYADE Projet chouette : paramétrage Objet - Base DRouteBean.hbm.xml 
+	: paramétrage DRouteBean - Route Historique des modifications : Date | Auteur 
+	| Libéllé =============+================+============================================== 
+	2 nov. 2004 |Marc FLORISSON | Création =============+================+============================================== 
+	24 nov. 2004 |Marc FLORISSON | Intégration de la donnée DRoutePtLinkBean 
+	=============+================+============================================== 
+	Version : $Revision: 1.6 $ -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-  <class name="Route" table="Route" dynamic-insert="false" dynamic-update="false" >
-    <id name="id" type="long">
-      <generator class="native"/>
-    </id>
-    <property name="objectId" type="string" unique="true"/>
-    <property name="objectVersion" type="int"/>
-    <property name="creationTime" type="java.util.Date"/>
-    <property name="creatorId" type="string"/>
-    <property name="name"/>
-    <property name="oppositeRouteId" type="long"/>
-    <property name="lineId" type="long" column="lineId" lazy="true"/>
-    <property name="publishedName"/>
-    <property name="number"/>
-    <property name="direction" type="fr.certu.chouette.dao.hibernate.usertype.PTDirectionUserType"/>
-    <property name="comment"/>
-    <property name="wayBack"/>
-    <!-- relations -->
-        <!-- 
-		<bag name="journeyPatterns" lazy="true" cascade="all" inverse="true" batch-size="10" >
+	<class name="Route" table="Route" dynamic-insert="false"
+		dynamic-update="false">
+		<id name="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="name" />
+		<property name="oppositeRouteId" type="long" />
+		<property name="lineId" type="long" column="lineId" lazy="true" />
+		<property name="publishedName" />
+		<property name="number" />
+		<property name="direction"
+			type="fr.certu.chouette.dao.hibernate.usertype.PTDirectionUserType" />
+		<property name="comment" />
+		<property name="wayBack" />
+		<!-- relations -->
+		<!-- 
+		<bag name="journeyPatterns" lazy="true" cascade="all" inverse="true"
+			batch-size="10">
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
-		-->
-		<!-- 
-		<bag name="journeyPatternIds" table="journeyPattern" inverse="true" lazy="false" cascade="none" fetch="join">
-		    <key column="routeId"/>
+		<bag name="journeyPatternIds" table="journeyPattern" inverse="true"
+			lazy="false" cascade="none" fetch="join">
+			<key column="routeId" />
 			<element type="string" column="objectId" />
 		</bag>
-		 -->
-    
-  </class>
+        -->
+
+	</class>
 </hibernate-mapping>

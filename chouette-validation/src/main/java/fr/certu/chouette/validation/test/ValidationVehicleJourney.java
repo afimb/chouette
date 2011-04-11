@@ -13,6 +13,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -118,85 +119,89 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 					report2_17_1.addItem(detailReportItem);
 				}				
 				String journeyPatternId = vehicleJourney.getJourneyPatternId();
-				String journeyPatternObjectId = (vehicleJourney.getJourneyPattern() != null) ? 
-						vehicleJourney.getJourneyPattern().getObjectId() : ""; 
-						//Test 2.18.1
-						if(journeyPatternId != null){
-							if(!journeyPatternObjectId.equals(journeyPatternId)){
-								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
-								report2_18_1.addItem(detailReportItem);	
-							}else
-								report2_18_1.updateStatus(Report.STATE.OK);
-						}
-						List<String> stopPointObjectIds = (vehicleJourney.getJourneyPattern() != null && vehicleJourney.getJourneyPattern().getStopPoints() != null) ? 
-								VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints()) : null;
+				JourneyPattern journeyPattern = vehicleJourney.getJourneyPattern(); 
+				//Test 2.18.1
+				if(journeyPatternId != null){
+					if(journeyPattern == null){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+						report2_18_1.addItem(detailReportItem);	
+					}else
+						report2_18_1.updateStatus(Report.STATE.OK);
+				}
+				List<String> stopPointObjectIds = (vehicleJourney.getJourneyPattern() != null && vehicleJourney.getJourneyPattern().getStopPoints() != null) ? 
+						VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints()) : null;
 
-								List<String> stopPointIds = (vehicleJourney.getJourneyPattern() != null) ? 
-										vehicleJourney.getJourneyPattern().getStopPointIds() : null;
-										if(stopPointObjectIds != null && stopPointIds != null){
-											//Test 2.18.2 a
-											if(!stopPointIds.containsAll(stopPointObjectIds)){
-												ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", Report.STATE.ERROR,"");
-												report2_18_2.addItem(detailReportItem);	
-											}else
-												report2_18_2.updateStatus(Report.STATE.OK);
-											//Test 2.18.2 b
-											List<VehicleJourneyAtStop> vehicleJourneyAtStopIds = vehicleJourney.getVehicleJourneyAtStops();
-											for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStopIds) {
-												if(!stopPointObjectIds.contains(vehicleJourneyAtStop.getStopPointId())){
-													ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_b", Report.STATE.ERROR,"");
-													report2_18_2.addItem(detailReportItem);	
-												}else
-													report2_18_2.updateStatus(Report.STATE.OK);
-											}
-										}
-										//Test 2.19.1
-										String lineShortCutId = vehicleJourney.getLineIdShortcut();
-										if(lineShortCutId != null){
-											if(vehicleJourney.getLine() == null){
-												ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,vehicleJourney.getObjectId());
-												report2_19.addItem(detailReportItem);	
-											}else
-												report2_19.updateStatus(Report.STATE.OK);	
-										}
+						List<String> stopPointIds = (vehicleJourney.getJourneyPattern() != null) ? 
+								vehicleJourney.getJourneyPattern().getStopPointIds() : null;
+								if(stopPointObjectIds != null && stopPointIds != null){
+									//Test 2.18.2 a
+									if(!stopPointIds.containsAll(stopPointObjectIds)){
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", Report.STATE.ERROR,"");
+										report2_18_2.addItem(detailReportItem);	
+									}else
+										report2_18_2.updateStatus(Report.STATE.OK);
 
-										//Test 2.20.1
-										String companyId = vehicleJourney.getCompanyId();
-										if(companyId != null){
-											String companyObjectId = (vehicleJourney.getCompany() != null) ? vehicleJourney.getCompany().getObjectId() : null;
-											if(!companyId.equals(companyObjectId)){
-												ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
-												report2_20.addItem(detailReportItem);	
-											}else
-												report2_20.updateStatus(Report.STATE.OK);	
-										}
+									int count = 0;
+									List<VehicleJourneyAtStop> vehicleJourneyAtStopIds = vehicleJourney.getVehicleJourneyAtStops();
+									for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStopIds) {
+										if(stopPointObjectIds.contains(vehicleJourneyAtStop.getStopPointId()))
+											count++;
+									}
 
-										//Test 2.21.1
-										String timeSlotId = vehicleJourney.getTimeSlotId();
-										TimeSlot timeSlot = vehicleJourney.getTimeSlot();
-										if(timeSlotId != null){
-											if(timeSlot == null){
-												ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
-												report2_21.addItem(detailReportItem);	
-											}else
-												report2_21.updateStatus(Report.STATE.OK);	
-										}
-										//Test 2.24.1
-										String routeIdFromVJ = (vehicleJourney.getRouteId() != null) ? vehicleJourney.getRouteId() : "";
-										String routeIdFromJP = (vehicleJourney.getJourneyPattern() != null) ? vehicleJourney.getJourneyPattern().getRouteId() : null;
-										if(!routeIdFromVJ.equals(routeIdFromJP)){
-											ReportItem detailReportItem = new DetailReportItem("Test2_Sheet24_Step1_error", Report.STATE.ERROR,"");
-											report2_24.addItem(detailReportItem);	
-										}else
-											report2_24.updateStatus(Report.STATE.OK);
-										//Test 3.16.2
-										for (Timetable timetable : vehicleJourney.getTimetables()) {
-											if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
-												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,vehicleJourney.getObjectId());
-												report3_16_2.addItem(detailReportItem);	
-											}else
-												report3_16_2.updateStatus(Report.STATE.OK);
-										}							
+									//Test 2.18.2 b
+									if(count == 0){
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_b", Report.STATE.ERROR,"");
+										report2_18_2.addItem(detailReportItem);	
+									}else
+										report2_18_2.updateStatus(Report.STATE.OK);
+								}
+								//Test 2.19.1
+								String lineShortCutId = vehicleJourney.getLineIdShortcut();
+								if(lineShortCutId != null){
+									if(vehicleJourney.getLine() == null){
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,vehicleJourney.getObjectId());
+										report2_19.addItem(detailReportItem);	
+									}else
+										report2_19.updateStatus(Report.STATE.OK);	
+								}
+
+								//Test 2.20.1
+								String companyId = vehicleJourney.getCompanyId();
+								if(companyId != null){
+									String companyObjectId = (vehicleJourney.getCompany() != null) ? vehicleJourney.getCompany().getObjectId() : null;
+									if(!companyId.equals(companyObjectId)){
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+										report2_20.addItem(detailReportItem);	
+									}else
+										report2_20.updateStatus(Report.STATE.OK);	
+								}
+
+								//Test 2.21.1
+								String timeSlotId = vehicleJourney.getTimeSlotId();
+								TimeSlot timeSlot = vehicleJourney.getTimeSlot();
+								if(timeSlotId != null){
+									if(timeSlot == null){
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+										report2_21.addItem(detailReportItem);	
+									}else
+										report2_21.updateStatus(Report.STATE.OK);	
+								}
+								//Test 2.24.1
+								String routeIdFromVJ = (vehicleJourney.getRouteId() != null) ? vehicleJourney.getRouteId() : "";
+								String routeIdFromJP = (vehicleJourney.getJourneyPattern() != null) ? vehicleJourney.getJourneyPattern().getRouteId() : null;
+								if(!routeIdFromVJ.equals(routeIdFromJP)){
+									ReportItem detailReportItem = new DetailReportItem("Test2_Sheet24_Step1_error", Report.STATE.ERROR,"");
+									report2_24.addItem(detailReportItem);	
+								}else
+									report2_24.updateStatus(Report.STATE.OK);
+								//Test 3.16.2
+								for (Timetable timetable : vehicleJourney.getTimetables()) {
+									if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
+										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,vehicleJourney.getObjectId());
+										report3_16_2.addItem(detailReportItem);	
+									}else
+										report3_16_2.updateStatus(Report.STATE.OK);
+								}							
 			}
 
 			//

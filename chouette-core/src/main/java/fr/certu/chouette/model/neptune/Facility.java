@@ -27,18 +27,19 @@ public class Facility extends NeptuneIdentifiedObject {
 	 /**
      * Is the access restricted or authorised to everybody
      */
-	@Getter @Setter private boolean freeAccess;
+	@Getter @Setter private Boolean freeAccess;
 	/**
      * keeps track of state for field: _freeAccess
      */
-	@Getter @Setter private boolean has_freeAccess;
+	// @Getter @Setter private boolean has_freeAccess;
 
 	@Getter @Setter private String comment;
 	@Getter @Setter private FacilityLocation facilityLocation;
 	@Getter @Setter private List<FacilityFeature> facilityFeatures;	
 	
 	
-	public void addFacilityFeature(FacilityFeature facilityFeature){
+	public void addFacilityFeature(FacilityFeature facilityFeature)
+	{
 		if (facilityFeatures == null) facilityFeatures = new ArrayList<FacilityFeature>();
 		facilityFeatures.add(facilityFeature);
 	}

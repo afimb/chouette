@@ -25,9 +25,14 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
+	public static final String ACCESSPOINT_KEY="AccessPoint";
+	public static final String ACCESSLINK_KEY="AccessLink";
 	public static final String AREACENTROID_KEY="AreaCentroid";
 	public static final String COMPANY_KEY="Company";
-	public static final String JOURNEYPATTERN_KEY="journeyPattern";
+	public static final String CONNECTIONLINK_KEY="ConnectionLink";
+	public static final String FACILITY_KEY="Facility";
+	public static final String GROUPOFLINE_KEY="GroupOfLine";
+	public static final String JOURNEYPATTERN_KEY="JourneyPattern";
 	public static final String LINE_KEY="Line";
 	public static final String PTLINK_KEY="PtLink";
 	public static final String PTNETWORK_KEY="GroupOfLine";
@@ -37,8 +42,8 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	public static final String TIMESLOT_KEY="TimeSlot";
 	public static final String TIMETABLE_KEY="Timetable";
 	public static final String VEHICLEJOURNEY_KEY="VehicleJourney";
-	
-	
+
+
 	/**
 	 * Neptune unique identifier : mandatory
 	 */
@@ -62,12 +67,16 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 
 	/**
 	 * Clean object dependencies : if children objects are not clean, they are dereferenced.
-	 * @return true if object is clean (i.e. has valid referencies) or false if it isn't  
+	 * <br/>
+	 * This method is available for export purpose 
+	 * 
+	 * @return true if object is clean (i.e. has valid references) or false if it isn't  
 	 */
-	public boolean clean(){
+	public boolean clean()
+	{
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneObject#toString(java.lang.String, int)
 	 */
@@ -94,40 +103,55 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	 * @param neptuneObjects the list to parse
 	 * @return the object ids list
 	 */
-	public static List<String> extractObjectIds(List<? extends NeptuneIdentifiedObject> neptuneObjects){
+	public static List<String> extractObjectIds(List<? extends NeptuneIdentifiedObject> neptuneObjects)
+	{
 		List<String> objectIds = new ArrayList<String>();
-			if(neptuneObjects != null){
-			for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) {
-				if(neptuneObject != null){
+		if(neptuneObjects != null)
+		{
+			for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) 
+			{
+				if(neptuneObject != null)
+				{
 					String objectId = neptuneObject.getObjectId();
-					if(objectId != null){
+					if(objectId != null)
+					{
 						objectIds.add(objectId);
 					}
 				}
 			}
 		}
-			
+
 		return objectIds;
 	}
-	
-	
+
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneObject#equals(java.lang.Object)
+	 */
 	@Override
-	public boolean equals(Object arg0) 
+	public boolean equals(Object obj) 
 	{
-		if (arg0 instanceof NeptuneIdentifiedObject)
-		{
-			NeptuneIdentifiedObject another = (NeptuneIdentifiedObject) arg0;
-			if (objectId != null) return objectId.equals(another.getObjectId());
-		}
-		return super.equals(arg0);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NeptuneIdentifiedObject another = (NeptuneIdentifiedObject) obj;
+		if (objectId != null) return objectId.equals(another.getObjectId());
+
+		return false;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneObject#hashCode()
+	 */
 	@Override
 	public int hashCode() 
 	{
 		if (objectId != null) return objectId.hashCode();
 		return super.hashCode();
 	}
-	
+
 }

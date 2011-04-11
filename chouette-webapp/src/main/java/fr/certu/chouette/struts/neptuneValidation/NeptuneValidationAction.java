@@ -112,22 +112,31 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 						validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_7_MinimalDistance"))
 						validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
+				
 					if(cookieName.equals("test3_8a_MaximalSpeed"))
 						validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8a_MinimalSpeed"))
 						validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8b_MaximalSpeed"))
 						validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8b_MinimalSpeed"))
 						validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8c_MaximalSpeed"))
 						validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8c_MinimalSpeed"))
-						validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
+						validationParam.setTest3_8c_MinimalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8d_MaximalSpeed"))
 						validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_8d_MinimalSpeed"))
 						validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
+					
 					if(cookieName.equals("test3_9_MaximalSpeed"))
 						validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_9_MinimalSpeed"))

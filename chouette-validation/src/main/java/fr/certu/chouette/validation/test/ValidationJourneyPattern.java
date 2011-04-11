@@ -53,14 +53,14 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 				List<String> stopPointIds = JourneyPattern.extractObjectIds(journeyPattern.getStopPoints());
 				//Test 2.15.1
 				if(!stopPointIds.containsAll(journeyPattern.getStopPointIds())){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step1_error", Report.STATE.ERROR,"");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step1_error", Report.STATE.ERROR,journeyPattern.getObjectId());
 					report2_15_1.addItem(detailReportItem);	
 				}else {
 					report2_15_1.updateStatus(Report.STATE.OK);
 				}
 				//Test 2.15.2
 				if(!journeyPattern.getStopPointIds().containsAll(stopPointIds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step2_error", Report.STATE.ERROR,"");
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step2_error", Report.STATE.ERROR);
 					report2_15_2.addItem(detailReportItem);	
 				}else {
 					report2_15_2.updateStatus(Report.STATE.OK);
@@ -70,7 +70,7 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 				String lineIdShortCutId = journeyPattern.getLineIdShortcut();
 				if(lineIdShortCutId != null){
 					if(!journeyPattern.getRoute().getLine().getObjectId().equals(lineIdShortCutId)){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet16_Step1_error", Report.STATE.ERROR,"");
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet16_Step1_error", Report.STATE.ERROR);
 						report2_16_1.addItem(detailReportItem);	
 					}else
 						report2_16_1.updateStatus(Report.STATE.OK);

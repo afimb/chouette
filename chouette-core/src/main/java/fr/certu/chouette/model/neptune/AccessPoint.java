@@ -45,6 +45,9 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 */
 	@Getter @Setter boolean stairsAvailable;
 	
+	/**
+	 * @param accessLink
+	 */
 	public void addAccessLink(AccessLink accessLink){
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
 		accessLinks.add(accessLink);
