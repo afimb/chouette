@@ -175,6 +175,10 @@ public class ModelAssembler {
 		{
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
 			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
+			for (PTLink ptLink : route.getPtLinks()) {
+				ptLink.setRoute(route);
+				ptLink.setRouteId(route.getObjectId());
+			}
 		}
 	}
 

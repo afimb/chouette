@@ -30,6 +30,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 
 	private ValidationStepDescription validationStepDescription;
 	private final long DIVIDER = 1000 * 3600;
+	private final double CONVERTER = 6371 /180;
 
 	public void init(){
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
@@ -101,7 +102,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
 			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
 			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
-			double distance = distanceOp.distance();
+			double distance = distanceOp.distance() * CONVERTER;
 			//Test 3.8.1  a
 			long timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;

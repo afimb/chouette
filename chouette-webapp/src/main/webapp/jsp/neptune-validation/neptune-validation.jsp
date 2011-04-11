@@ -8,9 +8,10 @@
 		<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
 		   <s:text name="fieldset.legend.import" />
-		   <s:file name="file" label="%{getText('action.browse')}" /> 
+		   <s:file name="file" label="%{getText('action.browse')}" />
+		   	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}"/> 
 		</div>
-				<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
+		<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
 		<s:div id="category1">
 		 <s:iterator value="report.items" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
@@ -214,7 +215,6 @@
 		
 		 <br />	
 		<s:submit action="defaultValue" name="defaultValue" value="%{getText('neptune.field.restore.default.value')}"/>
-     	<s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}"/>
 	</s:div>
 	</div>
 	</s:form>

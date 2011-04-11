@@ -11,7 +11,9 @@ import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -114,13 +116,6 @@ public class ValidationLine implements IValidationPlugin<Line>{
 				}else {
 					report2_6_1.updateStatus(Report.STATE.OK);	
 				}
-				//Test 2.6.2
-				List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
-				if(!lineEndList.containsAll(lineEnds)){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",Report.STATE.ERROR);
-					report2_6_2.addItem(detailReportItem);
-				}else 
-					report2_6_2.updateStatus(Report.STATE.OK);	
 			}
 
 			//Test 2.7
@@ -155,6 +150,33 @@ public class ValidationLine implements IValidationPlugin<Line>{
 							report2_2_1.updateStatus(Report.STATE.OK);	
 					}
 				}	
+				if(lineEnds != null){
+					//Test 2.6.2
+					int count = 0;
+					//List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
+					List<Route> routes = line.getRoutes();
+					here: for (String lineEnd : lineEnds) {
+						if(routes != null){
+							for (Route route : routes) {
+								List<PTLink> ptLinks = route.getPtLinks();
+								if(ptLinks != null){
+									for (PTLink ptLink : ptLinks) {
+										if(lineEnd.equals(ptLink.getStartOfLinkId()) || lineEnd.equals(ptLink.getEndOfLinkId())){
+											count++;
+											continue here;
+										}		
+									}
+								}
+							}
+						}	
+						if(count != 1){
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error",Report.STATE.ERROR);
+							report2_6_2.addItem(detailReportItem);
+						}else 
+							report2_6_2.updateStatus(Report.STATE.OK);			
+					}
+				}
+
 				//Test 2.26.1
 				List<AccessPoint> accessPoints = importedItems.getAccessPoints();
 				List<String> stopAreaIds = Line.extractObjectIds(importedItems.getStopAreas());

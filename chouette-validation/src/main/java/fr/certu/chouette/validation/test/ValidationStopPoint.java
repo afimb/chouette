@@ -159,10 +159,13 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 								stopPoint.getContainedInStopAreaId() == null || another.getContainedInStopAreaId() == null)){
 					if(stopPoint.getAddress() != null && another.getAddress() != null){
 						if(stopPoint.getAddress().equals(another.getAddress())){
-							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet3_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId(), another.getObjectId());
+							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet3_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId()+" : "+stopPoint.getName(), another.getObjectId()+" : "+stopPoint.getName());
 							report3_3_1.addItem(detailReportItem);	
 						}else
 							report3_3_1.updateStatus(Report.STATE.OK);	
+					}else{
+						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet3_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId()+" : "+stopPoint.getName(), another.getObjectId()+" : "+stopPoint.getName());
+						report3_3_1.addItem(detailReportItem);	
 					}
 				}
 			}	
@@ -200,10 +203,12 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 			List<PTLink> ptLinks4Route = new ArrayList<PTLink>();
 			boolean exists = false;
 			boolean existsPTLink= false;
+			int countContainedIn = 0;
 			ImportedItems importedItems =(stopPoint.getLine() != null) ? stopPoint.getLine().getImportedItems():null;
 			if(importedItems != null){
-				List<PTLink> ptLinks = importedItems.getPtLinks();
-				for (PTLink ptLink : ptLinks) {
+				List<PTLink> ptLinks = importedItems.getPtLinks(); 
+				for (int jj=0;jj<ptLinks.size();jj++) {
+					PTLink ptLink = ptLinks.get(jj);
 					StopPoint start = ptLink.getStartOfLink();
 					StopPoint end = ptLink.getEndOfLink();
 					//Test 3.10.1
@@ -213,12 +218,18 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 						ptLinks4Route.add(ptLink);
 						exists = true;
 					}
-					//Test 3.10.2
-					if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(ptLink.getEndOfLink().getContainedInStopAreaId())){
-						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING);
-						report3_10_2.addItem(detailReportItem);
-					}else
-						report3_10_2.updateStatus(Report.STATE.OK);
+	
+					for (int k=jj+1;k<ptLinks.size();k++) {
+						PTLink other = ptLinks.get(k);
+						if(ptLink.getRouteId().equals(other.getRouteId())){
+							if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(other.getStartOfLink().getContainedInStopAreaId()) || 
+									ptLink.getEndOfLink().getContainedInStopAreaId().equals(other.getEndOfLink().getContainedInStopAreaId()) ||
+									ptLink.getStartOfLink().getContainedInStopAreaId().equals(other.getEndOfLink().getContainedInStopAreaId()) ||
+									ptLink.getEndOfLink().getContainedInStopAreaId().equals(other.getStartOfLink().getContainedInStopAreaId()))
+								countContainedIn++;	
+						}
+					}
+					
 					//Test 3.10.3
 					double yStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
 					double xStart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
@@ -252,6 +263,12 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					}else
 						report2_14_1.updateStatus(Report.STATE.OK);
 				}
+				//Test 3.10.2
+				if(countContainedIn !=0){
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING);
+					report3_10_2.addItem(detailReportItem);
+				}else
+					report3_10_2.updateStatus(Report.STATE.OK);	
 				//Test 2.14.1 a
 				if(!exists){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
