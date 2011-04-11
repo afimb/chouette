@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <title><s:text name="validation.result.title" /></title>
-<s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
+<s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="get"/>
 <s:include value="/jsp/commun/messages.jsp" />
 	<div style="width: 90%;">
 	 <div class="panelDataSection"><s:text name="validation.result.title"/></div>
@@ -148,7 +148,7 @@
 	      <div class="neptune-panel">
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.1')}" value="%{validationParam.test3_1_MinimalDistance}" /><br />
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.2')}" value="%{validationParam.test3_2_MinimalDistance}"/><br />
-	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{validationParam.test3_2_PolygonPoints}"/><br />
+	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{validationPanoneram.test3_2_PolygonPoints}"/><br />
 	 	<s:label value="%{validationParam.test3_7_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" />
 	 	<s:label value="%{validationParam.test3_7_MaximalDistance}" label="/" />
 	 	<br />

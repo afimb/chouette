@@ -1,7 +1,11 @@
 package fr.certu.chouette.validation.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -89,8 +93,11 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 		String pj = parameters.getProjection_reference();
 		final int TEST =  99999;
 		int sridParam = TEST;	
-		if(pj != null) sridParam = LongLatTypeEnum.fromValue(pj.trim()).epsgCode(); 
+		if(pj != null) 
+			sridParam = LongLatTypeEnum.fromValue(pj.trim()).epsgCode(); 
+		Map<String,Set<StopPoint>> stopPointsFromPTLinkMap = new HashMap<String,Set<StopPoint>>();
 		int size = stopPoints.size();
+
 		for (int i=0;i<size;i++) {
 			StopPoint stopPoint = stopPoints.get(i);
 			//Test2.10.1
@@ -203,12 +210,12 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 			List<PTLink> ptLinks4Route = new ArrayList<PTLink>();
 			boolean exists = false;
 			boolean existsPTLink= false;
-			int countContainedIn = 0;
+			Set<StopPoint> stopPointsSet = new HashSet<StopPoint>();
 			ImportedItems importedItems =(stopPoint.getLine() != null) ? stopPoint.getLine().getImportedItems():null;
 			if(importedItems != null){
-				List<PTLink> ptLinks = importedItems.getPtLinks(); 
-				for (int jj=0;jj<ptLinks.size();jj++) {
-					PTLink ptLink = ptLinks.get(jj);
+				List<PTLink> ptLinks = importedItems.getPtLinks();
+				for (int k=0;k<ptLinks.size();k++) {
+					PTLink ptLink = ptLinks.get(k);
 					StopPoint start = ptLink.getStartOfLink();
 					StopPoint end = ptLink.getEndOfLink();
 					//Test 3.10.1
@@ -218,18 +225,10 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 						ptLinks4Route.add(ptLink);
 						exists = true;
 					}
-	
-					for (int k=jj+1;k<ptLinks.size();k++) {
-						PTLink other = ptLinks.get(k);
-						if(ptLink.getRouteId().equals(other.getRouteId())){
-							if(ptLink.getStartOfLink().getContainedInStopAreaId().equals(other.getStartOfLink().getContainedInStopAreaId()) || 
-									ptLink.getEndOfLink().getContainedInStopAreaId().equals(other.getEndOfLink().getContainedInStopAreaId()) ||
-									ptLink.getStartOfLink().getContainedInStopAreaId().equals(other.getEndOfLink().getContainedInStopAreaId()) ||
-									ptLink.getEndOfLink().getContainedInStopAreaId().equals(other.getStartOfLink().getContainedInStopAreaId()))
-								countContainedIn++;	
-						}
-					}
-					
+					stopPointsSet.add(start);
+					stopPointsSet.add(end);
+					stopPointsFromPTLinkMap.put(ptLink.getRouteId(),stopPointsSet);
+
 					//Test 3.10.3
 					double yStart = (start != null && start.getLatitude()!=null) ? start.getLatitude().doubleValue():0;
 					double xStart = (start != null && start.getLongitude()!=null) ? start.getLongitude().doubleValue():0;
@@ -244,7 +243,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd,yEnd));
 
 					DistanceOp distanceOp = new DistanceOp(pointSart, pointEnd);
-					double distance = distanceOp.distance() * 6371 /180;
+					double distance = distanceOp.distance() * CONVERTER;
 					if(distance < distanceMin3_10){
 						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step3_warning", Report.STATE.WARNING, String.valueOf(distance),String.valueOf(distanceMin3_10));
 						report3_10_3.addItem(detailReportItem);	
@@ -263,12 +262,7 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 					}else
 						report2_14_1.updateStatus(Report.STATE.OK);
 				}
-				//Test 3.10.2
-				if(countContainedIn !=0){
-					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING);
-					report3_10_2.addItem(detailReportItem);
-				}else
-					report3_10_2.updateStatus(Report.STATE.OK);	
+
 				//Test 2.14.1 a
 				if(!exists){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1_warning", Report.STATE.WARNING,stopPoint.getObjectId());
@@ -298,6 +292,21 @@ public class ValidationStopPoint implements IValidationPlugin<StopPoint>{
 			}
 		}
 
+		//Test 3.10.2
+		Set<String> containedInSet = new HashSet<String>(); 
+		for (String routeId : stopPointsFromPTLinkMap.keySet()) {
+			int count = 0;
+			Set<StopPoint> stopPointsSet = stopPointsFromPTLinkMap.get(routeId);
+			for (StopPoint stopPoint : stopPointsSet) {
+				if(!containedInSet.add(stopPoint.getContainedInStopAreaId()))
+					count++;
+			}
+			if(count != 0){
+				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet10_Step2_warning", Report.STATE.WARNING, routeId);
+				report3_10_2.addItem(detailReportItem);
+			}else
+				report3_10_2.updateStatus(Report.STATE.OK);		
+		}
 		report2_10_1.computeDetailItemCount();
 		report2_11_1.computeDetailItemCount();
 		report2_14_1.computeDetailItemCount();

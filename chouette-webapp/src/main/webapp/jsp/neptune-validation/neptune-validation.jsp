@@ -2,9 +2,8 @@
 
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
-<s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
 	<div style="width: 75%;">
-	  <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple" enctype="multipart/form-data">
+	  <s:form action="validation" namespace="/neptune-validation" method="post" theme="simple" enctype="multipart/form-data">
 		<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
 		   <s:text name="fieldset.legend.import" />
