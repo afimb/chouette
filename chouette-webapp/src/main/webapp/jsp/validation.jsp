@@ -12,7 +12,7 @@
 
 <%-- Import files --%>
 <div>
-  <FIELDSET style="width: 500px;">
+  <!--<FIELDSET style="width: 500px;">
     <LEGEND><b><s:text name="title.validate.data"/></b></LEGEND>
     <s:form id="validationForm" action="Validation_valider" enctype="multipart/form-data" method="POST">
       <s:submit value="%{getText('action.validate')}" formId="validationForm"/>
@@ -20,7 +20,7 @@
     <br>
     <s:text name="text.goto.bateri"/> <s:a href="http://www.bateri.fr/">http://www.bateri.fr/</s:a>
   </FIELDSET>
-  <br><br>
+  <br><br>-->
   <FIELDSET style="width: 500px;">
     <LEGEND><b><s:text name="title.shift.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form validate="true" id="decalageForm" action="Validation_decaler" enctype="multipart/form-data" method="POST">
