@@ -182,37 +182,47 @@ public class ValidationLine implements IValidationPlugin<Line>{
 					}
 
 					//Test 2.28.1
-					String stopAreaId = facility.getStopAreaId(); 
-					if(stopAreaId != null && stopAreaIds.contains(stopAreaId)){
-						report2_28_1.updateStatus(Report.STATE.OK);	
-					}else{
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step1_error",Report.STATE.ERROR);
-						report2_28_1.addItem(detailReportItem);
+					String stopAreaId = facility.getStopAreaId();
+					if(stopAreaId != null){
+						if(stopAreaIds.contains(stopAreaId)){
+							report2_28_1.updateStatus(Report.STATE.OK);	
+						}else{
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step1_error",Report.STATE.ERROR);
+							report2_28_1.addItem(detailReportItem);
+						}
 					}
 
 					//Test 2.28.2
-					if(facility.getLine() == null){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step2_error",Report.STATE.ERROR);
-						report2_28_1.addItem(detailReportItem);
-					}else
-						report2_28_1.updateStatus(Report.STATE.OK);
+					if(facility.getLineId() != null){
+						if(facility.getLine() == null){
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step2_error",Report.STATE.ERROR);
+							report2_28_1.addItem(detailReportItem);
+						}else
+							report2_28_1.updateStatus(Report.STATE.OK);
+					}
+
 					//Test 2.28.3
 					List<String> connectionLinkIds = Line.extractObjectIds(importedItems.getConnectionLinks());
 					String connectionLinkId = facility.getConnectionLinkId();
-					if(connectionLinkId != null && connectionLinkIds.contains(connectionLinkId)){
-						report2_28_1.updateStatus(Report.STATE.OK);	
-					}else{
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step3_error",Report.STATE.ERROR);
-						report2_28_1.addItem(detailReportItem);
+					if(connectionLinkId != null){
+						if(connectionLinkIds.contains(connectionLinkId)){
+							report2_28_1.updateStatus(Report.STATE.OK);	
+						}else{
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step3_error",Report.STATE.ERROR);
+							report2_28_1.addItem(detailReportItem);
+						}	
 					}
+
 					//Test 2.28.4
 					String stopPointId = facility.getStopPointId();
-					if(stopPointId != null && stopPointIds.contains(stopPointId)){
-						report2_28_1.updateStatus(Report.STATE.OK);	
-					}else{
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step4_error",Report.STATE.ERROR);
-						report2_28_1.addItem(detailReportItem);
-					}
+					if(stopPointId != null){
+						if(stopPointIds.contains(stopPointId)){
+							report2_28_1.updateStatus(Report.STATE.OK);	
+						}else{
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet28_Step4_error",Report.STATE.ERROR);
+							report2_28_1.addItem(detailReportItem);
+						}
+					}	
 				}
 			}
 		}

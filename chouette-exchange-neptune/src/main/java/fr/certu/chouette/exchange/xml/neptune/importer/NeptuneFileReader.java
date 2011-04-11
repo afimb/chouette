@@ -138,7 +138,7 @@ public class NeptuneFileReader
 				e = e.getNext();
 			} 
 			while (e != null);
-			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_XML_FILE,ex, contentName);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE,ex, contentName);
 		}
 		catch (MarshalException e) 
 		{
@@ -160,7 +160,7 @@ public class NeptuneFileReader
 					String msg1 = e1.getMessage();
 					logger.error("Exception "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
-					throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE,e1, contentName);
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_XML_FILE,e1, contentName);
 				}
 			}
 			String mesg = "";
@@ -180,7 +180,7 @@ public class NeptuneFileReader
 			}
 			logger.error("MarshalException "+mesg);
 			LoggingManager.log(logger, mesg, Level.ERROR);
-			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE, mesg);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_XML_FILE, mesg);
 
 		}
 		return chouettePTNetworkType;

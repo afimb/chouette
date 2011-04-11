@@ -10,6 +10,7 @@ package fr.certu.chouette.plugin.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -22,7 +23,7 @@ import lombok.Setter;
  */
 public class ValidationParameters 
 {
-	@Getter @Setter private float test3_1_MinimalDistance;
+	@Getter @Setter private float test3_1_MinimalDistance ;
 	@Getter @Setter private float test3_2_MinimalDistance;
 	@Getter @Setter private List<Coordinate> test3_2_Polygon;
 	@Getter @Setter private float test3_7_MinimalDistance;
@@ -52,6 +53,7 @@ public class ValidationParameters
 	@Getter @Setter private float test3_21d_MinimalSpeed;
 	@Getter @Setter private float test3_21d_MaximalSpeed;
 	@Getter @Setter private String projection_reference;
+	private String test3_2_PolygonPoints;
 
 	public void addTest3_2_PolygonPoint(Coordinate coordinate)
 	{
@@ -59,8 +61,9 @@ public class ValidationParameters
 		test3_2_Polygon.add(coordinate);
 	}
 
-	public void setTest3_2_PolygonPoints(String pointAsString)
+	public void setTest3_2_PolygonPoints(String pointAsString) throws PatternSyntaxException
 	{
+		test3_2_PolygonPoints = pointAsString;
 		String[] points = pointAsString.split(" ");
 		for (String point : points) 
 		{
@@ -72,5 +75,9 @@ public class ValidationParameters
 				addTest3_2_PolygonPoint(new Coordinate(x,y));
 			}
 		}
+	}
+
+	public String getTest3_2_PolygonPoints(){
+		return test3_2_PolygonPoints;
 	}
 }

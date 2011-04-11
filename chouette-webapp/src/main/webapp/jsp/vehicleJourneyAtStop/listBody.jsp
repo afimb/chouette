@@ -149,8 +149,8 @@
                 onchange="calculateTime(heuresCourses%{#idx})"
                 value="%{heuresCourses[#idx]}"
                 cssStyle="background-color:%{#heureCourseBackgroundColor}" />
+                </s:if>
             </td>
-          </s:if>
         </s:iterator>
       </tr>
     </s:iterator>

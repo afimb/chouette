@@ -26,6 +26,8 @@ import org.exolab.castor.xml.ValidationException;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
+import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -225,17 +227,32 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				rootObject = reader.read(stream,entryName);
 				report1_1.updateStatus(Report.STATE.OK);	
 			}
-			catch (Exception e) 
+			catch (ExchangeRuntimeException e) 
 			{
 				/*ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,entryName,e.getLocalizedMessage());
 				report.addItem(item);
 				report.setStatus(Report.STATE.ERROR);*/
-				ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,entryName);			
-				report1_1.addItem(detailReportItem);
-				report1_1.computeDetailItemCount();
+				if(ExchangeExceptionCode.INVALID_XML_FILE.name().equals(e.getCode())){
+					ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,entryName);			
+					report1_1.addItem(detailReportItem);
+					report1_1.computeDetailItemCount();	
+				}
+				
+				if(e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name())){
+					ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,entryName);			
+					report1_2.addItem(detailReportItem);
+				}
+				if(e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name())){
+					ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,entryName);			
+					report1_2.addItem(detailReportItem);
+				}
 				logger.error("zip entry "+entryName+" import failed (read XML)"+e.getLocalizedMessage());
 				continue;
 			}
+			catch (Exception e) {
+				logger.error(e.getLocalizedMessage());
+				continue;
+				}
 			try 
 			{
 				Line line = processImport(rootObject,validate,report,entryName);

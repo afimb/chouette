@@ -39,6 +39,7 @@
 		<property name="timetableProducer" ref="NeptuneTimetableImportProducer" />
 		<property name="accessLinkProducer" ref="NeptuneAccessLinkImportProducer" />
 		<property name="accessPointProducer" ref="NeptuneAccessPointImportProducer" />
+		<property name="facilityProducer" ref="NeptuneFacilityImportProducer" />
 		<property name="groupOfLineProducer" ref="NeptuneGroupOfLineImportProducer" />		
 	</bean>
 

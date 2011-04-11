@@ -143,7 +143,8 @@ public class ModelAssembler {
 		}
 
 		line.setPtNetwork(ptNetwork);
-		line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
+		//line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
+		line.setRoutes(routes);
 		
 		ImportedItems item = new ImportedItems();
 		item.setAccessLinks(accessLinks);
@@ -205,7 +206,7 @@ public class ModelAssembler {
 		for(PTLink ptLink : ptLinks)
 		{
 			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
-			ptLink.setEndOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
+			ptLink.setEndOfLink(getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class));
 		}
 	}
 
@@ -222,6 +223,7 @@ public class ModelAssembler {
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
 			}
 			//vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
+			vehicleJourney.setLine(line);
 		}
 	}
 
@@ -230,7 +232,8 @@ public class ModelAssembler {
 		for(StopPoint stopPoint : stopPoints)
 		{
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
-			stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
+			//stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
+			stopPoint.setLine(line);
 			if(ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
 			{
 				stopPoint.setPtNetwork(ptNetwork);
@@ -334,10 +337,14 @@ public class ModelAssembler {
 
 	private void connectFacilities() {
 		for (Facility facility : facilities) {
-			facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
-			facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
-			facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
-			facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
+			if(facility.getStopAreaId() != null)
+				facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
+			if(facility.getStopPointId() != null)
+				facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
+			if(facility.getConnectionLinkId() != null)
+				facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
+			if(facility.getLineId() != null)
+				facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
 		}
 	}
 	@SuppressWarnings("unchecked")

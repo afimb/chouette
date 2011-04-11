@@ -3,16 +3,16 @@
 <title><s:text name="import.index.title" /></title>
 <s:url id="urlImportNeptuneValidation" action="execute" namespace="/neptune-validation" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('text.neptune.import'), '', #urlImportNeptuneValidation)"/>
-	<div style="width: 70%;">
+	<div style="width: 75%;">
 	  <s:form action="validation" namespace="/neptune-validation" method="POST" theme="simple" enctype="multipart/form-data">
 		<div class="panelDataSection"><s:text name="import.index.title"/></div>
 	  	<div class="neptune-panel">
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" /> 
-		</div><!--
-		<b><s:label value="%{#session.report.getLocalizedMessage(getLocale())}"/></b>
+		</div>
+				<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
 		<s:div id="category1">
-		 <s:iterator value="#session.report.items" var="sheet" status="status">
+		 <s:iterator value="report.items" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 			 <s:div cssClass="neptune-panel" id="%{status}">
 			 <s:iterator value="items" var="test" status="itemsStatus">
@@ -50,7 +50,7 @@
 			 	</s:div>
 		 </s:iterator>
 	</s:div>
-	--><s:include value="/jsp/commun/messages.jsp" />
+		<s:include value="/jsp/commun/messages.jsp" />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
 	<s:div>
@@ -76,7 +76,7 @@
 			 	 <s:text name="neptune.field.polygon.3.6"></s:text>
 			 	</td>
 			 	<td>
-			 	 <s:textarea cols="25" name="polygonCoordinatesAsString" rows="3"></s:textarea>
+			 	 <s:textfield  name="validationParam.test3_2_PolygonPoints" size="63"/>
 			 	</td>
 		 	</tr>
 		 	<tr>
