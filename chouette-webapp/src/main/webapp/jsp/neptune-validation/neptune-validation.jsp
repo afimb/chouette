@@ -12,7 +12,7 @@
 		</div>
 		<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
 		<s:div id="category1">
-		 <s:iterator value="report.items" var="sheet" status="status">
+		 <s:iterator value="%{report.items}" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 			 <s:div cssClass="neptune-panel" id="%{status}">
 			 <s:iterator value="items" var="test" status="itemsStatus">

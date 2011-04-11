@@ -215,6 +215,8 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		lines = lineManager.doImport(null,formats.get(0).getName(),parameters, reportHolder);
 		report = reportHolder.getReport();
+		session.put("fileFileName",fileFileName);
+		session.put("report", report);
 		if(lines != null && !lines.isEmpty())
 			result = true;
 
@@ -222,7 +224,12 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	}
 
 	public String validation() throws ChouetteException, IOException{
-		String res = importNeptune();
+		String res = null;
+		if(session.get("lines") != null){
+			lines = (List<Line>) session.get("lines");
+			res = SUCCESS;
+		}else
+			res = importNeptune();
 		if(res.equals(SUCCESS)){
 			reportValidation = lineManager.validate(null,lines,validationParam);
 			boolean isDefault = false;
@@ -273,6 +280,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 				saveCookie("projection_reference", validationParam.getProjection_reference());
 			}
+			session.put("lines", lines);
 		}
 		if(res.equals(INPUT) || res.equals(SUCCESS))
 			res =  LIST;
