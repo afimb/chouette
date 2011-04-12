@@ -7,7 +7,7 @@
 	<div style="width: 90%;">
 	 <div class="panelDataSection"><s:text name="validation.result.title"/></div>
 	  	<div class="neptune-panel">
-	  	<s:label label="%{getText('validation.title')}" value="%{fileFileName}"/>
+	  	<s:label label="%{getText('validation.title')}" value="%{#session.fileFileName}"/>
 	  	<br /><br />
 	  	<s:text name="text.save" />
 		<table border="0" cellpadding="20">
@@ -45,9 +45,9 @@
 					id="hideIt_category1" title="%{getText('text.detail.hide')}">
 					<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}" />	
 			</s:a>	
-	<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>
+	<b><s:label value="%{#session.report.getLocalizedMessage(getLocale())}"/></b>
 	<s:div cssStyle="margin-left: 40px;" id="category1">
-		 <s:iterator value="report.items" var="sheet" status="status">
+		 <s:iterator value="%{#session.report.items}" var="sheet" status="status">
 		 <div class="panelDataSection"><s:property value="getLocalizedMessage(getLocale())"/></div>
 			 <s:div cssClass="neptune-panel" id="%{status}">
 			 <s:iterator value="items" var="test" status="itemsStatus">
@@ -148,7 +148,7 @@
 	      <div class="neptune-panel">
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.1')}" value="%{validationParam.test3_1_MinimalDistance}" /><br />
 	     <s:label label="%{getText('neptune.field.minimum.distance.3.2')}" value="%{validationParam.test3_2_MinimalDistance}"/><br />
-	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{validationPanoneram.test3_2_PolygonPoints}"/><br />
+	 	<s:label label="%{getText('neptune.field.polygon.3.6')}" value="%{validationParam.test3_2_PolygonPoints}"/><br />
 	 	<s:label value="%{validationParam.test3_7_MinimalDistance}" label="%{getText('neptune.field.minimum.distance.on.maximum.3.7')}" />
 	 	<s:label value="%{validationParam.test3_7_MaximalDistance}" label="/" />
 	 	<br />
