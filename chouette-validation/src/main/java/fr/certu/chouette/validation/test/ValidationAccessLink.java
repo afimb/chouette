@@ -30,7 +30,8 @@ import fr.certu.chouette.validation.report.SheetReportItem;
 public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 
 	private ValidationStepDescription validationStepDescription;
-	private final long DIVIDER = 1000 * 3600;
+	private final double DIVIDER = 1000 * 3600;
+	private final double CONVERTER = 6371 /180;
 	public void init(){
 		//TODO
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
@@ -94,28 +95,28 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
 			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
 			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
-			double distance = distanceOp.distance();
+			double distance = distanceOp.distance()*CONVERTER;
 			//Test 3.21.1  a
-			long timeA = (accessLink.getDefaultDuration() != null) ? accessLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
+			double timeA = (accessLink.getDefaultDuration() != null) ? accessLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;
-			if(speedA < minA && speedA > maxA){
+			if(speedA < minA || speedA > maxA){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_a",Report.STATE.ERROR,
 						String.valueOf(minA),String.valueOf(maxA),accessLink.getObjectId());
 				report3_21.addItem(detailReportItem);
 			}
 			//Test 3.21.1 b
-			long timeB = (accessLink.getFrequentTravellerDuration() != null) ? accessLink.getFrequentTravellerDuration().getTime() / DIVIDER : 0;
+			double timeB = (accessLink.getFrequentTravellerDuration() != null) ? accessLink.getFrequentTravellerDuration().getTime() / DIVIDER : 0;
 			double speedB = distance/timeB;
-			if(speedB < minB && speedB > maxB){
+			if(speedB < minB || speedB > maxB){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_b",Report.STATE.ERROR,
 						String.valueOf(minB),String.valueOf(maxB),accessLink.getObjectId());
 				report3_21.addItem(detailReportItem);
 			}		
 			//Test 3.21.1 c
-			long timeC = (accessLink.getOccasionalTravellerDuration() != null) ? accessLink.getOccasionalTravellerDuration().getTime() / DIVIDER: 0;
+			double timeC = (accessLink.getOccasionalTravellerDuration() != null) ? accessLink.getOccasionalTravellerDuration().getTime() / DIVIDER: 0;
 			double speedC = distance/timeC;
 			
-			if(speedC < minC && speedC > maxC){
+			if(speedC < minC || speedC > maxC){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_c",Report.STATE.ERROR,
 						String.valueOf(minC),String.valueOf(maxC),accessLink.getObjectId());
 				report3_21.addItem(detailReportItem);
@@ -124,9 +125,9 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 			if(accessLink.getMobilityRestrictedTravellerDuration() == null)
 				report3_21.updateStatus(Report.STATE.OK);
 			else {
-				long timeD = accessLink.getMobilityRestrictedTravellerDuration().getTime() / DIVIDER;
+				double timeD = accessLink.getMobilityRestrictedTravellerDuration().getTime() / DIVIDER;
 				double speedD = distance/timeD;
-				if(speedD < minD && speedD > maxD){
+				if(speedD < minD || speedD > maxD){
 					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_d",Report.STATE.ERROR,
 							String.valueOf(minD),String.valueOf(maxD),accessLink.getObjectId());
 					report3_21.addItem(detailReportItem);

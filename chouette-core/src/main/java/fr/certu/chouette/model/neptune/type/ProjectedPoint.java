@@ -1,5 +1,6 @@
 package fr.certu.chouette.model.neptune.type;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import lombok.Getter;
@@ -11,8 +12,9 @@ import lombok.Setter;
  * @author michel
  *
  */
-public class ProjectedPoint 
+public class ProjectedPoint implements Serializable
 {
+	private static final long serialVersionUID = -2981993156157564399L;
 	/**
 	 * x coordinate
 	 */

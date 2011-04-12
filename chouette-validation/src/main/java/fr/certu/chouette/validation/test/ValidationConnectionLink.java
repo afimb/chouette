@@ -29,7 +29,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
 public class ValidationConnectionLink implements IValidationPlugin<ConnectionLink>{
 
 	private ValidationStepDescription validationStepDescription;
-	private final long DIVIDER = 1000 * 3600;
+	private final double DIVIDER = 1000 * 3600;
 	private final double CONVERTER = 6371 /180;
 
 	public void init(){
@@ -102,27 +102,28 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
 			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
 			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
+			
 			double distance = distanceOp.distance() * CONVERTER;
 			//Test 3.8.1  a
-			long timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
+			double timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;
-			if(speedA < minA && speedA > maxA){
+			if(speedA < minA || speedA > maxA){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_a",Report.STATE.ERROR,
 						String.valueOf(minA),String.valueOf(maxA),connectionLink.getObjectId());
 				report3_8.addItem(detailReportItem);
 			}
 			//Test 3.8.1 b
-			long timeB = (connectionLink.getFrequentTravellerDuration() != null) ? connectionLink.getFrequentTravellerDuration().getTime() / DIVIDER : 0;
+			double timeB = (connectionLink.getFrequentTravellerDuration() != null) ? connectionLink.getFrequentTravellerDuration().getTime() / DIVIDER : 0;
 			double speedB = distance/timeB;
-			if(speedB < minB && speedB > maxB){
+			if(speedB < minB || speedB > maxB){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_b",Report.STATE.ERROR,
 						String.valueOf(minB),String.valueOf(maxB),connectionLink.getObjectId());
 				report3_8.addItem(detailReportItem);
 			}		
 			//Test 3.8.1 c
-			long timeC = (connectionLink.getOccasionalTravellerDuration() != null) ? connectionLink.getOccasionalTravellerDuration().getTime() / DIVIDER: 0;
+			double timeC = (connectionLink.getOccasionalTravellerDuration() != null) ? connectionLink.getOccasionalTravellerDuration().getTime() / DIVIDER: 0;
 			double speedC = distance/timeC;
-			if(speedC < minC && speedC > maxC){
+			if(speedC < minC || speedC > maxC){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_c",Report.STATE.ERROR,
 						String.valueOf(minC),String.valueOf(maxC),connectionLink.getObjectId());
 				report3_8.addItem(detailReportItem);
@@ -131,9 +132,9 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			if(connectionLink.getMobilityRestrictedTravellerDuration() == null)
 				report3_8.updateStatus(Report.STATE.OK);
 			else {
-				long timeD = connectionLink.getMobilityRestrictedTravellerDuration().getTime() / DIVIDER;
+				double timeD = connectionLink.getMobilityRestrictedTravellerDuration().getTime() / DIVIDER;
 				double speedD = distance/timeD;
-				if(speedD < minD && speedD > maxD){
+				if(speedD < minD || speedD > maxD){
 					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_d",Report.STATE.ERROR,
 							String.valueOf(minD),String.valueOf(maxD),connectionLink.getObjectId());
 					report3_8.addItem(detailReportItem);

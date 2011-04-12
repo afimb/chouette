@@ -61,7 +61,7 @@
 						id="hideIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
 						<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}"/>
 					</s:a>
-						<s:label value="%{report.order}.%{#sheet.order}.%{#test.order}" />
+						<s:label value="%{#session.report.order}.%{#sheet.order}.%{#test.order}" />
 				</div>
 			 		<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-15px">
 			 			<s:property value="getLocalizedMessage(getLocale())"/>
