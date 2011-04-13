@@ -233,7 +233,11 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		else if(session.get("lines") != null){
 			lines = (List<Line>) session.get("lines");
 			res = SUCCESS;
+		}else{
+			addActionError(getText("error.import.file.require"));
+			return ERROR;
 		}
+			
 		if(res.equals(SUCCESS)){
 			reportValidation = lineManager.validate(null,lines,validationParam);
 			boolean isDefault = false;

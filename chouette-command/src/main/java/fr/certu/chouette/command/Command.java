@@ -537,6 +537,11 @@ public class Command
 			List<String> sids = parameters.get("objectid");
 			filter = Filter.getNewInFilter("objectId", sids);
 		}
+		else if (parameters.containsKey("ptnetworkid"))
+		{
+			List<String> sids = parameters.get("ptnetworkid");
+			filter = Filter.getNewInFilter("ptNetwork.objectId", sids);
+		}
 		else
 		{
 			filter = Filter.getNewEmptyFilter();
