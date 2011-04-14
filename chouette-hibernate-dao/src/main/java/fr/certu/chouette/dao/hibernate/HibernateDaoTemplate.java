@@ -3,10 +3,14 @@ package fr.certu.chouette.dao.hibernate;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.NonUniqueObjectException;
+import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateSystemException;
@@ -112,13 +116,19 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	@SuppressWarnings("unchecked")
 	public List<T> select(final Filter filter) {
-		DetachedCriteria criteria = DetachedCriteria.forClass(type);
+		
+		
+		Session session = getSession();
+		
+		Criteria criteria = session.createCriteria(type);
+		
+		// DetachedCriteria criteria = DetachedCriteria.forClass(type);
 		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 		if (!filter.isEmpty())
 		{
 			logger.debug("build clause");
 			FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
-			criteria.add(translator.translate(filter));
+			criteria.add(translator.translate(filter,criteria,getSessionFactory().getClassMetadata(type)));
 		}
 		if (filter.getOrderList()!= null)
 		{
@@ -139,19 +149,22 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 				}
 			}
 		}
-		HibernateTemplate ht = getHibernateTemplate();
+		// HibernateTemplate ht = getHibernateTemplate();
 		List<T> beans = null; 
 		if (filter.getLimit() > 0 || filter.getStart() > 0)
 		{
 			logger.debug("call with limit");
-			beans = ht.findByCriteria(criteria,filter.getStart(),filter.getLimit());
+			criteria.setFirstResult(filter.getStart());
+			criteria.setMaxResults(filter.getLimit());
+			beans = criteria.list();// ht.findByCriteria(criteria,filter.getStart(),filter.getLimit());
 		}
 		else
 		{
 			logger.debug("call without limit");
-			beans = ht.findByCriteria(criteria);
+			beans = criteria.list(); // ht.findByCriteria(criteria);
 		}
 		logger.debug("beans founds = "+beans.size());
+
 		return beans;
 
 

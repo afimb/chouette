@@ -10,6 +10,7 @@ package fr.certu.chouette.dao.hibernate;
 
 import org.testng.annotations.BeforeMethod;
 
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Route;
 
 /**
@@ -36,5 +37,12 @@ public class RouteDaoTemplateTests extends AbstractDaoTemplateTests<Route> {
 	{
 		bean = createRoute();
 	}
+
+	@Override
+	protected Filter getSelectFilter() 
+	{
+		return Filter.getNewEqualsFilter("line.name", "TestNG Line");
+	}
+
 
 }

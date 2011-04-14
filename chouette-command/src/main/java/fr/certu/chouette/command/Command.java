@@ -537,6 +537,20 @@ public class Command
 			List<String> sids = parameters.get("objectid");
 			filter = Filter.getNewInFilter("objectId", sids);
 		}
+		else if (parameters.containsKey("filterkey"))
+		{
+			String filterKey = getSimpleString(parameters,"filterkey");
+			String filterOp = getSimpleString(parameters,"filterop","eq");
+			if (filterOp.equalsIgnoreCase("eq"))
+			{
+				String value = getSimpleString(parameters,"filterval");
+				filter = Filter.getNewEqualsFilter(filterKey, value);
+			}
+			else
+			{
+				throw new IllegalArgumentException("filterOp "+filterOp+" not yet implemented");
+			}
+		}
 		else
 		{
 			filter = Filter.getNewEmptyFilter();

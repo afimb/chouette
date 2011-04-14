@@ -11,6 +11,7 @@ package fr.certu.chouette.dao.hibernate;
 import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.PTNetwork;
 
 /**
@@ -36,6 +37,12 @@ public class PTNetworkDaoTemplateTests extends AbstractDaoTemplateTests<PTNetwor
 	public void refreshBean() 
 	{
 		bean = createPTNetwork();
+	}
+
+	@Override
+	protected Filter getSelectFilter() 
+	{
+		return Filter.getNewEqualsFilter("name", "TestNG Network");
 	}
 
 }

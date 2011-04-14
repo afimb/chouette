@@ -10,6 +10,7 @@ package fr.certu.chouette.dao.hibernate;
 
 import org.testng.annotations.BeforeMethod;
 
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Company;
 
 /**
@@ -34,6 +35,12 @@ public class CompanyDaoTemplateTests extends AbstractDaoTemplateTests<Company> {
 	public void refreshBean() 
 	{
 		bean = createCompany();
+	}
+	
+	@Override
+	protected Filter getSelectFilter() 
+	{
+		return  Filter.getNewEqualsFilter("name", "TestNG Company");
 	}
 
 }

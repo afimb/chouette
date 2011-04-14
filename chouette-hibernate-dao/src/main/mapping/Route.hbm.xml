@@ -40,6 +40,9 @@
 			<element type="string" column="objectId" />
 		</bag>
         -->
+		<many-to-one name="line" insert="false" update="false"
+			class="Line" cascade="none"
+			lazy="no-proxy" outer-join="auto" column="lineId" />
 
 	</class>
 </hibernate-mapping>

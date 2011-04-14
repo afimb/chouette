@@ -10,7 +10,9 @@ package fr.certu.chouette.dao.hibernate;
 
 import org.testng.annotations.BeforeMethod;
 
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 
 /**
  * @author michel
@@ -28,6 +30,7 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 		initDaoTemplate("StopArea", "stopAreaDao");
 	}
 
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
 	 */
@@ -35,6 +38,12 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 	public void refreshBean() 
 	{
 		bean = createStopArea();
+	}
+	
+	@Override
+	protected Filter getSelectFilter() 
+	{
+		return Filter.getNewEqualsFilter("areaCentroid.address.countryCode", "75000");
 	}
 
 }

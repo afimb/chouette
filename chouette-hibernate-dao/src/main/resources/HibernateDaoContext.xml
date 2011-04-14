@@ -89,7 +89,7 @@
 	<!-- Modules DAO -->
 
 	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createPTNetworkDao">
+		factory-method="createPTNetworkDao" >
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 

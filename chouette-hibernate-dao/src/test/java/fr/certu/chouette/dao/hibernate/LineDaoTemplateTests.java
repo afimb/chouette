@@ -10,6 +10,7 @@ package fr.certu.chouette.dao.hibernate;
 
 import org.testng.annotations.BeforeMethod;
 
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Line;
 
 /**
@@ -32,6 +33,12 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
 	public void refreshBean() 
 	{
 		bean = createLine();
+	}
+
+	@Override
+	protected Filter getSelectFilter() 
+	{
+		return Filter.getNewEqualsFilter("ptNetwork.name", "TestNG Network");
 	}
 	
 	

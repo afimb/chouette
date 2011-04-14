@@ -1,10 +1,10 @@
 package fr.certu.chouette.manager;
 
-import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import org.easymock.EasyMock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,7 +25,7 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 	public void initManager(String beanName, String managerName, T bean)
 	{
 		super.initManager(beanName, managerName, bean);
-		daoMock = createMock(IDaoTemplate.class );
+		daoMock = EasyMock.createMock(IDaoTemplate.class );
 	}
 
     @BeforeMethod (groups = { "withDao" } , dependsOnMethods="createManager")
