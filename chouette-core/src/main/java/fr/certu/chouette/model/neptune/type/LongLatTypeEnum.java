@@ -14,9 +14,9 @@ public enum LongLatTypeEnum {
 	     */
 	    WGS92("WGS92",0),
 	    /**
-	     * Constant STANDARD
+	     * Constant STANDARD same as WGS84
 	     */
-	    STANDARD("Standard",0);
+	    STANDARD("Standard",4326);
 
 	      //--------------------------/
 	     //- Class/Member Variables -/

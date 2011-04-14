@@ -112,31 +112,31 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 						validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_7_MinimalDistance"))
 						validationParam.setTest3_7_MinimalDistance(Float.valueOf(cookieValue));
-				
+
 					if(cookieName.equals("test3_8a_MaximalSpeed"))
 						validationParam.setTest3_8a_MaximalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8a_MinimalSpeed"))
 						validationParam.setTest3_8a_MinimalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8b_MaximalSpeed"))
 						validationParam.setTest3_8b_MaximalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8b_MinimalSpeed"))
 						validationParam.setTest3_8b_MinimalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8c_MaximalSpeed"))
 						validationParam.setTest3_8c_MaximalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8c_MinimalSpeed"))
 						validationParam.setTest3_8c_MinimalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8d_MaximalSpeed"))
 						validationParam.setTest3_8d_MaximalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_8d_MinimalSpeed"))
 						validationParam.setTest3_8d_MinimalSpeed(Float.valueOf(cookieValue));
-					
+
 					if(cookieName.equals("test3_9_MaximalSpeed"))
 						validationParam.setTest3_9_MaximalSpeed(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_9_MinimalSpeed"))
@@ -174,10 +174,12 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 	private String importNeptune() throws ChouetteException, IOException {
 		String result = INPUT;
+		session.clear();
 		if(file != null && file.length()>0){
 			formats = lineManager.getImportFormats(null);
 			imported = importXmlFile(file);
 			if(imported){
+				session.put("lines", lines);
 				if(lines != null && !lines.isEmpty()){
 					setImported(true);
 					result = SUCCESS;
@@ -191,6 +193,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 			addActionError(getText("error.import.file.require"));
 			result = ERROR;
 		}
+		session.put("imported", imported);
 		return result;
 	}
 
@@ -217,19 +220,24 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		report = reportHolder.getReport();
 		session.put("fileFileName",fileFileName);
 		session.put("report", report);
-		if(lines != null && !lines.isEmpty())
+		if(lines != null && !lines.isEmpty()){
 			result = true;
-
+		}	
 		return result;
 	}
 
 	public String validation() throws ChouetteException, IOException{
 		String res = null;
-		if(session.get("lines") != null){
+		if(file != null)
+			res = importNeptune();
+		else if(session.get("lines") != null){
 			lines = (List<Line>) session.get("lines");
 			res = SUCCESS;
-		}else
-			res = importNeptune();
+		}else{
+			addActionError(getText("error.import.file.require"));
+			return ERROR;
+		}
+			
 		if(res.equals(SUCCESS)){
 			reportValidation = lineManager.validate(null,lines,validationParam);
 			boolean isDefault = false;
@@ -280,7 +288,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 				saveCookie("projection_reference", validationParam.getProjection_reference());
 			}
-			session.put("lines", lines);
 		}
 		if(res.equals(INPUT) || res.equals(SUCCESS))
 			res =  LIST;

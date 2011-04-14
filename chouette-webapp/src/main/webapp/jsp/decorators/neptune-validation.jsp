@@ -20,15 +20,10 @@
       <%@ include file="/jsp/commun/neptune-validation-header.jsp" %>
       <div id="main">
       <div id="menu">
-	<div class="submenu">
-		<div>Menu</div>
-		<br />
-		<ul id="sommaire">
-			<%-- Reseaux --%>
+		<div>	<%-- Connection --%>
       	<s:url id="urlConnexionMenu" action ="list" namespace="/line" includeParams="none"/>
-			<li><s:a href="%{urlConnexionMenu}" id="connexionMenu"><s:text name="text.connexion"/></s:a></li>
-			</ul>
-			</div>
+			<s:a href="%{urlConnexionMenu}" id="connexionMenu"><s:text name="text.connexion"/></s:a>
+		</div>
 			</div>
         <div id="help"></div>
         <div id="content">
