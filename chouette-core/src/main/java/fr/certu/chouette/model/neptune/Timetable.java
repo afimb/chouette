@@ -15,7 +15,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = -1598554061982685113L;
 	@Getter @Setter private String comment;
 	@Getter @Setter private String version;
-	@Getter @Setter private List<DayTypeEnum> dayTypes;
+	private List<DayTypeEnum> dayTypes;    //Never be persisted
+	@Getter @Setter private Integer intDayTypes;
 	@Getter @Setter private List<Date> calendarDays;
 	@Getter @Setter private List<Period> periods;
 	@Getter @Setter private List<String> vehicleJourneyIds;
@@ -26,19 +27,19 @@ public class Timetable extends NeptuneIdentifiedObject {
 		if (dayTypes == null) dayTypes = new ArrayList<DayTypeEnum>();
 		dayTypes.add(dayType);
 	}
-	
+
 	public void addCalendarDay(Date calendarDay)
 	{
 		if (calendarDays == null) calendarDays = new ArrayList<Date>();
 		calendarDays.add(calendarDay);
 	}
-	
+
 	public void addPeriod(Period period)
 	{
 		if (periods == null) periods = new ArrayList<Period>();
 		periods.add(period);
 	}
-	
+
 	public void addVehicleJourneyId(String vehicleJourneyId)
 	{
 		if (vehicleJourneyIds == null) vehicleJourneyIds = new ArrayList<String>();
@@ -78,7 +79,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 			break;
 		}
 	} 
-	
+
 	@Override
 	public String toString(String indent,int level)
 	{
@@ -134,8 +135,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 		return sb.toString();
 	}
-	
-	
+
+
 	private static String formatDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		if(date != null){
@@ -143,6 +144,34 @@ public class Timetable extends NeptuneIdentifiedObject {
 		}
 		else{
 			return null;
+		}
+	}
+
+	public List<DayTypeEnum> getDayTypes() 
+	{
+		if (intDayTypes == null) return dayTypes;	
+		//CASTOREVO
+		DayTypeEnum[] dayTypes = DayTypeEnum.values();
+		for (DayTypeEnum dayType : dayTypes) 
+		{
+			int filtreJourType = (int) Math.pow(2, dayType.ordinal());
+			if (filtreJourType == (intDayTypes.intValue() & filtreJourType))
+			{
+				addDayType(dayType);
+			}
+		}	
+		return this.dayTypes;
+	}
+
+	public void setDayTypes(List<DayTypeEnum> dayTypes)
+	{
+		//CASTOREVO
+		intDayTypes = 0;
+		if (dayTypes == null) return;
+
+		for (DayTypeEnum dayType : dayTypes) 
+		{
+			intDayTypes += (int)Math.pow(2, dayType.ordinal());
 		}
 	}
 }

@@ -32,11 +32,7 @@
 
 		<property name="comment" type="string" />
 		<property name="version" type="string" />
-		<set name="dayTypes" table="dayTypes">
-			<key column="id" not-null="true" />
-			<element type="fr.certu.chouette.dao.hibernate.usertype.DayTypeUserType"
-				column="dayTypes" />
-		</set>
+		<property name="intDayTypes" />
 		<list cascade="all" lazy="false" name="calendarDays" table="timetable_date">
 			<key column="timetableId" />
 			<list-index base="0" column="position" />

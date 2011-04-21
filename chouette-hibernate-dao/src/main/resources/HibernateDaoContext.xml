@@ -76,8 +76,7 @@
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
-				
+				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>	
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml</value>

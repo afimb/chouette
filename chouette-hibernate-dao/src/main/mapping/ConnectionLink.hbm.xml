@@ -14,7 +14,7 @@
  =============+================+==============================================
  16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
  =============+================+==============================================
- 19 av. 2011 |Mamadou KEIRA    | Refactoring, creating foreign keys
+ 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
  =============+================+==============================================
 
  Version : $Revision: 1.6 $
