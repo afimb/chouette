@@ -206,7 +206,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	/* (non-Javadoc)

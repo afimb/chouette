@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 import java.util.Date;
 
 import chouette.schema.types.DayTypeType;
+import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -26,7 +27,7 @@ public class TimetableProducer extends AbstractCastorNeptuneProducer<chouette.sc
 			}
 		}
 		if(timetable.getPeriods() != null){
-			for(Timetable.Period period : timetable.getPeriods()){
+			for(Period period : timetable.getPeriods()){
 				if(period != null){
 					chouette.schema.Period castorPeriod = new chouette.schema.Period();
 					castorPeriod.setStartOfPeriod(new  org.exolab.castor.types.Date(period.getStartDate()));

@@ -88,12 +88,18 @@ public class ValidationStopArea implements IValidationPlugin<StopArea>{
 			if(constraints != null){
 				for (RestrictionConstraint restrictionConstraint : constraints) {
 					//Test 2.12.1
-					if(restrictionConstraint.getStopArea() == null){
+					if(restrictionConstraint.getStopAreas() == null){
 						ReportItem detailReportItem =new DetailReportItem("Test2_Sheet12_Step1_error",Report.STATE.ERROR);
 						report2_12.addItem(detailReportItem);	
-					}else{
-						report2_12.updateStatus(Report.STATE.OK);
+					}else {
+						if(!StopArea.extractObjectIds(restrictionConstraint.getStopAreas()).contains(stopArea.getObjectId())){
+							ReportItem detailReportItem =new DetailReportItem("Test2_Sheet12_Step1_error",Report.STATE.ERROR);
+							report2_12.addItem(detailReportItem);	
+						}else{
+							report2_12.updateStatus(Report.STATE.OK);
+						}
 					}
+					
 					//Test 2.13
 					if(restrictionConstraint.getLineIdShortCut() != null){
 						if(restrictionConstraint.getLine() == null){

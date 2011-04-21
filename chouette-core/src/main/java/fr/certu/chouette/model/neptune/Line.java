@@ -30,6 +30,7 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * when writable is added to comment, a implicit setter is available
  */
 @NoArgsConstructor
+
 public class Line extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = -8086291270595894778L;

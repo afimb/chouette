@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+ @@LICENCE@@ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ =============+================+==============================================
+ 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
+ =============+================+==============================================
+
+ Version : $Revision: 1.6 $
+-->
+<hibernate-mapping package="fr.certu.chouette.model.neptune">
+	<class name="RestrictionConstraint" table="routingConstraint">
+		<id column="id" name="id" type="long">
+			<generator class="native" />
+		</id>
+		<list cascade="all" lazy="false" name="stopAreas"
+			table="routingConstraint_stoparea" inverse="false">
+			<key column="routingConstraintId" />
+			<index column="position" />
+			<one-to-many class="StopArea"/>
+		</list>
+		<!-- <many-to-one class="StopArea" column="stopAreaId" insert="false"
+			lazy="no-proxy" name="stopArea" update="false" /> -->
+		<property generated="never" lazy="false" name="name" />
+		<property column="objectId" generated="never" lazy="false"
+			name="areaId" type="string" unique="true" />
+		<many-to-one class="Line" column="lineId" insert="false"
+			lazy="no-proxy" name="line" update="false" />
+	</class>
+</hibernate-mapping>

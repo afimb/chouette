@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+ @@LICENCE@@ Société DRYADE
+
+ Chouette project  : paramétrage Objet - Base
+
+ Change history :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 19 av. 2011 |Mamadou KEIRA    | init
+ =============+================+==============================================
+
+ Version : $Revision: 1.0 $
+-->
+<hibernate-mapping package="fr.certu.chouette.model.neptune">
+	<class dynamic-insert="false" dynamic-update="false"
+		name="AccessLink" table="AccessLink">
+		<id column="id" name="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="name" type="string" />
+		<property name="comment" type="string" />
+		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" />
+		<property name="startOfLinkId" type="string"/>
+		<property name="endOfLinkId" type="string" />
+		<property column="liftAvailability" name="liftAvailable"
+			type="boolean" />
+		<property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitable"
+			type="boolean" />
+		<property column="stairsAvailability" name="stairsAvailable"
+			type="boolean" />
+		<property column="defaultDuration" name="defaultDuration"
+			type="time" />
+		<property column="frequentTravellerDuration" name="frequentTravellerDuration"
+			type="time" />
+		<property column="occasionalTravellerDuration" name="occasionalTravellerDuration"
+			type="time" />
+		<property column="mobilityRestrictedTravellerDuration" name="mobilityRestrictedTravellerDuration"
+			type="time" />
+		<property column="linkType" name="linkType"
+			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType" />
+	</class>
+</hibernate-mapping>

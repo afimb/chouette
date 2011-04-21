@@ -1,18 +1,13 @@
 package fr.certu.chouette.dao.hibernate;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.type.Type;
 
 import fr.certu.chouette.filter.Filter;
 

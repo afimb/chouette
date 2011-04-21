@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.util.Date;
 
+import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -43,7 +44,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, chouette
 		
 		if(xmlTimetable.getPeriod() != null){
 			for(chouette.schema.Period xmlPeriod : xmlTimetable.getPeriod()){
-				timetable.addPeriod(new Timetable.Period(new Date(xmlPeriod.getStartOfPeriod().toLong()),new Date(xmlPeriod.getStartOfPeriod().toLong())));
+				timetable.addPeriod(new Period(new Date(xmlPeriod.getStartOfPeriod().toLong()),new Date(xmlPeriod.getStartOfPeriod().toLong())));
 			}
 		}
 		

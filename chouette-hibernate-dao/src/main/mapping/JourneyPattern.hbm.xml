@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+ @@LICENCE@@ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ =============+================+==============================================
+ 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
+ =============+================+==============================================
+
+ Version : $Revision: 1.6 $
+-->
+<hibernate-mapping package="fr.certu.chouette.model.neptune">
+	<class name="JourneyPattern"
+		table="JourneyPattern">
+		<id column="id" name="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="name" type="string" />
+		
+		<property name="comment" type="string" />
+		<property column="registrationNumber" name="registrationNumber" type="string" />
+		<property column="publishedName" name="publishedName" type="string"/>
+		<!-- <set batch-size="10" cascade="all" inverse="false" lazy="true"
+			name="stopPoints" table="journeyPattern_stopPoint">
+			<key column="journeyPatternId" />
+			<one-to-many class="StopPoint" />
+		</set> -->
+		<many-to-one class="Route" column="routeId" insert="false"
+			lazy="no-proxy" name="route" update="false" />
+		<!-- <set batch-size="10" cascade="all" inverse="true" lazy="true"
+			name="vehicleJourneys" table="journeyPattern_vehicleJourney">
+			<key column="journeyPatternId" />
+			<one-to-many class="VehicleJourney" />
+		</set> -->
+	</class>
+</hibernate-mapping>

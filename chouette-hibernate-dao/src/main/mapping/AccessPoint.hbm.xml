@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!--
+ DRYADE
+
+ Chouette project  : paramétrage Objet - Base
+
+ Change history :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 19 av. 2011 |Mamadou KEIRA    | init
+ =============+================+==============================================
+
+ Version : $Revision: 1.3 $
+-->
+<hibernate-mapping package="fr.certu.chouette.model.neptune">
+	<class dynamic-insert="false" dynamic-update="false" name="AccessPoint"
+		table="AccessPoint">
+		<id column="id" name="id" type="long">
+			<generator class="native" />
+		</id>
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="name" type="string" />
+		<property name="comment" type="string" />
+
+		<component name="address"
+			class="fr.certu.chouette.model.neptune.type.Address">
+			<property name="countryCode" type="string" />
+			<property name="streetName" type="string" />
+		</component>
+		<property name="longitude" precision="19" scale="16"
+			type="java.math.BigDecimal" />
+		<property name="latitude" precision="19" scale="16"
+			type="java.math.BigDecimal" />
+		<property name="longLatType"
+			type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType" />
+		<component name="projectedPoint"
+			class="fr.certu.chouette.model.neptune.type.ProjectedPoint">
+			<property name="x" type="java.math.BigDecimal" />
+			<property name="y" type="java.math.BigDecimal" />
+			<property name="projectionType" type="string" />
+		</component>
+		<property name="containedIn" column="containedIn" />
+		<set name="accessLinks" table="accesspoint_accesslink" lazy="false"
+			cascade="all">
+			<key column="accessPointId" />
+			<many-to-many column="accesslinkId" class="AccessLink" />
+		</set>
+		<property name="openningTime" type="java.util.Date" />
+		<property name="closingTime" type="java.util.Date" />
+		<property name="type" type="string" />
+		<property column="liftAvailability" name="liftAvailable"
+			type="boolean" />
+		<property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitable"
+			type="boolean" />
+		<property column="stairsAvailability" name="stairsAvailable"
+			type="boolean" />
+	</class>
+</hibernate-mapping>

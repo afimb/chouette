@@ -86,7 +86,7 @@ public class Command
 				PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
 				try
 				{
-					Resource[] re = test.getResources("classpath*:/chouetteContext.xml");
+					Resource[] re = test.getResources("classpath*:/chouette*.xml");
 					for (Resource resource : re)
 					{
 						if (! resource.getURL().toString().contains("dao"))

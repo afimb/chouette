@@ -1,5 +1,7 @@
 package fr.certu.chouette.model.neptune;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -13,7 +15,7 @@ public class RestrictionConstraint extends NeptuneObject{
      * Field areaId.
      */
     @Getter @Setter private String areaId;
-    @Getter @Setter private StopArea stopArea;
+    @Getter @Setter private List<StopArea> stopAreas;
     /**
      * Field lineIdShortCut.
      */

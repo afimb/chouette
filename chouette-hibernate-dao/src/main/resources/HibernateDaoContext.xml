@@ -77,6 +77,21 @@
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
+				
+				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value> 				
+				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/AccessLink.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/AccessPoint.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/AreaCentroid.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml</value>
+				
 			</list>
 		</property>
 	</bean>

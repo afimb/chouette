@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- @@LICENCE@@ -->
-<!-- Société DRYADE Projet chouette : paramétrage Objet - Base DLineBean.hbm.xml
-	: paramétrage DLineBean - Line Historique des modifications : Date | Auteur
-	| Libéllé ============+================+==============================================
-	2 nov. 2004 |Marc FLORISSON | Création ============+================+==============================================
-	Version : $Revision: 1.5 $ -->
+<!--
+ @@LICENCE@@ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ =============+================+==============================================
+ 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
+ =============+================+==============================================
+
+ Version : $Revision: 1.6 $
+-->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="Line" table="Line" dynamic-insert="false" dynamic-update="false" >
+	<class name="Line" table="Line" dynamic-insert="false"
+		dynamic-update="false">
 		<id name="id" type="long">
 			<generator class="native" />
 		</id>
-		<property name="ptNetworkId" type="long"/>
-		<property name="companyId" type="long"/>
+		<property name="ptNetworkId" type="long" />
+		<property name="companyId" type="long" />
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
@@ -20,29 +34,35 @@
 		<property name="name" type="string" />
 		<property name="number" type="string" />
 		<property name="publishedName" type="string" />
-		<property name="transportModeName" type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType" />
+		<property name="transportModeName"
+			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType" />
 		<property name="registrationNumber" unique="true" type="string" />
 		<property name="comment" />
-		<!-- bug hibernate : syntax doesn't works 
-		<property name="ptNetworkIdShortcut" type="string" formula="(SELECT p.objectId FROM {h-schema}PtNetwork p WHERE p.id = ptNetworkId)" />
-		 -->
-		<property name="ptNetworkIdShortcut" type="string" formula="(SELECT p.objectId FROM PtNetwork p WHERE p.id = ptNetworkId)" />
+		<!-- bug hibernate : syntax doesn't works <property name="ptNetworkIdShortcut" 
+			type="string" formula="(SELECT p.objectId FROM {h-schema}PtNetwork p WHERE 
+			p.id = ptNetworkId)" /> -->
+		<property name="ptNetworkIdShortcut" type="string"
+			formula="(SELECT p.objectId FROM PtNetwork p WHERE p.id = ptNetworkId)" />
 
 		<!-- relations -->
 		<many-to-one name="ptNetwork" insert="false" update="false"
-			class="PTNetwork" cascade="none"
-			lazy="no-proxy" outer-join="auto" column="PTNetworkId" />
+			class="PTNetwork" cascade="none" lazy="no-proxy" outer-join="auto"
+			column="PTNetworkId" />
 		<many-to-one name="company" insert="false" update="false"
-			class="Company" cascade="none"
-			lazy="no-proxy" outer-join="auto" column="companyId" />
-		<bag name="routes" lazy="true" cascade="all" inverse="true" batch-size="10" >
+			class="Company" cascade="none" lazy="no-proxy" outer-join="auto"
+			column="companyId" />
+		<bag name="routes" lazy="true" cascade="all" inverse="true"
+			batch-size="10">
 			<key column="lineId" />
 			<one-to-many class="Route" />
 		</bag>
-		<bag name="routeIds" table="route" inverse="true" lazy="false" cascade="none" fetch="join">
-		    <key column="lineId"/>
+		<bag name="routeIds" table="route" inverse="true" lazy="false"
+			cascade="none" fetch="join">
+			<key column="lineId" />
 			<element type="string" column="objectId" />
 		</bag>
-
+		<many-to-one name="groupOfLine" insert="false" update="false"
+			class="GroupOfLine" cascade="none" lazy="no-proxy" outer-join="auto"
+			column="groupOfLineId" />
 	</class>
 </hibernate-mapping>
