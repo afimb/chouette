@@ -165,6 +165,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	public void setDayTypes(List<DayTypeEnum> dayTypes)
 	{
+		this.dayTypes = dayTypes;
 		//CASTOREVO
 		intDayTypes = 0;
 		if (dayTypes == null) return;

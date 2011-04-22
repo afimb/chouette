@@ -9,6 +9,7 @@ import java.util.List;
 
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 import lombok.Getter;
@@ -73,7 +74,11 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	 * give a list of specific User needs available
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter List<UserNeedEnum> userNeeds;
+	private List<UserNeedEnum> userNeeds; //Never be persisted
+	/**
+	 * 
+	 */
+	@Getter @Setter private Integer intUserNeeds; //BD
 	/**
 	 * Duration of link 
 	 * <br/><i>readable/writable</i>
@@ -178,6 +183,35 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 		}
 		else{
 			return null;
+		}
+	}
+	
+	public List<UserNeedEnum> getUserNeeds() 
+	{
+		if (intUserNeeds == null) return userNeeds;	
+		//CASTOREVO
+		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
+		for (UserNeedEnum userNeedEnum : userNeedEnums) 
+		{
+			int filtre = (int) Math.pow(2, userNeedEnum.ordinal());
+			if (filtre == (intUserNeeds.intValue() & filtre))
+			{
+				addUserNeed(userNeedEnum);
+			}
+		}	
+		return userNeeds;
+	}
+
+	public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
+	{
+		userNeeds = userNeedEnums;
+		//CASTOREVO
+		intUserNeeds = 0;
+		if (userNeeds == null) return;
+
+		for (UserNeedEnum userNeedEnum : userNeedEnums) 
+		{
+			intUserNeeds += (int)Math.pow(2, userNeedEnum.ordinal());
 		}
 	}
 }

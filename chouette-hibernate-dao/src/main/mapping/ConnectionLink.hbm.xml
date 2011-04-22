@@ -52,5 +52,6 @@
 			type="time" />
 		<property column="linkType" name="linkType"
 			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType" />
+		<property name="intUserNeeds" />	
 	</class>
 </hibernate-mapping>
