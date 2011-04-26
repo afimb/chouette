@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
-import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
  * Neptune ConnectionLink : a link between 2 StopArea 
@@ -104,13 +102,19 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private ConnectionLinkTypeEnum linkType; 
-	
+
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
 		userNeeds.add(userNeed);
+		synchronizeUserNeeds();
 	}
 
+	public void removeUserNeed(UserNeedEnum userNeed){
+		if(userNeeds != null)
+			userNeeds.remove(userNeed);
+		synchronizeUserNeeds();
+	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -133,7 +137,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 			if (getEndOfLink() != null) getEndOfLink().expand(DetailLevelEnum.ATTRIBUTE);
 		}
 	} 
-	
+
 	@Override
 	public String toString(String indent, int level) {
 		StringBuilder sb = new StringBuilder(super.toString(indent,level));
@@ -151,7 +155,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  occasionalTravellerDuration = ").append(formatDate(occasionalTravellerDuration));
 		sb.append("\n").append(indent).append("  mobilityRestrictedTravellerDuration = ").append(formatDate(mobilityRestrictedTravellerDuration));
 		sb.append("\n").append(indent).append("  linkType = ").append(linkType);
-		
+
 		if(userNeeds != null){
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");
 			for (UserNeedEnum userNeed : getUserNeeds())
@@ -159,7 +163,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(userNeed);
 			}
 		}
-		
+
 		if (level > 0)
 		{
 			String childIndent = indent + CHILD_INDENT;
@@ -175,7 +179,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 
 		return sb.toString();
 	}
-	
+
 	private String formatDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		if(date != null){
@@ -185,7 +189,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 			return null;
 		}
 	}
-	
+
 	public List<UserNeedEnum> getUserNeeds() 
 	{
 		if (intUserNeeds == null) return userNeeds;	
@@ -206,10 +210,14 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	{
 		userNeeds = userNeedEnums;
 		//CASTOREVO
+		synchronizeUserNeeds();
+	}
+
+	private void synchronizeUserNeeds() {
 		intUserNeeds = 0;
 		if (userNeeds == null) return;
 
-		for (UserNeedEnum userNeedEnum : userNeedEnums) 
+		for (UserNeedEnum userNeedEnum : userNeeds) 
 		{
 			intUserNeeds += (int)Math.pow(2, userNeedEnum.ordinal());
 		}

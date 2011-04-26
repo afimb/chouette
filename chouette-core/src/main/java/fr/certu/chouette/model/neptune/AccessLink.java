@@ -103,12 +103,20 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private ConnectionLinkTypeEnum linkType; 
+
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
 		userNeeds.add(userNeed);
+		synchronizeUserNeeds();
 	}
-	
+
+	public void removeUserNeed(UserNeedEnum userNeed){
+		if(userNeeds != null)
+			userNeeds.remove(userNeed);
+		synchronizeUserNeeds();
+	}
+
 	@Override
 	public String toString(String indent, int level) {
 		StringBuilder sb = new StringBuilder(super.toString(indent,level));
@@ -126,7 +134,7 @@ public class AccessLink extends NeptuneIdentifiedObject{
 		sb.append("\n").append(indent).append("  occasionalTravellerDuration = ").append(formatDate(occasionalTravellerDuration));
 		sb.append("\n").append(indent).append("  mobilityRestrictedTravellerDuration = ").append(formatDate(mobilityRestrictedTravellerDuration));
 		sb.append("\n").append(indent).append("  linkType = ").append(linkType);
-		
+
 		if(userNeeds != null){
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");
 			for (UserNeedEnum userNeed : getUserNeeds())
@@ -137,7 +145,7 @@ public class AccessLink extends NeptuneIdentifiedObject{
 
 		return sb.toString();
 	}
-	
+
 	private String formatDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		if(date != null){
@@ -147,7 +155,7 @@ public class AccessLink extends NeptuneIdentifiedObject{
 			return null;
 		}
 	}
-	
+
 	public List<UserNeedEnum> getUserNeeds() 
 	{
 		if (intUserNeeds == null) return userNeeds;	
@@ -168,10 +176,14 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	{
 		userNeeds = userNeedEnums;
 		//CASTOREVO
+		synchronizeUserNeeds();
+	}
+
+	private void synchronizeUserNeeds() {
 		intUserNeeds = 0;
 		if (userNeeds == null) return;
 
-		for (UserNeedEnum userNeedEnum : userNeedEnums) 
+		for (UserNeedEnum userNeedEnum : userNeeds) 
 		{
 			intUserNeeds += (int)Math.pow(2, userNeedEnum.ordinal());
 		}
