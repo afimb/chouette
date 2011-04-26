@@ -8,6 +8,61 @@ public class FacilityFeature implements Serializable {
 
 	private static final long serialVersionUID = 2770570120139346512L;
 
+
+	private static final Class<?>[] enumTypes = {
+		AccessFacilityEnumeration.class,
+		AccommodationFacilityEnumeration.class,
+		AssistanceFacilityEnumeration.class,
+		FareClassFacilityEnumeration.class,
+		HireFacilityEnumeration.class,
+		LuggageFacilityEnumeration.class,
+		MobilityFacilityEnumeration.class,
+		NuisanceFacilityEnumeration.class,
+		ParkingFacilityEnumeration.class,
+		PassengerCommsFacilityEnumeration.class,
+		PassengerInformationFacilityEnumeration.class,
+		RefreshmentFacilityEnumeration.class,
+		ReservedSpaceFacilityEnumeration.class,
+		RetailFacilityEnumeration.class,
+		SanitaryFacilityEnumeration.class,
+		TicketingFacilityEnumeration.class
+	};
+
+	private int getEnumType()
+	{
+		for (int i = 0; i < enumTypes.length; i++)
+		{
+			if (choiceValue.getClass().equals(enumTypes[i])) return i;
+		}
+		return -1;
+	}
+
+	private int getOrdinal()
+	{
+		return ((Enum<?>) choiceValue).ordinal();
+	}
+
+	public int getChoiceCode()
+	{
+		return getEnumType() * 512 +  getOrdinal();
+	}
+
+	public void setChoiceCode( int code)
+	{
+		int enumType = code / 512;
+		int ordinal = code % 512;
+
+		Class<?> c = enumTypes[enumType];
+		try {
+			Object[] values = (Object[]) c.getMethod("values").invoke(null);
+			choiceValue = values[ordinal];
+
+		}  catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Internal choice value storage
 	 */
@@ -77,13 +132,13 @@ public class FacilityFeature implements Serializable {
 	 * Classification of Reserved Space Facility
 	 */
 	private ReservedSpaceFacilityEnumeration reservedSpaceFacility = ReservedSpaceFacilityEnumeration
-			.fromValue("unknown");
+	.fromValue("unknown");
 
 	/**
 	 * Classification of Retail Facility
 	 */
 	private RetailFacilityEnumeration retailFacility = RetailFacilityEnumeration
-			.fromValue("unknown");
+	.fromValue("unknown");
 
 	/**
 	 * Classification of Sanitary Facility type - Tpeg pti23.
@@ -101,9 +156,6 @@ public class FacilityFeature implements Serializable {
 
 	public FacilityFeature() {
 		super();
-		setReservedSpaceFacility(ReservedSpaceFacilityEnumeration
-				.fromValue("unknown"));
-		setRetailFacility(RetailFacilityEnumeration.fromValue("unknown"));
 	}
 
 	// -----------/

@@ -25,30 +25,20 @@
 		<id column="id" name="id" type="long">
 			<generator class="native" />
 		</id>
-		<property generated="never" lazy="false" name="objectId"
-			type="string" unique="true" />
-		<property generated="never" lazy="false" name="objectVersion"
-			type="int" />
-		<property generated="never" lazy="false" name="creationTime"
-			type="java.util.Date" />
-		<property generated="never" lazy="false" name="creatorId"
-			type="string" />
-		<property generated="never" lazy="false" name="comment" type="string" />
-		<property column="statusValue" generated="never" lazy="false"
-			name="serviceStatusValue"
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="comment" type="string" />
+		<property column="statusValue" name="serviceStatusValue"
 			type="fr.certu.chouette.dao.hibernate.usertype.ServiceStatusValueUserType" />
-		<property column="transportMode" generated="never" lazy="false"
-			name="transportMode"
+		<property column="transportMode" name="transportMode"
 			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType" />
-		<property column="publishedJourneyName" generated="never"
-			lazy="false" name="publishedJourneyName" />
-		<property column="publishedJourneyIdentifier" generated="never"
-			lazy="false" name="publishedJourneyIdentifier" />
-		<property column="facility" generated="never" lazy="false"
-			name="facility" type="string" />
+		<property column="publishedJourneyName" name="publishedJourneyName" />
+		<property column="publishedJourneyIdentifier" name="publishedJourneyIdentifier" />
+		<property column="facility" name="facility" type="string" />
 		<property name="vehicleTypeIdentifier" type="string" />
-		<property column="number" generated="never" lazy="false"
-			name="number" type="int" />
+		<property column="number" name="number" type="int" />
 		<many-to-one class="Route" column="routeId" insert="false"
 			lazy="no-proxy" name="route" update="false" />
 		<many-to-one class="JourneyPattern" column="journeyPatternId"
@@ -57,33 +47,27 @@
 			lazy="no-proxy" name="timeSlot" update="false" />
 		<many-to-one class="Company" column="companyId" insert="false"
 			lazy="no-proxy" name="company" update="false" />
-		<many-to-one class="Line" column="lineId" insert="false"
-			lazy="no-proxy" name="line" update="false" />
-		<!-- <set batch-size="10" cascade="all" inverse="true" lazy="true"
-			name="vehicleJourneyAtStops" sort="unsorted"
-			table="vehicleJourney_vehicleJourneyAtStop">
-			<key column="id" />
+		<!--<many-to-one class="Line" column="lineId" insert="false" lazy="no-proxy" 
+			name="line" update="false" /> -->
+		<set batch-size="10" cascade="all" inverse="true" lazy="true"
+			name="vehicleJourneyAtStops" sort="unsorted" table="vehicleJourneyAtStop">
+			<key column="vehicleJourneyId" />
 			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"
 					lazy="no-proxy" name="stopPoint" update="false" />
-				<many-to-one class="VehicleJourney" column="vehicleJourneyId"
-					lazy="no-proxy" name="vehicleJourney" update="false" />
-				<property generated="never" lazy="false" name="connectingServiceId" />
-				<property column="boardingAlightingPossibility" generated="never"
-					lazy="false" name="boardingAlightingPossibility"
+				<!-- <many-to-one class="VehicleJourney" column="vehicleJourneyId" lazy="no-proxy" 
+					name="vehicleJourney" update="false" /> -->
+				<property name="connectingServiceId" />
+				<property column="boardingAlightingPossibility" name="boardingAlightingPossibility"
 					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" />
-				<property generated="never" lazy="false" name="order" />
-				<property generated="never" lazy="false" name="arrivalTime"
-					type="java.util.Date" />
-				<property generated="never" lazy="false" name="departureTime"
-					type="java.util.Date" />
-				<property generated="never" lazy="false" name="waitingTime"
-					type="java.util.Date" />
-				<property generated="never" lazy="false" name="elapseDuration"
-					type="java.util.Date" />
-				<property generated="never" lazy="false" name="headwayFrequency"
-					type="java.util.Date" />
+				<property name="order" />
+				<property name="arrivalTime" type="java.util.Date" />
+				<property name="departureTime" type="java.util.Date" />
+				<property name="waitingTime" type="java.util.Date" />
+				<property name="elapseDuration" type="java.util.Date" />
+				<property name="headwayFrequency" type="java.util.Date" />
+				<property name="departure" type="boolean" column="isDeparture" />
 			</composite-element>
-		</set> -->
+		</set>
 	</class>
 </hibernate-mapping>

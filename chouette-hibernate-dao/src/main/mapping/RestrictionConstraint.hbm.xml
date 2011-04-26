@@ -29,13 +29,13 @@
 			table="routingConstraint_stoparea" inverse="false">
 			<key column="routingConstraintId" />
 			<index column="position" />
-			<one-to-many class="StopArea"/>
+			<one-to-many class="StopArea" />
 		</list>
-		<!-- <many-to-one class="StopArea" column="stopAreaId" insert="false"
-			lazy="no-proxy" name="stopArea" update="false" /> -->
-		<property generated="never" lazy="false" name="name" />
-		<property column="objectId" generated="never" lazy="false"
-			name="areaId" type="string" unique="true" />
+		<!-- <many-to-one class="StopArea" column="stopAreaId" insert="false" lazy="no-proxy" 
+			name="stopArea" update="false" /> -->
+		<property name="name" />
+		<property column="objectId" name="areaId" type="string"
+			unique="true" />
 		<many-to-one class="Line" column="lineId" insert="false"
 			lazy="no-proxy" name="line" update="false" />
 	</class>

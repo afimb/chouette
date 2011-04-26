@@ -32,7 +32,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private Line line;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
 	@Getter @Setter private List<Timetable> timetables;
-
 	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)

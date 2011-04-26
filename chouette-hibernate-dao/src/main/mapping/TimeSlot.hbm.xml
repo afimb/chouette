@@ -19,22 +19,14 @@
 		<id column="id" name="id" type="long">
 			<generator class="native" />
 		</id>
-		<property generated="never" lazy="false" name="objectId"
-			type="string" unique="true" />
-		<property generated="never" lazy="false" name="objectVersion"
-			type="int" />
-		<property generated="never" lazy="false" name="creationTime"
-			type="java.util.Date" />
-		<property generated="never" lazy="false" name="creatorId"
-			type="string" />
-		<property generated="never" lazy="false" name="name" type="string" />
-		<property generated="never" lazy="false" name="beginningSlotTime"
-			type="java.util.Date" />
-		<property generated="never" lazy="false" name="endSlotTime"
-			type="java.util.Date" />
-		<property generated="never" lazy="false" name="firstDepartureTimeInSlot"
-			type="java.util.Date" />
-		<property generated="never" lazy="false" name="lastDepartureTimeInSlot"
-			type="java.util.Date" />	
+		<property name="objectId" type="string" unique="true" />
+		<property name="objectVersion" type="int" />
+		<property name="creationTime" type="java.util.Date" />
+		<property name="creatorId" type="string" />
+		<property name="name" type="string" />
+		<property name="beginningSlotTime" type="java.util.Date" />
+		<property name="endSlotTime" type="java.util.Date" />
+		<property name="firstDepartureTimeInSlot" type="java.util.Date" />
+		<property name="lastDepartureTimeInSlot" type="java.util.Date" />
 	</class>
 </hibernate-mapping>
