@@ -60,7 +60,7 @@
 			</component>
 			<property name="containedIn" type="string" />
 		</component>
-		<set cascade="all" lazy="false" name="facilityFeatures" table="facility">
+		<set cascade="all" lazy="false" name="facilityFeatures" table="facilityFeature">
 			<key column="facilityId" />
 			<composite-element class="fr.certu.chouette.model.neptune.type.facility.FacilityFeature">
 				<property name="choiceCode" type="int" />
