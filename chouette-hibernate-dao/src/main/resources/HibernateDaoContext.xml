@@ -89,8 +89,7 @@
 				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml</value>
-				
+				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml</value>			
 			</list>
 		</property>
 	</bean>
