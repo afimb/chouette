@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 import lombok.Getter;
@@ -103,6 +104,7 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private ConnectionLinkTypeEnum linkType; 
+	@Getter @Setter private LinkOrientationEnum linkOrientation; 
 
 	public void addUserNeed(UserNeedEnum userNeed)
 	{

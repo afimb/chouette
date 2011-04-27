@@ -35,17 +35,18 @@
 		<property name="comment" type="string" />
 		<property column="registrationNumber" name="registrationNumber" type="string" />
 		<property column="publishedName" name="publishedName" type="string"/>
-		<!-- <set batch-size="10" cascade="all" inverse="false" lazy="true"
+		
+		<set batch-size="10" cascade="all" inverse="false" lazy="true"
 			name="stopPoints" table="journeyPattern_stopPoint">
 			<key column="journeyPatternId" />
-			<one-to-many class="StopPoint" />
-		</set> -->
+			<many-to-many class="StopPoint" column="stopPointId" />
+		</set>
 		<many-to-one class="Route" column="routeId" insert="false"
 			lazy="no-proxy" name="route" update="false" />
-		<!-- <set batch-size="10" cascade="all" inverse="true" lazy="true"
-			name="vehicleJourneys" table="journeyPattern_vehicleJourney">
+		<set batch-size="10" cascade="all" inverse="true" lazy="true"
+			name="vehicleJourneys" table="vehicleJourney">
 			<key column="journeyPatternId" />
 			<one-to-many class="VehicleJourney" />
-		</set> -->
+		</set>
 	</class>
 </hibernate-mapping>

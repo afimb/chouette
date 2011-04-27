@@ -27,13 +27,13 @@
 			type="fr.certu.chouette.dao.hibernate.usertype.PTDirectionUserType" />
 		<property name="comment" />
 		<property name="wayBack" />
-		<!-- relations -->
-		<!-- 
+		<!-- relations --> 
 		<bag name="journeyPatterns" lazy="true" cascade="all" inverse="true"
 			batch-size="10">
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
+		<!--
 		<bag name="journeyPatternIds" table="journeyPattern" inverse="true"
 			lazy="false" cascade="none" fetch="join">
 			<key column="routeId" />

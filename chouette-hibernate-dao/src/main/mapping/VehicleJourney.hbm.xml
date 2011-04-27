@@ -47,8 +47,6 @@
 			lazy="no-proxy" name="timeSlot" update="false" />
 		<many-to-one class="Company" column="companyId" insert="false"
 			lazy="no-proxy" name="company" update="false" />
-		<!--<many-to-one class="Line" column="lineId" insert="false" lazy="no-proxy" 
-			name="line" update="false" /> -->
 		<set batch-size="10" cascade="all" inverse="true" lazy="true"
 			name="vehicleJourneyAtStops" sort="unsorted" table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />

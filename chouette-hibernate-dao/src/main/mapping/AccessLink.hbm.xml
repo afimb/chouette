@@ -43,7 +43,9 @@
 		<property column="mobilityRestrictedTravellerDuration" name="mobilityRestrictedTravellerDuration"
 			type="time" />
 		<property column="linkType" name="linkType"
-			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType" />
-		<property name="intUserNeeds" />	
+			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType" />	
+		<property name="intUserNeeds" />
+		<property column="linkOrientation" name="linkOrientation"
+			type="fr.certu.chouette.dao.hibernate.usertype.LinkOrientationUserType" />	
 	</class>
 </hibernate-mapping>
