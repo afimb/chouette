@@ -122,8 +122,8 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
             String value = resourceBundle.getString(key);
-            if ((value.indexOf('/') >= 0) || (value.indexOf('\\') >= 0))
-                value = chouette_env + value;
+            if (value.charAt(0) == '%')
+                value = chouette_env + value.substring(1);
             System.setProperty(key, value);
         }
     }
