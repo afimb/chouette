@@ -5,7 +5,7 @@ import chouette.schema.ChouetteRemoveLineTypeType;
 
 public interface IExportManager 
 {
-	public static enum ExportMode  {CHOUETTE, NEPTUNE, GTFS};
+	public static enum ExportMode  {CHOUETTE, NEPTUNE, GTFS, GEOPORTAIL};
 	
 	ChouettePTNetworkTypeType getExportParRegistration(final String registrationNumber);
 	ChouettePTNetworkTypeType getExportParIdLigne(final Long idLigne);

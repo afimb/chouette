@@ -12,11 +12,15 @@ timetables of public transport networks, in accordance with a standard exchange 
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath*:chouetteContext.xml</param-value>
     </context-param>
-        <context-param>
-        <param-name>chouetteConfigRootPath</param-name>
+    <context-param>
+        <param-name>chouetteLinuxConfigRootPath</param-name>
         <param-value>//etc/chouette</param-value>
     </context-param>
     <!-- encodage utf-8 -->
+    <context-param>
+        <param-name>chouetteWindowsConfigRootPath</param-name>
+        <param-value>C:\\chouette</param-value>
+    </context-param>
     <filter>
         <filter-name>Spring character encoding filter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

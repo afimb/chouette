@@ -40,9 +40,10 @@ import org.apache.log4j.Logger;
 
 public class GTFSFileWriter implements IGTFSFileWriter {
 
-    private static final Logger logger         = Logger.getLogger(fr.certu.chouette.service.xml.LecteurFichierXML.class);
+    private static final Logger logger         = Logger.getLogger(fr.certu.chouette.service.export.gtfs.GTFSFileWriter.class);
     private static final String JEU_CARACTERES = "UTF-8";
-    
+    private Map<String, List<Trip>> tripsByCourseId = new HashMap<String, List<Trip>>();
+        
     public GTFSFileWriter() {
     }
 
@@ -252,8 +253,6 @@ public class GTFSFileWriter implements IGTFSFileWriter {
         }
         return routes;
     }
-    
-    private Map<String, List<Trip>> tripsByCourseId = new HashMap<String, List<Trip>>();
     
     private Collection<Trip> getTrips(List<ILectureEchange> lecturesEchanges) {
         Collection<Trip> trips = new ArrayList<Trip>();

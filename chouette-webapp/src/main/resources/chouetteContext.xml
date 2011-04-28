@@ -126,7 +126,9 @@
         <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
         <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
         <property name="gtfsFileWriter" ref="gtfsFileWriter"/>
+        <property name="geoportailFileWriter" ref="geoportailFileWriter"/>
         <property name="useGtfs" value="${network.gtfs}"/>
+        <property name="useGeoportail" value="${network.geoportail}"/>
     </bean>
 
     <bean id="TimeTableActionBean" scope="prototype"

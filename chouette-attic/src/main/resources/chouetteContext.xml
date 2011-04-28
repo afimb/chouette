@@ -500,4 +500,7 @@
     <bean id="gtfsFileWriter" class="fr.certu.chouette.service.export.gtfs.GTFSFileWriter">
     </bean>
 
+    <bean id="geoportailFileWriter" class="fr.certu.chouette.service.export.geoportail.GeoportailFileWriter">
+    </bean>
+
 </beans>
