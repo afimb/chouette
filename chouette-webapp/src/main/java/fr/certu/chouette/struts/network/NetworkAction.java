@@ -10,6 +10,7 @@ import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.export.gtfs.IGTFSFileWriter;
+import fr.certu.chouette.service.export.geoportail.IGeoportailFileWriter;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.database.IExportManager.ExportMode;
 import fr.certu.chouette.service.validation.commun.TypeInvalidite;
@@ -23,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -45,7 +47,11 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   private ILecteurFichierXML lecteurFichierXML;
   private ILecteurEchangeXML lecteurEchangeXML;
   private IGTFSFileWriter gtfsFileWriter;
+  private IGeoportailFileWriter geoportailFileWriter;
   private String useGtfs;
+  private String useGeoportail;
+  private static int GTFS       = 0;
+  private static int GEOPORTAIL = 1;
 
   public void setUseGtfs(String useGtfs) {
       this.useGtfs = useGtfs;
@@ -53,6 +59,14 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
 
   public String getUseGtfs() {
       return useGtfs;
+  }
+
+  public void setUseGeoportail(String useGeoportail) {
+      this.useGeoportail = useGeoportail;
+  }
+
+  public String getUseGeoportail() {
+      return useGeoportail;
   }
 
   public Long getIdReseau()
@@ -151,11 +165,19 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     return INPUT;
   }
   
-  private void write(List<ILectureEchange> lecturesEchanges, String _nomFichier, ZipOutputStream zipOutputStream) throws IOException {
-      File _temp = File.createTempFile(_nomFichier, ".txt");
+  private void write(List<ILectureEchange> lecturesEchanges, String _nomFichier, ZipOutputStream zipOutputStream, int type) throws IOException {
+      String extenstion = null;
+      if (type == GTFS)
+          extenstion = ".txt";
+      else if (type == GEOPORTAIL)
+          extenstion = ".csv";      
+      File _temp = File.createTempFile(_nomFichier, extenstion);
       _temp.deleteOnExit();
-      gtfsFileWriter.write(lecturesEchanges, _temp, _nomFichier);
-      zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".txt"));
+      if (type == GTFS)
+          gtfsFileWriter.write(lecturesEchanges, _temp, _nomFichier);
+      else if (type == GEOPORTAIL)
+          geoportailFileWriter.write(lecturesEchanges, _temp, _nomFichier);
+      zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + extenstion));
       byte[] bytes = new byte[(int) _temp.length()];
       FileInputStream fis = new FileInputStream(_temp);
       fis.read(bytes);
@@ -164,15 +186,12 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     }
 
   @SkipValidation
-  public String exportChouette() throws Exception
-  {
-    try
-    {
+  public String exportChouette() throws Exception {
+    try {
       String exportModeStr = exportMode.toString();
       log.debug("Export "+exportModeStr+" : toutes les lignes du reseau : " + idReseau);
       List<Ligne> lignes = reseauManager.getLignesReseau(idReseau);
-      if ((lignes == null) || (lignes.size() == 0))
-      {
+      if ((lignes == null) || (lignes.size() == 0)) {
         addActionMessage(getText("export.network.noline"));
         return REDIRECTLIST;
       }
@@ -182,18 +201,144 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
       ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
       zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
       nomFichier = "C_" + exportModeStr + "_" + id + ".zip";
-      if ("GTFS".equals(exportModeStr))
-      {
+      if ("GEOPORTAIL".equals(exportModeStr)) {
           List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
           for (Ligne ligne : lignes)
               lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
-          write(lecturesEchanges, "agency", zipOutputStream);
-          write(lecturesEchanges, "stops", zipOutputStream);
-          write(lecturesEchanges, "routes", zipOutputStream);
-          write(lecturesEchanges, "trips", zipOutputStream);
-          write(lecturesEchanges, "stop_times", zipOutputStream);
-          write(lecturesEchanges, "calendar", zipOutputStream);
-          write(lecturesEchanges, "calendar_dates", zipOutputStream);
+          write(lecturesEchanges, "aot", zipOutputStream, GEOPORTAIL);
+          write(lecturesEchanges, "chouette_metadata", zipOutputStream, GEOPORTAIL);
+          write(lecturesEchanges, "pictos", zipOutputStream, GEOPORTAIL);
+          write(lecturesEchanges, "tc_points", zipOutputStream, GEOPORTAIL);
+          /*******************************************************************************************/
+          Set<String> regs = new HashSet<String>();
+          for (ILectureEchange lectureEchange : lecturesEchanges) {
+              Reseau reseau = lectureEchange.getReseau();
+              if (reseau == null)
+                  continue;
+              String reg = reseau.getRegistrationNumber();
+              if (!regs.add(reg))
+                  continue;
+              String _tempName = System.getProperty("export.geoportail.readme."+reg);
+              File _temp = null;
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Readme.txt"));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.noreadme")+" "+reseau.getName());
+              _tempName = System.getProperty("export.geoportail.logoFile."+reg);
+              _temp = null;
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Logos"+File.separator+_temp.getName()));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.nologo")+" "+reseau.getName());
+              _tempName = System.getProperty("export.geoportail.pictos.pointaccess."+reg);
+              _temp = null;
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Pictos"+File.separator+_temp.getName()));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.noptaccess")+" "+reseau.getName());
+              _tempName = System.getProperty("export.geoportail.pictos.pointembarquement."+reg);
+              _temp = null;
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Pictos"+File.separator+_temp.getName()));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.noboarding")+" "+reseau.getName());
+              _temp = null;
+              _tempName = System.getProperty("export.geoportail.pictos.poleechange."+reg); 
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Pictos"+File.separator+_temp.getName()));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.noplace")+" "+reseau.getName());
+              _temp = null;
+              _tempName = System.getProperty("export.geoportail.pictos.quai."+reg);
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Pictos"+File.separator+_temp.getName()));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.noquay")+" "+reseau.getName());
+              _temp = null;
+              _tempName = System.getProperty("export.geoportail.pictos.zonecommerciale."+reg);
+              if (_tempName != null) {
+                  _temp = new File(_tempName);
+                  if (_temp.exists()) {
+                      zipOutputStream.putNextEntry(new ZipEntry("Pictos"+File.separator+_temp.getName()));
+                      byte[] bytes = new byte[(int)_temp.length()];
+                      FileInputStream fis = new FileInputStream(_temp);
+                      fis.read(bytes);
+                      zipOutputStream.write(bytes);
+                      zipOutputStream.flush();
+                  }
+              }
+              else
+                  addActionError(getText("reseau.export.geoportail.nocommercial")+" "+reseau.getName());
+          }
+          addActionMessage(getText("reseau.export.geoportail.ok"));
+          /*******************************************************************************************/
+      }
+      else if ("GTFS".equals(exportModeStr)) {
+          List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
+          for (Ligne ligne : lignes)
+              lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
+          write(lecturesEchanges, "agency", zipOutputStream, GTFS);
+          write(lecturesEchanges, "stops", zipOutputStream, GTFS);
+          write(lecturesEchanges, "routes", zipOutputStream, GTFS);
+          write(lecturesEchanges, "trips", zipOutputStream, GTFS);
+          write(lecturesEchanges, "stop_times", zipOutputStream, GTFS);
+          write(lecturesEchanges, "calendar", zipOutputStream, GTFS);
+          write(lecturesEchanges, "calendar_dates", zipOutputStream, GTFS);
+          addActionMessage(getText("reseau.export.gtfs.ok"));
       }
       else
       {
@@ -280,6 +425,11 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
   public void setGtfsFileWriter(IGTFSFileWriter gtfsFileWriter)
   {
     this.gtfsFileWriter = gtfsFileWriter;
+  }
+
+  public void setGeoportailFileWriter(IGeoportailFileWriter geoportailFileWriter)
+  {
+    this.geoportailFileWriter = geoportailFileWriter;
   }
 
   /********************************************************

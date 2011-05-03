@@ -44,6 +44,11 @@
         <s:param name="exportMode">${'GTFS'}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
+      <s:url id="exportGeoportail" action="exportChouette" namespace="/network">
+        <s:param name="idReseau">${reseau.id}</s:param>
+        <s:param name="exportMode">${'GEOPORTAIL'}</s:param>
+        <s:param name="operationMode">STORE</s:param>
+      </s:url>
       <s:a href="%{editUrl}">
         <img border="0" src="<s:url value='/images/editer.png'/>" alt="Edit" title="<s:text name="tooltip.edit"/>" >
       </s:a>&nbsp;&nbsp;
@@ -57,6 +62,9 @@
       <s:a href="%{exportNeptune}"><s:text name="text.reseau.export.neptune"/></s:a>
       <s:if test="useGtfs == 'true'">
         <br><s:a href="%{exportGTFS}"><s:text name="text.reseau.export.gtfs"/></s:a>
+      </s:if>
+      <s:if test="useGeoportail == 'true'">
+        <br><s:a href="%{exportGeoportail}"><s:text name="text.reseau.export.geoportail"/></s:a>
       </s:if>
     </display:column>
   </display:table>
