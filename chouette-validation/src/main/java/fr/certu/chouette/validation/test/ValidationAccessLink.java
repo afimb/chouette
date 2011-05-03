@@ -101,7 +101,7 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 			double speedA = distance /timeA;
 			if(speedA < minA || speedA > maxA){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_a",Report.STATE.ERROR,
-						String.valueOf(minA),String.valueOf(maxA),accessLink.getObjectId());
+						String.valueOf(minA),String.valueOf(maxA),accessLink.getName()+"("+accessLink.getObjectId()+")");
 				report3_21.addItem(detailReportItem);
 			}
 			//Test 3.21.1 b
@@ -109,7 +109,7 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 			double speedB = distance/timeB;
 			if(speedB < minB || speedB > maxB){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_b",Report.STATE.ERROR,
-						String.valueOf(minB),String.valueOf(maxB),accessLink.getObjectId());
+						String.valueOf(minB),String.valueOf(maxB),accessLink.getName()+"("+accessLink.getObjectId()+")");
 				report3_21.addItem(detailReportItem);
 			}		
 			//Test 3.21.1 c
@@ -118,7 +118,7 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 			
 			if(speedC < minC || speedC > maxC){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_c",Report.STATE.ERROR,
-						String.valueOf(minC),String.valueOf(maxC),accessLink.getObjectId());
+						String.valueOf(minC),String.valueOf(maxC),accessLink.getName()+"("+accessLink.getObjectId()+")");
 				report3_21.addItem(detailReportItem);
 			}		
 			//Test 3.21.1 d
@@ -129,7 +129,7 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 				double speedD = distance/timeD;
 				if(speedD < minD || speedD > maxD){
 					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet21_Step1_error_d",Report.STATE.ERROR,
-							String.valueOf(minD),String.valueOf(maxD),accessLink.getObjectId());
+							String.valueOf(minD),String.valueOf(maxD),accessLink.getName()+"("+accessLink.getObjectId()+")");
 					report3_21.addItem(detailReportItem);
 				}else 
 					report3_21.updateStatus(Report.STATE.OK);

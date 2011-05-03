@@ -275,4 +275,10 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		}
 
 	}
+
+//	@Override
+//	public int removeAll(Filter clause) {
+//		
+//		return 0;
+//	}
 }

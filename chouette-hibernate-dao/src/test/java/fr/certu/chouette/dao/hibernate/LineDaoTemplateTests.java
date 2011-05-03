@@ -39,6 +39,10 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
 	protected Filter getSelectFilter() 
 	{
 		return Filter.getNewEqualsFilter("ptNetwork.name", "TestNG Network");
+//		return Filter.getNewAndFilter(
+//				Filter.getNewEqualsFilter("ptNetwork.id", null),
+//				Filter.getNewEqualsFilter("company.id", null),
+//				Filter.getNewLikeFilter("name", "nom ligne -53808172"));
 	}
 	
 	

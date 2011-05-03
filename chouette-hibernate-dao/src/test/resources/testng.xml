@@ -6,12 +6,15 @@
 			<package name="fr.certu.chouette.dao.hibernate">
 			</package>
 		</packages>
-		<!--
+		<!-- <groups>
+			<run>
+				<include name="select" />
+			</run>
+		</groups>
 		<classes>
-		   <class name="fr.certu.chouette.dao.hibernate.LineDaoTemplateTests"/>
-		   <class name="fr.certu.chouette.dao.hibernate.StopAreaDaoTemplateTests"/>
-		</classes>
-		 -->
+			<class name="fr.certu.chouette.dao.hibernate.LineDaoTemplateTests">
+			</class>
+			<class name="fr.certu.chouette.dao.hibernate.StopAreaDaoTemplateTests" />
+		</classes> -->
 	</test>
-
 </suite>

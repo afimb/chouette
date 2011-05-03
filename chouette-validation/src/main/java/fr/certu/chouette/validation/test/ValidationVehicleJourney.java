@@ -110,12 +110,14 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 				}
 				if(vehicleJourney.getRoute() != null){
 					if(!vehicleJourney.getRouteId().equals(vehicleJourney.getRoute().getObjectId())){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, 
+								vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")",vehicleJourney.getRouteId());
 						report2_17_1.addItem(detailReportItem);	
 					}else
 						report2_17_1.updateStatus(Report.STATE.OK);	
 				}else{
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet17_Step1_error", Report.STATE.ERROR, 
+							vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")",vehicleJourney.getRouteId());
 					report2_17_1.addItem(detailReportItem);
 				}				
 				String journeyPatternId = vehicleJourney.getJourneyPatternId();
@@ -123,7 +125,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 				//Test 2.18.1
 				if(journeyPatternId != null){
 					if(journeyPattern == null){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step1_error", Report.STATE.ERROR, 
+								vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
 						report2_18_1.addItem(detailReportItem);	
 					}else
 						report2_18_1.updateStatus(Report.STATE.OK);
@@ -136,7 +139,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								if(stopPointObjectIds != null && stopPointIds != null){
 									//Test 2.18.2 a
 									if(!stopPointIds.containsAll(stopPointObjectIds)){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", Report.STATE.ERROR);
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", 
+												Report.STATE.ERROR);
 										report2_18_2.addItem(detailReportItem);	
 									}else
 										report2_18_2.updateStatus(Report.STATE.OK);
@@ -159,7 +163,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								String lineShortCutId = vehicleJourney.getLineIdShortcut();
 								if(lineShortCutId != null){
 									if(vehicleJourney.getLine() == null){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,vehicleJourney.getObjectId());
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,
+												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
 										report2_19.addItem(detailReportItem);	
 									}else
 										report2_19.updateStatus(Report.STATE.OK);	
@@ -170,7 +175,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								if(companyId != null){
 									String companyObjectId = (vehicleJourney.getCompany() != null) ? vehicleJourney.getCompany().getObjectId() : null;
 									if(!companyId.equals(companyObjectId)){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR,
+												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
 										report2_20.addItem(detailReportItem);	
 									}else
 										report2_20.updateStatus(Report.STATE.OK);	
@@ -181,7 +187,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								TimeSlot timeSlot = vehicleJourney.getTimeSlot();
 								if(timeSlotId != null){
 									if(timeSlot == null){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, vehicleJourney.getObjectId());
+										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, 
+												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
 										report2_21.addItem(detailReportItem);	
 									}else
 										report2_21.updateStatus(Report.STATE.OK);	
@@ -197,7 +204,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								//Test 3.16.2
 								for (Timetable timetable : vehicleJourney.getTimetables()) {
 									if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
-										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,vehicleJourney.getObjectId());
+										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
+												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
 										report3_16_2.addItem(detailReportItem);	
 									}else
 										report3_16_2.updateStatus(Report.STATE.OK);
@@ -240,7 +248,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							long diff = Math.abs(arrivalTime - departureTime);	
 							if(arrivalTime != CONSTANT){
 								if(diff > param3_15){
-									ReportItem detailReportItem = new DetailReportItem("Test3_Sheet15_Step1_error", Report.STATE.ERROR,String.valueOf(param3_15));
+									ReportItem detailReportItem = new DetailReportItem("Test3_Sheet15_Step1_error", Report.STATE.ERROR,
+											String.valueOf(param3_15));
 									report3_15.addItem(detailReportItem);	
 								}else
 									report3_15.updateStatus(Report.STATE.OK);	
@@ -280,7 +289,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 												DistanceOp distanceOp = new DistanceOp(point1, point2);
 												double distance = distanceOp.distance()* 6371 /180;
 												if(distance < min3_7  && distance > max3_7){
-													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet7_Step1_warning", Report.STATE.WARNING,String.valueOf(min3_7),String.valueOf(max3_7));
+													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet7_Step1_warning", Report.STATE.WARNING,
+															String.valueOf(min3_7),String.valueOf(max3_7));
 													report3_7.addItem(detailReportItem);	
 												}else
 													report3_7.updateStatus(Report.STATE.OK);
@@ -302,7 +312,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 											long departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /DIVIDER : 0;
 											long arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /DIVIDER : DIVIDER ;
 											if(Math.abs(arrivalTime - departureTime) > param3_16_3){
-												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_a", Report.STATE.ERROR,String.valueOf(param3_16_3));
+												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_a", Report.STATE.ERROR,
+														String.valueOf(param3_16_3));
 												report3_16_3.addItem(detailReportItem);	
 											}
 
@@ -311,7 +322,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 												report3_16_3.updateStatus(Report.STATE.OK);
 											//Test 3.16.3 b (suite)
 											else if(arrivalTime > param3_16_3) {
-												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_b", Report.STATE.ERROR,String.valueOf(param3_16_3));
+												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_b", Report.STATE.ERROR,
+														String.valueOf(param3_16_3));
 												report3_16_3.addItem(detailReportItem);	
 											}else
 												report3_16_3.updateStatus(Report.STATE.OK);
@@ -340,7 +352,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 									if(diff >= min && diff<=max)	
 										report3_16_1.updateStatus(Report.STATE.OK);
 									else {
-										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId(), String.valueOf(diff));
+										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,
+												vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId(), String.valueOf(diff));
 										report3_16_1.addItem(detailReportItem);	
 									}
 								}

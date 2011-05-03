@@ -87,7 +87,7 @@ public class ValidationLine implements IValidationPlugin<Line>{
 					{
 						ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step1_error");
 						failedItem.setStatus(Report.STATE.ERROR);
-						failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
+						failedItem.addMessageArgs(network.getName()+"("+network.getObjectId()+")",line.getName()+"("+line.getObjectId()+")");
 						report2_1_1.addItem(failedItem);
 					}else {
 						report2_1_1.updateStatus(Report.STATE.OK);
@@ -98,7 +98,7 @@ public class ValidationLine implements IValidationPlugin<Line>{
 					{
 						ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step2_error");
 						failedItem.setStatus(Report.STATE.ERROR);
-						failedItem.addMessageArgs(network.getObjectId(),line.getObjectId());
+						failedItem.addMessageArgs(network.getName()+"("+network.getObjectId()+")",line.getName()+"("+line.getObjectId()+")");
 						report2_1_2.addItem(failedItem);
 					}else {
 						report2_1_2.updateStatus(Report.STATE.OK);
@@ -132,7 +132,7 @@ public class ValidationLine implements IValidationPlugin<Line>{
 			String refNext = (nextLine.getName()+""+nextLine.getNumber()).trim();
 			if(!line.getObjectId().equals(nextLine.getObjectId())){
 				if(refCurrent.equals(refNext)){
-					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet4_Step1_error",Report.STATE.ERROR, line.getObjectId());
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet4_Step1_error",Report.STATE.ERROR,line.getName()+"("+line.getObjectId()+")");
 					report3_4_1.addItem(detailReportItem);
 				}else 
 					report3_4_1.updateStatus(Report.STATE.OK);	

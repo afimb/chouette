@@ -58,7 +58,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 			List<String> journeyPatternIds = Route.extractObjectIds(route.getJourneyPatterns());
 			//Test 2.8.1
 			if(!route.getJourneyPatternIds().containsAll(journeyPatternIds)){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", Report.STATE.ERROR, "");
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", Report.STATE.ERROR);
 				report2_8_1.addItem(detailReportItem);	
 			}else{
 				report2_8_1.updateStatus(Report.STATE.OK);
@@ -68,7 +68,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 				for(JourneyPattern journeyPattern : route.getJourneyPatterns()){
 					String routeObjectId = route.getObjectId();
 					if(!journeyPattern.getRouteId().equals(routeObjectId)){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step2_error", Report.STATE.ERROR, "");
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step2_error", Report.STATE.ERROR);
 						report2_8_2.addItem(detailReportItem);	
 					}else{
 						report2_8_2.updateStatus(Report.STATE.OK);
@@ -76,7 +76,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 					//Test 2.8.3 a
 					for(StopPoint stopPoint : journeyPattern.getStopPoints()){
 						if(!journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())){
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_a_error", Report.STATE.ERROR, stopPoint.getObjectId());
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_a_error", Report.STATE.ERROR, stopPoint.getName()+"("+stopPoint.getObjectId()+")");
 							report2_8_2.addItem(detailReportItem);
 						}else
 							report2_8_2.updateStatus(Report.STATE.OK);
@@ -89,13 +89,13 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 								exists = true;
 							//Test 2.8.3 c
 							if(!route.getPtLinkIds().contains(ptLink.getObjectId())){
-								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_c_error", Report.STATE.ERROR, ptLink.getObjectId());
+								ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_c_error", Report.STATE.ERROR, ptLink.getName()+"("+ptLink.getObjectId()+")");
 								report2_8_3.addItem(detailReportItem);
 							}else
 								report2_8_3.updateStatus(Report.STATE.OK);
 						}
 						if(!exists){
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_b_error", Report.STATE.ERROR, stopPoint.getObjectId());
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_b_error", Report.STATE.ERROR, stopPoint.getName()+"("+stopPoint.getObjectId()+")");
 							report2_8_3.addItem(detailReportItem);
 						}else
 							report2_8_3.updateStatus(Report.STATE.OK);
@@ -103,7 +103,7 @@ public class ValidationRoute implements IValidationPlugin<Route>{
 					}
 					//Test 2.8.3 d
 					if(!route.getObjectId().equals(journeyPattern.getRouteId())){
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR,route.getObjectId());
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR,route.getName()+"("+route.getObjectId()+")");
 						report2_8_3.addItem(detailReportItem);
 					}
 				}

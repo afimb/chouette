@@ -75,8 +75,10 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error_b",Report.STATE.ERROR);
 				report2_4.addItem(detailReportItem);
 			}else if(connectionLink.getStartOfLink().equals(connectionLink.getEndOfLink())){
-				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error",Report.STATE.ERROR,connectionLink.getObjectId(),
-						connectionLink.getStartOfLink().getObjectId(),connectionLink.getEndOfLink().getObjectId());
+				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet4_Step1_error",Report.STATE.ERROR,
+						connectionLink.getName()+"("+connectionLink.getObjectId()+")",
+						connectionLink.getStartOfLink().getName()+"("+connectionLink.getStartOfLink().getObjectId()+")",
+						connectionLink.getEndOfLink().getName()+"("+connectionLink.getEndOfLink().getObjectId()+")");
 				report2_4.addItem(detailReportItem);
 			}
 				else {
@@ -109,7 +111,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			double speedA = distance /timeA;
 			if(speedA < minA || speedA > maxA){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_a",Report.STATE.ERROR,
-						String.valueOf(minA),String.valueOf(maxA),connectionLink.getObjectId());
+						String.valueOf(minA),String.valueOf(maxA),connectionLink.getName()+"("+connectionLink.getObjectId()+")");
 				report3_8.addItem(detailReportItem);
 			}
 			//Test 3.8.1 b
@@ -117,7 +119,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			double speedB = distance/timeB;
 			if(speedB < minB || speedB > maxB){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_b",Report.STATE.ERROR,
-						String.valueOf(minB),String.valueOf(maxB),connectionLink.getObjectId());
+						String.valueOf(minB),String.valueOf(maxB),connectionLink.getName()+"("+connectionLink.getObjectId()+")");
 				report3_8.addItem(detailReportItem);
 			}		
 			//Test 3.8.1 c
@@ -125,7 +127,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			double speedC = distance/timeC;
 			if(speedC < minC || speedC > maxC){
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_c",Report.STATE.ERROR,
-						String.valueOf(minC),String.valueOf(maxC),connectionLink.getObjectId());
+						String.valueOf(minC),String.valueOf(maxC),connectionLink.getName()+"("+connectionLink.getObjectId()+")");
 				report3_8.addItem(detailReportItem);
 			}		
 			//Test 3.8.1 d
@@ -136,7 +138,7 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 				double speedD = distance/timeD;
 				if(speedD < minD || speedD > maxD){
 					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet8_Step1_error_d",Report.STATE.ERROR,
-							String.valueOf(minD),String.valueOf(maxD),connectionLink.getObjectId());
+							String.valueOf(minD),String.valueOf(maxD),connectionLink.getName()+"("+connectionLink.getObjectId()+")");
 					report3_8.addItem(detailReportItem);
 				}else 
 					report3_8.updateStatus(Report.STATE.OK);

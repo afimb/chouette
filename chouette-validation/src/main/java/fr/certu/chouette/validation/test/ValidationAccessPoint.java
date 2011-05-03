@@ -68,10 +68,10 @@ public class ValidationAccessPoint implements IValidationPlugin<AccessPoint>{
 			if(SRID == SRIDparam)
 				report3_17.updateStatus(Report.STATE.OK);
 			else {
-				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet17_Step1_warning", Report.STATE.WARNING,accessPoint.getObjectId());
+				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet17_Step1_warning", Report.STATE.WARNING,accessPoint.getName()+"("+accessPoint.getObjectId()+")");
 				report3_17.addItem(detailReportItem);
 				
-				ReportItem detailReportItem2 = new DetailReportItem("Test3_Sheet18_Step1_error_a", Report.STATE.ERROR,accessPoint.getObjectId());
+				ReportItem detailReportItem2 = new DetailReportItem("Test3_Sheet18_Step1_error_a", Report.STATE.ERROR,accessPoint.getName()+"("+accessPoint.getObjectId()+")");
 				report3_18.addItem(detailReportItem2);
 			}
 			
@@ -86,7 +86,7 @@ public class ValidationAccessPoint implements IValidationPlugin<AccessPoint>{
 			Coordinate coordinate = new Coordinate(x, y);
 			Point point1 = factory1.createPoint(coordinate);
 			if(!polygon.contains(point1)){
-				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet18_Step1_error_b", Report.STATE.ERROR,accessPoint.getObjectId());
+				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet18_Step1_error_b", Report.STATE.ERROR,accessPoint.getName()+"("+accessPoint.getObjectId()+")");
 				report3_18.addItem(detailReportItem);	
 			}else	
 				report3_18.updateStatus(Report.STATE.OK);

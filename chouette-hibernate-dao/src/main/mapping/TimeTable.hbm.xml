@@ -39,7 +39,7 @@
 			<element column="date" type="date" />
 		</list>
 		<list cascade="all" lazy="false" name="periods" table="timetable_period">
-			<key column="id" />
+			<key column="timeTableId" />
 			<list-index base="0" column="position" />
 			<composite-element class="Period">
 				<property name="startDate" column="periodstart" type="date" />

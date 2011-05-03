@@ -43,11 +43,29 @@ public class FilterToHibernateClauseTranslator {
 	 */
 	private Criterion translateCombined(Filter clause)
 	{
+		Filter[] filters = clause.getCombinedFilters();
 		switch (clause.getType())
 		{
-		case NOT : return Restrictions.not(translate(clause.getFirstCombinedFilter()));
-		case AND : return Restrictions.and(translate(clause.getFirstCombinedFilter()), translate(clause.getSecondCombinedFilter()));
-		case OR : return Restrictions.or(translate(clause.getFirstCombinedFilter()), translate(clause.getSecondCombinedFilter()));
+		case NOT : return Restrictions.not(translate(filters[0]));
+		case AND : 
+
+		{
+			if (filters.length == 1) return translate(filters[0]);
+			Criterion criterion = Restrictions.and(translate(filters[0]),translate(filters[1]));
+			for (int i = 2; i < filters.length; i++) {
+				criterion = Restrictions.and(criterion,translate(filters[i]));
+			}
+			return criterion;
+		}
+		case OR : 
+		{
+			if (filters.length == 1) return translate(filters[0]);
+			Criterion criterion = Restrictions.or(translate(filters[0]),translate(filters[1]));
+			for (int i = 2; i < filters.length; i++) {
+				criterion = Restrictions.or(criterion,translate(filters[i]));
+			}
+			return criterion;
+		}
 		}
 		return null;
 	}
@@ -62,18 +80,32 @@ public class FilterToHibernateClauseTranslator {
 
 		switch (clause.getType())
 		{
-		case IS_NULL : return Restrictions.isNull(propertyName);
-		case EQUALS : return Restrictions.eq(propertyName, clause.getFirstValue());
-		case NOT_EQUALS : return Restrictions.ne(propertyName, clause.getFirstValue());
-		case LESS : return Restrictions.lt(propertyName, clause.getFirstValue());
-		case LESS_OR_EQUALS : return Restrictions.le(propertyName, clause.getFirstValue());
-		case GREATER : return Restrictions.gt(propertyName, clause.getFirstValue());
-		case GREATER_OR_EQUALS : return Restrictions.ge(propertyName, clause.getFirstValue());
-		case LIKE : return Restrictions.like(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
-		case ILIKE : return Restrictions.ilike(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
-		case IN : return translateIn(clause);
-		case BETWEEN : return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
-		case SQL_WHERE : return Restrictions.sqlRestriction(propertyName);
+		case IS_NULL : 
+			return Restrictions.isNull(propertyName);
+		case EQUALS : 
+			logger.debug("create Equals clause with "+clause.getFirstValue());
+			return Restrictions.eq(propertyName, clause.getFirstValue());
+		case NOT_EQUALS : 
+			return Restrictions.ne(propertyName, clause.getFirstValue());
+		case LESS : 
+			return Restrictions.lt(propertyName, clause.getFirstValue());
+		case LESS_OR_EQUALS : 
+			return Restrictions.le(propertyName, clause.getFirstValue());
+		case GREATER : 
+			return Restrictions.gt(propertyName, clause.getFirstValue());
+		case GREATER_OR_EQUALS : 
+			return Restrictions.ge(propertyName, clause.getFirstValue());
+		case LIKE : 
+			logger.debug("create Like clause with "+getILikeOrLikeRestrictionValue(clause.getFirstValue()));
+			return Restrictions.like(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
+		case ILIKE : 
+			return Restrictions.ilike(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
+		case IN : 
+			return translateIn(clause);
+		case BETWEEN : 
+			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
+		case SQL_WHERE : 
+			return Restrictions.sqlRestriction(propertyName);
 		}
 		return null; // TODO : throw exception
 	}
@@ -129,11 +161,30 @@ public class FilterToHibernateClauseTranslator {
 	private Criterion translateCombined(Filter clause,
 			Criteria criteria, ClassMetadata metadata) 
 	{
+		Filter[] filters = clause.getCombinedFilters();
 		switch (clause.getType())
 		{
-		case NOT : return Restrictions.not(translate(clause.getFirstCombinedFilter(),criteria,metadata));
-		case AND : return Restrictions.and(translate(clause.getFirstCombinedFilter(),criteria,metadata), translate(clause.getSecondCombinedFilter(),criteria,metadata));
-		case OR : return Restrictions.or(translate(clause.getFirstCombinedFilter(),criteria,metadata), translate(clause.getSecondCombinedFilter(),criteria,metadata));
+		case NOT : return Restrictions.not(translate(filters[0],criteria,metadata));
+		case AND :
+		{
+			if (filters.length == 1) return translate(filters[0]);
+			logger.debug("create And clause with "+filters.length+" filters");
+			Criterion criterion = Restrictions.and(translate(filters[0]),translate(filters[1],criteria,metadata));
+			for (int i = 2; i < filters.length; i++) {
+				criterion = Restrictions.and(criterion,translate(filters[i],criteria,metadata));
+			}
+			return criterion;
+		}
+		case OR : 
+		{
+			if (filters.length == 1) return translate(filters[0],criteria,metadata);
+			logger.debug("create Or clause with "+filters.length+" filters");
+			Criterion criterion = Restrictions.or(translate(filters[0],criteria,metadata),translate(filters[1],criteria,metadata));
+			for (int i = 2; i < filters.length; i++) {
+				criterion = Restrictions.or(criterion,translate(filters[i],criteria,metadata));
+			}
+			return criterion;
+		}
 		}
 
 		return null;

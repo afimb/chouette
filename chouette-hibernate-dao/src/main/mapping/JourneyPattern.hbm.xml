@@ -36,14 +36,14 @@
 		<property column="registrationNumber" name="registrationNumber" type="string" />
 		<property column="publishedName" name="publishedName" type="string"/>
 		
-		<set batch-size="10" cascade="all" inverse="false" lazy="true"
+		<set cascade="all" inverse="false" lazy="true"
 			name="stopPoints" table="journeyPattern_stopPoint">
 			<key column="journeyPatternId" />
 			<many-to-many class="StopPoint" column="stopPointId" />
 		</set>
 		<many-to-one class="Route" column="routeId" insert="false"
 			lazy="no-proxy" name="route" update="false" />
-		<set batch-size="10" cascade="all" inverse="true" lazy="true"
+		<set cascade="all" inverse="true" lazy="true"
 			name="vehicleJourneys" table="vehicleJourney">
 			<key column="journeyPatternId" />
 			<one-to-many class="VehicleJourney" />

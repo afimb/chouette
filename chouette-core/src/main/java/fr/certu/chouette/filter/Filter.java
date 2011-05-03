@@ -100,13 +100,13 @@ public class Filter
 	/**
 	 * required value for a COMBINED family filter of first one for filter which requires 2 values 
 	 */
-	@Getter private Filter firstCombinedFilter = null;
+	@Getter private Filter[] combinedFilters = null;
 	/**
 	 * second required value for a COMBINED family filter which requires 2 values 
 	 * <p/>
 	 * for example : AND type filter
 	 */
-	@Getter private Filter secondCombinedFilter = null;
+	// @Getter private Filter secondCombinedFilter = null;
 	/**
 	 * list of ordering attributes to add to the request clause
 	 */
@@ -142,10 +142,12 @@ public class Filter
 	 */
 	private Filter(Type type,String attribute,Object value)
 	{
+		this();
 		if (type.ordinal() > Type.IN.ordinal())
 		{
 			throw new IllegalArgumentException("This constructor accept only EQUALS, NOT_EQUALS, LESS, LESS_OR_EQUALS, GREATER, GREATER_OR_EQUALS, LIKE , ILIKE and IN types");
 		}
+		if (value == null || value.equals("")) return;
 		this.type = type;
 		this.familly = TypeFamilly.TERMINAL;
 		this.attribute = attribute;
@@ -280,10 +282,13 @@ public class Filter
 	 */
 	private Filter(Type type,String attribute,Object value1, Object value2)
 	{
+		this();
 		if (!type.equals(Type.BETWEEN))
 		{
 			throw new IllegalArgumentException("This constructor accept only BETWEEN type");
 		}
+		if (value1 == null || value2 == null) return; // TODO exception ???
+		
 		this.type = type;
 		this.familly = TypeFamilly.TERMINAL;
 		this.attribute = attribute;
@@ -330,6 +335,8 @@ public class Filter
 	 */
 	private Filter(Type type,String attribute,Object[] valueArray)
 	{
+		this();
+		if (valueArray == null || valueArray.length == 0) return;
 		if (type.equals(Type.IN))
 		{
 			this.type = type;
@@ -388,19 +395,33 @@ public class Filter
 	 * @param first first sub filter
 	 * @param second second sub filter
 	 */
-	private Filter(Type type,Filter first,Filter second)
+	private Filter(Type type,Filter... filters)
 	{
+	    this();	
 		if (type.ordinal() < Type.AND.ordinal() || type.ordinal() > Type.OR.ordinal())
 		{
 			throw new IllegalArgumentException("This constructor accept only AND and OR types");
 		}
+		List<Filter> realFilters = new ArrayList<Filter>();
+		for (Filter filter : filters) 
+		{
+		   if (!filter.getFamilly().equals(TypeFamilly.EMPTY))	
+		   {
+			   realFilters.add(filter);
+		   }
+		}
+		for (Filter filter : filters) 
+		{
+			if (filter.orderList != null) addAllOrder(filter.orderList);
+			this.limit = Math.max(this.limit,filter.limit);
+			this.start = Math.min(this.start, filter.start);
+		}
+		if (realFilters.size() == 0) return; // no usefull filters create empty filter 
+
 		this.type = type;
 		this.familly = TypeFamilly.COMBINED;
-		this.firstCombinedFilter = first;
-		this.secondCombinedFilter = second;
-		if (first.orderList != null) addAllOrder(first.orderList);
-		if (second.orderList != null) addAllOrder(second.orderList);
-		this.limit = Math.max(first.limit,second.limit);
+		this.combinedFilters = realFilters.toArray(new Filter[0]);
+		// this.secondCombinedFilter = second;
 	}
 	/**
 	 * create a combined filter for a 'and' where clause
@@ -409,9 +430,9 @@ public class Filter
 	 * @param second the right side criteria
 	 * @return an And filter
 	 */
-	public static Filter getNewAndFilter(Filter first,Filter second)
+	public static Filter getNewAndFilter(Filter...filters)
 	{
-		return new Filter(Type.AND,first,second);
+		return new Filter(Type.AND,filters);
 	}
 	/**
 	 * create a combined filter for a 'OR' where clause
@@ -420,9 +441,9 @@ public class Filter
 	 * @param second the right side criteria
 	 * @return an Or filter
 	 */
-	public static Filter getNewOrFilter(Filter first,Filter second)
+	public static Filter getNewOrFilter(Filter...filters)
 	{
-		return new Filter(Type.OR,first,second);
+		return new Filter(Type.OR,filters);
 	}
 
 
@@ -436,11 +457,13 @@ public class Filter
 	 */
 	private Filter(Type type,Filter first)
 	{
+		this();
+		if (first.getFamilly().equals(TypeFamilly.EMPTY)) return;
 		if (type.equals(Type.NOT))
 		{
 			this.type = type;
 			this.familly = TypeFamilly.COMBINED;
-			this.firstCombinedFilter = first;
+			this.combinedFilters = new Filter[] {first};
 			if (first.orderList != null) this.addAllOrder(first.orderList);
 			this.limit = first.limit;
 		}
@@ -551,7 +574,6 @@ public class Filter
 	public void addStart(int startRestriction)
 	{
 		if (startRestriction < 0) throw new IllegalArgumentException("startRestriction can not be negative");
-		if (startRestriction == 0 && this.limit > 0) return;
 		this.start  = startRestriction;
 
 	}
@@ -564,7 +586,6 @@ public class Filter
 	{
 		if (limitRestriction < 0) throw new IllegalArgumentException("limitRestriction can not be negative");
 		this.limit  = limitRestriction;
-		if (this.start == 0) this.start = 1;
 
 	}
 
