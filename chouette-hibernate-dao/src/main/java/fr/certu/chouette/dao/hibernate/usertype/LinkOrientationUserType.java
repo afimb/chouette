@@ -6,18 +6,18 @@
  * Projet chouette : dfinition des types de donnes spcifiques 
  * 					 mis  disposition du mapping Base <-> Objet 
  * 					(package fr.certu.chouette.customtypes)
- * 
- * DConnectionLinkTypeUserType.java : Type de donne bas sur l'numration ConnectionLinkTypeType
+ *
+ * DServiceStatusValueType.java : Type de donne bas sur l'numration ServiceStatusValue
  *
  * Historique des modifications :
- * Date         | Auteur         | Libll
- * -------------+----------------+-----------------------------------------------
- * 4 fvr. 2005 |Marc FLORISSON  | Cration
- * -------------+----------------+-----------------------------------------------
+ * Date        | Auteur         | Libll
+ * ------------+----------------+-----------------------------------------------
+ * 10 nov. 2004|Chao ZHANG		| Cration
+ * ------------+----------------+-----------------------------------------------
  */
 //----------------------------------------------------------------------------
-
 package fr.certu.chouette.dao.hibernate.usertype;
+
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,21 +27,21 @@ import java.sql.Types;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
-import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
+import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
+
+
 
 //----------------------------------------------------------------------------
 /**
- * Type de donne bas sur l'numration ConnectionLinkTypeType. <p>
+ * Type de donne bas sur l'numration ServiceStatusValue
  * 
  * La structure implmente l'interface des dfinitions de type UserType.
- *
- * @author : Marc FLORISSON
+ *  
+ * @author : Chao ZHANG
  * 
- * @version : $Revision: 1.2 $
- *
+ * @version : $Revision: 1.3 $
  */
-//----------------------------------------------------------------------------
 public class LinkOrientationUserType implements UserType 
 {
 	//------------------------------------------------------------
@@ -76,7 +76,7 @@ public class LinkOrientationUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : ConnectionLinkTypeEnum.fromValue(name);	
+		return resultSet.wasNull() ? null : ServiceStatusValueEnum.fromValue(name);	
 	}
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

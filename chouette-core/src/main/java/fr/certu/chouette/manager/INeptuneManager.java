@@ -101,6 +101,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	List<T> getAll(User user, Filter filter, DetailLevelEnum level)  throws ChouetteException;
 
+	List<T> getAll(User user) throws ChouetteException;
 
 	// Update 
 	/**

@@ -174,7 +174,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 			{
 				bean = getDao().getByObjectId((String) filter.getFirstValue());
 			}
-			bean.expand(level);
+			//bean.expand(level);
 			return bean;
 		}
 
@@ -190,14 +190,26 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		List<T> beans =  getDao().select(filter);
+		/*
 		for (T bean : beans)
 		{
 			bean.expand(level);
 		}
+		*/
 
 		return beans;
 	}
 
+
+
+
+
+	@Override
+	public List<T> getAll(User user) throws ChouetteException {
+		// TODO check User access
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		return getDao().getAll();
+	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
 	 */
@@ -206,7 +218,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
-		
+		getDao().update(bean);
 	}
 
 	/* (non-Javadoc)
@@ -218,7 +230,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
-
+		getDao().update(bean);
 	}
 
 	/* (non-Javadoc)
@@ -240,7 +252,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO Auto-generated method stub
-
+		getDao().remove(bean.getId());
 	}
 
 	/* (non-Javadoc)

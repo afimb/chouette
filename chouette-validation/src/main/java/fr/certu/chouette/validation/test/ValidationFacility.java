@@ -64,10 +64,10 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 				if(SRID == SRIDparam)
 					report3_19_1.updateStatus(Report.STATE.OK);
 				else {
-					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet19_Step1_warning", Report.STATE.WARNING,facility.getObjectId());
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet19_Step1_warning", Report.STATE.WARNING,facility.getName()+"("+facility.getObjectId()+")");
 					report3_19_1.addItem(detailReportItem);
 
-					ReportItem detailReportItem2 = new DetailReportItem("Test3_Sheet20_Step1_warning_a", Report.STATE.WARNING,facility.getObjectId());
+					ReportItem detailReportItem2 = new DetailReportItem("Test3_Sheet20_Step1_warning_a", Report.STATE.WARNING,facility.getName()+"("+facility.getObjectId()+")");
 					report3_20_1.addItem(detailReportItem2);
 				}
 
@@ -82,7 +82,7 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 				Coordinate coordinate = new Coordinate(x, y);
 				Point point1 = factory1.createPoint(coordinate);
 				if(!polygon.contains(point1)){
-					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet20_Step1_error_b", Report.STATE.ERROR,facility.getObjectId());
+					ReportItem detailReportItem = new DetailReportItem("Test3_Sheet20_Step1_error_b", Report.STATE.ERROR,facility.getName()+"("+facility.getObjectId()+")");
 					report3_20_1.addItem(detailReportItem);	
 				}else	
 					report3_20_1.updateStatus(Report.STATE.OK);

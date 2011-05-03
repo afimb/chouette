@@ -11,7 +11,6 @@ package fr.certu.chouette.plugin.validation;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  * @author michel

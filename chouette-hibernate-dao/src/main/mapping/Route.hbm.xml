@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- @@LICENCE@@ -->
-<!-- Société DRYADE Projet chouette : paramétrage Objet - Base DRouteBean.hbm.xml 
-	: paramétrage DRouteBean - Route Historique des modifications : Date | Auteur 
-	| Libéllé =============+================+============================================== 
-	2 nov. 2004 |Marc FLORISSON | Création =============+================+============================================== 
-	24 nov. 2004 |Marc FLORISSON | Intégration de la donnée DRoutePtLinkBean 
-	=============+================+============================================== 
-	Version : $Revision: 1.6 $ -->
+<!--
+ @@LICENCE@@ Société DRYADE
+
+ Projet chouette : paramétrage Objet - Base
+
+ Route.hbm.xml : paramétrage Route
+
+ Historique des modifications :
+ Date         | Auteur         | Libéllé
+ =============+================+==============================================
+ 2 nov. 2004  |Marc FLORISSON  | Création
+ =============+================+==============================================
+ 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
+ =============+================+==============================================
+ 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
+ =============+================+==============================================
+
+ Version : $Revision: 1.6 $
+-->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Route" table="Route" dynamic-insert="false"
 		dynamic-update="false">
@@ -28,8 +39,7 @@
 		<property name="comment" />
 		<property name="wayBack" />
 		<!-- relations --> 
-		<bag name="journeyPatterns" lazy="true" cascade="all" inverse="true"
-			batch-size="10">
+		<bag name="journeyPatterns" lazy="true" cascade="all" inverse="true">
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
@@ -41,7 +51,7 @@
 		</bag>
         -->
 		<many-to-one name="line" insert="false" update="false"
-			class="Line" cascade="none"
+			class="Line" cascade="all"
 			lazy="no-proxy" outer-join="auto" column="lineId" />
 
 	</class>

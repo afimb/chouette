@@ -53,7 +53,7 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 				List<String> stopPointIds = JourneyPattern.extractObjectIds(journeyPattern.getStopPoints());
 				//Test 2.15.1
 				if(!stopPointIds.containsAll(journeyPattern.getStopPointIds())){
-					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step1_error", Report.STATE.ERROR,journeyPattern.getObjectId());
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step1_error", Report.STATE.ERROR,journeyPattern.getName()+"("+journeyPattern.getObjectId()+")");
 					report2_15_1.addItem(detailReportItem);	
 				}else {
 					report2_15_1.updateStatus(Report.STATE.OK);

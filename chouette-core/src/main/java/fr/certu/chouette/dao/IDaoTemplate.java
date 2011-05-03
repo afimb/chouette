@@ -11,6 +11,7 @@ public interface IDaoTemplate <T extends NeptuneObject>
 	   T get(Long id);
 	   void save(T object);
 	   void remove(Long id);
+//	   int removeAll(Filter clause);
 	   void update(T object);
 	   T getByObjectId( String objectId);
 	   List<T> select(Filter clause);

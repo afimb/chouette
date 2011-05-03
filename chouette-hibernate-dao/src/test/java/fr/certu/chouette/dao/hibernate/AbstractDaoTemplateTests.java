@@ -138,14 +138,18 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Assert.assertTrue(beans.size() <= 2,"size of returned list("+beans.size()+") should be less than 2");
 	}
 
-	@Test (groups = {"hibernate"}, description = "daoTemplate should return maximum 2 occurences of bean with a filter" )
+	@Test (groups = {"hibernate","select"}, description = "daoTemplate should return maximum 2 occurences of bean with a filter" )
 	public void verifySelectFilter() 
 	{
 		// TODO : see how to put prepared objects in test database
 		Filter filter = getSelectFilter();
 		filter.addLimit(2);
 		List<T> beans = daoTemplate.select(filter);
+		for (T t : beans) {
+			System.err.println(t.toString(" ", 0));
+		}
 		Assert.assertTrue(beans.size() <= 2,"size of returned list("+beans.size()+") should be less than 2");
+		
 	}
 
 	@Test (groups = {"hibernate"}, description = "daoTemplate should remove bean" )
