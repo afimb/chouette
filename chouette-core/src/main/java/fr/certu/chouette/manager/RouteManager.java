@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -100,12 +101,17 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
-		if(route.getJourneyPatterns() != null)
-			jpManager.removeAll(null, route.getJourneyPatterns());
-		if(route.getPtLinks() != null)
-			ptLinkManager.removeAll(null, route.getPtLinks());
-		if(route.getStopPoints() != null)
-			stopPointManager.removeAll(null, route.getStopPoints());
+		Filter filter = Filter.getNewEqualsFilter("route.id", route.getId());
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+		List<JourneyPattern> jps = jpManager.getAll(null, filter, level);
+		if(jps != null && !jps.isEmpty())
+			jpManager.removeAll(null, jps);
+		List<PTLink> ptLinks = ptLinkManager.getAll(null, filter, level);
+		if(ptLinks != null && !ptLinks.isEmpty())
+			ptLinkManager.removeAll(null, ptLinks);
+		List<StopPoint> stopPoints = stopPointManager.getAll(null, filter, level);
+		if(stopPoints != null && !stopPoints.isEmpty())
+			stopPointManager.removeAll(null, stopPoints);
 		super.remove(null, route);			
 	}
 }

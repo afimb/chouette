@@ -1,0 +1,62 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+  <field name="name">
+    <field-validator type="requiredstring">
+      <param name="trim">true</param>
+      <param name="fieldName">name</param>
+      <message key="errors.required"/>
+    </field-validator>
+    <field-validator type="stringlength">
+      <param name="fieldName">name</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+
+  <field name="comment">
+    <field-validator type="stringlength">
+      <param name="fieldName">comment</param>
+      <param name="maxLength">255</param>
+      <message key="errors.maxlength"/>
+    </field-validator>
+  </field>
+
+  <field name="defaultDuration">
+    <field-validator type="regex">
+      <param name="fieldName">defaultDuration</param>
+      <param name="expression">^$|([0-9][0-9]:[0-9][0-9])</param>
+      <message key="error.formatDate"/>
+    </field-validator>
+  </field>
+    
+  <field name="occasionalTravellerDuration">
+    <field-validator type="regex">
+      <param name="fieldName">occasionalTravellerDuration</param>
+      <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
+      </param>
+      <message key="error.formatDate"/>
+    </field-validator>
+  </field>
+
+  <field name="mobilityRestrictedTravellerDuration">
+    <field-validator type="regex">
+      <param name="fieldName">mobilityRestrictedTravellerDuration</param>
+      <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
+      </param>
+      <message key="error.formatDate"/>
+    </field-validator>
+  </field>
+    
+  <field name="frequentTravellerDuration">
+    <field-validator type="regex">
+      <param name="fieldName">frequentTravellerDuration</param>
+      <param name="expression"><![CDATA[([0-9][0-9]:[0-9][0-9])]]>
+      </param>
+      <message key="error.formatDate"/>
+    </field-validator>
+  </field>
+</validators> 
+

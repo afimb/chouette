@@ -1,0 +1,12 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+	<validator type="expression">
+		<!-- L'UTILISATEUR PEUT NE PAS SAISIR D'INTERVAL -->
+		<!-- MAIS S'IL EN SAISI UN LA DATE DE DEBUT DE L'INTERVAL DOIT ETRE AVANT LA DATE DE FIN -->
+		<param name="expression"><![CDATA[ (dateDebutPeriode == null || dateFinPeriode == null) || (dateDebutPeriode != null && dateFinPeriode != null && dateDebutPeriode <= dateFinPeriode) ]]></param>
+		<message>${getText("filter.begin.interval")} doit être inférieur à ${getText("filter.end.interval")}</message>
+	</validator>
+</validators> 

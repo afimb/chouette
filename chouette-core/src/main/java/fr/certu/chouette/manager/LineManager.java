@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
@@ -284,11 +286,14 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 	@Override
 	public void remove(User user, Line line) throws ChouetteException{
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-//		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-//		INeptuneManager<RestrictionConstraint> constraintManager = 
-//			(INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-		if(line.getRoutes() != null)
-			routeManager.removeAll(null, line.getRoutes());
+		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+		INeptuneManager<RestrictionConstraint> constraintManager = 
+			(INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+		routeManager.removeAll(null, routeManager.getAll(null, filter, level));
+		facilityManager.removeAll(null, facilityManager.getAll(null, filter, level));
+		constraintManager.removeAll(null, constraintManager.getAll(null, filter, level));
 		super.remove(null, line);
 	}
 }

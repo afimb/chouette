@@ -1,0 +1,12 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+<validators>
+	<field name="validationParam">
+		<field-validator type="visitor">
+			<param name="context">validationParamContext</param>
+			<param name="appendPrefix">true</param>
+			<message key="errors.required" />
+		</field-validator>
+	</field>
+</validators>
