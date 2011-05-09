@@ -47,7 +47,7 @@
 			lazy="no-proxy" name="timeSlot" update="false" />
 		<many-to-one class="Company" column="companyId" insert="false"
 			lazy="no-proxy" name="company" update="false" />
-		<set batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops"
+		<set batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops" cascade="all"
 			sort="unsorted" table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
 			<composite-element class="VehicleJourneyAtStop">

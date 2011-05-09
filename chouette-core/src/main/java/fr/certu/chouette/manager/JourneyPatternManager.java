@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
@@ -88,8 +89,11 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	@Override
 	public void remove(User user,JourneyPattern journeyPattern) throws ChouetteException{
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
-		if(journeyPattern.getVehicleJourneys() != null)
-			vjManager.removeAll(null, journeyPattern.getVehicleJourneys());
+		Filter filter = Filter.getNewEqualsFilter("journeyPattern.id", journeyPattern.getId());
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+		List<VehicleJourney> vehicleJourneys = vjManager.getAll(null, filter, level);
+		if(vehicleJourneys != null && !vehicleJourneys.isEmpty())
+			vjManager.removeAll(null, vehicleJourneys);
+		super.remove(null, journeyPattern);
 	}
-
 }
