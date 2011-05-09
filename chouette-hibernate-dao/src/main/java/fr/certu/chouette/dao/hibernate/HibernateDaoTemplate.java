@@ -1,5 +1,6 @@
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -23,6 +24,7 @@ import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -276,9 +278,9 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 
 	}
 
-//	@Override
-//	public int removeAll(Filter clause) {
-//		
-//		return 0;
-//	}
+	@Override
+	public void removeAll(Collection<T> objects) {
+		getHibernateTemplate().deleteAll(objects);
+		getHibernateTemplate().flush();
+	}
 }

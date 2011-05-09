@@ -27,15 +27,15 @@
 		<property name="comment" type="string" />
 
 		<many-to-one name="stopArea" insert="false" update="false"
-			class="StopArea" cascade="none" lazy="no-proxy" outer-join="auto"
+			class="StopArea" lazy="no-proxy" outer-join="auto"
 			column="stopareaid" />
 		<many-to-one name="line" insert="false" update="false"
-			class="Line" cascade="none" lazy="no-proxy" outer-join="auto" column="lineid" />
+			class="Line" lazy="no-proxy" outer-join="auto" column="lineid" />
 		<many-to-one name="connectionLink" insert="false" update="false"
-			class="ConnectionLink" cascade="none" lazy="no-proxy" outer-join="auto"
+			class="ConnectionLink" lazy="no-proxy" outer-join="auto"
 			column="connectionLinkid" />
 		<many-to-one name="stopPoint" insert="false" update="false"
-			class="StopPoint" cascade="none" lazy="no-proxy" outer-join="auto"
+			class="StopPoint" lazy="no-proxy" outer-join="auto"
 			column="stopPointid" />
 		<property name="description" type="string" />
 		<property name="freeAccess" type="boolean" />

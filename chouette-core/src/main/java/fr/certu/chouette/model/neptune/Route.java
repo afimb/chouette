@@ -107,6 +107,8 @@ public class Route extends NeptuneIdentifiedObject
 	@Getter @Setter private List<PTLink> ptLinks; // Table + FK inverse 
 	
 	
+	@Getter @Setter private List<StopPoint> stopPoints;
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */

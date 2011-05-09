@@ -25,7 +25,8 @@
 		<id column="id" name="id" type="long">
 			<generator class="native" />
 		</id>
-		<property name="parentId" />
+		<many-to-one class="StopArea" column="parentId" insert="false"
+			lazy="no-proxy" name="parentStopArea" update="false" />
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
@@ -38,7 +39,7 @@
 		<property name="nearestTopicName" type="string" />
 		<property name="fareCode" type="int" />
 		<component class="fr.certu.chouette.model.neptune.AreaCentroid"
-			name="areaCentroid">
+			name="areaCentroid" update="true">
 			<property column="objectId" insert="false" name="containedInStopAreaId"
 				type="string" update="false" />
 			<property name="longitude" precision="19" scale="16"

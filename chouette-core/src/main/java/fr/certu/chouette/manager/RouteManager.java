@@ -13,8 +13,10 @@ import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -24,6 +26,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
  * @author michel
  *
  */
+@SuppressWarnings("unchecked")
 public class RouteManager extends AbstractNeptuneManager<Route> 
 {
 	public RouteManager() 
@@ -31,7 +34,6 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		super(Route.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<Route> beans,
 			ValidationParameters parameters,boolean propagate) 
@@ -93,6 +95,17 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 
 		return globalReport;
 	}
-
-
+	@Override
+	public void remove(User user,Route route) throws ChouetteException{
+		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
+		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
+		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
+		if(route.getJourneyPatterns() != null)
+			jpManager.removeAll(null, route.getJourneyPatterns());
+		if(route.getPtLinks() != null)
+			ptLinkManager.removeAll(null, route.getPtLinks());
+		if(route.getStopPoints() != null)
+			stopPointManager.removeAll(null, route.getStopPoints());
+		super.remove(null, route);			
+	}
 }

@@ -22,6 +22,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -37,13 +38,13 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 /**
  * 
  */
+@SuppressWarnings("unchecked")
 public class LineManager extends AbstractNeptuneManager<Line> {
 
 	public LineManager() {
 		super(Line.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<Line> beans,ValidationParameters parameters, boolean propagate)
 	throws ChouetteException {
@@ -278,5 +279,16 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 			}
 		}
 		return report;
+	}
+
+	@Override
+	public void remove(User user, Line line) throws ChouetteException{
+		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+//		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+//		INeptuneManager<RestrictionConstraint> constraintManager = 
+//			(INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+		if(line.getRoutes() != null)
+			routeManager.removeAll(null, line.getRoutes());
+		super.remove(null, line);
 	}
 }

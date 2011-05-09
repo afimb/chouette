@@ -33,12 +33,12 @@
 		<property name="comment" type="string" />
 		<property name="version" type="string" />
 		<property name="intDayTypes" />
-		<list cascade="all" lazy="false" name="calendarDays" table="timetable_date">
+		<list lazy="false" name="calendarDays" table="timetable_date">
 			<key column="timetableId" />
 			<list-index base="0" column="position" />
 			<element column="date" type="date" />
 		</list>
-		<list cascade="all" lazy="false" name="periods" table="timetable_period">
+		<list lazy="false" name="periods" table="timetable_period">
 			<key column="timeTableId" />
 			<list-index base="0" column="position" />
 			<composite-element class="Period">
@@ -46,8 +46,7 @@
 				<property name="endDate" column="periodend" type="date" />
 			</composite-element>
 		</list>
-		<set name="vehicleJourneys" table="timetablevehiclejourney" lazy="false"
-			cascade="all">
+		<set name="vehicleJourneys" table="timetablevehiclejourney" lazy="false">
 			<key column="timetableId" />
 			<many-to-many column="vehiclejourneyId" class="VehicleJourney" />
 		</set>

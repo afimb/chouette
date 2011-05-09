@@ -8,6 +8,7 @@ import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
@@ -15,6 +16,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationReport;
 
+@SuppressWarnings("unchecked")
 public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern> 
 {
 
@@ -23,7 +25,6 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 		super(JourneyPattern.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<JourneyPattern> beans,
 			ValidationParameters parameters,boolean propagate) 
@@ -84,6 +85,11 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 
 		return globalReport;
 	}
-
+	@Override
+	public void remove(User user,JourneyPattern journeyPattern) throws ChouetteException{
+		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
+		if(journeyPattern.getVehicleJourneys() != null)
+			vjManager.removeAll(null, journeyPattern.getVehicleJourneys());
+	}
 
 }

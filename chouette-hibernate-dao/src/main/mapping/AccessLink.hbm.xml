@@ -47,5 +47,11 @@
 		<property name="intUserNeeds" />
 		<property column="linkOrientation" name="linkOrientation"
 			type="fr.certu.chouette.dao.hibernate.usertype.LinkOrientationUserType" />	
+		<many-to-one name="accessPoint" insert="false" update="false"
+			class="AccessPoint" cascade="none" lazy="no-proxy" outer-join="auto"
+			column="accessPointId" />
+		<many-to-one name="stopArea" insert="false" update="false"
+			class="StopArea" lazy="no-proxy" outer-join="auto"
+			column="stopAreaId" />		
 	</class>
 </hibernate-mapping>

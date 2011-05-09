@@ -47,8 +47,8 @@
 			lazy="no-proxy" name="timeSlot" update="false" />
 		<many-to-one class="Company" column="companyId" insert="false"
 			lazy="no-proxy" name="company" update="false" />
-		<set batch-size="10" cascade="all" inverse="true" lazy="true"
-			name="vehicleJourneyAtStops" sort="unsorted" table="vehicleJourneyAtStop">
+		<set batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops"
+			sort="unsorted" table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
 			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"
@@ -58,7 +58,7 @@
 				<property name="connectingServiceId" />
 				<property column="boardingAlightingPossibility" name="boardingAlightingPossibility"
 					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" />
-				<property name="order" column="rank"/>
+				<property name="order" column="rank" />
 				<property name="arrivalTime" type="java.util.Date" />
 				<property name="departureTime" type="java.util.Date" />
 				<property name="waitingTime" type="java.util.Date" />

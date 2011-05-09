@@ -44,10 +44,10 @@
 			<property name="projectionType" type="string" />
 		</component>
 		<property name="containedIn" column="containedIn" />
-		<set name="accessLinks" table="accesspoint_accesslink" lazy="false"
+		<set name="accessLinks" table="accesslink" lazy="true"
 			cascade="all">
 			<key column="accessPointId" />
-			<many-to-many column="accesslinkId" class="AccessLink" />
+			<one-to-many class="AccessLink" />
 		</set>
 		<property name="openningTime" type="java.util.Date" />
 		<property name="closingTime" type="java.util.Date" />

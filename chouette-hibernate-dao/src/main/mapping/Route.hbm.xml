@@ -39,10 +39,15 @@
 		<property name="comment" />
 		<property name="wayBack" />
 		<!-- relations --> 
-		<bag name="journeyPatterns" lazy="true" cascade="all" inverse="true">
+		<bag name="journeyPatterns" lazy="true" inverse="true">
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
+		<list name="stopPoints" lazy="true">
+			<key column="routeId" />
+			<index column="position"/>
+			<one-to-many class="StopPoint" />
+		</list>
 		<!--
 		<bag name="journeyPatternIds" table="journeyPattern" inverse="true"
 			lazy="false" cascade="none" fetch="join">
@@ -51,8 +56,7 @@
 		</bag>
         -->
 		<many-to-one name="line" insert="false" update="false"
-			class="Line" cascade="all"
-			lazy="no-proxy" outer-join="auto" column="lineId" />
+			class="Line" lazy="no-proxy" outer-join="auto" column="lineId" />
 
 	</class>
 </hibernate-mapping>

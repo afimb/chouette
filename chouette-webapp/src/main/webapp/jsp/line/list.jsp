@@ -67,7 +67,7 @@
       </s:url>
       <s:url id="removeLigneAmivif" action="exportSupprimerAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="origin">line</s:param>
+        <s:param name="origin">ligne</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="removeLigneChouette" action="deleteChouette" namespace="/line">
@@ -82,7 +82,7 @@
       </s:url>
       <s:url id="exportAmivif" action="exportAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="origin">line</s:param>
+        <s:param name="origin">ligne</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportChouette" action="exportChouette" namespace="/line">
@@ -97,7 +97,7 @@
       </s:url>
       <s:url id="exportCSV" action="exportCSV" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="origin">line</s:param>
+        <s:param name="origin">ligne</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <div style="float: left; margin-right: 7px;">
@@ -125,8 +125,8 @@
         </s:if>
       </div>
     </display:column>
-    <display:column titleKey="table.title.name" sortable="true" headerClass="sortable" property="line.name"/>
-    <display:column titleKey="table.title.index" property="line.number" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.name" sortable="true" headerClass="sortable" property="name"/>
+    <display:column titleKey="table.title.index" property="number" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.network" sortable="true" headerClass="sortable">
       <s:url id="editReseau" action="edit" namespace="/network">
         <s:param name="idReseau">${ligne.idReseau}</s:param>

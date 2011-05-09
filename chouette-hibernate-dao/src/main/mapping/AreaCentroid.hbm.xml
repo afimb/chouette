@@ -44,7 +44,7 @@
 			<property name="projectionType" type="string" />
 		</component>
 		<many-to-one name="containedInStopArea" insert="false"
-			update="false" class="StopArea" cascade="none" lazy="no-proxy"
+			update="false" class="StopArea" lazy="no-proxy"
 			outer-join="auto" column="stopareaid" />
 	</class>
 </hibernate-mapping>

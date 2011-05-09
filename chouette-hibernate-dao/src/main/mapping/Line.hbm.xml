@@ -46,12 +46,12 @@
 
  -->		<!-- relations -->
 		<many-to-one name="ptNetwork" insert="false" update="false"
-			class="PTNetwork" cascade="none" lazy="no-proxy" outer-join="auto"
+			class="PTNetwork" lazy="no-proxy" outer-join="auto"
 			column="PTNetworkId" />
 		<many-to-one name="company" insert="false" update="false"
-			class="Company" cascade="none" lazy="no-proxy" outer-join="auto"
+			class="Company" lazy="no-proxy" outer-join="auto"
 			column="companyId" />
-		<bag name="routes" lazy="true" cascade="all" inverse="true">
+		<bag name="routes" lazy="true" inverse="true">
 			<key column="lineId" />
 			<one-to-many class="Route" />
 		</bag>
@@ -61,7 +61,7 @@
 			<element type="string" column="objectId" />
 		</bag> -->
 		<many-to-one name="groupOfLine" insert="false" update="false"
-			class="GroupOfLine" cascade="none" lazy="no-proxy" outer-join="auto"
+			class="GroupOfLine" lazy="no-proxy" outer-join="auto"
 			column="groupOfLineId" />
 	</class>
 </hibernate-mapping>

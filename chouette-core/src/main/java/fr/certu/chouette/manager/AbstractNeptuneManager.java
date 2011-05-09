@@ -8,6 +8,7 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,7 +196,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		{
 			bean.expand(level);
 		}
-		*/
+		 */
 
 		return beans;
 	}
@@ -259,14 +260,18 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#removeAll(fr.certu.chouette.model.user.User, fr.certu.chouette.manager.Filter)
 	 */
 	@Override
-	public int removeAll(User user, Filter filter) throws ChouetteException
+	public void removeAll(User user, Collection<T> objects) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		// TODO Auto-generated method stub
-		return 0;
+		getDao().removeAll(objects);
 	}
 
-
+	@Override
+	public int removeAll(User user,Filter filter) throws ChouetteException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		return 0;
+	}	
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getImportFormats(fr.certu.chouette.model.user.User)

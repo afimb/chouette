@@ -100,7 +100,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Ligne>, P
   /********************************************************
    * CRUD *
    ********************************************************/
-  @SkipValidation
+@SkipValidation
   public String list()
   {
     log.debug("List of lines");

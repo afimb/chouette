@@ -36,14 +36,14 @@
 		<property column="registrationNumber" name="registrationNumber" type="string" />
 		<property column="publishedName" name="publishedName" type="string"/>
 		
-		<set cascade="all" inverse="false" lazy="true"
-			name="stopPoints" table="journeyPattern_stopPoint">
+		<set inverse="false" lazy="true"
+			name="stopPoints" table="journeyPattern_stopPoint" cascade="all">
 			<key column="journeyPatternId" />
 			<many-to-many class="StopPoint" column="stopPointId" />
 		</set>
 		<many-to-one class="Route" column="routeId" insert="false"
-			lazy="no-proxy" name="route" update="false" />
-		<set cascade="all" inverse="true" lazy="true"
+			lazy="no-proxy" name="route" update="false"/>
+		<set inverse="true" lazy="true"
 			name="vehicleJourneys" table="vehicleJourney">
 			<key column="journeyPatternId" />
 			<one-to-many class="VehicleJourney" />

@@ -7,6 +7,7 @@
  */
 package fr.certu.chouette.manager;
 
+import java.util.Collection;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -163,6 +164,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	int removeAll(User user,Filter filter)  throws ChouetteException;
 
+	void removeAll(User user,Collection<T> objects)  throws ChouetteException;
 	// importation
 
 	/**
