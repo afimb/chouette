@@ -16,11 +16,9 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
  * @author michel
  *
  */
-public class VehicleJourneyManager extends
-		AbstractNeptuneManager<VehicleJourney> {
+public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney> {
 
 	public VehicleJourneyManager() {
 		super(VehicleJourney.class);
 	}
-
 }

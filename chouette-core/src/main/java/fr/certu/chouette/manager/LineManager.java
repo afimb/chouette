@@ -291,9 +291,15 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 		INeptuneManager<RestrictionConstraint> constraintManager = 
 			(INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-		routeManager.removeAll(null, routeManager.getAll(null, filter, level));
-		facilityManager.removeAll(null, facilityManager.getAll(null, filter, level));
-		constraintManager.removeAll(null, constraintManager.getAll(null, filter, level));
+		List<Route> routes = routeManager.getAll(null, filter, level);
+		if(routes != null && !routes.isEmpty())
+			routeManager.removeAll(null, routes);
+		List<Facility> facilities = facilityManager.getAll(null, filter, level);
+		if(facilities != null && !facilities.isEmpty())
+			facilityManager.removeAll(null, facilities);
+		List<RestrictionConstraint> constraints = constraintManager.getAll(null, filter, level);
+		if(constraints != null && !constraints.isEmpty())
+			constraintManager.removeAll(null, constraints);
 		super.remove(null, line);
 	}
 }
