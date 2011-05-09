@@ -71,7 +71,7 @@ class PTNetworkProducer {
 		// ObjectVersion optionnel
 		if (castorPTNetwork.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorPTNetwork.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				if (castorPTNetwork.getName() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, castorPTNetwork.getName());
 				else

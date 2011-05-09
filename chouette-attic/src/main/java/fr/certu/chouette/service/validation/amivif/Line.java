@@ -5,18 +5,18 @@ import java.util.List;
 
 public class Line extends TridentObject {
 	
-	private String							name;												// 0..1
-	private String							number;												// 0..1
-	private String							publishedName;										// 0..1
+	private String						name;												// 0..1
+	private String						number;												// 0..1
+	private String						publishedName;										// 0..1
 	private TransportMode					transportMode;										// 0..1
 	private List<String>					lineEndIds			= new ArrayList<String>();		// 0..w
 	private List<StopPoint> 				lineEnds			= new ArrayList<StopPoint>();	// 0..w
 	private List<String>					routeIds			= new ArrayList<String>();		// 0..w
-	private List<Route>						routes				= new ArrayList<Route>();		// 0..w
+	private List<Route>					routes				= new ArrayList<Route>();		// 0..w
 	private Registration					registration;										// 0..1
-	private String							ptNetworkIdShortcut;								// 0..1
+	private String						ptNetworkIdShortcut;								// 0..1
 	private TransportNetwork				transportNetwork;									// 0..1
-	private String							comment;											// 0..1
+	private String						comment;											// 0..1
 	
 	private RespPTLineStructTimetableType	respPTLineStructTimetableType;						// 1..w
 	

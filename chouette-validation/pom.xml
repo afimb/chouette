@@ -3,11 +3,11 @@
   <parent>
     <artifactId>chouette</artifactId>
     <groupId>fr.certu.chouette</groupId>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
   </parent>
   <groupId>fr.certu.chouette</groupId>
   <artifactId>chouette-validation</artifactId>
-  <version>1.6.0</version>
+  <version>1.6.1</version>
   <name>Chouette Validation</name>
 
 	<dependencies>

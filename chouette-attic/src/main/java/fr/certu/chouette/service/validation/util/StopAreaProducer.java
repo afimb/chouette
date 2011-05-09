@@ -68,7 +68,7 @@ class StopAreaProducer {
 		// ObjectVersion optionnel
 		if (castorStopArea.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorStopArea.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				if (castorStopArea.getName() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, castorStopArea.getName());
 				else

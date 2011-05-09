@@ -63,6 +63,7 @@ public class Reseau extends BaseObjet
 	}
 
 	public int getObjectVersion() {
+            setObjectVersion((int)ptNetwork.getObjectVersion());
 		return (int)ptNetwork.getObjectVersion();
 	}
 
@@ -116,7 +117,10 @@ public class Reseau extends BaseObjet
 	}
 
 	public void setObjectVersion(int objectVersion) {
+            if (objectVersion >= 1)
 		ptNetwork.setObjectVersion(objectVersion);
+            else
+                ptNetwork.setObjectVersion(1);
 	}
 
 	public void setSourceIdentifier(String sourceIdentifier) {

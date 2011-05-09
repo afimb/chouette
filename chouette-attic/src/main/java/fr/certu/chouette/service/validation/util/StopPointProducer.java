@@ -67,7 +67,7 @@ class StopPointProducer {
 		// ObjectVersion optionnel
 		if (castorStopPoint.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorStopPoint.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				params = null;
 				if (stopPoint.getObjectId() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, stopPoint.getObjectId());

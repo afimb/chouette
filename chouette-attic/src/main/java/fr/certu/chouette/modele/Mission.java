@@ -64,7 +64,8 @@ public class Mission extends BaseObjet
 	}
 
 	public int getObjectVersion() {
-		return (int)journeyPattern.getObjectVersion();
+            setObjectVersion((int)journeyPattern.getObjectVersion());
+            return (int)journeyPattern.getObjectVersion();
 	}
 
 	public String getPublishedName() {
@@ -100,7 +101,10 @@ public class Mission extends BaseObjet
 	}
 
 	public void setObjectVersion(int objectVersion) {
+            if (objectVersion >= 1)
 		journeyPattern.setObjectVersion(objectVersion);
+            else
+                journeyPattern.setObjectVersion(1);
 	}
 
 	public void setPublishedName(String publishedName) {

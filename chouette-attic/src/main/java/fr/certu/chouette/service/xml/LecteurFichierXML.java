@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.util.AttributeSetImpl;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -151,6 +152,10 @@ public class LecteurFichierXML implements ILecteurFichierXML
 			marshaller.setRootElement("ChouettePTNetwork");
 			marshaller.setSuppressNamespaces(true);
 			marshaller.setValidation(false);
+                        marshaller.setNamespaceMapping("", "http://www.trident.org/schema/trident");
+                        marshaller.setNamespaceMapping("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                        marshaller.setSchemaLocation("http://www.trident.org/schema/trident neptune.xsd");
+                        marshaller.getProperty(Marshaller.XSI_SCHEMA_LOCATION);
 			marshaller.marshal(chouette);
 			outputStreamWriter.close();
 			fileOutputStream.close();
@@ -207,6 +212,9 @@ public class LecteurFichierXML implements ILecteurFichierXML
 			aMarshaller.setSuppressNamespaces(true);
 			aMarshaller.setValidation(false);
 			aMarshaller.marshal(chouette);
+                        aMarshaller.setNamespaceMapping("xmlns", "http://www.trident.org/schema/trident");
+                        aMarshaller.setNamespaceMapping("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");                        
+                        aMarshaller.setSchemaLocation("http://www.trident.org/schema/trident neptune.xsd");
 			outputStreamWriter.close();
 			fileOutputStream.close();
 		}

@@ -7,7 +7,7 @@ import java.util.List;
 public class TridentObject {
 	
 	private TridentId				objectId;				// 1
-	private int						objectVersion	= 1;	// 0..1 must be positive > 0
+	private int					objectVersion	= 1;	// 0..1 must be positive > 0
 	private Date					creationTime;			// 0..1
 	private Date					expiryTime;				// 0..1
 	private String					creatorId;				// 0..1
@@ -34,7 +34,10 @@ public class TridentObject {
 	}
 	
 	public void setObjectVersion(int objectVersion) {
+            if (objectVersion >= 1)
 		this.objectVersion = objectVersion;
+            else
+                this.objectVersion = 1;
 	}
 	
 	public int getObjectVersion() {

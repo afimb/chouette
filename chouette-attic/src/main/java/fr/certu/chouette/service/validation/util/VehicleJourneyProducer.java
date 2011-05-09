@@ -65,7 +65,7 @@ class VehicleJourneyProducer {
 		// ObjectVersion optionnel
 		if (castorVehicleJourney.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorVehicleJourney.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				params = LoggingManager.getParams(""+castorObjectVersion, vehicleJourney.getObjectId());
 				LoggingManager.log(logger, "La version () \"objectVersion\" du \"VehicleJourney\" () est invalide.", params, Level.ERROR);
 				validationException.add(TypeInvalidite.INVALIDOBJECTVERSION_VEHICLEJOURNEY, "La version () \"objectVersion\" du \"VehicleJourney\" () est invalide.", params);

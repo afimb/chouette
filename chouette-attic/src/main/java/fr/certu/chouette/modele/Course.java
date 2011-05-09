@@ -6,154 +6,156 @@ import chouette.schema.VehicleJourney;
 import chouette.schema.types.ServiceStatusValueType;
 import chouette.schema.types.TransportModeNameType;
 
-public class Course extends BaseObjet
-{
-	private VehicleJourney vehicleJourney;
-	
-	private Long idItineraire;
-	private Long idMission;
+public class Course extends BaseObjet {
 
-	public Course() {
-		super();
-		
-		vehicleJourney = new VehicleJourney();
-	}
+    private VehicleJourney vehicleJourney;
+    private Long idItineraire;
+    private Long idMission;
 
-	public Long getIdMission() {
-		return idMission;
-	}
+    public Course() {
+        super();
 
-	public void setIdMission(Long idMission) {
-		this.idMission = idMission;
-	}
+        vehicleJourney = new VehicleJourney();
+    }
 
-	public VehicleJourney getVehicleJourney() {
-		return vehicleJourney;
-	}
+    public Long getIdMission() {
+        return idMission;
+    }
 
-	public void setVehicleJourney( final VehicleJourney vehicleJourney) {
-		this.vehicleJourney = vehicleJourney;
-	}
+    public void setIdMission(Long idMission) {
+        this.idMission = idMission;
+    }
 
-	public Long getIdItineraire() {
-		return idItineraire;
-	}
+    public VehicleJourney getVehicleJourney() {
+        return vehicleJourney;
+    }
 
-	public void setIdItineraire( final Long idItineraire) {
-		this.idItineraire = idItineraire;
-	}
+    public void setVehicleJourney(final VehicleJourney vehicleJourney) {
+        this.vehicleJourney = vehicleJourney;
+    }
 
-	public String getComment() {
-		return vehicleJourney.getComment();
-	}
+    public Long getIdItineraire() {
+        return idItineraire;
+    }
 
-	public Date getCreationTime() {
-		return vehicleJourney.getCreationTime();
-	}
+    public void setIdItineraire(final Long idItineraire) {
+        this.idItineraire = idItineraire;
+    }
 
-	public String getCreatorId() {
-		return vehicleJourney.getCreatorId();
-	}
+    public String getComment() {
+        return vehicleJourney.getComment();
+    }
 
-	public String getFacility() {
-		return vehicleJourney.getFacility();
-	}
+    public Date getCreationTime() {
+        return vehicleJourney.getCreationTime();
+    }
 
-	public String getObjectId() {
-		return vehicleJourney.getObjectId();
-	}
+    public String getCreatorId() {
+        return vehicleJourney.getCreatorId();
+    }
 
-	public int getObjectVersion() {
-		return (int)vehicleJourney.getObjectVersion();
-	}
+    public String getFacility() {
+        return vehicleJourney.getFacility();
+    }
 
-	public String getPublishedJourneyIdentifier() {
-		return vehicleJourney.getPublishedJourneyIdentifier();
-	}
+    public String getObjectId() {
+        return vehicleJourney.getObjectId();
+    }
 
-	public String getPublishedJourneyName() {
-		return vehicleJourney.getPublishedJourneyName();
-	}
+    public int getObjectVersion() {
+        setObjectVersion((int) vehicleJourney.getObjectVersion());
+        return (int) vehicleJourney.getObjectVersion();
+    }
 
-	public ServiceStatusValueType getStatusValue() {
-		return vehicleJourney.getStatusValue();
-	}
+    public String getPublishedJourneyIdentifier() {
+        return vehicleJourney.getPublishedJourneyIdentifier();
+    }
 
-	public String getVehicleTypeIdentifier() {
-		return vehicleJourney.getVehicleTypeIdentifier();
-	}
+    public String getPublishedJourneyName() {
+        return vehicleJourney.getPublishedJourneyName();
+    }
 
-	public TransportModeNameType getTransportMode() {
-		return vehicleJourney.getTransportMode();
-	}
+    public ServiceStatusValueType getStatusValue() {
+        return vehicleJourney.getStatusValue();
+    }
 
-	public int getNumber() {
-		return (int)vehicleJourney.getNumber();
-	}
+    public String getVehicleTypeIdentifier() {
+        return vehicleJourney.getVehicleTypeIdentifier();
+    }
 
-	public String getRouteId() {
-		return vehicleJourney.getRouteId();
-	}
+    public TransportModeNameType getTransportMode() {
+        return vehicleJourney.getTransportMode();
+    }
 
-	public String getJourneyPatternId() {
-		return vehicleJourney.getJourneyPatternId();
-	}
+    public int getNumber() {
+        return (int) vehicleJourney.getNumber();
+    }
 
-	public void setJourneyPatternId(String journeyPatternId) {
-		vehicleJourney.setJourneyPatternId(journeyPatternId);
-	}
+    public String getRouteId() {
+        return vehicleJourney.getRouteId();
+    }
 
-	public void setRouteId(String routeId) {
-		vehicleJourney.setRouteId(routeId);
-	}
+    public String getJourneyPatternId() {
+        return vehicleJourney.getJourneyPatternId();
+    }
 
-	public void setNumber(int number) {
-		vehicleJourney.setNumber(number);
-	}
+    public void setJourneyPatternId(String journeyPatternId) {
+        vehicleJourney.setJourneyPatternId(journeyPatternId);
+    }
 
-	public void setTransportMode(TransportModeNameType transportMode) {
-		vehicleJourney.setTransportMode(transportMode);
-	}
+    public void setRouteId(String routeId) {
+        vehicleJourney.setRouteId(routeId);
+    }
 
-	public void setComment(String comment) {
-		vehicleJourney.setComment(comment);
-	}
+    public void setNumber(int number) {
+        vehicleJourney.setNumber(number);
+    }
 
-	public void setCreationTime(Date creationTime) {
-		vehicleJourney.setCreationTime(creationTime);
-	}
+    public void setTransportMode(TransportModeNameType transportMode) {
+        vehicleJourney.setTransportMode(transportMode);
+    }
 
-	public void setCreatorId(String creatorId) {
-		vehicleJourney.setCreatorId(creatorId);
-	}
+    public void setComment(String comment) {
+        vehicleJourney.setComment(comment);
+    }
 
-	public void setFacility(String facility) {
-		vehicleJourney.setFacility(facility);
-	}
+    public void setCreationTime(Date creationTime) {
+        vehicleJourney.setCreationTime(creationTime);
+    }
 
-	public void setObjectId(String objectId) {
-		vehicleJourney.setObjectId(objectId);
-	}
+    public void setCreatorId(String creatorId) {
+        vehicleJourney.setCreatorId(creatorId);
+    }
 
-	public void setObjectVersion(int objectVersion) {
-		vehicleJourney.setObjectVersion(objectVersion);
-	}
+    public void setFacility(String facility) {
+        vehicleJourney.setFacility(facility);
+    }
 
-	public void setPublishedJourneyIdentifier(String publishedJourneyIdentifier) {
-		vehicleJourney.setPublishedJourneyIdentifier(publishedJourneyIdentifier);
-	}
+    public void setObjectId(String objectId) {
+        vehicleJourney.setObjectId(objectId);
+    }
 
-	public void setPublishedJourneyName(String publishedJourneyName) {
-		vehicleJourney.setPublishedJourneyName(publishedJourneyName);
-	}
+    public void setObjectVersion(int objectVersion) {
+        if (objectVersion >= 1) {
+            vehicleJourney.setObjectVersion(objectVersion);
+        } else {
+            vehicleJourney.setObjectVersion(1);
+        }
+    }
 
-	public void setStatusValue(ServiceStatusValueType statusValue) {
-		vehicleJourney.setStatusValue(statusValue);
-	}
+    public void setPublishedJourneyIdentifier(String publishedJourneyIdentifier) {
+        vehicleJourney.setPublishedJourneyIdentifier(publishedJourneyIdentifier);
+    }
 
-	public void setVehicleTypeIdentifier(String vehicleTypeIdentifier) {
-		vehicleJourney.setVehicleTypeIdentifier(vehicleTypeIdentifier);
-	}
-	
-	
+    public void setPublishedJourneyName(String publishedJourneyName) {
+        vehicleJourney.setPublishedJourneyName(publishedJourneyName);
+    }
+
+    public void setStatusValue(ServiceStatusValueType statusValue) {
+        vehicleJourney.setStatusValue(statusValue);
+    }
+
+    public void setVehicleTypeIdentifier(String vehicleTypeIdentifier) {
+        vehicleJourney.setVehicleTypeIdentifier(vehicleTypeIdentifier);
+    }
 }

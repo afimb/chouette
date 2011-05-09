@@ -53,12 +53,15 @@ public class TridentObjectProducer {
 		
 		// objectVersion optionnel
 		if (castorTridentObject.hasObjectVersion()) {
-			if (castorTridentObject.getObjectVersion() < 1)
+			if (castorTridentObject.getObjectVersion() < 1) {
 				validationException.add(TypeInvalidite.InvalidObjectVersion, "L'\"objectVersion\" d'un \"TridentObject\" doit etre >= 1.");
-			tridentObject.setObjectVersion((int)castorTridentObject.getObjectVersion());
+                                tridentObject.setObjectVersion(1);
+                        }
+                        else
+                            tridentObject.setObjectVersion((int)castorTridentObject.getObjectVersion());
 		}
 		else
-			tridentObject.setObjectVersion(0);
+			tridentObject.setObjectVersion(1);
 		
 		// creationTime optionnel
 		if (castorTridentObject.getCreationTime() != null) {

@@ -91,11 +91,14 @@ public class Line {
 	}
 	
 	public void setObjectVersion(int objectVersion) {
-		this.objectVersion = objectVersion;
-		if (objectVersion >= 0)
+		if (objectVersion >= 1) {
 			hasObjectVersion = true;
-		else
+		this.objectVersion = objectVersion;
+                }
+                else {
 			hasObjectVersion = false;
+		this.objectVersion = 1;
+                }
 	}
 	
 	public int getObjectVersion() {
