@@ -102,11 +102,14 @@ public class AreaCentroid {
 	}
 	
 	public void setObjectVersion(int objectVersion) {
-		this.objectVersion = objectVersion;
-		if (objectVersion >= 0)
-			hasObjectVersion = true;
-		else
-			hasObjectVersion = false;
+		if (objectVersion >= 1) {
+                    hasObjectVersion = true;
+                    this.objectVersion = objectVersion;
+                }
+                else {
+                    hasObjectVersion = false;
+                    this.objectVersion = 1;
+                }
 	}
 	
 	public int getObjectVersion() {

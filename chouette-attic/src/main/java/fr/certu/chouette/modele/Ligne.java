@@ -81,6 +81,7 @@ public class Ligne extends BaseObjet
 	}
 
 	public int getObjectVersion() {
+            setObjectVersion((int)line.getObjectVersion());
 		return (int)line.getObjectVersion();
 	}
 
@@ -125,7 +126,10 @@ public class Ligne extends BaseObjet
 	}
 
 	public void setObjectVersion(int objectVersion) {
+            if (objectVersion >= 1)
 		line.setObjectVersion(objectVersion);
+            else
+                line.setObjectVersion(1);
 	}
 
 	public void setPublishedName(String publishedName) {

@@ -67,7 +67,7 @@ class ConnectionLinkProducer {
 		// ObjectVersion optionnel
 		if (castorConnectionLink.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorConnectionLink.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				if (castorConnectionLink.getName() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, castorConnectionLink.getName());
 				else

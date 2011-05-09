@@ -67,7 +67,7 @@ class GroupOfLineProducer {
 		// ObjectVersion optionnel
 		if (castorGroupOfLine.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorGroupOfLine.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				if (castorGroupOfLine.getName() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, castorGroupOfLine.getName());
 				else

@@ -68,21 +68,21 @@ class AreaCentroidProducer {
 		// ObjectVersion optionnel
 		if (castorAreaCentroid.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorAreaCentroid.getObjectVersion();
-			if (castorObjectVersion < 0) {
-				if (castorAreaCentroid.getName() != null)
-					params = LoggingManager.getParams(""+castorObjectVersion, castorAreaCentroid.getName());
-				else
-					params = LoggingManager.getParams(""+castorObjectVersion, castorAreaCentroid.getObjectId());
-				LoggingManager.log(logger, "La version () \"objectVersion\" du \"AreaCentroid\" () est invalide.", params, Level.ERROR);
-				validationException.add(TypeInvalidite.INVALIDOBJECTVERSION_AREACENTROID, "La version () \"objectVersion\" du \"AreaCentroid\" () est invalide.", params);
+			if (castorObjectVersion < 1) {
+                            if (castorAreaCentroid.getName() != null)
+                                params = LoggingManager.getParams(""+castorObjectVersion, castorAreaCentroid.getName());
+                            else
+                                params = LoggingManager.getParams(""+castorObjectVersion, castorAreaCentroid.getObjectId());
+                            LoggingManager.log(logger, "La version () \"objectVersion\" du \"AreaCentroid\" () est invalide.", params, Level.ERROR);
+                            validationException.add(TypeInvalidite.INVALIDOBJECTVERSION_AREACENTROID, "La version () \"objectVersion\" du \"AreaCentroid\" () est invalide.", params);
 			}
 			else
-				areaCentroid.setObjectVersion(castorObjectVersion);
+                            areaCentroid.setObjectVersion(castorObjectVersion);
 		}
 		else {
-			if (castorAreaCentroid.getName() != null)
-				params = LoggingManager.getParams(castorAreaCentroid.getName());
-			else
+                    if (castorAreaCentroid.getName() != null)
+                        params = LoggingManager.getParams(castorAreaCentroid.getName());
+                    else
 				params = LoggingManager.getParams(castorAreaCentroid.getObjectId());
 			LoggingManager.log(logger, "Pas d'\"objectVersion\" pour ce \"AreaCentroid\" ().", params, Level.INFO);
 		}

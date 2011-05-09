@@ -18,11 +18,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-
-import fr.certu.chouette.manager.SingletonManager;
+//import org.springframework.context.ApplicationContext;
+//import fr.certu.chouette.manager.SingletonManager;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import fr.certu.chouette.service.database.IDatabasePurgeManager;
@@ -45,6 +43,8 @@ public class ValidationAction extends GeneriqueAction
   private Date purgeBoundaryDate;
   private boolean beforeDatePurge;
   private String useGeometry;
+  private ICoordonnees coordonnees;
+  private IConvertisseur convertisseur;
 
   public ValidationAction()
   {
@@ -716,8 +716,8 @@ public class ValidationAction extends GeneriqueAction
   {
     try
     {
-      ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-      ICoordonnees coordonnees = (ICoordonnees) applicationContext.getBean("coordonnees");
+      //ApplicationContext applicationContext = SingletonManager.getApplicationContext();
+      //ICoordonnees coordonnees = (ICoordonnees) applicationContext.getBean("coordonnees");
       coordonnees.calculBarycentre();
       addActionMessage(getText("message.validate.barycentre.calculation"));
     }
@@ -732,8 +732,8 @@ public class ValidationAction extends GeneriqueAction
   {
     try
     {
-      ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-      IConvertisseur convertisseur = (IConvertisseur) applicationContext.getBean("convertisseur");
+      //ApplicationContext applicationContext = SingletonManager.getApplicationContext();
+      //IConvertisseur convertisseur = (IConvertisseur) applicationContext.getBean("convertisseur");
       convertisseur.deLambertAWGS84();
       addActionMessage(getText("message.validate.convert"));
     }
@@ -779,5 +779,21 @@ public String getUseGeometry()
   
   public void setDatabasePurgeManager(IDatabasePurgeManager databasePurgeManager) {
 	this.databasePurgeManager  = databasePurgeManager;
+  }
+  
+  public void setConvertisseur(IConvertisseur convertisseur) {
+      this.convertisseur = convertisseur;
+  }
+  
+  public IConvertisseur getConvertisseur() {
+      return convertisseur;
+  }
+  
+  public void setCoordonnees(ICoordonnees coordonnees) {
+      this.coordonnees = coordonnees;
+  }
+  
+  public ICoordonnees getCoordonnees() {
+      return coordonnees;
   }
 }

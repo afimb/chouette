@@ -240,6 +240,7 @@ public class TableauMarche extends BaseObjet
 	}
 
 	public int getObjectVersion() {
+            setObjectVersion((int)timetable.getObjectVersion());
 		return (int)timetable.getObjectVersion();
 	}
 
@@ -264,7 +265,10 @@ public class TableauMarche extends BaseObjet
 	}
 
 	public void setObjectVersion(int objectVersion) {
+            if (objectVersion >= 1)
 		timetable.setObjectVersion(objectVersion);
+            else
+                timetable.setObjectVersion(1);
 	}
 
 	public void setVersion(String version) {

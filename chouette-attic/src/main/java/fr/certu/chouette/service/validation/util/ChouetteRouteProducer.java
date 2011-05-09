@@ -67,7 +67,7 @@ class ChouetteRouteProducer {
 		// ObjectVersion optionnel
 		if (castorChouetteRoute.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorChouetteRoute.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				params = null;
 				if (chouetteRoute.getObjectId() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, chouetteRoute.getObjectId());

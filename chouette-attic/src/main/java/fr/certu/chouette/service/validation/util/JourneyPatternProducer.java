@@ -66,7 +66,7 @@ public class JourneyPatternProducer {
 		// ObjectVersion optionnel
 		if (castorJourneyPattern.hasObjectVersion()) {
 			int castorObjectVersion = (int)castorJourneyPattern.getObjectVersion();
-			if (castorObjectVersion < 0) {
+			if (castorObjectVersion < 1) {
 				params = null;
 				if (journeyPattern.getObjectId() != null)
 					params = LoggingManager.getParams(""+castorObjectVersion, journeyPattern.getObjectId());
