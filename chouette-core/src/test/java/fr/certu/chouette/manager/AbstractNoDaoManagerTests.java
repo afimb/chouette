@@ -46,8 +46,12 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
     @Test(groups = {"noDao"}, expectedExceptions = {CoreException.class}, description = "manager should report no dao available")
     public void verifyRemoveWithoutDao() throws ChouetteException {
         manager.setDao(null);
-        manager.remove(null, bean);
-
+        try {
+            manager.remove(null, bean);
+        }
+        catch(CoreException e) {
+            throw e;
+        }
         Assert.fail("expected exception not raised");
     }
 
