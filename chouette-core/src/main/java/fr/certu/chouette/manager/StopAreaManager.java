@@ -14,8 +14,12 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -25,6 +29,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
  * @author michel
  *
  */
+@SuppressWarnings("unchecked")
 public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
 {
 
@@ -33,7 +38,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		super(StopArea.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Report propagateValidation(User user, List<StopArea> beans,
 			ValidationParameters parameters,boolean propagate) 
@@ -75,6 +79,22 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
 		return globalReport;
 	}
-
+	@Override
+	public void remove(User user,StopArea stopArea) throws ChouetteException{
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+		INeptuneManager<ConnectionLink> clinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
+		INeptuneManager<StopPoint> spManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
+		List<ConnectionLink> cLinks = clinkManager.getAll(null, Filter.getNewOrFilter(
+				Filter.getNewEqualsFilter("startOfLink.id",stopArea.getId()), 
+				Filter.getNewEqualsFilter("endOfLink.id", stopArea.getId())),level); 
+		if(cLinks != null && !cLinks.isEmpty())
+			clinkManager.removeAll(null, cLinks);
+		List<StopPoint> stopPoints = spManager.getAll(null, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()), level);
+		for (StopPoint sp : stopPoints) {
+			sp.setContainedInStopArea(null);
+			spManager.update(null, sp);
+		}
+		//TODO List<AreaCentroid>
+	}
 	
 }
