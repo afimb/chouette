@@ -85,7 +85,7 @@
 				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/AccessLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/AccessPoint.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/AreaCentroid.hbm.xml</value>
+				<!-- <value>fr/certu/chouette/model/neptune/AreaCentroid.hbm.xml</value> -->
 				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>

@@ -9,6 +9,7 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -97,6 +98,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	public void remove(User user,StopPoint stopPoint) throws ChouetteException{
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
+		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		StopPoint next = get(null, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
 		List<PTLink> ptLinks = ptLinkManager.getAll(null, Filter.getNewOrFilter(
@@ -116,11 +118,21 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			}else if(size == 1)
 				ptLinkManager.remove(null, ptLinks.get(0));
 		}
-			
+		Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()), level);
+		if(facility != null)
+			facilityManager.remove(null, facility);
+		List<VehicleJourney> vjs = vjManager.getAll(null, Filter.getNewEqualsFilter("stopPoint.route.id",
+				stopPoint.getRoute().getId()), level);
+		for (VehicleJourney vehicleJourney : vjs) {
+			for (VehicleJourneyAtStop vAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
+				if(vAtStop.getStopPoint().equals(stopPoint)) {
+					//TODO create a manager of VehicleJourneyAtStop or delete the container VehicleJourney
+				}
+			}
+		}
 		List<StopPoint> stopPoints4Route = getAll(null, Filter.getNewAndFilter(
 				Filter.getNewEqualsFilter("route.id", stopPoint.getRoute().getId()),
 				Filter.getNewGreaterFilter("position", stopPoint.getPosition())), level);
-		//TODO List<VehicleJourney> vjs = vjManager.getAll(null, Filter.getNewEqualsFilter("", ), level)
 		remove(null, stopPoint);
 		for (StopPoint  sp : stopPoints4Route) {
 			sp.setPosition(sp.getPosition() - 1);
