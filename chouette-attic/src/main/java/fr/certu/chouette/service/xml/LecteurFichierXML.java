@@ -69,7 +69,7 @@ public class LecteurFichierXML implements ILecteurFichierXML
 		{
 			logger.debug("UNMARSHALING OF contenu");
 			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetwork.class);
-			anUnmarshaller.setIgnoreExtraElements(false);
+			anUnmarshaller.setIgnoreExtraElements(true);
 			anUnmarshaller.setValidation(false);
 			chouettePTNetworkType = (ChouettePTNetworkTypeType)anUnmarshaller.unmarshal(new StringReader(contenu));
 			logger.debug("END OF UNMARSHALING OF contenu");
