@@ -294,9 +294,9 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 		List<Route> routes = routeManager.getAll(null, filter, level);
 		if(routes != null && !routes.isEmpty())
 			routeManager.removeAll(null, routes);
-		List<Facility> facilities = facilityManager.getAll(null, filter, level);
-		if(facilities != null && !facilities.isEmpty())
-			facilityManager.removeAll(null, facilities);
+		Facility facility = facilityManager.get(null, filter, level);
+		if(facility != null)
+			facilityManager.remove(null, facility);
 		List<RestrictionConstraint> constraints = constraintManager.getAll(null, filter, level);
 		if(constraints != null && !constraints.isEmpty())
 			constraintManager.removeAll(null, constraints);
