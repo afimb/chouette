@@ -122,7 +122,7 @@ public class NeptuneFileReader
 		{
 			logger.debug("UNMARSHALING content of "+contentName);
 			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetwork.class);
-			anUnmarshaller.setIgnoreExtraElements(false);
+			anUnmarshaller.setIgnoreExtraElements(true);
 			anUnmarshaller.setValidation(false);
 			chouettePTNetworkType = (ChouettePTNetworkTypeType)anUnmarshaller.unmarshal(new StringReader(content));
 			logger.debug("END OF UNMARSHALING content of "+contentName);
