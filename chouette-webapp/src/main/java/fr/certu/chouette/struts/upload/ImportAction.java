@@ -40,62 +40,62 @@ import org.springframework.util.FileCopyUtils;
 
 @SuppressWarnings("serial")
 public class ImportAction extends GeneriqueAction {
-	
-	private static final Log                    logger                 = LogFactory.getLog(ImportAction.class);
-	private static final String					SUCCESS_ITINERAIRE	   = "success_itineraire";
-	private static final String					INPUT_ITINERAIRE	   = "input_itineraire";
-	private static final Logger                 log                    = Logger.getLogger(ImportAction.class);
-	private              String                 fichierContentType;
-	private              File                   fichier;
-	private              boolean                incremental;
-	private              String                 fichierFileName;
-	private              ILecteurCSV            lecteurCSV;
-	private              ILecteurPrincipal      lecteurCSVPrincipal;
-	private              ILecteurPrincipal      lecteurCSVHastus;
-	private              ILecteurPrincipal      lecteurCSVPegase;
-	private              ILecteurPrincipal      lecteurXMLAltibus;
-	private              ILecteurEchangeXML     lecteurEchangeXML;
-	private              ILecteurFichierXML     lecteurFichierXML;	
-	private              IImportateur           importateur            = null;
-	private              IAmivifAdapter         amivifAdapter;
-	private              ILecteurAmivifXML      lecteurAmivifXML;	
-	private              String                 useAmivif;
-	private              String                 useCSVGeneric;
-	private              String                 useHastus;
-	private              String                 useAltibus;
-	private              String                 usePegase;
-	private              IIdentificationManager identificationManager;
-	private              IImportHorairesManager importHorairesManager;
-	private              Long                   idLigne;
-	private              String                 logFileName;
-        private              File                   logFile;
-	private              IReducteur             reducteur;
-	private              String                 baseName;
-        private              InputStream            inputStream;
+    
+    private static final Log                    logger                 = LogFactory.getLog(ImportAction.class);
+    private static final String					SUCCESS_ITINERAIRE	   = "success_itineraire";
+    private static final String					INPUT_ITINERAIRE	   = "input_itineraire";
+    private static final Logger                 log                    = Logger.getLogger(ImportAction.class);
+    private              String                 fichierContentType;
+    private              File                   fichier;
+    private              boolean                incremental;
+    private              String                 fichierFileName;
+    private              ILecteurCSV            lecteurCSV;
+    private              ILecteurPrincipal      lecteurCSVPrincipal;
+    private              ILecteurPrincipal      lecteurCSVHastus;
+    private              ILecteurPrincipal      lecteurCSVPegase;
+    private              ILecteurPrincipal      lecteurXMLAltibus;
+    private              ILecteurEchangeXML     lecteurEchangeXML;
+    private              ILecteurFichierXML     lecteurFichierXML;	
+    private              IImportateur           importateur            = null;
+    private              IAmivifAdapter         amivifAdapter;
+    private              ILecteurAmivifXML      lecteurAmivifXML;	
+    private              String                 useAmivif;
+    private              String                 useCSVGeneric;
+    private              String                 useHastus;
+    private              String                 useAltibus;
+    private              String                 usePegase;
+    private              IIdentificationManager identificationManager;
+    private              IImportHorairesManager importHorairesManager;
+    private              Long                   idLigne;
+    private              String                 logFileName;
+    private              File                   logFile;
+    private              IReducteur             reducteur;
+    private              String                 baseName;
+    private              InputStream            inputStream;
     private              String                 importHastusLogFileName;
-	
-	public ImportAction() {
-		super();
-	}
-
-        public File getImportHastusLogFile() {
-            return new File(importHastusLogFileName);
-        }
-
-        public void setInputStream(InputStream inputStream) {
-            this.inputStream = inputStream;
-        }
-
-        public InputStream getInputStream() throws Exception {
-            return inputStream;
-            //return new FileInputStream(logFile.getPath());
-        }
-	
-	@Override
-	public String execute() throws Exception 
-	{
-		return SUCCESS;
-	}
+    private              String                 tmprep; 
+    
+    public ImportAction() {
+	super();
+    }
+    
+    public File getImportHastusLogFile() {
+	return new File(importHastusLogFileName);
+    }
+    
+    public void setInputStream(InputStream inputStream) {
+	this.inputStream = inputStream;
+    }
+    
+    public InputStream getInputStream() throws Exception {
+	return inputStream;
+	//return new FileInputStream(logFile.getPath());
+    }
+    
+    @Override
+    public String execute() throws Exception {
+	return SUCCESS;
+    }
 	
 	public String reduireHastus() 
 	{
@@ -247,7 +247,7 @@ public class ImportAction extends GeneriqueAction {
                     logger.error("La taille de cette entrée est : "+zipEntry.getSize());
                     byte[] bytes = new byte[4096];
                     int len = zipInputStream.read(bytes);
-                    File temp = new File(zipEntry.getName());
+                    File temp = new File(tmprep, zipEntry.getName());
                     FileOutputStream fos = new FileOutputStream(temp);
                     while (len > 0) {
                         fos.write(bytes, 0, len);
@@ -487,6 +487,7 @@ public class ImportAction extends GeneriqueAction {
 	
 	public String importXMLs() throws Exception 
 	{
+            File temp = null;
 		try
 		{
 		String result = SUCCESS;
@@ -496,7 +497,7 @@ public class ImportAction extends GeneriqueAction {
 			logger.error("La taille de cette entrée est : "+zipEntry.getSize());
 			byte[] bytes = new byte[4096];
 			int len = zipInputStream.read(bytes);
-			File temp = new File(zipEntry.getName());
+			temp = new File(tmprep, zipEntry.getName());
 			FileOutputStream fos = new FileOutputStream(temp);
 			while (len > 0) {
 				fos.write(bytes, 0, len);
@@ -510,7 +511,7 @@ public class ImportAction extends GeneriqueAction {
 		}
 		catch (Exception e)
 		{
-			addActionError(getExceptionMessage(e));
+			addActionError(getExceptionMessage(e)+" : "+temp.getAbsolutePath());
 			return INPUT;
 		}
 	}
@@ -907,4 +908,12 @@ public class ImportAction extends GeneriqueAction {
 	{
 		this.baseName = baseName;
 	}
+
+    public void setTmprep(String tmprep) {
+	this.tmprep = tmprep;
+    }
+    
+    public String getTmprep() {
+	return tmprep;
+    }
 }
