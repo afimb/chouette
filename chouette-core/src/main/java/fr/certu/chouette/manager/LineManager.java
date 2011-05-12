@@ -286,7 +286,7 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 	}
 
 	@Override
-	public void remove(User user, Line line) throws ChouetteException{
+	public void remove(User user, Line line,boolean propagate) throws ChouetteException{
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
@@ -298,10 +298,10 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 			routeManager.removeAll(null, routes);
 		Facility facility = facilityManager.get(null, filter, level);
 		if(facility != null)
-			facilityManager.remove(null, facility);
+			facilityManager.remove(null, facility,propagate);
 		List<RestrictionConstraint> constraints = constraintManager.getAll(null, filter, level);
 		if(constraints != null && !constraints.isEmpty())
 			constraintManager.removeAll(null, constraints);
-		super.remove(null, line);
+		super.remove(null, line,propagate);
 	}
 }

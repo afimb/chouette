@@ -84,7 +84,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		return globalReport;
 	}
 	@Override
-	public void remove(User user,StopArea stopArea) throws ChouetteException
+	public void remove(User user,StopArea stopArea,boolean propagate) throws ChouetteException
 	{
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<ConnectionLink> clinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
@@ -102,10 +102,10 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			clinkManager.removeAll(null, cLinks);
 		AccessLink accessLink = alManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
 		if(accessLink != null)
-			alManager.remove(null, accessLink);
+			alManager.remove(null, accessLink,propagate);
 		Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
 		if(facility != null)
-			facilityManager.remove(null, facility);
-		super.remove(null, stopArea);		
+			facilityManager.remove(null, facility,propagate);
+		super.remove(null, stopArea,propagate);		
 	}	
 }

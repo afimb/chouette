@@ -89,13 +89,13 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 		return globalReport;
 	}
 	@Override
-	public void remove(User user,JourneyPattern journeyPattern) throws ChouetteException{
+	public void remove(User user,JourneyPattern journeyPattern,boolean propagate) throws ChouetteException{
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		Filter filter = Filter.getNewEqualsFilter("journeyPattern.id", journeyPattern.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		List<VehicleJourney> vehicleJourneys = vjManager.getAll(null, filter, level);
 		if(vehicleJourneys != null && !vehicleJourneys.isEmpty())
 			vjManager.removeAll(null, vehicleJourneys);
-		super.remove(null, journeyPattern);
+		super.remove(null, journeyPattern,propagate);
 	}
 }

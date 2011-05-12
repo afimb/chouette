@@ -151,7 +151,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param bean the bean to delete
 	 * @throws ChouetteException invalid user access or constraints conflicts or storage access problem 
 	 */
-	void remove(User user,T bean)  throws ChouetteException;
+	void remove(User user,T bean,boolean propagate)  throws ChouetteException;
 
 	/**
 	 * remove beans on criteria<br/>

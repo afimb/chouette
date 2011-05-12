@@ -274,7 +274,6 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		{
 			return false;
 		}
-
 	}
 
 	@Override
