@@ -147,6 +147,12 @@
 				<artifactId>chouette-command</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>fr.certu.chouette</groupId>
+				<artifactId>chouette-neptune</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<!-- FRAMEWORKS DEPENDENCIES WITH VERSION -->
 			<!-- NO VERSION ALLOWED IN MODULES -->
 			<dependency>
@@ -187,11 +193,6 @@
 				<scope>test</scope>
 			</dependency>
 
-			<dependency>
-				<groupId>fr.certu.chouette</groupId>
-				<artifactId>chouette-neptune</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<!-- Apache commons -->
 			<dependency>
 				<groupId>commons-io</groupId>
