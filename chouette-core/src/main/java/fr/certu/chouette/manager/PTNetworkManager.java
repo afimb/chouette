@@ -30,13 +30,15 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 	@Override
 	public void remove(User user,PTNetwork ptNetwork,boolean propagate) throws ChouetteException
 	{
+		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+		List<Line> lines = lineManager.getAll(null, Filter.getNewEqualsFilter("ptNetwork.id", ptNetwork.getId()), level);
 		if(propagate)
-		{
-			INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
-			DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-			List<Line> lines = lineManager.getAll(null, Filter.getNewEqualsFilter("ptNetwork.id", ptNetwork.getId()), level);
+			lineManager.removeAll(null, lines);
+		else {
 			for (Line line : lines) {
-				lineManager.remove(null, line,propagate);
+				line.setPtNetwork(null);
+				lineManager.update(null, line);
 			}
 		}
 		super.remove(null, ptNetwork,propagate);
