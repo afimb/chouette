@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -98,6 +100,8 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	}
 	@Override
 	public void remove(User user,Route route) throws ChouetteException{
+		if (getDao() == null) 
+			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -88,6 +90,8 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	}
 	@Override
 	public void remove(User user,JourneyPattern journeyPattern) throws ChouetteException{
+		if (getDao() == null) 
+			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		Filter filter = Filter.getNewEqualsFilter("journeyPattern.id", journeyPattern.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;

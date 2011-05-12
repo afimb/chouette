@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -96,6 +98,8 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	}
 	@Override
 	public void remove(User user,StopPoint stopPoint) throws ChouetteException{
+		if (getDao() == null) 
+			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);

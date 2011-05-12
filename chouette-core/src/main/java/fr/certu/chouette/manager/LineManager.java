@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -285,6 +287,8 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 
 	@Override
 	public void remove(User user, Line line) throws ChouetteException{
+		if (getDao() == null) 
+			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -82,30 +84,30 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		return globalReport;
 	}
 	@Override
-	public void remove(User user,StopArea stopArea) throws ChouetteException{
+	public void remove(User user,StopArea stopArea) throws ChouetteException
+	{
+		if (getDao() == null) 
+			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<ConnectionLink> clinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
 		INeptuneManager<StopPoint> spManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
 		INeptuneManager<AccessLink> alManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+		List<StopPoint> stopPoints = spManager.getAll(null, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()), level);
+		if(stopPoints != null && !stopPoints.isEmpty())
+			return;
+		
 		List<ConnectionLink> cLinks = clinkManager.getAll(null, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("startOfLink.id",stopArea.getId()), 
 				Filter.getNewEqualsFilter("endOfLink.id", stopArea.getId())),level); 
 		if(cLinks != null && !cLinks.isEmpty())
 			clinkManager.removeAll(null, cLinks);
-		List<StopPoint> stopPoints = spManager.getAll(null, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()), level);
-//		for (StopPoint sp : stopPoints) {
-//			sp.setContainedInStopArea(null);
-//			spManager.update(null, sp);
-//		}
-		if(stopPoints == null){
-			AccessLink accessLink = alManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
-			if(accessLink != null)
-				alManager.remove(null, accessLink);
-			Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
-			if(facility != null)
-				facilityManager.remove(null, facility);
-			remove(null, stopArea);
-		}		
+		AccessLink accessLink = alManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
+		if(accessLink != null)
+			alManager.remove(null, accessLink);
+		Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
+		if(facility != null)
+			facilityManager.remove(null, facility);
+		remove(null, stopArea);		
 	}	
 }
