@@ -103,15 +103,15 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
 		Filter filter = Filter.getNewEqualsFilter("route.id", route.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<JourneyPattern> jps = jpManager.getAll(null, filter, level);
+		List<JourneyPattern> jps = jpManager.getAll(user, filter, level);
 		if(jps != null && !jps.isEmpty())
-			jpManager.removeAll(null, jps);
-		List<PTLink> ptLinks = ptLinkManager.getAll(null, filter, level);
+			jpManager.removeAll(user, jps,propagate);
+		List<PTLink> ptLinks = ptLinkManager.getAll(user, filter, level);
 		if(ptLinks != null && !ptLinks.isEmpty())
-			ptLinkManager.removeAll(null, ptLinks);
-		List<StopPoint> stopPoints = stopPointManager.getAll(null, filter, level);
+			ptLinkManager.removeAll(user, ptLinks,propagate);
+		List<StopPoint> stopPoints = stopPointManager.getAll(user, filter, level);
 		if(stopPoints != null && !stopPoints.isEmpty())
-			stopPointManager.removeAll(null, stopPoints);
-		super.remove(null, route,propagate);			
+			stopPointManager.removeAll(user, stopPoints,propagate);
+		super.remove(user, route,propagate);			
 	}
 }

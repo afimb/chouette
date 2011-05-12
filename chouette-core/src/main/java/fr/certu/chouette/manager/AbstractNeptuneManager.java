@@ -260,11 +260,11 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#removeAll(fr.certu.chouette.model.user.User, fr.certu.chouette.manager.Filter)
 	 */
 	@Override
-	public void removeAll(User user, Collection<T> objects) throws ChouetteException
+	public void removeAll(User user, Collection<T> objects,boolean propagate) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		for (T t : objects) {
-			remove(user, t, false);
+			remove(user, t, propagate);
 		}
 		//getDao().removeAll(objects);
 	}

@@ -91,21 +91,21 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		INeptuneManager<StopPoint> spManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
 		INeptuneManager<AccessLink> alManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-		List<StopPoint> stopPoints = spManager.getAll(null, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()), level);
+		List<StopPoint> stopPoints = spManager.getAll(user, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()), level);
 		if(stopPoints != null && !stopPoints.isEmpty())
-			return;
+			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"can't be deleted because it has a stopPoints");
 		
-		List<ConnectionLink> cLinks = clinkManager.getAll(null, Filter.getNewOrFilter(
+		List<ConnectionLink> cLinks = clinkManager.getAll(user, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("startOfLink.id",stopArea.getId()), 
 				Filter.getNewEqualsFilter("endOfLink.id", stopArea.getId())),level); 
 		if(cLinks != null && !cLinks.isEmpty())
-			clinkManager.removeAll(null, cLinks);
-		AccessLink accessLink = alManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
+			clinkManager.removeAll(user, cLinks,propagate);
+		AccessLink accessLink = alManager.get(user, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
 		if(accessLink != null)
 			alManager.remove(null, accessLink,propagate);
-		Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
+		Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
 		if(facility != null)
-			facilityManager.remove(null, facility,propagate);
-		super.remove(null, stopArea,propagate);		
+			facilityManager.remove(user, facility,propagate);
+		super.remove(user, stopArea,propagate);		
 	}	
 }

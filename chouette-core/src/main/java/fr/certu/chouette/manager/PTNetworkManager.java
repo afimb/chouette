@@ -32,15 +32,15 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 	{
 		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<Line> lines = lineManager.getAll(null, Filter.getNewEqualsFilter("ptNetwork.id", ptNetwork.getId()), level);
+		List<Line> lines = lineManager.getAll(user, Filter.getNewEqualsFilter("ptNetwork.id", ptNetwork.getId()), level);
 		if(propagate)
-			lineManager.removeAll(null, lines);
+			lineManager.removeAll(user,lines,propagate);
 		else {
 			for (Line line : lines) {
 				line.setPtNetwork(null);
-				lineManager.update(null, line);
+				lineManager.update(user, line);
 			}
 		}
-		super.remove(null, ptNetwork,propagate);
+		super.remove(user, ptNetwork,propagate);
 	}
 }
