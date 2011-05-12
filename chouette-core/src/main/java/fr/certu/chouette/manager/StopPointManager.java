@@ -98,8 +98,6 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	}
 	@Override
 	public void remove(User user,StopPoint stopPoint) throws ChouetteException{
-		if (getDao() == null) 
-			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -130,14 +128,14 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		for (VehicleJourney vehicleJourney : vjs) {
 			for (VehicleJourneyAtStop vAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				if(vAtStop.getStopPoint().equals(stopPoint)) {
-					//TODO create a manager of VehicleJourneyAtStop or delete the container VehicleJourney
+					//TODO 
 				}
 			}
 		}
 		List<StopPoint> stopPoints4Route = getAll(null, Filter.getNewAndFilter(
 				Filter.getNewEqualsFilter("route.id", stopPoint.getRoute().getId()),
 				Filter.getNewGreaterFilter("position", stopPoint.getPosition())), level);
-		remove(null, stopPoint);
+		super.remove(null, stopPoint);
 		for (StopPoint  sp : stopPoints4Route) {
 			sp.setPosition(sp.getPosition() - 1);
 			update(null, sp);

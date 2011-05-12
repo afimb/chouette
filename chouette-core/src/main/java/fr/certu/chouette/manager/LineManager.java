@@ -287,8 +287,6 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 
 	@Override
 	public void remove(User user, Line line) throws ChouetteException{
-		if (getDao() == null) 
-			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;

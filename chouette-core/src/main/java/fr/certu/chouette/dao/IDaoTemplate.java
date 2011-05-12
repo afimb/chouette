@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 
 public interface IDaoTemplate <T extends NeptuneObject> 
@@ -14,6 +13,7 @@ public interface IDaoTemplate <T extends NeptuneObject>
 	   void save(T object);
 	   void remove(Long id);
 	   void removeAll(Collection<T> objects);
+	   int removeAll(Filter clause);
 	   void update(T object);
 	   T getByObjectId( String objectId);
 	   List<T> select(Filter clause);

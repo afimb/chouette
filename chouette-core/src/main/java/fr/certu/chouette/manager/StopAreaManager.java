@@ -86,8 +86,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 	@Override
 	public void remove(User user,StopArea stopArea) throws ChouetteException
 	{
-		if (getDao() == null) 
-			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<ConnectionLink> clinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
 		INeptuneManager<StopPoint> spManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
@@ -108,6 +106,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()), level);
 		if(facility != null)
 			facilityManager.remove(null, facility);
-		remove(null, stopArea);		
+		super.remove(null, stopArea);		
 	}	
 }

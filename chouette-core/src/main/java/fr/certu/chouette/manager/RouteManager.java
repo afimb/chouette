@@ -100,8 +100,6 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	}
 	@Override
 	public void remove(User user,Route route) throws ChouetteException{
-		if (getDao() == null) 
-			throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
