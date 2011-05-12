@@ -263,7 +263,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void removeAll(User user, Collection<T> objects) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		getDao().removeAll(objects);
+		for (T t : objects) {
+			remove(user, t, false);
+		}
+		//getDao().removeAll(objects);
 	}
 
 	@Override
