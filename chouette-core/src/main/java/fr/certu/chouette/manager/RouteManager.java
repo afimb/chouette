@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.core.CoreException;
-import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -99,7 +97,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		return globalReport;
 	}
 	@Override
-	public void remove(User user,Route route) throws ChouetteException{
+	public void remove(User user,Route route,boolean propagate) throws ChouetteException{
 		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
@@ -114,6 +112,6 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		List<StopPoint> stopPoints = stopPointManager.getAll(null, filter, level);
 		if(stopPoints != null && !stopPoints.isEmpty())
 			stopPointManager.removeAll(null, stopPoints);
-		super.remove(null, route);			
+		super.remove(null, route,propagate);			
 	}
 }
