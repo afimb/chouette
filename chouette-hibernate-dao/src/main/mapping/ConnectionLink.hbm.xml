@@ -41,7 +41,7 @@
 				<comment>Comment</comment>
 			</column>
 		</property>
-		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" >
+		<property name="linkDistance" type="java.math.BigDecimal" >
 			<column name="linkDistance">
 				<comment>Length in meter</comment>
 			</column>
