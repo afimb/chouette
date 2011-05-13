@@ -102,6 +102,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+		INeptuneManager<VehicleJourneyAtStop> vAtStopManager = (INeptuneManager<VehicleJourneyAtStop>) getManager(VehicleJourneyAtStop.class);
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
 		List<PTLink> ptLinks = ptLinkManager.getAll(user, Filter.getNewOrFilter(
@@ -124,12 +125,19 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()), level);
 		if(facility != null)
 			facilityManager.remove(user, facility,propagate);
-		List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("stopPoint.route.id",
+		List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("route.id",
 				stopPoint.getRoute().getId()), level);
 		for (VehicleJourney vehicleJourney : vjs) {
-			for (VehicleJourneyAtStop vAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
+			List<VehicleJourneyAtStop> vAtStops = vehicleJourney.getVehicleJourneyAtStops();
+			for (int i=0;i< vAtStops.size();i++) {
+				VehicleJourneyAtStop vAtStop = vAtStops.get(i);
 				if(vAtStop.getStopPoint().equals(stopPoint)) {
-					//TODO 
+					if(vAtStop.isDeparture()){
+						VehicleJourneyAtStop nextAStop =  i< vAtStops.size() ? vAtStops.get(i +1) : vAtStop;
+						nextAStop.setDeparture(true);
+						vAtStopManager.update(null, nextAStop);
+					}
+					vAtStopManager.remove(null, vAtStop, propagate);
 				}
 			}
 		}
