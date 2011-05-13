@@ -274,12 +274,26 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		{
 			return false;
 		}
-
 	}
 
 	@Override
 	public void removeAll(Collection<T> objects) {
 		getHibernateTemplate().deleteAll(objects);
 		getHibernateTemplate().flush();
+	}
+
+	@Override
+	public int removeAll(Filter clause) {
+		int res = 0;
+		Session session = getSession();
+		Criteria criteria = session.createCriteria(type);
+		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+		if (!clause.isEmpty()){
+			logger.debug("build clause");
+			FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
+			criteria.add(translator.translate(clause,criteria,getSessionFactory().getClassMetadata(type)));
+			//res = session.d
+		}
+		return res;
 	}
 }

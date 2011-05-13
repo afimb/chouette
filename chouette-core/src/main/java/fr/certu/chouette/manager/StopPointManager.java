@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -95,13 +97,14 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		return ;
 	}
 	@Override
-	public void remove(User user,StopPoint stopPoint) throws ChouetteException{
+	public void remove(User user,StopPoint stopPoint,boolean propagate) throws ChouetteException
+	{
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		StopPoint next = get(null, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
-		List<PTLink> ptLinks = ptLinkManager.getAll(null, Filter.getNewOrFilter(
+		StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
+		List<PTLink> ptLinks = ptLinkManager.getAll(user, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("startOfLink.id", stopPoint.getId()),
 				Filter.getNewEqualsFilter("endOfLink.id", stopPoint.getId())), level); 
 		if(ptLinks != null && !ptLinks.isEmpty()){
@@ -110,33 +113,33 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 				for (PTLink ptLink : ptLinks) {
 					if(ptLink.getEndOfLink().getId().equals(stopPoint.getId())){
 						ptLink.setEndOfLink(next);
-						ptLinkManager.update(null, ptLink);
+						ptLinkManager.update(user, ptLink);
 					}
 					else
-						ptLinkManager.remove(null, ptLink);
+						ptLinkManager.remove(user, ptLink,propagate);
 				}
 			}else if(size == 1)
-				ptLinkManager.remove(null, ptLinks.get(0));
+				ptLinkManager.remove(user, ptLinks.get(0),propagate);
 		}
-		Facility facility = facilityManager.get(null, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()), level);
+		Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()), level);
 		if(facility != null)
-			facilityManager.remove(null, facility);
-		List<VehicleJourney> vjs = vjManager.getAll(null, Filter.getNewEqualsFilter("stopPoint.route.id",
+			facilityManager.remove(user, facility,propagate);
+		List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("stopPoint.route.id",
 				stopPoint.getRoute().getId()), level);
 		for (VehicleJourney vehicleJourney : vjs) {
 			for (VehicleJourneyAtStop vAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				if(vAtStop.getStopPoint().equals(stopPoint)) {
-					//TODO create a manager of VehicleJourneyAtStop or delete the container VehicleJourney
+					//TODO 
 				}
 			}
 		}
-		List<StopPoint> stopPoints4Route = getAll(null, Filter.getNewAndFilter(
+		List<StopPoint> stopPoints4Route = getAll(user, Filter.getNewAndFilter(
 				Filter.getNewEqualsFilter("route.id", stopPoint.getRoute().getId()),
 				Filter.getNewGreaterFilter("position", stopPoint.getPosition())), level);
-		remove(null, stopPoint);
+		super.remove(user, stopPoint,propagate);
 		for (StopPoint  sp : stopPoints4Route) {
 			sp.setPosition(sp.getPosition() - 1);
-			update(null, sp);
+			update(user, sp);
 		}
 	}
 

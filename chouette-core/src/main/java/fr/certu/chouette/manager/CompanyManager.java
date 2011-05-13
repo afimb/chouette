@@ -8,12 +8,21 @@
 
 package fr.certu.chouette.manager;
 
+import java.util.List;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.user.User;
 
 /**
  * @author michel
  *
  */
+@SuppressWarnings("unchecked")
 public class CompanyManager extends AbstractNeptuneManager<Company> 
 {
 
@@ -21,7 +30,30 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 	{
 		super(Company.class);
 	}
-
-	
-
+	@Override
+	public void remove(User user,Company company,boolean propagate) throws ChouetteException
+	{
+		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
+		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>)getManager(VehicleJourney.class);
+		Filter filter = Filter.getNewEqualsFilter("company.id", company.getId());
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+		List<Line> lines = lineManager.getAll(user, filter, level);
+		List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter, level);
+		if(propagate)
+		{
+			lineManager.removeAll(user, lines,propagate);
+			vjManager.removeAll(user, vehicleJourneys,propagate);
+		}else 
+		{
+			for (Line line : lines) {
+				line.setCompany(null);
+				lineManager.update(user, line);
+			}
+			for (VehicleJourney vehicleJourney : vehicleJourneys) {
+				vehicleJourney.setCompany(null);
+				vjManager.update(user, vehicleJourney);
+			}
+		}
+		super.remove(user, company, propagate);
+	}
 }
