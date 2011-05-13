@@ -110,10 +110,7 @@ public class Horaire {
         } else {
             arretItineraire.setName(arret.getName() + "_" + arret.getArretsItineraires(arretPhysique).size());
         }
-        arretItineraire.setObjectId(identificationManager.getIdFonctionnel("StopPoint", "NEW_" + String.valueOf(LecteurPrincipal.counter++)));
-        if (arretItineraire.getObjectId().equals("ALLIER:StopPoint:OLD_287")) {
-            logger.error("ARRET PHY POUR ALLIER:StopPoint:OLD_287 : \"" + arretPhysique.getObjectId() + "\".");
-        }
+        arretItineraire.setObjectId(identificationManager.getIdFonctionnel("StopPoint", String.valueOf(LecteurPrincipal.counter++)));
         arretItineraire.setObjectVersion(1);
         arretItineraire.setPosition(ordre - 1);
         arret.addArretItineraire(arretPhysique, arretItineraire);

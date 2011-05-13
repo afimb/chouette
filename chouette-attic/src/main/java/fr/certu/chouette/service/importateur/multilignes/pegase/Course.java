@@ -146,7 +146,7 @@ public class Course {
         vehicleJourney.setCreationTime(new Date());
         vehicleJourney.setJourneyPatternId(itineraire.getMissions().get(0).getObjectId());
         vehicleJourney.setNumber(serviceCode);
-        vehicleJourney.setObjectId(identificationManager.getIdFonctionnel("VehicleJourney", "NEW_" + String.valueOf(LecteurPrincipal.counter++)));
+        vehicleJourney.setObjectId(identificationManager.getIdFonctionnel("VehicleJourney", String.valueOf(LecteurPrincipal.counter++)));
         vehicleJourney.setObjectVersion(1);
         vehicleJourney.setRouteId(itineraire.getChouetteItineraire().getObjectId());
         if (serviceType.equals("TAD")) {

@@ -5,7 +5,6 @@ import fr.certu.chouette.service.importateur.multilignes.ILecteurPrincipal;
 import java.io.File;
 import org.apache.log4j.Logger;
 import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
-
 import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.echange.LectureEchange;
 import fr.certu.chouette.modele.Reseau;
@@ -41,6 +40,51 @@ public class LecteurPrincipal implements ILecteurPrincipal {
     private IIdentificationManager identificationManager;
     public static int counter;
     private ChouetteDriverManagerDataSource managerDataSource;
+    private String ptname;
+    private String sysname;
+    private String ptreg;
+    private String ptdesc;
+    private String comporgunit;
+
+    public void setPtname(String ptname) {
+        this.ptname = ptname;
+    }
+
+    public String getPtname() {
+        return ptname;
+    }
+
+    public void setSysname(String sysname) {
+        this.sysname = sysname;
+    }
+
+    public String getSysname() {
+        return sysname;
+    }
+
+    public void setPtreg(String ptreg) {
+        this.ptreg = ptreg;
+    }
+
+    public String getPtreg() {
+        return ptreg;
+    }
+
+    public void setPtdesc(String ptdesc) {
+        this.ptdesc = ptdesc;
+    }
+
+    public String getPtdesc() {
+        return ptdesc;
+    }
+
+    public void setComporgunit(String comporgunit) {
+        this.comporgunit = comporgunit;
+    }
+
+    public String getComporgunit() {
+        return comporgunit;
+    }
 
     @Override
     public List<ILectureEchange> getLecturesEchange() {
@@ -60,12 +104,12 @@ public class LecteurPrincipal implements ILecteurPrincipal {
         counter = 1;
         //transporteurs = new HashMap<String, Transporteur>();
         //((IdentificationManager)identificationManager).setSystemId("PEGASE");
-        reseau.setName("Reseau de Transport CG13");
-        reseau.setRegistrationNumber("RESEAU_CG13");
-        reseau.setDescription("Reseau de Transport CG13 : Donnees PEGASE");
+        reseau.setName(ptname);
+        reseau.setRegistrationNumber(ptreg);
+        reseau.setDescription(ptdesc);
         reseau.setCreationTime(new Date());
         reseau.setVersionDate(new Date());
-        reseau.setObjectId(identificationManager.getIdFonctionnel("PtNetwork", "CG13"));
+        reseau.setObjectId(identificationManager.getIdFonctionnel("PtNetwork", sysname));
         reseau.setObjectVersion(1);
         Transporteur transporteur = null;
         for (Ligne lig : lignes.values()) {
@@ -76,12 +120,12 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                 transporteur.setName(lig.getReg().substring(0, lig.getReg().length() - 3));
                 transporteur.setRegistrationNumber(lig.getShortName());
                 transporteur.setShortName(lig.getShortName());
-                transporteur.setOrganisationalUnit("Veolia Transdev");
+                transporteur.setOrganisationalUnit(comporgunit);
                 //transporteur.setCode("cleCodePostal");
                 //transporteur.setPhone("cleTelephone");
                 //transporteur.setFax("cleFax");
                 //transporteur.setEmail("cleEmail");
-                transporteur.setObjectId(identificationManager.getIdFonctionnel("Company", "CG13"));
+                transporteur.setObjectId(identificationManager.getIdFonctionnel("Company", sysname));
                 transporteur.setObjectVersion(1);
                 transporteur.setCreationTime(new Date());
                 //transporteurs.put(lig.getReg(), transporteur);
@@ -162,9 +206,21 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                 @SuppressWarnings("unused")
                 String tarif = text[17].trim(); // tarification
                 String sensCourse = text[18].trim(); // sens
+                if (heureDePassage.length() != 5) {
+                    logger.error("LIGNE : "+ligneNumber+" : ERREUR POUR HEURE_DE_PASSAGE : \"" + heureDePassage+"\"");//ligneNumber+"  : joursValidite.length() != 7");
+                    if (joursValidite.length() != 7) {
+                        logger.error("LIGNE : "+ligneNumber+" : ERREUR POUR JOURS_VALIDITE : \"" + joursValidite+"\"");//ligneNumber+"  : joursValidite.length() != 7");
+                        continue;
+                        //throw new TableauMarcheException("ERROR POUR JOURS_VALIDITE : " + joursValidite);//ligneNumber+"  : joursValidite.length() != 7");
+                    }
+                    continue;
+                }
                 if (joursValidite.length() != 7) {
-                    throw new TableauMarcheException("ERROR POUR JOURS_VALIDITE : " + joursValidite);//ligneNumber+"  : joursValidite.length() != 7");
-                }                //String        key;
+                    logger.error("LIGNE : "+ligneNumber+" : ERREUR POUR JOURS_VALIDITE : \"" + joursValidite+"\"");//ligneNumber+"  : joursValidite.length() != 7");
+                    continue;
+                    //throw new TableauMarcheException("ERROR POUR JOURS_VALIDITE : " + joursValidite);//ligneNumber+"  : joursValidite.length() != 7");
+                }
+                //String        key;
                 //if (codeItineraire.length() >= 3+regLigne.length())
                 //key = codeItineraire.substring(0, 3+regLigne.length());
                 //else
@@ -203,24 +259,24 @@ public class LecteurPrincipal implements ILecteurPrincipal {
                             Collection<Horaire> horaires2 = co2.getHoraires().values();
                             if (horaires1.size() != horaires2.size()) {
                                 //logger.error("ERREUR DEUX COURSES DU MEME ITINERAIRE AVEC DES NOMBRES D'HORAIRES DIFFERENTS : "+
-                                        //lig.getReg()+":"+it.getCode()+":"+co1.getServiceCode()+" ET "+
-                                        //lig.getReg()+":"+it.getCode()+":"+co2.getServiceCode());
+                                //lig.getReg()+":"+it.getCode()+":"+co1.getServiceCode()+" ET "+
+                                //lig.getReg()+":"+it.getCode()+":"+co2.getServiceCode());
                                 continue;
                             }
                             boolean areEquals = true;
                             for (Horaire ho1 : horaires1) {
-                                if (!areEquals)
+                                if (!areEquals) {
                                     break;
+                                }
                                 for (Horaire ho2 : horaires2) {
                                     if (ho1.getOrdre() == ho2.getOrdre()) {
                                         if (ho1.getArret() != ho2.getArret()) {
                                             //logger.error("ERREUR DEUX COURSES DU MEME ITINERAIRE AVEC DES ARRETS DIFFERENTS : "+
-                                                    //lig.getReg()+":"+it.getCode()+":"+co1.getServiceCode()+" ET "+
-                                                    //lig.getReg()+":"+it.getCode()+":"+co2.getServiceCode());
+                                            //lig.getReg()+":"+it.getCode()+":"+co1.getServiceCode()+" ET "+
+                                            //lig.getReg()+":"+it.getCode()+":"+co2.getServiceCode());
                                             areEquals = false;
                                             continue;
-                                        }
-                                        else if (!ho1.getHeure().equals(ho2.getHeure())) {
+                                        } else if (!ho1.getHeure().equals(ho2.getHeure())) {
                                             areEquals = false;
                                         }
                                     }

@@ -90,7 +90,7 @@ public class TableauMarche {
         tableauMarche.setComment("Calendrier (" + joursApplicationCode + ") " + sdf.format(dateDebut) + " - " + sdf.format(dateFin) + ".");
         tableauMarche.setCreationTime(new Date());
         tableauMarche.setDayTypes(dayTypes);
-        tableauMarche.setObjectId(identificationManager.getIdFonctionnel("Timetable", dateDebut + joursApplicationCode + dateFin));
+        tableauMarche.setObjectId(identificationManager.getIdFonctionnel("Timetable", String.valueOf(LecteurPrincipal.counter++)));
         tableauMarche.setObjectVersion(1);
         Periode periode = new Periode();
         periode.setDebut(dateDebut);
