@@ -5,7 +5,6 @@ import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.identification.IIdentificationManager;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 public class Itineraire {
 
@@ -26,6 +26,7 @@ public class Itineraire {
     private fr.certu.chouette.modele.Itineraire chouetteItineraire;
     private List<ArretItineraire> arretsItineraires;
     private List<Mission> missions;
+    private static final Logger logger = Logger.getLogger(Itineraire.class);
 
     public Itineraire(IIdentificationManager identificationManager, Ligne ligne, String code, String shortName, String name) {
         this.identificationManager = identificationManager;
@@ -80,7 +81,8 @@ public class Itineraire {
             }
             try {
                 if (co.getSens() != sens.toUpperCase().charAt(0)) {
-                    throw new CourseException("ERREUR POUR COURSE SENS : " + sens);
+                    logger.error("ERREUR POUR COURSE SENS : " + sens);
+                    ;//throw new CourseException("ERREUR POUR COURSE SENS : " + sens);
                 }
             } catch (Throwable e) {
                 throw new CourseException("ERREUR POUR COURSE SENS : " + sens);
@@ -139,7 +141,7 @@ public class Itineraire {
         }
         chouetteItineraire.setName(name);
         chouetteItineraire.setNumber(code);
-        chouetteItineraire.setObjectId(identificationManager.getIdFonctionnel("ChouetteRoute", "NEW_" + String.valueOf(LecteurPrincipal.counter++)));
+        chouetteItineraire.setObjectId(identificationManager.getIdFonctionnel("ChouetteRoute", String.valueOf(LecteurPrincipal.counter++)));
         chouetteItineraire.setObjectVersion(1);
         chouetteItineraire.setPublishedName(shortName);
     }
@@ -157,7 +159,7 @@ public class Itineraire {
         mission.setComment("Mission " + name);
         mission.setCreationTime(new Date());
         mission.setName(name);
-        mission.setObjectId(identificationManager.getIdFonctionnel("JourneyPattern", "NEW_" + String.valueOf(LecteurPrincipal.counter++)));
+        mission.setObjectId(identificationManager.getIdFonctionnel("JourneyPattern", String.valueOf(LecteurPrincipal.counter++)));
         mission.setObjectVersion(1);
         mission.setPublishedName(shortName);
         mission.setRegistrationNumber(code);

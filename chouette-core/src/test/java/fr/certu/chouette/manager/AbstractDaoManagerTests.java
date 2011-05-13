@@ -89,5 +89,15 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 			verify(daoMock);
 		}
 	}
+//	@Test (groups = {"withDao"}, description = "manager should remove the bean" )
+//	public void verifyRemoveWithDao() throws ChouetteException
+//	{
+//
+//		manager.setDao(daoMock);
+//		manager.remove(null, bean, false);
+//		T retBean = manager.get(null, Filter.getNewEqualsFilter("id", bean.getId()), DetailLevelEnum.ATTRIBUTE);
+//		Assert.assertTrue(retBean == null,"bean should be null");
+//		verify(daoMock);
+//	}
 	
 }

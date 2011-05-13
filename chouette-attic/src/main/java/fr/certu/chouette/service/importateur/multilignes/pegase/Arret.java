@@ -119,7 +119,6 @@ public class Arret {
             String aCommune = new String(commune);
             aCommune = aCommune.replaceAll("'", "''");
             String select = "SELECT objectid, countrycode FROM stoparea WHERE name='" + aName + " [" + aCommune + "]' AND areatype='CommercialStopPoint';";
-            logger.error("SELECT : " + select);
             Statement st = connexion.createStatement();
             ResultSet rs = st.executeQuery(select);
             if (rs.next()) {
@@ -141,11 +140,12 @@ public class Arret {
         zoneCommerciale.setCreationTime(new Date());
         zoneCommerciale.setName(shortName + " [" + commune + "]");
         if (objectId == null) {
-            objectId = identificationManager.getIdFonctionnel("StopArea", "NEW_" + String.valueOf(LecteurPrincipal.counter++));
+            objectId = identificationManager.getIdFonctionnel("StopArea", String.valueOf(LecteurPrincipal.counter++));
         }
         zoneCommerciale.setObjectId(objectId);
+        zoneCommerciale.setObjectVersion(1);
         zoneCommerciale.setNearestTopicName(name);
-        zoneCommerciale.setRegistrationNumber("NEW_" + code);
+        zoneCommerciale.setRegistrationNumber(code);
     }
 
     public PositionGeographique arretPhysique(Ligne ligne, char sens) {
@@ -155,9 +155,9 @@ public class Arret {
         arretPhysique.setCountryCode(commune);
         arretPhysique.setCreationTime(new Date());
         arretPhysique.setName(shortName + "[" + sens + "] [" + commune + "]");
-        arretPhysique.setObjectId(identificationManager.getIdFonctionnel("StopArea", "NEW_" + String.valueOf(LecteurPrincipal.counter++)));
+        arretPhysique.setObjectId(identificationManager.getIdFonctionnel("StopArea", String.valueOf(LecteurPrincipal.counter++)));
         arretPhysique.setNearestTopicName(name + "[" + sens + "]");
-        arretPhysique.setRegistrationNumber("NEW_" + code + "_" + arretsPhysiques.get(ligne).size());
+        arretPhysique.setRegistrationNumber(code + "_" + arretsPhysiques.get(ligne).size());
         addArretPhysique(ligne, arretPhysique);
         return arretPhysique;
     }

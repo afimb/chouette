@@ -37,23 +37,23 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>)getManager(VehicleJourney.class);
 		Filter filter = Filter.getNewEqualsFilter("company.id", company.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<Line> lines = lineManager.getAll(null, filter, level);
-		List<VehicleJourney> vehicleJourneys = vjManager.getAll(null, filter, level);
+		List<Line> lines = lineManager.getAll(user, filter, level);
+		List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter, level);
 		if(propagate)
 		{
-			lineManager.removeAll(null, lines);
-			vjManager.removeAll(null, vehicleJourneys);
+			lineManager.removeAll(user, lines,propagate);
+			vjManager.removeAll(user, vehicleJourneys,propagate);
 		}else 
 		{
 			for (Line line : lines) {
 				line.setCompany(null);
-				lineManager.update(null, line);
+				lineManager.update(user, line);
 			}
 			for (VehicleJourney vehicleJourney : vehicleJourneys) {
 				vehicleJourney.setCompany(null);
-				vjManager.update(null, vehicleJourney);
+				vjManager.update(user, vehicleJourney);
 			}
 		}
-		super.remove(null, company, propagate);
+		super.remove(user, company, propagate);
 	}
 }

@@ -13,6 +13,7 @@ import fr.certu.chouette.modele.ArretItineraire;
 import fr.certu.chouette.modele.Mission;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.identification.IIdentificationManager;
+import org.apache.log4j.Logger;
 
 public class Ligne {
 
@@ -24,6 +25,7 @@ public class Ligne {
     private fr.certu.chouette.modele.Ligne ligne;
     private List<PositionGeographique> zonesCommerciales;
     private Connection connexion;
+    private static final Logger logger = Logger.getLogger(Ligne.class);
 
     public Ligne(IIdentificationManager identificationManager, String reg, String shortName, String name) {
         this.identificationManager = identificationManager;
@@ -65,10 +67,12 @@ public class Ligne {
         Itineraire it = its.get(codeIti+":"+shortName);
         if (it != null) {
             if (!it.getShortName().equals(shortName)) {
-                throw new ItineraireException("ERREUR POUR ITINERAIRE SHORTNAME : " + shortName + " : " + it.getShortName());
+                logger.error("ERREUR POUR ITINERAIRE SHORTNAME : " + shortName + " : " + it.getShortName());
+                //throw new ItineraireException("ERREUR POUR ITINERAIRE SHORTNAME : " + shortName + " : " + it.getShortName());
             }
             if (!it.getName().equals(name)) {
-                throw new ItineraireException("ERREUR POUR ITINERAIRE NAME : " + name + " : " + it.getName());
+                logger.error("ERREUR POUR ITINERAIRE NAME : " + name + " : " + it.getName());
+                //throw new ItineraireException("ERREUR POUR ITINERAIRE NAME : " + name + " : " + it.getName());
             }
             return it;
         }

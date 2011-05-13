@@ -9,7 +9,7 @@ import lombok.Setter;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 
-public class VehicleJourneyAtStop extends NeptuneObject {
+public class VehicleJourneyAtStop extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 194243517715939830L;
 	@Getter @Setter private String stopPointId;
 	@Getter @Setter private StopPoint stopPoint;

@@ -164,7 +164,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	int removeAll(User user,Filter filter)  throws ChouetteException;
 
-	void removeAll(User user,Collection<T> objects)  throws ChouetteException;
+	void removeAll(User user,Collection<T> objects, boolean propagate)  throws ChouetteException;
 	// importation
 
 	/**
