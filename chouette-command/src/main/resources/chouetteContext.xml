@@ -52,20 +52,53 @@
 	<bean id="Command" class="fr.certu.chouette.command.Command">
 		<property name="managers">
 			<map>
-				<entry key="line">
-					<ref bean="lineManager" />
+				<entry key="accesslink">
+					<ref bean="accessLinkManager" />
+				</entry>
+				<entry key="accesspoint">
+					<ref bean="accessPointManager"/>
 				</entry>
 				<entry key="company">
 					<ref bean="companyManager" />
 				</entry>
-				<entry key="network">
+				<entry key="connectionlink">
+					<ref bean="connectionLinkManager" />
+				</entry>
+				<entry key="facility">
+					<ref bean="facilityManager"/>
+				</entry>
+				<entry key="groupofline">
+					<ref bean="groupOfLineManager"/>
+				</entry>
+				<entry key="journeypattern">
+					<ref bean="journeyPatternManager" />
+				</entry>
+				<entry key="line">
+					<ref bean="lineManager" />
+				</entry>
+				<entry key="ptlink">
+					<ref bean="PTLinkManager" />
+				</entry>
+				<entry key="ptnetwork">
 					<ref bean="networkManager" />
 				</entry>
 				<entry key="route">
 					<ref bean="routeManager" />
 				</entry>
-				<entry key="stopArea">
+				<entry key="stoparea">
 					<ref bean="stopAreaManager" />
+				</entry>
+				<entry key="stoppoint">
+					<ref bean="stopPointManager" />
+				</entry>
+				<entry key="timeslot">
+					<ref bean="timeSlotManager"/>
+				</entry>
+				<entry key="timetable">
+					<ref bean="timetableManager"/>
+				</entry>
+				<entry key="vehiclejourney">
+					<ref bean="vehicleJourneyManager"/>
 				</entry>
 			</map>
 		</property>
