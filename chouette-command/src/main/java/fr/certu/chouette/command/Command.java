@@ -702,7 +702,7 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
-		manager.removeAll(null, beans);
+		manager.removeAll(null, beans,false);
 		beans.clear();
 	}
 
