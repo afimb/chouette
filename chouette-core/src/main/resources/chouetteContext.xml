@@ -55,4 +55,8 @@
   	<bean id="groupOfLineManager"
     		class="fr.certu.chouette.manager.GroupOfLineManager">
   	</bean>
+  	
+  	<bean id="vehicleJourneyAtStopManager"
+    		class="fr.certu.chouette.manager.VehicleJourneyAtStopManager">
+  	</bean>
 </beans>
