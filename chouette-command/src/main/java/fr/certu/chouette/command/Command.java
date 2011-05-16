@@ -7,7 +7,10 @@
  */
 package fr.certu.chouette.command;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -76,6 +79,7 @@ public class Command
 		shortCuts.put("h", "help");
 		shortCuts.put("o", "object");
 		shortCuts.put("f", "file");
+		shortCuts.put("i", "interactive");
 	}
 
 	/**
@@ -135,126 +139,201 @@ public class Command
 	{
 
 
-		try
+		List<CommandArgument> commands = null;
+		try 
 		{
-			List<CommandArgument> commands = parseArgs(args);
+			commands = parseArgs(args);
+		} 
+		catch (Exception e1) 
+		{
 			if (getBoolean(globals,"help"))
 			{
 				printHelp();
 				return;
 			}
-			if (getBoolean(globals,"verbose"))
+			else
 			{
-				verbose = true;
-				for (String key : globals.keySet())
-				{
-					System.out.println("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
-				}
+				System.err.println("invalid syntax : "+e1.getMessage());
+				logger.error(e1.getMessage(),e1);
+				return;
 			}
+		}
+		if (getBoolean(globals,"help"))
+		{
+			printHelp();
+			return;
+		}
+		if (getBoolean(globals,"verbose"))
+		{
+			verbose = true;
 			for (String key : globals.keySet())
 			{
-				logger.info("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
+				System.out.println("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
 			}
+		}
+		for (String key : globals.keySet())
+		{
+			logger.info("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
+		}
 
-			List<NeptuneIdentifiedObject> beans = null;
-			int commandNumber = 0;
-			for (CommandArgument command : commands) 
+		List<NeptuneIdentifiedObject> beans = null;
+		int commandNumber = 0;
+		if (getBoolean(globals, "interactive"))
+		{
+			String line = "";
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			String activeObject = getActiveObject(globals);
+			while (true)
 			{
-				commandNumber++;
-				String name = command.getName();
-				Map<String, List<String>> parameters = command.getParameters();
-				if (verbose)
+				try 
 				{
-					System.out.println("Command "+name);
-					for (String key : parameters.keySet())
-					{
-						System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
-					}
+					System.out.print(activeObject+" >");
+					line = in.readLine().trim();
+				} 
+				catch (IOException e) 
+				{
+					System.err.println("cannot read stdin");
+					logger.error("cannot read stdin",e);
+					return;
 				}
-				logger.info("Command "+name);
-				for (String key : parameters.keySet())
+				if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")) break;
+				if (line.equalsIgnoreCase("help")) 
 				{
-					logger.info("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
-				}
-
-				INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
-
-				if (name.equals("get"))
-				{
-					beans = executeGet(manager,parameters);
-				}
-				else if (name.equals("new"))
-				{
-					beans = executeNew(manager,parameters);
-				}
-				else if (name.equals("setAttribute"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
-					executeSetAttribute(beans, parameters);
-				}
-				else if (name.equals("setReference"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setReference must follow a reading command");
-					executeSetReference(beans, parameters);
-				}
-				else if (name.equals("save"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
-					executeSave(beans, manager,parameters);
-				}
-				else if (name.equals("delete"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
-					executeDelete(beans, manager,parameters);
-					beans = null;
-				}
-				else if (name.equals("getImportFormats"))
-				{
-					executeGetImportFormats(manager,parameters);
-				}
-				else if (name.equals("import"))
-				{
-					beans = executeImport(manager,parameters);
-				}
-				else if (name.equals("print"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
-					executePrint(beans,parameters);
-				}
-				else if (name.equals("validate"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : validate must follow a reading command");
-					executeValidate(beans,manager,parameters);
-				}
-				else if (name.equals("getExportFormats"))
-				{
-					executeGetExportFormats(manager,parameters);
-				}
-				else if (name.equals("export"))
-				{
-					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
-					executeExport(beans,manager,parameters);
+					printCommandSyntax(true);
 				}
 				else
 				{
-					throw new Exception("Command "+commandNumber+": unknown command :" +command);
+					try 
+					{
+						CommandArgument command = parseLine(++commandNumber, line);
+						beans = executeCommand(beans, commandNumber, command);
+						activeObject = getActiveObject(command.getParameters());
+					} 
+					catch (Exception e) 
+					{
+						System.out.println(e.getMessage());
+					}
 				}
 			}
 
 		}
-		catch (Exception e)
+		else
 		{
-			if (getBoolean(globals,"help"))
+			try
 			{
-				printHelp();
+				for (CommandArgument command : commands) 
+				{
+					commandNumber++;
+					beans = executeCommand(beans, commandNumber, command);
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				System.err.println("command failed : "+e.getMessage());
-				logger.error(e.getMessage(),e);
+				if (getBoolean(globals,"help"))
+				{
+					printHelp();
+				}
+				else
+				{
+					System.err.println("command failed : "+e.getMessage());
+					logger.error(e.getMessage(),e);
+				}
 			}
 		}
 
+
+	}
+
+	/**
+	 * @param beans
+	 * @param commandNumber
+	 * @param command
+	 * @return
+	 * @throws ChouetteException
+	 * @throws Exception
+	 */
+	private List<NeptuneIdentifiedObject> executeCommand(
+			List<NeptuneIdentifiedObject> beans, int commandNumber,
+			CommandArgument command) throws ChouetteException, Exception {
+		String name = command.getName();
+		Map<String, List<String>> parameters = command.getParameters();
+		if (verbose)
+		{
+			System.out.println("Command "+name);
+			for (String key : parameters.keySet())
+			{
+				System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+			}
+		}
+		logger.info("Command "+name);
+		for (String key : parameters.keySet())
+		{
+			logger.info("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+		}
+
+		INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
+
+		if (name.equals("get"))
+		{
+			beans = executeGet(manager,parameters);
+		}
+		else if (name.equals("new"))
+		{
+			beans = executeNew(manager,parameters);
+		}
+		else if (name.equals("setAttribute"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
+			executeSetAttribute(beans, parameters);
+		}
+		else if (name.equals("setReference"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setReference must follow a reading command");
+			executeSetReference(beans, parameters);
+		}
+		else if (name.equals("save"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
+			executeSave(beans, manager,parameters);
+		}
+		else if (name.equals("delete"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
+			executeDelete(beans, manager,parameters);
+			beans = null;
+		}
+		else if (name.equals("getImportFormats"))
+		{
+			executeGetImportFormats(manager,parameters);
+		}
+		else if (name.equals("import"))
+		{
+			beans = executeImport(manager,parameters);
+		}
+		else if (name.equals("print"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
+			executePrint(beans,parameters);
+		}
+		else if (name.equals("validate"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : validate must follow a reading command");
+			executeValidate(beans,manager,parameters);
+		}
+		else if (name.equals("getExportFormats"))
+		{
+			executeGetExportFormats(manager,parameters);
+		}
+		else if (name.equals("export"))
+		{
+			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
+			executeExport(beans,manager,parameters);
+		}
+		else
+		{
+			throw new Exception("Command "+commandNumber+": unknown command :" +command);
+		}
+		return beans;
 	}
 
 
@@ -392,6 +471,27 @@ public class Command
 			throw new IllegalArgumentException("unknown object "+object+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
 		}
 		return manager;
+	}
+	/**
+	 * @param parameters
+	 * @return
+	 */
+	private String getActiveObject(Map<String, List<String>> parameters) 
+	{
+		String object = null;
+		try
+		{
+			object = getSimpleString(parameters,"object").toLowerCase();
+		}
+		catch (IllegalArgumentException e)
+		{
+			object = getSimpleString(globals,"object","xxx").toLowerCase();
+		}
+		if (!managers.containsKey(object))
+		{
+			return "unknown object";
+		}
+		return object;
 	}
 
 	private List<NeptuneIdentifiedObject> executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
@@ -734,8 +834,7 @@ public class Command
 		}
 		if (beans.size() > 1)
 		{
-			System.err.println("multiple beans to update, process stopped ");
-			System.exit(2);
+			throw new Exception("multiple beans to update, process stopped ");
 		}
 		NeptuneIdentifiedObject bean = beans.get(0);
 		String name = getSimpleString(parameters, "attrname");
@@ -769,19 +868,18 @@ public class Command
 		}
 		if (beans.size() > 1)
 		{
-			System.err.println("multiple beans to update, process stopped ");
-			System.exit(2);
+			throw new Exception("multiple beans to update, process stopped ");
 		}
 		NeptuneIdentifiedObject bean = beans.get(0);
 		String attrname = getSimpleString(parameters, "attrname");
 		String value = getSimpleString(parameters, "value",null);
 		followAttribute(bean,attrname, value);
-		
+
 	}
 
 	private void followAttribute(Object object, String attrname,
 			String value) throws Exception
-	{
+			{
 		if (attrname.contains("."))
 		{
 			Class<?> type = object.getClass();
@@ -800,10 +898,10 @@ public class Command
 		}
 		else
 		{
-		   setAttribute(object, attrname, value);
+			setAttribute(object, attrname, value);
 		}
-		
-	}
+
+			}
 
 	/**
 	 * @param object
@@ -849,7 +947,7 @@ public class Command
 		}
 		setter.invoke(object, arg);
 	}
-	
+
 
 	/**
 	 * @param beanClass
@@ -969,12 +1067,26 @@ public class Command
 		System.out.println("  -h(elp) for general syntax ");
 		System.out.println("  -verbose for processing traces ");
 		System.out.println("  -noDao to invalidate database access (MUST BE FIRST ARGUMENT) ");
+		System.out.println("  -i(nteractive) switch to interactive mode");
 		System.out.println("  -o(bject) neptuneObjectName (default object for commands)");
 		System.out.println("  -f(ile) [fileName] : read commands in file");
 		System.out.println("                       only one command by line");
 		System.out.println("                       -c(ommand) argument is implicit");
 		System.out.println("                       arguments with whitespaces must be doublequoted");
 		System.out.println("  -c(ommand) [commandName] : see below");
+		printCommandSyntax(false);
+		System.out.println("\nNotes: ");
+		System.out.println("    -c(ommand) can be chained : new occurence of command must be followed by it's specific argument");
+		System.out.println("               commands are executed in argument order ");
+		System.out.println("               last returned objects of reading commands are send to command wich needs objects as imput");
+		System.out.println("    -o(bject) argument may be added for each command to switch object types, switch is conserved on further commands");
+	}
+
+	/**
+	 * 
+	 */
+	private static void printCommandSyntax(boolean interactive) 
+	{
 		System.out.println("     delete : delete from database last readed Neptune objects");
 		System.out.println("\n     export : write Neptune Objects to file");
 		System.out.println("        -format formatName : format name");
@@ -994,7 +1106,7 @@ public class Command
 		System.out.println("\n     print : print previously readed Neptune Objects");
 		System.out.println("        -level level : deep level for recursive print (default = 99)");
 		System.out.println("\n     setAttribute : set value for a single cardinality attribute");
-		System.out.println("        -name attributeName : name of the single cardinality atomic attribute to set");
+		System.out.println("        -attrname attributeName : name of the single cardinality atomic attribute to set");
 		System.out.println("        -value newValue : new value to set (may be empty to unset)");
 		System.out.println("                          if value is a date, it must be in one of these 3 formats :");
 		System.out.println("                               yyyy-MM-dd");		
@@ -1005,11 +1117,8 @@ public class Command
 		System.out.println("        -objectId referenceId : NeptuneId of the Neptune Object to refer");
 		System.out.println("\n     save : save last readed Neptune objects");
 		System.out.println("\n     validate : launch validation process on previously readed NeptuneObject");
-		System.out.println("\nNotes: ");
-		System.out.println("    -c(ommand) can be chained : new occurence of command must be followed by it's specific argument");
-		System.out.println("               commands are executed in argument order ");
-		System.out.println("               last returned objects of reading commands are send to command wich needs objects as imput");
-		System.out.println("    -o(bject) argument may be added for each command to switch object types, switch is conserved on further commands");
+		if (interactive)
+		   System.out.println("\n\n     exit or quit : terminate interactive session");
 	}
 
 	/**

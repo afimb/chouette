@@ -11,13 +11,18 @@ package fr.certu.chouette.dao;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -31,45 +36,61 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
  */
 public class DaoInjector <T extends NeptuneIdentifiedObject>
 {
-	public static final DaoInjector<Line> createLineDaoInjector()
+	public static final DaoInjector<AccessLink> createAccessLinkDaoInjector()
 	{
-		return new DaoInjector<Line>();
+		return new DaoInjector<AccessLink>();
 	}
-	public static final DaoInjector<PTNetwork> createPTNetworkDaoInjector()
+	public static final DaoInjector<AccessPoint> createAccessPointDaoInjector()
 	{
-		return new DaoInjector<PTNetwork>();
+		return new DaoInjector<AccessPoint>();
 	}
 	public static final DaoInjector<Company> createCompanyDaoInjector()
 	{
 		return new DaoInjector<Company>();
 	}
-	public static final DaoInjector<Route> createRouteDaoInjector()
+	public static DaoInjector<ConnectionLink> createConnectionLinkDaoInjector()
 	{
-		return new DaoInjector<Route>();
+		return new DaoInjector<ConnectionLink>();
 	}
-	public static final DaoInjector<StopPoint> createStopPointDaoInjector()
+	public static DaoInjector<Facility> createFacilityDaoInjector()
 	{
-		return new DaoInjector<StopPoint>();
+		return new DaoInjector<Facility>();
+	}
+	public static DaoInjector<GroupOfLine> createGroupOfLineDaoInjector()
+	{
+		return new DaoInjector<GroupOfLine>();
 	}
 	public static final DaoInjector<JourneyPattern> createJourneyPatternDaoInjector()
 	{
 		return new DaoInjector<JourneyPattern>();
 	}
+	public static final DaoInjector<Line> createLineDaoInjector()
+	{
+		return new DaoInjector<Line>();
+	}
 	public static final DaoInjector<PTLink> createPTLinkDaoInjector()
 	{
 		return new DaoInjector<PTLink>();
+	}
+	public static final DaoInjector<PTNetwork> createPTNetworkDaoInjector()
+	{
+		return new DaoInjector<PTNetwork>();
+	}
+	public static final DaoInjector<RestrictionConstraint> createRestrictionConstraintDaoInjector()
+	{
+		return new DaoInjector<RestrictionConstraint>();
+	}
+	public static final DaoInjector<Route> createRouteDaoInjector()
+	{
+		return new DaoInjector<Route>();
 	}
 	public static DaoInjector<StopArea> createStopAreaDaoInjector()
 	{
 		return new DaoInjector<StopArea>();
 	}
-	public static DaoInjector<ConnectionLink> createConnectionLinkDaoInjector()
+	public static final DaoInjector<StopPoint> createStopPointDaoInjector()
 	{
-		return new DaoInjector<ConnectionLink>();
-	}
-	public static DaoInjector<VehicleJourney> createVehicleJourneyDaoInjector()
-	{
-		return new DaoInjector<VehicleJourney>();
+		return new DaoInjector<StopPoint>();
 	}
 	public static DaoInjector<Timetable> createTimetableDaoInjector()
 	{
@@ -78,6 +99,10 @@ public class DaoInjector <T extends NeptuneIdentifiedObject>
 	public static DaoInjector<TimeSlot> createTimeSlotDaoInjector()
 	{
 		return new DaoInjector<TimeSlot>();
+	}
+	public static DaoInjector<VehicleJourney> createVehicleJourneyDaoInjector()
+	{
+		return new DaoInjector<VehicleJourney>();
 	}
 	
 	
