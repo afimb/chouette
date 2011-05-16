@@ -10,11 +10,14 @@ package fr.certu.chouette.manager;
 import java.util.Collection;
 import java.util.List;
 
+import javax.jws.soap.SOAPBinding.Use;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -326,4 +329,5 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	void addValidationPlugin(IValidationPlugin<T> plugin);
 
+	void removeVehicleJourneyAtStop(User user, VehicleJourneyAtStop vehicleJourneyAtStop);
 }

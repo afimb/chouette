@@ -23,6 +23,7 @@ import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -484,5 +485,13 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void removeVehicleJourneyAtStop(User user, VehicleJourneyAtStop vehicleJourneyAtStop){
+		try {
+			throw new IllegalAccessException();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }

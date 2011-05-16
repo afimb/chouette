@@ -7,8 +7,15 @@
  */
 package fr.certu.chouette.command;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +23,8 @@ import java.util.Map;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
@@ -46,7 +55,9 @@ import fr.certu.chouette.plugin.validation.ValidationParameters;
 public class Command
 {
 
+	private static final Logger logger = Logger.getLogger(Command.class);
 	private static ClassPathXmlApplicationContext applicationContext;
+
 
 	@Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
@@ -56,12 +67,15 @@ public class Command
 
 	private static Map<String,String> shortCuts ;
 
+	private boolean verbose = false;
+
 	static
 	{
 		shortCuts = new HashMap<String, String>();
 		shortCuts.put("c", "command");
 		shortCuts.put("h", "help");
 		shortCuts.put("o", "object");
+		shortCuts.put("f", "file");
 	}
 
 	/**
@@ -119,29 +133,48 @@ public class Command
 	 */
 	private void execute(String[] args)
 	{
-		List<CommandArgument> commands = parseArgs(args);
 
-		for (String key : globals.keySet())
-		{
-			System.out.println("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
-		}
 
 		try
 		{
+			List<CommandArgument> commands = parseArgs(args);
 			if (getBoolean(globals,"help"))
 			{
 				printHelp();
 				return;
 			}
+			if (getBoolean(globals,"verbose"))
+			{
+				verbose = true;
+				for (String key : globals.keySet())
+				{
+					System.out.println("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
+				}
+			}
+			for (String key : globals.keySet())
+			{
+				logger.info("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
+			}
+
 			List<NeptuneIdentifiedObject> beans = null;
+			int commandNumber = 0;
 			for (CommandArgument command : commands) 
 			{
+				commandNumber++;
 				String name = command.getName();
 				Map<String, List<String>> parameters = command.getParameters();
-				System.out.println("Command "+name);
+				if (verbose)
+				{
+					System.out.println("Command "+name);
+					for (String key : parameters.keySet())
+					{
+						System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+					}
+				}
+				logger.info("Command "+name);
 				for (String key : parameters.keySet())
 				{
-					System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+					logger.info("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
 				}
 
 				INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
@@ -149,6 +182,31 @@ public class Command
 				if (name.equals("get"))
 				{
 					beans = executeGet(manager,parameters);
+				}
+				else if (name.equals("new"))
+				{
+					beans = executeNew(manager,parameters);
+				}
+				else if (name.equals("setAttribute"))
+				{
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
+					executeSetAttribute(beans, parameters);
+				}
+				else if (name.equals("setReference"))
+				{
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setReference must follow a reading command");
+					executeSetReference(beans, parameters);
+				}
+				else if (name.equals("save"))
+				{
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
+					executeSave(beans, manager,parameters);
+				}
+				else if (name.equals("delete"))
+				{
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
+					executeDelete(beans, manager,parameters);
+					beans = null;
 				}
 				else if (name.equals("getImportFormats"))
 				{
@@ -160,12 +218,12 @@ public class Command
 				}
 				else if (name.equals("print"))
 				{
-					if (beans == null) throw new Exception("Invalid command sequence : print must follow a loading command");
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
 					executePrint(beans,parameters);
 				}
 				else if (name.equals("validate"))
 				{
-					if (beans == null) throw new Exception("Invalid command sequence : validate must follow a loading command");
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : validate must follow a reading command");
 					executeValidate(beans,manager,parameters);
 				}
 				else if (name.equals("getExportFormats"))
@@ -174,12 +232,12 @@ public class Command
 				}
 				else if (name.equals("export"))
 				{
-					if (beans == null) throw new Exception("Invalid command sequence : export must follow a loading command");
+					if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
 					executeExport(beans,manager,parameters);
 				}
 				else
 				{
-					System.out.println("invalid command :" +command);
+					throw new Exception("Command "+commandNumber+": unknown command :" +command);
 				}
 			}
 
@@ -192,13 +250,13 @@ public class Command
 			}
 			else
 			{
-				System.err.println(e.getMessage());
-				System.err.println(e.getLocalizedMessage());
-				e.printStackTrace();
+				System.err.println("command failed : "+e.getMessage());
+				logger.error(e.getMessage(),e);
 			}
 		}
 
 	}
+
 
 	private void executeExport(List<NeptuneIdentifiedObject> beans,
 			INeptuneManager<NeptuneIdentifiedObject> manager,
@@ -283,15 +341,15 @@ public class Command
 		}
 		catch (ChouetteException e)
 		{
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 
 			Throwable caused = e.getCause();
 			while (caused != null)
 			{
-				System.err.println("caused by "+ caused.getMessage());
+				logger.error("caused by "+ caused.getMessage());
 				caused = caused.getCause();
 			}
-			throw new RuntimeException("export failed");
+			throw new RuntimeException("export failed, see details in log");
 		}
 	}
 
@@ -319,11 +377,14 @@ public class Command
 		String object = null;
 		try
 		{
-			object = getSimpleString(parameters,"object");
+			object = getSimpleString(parameters,"object").toLowerCase();
+			List<String> objects = new ArrayList<String>();
+			objects.add(object);
+			globals.put("object", objects);
 		}
 		catch (IllegalArgumentException e)
 		{
-			object = getSimpleString(globals,"object");
+			object = getSimpleString(globals,"object").toLowerCase();
 		}
 		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(object);
 		if (manager == null)
@@ -427,15 +488,15 @@ public class Command
 		}
 		catch (ChouetteException e)
 		{
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 
 			Throwable caused = e.getCause();
 			while (caused != null)
 			{
-				System.err.println("caused by "+ caused.getMessage());
+				logger.error("caused by "+ caused.getMessage());
 				caused = caused.getCause();
 			}
-			throw new RuntimeException("import failed");
+			throw new RuntimeException("import failed , see log for details");
 		}
 
 
@@ -612,6 +673,292 @@ public class Command
 		}
 	}
 
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters 
+	 * @throws ChouetteException
+	 */
+	private void executeSave(List<NeptuneIdentifiedObject> beans,
+			INeptuneManager<NeptuneIdentifiedObject> manager, 
+			Map<String, List<String>> parameters)
+	throws ChouetteException 
+	{
+		for (NeptuneIdentifiedObject bean : beans) 
+		{
+			manager.update(null, bean);
+		}
+
+	}
+
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters 
+	 * @throws ChouetteException
+	 */
+	private void executeDelete(List<NeptuneIdentifiedObject> beans,
+			INeptuneManager<NeptuneIdentifiedObject> manager, 
+			Map<String, List<String>> parameters)
+	throws ChouetteException 
+	{
+		manager.removeAll(null, beans,false);
+		beans.clear();
+	}
+
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters 
+	 * @throws ChouetteException
+	 */
+	private List<NeptuneIdentifiedObject> executeNew(
+			INeptuneManager<NeptuneIdentifiedObject> manager, 
+			Map<String, List<String>> parameters)
+			throws ChouetteException 
+			{
+
+		NeptuneIdentifiedObject bean = 	manager.getNewInstance(null);
+		List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
+		beans.add(bean);
+		return beans;
+
+			}
+
+
+	private void executeSetReference(List<NeptuneIdentifiedObject> beans,
+			Map<String, List<String>> parameters) throws Exception {
+		if (beans.size() == 0)
+		{
+			throw new Exception("no bean to update, process stopped ");
+		}
+		if (beans.size() > 1)
+		{
+			System.err.println("multiple beans to update, process stopped ");
+			System.exit(2);
+		}
+		NeptuneIdentifiedObject bean = beans.get(0);
+		String name = getSimpleString(parameters, "attrname");
+		Class<? extends NeptuneIdentifiedObject> beanClass = bean.getClass();
+		Method setter = findSetter(beanClass, name);
+		Class<?> type = setter.getParameterTypes()[0];
+
+		String typeName = type.getSimpleName().toLowerCase();
+		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(typeName);
+		if (manager == null)
+		{
+			throw new Exception("unknown object "+typeName+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
+		}
+		String objectId = getSimpleString(parameters, "objectid");
+		Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
+		NeptuneIdentifiedObject reference = manager.get(null, filter, DetailLevelEnum.ATTRIBUTE);
+		setter.invoke(bean, reference);
+
+	}
+
+	/**
+	 * @param beans
+	 * @param parameters 
+	 * @throws Exception 
+	 */
+	private void executeSetAttribute(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
+	{
+		if (beans.size() == 0)
+		{
+			throw new Exception("no bean to update, process stopped ");
+		}
+		if (beans.size() > 1)
+		{
+			System.err.println("multiple beans to update, process stopped ");
+			System.exit(2);
+		}
+		NeptuneIdentifiedObject bean = beans.get(0);
+		String attrname = getSimpleString(parameters, "attrname");
+		String value = getSimpleString(parameters, "value",null);
+		followAttribute(bean,attrname, value);
+		
+	}
+
+	private void followAttribute(Object object, String attrname,
+			String value) throws Exception
+	{
+		if (attrname.contains("."))
+		{
+			Class<?> type = object.getClass();
+			String basename = attrname.substring(0,attrname.indexOf("."));
+			Method getter = findGetter(type, basename);
+			Object target = getter.invoke(object);
+			if (target == null)
+			{
+				Class<?> targetType = getter.getReturnType();
+				target = targetType.newInstance();
+				Method setter = findSetter(type, basename);
+				setter.invoke(object, target);
+			}
+			attrname = attrname.substring(attrname.indexOf(".")+1);
+			followAttribute(target, attrname, value);
+		}
+		else
+		{
+		   setAttribute(object, attrname, value);
+		}
+		
+	}
+
+	/**
+	 * @param object
+	 * @param attrname
+	 * @param value
+	 * @throws Exception
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	private void setAttribute(Object object, String attrname,
+			String value) throws Exception {
+		if (attrname.equalsIgnoreCase("id")) 
+		{
+			throw new Exception("non writable attribute id for any object , process stopped ");
+		}
+		if (!attrname.toLowerCase().equals("objectid") && attrname.toLowerCase().endsWith("id")) 
+		{
+			throw new Exception("non writable attribute "+attrname+" use setReference instand , process stopped ");
+		}
+		Class<?> beanClass = object.getClass();
+		Method setter = findSetter(beanClass, attrname);
+		Class<?> type = setter.getParameterTypes()[0];
+		//		System.out.println(type.getCanonicalName());
+		//		System.out.println("array = "+type.isArray());
+		//		System.out.println("primitive = "+type.isPrimitive());
+		//		System.out.println("enum = "+type.isEnum());
+		if (type.isArray() || type.getSimpleName().equals("List"))
+		{
+			throw new Exception("list attribute "+attrname+" for object "+beanClass.getName()+" must be update with (add/remove)Attribute, process stopped ");
+		}
+		Object arg = null;
+		if (type.isEnum())
+		{
+			arg = toEnum(type,value);
+		}
+		else if (type.isPrimitive())
+		{
+			arg = toPrimitive(type,value);
+		}
+		else
+		{
+			arg = toObject(type,value);
+		}
+		setter.invoke(object, arg);
+	}
+	
+
+	/**
+	 * @param beanClass
+	 * @param attribute
+	 * @return
+	 * @throws Exception
+	 */
+	private Method findSetter(
+			Class<?> beanClass, String attribute)
+	throws Exception {
+		String setterName = "set"+attribute;
+		Method[] methods = beanClass.getMethods();
+		Method setter = null;
+		for (Method method : methods) 
+		{
+			if (method.getName().equalsIgnoreCase(setterName))
+			{
+				setter = method;
+				break;
+			}
+		}
+		if (setter == null)
+		{
+			throw new Exception("unknown attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
+		}
+		return setter;
+	}
+	/**
+	 * @param beanClass
+	 * @param attribute
+	 * @return
+	 * @throws Exception
+	 */
+	private Method findGetter(
+			Class<?> beanClass, String attribute)
+	throws Exception {
+		String getterName = "get"+attribute;
+		Method[] methods = beanClass.getMethods();
+		Method getter = null;
+		for (Method method : methods) 
+		{
+			if (method.getName().equalsIgnoreCase(getterName))
+			{
+				getter = method;
+				break;
+			}
+		}
+		if (getter == null)
+		{
+			throw new Exception("unknown attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
+		}
+		return getter;
+	}
+
+
+	private Object toObject(Class<?> type, String value) throws Exception 
+	{
+		if (value == null) return null;
+		String name = type.getSimpleName();
+		if (name.equals("String")) return value;
+		if (name.equals("Long")) return Long.valueOf(value);
+		if (name.equals("Boolean")) return Boolean.valueOf(value);
+		if (name.equals("Integer")) return Integer.valueOf(value);
+		if (name.equals("Float")) return Float.valueOf(value);
+		if (name.equals("Double")) return Double.valueOf(value);
+		if (name.equals("BigDecimal")) return BigDecimal.valueOf(Double.parseDouble(value));
+		if (name.equals("Date")) 
+		{
+			DateFormat dateFormat = null;
+			if (value.contains("-") && value.contains(":"))
+			{
+				dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+			}
+			else if (value.contains("-") )
+			{
+				dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			}
+			else if ( value.contains(":"))
+			{
+				dateFormat = new SimpleDateFormat("HH:mm:ss");
+			}
+			else
+			{
+				throw new Exception("unable to convert "+value+" to Date");
+			}
+			Date date = dateFormat.parse(value);
+			return date;
+		}
+
+		throw new Exception("unable to convert String to "+type.getCanonicalName());
+	}
+
+	private Object toPrimitive(Class<?> type, String value) throws Exception 
+	{
+		if (value == null) throw new Exception("primitive type "+type.getName()+" cannot be set to null");
+		String name = type.getName();
+		if (name.equals("long")) return Long.valueOf(value);
+		if (name.equals("boolean")) return Boolean.valueOf(value);
+		if (name.equals("int")) return Integer.valueOf(value);
+		if (name.equals("float")) return Float.valueOf(value);
+		if (name.equals("double")) return Double.valueOf(value);
+		throw new Exception("unable to convert String to "+type.getName());
+	}
+
+	private Object toEnum(Class<?> type, String value) throws Exception 
+	{
+		Method m = type.getMethod("fromValue", String.class);
+		return m.invoke(null, value);
+	}
 
 	/**
 	 *
@@ -620,25 +967,49 @@ public class Command
 	{
 		System.out.println("Arguments : ");
 		System.out.println("  -h(elp) for general syntax ");
+		System.out.println("  -verbose for processing traces ");
 		System.out.println("  -noDao to invalidate database access (MUST BE FIRST ARGUMENT) ");
 		System.out.println("  -o(bject) neptuneObjectName (default object for commands)");
-		System.out.println("  -c(ommand) [commandName] : get, getImportFormats, import, validate, getExportFormats, export, print");
-		System.out.println("     get : ");
+		System.out.println("  -f(ile) [fileName] : read commands in file");
+		System.out.println("                       only one command by line");
+		System.out.println("                       -c(ommand) argument is implicit");
+		System.out.println("                       arguments with whitespaces must be doublequoted");
+		System.out.println("  -c(ommand) [commandName] : see below");
+		System.out.println("     delete : delete from database last readed Neptune objects");
+		System.out.println("\n     export : write Neptune Objects to file");
+		System.out.println("        -format formatName : format name");
+		System.out.println("        launch getExportFormats for other parameters");
+		System.out.println("\n     get : read Neptune Object from database");
 		System.out.println("        -id [value+] : object technical id ");
 		System.out.println("        -objectId [value+] : object neptune id ");
 		System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
 		System.out.println("        -orderBy [value+] : sort fields ");
 		System.out.println("        -asc|-desc sort order (default = asc) ");
-		System.out.println("     import|export : ");
+		System.out.println("\n     getExportFormats : print available export formats and arguments");
+		System.out.println("\n     getImportFormats : print available import formats and arguments");
+		System.out.println("\n     import : read Neptune Objects from file");
 		System.out.println("        -format formatName : format name");
-		System.out.println("        launch getImportFormats or getExportFormats for other parameters");
-		System.out.println("     print : ");
+		System.out.println("        launch getImportFormats for other parameters");
+		System.out.println("\n     new : create a new instance from scratch");
+		System.out.println("\n     print : print previously readed Neptune Objects");
 		System.out.println("        -level level : deep level for recursive print (default = 99)");
-		System.out.println("Notes: ");
+		System.out.println("\n     setAttribute : set value for a single cardinality attribute");
+		System.out.println("        -name attributeName : name of the single cardinality atomic attribute to set");
+		System.out.println("        -value newValue : new value to set (may be empty to unset)");
+		System.out.println("                          if value is a date, it must be in one of these 3 formats :");
+		System.out.println("                               yyyy-MM-dd");		
+		System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
+		System.out.println("                               HH:mm:ss");		
+		System.out.println("\n     setReference : set reference to another existing NeptuneObject");
+		System.out.println("        -name attributeName : Neptune reference to set");
+		System.out.println("        -objectId referenceId : NeptuneId of the Neptune Object to refer");
+		System.out.println("\n     save : save last readed Neptune objects");
+		System.out.println("\n     validate : launch validation process on previously readed NeptuneObject");
+		System.out.println("\nNotes: ");
 		System.out.println("    -c(ommand) can be chained : new occurence of command must be followed by it's specific argument");
 		System.out.println("               commands are executed in argument order ");
 		System.out.println("               last returned objects of reading commands are send to command wich needs objects as imput");
-		System.out.println("    -o(bject) argument may be added for each command to switch object types");
+		System.out.println("    -o(bject) argument may be added for each command to switch object types, switch is conserved on further commands");
 	}
 
 	/**
@@ -677,7 +1048,7 @@ public class Command
 		return Boolean.parseBoolean(values.get(0));
 	}
 
-	private List<CommandArgument> parseArgs(String[] args)
+	private List<CommandArgument> parseArgs(String[] args) throws Exception
 	{
 		Map<String, List<String>> parameters = globals;
 		List<CommandArgument> commands = new ArrayList<CommandArgument>();
@@ -702,25 +1073,36 @@ public class Command
 				{
 					if (i == args.length -1) 
 					{
-						System.err.println("missing command name");
-						System.exit(2);
+						throw new Exception("missing command name");
 					}
 					String name = args[++i];
 					if (name.startsWith("-"))
 					{
-						System.err.println("missing command name before "+name);
-						System.exit(2);						
+						throw new Exception("missing command name before "+name);
 					}
 					command = new CommandArgument(name);
 					parameters = command.getParameters();
 					commands.add(command);
 				}
+				else if (key.equals("file")) 
+				{
+					if (i == args.length -1) 
+					{
+						throw new Exception("missing filename");
+					}
+					String name = args[++i];
+					if (name.startsWith("-"))
+					{
+						throw new Exception("missing filename before "+name);
+					}
+					commands.addAll(parseFile(name));
+
+				}
 				else
 				{
 					if (parameters.containsKey(key))
 					{
-						System.err.println("duplicate parameter : -"+key);
-						System.exit(2);
+						throw new Exception("duplicate parameter : -"+key);
 					}
 					List<String> list = new ArrayList<String>();
 
@@ -741,6 +1123,129 @@ public class Command
 		}
 
 		return commands;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<CommandArgument> parseFile(String filename) throws Exception
+	{
+		File f = new File(filename);
+		List<String> lines = FileUtils.readLines(f);
+		List<CommandArgument> commands = new ArrayList<CommandArgument>();
+		int linenumber=1;
+		for (String line : lines) 
+		{
+			line = line.trim();
+			if (!line.isEmpty() && !line.startsWith("#"))
+			{
+				CommandArgument command = parseLine(linenumber++, line);
+				if (command != null)
+					commands.add(command);
+			}
+		}
+		return commands;
+
+	}
+
+	private CommandArgument parseLine(int linenumber,String line) throws Exception
+	{
+		CommandArgument command = null;
+		String[] args = splitLine(linenumber,line);
+		if (args.length == 0)
+		{
+			return null;
+		}
+
+		if (linenumber==1 && args[0].startsWith("-"))
+		{
+			parseArgs(args);
+		}
+		else
+		{
+			command = new CommandArgument(args[0]);
+			Map<String, List<String>> parameters = command.getParameters();
+			for (int i = 1; i < args.length; i++)
+			{
+				if (args[i].startsWith("-"))
+				{
+					String key = args[i].substring(1).toLowerCase();
+					if (key.length() == 1) 
+					{
+						String alias = shortCuts.get(key);
+						if (alias != null) key = alias;
+					}
+					if (key.equals("command")) 
+					{
+						throw new Exception("Line "+linenumber+": multiple command on one line is forbidden");					
+					}
+					else
+					{
+						if (parameters.containsKey(key))
+						{
+							throw new Exception("Line "+linenumber+": duplicate parameter : -"+key);
+						}
+						List<String> list = new ArrayList<String>();
+
+						if (i == args.length -1 || args[i+1].startsWith("-"))
+						{
+							list.add("true");
+						}
+						else
+						{
+							while ((i+1 < args.length && !args[i+1].startsWith("-")))
+							{
+								list.add(args[++i]);
+							}
+						}
+						parameters.put(key,list);
+					}
+				}
+				else
+				{
+					throw new Exception("Line "+linenumber+": unexpected argument outside a key : "+args[i]);
+				}
+			}
+		}
+
+		return command;
+	}
+
+	private String[] splitLine(int linenumber,String line) throws Exception 
+	{
+		String[] args1 = line.split(" ");
+		if (!line.contains("\"")) return args1;
+		List<String>  args = new ArrayList<String>();
+		String assembly = null;
+		boolean quote = false;
+		for (int i = 0; i < args1.length; i++)
+		{
+			if (quote)
+			{
+				assembly+=" "+args1[i];
+				if (assembly.endsWith("\""))
+				{
+					quote = false;
+					args.add(assembly.substring(1,assembly.length()-1));
+				}
+			}
+			else if (args1[i].startsWith("\""))
+			{
+				if (args1[i].endsWith("\""))
+				{
+					args.add(args1[i].substring(1,args1[i].length()-1));
+				}
+				else
+				{
+					quote = true;
+					assembly = args1[i];
+				}
+			}
+			else
+			{
+				args.add(args1[i]);
+			}
+		}
+		if (quote) throw new Exception("Line "+linenumber+": missing ending doublequote");
+		return args.toArray(new String[0]);
 	}
 
 }
