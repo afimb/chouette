@@ -53,7 +53,7 @@
 		<property name="dao" ref="lineDao" />
 	</bean>
 	<bean id="ptLinkDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
-		factory-method="createPtLinkDaoInjector">
+		factory-method="createPTLinkDaoInjector">
 		<property name="manager" ref="PTLinkManager" />
 		<property name="dao" ref="ptLinkDao" />
 	</bean>

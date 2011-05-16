@@ -68,7 +68,7 @@ public class DaoInjector <T extends NeptuneIdentifiedObject>
 	{
 		return new DaoInjector<Line>();
 	}
-	public static final DaoInjector<PTLink> createPTLinkDaoInjector()
+	public static final DaoInjector<PTLink>  createPTLinkDaoInjector()
 	{
 		return new DaoInjector<PTLink>();
 	}
