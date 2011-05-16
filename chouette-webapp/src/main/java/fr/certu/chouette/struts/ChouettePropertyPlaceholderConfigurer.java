@@ -19,7 +19,11 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javax.servlet.ServletContext;
+import org.apache.log4j.Appender;
+import org.apache.log4j.RollingFileAppender;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer;
@@ -31,7 +35,6 @@ import org.springframework.web.context.support.ServletContextResourceLoader;
  */
 public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropertyPlaceholderConfigurer {
 
-    private static final Logger log4jLogger = Logger.getLogger(ChouettePropertyPlaceholderConfigurer.class);
     private ServletContext servletContext;
     private Resource[] locations;
     private String chouette_env="";
@@ -74,10 +77,12 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
                     addLocation(new FileSystemResource(File.separator+chouetteConfig));
             }
         }
-        log4jLogger.info("loadProperties from " + Arrays.toString(locations));
         super.loadProperties(props);
+        Logger rootLogger = Logger.getRootLogger();
+        Layout layout = new PatternLayout("%d{ISO8601} %-5p %C{1} %X{username} - %m\n");
+        rootLogger.removeAllAppenders();
+        rootLogger.addAppender(new RollingFileAppender(layout, props.getProperty("log4j.appender.R.File")));
         getEnvProperties(props.getProperty("chouette.env"));
-        log4jLogger.info("loaded : " + props);
     }
     
     protected void addLocation(Resource resource) {
@@ -106,17 +111,17 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
 
     private void getEnvProperties(String fileName) {
         ResourceBundle resourceBundle = null;
-       try {
+        try {
             if (fileName == null)
                 resourceBundle = new PropertyResourceBundle(new InputStreamReader(new FileInputStream(chouette_env+"chouette_env.properties"), "UTF-8"));
             else
                 resourceBundle = new PropertyResourceBundle(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
         }
         catch (FileNotFoundException ex) {
-            log4jLogger.error("File not found "+fileName);
+            Logger.getLogger(ChouettePropertyPlaceholderConfigurer.class).error("File not found "+fileName);
         }
         catch(IOException e) {
-            log4jLogger.error("IO Exception while reading "+fileName);
+            Logger.getLogger(ChouettePropertyPlaceholderConfigurer.class).error("IO Exception while reading "+fileName);
         }
         Enumeration<String> keys = resourceBundle.getKeys();
         while (keys.hasMoreElements()) {
