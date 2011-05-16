@@ -24,6 +24,8 @@
 	</bean>
 	<bean id="networkManager" class="fr.certu.chouette.manager.PTNetworkManager">
 	</bean>
+	<bean id="restrictionConstraintManager" class="fr.certu.chouette.manager.RestrictionConstraintManager">
+	</bean>
 	<bean id="routeManager" class="fr.certu.chouette.manager.RouteManager">
 	</bean>
 	<bean id="stopAreaManager" class="fr.certu.chouette.manager.StopAreaManager">
