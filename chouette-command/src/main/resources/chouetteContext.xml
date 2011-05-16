@@ -104,6 +104,15 @@
 		</property>
 		<property name="validationParameters" ref="Validation" />
 	</bean>
-
-
+	<!--  
+	<bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor"> 
+		<property name="sessionFactory">
+			<ref bean="factory" />
+			</property>
+			<property name="singleSession" value="true"/>
+			<property name="flushModeName">
+				<value>FLUSH_AUTO</value>
+		</property>	
+	</bean> 
+	-->
 </beans>

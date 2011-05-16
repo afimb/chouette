@@ -4,7 +4,6 @@
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-
 	<bean id="accessLinkManager" class="fr.certu.chouette.manager.AccessLinkManager">
 	</bean>
 	<bean id="accessPointManager" class="fr.certu.chouette.manager.AccessPointManager">

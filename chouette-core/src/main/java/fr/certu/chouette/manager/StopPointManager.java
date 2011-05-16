@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.core.CoreException;
-import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -102,16 +100,17 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-		INeptuneManager<VehicleJourneyAtStop> vAtStopManager = (INeptuneManager<VehicleJourneyAtStop>) getManager(VehicleJourneyAtStop.class);
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
 		List<PTLink> ptLinks = ptLinkManager.getAll(user, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("startOfLink.id", stopPoint.getId()),
 				Filter.getNewEqualsFilter("endOfLink.id", stopPoint.getId())), level); 
-		if(ptLinks != null && !ptLinks.isEmpty()){
+		if(ptLinks != null && !ptLinks.isEmpty())
+		{
 			int size = ptLinks.size(); 
 			if(size > 1){
-				for (PTLink ptLink : ptLinks) {
+				for (PTLink ptLink : ptLinks) 
+				{
 					if(ptLink.getEndOfLink().getId().equals(stopPoint.getId())){
 						ptLink.setEndOfLink(next);
 						ptLinkManager.update(user, ptLink);
@@ -127,28 +126,33 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			facilityManager.remove(user, facility,propagate);
 		List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("route.id",
 				stopPoint.getRoute().getId()), level);
-		for (VehicleJourney vehicleJourney : vjs) {
+		for (VehicleJourney vehicleJourney : vjs) 
+		{
 			List<VehicleJourneyAtStop> vAtStops = vehicleJourney.getVehicleJourneyAtStops();
-			for (int i=0;i< vAtStops.size();i++) {
+			for (int i=0;i< vAtStops.size();i++) 
+			{
 				VehicleJourneyAtStop vAtStop = vAtStops.get(i);
-				if(vAtStop.getStopPoint().equals(stopPoint)) {
-					if(vAtStop.isDeparture()){
+				if(vAtStop.getStopPoint().equals(stopPoint)) 
+				{
+					if(vAtStop.isDeparture())
+					{
 						VehicleJourneyAtStop nextAStop =  i< vAtStops.size() ? vAtStops.get(i +1) : vAtStop;
 						nextAStop.setDeparture(true);
-						vAtStopManager.update(null, nextAStop);
 					}
-					vAtStopManager.remove(null, vAtStop, propagate);
+					vAtStops.remove(vAtStop);
+					//vjManager.removeVehicleJourneyAtStop(null, vAtStop);
 				}
 			}
+			vjManager.update(null, vehicleJourney);
 		}
 		List<StopPoint> stopPoints4Route = getAll(user, Filter.getNewAndFilter(
 				Filter.getNewEqualsFilter("route.id", stopPoint.getRoute().getId()),
 				Filter.getNewGreaterFilter("position", stopPoint.getPosition())), level);
-		super.remove(user, stopPoint,propagate);
-		for (StopPoint  sp : stopPoints4Route) {
+		for (StopPoint  sp : stopPoints4Route) 
+		{
 			sp.setPosition(sp.getPosition() - 1);
 			update(user, sp);
 		}
+		super.remove(user, stopPoint,propagate);
 	}
-
 }
