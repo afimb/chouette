@@ -104,6 +104,4 @@
 		</property>
 		<property name="validationParameters" ref="Validation" />
 	</bean>
-
-
 </beans>

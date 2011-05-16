@@ -20,13 +20,18 @@ import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -45,45 +50,61 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		this.type = type;
 	}
 
-	public static HibernateDaoTemplate<PTNetwork> createPTNetworkDao()
+	public static HibernateDaoTemplate<AccessLink> createAccessLinkDao()
 	{
-		return new HibernateDaoTemplate<PTNetwork>( PTNetwork.class);
+		return new HibernateDaoTemplate<AccessLink>( AccessLink.class);
 	}
-	public static HibernateDaoTemplate<Line> createLineDao()
+	public static HibernateDaoTemplate<AccessPoint> createAccessPointDao()
 	{
-		return new HibernateDaoTemplate<Line>( Line.class);
+		return new HibernateDaoTemplate<AccessPoint>( AccessPoint.class);
 	}
 	public static HibernateDaoTemplate<Company> createCompanyDao()
 	{
 		return new HibernateDaoTemplate<Company>( Company.class);
 	}
-	public static HibernateDaoTemplate<Route> createRouteDao()
+	public static HibernateDaoTemplate<ConnectionLink> createConnectionLinkDao()
 	{
-		return new HibernateDaoTemplate<Route>( Route.class);
+		return new HibernateDaoTemplate<ConnectionLink>( ConnectionLink.class);
+	}
+	public static HibernateDaoTemplate<Facility> createFacilityDao()
+	{
+		return new HibernateDaoTemplate<Facility>( Facility.class);
+	}
+	public static HibernateDaoTemplate<GroupOfLine> createGroupOfLineDao()
+	{
+		return new HibernateDaoTemplate<GroupOfLine>( GroupOfLine.class);
 	}
 	public static HibernateDaoTemplate<JourneyPattern> createJourneyPatternDao()
 	{
 		return new HibernateDaoTemplate<JourneyPattern>( JourneyPattern.class);
 	}
+	public static HibernateDaoTemplate<Line> createLineDao()
+	{
+		return new HibernateDaoTemplate<Line>( Line.class);
+	}
 	public static HibernateDaoTemplate<PTLink> createPTLinkDao()
 	{
 		return new HibernateDaoTemplate<PTLink>( PTLink.class);
 	}
-	public static HibernateDaoTemplate<StopPoint> createStopPointDao()
+	public static HibernateDaoTemplate<PTNetwork> createPTNetworkDao()
 	{
-		return new HibernateDaoTemplate<StopPoint>( StopPoint.class);
+		return new HibernateDaoTemplate<PTNetwork>( PTNetwork.class);
+	}
+	public static HibernateDaoTemplate<RestrictionConstraint> createRestrictionConstraintDao()
+	{
+		return new HibernateDaoTemplate<RestrictionConstraint>( RestrictionConstraint.class);
+	}
+	public static HibernateDaoTemplate<Route> createRouteDao()
+	{
+		return new HibernateDaoTemplate<Route>( Route.class);
 	}
 	public static HibernateDaoTemplate<StopArea> createStopAreaDao()
 	{
 		return new HibernateDaoTemplate<StopArea>( StopArea.class);
 	}
-	public static HibernateDaoTemplate<ConnectionLink> createConnectionLinkDao()
+	public static HibernateDaoTemplate<StopPoint> createStopPointDao()
 	{
-		return new HibernateDaoTemplate<ConnectionLink>( ConnectionLink.class);
-	}
-	public static HibernateDaoTemplate<VehicleJourney> createVehicleJourneyDao()
-	{
-		return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
+		return new HibernateDaoTemplate<StopPoint>( StopPoint.class);
 	}
 	public static HibernateDaoTemplate<Timetable> createTimetableDao()
 	{
@@ -92,6 +113,10 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	public static HibernateDaoTemplate<TimeSlot> createTimeSlotDao()
 	{
 		return new HibernateDaoTemplate<TimeSlot>( TimeSlot.class);
+	}
+	public static HibernateDaoTemplate<VehicleJourney> createVehicleJourneyDao()
+	{
+		return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
 	}
 	
 

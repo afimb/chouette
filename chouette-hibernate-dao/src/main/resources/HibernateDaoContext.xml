@@ -72,23 +72,23 @@
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="mappingResources">
 			<list>
+				<value>fr/certu/chouette/model/neptune/AccessLink.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/AccessPoint.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml</value>			
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>	
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value> 				
-				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/AccessLink.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/AccessPoint.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml</value>			
+				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -101,8 +101,38 @@
 
 	<!-- Modules DAO -->
 
-	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createPTNetworkDao" >
+	<bean id="accessLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createAccessLinkDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="accessPointDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createAccessPointDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="companyDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createCompanyDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="connectionLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createConnectionLinkDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="facilityDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createFacilityDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="groupOfLineDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createGroupOfLineDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="journeyPatternDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createJourneyPatternDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
@@ -111,8 +141,18 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="companyDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createCompanyDao">
+	<bean id="ptLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createPTLinkDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createPTNetworkDao" >
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="restrictionConstraintDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createRestrictionConstraintDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
@@ -123,6 +163,26 @@
 	
 	<bean id="stopAreaDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createStopAreaDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="stopPointDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createStopPointDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="timeSlotDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createTimeSlotDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="timetableDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createTimetableDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="vehicleJourneyDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+		factory-method="createVehicleJourneyDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 

@@ -4,20 +4,29 @@
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-
-	<bean id="lineManager" class="fr.certu.chouette.manager.LineManager">
+	<bean id="accessLinkManager" class="fr.certu.chouette.manager.AccessLinkManager">
 	</bean>
-	<bean id="networkManager" class="fr.certu.chouette.manager.PTNetworkManager">
+	<bean id="accessPointManager" class="fr.certu.chouette.manager.AccessPointManager">
 	</bean>
 	<bean id="companyManager" class="fr.certu.chouette.manager.CompanyManager">
 	</bean>
-	<bean id="routeManager" class="fr.certu.chouette.manager.RouteManager">
-	</bean>
 	<bean id="connectionLinkManager" class="fr.certu.chouette.manager.ConnectionLinkManager">
+	</bean>
+	<bean id="facilityManager" class="fr.certu.chouette.manager.FacilityManager">
+	</bean>
+	<bean id="groupOfLineManager" class="fr.certu.chouette.manager.GroupOfLineManager">
 	</bean>
 	<bean id="journeyPatternManager" class="fr.certu.chouette.manager.JourneyPatternManager">
 	</bean>
+	<bean id="lineManager" class="fr.certu.chouette.manager.LineManager">
+	</bean>
 	<bean id="PTLinkManager" class="fr.certu.chouette.manager.PTLinkManager">
+	</bean>
+	<bean id="networkManager" class="fr.certu.chouette.manager.PTNetworkManager">
+	</bean>
+	<bean id="restrictionConstraintManager" class="fr.certu.chouette.manager.RestrictionConstraintManager">
+	</bean>
+	<bean id="routeManager" class="fr.certu.chouette.manager.RouteManager">
 	</bean>
 	<bean id="stopAreaManager" class="fr.certu.chouette.manager.StopAreaManager">
 	</bean>
@@ -30,12 +39,4 @@
 	<bean id="vehicleJourneyManager" class="fr.certu.chouette.manager.VehicleJourneyManager">
 	</bean>
 
-	<bean id="accessLinkManager" class="fr.certu.chouette.manager.AccessLinkManager">
-	</bean>
-	<bean id="accessPointManager" class="fr.certu.chouette.manager.AccessPointManager">
-	</bean>
-	<bean id="facilityManager" class="fr.certu.chouette.manager.FacilityManager">
-	</bean>
-	<bean id="groupOfLineManager" class="fr.certu.chouette.manager.GroupOfLineManager">
-	</bean>
 </beans>
