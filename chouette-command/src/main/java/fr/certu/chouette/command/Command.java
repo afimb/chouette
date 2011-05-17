@@ -230,6 +230,7 @@ public class Command
 				} 
 				catch (Exception e) 
 				{
+					logger.error(e.getMessage(),e);
 					System.out.println(e.getMessage());
 				}
 
@@ -1001,15 +1002,24 @@ public class Command
 	private void executeInfo(INeptuneManager<NeptuneIdentifiedObject> manager) throws Exception 
 	{
 		Object object = manager.getNewInstance(null);
+		printFields(object,"");
+
+
+	}
+
+	/**
+	 * @param object
+	 * @throws Exception
+	 */
+	private void printFields(Object object,String indent) throws Exception {
 		Class<?> c = object.getClass();
-		// Method[] methods = c.getMethods();
 		Field[] fields = c.getSuperclass().getDeclaredFields();
 		for (Field field : fields) 
 		{
 			int m = field.getModifiers();
 			if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
 			{
-				printField(c,field);
+				printField(c,field,indent);
 			}
 
 
@@ -1020,16 +1030,20 @@ public class Command
 			int m = field.getModifiers();
 			if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
 			{
-				printField(c,field);
+				printField(c,field,indent);
 			}
 
 
 		}
-
-
 	}
 
-	private void printField(Class<?> objectType, Field field) throws Exception
+	/**
+	 * @param objectType
+	 * @param field
+	 * @param indent
+	 * @throws Exception
+	 */
+	private void printField(Class<?> objectType, Field field,String indent) throws Exception
 	{
 		String fieldName = field.getName().toLowerCase();
 		if (fieldName.equals("importeditems")) return;
@@ -1047,7 +1061,7 @@ public class Command
 
 		if (type.isPrimitive())
 		{
-			System.out.print("- "+field.getName());
+			System.out.print(indent+"- "+field.getName());
 			System.out.print(" : type "+type.getName());
 			if (findAccessor(objectType, field.getName(), "set", false) == null)	
 			{
@@ -1062,7 +1076,7 @@ public class Command
 				name = name.substring(0,name.length()-1);
 				ParameterizedType ptype = (ParameterizedType) field.getGenericType();
 				Class<?> itemType = (Class<?>) ptype.getActualTypeArguments()[0];
-				System.out.print("- "+name);
+				System.out.print(indent+"- "+name);
 				System.out.print(" : collection of type "+itemType.getSimpleName());
 				if (findAccessor(objectType, name, "add", false) != null)	
 				{
@@ -1072,10 +1086,11 @@ public class Command
 				{
 					System.out.print(" (remove allowed)");
 				}
+				type = itemType;
 			}
 			else
 			{
-				System.out.print("- "+field.getName());
+				System.out.print(indent+"- "+field.getName());
 				System.out.print(" : type "+type.getSimpleName());
 				if (findAccessor(objectType, field.getName(), "set", false) == null)	
 				{
@@ -1084,6 +1099,67 @@ public class Command
 			}
 		}
 		System.out.println("");
+		if (!type.isPrimitive())
+		printFieldDetails(type, indent);
+	}
+
+	/**
+	 * @param itemType
+	 * @param indent
+	 * @throws Exception
+	 */
+	private void printFieldDetails(Class<?> itemType, String indent)
+			throws Exception 
+			{
+		String itemName = itemType.getName();
+		if (itemName.startsWith("fr.certu.chouette.model.neptune.type."))
+		{
+			if (itemName.endsWith("Enum"))
+			{
+				Field[] fields = itemType.getDeclaredFields();
+			    System.out.print(indent+"     ");
+			    int i = 0;
+				for (Field field : fields) 
+				{
+					int m = field.getModifiers();
+					if (Modifier.isPublic(m) && Modifier.isStatic(m) && Modifier.isFinal(m))
+					{
+						System.out.print(field.getName()+" ");
+						i++;
+						if (i > 5)
+						{
+							i =0;
+							System.out.print("\n"+indent+"     ");
+						}
+						
+					}
+				}
+				System.out.println("");
+			}
+			else
+			{
+				Object instance = itemType.newInstance();
+				printFields(instance, indent+"     ");
+			}
+		}
+		else if (itemName.startsWith("fr.certu.chouette.model.neptune."))
+		{
+			Object instance = itemType.newInstance();
+			if (instance instanceof NeptuneIdentifiedObject)
+			{
+				String simpleName = itemType.getSimpleName();
+				if (simpleName.equals("AreaCentroid"))
+				{
+					printFields(instance, indent+"     ");
+				}
+			}
+			else
+			{
+				printFields(instance, indent+"     ");
+			}
+
+
+		}
 	}
 
 
