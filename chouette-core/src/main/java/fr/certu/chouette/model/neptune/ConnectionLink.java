@@ -57,17 +57,17 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	 * Indicate if a Lift is available 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter boolean liftAvailable;
+	@Getter @Setter private  boolean liftAvailable;
 	/**
 	 * indicate if the link is equipped for mobility restricted persons 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter boolean mobilityRestrictedSuitable;
+	@Getter @Setter private  boolean mobilityRestrictedSuitable;
 	/**
 	 * indicate if stairs are present on the link 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter boolean stairsAvailable;
+	@Getter @Setter private  boolean stairsAvailable;
 	/**
 	 * give a list of specific User needs available
 	 * <br/><i>readable/writable</i>

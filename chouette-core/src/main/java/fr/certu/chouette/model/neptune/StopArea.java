@@ -12,27 +12,27 @@ import lombok.Setter;
 
 public class StopArea extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
-	@Getter @Setter List<String> boundaryPoints;
-	@Getter @Setter String areaCentroidId;
-	@Getter @Setter AreaCentroid areaCentroid;
-	@Getter @Setter String comment;
-	@Getter @Setter List<String> containedStopIds;
-	@Getter @Setter List<StopArea> containedStopAreas;
-	@Getter @Setter List<StopPoint> containedStopPoints;
-	@Getter @Setter StopArea parentStopArea;
-	@Getter @Setter Long parentId;
-	@Getter @Setter ChouetteAreaEnum areaType;
-	@Getter @Setter int fareCode;
-	@Getter @Setter boolean liftAvailable;
-	@Getter @Setter boolean mobilityRestrictedSuitable;
-	@Getter @Setter boolean stairsAvailable;
-	@Getter @Setter String nearestTopicName;
-	@Getter @Setter String registrationNumber;
-	@Getter @Setter List<UserNeedEnum> userNeeds;
-	@Getter @Setter List<ConnectionLink> connectionLinks;
+	@Getter @Setter private List<String> boundaryPoints;
+	@Getter @Setter private String areaCentroidId;
+	@Getter @Setter private AreaCentroid areaCentroid;
+	@Getter @Setter private String comment;
+	@Getter @Setter private List<String> containedStopIds;
+	@Getter @Setter private List<StopArea> containedStopAreas;
+	@Getter @Setter private List<StopPoint> containedStopPoints;
+	@Getter @Setter private StopArea parentStopArea;
+	@Getter @Setter private Long parentId;
+	@Getter @Setter private ChouetteAreaEnum areaType;
+	@Getter @Setter private int fareCode;
+	@Getter @Setter private boolean liftAvailable;
+	@Getter @Setter private boolean mobilityRestrictedSuitable;
+	@Getter @Setter private boolean stairsAvailable;
+	@Getter @Setter private String nearestTopicName;
+	@Getter @Setter private String registrationNumber;
+	@Getter @Setter private List<UserNeedEnum> userNeeds;
+	@Getter @Setter private List<ConnectionLink> connectionLinks;
 
-	@Getter @Setter List<AccessLink> accessLinks;
-	@Getter @Setter List<RestrictionConstraint> restrictionConstraints;
+	@Getter @Setter private List<AccessLink> accessLinks;
+	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 
 	public void addBoundaryPoint(String boundaryPoint)
 	{
