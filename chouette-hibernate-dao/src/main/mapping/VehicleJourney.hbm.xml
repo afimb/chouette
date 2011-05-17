@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
- @@LICENCE@@ Société DRYADE
 
- Projet chouette : paramétrage Objet - Base
-
- DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
-
- Historique des modifications :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
- =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
- =============+================+==============================================
- 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
- =============+================+==============================================
-
- Version : $Revision: 1.6 $
--->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="VehicleJourney" table="VehicleJourney">
 		<id column="id" name="id" type="long">
@@ -39,22 +21,22 @@
 		<property column="facility" name="facility" type="string" />
 		<property name="vehicleTypeIdentifier" type="string" />
 		<property column="number" name="number" type="int" />
-		<many-to-one class="Route" column="routeId" insert="false"
-			lazy="no-proxy" name="route" update="false" />
+		<many-to-one class="Route" column="routeId" lazy="no-proxy"
+			name="route" />
 		<many-to-one class="JourneyPattern" column="journeyPatternId"
-			insert="false" lazy="no-proxy" name="journeyPattern" update="false" />
-		<many-to-one class="TimeSlot" column="timeSlotId" insert="false"
-			lazy="no-proxy" name="timeSlot" update="false" />
-		<many-to-one class="Company" column="companyId" insert="false"
-			lazy="no-proxy" name="company" update="false" />
-		<set batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops" cascade="all"
-			sort="unsorted" table="vehicleJourneyAtStop">
+			lazy="no-proxy" name="journeyPattern" />
+		<many-to-one class="TimeSlot" column="timeSlotId" lazy="no-proxy"
+			name="timeSlot" />
+		<many-to-one class="Company" column="companyId" lazy="no-proxy"
+			name="company" />
+		<set batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops"
+			cascade="all" sort="unsorted" table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
 			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"
-					lazy="no-proxy" name="stopPoint" update="false" />
+					lazy="no-proxy" name="stopPoint" />
 				<!-- <many-to-one class="VehicleJourney" column="vehicleJourneyId" lazy="no-proxy" 
-					name="vehicleJourney" update="false" /> -->
+					name="vehicleJourney" /> -->
 				<property name="connectingServiceId" />
 				<property column="boardingAlightingPossibility" name="boardingAlightingPossibility"
 					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" />

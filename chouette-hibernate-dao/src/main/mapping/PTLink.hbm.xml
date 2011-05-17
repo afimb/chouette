@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
-  @@LICENCE@@ Société DRYADE
 
- Chouette project  : paramétrage Objet - Base
-
- Change history :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 19 av. 2011 |Mamadou KEIRA    | init
- =============+================+==============================================
-
- Version : $Revision: 1.0 $
--->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="PTLink" table="PTLink">
 		<id column="id" name="id" type="long">
@@ -27,10 +15,10 @@
 		<property name="comment" type="string" />
 		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" />
 		<many-to-one class="StopPoint" column="startOfLinkId"
-			insert="false" lazy="no-proxy" name="startOfLink" update="false" />
+			insert="false" lazy="no-proxy" name="startOfLink" />
 		<many-to-one class="StopPoint" column="endOfLinkId"
-			insert="false" lazy="no-proxy" name="endOfLink" update="false" />
-		<many-to-one class="Route" column="routeId" insert="false"
-			lazy="no-proxy" name="route" update="false" />
+			insert="false" lazy="no-proxy" name="endOfLink" />
+		<many-to-one class="Route" column="routeId" lazy="no-proxy"
+			name="route" />
 	</class>
 </hibernate-mapping>

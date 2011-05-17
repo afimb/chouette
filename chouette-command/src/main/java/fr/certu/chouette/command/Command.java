@@ -28,10 +28,15 @@ import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
@@ -124,7 +129,15 @@ public class Command
 			applicationContext = new ClassPathXmlApplicationContext(context);
 			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 			Command command = (Command) factory.getBean("Command");
+
+			SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
+			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
+
 			command.execute(args);
+			
+			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
+	        SessionFactoryUtils.closeSession(sessionHolder.getSession());
 		}
 		else
 		{
@@ -1118,7 +1131,7 @@ public class Command
 		System.out.println("\n     save : save last readed Neptune objects");
 		System.out.println("\n     validate : launch validation process on previously readed NeptuneObject");
 		if (interactive)
-		   System.out.println("\n\n     exit or quit : terminate interactive session");
+			System.out.println("\n\n     exit or quit : terminate interactive session");
 	}
 
 	/**
