@@ -54,8 +54,7 @@
 			</column>
 		</property>
 
-		<bag inverse="false" lazy="true" name="stopPoints" table="journeyPattern_stopPoint"
-			cascade="all">
+		<bag inverse="false" lazy="true" name="stopPoints" table="journeyPattern_stopPoint">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
 			<key>
 				<column name="journeyPatternId">

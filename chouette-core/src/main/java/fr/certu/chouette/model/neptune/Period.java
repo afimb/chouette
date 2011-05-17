@@ -16,6 +16,9 @@ public class Period implements Serializable{
 	@Getter @Setter private Date startDate;
 	@Getter @Setter private Date endDate;
 	
+	public Period(){
+		
+	}
 	public Period(Date startDate, Date endDate) {
 		this.startDate = startDate;
 		this.endDate = endDate;

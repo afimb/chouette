@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
@@ -107,5 +109,11 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		if(facility != null)
 			facilityManager.remove(user, facility,propagate);
 		super.remove(user, stopArea,propagate);		
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

@@ -10,6 +10,8 @@ package fr.certu.chouette.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
@@ -301,5 +303,11 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 		if(constraints != null && !constraints.isEmpty())
 			constraintManager.removeAll(user, constraints,propagate);
 		super.remove(user, line,propagate);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

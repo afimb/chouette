@@ -28,9 +28,9 @@
 				<property name="endDate" column="periodend" type="date" />
 			</composite-element>
 		</list>
-		<set name="vehicleJourneys" table="timetablevehiclejourney" lazy="false">
+		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="false">
 			<key column="timetableId" />
 			<many-to-many column="vehiclejourneyId" class="VehicleJourney" />
-		</set>
+		</bag>
 	</class>
 </hibernate-mapping>

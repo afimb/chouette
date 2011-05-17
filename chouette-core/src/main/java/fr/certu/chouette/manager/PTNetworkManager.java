@@ -9,6 +9,8 @@ package fr.certu.chouette.manager;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
@@ -42,5 +44,11 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 			}
 		}
 		super.remove(user, ptNetwork,propagate);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
