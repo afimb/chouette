@@ -11,8 +11,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -61,6 +64,7 @@ public class Command
 	private static final Logger logger = Logger.getLogger(Command.class);
 	private static ClassPathXmlApplicationContext applicationContext;
 
+	private static enum ATTR_CMD {SET_VALUE, ADD_VALUE, REMOVE_VALUE,SET_REF,ADD_REF,REMOVE_REF};
 
 	@Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
@@ -176,7 +180,7 @@ public class Command
 			logger.info("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
 		}
 
-		List<NeptuneIdentifiedObject> beans = null;
+		List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
 		int commandNumber = 0;
 		if (getBoolean(globals, "interactive"))
 		{
@@ -187,8 +191,8 @@ public class Command
 			{
 				try 
 				{
-					System.out.print(activeObject+" >");
-					line = in.readLine().trim();
+					System.out.print(activeObject+" ("+beans.size()+") >");
+					line = in.readLine().trim(); 
 				} 
 				catch (IOException e) 
 				{
@@ -197,23 +201,17 @@ public class Command
 					return;
 				}
 				if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")) break;
-				if (line.equalsIgnoreCase("help")) 
+				try 
 				{
-					printCommandSyntax(true);
-				}
-				else
+					CommandArgument command = parseLine(++commandNumber, line);
+					beans = executeCommand(beans, commandNumber, command);
+					activeObject = getActiveObject(command.getParameters());
+				} 
+				catch (Exception e) 
 				{
-					try 
-					{
-						CommandArgument command = parseLine(++commandNumber, line);
-						beans = executeCommand(beans, commandNumber, command);
-						activeObject = getActiveObject(command.getParameters());
-					} 
-					catch (Exception e) 
-					{
-						System.out.println(e.getMessage());
-					}
+					System.out.println(e.getMessage());
 				}
+
 			}
 
 		}
@@ -271,6 +269,24 @@ public class Command
 			logger.info("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
 		}
 
+		if (name.equals("verbose"))
+		{
+			verbose = !(getBoolean(parameters, "off")) ;
+			return beans;
+		}
+		if (name.equals("help"))
+		{
+			String cmd = getSimpleString(parameters, "cmd","");
+			if (cmd.length() > 0)
+			{
+				printCommandDetail(cmd);
+			}
+			else
+			{
+				printCommandSyntax(true);
+			}
+			return beans;
+		}
 		INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
 
 		if (name.equals("get"))
@@ -281,26 +297,30 @@ public class Command
 		{
 			beans = executeNew(manager,parameters);
 		}
-		else if (name.equals("setAttribute"))
+		else if (name.equals("set"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
-			executeSetAttribute(beans, parameters);
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
+			executeSet(beans, parameters);
 		}
-		else if (name.equals("setReference"))
+		else if (name.equals("add"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : setReference must follow a reading command");
-			executeSetReference(beans, parameters);
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
+			executeAdd(beans, parameters);
+		}
+		else if (name.equals("remove"))
+		{
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
+			executeRemove(beans, parameters);
 		}
 		else if (name.equals("save"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
 			executeSave(beans, manager,parameters);
 		}
 		else if (name.equals("delete"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
 			executeDelete(beans, manager,parameters);
-			beans = null;
 		}
 		else if (name.equals("getImportFormats"))
 		{
@@ -312,12 +332,12 @@ public class Command
 		}
 		else if (name.equals("print"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
 			executePrint(beans,parameters);
 		}
 		else if (name.equals("validate"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : validate must follow a reading command");
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : validate must follow a reading command");
 			executeValidate(beans,manager,parameters);
 		}
 		else if (name.equals("getExportFormats"))
@@ -326,8 +346,12 @@ public class Command
 		}
 		else if (name.equals("export"))
 		{
-			if (beans == null) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
 			executeExport(beans,manager,parameters);
+		}
+		else if (name.equals("info"))
+		{
+			executeInfo(manager);
 		}
 		else
 		{
@@ -337,6 +361,11 @@ public class Command
 	}
 
 
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters
+	 */
 	private void executeExport(List<NeptuneIdentifiedObject> beans,
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			Map<String, List<String>> parameters) 
@@ -432,6 +461,11 @@ public class Command
 		}
 	}
 
+	/**
+	 * @param manager
+	 * @param parameters
+	 * @throws ChouetteException
+	 */
 	private void executeGetExportFormats(
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			Map<String, List<String>> parameters) 
@@ -494,6 +528,11 @@ public class Command
 		return object;
 	}
 
+	/**
+	 * @param manager
+	 * @param parameters
+	 * @return
+	 */
 	private List<NeptuneIdentifiedObject> executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	{
 		String format = getSimpleString(parameters,"format");
@@ -739,6 +778,13 @@ public class Command
 			}
 		}
 
+			String limit = getSimpleString(parameters, "limit","10");
+			if (limit.equalsIgnoreCase("none"))
+			{
+				filter.addLimit(Integer.parseInt(limit));
+			}
+			
+
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		if (parameters.containsKey("level"))
 		{
@@ -755,6 +801,20 @@ public class Command
 
 		List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter, level);
 
+		if (verbose)
+		{
+			int count = 0;
+			for (NeptuneIdentifiedObject bean : beans)
+			{
+				if (count > 10) 
+				{
+					System.out.println(" ... ");
+					break;
+				}
+				count++;
+				System.out.println(bean.getName()+" : ObjectId = "+bean.getObjectId());
+			}
+		}
 		System.out.println("beans count = "+beans.size());
 		return beans;
 	}
@@ -765,7 +825,7 @@ public class Command
 	 */
 	private void executePrint(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) 
 	{
-		String slevel = getSimpleString(parameters, "level", "99");
+		String slevel = getSimpleString(parameters, "level", "0");
 		int level = Integer.parseInt(slevel);
 		for (NeptuneObject bean : beans)
 		{
@@ -826,33 +886,15 @@ public class Command
 			}
 
 
-	private void executeSetReference(List<NeptuneIdentifiedObject> beans,
-			Map<String, List<String>> parameters) throws Exception {
-		if (beans.size() == 0)
-		{
-			throw new Exception("no bean to update, process stopped ");
-		}
-		if (beans.size() > 1)
-		{
-			throw new Exception("multiple beans to update, process stopped ");
-		}
-		NeptuneIdentifiedObject bean = beans.get(0);
-		String name = getSimpleString(parameters, "attrname");
-		Class<? extends NeptuneIdentifiedObject> beanClass = bean.getClass();
-		Method setter = findSetter(beanClass, name);
-		Class<?> type = setter.getParameterTypes()[0];
 
-		String typeName = type.getSimpleName().toLowerCase();
-		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(typeName);
-		if (manager == null)
-		{
-			throw new Exception("unknown object "+typeName+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
-		}
-		String objectId = getSimpleString(parameters, "objectid");
-		Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
-		NeptuneIdentifiedObject reference = manager.get(null, filter, DetailLevelEnum.ATTRIBUTE);
-		setter.invoke(bean, reference);
-
+	/**
+	 * @param beans
+	 * @param parameters 
+	 * @throws Exception 
+	 */
+	private void executeSet(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
+	{
+		updateAttribute("SET", beans, parameters);
 	}
 
 	/**
@@ -860,7 +902,28 @@ public class Command
 	 * @param parameters 
 	 * @throws Exception 
 	 */
-	private void executeSetAttribute(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
+	private void executeAdd(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
+	{
+		updateAttribute("ADD", beans, parameters);
+	}
+	/**
+	 * @param beans
+	 * @param parameters 
+	 * @throws Exception 
+	 */
+	private void executeRemove(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
+	{
+		updateAttribute("REMOVE", beans, parameters);
+	}
+
+
+	/**
+	 * @param cmd
+	 * @param beans
+	 * @param parameters
+	 * @throws Exception
+	 */
+	private void updateAttribute(String cmd,List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
 	{
 		if (beans.size() == 0)
 		{
@@ -871,37 +934,263 @@ public class Command
 			throw new Exception("multiple beans to update, process stopped ");
 		}
 		NeptuneIdentifiedObject bean = beans.get(0);
-		String attrname = getSimpleString(parameters, "attrname");
-		String value = getSimpleString(parameters, "value",null);
-		followAttribute(bean,attrname, value);
+		List<String> args = parameters.get("attr");
+		if (args != null)
+		{
+			if (args.isEmpty())
+			{
+				throw new Exception ("command set -attr : missing arguments : name value");
+			}
+			String attrname = args.get(0);
+			String value = null;
+			if (args.size() > 1)
+			{
+			   value = args.get(1);
+			}
+			ATTR_CMD c = ATTR_CMD.valueOf(cmd+"_VALUE");
+			followAttribute(c, bean,attrname, value);
+		}
+		else
+		{
+			args = parameters.get("ref");
+			if (args == null)
+			{
+				throw new Exception ("command set must have -attr or -ref argument");
+			}
+			if (args.isEmpty())
+			{
+				throw new Exception ("command set -ref : missing arguments : ref objectId");
+			}
+			String attrname = args.get(0);
+			String value = null;
+			if (args.size() > 1)
+			{
+			   value = args.get(1);
+			}
+			ATTR_CMD c = ATTR_CMD.valueOf(cmd+"_REF");
+			followAttribute(c, bean,attrname, value);
+		}
+
+	}
+	/**
+	 * @param beans
+	 * @param parameters 
+	 * @throws Exception 
+	 */
+	private void executeInfo(INeptuneManager<NeptuneIdentifiedObject> manager) throws Exception 
+	{
+		Object object = manager.getNewInstance(null);
+		Class<?> c = object.getClass();
+		// Method[] methods = c.getMethods();
+		Field[] fields = c.getSuperclass().getDeclaredFields();
+		for (Field field : fields) 
+		{
+			int m = field.getModifiers();
+		    if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
+			{
+				printField(c,field);
+			}
+
+
+		}
+		fields = c.getDeclaredFields();
+		for (Field field : fields) 
+		{
+			int m = field.getModifiers();
+			if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
+			{
+				printField(c,field);
+			}
+
+
+		}
+
 
 	}
 
-	private void followAttribute(Object object, String attrname,
-			String value) throws Exception
+	private void printField(Class<?> objectType, Field field) throws Exception
+	{
+		String fieldName = field.getName().toLowerCase();
+		if (fieldName.equals("importeditems")) return;
+		if (fieldName.endsWith("id") || fieldName.endsWith("ids"))
+		{
+			if (!fieldName.equals("objectid") && !fieldName.equals("creatorId"))
+				return;
+		}
+		if (findAccessor(objectType, field.getName(), "get", false) == null)	
+		{
+			return;
+		}
+		Class<?> type = field.getType();
+		
+		
+		if (type.isPrimitive())
+		{
+			System.out.print("- "+field.getName());
+			System.out.print(" : type "+type.getName());
+			if (findAccessor(objectType, field.getName(), "set", false) == null)	
 			{
+				System.out.print(" (readonly)");
+			}
+		}
+		else
+		{
+			if (type.getSimpleName().equals("List"))
+			{
+				String name = field.getName();
+				name = name.substring(0,name.length()-1);
+				ParameterizedType ptype = (ParameterizedType) field.getGenericType();
+				Class<?> itemType = (Class<?>) ptype.getActualTypeArguments()[0];
+				System.out.print("- "+name);
+				System.out.print(" : collection of type "+itemType.getSimpleName());
+				if (findAccessor(objectType, name, "add", false) != null)	
+				{
+					System.out.print(" (add allowed)");
+				}
+				if (findAccessor(objectType, name, "remove", false) != null)	
+				{
+					System.out.print(" (remove allowed)");
+				}
+			}
+			else
+			{
+				System.out.print("- "+field.getName());
+				System.out.print(" : type "+type.getSimpleName());
+				if (findAccessor(objectType, field.getName(), "set", false) == null)	
+				{
+					System.out.print(" (readonly)");
+				}
+			}
+		}
+		System.out.println("");
+	}
+	
+
+	/**
+	 * 
+	 * @param object
+	 * @param bean 
+	 * @param attrname
+	 * @param value
+	 * @throws Exception
+	 */
+	private void followAttribute(ATTR_CMD cmd, Object object, String attrname,
+			String value) 
+	throws Exception
+	{
 		if (attrname.contains("."))
 		{
 			Class<?> type = object.getClass();
 			String basename = attrname.substring(0,attrname.indexOf("."));
-			Method getter = findGetter(type, basename);
-			Object target = getter.invoke(object);
-			if (target == null)
+			Object target = null;
+			if (basename.endsWith("]"))
 			{
-				Class<?> targetType = getter.getReturnType();
-				target = targetType.newInstance();
-				Method setter = findSetter(type, basename);
-				setter.invoke(object, target);
+				String srank = basename.substring(basename.indexOf("[")+1, basename.indexOf("]"));
+				basename = basename.substring(0, basename.indexOf("["));
+				if (srank.equalsIgnoreCase("new"))
+				{
+					Method add = findAdder(type, basename);
+					target = add.getParameterTypes()[0].newInstance();
+					add.invoke(object, target);
+				}
+				else 
+				{
+					Method getter= findGetter(type, basename+"s");
+					List<?> collection = (List<?>) getter.invoke(object);
+					if (collection == null || collection.isEmpty()) 
+					{
+						throw new Exception("empty collection "+basename);
+					}
+					if (srank.equalsIgnoreCase("last"))
+					{
+						target = collection.get(collection.size()-1);
+					}
+					else
+					{
+						int rank = Integer.parseInt(srank);
+						if (rank < 0 || rank >= collection.size())
+						{
+							throw new Exception("index "+rank+" out of collection bounds "+collection.size());
+						}
+						target = collection.get(rank);
+					}
+				}
+			}
+			else
+			{
+				Method getter = findGetter(type, basename);
+				target = getter.invoke(object);
+				if (target == null)
+				{
+					Class<?> targetType = getter.getReturnType();
+					target = targetType.newInstance();
+					Method setter = findSetter(type, basename);
+					setter.invoke(object, target);
+				}
 			}
 			attrname = attrname.substring(attrname.indexOf(".")+1);
-			followAttribute(target, attrname, value);
+			followAttribute(cmd, target, attrname, value);
 		}
 		else
 		{
-			setAttribute(object, attrname, value);
+			switch (cmd)
+			{
+			case SET_VALUE : setAttribute(object, attrname, value); break;
+			case ADD_VALUE : addAttribute(object, attrname, value); break;
+			case REMOVE_VALUE : removeAttribute(object, attrname, value); break;
+			case SET_REF : setReference(object, attrname, value); break;
+			case ADD_REF : addReference(object, attrname, value); break;
+			case REMOVE_REF : removeReference(object, attrname, value); break;
+			}
+
 		}
 
-			}
+	}
+
+	private void removeAttribute(Object object, String attrname, String value) throws Exception 
+	{
+		Class<?> beanClass = object.getClass();
+		Method remover = findRemover(beanClass, attrname);
+		Class<?> type = remover.getParameterTypes()[0];
+		Object arg = null;
+		if (type.isEnum())
+		{
+			arg = toEnum(type,value);
+		}
+		else if (type.isPrimitive())
+		{
+			arg = toPrimitive(type,value);
+		}
+		else
+		{
+			arg = toObject(type,value);
+		}
+		remover.invoke(object, arg);
+
+	}
+
+	private void addAttribute(Object object, String attrname, String value) throws Exception 
+	{
+		Class<?> beanClass = object.getClass();
+		Method adder = findAdder(beanClass, attrname);
+		Class<?> type = adder.getParameterTypes()[0];
+		Object arg = null;
+		if (type.isEnum())
+		{
+			arg = toEnum(type,value);
+		}
+		else if (type.isPrimitive())
+		{
+			arg = toPrimitive(type,value);
+		}
+		else
+		{
+			arg = toObject(type,value);
+		}
+		adder.invoke(object, arg);
+
+	}
+
 
 	/**
 	 * @param object
@@ -917,17 +1206,13 @@ public class Command
 		{
 			throw new Exception("non writable attribute id for any object , process stopped ");
 		}
-		if (!attrname.toLowerCase().equals("objectid") && attrname.toLowerCase().endsWith("id")) 
+		if (!attrname.toLowerCase().equals("objectid") && !attrname.toLowerCase().equals("creatorid") && attrname.toLowerCase().endsWith("id")) 
 		{
 			throw new Exception("non writable attribute "+attrname+" use setReference instand , process stopped ");
 		}
 		Class<?> beanClass = object.getClass();
 		Method setter = findSetter(beanClass, attrname);
 		Class<?> type = setter.getParameterTypes()[0];
-		//		System.out.println(type.getCanonicalName());
-		//		System.out.println("array = "+type.isArray());
-		//		System.out.println("primitive = "+type.isPrimitive());
-		//		System.out.println("enum = "+type.isEnum());
 		if (type.isArray() || type.getSimpleName().equals("List"))
 		{
 			throw new Exception("list attribute "+attrname+" for object "+beanClass.getName()+" must be update with (add/remove)Attribute, process stopped ");
@@ -948,6 +1233,74 @@ public class Command
 		setter.invoke(object, arg);
 	}
 
+	/**
+	 * @param object
+	 * @param refName
+	 * @param objectId
+	 * @throws Exception
+	 */
+	private void setReference(Object object,String refName, String objectId) throws Exception 
+	{
+		Class<?> beanClass = object.getClass();
+		Method method = findSetter(beanClass, refName);
+		updateReference(object, objectId, method);
+	}
+
+	/**
+	 * @param object
+	 * @param refName
+	 * @param objectId
+	 * @throws Exception
+	 */
+	private void addReference(Object object,String refName, String objectId) throws Exception 
+	{
+		Class<?> beanClass = object.getClass();
+		Method method = findAdder(beanClass, refName);
+		updateReference(object, objectId, method);
+	}
+
+	/**
+	 * @param object
+	 * @param refName
+	 * @param objectId
+	 * @throws Exception
+	 */
+	private void removeReference(Object object,String refName, String objectId) throws Exception 
+	{
+		Class<?> beanClass = object.getClass();
+		Method method = findRemover(beanClass, refName);
+		updateReference(object, objectId, method);
+	}
+
+	/**
+	 * @param object
+	 * @param objectId
+	 * @param setter
+	 * @throws Exception
+	 */
+	private void updateReference(Object object, String objectId, Method method)
+	throws Exception {
+		Class<?> type = method.getParameterTypes()[0];
+
+		String typeName = type.getSimpleName().toLowerCase();
+		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(typeName);
+		if (manager == null)
+		{
+			throw new Exception("unknown object "+typeName+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
+		}
+		Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
+		NeptuneIdentifiedObject reference = manager.get(null, filter, DetailLevelEnum.ATTRIBUTE);
+		if (reference != null) 
+		{
+			method.invoke(object, reference);
+		}
+		else
+		{
+			throw new Exception(typeName+" with ObjectId = "+objectId+" does not exists");
+		}
+	}
+
+
 
 	/**
 	 * @param beanClass
@@ -958,22 +1311,33 @@ public class Command
 	private Method findSetter(
 			Class<?> beanClass, String attribute)
 	throws Exception {
-		String setterName = "set"+attribute;
+		return findAccessor(beanClass, attribute, "set",true);
+	}
+	/**
+	 * @param beanClass
+	 * @param attribute
+	 * @return
+	 * @throws Exception
+	 */
+	private Method findAccessor(
+			Class<?> beanClass, String attribute, String prefix, boolean ex)
+	throws Exception {
+		String methodName = prefix+attribute;
 		Method[] methods = beanClass.getMethods();
-		Method setter = null;
+		Method accessor = null;
 		for (Method method : methods) 
 		{
-			if (method.getName().equalsIgnoreCase(setterName))
+			if (method.getName().equalsIgnoreCase(methodName))
 			{
-				setter = method;
+				accessor = method;
 				break;
 			}
 		}
-		if (setter == null)
+		if (ex && accessor == null)
 		{
-			throw new Exception("unknown attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
+			throw new Exception("unknown accessor "+prefix+" for attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
 		}
-		return setter;
+		return accessor;
 	}
 	/**
 	 * @param beanClass
@@ -984,22 +1348,31 @@ public class Command
 	private Method findGetter(
 			Class<?> beanClass, String attribute)
 	throws Exception {
-		String getterName = "get"+attribute;
-		Method[] methods = beanClass.getMethods();
-		Method getter = null;
-		for (Method method : methods) 
-		{
-			if (method.getName().equalsIgnoreCase(getterName))
-			{
-				getter = method;
-				break;
-			}
-		}
-		if (getter == null)
-		{
-			throw new Exception("unknown attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
-		}
-		return getter;
+		return findAccessor(beanClass, attribute, "get",true);
+	}
+
+	/**
+	 * @param beanClass
+	 * @param attribute
+	 * @return
+	 * @throws Exception
+	 */
+	private Method findAdder(
+			Class<?> beanClass, String attribute)
+	throws Exception {
+		return findAccessor(beanClass, attribute, "add",true);
+	}
+
+	/**
+	 * @param beanClass
+	 * @param attribute
+	 * @return
+	 * @throws Exception
+	 */
+	private Method findRemover(
+			Class<?> beanClass, String attribute)
+	throws Exception {
+		return findAccessor(beanClass, attribute, "remove",true);
 	}
 
 
@@ -1087,38 +1460,177 @@ public class Command
 	 */
 	private static void printCommandSyntax(boolean interactive) 
 	{
-		System.out.println("     delete : delete from database last readed Neptune objects");
-		System.out.println("\n     export : write Neptune Objects to file");
-		System.out.println("        -format formatName : format name");
-		System.out.println("        launch getExportFormats for other parameters");
-		System.out.println("\n     get : read Neptune Object from database");
-		System.out.println("        -id [value+] : object technical id ");
-		System.out.println("        -objectId [value+] : object neptune id ");
-		System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
-		System.out.println("        -orderBy [value+] : sort fields ");
-		System.out.println("        -asc|-desc sort order (default = asc) ");
-		System.out.println("\n     getExportFormats : print available export formats and arguments");
-		System.out.println("\n     getImportFormats : print available import formats and arguments");
-		System.out.println("\n     import : read Neptune Objects from file");
-		System.out.println("        -format formatName : format name");
-		System.out.println("        launch getImportFormats for other parameters");
-		System.out.println("\n     new : create a new instance from scratch");
-		System.out.println("\n     print : print previously readed Neptune Objects");
-		System.out.println("        -level level : deep level for recursive print (default = 99)");
-		System.out.println("\n     setAttribute : set value for a single cardinality attribute");
-		System.out.println("        -attrname attributeName : name of the single cardinality atomic attribute to set");
-		System.out.println("        -value newValue : new value to set (may be empty to unset)");
-		System.out.println("                          if value is a date, it must be in one of these 3 formats :");
-		System.out.println("                               yyyy-MM-dd");		
-		System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
-		System.out.println("                               HH:mm:ss");		
-		System.out.println("\n     setReference : set reference to another existing NeptuneObject");
-		System.out.println("        -name attributeName : Neptune reference to set");
-		System.out.println("        -objectId referenceId : NeptuneId of the Neptune Object to refer");
-		System.out.println("\n     save : save last readed Neptune objects");
-		System.out.println("\n     validate : launch validation process on previously readed NeptuneObject");
 		if (interactive)
-		   System.out.println("\n\n     exit or quit : terminate interactive session");
+		{
+			System.out.println("     add : add value or reference for any collection of attribute on single loaded object");
+			System.out.println("     delete : delete from database last readed Neptune objects");
+			System.out.println("     export : write Neptune Objects to file");
+			System.out.println("     get : read Neptune Object from database");
+			System.out.println("     getExportFormats : print available export formats and arguments");
+			System.out.println("     getImportFormats : print available import formats and arguments");
+			System.out.println("     import : read Neptune Objects from file");
+			System.out.println("     info : show attributes for active object type");
+			System.out.println("     new : create a new instance from scratch");
+			System.out.println("     print : print previously readed Neptune Objects");
+			System.out.println("     remove : remove value or reference for any collection of attribute on single loaded object");
+			System.out.println("     save : save last readed Neptune objects");
+			System.out.println("     set : set value or reference for any attribute on single loaded object");
+			System.out.println("     validate : launch validation process on previously readed NeptuneObject");
+			System.out.println("\n\n     exit or quit : terminate interactive session");
+			System.out.println("\n     verbose -on/-off : switch verbose mode");
+			System.out.println("\n     help -cmd commandName : details on commandName");
+		}
+		else
+		{
+			System.out.println("     add : add value or reference for any collection of attribute on single loaded object (see set for arguments)");
+			System.out.println("\n     delete : delete from database last readed Neptune objects");
+			System.out.println("\n     export : write Neptune Objects to file");
+			System.out.println("        -format formatName : format name");
+			System.out.println("        launch getExportFormats for other parameters");
+			System.out.println("\n     get : read Neptune Object from database");
+			System.out.println("        -id [value+] : object technical id ");
+			System.out.println("        -objectId [value+] : object neptune id ");
+			System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
+			System.out.println("        -orderBy [value+] : sort fields ");
+			System.out.println("        -asc|-desc sort order (default = asc) ");
+			System.out.println("        -limit value|none (default = 10) ");
+			System.out.println("\n     getExportFormats : print available export formats and arguments");
+			System.out.println("\n     getImportFormats : print available import formats and arguments");
+			System.out.println("\n     info : show attributes for active object type");
+			System.out.println("\n     import : read Neptune Objects from file");
+			System.out.println("        -format formatName : format name");
+			System.out.println("        launch getImportFormats for other parameters");
+			System.out.println("\n     new : create a new instance from scratch");
+			System.out.println("\n     print : print previously readed Neptune Objects");
+			System.out.println("        -level level : deep level for recursive print (default = 99)");
+			System.out.println("\n     remove : remove value or reference for any collection of attribute on single loaded object (see set for arguments)");
+			System.out.println("\n     save : save last readed Neptune objects");
+			System.out.println("\n     set : set value or reference for any attribute on single loaded object");
+			System.out.println("        -attr attributeName newValue: name of the single cardinality atomic attribute to set");
+			System.out.println("                                      new value to set (may be empty to unset)");
+			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
+			System.out.println("                               yyyy-MM-dd");		
+			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
+			System.out.println("                               HH:mm:ss");		
+			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
+			System.out.println("                                         referenceId NeptuneId of the Neptune Object to refer");
+			System.out.println("\n     validate : launch validation process on previously readed NeptuneObject");
+
+		}
+
+	}
+
+	/**
+	 * 
+	 */
+	private static void printCommandDetail(String command) 
+	{
+		String lowerCommand = command.toLowerCase();
+		if (lowerCommand.equals("delete"))
+		{
+			System.out.println("delete : delete from database last readed Neptune objects");
+		}
+		else if (lowerCommand.equals("export"))
+		{
+			System.out.println("export : write last readed Neptune Objects to file");
+			System.out.println("        -format formatName : format name");
+			System.out.println("        launch getExportFormats for other parameters");
+		}
+		else if (lowerCommand.equals("get"))
+		{
+			System.out.println("get : read Neptune Object from database");
+			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
+			System.out.println("        -id [value+] : object technical id ");
+			System.out.println("        -objectId [value+] : object neptune id ");
+			System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
+			System.out.println("        -orderBy [value+] : sort fields ");
+			System.out.println("        -asc|-desc sort order (default = asc) ");
+			System.out.println("        -limit value|none (default = 10) ");
+		}
+		else if (lowerCommand.equals("getExportFormats"))
+		{
+			System.out.println("getExportFormats : print available export formats and arguments");
+			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
+		}
+		else if (lowerCommand.equals("getImportFormats"))
+		{
+			System.out.println("getImportFormats : print available import formats and arguments");
+			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
+		}
+		else if (lowerCommand.equals("import"))
+		{
+			System.out.println("import : read Neptune Objects from file");
+			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
+			System.out.println("        -format formatName : format name");
+			System.out.println("        launch getImportFormats for other parameters");
+		}
+		else if (lowerCommand.equals("new"))
+		{
+			System.out.println("new : create a new instance from scratch");
+			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
+		}
+		else if (lowerCommand.equals("print"))
+		{
+			System.out.println("print : print previously readed Neptune Objects");
+			System.out.println("        -level level : deep level for recursive print (default = 99)");
+		}
+		else if (lowerCommand.equals("set"))
+		{
+			System.out.println("set : set value or reference for any attribute on single loaded object");
+			System.out.println("        -attr attributeName newValue: name of the single cardinality atomic attribute to set");
+			System.out.println("                                      new value to set (may be empty to unset)");
+			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
+			System.out.println("                               yyyy-MM-dd");		
+			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
+			System.out.println("                               HH:mm:ss");		
+			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
+			System.out.println("                                         referenceId NeptuneId of the Neptune Object to refer");
+			System.out.println("\n This command can be used only if one bean is loaded");		
+		}
+		else if (lowerCommand.equals("add"))
+		{
+			System.out.println("add : add value or reference for any collection of attribute on single loaded object");
+			System.out.println("        -attr attributeName newValue: name of the list attribute to update");
+			System.out.println("                                      new value to add");
+			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
+			System.out.println("                               yyyy-MM-dd");		
+			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
+			System.out.println("                               HH:mm:ss");		
+			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
+			System.out.println("                                         referenceId NeptuneId of the Neptune Object to add");
+			System.out.println("\n This command can be used only if one bean is loaded");		
+		}
+		else if (lowerCommand.equals("remove"))
+		{
+			System.out.println("remove : remove value or reference for any collection of attribute on single loaded object");
+			System.out.println("        -attr attributeName value: name of the list attribute to update");
+			System.out.println("                                   value to remove ");
+			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
+			System.out.println("                               yyyy-MM-dd");		
+			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
+			System.out.println("                               HH:mm:ss");		
+			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
+			System.out.println("                                         referenceId NeptuneId of the Neptune Object to remove");
+			System.out.println("\n This command can be used only if one bean is loaded");		
+		}
+		else if (lowerCommand.equals("save"))
+		{
+			System.out.println("save : save last readed Neptune objects");
+		}
+		else if (lowerCommand.equals("validate"))
+		{
+			System.out.println("validate : launch validation process on previously readed NeptuneObject");
+		}
+		else if (lowerCommand.equals("info"))
+		{
+			System.out.println("info : show attributes for active object type");
+			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
+		}
+		else
+		{
+			System.out.println(" unknown command "+command);
+		}
+
 	}
 
 	/**
