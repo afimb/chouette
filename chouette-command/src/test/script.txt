@@ -1,8 +1,23 @@
 #get -o line -objectId NINOXE:Line:15568799 
 #print -level 0
 #setAttribute -name name -value "ligne 2 verte"
+
+new -o ptnetwork
+setAttribute -attrname objectId -value NINOXE:GroupOfLine:test1
+setAttribute -attrname objectVersion -value 1
+setAttribute -attrname creationTime -value 2011-05-16_14:22:00
+setAttribute -attrname name -value "réseau de test"
+save
+
+new -o Company
+setAttribute -attrname objectId -value NINOXE:Company:test1
+setAttribute -attrname objectVersion -value 1
+setAttribute -attrname creationTime -value 2011-05-16_14:22:00
+setAttribute -attrname name -value "transporteur de test"
+save
+
 new -o line
-setAttribute -attrname objectId -value NINOXE:Line:test1
+setAttribute -attrname objectId -value NINOXE:Line:test2
 setAttribute -attrname objectVersion -value 1
 setAttribute -attrname creationTime -value 2011-05-13_14:22:00
 setAttribute -attrname name -value "ligne 8 de test"
@@ -10,14 +25,16 @@ setAttribute -attrname number -value 8T
 setAttribute -attrname registrationNumber -value test8
 setAttribute -attrname publishedname -value "ligne 8 de test"
 setAttribute -attrname comment -value "commentaire"
-setReference -attrname ptnetwork -objectId NINOXE:PtNetwork:13689686
-setReference -attrname company -objectId NINOXE:Company:13689687
+setReference -attrname ptnetwork -objectId NINOXE:GroupOfLine:test1
+setReference -attrname company -objectId NINOXE:Company:test1
 setAttribute -attrname transportmodename -value Bus
 print -level 0
 save
-get -objectId NINOXE:Line:test1
-print -level 0
-#delete
-new -o StopArea 
-setAttribute -attrname areacentroid.objectId -value NINOXE:AreaCentroid:test1
-print
+
+new -o Facility
+setAttribute -attrname description -value "dje def"
+setReference -attrname line -value NINOXE:Line:test1
+save
+
+get -o line -objectId NINOXE:Line:test1
+print -level 99

@@ -228,16 +228,16 @@ public class Line extends NeptuneIdentifiedObject
 		{
 			int childLevel = level -1;
 			String childIndent = indent + CHILD_INDENT;
-			if (ptNetwork != null) 
+			if (getPtNetwork() != null) 
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(ptNetwork.toString(childIndent,0));
 			}
-			if (company != null) 
+			if (getCompany() != null) 
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(company.toString(childIndent,0));
 			}
 			childIndent = indent + CHILD_LIST_INDENT;
-			if (routes != null)
+			if (getRoutes() != null)
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append("routes");
 				for (Route route : getRoutes())

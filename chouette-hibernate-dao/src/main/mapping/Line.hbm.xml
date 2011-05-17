@@ -10,12 +10,13 @@
 			</column>
 			<generator class="native" />
 		</id>
-		<property name="objectId" type="string" unique="true" not-null="true">
+		<property name="objectId" type="string" unique="true"
+			not-null="true">
 			<column name="objectId">
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
-		<property name="objectVersion" type="int" >
+		<property name="objectVersion" type="int">
 			<column name="objectVersion" default="1">
 				<comment>Version of this object</comment>
 			</column>
@@ -35,49 +36,55 @@
 				<comment>Name</comment>
 			</column>
 		</property>
-		<property name="comment" type="string" >
+		<property name="comment" type="string">
 			<column name="comment">
 				<comment>Comment</comment>
 			</column>
 		</property>
-	    <property name="number">
+		<property name="number">
 			<column name="number">
 				<comment>Number of the line (characters)</comment>
 			</column>
-	    </property>
-		
-		<property name="publishedName" type="string" >
+		</property>
+
+		<property name="publishedName" type="string">
 			<column name="publishedName">
 				<comment>Public name for travelers</comment>
 			</column>
 		</property>
-		<property name="registrationNumber" unique="true" type="string" >
+		<property name="registrationNumber" unique="true" type="string">
 			<column name="registrationNumber">
 				<comment>Registration number</comment>
 			</column>
 		</property>
 		<property name="transportModeName"
-			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType" >
+			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType">
 			<column name="transportModeName">
 				<comment>Transport Mode (Bus, Train, ...)</comment>
 			</column>
 		</property>
 		<!-- relations -->
-		<many-to-one name="ptNetwork" insert="true" update="true" cascade="none"
-			class="PTNetwork" lazy="no-proxy" outer-join="auto">
-			<column name="PTNetworkId"><comment>PTNetwork reference</comment></column>
+		<many-to-one name="ptNetwork" cascade="none" class="PTNetwork"
+			lazy="no-proxy" outer-join="auto">
+			<column name="PTNetworkId">
+				<comment>PTNetwork reference</comment>
+			</column>
 		</many-to-one>
-		<many-to-one name="company" insert="true" update="true" cascade="none"
-			class="Company" lazy="no-proxy" outer-join="auto">
-			<column name="companyId"><comment>Company reference</comment></column>
+		<many-to-one name="company" cascade="none" class="Company"
+			lazy="no-proxy" outer-join="auto">
+			<column name="companyId">
+				<comment>Company reference</comment>
+			</column>
 		</many-to-one>
 		<bag name="routes" lazy="true" inverse="true">
 			<key column="lineId" />
 			<one-to-many class="Route" />
 		</bag>
-		<many-to-one name="groupOfLine" insert="true" update="true"
-			class="GroupOfLine" lazy="no-proxy" outer-join="auto">
-			<column name="groupOfLineId"><comment>GroupOfLine reference</comment></column>
+		<many-to-one name="groupOfLine" class="GroupOfLine" lazy="no-proxy"
+			outer-join="auto">
+			<column name="groupOfLineId">
+				<comment>GroupOfLine reference</comment>
+			</column>
 		</many-to-one>
 	</class>
 </hibernate-mapping>

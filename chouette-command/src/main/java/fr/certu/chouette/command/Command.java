@@ -31,10 +31,15 @@ import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
@@ -102,6 +107,7 @@ public class Command
 				System.exit(0);
 			}
 
+			boolean dao = true;
 			if (args[0].equalsIgnoreCase("-noDao"))
 			{
 				List<String> newContext = new ArrayList<String>();
@@ -117,7 +123,7 @@ public class Command
 						}
 					}
 					context = newContext.toArray(new String[0]);
-
+					dao = false;
 				} 
 				catch (Exception e) 
 				{
@@ -128,7 +134,22 @@ public class Command
 			applicationContext = new ClassPathXmlApplicationContext(context);
 			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 			Command command = (Command) factory.getBean("Command");
+
+			if (dao)
+			{
+				SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
+				Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+				TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
+			}
+
 			command.execute(args);
+
+			if (dao)
+			{
+				SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
+				SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
+				SessionFactoryUtils.closeSession(sessionHolder.getSession());
+			}
 		}
 		else
 		{
@@ -778,12 +799,12 @@ public class Command
 			}
 		}
 
-			String limit = getSimpleString(parameters, "limit","10");
-			if (limit.equalsIgnoreCase("none"))
-			{
-				filter.addLimit(Integer.parseInt(limit));
-			}
-			
+		String limit = getSimpleString(parameters, "limit","10");
+		if (limit.equalsIgnoreCase("none"))
+		{
+			filter.addLimit(Integer.parseInt(limit));
+		}
+
 
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		if (parameters.containsKey("level"))
@@ -945,7 +966,7 @@ public class Command
 			String value = null;
 			if (args.size() > 1)
 			{
-			   value = args.get(1);
+				value = args.get(1);
 			}
 			ATTR_CMD c = ATTR_CMD.valueOf(cmd+"_VALUE");
 			followAttribute(c, bean,attrname, value);
@@ -965,7 +986,7 @@ public class Command
 			String value = null;
 			if (args.size() > 1)
 			{
-			   value = args.get(1);
+				value = args.get(1);
 			}
 			ATTR_CMD c = ATTR_CMD.valueOf(cmd+"_REF");
 			followAttribute(c, bean,attrname, value);
@@ -986,7 +1007,7 @@ public class Command
 		for (Field field : fields) 
 		{
 			int m = field.getModifiers();
-		    if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
+			if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
 			{
 				printField(c,field);
 			}
@@ -1022,8 +1043,8 @@ public class Command
 			return;
 		}
 		Class<?> type = field.getType();
-		
-		
+
+
 		if (type.isPrimitive())
 		{
 			System.out.print("- "+field.getName());
@@ -1064,7 +1085,7 @@ public class Command
 		}
 		System.out.println("");
 	}
-	
+
 
 	/**
 	 * 
@@ -1479,6 +1500,7 @@ public class Command
 			System.out.println("\n\n     exit or quit : terminate interactive session");
 			System.out.println("\n     verbose -on/-off : switch verbose mode");
 			System.out.println("\n     help -cmd commandName : details on commandName");
+			System.out.println("\n\n     exit or quit : terminate interactive session");
 		}
 		else
 		{

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="JourneyPattern"
-		table="JourneyPattern">
+	<class name="JourneyPattern" table="JourneyPattern">
 		<comment>Journey pattern</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -11,12 +11,13 @@
 			</column>
 			<generator class="native" />
 		</id>
-		<property name="objectId" type="string" unique="true" not-null="true">
+		<property name="objectId" type="string" unique="true"
+			not-null="true">
 			<column name="objectId">
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
-		<property name="objectVersion" type="int" >
+		<property name="objectVersion" type="int">
 			<column name="objectVersion" default="1">
 				<comment>Version of this object</comment>
 			</column>
@@ -36,7 +37,7 @@
 				<comment>Name</comment>
 			</column>
 		</property>
-		
+
 		<property name="comment" type="string">
 			<column name="comment">
 				<comment>Comment</comment>
@@ -52,21 +53,27 @@
 				<comment>Public name for travelers</comment>
 			</column>
 		</property>
-		
-		<set inverse="false" lazy="true"
-			name="stopPoints" table="journeyPattern_stopPoint" cascade="all">
+
+		<set inverse="false" lazy="true" name="stopPoints" table="journeyPattern_stopPoint"
+			cascade="all">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
-			<key><column name="journeyPatternId"><comment>JourneyPattern Reference</comment></column></key>
+			<key>
+				<column name="journeyPatternId">
+					<comment>JourneyPattern Reference</comment>
+				</column>
+			</key>
 			<many-to-many class="StopPoint">
-				<column name="stopPointId"><comment>StopPoint Reference</comment></column>
+				<column name="stopPointId">
+					<comment>StopPoint Reference</comment>
+				</column>
 			</many-to-many>
 		</set>
-		<many-to-one class="Route" insert="false"
-			lazy="no-proxy" name="route" update="false">
-			<column name="routeId"><comment>Route Reference</comment></column>
-			</many-to-one>
-		<set inverse="true" lazy="true"
-			name="vehicleJourneys" >
+		<many-to-one class="Route" lazy="no-proxy" name="route">
+			<column name="routeId">
+				<comment>Route Reference</comment>
+			</column>
+		</many-to-one>
+		<set inverse="true" lazy="true" name="vehicleJourneys">
 			<key column="journeyPatternId" />
 			<one-to-many class="VehicleJourney" />
 		</set>

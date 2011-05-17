@@ -51,7 +51,7 @@
 
 	<tx:advice id="txAdvice">
 		<tx:attributes>
-			<tx:method name="get*" read-only="true" />
+			<tx:method name="get*" read-only="false" />
 			<tx:method name="*" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
