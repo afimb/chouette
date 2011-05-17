@@ -20,7 +20,7 @@
 		<property column="publishedJourneyIdentifier" name="publishedJourneyIdentifier" />
 		<property column="facility" name="facility" type="string" />
 		<property name="vehicleTypeIdentifier" type="string" />
-		<property column="number" name="number" type="int" />
+		<property column="number" name="number" type="long" />
 		<many-to-one class="Route" column="routeId" lazy="no-proxy"
 			name="route" />
 		<many-to-one class="JourneyPattern" column="journeyPatternId"
@@ -29,8 +29,8 @@
 			name="timeSlot" />
 		<many-to-one class="Company" column="companyId" lazy="no-proxy"
 			name="company" />
-		<set batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops"
-			cascade="all" sort="unsorted" table="vehicleJourneyAtStop">
+		<bag batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops"
+			cascade="all" table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
 			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"
@@ -48,6 +48,6 @@
 				<property name="headwayFrequency" type="java.util.Date" />
 				<property name="departure" type="boolean" column="isDeparture" />
 			</composite-element>
-		</set>
+		</bag>
 	</class>
 </hibernate-mapping>

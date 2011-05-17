@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
- @@LICENCE@@ Société DRYADE
 
- Projet chouette : paramétrage Objet - Base
-
- DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
-
- Historique des modifications :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
- =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
- =============+================+==============================================
- 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
- =============+================+==============================================
-
- Version : $Revision: 1.6 $
--->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Timetable" table="Timetable">
 		<id column="id" name="id" type="long">

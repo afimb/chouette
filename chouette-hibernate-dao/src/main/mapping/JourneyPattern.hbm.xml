@@ -54,7 +54,7 @@
 			</column>
 		</property>
 
-		<set inverse="false" lazy="true" name="stopPoints" table="journeyPattern_stopPoint"
+		<bag inverse="false" lazy="true" name="stopPoints" table="journeyPattern_stopPoint"
 			cascade="all">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
 			<key>
@@ -67,15 +67,15 @@
 					<comment>StopPoint Reference</comment>
 				</column>
 			</many-to-many>
-		</set>
+		</bag>
 		<many-to-one class="Route" lazy="no-proxy" name="route">
 			<column name="routeId">
 				<comment>Route Reference</comment>
 			</column>
 		</many-to-one>
-		<set inverse="true" lazy="true" name="vehicleJourneys">
+		<bag inverse="true" lazy="true" name="vehicleJourneys">
 			<key column="journeyPatternId" />
 			<one-to-many class="VehicleJourney" />
-		</set>
+		</bag>
 	</class>
 </hibernate-mapping>
