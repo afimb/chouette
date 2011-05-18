@@ -134,7 +134,6 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		for (VehicleJourney vehicleJourney : vjs) 
 		{
 			List<VehicleJourneyAtStop> vAtStops = vehicleJourney.getVehicleJourneyAtStops();
-			logger.info("total VehicleJourneyAtStop before "+vAtStops.size());
 			for (int i=0;i< vAtStops.size();i++) 
 			{
 				VehicleJourneyAtStop vAtStop = vAtStops.get(i);
@@ -146,7 +145,6 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 						nextAStop.setDeparture(true);
 					}
 					vAtStops.remove(vAtStop);
-					logger.info("total VehicleJourneyAtStop after "+vAtStops.size());
 				}
 			}
 
@@ -165,7 +163,6 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
 		return logger;
 	}
 }

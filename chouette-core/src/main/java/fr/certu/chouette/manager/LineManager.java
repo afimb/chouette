@@ -307,7 +307,11 @@ public class LineManager extends AbstractNeptuneManager<Line> {
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public void completeObject(User user, Line line) {
+		line.setPtNetworkIdShortcut(line.getPtNetwork().getObjectId());
 	}
 }
