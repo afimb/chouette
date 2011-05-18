@@ -883,7 +883,8 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
-		manager.removeAll(null, beans,false);
+		boolean propagate = getBoolean(parameters, "propagate");
+		manager.removeAll(null, beans,propagate);
 		beans.clear();
 	}
 
@@ -1591,6 +1592,7 @@ public class Command
 		{
 			System.out.println("     add : add value or reference for any collection of attribute on single loaded object (see set for arguments)");
 			System.out.println("\n     delete : delete from database last readed Neptune objects");
+			System.out.println("        -propagate : propagate delete on sub objects");
 			System.out.println("\n     export : write Neptune Objects to file");
 			System.out.println("        -format formatName : format name");
 			System.out.println("        launch getExportFormats for other parameters");
