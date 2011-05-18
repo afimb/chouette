@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -230,6 +229,7 @@ public class Command
 				} 
 				catch (Exception e) 
 				{
+					logger.error(e.getMessage(),e);
 					System.out.println(e.getMessage());
 				}
 
@@ -1001,53 +1001,76 @@ public class Command
 	private void executeInfo(INeptuneManager<NeptuneIdentifiedObject> manager) throws Exception 
 	{
 		Object object = manager.getNewInstance(null);
-		Class<?> c = object.getClass();
-		// Method[] methods = c.getMethods();
-		Field[] fields = c.getSuperclass().getDeclaredFields();
-		for (Field field : fields) 
-		{
-			int m = field.getModifiers();
-			if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
-			{
-				printField(c,field);
-			}
-
-
-		}
-		fields = c.getDeclaredFields();
-		for (Field field : fields) 
-		{
-			int m = field.getModifiers();
-			if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
-			{
-				printField(c,field);
-			}
-
-
-		}
+		printFields(object,"");
 
 
 	}
 
-	private void printField(Class<?> objectType, Field field) throws Exception
+	/**
+	 * @param object
+	 * @throws Exception
+	 */
+	private void printFields(Object object,String indent) throws Exception 
+	{
+		try
+		{
+			Class<?> c = object.getClass();
+			Field[] fields = c.getSuperclass().getDeclaredFields();
+			for (Field field : fields) 
+			{
+				int m = field.getModifiers();
+				if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
+				{
+					printField(c,field,indent);
+				}
+
+
+			}
+
+			fields = c.getDeclaredFields();
+			for (Field field : fields) 
+			{
+				int m = field.getModifiers();
+				if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
+				{
+					printField(c,field,indent);
+				}
+
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	/**
+	 * @param objectType
+	 * @param field
+	 * @param indent
+	 * @throws Exception
+	 */
+	private void printField(Class<?> objectType, Field field,String indent) throws Exception
 	{
 		String fieldName = field.getName().toLowerCase();
 		if (fieldName.equals("importeditems")) return;
 		if (fieldName.endsWith("id") || fieldName.endsWith("ids"))
 		{
-			if (!fieldName.equals("objectid") && !fieldName.equals("creatorId"))
+			if (!fieldName.equals("objectid") && !fieldName.equals("creatorid") && !fieldName.equals("areacentroid"))
 				return;
 		}
-		if (findAccessor(objectType, field.getName(), "get", false) == null)	
+		if (findAccessor(objectType, field.getName(), "get", false) == null 
+		    && findAccessor(objectType, field.getName(), "is", false) == null )	
 		{
 			return;
 		}
 		Class<?> type = field.getType();
 
-
 		if (type.isPrimitive())
 		{
-			System.out.print("- "+field.getName());
+			System.out.print(indent+"- "+field.getName());
 			System.out.print(" : type "+type.getName());
 			if (findAccessor(objectType, field.getName(), "set", false) == null)	
 			{
@@ -1062,7 +1085,7 @@ public class Command
 				name = name.substring(0,name.length()-1);
 				ParameterizedType ptype = (ParameterizedType) field.getGenericType();
 				Class<?> itemType = (Class<?>) ptype.getActualTypeArguments()[0];
-				System.out.print("- "+name);
+				System.out.print(indent+"- "+name);
 				System.out.print(" : collection of type "+itemType.getSimpleName());
 				if (findAccessor(objectType, name, "add", false) != null)	
 				{
@@ -1072,10 +1095,11 @@ public class Command
 				{
 					System.out.print(" (remove allowed)");
 				}
+				type = itemType;
 			}
 			else
 			{
-				System.out.print("- "+field.getName());
+				System.out.print(indent+"- "+field.getName());
 				System.out.print(" : type "+type.getSimpleName());
 				if (findAccessor(objectType, field.getName(), "set", false) == null)	
 				{
@@ -1084,6 +1108,67 @@ public class Command
 			}
 		}
 		System.out.println("");
+		if (!type.isPrimitive())
+			printFieldDetails(type, indent);
+	}
+
+	/**
+	 * @param itemType
+	 * @param indent
+	 * @throws Exception
+	 */
+	private void printFieldDetails(Class<?> itemType, String indent)
+	throws Exception 
+	{
+		String itemName = itemType.getName();
+		if (itemName.startsWith("fr.certu.chouette.model.neptune.type."))
+		{
+			if (itemName.endsWith("Enum"))
+			{
+				Field[] fields = itemType.getDeclaredFields();
+				System.out.print(indent+"     ");
+				int i = 0;
+				for (Field field : fields) 
+				{
+					int m = field.getModifiers();
+					if (Modifier.isPublic(m) && Modifier.isStatic(m) && Modifier.isFinal(m))
+					{
+						System.out.print(field.getName()+" ");
+						i++;
+						if (i > 5)
+						{
+							i =0;
+							System.out.print("\n"+indent+"     ");
+						}
+
+					}
+				}
+				System.out.println("");
+			}
+			else
+			{
+				Object instance = itemType.newInstance();
+				printFields(instance, indent+"     ");
+			}
+		}
+		else if (itemName.startsWith("fr.certu.chouette.model.neptune."))
+		{
+			Object instance = itemType.newInstance();
+			if (instance instanceof NeptuneIdentifiedObject)
+			{
+				String simpleName = itemType.getSimpleName();
+				if (simpleName.equals("AreaCentroid"))
+				{
+					printFields(instance, indent+"     ");
+				}
+			}
+			else
+			{
+				printFields(instance, indent+"     ");
+			}
+
+
+		}
 	}
 
 
@@ -1218,16 +1303,15 @@ public class Command
 	 * @param attrname
 	 * @param value
 	 * @throws Exception
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
 	 */
-	private void setAttribute(Object object, String attrname,
-			String value) throws Exception {
-		if (attrname.equalsIgnoreCase("id")) 
+	private void setAttribute(Object object, String attrname, String value) throws Exception 
+	{
+		String name = attrname.toLowerCase();
+		if (name.equals("id")) 
 		{
 			throw new Exception("non writable attribute id for any object , process stopped ");
 		}
-		if (!attrname.toLowerCase().equals("objectid") && !attrname.toLowerCase().equals("creatorid") && attrname.toLowerCase().endsWith("id")) 
+		if (!name.equals("objectid") && !name.equals("creatorid") && !name.equals("areacentroid")&& name.endsWith("id")) 
 		{
 			throw new Exception("non writable attribute "+attrname+" use setReference instand , process stopped ");
 		}
@@ -1368,7 +1452,8 @@ public class Command
 	 */
 	private Method findGetter(
 			Class<?> beanClass, String attribute)
-	throws Exception {
+	throws Exception 
+	{
 		return findAccessor(beanClass, attribute, "get",true);
 	}
 

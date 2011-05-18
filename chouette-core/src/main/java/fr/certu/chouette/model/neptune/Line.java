@@ -114,12 +114,12 @@ public class Line extends NeptuneIdentifiedObject
 	 * Indicate whenever the line is suitable for mobility restricted persons
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter boolean mobilityRestrictedSuitable; // Ajout en base init à false
+	@Getter @Setter private boolean mobilityRestrictedSuitable; // Ajout en base init à false
 	/**
 	 * List of the specific user needs available
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
+	@Getter @Setter private  List<UserNeedEnum> userNeeds; // Ajout dans la base colonne UserNeeds  masque binaire 32 bits
 
 	/**
 	 * The optional GroupOfLine of the line
