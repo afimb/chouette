@@ -1,4 +1,4 @@
-# create a new instanec of network
+# create a new instance of network
 new -o ptnetwork
 # set attributes
 set -attr objectId CITURA:GroupOfLine:CITURA
@@ -37,6 +37,15 @@ set -attr objectVersion 1
 set -attr name NODIER
 set -attr areaType CommercialStopPoint
 # insert areacentroid CITURA:AreaCentroid:NOD2
+set -attr areacentroid.objectId CITURA:AreaCentroid:NOD2
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.023547885585011
+set -attr areacentroid.latitude 49.21584774618384
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 722997
+set -attr areacentroid.projectedPoint.y 2469993
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name NODIER
 save
 #
 new
@@ -45,6 +54,15 @@ set -attr objectVersion 1
 set -attr name "VAL DE MURIGNY"
 set -attr areaType CommercialStopPoint
 # insert areacentroid CITURA:AreaCentroid:VAL2
+set -attr areacentroid.objectId CITURA:AreaCentroid:VAL2
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.025271107959671
+set -attr areacentroid.latitude 49.20982936308434
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 723137
+set -attr areacentroid.projectedPoint.y 2469326
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name "VAL DE MURIGNY"
 save
 #
 new
@@ -121,6 +139,15 @@ set -attr objectVersion 1
 set -attr name VERDI
 set -attr areaType CommercialStopPoint
 # insert areacentroid CITURA:AreaCentroid:VRD2
+set -attr areacentroid.objectId CITURA:AreaCentroid:VRD2
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.02801703482637
+set -attr areacentroid.latitude 49.21157905227647
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 723333
+set -attr areacentroid.projectedPoint.y 2469525
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name VERDI
 save
 #
 new
@@ -397,6 +424,15 @@ set -attr name "VAL DE MURIGNY"
 set -attr areaType BoardingPosition
 set -ref parentStopArea CITURA:StopArea:VAL2
 # insert areacentroid CITURA:AreaCentroid:1780
+set -attr areacentroid.objectId CITURA:AreaCentroid:1780
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.025366491398194
+set -attr areacentroid.latitude 49.20981004721816
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 723144
+set -attr areacentroid.projectedPoint.y 2469324
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name "VAL DE MURIGNY"
 save
 #
 new 
@@ -406,6 +442,33 @@ set -attr name NODIER
 set -attr areaType BoardingPosition
 set -ref parentStopArea CITURA:StopArea:NOD2
 # insert areacentroid CITURA:AreaCentroid:6679
+set -attr areacentroid.objectId CITURA:AreaCentroid:6679
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.0237568019102214
+set -attr areacentroid.latitude 49.215943662994526
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 723012
+set -attr areacentroid.projectedPoint.y 2470004
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name NODIER
+save
+#
+new 
+set -attr objectId CITURA:StopArea:13717
+set -attr objectVersion 1
+set -attr name POMPIDOU
+set -attr areaType BoardingPosition
+set -ref parentStopArea CITURA:StopArea:PDO2
+# insert areacentroid CITURA:AreaCentroid:13717
+set -attr areacentroid.objectId CITURA:AreaCentroid:13717
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.028501477533717
+set -attr areacentroid.latitude 49.21755737958582
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 723354
+set -attr areacentroid.projectedPoint.y 2470191
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name POMPIDOU
 save
 #
 new 
@@ -451,6 +514,15 @@ set -attr name DOSTOIEVSKI
 set -attr areaType BoardingPosition
 set -ref parentStopArea CITURA:StopArea:DSK2
 # insert areacentroid CITURA:AreaCentroid:16229
+set -attr areacentroid.objectId CITURA:AreaCentroid:16229
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.021733347848372
+set -attr areacentroid.latitude 49.210283500813155
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 722878
+set -attr areacentroid.projectedPoint.y 2469371
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name DOSTOIEVSKI
 save
 #
 new 
@@ -496,6 +568,398 @@ set -attr name MELIES
 set -attr areaType BoardingPosition
 set -ref parentStopArea CITURA:StopArea:MEL2
 # insert areacentroid CITURA:AreaCentroid:20285
+set -attr areacentroid.objectId CITURA:AreaCentroid:20285
+set -attr areacentroid.objectVersion 1
+set -attr areacentroid.longitude 4.02668868303502
+set -attr areacentroid.latitude 49.213736610884325
+set -attr areacentroid.longLatType WGS84
+set -attr areacentroid.projectedPoint.x 723231
+set -attr areacentroid.projectedPoint.y 2469763
+set -attr areacentroid.projectedPoint.projectionType epgs:27572
+set -attr areacentroid.name MELIES
 save
 #
+
+# TIMETABLES
+new -o timetable
+set -attr objectId CITURA:Timetable:20110511
+set -attr objectVersion 1
+add -attr calendarDay 2011-05-11
+save
+
+# line
+new -o line
+set -attr objectId CITURA:Line:15
+set -attr objectVersion 1
+set -attr name "LIGNE 15"
+set -attr number 15
+set -attr publishedName "LIGNE 15"
+set -attr transportModeName Bus
+set -ref ptNetwork CITURA:GroupOfLine:CITURA
+save
+
+# routes
+new -o route
+set -attr objectId CITURA:Route:15_A_1
+set -attr objectVersion 1
+set -attr name MELI-VALM-KIPL-COUB-MELI
+set -attr direction A
+set -attr wayBack A
+save
+
+new 
+set -attr objectId CITURA:Route:15_R_2
+set -attr objectVersion 1
+set -attr name MELI-COUB-ALSA-COUB-MELI
+set -attr direction R
+set -attr wayBack R
+save
+
+# STOPPOINTS 
+# route aller
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_0
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:24990
+set -ref route CITURA:Route:15_A_1
+set -attr position 1
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_274
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:6126
+set -ref route CITURA:Route:15_A_1
+set -attr position 2
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_612
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:5687
+set -ref route CITURA:Route:15_A_1
+set -attr position 3
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_882
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:16229
+set -ref route CITURA:Route:15_A_1
+set -attr position 4
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_1290
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:20829
+set -ref route CITURA:Route:15_A_1
+set -attr position 5
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_1513
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:29003
+set -ref route CITURA:Route:15_A_1
+set -attr position 6
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_1719
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:18087
+set -ref route CITURA:Route:15_A_1
+set -attr position 7
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_1934
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:19909
+set -ref route CITURA:Route:15_A_1
+set -attr position 8
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_2077
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:27514
+set -ref route CITURA:Route:15_A_1
+set -attr position 9
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_2686
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:1248
+set -ref route CITURA:Route:15_A_1
+set -attr position 10
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_3058
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:17547
+set -ref route CITURA:Route:15_A_1
+set -attr position 11
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_3648
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:21424
+set -ref route CITURA:Route:15_A_1
+set -attr position 12
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_4361
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:13717
+set -ref route CITURA:Route:15_A_1
+set -attr position 13
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_4519
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:9219
+set -ref route CITURA:Route:15_A_1
+set -attr position 14
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_A_1_4835
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:24990
+set -ref route CITURA:Route:15_A_1
+set -attr position 15
+save
+
+# route retour
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_0
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:20285
+set -ref route CITURA:Route:15_R_2
+set -attr position 1
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_332
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:19909
+set -ref route CITURA:Route:15_R_2
+set -attr position 2
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_475
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:27514
+set -ref route CITURA:Route:15_R_2
+set -attr position 3
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_1084
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:1248
+set -ref route CITURA:Route:15_R_2
+set -attr position 4
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_1456
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:17547
+set -ref route CITURA:Route:15_R_2
+set -attr position 5
+save
+
+new -o StopPoint
+set -attr objectId CITURA:StopPoint:15_R_2_2046
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:21424
+set -ref route CITURA:Route:15_R_2
+set -attr position 6
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_2759
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:13717
+set -ref route CITURA:Route:15_R_2
+set -attr position 7
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_2917
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:9219
+set -ref route CITURA:Route:15_R_2
+set -attr position 8
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_3115
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:19408
+set -ref route CITURA:Route:15_R_2
+set -attr position 9
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_3272
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:6679
+set -ref route CITURA:Route:15_R_2
+set -attr position 10
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_3555
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:7004
+set -ref route CITURA:Route:15_R_2
+set -attr position 11
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_4010
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:914
+set -ref route CITURA:Route:15_R_2
+set -attr position 12
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_4274
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:1780
+set -ref route CITURA:Route:15_R_2
+set -attr position 13
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_4630
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:30705
+set -ref route CITURA:Route:15_R_2
+set -attr position 14
+save
+
+new 
+set -attr objectId CITURA:StopPoint:15_R_2_4883
+set -attr objectVersion 1
+set -ref containedInStopArea CITURA:StopArea:20285
+set -ref route CITURA:Route:15_R_2
+set -attr position 15
+save
+
+#  PTLinks
+
+# Journeypatterns
+new -o Journeypattern
+set -attr objectId CITURA:JourneyPattern:15_A_1
+set -attr objectVersion 1
+set -attr name MELI-VALM-KIPL-COUB-MELI 
+set -ref route CITURA:Route:15_A_1
+save
+
+new
+set -attr objectId CITURA:JourneyPattern:15_R_2
+set -attr objectVersion 1
+set -attr name MELI-COUB-ALSA-COUB-MELI 
+set -ref route CITURA:Route:15_R_2
+save
+
+# VehicleJourney
+new -o vehicleJourney
+set -attr objectId CITURA:VehicleJourney:15_A_1_08_38
+set -attr objectVersion 1
+set -ref route CITURA:Route:15_A_1
+set -ref journeyPattern CITURA:JourneyPattern:15_A_1
+set -attr transportMode Bus
+set -attr number 2
+# insert first vehiclejourneyatstop
+set -attr vehicleJourneyAtStop[new].departure true
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_0
+set -attr vehicleJourneyAtStop[last].departureTime 08:38:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:38:00
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_274
+set -attr vehicleJourneyAtStop[last].departureTime 08:38:53
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:38:53
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_612
+set -attr vehicleJourneyAtStop[last].departureTime 08:40:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:40:00
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_882
+set -attr vehicleJourneyAtStop[last].departureTime 08:40:47
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:40:47
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_1290
+set -attr vehicleJourneyAtStop[last].departureTime 08:42:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:42:00
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_1513
+set -attr vehicleJourneyAtStop[last].departureTime 08:42:38
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:42:38
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_1719
+set -attr vehicleJourneyAtStop[last].departureTime 08:43:13
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:43:13
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_1934
+set -attr vehicleJourneyAtStop[last].departureTime 08:43:50
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:43:50
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_2077
+set -attr vehicleJourneyAtStop[last].departureTime 08:44:15
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:44:15
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_2686
+set -attr vehicleJourneyAtStop[last].departureTime 08:46:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:46:00
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_3058
+set -attr vehicleJourneyAtStop[last].departureTime 08:47:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:47:00
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_3648
+set -attr vehicleJourneyAtStop[last].departureTime 08:49:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:49:00
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_4361
+set -attr vehicleJourneyAtStop[last].departureTime 08:50:48
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:50:48
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_4519
+set -attr vehicleJourneyAtStop[last].departureTime 08:51:12
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:51:12
+# next vehicleJourneyAtStop
+set -attr vehicleJourneyAtStop[new].departure false
+set -ref vehicleJourneyAtStop[last].stopPoint CITURA:StopPoint:15_A_1_4835
+set -attr vehicleJourneyAtStop[last].departureTime 08:52:00
+set -attr vehicleJourneyAtStop[last].arrivalTime 08:52:00
+
+# save vehiclejourney
+save
+
 
