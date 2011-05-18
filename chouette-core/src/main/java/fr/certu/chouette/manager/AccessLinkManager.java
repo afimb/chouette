@@ -17,7 +17,6 @@ public class AccessLinkManager extends AbstractNeptuneManager<AccessLink> {
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

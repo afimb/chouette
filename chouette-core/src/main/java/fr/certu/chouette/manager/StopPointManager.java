@@ -12,7 +12,9 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -164,5 +166,14 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	@Override
+	public void completeObject(User user, StopPoint stopPoint) {
+		PTNetwork ptNetwork = stopPoint.getPtNetwork();
+		if(ptNetwork != null)
+			stopPoint.setPtNetworkIdShortcut(ptNetwork.getObjectId());
+		Line line = stopPoint.getLine();
+		if(line != null)
+			stopPoint.setLineIdShortcut(line.getObjectId());
 	}
 }

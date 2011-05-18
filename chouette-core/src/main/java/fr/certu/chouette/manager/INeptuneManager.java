@@ -328,7 +328,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	
 	/**
 	 * Object completion <br />
-	 *  <p>complete this object by setting all shortcutIds and objects required (by export for example)</p>
+	 * Complete this object {@link T} by setting all shortcutIds and objects required (in export process for example)
 	 * @param user
 	 * @param bean
 	 */
