@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
@@ -23,6 +25,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class StopPointManager extends AbstractNeptuneManager<StopPoint> 
 {
+	Logger logger = Logger.getLogger(StopPoint.class);
 	public StopPointManager() 
 	{
 		super(StopPoint.class);
@@ -100,6 +103,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
 		List<PTLink> ptLinks = ptLinkManager.getAll(user, Filter.getNewOrFilter(
@@ -126,9 +130,11 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			facilityManager.remove(user, facility,propagate);
 		List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("route.id",
 				stopPoint.getRoute().getId()), level);
+
 		for (VehicleJourney vehicleJourney : vjs) 
 		{
 			List<VehicleJourneyAtStop> vAtStops = vehicleJourney.getVehicleJourneyAtStops();
+			logger.info("total VehicleJourneyAtStop before "+vAtStops.size());
 			for (int i=0;i< vAtStops.size();i++) 
 			{
 				VehicleJourneyAtStop vAtStop = vAtStops.get(i);
@@ -140,9 +146,10 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 						nextAStop.setDeparture(true);
 					}
 					vAtStops.remove(vAtStop);
-					//vjManager.removeVehicleJourneyAtStop(null, vAtStop);
+					logger.info("total VehicleJourneyAtStop after "+vAtStops.size());
 				}
 			}
+
 			vjManager.update(null, vehicleJourney);
 		}
 		List<StopPoint> stopPoints4Route = getAll(user, Filter.getNewAndFilter(
@@ -154,5 +161,11 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			update(user, sp);
 		}
 		super.remove(user, stopPoint,propagate);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return logger;
 	}
 }

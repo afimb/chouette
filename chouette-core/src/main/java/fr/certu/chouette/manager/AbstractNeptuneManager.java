@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
@@ -55,6 +57,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 	private static Map<Class<?>,INeptuneManager<?>> managers = new HashMap<Class<?>, INeptuneManager<?>>();
 
+	protected abstract Logger getLogger();
 	/**
 	 * 
 	 */
@@ -485,13 +488,5 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-	@Override
-	public void removeVehicleJourneyAtStop(User user, VehicleJourneyAtStop vehicleJourneyAtStop){
-		try {
-			throw new IllegalAccessException();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
 	}
 }

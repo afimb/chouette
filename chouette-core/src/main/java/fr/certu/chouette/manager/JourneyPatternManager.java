@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.core.CoreException;
-import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -97,5 +97,11 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 		if(vehicleJourneys != null && !vehicleJourneys.isEmpty())
 			vjManager.removeAll(user, vehicleJourneys,propagate);
 		super.remove(user, journeyPattern,propagate);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

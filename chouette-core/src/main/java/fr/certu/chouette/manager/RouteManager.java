@@ -11,6 +11,8 @@ package fr.certu.chouette.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
@@ -113,5 +115,11 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		if(stopPoints != null && !stopPoints.isEmpty())
 			stopPointManager.removeAll(user, stopPoints,propagate);
 		super.remove(user, route,propagate);			
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

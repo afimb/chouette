@@ -8,6 +8,8 @@
 
 package fr.certu.chouette.manager;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.RestrictionConstraint;
 
 /**
@@ -18,6 +20,12 @@ public class RestrictionConstraintManager extends AbstractNeptuneManager<Restric
 
 	public RestrictionConstraintManager() {
 		super(RestrictionConstraint.class);
+	}
+
+	@Override
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

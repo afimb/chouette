@@ -8,9 +8,9 @@
 
 package fr.certu.chouette.manager;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import fr.certu.chouette.model.user.User;
 
 
 
@@ -23,9 +23,10 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	public VehicleJourneyManager() {
 		super(VehicleJourney.class);
 	}
-	
+
 	@Override
-	public void removeVehicleJourneyAtStop(User user, VehicleJourneyAtStop vehicleJourneyAtStop){
-		
+	protected Logger getLogger() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

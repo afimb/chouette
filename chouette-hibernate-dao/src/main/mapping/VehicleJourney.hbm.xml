@@ -29,12 +29,12 @@
 			name="timeSlot" />
 		<many-to-one class="Company" column="companyId" lazy="no-proxy"
 			name="company" />
-		<bag batch-size="10" inverse="true" lazy="true" name="vehicleJourneyAtStops"
-			cascade="all" table="vehicleJourneyAtStop">
+		<bag lazy="false" name="vehicleJourneyAtStops"
+			cascade="none" table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
 			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"
-					lazy="no-proxy" name="stopPoint" />
+					lazy="no-proxy" name="stopPoint" cascade="none"/>
 				<!-- <many-to-one class="VehicleJourney" column="vehicleJourneyId" lazy="no-proxy" 
 					name="vehicleJourney" /> -->
 				<property name="connectingServiceId" />
@@ -49,5 +49,9 @@
 				<property name="departure" type="boolean" column="isDeparture" />
 			</composite-element>
 		</bag>
+	<bag name="timetables" table="timetablevehiclejourney" lazy="false">
+			<key column="vehiclejourneyId" />
+			<many-to-many column="timetableId" class="Timetable" />
+		</bag>	
 	</class>
 </hibernate-mapping>
