@@ -31,7 +31,6 @@
 		<property name="creatorId" type="string" />
 		<property name="name" />
 		<property name="oppositeRouteId" type="long" />
-		<property name="lineId" type="long" column="lineId" lazy="true" />
 		<property name="publishedName" />
 		<property name="number" />
 		<property name="direction"
@@ -55,7 +54,7 @@
 			<element type="string" column="objectId" />
 		</bag>
         -->
-		<many-to-one name="line" insert="false" update="false"
+		<many-to-one name="line" insert="true" update="true"
 			class="Line" lazy="no-proxy" outer-join="auto" column="lineId" />
 
 	</class>

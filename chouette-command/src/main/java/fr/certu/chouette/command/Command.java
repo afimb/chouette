@@ -79,6 +79,8 @@ public class Command
 	private static Map<String,String> shortCuts ;
 
 	private boolean verbose = false;
+	
+	private static boolean dao = true;
 
 	static
 	{
@@ -106,7 +108,6 @@ public class Command
 				System.exit(0);
 			}
 
-			boolean dao = true;
 			if (args[0].equalsIgnoreCase("-noDao"))
 			{
 				List<String> newContext = new ArrayList<String>();
@@ -134,21 +135,11 @@ public class Command
 			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 			Command command = (Command) factory.getBean("Command");
 
-			if (dao)
-			{
-				SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
-				Session session = SessionFactoryUtils.getSession(sessionFactory, true);
-				TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
-			}
+			initDao();
 
 			command.execute(args);
 
-			if (dao)
-			{
-				SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
-				SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
-				SessionFactoryUtils.closeSession(sessionHolder.getSession());
-			}
+			closeDao();
 		}
 		else
 		{
@@ -156,6 +147,37 @@ public class Command
 		}
 	}
 
+	/**
+	 * @param factory
+	 */
+	private static void closeDao() {
+		if (dao)
+		{
+			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
+			SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
+			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
+			SessionFactoryUtils.closeSession(sessionHolder.getSession());
+		}
+	}
+
+	/**
+	 * @param factory
+	 */
+	private static void initDao() {
+		if (dao)
+		{
+			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
+			SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
+			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
+		}
+	}
+
+	private static void flushDao()
+	{
+		closeDao();
+		initDao();
+	}
 	/**
 	 * @param args
 	 */
@@ -742,7 +764,7 @@ public class Command
 	private List<NeptuneIdentifiedObject> executeGet(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	throws ChouetteException
 	{
-
+        flushDao();
 		Filter filter = null;
 		if (parameters.containsKey("id"))
 		{

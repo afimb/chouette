@@ -32,6 +32,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class RouteManager extends AbstractNeptuneManager<Route> 
 {
+	private static final Logger logger = Logger.getLogger(RouteManager.class);
 	public RouteManager() 
 	{
 		super(Route.class);
@@ -99,7 +100,9 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		return globalReport;
 	}
 	@Override
-	public void remove(User user,Route route,boolean propagate) throws ChouetteException{
+	public void remove(User user,Route route,boolean propagate) throws ChouetteException
+	{
+		logger.debug("deleting Route = "+route.getObjectId());
 		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
@@ -118,8 +121,8 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	}
 
 	@Override
-	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}
 }
