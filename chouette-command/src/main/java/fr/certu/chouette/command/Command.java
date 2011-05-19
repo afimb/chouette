@@ -79,7 +79,7 @@ public class Command
 	private static Map<String,String> shortCuts ;
 
 	private boolean verbose = false;
-	
+
 	private static boolean dao = true;
 
 	static
@@ -242,17 +242,20 @@ public class Command
 					logger.error("cannot read stdin",e);
 					return;
 				}
-				if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")) break;
-				try 
+				if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")  || line.equalsIgnoreCase("q")) break;
+				if (!line.startsWith("#")) 
 				{
-					CommandArgument command = parseLine(++commandNumber, line);
-					beans = executeCommand(beans, commandNumber, command);
-					activeObject = getActiveObject(command.getParameters());
-				} 
-				catch (Exception e) 
-				{
-					logger.error(e.getMessage(),e);
-					System.out.println(e.getMessage());
+					try 
+					{
+						CommandArgument command = parseLine(++commandNumber, line);
+						beans = executeCommand(beans, commandNumber, command);
+						activeObject = getActiveObject(command.getParameters());
+					} 
+					catch (Exception e) 
+					{
+						logger.error(e.getMessage(),e);
+						System.out.println(e.getMessage());
+					}
 				}
 
 			}
@@ -368,7 +371,7 @@ public class Command
 			}
 			else
 			{
-			   executeDelete(beans, manager,parameters);
+				executeDelete(beans, manager,parameters);
 			}
 		}
 		else if (name.equals("getImportFormats"))
@@ -764,7 +767,7 @@ public class Command
 	private List<NeptuneIdentifiedObject> executeGet(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	throws ChouetteException
 	{
-        flushDao();
+		flushDao();
 		Filter filter = null;
 		if (parameters.containsKey("id"))
 		{

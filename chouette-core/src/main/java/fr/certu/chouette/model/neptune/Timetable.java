@@ -199,6 +199,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	public List<DayTypeEnum> getDayTypes() 
 	{
+		if (dayTypes == null) dayTypes = new ArrayList<DayTypeEnum>();
 		if (intDayTypes == null) return dayTypes;	
 		//CASTOREVO
 		DayTypeEnum[] dayTypes = DayTypeEnum.values();

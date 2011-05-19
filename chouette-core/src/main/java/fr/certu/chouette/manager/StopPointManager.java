@@ -141,7 +141,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 				VehicleJourneyAtStop vAtStop = vAtStops.get(i);
 				if(vAtStop.getStopPoint().equals(stopPoint)) 
 				{
-					if(vAtStop.isDeparture())
+					if(vAtStop.getDeparture())
 					{
 						VehicleJourneyAtStop nextAStop =  i< vAtStops.size() ? vAtStops.get(i +1) : vAtStop;
 						nextAStop.setDeparture(true);

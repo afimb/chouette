@@ -63,6 +63,13 @@
 				<comment>Transport Mode (Bus, Train, ...)</comment>
 			</column>
 		</property>
+		<property name="mobilityRestrictedSuitable"
+			type="boolean">
+			<column name="mobilityRestrictedSuitable">
+				<comment>Indicate whenever the line is suitable for mobility restricted persons</comment>
+			</column>
+		</property>
+		
 		<!-- relations -->
 		<many-to-one name="ptNetwork" cascade="none" class="PTNetwork"
 			lazy="no-proxy" outer-join="auto">
