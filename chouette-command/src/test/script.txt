@@ -1,15 +1,3 @@
-# clean CITURA
-get -o line -filter objectId like CITURA%
-delete
-get -o stoparea -filter objectId like CITURA%
-delete
-get -o timetable -filter objectId like CITURA%
-delete
-get -o company -filter objectId like CITURA%
-delete
-get -o ptnetwork -filter objectId like CITURA%
-delete
-
 # create a new instance of network
 new -o ptnetwork
 # set attributes
@@ -599,7 +587,6 @@ set -attr objectVersion 1
 add -attr calendarDay 2011-05-11
 save
 
-
 # line
 new -o line
 set -attr objectId CITURA:Line:15
@@ -609,7 +596,6 @@ set -attr number 15
 set -attr publishedName "LIGNE 15"
 set -attr transportModeName Bus
 set -ref ptNetwork CITURA:GroupOfLine:CITURA
-set -ref company CITURA:Company:TRANSDEV
 save
 
 # routes
@@ -619,7 +605,6 @@ set -attr objectVersion 1
 set -attr name MELI-VALM-KIPL-COUB-MELI
 set -attr direction A
 set -attr wayBack A
-set -ref line CITURA:Line:15
 save
 
 new 
@@ -628,13 +613,11 @@ set -attr objectVersion 1
 set -attr name MELI-COUB-ALSA-COUB-MELI
 set -attr direction R
 set -attr wayBack R
-set -ref line CITURA:Line:15
 save
-
 
 # STOPPOINTS 
 # route aller
-new -o stoppoint
+new 
 set -attr objectId CITURA:StopPoint:15_A_1_0
 set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:24990
@@ -795,7 +778,7 @@ set -ref route CITURA:Route:15_R_2
 set -attr position 5
 save
 
-new
+new -o StopPoint
 set -attr objectId CITURA:StopPoint:15_R_2_2046
 set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:21424
@@ -978,10 +961,5 @@ set -attr vehicleJourneyAtStop[last].arrivalTime 08:52:00
 
 # save vehiclejourney
 save
-
-get -o line -objectId CITURA:Line:15
-print -level 4
-## interrupt here for tests
-exit 
 
 

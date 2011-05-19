@@ -600,4 +600,5 @@
       <result name="list">/jsp/neptune-validation/list.jsp</result>
     </action>
   </package>
+  
 </struts>

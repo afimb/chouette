@@ -35,5 +35,5 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 		Line line = vehicleJourney.getLine();
 		if(line != null)
 			vehicleJourney.setLineIdShortcut(line.getObjectId());
-	}
+	} 
 }

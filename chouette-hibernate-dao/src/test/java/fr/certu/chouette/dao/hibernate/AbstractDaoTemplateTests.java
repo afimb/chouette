@@ -9,6 +9,7 @@
 package fr.certu.chouette.dao.hibernate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,11 +23,18 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -39,6 +47,7 @@ import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 @ContextConfiguration(locations={"classpath:testContext.xml"})
 @TransactionConfiguration(transactionManager="transactionManager",defaultRollback=true)
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject> extends AbstractTransactionalTestNGSpringContextTests
 {
 	private static final Logger logger = Logger.getLogger(AbstractDaoTemplateTests.class);
@@ -58,7 +67,6 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		return nextObjectId++;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void initDaoTemplate(String beanName, String daoName)
 	{
 		daoTemplate = (HibernateDaoTemplate<T>) applicationContext.getBean(daoName);
@@ -221,7 +229,6 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Line createBasicLine() {
 		Line line = new Line();
 		long objectId = getNextObjectId();
@@ -260,7 +267,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		route.setWayBack("A");
 		return route;
 	}
-	@SuppressWarnings("unchecked")
+
 	protected Route createRoute()
 	{
 		Route route = createBasicRoute();
@@ -274,7 +281,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		
 		return route;
 	}
-	@SuppressWarnings("unchecked")
+
 	protected StopArea createStopArea()
 	{
 		StopArea stoparea = new StopArea();
@@ -297,5 +304,88 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		stoparea.setAreaCentroid(centroid);
 		
 		return stoparea;
+	}
+	
+	protected StopPoint createStopPoint()
+	{
+		StopPoint stopPoint = new StopPoint();
+		long objectId = getNextObjectId();
+		stopPoint.setCreatorId("TESTNG");
+		stopPoint.setObjectId("Test:StopPoint:"+objectId);
+		stopPoint.setContainedInStopArea(createStopArea());
+		Address address = new Address();
+		address.setCountryCode("39397");
+		stopPoint.setAddress(address);
+		stopPoint.setRoute(createBasicRoute());
+		
+		return stopPoint;
+	}
+	
+	protected JourneyPattern createJourneyPattern()
+	{
+		JourneyPattern journeyPattern = new JourneyPattern();
+		journeyPattern.setObjectId("Test:JourneyPattern:"+getNextObjectId());
+		journeyPattern.setRoute(createBasicRoute());
+		
+		return journeyPattern;
+	}
+	
+	protected RestrictionConstraint createRestrictionConstraint() 
+	{
+		RestrictionConstraint constraint = new RestrictionConstraint();
+		constraint.setObjectId("RoutingConstraint:"+getNextObjectId());
+		constraint.setLine(createBasicLine());
+		List<StopArea> stopAreas = new ArrayList<StopArea>();
+ 		for (int i=0;i<3;i++) 
+		{
+			stopAreas.add(createStopArea());
+		}
+		constraint.setStopAreas(stopAreas);
+		
+		return constraint;
+	}
+	
+	protected ConnectionLink createConnectionLink() 
+	{
+		ConnectionLink connectionLink = new ConnectionLink();
+		connectionLink.setObjectId("ConnectionLink:"+getNextObjectId());
+		connectionLink.setStairsAvailable(true);
+		connectionLink.setStartOfLink(createStopArea());
+		connectionLink.setEndOfLink(createStopArea());
+		
+		return connectionLink;
+	}
+	
+	protected PTLink createPtLink() 
+	{
+		PTLink ptLink = new PTLink();
+		ptLink.setObjectId("PTLink:"+getNextObjectId());
+		ptLink.setComment("ptlink comment");
+		ptLink.setRoute(createBasicRoute());
+		ptLink.setStartOfLink(createStopPoint());
+		ptLink.setEndOfLink(createStopPoint());
+		
+		return ptLink;
+	}
+	
+	protected TimeSlot createTimeSlot() 
+	{
+		TimeSlot timeSlot = new TimeSlot();
+		timeSlot.setObjectId("TimeSlot:"+getNextObjectId());
+		timeSlot.setCreatorId("TESTNG");
+		timeSlot.setBeginningSlotTime(new Date());
+		
+		return timeSlot;
+	}
+	
+	protected VehicleJourney createVehicleJourney() 
+	{
+		VehicleJourney vehicleJourney = new VehicleJourney();
+		vehicleJourney.setJourneyPattern(createJourneyPattern());
+		vehicleJourney.setRoute(createBasicRoute());
+		vehicleJourney.setLine(createBasicLine());
+		vehicleJourney.setTimeSlot(createTimeSlot());
+		
+		return vehicleJourney;
 	}
 }

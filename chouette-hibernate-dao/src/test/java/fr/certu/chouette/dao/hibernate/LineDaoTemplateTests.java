@@ -44,7 +44,4 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
 //				Filter.getNewEqualsFilter("company.id", null),
 //				Filter.getNewLikeFilter("name", "nom ligne -53808172"));
 	}
-	
-	
-
 }
