@@ -4,8 +4,6 @@
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
    default-init-method="init">
-
-
 	<bean id="Test_Line" class="fr.certu.chouette.validation.test.ValidationLine" />
 	<bean id="Test_StopArea" class="fr.certu.chouette.validation.test.ValidationStopArea" />
 	<bean id="Test_ConnectionLink" class="fr.certu.chouette.validation.test.ValidationConnectionLink" />

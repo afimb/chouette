@@ -340,8 +340,14 @@ public class Command
 		}
 		else if (name.equals("delete"))
 		{
-			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
-			executeDelete(beans, manager,parameters);
+			if (beans == null || beans.isEmpty()) 
+			{
+				System.out.println("Command "+commandNumber+": nothing to delete");
+			}
+			else
+			{
+			   executeDelete(beans, manager,parameters);
+			}
 		}
 		else if (name.equals("getImportFormats"))
 		{
@@ -758,18 +764,57 @@ public class Command
 			List<String> sids = parameters.get("objectid");
 			filter = Filter.getNewInFilter("objectId", sids);
 		}
-		else if (parameters.containsKey("filterkey"))
+		else if (parameters.containsKey("filter"))
 		{
-			String filterKey = getSimpleString(parameters,"filterkey");
-			String filterOp = getSimpleString(parameters,"filterop","eq");
-			if (filterOp.equalsIgnoreCase("eq"))
+			List<String> filterArgs = parameters.get("filter");
+			if (filterArgs.size() < 2) 
 			{
-				String value = getSimpleString(parameters,"filterval");
-				filter = Filter.getNewEqualsFilter(filterKey, value);
+				throw new IllegalArgumentException("invalid syntax for filter ");
+			}
+			String filterKey = filterArgs.get(0);
+			String filterOp = filterArgs.get(1);
+			if (filterArgs.size() == 2)
+			{
+				if (filterOp.equalsIgnoreCase("null") || filterOp.equalsIgnoreCase("isnull"))
+				{
+					filter = Filter.getNewIsNullFilter(filterKey);
+				}
+				else 
+				{
+					throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
+				}
+			}
+			else if (filterArgs.size() == 3)
+			{
+				String value = filterArgs.get(2);
+				if (filterOp.equalsIgnoreCase("eq") || filterOp.equals("="))
+				{
+					filter = Filter.getNewEqualsFilter(filterKey, value);
+				}
+				else if (filterOp.equalsIgnoreCase("like"))
+				{
+					filter = Filter.getNewLikeFilter(filterKey, value);
+				}
+				else 
+				{
+					throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
+				}
+			}
+			else if (filterArgs.size() == 4)
+			{
+				throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
 			}
 			else
 			{
-				throw new IllegalArgumentException("filterOp "+filterOp+" not yet implemented");
+				if (filterOp.equalsIgnoreCase("in"))
+				{
+					List<String> values = filterArgs.subList(2, filterArgs.size());
+					filter = Filter.getNewInFilter(filterKey, values );
+				}
+				else
+				{
+					throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
+				}
 			}
 		}
 		else
@@ -1063,7 +1108,7 @@ public class Command
 				return;
 		}
 		if (findAccessor(objectType, field.getName(), "get", false) == null 
-		    && findAccessor(objectType, field.getName(), "is", false) == null )	
+				&& findAccessor(objectType, field.getName(), "is", false) == null )	
 		{
 			return;
 		}
@@ -1134,7 +1179,7 @@ public class Command
 					int m = field.getModifiers();
 					if (Modifier.isPublic(m) && Modifier.isStatic(m) && Modifier.isFinal(m))
 					{
-						System.out.print(field.getName()+" ");
+						System.out.print(field+" ");
 						i++;
 						if (i > 5)
 						{
@@ -1257,8 +1302,18 @@ public class Command
 	private void removeAttribute(Object object, String attrname, String value) throws Exception 
 	{
 		Class<?> beanClass = object.getClass();
-		Method remover = findRemover(beanClass, attrname);
-		Class<?> type = remover.getParameterTypes()[0];
+		Method adder = findAdder(beanClass,attrname);
+		Class<?> type = adder.getParameterTypes()[0];
+		if (type.getName().startsWith("fr.certu.chouette.model.neptune") &&
+				!type.getName().startsWith("Enum"))
+		{
+			type = Integer.TYPE;
+		}
+		else
+		{
+
+		}
+		Method remover = findRemover(beanClass, attrname,type);
 		Object arg = null;
 		if (type.isEnum())
 		{
@@ -1374,7 +1429,7 @@ public class Command
 	private void removeReference(Object object,String refName, String objectId) throws Exception 
 	{
 		Class<?> beanClass = object.getClass();
-		Method method = findRemover(beanClass, refName);
+		Method method = findRemover(beanClass, refName,String.class);
 		updateReference(object, objectId, method);
 	}
 
@@ -1477,9 +1532,29 @@ public class Command
 	 * @throws Exception
 	 */
 	private Method findRemover(
-			Class<?> beanClass, String attribute)
-	throws Exception {
-		return findAccessor(beanClass, attribute, "remove",true);
+			Class<?> beanClass, String attribute, Class<?> argType)
+	throws Exception 
+	{
+		String methodName = "remove"+attribute;
+		Method[] methods = beanClass.getMethods();
+		Method accessor = null;
+		for (Method method : methods) 
+		{
+			if (method.getName().equalsIgnoreCase(methodName))
+			{
+				Class<?> parmType = method.getParameterTypes()[0];
+				if (argType.equals(parmType))
+				{
+					accessor = method;
+					break;
+				}
+			}
+		}
+		if (accessor == null)
+		{
+			throw new Exception("unknown accessor remove for attribute "+attribute+" for object "+beanClass.getName()+" with argument type = "+argType.getSimpleName()+", process stopped ");
+		}
+		return accessor;
 	}
 
 
@@ -1599,6 +1674,7 @@ public class Command
 			System.out.println("\n     get : read Neptune Object from database");
 			System.out.println("        -id [value+] : object technical id ");
 			System.out.println("        -objectId [value+] : object neptune id ");
+			System.out.println("        -filter [filterargs]+ : filter clause (type '-c help -cmd filter' for more help) ");
 			System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
 			System.out.println("        -orderBy [value+] : sort fields ");
 			System.out.println("        -asc|-desc sort order (default = asc) ");
@@ -1651,10 +1727,18 @@ public class Command
 			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
 			System.out.println("        -id [value+] : object technical id ");
 			System.out.println("        -objectId [value+] : object neptune id ");
+			System.out.println("        -filter [filterargs]+ : filter clause (type '-c help -cmd filter' for more help) ");
 			System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
 			System.out.println("        -orderBy [value+] : sort fields ");
 			System.out.println("        -asc|-desc sort order (default = asc) ");
 			System.out.println("        -limit value|none (default = 10) ");
+		}
+		else if (lowerCommand.equals("filter"))
+		{
+			System.out.println("-filter attribute operator [value]+ : filter request");
+			System.out.println("        attribute = attribute to filter : may be nested (ptnetwork.objectid on line for example)");
+			System.out.println("        operator : null, eq or =, like, in (others will be adde in future)");
+			System.out.println("        value : optional values depending on operator");
 		}
 		else if (lowerCommand.equals("getExportFormats"))
 		{
@@ -1865,6 +1949,7 @@ public class Command
 		for (String line : lines) 
 		{
 			line = line.trim();
+			if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) break;
 			if (!line.isEmpty() && !line.startsWith("#"))
 			{
 				CommandArgument command = parseLine(linenumber++, line);

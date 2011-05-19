@@ -21,5 +21,23 @@ public enum LinkOrientationEnum {
 		}
 		throw new IllegalArgumentException(value);
 	}
+    /**
+     * Method toString.
+     * 
+     * @return the value of this constant
+     */
+    public java.lang.String toString(
+    ) {
+        return this.value;
+    }
+    /**
+     * Method value.
+     * 
+     * @return the value of this constant
+     */
+    public java.lang.String value(
+    ) {
+        return this.value;
+    }
 
 }

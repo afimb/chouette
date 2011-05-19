@@ -29,6 +29,21 @@ import fr.certu.chouette.validation.report.DetailReportItem;
 import fr.certu.chouette.validation.report.SheetReportItem;
 
 /**
+ * Validation plugin based on VehicleJourneys attributes and relationships
+ * <li>
+ * <ul>2.17 : </ul>
+ * <ul>2.18 : </ul>
+ * <ul>2.19 : </ul>
+ * <ul>2.20 : </ul>
+ * <ul>2.21 : </ul>
+ * <ul>2.22 : </ul>
+ * <ul>2.23 : </ul>
+ * <ul>2.24 : </ul>
+ * <ul>3.7 : </ul>
+ * <ul>3.9 : </ul>
+ * <ul>3.15 : </ul>
+ * <ul>3.16 : </ul>
+ * </li>
  * 
  * @author mamadou keira
  *
@@ -259,7 +274,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 						if(vehicleJourneyAtStops.size() >1){
 							for (VehicleJourneyAtStop vJAtStop : vehicleJourneyAtStops) {
 								String stopPointId = vJAtStop.getStopPointId();
-								StopPoint stopPoint = vJAtStop.getOjectByObjectId(stopPointId);
+								StopPoint stopPoint = vJAtStop.getStopPointByObjectId(stopPointId);
 								if(stopPoint != null){
 									double y1 = (stopPoint .getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
 									double x1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
@@ -278,7 +293,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 											stopsSet.add(vJAtStops);
 											//Test 3.7.1
 											String stopPointId2 = vJAtStop2.getStopPointId();
-											StopPoint stopPoint2 = vJAtStop2.getOjectByObjectId(stopPointId2);
+											StopPoint stopPoint2 = vJAtStop2.getStopPointByObjectId(stopPointId2);
 											if(stopPoint2 != null){
 												double y2 = (stopPoint2 .getLatitude()!=null) ? stopPoint2.getLatitude().doubleValue():0;
 												double x2 = (stopPoint2.getLongitude()!=null) ? stopPoint2.getLongitude().doubleValue():0;

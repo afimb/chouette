@@ -24,20 +24,67 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	public void addDayType(DayTypeEnum dayType)
 	{
-		if (dayTypes == null) dayTypes = new ArrayList<DayTypeEnum>();
-		dayTypes.add(dayType);
+		if (dayTypes == null) dayTypes = getDayTypes();
+		if (dayType != null)
+		{
+			dayTypes.add(dayType);
+			refreshIntDaytypes();
+		}
+	}
+
+	public void removeDayType(DayTypeEnum dayType)
+	{
+		if (dayTypes == null) dayTypes = getDayTypes();
+		if (dayType != null)
+		{
+			if (dayTypes.remove(dayType))
+				refreshIntDaytypes();
+		}
 	}
 
 	public void addCalendarDay(Date calendarDay)
 	{
 		if (calendarDays == null) calendarDays = new ArrayList<Date>();
-		calendarDays.add(calendarDay);
+		if (calendarDay != null)
+		{
+			calendarDays.add(calendarDay);
+		}
+	}
+
+	public void removeCalendarDay(Date calendarDay)
+	{
+		if (calendarDays == null) calendarDays = new ArrayList<Date>();
+		if (calendarDay != null)
+		{
+			calendarDays.remove(calendarDay);
+		}
 	}
 
 	public void addPeriod(Period period)
 	{
 		if (periods == null) periods = new ArrayList<Period>();
-		periods.add(period);
+		if (period != null)
+		{
+			periods.add(period);
+		}
+	}
+
+	public void removePeriod(Period period)
+	{
+		if (periods == null) periods = new ArrayList<Period>();
+		if (period != null)
+		{
+			periods.remove(period);
+		}
+	}
+
+	public void removePeriod(int rank)
+	{
+		if (periods == null) periods = new ArrayList<Period>();
+		if (rank >= 0 && rank < periods.size())
+		{
+			periods.remove(rank);
+		}
 	}
 
 	public void addVehicleJourneyId(String vehicleJourneyId)
@@ -49,7 +96,10 @@ public class Timetable extends NeptuneIdentifiedObject {
 	public void addVehicleJourney(VehicleJourney vehicleJourney)
 	{
 		if (vehicleJourneys == null) vehicleJourneys = new ArrayList<VehicleJourney>();
-		vehicleJourneys.add(vehicleJourney);
+		if (vehicleJourney != null && !vehicleJourneys.contains(vehicleJourney))
+		{
+			vehicleJourneys.add(vehicleJourney);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -167,10 +217,17 @@ public class Timetable extends NeptuneIdentifiedObject {
 	{
 		this.dayTypes = dayTypes;
 		//CASTOREVO
-		intDayTypes = 0;
-		if (dayTypes == null) return;
+		refreshIntDaytypes();
+	}
 
-		for (DayTypeEnum dayType : dayTypes) 
+	/**
+	 * 
+	 */
+	private void refreshIntDaytypes() {
+		intDayTypes = 0;
+		if (this.dayTypes == null) return;
+
+		for (DayTypeEnum dayType : this.dayTypes) 
 		{
 			intDayTypes += (int)Math.pow(2, dayType.ordinal());
 		}

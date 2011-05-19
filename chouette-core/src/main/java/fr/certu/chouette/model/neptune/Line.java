@@ -77,13 +77,13 @@ public class Line extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 * 
 	 */
-	@Getter @Setter private String ptNetworkIdShortcut; // Hors BD, habillé par la relation FK
+	@Getter @Setter private String ptNetworkIdShortcut; // calculés quand nécessaire 
 	/**
 	 * Neptune identification referring to the line's routes
 	 * <br/>Changes have no effect on database (see ptNetwork)
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private List<String> routeIds; // résolu par la FK
+	@Getter @Setter private List<String> routeIds; // calculés quand nécessaire 
 	/**
 	 * Neptune identification referring to the departures/arrivals stoppoints of the line's JourneyPatterns<br/>
 	 * Meaningless after database read<br/>
@@ -131,7 +131,7 @@ public class Line extends NeptuneIdentifiedObject
 	 * ImportedItems for import neptune process
 	 */
 	@Getter @Setter private ImportedItems importedItems;
-	
+
 	/**
 	 * add a user needs enumeration value to the line<br/>
 	 * do nothing if user need is already present
@@ -262,6 +262,52 @@ public class Line extends NeptuneIdentifiedObject
 	}
 
 	/**
+	 * remove a route from the line
+	 * 
+	 * @param index of the route to be removed
+	 */
+	public void removeRoute(int index)
+	{
+		if (routes == null) routes = new ArrayList<Route>();
+		if (index < routes.size())
+		{
+			Route deleted = routes.remove(index);
+			if (deleted != null) removeRouteId(deleted.getObjectId());
+		}
+	}
+	/**
+	 * remove a route from the line
+	 * 
+	 * @param route the route to be removed
+	 */
+	public void removeRoute(Route route)
+	{
+		if (routes == null) routes = new ArrayList<Route>();
+		if (routes.remove(route))
+		{
+			removeRouteId(route.getObjectId());
+		}
+	}
+	/**
+	 * remove a route from the line
+	 * @param routeId the route objectId to be removed
+	 */
+	public void removeRoute(String routeId)
+	{
+		if (routes == null) routes = new ArrayList<Route>();
+		for (Iterator<Route> iterator = routes.iterator(); iterator.hasNext();) {
+			Route route =  iterator.next();
+			if (routeId.equals(route.getObjectId()))
+			{
+				removeRouteId(routeId);
+				iterator.remove();
+				break;
+			}
+		}	
+	}
+
+
+	/**
 	 * add a routeid to the line
 	 * 
 	 * @param routeId the routeId to add
@@ -270,6 +316,16 @@ public class Line extends NeptuneIdentifiedObject
 	{
 		if (routeIds== null) routeIds = new ArrayList<String>();
 		routeIds.add(routeId);
+	}
+	/**
+	 * remove a routeid to the line
+	 * 
+	 * @param routeId the routeId to add
+	 */
+	public void removeRouteId(String routeId)
+	{
+		if (routeIds== null) routeIds = new ArrayList<String>();
+		routeIds.remove(routeId);
 	}
 
 	/**
