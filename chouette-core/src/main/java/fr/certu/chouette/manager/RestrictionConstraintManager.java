@@ -10,7 +10,9 @@ package fr.certu.chouette.manager;
 
 import org.apache.log4j.Logger;
 
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.RestrictionConstraint;
+import fr.certu.chouette.model.user.User;
 
 /**
  * @author michel
@@ -24,8 +26,12 @@ public class RestrictionConstraintManager extends AbstractNeptuneManager<Restric
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@Override
+	public void completeObject(User user, RestrictionConstraint constraint) {
+		Line line =constraint.getLine();
+		if(line  != null)
+			constraint.setLineIdShortCut(line.getObjectId());
+	}
 }

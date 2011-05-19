@@ -10,7 +10,9 @@ package fr.certu.chouette.manager;
 
 import org.apache.log4j.Logger;
 
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.user.User;
 
 
 
@@ -26,7 +28,12 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void completeObject(User user, VehicleJourney vehicleJourney) {
+		Line line = vehicleJourney.getLine();
+		if(line != null)
+			vehicleJourney.setLineIdShortcut(line.getObjectId());
 	}
 }

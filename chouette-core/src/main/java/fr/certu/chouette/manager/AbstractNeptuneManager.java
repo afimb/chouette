@@ -489,4 +489,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void completeObject(User user, T bean) {
+	}
 }

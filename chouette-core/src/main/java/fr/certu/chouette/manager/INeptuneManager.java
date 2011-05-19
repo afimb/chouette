@@ -325,4 +325,12 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param plugin
 	 */
 	void addValidationPlugin(IValidationPlugin<T> plugin);
+	
+	/**
+	 * Object completion <br />
+	 * Complete this object {@link T} by setting all shortcutIds and objects required (in export process for example)
+	 * @param user
+	 * @param bean
+	 */
+	void completeObject(User user, T bean);
 }
