@@ -1,5 +1,6 @@
 package fr.certu.chouette.model.neptune;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,11 +19,11 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter @Setter private String connectingServiceId;
 	@Getter @Setter private BoardingAlightingPossibilityEnum boardingAlightingPossibility;
 	@Getter @Setter private long order;
-	@Getter @Setter private Date arrivalTime;
-	@Getter @Setter private Date departureTime;
-	@Getter @Setter private Date waitingTime;
-	@Getter @Setter private Date elapseDuration;
-	@Getter @Setter private Date headwayFrequency;
+	@Getter @Setter private Time arrivalTime;
+	@Getter @Setter private Time departureTime;
+	@Getter @Setter private Time waitingTime;
+	@Getter @Setter private Time elapseDuration;
+	@Getter @Setter private Time headwayFrequency;
 	@Getter @Setter private Boolean departure;
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)

@@ -14,43 +14,52 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 	@Override
 	public chouette.schema.StopArea produce(StopArea stopArea) {
 		chouette.schema.StopArea castorStopArea = new chouette.schema.StopArea();
-		
+
 		//
 		populateFromModel(castorStopArea, stopArea);
-		
+
 		castorStopArea.setComment(stopArea.getComment());
 		castorStopArea.setName(stopArea.getName());
-		if(stopArea.getBoundaryPoints() != null){
+		if(stopArea.getBoundaryPoints() != null)
+		{
 			castorStopArea.setBoundaryPoint(stopArea.getBoundaryPoints());
 		}
 		castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
-		
+
 		List<String> containsList = new ArrayList<String>();
 		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
 		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));
 		castorStopArea.setContains(containsList);
-		
+
 		StopAreaExtension stopAreaExtension = new StopAreaExtension();
 		stopAreaExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea.getUserNeeds()));
-		
-		try {
+
+		try 
+		{
 			ChouetteAreaEnum areaType = stopArea.getAreaType();
-			if(areaType != null){
+			if(areaType != null)
+			{
 				stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType.value()));
 			}
-		} catch (IllegalArgumentException e) {
+		}
+		catch (IllegalArgumentException e) 
+		{
 			// TODO generate report
 		}
-		
-		stopAreaExtension.setFareCode(stopArea.getFareCode());
-		stopAreaExtension.setLiftAvailability(stopArea.isLiftAvailable());
-		stopAreaExtension.setMobilityRestrictedSuitability(stopArea.isMobilityRestrictedSuitable());
+
+		if (stopArea.getFareCode() != null)
+			stopAreaExtension.setFareCode(stopArea.getFareCode());
+		if (stopArea.getLiftAvailable() != null)
+			stopAreaExtension.setLiftAvailability(stopArea.getLiftAvailable());
+		if (stopArea.getMobilityRestrictedSuitable() != null)
+			stopAreaExtension.setMobilityRestrictedSuitability(stopArea.getMobilityRestrictedSuitable());
 		stopAreaExtension.setNearestTopicName(stopArea.getNearestTopicName());
 		stopAreaExtension.setRegistration(getRegistration(stopArea.getRegistrationNumber()));
-		stopAreaExtension.setStairsAvailability(stopArea.isStairsAvailable());
-		
+		if (stopArea.getStairsAvailable() != null)
+			stopAreaExtension.setStairsAvailability(stopArea.getStairsAvailable());
+
 		castorStopArea.setStopAreaExtension(stopAreaExtension );
-						
+
 		return castorStopArea;
 	}
 }

@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,6 +91,7 @@ public class Command
 		shortCuts.put("o", "object");
 		shortCuts.put("f", "file");
 		shortCuts.put("i", "interactive");
+		shortCuts.put("l", "level");
 	}
 
 	/**
@@ -234,11 +236,13 @@ public class Command
 				try 
 				{
 					System.out.print(activeObject+" ("+beans.size()+") >");
-					line = in.readLine().trim(); 
+					line = in.readLine();
+					if (line == null) return;
+					line = line.trim();
 				} 
-				catch (IOException e) 
+				catch (Exception e) 
 				{
-					System.err.println("cannot read stdin");
+					System.err.println("cannot read input");
 					logger.error("cannot read stdin",e);
 					return;
 				}
@@ -248,7 +252,22 @@ public class Command
 					try 
 					{
 						CommandArgument command = parseLine(++commandNumber, line);
-						beans = executeCommand(beans, commandNumber, command);
+						if (command.getName().equalsIgnoreCase("exec"))
+						{
+							String file = getSimpleString(command.getParameters(), "file");
+							List<CommandArgument> cmds = parseFile(file);
+							int cmdNum = 1;
+							for (CommandArgument cmd : cmds) 
+							{
+								commandNumber++;
+								beans = executeCommand(beans, cmdNum++, cmd);
+							}
+
+						}
+						else
+						{	
+							beans = executeCommand(beans, commandNumber, command);
+						}
 						activeObject = getActiveObject(command.getParameters());
 					} 
 					catch (Exception e) 
@@ -1198,23 +1217,24 @@ public class Command
 			{
 				Field[] fields = itemType.getDeclaredFields();
 				System.out.print(indent+"     ");
-				int i = 0;
+
+				String text = "";
 				for (Field field : fields) 
 				{
 					int m = field.getModifiers();
 					if (Modifier.isPublic(m) && Modifier.isStatic(m) && Modifier.isFinal(m))
 					{
-						System.out.print(field+" ");
-						i++;
-						if (i > 5)
+						Object instance = field.get(null);
+						String name = instance.toString();
+						if (text.length() + name.length() > 79)
 						{
-							i =0;
-							System.out.print("\n"+indent+"     ");
+							System.out.print(text+"\n"+indent+"     ");
+							text = "";
 						}
-
+						text += name+" ";
 					}
 				}
-				System.out.println("");
+				System.out.println(text);
 			}
 			else
 			{
@@ -1616,6 +1636,21 @@ public class Command
 			Date date = dateFormat.parse(value);
 			return date;
 		}
+		if (name.equals("Time")) 
+		{
+			DateFormat dateFormat = null;
+			if ( value.contains(":"))
+			{
+				dateFormat = new SimpleDateFormat("H:m:s");
+			}
+			else
+			{
+				throw new Exception("unable to convert "+value+" to Time");
+			}
+			Date date = dateFormat.parse(value);
+			Time time = new Time(date.getTime());
+			return time;
+		}
 
 		throw new Exception("unable to convert String to "+type.getCanonicalName());
 	}
@@ -1979,7 +2014,17 @@ public class Command
 			{
 				CommandArgument command = parseLine(linenumber++, line);
 				if (command != null)
-					commands.add(command);
+				{
+					if (command.getName().equalsIgnoreCase("include"))
+					{
+
+					}
+					else
+					{
+						commands.add(command);
+					}
+				}
+
 			}
 		}
 		return commands;
@@ -2005,9 +2050,11 @@ public class Command
 			Map<String, List<String>> parameters = command.getParameters();
 			for (int i = 1; i < args.length; i++)
 			{
-				if (args[i].startsWith("-"))
+				String arg = args[i].trim();
+				if (arg.isEmpty()) continue;
+				if (arg.startsWith("-"))
 				{
-					String key = args[i].substring(1).toLowerCase();
+					String key = arg.substring(1).toLowerCase();
 					if (key.length() == 1) 
 					{
 						String alias = shortCuts.get(key);
@@ -2033,7 +2080,8 @@ public class Command
 						{
 							while ((i+1 < args.length && !args[i+1].startsWith("-")))
 							{
-								list.add(args[++i]);
+								if (!args[++i].trim().isEmpty())
+									list.add(args[i]);
 							}
 						}
 						parameters.put(key,list);

@@ -25,7 +25,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	public void addDayType(DayTypeEnum dayType)
 	{
 		if (dayTypes == null) dayTypes = getDayTypes();
-		if (dayType != null)
+		if (dayType != null && !dayTypes.contains(dayType))
 		{
 			dayTypes.add(dayType);
 			refreshIntDaytypes();
@@ -199,16 +199,23 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	public List<DayTypeEnum> getDayTypes() 
 	{
-		if (dayTypes == null) dayTypes = new ArrayList<DayTypeEnum>();
-		if (intDayTypes == null) return dayTypes;	
-		//CASTOREVO
-		DayTypeEnum[] dayTypes = DayTypeEnum.values();
-		for (DayTypeEnum dayType : dayTypes) 
+		if (dayTypes == null) 
+		{
+			dayTypes = new ArrayList<DayTypeEnum>();
+		}
+		else
+		{
+			dayTypes.clear();
+		}
+		if (intDayTypes == null) intDayTypes = 0;;	
+		
+		DayTypeEnum[] dayTypeEnum = DayTypeEnum.values();
+		for (DayTypeEnum dayType : dayTypeEnum) 
 		{
 			int filtreJourType = (int) Math.pow(2, dayType.ordinal());
 			if (filtreJourType == (intDayTypes.intValue() & filtreJourType))
 			{
-				addDayType(dayType);
+				dayTypes.add(dayType);
 			}
 		}	
 		return this.dayTypes;
@@ -226,7 +233,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 */
 	private void refreshIntDaytypes() {
 		intDayTypes = 0;
-		if (this.dayTypes == null) return;
+		if (this.dayTypes == null) new ArrayList<DayTypeEnum>();
 
 		for (DayTypeEnum dayType : this.dayTypes) 
 		{

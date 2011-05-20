@@ -22,10 +22,10 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter private StopArea parentStopArea;
 	@Getter @Setter private Long parentId;
 	@Getter @Setter private ChouetteAreaEnum areaType;
-	@Getter @Setter private int fareCode;
-	@Getter @Setter private boolean liftAvailable;
-	@Getter @Setter private boolean mobilityRestrictedSuitable;
-	@Getter @Setter private boolean stairsAvailable;
+	@Getter @Setter private Integer fareCode;
+	@Getter @Setter private Boolean liftAvailable;
+	@Getter @Setter private Boolean mobilityRestrictedSuitable;
+	@Getter @Setter private Boolean stairsAvailable;
 	@Getter @Setter private String nearestTopicName;
 	@Getter @Setter private String registrationNumber;
 	@Getter @Setter private List<UserNeedEnum> userNeeds;

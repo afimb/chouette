@@ -38,7 +38,8 @@ public class LineProducer extends AbstractCastorNeptuneProducer<chouette.schema.
 		
 		LineExtension castorLineExtension = new LineExtension();
 		castorLineExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(line.getUserNeeds()));
-		castorLineExtension.setMobilityRestrictedSuitability(line.getMobilityRestrictedSuitable());
+		if (line.getMobilityRestrictedSuitable() != null)
+		   castorLineExtension.setMobilityRestrictedSuitability(line.getMobilityRestrictedSuitable());
 		// castorLineExtension.setStableId(stableId); ???
 		castorLine.setLineExtension(castorLineExtension);
 		

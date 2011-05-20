@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import java.sql.Time;
 import java.util.Date;
 
 import chouette.schema.Registration;
@@ -64,10 +65,11 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		return date;
 	}
 
-	protected Date getTime(org.exolab.castor.types.Time castorTime) {
+	protected Time getTime(org.exolab.castor.types.Time castorTime) {
 		if(castorTime == null) return null;
 		Date date = castorTime.toDate();
-		return date;
+		Time time = new Time(date.getTime());
+		return time;
 	}
 
 

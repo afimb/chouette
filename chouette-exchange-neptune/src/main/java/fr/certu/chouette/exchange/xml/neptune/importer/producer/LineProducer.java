@@ -80,14 +80,15 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 
 		// Comment optional
 		line.setComment(getNonEmptyTrimedString(xmlLine.getComment()));
-		
+
 		// LineExtension optional
 		LineExtension xmlLineExtension = xmlLine.getLineExtension();
 		if(xmlLineExtension != null){
-			
+
 			// MobilityRestrictedSuitability
-			line.setMobilityRestrictedSuitable(xmlLineExtension.getMobilityRestrictedSuitability());
-			
+			if (xmlLineExtension.hasMobilityRestrictedSuitability())
+				line.setMobilityRestrictedSuitable(xmlLineExtension.getMobilityRestrictedSuitability());
+
 			if(xmlLineExtension.getAccessibilitySuitabilityDetails() != null){
 				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlLineExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
 					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
@@ -105,7 +106,7 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 			}
 
 		}
-		
+
 		return line;
 	}
 

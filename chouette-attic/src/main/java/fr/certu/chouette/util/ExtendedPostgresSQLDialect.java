@@ -17,5 +17,6 @@ public class ExtendedPostgresSQLDialect extends /*PostgisDialect*/ PostgreSQLDia
 		super();
 		logger.info("ENREGISTREMENT DES NOUVELLES FONCTIONS APPORTEES AU DIALECT POSTGRESQL .. ");
 		registerFunction("bitwise_and", new BitwiseAndSQLFunction("?1 & ?2", Hibernate.INTEGER));
+		
 	}
 }
