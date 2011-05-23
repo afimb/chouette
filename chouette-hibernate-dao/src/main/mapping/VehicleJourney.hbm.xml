@@ -32,8 +32,8 @@
 		<bag lazy="false" name="vehicleJourneyAtStops" cascade="none"
 			table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
-			
-			<composite-element class="VehicleJourneyAtStop" >
+
+			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"
 					lazy="no-proxy" name="stopPoint" cascade="none" />
 				<!-- <many-to-one class="VehicleJourney" column="vehicleJourneyId" lazy="no-proxy" 
@@ -45,7 +45,7 @@
 				<property name="arrivalTime" type="time" />
 				<property name="departureTime" type="time" />
 				<property name="waitingTime" type="time" />
-				<property name="elapseDuration" type="time" />  
+				<property name="elapseDuration" type="time" />
 				<property name="headwayFrequency" type="time" />
 				<property name="departure" type="boolean">
 					<column name="isDeparture" default="false">
@@ -56,7 +56,7 @@
 		<bag name="timetables" table="timetablevehiclejourney" lazy="false">
 			<key column="vehiclejourneyId" />
 			<many-to-many column="timetableId" class="Timetable">
-			
+
 			</many-to-many>
 		</bag>
 	</class>

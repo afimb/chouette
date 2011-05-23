@@ -11,13 +11,13 @@ package fr.certu.chouette.dao.hibernate;
 import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 
 /**
  * @author michel
  *
  */
-public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea> {
+public class JourneyPatternDaoTemplateTests extends AbstractDaoTemplateTests<JourneyPattern> {
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
@@ -26,7 +26,7 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 	@BeforeMethod (alwaysRun=true)
 	public void createDaoTemplate() 
 	{
-		initDaoTemplate("StopArea", "stopAreaDao");
+		initDaoTemplate("JourneyPattern", "journeyPatternDao");
 	}
 
 
@@ -36,13 +36,13 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 	@Override
 	public void refreshBean() 
 	{
-		bean = createStopArea();
+		bean = createJourneyPattern();
 	}
 	
 	@Override
 	protected Filter getSelectFilter() 
 	{
-		return Filter.getNewEqualsFilter("areaCentroid.address.countryCode", "75000");
+		return Filter.getNewEqualsFilter("route.creatorId", "TESTNG");
 	}
 
 }
