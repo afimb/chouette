@@ -172,7 +172,7 @@ A:hover
 #menu
 {
   FLOAT: left;
-  WIDTH: 120px;
+  WIDTH: 170px;
   BORDER: 1px solid #B0BCD6;
   TEXT-ALIGN: left;
   PADDING: 2px;
@@ -218,7 +218,7 @@ A:hover
 /*                        CONTENT                               */
 /****************************************************************/
 #content {
-  margin: 0px 0px 0px 140px;
+  margin: 0px 0px 0px 190px;
 }
 
 #content .selection {

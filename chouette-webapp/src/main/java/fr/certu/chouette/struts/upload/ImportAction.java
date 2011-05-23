@@ -213,7 +213,6 @@ public class ImportAction extends GeneriqueAction {
                 return INPUT;
             }
             while (zipEntry != null) {
-                logger.error("La taille de cette entrée est : " + zipEntry.getSize());
                 byte[] bytes = new byte[4096];
                 int len = zipInputStream.read(bytes);
                 File temp = new File(tmprep, zipEntry.getName());
@@ -318,7 +317,6 @@ public class ImportAction extends GeneriqueAction {
                     txt += ste[kk].getClassName() + ":" + ste[kk].getLineNumber() + "\n";
                 }
             }
-            logger.error(txt);
             if (CodeIncident.ERR_CSV_NON_TROUVE.equals(e.getCode())) {
                 String message = getText("import.csv.fichier.introuvable");
                 message += getExceptionMessage(e);
@@ -446,7 +444,6 @@ public class ImportAction extends GeneriqueAction {
             ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(fichier));
             ZipEntry zipEntry = zipInputStream.getNextEntry();
             while (zipEntry != null) {
-                logger.error("La taille de cette entrée est : " + zipEntry.getSize());
                 byte[] bytes = new byte[4096];
                 int len = zipInputStream.read(bytes);
                 temp = new File(tmprep, zipEntry.getName());
