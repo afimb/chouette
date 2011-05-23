@@ -321,4 +321,10 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		}
 		return res;
 	}
+
+	@Override
+	public void saveOrUpdateAll(Collection<T> objects) {
+		getHibernateTemplate().saveOrUpdateAll(objects);
+		getHibernateTemplate().flush();
+	}
 }

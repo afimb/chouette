@@ -62,6 +62,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter protected HttpServletResponse servletResponse;
 	@Getter @Setter protected HttpServletRequest servletRequest;
 
+	@Getter @Setter private boolean save;
+
+
 	@Override
 	public void prepare() throws Exception {
 		validationParam = new ValidationParameters();
@@ -172,15 +175,18 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 	}
 
-	private String importNeptune() throws ChouetteException, IOException {
+	private String importNeptune() throws ChouetteException, IOException 
+	{
 		String result = INPUT;
 		session.clear();
 		if(file != null && file.length()>0){
 			formats = lineManager.getImportFormats(null);
 			imported = importXmlFile(file);
-			if(imported){
+			if(imported)
+			{
 				session.put("lines", lines);
-				if(lines != null && !lines.isEmpty()){
+				if(lines != null && !lines.isEmpty())
+				{
 					setImported(true);
 					result = SUCCESS;
 				}else {
@@ -197,7 +203,8 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		return result;
 	}
 
-	private boolean importXmlFile(File file) throws ChouetteException{
+	private boolean importXmlFile(File file) throws ChouetteException
+	{
 		boolean result = false;
 		if(!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("xml") && 
 				!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("zip"))
@@ -220,75 +227,89 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 		report = reportHolder.getReport();
 		session.put("fileFileName",fileFileName);
 		session.put("report", report);
-		if(lines != null && !lines.isEmpty()){
+		if(lines != null && !lines.isEmpty())
+		{
 			result = true;
 		}	
 		return result;
 	}
 
-	public String validation() throws ChouetteException, IOException{
+	public String validation() throws ChouetteException, IOException
+	{
 		String res = null;
 		if(file != null)
 			res = importNeptune();
-		else if(session.get("lines") != null){
+		else if(session.get("lines") != null)
+		{
 			lines = (List<Line>) session.get("lines");
 			res = SUCCESS;
 		}else{
 			addActionError(getText("error.import.file.require"));
 			return ERROR;
 		}
-			
-		if(res.equals(SUCCESS)){
-			reportValidation = lineManager.validate(null,lines,validationParam);
-			boolean isDefault = false;
-			if(session.get("isDefault") != null)
-				isDefault = (Boolean)session.get("isDefault");
-			if(!isDefault){
-				// Save to cookie
-				saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
-				saveCookie("test3_2_Polygon", validationParam.getTest3_2_PolygonPoints());
-				saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
 
-				saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
-				saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
+		if(validate)
+			if(res.equals(SUCCESS))
+			{
+				reportValidation = lineManager.validate(null,lines,validationParam);
+				boolean isDefault = false;
+				if(session.get("isDefault") != null)
+					isDefault = (Boolean)session.get("isDefault");
+				if(!isDefault){
+					// Save to cookie
+					saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
+					saveCookie("test3_2_Polygon", validationParam.getTest3_2_PolygonPoints());
+					saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
 
-				saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
+					saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
+					saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
 
-				saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
-				saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
+					saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
 
-				saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
-				saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
+					saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
+					saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
 
-				saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
-				saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
+					saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
+					saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
 
-				saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
-				saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
+					saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
+					saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
 
-				saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
-				saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
+					saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
+					saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
 
-				saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
-				saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
-				saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
-				saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
+					saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
+					saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
 
-				saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
-				saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
+					saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
+					saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
+					saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
+					saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
 
-				saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
-				saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
+					saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
+					saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
 
-				saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
-				saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
+					saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
+					saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
 
-				saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
-				saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
+					saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
+					saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
 
-				saveCookie("projection_reference", validationParam.getProjection_reference());
+					saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
+					saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
+
+					saveCookie("projection_reference", validationParam.getProjection_reference());
+				}
 			}
+
+		if(save)
+		{
+			//TODO saveAll() should be implemented in LineManager 
+			lineManager.saveAll(null, lines);
+			addActionMessage("successfully saved");
+			return INPUT;
 		}
+
 		if(res.equals(INPUT) || res.equals(SUCCESS))
 			res =  LIST;
 		else 

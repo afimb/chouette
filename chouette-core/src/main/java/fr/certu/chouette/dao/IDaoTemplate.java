@@ -19,4 +19,5 @@ public interface IDaoTemplate <T extends NeptuneObject>
 	   List<T> select(Filter clause);
 	   boolean exists(Long id);
 	   boolean exists(String objectId);
+	   void saveOrUpdateAll(Collection<T> objects);
 }

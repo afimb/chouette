@@ -47,8 +47,9 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class LineManager extends AbstractNeptuneManager<Line> 
 {
-    private static final Logger logger = Logger.getLogger(LineManager.class);
-	
+	private static final Logger logger = Logger.getLogger(LineManager.class);
+	private INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+
 	public LineManager() 
 	{
 		super(Line.class);
@@ -295,7 +296,6 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	{
 		logger.debug("deleting Line = "+line.getObjectId());
 
-		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -361,6 +361,17 @@ public class LineManager extends AbstractNeptuneManager<Line>
 					}
 				}
 			}
+		}
+	}
+
+	@Override
+	public void saveAll(User user, List<Line> lines) throws ChouetteException 
+	{
+		super.saveAll(null, lines);
+		for (Line line : lines) {
+			List<Route> routes = line.getRoutes();
+			if(routes != null)
+				routeManager.saveAll(null, routes);
 		}
 	}
 }

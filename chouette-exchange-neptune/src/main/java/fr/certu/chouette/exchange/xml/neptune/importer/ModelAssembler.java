@@ -179,6 +179,7 @@ public class ModelAssembler {
 				ptLink.setRoute(route);
 				ptLink.setRouteId(route.getObjectId());
 			}
+			route.setLine(line);
 		}
 	}
 
