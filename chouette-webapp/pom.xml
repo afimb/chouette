@@ -103,6 +103,10 @@
             <groupId>fr.certu.chouette</groupId>
             <artifactId>chouette-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-hibernate-dao</artifactId>
+        </dependency>
     </dependencies>
     <pluginRepositories>
         <pluginRepository>

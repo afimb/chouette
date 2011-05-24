@@ -304,7 +304,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 		if(save)
 		{ 
-			lineManager.saveAll(null, lines,true);
+			lineManager.saveAll(null, lines, false);
 			addActionMessage("successfully saved");
 			return INPUT;
 		}

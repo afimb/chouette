@@ -25,6 +25,8 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern> 
 {
 
+	private INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
+
 	public JourneyPatternManager() 
 	{
 		super(JourneyPattern.class);
@@ -105,7 +107,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	protected Logger getLogger() {
 		return null;
 	}
-	
+
 	@Override
 	public void completeObject(User user, JourneyPattern journeyPattern) {
 		Route route = journeyPattern.getRoute();
@@ -114,5 +116,19 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 			if(line != null)
 				journeyPattern.setLineIdShortcut(line.getObjectId());
 		}		
+	}
+
+	@Override
+	public void save(User user, JourneyPattern journeyPattern, boolean propagate) throws ChouetteException 
+	{
+		super.save(user, journeyPattern, propagate);
+		
+		if(propagate)
+		{
+			List<VehicleJourney> vehicleJourneys = journeyPattern.getVehicleJourneys();
+			if(vehicleJourneys != null)
+				vjManager.saveAll(user, vehicleJourneys, propagate);
+
+		}
 	}
 }

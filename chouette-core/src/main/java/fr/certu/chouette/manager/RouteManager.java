@@ -20,7 +20,6 @@ import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -34,12 +33,11 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 public class RouteManager extends AbstractNeptuneManager<Route> 
 {
 	private static final Logger logger = Logger.getLogger(RouteManager.class);
-	
+
 	private INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 	private INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
-	private INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 	private INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-	
+
 	public RouteManager() 
 	{
 		super(Route.class);
@@ -132,29 +130,24 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	{
 		return logger;
 	}
-	
+
 	@Override
-	public void saveAll(User user, List<Route> routes, boolean saveOthers) throws ChouetteException 
+	public void save(User user, Route route, boolean propagate) throws ChouetteException 
 	{
-		if(saveOthers)
+		super.save(user, route, propagate);
+
+		if(propagate)
 		{
-			for (Route route : routes) 
-			{
-				save(route);
-				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
-				if(journeyPatterns != null)
-					jpManager.saveAll(user, journeyPatterns,saveOthers);
-				List<PTLink> links = route.getPtLinks();
-				if(links != null)
-					ptLinkManager.saveAll(user, links,saveOthers);
-				List<StopPoint> stopPoints  = route.getStopPoints();
-				if(stopPoints != null)
-					stopPointManager.saveAll(user, stopPoints,saveOthers);
-			}
-		}else
-		{
-			super.saveAll(user, routes, saveOthers);
+			save(user,route,propagate);
+			List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
+			if(journeyPatterns != null)
+				jpManager.saveAll(user, journeyPatterns,propagate);
+			List<StopPoint> stopPoints  = route.getStopPoints();
+			if(stopPoints != null)
+				stopPointManager.saveAll(user, stopPoints,propagate);
+			List<PTLink> links = route.getPtLinks();
+			if(links != null)
+				ptLinkManager.saveAll(user, links,propagate);
 		}
-		
 	}
 }

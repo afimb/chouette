@@ -301,9 +301,9 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	public void remove(User user, Line line,boolean propagate) throws ChouetteException
 	{
 		if(getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		
+
 		logger.debug("deleting Line = "+line.getObjectId());
-		
+
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -373,26 +373,29 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void saveAll(User user, List<Line> lines, boolean saveOthers) throws ChouetteException 
+	public void save(User user, Line line, boolean propagate) throws ChouetteException
 	{
-		if(saveOthers)
+		if(propagate)
 		{
-			for (Line line : lines) 
-			{
-				companyManager.save(line.getCompany());
-				networkManager.save(line.getPtNetwork());
-				GroupOfLine groupOfLine = line.getGroupOfLine();
-				if(groupOfLine != null)
-					groupOfLineManager.save(groupOfLine);
-				save(line);
-				List<Route> routes = line.getRoutes();
-				if(routes != null)
-					routeManager.saveAll(user, routes,saveOthers);
-			}
+			Company company = line.getCompany();
+			if(company != null)
+				companyManager.save(user,company,propagate);
+			PTNetwork network = line.getPtNetwork();
+			if(network != null)
+				networkManager.save(user,network,propagate);
+			GroupOfLine groupOfLine = line.getGroupOfLine();
+			if(groupOfLine != null)
+				groupOfLineManager.save(user,groupOfLine,propagate);
+			
+			super.save(user, line, propagate);
+			
+			List<Route> routes = line.getRoutes();
+			if(routes != null)
+				routeManager.saveAll(user, routes,propagate);
 		}else 
 		{
-			super.saveAll(user, lines, saveOthers);
+			super.save(user, line, propagate);
 		}
-		
+
 	}
 }
