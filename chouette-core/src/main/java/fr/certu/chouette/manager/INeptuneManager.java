@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
@@ -197,9 +198,10 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * 
 	 * @param user user account for security check 
 	 * @param beans a collection of beans to save
+	 * @param saveOthers indicate if sub objects should be saved automatically
 	 * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
 	 */
-	void saveAll(User user, List<T> beans) throws ChouetteException;
+	void saveAll(User user, List<T> beans,boolean saveOthers) throws ChouetteException;
 
 	/**
 	 * save in storage the imported beans<br/>
@@ -333,4 +335,6 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param bean
 	 */
 	void completeObject(User user, T bean);
+	
+	void save(T object) throws CoreException;
 }

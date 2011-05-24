@@ -15,6 +15,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -48,7 +50,11 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 public class LineManager extends AbstractNeptuneManager<Line> 
 {
 	private static final Logger logger = Logger.getLogger(LineManager.class);
+
 	private INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+	private INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
+	private INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
+	private INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
 
 	public LineManager() 
 	{
@@ -294,8 +300,10 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void remove(User user, Line line,boolean propagate) throws ChouetteException
 	{
+		if(getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		
 		logger.debug("deleting Line = "+line.getObjectId());
-
+		
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -365,13 +373,26 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void saveAll(User user, List<Line> lines) throws ChouetteException 
+	public void saveAll(User user, List<Line> lines, boolean saveOthers) throws ChouetteException 
 	{
-		super.saveAll(null, lines);
-		for (Line line : lines) {
-			List<Route> routes = line.getRoutes();
-			if(routes != null)
-				routeManager.saveAll(null, routes);
+		if(saveOthers)
+		{
+			for (Line line : lines) 
+			{
+				companyManager.save(line.getCompany());
+				networkManager.save(line.getPtNetwork());
+				GroupOfLine groupOfLine = line.getGroupOfLine();
+				if(groupOfLine != null)
+					groupOfLineManager.save(groupOfLine);
+				save(line);
+				List<Route> routes = line.getRoutes();
+				if(routes != null)
+					routeManager.saveAll(user, routes,saveOthers);
+			}
+		}else 
+		{
+			super.saveAll(user, lines, saveOthers);
 		}
+		
 	}
 }

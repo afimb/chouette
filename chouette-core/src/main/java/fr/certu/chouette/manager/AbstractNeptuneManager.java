@@ -308,11 +308,17 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 	}
 
+	@Override
+	public void save(T object) throws CoreException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		getDao().save(object);
+	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#saveAll(fr.certu.chouette.model.user.User, java.util.List)
 	 */
 	@Override
-	public void saveAll(User user, List<T> beans) throws ChouetteException 
+	public void saveAll(User user, List<T> beans ,boolean saveOthers) throws ChouetteException 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		getDao().saveOrUpdateAll(beans);

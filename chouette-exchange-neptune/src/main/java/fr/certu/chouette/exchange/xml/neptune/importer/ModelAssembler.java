@@ -212,6 +212,7 @@ public class ModelAssembler {
 		{
 			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 			ptLink.setEndOfLink(getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class));
+			ptLink.setRoute(getObjectFromId(ptLink.getRouteId(), Route.class));
 		}
 	}
 
@@ -226,6 +227,7 @@ public class ModelAssembler {
 			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
 			for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()){
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
+				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			}
 			//vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
 			vehicleJourney.setLine(line);
@@ -245,6 +247,11 @@ public class ModelAssembler {
 			}
 			else{
 				//TODO : throw exception ???
+			}
+			
+			for (PTLink ptLink : ptLinks) {
+				if(ptLink.getStartOfLink().equals(stopPoint) || ptLink.getEndOfLink().equals(stopPoint))
+					stopPoint.setRoute(ptLink.getRoute());
 			}
 		}
 	}
@@ -268,6 +275,7 @@ public class ModelAssembler {
 				for (RestrictionConstraint constraint : stopArea.getRestrictionConstraints()) {
 					Line line = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
 					constraint.setLine(line);
+					constraint.setStopAreas(stopAreas);
 				}
 			}
 		}
