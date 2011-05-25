@@ -23,6 +23,7 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
@@ -37,6 +38,10 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
 {
+
+	private INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
+	private INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
+	private INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
 
 	public StopAreaManager() 
 	{
@@ -95,7 +100,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		List<StopPoint> stopPoints = spManager.getAll(user, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()), level);
 		if(stopPoints != null && !stopPoints.isEmpty())
 			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"can't be deleted because it has a stopPoints");
-		
+
 		List<ConnectionLink> cLinks = clinkManager.getAll(user, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("startOfLink.id",stopArea.getId()), 
 				Filter.getNewEqualsFilter("endOfLink.id", stopArea.getId())),level); 
@@ -115,4 +120,23 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		// TODO Auto-generated method stub
 		return null;
 	}	
+
+	@Override
+	public void save(User user, StopArea stopArea, boolean propagate) throws ChouetteException 
+	{
+		super.save(user, stopArea, propagate);
+
+		if(propagate)
+		{
+			List<AccessLink> accessLinks = stopArea.getAccessLinks();
+			if(accessLinks != null)
+				accessLinkManager.saveAll(user, accessLinks, propagate);
+			List<ConnectionLink> connectionLinks = stopArea.getConnectionLinks();
+			if(connectionLinks != null)
+				connectionLinkManager.saveAll(user, connectionLinks, propagate);
+			List<RestrictionConstraint> constraints = stopArea.getRestrictionConstraints();
+			if(constraints != null)
+				constraintManager.saveAll(user, constraints, propagate);	
+		}
+	}
 }

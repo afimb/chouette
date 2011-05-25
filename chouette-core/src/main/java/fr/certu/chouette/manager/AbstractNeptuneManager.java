@@ -321,13 +321,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		if(propagate)
-		{
-			for (T t : beans) {
-				save(user,t, propagate);
-			}
-		}else
-			getDao().saveOrUpdateAll(beans);
+
+		for (T t : beans) {
+			save(user,t, propagate);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -499,7 +496,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public void completeObject(User user, T bean) {
 	}

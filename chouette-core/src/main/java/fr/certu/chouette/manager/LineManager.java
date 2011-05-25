@@ -380,12 +380,12 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			Company company = line.getCompany();
 			if(company != null)
 				companyManager.save(user,company,propagate);
-			PTNetwork network = line.getPtNetwork();
-			if(network != null)
-				networkManager.save(user,network,propagate);
 			GroupOfLine groupOfLine = line.getGroupOfLine();
 			if(groupOfLine != null)
 				groupOfLineManager.save(user,groupOfLine,propagate);
+			PTNetwork network = line.getPtNetwork();
+			if(network != null)
+				networkManager.save(user,network,propagate);
 			
 			super.save(user, line, propagate);
 			

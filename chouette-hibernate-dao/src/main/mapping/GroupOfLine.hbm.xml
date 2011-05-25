@@ -14,10 +14,10 @@
 		<property name="name" type="string" />
 
 		<property name="comment" />
-		<set name="lines" lazy="true" inverse="true"
+		<bag name="lines" lazy="true" inverse="true"
 			batch-size="10">
 			<key column="groupOfLineId" />
 			<one-to-many class="Line" />
-		</set>
+		</bag>
 	</class>
 </hibernate-mapping>

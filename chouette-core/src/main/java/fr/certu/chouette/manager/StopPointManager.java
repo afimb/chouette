@@ -28,6 +28,9 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 public class StopPointManager extends AbstractNeptuneManager<StopPoint> 
 {
 	Logger logger = Logger.getLogger(StopPoint.class);
+	
+	private INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
+	
 	public StopPointManager() 
 	{
 		super(StopPoint.class);
@@ -167,13 +170,28 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	protected Logger getLogger() {
 		return logger;
 	}
+	
 	@Override
-	public void completeObject(User user, StopPoint stopPoint) {
+	public void completeObject(User user, StopPoint stopPoint) 
+	{
 		PTNetwork ptNetwork = stopPoint.getPtNetwork();
 		if(ptNetwork != null)
 			stopPoint.setPtNetworkIdShortcut(ptNetwork.getObjectId());
 		Line line = stopPoint.getLine();
 		if(line != null)
 			stopPoint.setLineIdShortcut(line.getObjectId());
+	}
+	
+	@Override
+	public void save(User user, StopPoint stopPoint, boolean propagate) throws ChouetteException 
+	{
+		super.save(user, stopPoint, propagate);
+		
+		if(propagate)
+		{
+			StopArea stopArea = stopPoint.getContainedInStopArea();
+			if(stopArea != null)
+				stopAreaManager.save(user, stopArea, propagate);
+		}
 	}
 }
