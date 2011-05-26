@@ -343,4 +343,6 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param bean
 	 */
 	void completeObject(User user, T bean);
+	
+	T getByObjectId(String objectId) throws ChouetteException;
 }

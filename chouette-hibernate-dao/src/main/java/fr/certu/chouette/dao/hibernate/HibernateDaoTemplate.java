@@ -245,7 +245,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public void save(T object)
 	{
-		getHibernateTemplate().save( object);
+		getHibernateTemplate().save(object);
 		getHibernateTemplate().flush();
 	}
 

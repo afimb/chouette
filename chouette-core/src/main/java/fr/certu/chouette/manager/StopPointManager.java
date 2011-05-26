@@ -1,5 +1,6 @@
 package fr.certu.chouette.manager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -181,16 +182,22 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	}
 	
 	@Override
-	public void save(User user, StopPoint stopPoint, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<StopPoint> stopPoints, boolean propagate) throws ChouetteException 
 	{
-		super.save(user, stopPoint, propagate);
+		super.saveOrUpdateAll(user, stopPoints);
 		
 		if(propagate)
 		{
 			INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
-			StopArea stopArea = stopPoint.getContainedInStopArea();
-			if(stopArea != null)
-				stopAreaManager.save(user, stopArea, propagate);
+			List<StopArea> stopAreas = new ArrayList<StopArea>();
+			for (StopPoint stopPoint : stopPoints) {
+				StopArea stopArea = stopPoint.getContainedInStopArea();	
+				if(stopArea != null && !stopAreas.contains(stopArea))
+					stopAreas.add(stopArea);
+			}
+			
+			if(stopAreas != null)
+				stopAreaManager.saveAll(user, stopAreas, propagate);
 		}
 	}
 }

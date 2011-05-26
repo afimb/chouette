@@ -8,6 +8,7 @@
 
 package fr.certu.chouette.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	protected Logger getLogger() {
 		return null;
 	}
-	
+
 	@Override
 	public void completeObject(User user, VehicleJourney vehicleJourney) 
 	{
@@ -46,21 +47,31 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	} 
 
 	@Override
-	public void save(User user, VehicleJourney vehicleJourney, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<VehicleJourney> vehicleJourneys, boolean propagate) throws ChouetteException 
 	{
-		super.save(user, vehicleJourney, propagate);
+		super.saveOrUpdateAll(user, vehicleJourneys);
 
 		if(propagate)
 		{
 			INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) getManager(Timetable.class);
 			INeptuneManager<TimeSlot> timeSlotManager = (INeptuneManager<TimeSlot>) getManager(TimeSlot.class);
-			
-			List<Timetable> timetables = vehicleJourney.getTimetables();
+
+			List<Timetable> timetables = new ArrayList<Timetable>();
+			List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
+
+			for (VehicleJourney vehicleJourney : vehicleJourneys) 
+			{
+				if(vehicleJourney.getTimetables() != null && !timetables.containsAll(vehicleJourney.getTimetables()))
+					timetables.addAll(vehicleJourney.getTimetables());	
+
+				TimeSlot timeSlot = vehicleJourney.getTimeSlot();
+				if(timeSlot != null && !timeSlots.contains(timeSlot))
+					timeSlots.add(timeSlot);
+			}
 			if(timetables != null)
 				timetableManager.saveAll(user, timetables, propagate);
-			TimeSlot timeSlot = vehicleJourney.getTimeSlot();
-			if(timeSlot != null)
-				timeSlotManager.save(user, timeSlot, propagate);
+			if(timeSlots != null)
+				timeSlotManager.saveAll(user, timeSlots, propagate);
 		}
 	}
 }

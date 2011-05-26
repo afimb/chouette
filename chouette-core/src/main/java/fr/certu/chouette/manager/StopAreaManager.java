@@ -8,6 +8,7 @@
 
 package fr.certu.chouette.manager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -117,23 +118,35 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 	}	
 
 	@Override
-	public void save(User user, StopArea stopArea, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<StopArea> stopAreas, boolean propagate) throws ChouetteException 
 	{
-		super.save(user, stopArea, propagate);
+		super.saveOrUpdateAll(user, stopAreas);
 
 		if(propagate)
 		{
 			INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
 			INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
 			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-			
-			List<AccessLink> accessLinks = stopArea.getAccessLinks();
+
+			List<AccessLink> accessLinks = new ArrayList<AccessLink>();
+			List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
+			List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
+			for (StopArea stopArea : stopAreas) 
+			{
+				List<AccessLink> links = stopArea.getAccessLinks();
+				if(links != null && !accessLinks.containsAll(links))
+					accessLinks.addAll(links);
+				if(stopArea.getConnectionLinks()!=null && !connectionLinks.containsAll(stopArea.getConnectionLinks()))
+					connectionLinks.addAll(stopArea.getConnectionLinks());
+
+				if(stopArea.getRestrictionConstraints() != null && !constraints.containsAll(stopArea.getRestrictionConstraints()))
+					constraints.addAll(stopArea.getRestrictionConstraints());
+			}
+
 			if(accessLinks != null)
 				accessLinkManager.saveAll(user, accessLinks, propagate);
-			List<ConnectionLink> connectionLinks = stopArea.getConnectionLinks();
 			if(connectionLinks != null)
 				connectionLinkManager.saveAll(user, connectionLinks, propagate);
-			List<RestrictionConstraint> constraints = stopArea.getRestrictionConstraints();
 			if(constraints != null)
 				constraintManager.saveAll(user, constraints, propagate);	
 		}
