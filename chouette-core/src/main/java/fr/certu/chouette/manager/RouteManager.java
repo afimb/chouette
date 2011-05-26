@@ -34,10 +34,6 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 {
 	private static final Logger logger = Logger.getLogger(RouteManager.class);
 
-	private INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
-	private INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
-	private INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-
 	public RouteManager() 
 	{
 		super(Route.class);
@@ -132,20 +128,37 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	}
 
 	@Override
-	public void save(User user, Route route, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<Route> routes, boolean propagate) throws ChouetteException 
 	{
-		super.save(user, route, propagate);
+		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
+		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
+		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
+
+		super.saveOrUpdateAll(user, routes);
 
 		if(propagate)
 		{
-			save(user,route,propagate);
-			List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
+			List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();
+			List<StopPoint> stopPoints  = new ArrayList<StopPoint>();
+			List<PTLink> links = new ArrayList<PTLink>();
+			for (Route route : routes)
+			{
+				List<JourneyPattern> patterns =route.getJourneyPatterns();
+				if(patterns != null && !journeyPatterns.containsAll(patterns))
+					journeyPatterns.addAll(route.getJourneyPatterns());
+				
+				List<StopPoint> points = route.getStopPoints();
+				if(points != null && !stopPoints.containsAll(points))
+					stopPoints.addAll(route.getStopPoints());
+				List<PTLink> ptLinks = route.getPtLinks(); 
+				if(ptLinks != null && !links.containsAll(ptLinks))
+					links.addAll(route.getPtLinks());
+			}
 			if(journeyPatterns != null)
 				jpManager.saveAll(user, journeyPatterns,propagate);
-			List<StopPoint> stopPoints  = route.getStopPoints();
+
 			if(stopPoints != null)
 				stopPointManager.saveAll(user, stopPoints,propagate);
-			List<PTLink> links = route.getPtLinks();
 			if(links != null)
 				ptLinkManager.saveAll(user, links,propagate);
 		}

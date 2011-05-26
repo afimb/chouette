@@ -500,4 +500,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void completeObject(User user, T bean) {
 	}
+	
+	@Override
+	public T getByObjectId(String objectId) throws CoreException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		
+		return getDao().getByObjectId(objectId);		
+	}
 }

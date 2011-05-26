@@ -299,7 +299,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 
 		logger.debug("deleting Line = "+line.getObjectId());
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-		
+
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -369,7 +369,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void save(User user, Line line, boolean propagate) throws ChouetteException
+	public void saveAll(User user, List<Line> lines, boolean propagate) throws ChouetteException
 	{
 		if(propagate)
 		{
@@ -377,26 +377,35 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
 			INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
 			INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
-			
-			Company company = line.getCompany();
-			if(company != null)
-				companyManager.save(user,company,propagate);
-			GroupOfLine groupOfLine = line.getGroupOfLine();
-			if(groupOfLine != null)
-				groupOfLineManager.save(user,groupOfLine,propagate);
-			PTNetwork network = line.getPtNetwork();
-			if(network != null)
-				networkManager.save(user,network,propagate);
-			
-			super.save(user, line, propagate);
-			
-			List<Route> routes = line.getRoutes();
-			if(routes != null)
-				routeManager.saveAll(user, routes,propagate);
-		}else 
-		{
-			super.save(user, line, propagate);
-		}
 
+			List<PTNetwork> networks = new ArrayList<PTNetwork>();
+			List<Company> companies = new ArrayList<Company>();
+			List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
+			List<Route> routes = new ArrayList<Route>();
+
+			for (Line line : lines) 
+			{
+				Company company = line.getCompany();
+				if(company != null && !companies.contains(company))
+					companies.add(company);					
+				groupOfLines.add(line.getGroupOfLine());
+				networks.add(line.getPtNetwork());
+				routes.addAll(line.getRoutes());		
+			}
+			companyManager.saveAll(user,companies,propagate);
+			groupOfLineManager.saveAll(user,groupOfLines,propagate);
+			for (PTNetwork network : networks) 
+			{
+				if(networkManager.getByObjectId(network.getObjectId()) != null)
+					networkManager.update(user, network);
+				else
+					networkManager.save(user,network,propagate);
+			}
+
+			super.saveOrUpdateAll(user, lines);			
+			routeManager.saveAll(user, routes,propagate);
+
+		}else 
+			super.saveOrUpdateAll(user, lines);
 	}
 }
