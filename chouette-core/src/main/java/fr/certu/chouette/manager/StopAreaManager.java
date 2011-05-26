@@ -38,11 +38,6 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
 {
-
-	private INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
-	private INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-	private INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-
 	public StopAreaManager() 
 	{
 		super(StopArea.class);
@@ -128,6 +123,10 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
 		if(propagate)
 		{
+			INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
+			INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
+			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+			
 			List<AccessLink> accessLinks = stopArea.getAccessLinks();
 			if(accessLinks != null)
 				accessLinkManager.saveAll(user, accessLinks, propagate);

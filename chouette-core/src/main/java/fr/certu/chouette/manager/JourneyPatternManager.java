@@ -24,9 +24,6 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern> 
 {
-
-	private INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
-
 	public JourneyPatternManager() 
 	{
 		super(JourneyPattern.class);
@@ -125,6 +122,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 		
 		if(propagate)
 		{
+			INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 			List<VehicleJourney> vehicleJourneys = journeyPattern.getVehicleJourneys();
 			if(vehicleJourneys != null)
 				vjManager.saveAll(user, vehicleJourneys, propagate);

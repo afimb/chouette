@@ -51,11 +51,6 @@ public class LineManager extends AbstractNeptuneManager<Line>
 {
 	private static final Logger logger = Logger.getLogger(LineManager.class);
 
-	private INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-	private INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
-	private INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
-	private INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
-
 	public LineManager() 
 	{
 		super(Line.class);
@@ -303,7 +298,8 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		if(getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 
 		logger.debug("deleting Line = "+line.getObjectId());
-
+		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+		
 		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
 		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -377,6 +373,11 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	{
 		if(propagate)
 		{
+			INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+			INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
+			INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
+			INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
+			
 			Company company = line.getCompany();
 			if(company != null)
 				companyManager.save(user,company,propagate);

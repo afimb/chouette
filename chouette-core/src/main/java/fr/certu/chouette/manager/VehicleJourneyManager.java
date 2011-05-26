@@ -28,9 +28,6 @@ import fr.certu.chouette.model.user.User;
 @SuppressWarnings("unchecked")
 public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney> {
 
-	private INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) getManager(Timetable.class);
-	private INeptuneManager<TimeSlot> timeSlotManager = (INeptuneManager<TimeSlot>) getManager(TimeSlot.class);
-
 	public VehicleJourneyManager() {
 		super(VehicleJourney.class);
 	}
@@ -55,6 +52,9 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 
 		if(propagate)
 		{
+			INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) getManager(Timetable.class);
+			INeptuneManager<TimeSlot> timeSlotManager = (INeptuneManager<TimeSlot>) getManager(TimeSlot.class);
+			
 			List<Timetable> timetables = vehicleJourney.getTimetables();
 			if(timetables != null)
 				timetableManager.saveAll(user, timetables, propagate);

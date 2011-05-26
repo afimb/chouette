@@ -29,8 +29,6 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 {
 	Logger logger = Logger.getLogger(StopPoint.class);
 	
-	private INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
-	
 	public StopPointManager() 
 	{
 		super(StopPoint.class);
@@ -189,6 +187,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		
 		if(propagate)
 		{
+			INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
 			StopArea stopArea = stopPoint.getContainedInStopArea();
 			if(stopArea != null)
 				stopAreaManager.save(user, stopArea, propagate);
