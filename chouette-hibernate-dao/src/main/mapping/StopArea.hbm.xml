@@ -25,8 +25,8 @@
 		<id column="id" name="id" type="long">
 			<generator class="native" />
 		</id>
-		<many-to-one class="StopArea" column="parentId" insert="false"
-			lazy="no-proxy" name="parentStopArea" update="false" />
+		<many-to-one class="StopArea" column="parentId"
+			lazy="no-proxy" name="parentStopArea" />
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />

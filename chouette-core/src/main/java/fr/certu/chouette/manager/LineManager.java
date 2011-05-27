@@ -392,20 +392,18 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				networks.add(line.getPtNetwork());
 				routes.addAll(line.getRoutes());		
 			}
-			companyManager.saveAll(user,companies,propagate);
-			groupOfLineManager.saveAll(user,groupOfLines,propagate);
-			for (PTNetwork network : networks) 
-			{
-				if(networkManager.getByObjectId(network.getObjectId()) != null)
-					networkManager.update(user, network);
-				else
-					networkManager.save(user,network,propagate);
-			}
+			if(!companies.isEmpty())
+				companyManager.saveAll(user,companies,propagate);
+			if(!groupOfLines.isEmpty())
+				groupOfLineManager.saveAll(user,groupOfLines,propagate);
+			if(!networks.isEmpty())
+				networkManager.saveAll(user,networks,propagate);
 
-			super.saveOrUpdateAll(user, lines);			
-			routeManager.saveAll(user, routes,propagate);
+			super.saveAll(user, lines,propagate);
+			if(!routes.isEmpty())
+				routeManager.saveAll(user, routes,propagate);
 
 		}else 
-			super.saveOrUpdateAll(user, lines);
+			super.saveAll(user, lines,propagate);
 	}
 }
