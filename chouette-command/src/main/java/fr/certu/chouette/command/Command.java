@@ -9,7 +9,6 @@ package fr.certu.chouette.command;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,7 +23,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -82,6 +84,8 @@ public class Command
 	private boolean verbose = false;
 
 	private static boolean dao = true;
+
+	private static Locale locale = Locale.getDefault();
 
 	static
 	{
@@ -352,6 +356,23 @@ public class Command
 			}
 			return beans;
 		}
+		if (name.equals("lang"))
+		{
+			if (getBoolean(parameters, "en"))
+			{
+				locale = Locale.ENGLISH;
+			}
+			else if (getBoolean(parameters, "fr"))
+			{
+				locale = Locale.FRENCH;
+			}
+			else
+			{
+				System.out.println(locale);
+			}
+			return beans;
+		}
+
 		INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
 
 		if (name.equals("get"))
@@ -401,6 +422,7 @@ public class Command
 		{
 			beans = executeImport(manager,parameters);
 		}
+		
 		else if (name.equals("print"))
 		{
 			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
@@ -1678,23 +1700,86 @@ public class Command
 	 */
 	private static void printHelp()
 	{
-		System.out.println("Arguments : ");
-		System.out.println("  -h(elp) for general syntax ");
-		System.out.println("  -verbose for processing traces ");
-		System.out.println("  -noDao to invalidate database access (MUST BE FIRST ARGUMENT) ");
-		System.out.println("  -i(nteractive) switch to interactive mode");
-		System.out.println("  -o(bject) neptuneObjectName (default object for commands)");
-		System.out.println("  -f(ile) [fileName] : read commands in file");
-		System.out.println("                       only one command by line");
-		System.out.println("                       -c(ommand) argument is implicit");
-		System.out.println("                       arguments with whitespaces must be doublequoted");
-		System.out.println("  -c(ommand) [commandName] : see below");
-		printCommandSyntax(false);
-		System.out.println("\nNotes: ");
-		System.out.println("    -c(ommand) can be chained : new occurence of command must be followed by it's specific argument");
-		System.out.println("               commands are executed in argument order ");
-		System.out.println("               last returned objects of reading commands are send to command wich needs objects as imput");
-		System.out.println("    -o(bject) argument may be added for each command to switch object types, switch is conserved on further commands");
+		ResourceBundle bundle = null;
+		try
+		{
+			bundle = ResourceBundle.getBundle(Command.class.getName(),locale);
+		}
+		catch (MissingResourceException e1)
+		{
+			try
+			{
+				bundle = ResourceBundle.getBundle(Command.class.getName());
+			}
+			catch (MissingResourceException e2)
+			{
+				System.out.println("missing help resource");
+				return;
+			}
+		}
+
+		printBloc(bundle,"Header","");
+		
+		printBloc(bundle,"Option","   ");
+		
+		System.out.println("");
+		
+		String[] commands = getHelpString(bundle,"Commands").split(" ");
+		for (String command : commands) 
+		{
+			printCommandDetail(bundle,command,"   ");
+			System.out.println("");
+		}
+		
+		printBloc(bundle,"Footer","");
+	}
+
+	private static String getHelpString(ResourceBundle bundle,String key)
+	{
+		try
+		{
+			return bundle.getString(key);
+		}
+		catch (Exception e) 
+		{
+			return null;
+		}
+	}
+	
+	private static void printBloc(ResourceBundle bundle,String key,String indent)
+	{ 
+		// print  options
+		String line = null;
+		int rank = 1;
+		do 
+		{
+			line = getHelpString(bundle,key+rank);
+			if (line != null)
+			{
+				System.out.println(indent+line);
+				printBloc(bundle,key+rank+"_",indent+"   ");
+			}
+			rank++;
+		} while (line != null);
+	}
+	
+	private static void printCommandDetail(ResourceBundle bundle,String key,String indent)
+	{ 
+		// print  command
+		String line = getHelpString(bundle,key); 
+		if (line == null)
+		{
+			System.out.println("-- unknown command : "+key);
+			return;
+		}
+		System.out.println(indent+line);
+		printBloc(bundle,key+"_",indent+"   ");
+		line = getHelpString(bundle,key+"_n"); 
+		if (line != null)
+		{
+			System.out.println(indent+"   "+line);
+		}
+		
 	}
 
 	/**
@@ -1702,187 +1787,71 @@ public class Command
 	 */
 	private static void printCommandSyntax(boolean interactive) 
 	{
+		ResourceBundle bundle = null;
+		try
+		{
+			bundle = ResourceBundle.getBundle(Command.class.getName(),locale);
+		}
+		catch (MissingResourceException e1)
+		{
+			try
+			{
+				bundle = ResourceBundle.getBundle(Command.class.getName());
+			}
+			catch (MissingResourceException e2)
+			{
+				System.out.println("missing help resource");
+				return;
+			}
+		}
+		
+		String[] commands = getHelpString(bundle,"Commands").split(" ");
 		if (interactive)
 		{
-			System.out.println("     add : add value or reference for any collection of attribute on single loaded object");
-			System.out.println("     delete : delete from database last readed Neptune objects");
-			System.out.println("     export : write Neptune Objects to file");
-			System.out.println("     get : read Neptune Object from database");
-			System.out.println("     getExportFormats : print available export formats and arguments");
-			System.out.println("     getImportFormats : print available import formats and arguments");
-			System.out.println("     import : read Neptune Objects from file");
-			System.out.println("     info : show attributes for active object type");
-			System.out.println("     new : create a new instance from scratch");
-			System.out.println("     print : print previously readed Neptune Objects");
-			System.out.println("     remove : remove value or reference for any collection of attribute on single loaded object");
-			System.out.println("     save : save last readed Neptune objects");
-			System.out.println("     set : set value or reference for any attribute on single loaded object");
-			System.out.println("     validate : launch validation process on previously readed NeptuneObject");
-			System.out.println("\n\n     exit or quit : terminate interactive session");
-			System.out.println("\n     verbose -on/-off : switch verbose mode");
-			System.out.println("\n     help -cmd commandName : details on commandName");
-			System.out.println("\n\n     exit or quit : terminate interactive session");
+			for (String command : commands) 
+			{
+				String line = getHelpString(bundle, command);
+				System.out.println("   "+line);
+			}
 		}
 		else
 		{
-			System.out.println("     add : add value or reference for any collection of attribute on single loaded object (see set for arguments)");
-			System.out.println("\n     delete : delete from database last readed Neptune objects");
-			System.out.println("        -propagate : propagate delete on sub objects");
-			System.out.println("\n     export : write Neptune Objects to file");
-			System.out.println("        -format formatName : format name");
-			System.out.println("        launch getExportFormats for other parameters");
-			System.out.println("\n     get : read Neptune Object from database");
-			System.out.println("        -id [value+] : object technical id ");
-			System.out.println("        -objectId [value+] : object neptune id ");
-			System.out.println("        -filter [filterargs]+ : filter clause (type '-c help -cmd filter' for more help) ");
-			System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
-			System.out.println("        -orderBy [value+] : sort fields ");
-			System.out.println("        -asc|-desc sort order (default = asc) ");
-			System.out.println("        -limit value|none (default = 10) ");
-			System.out.println("\n     getExportFormats : print available export formats and arguments");
-			System.out.println("\n     getImportFormats : print available import formats and arguments");
-			System.out.println("\n     info : show attributes for active object type");
-			System.out.println("\n     import : read Neptune Objects from file");
-			System.out.println("        -format formatName : format name");
-			System.out.println("        launch getImportFormats for other parameters");
-			System.out.println("\n     new : create a new instance from scratch");
-			System.out.println("\n     print : print previously readed Neptune Objects");
-			System.out.println("        -level level : deep level for recursive print (default = 99)");
-			System.out.println("\n     remove : remove value or reference for any collection of attribute on single loaded object (see set for arguments)");
-			System.out.println("\n     save : save last readed Neptune objects");
-			System.out.println("\n     set : set value or reference for any attribute on single loaded object");
-			System.out.println("        -attr attributeName newValue: name of the single cardinality atomic attribute to set");
-			System.out.println("                                      new value to set (may be empty to unset)");
-			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
-			System.out.println("                               yyyy-MM-dd");		
-			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
-			System.out.println("                               HH:mm:ss");		
-			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
-			System.out.println("                                         referenceId NeptuneId of the Neptune Object to refer");
-			System.out.println("\n     validate : launch validation process on previously readed NeptuneObject");
-
+			for (String command : commands) 
+			{
+				printCommandDetail(bundle,command,"   ");
+				System.out.println("");
+			}
 		}
 
 	}
 
+	
+	
 	/**
 	 * 
 	 */
 	private static void printCommandDetail(String command) 
 	{
+		ResourceBundle bundle = null;
+		try
+		{
+			bundle = ResourceBundle.getBundle(Command.class.getName(),locale);
+		}
+		catch (MissingResourceException e1)
+		{
+			try
+			{
+				bundle = ResourceBundle.getBundle(Command.class.getName());
+			}
+			catch (MissingResourceException e2)
+			{
+				System.out.println("missing help resource");
+				return;
+			}
+		}
 		String lowerCommand = command.toLowerCase();
-		if (lowerCommand.equals("delete"))
-		{
-			System.out.println("delete : delete from database last readed Neptune objects");
-		}
-		else if (lowerCommand.equals("export"))
-		{
-			System.out.println("export : write last readed Neptune Objects to file");
-			System.out.println("        -format formatName : format name");
-			System.out.println("        launch getExportFormats for other parameters");
-		}
-		else if (lowerCommand.equals("get"))
-		{
-			System.out.println("get : read Neptune Object from database");
-			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
-			System.out.println("        -id [value+] : object technical id ");
-			System.out.println("        -objectId [value+] : object neptune id ");
-			System.out.println("        -filter [filterargs]+ : filter clause (type '-c help -cmd filter' for more help) ");
-			System.out.println("        -level [attribute|narrow|full] : detail level (default = attribute)");
-			System.out.println("        -orderBy [value+] : sort fields ");
-			System.out.println("        -asc|-desc sort order (default = asc) ");
-			System.out.println("        -limit value|none (default = 10) ");
-		}
-		else if (lowerCommand.equals("filter"))
-		{
-			System.out.println("-filter attribute operator [value]+ : filter request");
-			System.out.println("        attribute = attribute to filter : may be nested (ptnetwork.objectid on line for example)");
-			System.out.println("        operator : null, eq or =, like, in (others will be adde in future)");
-			System.out.println("        value : optional values depending on operator");
-		}
-		else if (lowerCommand.equals("getExportFormats"))
-		{
-			System.out.println("getExportFormats : print available export formats and arguments");
-			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
-		}
-		else if (lowerCommand.equals("getImportFormats"))
-		{
-			System.out.println("getImportFormats : print available import formats and arguments");
-			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
-		}
-		else if (lowerCommand.equals("import"))
-		{
-			System.out.println("import : read Neptune Objects from file");
-			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
-			System.out.println("        -format formatName : format name");
-			System.out.println("        launch getImportFormats for other parameters");
-		}
-		else if (lowerCommand.equals("new"))
-		{
-			System.out.println("new : create a new instance from scratch");
-			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
-		}
-		else if (lowerCommand.equals("print"))
-		{
-			System.out.println("print : print previously readed Neptune Objects");
-			System.out.println("        -level level : deep level for recursive print (default = 99)");
-		}
-		else if (lowerCommand.equals("set"))
-		{
-			System.out.println("set : set value or reference for any attribute on single loaded object");
-			System.out.println("        -attr attributeName newValue: name of the single cardinality atomic attribute to set");
-			System.out.println("                                      new value to set (may be empty to unset)");
-			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
-			System.out.println("                               yyyy-MM-dd");		
-			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
-			System.out.println("                               HH:mm:ss");		
-			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
-			System.out.println("                                         referenceId NeptuneId of the Neptune Object to refer");
-			System.out.println("\n This command can be used only if one bean is loaded");		
-		}
-		else if (lowerCommand.equals("add"))
-		{
-			System.out.println("add : add value or reference for any collection of attribute on single loaded object");
-			System.out.println("        -attr attributeName newValue: name of the list attribute to update");
-			System.out.println("                                      new value to add");
-			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
-			System.out.println("                               yyyy-MM-dd");		
-			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
-			System.out.println("                               HH:mm:ss");		
-			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
-			System.out.println("                                         referenceId NeptuneId of the Neptune Object to add");
-			System.out.println("\n This command can be used only if one bean is loaded");		
-		}
-		else if (lowerCommand.equals("remove"))
-		{
-			System.out.println("remove : remove value or reference for any collection of attribute on single loaded object");
-			System.out.println("        -attr attributeName value: name of the list attribute to update");
-			System.out.println("                                   value to remove ");
-			System.out.println("                          if value is a date, it must be in one of these 3 formats :");
-			System.out.println("                               yyyy-MM-dd");		
-			System.out.println("                               yyyy-MM-dd_HH:mm:ss");		
-			System.out.println("                               HH:mm:ss");		
-			System.out.println("        -ref attributeName referenceId : attributeName attribute of reference type");
-			System.out.println("                                         referenceId NeptuneId of the Neptune Object to remove");
-			System.out.println("\n This command can be used only if one bean is loaded");		
-		}
-		else if (lowerCommand.equals("save"))
-		{
-			System.out.println("save : save last readed Neptune objects");
-		}
-		else if (lowerCommand.equals("validate"))
-		{
-			System.out.println("validate : launch validation process on previously readed NeptuneObject");
-		}
-		else if (lowerCommand.equals("info"))
-		{
-			System.out.println("info : show attributes for active object type");
-			System.out.println("        -o(bject) neptuneObjectName : fix or change object type");
-		}
-		else
-		{
-			System.out.println(" unknown command "+command);
-		}
+		printCommandDetail(bundle,lowerCommand,"   ");
+		
 
 	}
 
