@@ -109,7 +109,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Long id = bean.getId();
 		boolean ret = daoTemplate.exists(id);
 		Assert.assertTrue(ret,"asked id="+id+" should exists");
-		id = Long.valueOf(23);
+		id = Long.valueOf(-23);
 		ret = daoTemplate.exists(id);
 		Assert.assertFalse(ret,"asked id="+id+" should not exists");
 	}
