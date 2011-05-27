@@ -48,7 +48,7 @@ public class Convertisseur implements IConvertisseur {
                 update += " SET longitude = x(transform(GeometryFromText('POINT(" + x + " " + y + ")', "
                         + lambertSRID + "), " + wgs84SRID + ")), "
                         + "latitude = y(transform(GeometryFromText('POINT(" + x + " " + y + ")', "
-                        + lambertSRID + "), " + wgs84SRID + ")) " + " longlattype='WGS84'"
+                        + lambertSRID + "), " + wgs84SRID + "))," + " longlattype = 'WGS84'"
                         + " WHERE id='" + id + "';";
                 Statement statement = connexion.createStatement();
                 statement.executeUpdate(update);
