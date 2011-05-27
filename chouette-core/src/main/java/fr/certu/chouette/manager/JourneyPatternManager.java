@@ -118,7 +118,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	@Override
 	public void saveAll(User user, List<JourneyPattern> journeyPatterns, boolean propagate) throws ChouetteException 
 	{
-		super.saveOrUpdateAll(user, journeyPatterns);
+		super.saveAll(user, journeyPatterns,propagate);
 
 		if(propagate)
 		{
@@ -130,7 +130,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 					vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());	
 			}
 
-			if(vehicleJourneys != null)
+			if(!vehicleJourneys.isEmpty())
 				vjManager.saveAll(user, vehicleJourneys, propagate);
 
 		}

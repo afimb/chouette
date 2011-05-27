@@ -120,7 +120,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 	@Override
 	public void saveAll(User user, List<StopArea> stopAreas, boolean propagate) throws ChouetteException 
 	{
-		super.saveOrUpdateAll(user, stopAreas);
+		super.saveAll(user, stopAreas,propagate);
 
 		if(propagate)
 		{
@@ -143,11 +143,11 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 					constraints.addAll(stopArea.getRestrictionConstraints());
 			}
 
-			if(accessLinks != null)
+			if(!accessLinks.isEmpty())
 				accessLinkManager.saveAll(user, accessLinks, propagate);
-			if(connectionLinks != null)
+			if(!connectionLinks.isEmpty())
 				connectionLinkManager.saveAll(user, connectionLinks, propagate);
-			if(constraints != null)
+			if(!constraints.isEmpty())
 				constraintManager.saveAll(user, constraints, propagate);	
 		}
 	}

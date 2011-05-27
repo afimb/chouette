@@ -739,6 +739,7 @@ public class ValidationAction extends GeneriqueAction
     }
     catch (RuntimeException e)
     {
+        e.printStackTrace();
       addActionError(getText("message.validate.convert.error") +  getExceptionMessage(e));
     }
     return INPUT;

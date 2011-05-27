@@ -18,6 +18,7 @@ import fr.certu.chouette.model.neptune.PTLink;
  */
 public class PTLinkManager extends AbstractNeptuneManager<PTLink> {
 
+	private Logger logger = Logger.getLogger(PTLink.class);
 	public PTLinkManager() 
 	{
 		super(PTLink.class);
@@ -25,9 +26,6 @@ public class PTLinkManager extends AbstractNeptuneManager<PTLink> {
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+		return logger;
 	}
-
-
 }

@@ -42,11 +42,11 @@
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
-		<list name="stopPoints" lazy="true">
+		<!-- <list name="stopPoints" lazy="true">
 			<key column="routeId" />
 			<index column="position"/>
 			<one-to-many class="StopPoint" />
-		</list>
+		</list> -->
 		<!--
 		<bag name="journeyPatternIds" table="journeyPattern" inverse="true"
 			lazy="false" cascade="none" fetch="join">

@@ -134,7 +134,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
 
-		super.saveOrUpdateAll(user, routes);
+		super.saveAll(user, routes,propagate);
 
 		if(propagate)
 		{
@@ -149,17 +149,20 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 				
 				List<StopPoint> points = route.getStopPoints();
 				if(points != null && !stopPoints.containsAll(points))
-					stopPoints.addAll(route.getStopPoints());
+					stopPoints.addAll(points);
+				
 				List<PTLink> ptLinks = route.getPtLinks(); 
 				if(ptLinks != null && !links.containsAll(ptLinks))
 					links.addAll(route.getPtLinks());
 			}
-			if(journeyPatterns != null)
+			
+			if(!stopPoints.isEmpty())
+				stopPointManager.saveAll(user, stopPoints,propagate);
+			
+			if(!journeyPatterns.isEmpty())
 				jpManager.saveAll(user, journeyPatterns,propagate);
 
-			if(stopPoints != null)
-				stopPointManager.saveAll(user, stopPoints,propagate);
-			if(links != null)
+			if(!links.isEmpty())
 				ptLinkManager.saveAll(user, links,propagate);
 		}
 	}

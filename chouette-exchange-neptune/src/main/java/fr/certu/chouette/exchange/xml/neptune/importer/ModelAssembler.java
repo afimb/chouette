@@ -175,10 +175,20 @@ public class ModelAssembler {
 		{
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
 			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
-			for (PTLink ptLink : route.getPtLinks()) {
+			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
+			for (PTLink ptLink : route.getPtLinks()) 
+			{
 				ptLink.setRoute(route);
 				ptLink.setRouteId(route.getObjectId());
+				
+				StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
+				StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
+				if(!stopPoints.contains(startPoint))
+					stopPoints.add(startPoint);
+				if(!stopPoints.contains(endPoint))
+					stopPoints.add(endPoint);
 			}
+			route.setStopPoints(stopPoints);
 			route.setLine(line);
 		}
 	}
@@ -248,11 +258,11 @@ public class ModelAssembler {
 			else{
 				//TODO : throw exception ???
 			}
-			
-			for (PTLink ptLink : ptLinks) {
-				if(ptLink.getStartOfLink().equals(stopPoint) || ptLink.getEndOfLink().equals(stopPoint))
-					stopPoint.setRoute(ptLink.getRoute());
-			}
+//			
+//			for (PTLink ptLink : ptLinks) {
+//				if(ptLink.getStartOfLink().equals(stopPoint) || ptLink.getEndOfLink().equals(stopPoint))
+//					stopPoint.setRoute(ptLink.getRoute());
+//			}
 		}
 	}
 

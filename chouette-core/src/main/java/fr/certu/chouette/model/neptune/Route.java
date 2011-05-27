@@ -286,6 +286,11 @@ public class Route extends NeptuneIdentifiedObject
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}
 	
+	public void addStopPoint(StopPoint stopPoint){
+		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
+		stopPoints.add(stopPoint);
+	}
+	
 	@Override
 	public boolean clean() {
 		if(journeyPatterns == null){
