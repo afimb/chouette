@@ -19,6 +19,11 @@
     <div id="global">
       <%@ include file="/jsp/commun/neptune-validation-header.jsp" %>
       <div id="main">
+          <br />
+<%--Neptune validation --%>
+<a href="<%=request.getContextPath()%>/neptune-validation/execute.action" style="font-size:24px;">
+    <b>Validation Neptune</b></a>
+<br/><br/>
       <div id="menu">
 		<div>	<%-- Connection --%>
       	<s:url id="urlConnexionMenu" action ="list" namespace="/line" includeParams="none"/>

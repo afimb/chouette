@@ -35,7 +35,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 {
 	// management
 	/**
-	 * add DAO managment to manager
+	 * add DAO management to manager
 	 * 
 	 * @param dao an IDaoTemplate implementation
 	 */
