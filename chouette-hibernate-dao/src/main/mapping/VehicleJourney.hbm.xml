@@ -53,11 +53,5 @@
 				</property>
 			</composite-element>
 		</bag>
-		<bag name="timetables" table="timetablevehiclejourney" lazy="false">
-			<key column="vehiclejourneyId" />
-			<many-to-many column="timetableId" class="Timetable">
-
-			</many-to-many>
-		</bag>
 	</class>
 </hibernate-mapping>

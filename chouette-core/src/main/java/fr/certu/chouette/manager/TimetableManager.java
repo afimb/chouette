@@ -28,5 +28,4 @@ public class TimetableManager extends AbstractNeptuneManager<Timetable> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

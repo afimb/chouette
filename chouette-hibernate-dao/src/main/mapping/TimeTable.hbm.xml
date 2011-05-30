@@ -32,5 +32,6 @@
 			<key column="timetableId" />
 			<many-to-many column="vehiclejourneyId" class="VehicleJourney" />
 		</bag>
+		
 	</class>
 </hibernate-mapping>
