@@ -976,11 +976,13 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
-		for (NeptuneIdentifiedObject bean : beans) 
-		{
-			manager.update(null, bean);
-		}
+//		for (NeptuneIdentifiedObject bean : beans) 
+//		{
+//			manager.update(null, bean);
+//		}
 
+		boolean propagate = getBoolean(parameters, "propagate");
+		manager.saveAll(null, beans, propagate);
 	}
 
 	/**
