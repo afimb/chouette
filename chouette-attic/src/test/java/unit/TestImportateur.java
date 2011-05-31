@@ -130,10 +130,10 @@ public class TestImportateur extends AbstractTestNGSpringContextTests {
 	@Test(groups="tests unitaires", description="verification du nettoyage par rollback")
     public void importAvecRollback()
     {
-		List<Transporteur> trsps = transporteurManager.lire();
-		for (Transporteur transporteur : trsps) {
-			transporteurManager.supprimer( transporteur.getId());
-		}
+//		List<Transporteur> trsps = transporteurManager.lire();
+//		for (Transporteur transporteur : trsps) {
+//			transporteurManager.supprimer( transporteur.getId());
+//		}
 		
 		List<Reseau> rsx = reseauManager.lire();
 		for (Reseau reseau : rsx) {

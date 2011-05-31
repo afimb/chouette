@@ -127,10 +127,13 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
 			INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
 			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-
+			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+			
 			List<AccessLink> accessLinks = new ArrayList<AccessLink>();
 			List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
 			List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
+			List<Facility> facilities = new ArrayList<Facility>();
+			
 			for (StopArea stopArea : stopAreas) 
 			{
 				List<AccessLink> links = stopArea.getAccessLinks();
@@ -141,6 +144,10 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
 				if(stopArea.getRestrictionConstraints() != null && !constraints.containsAll(stopArea.getRestrictionConstraints()))
 					constraints.addAll(stopArea.getRestrictionConstraints());
+				
+				List<Facility> fList = stopArea.getFacilities(); 
+				if(fList != null && !facilities.containsAll(fList))
+					facilities.addAll(fList);
 			}
 
 			if(!accessLinks.isEmpty())
@@ -149,6 +156,8 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 				connectionLinkManager.saveAll(user, connectionLinks, propagate);
 			if(!constraints.isEmpty())
 				constraintManager.saveAll(user, constraints, propagate);	
+			if(!facilities.isEmpty())
+				facilityManager.saveAll(user, facilities, propagate);
 		}
 	}
 }

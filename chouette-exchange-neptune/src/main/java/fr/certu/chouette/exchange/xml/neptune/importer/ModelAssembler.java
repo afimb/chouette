@@ -83,6 +83,7 @@ public class ModelAssembler {
 	public void connect()
 	{
 		populateDictionaries();
+		connectFacilities();
 		connectLine();
 		connectRoutes();
 		connectCompanies();
@@ -97,7 +98,6 @@ public class ModelAssembler {
 		connectTimetables();
 		connectAccessLinks();
 		connectGroupOfLines();
-		connectFacilities();
 	}
 
 	private void populateDictionaries()
@@ -167,6 +167,12 @@ public class ModelAssembler {
 		line.setImportedItems(item);
 		if(!groupOfLines.isEmpty())
 			line.setGroupOfLine(groupOfLines.get(0));
+		
+		for (Facility facility : facilities)
+		{
+			if(facility.getLine() != null && facility.getLine().equals(line))
+				line.addFacility(facility);
+		}
 	}
 
 	private void connectRoutes()
@@ -263,6 +269,11 @@ public class ModelAssembler {
 //				if(ptLink.getStartOfLink().equals(stopPoint) || ptLink.getEndOfLink().equals(stopPoint))
 //					stopPoint.setRoute(ptLink.getRoute());
 //			}
+			for (Facility facility : facilities)
+			{
+				if(facility.getStopPoint() != null && facility.getStopPoint().equals(stopPoint))
+					stopPoint.addFacility(facility);
+			}
 		}
 	}
 
@@ -281,12 +292,20 @@ public class ModelAssembler {
 			}
 			stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
 			//no need to set containedInStopArea in StopPoint : it is already done in connectStopPoints method...
-			if(stopArea.getRestrictionConstraints() != null){
-				for (RestrictionConstraint constraint : stopArea.getRestrictionConstraints()) {
+			if(stopArea.getRestrictionConstraints() != null)
+			{
+				for (RestrictionConstraint constraint : stopArea.getRestrictionConstraints()) 
+				{
 					Line line = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
 					constraint.setLine(line);
 					constraint.setStopAreas(stopAreas);
 				}
+			}
+			
+			for (Facility facility : facilities)
+			{
+				if(facility.getStopArea() != null && facility.getStopArea().equals(stopArea))
+					stopArea.addFacility(facility);
 			}
 		}
 	}
@@ -313,6 +332,12 @@ public class ModelAssembler {
 			{
 				connectionLink.setEndOfLink(endOfLink);
 				endOfLink.addConnectionLink(connectionLink);
+			}
+			
+			for (Facility facility : facilities)
+			{
+				if(facility.getConnectionLink() != null && facility.getConnectionLink().equals(connectionLink))
+					connectionLink.addFacility(facility);
 			}
 		}
 	}

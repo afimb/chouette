@@ -34,6 +34,14 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter private List<AccessLink> accessLinks;
 	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 
+	@Getter @Setter private List<Facility> facilities;
+
+	public void addFacility(Facility facility)
+	{
+		if(facilities == null) facilities = new ArrayList<Facility>();
+		if(!facilities.contains(facility)) facilities.add(facility);
+	}
+
 	public void addBoundaryPoint(String boundaryPoint)
 	{
 		if (boundaryPoints == null) boundaryPoints = new ArrayList<String>();

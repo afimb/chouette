@@ -132,6 +132,13 @@ public class Line extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private ImportedItems importedItems;
 
+	@Getter @Setter private List<Facility> facilities;
+	
+	public void addFacility(Facility facility)
+	{
+		if(facilities == null) facilities = new ArrayList<Facility>();
+		if(!facilities.contains(facility)) facilities.add(facility);
+	}
 	/**
 	 * add a user needs enumeration value to the line<br/>
 	 * do nothing if user need is already present

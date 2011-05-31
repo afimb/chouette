@@ -103,6 +103,14 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private ConnectionLinkTypeEnum linkType; 
 
+	@Getter @Setter private List<Facility> facilities;
+
+	public void addFacility(Facility facility)
+	{
+		if(facilities == null) facilities = new ArrayList<Facility>();
+		if(!facilities.contains(facility)) facilities.add(facility);
+	}
+
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
