@@ -73,7 +73,7 @@ public class GeoportailFileWriter implements IGeoportailFileWriter {
 
     private void writeTCPointsCSVLines(List<ILectureEchange> lecturesEchanges, OutputStreamWriter outputStreamWriter) throws IOException {
         Collection<TCPoint> tCPoints = getTCPoints(lecturesEchanges);
-        outputStreamWriter.write("objectid,geom.longitude,geom.latitude,registrationnumber,name,tcpointtype,fullname,comment,countrycode,creationtime,creatorid,longlattype,longitude,latitude,projectiontype,x,y,objectversion,streetname\n");
+        outputStreamWriter.write("objectid,geom_longitude,geom_latitude,registrationnumber,name,tcpointtype,fullname,comment,countrycode,creationtime,creatorid,longlattype,longitude,latitude,projectiontype,x,y,objectversion,streetname\n");
         for (TCPoint tCPoint : tCPoints)
             outputStreamWriter.write(tCPoint.getCSVLine() + "\n");
     }
