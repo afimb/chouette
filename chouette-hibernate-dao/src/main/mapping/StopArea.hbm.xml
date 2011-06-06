@@ -23,7 +23,7 @@
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="StopArea" table="StopArea">
 		<id column="id" name="id" type="long">
-			<generator class="native" />
+			<generator class="identity" />
 		</id>
 		<many-to-one class="StopArea" column="parentId"
 			lazy="no-proxy" name="parentStopArea" />

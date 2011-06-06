@@ -24,7 +24,7 @@
 	<class dynamic-insert="false" name="StopPoint"
 		table="StopPoint">
 		<id column="id" name="id" type="long">
-			<generator class="native" />
+			<generator class="identity" />
 		</id>
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />

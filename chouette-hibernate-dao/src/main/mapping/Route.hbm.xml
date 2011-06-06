@@ -23,7 +23,7 @@
 	<class name="Route" table="Route" dynamic-insert="false"
 		dynamic-update="false">
 		<id name="id" type="long">
-			<generator class="native" />
+			<generator class="identity" />
 		</id>
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />
