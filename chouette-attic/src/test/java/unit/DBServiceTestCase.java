@@ -132,21 +132,21 @@ public class DBServiceTestCase extends AbstractTestNGSpringContextTests {
 
         // tentative avec donnee valide
 
-        uneLigne.setRegistrationNumber(valeurOk);
-        ligneManager.creer(uneLigne);
-
-        // tentative d'ajout de doublon / registration
-        Ligne unDoublonLigne = GenerateurDonnee.creerLigne();
-        unDoublonLigne.setRegistrationNumber(valeurOk);
-
-        try {
-            ligneManager.creer(unDoublonLigne);
-            assert false : "pas d'exception levée sur une ligne créée avec meme registrationNumber";
-        } catch (ServiceException e) {
-            assert CodeIncident.CONTRAINTE_INVALIDE.equals(e.getCode()) :
-                    "l'exception levé n'a pas le code attendu " + CodeIncident.CONTRAINTE_INVALIDE
-                    + " mais " + e.getCode();
-        }
+//        uneLigne.setRegistrationNumber(valeurOk);
+//        ligneManager.creer(uneLigne);
+//
+//        // tentative d'ajout de doublon / registration
+//        Ligne unDoublonLigne = GenerateurDonnee.creerLigne();
+//        unDoublonLigne.setRegistrationNumber(valeurOk);
+//
+//        try {
+//            ligneManager.creer(unDoublonLigne);
+//            assert false : "pas d'exception levée sur une ligne créée avec meme registrationNumber";
+//        } catch (ServiceException e) {
+//            assert CodeIncident.CONTRAINTE_INVALIDE.equals(e.getCode()) :
+//                    "l'exception levé n'a pas le code attendu " + CodeIncident.CONTRAINTE_INVALIDE
+//                    + " mais " + e.getCode();
+//        }
 
         // tentative avec référence fausse
 
