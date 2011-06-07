@@ -2,31 +2,31 @@ SET search_path TO :SCH ;
 
 -- TimetableVehicleJourney
 
-ALTER TABLE timetablevehiclejourney DROP CONSTRAINT IF EXISTS timetablevehiclejourney_pkey;
+ALTER TABLE timetablevehiclejourney DROP CONSTRAINT timetablevehiclejourney_pkey;
 
-ALTER TABLE timetablevehiclejourney DROP COLUMN IF EXISTS id;
+ALTER TABLE timetablevehiclejourney DROP COLUMN id;
 
 ALTER TABLE timetablevehiclejourney
   ADD CONSTRAINT timetablevehiclejourney_pkey PRIMARY KEY(timetableid, vehiclejourneyid);
   
 -- VehicleJourneyAtStop
 
-ALTER TABLE vehiclejourneyatstop DROP CONSTRAINT IF EXISTS vehiclejourneyatstop_pkey;
+ALTER TABLE vehiclejourneyatstop DROP CONSTRAINT vjas_pk;
 
-ALTER TABLE vehiclejourneyatstop DROP COLUMN IF EXISTS id;
+ALTER TABLE vehiclejourneyatstop DROP COLUMN id;
 
 ALTER TABLE vehiclejourneyatstop
   ADD CONSTRAINT vehiclejourneyatstop_pkey PRIMARY KEY(vehiclejourneyid, stoppointid);
 
 -- id sequences 
 -- purge nouvelles tables eventuelles
-DROP TABLE IF EXISTS accesslink;
-DROP TABLE IF EXISTS accesspoint;
-DROP TABLE IF EXISTS facilityfeature;
-DROP TABLE IF EXISTS facility;
-DROP TABLE IF EXISTS groupofline;
-DROP TABLE IF EXISTS ptlink;
-DROP TABLE IF EXISTS timeslot;
+DROP TABLE IF EXISTS accesslink CASCADE;
+DROP TABLE IF EXISTS accesspoint  CASCADE;
+DROP TABLE IF EXISTS facilityfeature  CASCADE;
+DROP TABLE IF EXISTS facility  CASCADE;
+DROP TABLE IF EXISTS groupofline  CASCADE;
+DROP TABLE IF EXISTS ptlink  CASCADE;
+DROP TABLE IF EXISTS timeslot  CASCADE;
   
 -- company   
 CREATE SEQUENCE company_id_seq

@@ -29,16 +29,19 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 		target.setObjectId(source.getObjectId());
 
 		// ObjectVersion
-		target.setObjectVersion(source.getObjectVersion());
+		if (source.getObjectVersion() > 0)
+			target.setObjectVersion(source.getObjectVersion());
 
 		// CreationTime : maybe null
-		target.setCreationTime(source.getCreationTime());
+		if (source.getCreationTime() != null)
+			target.setCreationTime(source.getCreationTime());
 
 		// CreatorId : maybe null but not empty
-		target.setCreatorId(source.getCreatorId());
+		if (source.getCreatorId() != null)
+			target.setCreatorId(source.getCreatorId());
 
 	}
-	
+
 	protected Registration getRegistration(String registrationNumber) 
 	{
 		if (registrationNumber == null) return null;
@@ -46,13 +49,13 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 		registration.setRegistrationNumber(registrationNumber);
 		return registration;
 	}
-	
+
 	protected String getNonEmptyObjectId(NeptuneIdentifiedObject object) 
 	{
 		if (object == null) return null;
 		return object.getObjectId();
 	}
-	
+
 	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
 		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
 		List<AccessibilitySuitabilityDetailsItem> detailsItems = new ArrayList<AccessibilitySuitabilityDetailsItem>();
@@ -60,7 +63,7 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 			for(UserNeedEnum userNeed : userNeeds){
 				if(userNeed != null){
 					UserNeedGroup userNeedGroup = new UserNeedGroup();
-					
+
 					switch (userNeed.category()) {
 					case ENCUMBRANCE:
 						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
@@ -77,7 +80,7 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 					default:
 						throw new IllegalArgumentException("bad value of userNeed");
 					}
-					
+
 					if(userNeedGroup.getChoiceValue() != null){
 						AccessibilitySuitabilityDetailsItem item = new AccessibilitySuitabilityDetailsItem();
 						item.setUserNeedGroup(userNeedGroup);
@@ -86,28 +89,28 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 				}
 			}
 		}
-		
+
 		details.setAccessibilitySuitabilityDetailsItem(detailsItems);
 		return details;
 	}
-	
-	
+
+
 	protected Time toCastorTime( Date neptuneTime)
 	{
 		if ( neptuneTime==null) return null;
-		
+
 		short[] aTimeVal = new short[ 4];
 		Calendar aCalendar = Calendar.getInstance();
 		aCalendar.setTime( neptuneTime);
-		
+
 		aTimeVal[ 0] = ( short)aCalendar.get( Calendar.HOUR_OF_DAY);
 		aTimeVal[ 1] = ( short)aCalendar.get( Calendar.MINUTE);
 		aTimeVal[ 2] = ( short)aCalendar.get( Calendar.SECOND);
 		aTimeVal[ 3] = ( short)aCalendar.get( Calendar.MILLISECOND);
-		
+
 		return new Time(aTimeVal);
 	}
-	
-	
+
+
 	public abstract T produce(U o);
 }

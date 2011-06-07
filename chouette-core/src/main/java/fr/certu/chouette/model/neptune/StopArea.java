@@ -48,22 +48,25 @@ public class StopArea extends NeptuneIdentifiedObject {
 		boundaryPoints.add(boundaryPoint);
 	}
 
-	public void addContainedStopAreaId(String containedStopAreaId)
+	public void addContainedStopId(String containedStopId)
 	{
 		if (containedStopIds == null) containedStopIds = new ArrayList<String>();
-		containedStopIds.add(containedStopAreaId);
+		if (containedStopIds.contains(containedStopId))
+			containedStopIds.add(containedStopId);
 	}
 
 	public void addContainedStopArea(StopArea containedStopArea)
 	{
 		if (containedStopAreas == null) containedStopAreas = new ArrayList<StopArea>();
-		containedStopAreas.add(containedStopArea);
+		if (!containedStopAreas.contains(containedStopArea))
+			containedStopAreas.add(containedStopArea);
 	}
 
 	public void addContainedStopPoint(StopPoint containedStopPoint)
 	{
 		if (containedStopPoints == null) containedStopPoints = new ArrayList<StopPoint>();
-		containedStopPoints.add(containedStopPoint);
+		if (!containedStopPoints.contains(containedStopPoint))
+			containedStopPoints.add(containedStopPoint);
 	}
 
 	public void addUserNeed(UserNeedEnum userNeed)

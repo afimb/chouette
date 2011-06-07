@@ -18,6 +18,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.user.User;
 
 
@@ -39,11 +40,20 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	}
 
 	@Override
-	public void completeObject(User user, VehicleJourney vehicleJourney) 
+	public void completeObject(User user, VehicleJourney vehicleJourney) throws ChouetteException
 	{
 		Line line = vehicleJourney.getLine();
 		if(line != null)
 			vehicleJourney.setLineIdShortcut(line.getObjectId());
+		
+		List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
+		for (int i = 0; i < vjass.size(); i++)
+		{
+			VehicleJourneyAtStop vjas = vjass.get(i);
+			vjas.setOrder(i+1);
+			vjas.setVehicleJourney(vehicleJourney);
+			vjas.setVehicleJourneyId(vehicleJourney.getObjectId());
+		}
 	} 
 
 	@Override

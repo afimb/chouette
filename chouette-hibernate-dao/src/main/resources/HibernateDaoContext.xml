@@ -63,8 +63,8 @@
 			<props>
 				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
 				</prop>
-				<!-- TODO : a passer en update avant livraison -->
-				<prop key="hibernate.hbm2ddl.auto">create-drop</prop> 
+				<!-- TODO : a passer en update avant livraison si create-drop-->
+				<prop key="hibernate.hbm2ddl.auto">update</prop> 
 				<prop key="hibernate.show_sql">${database.showsql}</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.default_schema">${database.schema}</prop>

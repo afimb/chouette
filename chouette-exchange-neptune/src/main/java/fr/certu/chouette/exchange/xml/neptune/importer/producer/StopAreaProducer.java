@@ -32,8 +32,8 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 		}
 		
 		// ContainedStopIds [1..w]
-		for(String containedStopAreaId : xmlStopArea.getContains()){
-			stopArea.addContainedStopAreaId(getNonEmptyTrimedString(containedStopAreaId));
+		for(String containedStopId : xmlStopArea.getContains()){
+			stopArea.addContainedStopId(getNonEmptyTrimedString(containedStopId));
 		}
 		
 		// StopAreaExtension optional

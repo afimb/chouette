@@ -498,7 +498,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	@Override
-	public void completeObject(User user, T bean) {
+	public void completeObject(User user, T bean) throws ChouetteException 
+	{
 	}
 	
 	@Override

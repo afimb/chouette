@@ -29,6 +29,11 @@
 			name="timeSlot" />
 		<many-to-one class="Company" column="companyId" lazy="no-proxy"
 			name="company" />
+		<bag name="timetables" table="timetablevehiclejourney" lazy="false">
+			<key column="vehiclejourneyId" />
+			<many-to-many column="timetableId" class="Timetable" />
+		</bag>
+			
 		<bag lazy="false" name="vehicleJourneyAtStops" cascade="none"
 			table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />
