@@ -50,7 +50,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 public class LineManager extends AbstractNeptuneManager<Line> 
 {
 	private static final Logger logger = Logger.getLogger(LineManager.class);
-
+	
 	public LineManager() 
 	{
 		super(Line.class);

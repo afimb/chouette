@@ -107,6 +107,10 @@
             <groupId>fr.certu.chouette</groupId>
             <artifactId>chouette-hibernate-dao</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-jdbc-dao</artifactId>
+        </dependency>
     </dependencies>
     <pluginRepositories>
         <pluginRepository>

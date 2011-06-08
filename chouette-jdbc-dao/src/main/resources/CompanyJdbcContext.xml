@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	default-init-method="init">
+
+	<bean id="companyJdbcDao" class="fr.certu.chouette.jdbc.dao.CompanyJdbcDao">
+		<property name="dataSource" ref="chouetteDataSource" />
+		<property name="sqlSelectAll">
+			<value>SELECT * FROM ${database.schema}.COMPANY</value>
+		</property>
+		<property name="sqlInsert">
+			<value>
+				INSERT INTO ${database.schema}.COMPANY
+				(
+				id,
+				objectid,
+				objectversion,
+				creationtime,
+				creatorid,
+				name,
+				shortname,
+				organizationalunit,
+				operatingdepartmentname,
+				code,
+				phone,
+				fax,
+				email,
+				registrationnumber)
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			 </value>
+		</property>
+		<property name="sqlSelectByObjectId">
+			<value>SELECT * FROM ${database.schema}.COMPANY WHERE objectid = ?
+			</value>
+		</property>
+	</bean>
+</beans>	

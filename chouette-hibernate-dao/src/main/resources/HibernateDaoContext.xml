@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
-   default-init-method="init">
-
+	default-init-method="init">
 
 	<bean id="chouetteDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource">
 		<property name="driverClassName" value="${jdbc.driver}" />
@@ -17,6 +15,7 @@
 		<property name="password" value="${hibernate.password}" />
 		<property name="databaseSchema" value="${database.schema}" />
 	</bean>
+
 	<bean id="profiler" class="fr.certu.chouette.spring.profiler.SimpleProfiler">
 		<!-- execute before the transactional advice (hence the lower order number) -->
 		<property name="order" value="1" />
@@ -75,20 +74,24 @@
 				<value>fr/certu/chouette/model/neptune/AccessLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/AccessPoint.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml
+				</value>
 				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml
+				</value>
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml</value>			
+				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml
+				</value>
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>	
+				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value> 				
-				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml
+				</value>
 			</list>
 		</property>
 	</bean>
@@ -147,7 +150,7 @@
 	</bean>
 
 	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createPTNetworkDao" >
+		factory-method="createPTNetworkDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
@@ -160,7 +163,7 @@
 		factory-method="createRouteDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="stopAreaDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createStopAreaDao">
 		<property name="sessionFactory" ref="sessionFactory" />

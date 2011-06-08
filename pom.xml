@@ -21,6 +21,7 @@
 		<module>chouette-command</module>
 		<module>chouette-neptune</module>
 		<module>chouette-validation</module>
+		<module>chouette-jdbc-dao</module>
 	</modules>
 
 	<repositories>
@@ -150,6 +151,11 @@
 			<dependency>
 				<groupId>fr.certu.chouette</groupId>
 				<artifactId>chouette-neptune</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>fr.certu.chouette</groupId>
+				<artifactId>chouette-jdbc-dao</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -473,6 +479,7 @@
 				<artifactId>jts</artifactId>
 				<version>1.11</version>
 			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 	<profiles>

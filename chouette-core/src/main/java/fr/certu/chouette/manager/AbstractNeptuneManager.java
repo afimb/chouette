@@ -47,8 +47,12 @@ import fr.certu.chouette.plugin.validation.ValidationStepDescription;
  */
 public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> implements INeptuneManager<T>
 {
-	// data storage access
+	// data storage access by hibernate
 	@Getter @Setter private IDaoTemplate<T> dao; 
+	
+	// data storage access by jdbc
+	@Getter @Setter private IDaoTemplate<T> jdbcDao;
+
 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
@@ -159,7 +163,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		}
 		return false;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#get(fr.certu.chouette.model.user.User, fr.certu.chouette.filter.Filter, fr.certu.chouette.filter.DetailLevelEnum)
 	 */
@@ -320,11 +324,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
 	{
-		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-
-		for (T t : beans) {
-			save(user,t, propagate);
-		}
+//		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+//
+//		for (T t : beans) {
+//			save(user,t, propagate);
+//		}
+		if(getJdbcDao() == null)
+			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
+		
+		getJdbcDao().saveOrUpdateAll(beans);
 	}
 
 	/* (non-Javadoc)

@@ -41,6 +41,13 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	void setDao(IDaoTemplate<T> dao);
 
+	/**
+	 * add DAO management to manager
+	 * 
+	 * @param dao an IDaoTemplate implementation
+	 */
+	void setJdbcDao(IDaoTemplate<T> dao);
+
 	// Create
 	/**
 	 * Instantiate a new bean but don't save or attach it in storage
