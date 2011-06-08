@@ -13,21 +13,22 @@ public class PTNetworkProducer extends AbstractCastorNeptuneProducer<chouette.sc
 	@Override
 	public chouette.schema.PTNetwork produce(PTNetwork ptNetwork) {
 		chouette.schema.PTNetwork castorPTNetwork = new chouette.schema.PTNetwork();
-		
+
 		//
 		populateFromModel(castorPTNetwork, ptNetwork);
-		
-		castorPTNetwork.setComment(ptNetwork.getComment());
+
 		castorPTNetwork.setName(ptNetwork.getName());
 		castorPTNetwork.setRegistration(getRegistration(ptNetwork.getRegistrationNumber()));
-		castorPTNetwork.setDescription(ptNetwork.getDescription());
-		castorPTNetwork.setSourceIdentifier(ptNetwork.getSourceIdentifier());
-		castorPTNetwork.setSourceName(ptNetwork.getSourceName());
+		
+		castorPTNetwork.setDescription(getNotEmptyString(ptNetwork.getDescription()));
+		castorPTNetwork.setSourceIdentifier(getNotEmptyString(ptNetwork.getSourceIdentifier()));
+		castorPTNetwork.setSourceName(getNotEmptyString(ptNetwork.getSourceName()));
+		castorPTNetwork.setComment(getNotEmptyString(ptNetwork.getComment()));
 		castorPTNetwork.setLineId(NeptuneIdentifiedObject.extractObjectIds(ptNetwork.getLines()));
 		if(ptNetwork.getVersionDate() != null){
 			castorPTNetwork.setVersionDate(new Date(ptNetwork.getVersionDate()));
 		}
-		
+
 		try {
 			PTNetworkSourceTypeEnum ptNetworkSourceType = ptNetwork.getPTNetworkSourceType();
 			if(ptNetworkSourceType != null){
@@ -36,7 +37,7 @@ public class PTNetworkProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		} catch (IllegalArgumentException e) {
 			// TODO generate report
 		}
-		
+
 		return castorPTNetwork;
 	}
 

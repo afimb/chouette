@@ -45,6 +45,7 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 	protected Registration getRegistration(String registrationNumber) 
 	{
 		if (registrationNumber == null) return null;
+		if (registrationNumber.trim().isEmpty()) return null;
 		Registration registration = new Registration();
 		registration.setRegistrationNumber(registrationNumber);
 		return registration;
@@ -90,6 +91,7 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 			}
 		}
 
+		if (detailsItems.isEmpty()) return null;
 		details.setAccessibilitySuitabilityDetailsItem(detailsItems);
 		return details;
 	}
@@ -113,4 +115,11 @@ public abstract class AbstractCastorNeptuneProducer<T extends TridentObjectTypeT
 
 
 	public abstract T produce(U o);
+	
+	protected String getNotEmptyString(String value)
+	{
+		if (value == null) return null;
+		if (value.trim().isEmpty()) return null;
+		return value;
+	}
 }

@@ -15,7 +15,7 @@ public class LineProducer extends AbstractCastorNeptuneProducer<chouette.schema.
 		//
 		populateFromModel(castorLine, line);
 		
-		castorLine.setComment(line.getComment());
+		castorLine.setComment(getNotEmptyString(line.getComment()));
 		castorLine.setName(line.getName());
 		castorLine.setNumber(line.getNumber());
 		castorLine.setPublishedName(line.getPublishedName());

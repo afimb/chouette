@@ -22,8 +22,8 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	@Getter @Setter private String routeId; // FK
 	@Getter @Setter private Route route;   // FK 
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys; // FK inverse
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -122,21 +122,24 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	public void addStopPointId(String stopPointId)
 	{
 		if (stopPointIds== null) stopPointIds = new ArrayList<String>();
-		stopPointIds.add(stopPointId);
+		if (!stopPointIds.contains(stopPointId))
+			stopPointIds.add(stopPointId);
 	}
-	
+
 	public void addStopPoint(StopPoint stopPoint)
 	{
 		if (stopPoints== null) stopPoints = new ArrayList<StopPoint>();
-		stopPoints.add(stopPoint);
+		if (!stopPoints.contains(stopPoint))
+			stopPoints.add(stopPoint);
 	}
-	
+
 	public void addVehicleJourney(VehicleJourney vehicleJourney)
 	{
 		if (vehicleJourneys== null) vehicleJourneys = new ArrayList<VehicleJourney>();
-		vehicleJourneys.add(vehicleJourney);
+		if (!vehicleJourneys.contains(vehicleJourney))
+			vehicleJourneys.add(vehicleJourney);
 	}
-	
+
 	@Override
 	public boolean clean() {
 		if(vehicleJourneys == null){
