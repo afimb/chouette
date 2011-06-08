@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%-- Titre et barre de navigation --%>	
 <title><s:text name="import.index.title" /></title>
-<s:url id="urlImports" action="execute" namespace="/upload" includeParams="none"/>
+<s:url id="urlImports" action="execute" includeParams="none"/>
 <s:property value="filAriane.addElementFilAriane(getText('import.index.title'), '', #urlImports)"/>
 <div class="panelData">
 	<s:property value="filAriane.texteFilAriane" escape="false"/>

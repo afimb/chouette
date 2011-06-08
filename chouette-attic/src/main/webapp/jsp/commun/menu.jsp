@@ -216,7 +216,7 @@
 </s:else>
 
 <%-- Import --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.import.list.title')">
+<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('import.index.title')">
 	<SCRIPT type="text/javascript">
 		$('importMenu').className='selectionne';
 	</SCRIPT>	

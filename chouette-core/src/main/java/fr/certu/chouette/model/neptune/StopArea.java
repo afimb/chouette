@@ -34,6 +34,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter private List<AccessLink> accessLinks;
 	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 
+        private static List<RestrictionConstraint> unvalidRestrictionConstraints;
 	@Getter @Setter private List<Facility> facilities;
 
 	public void addFacility(Facility facility)
@@ -51,7 +52,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 	public void addContainedStopId(String containedStopId)
 	{
 		if (containedStopIds == null) containedStopIds = new ArrayList<String>();
-		if (containedStopIds.contains(containedStopId))
+		if (!containedStopIds.contains(containedStopId))
 			containedStopIds.add(containedStopId);
 	}
 
@@ -90,6 +91,20 @@ public class StopArea extends NeptuneIdentifiedObject {
 		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
 		restrictionConstraints.add(restrictionConstraint);
 	}
+        
+        public static void addUnvalidRestrictionConstraint(RestrictionConstraint unvalidRestrictionConstraint) {
+            if (unvalidRestrictionConstraints == null) unvalidRestrictionConstraints = new ArrayList<RestrictionConstraint>();
+            unvalidRestrictionConstraints.add(unvalidRestrictionConstraint);
+        }
+        
+        public static void setUnvalidRestrictionConstraints(List<RestrictionConstraint> tmpUnvalidRestrictionConstraints) {
+            unvalidRestrictionConstraints = tmpUnvalidRestrictionConstraints;
+        }
+        
+        public static List<RestrictionConstraint> getUnvalidRestrictionConstraints() {
+            return unvalidRestrictionConstraints;
+        }
+        
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
