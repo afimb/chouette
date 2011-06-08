@@ -13,13 +13,13 @@ public class CompanyProducer extends AbstractCastorNeptuneProducer<chouette.sche
 		
 		castorCompany.setName(company.getName());
 		castorCompany.setRegistration(getRegistration(company.getRegistrationNumber()));
-		castorCompany.setCode(company.getCode());
-		castorCompany.setEmail(company.getEmail());
-		castorCompany.setFax(company.getFax());
-		castorCompany.setOperatingDepartmentName(company.getOperatingDepartmentName());
-		castorCompany.setOrganisationalUnit(company.getOrganisationalUnit());
-		castorCompany.setPhone(company.getPhone());
-		castorCompany.setShortName(company.getShortName());
+		castorCompany.setCode(getNotEmptyString(company.getCode()));
+		castorCompany.setEmail(getNotEmptyString(company.getEmail()));
+		castorCompany.setFax(getNotEmptyString(company.getFax()));
+		castorCompany.setOperatingDepartmentName(getNotEmptyString(company.getOperatingDepartmentName()));
+		castorCompany.setOrganisationalUnit(getNotEmptyString(company.getOrganisationalUnit()));
+		castorCompany.setPhone(getNotEmptyString(company.getPhone()));
+		castorCompany.setShortName(getNotEmptyString(company.getShortName()));
 		
 		return castorCompany;
 	}

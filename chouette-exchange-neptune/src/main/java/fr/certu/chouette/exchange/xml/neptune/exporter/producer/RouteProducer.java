@@ -15,7 +15,7 @@ public class RouteProducer extends AbstractCastorNeptuneProducer<chouette.schema
 		//
 		populateFromModel(castorRoute, route);
 		
-		castorRoute.setComment(route.getComment());
+		castorRoute.setComment(getNotEmptyString(route.getComment()));
 		castorRoute.setName(route.getName());
 		castorRoute.setNumber(route.getNumber());
 		castorRoute.setPublishedName(route.getPublishedName());

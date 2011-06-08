@@ -22,8 +22,10 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -160,4 +162,47 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 				facilityManager.saveAll(user, facilities, propagate);
 		}
 	}
+
+	@Override
+	public void completeObject(User user, StopArea stopArea)
+			throws ChouetteException 
+	{
+		List<StopPoint> containsPoints = stopArea.getContainedStopPoints();
+		if (containsPoints != null && !containsPoints.isEmpty())
+		{
+			for (StopPoint child : containsPoints) 
+			{
+				stopArea.addContainedStopId(child.getObjectId());
+			}
+		}
+		List<StopArea> containsAreas = stopArea.getContainedStopAreas();
+		if (containsAreas != null && !containsAreas.isEmpty())
+		{
+			for (StopArea child : containsAreas) 
+			{
+				stopArea.addContainedStopId(child.getObjectId());
+			}
+		}
+		if (stopArea.getParentStopArea() != null)
+		{
+			stopArea.getParentStopArea().addContainedStopArea(stopArea);
+			completeObject(user, stopArea.getParentStopArea());
+		}
+		if (stopArea.getAreaCentroid() != null)
+		{
+			AreaCentroid centroid = stopArea.getAreaCentroid();
+			if (centroid.getObjectId() == null)
+			{
+				String[] ids = stopArea.getObjectId().split(":");
+				centroid.setObjectId(ids[0]+":"+NeptuneIdentifiedObject.AREACENTROID_KEY+":"+ids[2]);
+		
+			}
+			centroid.setContainedInStopArea(stopArea);
+			centroid.setContainedInStopAreaId(stopArea.getObjectId());
+			centroid.setName(stopArea.getName());
+			stopArea.setAreaCentroidId(stopArea.getAreaCentroid().getObjectId());
+		}
+	}
+	
+	
 }

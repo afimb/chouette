@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.Line;
@@ -171,7 +172,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	}
 
 	@Override
-	public void completeObject(User user, StopPoint stopPoint) 
+	public void completeObject(User user, StopPoint stopPoint) throws ChouetteException 
 	{
 		PTNetwork ptNetwork = stopPoint.getPtNetwork();
 		if(ptNetwork != null)
@@ -179,6 +180,22 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		Line line = stopPoint.getLine();
 		if(line != null)
 			stopPoint.setLineIdShortcut(line.getObjectId());
+		INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
+		StopArea area = stopPoint.getContainedInStopArea(); 	
+		if (area != null)
+		{
+			area.addContainedStopPoint(stopPoint);
+			stopAreaManager.completeObject(user, area);
+			AreaCentroid centroid = area.getAreaCentroid();
+			if (centroid != null)
+			{
+				stopPoint.setLatitude(centroid.getLatitude());
+				stopPoint.setLongitude(centroid.getLongitude());
+				stopPoint.setLongLatType(centroid.getLongLatType());
+				stopPoint.setProjectedPoint(centroid.getProjectedPoint());
+			}
+			stopPoint.setName(area.getName());
+		}
 	}
 
 	@Override

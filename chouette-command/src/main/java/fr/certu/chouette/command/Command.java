@@ -414,6 +414,17 @@ public class Command
 				executeDelete(beans, manager,parameters);
 			}
 		}
+		else if (name.equals("complete"))
+		{
+			if (beans == null || beans.isEmpty()) 
+			{
+				System.out.println("Command "+commandNumber+": nothing to complete");
+			}
+			else
+			{
+				executeComplete(beans, manager, parameters);
+			}
+		}
 		else if (name.equals("getImportFormats"))
 		{
 			executeGetImportFormats(manager,parameters);
@@ -999,6 +1010,24 @@ public class Command
 		boolean propagate = getBoolean(parameters, "propagate");
 		manager.removeAll(null, beans,propagate);
 		beans.clear();
+	}
+
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters 
+	 * @throws ChouetteException
+	 */
+	private void executeComplete(List<NeptuneIdentifiedObject> beans,
+			INeptuneManager<NeptuneIdentifiedObject> manager, 
+			Map<String, List<String>> parameters)
+	throws ChouetteException 
+	{
+		for (NeptuneIdentifiedObject bean : beans) 
+		{
+			manager.completeObject(null, bean);
+		}
+		
 	}
 
 	/**

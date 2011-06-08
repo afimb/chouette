@@ -323,16 +323,20 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void completeObject(User user, Line line) {
+	public void completeObject(User user, Line line) throws ChouetteException 
+	{
 		//ptNetworkShortcut
 		PTNetwork ptNetwork = line.getPtNetwork();
 		if(ptNetwork != null)
 			line.setPtNetworkIdShortcut(ptNetwork.getObjectId());
 		//lineEndIds
 		List<Route> routes = line.getRoutes();
-		if (routes != null){
+		if (routes != null)
+		{
+			INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 			for (Route route : routes) 
 			{
+				routeManager.completeObject(user, route);
 				if (route.getPtLinks() != null)
 				{
 					Set<String> startStopPoints = new HashSet<String>();

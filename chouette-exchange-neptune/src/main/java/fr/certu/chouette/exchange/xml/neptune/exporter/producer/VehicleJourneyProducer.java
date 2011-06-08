@@ -24,14 +24,14 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 		//
 		populateFromModel(castorVehicleJourney, vehicleJourney);
 		
-		castorVehicleJourney.setComment(vehicleJourney.getComment());
-		castorVehicleJourney.setFacility(vehicleJourney.getFacility());
+		castorVehicleJourney.setComment(getNotEmptyString(vehicleJourney.getComment()));
+		castorVehicleJourney.setFacility(getNotEmptyString(vehicleJourney.getFacility()));
 		castorVehicleJourney.setJourneyPatternId(getNonEmptyObjectId(vehicleJourney.getJourneyPattern()));
 		castorVehicleJourney.setLineIdShortcut(vehicleJourney.getLineIdShortcut());
 		castorVehicleJourney.setNumber(vehicleJourney.getNumber());
 		castorVehicleJourney.setOperatorId(getNonEmptyObjectId(vehicleJourney.getCompany()));
-		castorVehicleJourney.setPublishedJourneyIdentifier(vehicleJourney.getPublishedJourneyIdentifier());
-		castorVehicleJourney.setPublishedJourneyName(vehicleJourney.getPublishedJourneyName());
+		castorVehicleJourney.setPublishedJourneyIdentifier(getNotEmptyString(vehicleJourney.getPublishedJourneyIdentifier()));
+		castorVehicleJourney.setPublishedJourneyName(getNotEmptyString(vehicleJourney.getPublishedJourneyName()));
 		castorVehicleJourney.setRouteId(getNonEmptyObjectId(vehicleJourney.getRoute()));
 		if(vehicleJourney.getServiceStatusValue() != null)
 		{

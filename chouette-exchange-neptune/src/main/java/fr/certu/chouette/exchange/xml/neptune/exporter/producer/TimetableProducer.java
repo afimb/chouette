@@ -17,7 +17,7 @@ public class TimetableProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		//
 		populateFromModel(castorTimetable, timetable);
 		
-		castorTimetable.setComment(timetable.getComment());
+		castorTimetable.setComment(getNotEmptyString(timetable.getComment()));
 		castorTimetable.setVersion(timetable.getVersion());
 		if(timetable.getCalendarDays() != null){
 			for(Date calendarDay : timetable.getCalendarDays()){

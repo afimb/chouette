@@ -41,7 +41,7 @@ public class Route extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private Long lineId;          // FK 
-	
+
 	@Getter @Setter private Line line;
 	/**
 	 * Public name for travellers
@@ -105,10 +105,10 @@ public class Route extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<PTLink> ptLinks; // Table + FK inverse 
-	
-	
+
+
 	@Getter @Setter private List<StopPoint> stopPoints;
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
@@ -160,7 +160,7 @@ public class Route extends NeptuneIdentifiedObject
 		}
 	} 
 
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
 	 */
@@ -212,8 +212,16 @@ public class Route extends NeptuneIdentifiedObject
 					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(ptLink.toString(childIndent,childLevel));
 				}
 			}
+			if (stopPoints != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPoints");
+				for (StopPoint stopPoint : stopPoints)
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.toString(childIndent,childLevel));
+				}
+			}
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -225,7 +233,7 @@ public class Route extends NeptuneIdentifiedObject
 		if(journeyPatternIds == null) journeyPatternIds = new ArrayList<String>();
 		journeyPatternIds.add(journeyPatternId);
 	}
-	
+
 	/**
 	 * add a journeyPattern to list only if not already present
 	 * @param journeyPattern
@@ -234,25 +242,27 @@ public class Route extends NeptuneIdentifiedObject
 		if(journeyPatterns == null) journeyPatterns = new ArrayList<JourneyPattern>();
 		journeyPatterns.add(journeyPattern);
 	}
-	
+
 	/**
 	 * add a ptLinkId to list only if not already present
 	 * @param ptLinkId
 	 */
 	public void addPTLinkId(String ptLinkId){
 		if(ptLinkIds == null) ptLinkIds = new ArrayList<String>();
-		ptLinkIds.add(ptLinkId);
+		if (!ptLinkIds.contains(ptLinkId))
+			ptLinkIds.add(ptLinkId);
 	}
-	
+
 	/**
 	 * add a ptLink to list only if not already present
 	 * @param ptLink
 	 */
 	public void addPTLink(PTLink ptLink){
 		if(ptLinks == null) ptLinks = new ArrayList<PTLink>();
-		ptLinks.add(ptLink);
+		if (!ptLinks.contains(ptLink))
+			ptLinks.add(ptLink);
 	}
-	
+
 	/**
 	 * remove a journeyPatternId from list if present
 	 * @param journeyPatternId
@@ -260,7 +270,7 @@ public class Route extends NeptuneIdentifiedObject
 	public void removeJourneyPatternId(String journeyPatternId){
 		if(journeyPatternIds != null) journeyPatternIds.remove(journeyPatternId);
 	}
-	
+
 	/**
 	 * remove a journeyPattern from list if present
 	 * @param journeyPattern
@@ -268,7 +278,7 @@ public class Route extends NeptuneIdentifiedObject
 	public void removeJourneyPattern(JourneyPattern journeyPattern){
 		if(journeyPatterns != null) journeyPatterns.remove(journeyPattern);
 	}
-	
+
 	/**
 	 * remove a ptLinkId from list if present
 	 * @param ptLinkId
@@ -277,7 +287,7 @@ public class Route extends NeptuneIdentifiedObject
 		if(ptLinkIds != null) ptLinkIds.remove(ptLinkId);
 		ptLinkIds.add(ptLinkId);
 	}
-	
+
 	/**
 	 * remove a ptLink from list if present
 	 * @param ptLink
@@ -285,12 +295,12 @@ public class Route extends NeptuneIdentifiedObject
 	public void removePTLink(PTLink ptLink){
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}
-	
+
 	public void addStopPoint(StopPoint stopPoint){
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
 		stopPoints.add(stopPoint);
 	}
-	
+
 	@Override
 	public boolean clean() {
 		if(journeyPatterns == null){

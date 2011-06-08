@@ -17,6 +17,8 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -146,19 +148,19 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 				List<JourneyPattern> patterns =route.getJourneyPatterns();
 				if(patterns != null && !journeyPatterns.containsAll(patterns))
 					journeyPatterns.addAll(route.getJourneyPatterns());
-				
+
 				List<StopPoint> points = route.getStopPoints();
 				if(points != null && !stopPoints.containsAll(points))
 					stopPoints.addAll(points);
-				
+
 				List<PTLink> ptLinks = route.getPtLinks(); 
 				if(ptLinks != null && !links.containsAll(ptLinks))
 					links.addAll(route.getPtLinks());
 			}
-			
+
 			if(!stopPoints.isEmpty())
 				stopPointManager.saveAll(user, stopPoints,propagate);
-			
+
 			if(!journeyPatterns.isEmpty())
 				jpManager.saveAll(user, journeyPatterns,propagate);
 
@@ -166,4 +168,59 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 				ptLinkManager.saveAll(user, links,propagate);
 		}
 	}
+
+	@Override
+	public void completeObject(User user, Route route) throws ChouetteException 
+	{
+		List<StopPoint> stopPoints = route.getStopPoints();
+		if (stopPoints != null && !stopPoints.isEmpty())
+		{
+			// generate PtLinks
+			List<PTLink> ptLinks = route.getPtLinks();
+			if (ptLinks == null || ptLinks.isEmpty())
+			{
+				String baseId = route.getObjectId().split(":")[0]+":"+NeptuneIdentifiedObject.PTLINK_KEY+":";
+				INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
+				for (int rank = 1; rank < stopPoints.size(); rank++)
+				{
+					PTLink link = ptLinkManager.getNewInstance(user);
+					link.setStartOfLink(stopPoints.get(rank-1));
+					link.setEndOfLink(stopPoints.get(rank));
+					String startId = stopPoints.get(rank-1).getObjectId().split(":")[2];
+					String endId = stopPoints.get(rank).getObjectId().split(":")[2];
+					String objectId = baseId+startId+"A"+endId;
+					link.setObjectId(objectId);
+					link.setRoute(route);
+					route.addPTLink(link);
+				}
+			}
+			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
+            for (StopPoint stopPoint : stopPoints) 
+            {
+            	stopPointManager.completeObject(user, stopPoint);
+			}
+		}
+
+		List<PTLink> ptLinks = route.getPtLinks();
+		if (ptLinks == null || ptLinks.isEmpty())
+		{
+			for (PTLink ptLink : ptLinks) 
+			{
+				route.addPTLinkId(ptLink.getObjectId());
+			}
+		}
+
+		List<JourneyPattern> jps = route.getJourneyPatterns();
+		if (jps != null && !jps.isEmpty())
+		{
+			INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
+			for (JourneyPattern journeyPattern : jps) 
+			{
+				jpManager.completeObject(user, journeyPattern);
+			}
+		}
+
+	}
+
+
 }

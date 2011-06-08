@@ -348,8 +348,9 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * Complete this object {@link T} by setting all shortcutIds and objects required (in export process for example)
 	 * @param user
 	 * @param bean
+	 * @throws ChouetteException 
 	 */
-	void completeObject(User user, T bean);
+	void completeObject(User user, T bean) throws ChouetteException;
 	
 	T getByObjectId(String objectId) throws ChouetteException;
 }

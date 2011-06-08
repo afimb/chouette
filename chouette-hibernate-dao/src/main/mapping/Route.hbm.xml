@@ -23,7 +23,7 @@
 	<class name="Route" table="Route" dynamic-insert="false"
 		dynamic-update="false">
 		<id name="id" type="long">
-			<generator class="native" />
+			<generator class="identity" />
 		</id>
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />
@@ -42,11 +42,11 @@
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
-		<!-- <list name="stopPoints" lazy="true">
+		<list name="stopPoints" lazy="true">
 			<key column="routeId" />
 			<index column="position"/>
 			<one-to-many class="StopPoint" />
-		</list> -->
+		</list>
 		<!--
 		<bag name="journeyPatternIds" table="journeyPattern" inverse="true"
 			lazy="false" cascade="none" fetch="join">

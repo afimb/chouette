@@ -8,7 +8,7 @@
 			<column name="id">
 				<comment>Internal identification</comment>
 			</column>
-			<generator class="native" />
+			<generator class="identity"/> 
 		</id>
 		<property name="objectId" type="string" unique="true"
 			not-null="true">

@@ -15,14 +15,14 @@ public class AreaCentroidProducer extends AbstractCastorNeptuneProducer<chouette
 		//
 		populateFromModel(castorAreaCentroid, areaCentroid);
 		
-		castorAreaCentroid.setComment(areaCentroid.getComment());
+		castorAreaCentroid.setComment(getNotEmptyString(areaCentroid.getComment()));
 		castorAreaCentroid.setName(areaCentroid.getName());
 		
 		Address address = areaCentroid.getAddress();
 		if(areaCentroid.getAddress() != null){
 			chouette.schema.Address castorAddress = new chouette.schema.Address();
-			castorAddress.setCountryCode(address.getCountryCode());
-			castorAddress.setStreetName(address.getStreetName());
+			castorAddress.setCountryCode(getNotEmptyString(address.getCountryCode()));
+			castorAddress.setStreetName(getNotEmptyString(address.getStreetName()));
 			castorAreaCentroid.setAddress(castorAddress);
 		}
 		

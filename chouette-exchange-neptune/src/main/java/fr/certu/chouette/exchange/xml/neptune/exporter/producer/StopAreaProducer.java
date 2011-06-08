@@ -18,7 +18,7 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 		//
 		populateFromModel(castorStopArea, stopArea);
 
-		castorStopArea.setComment(stopArea.getComment());
+		castorStopArea.setComment(getNotEmptyString(stopArea.getComment()));
 		castorStopArea.setName(stopArea.getName());
 		if(stopArea.getBoundaryPoints() != null)
 		{
@@ -53,7 +53,7 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 			stopAreaExtension.setLiftAvailability(stopArea.getLiftAvailable());
 		if (stopArea.getMobilityRestrictedSuitable() != null)
 			stopAreaExtension.setMobilityRestrictedSuitability(stopArea.getMobilityRestrictedSuitable());
-		stopAreaExtension.setNearestTopicName(stopArea.getNearestTopicName());
+		stopAreaExtension.setNearestTopicName(getNotEmptyString(stopArea.getNearestTopicName()));
 		stopAreaExtension.setRegistration(getRegistration(stopArea.getRegistrationNumber()));
 		if (stopArea.getStairsAvailable() != null)
 			stopAreaExtension.setStairsAvailability(stopArea.getStairsAvailable());

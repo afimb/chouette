@@ -5,7 +5,7 @@
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="VehicleJourney" table="VehicleJourney">
 		<id column="id" name="id" type="long">
-			<generator class="native" />
+			<generator class="identity" />
 		</id>
 		<property name="objectId" type="string" unique="true" />
 		<property name="objectVersion" type="int" />
@@ -29,6 +29,11 @@
 			name="timeSlot" />
 		<many-to-one class="Company" column="companyId" lazy="no-proxy"
 			name="company" />
+		<bag name="timetables" table="timetablevehiclejourney" lazy="false">
+			<key column="vehiclejourneyId" />
+			<many-to-many column="timetableId" class="Timetable" />
+		</bag>
+			
 		<bag lazy="false" name="vehicleJourneyAtStops" cascade="none"
 			table="vehicleJourneyAtStop">
 			<key column="vehicleJourneyId" />

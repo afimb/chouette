@@ -4,7 +4,7 @@
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
   <class name="PTNetwork" table="PtNetwork" dynamic-insert="false" dynamic-update="false">
     <id name="id" type="long">
-      <generator class="native"/>
+      <generator class="identity"/>
     </id>
     <property name="objectId" type="string" unique="true"/>
     <property name="objectVersion" type="int"/>
