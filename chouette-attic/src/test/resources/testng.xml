@@ -22,7 +22,6 @@
       <class name="unit.ExportMissionITL"/> 
     </classes>
   </test>
-  -->
   <test name="Validation" enabled="false">
     <classes>
       <class name="unit.TestValidation"/>
@@ -40,7 +39,6 @@
   		<class name="unit.ImportExcelTest"/>
   	</classes>
   </test>
-  <!-- 
   <test name="ImportXML">
   	<classes>
   		<class name="unit.ImportXML"/>
