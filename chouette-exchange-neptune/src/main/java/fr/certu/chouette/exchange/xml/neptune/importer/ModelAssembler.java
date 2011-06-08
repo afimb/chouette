@@ -283,6 +283,11 @@ public class ModelAssembler {
 
                 }
             }
+            for (Facility facility : facilities) {
+                if (facility.getStopArea() != null && facility.getStopArea().equals(stopArea)) {
+                    stopArea.addFacility(facility);
+                }
+            }
         }
         if (StopArea.getUnvalidRestrictionConstraints() != null) {
             for (RestrictionConstraint constraint : StopArea.getUnvalidRestrictionConstraints()) {
@@ -293,11 +298,6 @@ public class ModelAssembler {
                     logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
                 } else {
                     logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
-                }
-            }
-            for (Facility facility : facilities) {
-                if (facility.getStopArea() != null && facility.getStopArea().equals(stopArea)) {
-                    stopArea.addFacility(facility);
                 }
             }
         }

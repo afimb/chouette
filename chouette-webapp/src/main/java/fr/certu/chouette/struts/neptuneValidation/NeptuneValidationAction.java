@@ -62,7 +62,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 	@Getter @Setter protected HttpServletResponse servletResponse;
 	@Getter @Setter protected HttpServletRequest servletRequest;
 
-	@Getter @Setter private boolean save;
+	@Getter @Setter private boolean save = false;
 
 
 	@Override
