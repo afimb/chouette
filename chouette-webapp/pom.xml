@@ -19,6 +19,14 @@
             <artifactId>chouette-attic</artifactId>
         </dependency>
         <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-hibernate-dao</artifactId>
+        </dependency>
+         <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-jdbc-dao</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>

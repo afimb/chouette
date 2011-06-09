@@ -126,6 +126,7 @@ public class Line extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private GroupOfLine groupOfLine;
+	@Getter @Setter private Long groupOfLineId;
 
 	/**
 	 * ImportedItems for import neptune process

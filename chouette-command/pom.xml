@@ -37,6 +37,10 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-validation</artifactId>
 		</dependency>
+		<dependency>
+        <groupId>fr.certu.chouette</groupId>
+        <artifactId>chouette-jdbc-dao</artifactId>
+      </dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

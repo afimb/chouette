@@ -108,7 +108,7 @@ public class DaoInjector <T extends NeptuneIdentifiedObject>
 	
 	@Getter @Setter private INeptuneManager<T> manager;
 	@Getter @Setter private IDaoTemplate<T> dao;
-	@Getter @Setter private IDaoTemplate<T> jdbcDao;
+	@Getter @Setter private IJdbcDaoTemplate<T> jdbcDao;
 	
 	public void init()
 	{

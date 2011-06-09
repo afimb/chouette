@@ -23,6 +23,7 @@ import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.dao.IDaoTemplate;
+import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -51,7 +52,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Getter @Setter private IDaoTemplate<T> dao; 
 	
 	// data storage access by jdbc
-	@Getter @Setter private IDaoTemplate<T> jdbcDao;
+	@Getter @Setter private IJdbcDaoTemplate<T> jdbcDao;
 
 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
@@ -324,8 +325,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
 	{
-//		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-//
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+
 //		for (T t : beans) {
 //			save(user,t, propagate);
 //		}

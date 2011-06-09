@@ -8,61 +8,46 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="lineJdbcDao" class="fr.certu.chouette.jdbc.dao.LineJdbcDao">
+	<bean id="groupOfLineJdbcDao" class="fr.certu.chouette.jdbc.dao.GroupOfLineJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.LINE</value>
+			<value>SELECT * FROM ${database.schema}.GroupOfLine</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.LINE
+				INSERT INTO ${database.schema}.GroupOfLine
 				(
-				ptnetworkid,
-				companyid,
 				objectid,
 				objectversion,
 				creationtime,
 				creatorid,
 				name,
-				NUMBER,
-				publishedname,
-				transportmodename,
-				registrationnumber,
-				COMMENT,
-				groupoflineid,
-				mobilityrestrictedsuitable)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				COMMENT
+				)
+				VALUES(?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.LINE WHERE objectid = ?
+				SELECT * FROM ${database.schema}.GroupOfLine WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.LINE WHERE
+				SELECT id,objectid FROM ${database.schema}.GroupOfLine WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.LINE
+				UPDATE ${database.schema}.GroupOfLine
 				SET
-				ptnetworkid = ?,
-				companyid = ?,
 				objectid = ?,
 				objectversion = ?,
 				creationtime = ?,
 				creatorid = ?,
 				name = ?,
-				NUMBER = ?,
-				publishedname = ?,
-				transportmodename = ?,
-				registrationnumber = ?,
-				COMMENT = ?,
-				groupoflineid = ?,
-				mobilityrestrictedsuitable = ?
+				COMMENT = ?
 		</value>
 		</property>
 	</bean>
