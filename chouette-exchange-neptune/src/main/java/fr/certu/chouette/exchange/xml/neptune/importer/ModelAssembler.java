@@ -195,28 +195,31 @@ public class ModelAssembler
 			route.setPtLinks(sortPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class)));
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 			int position = 0;
-			for (PTLink ptLink : route.getPtLinks()) 
+			if (route.getPtLinks() != null)
 			{
-				ptLink.setRoute(route);
-				ptLink.setRouteId(route.getObjectId());
+				for (PTLink ptLink : route.getPtLinks()) 
+				{
+					ptLink.setRoute(route);
+					ptLink.setRouteId(route.getObjectId());
 
-				StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
-				startPoint.setPosition(position++);
-				startPoint.setRoute(route);
-				if(!stopPoints.contains(startPoint))
-				{
-					stopPoints.add(startPoint);
+					StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
+					startPoint.setPosition(position++);
+					startPoint.setRoute(route);
+					if(!stopPoints.contains(startPoint))
+					{
+						stopPoints.add(startPoint);
+					}
+					StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
+					if(!stopPoints.contains(endPoint))
+					{
+						endPoint.setPosition(position);
+						endPoint.setRoute(route);
+						stopPoints.add(endPoint);
+					}
 				}
-				StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
-				if(!stopPoints.contains(endPoint))
-				{
-					endPoint.setPosition(position);
-					endPoint.setRoute(route);
-					stopPoints.add(endPoint);
-				}
+				route.setStopPoints(stopPoints);
 			}
-
-			route.setStopPoints(stopPoints);
+			
 			route.setLine(line);
 		}
 	}
@@ -288,12 +291,11 @@ public class ModelAssembler
 	{
 		for(VehicleJourney vehicleJourney : vehicleJourneys)
 		{
-
-
 			vehicleJourney.setCompany(getObjectFromId(vehicleJourney.getCompanyId(), Company.class));
 			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
 			vehicleJourney.setJourneyPattern(journeyPattern);
-			journeyPattern.addVehicleJourney(vehicleJourney);
+			if (journeyPattern != null)
+			   journeyPattern.addVehicleJourney(vehicleJourney);
 			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
 			for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()){
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
@@ -509,7 +511,8 @@ public class ModelAssembler
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		T object = null;
 
-		object = (T)dictionary.get(id);
+		if (dictionary != null)
+			object = (T)dictionary.get(id);
 
 		return object;
 	}

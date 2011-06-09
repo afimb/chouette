@@ -272,10 +272,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void removeAll(User user, Collection<T> objects,boolean propagate) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		/*
 		for (T t : objects) {
 			remove(user, t, propagate);
 		}
-		//getDao().removeAll(objects);
+		 */
+		getDao().removeAll(objects);
 	}
 
 	@Override
@@ -330,11 +332,11 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		getLogger().debug("saving "+beans.size()+" "+neptuneType.getSimpleName());
 
 		getDao().saveOrUpdateAll(beans);
-		
-//		for (T t : beans) 
-//		{
-//			save(user,t, propagate);
-//		}
+
+		//		for (T t : beans) 
+		//		{
+		//			save(user,t, propagate);
+		//		}
 		//		if(getJdbcDao() == null)
 		//			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
 		//		
@@ -561,5 +563,27 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 	}
 
+	/**
+	 * build a list of ids from object collection
+	 * 
+	 * @param <U> type of collection entries
+	 * @param beans  collection
+	 * @return 
+	 */
+	protected static <U extends NeptuneIdentifiedObject> List<Long> getIds(Collection<U> beans)
+	{
+		List<Long> ids = new ArrayList<Long>();
+		for (U bean : beans) 
+		{
+			if (bean.getId() != null)
+			{
+				if (!ids.contains(bean.getId()))
+				{
+					ids.add(bean.getId());
+				}
+			}
+		}
+		return ids;
+	}
 
 }

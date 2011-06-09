@@ -217,14 +217,17 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 								}else
 									report2_24.updateStatus(Report.STATE.OK);
 								//Test 3.16.2
-								for (Timetable timetable : vehicleJourney.getTimetables()) {
-									if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
-										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
-												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-										report3_16_2.addItem(detailReportItem);	
-									}else
-										report3_16_2.updateStatus(Report.STATE.OK);
-								}							
+								if (vehicleJourney.getTimetables() != null)
+								{
+									for (Timetable timetable : vehicleJourney.getTimetables()) {
+										if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
+											ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
+													vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+											report3_16_2.addItem(detailReportItem);	
+										}else
+											report3_16_2.updateStatus(Report.STATE.OK);
+									}	
+								}
 			}
 
 			//
@@ -236,7 +239,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 					Set<VehicleJourneyAtStop[]> stopsSet = new HashSet<VehicleJourneyAtStop[]>();
 					if(vehicleJourneyAtStops != null){
 						for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops){
-							
+
 							//Test 2.22.1
 							if(vehicleJourneyAtStop.getStopPoint() == null){
 								String arrivalTime = String.valueOf(vehicleJourneyAtStop.getArrivalTime());
@@ -245,8 +248,8 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 							}else{
 								report2_22.updateStatus(Report.STATE.OK);
 							}
-								
-							
+
+
 							//Test 2.23.1
 							String vehicleJourneyId = vehicleJourneyAtStop.getVehicleJourneyId();
 							if(!vehicleJourneyId.equals(vehicleJourney.getObjectId())){
