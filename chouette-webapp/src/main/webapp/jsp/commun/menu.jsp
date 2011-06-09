@@ -32,10 +32,10 @@
                         <ul id="sub_sub_sommaire">
                             <s:url id="urlHorairesMenu" action="search" namespace="/vehicleJourneyAtStop" includeParams="none"/>
                             <li><s:a href="%{urlHorairesMenu}" id="horairesMenu"><s:text name="text.horaires"/></s:a></li>
-                        </ul>
-                    <li>
-                </ul>
-            </li>
+                            </ul>
+                        <li>
+                    </ul>
+                </li>
 
             <%-- Calendriers d'application --%>
             <s:url id="urlTableauMarchesMenu" action="list" namespace="/timeTable" includeParams="none"/>
@@ -231,7 +231,7 @@
 </s:else>
 
 <%-- Import --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.import.list.title')">
+<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('import.index.title')">
     <SCRIPT type="text/javascript">
         $('importMenu').className='selectionne';
     </SCRIPT>	

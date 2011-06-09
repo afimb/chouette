@@ -10,10 +10,12 @@ import lombok.Getter;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.GroupOfLine;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -53,6 +55,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
         ReportItem sheet2 = new SheetReportItem("Test2_Sheet2", 2);
         ReportItem sheet6 = new SheetReportItem("Test2_Sheet6", 6);
         ReportItem sheet7 = new SheetReportItem("Test2_Sheet7", 7);
+        ReportItem sheet15 = new SheetReportItem("Test2_Sheet15", 15);
         ReportItem sheet3_4 = new SheetReportItem("Test3_Sheet4", 4);
         ReportItem sheet2_26 = new SheetReportItem("Test2_Sheet26", 26);
         ReportItem sheet2_27 = new SheetReportItem("Test2_Sheet27", 27);
@@ -61,6 +64,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
         SheetReportItem report2_1_1 = new SheetReportItem("Test2_Sheet1_Step1", 1);
         SheetReportItem report2_1_2 = new SheetReportItem("Test2_Sheet1_Step2", 2);
         SheetReportItem report2_2_1 = new SheetReportItem("Test2_Sheet2_Step1", 1);
+        SheetReportItem report2_15_2 = new SheetReportItem("Test2_Sheet15_Step2", 2);
         SheetReportItem report2_6_1 = new SheetReportItem("Test2_Sheet6_Step1", 1);
         SheetReportItem report2_6_2 = new SheetReportItem("Test2_Sheet6_Step2", 2);
         SheetReportItem report2_7_1 = new SheetReportItem("Test2_Sheet7_Step1", 1);
@@ -119,11 +123,14 @@ public class ValidationLine implements IValidationPlugin<Line> {
 
             //Test 2.7
             List<String> routeIds = Line.extractObjectIds(line.getRoutes());
-            if (!line.getRouteIds().containsAll(routeIds)) {
-                ReportItem detailReportItem = new DetailReportItem("Test2_Sheet7_Step1_error", Report.STATE.ERROR);
-                report2_7_1.addItem(detailReportItem);
-            } else {
-                report2_7_1.updateStatus(Report.STATE.OK);
+            //if (!line.getRouteIds().containsAll(routeIds)) {
+            if (routeIds != null && routeIds.size() > 0) {
+                if (!routeIds.containsAll(line.getRouteIds())) {
+                    ReportItem detailReportItem = new DetailReportItem("Test2_Sheet7_Step1_error", Report.STATE.ERROR);
+                    report2_7_1.addItem(detailReportItem);
+                } else {
+                    report2_7_1.updateStatus(Report.STATE.OK);
+                }
             }
             //Test 3.4.1
             Line nextLine = (i < lines.size() - 1) ? lines.get(i + 1) : line;
@@ -139,6 +146,26 @@ public class ValidationLine implements IValidationPlugin<Line> {
             }
             ImportedItems importedItems = line.getImportedItems();
             if (importedItems != null) {
+                
+                //Test 2.15.2
+                boolean propertyIsError = false;
+                for (StopPoint stopPoint : importedItems.getStopPoints()) {
+                    boolean notFound = true;
+                    for (JourneyPattern journeyPattern : importedItems.getJourneyPatterns()) {
+                        if (journeyPattern.getStopPointIds() != null && journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())) {
+                            notFound = false;
+                            propertyIsError = true;
+                            break;
+                        }
+                    }
+                    if (notFound) {
+                        ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step2_error", Report.STATE.ERROR);
+                        report2_15_2.addItem(detailReportItem);
+                    }
+                }
+                if (!propertyIsError) {
+                    report2_15_2.updateStatus(Report.STATE.OK);                    
+                }
 
                 //Test 2.2.1
                 for (GroupOfLine groupOfLine : importedItems.getGroupOfLines()) {
@@ -151,32 +178,60 @@ public class ValidationLine implements IValidationPlugin<Line> {
                         }
                     }
                 }
+
+                //Test 2.6.2
                 if (lineEnds != null) {
-                    //Test 2.6.2
-                    int count = 0;
-                    //List<String> lineEndList  = Line.extractObjectIds(line.getLineEndList());
                     List<Route> routes = line.getRoutes();
-                    here:
+                    List<PTLink> ptLinks = new ArrayList<PTLink>();
+                    if (routes != null) {
+                        for (Route route : routes) {
+                            ptLinks.addAll(route.getPtLinks());
+                        }
+                    }
+                    boolean isStart = false;
+                    boolean isEnd = false;
+                    lineEndsRef:
                     for (String lineEnd : lineEnds) {
-                        if (routes != null) {
-                            for (Route route : routes) {
-                                List<PTLink> ptLinks = route.getPtLinks();
-                                if (ptLinks != null) {
-                                    for (PTLink ptLink : ptLinks) {
-                                        if (lineEnd.equals(ptLink.getStartOfLinkId()) || lineEnd.equals(ptLink.getEndOfLinkId())) {
-                                            count++;
-                                            continue here;
-                                        }
-                                    }
-                                }
+                        if (lineEnd == null) {
+                            continue;
+                        }
+                        lineEnd = lineEnd.trim();
+                        if (lineEnd.length() == 0) {
+                            continue;
+                        }
+                        isStart = false;
+                        isEnd = false;
+                        for (PTLink ptLink : ptLinks) {
+                            if (ptLink == null) {
+                                continue;
+                            }
+                            if (ptLink.getStartOfLink() == null) {
+                                continue;
+                            }
+                            if (ptLink.getStartOfLink().getObjectId() == null) {
+                                continue;
+                            }
+                            if (lineEnd.equals(ptLink.getStartOfLink().getObjectId().trim())) {
+                                isStart = true;
+                            }
+                            if (ptLink.getEndOfLink() == null) {
+                                continue;
+                            }
+                            if (ptLink.getEndOfLink().getObjectId() == null) {
+                                continue;
+                            }
+                            if (lineEnd.equals(ptLink.getEndOfLink().getObjectId().trim())) {
+                                isEnd = true;
+                            }
+                            if (isStart && isEnd) {
+                                ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error", Report.STATE.ERROR);
+                                report2_6_2.addItem(detailReportItem);
+                                continue lineEndsRef;
                             }
                         }
-                        if (count != 1) {
-                            ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step2_error", Report.STATE.ERROR);
-                            report2_6_2.addItem(detailReportItem);
-                        } else {
-                            report2_6_2.updateStatus(Report.STATE.OK);
-                        }
+                    }
+                    if (!(isStart && isEnd)) {
+                        report2_6_2.updateStatus(Report.STATE.OK);
                     }
                 }
 
@@ -259,6 +314,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
         report2_6_1.computeDetailItemCount();
         report2_6_2.computeDetailItemCount();
         report2_7_1.computeDetailItemCount();
+        report2_15_2.computeDetailItemCount();
         report3_4_1.computeDetailItemCount();
         report2_26_1.computeDetailItemCount();
         report2_27_1.computeDetailItemCount();
@@ -270,6 +326,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
         sheet6.addItem(report2_6_1);
         sheet6.addItem(report2_6_2);
         sheet7.addItem(report2_7_1);
+        sheet15.addItem(report2_15_2);
         sheet3_4.addItem(report3_4_1);
         sheet2_26.addItem(report2_26_1);
         sheet2_27.addItem(report2_27_1);
@@ -279,6 +336,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
         category2.addItem(sheet2);
         category2.addItem(sheet6);
         category2.addItem(sheet7);
+        category2.addItem(sheet15);
         category2.addItem(sheet2_26);
         category2.addItem(sheet2_27);
         category2.addItem(sheet2_28);

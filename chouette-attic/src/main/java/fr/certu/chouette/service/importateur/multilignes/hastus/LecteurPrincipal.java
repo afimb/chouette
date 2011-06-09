@@ -179,7 +179,7 @@ public class LecteurPrincipal implements ILecteurPrincipal {
     
     @Override
     public void lireCheminFichier(String chemin) throws ServiceException {
-	logger.debug("LECTURE DE DONNEES HASTUS DEPUIS : "+chemin);
+	logger.debug("READING HASTUS DATA FROM : "+chemin);
         File              inputFile         = null;
         InputStreamReader inputStreamReader = null;
 	CSVReader         lecteur           = null;

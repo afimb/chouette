@@ -53,6 +53,7 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
+import org.apache.log4j.Logger;
 
 /**
  * note : repartir du fr.certu.chouette.service.validation.util.MainSchemaProducer 
@@ -80,6 +81,7 @@ public class NeptuneConverter
 	@Getter @Setter private GroupOfLineProducer groupOfLineProducer;
 	@Getter @Setter private FacilityProducer facilityProducer;
 	@Getter @Setter private TimeSlotProducer timeSlotProducer;
+        private static Logger logger = Logger.getLogger(NeptuneConverter.class);
 
 	public Line extractLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
@@ -252,7 +254,8 @@ public class NeptuneConverter
 		// modele des producer : voir package fr.certu.chouette.service.validation.util
 
 		List<StopArea> stopAreas = new ArrayList<StopArea>();
-
+                
+                List<chouette.schema.ITL> usedItls = new ArrayList<chouette.schema.ITL>();
 		for(chouette.schema.StopArea xmlStopArea : xmlStopAreas){
 			StopArea stopArea = stopAreaProducer.produce(xmlStopArea, report);
 			for (chouette.schema.ITL itl : itls) {
@@ -261,12 +264,26 @@ public class NeptuneConverter
 					constraint.setAreaId(itl.getAreaId());
 					constraint.setLineIdShortCut(itl.getLineIdShortCut());
 					constraint.setName(itl.getName());
-					stopArea.addRestrictionConstraint(constraint);	
+					stopArea.addRestrictionConstraint(constraint);
+                                        usedItls.add(itl);
+                                        logger.debug("ITL "+itl.getName()+" ("+itl.getAreaId()+","+itl.getLineIdShortCut()+") HAS A STOP AREA.");
 				}
 			}
 			
 			stopAreas.add(stopArea);
 		}
+                
+                StopArea.setUnvalidRestrictionConstraints(null);
+                for (chouette.schema.ITL itl : itls) {
+                    if (!usedItls.contains(itl)) {
+                        RestrictionConstraint constraint = new RestrictionConstraint();
+			constraint.setAreaId(itl.getAreaId());
+			constraint.setLineIdShortCut(itl.getLineIdShortCut());
+                        constraint.setName(itl.getName());
+                        StopArea.addUnvalidRestrictionConstraint(constraint);
+                        logger.debug("ITL "+itl.getName()+" ("+itl.getAreaId()+","+itl.getLineIdShortCut()+") HAS NO STOP AREA.");
+                    }
+                }
 
 		int count = (stopAreas == null? 0 : stopAreas.size());
 		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));

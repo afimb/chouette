@@ -15,6 +15,9 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -41,8 +44,11 @@ import fr.certu.chouette.model.neptune.type.ImportedItems;
  * @author michel
  *
  */
-public class ModelAssembler {
-	@Getter @Setter private Line line;
+public class ModelAssembler 
+{
+    private static Logger logger = Logger.getLogger(ModelAssembler.class);
+
+    @Getter @Setter private Line line;
 	@Getter @Setter private List<Route> routes;
 	@Getter @Setter private List<Company> companies;
 	@Getter @Setter private PTNetwork ptNetwork;
@@ -54,15 +60,13 @@ public class ModelAssembler {
 	@Getter @Setter private List<AreaCentroid> areaCentroids;
 	@Getter @Setter private List<ConnectionLink> connectionLinks;
 	@Getter @Setter private List<Timetable> timetables;
-
 	@Getter @Setter private List<AccessLink> accessLinks;
 	@Getter @Setter private List<AccessPoint> accessPoints;
 	@Getter @Setter private List<GroupOfLine> groupOfLines;
 	@Getter @Setter private List<Facility> facilities;
 	@Getter @Setter private List<TimeSlot> timeSlots;
-
+	
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
-
 	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
 	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
@@ -74,7 +78,6 @@ public class ModelAssembler {
 	private Map<String, AreaCentroid> areaCentroidsDictionary = new HashMap<String, AreaCentroid>();
 	private Map<String, ConnectionLink> connectionLinksDictionary = new HashMap<String, ConnectionLink>();
 	private Map<String, Timetable> timetablesDictionary = new HashMap<String, Timetable>();
-
 	private Map<String, AccessLink> accessLinksDictionary = new HashMap<String, AccessLink>();
 	private Map<String, AccessPoint> accessPointsDictionary = new HashMap<String, AccessPoint>();
 	private Map<String, GroupOfLine> groupOfLinesDictionary = new HashMap<String, GroupOfLine>();
@@ -83,6 +86,7 @@ public class ModelAssembler {
 	
 	public void connect()
 	{
+
 		populateDictionaries();
 		connectFacilities();
 		connectLine();
@@ -103,6 +107,7 @@ public class ModelAssembler {
 
 	private void populateDictionaries()
 	{
+
 		List<Line> lines = new ArrayList<Line>();
 		lines.add(line);
 		populateDictionnary(lines, linesDictionary);
@@ -126,6 +131,7 @@ public class ModelAssembler {
 
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary)
 	{
+
 		for(T item : list){
 			if(item != null && item.getObjectId() != null){
 				dictionnary.put(item.getObjectId(), item);
@@ -140,6 +146,8 @@ public class ModelAssembler {
 	{
 		if(companies != null && companies.size() == 1)
 		{
+
+
 			line.setCompany(companies.get(0));
 		}
 
@@ -167,23 +175,33 @@ public class ModelAssembler {
 		
 		line.setImportedItems(item);
 		if(!groupOfLines.isEmpty())
+
 			line.setGroupOfLine(groupOfLines.get(0));
+
 		
 		for (Facility facility : facilities)
 		{
 			if(facility.getLine() != null && facility.getLine().equals(line))
+
+
 				line.addFacility(facility);
 		}
 	}
+
 
 	private void connectRoutes()
 	{
 		for(Route route : routes)
 		{
+
+
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
+			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
 			
 			route.setPtLinks(sortPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class)));
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
+			for (PTLink ptLink : route.getPtLinks()) 
+			{
 			int position = 0;
 			for (PTLink ptLink : route.getPtLinks()) 
 			{
@@ -194,13 +212,17 @@ public class ModelAssembler {
 				startPoint.setPosition(position++);
 				startPoint.setRoute(route);
 				StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
+				if(!stopPoints.contains(startPoint))
 				endPoint.setPosition(position);
 				endPoint.setRoute(route);
 				if(!stopPoints.contains(startPoint))
 					stopPoints.add(startPoint);
 				if(!stopPoints.contains(endPoint))
+
+
 					stopPoints.add(endPoint);
 			}
+
 			route.setStopPoints(stopPoints);
 			route.setLine(line);
 		}
@@ -245,6 +267,7 @@ public class ModelAssembler {
 
 	private void connectPTNetwork() 
 	{
+
 		ptNetwork.setLines(getObjectsFromIds(ptNetwork.getLineIds(), Line.class));
 	}
 
@@ -252,6 +275,8 @@ public class ModelAssembler {
 	{
 		for(JourneyPattern journeyPattern : journeyPatterns)
 		{
+
+
 			journeyPattern.setRoute(getObjectFromId(journeyPattern.getRouteId(), Route.class));
 			journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
 		}
@@ -261,6 +286,8 @@ public class ModelAssembler {
 	{
 		for(PTLink ptLink : ptLinks)
 		{
+
+
 			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 			ptLink.setEndOfLink(getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class));
 			ptLink.setRoute(getObjectFromId(ptLink.getRouteId(), Route.class));
@@ -271,6 +298,8 @@ public class ModelAssembler {
 	{
 		for(VehicleJourney vehicleJourney : vehicleJourneys)
 		{
+
+
 			vehicleJourney.setCompany(getObjectFromId(vehicleJourney.getCompanyId(), Company.class));
 			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
 			vehicleJourney.setJourneyPattern(journeyPattern);
@@ -289,14 +318,18 @@ public class ModelAssembler {
 	{
 		for(StopPoint stopPoint : stopPoints)
 		{
+
+
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
 			//stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
 			stopPoint.setLine(line);
 			if(ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
 			{
+
 				stopPoint.setPtNetwork(ptNetwork);
 			}
 			else{
+
 				//TODO : throw exception ???
 			}
 //			
@@ -307,21 +340,28 @@ public class ModelAssembler {
 			for (Facility facility : facilities)
 			{
 				if(facility.getStopPoint() != null && facility.getStopPoint().equals(stopPoint))
+
+
 					stopPoint.addFacility(facility);
 			}
 		}
 	}
 
+
 	private void connectStopAreas() 
 	{
 		for(StopArea stopArea : stopAreas)
 		{
+
+
 			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
 			stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
 			if(stopArea.getContainedStopAreas() != null)
 			{
 				for(StopArea childStopArea : stopArea.getContainedStopAreas())
 				{
+
+
 					childStopArea.setParentStopArea(stopArea);
 				}
 			}
@@ -333,22 +373,49 @@ public class ModelAssembler {
 				{
 					Line line = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
 					constraint.setLine(line);
-					constraint.setStopAreas(stopAreas);
+
+
+
+
+                    constraint.setStopAreas(stopAreas);
+                    if (tmpLine == null) {
+                        logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
+                    } else {
+                        logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
 				}
 			}
 			
 			for (Facility facility : facilities)
 			{
 				if(facility.getStopArea() != null && facility.getStopArea().equals(stopArea))
+
+
+
+
 					stopArea.addFacility(facility);
 			}
 		}
 	}
+        if (StopArea.getUnvalidRestrictionConstraints() != null) {
+            for (RestrictionConstraint constraint : StopArea.getUnvalidRestrictionConstraints()) {
+                Line tmpLine = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
+                constraint.setLine(tmpLine);
+                logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO STOP AREA.");
+                if (tmpLine == null) {
+                    logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
+                } else {
+                    logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
+                }
+            }
+        }
+    }
 
 	private void connectAreaCentroids() 
 	{
 		for(AreaCentroid areaCentroid : areaCentroids)
 		{
+
+
 			areaCentroid.setContainedInStopArea(getObjectFromId(areaCentroid.getContainedInStopAreaId(), StopArea.class));
 		}
 	}
@@ -357,6 +424,8 @@ public class ModelAssembler {
 	{
 		for(ConnectionLink connectionLink : connectionLinks)
 		{
+
+
 			StopArea startOfLink = getObjectFromId(connectionLink.getStartOfLinkId(), StopArea.class);
 			if(startOfLink != null){
 				connectionLink.setStartOfLink(startOfLink);
@@ -365,6 +434,7 @@ public class ModelAssembler {
 			StopArea endOfLink = getObjectFromId(connectionLink.getEndOfLinkId(), StopArea.class);
 			if(endOfLink != null)
 			{
+
 				connectionLink.setEndOfLink(endOfLink);
 				endOfLink.addConnectionLink(connectionLink);
 			}
@@ -372,20 +442,27 @@ public class ModelAssembler {
 			for (Facility facility : facilities)
 			{
 				if(facility.getConnectionLink() != null && facility.getConnectionLink().equals(connectionLink))
+
+
 					connectionLink.addFacility(facility);
 			}
 		}
 	}
 
+
 	private void connectTimetables() 
 	{
 		for(Timetable timetable : timetables)
 		{
+
+
 			timetable.setVehicleJourneys(getObjectsFromIds(timetable.getVehicleJourneyIds(), VehicleJourney.class));
 			if(timetable.getVehicleJourneys() != null)
 			{
 				for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
 				{
+
+
 					vehicleJourney.addTimetable(timetable);
 				}
 			}
@@ -398,6 +475,10 @@ public class ModelAssembler {
 		{
 			StopArea stopArea = (getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) != null) ? getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) :
 				getObjectFromId(accessLink.getEndOfLinkId(), StopArea.class);
+
+
+
+
 			if(stopArea != null){
 				accessLink.setStopArea(stopArea);
 				stopArea.addAccessLink(accessLink);
@@ -406,6 +487,9 @@ public class ModelAssembler {
 				getObjectFromId(accessLink.getEndOfLinkId(), AccessPoint.class);
 			if(accessPoint != null)
 			{
+
+
+
 				accessLink.setAccessPoint(accessPoint);
 				accessPoint.addAccessLink(accessLink);
 			}
@@ -421,18 +505,28 @@ public class ModelAssembler {
 	private void connectFacilities() {
 		for (Facility facility : facilities) {
 			if(facility.getStopAreaId() != null)
+
 				facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
 			if(facility.getStopPointId() != null)
+
+
 				facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
 			if(facility.getConnectionLinkId() != null)
+
+
 				facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
 			if(facility.getLineId() != null)
+
+
 				facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
 		}
 	}
+
+
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass)
 	{
+
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
 
@@ -440,9 +534,12 @@ public class ModelAssembler {
 		{
 			for(String id : ids)
 			{
+
+
 				T object = (T)dictionary.get(id);
 				if(object != null)
 				{
+
 					objects.add(object);
 				}
 			}
@@ -450,6 +547,7 @@ public class ModelAssembler {
 
 		if(objects.size() == 0)
 		{
+
 			objects = null;
 		}
 
@@ -459,6 +557,7 @@ public class ModelAssembler {
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> T getObjectFromId(String id, Class<T> dictionaryClass)
 	{
+
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		T object = null;
 
