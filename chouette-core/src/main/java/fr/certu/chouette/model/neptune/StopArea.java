@@ -105,73 +105,73 @@ public class StopArea extends NeptuneIdentifiedObject {
             return unvalidRestrictionConstraints;
         }
         
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	 */
-	@Override
-	public void expand(DetailLevelEnum level)
-	{
-		// to avoid circular call check if level is already set according to this level
-		if (getLevel().ordinal() >= level.ordinal()) return;
-		super.expand(level);
-		switch (level)
-		{
-		case ATTRIBUTE : 
-			containedStopAreas = null;
-			containedStopPoints = null;
-			parentStopArea = null;
-			connectionLinks = null;
-			break;
-		case NARROW_DEPENDENCIES : 
-			if (getParentStopArea() != null) getParentStopArea().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getContainedStopAreas() != null)
-			{
-				for (StopArea containedStopArea : getContainedStopAreas())
-				{
-					containedStopArea.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			if (getContainedStopPoints() != null)
-			{
-				for (StopPoint containedStopPoint : getContainedStopPoints())
-				{
-					containedStopPoint.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			if (getConnectionLinks() != null)
-			{
-				for (ConnectionLink connectionLink : getConnectionLinks())
-				{
-					connectionLink.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			break;
-		case STRUCTURAL_DEPENDENCIES : 
-		case ALL_DEPENDENCIES :
-			if (getParentStopArea() != null) getParentStopArea().expand(level);
-			if (getContainedStopAreas() != null)
-			{
-				for (StopArea containedStopArea : getContainedStopAreas())
-				{
-					containedStopArea.expand(level);
-				}
-			}
-			if (getContainedStopPoints() != null)
-			{
-				for (StopPoint containedStopPoint : getContainedStopPoints())
-				{
-					containedStopPoint.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			if (getConnectionLinks() != null)
-			{
-				for (ConnectionLink connectionLink : getConnectionLinks())
-				{
-					connectionLink.expand(level);
-				}
-			}
-		}
-	} 
+//	/* (non-Javadoc)
+//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+//	 */
+//	@Override
+//	public void expand(DetailLevelEnum level)
+//	{
+//		// to avoid circular call check if level is already set according to this level
+//		if (getLevel().ordinal() >= level.ordinal()) return;
+//		super.expand(level);
+//		switch (level)
+//		{
+//		case ATTRIBUTE : 
+//			containedStopAreas = null;
+//			containedStopPoints = null;
+//			parentStopArea = null;
+//			connectionLinks = null;
+//			break;
+//		case NARROW_DEPENDENCIES : 
+//			if (getParentStopArea() != null) getParentStopArea().expand(DetailLevelEnum.ATTRIBUTE);
+//			if (getContainedStopAreas() != null)
+//			{
+//				for (StopArea containedStopArea : getContainedStopAreas())
+//				{
+//					containedStopArea.expand(DetailLevelEnum.ATTRIBUTE);
+//				}
+//			}
+//			if (getContainedStopPoints() != null)
+//			{
+//				for (StopPoint containedStopPoint : getContainedStopPoints())
+//				{
+//					containedStopPoint.expand(DetailLevelEnum.ATTRIBUTE);
+//				}
+//			}
+//			if (getConnectionLinks() != null)
+//			{
+//				for (ConnectionLink connectionLink : getConnectionLinks())
+//				{
+//					connectionLink.expand(DetailLevelEnum.ATTRIBUTE);
+//				}
+//			}
+//			break;
+//		case STRUCTURAL_DEPENDENCIES : 
+//		case ALL_DEPENDENCIES :
+//			if (getParentStopArea() != null) getParentStopArea().expand(level);
+//			if (getContainedStopAreas() != null)
+//			{
+//				for (StopArea containedStopArea : getContainedStopAreas())
+//				{
+//					containedStopArea.expand(level);
+//				}
+//			}
+//			if (getContainedStopPoints() != null)
+//			{
+//				for (StopPoint containedStopPoint : getContainedStopPoints())
+//				{
+//					containedStopPoint.expand(DetailLevelEnum.ATTRIBUTE);
+//				}
+//			}
+//			if (getConnectionLinks() != null)
+//			{
+//				for (ConnectionLink connectionLink : getConnectionLinks())
+//				{
+//					connectionLink.expand(level);
+//				}
+//			}
+//		}
+//	} 
 
 	@Override
 	public String toString(String indent,int level)

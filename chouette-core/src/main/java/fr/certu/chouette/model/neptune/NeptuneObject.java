@@ -18,7 +18,7 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 
 
 /**
- * 
+ * basic class for every Neptune object
  */
 
 public abstract class NeptuneObject implements Serializable
@@ -30,7 +30,7 @@ public abstract class NeptuneObject implements Serializable
 	protected static final String CHILD_LIST_ARROW = "      -->";
 
 	@Getter @Setter private Long id;
-	@Getter private DetailLevelEnum level = DetailLevelEnum.UNINITIALIZED;
+//	@Getter private DetailLevelEnum level = DetailLevelEnum.UNINITIALIZED;
 
 	private boolean validationProceeded = false;
 
@@ -60,14 +60,14 @@ public abstract class NeptuneObject implements Serializable
 		return getClass().getSimpleName()+ "( id="+id +") ";
 	}
 
-	/**
-	 * @param level
-	 */
-	public void expand(DetailLevelEnum level)
-	{
-		this.level = level;
-		return;
-	}
+//	/**
+//	 * @param level
+//	 */
+//	public void expand(DetailLevelEnum level)
+//	{
+//		this.level = level;
+//		return;
+//	}
 
 
 	/* (non-Javadoc)

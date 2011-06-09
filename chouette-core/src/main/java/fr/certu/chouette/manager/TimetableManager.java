@@ -17,15 +17,14 @@ import fr.certu.chouette.model.neptune.Timetable;
  *
  */
 public class TimetableManager extends AbstractNeptuneManager<Timetable> {
+	private static final Logger logger = Logger.getLogger(TimetableManager.class); 
 
 	public TimetableManager() {
 		super(Timetable.class);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+		return logger;
 	}
 }

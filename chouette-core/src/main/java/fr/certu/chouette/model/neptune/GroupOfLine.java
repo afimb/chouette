@@ -16,14 +16,15 @@ public class GroupOfLine extends NeptuneIdentifiedObject{
 	@Getter @Setter private List<String> lineIds;
 	@Getter @Setter private List<Line> lines;
 	@Getter @Setter private String comment;
-	
+
 	/**
 	 * add a lineId to list only if not already present
 	 * @param lineId
 	 */
 	public void addLineId(String lineId){
 		if(lineIds == null) lineIds = new ArrayList<String>();
-		lineIds.add(lineId);
+		if (!lineIds.contains(lineId))
+			lineIds.add(lineId);
 	}
 	/**
 	 * add a line to list only if not already present
@@ -31,7 +32,8 @@ public class GroupOfLine extends NeptuneIdentifiedObject{
 	 */
 	public void addLine(Line line){
 		if(lines == null) lines = new ArrayList<Line>();
-		lines.add(line);
+		if (!lines.contains(line))
+			lines.add(line);
 	}
-	
+
 }

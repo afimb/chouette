@@ -152,47 +152,47 @@ public class Line extends NeptuneIdentifiedObject
 		if (!userNeeds.contains(userNeed)) userNeeds.add(userNeed);
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	 */
-	@Override
-	public void expand(DetailLevelEnum level)
-	{
-		// to avoid circular call check if level is already set according to this level
-		if (getLevel().ordinal() >= level.ordinal()) return;
-		super.expand(level);
-		switch (level)
-		{
-		case ATTRIBUTE : 
-			ptNetwork = null;
-			company = null;
-			routes = null;
-			break;
-		case NARROW_DEPENDENCIES : 
-			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getRoutes() != null)
-			{
-				for (Route route : getRoutes())
-				{
-					route.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			break;
-		case STRUCTURAL_DEPENDENCIES : 
-		case ALL_DEPENDENCIES :
-			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getRoutes() != null)
-			{
-				for (Route route : getRoutes())
-				{
-					route.expand(level);
-				}
-			}
-
-		}
-	} 
+//	/* (non-Javadoc)
+//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+//	 */
+//	@Override
+//	public void expand(DetailLevelEnum level)
+//	{
+//		// to avoid circular call check if level is already set according to this level
+//		if (getLevel().ordinal() >= level.ordinal()) return;
+//		super.expand(level);
+//		switch (level)
+//		{
+//		case ATTRIBUTE : 
+//			ptNetwork = null;
+//			company = null;
+//			routes = null;
+//			break;
+//		case NARROW_DEPENDENCIES : 
+//			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
+//			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
+//			if (getRoutes() != null)
+//			{
+//				for (Route route : getRoutes())
+//				{
+//					route.expand(DetailLevelEnum.ATTRIBUTE);
+//				}
+//			}
+//			break;
+//		case STRUCTURAL_DEPENDENCIES : 
+//		case ALL_DEPENDENCIES :
+//			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
+//			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
+//			if (getRoutes() != null)
+//			{
+//				for (Route route : getRoutes())
+//				{
+//					route.expand(level);
+//				}
+//			}
+//
+//		}
+//	} 
 
 	@Override
 	public String toString(String indent,int level)

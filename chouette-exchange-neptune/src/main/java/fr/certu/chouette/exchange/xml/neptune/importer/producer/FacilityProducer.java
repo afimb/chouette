@@ -128,6 +128,7 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 			}			
 			facility.addFacilityFeature(facilityFeature);
 		}	
+		
 		return facility;
 	}
 

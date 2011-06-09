@@ -28,7 +28,7 @@ import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.RestrictionConstraint;
@@ -39,7 +39,7 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
-public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoSupport implements IDaoTemplate<T>
+public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends HibernateDaoSupport implements IDaoTemplate<T>
 {
 	private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
 
@@ -118,7 +118,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	{
 		return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
@@ -126,6 +126,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	@SuppressWarnings("unchecked")
 	public T get(Long id)
 	{
+        logger.debug("invoke get on "+type.getSimpleName());
 		T object = ( T)getHibernateTemplate().get( type, id);
 		if ( object==null)
 		{
@@ -138,24 +139,23 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 * @see fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<T> select(final Filter filter) {
-		
-		
+	public List<T> select(final Filter filter) 
+	{
+        logger.debug("invoke select on "+type.getSimpleName());
+
 		Session session = getSession();
-		
+
 		Criteria criteria = session.createCriteria(type);
-		
+
 		// DetachedCriteria criteria = DetachedCriteria.forClass(type);
 		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 		if (!filter.isEmpty())
 		{
-			logger.debug("build clause");
 			FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
 			criteria.add(translator.translate(filter,criteria,getSessionFactory().getClassMetadata(type)));
 		}
 		if (filter.getOrderList()!= null)
 		{
-			logger.debug("add order");
 			for (FilterOrder order : filter.getOrderList())
 			{
 				switch (order.getType())
@@ -176,17 +176,16 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 		List<T> beans = null; 
 		if (filter.getLimit() > 0 || filter.getStart() > 0)
 		{
-			logger.debug("call with limit");
+			logger.debug("call with start and/or limit");
 			criteria.setFirstResult(filter.getStart());
 			criteria.setMaxResults(filter.getLimit());
 			beans = criteria.list();// ht.findByCriteria(criteria,filter.getStart(),filter.getLimit());
 		}
 		else
 		{
-			logger.debug("call without limit");
 			beans = criteria.list(); // ht.findByCriteria(criteria);
 		}
-		logger.debug("beans founds = "+beans.size());
+		logger.debug(type.getSimpleName()+" founds = "+beans.size());
 
 		return beans;
 
@@ -199,6 +198,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	@SuppressWarnings("unchecked")
 	public T getByObjectId( final String objectId)
 	{
+        logger.debug("invoke getByObjectId on "+type.getSimpleName());
 		if ( objectId==null || objectId.isEmpty()) return null;
 
 		DetachedCriteria criteria = DetachedCriteria.forClass(type);
@@ -209,8 +209,8 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 
 		if ( total==0)
 		{
-			// TODO 
-			throw new ObjectRetrievalFailureException( type, objectId);
+			return null;
+			// throw new ObjectRetrievalFailureException( type, objectId);
 		}
 		else if ( total>1)
 		{
@@ -225,6 +225,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public List<T> getAll() 
 	{
+        logger.debug("invoke getAll on "+type.getSimpleName());
 		// return getHibernateTemplate().loadAll(type); 
 		// wrong call, may contains duplicate entry if join clause
 		Filter f = Filter.getNewEmptyFilter();
@@ -236,6 +237,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public void remove(Long id)
 	{
+        logger.debug("invoke remove on "+type.getSimpleName());
 		getHibernateTemplate().delete( get( id));
 		getHibernateTemplate().flush();
 	}
@@ -245,7 +247,17 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public void save(T object)
 	{
-		getHibernateTemplate().save(object);
+        logger.debug("invoke save on "+type.getSimpleName());
+		T existing = getByObjectId(object.getObjectId());
+		if (existing == null)
+		{
+			getHibernateTemplate().saveOrUpdate( object);
+		}
+		else
+		{
+			object.setId(existing.getId());
+			getHibernateTemplate().merge( object);
+		}
 		getHibernateTemplate().flush();
 	}
 
@@ -254,6 +266,8 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public void update(T object)
 	{
+        logger.debug("invoke update on "+type.getSimpleName());
+		
 		try
 		{
 			getHibernateTemplate().saveOrUpdate( object);
@@ -302,13 +316,18 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	}
 
 	@Override
-	public void removeAll(Collection<T> objects) {
+	public void removeAll(Collection<T> objects) 
+	{
+        logger.debug("invoke removeAll on "+type.getSimpleName());
+
 		getHibernateTemplate().deleteAll(objects);
 		getHibernateTemplate().flush();
 	}
 
 	@Override
-	public int removeAll(Filter clause) {
+	public int removeAll(Filter clause) 
+	{
+        logger.debug("invoke removeAll on "+type.getSimpleName());
 		int res = 0;
 		Session session = getSession();
 		Criteria criteria = session.createCriteria(type);
@@ -323,7 +342,23 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	}
 
 	@Override
-	public void saveOrUpdateAll(List<T> objects) {
+	public void saveOrUpdateAll(List<T> objects) 
+	{
+        logger.debug("invoke saveOrUpdateAll on "+type.getSimpleName());
+		for (T object : objects) 
+		{
+			T existing = getByObjectId(object.getObjectId());
+			if (existing != null)
+			{
+				logger.debug("update object :"+object.getObjectId());
+				getHibernateTemplate().evict(existing);
+				object.setId(existing.getId());
+			}
+			else
+			{
+				logger.debug("save object :"+object.getObjectId());
+			}
+		}
 		getHibernateTemplate().saveOrUpdateAll(objects);
 		getHibernateTemplate().flush();
 	}

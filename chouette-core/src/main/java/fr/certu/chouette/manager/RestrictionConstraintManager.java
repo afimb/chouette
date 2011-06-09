@@ -20,13 +20,15 @@ import fr.certu.chouette.model.user.User;
  */
 public class RestrictionConstraintManager extends AbstractNeptuneManager<RestrictionConstraint> {
 
+	private static final Logger logger = Logger.getLogger(RestrictionConstraintManager.class); 
+
 	public RestrictionConstraintManager() {
 		super(RestrictionConstraint.class);
 	}
 
 	@Override
 	protected Logger getLogger() {
-		return null;
+		return logger;
 	}
 	@Override
 	public void completeObject(User user, RestrictionConstraint constraint) {

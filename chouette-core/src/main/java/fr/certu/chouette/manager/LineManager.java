@@ -50,7 +50,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 public class LineManager extends AbstractNeptuneManager<Line> 
 {
 	private static final Logger logger = Logger.getLogger(LineManager.class);
-	
+
 	public LineManager() 
 	{
 		super(Line.class);
@@ -318,7 +318,8 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	protected Logger getLogger() {
+	protected Logger getLogger() 
+	{
 		return logger;
 	}
 
@@ -330,6 +331,12 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		if(ptNetwork != null)
 			line.setPtNetworkIdShortcut(ptNetwork.getObjectId());
 		//lineEndIds
+		if (line.getGroupOfLine() != null)
+		{
+			line.getGroupOfLine().addLine(line);
+			line.getGroupOfLine().addLineId(line.getObjectId());
+		}
+
 		List<Route> routes = line.getRoutes();
 		if (routes != null)
 		{
@@ -382,7 +389,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
 			INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-			
+
 			List<PTNetwork> networks = new ArrayList<PTNetwork>();
 			List<Company> companies = new ArrayList<Company>();
 			List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
@@ -391,16 +398,11 @@ public class LineManager extends AbstractNeptuneManager<Line>
 
 			for (Line line : lines) 
 			{
-				Company company = line.getCompany();
-				if(company != null && !companies.contains(company))
-					companies.add(company);					
-				groupOfLines.add(line.getGroupOfLine());
-				networks.add(line.getPtNetwork());
-				routes.addAll(line.getRoutes());	
-				
-				List<Facility> fList = line.getFacilities(); 
-				if(fList != null && !facilities.containsAll(fList))
-					facilities.addAll(fList);
+				addIfMissingInCollection(companies,line.getCompany());
+				addIfMissingInCollection(groupOfLines,line.getGroupOfLine());
+				addIfMissingInCollection(networks, line.getPtNetwork());
+				mergeCollection(routes,line.getRoutes());	
+				mergeCollection(facilities,line.getFacilities());
 			}
 			if(!companies.isEmpty())
 				companyManager.saveAll(user,companies,propagate);
@@ -410,14 +412,17 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				networkManager.saveAll(user,networks,propagate);
 
 			super.saveAll(user, lines,propagate);
-			
+
 			if(!routes.isEmpty())
 				routeManager.saveAll(user, routes,propagate);
 			if(!facilities.isEmpty())
 				facilityManager.saveAll(user, facilities, propagate);
-				
-			
-		}else 
-			super.saveAll(user, lines,propagate);		
+
+
+		}
+		else 
+		{
+			super.saveAll(user, lines,propagate);	
+		}
 	}
 }

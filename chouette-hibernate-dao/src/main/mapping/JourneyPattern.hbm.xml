@@ -54,14 +54,14 @@
 			</column>
 		</property>
 
-		<bag inverse="false" lazy="true" name="stopPoints" table="journeyPattern_stopPoint">
+		<bag inverse="true" lazy="true" name="stopPoints" table="journeyPattern_stopPoint">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
 			<key>
 				<column name="journeyPatternId">
 					<comment>JourneyPattern Reference</comment>
 				</column>
 			</key>
-			<many-to-many class="StopPoint">
+			<many-to-many class="StopPoint" >
 				<column name="stopPointId">
 					<comment>StopPoint Reference</comment>
 				</column>

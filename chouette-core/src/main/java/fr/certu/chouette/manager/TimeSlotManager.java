@@ -18,14 +18,15 @@ import fr.certu.chouette.model.neptune.TimeSlot;
  */
 public class TimeSlotManager extends AbstractNeptuneManager<TimeSlot> {
 
+	private static final Logger logger = Logger.getLogger(TimeSlotManager.class); 
+
 	public TimeSlotManager() {
 		super(TimeSlot.class);
 	}
 
 	@Override
 	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+		return logger;
 	}
 
 }

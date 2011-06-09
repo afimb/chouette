@@ -32,67 +32,67 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	@Getter @Setter private Line line;
 	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
 	@Getter @Setter private List<Timetable> timetables;
-	
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	 */
-	@Override
-	public void expand(DetailLevelEnum level)
-	{
-		// to avoid circular call check if level is already set according to this level
-		if (getLevel().ordinal() >= level.ordinal()) return;
-		super.expand(level);
-		switch (level)
-		{
-		case ATTRIBUTE : 
-			route = null;
-			journeyPattern = null;
-			timeSlot = null;
-			vehicleJourneyAtStops = null;
-			timetables = null;
-			break;
-		case NARROW_DEPENDENCIES : 
-			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getTimeSlot() != null) getTimeSlot().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getVehicleJourneyAtStops() != null)
-			{
-				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
-				{
-					vehicleJourneyAtStop.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			if (getTimetables() != null)
-			{
-				for (Timetable timetable : getTimetables())
-				{
-					timetable.expand(DetailLevelEnum.ATTRIBUTE);
-				}
-			}
-			break;
-		case STRUCTURAL_DEPENDENCIES : 
-		case ALL_DEPENDENCIES :
-			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getTimeSlot() != null) getTimeSlot().expand(level);
-			if (getVehicleJourneyAtStops() != null)
-			{
-				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
-				{
-					vehicleJourneyAtStop.expand(level);
-				}
-			}
-			if (getTimetables() != null)
-			{
-				for (Timetable timetable : getTimetables())
-				{
-					timetable.expand(level);
-				}
-			}
-			break;
-		}
-	}
-	
+
+	//	/* (non-Javadoc)
+	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	//	 */
+	//	@Override
+	//	public void expand(DetailLevelEnum level)
+	//	{
+	//		// to avoid circular call check if level is already set according to this level
+	//		if (getLevel().ordinal() >= level.ordinal()) return;
+	//		super.expand(level);
+	//		switch (level)
+	//		{
+	//		case ATTRIBUTE : 
+	//			route = null;
+	//			journeyPattern = null;
+	//			timeSlot = null;
+	//			vehicleJourneyAtStops = null;
+	//			timetables = null;
+	//			break;
+	//		case NARROW_DEPENDENCIES : 
+	//			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getTimeSlot() != null) getTimeSlot().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getVehicleJourneyAtStops() != null)
+	//			{
+	//				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
+	//				{
+	//					vehicleJourneyAtStop.expand(DetailLevelEnum.ATTRIBUTE);
+	//				}
+	//			}
+	//			if (getTimetables() != null)
+	//			{
+	//				for (Timetable timetable : getTimetables())
+	//				{
+	//					timetable.expand(DetailLevelEnum.ATTRIBUTE);
+	//				}
+	//			}
+	//			break;
+	//		case STRUCTURAL_DEPENDENCIES : 
+	//		case ALL_DEPENDENCIES :
+	//			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getTimeSlot() != null) getTimeSlot().expand(level);
+	//			if (getVehicleJourneyAtStops() != null)
+	//			{
+	//				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
+	//				{
+	//					vehicleJourneyAtStop.expand(level);
+	//				}
+	//			}
+	//			if (getTimetables() != null)
+	//			{
+	//				for (Timetable timetable : getTimetables())
+	//				{
+	//					timetable.expand(level);
+	//				}
+	//			}
+	//			break;
+	//		}
+	//	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -113,11 +113,20 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("vehicleTypeIdentifier = ").append(vehicleTypeIdentifier);
 		sb.append("\n").append(indent).append("companyId = ").append(companyId);
 
+		int childLevel = level -1;
+
+		String childIndent = indent + CHILD_LIST_INDENT;
+		if (vehicleJourneyAtStops != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneyAtStops");
+			for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourneyAtStop.toString(childIndent,childLevel));
+			}
+		}
 		if (level > 0)
 		{
-			int childLevel = level -1;
-			String childIndent = indent + CHILD_INDENT;
-			
+			childIndent = indent + CHILD_INDENT;
 			if (timeSlot != null) 
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(timeSlot.toString(childIndent,0));
@@ -127,16 +136,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append(company.toString(childIndent,0));
 			}
-			
 			childIndent = indent + CHILD_LIST_INDENT;
-			if (vehicleJourneyAtStops != null)
-			{
-				sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneyAtStops");
-				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
-				{
-					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourneyAtStop.toString(childIndent,childLevel));
-				}
-			}
 			if (timetables != null)
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append("timetables");
@@ -148,26 +148,26 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		}
 		return sb.toString();
 	}
-	
+
 	public void addVehicleJourneyAtStop(VehicleJourneyAtStop vehicleJourneyAtStop)
 	{
 		if (vehicleJourneyAtStops== null) vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
 		vehicleJourneyAtStops.add(vehicleJourneyAtStop);
 	}	
-	
+
 	public void addTimetable(Timetable timetable)
 	{
 		if (timetables== null) timetables = new ArrayList<Timetable>();
 		timetables.add(timetable);
 	}
-	
+
 	public List<VehicleJourney> getVehicleJourneysByRoute(String routeId){
 		List<VehicleJourney> res = new ArrayList<VehicleJourney>();
 		if(this.routeId.equals(routeId))
 			res.add(this);
 		return res;
 	}
-	
+
 	@Override
 	public boolean clean() {
 		if(vehicleJourneyAtStops == null || vehicleJourneyAtStops.isEmpty()){

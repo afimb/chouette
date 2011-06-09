@@ -26,14 +26,15 @@ import fr.certu.chouette.model.user.User;
 public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink> 
 {
 
-	private Logger logger = Logger.getLogger(ConnectionLink.class); 
+	private static final Logger logger = Logger.getLogger(ConnectionLinkManager.class); 
     public ConnectionLinkManager()
 	{
 		super(ConnectionLink.class);
 	}
 
 	@Override
-	protected Logger getLogger() {
+	protected Logger getLogger() 
+	{
 		return logger;
 	}
     
@@ -48,9 +49,7 @@ public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink
 			List<Facility> facilities = new ArrayList<Facility>();
 			for (ConnectionLink connectionLink : connectionLinks) 
 			{
-				List<Facility> fList = connectionLink.getFacilities(); 
-				if(fList != null && !facilities.containsAll(fList))
-					facilities.addAll(fList);
+				mergeCollection(facilities,connectionLink.getFacilities());
 			}
 			
 			if(!facilities.isEmpty())

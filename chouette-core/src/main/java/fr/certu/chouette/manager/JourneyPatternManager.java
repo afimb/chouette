@@ -25,6 +25,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern> 
 {
+	private static final Logger logger = Logger.getLogger(JourneyPatternManager.class); 
 	public JourneyPatternManager() 
 	{
 		super(JourneyPattern.class);
@@ -102,14 +103,17 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	}
 
 	@Override
-	protected Logger getLogger() {
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}
 
 	@Override
-	public void completeObject(User user, JourneyPattern journeyPattern) throws ChouetteException {
+	public void completeObject(User user, JourneyPattern journeyPattern) throws ChouetteException 
+	{
 		Route route = journeyPattern.getRoute();
-		if(route != null){
+		if(route != null)
+		{
 			Line line = route.getLine();
 			if(line != null)
 				journeyPattern.setLineIdShortcut(line.getObjectId());
@@ -148,8 +152,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 			List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
 			for (JourneyPattern journeyPattern : journeyPatterns) 
 			{
-				if(journeyPattern.getVehicleJourneys() != null && !vehicleJourneys.containsAll(journeyPattern.getVehicleJourneys()))	
-					vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());	
+				mergeCollection(vehicleJourneys,journeyPattern.getVehicleJourneys());
 			}
 
 			if(!vehicleJourneys.isEmpty())

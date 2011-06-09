@@ -81,7 +81,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifySave() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean should have id different of zero");
 		logger.info("bean " + beanName + " created with id = "+ bean.getId());
@@ -91,7 +91,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifyGet() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean should have id different of zero");
 		Long id = bean.getId();
@@ -104,7 +104,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifyExistsFromId() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		Long id = bean.getId();
 		boolean ret = daoTemplate.exists(id);
@@ -118,7 +118,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifyExistsFromObjectId() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		String id = bean.getObjectId();
 		boolean ret = daoTemplate.exists(id);
@@ -133,7 +133,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifyGetAll() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		List<T> beans = daoTemplate.getAll();
 		Assert.assertTrue(beans.size() > 0,"size of returned list shouldn't be zero");
@@ -167,7 +167,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifyRemove() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean for remove should have id different of zero");
 		daoTemplate.remove(bean.getId());
@@ -177,7 +177,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	public void verifyUpdate() 
 	{
 		refreshBean();
-		bean.setId(Long.valueOf(0));
+		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean for update should have id different of zero");
 		bean.setName("newname");
@@ -195,7 +195,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	{
 		PTNetwork network = new PTNetwork();
 		long objectId = getNextObjectId();
-		network.setId(Long.valueOf(0));
+		// network.setId(Long.valueOf(0));
 		network.setObjectId("Test:PTNetwork:"+objectId);
 		network.setCreationTime(new Date());
 		network.setCreatorId("TESTNG");
@@ -210,7 +210,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	{
 		Company company = new Company();
 		long objectId = getNextObjectId();
-		company.setId(Long.valueOf(0));
+		// company.setId(Long.valueOf(0));
 		company.setObjectId("Test:Company:"+objectId);
 		company.setCreationTime(new Date());
 		company.setCreatorId("TESTNG");
@@ -235,7 +235,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 	protected Line createBasicLine() {
 		Line line = new Line();
 		long objectId = getNextObjectId();
-		line.setId(Long.valueOf(0));
+		// line.setId(Long.valueOf(0));
 		line.setObjectId("Test:Line:"+objectId);
 		line.setCreationTime(new Date());
 		line.setCreatorId("TESTNG");
@@ -279,7 +279,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Line line = createBasicLine();
 		HibernateDaoTemplate<Line> lineTemplate = (HibernateDaoTemplate<Line>) applicationContext.getBean("lineDao");
 		lineTemplate.save(line);
-		route.setLineId(line.getId());
+		route.setLine(line);
 		logger.info("created line with id = "+line.getId());
 
 		return route;

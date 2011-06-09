@@ -25,29 +25,29 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter @Setter private Time elapseDuration;
 	@Getter @Setter private Time headwayFrequency;
 	@Getter @Setter private Boolean departure;
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	 */
-	@Override
-	public void expand(DetailLevelEnum level)
-	{
-		// to avoid circular call check if level is already set according to this level
-		if (getLevel().ordinal() >= level.ordinal()) return;
-		super.expand(level);
-		switch (level)
-		{
-		case ATTRIBUTE : 
-			stopPoint = null;
-			vehicleJourney = null;
-			break;
-		case NARROW_DEPENDENCIES : 
-		case STRUCTURAL_DEPENDENCIES : 
-		case ALL_DEPENDENCIES :
-			if (getStopPoint() != null) getStopPoint().expand(DetailLevelEnum.ATTRIBUTE);
-			if (getVehicleJourney() != null) getVehicleJourney().expand(DetailLevelEnum.ATTRIBUTE);
-			break;
-		}
-	} 
+//	/* (non-Javadoc)
+//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+//	 */
+//	@Override
+//	public void expand(DetailLevelEnum level)
+//	{
+//		// to avoid circular call check if level is already set according to this level
+//		if (getLevel().ordinal() >= level.ordinal()) return;
+//		super.expand(level);
+//		switch (level)
+//		{
+//		case ATTRIBUTE : 
+//			stopPoint = null;
+//			vehicleJourney = null;
+//			break;
+//		case NARROW_DEPENDENCIES : 
+//		case STRUCTURAL_DEPENDENCIES : 
+//		case ALL_DEPENDENCIES :
+//			if (getStopPoint() != null) getStopPoint().expand(DetailLevelEnum.ATTRIBUTE);
+//			if (getVehicleJourney() != null) getVehicleJourney().expand(DetailLevelEnum.ATTRIBUTE);
+//			break;
+//		}
+//	} 
 
 	@Override
 	public String toString(String indent, int level) {

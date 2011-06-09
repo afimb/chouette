@@ -41,6 +41,8 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
 {
+	private static final Logger logger = Logger.getLogger(StopAreaManager.class);
+
 	public StopAreaManager() 
 	{
 		super(StopArea.class);
@@ -114,15 +116,54 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 	}
 
 	@Override
-	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}	
 
 	@Override
 	public void saveAll(User user, List<StopArea> stopAreas, boolean propagate) throws ChouetteException 
 	{
-		super.saveAll(user, stopAreas,propagate);
+		getLogger().debug("try to save "+stopAreas.size()+" StopAreas");
+
+		List<StopArea> completeStopAreas = new ArrayList<StopArea>();
+		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
+		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
+		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
+		List<Facility> facilities = new ArrayList<Facility>();
+		if (propagate)
+		{
+			List<StopArea> parents = getParents(stopAreas);
+			completeStopAreas.addAll(parents);
+			mergeCollection(completeStopAreas,stopAreas);
+
+			for (StopArea stopArea : completeStopAreas) 
+			{
+				mergeCollection(accessLinks, stopArea.getAccessLinks());
+				mergeCollection(connectionLinks, stopArea.getConnectionLinks());
+				mergeCollection(constraints, stopArea.getRestrictionConstraints());
+				mergeCollection(facilities, stopArea.getFacilities());
+			}
+			
+			// add targetConnectionLink if not present
+			List<StopArea> connected = new ArrayList<StopArea>();
+			for (ConnectionLink connectionLink : connectionLinks) 
+			{
+				if (!completeStopAreas.contains(connectionLink.getStartOfLink()))
+					connected.add(connectionLink.getStartOfLink());
+				if (!completeStopAreas.contains(connectionLink.getEndOfLink()))
+					connected.add(connectionLink.getEndOfLink());
+			}
+			parents = getParents(connected);
+			mergeCollection(completeStopAreas, parents);
+			mergeCollection(completeStopAreas, connected);
+		}
+		else
+		{
+			completeStopAreas = stopAreas;
+		}
+		
+		super.saveAll(user, completeStopAreas,propagate);
 
 		if(propagate)
 		{
@@ -130,27 +171,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
 			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-			
-			List<AccessLink> accessLinks = new ArrayList<AccessLink>();
-			List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
-			List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
-			List<Facility> facilities = new ArrayList<Facility>();
-			
-			for (StopArea stopArea : stopAreas) 
-			{
-				List<AccessLink> links = stopArea.getAccessLinks();
-				if(links != null && !accessLinks.containsAll(links))
-					accessLinks.addAll(links);
-				if(stopArea.getConnectionLinks()!=null && !connectionLinks.containsAll(stopArea.getConnectionLinks()))
-					connectionLinks.addAll(stopArea.getConnectionLinks());
-
-				if(stopArea.getRestrictionConstraints() != null && !constraints.containsAll(stopArea.getRestrictionConstraints()))
-					constraints.addAll(stopArea.getRestrictionConstraints());
-				
-				List<Facility> fList = stopArea.getFacilities(); 
-				if(fList != null && !facilities.containsAll(fList))
-					facilities.addAll(fList);
-			}
 
 			if(!accessLinks.isEmpty())
 				accessLinkManager.saveAll(user, accessLinks, propagate);
@@ -163,9 +183,29 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		}
 	}
 
+	/**
+	 * @param stopAreas
+	 * @return
+	 */
+	private List<StopArea> getParents(List<StopArea> stopAreas) {
+		List<StopArea> parents = new ArrayList<StopArea>();
+		for (StopArea stopArea : stopAreas) 
+		{
+			addIfMissingInCollection(parents,stopArea.getParentStopArea());
+		}
+		if (!parents.isEmpty())
+		{
+			List<StopArea> granParents = getParents(parents);
+			mergeCollection(granParents, parents);
+			parents = granParents;
+		}
+		getLogger().debug("add "+parents.size()+" parents");
+		return parents;
+	}
+
 	@Override
 	public void completeObject(User user, StopArea stopArea)
-			throws ChouetteException 
+	throws ChouetteException 
 	{
 		List<StopPoint> containsPoints = stopArea.getContainedStopPoints();
 		if (containsPoints != null && !containsPoints.isEmpty())
@@ -195,7 +235,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			{
 				String[] ids = stopArea.getObjectId().split(":");
 				centroid.setObjectId(ids[0]+":"+NeptuneIdentifiedObject.AREACENTROID_KEY+":"+ids[2]);
-		
+
 			}
 			centroid.setContainedInStopArea(stopArea);
 			centroid.setContainedInStopAreaId(stopArea.getObjectId());
@@ -203,6 +243,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			stopArea.setAreaCentroidId(stopArea.getAreaCentroid().getObjectId());
 		}
 	}
-	
-	
+
+
 }
