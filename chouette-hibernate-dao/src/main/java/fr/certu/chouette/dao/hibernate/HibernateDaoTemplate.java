@@ -28,6 +28,7 @@ import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -39,7 +40,7 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
-public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoSupport implements IDaoTemplate<T>
+public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends HibernateDaoSupport implements IDaoTemplate<T>
 {
 	private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
 
@@ -118,7 +119,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	{
 		return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
@@ -139,12 +140,12 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	@SuppressWarnings("unchecked")
 	public List<T> select(final Filter filter) {
-		
-		
+
+
 		Session session = getSession();
-		
+
 		Criteria criteria = session.createCriteria(type);
-		
+
 		// DetachedCriteria criteria = DetachedCriteria.forClass(type);
 		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 		if (!filter.isEmpty())
@@ -209,8 +210,8 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 
 		if ( total==0)
 		{
-			// TODO 
-			throw new ObjectRetrievalFailureException( type, objectId);
+			return null;
+			// throw new ObjectRetrievalFailureException( type, objectId);
 		}
 		else if ( total>1)
 		{
@@ -245,7 +246,16 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public void save(T object)
 	{
-		getHibernateTemplate().save(object);
+		T existing = getByObjectId(object.getObjectId());
+		if (existing == null)
+		{
+			getHibernateTemplate().saveOrUpdate( object);
+		}
+		else
+		{
+			object.setId(existing.getId());
+			getHibernateTemplate().merge( object);
+		}
 		getHibernateTemplate().flush();
 	}
 
@@ -254,6 +264,8 @@ public class HibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoS
 	 */
 	public void update(T object)
 	{
+
+		
 		try
 		{
 			getHibernateTemplate().saveOrUpdate( object);

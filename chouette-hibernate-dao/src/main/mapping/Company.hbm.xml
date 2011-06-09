@@ -11,12 +11,17 @@
 			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" not-null="true">
-			<column name="objectId">
-				<comment>Neptune identification</comment>
-			</column>
-		</property>
-		<property name="objectVersion" type="int" >
+		
+		<natural-id>
+			<property name="objectId" type="string" unique="true"
+				not-null="true">
+				<column name="objectId">
+					<comment>Neptune identification</comment>
+				</column>
+			</property>
+		</natural-id>
+
+		<property name="objectVersion" type="int">
 			<column name="objectVersion" default="1">
 				<comment>Version of this object</comment>
 			</column>
@@ -36,42 +41,42 @@
 				<comment>Name</comment>
 			</column>
 		</property>
-		<property name="shortName" >
+		<property name="shortName">
 			<column name="shortName">
 				<comment>Short name</comment>
 			</column>
 		</property>
-		<property name="organisationalUnit" >
+		<property name="organisationalUnit">
 			<column name="organizationalUnit">
 				<comment>Organizational Unit</comment>
 			</column>
 		</property>
-		<property name="operatingDepartmentName" >
+		<property name="operatingDepartmentName">
 			<column name="operatingDepartmentName">
 				<comment>Operating department</comment>
 			</column>
 		</property>
-		<property name="code" >
+		<property name="code">
 			<column name="code">
 				<comment>Zip code</comment>
 			</column>
 		</property>
-		<property name="phone" >
+		<property name="phone">
 			<column name="phone">
 				<comment>Phone number</comment>
 			</column>
 		</property>
-		<property name="fax" >
+		<property name="fax">
 			<column name="fax">
 				<comment>FAX number</comment>
 			</column>
 		</property>
-		<property name="email" >
+		<property name="email">
 			<column name="email">
 				<comment>Email</comment>
 			</column>
 		</property>
-		<property name="registrationNumber" unique="true" >
+		<property name="registrationNumber" unique="true">
 			<column name="registrationNumber">
 				<comment>Registration number</comment>
 			</column>

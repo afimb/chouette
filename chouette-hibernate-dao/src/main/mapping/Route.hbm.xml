@@ -42,7 +42,7 @@
 			<key column="routeId" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
-		<list name="stopPoints" lazy="true">
+		<list name="stopPoints" lazy="true" inverse="true">
 			<key column="routeId" />
 			<index column="position"/>
 			<one-to-many class="StopPoint" />

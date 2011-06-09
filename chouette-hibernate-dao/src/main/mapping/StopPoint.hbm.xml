@@ -33,6 +33,6 @@
 		<many-to-one name="containedInStopArea" class="StopArea" cascade="none" lazy="no-proxy"
 			outer-join="auto" column="stopareaid" />	
 		<property name="position" type="int" />
-		<many-to-one name="route" lazy="no-proxy" class="Route" column="routeId" />
+		<many-to-one name="route" lazy="no-proxy" class="Route" column="routeId" insert="true" update="true" />
 	</class>
 </hibernate-mapping>

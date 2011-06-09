@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -180,15 +181,21 @@ public class ModelAssembler {
 		for(Route route : routes)
 		{
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
-			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
+			
+			route.setPtLinks(sortPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class)));
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
+			int position = 0;
 			for (PTLink ptLink : route.getPtLinks()) 
 			{
 				ptLink.setRoute(route);
 				ptLink.setRouteId(route.getObjectId());
 				
 				StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
+				startPoint.setPosition(position++);
+				startPoint.setRoute(route);
 				StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
+				endPoint.setPosition(position);
+				endPoint.setRoute(route);
 				if(!stopPoints.contains(startPoint))
 					stopPoints.add(startPoint);
 				if(!stopPoints.contains(endPoint))
@@ -197,6 +204,34 @@ public class ModelAssembler {
 			route.setStopPoints(stopPoints);
 			route.setLine(line);
 		}
+	}
+
+	private List<PTLink> sortPtLinks(List<PTLink> ptLinks) 
+	{
+		if (ptLinks == null || ptLinks.isEmpty()) return ptLinks;
+		Map<String,PTLink> linkByStart = new HashMap<String, PTLink>();
+		Map<String,PTLink> linkByEnd = new HashMap<String, PTLink>();
+		
+		for (PTLink ptLink : ptLinks) 
+		{
+			linkByStart.put(ptLink.getStartOfLinkId(), ptLink);
+			linkByEnd.put(ptLink.getEndOfLinkId(), ptLink);
+		}
+		
+		Set<String> starts = linkByStart.keySet();
+		starts.removeAll(linkByEnd.keySet());
+		
+		String start = starts.toArray(new String[0])[0];
+		PTLink link = linkByStart.get(start);
+		List<PTLink> sortedLinks = new ArrayList<PTLink>();
+		while (link != null)
+		{
+			sortedLinks.add(link);
+			start = link.getEndOfLinkId();
+			link = linkByStart.get(start);
+		}
+		
+		return sortedLinks;
 	}
 
 	private void connectCompanies()

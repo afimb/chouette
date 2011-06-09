@@ -41,6 +41,8 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
 {
+	private static final Logger logger = Logger.getLogger(StopAreaManager.class);
+	
 	public StopAreaManager() 
 	{
 		super(StopArea.class);
@@ -114,14 +116,33 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 	}
 
 	@Override
-	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}	
 
 	@Override
 	public void saveAll(User user, List<StopArea> stopAreas, boolean propagate) throws ChouetteException 
 	{
+		if (propagate)
+		{
+			List<StopArea> parents = new ArrayList<StopArea>();
+			for (StopArea stopArea : stopAreas) 
+			{
+				StopArea parent = stopArea.getParentStopArea();
+				if (parent != null)
+				{
+					if (!parents.contains(parent))
+					{
+						parents.add(parent);
+					}
+				}
+			}
+			if (!parents.isEmpty())
+			{
+				saveAll(user,parents,propagate);
+			}
+		}
 		super.saveAll(user, stopAreas,propagate);
 
 		if(propagate)
