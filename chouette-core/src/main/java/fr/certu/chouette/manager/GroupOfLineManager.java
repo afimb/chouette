@@ -9,17 +9,19 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
  * @author mamadou keira
  *
  */
-public class GroupOfLineManager extends AbstractNeptuneManager<GroupOfLine>{
+public class GroupOfLineManager extends AbstractNeptuneManager<GroupOfLine>
+{
 
-	public GroupOfLineManager() {
+	private static final Logger logger = Logger.getLogger(GroupOfLineManager.class); 
+	public GroupOfLineManager() 
+	{
 		super(GroupOfLine.class);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}
 
 }

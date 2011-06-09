@@ -29,7 +29,7 @@ import fr.certu.chouette.plugin.validation.ValidationReport;
 @SuppressWarnings("unchecked")
 public class StopPointManager extends AbstractNeptuneManager<StopPoint> 
 {
-	Logger logger = Logger.getLogger(StopPoint.class);
+	private static final Logger logger = Logger.getLogger(StopPointManager.class);
 
 	public StopPointManager() 
 	{
@@ -201,6 +201,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	@Override
 	public void saveAll(User user, List<StopPoint> stopPoints, boolean propagate) throws ChouetteException 
 	{
+		getLogger().debug("try to save "+stopPoints.size()+" StopPoints");
 		if(propagate)
 		{
 			INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
@@ -211,23 +212,21 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 
 			for (StopPoint stopPoint : stopPoints) 
 			{
-				StopArea stopArea = stopPoint.getContainedInStopArea();	
-				if(stopArea != null && !stopAreas.contains(stopArea))
-					stopAreas.add(stopArea);
-
-				List<Facility> fList = stopPoint.getFacilities(); 
-				if(fList != null && !facilities.containsAll(fList))
-					facilities.addAll(fList);
+				addIfMissingInCollection(stopAreas, stopPoint.getContainedInStopArea());
+				mergeCollection(facilities,stopPoint.getFacilities());
 			}
 
 			if(!stopAreas.isEmpty())
 				stopAreaManager.saveAll(user, stopAreas, propagate);
 
-			super.saveAll(user, stopPoints,propagate);
+			super.saveAll(user, stopPoints, propagate);
 
 			if(!facilities.isEmpty())
 				facilityManager.saveAll(user, facilities, propagate);
-		}else
+		}
+		else
+		{
 			super.saveAll(user, stopPoints,propagate);	
+		}
 	}
 }

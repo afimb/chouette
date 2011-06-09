@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -28,15 +29,19 @@ import fr.certu.chouette.model.user.User;
  *
  */
 @SuppressWarnings("unchecked")
-public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney> {
+public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney> 
+{
+    private static final Logger logger = Logger.getLogger(VehicleJourneyManager.class);
 
-	public VehicleJourneyManager() {
+	public VehicleJourneyManager()
+	{
 		super(VehicleJourney.class);
 	}
 
 	@Override
-	protected Logger getLogger() {
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}
 
 	@Override
@@ -45,7 +50,7 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 		Line line = vehicleJourney.getLine();
 		if(line != null)
 			vehicleJourney.setLineIdShortcut(line.getObjectId());
-		
+
 		List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
 		for (int i = 0; i < vjass.size(); i++)
 		{
@@ -59,29 +64,31 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	@Override
 	public void saveAll(User user, List<VehicleJourney> vehicleJourneys, boolean propagate) throws ChouetteException 
 	{
-		super.saveAll(user, vehicleJourneys,propagate);
 
 		if(propagate)
 		{
+			INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
 			INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) getManager(Timetable.class);
 			INeptuneManager<TimeSlot> timeSlotManager = (INeptuneManager<TimeSlot>) getManager(TimeSlot.class);
 
 			List<Timetable> timetables = new ArrayList<Timetable>();
 			List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
+			List<Company> companies = new ArrayList<Company>();
 
 			for (VehicleJourney vehicleJourney : vehicleJourneys) 
 			{
-				if(vehicleJourney.getTimetables() != null && !timetables.containsAll(vehicleJourney.getTimetables()))
-					timetables.addAll(vehicleJourney.getTimetables());	
-
-				TimeSlot timeSlot = vehicleJourney.getTimeSlot();
-				if(timeSlot != null && !timeSlots.contains(timeSlot))
-					timeSlots.add(timeSlot);
+				mergeCollection(timetables,vehicleJourney.getTimetables());
+				addIfMissingInCollection(timeSlots,vehicleJourney.getTimeSlot());
+				addIfMissingInCollection(companies,vehicleJourney.getCompany());
 			}
 			if(!timetables.isEmpty())
 				timetableManager.saveAll(user, timetables, propagate);
 			if(!timeSlots.isEmpty())
 				timeSlotManager.saveAll(user, timeSlots, propagate);
+			if(!companies.isEmpty())
+				companyManager.saveAll(user, companies, propagate);
 		}
+
+		super.saveAll(user, vehicleJourneys,propagate);
 	}
 }

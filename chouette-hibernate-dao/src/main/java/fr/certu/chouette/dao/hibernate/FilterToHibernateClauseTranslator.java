@@ -13,7 +13,7 @@ import fr.certu.chouette.filter.Filter;
 
 public class FilterToHibernateClauseTranslator {
 
-	protected static final Logger logger = Logger.getLogger(FilterToHibernateClauseTranslator.class);
+	private static final Logger logger = Logger.getLogger(FilterToHibernateClauseTranslator.class);
 	private HashSet<String> aliasses;
 
 	/**
@@ -83,7 +83,6 @@ public class FilterToHibernateClauseTranslator {
 		case IS_NULL : 
 			return Restrictions.isNull(propertyName);
 		case EQUALS : 
-			logger.debug("create Equals clause with "+clause.getFirstValue());
 			return Restrictions.eq(propertyName, clause.getFirstValue());
 		case NOT_EQUALS : 
 			return Restrictions.ne(propertyName, clause.getFirstValue());
@@ -96,7 +95,6 @@ public class FilterToHibernateClauseTranslator {
 		case GREATER_OR_EQUALS : 
 			return Restrictions.ge(propertyName, clause.getFirstValue());
 		case LIKE : 
-			logger.debug("create Like clause with "+getILikeOrLikeRestrictionValue(clause.getFirstValue()));
 			return Restrictions.like(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
 		case ILIKE : 
 			return Restrictions.ilike(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
@@ -122,7 +120,6 @@ public class FilterToHibernateClauseTranslator {
 		}
 		else if (clause.getValueArray() != null)
 		{
-			logger.debug("build in clause");
 			return Restrictions.in(clause.getAttribute(), clause.getValueArray());
 		}
 		return null;
@@ -168,7 +165,6 @@ public class FilterToHibernateClauseTranslator {
 		case AND :
 		{
 			if (filters.length == 1) return translate(filters[0]);
-			logger.debug("create And clause with "+filters.length+" filters");
 			Criterion criterion = Restrictions.and(translate(filters[0]),translate(filters[1],criteria,metadata));
 			for (int i = 2; i < filters.length; i++) {
 				criterion = Restrictions.and(criterion,translate(filters[i],criteria,metadata));
@@ -178,7 +174,6 @@ public class FilterToHibernateClauseTranslator {
 		case OR : 
 		{
 			if (filters.length == 1) return translate(filters[0],criteria,metadata);
-			logger.debug("create Or clause with "+filters.length+" filters");
 			Criterion criterion = Restrictions.or(translate(filters[0],criteria,metadata),translate(filters[1],criteria,metadata));
 			for (int i = 2; i < filters.length; i++) {
 				criterion = Restrictions.or(criterion,translate(filters[i],criteria,metadata));

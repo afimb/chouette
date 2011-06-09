@@ -47,9 +47,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
     private static final Logger logger = Logger.getLogger(XMLNeptuneImportLinePlugin.class);
     private FormatDescription description;
     private List<String> allowedExtensions = Arrays.asList(new String[]{"xml", "zip"});
-    @Getter
-    @Setter
-    private NeptuneConverter converter;
+    @Getter @Setter private NeptuneConverter converter;
     private ReportItem sheet1_1;
     private SheetReportItem report1_1;
     private SheetReportItem report1_2;

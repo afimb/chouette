@@ -29,7 +29,6 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.RestrictionConstraint;
@@ -127,6 +126,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	@SuppressWarnings("unchecked")
 	public T get(Long id)
 	{
+        logger.debug("invoke get on "+type.getSimpleName());
 		T object = ( T)getHibernateTemplate().get( type, id);
 		if ( object==null)
 		{
@@ -139,8 +139,9 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	 * @see fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<T> select(final Filter filter) {
-
+	public List<T> select(final Filter filter) 
+	{
+        logger.debug("invoke select on "+type.getSimpleName());
 
 		Session session = getSession();
 
@@ -150,13 +151,11 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 		if (!filter.isEmpty())
 		{
-			logger.debug("build clause");
 			FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
 			criteria.add(translator.translate(filter,criteria,getSessionFactory().getClassMetadata(type)));
 		}
 		if (filter.getOrderList()!= null)
 		{
-			logger.debug("add order");
 			for (FilterOrder order : filter.getOrderList())
 			{
 				switch (order.getType())
@@ -177,17 +176,16 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 		List<T> beans = null; 
 		if (filter.getLimit() > 0 || filter.getStart() > 0)
 		{
-			logger.debug("call with limit");
+			logger.debug("call with start and/or limit");
 			criteria.setFirstResult(filter.getStart());
 			criteria.setMaxResults(filter.getLimit());
 			beans = criteria.list();// ht.findByCriteria(criteria,filter.getStart(),filter.getLimit());
 		}
 		else
 		{
-			logger.debug("call without limit");
 			beans = criteria.list(); // ht.findByCriteria(criteria);
 		}
-		logger.debug("beans founds = "+beans.size());
+		logger.debug(type.getSimpleName()+" founds = "+beans.size());
 
 		return beans;
 
@@ -200,6 +198,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	@SuppressWarnings("unchecked")
 	public T getByObjectId( final String objectId)
 	{
+        logger.debug("invoke getByObjectId on "+type.getSimpleName());
 		if ( objectId==null || objectId.isEmpty()) return null;
 
 		DetachedCriteria criteria = DetachedCriteria.forClass(type);
@@ -226,6 +225,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	 */
 	public List<T> getAll() 
 	{
+        logger.debug("invoke getAll on "+type.getSimpleName());
 		// return getHibernateTemplate().loadAll(type); 
 		// wrong call, may contains duplicate entry if join clause
 		Filter f = Filter.getNewEmptyFilter();
@@ -237,6 +237,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	 */
 	public void remove(Long id)
 	{
+        logger.debug("invoke remove on "+type.getSimpleName());
 		getHibernateTemplate().delete( get( id));
 		getHibernateTemplate().flush();
 	}
@@ -246,6 +247,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	 */
 	public void save(T object)
 	{
+        logger.debug("invoke save on "+type.getSimpleName());
 		T existing = getByObjectId(object.getObjectId());
 		if (existing == null)
 		{
@@ -264,7 +266,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	 */
 	public void update(T object)
 	{
-
+        logger.debug("invoke update on "+type.getSimpleName());
 		
 		try
 		{
@@ -314,13 +316,18 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	}
 
 	@Override
-	public void removeAll(Collection<T> objects) {
+	public void removeAll(Collection<T> objects) 
+	{
+        logger.debug("invoke removeAll on "+type.getSimpleName());
+
 		getHibernateTemplate().deleteAll(objects);
 		getHibernateTemplate().flush();
 	}
 
 	@Override
-	public int removeAll(Filter clause) {
+	public int removeAll(Filter clause) 
+	{
+        logger.debug("invoke removeAll on "+type.getSimpleName());
 		int res = 0;
 		Session session = getSession();
 		Criteria criteria = session.createCriteria(type);
@@ -335,7 +342,23 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	}
 
 	@Override
-	public void saveOrUpdateAll(List<T> objects) {
+	public void saveOrUpdateAll(List<T> objects) 
+	{
+        logger.debug("invoke saveOrUpdateAll on "+type.getSimpleName());
+		for (T object : objects) 
+		{
+			T existing = getByObjectId(object.getObjectId());
+			if (existing != null)
+			{
+				logger.debug("update object :"+object.getObjectId());
+				getHibernateTemplate().evict(existing);
+				object.setId(existing.getId());
+			}
+			else
+			{
+				logger.debug("save object :"+object.getObjectId());
+			}
+		}
 		getHibernateTemplate().saveOrUpdateAll(objects);
 		getHibernateTemplate().flush();
 	}

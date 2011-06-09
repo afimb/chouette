@@ -9,6 +9,8 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -18,7 +20,6 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -119,7 +120,18 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			ptLinkManager.removeAll(user, ptLinks,propagate);
 		List<StopPoint> stopPoints = stopPointManager.getAll(user, filter, level);
 		if(stopPoints != null && !stopPoints.isEmpty())
+		{
+			Collections.sort(stopPoints,new Comparator<StopPoint>() 
+					{
+				@Override
+				public int compare(StopPoint o1, StopPoint o2) 
+				{
+					return o2.getPosition() - o1.getPosition();
+				}
+
+					});
 			stopPointManager.removeAll(user, stopPoints,propagate);
+		}
 		super.remove(user, route,propagate);			
 	}
 
@@ -145,17 +157,9 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			List<PTLink> links = new ArrayList<PTLink>();
 			for (Route route : routes)
 			{
-				List<JourneyPattern> patterns =route.getJourneyPatterns();
-				if(patterns != null && !journeyPatterns.containsAll(patterns))
-					journeyPatterns.addAll(route.getJourneyPatterns());
-
-				List<StopPoint> points = route.getStopPoints();
-				if(points != null && !stopPoints.containsAll(points))
-					stopPoints.addAll(points);
-
-				List<PTLink> ptLinks = route.getPtLinks(); 
-				if(ptLinks != null && !links.containsAll(ptLinks))
-					links.addAll(route.getPtLinks());
+				mergeCollection(journeyPatterns,route.getJourneyPatterns());
+				mergeCollection(stopPoints,route.getStopPoints());
+				mergeCollection(links,route.getPtLinks());
 			}
 
 			if(!stopPoints.isEmpty())
@@ -195,9 +199,9 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 				}
 			}
 			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-            for (StopPoint stopPoint : stopPoints) 
-            {
-            	stopPointManager.completeObject(user, stopPoint);
+			for (StopPoint stopPoint : stopPoints) 
+			{
+				stopPointManager.completeObject(user, stopPoint);
 			}
 		}
 

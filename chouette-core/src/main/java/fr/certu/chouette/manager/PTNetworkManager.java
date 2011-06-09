@@ -24,6 +24,8 @@ import fr.certu.chouette.model.user.User;
 @SuppressWarnings("unchecked")
 public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 {
+	private static final Logger logger = Logger.getLogger(PTNetworkManager.class); 
+
 	public PTNetworkManager() 
 	{
 		super(PTNetwork.class);
@@ -47,8 +49,8 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 	}
 
 	@Override
-	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}
 }

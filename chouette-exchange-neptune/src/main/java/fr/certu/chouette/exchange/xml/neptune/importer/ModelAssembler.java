@@ -9,6 +9,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,9 +47,9 @@ import fr.certu.chouette.model.neptune.type.ImportedItems;
  */
 public class ModelAssembler 
 {
-    private static Logger logger = Logger.getLogger(ModelAssembler.class);
+	private static Logger logger = Logger.getLogger(ModelAssembler.class);
 
-    @Getter @Setter private Line line;
+	@Getter @Setter private Line line;
 	@Getter @Setter private List<Route> routes;
 	@Getter @Setter private List<Company> companies;
 	@Getter @Setter private PTNetwork ptNetwork;
@@ -65,7 +66,7 @@ public class ModelAssembler
 	@Getter @Setter private List<GroupOfLine> groupOfLines;
 	@Getter @Setter private List<Facility> facilities;
 	@Getter @Setter private List<TimeSlot> timeSlots;
-	
+
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
 	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
@@ -83,10 +84,9 @@ public class ModelAssembler
 	private Map<String, GroupOfLine> groupOfLinesDictionary = new HashMap<String, GroupOfLine>();
 	private Map<String, Facility> facilitiesDictionary = new HashMap<String, Facility>();
 	private Map<String, TimeSlot> timeSlotDictionary = new HashMap<String, TimeSlot>();
-	
+
 	public void connect()
 	{
-
 		populateDictionaries();
 		connectFacilities();
 		connectLine();
@@ -121,7 +121,6 @@ public class ModelAssembler
 		populateDictionnary(areaCentroids, areaCentroidsDictionary);
 		populateDictionnary(connectionLinks, connectionLinksDictionary);
 		populateDictionnary(timetables, timetablesDictionary);
-
 		populateDictionnary(accessLinks, accessLinksDictionary);
 		populateDictionnary(accessPoints, accessPointsDictionary);
 		populateDictionnary(groupOfLines, groupOfLinesDictionary);
@@ -132,12 +131,15 @@ public class ModelAssembler
 	private <T extends NeptuneIdentifiedObject> void populateDictionnary(List<T> list, Map<String,T> dictionnary)
 	{
 
-		for(T item : list){
-			if(item != null && item.getObjectId() != null){
+		for(T item : list)
+		{
+			if(item != null && item.getObjectId() != null)
+			{
 				dictionnary.put(item.getObjectId(), item);
 			}
 		}
-		if(list.size() > 0){
+		if(list.size() > 0)
+		{
 			populatedDictionaries.put(list.get(0).getClass(), dictionnary);
 		}
 	}
@@ -146,15 +148,13 @@ public class ModelAssembler
 	{
 		if(companies != null && companies.size() == 1)
 		{
-
-
 			line.setCompany(companies.get(0));
 		}
 
 		line.setPtNetwork(ptNetwork);
 		//line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
 		line.setRoutes(routes);
-		
+
 		ImportedItems item = new ImportedItems();
 		item.setAccessLinks(accessLinks);
 		item.setAccessPoints(accessPoints);
@@ -172,18 +172,14 @@ public class ModelAssembler
 		item.setTimetables(timetables);
 		item.setVehicleJourneys(vehicleJourneys);
 		item.setTimeSlots(timeSlots);
-		
+
 		line.setImportedItems(item);
 		if(!groupOfLines.isEmpty())
-
 			line.setGroupOfLine(groupOfLines.get(0));
 
-		
 		for (Facility facility : facilities)
 		{
 			if(facility.getLine() != null && facility.getLine().equals(line))
-
-
 				line.addFacility(facility);
 		}
 	}
@@ -193,34 +189,31 @@ public class ModelAssembler
 	{
 		for(Route route : routes)
 		{
-
-
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
-			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
-			
+			// route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
+
 			route.setPtLinks(sortPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class)));
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
-			for (PTLink ptLink : route.getPtLinks()) 
-			{
 			int position = 0;
 			for (PTLink ptLink : route.getPtLinks()) 
 			{
 				ptLink.setRoute(route);
 				ptLink.setRouteId(route.getObjectId());
-				
+
 				StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
 				startPoint.setPosition(position++);
 				startPoint.setRoute(route);
-				StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
 				if(!stopPoints.contains(startPoint))
-				endPoint.setPosition(position);
-				endPoint.setRoute(route);
-				if(!stopPoints.contains(startPoint))
+				{
 					stopPoints.add(startPoint);
+				}
+				StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
 				if(!stopPoints.contains(endPoint))
-
-
+				{
+					endPoint.setPosition(position);
+					endPoint.setRoute(route);
 					stopPoints.add(endPoint);
+				}
 			}
 
 			route.setStopPoints(stopPoints);
@@ -228,21 +221,23 @@ public class ModelAssembler
 		}
 	}
 
+
 	private List<PTLink> sortPtLinks(List<PTLink> ptLinks) 
 	{
 		if (ptLinks == null || ptLinks.isEmpty()) return ptLinks;
 		Map<String,PTLink> linkByStart = new HashMap<String, PTLink>();
 		Map<String,PTLink> linkByEnd = new HashMap<String, PTLink>();
-		
+
 		for (PTLink ptLink : ptLinks) 
 		{
 			linkByStart.put(ptLink.getStartOfLinkId(), ptLink);
 			linkByEnd.put(ptLink.getEndOfLinkId(), ptLink);
 		}
-		
-		Set<String> starts = linkByStart.keySet();
+
+		Set<String> starts = new HashSet<String>();
+		starts.addAll(linkByStart.keySet());
 		starts.removeAll(linkByEnd.keySet());
-		
+
 		String start = starts.toArray(new String[0])[0];
 		PTLink link = linkByStart.get(start);
 		List<PTLink> sortedLinks = new ArrayList<PTLink>();
@@ -252,7 +247,7 @@ public class ModelAssembler
 			start = link.getEndOfLinkId();
 			link = linkByStart.get(start);
 		}
-		
+
 		return sortedLinks;
 	}
 
@@ -267,7 +262,6 @@ public class ModelAssembler
 
 	private void connectPTNetwork() 
 	{
-
 		ptNetwork.setLines(getObjectsFromIds(ptNetwork.getLineIds(), Line.class));
 	}
 
@@ -275,8 +269,6 @@ public class ModelAssembler
 	{
 		for(JourneyPattern journeyPattern : journeyPatterns)
 		{
-
-
 			journeyPattern.setRoute(getObjectFromId(journeyPattern.getRouteId(), Route.class));
 			journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
 		}
@@ -286,8 +278,6 @@ public class ModelAssembler
 	{
 		for(PTLink ptLink : ptLinks)
 		{
-
-
 			ptLink.setStartOfLink(getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class));
 			ptLink.setEndOfLink(getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class));
 			ptLink.setRoute(getObjectFromId(ptLink.getRouteId(), Route.class));
@@ -318,8 +308,6 @@ public class ModelAssembler
 	{
 		for(StopPoint stopPoint : stopPoints)
 		{
-
-
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
 			//stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(), Line.class));
 			stopPoint.setLine(line);
@@ -332,16 +320,14 @@ public class ModelAssembler
 
 				//TODO : throw exception ???
 			}
-//			
-//			for (PTLink ptLink : ptLinks) {
-//				if(ptLink.getStartOfLink().equals(stopPoint) || ptLink.getEndOfLink().equals(stopPoint))
-//					stopPoint.setRoute(ptLink.getRoute());
-//			}
+			//			
+			//			for (PTLink ptLink : ptLinks) {
+			//				if(ptLink.getStartOfLink().equals(stopPoint) || ptLink.getEndOfLink().equals(stopPoint))
+			//					stopPoint.setRoute(ptLink.getRoute());
+			//			}
 			for (Facility facility : facilities)
 			{
 				if(facility.getStopPoint() != null && facility.getStopPoint().equals(stopPoint))
-
-
 					stopPoint.addFacility(facility);
 			}
 		}
@@ -352,16 +338,12 @@ public class ModelAssembler
 	{
 		for(StopArea stopArea : stopAreas)
 		{
-
-
 			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
 			stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
 			if(stopArea.getContainedStopAreas() != null)
 			{
 				for(StopArea childStopArea : stopArea.getContainedStopAreas())
 				{
-
-
 					childStopArea.setParentStopArea(stopArea);
 				}
 			}
@@ -371,51 +353,41 @@ public class ModelAssembler
 			{
 				for (RestrictionConstraint constraint : stopArea.getRestrictionConstraints()) 
 				{
-					Line line = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
-					constraint.setLine(line);
+					Line tmpLine = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
+					constraint.setLine(tmpLine);
+					constraint.setStopAreas(stopAreas);
+					if (tmpLine == null) {
+						logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
+					} else {
+						logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
+					}
+				}
 
-
-
-
-                    constraint.setStopAreas(stopAreas);
-                    if (tmpLine == null) {
-                        logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
-                    } else {
-                        logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
+				for (Facility facility : facilities)
+				{
+					if(facility.getStopArea() != null && facility.getStopArea().equals(stopArea))
+						stopArea.addFacility(facility);
 				}
 			}
-			
-			for (Facility facility : facilities)
-			{
-				if(facility.getStopArea() != null && facility.getStopArea().equals(stopArea))
-
-
-
-
-					stopArea.addFacility(facility);
+		}
+		if (StopArea.getUnvalidRestrictionConstraints() != null) {
+			for (RestrictionConstraint constraint : StopArea.getUnvalidRestrictionConstraints()) {
+				Line tmpLine = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
+				constraint.setLine(tmpLine);
+				logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO STOP AREA.");
+				if (tmpLine == null) {
+					logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
+				} else {
+					logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
+				}
 			}
 		}
 	}
-        if (StopArea.getUnvalidRestrictionConstraints() != null) {
-            for (RestrictionConstraint constraint : StopArea.getUnvalidRestrictionConstraints()) {
-                Line tmpLine = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
-                constraint.setLine(tmpLine);
-                logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO STOP AREA.");
-                if (tmpLine == null) {
-                    logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS NO LINE.");
-                } else {
-                    logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
-                }
-            }
-        }
-    }
 
 	private void connectAreaCentroids() 
 	{
 		for(AreaCentroid areaCentroid : areaCentroids)
 		{
-
-
 			areaCentroid.setContainedInStopArea(getObjectFromId(areaCentroid.getContainedInStopAreaId(), StopArea.class));
 		}
 	}
@@ -424,8 +396,6 @@ public class ModelAssembler
 	{
 		for(ConnectionLink connectionLink : connectionLinks)
 		{
-
-
 			StopArea startOfLink = getObjectFromId(connectionLink.getStartOfLinkId(), StopArea.class);
 			if(startOfLink != null){
 				connectionLink.setStartOfLink(startOfLink);
@@ -434,16 +404,13 @@ public class ModelAssembler
 			StopArea endOfLink = getObjectFromId(connectionLink.getEndOfLinkId(), StopArea.class);
 			if(endOfLink != null)
 			{
-
 				connectionLink.setEndOfLink(endOfLink);
 				endOfLink.addConnectionLink(connectionLink);
 			}
-			
+
 			for (Facility facility : facilities)
 			{
 				if(facility.getConnectionLink() != null && facility.getConnectionLink().equals(connectionLink))
-
-
 					connectionLink.addFacility(facility);
 			}
 		}
@@ -454,15 +421,11 @@ public class ModelAssembler
 	{
 		for(Timetable timetable : timetables)
 		{
-
-
 			timetable.setVehicleJourneys(getObjectsFromIds(timetable.getVehicleJourneyIds(), VehicleJourney.class));
 			if(timetable.getVehicleJourneys() != null)
 			{
 				for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
 				{
-
-
 					vehicleJourney.addTimetable(timetable);
 				}
 			}
@@ -475,10 +438,6 @@ public class ModelAssembler
 		{
 			StopArea stopArea = (getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) != null) ? getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) :
 				getObjectFromId(accessLink.getEndOfLinkId(), StopArea.class);
-
-
-
-
 			if(stopArea != null){
 				accessLink.setStopArea(stopArea);
 				stopArea.addAccessLink(accessLink);
@@ -487,37 +446,31 @@ public class ModelAssembler
 				getObjectFromId(accessLink.getEndOfLinkId(), AccessPoint.class);
 			if(accessPoint != null)
 			{
-
-
-
 				accessLink.setAccessPoint(accessPoint);
 				accessPoint.addAccessLink(accessLink);
 			}
 		}
 	}
 
-	private void connectGroupOfLines(){
-		for (GroupOfLine groupOfLine : groupOfLines) {
+	private void connectGroupOfLines()
+	{
+		for (GroupOfLine groupOfLine : groupOfLines) 
+		{
 			groupOfLine.setLines(getObjectsFromIds(groupOfLine.getLineIds(), Line.class));
 		}
 	}
 
-	private void connectFacilities() {
-		for (Facility facility : facilities) {
+	private void connectFacilities() 
+	{
+		for (Facility facility : facilities) 
+		{
 			if(facility.getStopAreaId() != null)
-
 				facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
 			if(facility.getStopPointId() != null)
-
-
 				facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
 			if(facility.getConnectionLinkId() != null)
-
-
 				facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
 			if(facility.getLineId() != null)
-
-
 				facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
 		}
 	}
@@ -526,7 +479,6 @@ public class ModelAssembler
 	@SuppressWarnings("unchecked")
 	private <T extends NeptuneIdentifiedObject> List<T> getObjectsFromIds(List<String> ids, Class<T> dictionaryClass)
 	{
-
 		Map<String, ? extends NeptuneIdentifiedObject> dictionary =  populatedDictionaries.get(dictionaryClass);
 		List<T> objects = new ArrayList<T>();
 
@@ -534,12 +486,9 @@ public class ModelAssembler
 		{
 			for(String id : ids)
 			{
-
-
 				T object = (T)dictionary.get(id);
 				if(object != null)
 				{
-
 					objects.add(object);
 				}
 			}
@@ -547,7 +496,6 @@ public class ModelAssembler
 
 		if(objects.size() == 0)
 		{
-
 			objects = null;
 		}
 

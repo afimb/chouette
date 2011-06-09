@@ -9,17 +9,19 @@ import fr.certu.chouette.model.neptune.Facility;
  * @author mamadou keira
  *
  */
-public class FacilityManager extends AbstractNeptuneManager<Facility>{
-
-	public FacilityManager() {
+public class FacilityManager extends AbstractNeptuneManager<Facility>
+{
+	private static final Logger logger = Logger.getLogger(FacilityManager.class); 
+	
+	public FacilityManager() 
+	{
 		super(Facility.class);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected Logger getLogger() {
-		// TODO Auto-generated method stub
-		return null;
+	protected Logger getLogger() 
+	{
+		return logger;
 	}
 
 }

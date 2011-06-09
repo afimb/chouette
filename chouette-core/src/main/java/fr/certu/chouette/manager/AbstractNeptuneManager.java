@@ -47,9 +47,10 @@ import fr.certu.chouette.plugin.validation.ValidationStepDescription;
  */
 public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> implements INeptuneManager<T>
 {
+	private static final Logger localLogger = Logger.getLogger(AbstractNeptuneManager.class);
 	// data storage access by hibernate
 	@Getter @Setter private IDaoTemplate<T> dao; 
-	
+
 	// data storage access by jdbc
 	@Getter @Setter private IDaoTemplate<T> jdbcDao;
 
@@ -163,7 +164,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#get(fr.certu.chouette.model.user.User, fr.certu.chouette.filter.Filter, fr.certu.chouette.filter.DetailLevelEnum)
 	 */
@@ -260,7 +261,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void remove(User user, T bean,boolean propagate) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		// TODO Auto-generated method stub
+		getLogger().debug("removing object :"+bean.getObjectId());
 		getDao().remove(bean.getId());
 	}
 
@@ -316,6 +317,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void save(User user, T object ,boolean propagate) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		getLogger().debug("saving object :"+object.getObjectId());
 		getDao().save(object);
 	}
 	/* (non-Javadoc)
@@ -325,14 +327,18 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		getLogger().debug("saving "+beans.size()+" "+neptuneType.getSimpleName());
 
-		for (T t : beans) {
-			save(user,t, propagate);
-		}
-//		if(getJdbcDao() == null)
-//			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
-//		
-//		getJdbcDao().saveOrUpdateAll(beans);
+		getDao().saveOrUpdateAll(beans);
+		
+//		for (T t : beans) 
+//		{
+//			save(user,t, propagate);
+//		}
+		//		if(getJdbcDao() == null)
+		//			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
+		//		
+		//		getJdbcDao().saveOrUpdateAll(beans);
 	}
 
 	/* (non-Javadoc)
@@ -509,12 +515,51 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void completeObject(User user, T bean) throws ChouetteException 
 	{
 	}
-	
+
 	@Override
 	public T getByObjectId(String objectId) throws CoreException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		
+
 		return getDao().getByObjectId(objectId);		
 	}
+
+	/**
+	 * merge source collection in target one : <br/>
+	 * add source objects if not already in target
+	 * @param <U> type of source and target entries
+	 * @param target collection to fill
+	 * @param source objects to add
+	 */
+	protected static <U> void mergeCollection(Collection<U> target, Collection<U> source )
+	{
+		if (source == null || source.isEmpty() ) return;
+		for (U object : source) 
+		{
+			if (!target.contains(object)) 
+			{
+				target.add(object);
+			}
+		}
+	}
+
+	/**
+	 * add source in target collection if not null, not already in database and not already in target 
+	 * @param <U> type of source and collection entries
+	 * @param target collection
+	 * @param source object to add
+	 */
+	protected static <U extends NeptuneIdentifiedObject> void addIfMissingInCollection(Collection<U> target, U source )
+	{
+		if (source == null ) return;
+		if (source.getId() != null ) 
+		{
+			localLogger.debug(source.getObjectId()+" not added , already saved as "+source.getId());
+			return;
+		}
+		if (!target.contains(source)) target.add(source);
+
+	}
+
+
 }
