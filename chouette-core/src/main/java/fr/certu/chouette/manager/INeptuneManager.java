@@ -13,6 +13,7 @@ import java.util.List;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.dao.IDaoTemplate;
+import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -46,7 +47,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * 
 	 * @param dao an IDaoTemplate implementation
 	 */
-	void setJdbcDao(IDaoTemplate<T> dao);
+	void setJdbcDao(IJdbcDaoTemplate<T> dao);
 
 	// Create
 	/**

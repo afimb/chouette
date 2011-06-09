@@ -11,5 +11,7 @@
 	<import resource="LineJdbcContext.xml" />
 	<import resource="PTNetworkJdbcContext.xml" />
 	<import resource="CompanyJdbcContext.xml" />
+	<import resource="GroupOfLineJdbcContext.xml" />
+	<import resource="StopAreaJdbcContext.xml" />
 	
 </beans>

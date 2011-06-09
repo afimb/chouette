@@ -1,19 +1,16 @@
 package fr.certu.chouette.jdbc.dao;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.PTNetwork;
 
 /**
  * 
@@ -37,43 +34,14 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 	@Override
 	public void saveOrUpdateAll(final List<Line> lines)
 	{			
-		String sql = sqlInsert;
-		getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
-		{			
-			@Override
-			public void setValues(PreparedStatement ps, int i) throws SQLException 
-			{
-				Line line = lines.get(i);
-
-				ps.setLong(1, line.getId());
-				PTNetwork ptNetwork = line.getPtNetwork();
-				if(ptNetwork != null)
-					ps.setLong(2, ptNetwork.getId());
-				Company company = line.getCompany();
-				if(company != null)
-					ps.setLong(3, company.getId());
-				ps.setString(4, line.getObjectId());
-				ps.setInt(5, line.getObjectVersion());
-				ps.setDate(6, (Date) line.getCreationTime());
-				ps.setString(7, line.getCreatorId());
-				ps.setString(8, line.getName());
-				ps.setString(9, line.getNumber());
-				ps.setString(10, line.getPublishedName());
-				ps.setString(11, line.getTransportModeName().toString());
-				ps.setString(12, line.getRegistrationNumber());
-				ps.setString(13, line.getComment());
-				GroupOfLine groupOfline = line.getGroupOfLine();
-				if(groupOfline != null)
-					ps.setLong(14, groupOfline.getId());
-				ps.setBoolean(15, line.getMobilityRestrictedSuitable());
-			}
-
-			@Override
-			public int getBatchSize() 
-			{
-				return lines.size();
-			}
-		});
+		final List<Line> insertables = new ArrayList<Line>();
+		final List<Line> updatables = new ArrayList<Line>();
+		
+		dispatchObjects(lines, insertables, updatables);
+		if(!insertables.isEmpty())
+			toBatchUpdate(sqlInsert, insertables);
+		if(!updatables.isEmpty())
+			toBatchUpdate(sqlUpdate, updatables);
 	}
 
 	@Override
@@ -84,6 +52,25 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 				new Object[] {objectId}, 
 				new BeanPropertyRowMapper(Line.class));
 		return line;
+	}
+	
+	@Override
+	protected void setPreparedStatement(PreparedStatement ps, Line line)
+			throws SQLException {
+		ps.setLong(1, line.getPtNetworkId());
+		ps.setLong(2, line.getCompanyId());
+		ps.setString(3, line.getObjectId());
+		ps.setInt(4, line.getObjectVersion());
+		ps.setTimestamp(5, new Timestamp(line.getCreationTime().getTime()));
+		ps.setString(6, line.getCreatorId());
+		ps.setString(7, line.getName());
+		ps.setString(8, line.getNumber());
+		ps.setString(9, line.getPublishedName());
+		ps.setString(10, line.getTransportModeName().toString());
+		ps.setString(11, line.getRegistrationNumber());
+		ps.setString(12, line.getComment());
+		ps.setLong(13, line.getGroupOfLineId());
+		ps.setBoolean(14, line.getMobilityRestrictedSuitable());
 	}
 	
 	@Override
@@ -136,5 +123,4 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 
 		return false;
 	}
-
 }

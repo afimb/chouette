@@ -17,7 +17,6 @@
 			<value>
 				INSERT INTO ${database.schema}.COMPANY
 				(
-				id,
 				objectid,
 				objectversion,
 				creationtime,
@@ -31,12 +30,43 @@
 				fax,
 				email,
 				registrationnumber)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-			 </value>
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>SELECT * FROM ${database.schema}.COMPANY WHERE objectid = ?
 			</value>
+		</property>
+		<property name="sqlSelectByObjectIdWithInClause">
+			<value>
+				SELECT id,objectid FROM ${database.schema}.COMPANY WHERE
+				objectid IN (_OBJECTIDS_)
+			</value>
+		</property>
+		<property name="sqlUpdate">
+			<value>
+				UPDATE ${database.schema}.COMPANY
+				SET
+				objectid = ?
+				objectversion = ?,
+				creationtime = ?,
+				creatorid = ?,
+				name = ?,
+				shortname = ?,
+				organizationalunit = ?,
+				operatingdepartmentname = ?,
+				code = ?,
+				phone =?,
+				fax = ?,
+				email = ?,
+				registrationnumber = ?
+		</value>
+		</property>
+		<property name="sqlDelete">
+			<value>
+				DELETE FROM ${database.schema}.COMPANY WHERE objectid IN
+				(_OBJECTIDS_)
+		</value>
 		</property>
 	</bean>
 </beans>	

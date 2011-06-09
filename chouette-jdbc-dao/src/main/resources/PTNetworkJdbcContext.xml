@@ -16,7 +16,7 @@
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.PTNETWORK
-				(id,
+				(
 				objectid,
 				objectversion,
 				creationtime,
@@ -28,12 +28,36 @@
 				sourcename,
 				sourceidentifier,
 				COMMENT)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				VALUES(?, ?,
+				?, ?, ?, ?, ?, ?, ?, ?, ?)
 			 </value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>SELECT * FROM ${database.schema}.PTNETWORK WHERE objectid = ?
 			</value>
+		</property>
+		<property name="sqlSelectByObjectIdWithInClause">
+			<value>
+				SELECT id,objectid FROM ${database.schema}.PTNETWORK WHERE
+				objectid IN (_OBJECTIDS_)
+			</value>
+		</property>
+		<property name="sqlUpdate">
+			<value>
+				UPDATE ${database.schema}.PTNETWORK
+				SET
+				objectid = ?,
+				objectversion = ?,
+				creationtime = ?,
+				creatorid = ?,
+				versiondate = ?,
+				description = ?,
+				name = ?,
+				registrationnumber = ?,
+				sourcename = ?,
+				sourceidentifier = ?,
+				COMMENT = ?
+		</value>
 		</property>
 	</bean>
 </beans>	
