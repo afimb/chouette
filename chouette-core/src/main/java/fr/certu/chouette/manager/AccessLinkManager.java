@@ -31,7 +31,7 @@ public class AccessLinkManager extends AbstractNeptuneManager<AccessLink>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void saveAll(User user, List<AccessLink> links, boolean propagate)
+	public void saveAll(User user, List<AccessLink> links, boolean propagate,boolean fast)
 			throws ChouetteException 
 	{
 		if (propagate)
@@ -47,10 +47,10 @@ public class AccessLinkManager extends AbstractNeptuneManager<AccessLink>
 				addIfMissingInCollection(stopAreas, accessLink.getStopArea());
 				addIfMissingInCollection(accessPoints, accessLink.getAccessPoint());
 			}
-		    if (!stopAreas.isEmpty()) stopAreaManager.saveAll(user, stopAreas, propagate);
-		    if (!accessPoints.isEmpty()) accessPointManager.saveAll(user, accessPoints, propagate);
+		    if (!stopAreas.isEmpty()) stopAreaManager.saveAll(user, stopAreas, propagate,fast);
+		    if (!accessPoints.isEmpty()) accessPointManager.saveAll(user, accessPoints, propagate,fast);
 		}
-		super.saveAll(user, links, propagate);
+		super.saveAll(user, links, propagate,fast);
 	}
 	
 	

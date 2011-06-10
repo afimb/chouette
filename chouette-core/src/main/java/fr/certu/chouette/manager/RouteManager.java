@@ -142,13 +142,13 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	}
 
 	@Override
-	public void saveAll(User user, List<Route> routes, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<Route> routes, boolean propagate,boolean fast) throws ChouetteException 
 	{
 		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
 
-		super.saveAll(user, routes,propagate);
+		super.saveAll(user, routes,propagate,fast);
 
 		if(propagate)
 		{
@@ -163,13 +163,13 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			}
 
 			if(!stopPoints.isEmpty())
-				stopPointManager.saveAll(user, stopPoints,propagate);
+				stopPointManager.saveAll(user, stopPoints,propagate,fast);
 
 			if(!journeyPatterns.isEmpty())
-				jpManager.saveAll(user, journeyPatterns,propagate);
+				jpManager.saveAll(user, journeyPatterns,propagate,fast);
 
 			if(!links.isEmpty())
-				ptLinkManager.saveAll(user, links,propagate);
+				ptLinkManager.saveAll(user, links,propagate,fast);
 		}
 	}
 

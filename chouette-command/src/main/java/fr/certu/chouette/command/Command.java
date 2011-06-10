@@ -993,7 +993,7 @@ public class Command
 //		}
 
 		boolean propagate = getBoolean(parameters, "propagate");
-		manager.saveAll(null, beans, propagate);
+		manager.saveAll(null, beans, propagate, true);
 	}
 
 	/**

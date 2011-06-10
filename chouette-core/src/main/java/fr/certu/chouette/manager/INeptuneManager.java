@@ -209,7 +209,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param propagate indicate if sub objects should be saved automatically 
 	 * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
 	 */
-	void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException;
+	//void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException;
 
 	
 	/**
@@ -354,4 +354,18 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	void completeObject(User user, T bean) throws ChouetteException;
 	
 	T getByObjectId(String objectId) throws ChouetteException;
+	
+	/**
+	 * save in storage the imported beans<br/>
+	 * new beans will be added<br/>
+	 * beans of main type will replace existing beans<br/>
+	 * existing beans in relation dependencies will be updated
+	 * 
+	 * @param user user account for security check 
+	 * @param beans a collection of beans to save
+	 * @param propagate indicates if sub objects should be saved automatically 
+	 * @param fast indicates if you want to save quickly
+	 * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
+	 */
+	void saveAll(User user, List<T> beans,boolean propagate, boolean fast) throws ChouetteException;
 }

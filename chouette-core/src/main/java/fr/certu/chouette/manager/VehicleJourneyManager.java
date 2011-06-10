@@ -62,7 +62,7 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	} 
 
 	@Override
-	public void saveAll(User user, List<VehicleJourney> vehicleJourneys, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<VehicleJourney> vehicleJourneys, boolean propagate,boolean fast) throws ChouetteException 
 	{
 
 		if(propagate)
@@ -82,13 +82,13 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 				addIfMissingInCollection(companies,vehicleJourney.getCompany());
 			}
 			if(!timetables.isEmpty())
-				timetableManager.saveAll(user, timetables, propagate);
+				timetableManager.saveAll(user, timetables, propagate,fast);
 			if(!timeSlots.isEmpty())
-				timeSlotManager.saveAll(user, timeSlots, propagate);
+				timeSlotManager.saveAll(user, timeSlots, propagate,fast);
 			if(!companies.isEmpty())
-				companyManager.saveAll(user, companies, propagate);
+				companyManager.saveAll(user, companies, propagate,fast);
 		}
 
-		super.saveAll(user, vehicleJourneys,propagate);
+		super.saveAll(user, vehicleJourneys,propagate,fast);
 	}
 }

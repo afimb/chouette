@@ -326,26 +326,34 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#saveAll(fr.certu.chouette.model.user.User, java.util.List)
 	 */
+//	@Override
+//	public final void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
+//	{
+//
+////		if(getJdbcDao() == null)
+////			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
+////
+////		getJdbcDao().saveOrUpdateAll(beans);
+//	}
+
 	@Override
-	public void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<T> beans,boolean propagate, boolean fast) throws ChouetteException 
 	{
-		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		if(fast)
+		{
+			if(getJdbcDao() == null)
+				throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
+			getJdbcDao().saveOrUpdateAll(beans);	
+		}
+		else
+		{
+			if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+			getLogger().debug("saving "+beans.size()+" "+neptuneType.getSimpleName());
 
-//		for (T t : beans) {
-		getLogger().debug("saving "+beans.size()+" "+neptuneType.getSimpleName());
+			getDao().saveOrUpdateAll(beans);
 
-		getDao().saveOrUpdateAll(beans);
-
-		//		for (T t : beans) 
-		//		{
-		//			save(user,t, propagate);
-		//		}
-		//		if(getJdbcDao() == null)
-		//			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
-		//		
-		//		getJdbcDao().saveOrUpdateAll(beans);
+		}
 	}
-
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#saveOrUpdateAll(fr.certu.chouette.model.user.User, java.util.List)
 	 */
