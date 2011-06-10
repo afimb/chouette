@@ -1,6 +1,8 @@
 package fr.certu.chouette.jdbc.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +13,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.jdbc.core.InterruptibleBatchPreparedStatementSetter;
+import org.springframework.jdbc.core.ParameterDisposer;
+import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.RowMapperResultSetExtractor;
+import org.springframework.jdbc.core.SqlProvider;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.Assert;
 
 import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -133,4 +147,128 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		});
 		return rows;
 	}
+	
+	/**
+	 * Issue multiple update statements on a single PreparedStatement, using batchupdate method from Spring  
+	 * @param sql request
+	 * @param list of {@link NeptuneIdentifiedObject}
+	 * @return an array of the number of rows affected by each statement
+	 */
+	protected int[] toBatchInsert(String sql, final List<T> list)
+	{
+		
+		final BatchPreparedStatementSetter pss = new BatchPreparedStatementSetter() 
+		{			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException 
+			{
+				T type = list.get(i);
+				if(type != null)
+					setPreparedStatement(ps, type);	
+			}
+			@Override
+			public int getBatchSize() 
+			{
+				return list.size();
+			}
+		};
+		
+		final KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+		
+		int[] rows =  (int[]) getJdbcTemplate().execute(new ReturnKeysPreparedStatementCreator(sql), new PreparedStatementCallback() 
+		 {
+			public Object doInPreparedStatement(PreparedStatement ps) throws SQLException {
+				try {
+					int batchSize = pss.getBatchSize();
+					InterruptibleBatchPreparedStatementSetter ipss =
+							(pss instanceof InterruptibleBatchPreparedStatementSetter ?
+							(InterruptibleBatchPreparedStatementSetter) pss : null);
+					if (JdbcUtils.supportsBatchUpdates(ps.getConnection())) {
+						for (int i = 0; i < batchSize; i++) {
+							pss.setValues(ps, i);
+							if (ipss != null && ipss.isBatchExhausted(i)) {
+								break;
+							}
+							ps.addBatch();
+						}
+						int[] rowsAffected = ps.executeBatch();
+						List generatedKeys = generatedKeyHolder.getKeyList();
+						generatedKeys.clear();
+						ResultSet keys = ps.getGeneratedKeys();
+						if (keys != null) {
+							try {
+								RowMapper rowMapper = new ColumnMapRowMapper();
+								RowMapperResultSetExtractor rse = new RowMapperResultSetExtractor(rowMapper, 1);
+								generatedKeys.addAll((List) rse.extractData(keys));
+							}
+							finally {
+								JdbcUtils.closeResultSet(keys);
+							}
+						}
+						if (logger.isDebugEnabled()) {
+							logger.debug("SQL update affected " + rowsAffected + " rows and returned " + generatedKeys.size() + " keys");
+						}
+						return rowsAffected;
+					}
+					else {
+						List rowsAffected = new ArrayList();
+						for (int i = 0; i < batchSize; i++) {
+							pss.setValues(ps, i);
+							if (ipss != null && ipss.isBatchExhausted(i)) {
+								break;
+							}
+							rowsAffected.add(new Integer(ps.executeUpdate()));
+						}
+						int[] rowsAffectedArray = new int[rowsAffected.size()];
+						for (int i = 0; i < rowsAffectedArray.length; i++) {
+							rowsAffectedArray[i] = ((Integer) rowsAffected.get(i)).intValue();
+						}
+						return rowsAffectedArray;
+					}
+				}
+				finally {
+					if (pss instanceof ParameterDisposer) {
+						((ParameterDisposer) pss).cleanupParameters();
+					}
+				}
+			}
+		});
+		
+		// TODO dépouillement à tester
+		List keys = generatedKeyHolder.getKeyList();
+		for (int i = 0; i < rows.length; i++) 
+		{
+			if (rows[i] ==  1)
+			{
+				Long key = (Long) keys.get(i);
+				list.get(i).setId(key);
+			}
+		}
+		return rows;
+	}
+
+	
+	
+	/**
+	 * Simple adapter for PreparedStatementCreator, allowing to use a plain SQL statement.
+	 */
+	private static class ReturnKeysPreparedStatementCreator implements PreparedStatementCreator, SqlProvider {
+
+		private final String sql;
+
+		public ReturnKeysPreparedStatementCreator(String sql) 
+		{
+			Assert.notNull(sql, "SQL must not be null");
+			this.sql = sql;
+		}
+
+		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+			return con.prepareStatement(this.sql,PreparedStatement.RETURN_GENERATED_KEYS);
+		}
+
+		public String getSql() {
+			return this.sql;
+		}
+	}
+
 }
