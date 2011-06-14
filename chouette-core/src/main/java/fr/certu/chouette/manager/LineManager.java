@@ -382,7 +382,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void saveAll(User user, List<Line> lines, boolean propagate) throws ChouetteException
+	public void saveAll(User user, List<Line> lines, boolean propagate,boolean fast) throws ChouetteException
 	{
 		if(propagate)
 		{
@@ -407,24 +407,22 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				mergeCollection(facilities,line.getFacilities());
 			}
 			if(!companies.isEmpty())
-				companyManager.saveAll(user,companies,propagate);
+				companyManager.saveAll(user,companies,propagate,fast);
 			if(!groupOfLines.isEmpty())
-				groupOfLineManager.saveAll(user,groupOfLines,propagate);
+				groupOfLineManager.saveAll(user,groupOfLines,propagate,fast);
 			if(!networks.isEmpty())
-				networkManager.saveAll(user,networks,propagate);
+				networkManager.saveAll(user,networks,propagate,fast);
 
-			super.saveAll(user, lines,propagate);
-
+			super.saveAll(user, lines,propagate,fast);
+			
 			if(!routes.isEmpty())
-				routeManager.saveAll(user, routes,propagate);
+				routeManager.saveAll(user, routes,propagate,fast);
 			if(!facilities.isEmpty())
-				facilityManager.saveAll(user, facilities, propagate);
-
-
+				facilityManager.saveAll(user, facilities, propagate,fast);
 		}
 		else 
 		{
-			super.saveAll(user, lines,propagate);	
+			super.saveAll(user, lines,propagate,fast);	
 		}
 	}
 

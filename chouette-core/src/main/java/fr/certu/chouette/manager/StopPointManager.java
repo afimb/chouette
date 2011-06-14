@@ -202,7 +202,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 	}
 
 	@Override
-	public void saveAll(User user, List<StopPoint> stopPoints, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<StopPoint> stopPoints, boolean propagate,boolean fast) throws ChouetteException 
 	{
 		getLogger().debug("try to save "+stopPoints.size()+" StopPoints");
 		if(propagate)
@@ -220,16 +220,16 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			}
 
 			if(!stopAreas.isEmpty())
-				stopAreaManager.saveAll(user, stopAreas, propagate);
+				stopAreaManager.saveAll(user, stopAreas, propagate,fast);
 
-			super.saveAll(user, stopPoints, propagate);
+			super.saveAll(user, stopPoints, propagate,fast);
 
 			if(!facilities.isEmpty())
-				facilityManager.saveAll(user, facilities, propagate);
+				facilityManager.saveAll(user, facilities, propagate,fast);
 		}
 		else
 		{
-			super.saveAll(user, stopPoints,propagate);	
+			super.saveAll(user, stopPoints,propagate,fast);	
 		}
 	}
 	

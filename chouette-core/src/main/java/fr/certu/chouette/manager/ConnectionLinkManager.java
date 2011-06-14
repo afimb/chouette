@@ -39,9 +39,9 @@ public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink
 	}
     
 	@Override
-	public void saveAll(User user, List<ConnectionLink> connectionLinks, boolean propagate) throws ChouetteException 
+	public void saveAll(User user, List<ConnectionLink> connectionLinks, boolean propagate,boolean fast) throws ChouetteException 
 	{
-		super.saveAll(user, connectionLinks, propagate);
+		super.saveAll(user, connectionLinks, propagate,fast);
 		
 		if(propagate)
 		{
@@ -53,7 +53,7 @@ public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink
 			}
 			
 			if(!facilities.isEmpty())
-				facilityManager.saveAll(user, facilities, propagate);
+				facilityManager.saveAll(user, facilities, propagate,fast);
 		}
 	}
 

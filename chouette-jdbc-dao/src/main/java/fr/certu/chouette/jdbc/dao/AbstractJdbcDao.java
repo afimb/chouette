@@ -1,10 +1,9 @@
 package fr.certu.chouette.jdbc.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,21 +12,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.ColumnMapRowMapper;
-import org.springframework.jdbc.core.InterruptibleBatchPreparedStatementSetter;
-import org.springframework.jdbc.core.ParameterDisposer;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.RowMapperResultSetExtractor;
-import org.springframework.jdbc.core.SqlProvider;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.util.Assert;
 
 import fr.certu.chouette.dao.IJdbcDaoTemplate;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PeerId;
 
@@ -37,6 +25,7 @@ import fr.certu.chouette.model.neptune.PeerId;
  *
  * @param <T>
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject>
 extends JdbcDaoSupport implements IJdbcDaoTemplate<T> 
 {
@@ -68,7 +57,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param objectids
 	 * @return list of {@link PeerId}
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	public List<PeerId> get(List<String> objectids)
 	{
 		String[] myArray = objectids.toArray(new String[objectids.size()]);
@@ -94,7 +83,21 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param type
 	 * @throws SQLException
 	 */
-	protected abstract void setPreparedStatement(PreparedStatement ps, T type) throws SQLException;
+	protected abstract void populateStatement(PreparedStatement ps, T type) throws SQLException;
+
+	
+	@Override
+	public void saveOrUpdateAll(final List<T> objects)
+	{			
+		final List<T> insertables = new ArrayList<T>();
+		final List<T> updatables = new ArrayList<T>();
+
+		dispatchObjects(objects, insertables, updatables);
+		if(!insertables.isEmpty())
+			toBatchInsert(sqlInsert, insertables);
+		if(!updatables.isEmpty())
+			toBatchUpdate(sqlUpdate, updatables);
+	}
 
 	/**
 	 * This method allowed to dispatch a list of complete objects to two list in parameter
@@ -137,7 +140,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			{
 				T type = list.get(i);
 				if(type != null)
-					setPreparedStatement(ps, type);	
+					populateStatement(ps, type);	
 			}
 			@Override
 			public int getBatchSize() 
@@ -147,7 +150,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		});
 		return rows;
 	}
-	
+
 	/**
 	 * Issue multiple update statements on a single PreparedStatement, using batchupdate method from Spring  
 	 * @param sql request
@@ -156,119 +159,91 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 */
 	protected int[] toBatchInsert(String sql, final List<T> list)
 	{
-		
-		final BatchPreparedStatementSetter pss = new BatchPreparedStatementSetter() 
+		int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
 		{			
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException 
 			{
 				T type = list.get(i);
 				if(type != null)
-					setPreparedStatement(ps, type);	
+					populateStatement(ps, type);	
 			}
 			@Override
 			public int getBatchSize() 
 			{
 				return list.size();
 			}
-		};
-		
-		final KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-		
-		int[] rows =  (int[]) getJdbcTemplate().execute(new ReturnKeysPreparedStatementCreator(sql), new PreparedStatementCallback() 
-		 {
-			public Object doInPreparedStatement(PreparedStatement ps) throws SQLException {
-				try {
-					int batchSize = pss.getBatchSize();
-					InterruptibleBatchPreparedStatementSetter ipss =
-							(pss instanceof InterruptibleBatchPreparedStatementSetter ?
-							(InterruptibleBatchPreparedStatementSetter) pss : null);
-					if (JdbcUtils.supportsBatchUpdates(ps.getConnection())) {
-						for (int i = 0; i < batchSize; i++) {
-							pss.setValues(ps, i);
-							if (ipss != null && ipss.isBatchExhausted(i)) {
-								break;
-							}
-							ps.addBatch();
-						}
-						int[] rowsAffected = ps.executeBatch();
-						List generatedKeys = generatedKeyHolder.getKeyList();
-						generatedKeys.clear();
-						ResultSet keys = ps.getGeneratedKeys();
-						if (keys != null) {
-							try {
-								RowMapper rowMapper = new ColumnMapRowMapper();
-								RowMapperResultSetExtractor rse = new RowMapperResultSetExtractor(rowMapper, 1);
-								generatedKeys.addAll((List) rse.extractData(keys));
-							}
-							finally {
-								JdbcUtils.closeResultSet(keys);
-							}
-						}
-						if (logger.isDebugEnabled()) {
-							logger.debug("SQL update affected " + rowsAffected + " rows and returned " + generatedKeys.size() + " keys");
-						}
-						return rowsAffected;
-					}
-					else {
-						List rowsAffected = new ArrayList();
-						for (int i = 0; i < batchSize; i++) {
-							pss.setValues(ps, i);
-							if (ipss != null && ipss.isBatchExhausted(i)) {
-								break;
-							}
-							rowsAffected.add(new Integer(ps.executeUpdate()));
-						}
-						int[] rowsAffectedArray = new int[rowsAffected.size()];
-						for (int i = 0; i < rowsAffectedArray.length; i++) {
-							rowsAffectedArray[i] = ((Integer) rowsAffected.get(i)).intValue();
-						}
-						return rowsAffectedArray;
-					}
-				}
-				finally {
-					if (pss instanceof ParameterDisposer) {
-						((ParameterDisposer) pss).cleanupParameters();
-					}
-				}
-			}
-		});
-		
-		// TODO dépouillement à tester
-		List keys = generatedKeyHolder.getKeyList();
-		for (int i = 0; i < rows.length; i++) 
+		});	
+		Map<String,T> map = new HashMap<String, T>();
+		for (T type : list) 
 		{
-			if (rows[i] ==  1)
-			{
-				Long key = (Long) keys.get(i);
-				list.get(i).setId(key);
-			}
+			map.put(type.getObjectId(), type);
+		}
+
+		List<String> objectids = T.extractObjectIds(list);
+		List<PeerId> peerIds = get(objectids);
+
+		for (PeerId peerId : peerIds) 
+		{
+			T type = map.remove(peerId.getObjectid());
+			type.setId(peerId.getId());
 		}
 		return rows;
 	}
 
-	
-	
-	/**
-	 * Simple adapter for PreparedStatementCreator, allowing to use a plain SQL statement.
-	 */
-	private static class ReturnKeysPreparedStatementCreator implements PreparedStatementCreator, SqlProvider {
-
-		private final String sql;
-
-		public ReturnKeysPreparedStatementCreator(String sql) 
-		{
-			Assert.notNull(sql, "SQL must not be null");
-			this.sql = sql;
-		}
-
-		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-			return con.prepareStatement(this.sql,PreparedStatement.RETURN_GENERATED_KEYS);
-		}
-
-		public String getSql() {
-			return this.sql;
-		}
+	@Override
+	public List<T> getAll() {
+		return null;
 	}
 
+	@Override
+	public T get(Long id) {
+		return null;
+	}
+
+	@Override
+	public void save(T object) {
+
+	}
+
+	@Override
+	public void remove(Long id) {
+
+	}
+
+	@Override
+	public void removeAll(Collection<T> objects) {
+
+
+	}
+
+	@Override
+	public int removeAll(Filter clause) {
+
+		return 0;
+	}
+
+	@Override
+	public void update(T object) {
+
+	}
+
+
+	@Override
+	public List<T> select(Filter clause) {
+
+		return null;
+	}
+
+	@Override
+	public boolean exists(Long id) {
+
+		return false;
+	}
+
+	@Override
+	public boolean exists(String objectId) {
+
+		return false;
+	}
 }

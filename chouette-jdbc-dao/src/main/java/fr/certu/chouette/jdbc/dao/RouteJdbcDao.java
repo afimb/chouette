@@ -2,13 +2,11 @@ package fr.certu.chouette.jdbc.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Route;
 
 /**
@@ -30,18 +28,6 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		return routes;
 	}
 
-	@Override
-	public void saveOrUpdateAll(final List<Route> routes)
-	{			
-		final List<Route> insertables = new ArrayList<Route>();
-		final List<Route> updatables = new ArrayList<Route>();
-
-		dispatchObjects(routes, insertables, updatables);
-		if(!insertables.isEmpty())
-			toBatchUpdate(sqlInsert, insertables);
-		if(!updatables.isEmpty())
-			toBatchUpdate(sqlUpdate, updatables);
-	}
 
 	@Override
 	public Route getByObjectId(String objectId) 
@@ -54,63 +40,26 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 	}
 
 	@Override
-	protected void setPreparedStatement(PreparedStatement ps, Route route)
+	protected void populateStatement(PreparedStatement ps, Route route)
 	throws SQLException {
+		ps.setString(1, route.getObjectId());
+		ps.setInt(2, route.getObjectVersion());
+		Timestamp timestamp = null;
+		if(route.getCreationTime() != null)
+			timestamp = new Timestamp(route.getCreationTime().getTime());
+		ps.setTimestamp(3, timestamp);
+		ps.setString(4, route.getCreatorId());
+		ps.setString(5, route.getName());
+		ps.setLong(6, route.getOppositeRouteId());
+		Long lineId = null;
+		if(route.getLine() != null)
+			lineId = route.getLine().getId();
+		ps.setLong(7, lineId);
+		ps.setString(8, route.getPublishedName());
+		ps.setString(9, route.getNumber());
+		ps.setString(10, route.getDirection().value());
+		ps.setString(11, route.getComment());
+		ps.setString(12, route.getWayBack());
 
 	}
-
-	@Override
-	public Route get(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void save(Route object) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void remove(Long id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeAll(Collection<Route> objects) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public int removeAll(Filter clause) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void update(Route object) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public List<Route> select(Filter clause) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean exists(Long id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean exists(String objectId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }
