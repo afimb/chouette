@@ -15,5 +15,6 @@
 	<import resource="StopAreaJdbcContext.xml" />
 	<import resource="AccessPointJdbcContext.xml" />
 	<import resource="RouteJdbcContext.xml" />
+        <import resource="ConnectionLinkJdbcContext.xml" />
 	
 </beans>
