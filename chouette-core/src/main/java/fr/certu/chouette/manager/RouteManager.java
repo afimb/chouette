@@ -16,11 +16,15 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
+import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
@@ -224,6 +228,29 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			}
 		}
 
+	}
+	@Override
+	public int removeAll(User user, Filter filter) throws ChouetteException 
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		if (filter.getType().equals(Filter.Type.EQUALS))
+		{
+			INeptuneManager<PTLink> ptlinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
+			INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
+			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
+	        Filter dependentFilter = Filter.getNewEqualsFilter("route."+filter.getAttribute(), filter.getFirstValue());
+	        ptlinkManager.removeAll(user, dependentFilter);
+	        jpManager.removeAll(user, dependentFilter);
+	        stopPointManager.removeAll(user, dependentFilter);
+		}
+		else
+		{
+			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"unvalid filter");
+		}
+		int ret =  getDao().removeAll(filter);
+		logger.debug(""+ret+" routes deleted");
+		return ret;
+		
 	}
 
 

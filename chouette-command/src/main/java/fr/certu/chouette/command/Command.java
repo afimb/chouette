@@ -1007,8 +1007,14 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
-		boolean propagate = getBoolean(parameters, "propagate");
-		manager.removeAll(null, beans,propagate);
+		// boolean propagate = getBoolean(parameters, "propagate");
+		for (NeptuneIdentifiedObject bean : beans) 
+		{
+			Filter filter = Filter.getNewEqualsFilter("id", bean.getId());
+			manager.removeAll(null, filter);
+		}
+		
+		// manager.removeAll(null, beans,propagate);
 		beans.clear();
 	}
 

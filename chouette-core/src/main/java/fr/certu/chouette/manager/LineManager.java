@@ -8,6 +8,7 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -293,28 +294,29 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void remove(User user, Line line,boolean propagate) throws ChouetteException
+	public void removeAll(User user, Collection<Line> lines, boolean propagate) throws ChouetteException
 	{
-		if(getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-
-		logger.debug("deleting Line = "+line.getObjectId());
+		logger.debug("start deleting Lines");
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-
-		Filter filter = Filter.getNewEqualsFilter("line.id", line.getId());
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-		INeptuneManager<RestrictionConstraint> constraintManager = 
-			(INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+		INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+
+		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+
+		List<Long> ids = getIds(lines);
+		Filter filter = Filter.getNewInFilter("line.id", ids);
 		List<Route> routes = routeManager.getAll(user, filter, level);
 		if(routes != null && !routes.isEmpty())
-			routeManager.removeAll(user, routes,propagate);
+			routeManager.removeAll(user, routes, propagate);
 		Facility facility = facilityManager.get(user, filter, level);
 		if(facility != null)
 			facilityManager.remove(user, facility,propagate);
 		List<RestrictionConstraint> constraints = constraintManager.getAll(user, filter, level);
 		if(constraints != null && !constraints.isEmpty())
-			constraintManager.removeAll(user, constraints,propagate);
-		super.remove(user, line,propagate);
+			constraintManager.removeAll(user, constraints,propagate);	
+
+		logger.debug("delete Lines");
+		super.removeAll(user, lines,propagate);
 	}
 
 	@Override
@@ -425,4 +427,30 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			super.saveAll(user, lines,propagate);	
 		}
 	}
+
+	@Override
+	public int removeAll(User user, Filter filter) throws ChouetteException 
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		if (filter.getType().equals(Filter.Type.EQUALS))
+		{
+			INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+			INeptuneManager<RestrictionConstraint> restrictionConstraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+	        Filter dependentFilter = Filter.getNewEqualsFilter("line."+filter.getAttribute(), filter.getFirstValue());
+	        routeManager.removeAll(user, dependentFilter);
+	        facilityManager.removeAll(user, dependentFilter);
+	        restrictionConstraintManager.removeAll(user, dependentFilter);
+		}
+		else
+		{
+			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"unvalid filter");
+		}
+		int ret =  getDao().removeAll(filter);
+		logger.debug(""+ret+" lines deleted");
+		return ret;
+		
+	}
+	
+	
 }

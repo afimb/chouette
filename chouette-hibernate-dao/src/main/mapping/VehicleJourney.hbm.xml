@@ -34,9 +34,9 @@
 			<many-to-many column="timetableId" class="Timetable" />
 		</bag>
 			
-		<bag lazy="false" name="vehicleJourneyAtStops" cascade="none"
+		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan"
 			table="vehicleJourneyAtStop">
-			<key column="vehicleJourneyId" />
+			<key column="vehicleJourneyId"/>
 
 			<composite-element class="VehicleJourneyAtStop">
 				<many-to-one class="StopPoint" column="stopPointId"

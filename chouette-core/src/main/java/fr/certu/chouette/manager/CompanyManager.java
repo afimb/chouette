@@ -8,6 +8,7 @@
 
 package fr.certu.chouette.manager;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -34,32 +35,39 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 		super(Company.class);
 	}
 	@Override
-	public void remove(User user,Company company,boolean propagate) throws ChouetteException
+	public void removeAll(User user,Collection<Company> companies,boolean propagate) throws ChouetteException
 	{
-		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
-		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>)getManager(VehicleJourney.class);
-		Filter filter = Filter.getNewEqualsFilter("company.id", company.getId());
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<Line> lines = lineManager.getAll(user, filter, level);
-		List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter, level);
-		if(propagate)
+		for (Company company : companies) 
 		{
-			lineManager.removeAll(user, lines,propagate);
-			vjManager.removeAll(user, vehicleJourneys,propagate);
-		}else 
-		{
-			for (Line line : lines) {
-				line.setCompany(null);
-				lineManager.update(user, line);
+
+			INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
+			INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>)getManager(VehicleJourney.class);
+			Filter filter = Filter.getNewEqualsFilter("company.id", company.getId());
+			DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+			List<Line> lines = lineManager.getAll(user, filter, level);
+			List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter, level);
+			if(propagate)
+			{
+				lineManager.removeAll(user, lines,propagate);
+				vjManager.removeAll(user, vehicleJourneys,propagate);
 			}
-			for (VehicleJourney vehicleJourney : vehicleJourneys) {
-				vehicleJourney.setCompany(null);
-				vjManager.update(user, vehicleJourney);
+			else 
+			{
+				for (Line line : lines) 
+				{
+					line.setCompany(null);
+					lineManager.update(user, line);
+				}
+				for (VehicleJourney vehicleJourney : vehicleJourneys) 
+				{
+					vehicleJourney.setCompany(null);
+					vjManager.update(user, vehicleJourney);
+				}
 			}
 		}
-		super.remove(user, company, propagate);
+		super.removeAll(user, companies, propagate);
 	}
-	
+
 	@Override
 	protected Logger getLogger()
 	{

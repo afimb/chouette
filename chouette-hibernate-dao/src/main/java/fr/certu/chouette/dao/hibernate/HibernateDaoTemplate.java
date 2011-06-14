@@ -328,17 +328,12 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	public int removeAll(Filter clause) 
 	{
         logger.debug("invoke removeAll on "+type.getSimpleName());
-		int res = 0;
+        
 		Session session = getSession();
-		Criteria criteria = session.createCriteria(type);
-		criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-		if (!clause.isEmpty()){
-			logger.debug("build clause");
-			FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
-			criteria.add(translator.translate(clause,criteria,getSessionFactory().getClassMetadata(type)));
-			//res = session.d
-		}
-		return res;
+		FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
+		String hql = translator.translateToHQLDelete(clause, getSessionFactory().getClassMetadata(type));
+		logger.debug("hql = "+hql);
+		return session.createQuery(hql).executeUpdate();
 	}
 
 	@Override

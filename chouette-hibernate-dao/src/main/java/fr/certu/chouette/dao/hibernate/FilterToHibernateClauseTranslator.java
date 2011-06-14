@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.annotations.common.util.StringHelper;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
@@ -230,5 +231,80 @@ public class FilterToHibernateClauseTranslator {
 		}
 		return translateTerminal(clause);
 	}
+
+	
+	public String translateToHQLDelete(Filter clause, ClassMetadata metadata) 
+	{
+		aliasses = new HashSet<String>();
+		if (clause == null) throw new NullPointerException("JE VIENS DE RENCONTRER UNE CLAUSE NON INITIALISEE .. J'ARRETE TOUT TRAITEMENT");
+
+		switch (clause.getFamilly())
+		{
+		case EMPTY : throw new NullPointerException("Empty query to HQL not yet implemented");
+			
+		case TERMINAL : 
+			return  translateTerminalToHQLDelete(clause,metadata);
+		case COMBINED : 
+			throw new NullPointerException("Combined query to HQL not yet implemented");
+		}
+		return null; // 
+
+
+	}
+
+
+	private String translateTerminalToHQLDelete(Filter clause, ClassMetadata metadata) 
+	{
+		String propertyName = clause.getAttribute();
+
+		String entityName = metadata.getEntityName();
+		
+		switch (clause.getType())
+		{
+//		case IS_NULL : 
+//			return Restrictions.isNull(propertyName);
+		case EQUALS : 
+		{
+			return "delete "+entityName+" bean where bean."+propertyName+" = "+toHQL(clause.getFirstValue());
+		}
+//		case NOT_EQUALS : 
+//			return Restrictions.ne(propertyName, clause.getFirstValue());
+//		case LESS : 
+//			return Restrictions.lt(propertyName, clause.getFirstValue());
+//		case LESS_OR_EQUALS : 
+//			return Restrictions.le(propertyName, clause.getFirstValue());
+//		case GREATER : 
+//			return Restrictions.gt(propertyName, clause.getFirstValue());
+//		case GREATER_OR_EQUALS : 
+//			return Restrictions.ge(propertyName, clause.getFirstValue());
+//		case LIKE : 
+//			return Restrictions.like(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
+//		case ILIKE : 
+//			return Restrictions.ilike(propertyName, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
+//		case IN : 
+//			return translateIn(clause);
+//		case BETWEEN : 
+//			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
+//		case SQL_WHERE : 
+//			return Restrictions.sqlRestriction(propertyName);
+		}
+		throw new NullPointerException(clause.getType()+" to HQL not yet implemented");
+	}
+
+
+	private String toHQL(Object value) 
+	{
+		if (value instanceof Number)
+		{
+			return value.toString();
+		}
+		if (value instanceof String)
+		{
+		   return StringHelper.quote((String) value);
+		}
+		throw new NullPointerException(value.getClass().getName()+" to HQL not yet implemented");
+			
+	}
+
 
 }

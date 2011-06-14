@@ -54,26 +54,26 @@
 			</column>
 		</property>
 
-		<bag inverse="true" lazy="true" name="stopPoints" table="journeyPattern_stopPoint">
+		<bag inverse="true" lazy="true" name="stopPoints" table="journeyPattern_stopPoint" cascade="all-delete-orphan">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
-			<key>
+			<key foreign-key="jpsp_jp_fkey"> 
 				<column name="journeyPatternId">
 					<comment>JourneyPattern Reference</comment>
 				</column>
 			</key>
-			<many-to-many class="StopPoint" >
+			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey">
 				<column name="stopPointId">
 					<comment>StopPoint Reference</comment>
 				</column>
 			</many-to-many>
 		</bag>
-		<many-to-one class="Route" lazy="no-proxy" name="route">
+		<many-to-one class="Route" lazy="no-proxy" name="route" foreign-key="jp_route_fkey">
 			<column name="routeId">
 				<comment>Route Reference</comment>
 			</column>
 		</many-to-one>
 		<bag inverse="true" lazy="true" name="vehicleJourneys">
-			<key column="journeyPatternId" />
+			<key column="journeyPatternId" foreign-key="vj_jp_fkey"/>
 			<one-to-many class="VehicleJourney" />
 		</bag>
 	</class>

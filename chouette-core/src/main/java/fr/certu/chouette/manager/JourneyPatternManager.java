@@ -9,10 +9,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.core.CoreException;
+import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -160,4 +163,25 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 
 		}
 	}
+	
+	@Override
+	public int removeAll(User user, Filter filter) throws ChouetteException 
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		if (filter.getType().equals(Filter.Type.EQUALS))
+		{
+			INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
+	        Filter dependentFilter = Filter.getNewEqualsFilter("journeyPattern."+filter.getAttribute(), filter.getFirstValue());
+	        vjManager.removeAll(user, dependentFilter);
+		}
+		else
+		{
+			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"unvalid filter");
+		}
+		int ret =  getDao().removeAll(filter);
+		logger.debug(""+ret+" journeyPatterns deleted");
+		return ret;
+		
+	}
+
 }
