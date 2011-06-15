@@ -60,6 +60,7 @@
 				fax = ?,
 				email = ?,
 				registrationnumber = ?
+				WHERE objectid IN (_OBJECTIDS_)
 		</value>
 		</property>
 		<property name="sqlDelete">

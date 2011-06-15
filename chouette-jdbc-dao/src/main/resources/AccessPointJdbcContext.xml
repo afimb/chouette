@@ -80,6 +80,7 @@
 				liftavailability = ?,
 				mobilityrestrictedsuitability = ? ,
 				stairsavailability =?
+				WHERE objectid IN (_OBJECTIDS_)
 		</value>
 		</property>
 	</bean>

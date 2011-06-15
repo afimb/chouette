@@ -31,7 +31,8 @@
 				COMMENT,
 				groupoflineid,
 				mobilityrestrictedsuitable)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?, ?, ?, ?, ?,
+				?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -42,7 +43,8 @@
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
 				SELECT id,objectid FROM ${database.schema}.LINE WHERE
-				objectid IN (_OBJECTIDS_)
+				objectid
+				IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
@@ -50,7 +52,8 @@
 				UPDATE ${database.schema}.LINE
 				SET
 				ptnetworkid = ?,
-				companyid = ?,
+				companyid =
+				?,
 				objectid = ?,
 				objectversion = ?,
 				creationtime = ?,
@@ -63,7 +66,8 @@
 				COMMENT = ?,
 				groupoflineid = ?,
 				mobilityrestrictedsuitable = ?
-		</value>
+				WHERE objectid IN (_OBJECTIDS_)
+			</value>
 		</property>
 	</bean>
 </beans>	

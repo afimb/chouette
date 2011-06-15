@@ -8,48 +8,59 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="groupOfLineJdbcDao" class="fr.certu.chouette.jdbc.dao.GroupOfLineJdbcDao">
+	<bean id="stopPointJdbcDao" class="fr.certu.chouette.jdbc.dao.StopPointJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.GroupOfLine</value>
+			<value>SELECT * FROM ${database.schema}.StopPoint</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.GroupOfLine
+				INSERT INTO ${database.schema}.StopPoint
 				(
 				objectid,
 				objectversion,
 				creationtime,
 				creatorid,
-				name,
-				COMMENT
+				stopareaid,
+				position,
+				ismodified,
+				routeid
 				)
-				VALUES(?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.GroupOfLine WHERE objectid = ?
+				SELECT * FROM ${database.schema}.StopPoint WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.GroupOfLine WHERE
+				SELECT id,objectid FROM ${database.schema}.StopPoint WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.GroupOfLine
+				UPDATE ${database.schema}.StopPoint
 				SET
 				objectid = ?,
 				objectversion = ?,
 				creationtime = ?,
 				creatorid = ?,
-				name = ?,
-				COMMENT = ?
+				stopareaid = ?,
+				position = ?,
+				ismodified = ? ,
+				routeid = ?
 				WHERE objectid IN (_OBJECTIDS_)
 		</value>
+		</property>
+		<property name="sqlDelete">
+			<value>
+				DELETE FROM ${database.schema}.StopPoint WHERE objectid
+				IN
+				(_OBJECTIDS_)
+			</value>
 		</property>
 	</bean>
 </beans>	

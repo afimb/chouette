@@ -30,7 +30,8 @@
 				COMMENT,
 				wayback
 				)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,
+				?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -49,7 +50,8 @@
 				UPDATE ${database.schema}.Route
 				SET
 				objectid = ?,
-				objectversion = ?,
+				objectversion =
+				?,
 				creationtime = ?,
 				creatorid = ?,
 				name = ?,
@@ -60,7 +62,14 @@
 				direction = ?,
 				COMMENT = ?,
 				wayback = ?
+				WHERE objectid IN (_OBJECTIDS_)
 		</value>
+		</property>
+		<property name="sqlDelete">
+			<value>
+				DELETE FROM ${database.schema}.Route WHERE objectid
+				IN (_OBJECTIDS_)
+			</value>
 		</property>
 	</bean>
 </beans>	

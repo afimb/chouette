@@ -85,7 +85,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 */
 	protected abstract void populateStatement(PreparedStatement ps, T type) throws SQLException;
 
-	
+
 	@Override
 	public void saveOrUpdateAll(final List<T> objects)
 	{			
@@ -96,7 +96,14 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		if(!insertables.isEmpty())
 			toBatchInsert(sqlInsert, insertables);
 		if(!updatables.isEmpty())
-			toBatchUpdate(sqlUpdate, updatables);
+		{
+			if(sqlDelete != null)
+			{
+				toBatchDelete(sqlDelete, updatables);
+				toBatchInsert(sqlInsert, updatables);
+			}else
+				toBatchUpdate(sqlUpdate, updatables);		
+		}
 	}
 
 	/**
@@ -133,7 +140,11 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 */
 	protected int[] toBatchUpdate(String sql, final List<T> list)
 	{
-		int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
+		List<String> objectids = T.extractObjectIds(list);
+		String[] myArray = objectids.toArray(new String[objectids.size()]);
+		String sqlUpdate = sql.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));
+		
+		int[] rows = getJdbcTemplate().batchUpdate(sqlUpdate, new BatchPreparedStatementSetter() 
 		{			
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException 
@@ -188,6 +199,22 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			T type = map.remove(peerId.getObjectid());
 			type.setId(peerId.getId());
 		}
+		return rows;
+	}
+
+	/**
+	 * Execute a batch (multiple SQL delete) on a single JDBC Statement
+	 * @param sql
+	 * @param list of {@link NeptuneIdentifiedObject}
+	 */
+	protected int[] toBatchDelete(String sql, List<T> list)
+	{
+		List<String> objectids = T.extractObjectIds(list);
+		String[] myArray = objectids.toArray(new String[objectids.size()]);
+		String sqlDelete = sql.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));
+
+		int [] rows = getJdbcTemplate().batchUpdate(new String[]{sqlDelete});
+		
 		return rows;
 	}
 

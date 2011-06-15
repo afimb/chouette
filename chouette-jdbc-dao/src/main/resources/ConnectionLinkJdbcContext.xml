@@ -74,6 +74,7 @@
 				mobilityrestrictedtravellerduration = ?,
 				linktype = ?,
 				intuserneeds = ?
+				WHERE objectid IN (_OBJECTIDS_)
 		</value>
 		</property>
 		<property name="sqlDelete">

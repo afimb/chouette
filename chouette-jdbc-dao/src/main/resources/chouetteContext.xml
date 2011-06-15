@@ -12,11 +12,11 @@
    <import resource="JdbcDaoContext.xml"/>
 
 	<!-- injection dans les managers -->
-	<!-- <bean id="accesslinkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<bean id="accesslinkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createAccessLinkDaoInjector">
 		<property name="manager" ref="accessLinkManager" />
 		<property name="jdbcDao" ref="accessLinkJdbcDao" />
-	</bean> -->
+	</bean>
 	<bean id="accessPointJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createAccessPointDaoInjector">
 		<property name="manager" ref="accessPointManager" />
@@ -81,12 +81,14 @@
 		<property name="manager" ref="stopAreaManager" />
 		<property name="jdbcDao" ref="stopAreaJdbcDao" />
 	</bean>
-	<!--
+
 	<bean id="stopPointJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createStopPointDaoInjector">
 		<property name="manager" ref="stopPointManager" />
 		<property name="jdbcDao" ref="stopPointJdbcDao" />
 	</bean>
+	
+	<!--
 	<bean id="timeSlotJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimeSlotDaoInjector">
 		<property name="manager" ref="timeSlotManager" />
