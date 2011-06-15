@@ -18,5 +18,4 @@
 	<import resource="ConnectionLinkJdbcContext.xml" />
 	<import resource="AccessLinkJdbcContext.xml" />
 	<import resource="StopPointJdbcContext.xml" />
-
 </beans>

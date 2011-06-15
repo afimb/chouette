@@ -55,6 +55,11 @@ public class NeptuneFileReader
 	 */
 	public ChouettePTNetworkTypeType read(String fileName) 
 	{
+            return read(fileName, false);
+        }
+        
+	public ChouettePTNetworkTypeType read(String fileName, boolean validation) 
+	{
 		String content = null;
 		try 
 		{
@@ -68,7 +73,7 @@ public class NeptuneFileReader
 			throw new ExchangeRuntimeException(ExchangeExceptionCode.FILE_NOT_FOUND, e, fileName);
 		}
 		
-		ChouettePTNetworkTypeType chouettePTNetworkType = parseXML(fileName,content);
+		ChouettePTNetworkTypeType chouettePTNetworkType = parseXML(fileName,content, validation, false);
 		return chouettePTNetworkType;
 	}
 
@@ -80,6 +85,11 @@ public class NeptuneFileReader
 	 * @return Neptune model
 	 */
 	public ChouettePTNetworkTypeType read(InputStream input , String inputName) 
+	{
+            return read(input, inputName, false);
+        }
+        
+	public ChouettePTNetworkTypeType read(InputStream input , String inputName, boolean validation) 
 	{
 		String content = null;
 		try 
@@ -103,7 +113,7 @@ public class NeptuneFileReader
 			throw new ExchangeRuntimeException(ExchangeExceptionCode.FILE_NOT_FOUND, e, inputName);
 		}
 		
-		ChouettePTNetworkTypeType chouettePTNetworkType = parseXML(inputName, content);
+		ChouettePTNetworkTypeType chouettePTNetworkType = parseXML(inputName, content, validation, true);
 		return chouettePTNetworkType;
 	}
 
@@ -115,15 +125,15 @@ public class NeptuneFileReader
 	 * @return Neptune model
 	 */
 
-	private ChouettePTNetworkTypeType parseXML(String contentName, String content) 
+	private ChouettePTNetworkTypeType parseXML(String contentName, String content, boolean validation, boolean isZipEntry) 
 	{
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
 		try 
 		{
 			logger.debug("UNMARSHALING content of "+contentName);
 			Unmarshaller anUnmarshaller = new Unmarshaller(ChouettePTNetwork.class);
-			anUnmarshaller.setIgnoreExtraElements(true);
-			anUnmarshaller.setValidation(false);
+			anUnmarshaller.setIgnoreExtraElements(false);
+			anUnmarshaller.setValidation(validation);
 			chouettePTNetworkType = (ChouettePTNetworkTypeType)anUnmarshaller.unmarshal(new StringReader(content));
 			logger.debug("END OF UNMARSHALING content of "+contentName);
 		}
@@ -144,12 +154,23 @@ public class NeptuneFileReader
 		{
 			if ((e instanceof MarshalException) && (e.getCause() != null) && (e.getCause() instanceof SAXException)) 
 			{
-				try 
-				{
+                            File file = null;
+                            try {
+                                if (isZipEntry) {
+                                    file = new File(contentName);
+                                    java.io.FileWriter fw = new java.io.FileWriter(file);
+                                    fw.write(content);
+                                    fw.flush();
+                                    fw.close();
+                                }
 					test_xml(contentName);
+                                        if (file !=null)
+                                            file.delete();
 				}
 				catch (SAXParseException e1) 
 				{
+                                    if (file !=null)
+                                        file.delete();
 					String msg1 = e1.getMessage() + " AT LINE " +e1.getLineNumber()+ " COLUMN "+ e1.getColumnNumber();
 					logger.error("SAXParseException "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
@@ -157,6 +178,8 @@ public class NeptuneFileReader
 				}
 				catch (Exception e1)
 				{
+                                    if (file !=null)
+                                        file.delete();
 					String msg1 = e1.getMessage();
 					logger.error("Exception "+msg1);
 					LoggingManager.log(logger, msg1, Level.ERROR);
@@ -180,7 +203,7 @@ public class NeptuneFileReader
 			}
 			logger.error("MarshalException "+mesg);
 			LoggingManager.log(logger, mesg, Level.ERROR);
-			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_XML_FILE, mesg);
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE, mesg);
 
 		}
 		return chouettePTNetworkType;
