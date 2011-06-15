@@ -59,7 +59,6 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
             //Test 2.3.1
             if (containedStopIds != null && !containedStopIds.isEmpty()) {
                 ChouetteAreaEnum areaType = stopArea.getAreaType();
-
                 if (areaType.equals(ChouetteAreaEnum.BOARDINGPOSITION)
                         || areaType.equals(ChouetteAreaEnum.QUAY)) {
                     List<String> stopPointIds = StopArea.extractObjectIds(stopArea.getContainedStopPoints());
@@ -85,6 +84,8 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
                         }
                     }
                 }
+            } else {
+                report2_3.updateStatus(Report.STATE.UNCHECK);
             }
             List<RestrictionConstraint> constraints = stopArea.getRestrictionConstraints();
             if (constraints != null) {

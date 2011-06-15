@@ -76,12 +76,25 @@ public class ValidationLine implements IValidationPlugin<Line> {
 		for (int i = 0; i < lines.size(); i++) {
 			Line line = lines.get(i);
 			PTNetwork network = line.getPtNetwork();
-			if (network == null) {
+                        String ptNeworkId = line.getPtNetworkIdShortcut();
+			List<String> lineEnds = line.getLineEnds();
+			List<String> stopPointIds = Line.extractObjectIds(line.getStopPointList());
+			List<String> routeIds = Line.extractObjectIds(line.getRoutes());
+                        List<GroupOfLine> groupOfLines = line.getGroupOfLines();
+			
+                        if (network == null) {
 				ReportItem failedItem = new DetailReportItem("Test2_Sheet1_fatal");
 				failedItem.setStatus(Report.STATE.FATAL);
 				failedItem.addMessageArgs(line.getObjectId());
 				report2_1_1.addItem(failedItem);
-
+                                if (ptNeworkId != null) {
+                                    ReportItem failedItem2 = new DetailReportItem("Test2_Sheet1_Step2b_error");
+                                    failedItem2.setStatus(Report.STATE.ERROR);
+                                    failedItem2.addMessageArgs(ptNeworkId, line.getName() + "(" + line.getObjectId() + ")");
+                                    report2_1_2.addItem(failedItem2);
+                                } else {
+                                    report2_1_2.updateStatus(Report.STATE.UNCHECK);
+                                }
 			} else {
 				List<String> lineIds = network.getLineIds();
 				if (lineIds != null && !lineIds.isEmpty()) {
@@ -95,23 +108,37 @@ public class ValidationLine implements IValidationPlugin<Line> {
 						report2_1_1.updateStatus(Report.STATE.OK);
 					}
 					//Test 2.1.2
-					String ptNeworkId = line.getPtNetworkIdShortcut();
 					if (ptNeworkId != null) {
 						if (!ptNeworkId.equals(network.getObjectId())) {
-							ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step2_error");
+							ReportItem failedItem = new DetailReportItem("Test2_Sheet1_Step2a_error");
 							failedItem.setStatus(Report.STATE.ERROR);
-							failedItem.addMessageArgs(network.getName() + "(" + network.getObjectId() + ")", line.getName() + "(" + line.getObjectId() + ")");
+							failedItem.addMessageArgs(network.getName() + "(" + network.getObjectId() + ")", line.getName() + "(" + line.getObjectId() + ")", ptNeworkId);
 							report2_1_2.addItem(failedItem);
 						} else {
 							report2_1_2.updateStatus(Report.STATE.OK);
 						}
-					}
-				}
+					} else {
+                                            report2_1_2.updateStatus(Report.STATE.UNCHECK);
+                                        }
+				} else {
+                                    report2_1_1.updateStatus(Report.STATE.UNCHECK);
+                                }                                
 			}
+                        
+                        //Test 2.2.1
+                        for (GroupOfLine groupOfLine : groupOfLines) {
+                            List<String> lineIds = groupOfLine.getLineIds();
+                            if (lineIds == null || lineIds.isEmpty()) {
+                                report2_2_1.updateStatus(Report.STATE.UNCHECK);
+                            } else if (lineIds.contains(line.getObjectId())) {
+                                report2_2_1.updateStatus(Report.STATE.OK);
+                            } else {
+                                ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error", Report.STATE.ERROR);
+                                report2_2_1.addItem(detailReportItem);
+                            }
+                        }
 
 			//Test 2.6.1
-			List<String> lineEnds = line.getLineEnds();
-			List<String> stopPointIds = Line.extractObjectIds(line.getStopPointList());
 			if (lineEnds != null) {
 				if (!stopPointIds.containsAll(lineEnds)) {
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet6_Step1_error", Report.STATE.ERROR);
@@ -122,7 +149,6 @@ public class ValidationLine implements IValidationPlugin<Line> {
 			}
 
 			//Test 2.7
-			List<String> routeIds = Line.extractObjectIds(line.getRoutes());
 			//if (!line.getRouteIds().containsAll(routeIds)) {
 			if (routeIds != null && routeIds.size() > 0) {
 				if (!routeIds.containsAll(line.getRouteIds())) {
@@ -165,18 +191,6 @@ public class ValidationLine implements IValidationPlugin<Line> {
 				}
 				if (!propertyIsError) {
 					report2_15_2.updateStatus(Report.STATE.OK);                    
-				}
-
-				//Test 2.2.1
-				for (GroupOfLine groupOfLine : importedItems.getGroupOfLines()) {
-					if (groupOfLine.getObjectId().equals(line.getGroupOfLine().getObjectId())) {
-						if (!groupOfLine.getLineIds().contains(line.getObjectId())) {
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error", Report.STATE.ERROR);
-							report2_2_1.addItem(detailReportItem);
-						} else {
-							report2_2_1.updateStatus(Report.STATE.OK);
-						}
-					}
 				}
 
 				//Test 2.6.2

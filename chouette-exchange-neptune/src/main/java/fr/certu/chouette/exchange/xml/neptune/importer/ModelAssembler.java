@@ -150,6 +150,7 @@ public class ModelAssembler
 		{
 			line.setCompany(companies.get(0));
 		}
+                line.setCompanies(companies);
 
 		line.setPtNetwork(ptNetwork);
 		//line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
@@ -176,6 +177,7 @@ public class ModelAssembler
 		line.setImportedItems(item);
 		if(!groupOfLines.isEmpty())
 			line.setGroupOfLine(groupOfLines.get(0));
+                line.setGroupOfLines(groupOfLines);
 
 		for (Facility facility : facilities)
 		{
