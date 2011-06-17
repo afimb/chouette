@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
@@ -32,16 +31,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		return stopAreas;
 	}
 
-	@Override
-	public StopArea getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		StopArea stopArea = (StopArea)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(StopArea.class));
-		return stopArea;
-	}
-
+	
 	@Override
 	protected void populateStatement(PreparedStatement ps, StopArea stopArea)
 	throws SQLException {

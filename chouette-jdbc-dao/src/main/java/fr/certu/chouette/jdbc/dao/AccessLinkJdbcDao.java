@@ -30,16 +30,6 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 	}
 
 	@Override
-	public AccessLink getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		AccessLink accessLink = (AccessLink)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(AccessLink.class));
-		return accessLink;
-	}
-
-	@Override
 	protected void populateStatement(PreparedStatement ps, AccessLink accessLink)
 	throws SQLException {
 		ps.setString(1, accessLink.getObjectId());

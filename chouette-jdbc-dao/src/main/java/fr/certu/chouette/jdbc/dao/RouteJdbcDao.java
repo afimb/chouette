@@ -28,17 +28,6 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		return routes;
 	}
 
-
-	@Override
-	public Route getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		Route route = (Route)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(Route.class));
-		return route;
-	}
-
 	@Override
 	protected void populateStatement(PreparedStatement ps, Route route)
 	throws SQLException {

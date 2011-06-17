@@ -29,16 +29,6 @@ public class GroupOfLineJdbcDao extends AbstractJdbcDao<GroupOfLine>
 	}
 
 	@Override
-	public GroupOfLine getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		GroupOfLine groupOfLine = (GroupOfLine)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(GroupOfLine.class));
-		return groupOfLine;
-	}
-
-	@Override
 	protected void populateStatement(PreparedStatement ps, GroupOfLine groupOfLine)
 	throws SQLException {
 		ps.setString(1, groupOfLine.getObjectId());

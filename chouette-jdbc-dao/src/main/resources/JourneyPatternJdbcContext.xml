@@ -8,66 +8,47 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="lineJdbcDao" class="fr.certu.chouette.jdbc.dao.LineJdbcDao">
+	<bean id="journeyPatternJdbcDao" class="fr.certu.chouette.jdbc.dao.JourneyPatternJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.LINE</value>
+			<value>SELECT * FROM ${database.schema}.JourneyPattern</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.LINE
+				INSERT INTO ${database.schema}.JourneyPattern
 				(
-				ptnetworkid,
-				companyid,
 				objectid,
 				objectversion,
 				creationtime,
 				creatorid,
 				name,
-				NUMBER,
-				publishedname,
-				transportmodename,
-				registrationnumber,
 				COMMENT,
-				groupoflineid,
-				mobilityrestrictedsuitable)
-				VALUES(?, ?, ?, ?, ?, ?, ?,
-				?, ?, ?, ?, ?, ?, ?)
+				registrationnumber,
+				publishedname,
+				routeid
+				)
+				VALUES(?, ?, ?, ?, ?, ? ,? , ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.LINE WHERE objectid = ?
+				SELECT * FROM ${database.schema}.AccessPoint WHERE objectid =
+				?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.LINE WHERE
-				objectid
-				IN (_OBJECTIDS_)
+				SELECT id,objectid FROM ${database.schema}.JourneyPattern
+				WHERE
+				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<!-- <property name="sqlUpdate">
+		<property name="sqlDelete">
 			<value>
-				UPDATE ${database.schema}.LINE
-				SET
-				ptnetworkid = ?,
-				companyid =
-				?,
-				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				name = ?,
-				NUMBER = ?,
-				publishedname = ?,
-				transportmodename = ?,
-				registrationnumber = ?,
-				COMMENT = ?,
-				groupoflineid = ?,
-				mobilityrestrictedsuitable = ?
-				WHERE objectid IN (_OBJECTIDS_)
+				DELETE FROM ${database.schema}.Route WHERE objectid
+				IN
+				(_OBJECTIDS_)
 			</value>
-		</property> -->
+		</property>
 	</bean>
 </beans>	

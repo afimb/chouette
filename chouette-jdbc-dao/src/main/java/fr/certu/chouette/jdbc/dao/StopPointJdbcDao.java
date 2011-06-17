@@ -30,16 +30,6 @@ public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 	}
 
 	@Override
-	public StopPoint getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		StopPoint stopPoint = (StopPoint)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(StopPoint.class));
-		return stopPoint;
-	}
-
-	@Override
 	protected void populateStatement(PreparedStatement ps, StopPoint stopPoint)
 	throws SQLException {
 		ps.setString(1, stopPoint.getObjectId());
@@ -56,5 +46,6 @@ public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 			stopAreaId = stopArea.getId();
 		ps.setLong(5, stopAreaId);
 		ps.setInt(6, stopPoint.getPosition());
+		//ps.setBoolean(7, stopPoint.)
 	}
 }

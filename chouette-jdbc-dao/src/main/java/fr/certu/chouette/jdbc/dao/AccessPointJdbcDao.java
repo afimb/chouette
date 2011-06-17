@@ -32,16 +32,6 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 	}
 
 	@Override
-	public AccessPoint getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		AccessPoint accessPoint = (AccessPoint)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(AccessPoint.class));
-		return accessPoint;
-	}
-
-	@Override
 	protected void populateStatement(PreparedStatement ps, AccessPoint accessPoint)
 	throws SQLException {
 		ps.setString(1, accessPoint.getObjectId());
