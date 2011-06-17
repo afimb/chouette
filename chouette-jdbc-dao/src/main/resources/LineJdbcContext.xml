@@ -47,7 +47,7 @@
 				IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<!-- <property name="sqlUpdate">
+		<property name="sqlUpdate">
 			<value>
 				UPDATE ${database.schema}.LINE
 				SET
@@ -68,6 +68,6 @@
 				mobilityrestrictedsuitable = ?
 				WHERE objectid IN (_OBJECTIDS_)
 			</value>
-		</property> -->
+		</property>
 	</bean>
 </beans>	
