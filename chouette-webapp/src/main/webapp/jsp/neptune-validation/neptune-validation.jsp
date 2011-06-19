@@ -8,10 +8,10 @@
 	  	<div class="neptune-panel">
 		   <s:text name="fieldset.legend.import" />
 		   <s:file name="file" label="%{getText('action.browse')}" />
-                   
+                   <!--
 		   <s:checkbox name="validate">Valider</s:checkbox>
 		   <s:checkbox name="save">Sauvegarder</s:checkbox>
-                   
+                   -->
 		   <s:submit action="validation" name="validation" value="%{getText('neptune.field.validation.sumit')}"/>
 		</div>
 		<b><s:label value="%{report.getLocalizedMessage(getLocale())}"/></b>

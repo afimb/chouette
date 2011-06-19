@@ -64,7 +64,6 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
                     List<String> stopPointIds = StopArea.extractObjectIds(stopArea.getContainedStopPoints());
 
                     if (stopPointIds != null) {
-                        //if(!containedStopIds.containsAll(stopPointIds)){
                         if (!stopPointIds.containsAll(containedStopIds)) {
                             ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR);
                             report2_3.addItem(detailReportItem);
@@ -75,7 +74,6 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
                 } else {
                     List<String> containedAreas = StopArea.extractObjectIds(stopArea.getContainedStopAreas());
                     if (containedAreas != null) {
-                        //if(!containedStopIds.containsAll(containedAreas)){
                         if (!containedAreas.containsAll(containedStopIds)) {
                             ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR);
                             report2_3.addItem(detailReportItem);
@@ -87,6 +85,7 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
             } else {
                 report2_3.updateStatus(Report.STATE.UNCHECK);
             }
+            
             List<RestrictionConstraint> constraints = stopArea.getRestrictionConstraints();
             if (constraints != null) {
                 for (RestrictionConstraint restrictionConstraint : constraints) {

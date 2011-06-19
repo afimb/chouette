@@ -51,75 +51,24 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 		ReportItem sheet3_11 = new SheetReportItem("Test3_Sheet11", 11);
 
 		SheetReportItem report2_8_1 = new SheetReportItem("Test2_Sheet8_Step1", 1);
-		SheetReportItem report2_8_2 = new SheetReportItem("Test2_Sheet8_Step2", 2);
-		SheetReportItem report2_8_3 = new SheetReportItem("Test2_Sheet8_Step3", 3);
+		//SheetReportItem report2_8_3 = new SheetReportItem("Test2_Sheet8_Step3", 3);
 		SheetReportItem report2_9_1 = new SheetReportItem("Test2_Sheet9_Step1", 1);
 		SheetReportItem report3_11 = new SheetReportItem("Test3_Sheet11_Step1", 1);
 
 		for (Route route : routes) {
-			if (route.getJourneyPatterns() != null) {
+                        if (route.getJourneyPatterns() == null) {
+                            report2_8_1.updateStatus(Report.STATE.UNCHECK);
+                        } else {
 				List<String> journeyPatternIds = Route.extractObjectIds(route.getJourneyPatterns());
 				//Test 2.8.1
-				if (journeyPatternIds != null) {
-					//if(!route.getJourneyPatternIds().containsAll(journeyPatternIds)){
-					if (!journeyPatternIds.containsAll(route.getJourneyPatternIds())) {
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", Report.STATE.ERROR);
-						report2_8_1.addItem(detailReportItem);
-					} else {
-						report2_8_1.updateStatus(Report.STATE.OK);
-					}
-				}
-
-				//Test 2.8.2
-				for (JourneyPattern journeyPattern : route.getJourneyPatterns()) {
-					String routeObjectId = route.getObjectId();
-					if (!journeyPattern.getRouteId().equals(routeObjectId)) {
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step2_error", Report.STATE.ERROR);
-						report2_8_2.addItem(detailReportItem);
-					} else {
-						report2_8_2.updateStatus(Report.STATE.OK);
-					}
-					//Test 2.8.3 a
-					for (StopPoint stopPoint : journeyPattern.getStopPoints()) {
-						if (!journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())) {
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_a_error", Report.STATE.ERROR, stopPoint.getName() + "(" + stopPoint.getObjectId() + ")");
-							report2_8_2.addItem(detailReportItem);
-						} else {
-							report2_8_2.updateStatus(Report.STATE.OK);
-						}
-						//Test 2.8.3 b
-						boolean exists = false;
-						List<PTLink> ptLinks = route.getPtLinks();
-						if (ptLinks != null)
-						{
-							for (int i = 0; i < ptLinks.size(); i++) {
-								PTLink ptLink = ptLinks.get(i);
-								if (stopPoint.getObjectId().equals(ptLink.getStartOfLinkId()) || stopPoint.getObjectId().equals(ptLink.getEndOfLinkId())) {
-									exists = true;
-								}
-								//Test 2.8.3 c
-								if (!route.getPtLinkIds().contains(ptLink.getObjectId())) {
-									ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_c_error", Report.STATE.ERROR, ptLink.getName() + "(" + ptLink.getObjectId() + ")");
-									report2_8_3.addItem(detailReportItem);
-								} else {
-									report2_8_3.updateStatus(Report.STATE.OK);
-								}
-							}
-						}
-						if (!exists) {
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_b_error", Report.STATE.ERROR, stopPoint.getName() + "(" + stopPoint.getObjectId() + ")");
-							report2_8_3.addItem(detailReportItem);
-						} else {
-							report2_8_3.updateStatus(Report.STATE.OK);
-						}
-
-					}
-					//Test 2.8.3 d
-					if (!route.getObjectId().equals(journeyPattern.getRouteId())) {
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step3_d_error", Report.STATE.ERROR, route.getName() + "(" + route.getObjectId() + ")");
-						report2_8_3.addItem(detailReportItem);
-					}
-				}
+                                if (journeyPatternIds == null)
+                                    journeyPatternIds = new ArrayList<String>();
+                                if (!journeyPatternIds.containsAll(route.getJourneyPatternIds())) {
+                                    ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step1_error", Report.STATE.ERROR);
+                                    report2_8_1.addItem(detailReportItem);
+                                } else {
+                                    report2_8_1.updateStatus(Report.STATE.OK);
+                                }
 			}
 
 			//Test 2.9.1
@@ -174,14 +123,12 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 		}
 
 		report2_8_1.computeDetailItemCount();
-		report2_8_2.computeDetailItemCount();
-		report2_8_3.computeDetailItemCount();
+		//report2_8_3.computeDetailItemCount();
 		report2_9_1.computeDetailItemCount();
 		report3_11.computeDetailItemCount();
 
 		sheet8.addItem(report2_8_1);
-		sheet8.addItem(report2_8_2);
-		sheet8.addItem(report2_8_3);
+		//sheet8.addItem(report2_8_3);
 		sheet9.addItem(report2_9_1);
 		sheet3_11.addItem(report3_11);
 

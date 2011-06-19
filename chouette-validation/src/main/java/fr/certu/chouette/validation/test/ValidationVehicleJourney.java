@@ -70,6 +70,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
+		ReportItem sheet5 = new SheetReportItem("Test2_Sheet5",5);
 		ReportItem sheet2_17 = new SheetReportItem("Test2_Sheet17",17);
 		ReportItem sheet2_18 = new SheetReportItem("Test2_Sheet18",18);
 		ReportItem sheet2_19 = new SheetReportItem("Test2_Sheet19",19);
@@ -83,6 +84,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		ReportItem sheet3_15 = new SheetReportItem("Test3_Sheet15",15);
 		ReportItem sheet3_16 = new SheetReportItem("Test3_Sheet16",16);
 
+		SheetReportItem reportItem2 = new SheetReportItem("Test2_Sheet5_Step2",2);
 		SheetReportItem report2_17_1 = new SheetReportItem("Test2_Sheet17_Step1",1);		
 		SheetReportItem report2_18_1 = new SheetReportItem("Test2_Sheet18_Step1",1);
 		SheetReportItem report2_18_2 = new SheetReportItem("Test2_Sheet18_Step2",2);		
@@ -115,6 +117,15 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		if(vehicleJourneys != null){
 			for (int i=0; i<vehicleJourneys.size();i++) {
 				VehicleJourney vehicleJourney = vehicleJourneys.get(i);
+                                
+                                //Test 2.5.2
+                                if (vehicleJourney.getTimetables() == null || vehicleJourney.getTimetables().isEmpty()) {
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",Report.STATE.ERROR);
+					reportItem2.addItem(detailReportItem);
+                                } else {
+					reportItem2.updateStatus(Report.STATE.OK);	
+                                }
+                            
 				String key = vehicleJourney.getRouteId();
 				Set<VehicleJourney> values = map.get(key); 
 				if(values != null && !values.isEmpty()){
@@ -382,6 +393,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 			}
 		}
 
+		reportItem2.computeDetailItemCount();
 		report2_17_1.computeDetailItemCount();
 		report2_18_1.computeDetailItemCount();
 		report2_18_2.computeDetailItemCount();
@@ -398,6 +410,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		report3_16_2.computeDetailItemCount();
 		report3_16_3.computeDetailItemCount();
 
+		sheet5.addItem(reportItem2);
 		sheet2_17.addItem(report2_17_1);
 		sheet2_18.addItem(report2_18_1);
 		sheet2_18.addItem(report2_18_2);
@@ -414,6 +427,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		sheet3_16.addItem(report3_16_2);
 		sheet3_16.addItem(report3_16_3);
 
+		category2.addItem(sheet5);
 		category2.addItem(sheet2_17);
 		category2.addItem(sheet2_18);
 		category2.addItem(sheet2_19);
