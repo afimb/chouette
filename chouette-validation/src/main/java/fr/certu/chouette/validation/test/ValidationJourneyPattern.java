@@ -39,10 +39,12 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
     private List<ValidationClassReportItem> validate(List<JourneyPattern> journeyPatterns) {
 
         ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
-
+        
+        ReportItem sheet8 = new SheetReportItem("Test2_Sheet8", 8);
         ReportItem sheet15 = new SheetReportItem("Test2_Sheet15", 15);
         ReportItem sheet16 = new SheetReportItem("Test2_Sheet16", 16);
-
+        
+        SheetReportItem report2_8_2 = new SheetReportItem("Test2_Sheet8_Step2", 2);
         SheetReportItem report2_15_1 = new SheetReportItem("Test2_Sheet15_Step1", 1);
         SheetReportItem report2_15_2 = new SheetReportItem("Test2_Sheet15_Step2", 2);
 
@@ -52,6 +54,15 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
         if (journeyPatterns != null) {
             for (JourneyPattern journeyPattern : journeyPatterns) {
                 List<String> stopPointIds = JourneyPattern.extractObjectIds(journeyPattern.getStopPoints());
+                
+                //Test 2.8.2
+                if (journeyPattern.getRoute() == null) {
+                    ReportItem detailReportItem = new DetailReportItem("Test2_Sheet8_Step2_error", Report.STATE.ERROR);
+                    report2_8_2.addItem(detailReportItem);
+                } else {
+                    report2_8_2.updateStatus(Report.STATE.OK);
+                }
+                
                 //Test 2.15.1
                 if (journeyPattern.getStopPointIds() == null || !journeyPattern.getStopPointIds().containsAll(stopPointIds)) {
                     ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step1_error", Report.STATE.ERROR, journeyPattern.getName() + "(" + journeyPattern.getObjectId() + ")");
@@ -72,14 +83,17 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
                 }
             }
         }
+        report2_8_2.computeDetailItemCount();
         report2_15_1.computeDetailItemCount();
         report2_15_2.computeDetailItemCount();
         report2_16_1.computeDetailItemCount();
-
+        
+        sheet8.addItem(report2_8_2);
         sheet15.addItem(report2_15_1);
         sheet15.addItem(report2_15_2);
         sheet16.addItem(report2_16_1);
 
+        category2.addItem(sheet8);
         category2.addItem(sheet15);
         category2.addItem(sheet16);
         result.add(category2);

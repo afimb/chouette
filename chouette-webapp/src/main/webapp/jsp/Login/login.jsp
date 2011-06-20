@@ -48,7 +48,7 @@
                 <%--Neptune validation --%>
                 <br/><br/>
                 <a href="<%=request.getContextPath()%>/neptune-validation/execute.action" style="font-size:24px;">
-                    <b>Validation Neptune</b></a>
+                    <b>Validation Neptune(&#x2646;)</b></a>
 
                 <div id="login">
                     <form action="j_security_check" method="post">

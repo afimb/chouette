@@ -8,47 +8,40 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="groupOfLineJdbcDao" class="fr.certu.chouette.jdbc.dao.GroupOfLineJdbcDao">
+	<bean id="restrictionConstraintJdbcDao" class="fr.certu.chouette.jdbc.dao.RestrictionConstraintJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.GroupOfLine</value>
+			<value>SELECT * FROM ${database.schema}.RoutingConstraint</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.GroupOfLine
+				INSERT INTO ${database.schema}.RoutingConstraint
 				(
-				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
 				name,
-				COMMENT
+				objectid,
+				lineid
 				)
-				VALUES(?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.GroupOfLine WHERE objectid = ?
+				SELECT * FROM ${database.schema}.RoutingConstraint WHERE
+				objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.GroupOfLine WHERE
+				SELECT id,objectid FROM ${database.schema}.RoutingConstraint
+				WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<property name="sqlUpdate">
+		<property name="sqlDelete">
 			<value>
-				UPDATE ${database.schema}.GroupOfLine
-				SET
-				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				name = ?,
-				COMMENT = ?
-				WHERE objectid IN (_OBJECTIDS_)
+				DELETE FROM ${database.schema}.RoutingConstraint WHERE objectid
+				IN
+				(_OBJECTIDS_)
 		</value>
 		</property>
 	</bean>

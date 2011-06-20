@@ -22,7 +22,7 @@
           <br />
 <%--Neptune validation --%>
 <a href="<%=request.getContextPath()%>/neptune-validation/execute.action" style="font-size:24px;">
-    <b>Validation Neptune</b></a>
+    <b>Validation Neptune(&#x2646;)</b></a>
 <br/><br/>
       <div id="menu">
 		<div>	<%-- Connection --%>

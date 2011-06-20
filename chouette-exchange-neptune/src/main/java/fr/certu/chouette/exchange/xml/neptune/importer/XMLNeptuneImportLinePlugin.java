@@ -163,7 +163,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
             return null;
         }
         List<Line> lines = new ArrayList<Line>();
-
+        boolean ofType1 = false;
+        boolean ofType2 = false;
+        boolean someOk = false;
         for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();) {
             ZipEntry entry = entries.nextElement();
             String entryName = entry.getName();
@@ -190,8 +192,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
             }
             ChouettePTNetworkTypeType rootObject = null;
             try {
-                rootObject = reader.read(stream, entryName);
+                rootObject = reader.read(stream, entryName, validate);
+                someOk = true;
                 report1_1.updateStatus(Report.STATE.OK);
+                report1_2.updateStatus(Report.STATE.OK);
             } catch (ExchangeRuntimeException e) {
                 /*ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,entryName,e.getLocalizedMessage());
                 report.addItem(item);
@@ -200,15 +204,18 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
                     ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, entryName);
                     report1_1.addItem(detailReportItem);
                     report1_1.computeDetailItemCount();
+                    ofType1 = true;
                 }
 
                 if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name())) {
                     ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR, entryName);
                     report1_2.addItem(detailReportItem);
+                    ofType2 = true;
                 }
                 if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name())) {
                     ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, entryName);
-                    report1_2.addItem(detailReportItem);
+                    report1_1.addItem(detailReportItem);
+                    ofType1 = true;
                 }
                 logger.error("zip entry " + entryName + " import failed (read XML)" + e.getLocalizedMessage());
                 continue;
@@ -236,12 +243,18 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
             }
             logger.info("zip entry imported");
         }
+        if (!ofType1 && ofType2) {
+            report1_1.updateStatus(Report.STATE.OK);
+        } else if (ofType1 && !ofType2 && !someOk) {
+            report1_2.updateStatus(Report.STATE.UNCHECK);
+        }
+        
         report1_1.computeDetailItemCount();
         report1_2.computeDetailItemCount();
         if (lines.size() == 0) {
             //report.setStatus(Report.STATE.FATAL);
-            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_fatal", Report.STATE.FATAL);
-            report1_2.addItem(detailReportItem);
+            //ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_fatal", Report.STATE.FATAL);
+            //report1_2.addItem(detailReportItem);
             logger.error("zip import failed (no valid entry)");
             return null;
         } else {
@@ -262,22 +275,47 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
         ChouettePTNetworkTypeType rootObject = null;
         NeptuneFileReader reader = new NeptuneFileReader();
         try {
-            rootObject = reader.read(filePath);
+            rootObject = reader.read(filePath, validate);
+            report1_1.updateStatus(Report.STATE.OK);
+            report1_2.updateStatus(Report.STATE.OK);
+        } catch (ExchangeRuntimeException e) {
+            if (e.getCode().equals(ExchangeExceptionCode.INVALID_XML_FILE.name())) {
+                logger.error("INVALID_XML_FILE "+filePath);
+                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, filePath);
+                report1_1.addItem(detailReportItem);
+                report1_1.computeDetailItemCount();
+                report1_2.updateStatus(Report.STATE.UNCHECK);
+            }
+            if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name())) {
+                logger.error("INVALID_NEPTUNE_FILE "+filePath);
+                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR, filePath);
+                report1_2.addItem(detailReportItem);
+                report1_1.updateStatus(Report.STATE.OK);
+            }
+            if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name())) {
+                logger.error("FILE_NOT_FOUND "+filePath);
+                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, filePath);
+                report1_1.addItem(detailReportItem);
+                report1_2.updateStatus(Report.STATE.UNCHECK);
+            }
+            logger.error("File " + filePath + " import failed (read XML) [" + e.getLocalizedMessage()+"]");
+            return null;
         } catch (Exception e) {
             /*ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
             report.addItem(item);
             report.setStatus(Report.STATE.FATAL);*/
-            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_fatal", Report.STATE.FATAL, filePath);
-            report1_1.addItem(detailReportItem);
-            report1_1.computeDetailItemCount();
-            logger.error("import failed ((read XML)) " + e.getLocalizedMessage());
+            //ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_fatal", Report.STATE.FATAL, filePath);
+            //report1_1.addItem(detailReportItem);
+            //report1_1.computeDetailItemCount();
+            //logger.error("import failed ((read XML)) " + e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
             return null;
         }
         Line line = processImport(rootObject, validate, report, filePath);
         if (line == null) {
             logger.error("import failed (build model)");
             //report.setStatus(Report.STATE.FATAL);
-            report1_2.updateStatus(Report.STATE.FATAL);
+            //report1_2.updateStatus(Report.STATE.FATAL);
         } else {
             report1_1.updateStatus(Report.STATE.OK);
         }

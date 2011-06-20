@@ -30,16 +30,6 @@ public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
 	}
 
 	@Override
-	public ConnectionLink getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		ConnectionLink connectionLink = (ConnectionLink)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(ConnectionLink.class));
-		return connectionLink;
-	}
-
-	@Override
 	protected void populateStatement(PreparedStatement ps, ConnectionLink connectionLink)
 	throws SQLException {
 		ps.setString(1, connectionLink.getObjectId());

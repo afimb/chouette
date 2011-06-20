@@ -31,6 +31,17 @@ public abstract class Report
 	public void addItem(ReportItem item)
 	{
 		if (items == null) items= new ArrayList<ReportItem>();
+                String messageKey = item.getMessageKey();
+                for (ReportItem it : items) {
+                    if (it.getMessageKey() != null && it.getMessageKey().equals(messageKey)) {
+                        if (item.getItems() != null) {
+                            for (ReportItem sub : item.getItems()) {
+                                it.addItem(sub);
+                            }
+                        }
+                        return;
+                    }
+                }
 		items.add(item);
 	}	
 	
@@ -38,7 +49,9 @@ public abstract class Report
 	{
 		if (itemsToAdd == null) return;
 		if (items == null) items= new ArrayList<ReportItem>();
-		items.addAll(itemsToAdd);
+		//items.addAll(itemsToAdd);
+                for (ReportItem it : itemsToAdd)
+                    addItem(it);
 	} 
 
 

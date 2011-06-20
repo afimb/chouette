@@ -42,35 +42,44 @@ public class ValidationTimetable implements IValidationPlugin<Timetable>{
 		
 		ReportItem sheet5 = new SheetReportItem("Test2_Sheet5",5);
 		SheetReportItem reportItem1 = new SheetReportItem("Test2_Sheet5_Step1",1);
-		SheetReportItem reportItem2 = new SheetReportItem("Test2_Sheet5_Step2",2);
+		//SheetReportItem reportItem2 = new SheetReportItem("Test2_Sheet5_Step2",2);
 		
 		for (Timetable timetable: timetables) {
 			List<String> vjIds= timetable.getVehicleJourneyIds();
 			List<String> vehicleJourneyIds = Timetable.extractObjectIds(timetable.getVehicleJourneys());
-			if(vjIds != null){
-				//Test 2.5.1
+                        //Test 2.5.1
+                        if (timetable.getVehicleJourneys() == null || timetable.getVehicleJourneys().isEmpty()) {
+                            ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR);
+                            reportItem1.addItem(detailReportItem);
+                        } else {
+                            reportItem1.updateStatus(Report.STATE.OK);
+                        }
+			/*if(vjIds != null){
 				if(!vehicleJourneyIds.containsAll(vjIds)){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR);
 					reportItem1.addItem(detailReportItem);
 				}else {
 					reportItem1.updateStatus(Report.STATE.OK);	
 				}
-			}
+			} else {
+                            ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR);
+                            reportItem1.addItem(detailReportItem);
+                        }*/
 			//Test 2.5.2
-			if(timetable.getVehicleJourneys() != null){
+			/*if(timetable.getVehicleJourneys() != null){
 				if(!vjIds.containsAll(vehicleJourneyIds)){
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",Report.STATE.ERROR);
 					reportItem2.addItem(detailReportItem);
 				}else {
 					reportItem2.updateStatus(Report.STATE.OK);	
 				}
-			}
+			}*/
 		}
 		reportItem1.computeDetailItemCount();
-		reportItem2.computeDetailItemCount();
+		//reportItem2.computeDetailItemCount();
 		
 		sheet5.addItem(reportItem1);
-		sheet5.addItem(reportItem2);
+		//sheet5.addItem(reportItem2);
 		category2.addItem(sheet5);
 		result.add(category2);
 		return result;

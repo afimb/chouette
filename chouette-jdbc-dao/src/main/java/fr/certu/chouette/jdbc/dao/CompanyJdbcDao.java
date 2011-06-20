@@ -4,8 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
 import fr.certu.chouette.model.neptune.Company;
 
 /**
@@ -16,16 +14,6 @@ import fr.certu.chouette.model.neptune.Company;
 
 public class CompanyJdbcDao extends AbstractJdbcDao<Company> 
 {
-	@Override
-	public Company getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		Company company = (Company)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(Company.class));
-		return company;
-	}
-
 	@Override
 	protected void populateStatement(PreparedStatement ps, Company company) throws SQLException 
 	{

@@ -12,11 +12,11 @@
    <import resource="JdbcDaoContext.xml"/>
 
 	<!-- injection dans les managers -->
-	<!-- <bean id="accesslinkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<bean id="accesslinkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createAccessLinkDaoInjector">
 		<property name="manager" ref="accessLinkManager" />
 		<property name="jdbcDao" ref="accessLinkJdbcDao" />
-	</bean> -->
+	</bean>
 	<bean id="accessPointJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createAccessPointDaoInjector">
 		<property name="manager" ref="accessPointManager" />
@@ -45,11 +45,11 @@
 		<property name="manager" ref="groupOfLineManager" />
 		<property name="jdbcDao" ref="groupOfLineJdbcDao" />
 	</bean>
-	<!--<bean id="journeyPatternJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<bean id="journeyPatternJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createJourneyPatternDaoInjector">
 		<property name="manager" ref="journeyPatternManager" />
 		<property name="jdbcDao" ref="journeyPatternJdbcDao" />
-	</bean> -->
+	</bean>
 	<bean id="lineJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createLineDaoInjector">
 		<property name="manager" ref="lineManager" />
@@ -65,11 +65,11 @@
 		<property name="manager" ref="networkManager" />
 		<property name="jdbcDao" ref="networkJdbcDao" />
 	</bean>
-	<!-- <bean id="restrictionConstraintJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<bean id="restrictionConstraintJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createRestrictionConstraintDaoInjector">
 		<property name="manager" ref="restrictionConstraintManager" />
 		<property name="jdbcDao" ref="restrictionConstraintJdbcDao" />
-	</bean> -->
+	</bean>
 	<bean id="routeJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createRouteDaoInjector">
 		<property name="manager" ref="routeManager" />
@@ -81,17 +81,20 @@
 		<property name="manager" ref="stopAreaManager" />
 		<property name="jdbcDao" ref="stopAreaJdbcDao" />
 	</bean>
-	<!--
+
 	<bean id="stopPointJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createStopPointDaoInjector">
 		<property name="manager" ref="stopPointManager" />
 		<property name="jdbcDao" ref="stopPointJdbcDao" />
 	</bean>
+	
+	
 	<bean id="timeSlotJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimeSlotDaoInjector">
 		<property name="manager" ref="timeSlotManager" />
 		<property name="jdbcDao" ref="timeSlotJdbcDao" />
 	</bean>
+	<!--
 	<bean id="timetableJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimetableDaoInjector">
 		<property name="manager" ref="timetableManager" />

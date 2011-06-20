@@ -105,6 +105,12 @@ public class Line extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private Company company; // FK 
 	/**
+	 * The line's companies objects <br/>
+	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private List<Company> companies; // FK 
+	/**
 	 * The line's route objects <br/>
 	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
 	 * <br/><i>readable/writable</i>
@@ -126,6 +132,11 @@ public class Line extends NeptuneIdentifiedObject
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private GroupOfLine groupOfLine;
+	/**
+	 * The optional GroupOfLines of the line
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private List<GroupOfLine> groupOfLines;
 	@Getter @Setter private Long groupOfLineId;
 
 	/**

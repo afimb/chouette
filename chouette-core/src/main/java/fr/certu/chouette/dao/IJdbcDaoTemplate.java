@@ -2,8 +2,8 @@ package fr.certu.chouette.dao;
 
 import java.util.List;
 
+import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.NeptuneObject;
-import fr.certu.chouette.model.neptune.PeerId;
 
 /**
  * 
@@ -11,7 +11,9 @@ import fr.certu.chouette.model.neptune.PeerId;
  *
  * @param <T>
  */
-public interface IJdbcDaoTemplate<T extends NeptuneObject> extends IDaoTemplate<T> 
+public interface IJdbcDaoTemplate<T extends NeptuneObject>
 {
-	List<PeerId> get(List<String> objectids);
+	 List<T> getAll();
+	 void removeAll(List<T> objects) throws  ChouetteException;
+	 void saveOrUpdateAll(List<T> objects) throws  ChouetteException;
 }

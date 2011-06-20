@@ -16,5 +16,10 @@
 	<import resource="AccessPointJdbcContext.xml" />
 	<import resource="ConnectionLinkJdbcContext.xml" />
 	<import resource="RouteJdbcContext.xml" />
-	
+	<import resource="ConnectionLinkJdbcContext.xml" />
+	<import resource="AccessLinkJdbcContext.xml" />
+	<import resource="StopPointJdbcContext.xml" />
+	<import resource="RestrictionConstraintJdbcContext.xml" />
+	<import resource="TimeSlotJdbcContext.xml" />
+	<import resource="JourneyPatternJdbcContext.xml" />
 </beans>

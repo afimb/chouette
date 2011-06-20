@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
 import fr.certu.chouette.model.neptune.PTNetwork;
 
 /**
@@ -17,16 +15,6 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 
 public class PTNetworkJdbcDao extends AbstractJdbcDao<PTNetwork> 
 {
-	@Override
-	public PTNetwork getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		PTNetwork network = (PTNetwork)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(PTNetwork.class));
-		return network;
-	}
-
 	@Override
 	protected void populateStatement(PreparedStatement ps, PTNetwork network)
 	throws SQLException {

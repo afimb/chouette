@@ -29,16 +29,6 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 	}
 	
 	@Override
-	public Line getByObjectId(String objectId) 
-	{
-		String sql = sqlSelectByObjectId;		 
-		Line line = (Line)getJdbcTemplate().queryForObject(sql, 
-				new Object[] {objectId}, 
-				new BeanPropertyRowMapper(Line.class));
-		return line;
-	}
-	
-	@Override
 	protected void populateStatement(PreparedStatement ps, Line line)
 			throws SQLException {
 		Long networkId = null , companyId = null;

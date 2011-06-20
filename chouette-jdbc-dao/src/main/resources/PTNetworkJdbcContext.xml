@@ -57,6 +57,7 @@
 				sourcename = ?,
 				sourceidentifier = ?,
 				COMMENT = ?
+				WHERE objectid IN (_OBJECTIDS_)
 		</value>
 		</property>
 	</bean>
