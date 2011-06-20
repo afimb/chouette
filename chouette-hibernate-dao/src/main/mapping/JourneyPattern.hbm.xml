@@ -62,7 +62,7 @@
 				</column>
 			</key>
 			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey">
-				<column name="stopPointId">
+				<column name="stopPointId"  >
 					<comment>StopPoint Reference</comment>
 				</column>
 			</many-to-many>
@@ -73,7 +73,7 @@
 			</column>
 		</many-to-one>
 		<bag inverse="true" lazy="true" name="vehicleJourneys">
-			<key column="journeyPatternId" foreign-key="vj_jp_fkey"/>
+			<key column="journeyPatternId" foreign-key="vj_jp_fkey"  on-delete="cascade"/>
 			<one-to-many class="VehicleJourney" />
 		</bag>
 	</class>

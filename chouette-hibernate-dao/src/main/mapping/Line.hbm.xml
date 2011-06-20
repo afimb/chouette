@@ -72,23 +72,23 @@
 		
 		<!-- relations -->
 		<many-to-one name="ptNetwork" cascade="none" class="PTNetwork"
-			lazy="no-proxy" outer-join="auto">
+			lazy="no-proxy" outer-join="auto" foreign-key="line_ptnetwork_fkey">
 			<column name="PTNetworkId">
 				<comment>PTNetwork reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one name="company" cascade="none" class="Company"
-			lazy="no-proxy" outer-join="auto">
+			lazy="no-proxy" outer-join="auto" foreign-key="line_company_fkey">
 			<column name="companyId">
 				<comment>Company reference</comment>
 			</column>
 		</many-to-one>
 		<bag name="routes" lazy="true" inverse="true">
-			<key column="lineId" />
+			<key column="lineId" foreign-key="route_line_fkey" on-delete="cascade"/>
 			<one-to-many class="Route" />
 		</bag>
 		<many-to-one name="groupOfLine" class="GroupOfLine" lazy="no-proxy"
-			outer-join="auto">
+			outer-join="auto" foreign-key="line_glines_fkey">
 			<column name="groupOfLineId">
 				<comment>GroupOfLine reference</comment>
 			</column>

@@ -57,13 +57,13 @@
 
 
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="true">
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
 				</prop>
 				<!-- TODO : a passer en update avant livraison si create-drop-->
-				<prop key="hibernate.hbm2ddl.auto">create</prop> 
+				<prop key="hibernate.hbm2ddl.auto">${database.hbm2ddl.auto}</prop> 
 				<prop key="hibernate.show_sql">${database.showsql}</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.default_schema">${database.schema}</prop>

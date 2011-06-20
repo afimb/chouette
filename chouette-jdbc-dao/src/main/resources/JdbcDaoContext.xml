@@ -13,7 +13,8 @@
 	<import resource="CompanyJdbcContext.xml" />
 	<import resource="GroupOfLineJdbcContext.xml" />
 	<import resource="StopAreaJdbcContext.xml" />
-	<!-- <import resource="AccessPointJdbcContext.xml" /> -->
+	<import resource="AccessPointJdbcContext.xml" />
+	<import resource="ConnectionLinkJdbcContext.xml" />
 	<import resource="RouteJdbcContext.xml" />
 	
 </beans>
