@@ -24,4 +24,6 @@
 	<import resource="PTLinkJdbcContext.xml" />
 	<import resource="FacilityJdbcContext.xml" />
 	<import resource="VehicleJourneyJdbcContext.xml" />
+	<import resource="TimetableJdbcContext.xml" />
+	
 </beans>

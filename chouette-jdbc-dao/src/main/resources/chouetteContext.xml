@@ -93,12 +93,12 @@
 		<property name="manager" ref="timeSlotManager" />
 		<property name="jdbcDao" ref="timeSlotJdbcDao" />
 	</bean>
-	<!--
+	
 	<bean id="timetableJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimetableDaoInjector">
 		<property name="manager" ref="timetableManager" />
 		<property name="jdbcDao" ref="timetableJdbcDao" />
-	</bean>-->
+	</bean>
 	<bean id="vehicleJourneyJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createVehicleJourneyDaoInjector">
 		<property name="manager" ref="vehicleJourneyManager" />
