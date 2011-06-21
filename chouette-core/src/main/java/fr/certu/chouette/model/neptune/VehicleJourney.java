@@ -151,14 +151,17 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
 	public void addVehicleJourneyAtStop(VehicleJourneyAtStop vehicleJourneyAtStop)
 	{
-		if (vehicleJourneyAtStops== null) vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
-		vehicleJourneyAtStops.add(vehicleJourneyAtStop);
+		if (vehicleJourneyAtStops== null) 
+			vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
+		if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop)) 
+			vehicleJourneyAtStops.add(vehicleJourneyAtStop);
 	}	
 
 	public void addTimetable(Timetable timetable)
 	{
 		if (timetables== null) timetables = new ArrayList<Timetable>();
-		timetables.add(timetable);
+		if (timetable != null && !timetables.contains(timetable))
+			timetables.add(timetable);
 	}
 
 	public List<VehicleJourney> getVehicleJourneysByRoute(String routeId){

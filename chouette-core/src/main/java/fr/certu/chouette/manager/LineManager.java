@@ -432,11 +432,11 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		if (filter.getType().equals(Filter.Type.EQUALS))
 		{
-			INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
+			// INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 			INeptuneManager<RestrictionConstraint> restrictionConstraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
 	        Filter dependentFilter = Filter.getNewEqualsFilter("line."+filter.getAttribute(), filter.getFirstValue());
-	        routeManager.removeAll(user, dependentFilter);
+	        // routeManager.removeAll(user, dependentFilter);
 	        facilityManager.removeAll(user, dependentFilter);
 	        restrictionConstraintManager.removeAll(user, dependentFilter);
 		}

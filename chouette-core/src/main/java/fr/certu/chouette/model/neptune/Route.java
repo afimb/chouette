@@ -109,56 +109,56 @@ public class Route extends NeptuneIdentifiedObject
 
 	@Getter @Setter private List<StopPoint> stopPoints;
 
-//	/* (non-Javadoc)
-//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-//	 */
-//	@Override
-//	public void expand(DetailLevelEnum level)
-//	{
-//		// to avoid circular call check if level is already set according to this level
-//		if (getLevel().ordinal() >= level.ordinal()) return;
-//		super.expand(level);
-//		switch (level)
-//		{
-//		case ATTRIBUTE : 
-//			journeyPatterns = null;
-//			ptLinks = null;
-//			break;
-//		case NARROW_DEPENDENCIES : 
-//			if (getJourneyPatterns() != null)
-//			{
-//				for (JourneyPattern journeyPattern : getJourneyPatterns())
-//				{
-//					journeyPattern.expand(DetailLevelEnum.ATTRIBUTE);
-//				}
-//			}
-//			if (getPtLinks() != null)
-//			{
-//				for (PTLink ptLink : getPtLinks())
-//				{
-//					ptLink.expand(DetailLevelEnum.ATTRIBUTE);
-//				}
-//			}
-//			break;
-//		case STRUCTURAL_DEPENDENCIES : 
-//		case ALL_DEPENDENCIES :
-//			if (getJourneyPatterns() != null)
-//			{
-//				for (JourneyPattern journeyPattern : getJourneyPatterns())
-//				{
-//					journeyPattern.expand(level);
-//				}
-//			}
-//			if (getPtLinks() != null)
-//			{
-//				for (PTLink ptLink : getPtLinks())
-//				{
-//					ptLink.expand(level);
-//				}
-//			}
-//
-//		}
-//	} 
+	//	/* (non-Javadoc)
+	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	//	 */
+	//	@Override
+	//	public void expand(DetailLevelEnum level)
+	//	{
+	//		// to avoid circular call check if level is already set according to this level
+	//		if (getLevel().ordinal() >= level.ordinal()) return;
+	//		super.expand(level);
+	//		switch (level)
+	//		{
+	//		case ATTRIBUTE : 
+	//			journeyPatterns = null;
+	//			ptLinks = null;
+	//			break;
+	//		case NARROW_DEPENDENCIES : 
+	//			if (getJourneyPatterns() != null)
+	//			{
+	//				for (JourneyPattern journeyPattern : getJourneyPatterns())
+	//				{
+	//					journeyPattern.expand(DetailLevelEnum.ATTRIBUTE);
+	//				}
+	//			}
+	//			if (getPtLinks() != null)
+	//			{
+	//				for (PTLink ptLink : getPtLinks())
+	//				{
+	//					ptLink.expand(DetailLevelEnum.ATTRIBUTE);
+	//				}
+	//			}
+	//			break;
+	//		case STRUCTURAL_DEPENDENCIES : 
+	//		case ALL_DEPENDENCIES :
+	//			if (getJourneyPatterns() != null)
+	//			{
+	//				for (JourneyPattern journeyPattern : getJourneyPatterns())
+	//				{
+	//					journeyPattern.expand(level);
+	//				}
+	//			}
+	//			if (getPtLinks() != null)
+	//			{
+	//				for (PTLink ptLink : getPtLinks())
+	//				{
+	//					ptLink.expand(level);
+	//				}
+	//			}
+	//
+	//		}
+	//	} 
 
 
 	/* (non-Javadoc)
@@ -217,7 +217,11 @@ public class Route extends NeptuneIdentifiedObject
 				sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPoints");
 				for (StopPoint stopPoint : stopPoints)
 				{
-					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.toString(childIndent,childLevel));
+					if (stopPoint != null)
+						sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.toString(childIndent,childLevel));
+					else 
+						sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append("null stopPoint !!");
+
 				}
 			}
 		}
@@ -296,9 +300,10 @@ public class Route extends NeptuneIdentifiedObject
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}
 
-	public void addStopPoint(StopPoint stopPoint){
+	public void addStopPoint(StopPoint stopPoint)
+	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
-		stopPoints.add(stopPoint);
+		if (stopPoint != null && !stopPoints.contains(stopPoint)) stopPoints.add(stopPoint);
 	}
 
 	@Override
