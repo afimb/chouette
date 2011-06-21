@@ -35,5 +35,7 @@ public class PTNetworkJdbcDao extends AbstractJdbcDao<PTNetwork>
 		ps.setString(9, network.getSourceName());
 		ps.setString(10, network.getSourceIdentifier());
 		ps.setString(11, network.getComment());
+		if(sqlUpdate != null)
+			ps.setString(12, network.getObjectId());
 	}
 }

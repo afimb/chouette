@@ -63,8 +63,8 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	{
 		if(sqlSelectByObjectIdWithInClause == null)
 			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
-					"implements sql request statement in xml file :"+objectids.get(0).split(":")[1]+"JdbcDaoConext.xml");
-		
+					"implements sqlSelectByObjectIdWithInClause request statement in xml file :"+objectids.get(0).split(":")[1]+"JdbcDaoConext.xml");
+
 		String[] myArray = objectids.toArray(new String[objectids.size()]);
 		String sql = sqlSelectByObjectIdWithInClause.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));
 
@@ -83,7 +83,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 
 	/**
 	 * An abstract method wich should be implemented in sub classes <br />
-	 * It set the {@link PreparedStatement} by the {@link NeptuneIdentifiedObject}
+	 * It populate the {@link PreparedStatement} by the {@link NeptuneIdentifiedObject}
 	 * @param ps
 	 * @param type
 	 * @throws SQLException
@@ -149,13 +149,9 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	{
 		if(sql == null)
 			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
-					"implements sql request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
-		
-		List<String> objectids = T.extractObjectIds(list);
-		String[] myArray = objectids.toArray(new String[objectids.size()]);
-		String sqlUpdate = sql.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));
+					"implements sqlUpdate request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 
-		int[] rows = getJdbcTemplate().batchUpdate(sqlUpdate, new BatchPreparedStatementSetter() 
+		int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
 		{			
 			@Override
 			public void setValues(PreparedStatement ps, int i) throws SQLException 
@@ -163,6 +159,8 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 				T type = list.get(i);
 				if(type != null)
 					populateStatement(ps, type);	
+				int rank = ps.getParameterMetaData().getParameterCount();
+				ps.setString(rank, type.getObjectId());
 			}
 			@Override
 			public int getBatchSize() 
@@ -184,8 +182,8 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	{
 		if(sql == null)
 			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
-					"implements sql request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
-		
+					"implements sqlInsert request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
+
 		int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
 		{			
 			@Override
@@ -228,8 +226,8 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	{
 		if(sql == null)
 			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
-					"implements sql request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
-		
+					"implements sqlDelete request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
+
 		List<String> objectids = T.extractObjectIds(list);
 		String[] myArray = objectids.toArray(new String[objectids.size()]);
 		String sqlDelete = sql.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));

@@ -8,14 +8,14 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="accessPointJdbcDao" class="fr.certu.chouette.jdbc.dao.AccessPointJdbcDao">
+	<bean id="facilityJdbcDao" class="fr.certu.chouette.jdbc.dao.FacilityJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.AccessPoint</value>
+			<value>SELECT * FROM ${database.schema}.Facility</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.AccessPoint
+				INSERT INTO ${database.schema}.Facility
 				(
 				objectid,
 				objectversion,
@@ -23,64 +23,42 @@
 				creatorid,
 				name,
 				COMMENT,
-				countrycode,
-				streetname,
+				stopareaid,
+				lineid,
+				connectionlinkid,
+				stoppointid,
+				description,
+				freeaccess,
 				longitude,
 				latitude,
 				longlattype,
+				countrycode,
+				streetname,
 				x,
 				y,
 				projectiontype,
-				containedin,
-				openningtime,
-				closingtime,
-				type,
-				liftavailability,
-				mobilityrestrictedsuitability,
-				stairsavailability
+				containedin
 				)
-				VALUES(?, ?, ?, ?,
-				?, ? ,? ,?,?,?,?, ?, ?, ?, ?, ? ,? ,?,?,?,?)
+				VALUES(?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?
+				,?, ?, ?, ?, ?, ?,? ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.AccessPoint WHERE objectid =
-				?
+				SELECT * FROM ${database.schema}.Facility WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.AccessPoint WHERE
+				SELECT id,objectid FROM ${database.schema}.Facility WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<property name="sqlUpdate">
+		<property name="sqlDelete">
 			<value>
-				UPDATE ${database.schema}.AccessPoint
-				SET
-				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				name = ?,
-				COMMENT = ?,
-				countrycode = ?,
-				streetname = ?,
-				longitude = ?,
-				latitude = ?,
-				longlattype = ?,
-				x = ?,
-				y = ?,
-				projectiontype = ?,
-				containedin = ?,
-				openningtime = ?,
-				closingtime = ?,
-				type = ?,
-				liftavailability = ?,
-				mobilityrestrictedsuitability = ? ,
-				stairsavailability =?
-				WHERE objectid = ?
+				DELETE FROM ${database.schema}.Facility WHERE objectid
+				IN
+				(_OBJECTIDS_)
 		</value>
 		</property>
 	</bean>

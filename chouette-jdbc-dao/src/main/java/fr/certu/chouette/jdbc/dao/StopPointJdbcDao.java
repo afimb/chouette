@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 
@@ -46,6 +47,11 @@ public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 			stopAreaId = stopArea.getId();
 		ps.setLong(5, stopAreaId);
 		ps.setInt(6, stopPoint.getPosition());
-		//ps.setBoolean(7, stopPoint.)
+		
+		Long routeId = null;
+		Route route = stopPoint.getRoute();
+		if(route != null)
+			routeId = route.getId();
+		ps.setLong(7, routeId );
 	}
 }

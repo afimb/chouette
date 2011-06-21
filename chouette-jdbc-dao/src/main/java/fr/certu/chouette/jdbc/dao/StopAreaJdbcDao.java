@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
@@ -58,8 +59,10 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setInt(11, stopArea.getFareCode());
 		
 		AreaCentroid areaCentroid = stopArea.getAreaCentroid();
-		BigDecimal longitude = null, latitude = null ,x = null, y = null;
-		String longLatType = null , projectionType = null;
+		BigDecimal longitude = null, latitude = null ,
+					x = null, y = null;
+		String longLatType = null , projectionType = null,
+				countryCode = null, streetName = null;
 		
 		if(areaCentroid != null)
 		{
@@ -75,6 +78,13 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 				y = projectedPoint.getY();
 				projectionType = projectedPoint.getProjectionType();
 			}
+			
+			Address address = areaCentroid.getAddress();
+			if(address != null)
+			{
+				countryCode = address.getCountryCode();
+				streetName = address.getStreetName();
+			}
 		}
 		ps.setBigDecimal(12, longitude);
 		ps.setBigDecimal(13, latitude);
@@ -82,6 +92,8 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setBigDecimal(15, x);
 		ps.setBigDecimal(16, y);
 		ps.setString(17, projectionType);
-		//TODO finish implementation
+		ps.setString(18, countryCode);
+		ps.setString(19, streetName);
+	
 	}
 }

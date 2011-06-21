@@ -62,7 +62,7 @@
 				direction = ?,
 				COMMENT = ?,
 				wayback = ?
-				WHERE objectid IN (_OBJECTIDS_)
+				WHERE objectid = ?
 		</value>
 		</property>
 		<property name="sqlDelete">

@@ -8,14 +8,14 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="accessPointJdbcDao" class="fr.certu.chouette.jdbc.dao.AccessPointJdbcDao">
+	<bean id="ptLinkJdbcDao" class="fr.certu.chouette.jdbc.dao.PTLinkJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.AccessPoint</value>
+			<value>SELECT * FROM ${database.schema}.PTLink</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.AccessPoint
+				INSERT INTO ${database.schema}.PTLink
 				(
 				objectid,
 				objectversion,
@@ -23,64 +23,49 @@
 				creatorid,
 				name,
 				COMMENT,
-				countrycode,
-				streetname,
-				longitude,
-				latitude,
-				longlattype,
-				x,
-				y,
-				projectiontype,
-				containedin,
-				openningtime,
-				closingtime,
-				type,
-				liftavailability,
-				mobilityrestrictedsuitability,
-				stairsavailability
+				linkdistance,
+				startoflinkid,
+				endoflinkid,
+				routeid
 				)
-				VALUES(?, ?, ?, ?,
-				?, ? ,? ,?,?,?,?, ?, ?, ?, ?, ? ,? ,?,?,?,?)
+				VALUES(?, ?, ?, ?, ?, ? ,?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.AccessPoint WHERE objectid =
-				?
+				SELECT * FROM ${database.schema}.PTLink WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.AccessPoint WHERE
+				SELECT id,objectid FROM ${database.schema}.PTLink WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.AccessPoint
+				UPDATE ${database.schema}.PTLink
 				SET
 				objectid = ?,
-				objectversion = ?,
+				objectversion
+				= ?,
 				creationtime = ?,
 				creatorid = ?,
 				name = ?,
 				COMMENT = ?,
-				countrycode = ?,
-				streetname = ?,
-				longitude = ?,
-				latitude = ?,
-				longlattype = ?,
-				x = ?,
-				y = ?,
-				projectiontype = ?,
-				containedin = ?,
-				openningtime = ?,
-				closingtime = ?,
-				type = ?,
-				liftavailability = ?,
-				mobilityrestrictedsuitability = ? ,
-				stairsavailability =?
-				WHERE objectid = ?
+				linkdistance = ?,
+				startoflinkid = ?,
+				endoflinkid = ?,
+				routeid = ?
+				WHERE
+				objectid = ?
+		</value>
+		</property>
+		<property name="sqlDelete">
+			<value>
+				DELETE FROM ${database.schema}.PTLink WHERE objectid
+				IN
+				(_OBJECTIDS_)
 		</value>
 		</property>
 	</bean>

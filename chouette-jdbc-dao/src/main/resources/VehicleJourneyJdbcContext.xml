@@ -8,56 +8,53 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="stopPointJdbcDao" class="fr.certu.chouette.jdbc.dao.StopPointJdbcDao">
+	<bean id="vehicleJourneyJdbcDao" class="fr.certu.chouette.jdbc.dao.VehicleJourneyJdbcDao">
 		<property name="dataSource" ref="chouetteDataSource" />
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.StopPoint</value>
+			<value>SELECT * FROM ${database.schema}.VehicleJourney</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.StopPoint
+				INSERT INTO ${database.schema}.VehicleJourney
 				(
 				objectid,
 				objectversion,
 				creationtime,
 				creatorid,
-				stopareaid,
-				position,
-				routeid
+				COMMENT,
+				statusvalue,
+				transportmode,
+				publishedjourneyname,
+				publishedjourneyidentifier,
+				facility,
+				vehicletypeidentifier,
+				NUMBER,
+				routeid,
+				journeypatternid,
+				timeslotid,
+				companyid
 				)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?,
+				?,?,?,?,?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.StopPoint WHERE objectid = ?
+				SELECT * FROM ${database.schema}.VehicleJourney WHERE objectid
+				= ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.StopPoint WHERE
+				SELECT id,objectid FROM ${database.schema}.VehicleJourney
+				WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<property name="sqlUpdate">
-			<value>
-				UPDATE ${database.schema}.StopPoint
-				SET
-				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				stopareaid = ?,
-				position = ?,
-				routeid = ?
-				WHERE objectid = ?
-		</value>
-		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.StopPoint WHERE objectid
-				IN
-				(_OBJECTIDS_)
+				DELETE FROM ${database.schema}.VehicleJourney WHERE objectid
+				IN (_OBJECTIDS_)
 			</value>
 		</property>
 	</bean>

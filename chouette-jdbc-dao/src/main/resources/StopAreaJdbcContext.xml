@@ -75,7 +75,7 @@
 				projectiontype = ?,
 				countrycode = ?,
 				streetname = ?
-				WHERE objectid IN (_OBJECTIDS_)
+				WHERE objectid = ?
 		</value>
 		</property>
 	</bean>

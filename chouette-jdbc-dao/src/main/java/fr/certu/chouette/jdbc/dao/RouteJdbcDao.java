@@ -49,6 +49,5 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		ps.setString(10, route.getDirection().value());
 		ps.setString(11, route.getComment());
 		ps.setString(12, route.getWayBack());
-
 	}
 }
