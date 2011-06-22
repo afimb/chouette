@@ -102,12 +102,15 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			toBatchInsert(sqlInsert, insertables);
 		if(!updatables.isEmpty())
 		{
-			if(sqlDelete != null)
+			if(sqlUpdate != null)
+				toBatchUpdate(sqlUpdate, updatables);
+			
+			else if(sqlDelete != null)
 			{
 				toBatchDelete(sqlDelete, updatables);
 				toBatchInsert(sqlInsert, updatables);
-			}else
-				toBatchUpdate(sqlUpdate, updatables);		
+			}
+
 		}
 	}
 

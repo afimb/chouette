@@ -55,6 +55,9 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 		if(line.getGroupOfLine() != null)
 			groupOfLineId = line.getGroupOfLine().getId();
 		ps.setLong(13, groupOfLineId);
-		ps.setBoolean(14, line.getMobilityRestrictedSuitable());
+		Boolean mobilityRS = false;
+		if(line.getMobilityRestrictedSuitable() != null)
+			mobilityRS = true;		
+		ps.setBoolean(14, mobilityRS);
 	}
 }

@@ -39,14 +39,21 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		ps.setTimestamp(3, timestamp);
 		ps.setString(4, route.getCreatorId());
 		ps.setString(5, route.getName());
-		ps.setLong(6, route.getOppositeRouteId());
+		Long oppositeRouteId = new Long(0);
+		if(route.getOppositeRouteId() != null)
+			oppositeRouteId = route.getOppositeRouteId();
+		ps.setLong(6, oppositeRouteId);
 		Long lineId = null;
 		if(route.getLine() != null)
 			lineId = route.getLine().getId();
 		ps.setLong(7, lineId);
 		ps.setString(8, route.getPublishedName());
 		ps.setString(9, route.getNumber());
-		ps.setString(10, route.getDirection().value());
+		
+		String direction = null;
+		if(route.getDirection() != null)
+			direction = route.getDirection().value();
+		ps.setString(10, direction);
 		ps.setString(11, route.getComment());
 		ps.setString(12, route.getWayBack());
 	}

@@ -61,7 +61,7 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		if(projectedPoint != null)
 		{
 			x = projectedPoint.getX();
-			y= projectedPoint.getY();
+			y = projectedPoint.getY();
 			projectionType = projectedPoint.getProjectionType();
 		}
 		ps.setBigDecimal(11, x);

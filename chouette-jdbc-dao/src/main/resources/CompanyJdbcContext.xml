@@ -47,7 +47,7 @@
 			<value>
 				UPDATE ${database.schema}.COMPANY
 				SET
-				objectid = ?
+				objectid = ?,
 				objectversion = ?,
 				creationtime = ?,
 				creatorid = ?,

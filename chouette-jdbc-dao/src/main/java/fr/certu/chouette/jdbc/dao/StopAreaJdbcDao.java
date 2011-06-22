@@ -59,10 +59,14 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setInt(11, stopArea.getFareCode());
 		
 		AreaCentroid areaCentroid = stopArea.getAreaCentroid();
-		BigDecimal longitude = null, latitude = null ,
+		BigDecimal longitude = null, 
+				   latitude = null ,
 					x = null, y = null;
-		String longLatType = null , projectionType = null,
-				countryCode = null, streetName = null;
+		
+		String longLatType = null , 
+			   projectionType = null,
+				countryCode = null, 
+				streetName = null;
 		
 		if(areaCentroid != null)
 		{
