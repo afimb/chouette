@@ -24,8 +24,6 @@
 				name,
 				COMMENT,
 				linkdistance,
-				startoflinkid,
-				endoflinkid,
 				liftavailability,
 				mobilityrestrictedsuitability,
 				stairsavailability,
@@ -34,7 +32,10 @@
 				occasionaltravellerduration,
 				mobilityrestrictedtravellerduration,
 				linktype,
-				intuserneeds
+				intuserneeds,
+				linkorientation,
+				accesspointid,
+				stopareaid
 				)
 				VALUES(?,
 				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)
@@ -61,19 +62,23 @@
 				creationtime = ?,
 				creatorid = ?,
 				name = ?,
-				COMMENT = ?,
+				COMMENT =?,
 				linkdistance = ?,
-				departureid = ?,
-				arrivalid = ?,
-				liftavailability = ?,
+				liftavailability =
+				?,
 				mobilityrestrictedsuitability = ?,
 				stairsavailability = ?,
 				defaultduration = ?,
 				frequenttravellerduration = ?,
 				occasionaltravellerduration = ?,
-				mobilityrestrictedtravellerduration = ?,
+				mobilityrestrictedtravellerduration
+				= ?,
 				linktype = ?,
-				intuserneeds = ?
+				intuserneeds = ?,
+				linkorientation = ?,
+				accesspointid
+				= ?,
+				stopareaid = ?
 				WHERE objectid = ?
 		</value>
 		</property>

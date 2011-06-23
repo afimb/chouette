@@ -25,7 +25,7 @@
 				position,
 				routeid
 				)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">

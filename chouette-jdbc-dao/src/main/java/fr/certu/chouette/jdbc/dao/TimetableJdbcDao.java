@@ -27,6 +27,6 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 		ps.setString(4, timetable.getCreatorId());
 		ps.setString(5, timetable.getComment());
 		ps.setString(6, timetable.getVersion());
-		ps.setInt(7, timetable.getIntDayTypes());
+		ps.setObject(7, (Integer)timetable.getIntDayTypes());
 	}
 }

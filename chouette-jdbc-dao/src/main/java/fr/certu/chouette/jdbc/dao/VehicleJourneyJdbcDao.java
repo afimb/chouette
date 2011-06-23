@@ -67,7 +67,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 
 		ps.setLong(13, routeId);
 		ps.setLong(14, jPatternId);
-		ps.setLong(15, timeSlotId);
+		ps.setObject(15, (Long)timeSlotId);
 		ps.setLong(16, companyId);
 	}
 }

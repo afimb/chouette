@@ -43,19 +43,51 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 		ps.setString(5, accessLink.getName());
 		ps.setString(6, accessLink.getComment());
 		ps.setBigDecimal(7, accessLink.getLinkDistance());
-		Long departureId = null, arrivalId = null;
-		if(accessLink.getStopArea() != null)
-			departureId = accessLink.getStopArea().getId();
-		ps.setLong(8, departureId);
+		ps.setBoolean(8, accessLink.isLiftAvailable());
+		ps.setBoolean(9,accessLink.isMobilityRestrictedSuitable());
+		ps.setBoolean(10,accessLink.isStairsAvailable());
+		
+		Time defaultduration = null,
+			 frequenttravellerduration = null,
+			 occasionaltravellerduration = null,
+			 mobilityrestrictedtravellerduration = null;
+		
+		if(accessLink.getDefaultDuration() != null)
+			defaultduration = new Time(accessLink.getDefaultDuration().getTime());
+		
+		if(accessLink.getFrequentTravellerDuration() != null)
+			frequenttravellerduration = new Time(accessLink.getFrequentTravellerDuration().getTime());
+		
+		if(accessLink.getOccasionalTravellerDuration() != null)
+			occasionaltravellerduration = new Time(accessLink.getOccasionalTravellerDuration().getTime());
+		
+		if(accessLink.getMobilityRestrictedTravellerDuration() != null)
+			mobilityrestrictedtravellerduration = new Time(accessLink.getMobilityRestrictedTravellerDuration().getTime());
+		
+		ps.setTime(11, defaultduration);
+		ps.setTime(12, frequenttravellerduration);
+		ps.setTime(13, occasionaltravellerduration);
+		ps.setTime(14, mobilityrestrictedtravellerduration);
+		String linkType = null;
+		if (accessLink.getLinkType() != null)
+			linkType = accessLink.getLinkType().value();
+		ps.setString(15, linkType);
+		ps.setObject(16, (Integer)accessLink.getIntUserNeeds());
+		
+		String linkOrientation = null;
+		if(accessLink.getLinkOrientation() != null)
+			linkOrientation = accessLink.getLinkOrientation().value();
+		ps.setString(17, linkOrientation);
+		
+		Long stopAreaId = null, 
+			 accessPointId = null;
 		
 		if(accessLink.getAccessPoint() != null)
-			arrivalId = accessLink.getAccessPoint().getId();
-		ps.setLong(9, arrivalId);
-		ps.setBoolean(10, accessLink.isLiftAvailable());
-		ps.setBoolean(11,accessLink.isMobilityRestrictedSuitable());
-		ps.setBoolean(12,accessLink.isStairsAvailable());
-		Time time = null;
-		//TODO Complete implementation
+			accessPointId = accessLink.getAccessPoint().getId();
+		ps.setLong(18, accessPointId);
 		
+		if(accessLink.getStopArea() != null)
+			stopAreaId = accessLink.getStopArea().getId();
+		ps.setLong(19, stopAreaId);
 	}
 }
