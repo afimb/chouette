@@ -32,7 +32,7 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.AccessPoint WHERE objectid =
+				SELECT * FROM ${database.schema}.JourneyPattern WHERE objectid =
 				?
 			</value>
 		</property>
@@ -45,7 +45,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.Route WHERE objectid
+				DELETE FROM ${database.schema}.JourneyPattern WHERE objectid
 				IN
 				(_OBJECTIDS_)
 			</value>

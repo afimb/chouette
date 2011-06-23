@@ -64,6 +64,10 @@ import fr.certu.chouette.plugin.validation.ValidationParameters;
 /**
  *
  */
+/**
+ * @author mamadou
+ *
+ */
 @NoArgsConstructor
 public class Command
 {

@@ -40,7 +40,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		Long parentId = null;
 		if(parent != null)
 			parentId = parent.getId();
-		ps.setLong(1, parentId);
+		ps.setObject(1, (Long) parentId);
 		ps.setString(2, stopArea.getObjectId());
 		ps.setInt(3, stopArea.getObjectVersion());
 		Timestamp timestamp = null;

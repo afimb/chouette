@@ -43,7 +43,9 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setString(4, accessPoint.getCreatorId());
 		ps.setString(5, accessPoint.getName());
 		ps.setString(6, accessPoint.getComment());
-		String countryCode = null , streetName = null;
+		String countryCode = null , 
+			   streetName = null;
+			   
 		Address address = accessPoint.getAddress(); 
 		if(address != null)
 		{
@@ -54,9 +56,13 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setString(8, streetName );
 		ps.setBigDecimal(9, accessPoint.getLongitude());
 		ps.setBigDecimal(10, accessPoint.getLatitude());
+		String projectionType = null,
+		   longLatType = null;
+		if(accessPoint.getLongLatType() != null)
+			longLatType = accessPoint.getLongLatType().value();
+		ps.setString(11, longLatType);
 		BigDecimal x = null, y = null;
-		String projectionType = null;
-
+		
 		ProjectedPoint projectedPoint = accessPoint.getProjectedPoint();
 		if(projectedPoint != null)
 		{
@@ -64,20 +70,20 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 			y = projectedPoint.getY();
 			projectionType = projectedPoint.getProjectionType();
 		}
-		ps.setBigDecimal(11, x);
-		ps.setBigDecimal(12, y);
-		ps.setString(13, projectionType);
-		ps.setString(14, accessPoint.getContainedIn());
+		ps.setBigDecimal(12, x);
+		ps.setBigDecimal(13, y);
+		ps.setString(14, projectionType);
+		ps.setString(15, accessPoint.getContainedIn());
 		Timestamp openningTime = null , closingTime = null;
 		if(accessPoint.getOpenningTime() != null)
 			openningTime = new Timestamp(accessPoint.getOpenningTime().getTime());
-		ps.setTimestamp(15, openningTime);
+		ps.setTimestamp(16, openningTime);
 		if(accessPoint.getClosingTime() != null)
 			closingTime = new Timestamp(accessPoint.getClosingTime().getTime());
-		ps.setTimestamp(16, closingTime);
-		ps.setString(17, accessPoint.getType());
-		ps.setBoolean(18, accessPoint.isLiftAvailable());
-		ps.setBoolean(19,accessPoint.isMobilityRestrictedSuitable());
-		ps.setBoolean(20,accessPoint.isStairsAvailable());
+		ps.setTimestamp(17, closingTime);
+		ps.setString(18, accessPoint.getType());
+		ps.setBoolean(19, accessPoint.isLiftAvailable());
+		ps.setBoolean(20,accessPoint.isMobilityRestrictedSuitable());
+		ps.setBoolean(21,accessPoint.isStairsAvailable());
 	}
 }
