@@ -1,6 +1,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,22 +82,22 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	 * Duration of link 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Date defaultDuration;
+	@Getter @Setter private Time defaultDuration;
 	/**
 	 * Duration of link for frequent travelers 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Date frequentTravellerDuration;
+	@Getter @Setter private Time frequentTravellerDuration;
 	/**
 	 * Duration of link for occasional travelers 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Date occasionalTravellerDuration;
+	@Getter @Setter private Time occasionalTravellerDuration;
 	/**
 	 * Duration of link for mobility restricted travelers 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Date mobilityRestrictedTravellerDuration;
+	@Getter @Setter private Time mobilityRestrictedTravellerDuration;
 	/**
 	 * Link type
 	 * <br/><i>readable/writable</i>

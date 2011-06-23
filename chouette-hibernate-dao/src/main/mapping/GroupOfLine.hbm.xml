@@ -7,7 +7,7 @@
 		<id name="id" type="long">
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" />
+		<property name="objectId" type="string" unique="true"  not-null="true"/>
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
 		<property name="creatorId" type="string" />

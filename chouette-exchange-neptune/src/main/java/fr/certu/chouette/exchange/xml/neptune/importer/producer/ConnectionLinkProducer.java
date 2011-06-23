@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.util.Date;
-
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.ConnectionLinkExtension;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -50,7 +48,8 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 			if(xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails() != null){
 				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
 					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
-						try{
+						try
+						{
 							connectionLink.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
 						}
 						catch (IllegalArgumentException e) 
@@ -64,22 +63,22 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 		
 		// DefaultDuration optional
 		if(xmlConnectionLink.getDefaultDuration() != null){
-			connectionLink.setDefaultDuration(new Date(xmlConnectionLink.getDefaultDuration().toLong()));
+			connectionLink.setDefaultDuration(getTime(xmlConnectionLink.getDefaultDuration()));
 		}
 		
 		// FrequentTravellerDuration optional
 		if(xmlConnectionLink.getFrequentTravellerDuration() != null){
-			connectionLink.setFrequentTravellerDuration(new Date(xmlConnectionLink.getFrequentTravellerDuration().toLong()));
+			connectionLink.setFrequentTravellerDuration(getTime(xmlConnectionLink.getFrequentTravellerDuration()));
 		}
 		
 		// OccasionalTravellerDuration optional
 		if(xmlConnectionLink.getOccasionalTravellerDuration() != null){
-			connectionLink.setOccasionalTravellerDuration(new Date(xmlConnectionLink.getOccasionalTravellerDuration().toLong()));
+			connectionLink.setOccasionalTravellerDuration(getTime(xmlConnectionLink.getOccasionalTravellerDuration()));
 		}
 		
 		// MobilityRestrictedTravellerDuration optional
 		if(xmlConnectionLink.getMobilityRestrictedTravellerDuration() != null){
-			connectionLink.setMobilityRestrictedTravellerDuration(new Date(xmlConnectionLink.getMobilityRestrictedTravellerDuration().toLong()));
+			connectionLink.setMobilityRestrictedTravellerDuration(getTime(xmlConnectionLink.getMobilityRestrictedTravellerDuration()));
 		}
 		
 		// LinkType optional

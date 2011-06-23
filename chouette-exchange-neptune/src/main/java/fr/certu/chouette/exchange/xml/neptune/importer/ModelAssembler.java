@@ -66,6 +66,7 @@ public class ModelAssembler
 	@Getter @Setter private List<GroupOfLine> groupOfLines;
 	@Getter @Setter private List<Facility> facilities;
 	@Getter @Setter private List<TimeSlot> timeSlots;
+	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
@@ -100,10 +101,12 @@ public class ModelAssembler
 		connectStopAreas();
 		connectAreaCentroids();
 		connectConnectionLinks();
+		connectRestrictionConstraints();
 		connectTimetables();
 		connectAccessLinks();
 		connectGroupOfLines();
 	}
+
 
 	private void populateDictionaries()
 	{
@@ -173,6 +176,7 @@ public class ModelAssembler
 		item.setTimetables(timetables);
 		item.setVehicleJourneys(vehicleJourneys);
 		item.setTimeSlots(timeSlots);
+		item.setRestrictionConstraints(restrictionConstraints);
 
 		line.setImportedItems(item);
 		if(!groupOfLines.isEmpty())
@@ -184,6 +188,32 @@ public class ModelAssembler
 			if(facility.getLine() != null && facility.getLine().equals(line))
 				line.addFacility(facility);
 		}
+		
+		for (RestrictionConstraint restriction : restrictionConstraints)
+		{
+			if (restriction.getLine() != null && restriction.getLine().equals(line))
+			    line.addRestrictionConstraint(restriction);
+		}
+	}
+
+	private void connectRestrictionConstraints() 
+	{
+		for (RestrictionConstraint restriction : restrictionConstraints) 
+		{
+			if (restriction.getLineIdShortCut() != null && restriction.getLineIdShortCut().equals(line.getObjectId()))
+			{
+				restriction.setLine(line);
+			}
+			for (String areaId : restriction.getAreaIds()) 
+			{
+				StopArea area = stopAreasDictionary.get(areaId);
+				if (area != null)
+				{
+					restriction.addArea(area);
+				}
+			}
+		}
+		
 	}
 
 
@@ -353,6 +383,7 @@ public class ModelAssembler
 			}
 			stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
 			//no need to set containedInStopArea in StopPoint : it is already done in connectStopPoints method...
+			/*
 			if(stopArea.getRestrictionConstraints() != null)
 			{
 				for (RestrictionConstraint constraint : stopArea.getRestrictionConstraints()) 
@@ -366,14 +397,17 @@ public class ModelAssembler
 						logger.debug("ITL " + constraint.getName() + " (" + constraint.getAreaId() + "," + constraint.getLineIdShortCut() + ") HAS A LINE.");
 					}
 				}
+				}
+				*/
 
 				for (Facility facility : facilities)
 				{
 					if(facility.getStopArea() != null && facility.getStopArea().equals(stopArea))
 						stopArea.addFacility(facility);
 				}
-			}
+			
 		}
+		/*
 		if (StopArea.getUnvalidRestrictionConstraints() != null) {
 			for (RestrictionConstraint constraint : StopArea.getUnvalidRestrictionConstraints()) {
 				Line tmpLine = getObjectFromId(constraint.getLineIdShortCut(), Line.class);
@@ -386,6 +420,7 @@ public class ModelAssembler
 				}
 			}
 		}
+		*/
 	}
 
 	private void connectAreaCentroids() 

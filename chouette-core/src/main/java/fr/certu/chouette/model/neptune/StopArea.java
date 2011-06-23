@@ -32,9 +32,9 @@ public class StopArea extends NeptuneIdentifiedObject {
 	@Getter @Setter private List<ConnectionLink> connectionLinks;
 
 	@Getter @Setter private List<AccessLink> accessLinks;
-	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
+	//@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 
-        private static List<RestrictionConstraint> unvalidRestrictionConstraints;
+    //    private static List<RestrictionConstraint> unvalidRestrictionConstraints;
 	@Getter @Setter private List<Facility> facilities;
 
 	public void addFacility(Facility facility)
@@ -87,6 +87,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 		accessLinks.add(accessLink);
 	}
 
+	/*
 	public void addRestrictionConstraint(RestrictionConstraint restrictionConstraint){
 		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
 		restrictionConstraints.add(restrictionConstraint);
@@ -104,6 +105,7 @@ public class StopArea extends NeptuneIdentifiedObject {
         public static List<RestrictionConstraint> getUnvalidRestrictionConstraints() {
             return unvalidRestrictionConstraints;
         }
+        */
         
 //	/* (non-Javadoc)
 //	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
@@ -237,6 +239,7 @@ public class StopArea extends NeptuneIdentifiedObject {
 
 		return sb.toString();
 	}
+	/*
 	public List<String> extracAreaIdsFromRConstraint(){
 		List<String> areaIds = new ArrayList<String>();
 		if(restrictionConstraints != null){
@@ -251,4 +254,5 @@ public class StopArea extends NeptuneIdentifiedObject {
 		}
 		return areaIds;
 	}
+	*/
 }

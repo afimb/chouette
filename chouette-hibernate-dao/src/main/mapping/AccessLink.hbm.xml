@@ -7,15 +7,13 @@
 		<id column="id" name="id" type="long">
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" />
+		<property name="objectId" type="string" unique="true" not-null="true"/>
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
 		<property name="creatorId" type="string" />
 		<property name="name" type="string" />
 		<property name="comment" type="string" />
 		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" />
-		<property name="startOfLinkId" type="string" />
-		<property name="endOfLinkId" type="string" />
 		<property column="liftAvailability" name="liftAvailable"
 			type="boolean" />
 		<property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitable"
@@ -36,8 +34,8 @@
 		<property column="linkOrientation" name="linkOrientation"
 			type="fr.certu.chouette.dao.hibernate.usertype.LinkOrientationUserType" />
 		<many-to-one name="accessPoint" class="AccessPoint"
-			cascade="none" lazy="no-proxy" outer-join="auto" column="accessPointId" />
+			cascade="none" lazy="no-proxy" outer-join="auto" column="accessPointId" foreign-key="aclk_acpt_fkey"/>
 		<many-to-one name="stopArea" class="StopArea" lazy="no-proxy"
-			outer-join="auto" column="stopAreaId" />
+			outer-join="auto" column="stopAreaId" foreign-key="aclk_area_fkey"/>
 	</class>
 </hibernate-mapping>

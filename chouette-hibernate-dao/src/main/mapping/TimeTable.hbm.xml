@@ -7,7 +7,7 @@
 		<id column="id" name="id" type="long">
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" />
+		<property name="objectId" type="string" unique="true" not-null="true"/>
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
 		<property name="creatorId" type="string" />
@@ -16,12 +16,12 @@
 		<property name="version" type="string" />
 		<property name="intDayTypes" />
 		<list lazy="false" name="calendarDays" table="timetable_date">
-			<key column="timetableId" />
+			<key column="timetableId"  foreign-key="tm_date_fkey"/>
 			<list-index base="0" column="position" />
 			<element column="date" type="date" />
 		</list>
 		<list lazy="false" name="periods" table="timetable_period">
-			<key column="timeTableId" />
+			<key column="timeTableId" foreign-key="tm_period_fkey"/>
 			<list-index base="0" column="position" />
 			<composite-element class="Period">
 				<property name="startDate" column="periodstart" type="date" />

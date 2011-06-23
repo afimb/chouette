@@ -9,6 +9,7 @@
 package fr.certu.chouette.dao.hibernate;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -360,7 +361,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		connectionLink.setStairsAvailable(true);
 		connectionLink.setStartOfLink(createStopArea());
 		connectionLink.setEndOfLink(createStopArea());
-
+		connectionLink.setDefaultDuration(new Time(new Date().getTime()));
 		return connectionLink;
 	}
 
@@ -438,7 +439,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		accessLink.setStopArea(createStopArea());
 		accessLink.addUserNeed(UserNeedEnum.ALLERGIC);
 		accessLink.addUserNeed(UserNeedEnum.ASSISTEDWHEELCHAIR);
-		accessLink.setDefaultDuration(new Date());
+		accessLink.setDefaultDuration(new Time(new Date().getTime()));
 
 		return accessLink;
 	}

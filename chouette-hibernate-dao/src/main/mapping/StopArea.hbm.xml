@@ -25,9 +25,7 @@
 		<id column="id" name="id" type="long">
 			<generator class="identity" />
 		</id>
-		<many-to-one class="StopArea" column="parentId"
-			lazy="no-proxy" name="parentStopArea" />
-		<property name="objectId" type="string" unique="true" />
+		<property name="objectId" type="string" unique="true" not-null="true"/>
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
 		<property name="creatorId" type="string" />
@@ -60,5 +58,7 @@
 				<property name="streetName" type="string" />
 			</component>
 		</component>
+		<many-to-one class="StopArea" column="parentId"
+			lazy="no-proxy" name="parentStopArea" foreign-key="area_parent_fkey"/>
 	</class>
 </hibernate-mapping>

@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ITL;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer;
@@ -27,6 +28,7 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.RestrictionConstraintProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimeSlotProducer;
@@ -63,7 +65,9 @@ import org.apache.log4j.Logger;
  */
 public class NeptuneConverter
 {
-	@Getter @Setter private LineProducer lineProducer;
+    private static Logger logger = Logger.getLogger(NeptuneConverter.class);
+
+    @Getter @Setter private LineProducer lineProducer;
 	@Getter @Setter private RouteProducer routeProducer;
 	@Getter @Setter private PTNetworkProducer networkProducer;
 	@Getter @Setter private CompanyProducer companyProducer;
@@ -75,13 +79,13 @@ public class NeptuneConverter
 	@Getter @Setter private AreaCentroidProducer areaCentroidProducer;
 	@Getter @Setter private ConnectionLinkProducer connectionLinkProducer;
 	@Getter @Setter private TimetableProducer timetableProducer;
+	@Getter @Setter private RestrictionConstraintProducer restrictionConstraintProducer;
 
 	@Getter @Setter private AccessLinkProducer accessLinkProducer;
 	@Getter @Setter private AccessPointProducer accessPointProducer;
 	@Getter @Setter private GroupOfLineProducer groupOfLineProducer;
 	@Getter @Setter private FacilityProducer facilityProducer;
 	@Getter @Setter private TimeSlotProducer timeSlotProducer;
-        private static Logger logger = Logger.getLogger(NeptuneConverter.class);
 
 	public Line extractLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
@@ -122,6 +126,22 @@ public class NeptuneConverter
 		return routes;
 	}
 
+	public List<RestrictionConstraint> extractRestrictionConstraints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
+	{
+		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"ITL");
+		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
+		ITL[] itls = lineDescription.getITL();
+
+		List<RestrictionConstraint> restrictionConstraints = restrictionConstraintProducer.produce(itls, report);
+
+		int count = (restrictionConstraints == null? 0 : restrictionConstraints.size());
+		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));
+		report.addItem(countItem);
+		parentReport.addItem(report);
+		return restrictionConstraints;
+	}
+
+	
 	public List<Company> extractCompanies(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"Company");
@@ -249,15 +269,16 @@ public class NeptuneConverter
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"StopArea");
 		chouette.schema.StopArea[] xmlStopAreas = rootObject.getChouetteArea().getStopArea();
-		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
-		chouette.schema.ITL[] itls = lineDescription.getITL();
+		// ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
+		// chouette.schema.ITL[] itls = lineDescription.getITL();
 		// modele des producer : voir package fr.certu.chouette.service.validation.util
 
 		List<StopArea> stopAreas = new ArrayList<StopArea>();
                 
-                List<chouette.schema.ITL> usedItls = new ArrayList<chouette.schema.ITL>();
+        //        List<chouette.schema.ITL> usedItls = new ArrayList<chouette.schema.ITL>();
 		for(chouette.schema.StopArea xmlStopArea : xmlStopAreas){
 			StopArea stopArea = stopAreaProducer.produce(xmlStopArea, report);
+			/*
 			for (chouette.schema.ITL itl : itls) {
 				if(stopArea.getObjectId().equals(itl.getAreaId())){
 					RestrictionConstraint constraint = new RestrictionConstraint();
@@ -269,10 +290,10 @@ public class NeptuneConverter
                                         logger.debug("ITL "+itl.getName()+" ("+itl.getAreaId()+","+itl.getLineIdShortCut()+") HAS A STOP AREA.");
 				}
 			}
-			
+			*/
 			stopAreas.add(stopArea);
 		}
-                
+                /*
                 StopArea.setUnvalidRestrictionConstraints(null);
                 for (chouette.schema.ITL itl : itls) {
                     if (!usedItls.contains(itl)) {
@@ -284,6 +305,7 @@ public class NeptuneConverter
                         logger.debug("ITL "+itl.getName()+" ("+itl.getAreaId()+","+itl.getLineIdShortCut()+") HAS NO STOP AREA.");
                     }
                 }
+                */
 
 		int count = (stopAreas == null? 0 : stopAreas.size());
 		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));

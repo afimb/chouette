@@ -7,7 +7,7 @@
 		<id column="id" name="id" type="long">
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" />
+		<property name="objectId" type="string" unique="true" not-null="true"/>
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
 		<property name="creatorId" type="string" />
@@ -15,13 +15,13 @@
 		<property name="comment" type="string" />
 
 		<many-to-one name="stopArea" class="StopArea" lazy="no-proxy"
-			outer-join="auto" column="stopareaid" />
+			outer-join="auto" column="stopareaid" foreign-key="faci_area_fkey"/>
 		<many-to-one name="line" class="Line" lazy="no-proxy"
-			outer-join="auto" column="lineid" />
+			outer-join="auto" column="lineid" foreign-key="faci_line_fkey"/>
 		<many-to-one name="connectionLink" class="ConnectionLink"
-			lazy="no-proxy" outer-join="auto" column="connectionLinkid" />
+			lazy="no-proxy" outer-join="auto" column="connectionLinkid" foreign-key="faci_colk_fkey"/>
 		<many-to-one name="stopPoint" class="StopPoint" lazy="no-proxy"
-			outer-join="auto" column="stopPointid" />
+			outer-join="auto" column="stopPointid" foreign-key="faci_stpt_fkey"/>
 		<property name="description" type="string" />
 		<property name="freeAccess" type="boolean" />
 		<component name="facilityLocation"
@@ -46,7 +46,7 @@
 			<property name="containedIn" type="string" />
 		</component>
 		<bag cascade="all" lazy="false" name="facilityFeatures" table="facilityFeature">
-			<key column="facilityId" />
+			<key column="facilityId" foreign-key="facility_feature_fkey"/>
 			<composite-element
 				class="fr.certu.chouette.model.neptune.type.facility.FacilityFeature">
 				<property name="choiceCode" type="int" />

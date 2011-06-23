@@ -22,6 +22,7 @@
 	<bean id="NeptuneAccessPointImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessPointProducer" />
 	<bean id="NeptuneFacilityImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.FacilityProducer" />
 	<bean id="NeptuneGroupOfLineImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.GroupOfLineProducer" />
+	<bean id="NeptuneRestrictionImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.RestrictionConstraintProducer" />
 	
 	
 	<bean id="NeptuneConverter" class="fr.certu.chouette.exchange.xml.neptune.importer.NeptuneConverter">
@@ -41,6 +42,7 @@
 		<property name="accessPointProducer" ref="NeptuneAccessPointImportProducer" />
 		<property name="facilityProducer" ref="NeptuneFacilityImportProducer" />
 		<property name="groupOfLineProducer" ref="NeptuneGroupOfLineImportProducer" />		
+		<property name="restrictionConstraintProducer" ref="NeptuneRestrictionImportProducer" />		
 	</bean>
 
 	<bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.xml.neptune.importer.XMLNeptuneImportLinePlugin">

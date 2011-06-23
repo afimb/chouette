@@ -11,9 +11,8 @@
 			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true"
-			not-null="true">
-			<column name="objectId">
+		<property name="objectId" type="string" unique="true">
+			<column name="objectId"  not-null="true">
 				<comment>Neptune identification</comment>
 			</column>
 		</property>

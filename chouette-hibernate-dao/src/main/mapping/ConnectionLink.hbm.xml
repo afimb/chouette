@@ -11,8 +11,8 @@
 			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" not-null="true">
-			<column name="objectId">
+		<property name="objectId" type="string" unique="true">
+			<column name="objectId" not-null="true">
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
@@ -47,13 +47,13 @@
 			</column>
 		</property>
 		<many-to-one name="startOfLink" class="StopArea" 
-			insert="false" lazy="no-proxy" update="false" >
+			insert="false" lazy="no-proxy" update="false" foreign-key="colk_startarea_fkey">
 			<column name="departureid">
 				<comment>Start stoparea internal id</comment>
 			</column>
 		</many-to-one>
 		<many-to-one name="endOfLink" class="StopArea"
-			insert="false" lazy="no-proxy" update="false" >
+			insert="false" lazy="no-proxy" update="false" foreign-key="colk_endarea_fkey">
 			<column name="arrivalid">
 				<comment>End stoparea internal id</comment>
 			</column>

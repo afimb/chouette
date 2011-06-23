@@ -140,6 +140,13 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private Long groupOfLineId;
 
 	/**
+	 * The optional RestrictionConstraints of the line
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
+
+	
+	/**
 	 * ImportedItems for import neptune process
 	 */
 	@Getter @Setter private ImportedItems importedItems;
@@ -358,6 +365,13 @@ public class Line extends NeptuneIdentifiedObject
 		lineEnds.add(lineEndId);
 	}
 
+
+	public void addRestrictionConstraint(RestrictionConstraint restriction) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/**
 	 * return lineEndList built with PTLink relationship
 	 * <p/>

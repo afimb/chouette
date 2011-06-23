@@ -10,7 +10,7 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
-public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> implements IModelProducer<T, U>
+public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> extends AbstractProducer implements IModelProducer<T, U>
 {
 
 	public void populateFromCastorNeptune(T target,U source ,ReportItem report)
@@ -39,12 +39,6 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 
 	}
 
-	protected String getNonEmptyTrimedString(String source)
-	{
-		if (source == null) return null;
-		String target = source.trim();
-		return (target.length() ==0? null: target);
-	}
 
 	protected String getRegistrationNumber(Registration registration,ReportItem report) 
 	{
@@ -59,18 +53,6 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		return number.trim();
 	}
 
-	protected Date getDate(org.exolab.castor.types.Date castorDate) {
-		if(castorDate == null) return null;
-		Date date = castorDate.toDate();
-		return date;
-	}
-
-	protected Time getTime(org.exolab.castor.types.Time castorTime) {
-		if(castorTime == null) return null;
-		Date date = castorTime.toDate();
-		Time time = new Time(date.getTime());
-		return time;
-	}
 
 
 }

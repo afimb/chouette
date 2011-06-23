@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.util.Date;
-
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.ConnectionLinkExtension;
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -64,22 +62,22 @@ public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouet
 		
 		// DefaultDuration optional
 		if(xmlAccessLink.getDefaultDuration() != null){
-			accessLink.setDefaultDuration(new Date(xmlAccessLink.getDefaultDuration().toLong()));
+			accessLink.setDefaultDuration(getTime(xmlAccessLink.getDefaultDuration()));
 		}
 		
 		// FrequentTravellerDuration optional
 		if(xmlAccessLink.getFrequentTravellerDuration() != null){
-			accessLink.setFrequentTravellerDuration(new Date(xmlAccessLink.getFrequentTravellerDuration().toLong()));
+			accessLink.setFrequentTravellerDuration(getTime(xmlAccessLink.getFrequentTravellerDuration()));
 		}
 		
 		// OccasionalTravellerDuration optional
 		if(xmlAccessLink.getOccasionalTravellerDuration() != null){
-			accessLink.setOccasionalTravellerDuration(new Date(xmlAccessLink.getOccasionalTravellerDuration().toLong()));
+			accessLink.setOccasionalTravellerDuration(getTime(xmlAccessLink.getOccasionalTravellerDuration()));
 		}
 		
 		// MobilityRestrictedTravellerDuration optional
 		if(xmlAccessLink.getMobilityRestrictedTravellerDuration() != null){
-			accessLink.setMobilityRestrictedTravellerDuration(new Date(xmlAccessLink.getMobilityRestrictedTravellerDuration().toLong()));
+			accessLink.setMobilityRestrictedTravellerDuration(getTime(xmlAccessLink.getMobilityRestrictedTravellerDuration()));
 		}
 		
 		// LinkType optional
@@ -95,5 +93,6 @@ public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouet
 		
 		return accessLink;
 	}
+
 
 }

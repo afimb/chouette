@@ -129,7 +129,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		List<StopArea> completeStopAreas = new ArrayList<StopArea>();
 		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
 		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
-		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
+// 		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
 		List<Facility> facilities = new ArrayList<Facility>();
 		if (propagate)
 		{
@@ -141,7 +141,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			{
 				mergeCollection(accessLinks, stopArea.getAccessLinks());
 				mergeCollection(connectionLinks, stopArea.getConnectionLinks());
-				mergeCollection(constraints, stopArea.getRestrictionConstraints());
+// 				mergeCollection(constraints, stopArea.getRestrictionConstraints());
 				mergeCollection(facilities, stopArea.getFacilities());
 			}
 			
@@ -169,15 +169,15 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		{
 			INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
 			INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+//			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
 			if(!accessLinks.isEmpty())
 				accessLinkManager.saveAll(user, accessLinks, propagate,fast);
 			if(!connectionLinks.isEmpty())
 				connectionLinkManager.saveAll(user, connectionLinks, propagate,fast);
-			if(!constraints.isEmpty())
-				constraintManager.saveAll(user, constraints, propagate,fast);	
+//			if(!constraints.isEmpty())
+//				constraintManager.saveAll(user, constraints, propagate,fast);	
 			if(!facilities.isEmpty())
 				facilityManager.saveAll(user, facilities, propagate,fast);
 		}
