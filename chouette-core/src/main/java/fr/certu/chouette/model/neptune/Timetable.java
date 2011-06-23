@@ -3,7 +3,7 @@ package fr.certu.chouette.model.neptune;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import lombok.Getter;

@@ -38,13 +38,13 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, chouette
 		// 
 		if(xmlTimetable.getCalendarDay() != null){
 			for(org.exolab.castor.types.Date calendarDay : xmlTimetable.getCalendarDay()){
-				timetable.addCalendarDay(new Date(calendarDay.toLong()));
+				timetable.addCalendarDay(getSqlDate(calendarDay));
 			}
 		}
 		
 		if(xmlTimetable.getPeriod() != null){
 			for(chouette.schema.Period xmlPeriod : xmlTimetable.getPeriod()){
-				timetable.addPeriod(new Period(new Date(xmlPeriod.getStartOfPeriod().toLong()),new Date(xmlPeriod.getStartOfPeriod().toLong())));
+				timetable.addPeriod(new Period(getSqlDate(xmlPeriod.getStartOfPeriod()),getSqlDate(xmlPeriod.getStartOfPeriod())));
 			}
 		}
 		

@@ -3,6 +3,7 @@ package fr.certu.chouette.jdbc.dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -222,33 +223,94 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			type.setId(peerId.getId());
 		}
 		
-
-		toBatchInsertColectionAttributes(list);
+        // insert in secondary tables for multiple occurence attributes
+		toBatchInsertCollectionAttributes(list);
 		
 		return rows;
 	}
 
-	private void toBatchInsertColectionAttributes(final List<T> list) throws JdbcDaoException 
+	/**
+	 * launch insert for each attribute describe in collectionAttributes
+	 * 
+	 * @param list
+	 * @throws JdbcDaoException
+	 */
+	private void toBatchInsertCollectionAttributes(List<T> list) throws JdbcDaoException 
 	{
 		if (collectionAttributes != null && !collectionAttributes.isEmpty())
 		{
 			for (String attributeKey : collectionAttributes.keySet()) 
 			{
-				toBatchInsertColectionAttribute(list,attributeKey,collectionAttributes.get(attributeKey));
+				toBatchInsertCollectionAttribute(list,attributeKey,collectionAttributes.get(attributeKey));
 			}
 		}
 		
 	}
 
-	private void toBatchInsertColectionAttribute(final List<T> list,String attributeKey,
+	/**
+	 * launch insert for one attribute describe in collectionAttributes
+	 * 
+	 * @param list
+	 * @param attributeKey
+	 * @param map
+	 * @throws JdbcDaoException
+	 */
+	private void toBatchInsertCollectionAttribute(List<T> list,final String attributeKey,
 			Map<String, String> map) throws JdbcDaoException 
 	{
 		String sql = map.get("sqlInsert");
 		if(sql == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE, 
 					"implements sqlInsert request statement for "+attributeKey+" in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 		
+        final List<Object> attributes = new ArrayList<Object>();
+        for (T item : list) 
+        {
+            attributes.addAll(getAttributeValues(attributeKey,item));
+		}
+		getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
+		{			
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException 
+			{
+				Object attribute = attributes.get(i);
+				if(attribute != null)
+					populateAttributeStatement(attributeKey,ps, attribute);	
+			}
+			@Override
+			public int getBatchSize() 
+			{
+				
+				return attributes.size();
+			}
+		});	
 		
+	}
+
+	/**
+	 * extract values of attributes for populateAttributeStatement
+	 * 
+	 * @param attributeKey
+	 * @param item
+	 * @return
+	 * @throws JdbcDaoException
+	 */
+	protected Collection<? extends Object> getAttributeValues(String attributeKey, T item) throws JdbcDaoException 
+	{
+		throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,"getAttributeValues is not implemented for "+this.getClass().getName());
+	}
+
+	/**
+	 * populate statement for one attribute value produced by getAttributeValues
+	 * 
+	 * @param attributeKey
+	 * @param ps
+	 * @param attribute
+	 * @throws SQLException
+	 */
+	protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) throws SQLException 
+	{
+		throw new SQLException("populateAttributeStatement is not implemented for "+this.getClass().getName());
 	}
 
 	/**
