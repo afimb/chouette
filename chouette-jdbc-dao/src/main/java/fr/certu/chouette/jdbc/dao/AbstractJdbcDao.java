@@ -105,11 +105,15 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		{
 			if(sqlUpdate != null)
 				toBatchUpdate(sqlUpdate, updatables);
-			
+
 			else if(sqlDelete != null)
 			{
 				toBatchDelete(sqlDelete, updatables);
 				toBatchInsert(sqlInsert, updatables);
+			}else 
+			{
+				throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+						"implements sqlUpdate AND/OR sqlDelete request statement in xml file :"+objects.get(0).getClass().getName()+"JdbcDaoConext.xml");	
 			}
 
 		}
