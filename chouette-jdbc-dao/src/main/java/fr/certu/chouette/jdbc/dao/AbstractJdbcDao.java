@@ -35,6 +35,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	@Getter @Setter protected String sqlInsert;
 	@Getter @Setter protected String sqlUpdate;
 	@Getter @Setter protected String sqlDelete;
+	@Getter @Setter protected Map<String, Map<String,String>> collectionAttributes;
 
 	/**
 	 * Transform an array to sql IN clause
@@ -216,7 +217,34 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			T type = map.remove(peerId.getObjectid());
 			type.setId(peerId.getId());
 		}
+		
+
+		toBatchInsertColectionAttributes(list);
+		
 		return rows;
+	}
+
+	private void toBatchInsertColectionAttributes(final List<T> list) throws JdbcDaoException 
+	{
+		if (collectionAttributes != null && !collectionAttributes.isEmpty())
+		{
+			for (String attributeKey : collectionAttributes.keySet()) 
+			{
+				toBatchInsertColectionAttribute(list,attributeKey,collectionAttributes.get(attributeKey));
+			}
+		}
+		
+	}
+
+	private void toBatchInsertColectionAttribute(final List<T> list,String attributeKey,
+			Map<String, String> map) throws JdbcDaoException 
+	{
+		String sql = map.get("sqlInsert");
+		if(sql == null)
+			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+					"implements sqlInsert request statement for "+attributeKey+" in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
+		
+		
 	}
 
 	/**
