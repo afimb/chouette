@@ -67,12 +67,15 @@
 				<entry key="period">
 					<map>
 						<description>one entry for select, insert, delete</description>
-						<entry key="sqlSelectByObjectId">
-							<value>SELECT * FROM ${database.schema}.Timetable_Period WHERE
-								timetableid = ? </value>
+						<entry key="sqlSelectById">
+							<value>
+								SELECT * FROM ${database.schema}.Timetable_Period WHERE
+								timetableid = ?
+							</value>
 						</entry>
 						<entry key="sqlInsert">
-							<value>INSERT INTO ${database.schema}.Timetable_Period
+							<value>
+								INSERT INTO ${database.schema}.Timetable_Period
 								(
 								timetableid,
 								periodstart,
@@ -83,20 +86,26 @@
 							</value>
 						</entry>
 						<entry key="sqlDelete">
-							<value>DELETE FROM ${database.schema}.Timetable_Period WHERE
-								timetableid IN (_IDS_) </value>
+							<value>
+								DELETE FROM ${database.schema}.Timetable_Period WHERE
+								timetableid IN
+								(_IDS_)
+								 </value>
 						</entry>
 					</map>
 				</entry>
 				<entry key="date">
 					<map>
 						<description>one entry for select, insert, delete</description>
-						<entry key="sqlSelectByObjectId">
-							<value>SELECT * FROM ${database.schema}.Timetable_Date WHERE
-								timetableid = ? </value>
+						<entry key="sqlSelectById">
+							<value>
+								SELECT * FROM ${database.schema}.Timetable_Date WHERE
+								timetableid = ?
+							</value>
 						</entry>
 						<entry key="sqlInsert">
-							<value>INSERT INTO ${database.schema}.Timetable_Date
+							<value>
+								INSERT INTO ${database.schema}.Timetable_Date
 								(
 								timetableid,
 								date,
@@ -105,8 +114,11 @@
 								VALUES(?, ?, ?, ?)</value>
 						</entry>
 						<entry key="sqlDelete">
-							<value>DELETE FROM ${database.schema}.Timetable_Date WHERE
-								timetableid IN (_IDS_) </value>
+							<value>
+								DELETE FROM ${database.schema}.Timetable_Date WHERE
+								timetableid IN
+								(_IDS_) 
+								</value>
 						</entry>
 					</map>
 				</entry>
