@@ -8,7 +8,8 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="journeyPatternJdbcDao" class="fr.certu.chouette.jdbc.dao.JourneyPatternJdbcDao" parent="abstractJdbcDao">
+	<bean id="journeyPatternJdbcDao" class="fr.certu.chouette.jdbc.dao.JourneyPatternJdbcDao"
+		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.JourneyPattern</value>
 		</property>
@@ -26,13 +27,13 @@
 				publishedname,
 				routeid
 				)
-				VALUES(?, ?, ?, ?, ?, ? ,? , ?, ?)
+				VALUES(?, ?, ?, ?, ?, ? ,?
+				, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.JourneyPattern WHERE objectid =
-				?
+				SELECT * FROM ${database.schema}.JourneyPattern WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
@@ -49,5 +50,32 @@
 				(_OBJECTIDS_)
 			</value>
 		</property>
+		<property name="collectionAttributes">
+			<map>
+				<description>one entry for each attribute</description>
+				<entry key="stoppoint">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectById">
+							<value>SELECT * FROM ${database.schema}.journeypattern_stoppoint
+								WHERE journeypatternid = ? </value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>INSERT INTO ${database.schema}.journeypattern_stoppoint
+								(
+								journeypatternid,
+								stoppointid,
+								)
+								VALUES(?, ?)</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>DELETE FROM ${database.schema}.journeypattern_stoppoint
+								WHERE journeypatternid IN (_IDS_) </value>
+						</entry>
+					</map>
+				</entry>
+			</map>
+		</property>
+
 	</bean>
 </beans>	
