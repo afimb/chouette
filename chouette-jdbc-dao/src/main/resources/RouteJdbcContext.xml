@@ -8,8 +8,7 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="routeJdbcDao" class="fr.certu.chouette.jdbc.dao.RouteJdbcDao">
-		<property name="dataSource" ref="chouetteDataSource" />
+	<bean id="routeJdbcDao" class="fr.certu.chouette.jdbc.dao.RouteJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.Route</value>
 		</property>

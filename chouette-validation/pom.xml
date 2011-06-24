@@ -43,6 +43,12 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-exchange-neptune</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<resources>

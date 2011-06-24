@@ -18,6 +18,7 @@ import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.jdbc.exception.JdbcDaoExceptionCode;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PeerId;
 
 /**
@@ -53,6 +54,21 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		}
 		return result; 
 	}
+	/**
+	 * Transform an array to sql IN clause
+	 * @param myArray
+	 * @return sql IN 
+	 */
+	protected static String arrayToSQLIn(Long[] myArray) 
+	{
+		String result = "";
+		for (int i=0;i<myArray.length; i++) 
+		{
+			if (i>0) result = result + ",";
+			result = result + myArray[i];
+		}
+		return result; 
+	}
 
 	/**
 	 * Execute the sql statement with IN clause
@@ -84,13 +100,17 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	}
 
 	/**
-	 * An abstract method wich should be implemented in sub classes <br />
+	 * An abstract method which should be implemented in sub classes <br />
 	 * It populate the {@link PreparedStatement} by the {@link NeptuneIdentifiedObject}
 	 * @param ps
 	 * @param type
 	 * @throws SQLException
 	 */
-	protected abstract void populateStatement(PreparedStatement ps, T type) throws SQLException;
+	protected  void populateStatement(PreparedStatement ps, T type) throws SQLException
+	{
+		
+	}
+	
 
 
 	@Override
@@ -177,7 +197,51 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 				return list.size();
 			}
 		});
+		
+        // remove from secondary tables for multiple occurence attributes
+		toBatchDeleteCollectionAttributes(list);
+        // insert in secondary tables for multiple occurence attributes
+		toBatchInsertCollectionAttributes(list);
+
 		return rows;
+	}
+
+	/**
+	 * @param list
+	 * @throws JdbcDaoException
+	 */
+	private void toBatchDeleteCollectionAttributes(List<T> list) throws JdbcDaoException 
+	{
+		if (collectionAttributes != null && !collectionAttributes.isEmpty())
+		{
+			for (String attributeKey : collectionAttributes.keySet()) 
+			{
+				toBatchDeleteCollectionAttribute(list,attributeKey,collectionAttributes.get(attributeKey));
+			}
+		}
+		
+	}
+
+	/**
+	 * @param list
+	 * @param attributeKey
+	 * @param map
+	 * @throws JdbcDaoException
+	 */
+	private void toBatchDeleteCollectionAttribute(List<T> list,
+			String attributeKey, Map<String, String> map) throws JdbcDaoException 
+	{
+		String sql = map.get("sqlDelete");
+		if(sql == null)
+			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE, 
+					"implements sqlDelete request statement for "+attributeKey+" in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
+		
+		List<Long> ids = T.extractIds(list);
+		Long[] myArray = ids.toArray(new Long[ids.size()]);
+		String sqlDelete = sql.replaceAll("_IDS_", arrayToSQLIn(myArray));
+
+		getJdbcTemplate().batchUpdate(new String[]{sqlDelete});
+
 	}
 
 	/**
