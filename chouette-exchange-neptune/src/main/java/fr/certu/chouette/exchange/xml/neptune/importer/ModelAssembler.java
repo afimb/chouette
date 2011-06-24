@@ -189,11 +189,6 @@ public class ModelAssembler
 				line.addFacility(facility);
 		}
 		
-		for (RestrictionConstraint restriction : restrictionConstraints)
-		{
-			if (restriction.getLine() != null && restriction.getLine().equals(line))
-			    line.addRestrictionConstraint(restriction);
-		}
 	}
 
 	private void connectRestrictionConstraints() 
@@ -203,6 +198,7 @@ public class ModelAssembler
 			if (restriction.getLineIdShortCut() != null && restriction.getLineIdShortCut().equals(line.getObjectId()))
 			{
 				restriction.setLine(line);
+				line.addRestrictionConstraint(restriction);
 			}
 			for (String areaId : restriction.getAreaIds()) 
 			{
@@ -333,7 +329,7 @@ public class ModelAssembler
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			}
-			//vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
+			vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
 			vehicleJourney.setLine(line);
 		}
 	}
@@ -350,7 +346,8 @@ public class ModelAssembler
 
 				stopPoint.setPtNetwork(ptNetwork);
 			}
-			else{
+			else
+			{
 
 				//TODO : throw exception ???
 			}

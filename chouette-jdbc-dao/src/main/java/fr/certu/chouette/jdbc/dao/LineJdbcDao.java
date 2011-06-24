@@ -31,7 +31,8 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 	@Override
 	protected void populateStatement(PreparedStatement ps, Line line)
 			throws SQLException {
-		Long networkId = null , companyId = null;
+		Long networkId = null ;
+		Long companyId = null;
 		if(line.getPtNetwork() != null)
 			networkId = line.getPtNetwork().getId();
 		ps.setLong(1, networkId );

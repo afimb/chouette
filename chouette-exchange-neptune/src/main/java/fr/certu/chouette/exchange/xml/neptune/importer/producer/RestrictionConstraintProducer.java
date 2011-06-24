@@ -16,7 +16,7 @@ public class RestrictionConstraintProducer extends AbstractProducer
 	{
 		Map<String,RestrictionConstraint> constraintMap = new HashMap<String, RestrictionConstraint>();
 		List<RestrictionConstraint> restrictions = new ArrayList<RestrictionConstraint>();
-		
+
 		for (ITL itl : itls) 
 		{
 			String name = getNonEmptyTrimedString(itl.getName());
@@ -26,17 +26,21 @@ public class RestrictionConstraintProducer extends AbstractProducer
 				restriction = new RestrictionConstraint();
 				// Name mandatory
 				restriction.setName(name);
-				
+
 				// LineIdShortCut mandatory
 				restriction.setLineIdShortCut(getNonEmptyTrimedString(itl.getLineIdShortCut()));
-					
+
 				// build objectId with name and lineId prefix
-				String objectId = restriction.getLineIdShortCut().split(":")[0]+":RestrictionConstraint:"+name.replaceAll(" ", "_");
-				restriction.setObjectId(objectId);
+				String[] ids = restriction.getLineIdShortCut().split(":");
+				if (ids.length == 3)
+				{
+					String objectId = ids[0]+":RestrictionConstraint:"+ids[2]+"_"+name.replaceAll(" ", "_");
+					restriction.setObjectId(objectId);
+				}
 				constraintMap.put(name, restriction);
 				restrictions.add(restriction);
 			}
-						
+
 			// Area mandatory
 			restriction.addAreaId(getNonEmptyTrimedString(itl.getAreaId()));
 		}

@@ -8,6 +8,10 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init" default-lazy-init="true">
 
+	<bean id="abstractJdbcDao" class="fr.certu.chouette.jdbc.dao.AbstractJdbcDao" abstract="true">
+		<property name="dataSource" ref="chouetteDataSource" />
+	</bean>
+
 	<import resource="LineJdbcContext.xml" />
 	<import resource="PTNetworkJdbcContext.xml" />
 	<import resource="CompanyJdbcContext.xml" />
@@ -25,5 +29,5 @@
 	<import resource="FacilityJdbcContext.xml" />
 	<import resource="VehicleJourneyJdbcContext.xml" />
 	<import resource="TimetableJdbcContext.xml" />
-	
+
 </beans>

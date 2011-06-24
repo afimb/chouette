@@ -8,6 +8,8 @@
 package fr.certu.chouette.model.neptune;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -34,6 +36,36 @@ public abstract class NeptuneObject implements Serializable
 
 	private boolean validationProceeded = false;
 
+	
+	/**
+	 * Build a list of internal Ids (Id) from a list of Neptune Objects 
+	 * 
+	 * @param neptuneObjects the list to parse
+	 * @return the ids list
+	 */
+	public static List<Long> extractIds(List<? extends NeptuneObject> neptuneObjects)
+	{
+		List<Long> ids = new ArrayList<Long>();
+		if(neptuneObjects != null)
+		{
+			for (NeptuneObject neptuneObject : neptuneObjects) 
+			{
+				if(neptuneObject != null)
+				{
+					Long id = neptuneObject.getId();
+					if(id != null)
+					{
+						ids.add(id);
+					}
+				}
+			}
+		}
+
+		return ids;
+	}
+
+
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

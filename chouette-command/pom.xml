@@ -38,9 +38,9 @@
 			<artifactId>chouette-validation</artifactId>
 		</dependency>
 		<dependency>
-        <groupId>fr.certu.chouette</groupId>
-        <artifactId>chouette-jdbc-dao</artifactId>
-      </dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-jdbc-dao</artifactId>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -55,6 +55,12 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
+		<!-- testing -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+		</dependency>
+
 	</dependencies>
 	<profiles>
 		<profile>
@@ -81,11 +87,8 @@
 		</profile>
 	</profiles>
 	<build>
-	<!-- 
-		<filters>
-			<filter>src/main/filters/${profile.filter}.properties</filter>
-		</filters>
-		 -->
+		<!-- <filters> <filter>src/main/filters/${profile.filter}.properties</filter> 
+			</filters> -->
 		<resources>
 			<resource>
 				<directory>src/main/java/</directory>
@@ -109,18 +112,14 @@
 				</includes>
 				<targetPath>${project.build.directory}</targetPath>
 			</resource>
-			<!-- 
+			<!-- <resource> <directory>${basedir}/src/main/resources/filtered</directory> 
+				<filtering>true</filtering> <targetPath>${project.build.directory}</targetPath> 
+				</resource> -->
 			<resource>
-				<directory>${basedir}/src/main/resources/filtered</directory>
-				<filtering>true</filtering>
 				<targetPath>${project.build.directory}</targetPath>
+				<directory>../config/dev</directory>
+				<filtering>true</filtering>
 			</resource>
-			 -->
-            <resource>
-                <targetPath>${project.build.directory}</targetPath>
-                <directory>../config/dev</directory>
-                <filtering>true</filtering>
-            </resource>
 		</resources>
 
 		<plugins>

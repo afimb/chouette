@@ -68,6 +68,12 @@
 				<comment>Indicate whenever the line is suitable for mobility restricted persons</comment>
 			</column>
 		</property>
+		<property name="userNeedsAsLong"
+			type="long">
+			<column name="userNeeds">
+				<comment>bit encoded list of userneeds enum value</comment>
+			</column>
+		</property>
 		
 		<!-- relations -->
 		<many-to-one name="ptNetwork" cascade="none" class="PTNetwork"

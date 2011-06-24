@@ -8,8 +8,7 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="groupOfLineJdbcDao" class="fr.certu.chouette.jdbc.dao.GroupOfLineJdbcDao">
-		<property name="dataSource" ref="chouetteDataSource" />
+	<bean id="groupOfLineJdbcDao" class="fr.certu.chouette.jdbc.dao.GroupOfLineJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.GroupOfLine</value>
 		</property>

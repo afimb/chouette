@@ -17,7 +17,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -145,14 +144,14 @@ public class Line extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 
-	
+
 	/**
 	 * ImportedItems for import neptune process
 	 */
 	@Getter @Setter private ImportedItems importedItems;
 
 	@Getter @Setter private List<Facility> facilities;
-	
+
 	public void addFacility(Facility facility)
 	{
 		if(facilities == null) facilities = new ArrayList<Facility>();
@@ -170,47 +169,47 @@ public class Line extends NeptuneIdentifiedObject
 		if (!userNeeds.contains(userNeed)) userNeeds.add(userNeed);
 	}
 
-//	/* (non-Javadoc)
-//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-//	 */
-//	@Override
-//	public void expand(DetailLevelEnum level)
-//	{
-//		// to avoid circular call check if level is already set according to this level
-//		if (getLevel().ordinal() >= level.ordinal()) return;
-//		super.expand(level);
-//		switch (level)
-//		{
-//		case ATTRIBUTE : 
-//			ptNetwork = null;
-//			company = null;
-//			routes = null;
-//			break;
-//		case NARROW_DEPENDENCIES : 
-//			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
-//			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
-//			if (getRoutes() != null)
-//			{
-//				for (Route route : getRoutes())
-//				{
-//					route.expand(DetailLevelEnum.ATTRIBUTE);
-//				}
-//			}
-//			break;
-//		case STRUCTURAL_DEPENDENCIES : 
-//		case ALL_DEPENDENCIES :
-//			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
-//			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
-//			if (getRoutes() != null)
-//			{
-//				for (Route route : getRoutes())
-//				{
-//					route.expand(level);
-//				}
-//			}
-//
-//		}
-//	} 
+	//	/* (non-Javadoc)
+	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	//	 */
+	//	@Override
+	//	public void expand(DetailLevelEnum level)
+	//	{
+	//		// to avoid circular call check if level is already set according to this level
+	//		if (getLevel().ordinal() >= level.ordinal()) return;
+	//		super.expand(level);
+	//		switch (level)
+	//		{
+	//		case ATTRIBUTE : 
+	//			ptNetwork = null;
+	//			company = null;
+	//			routes = null;
+	//			break;
+	//		case NARROW_DEPENDENCIES : 
+	//			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getRoutes() != null)
+	//			{
+	//				for (Route route : getRoutes())
+	//				{
+	//					route.expand(DetailLevelEnum.ATTRIBUTE);
+	//				}
+	//			}
+	//			break;
+	//		case STRUCTURAL_DEPENDENCIES : 
+	//		case ALL_DEPENDENCIES :
+	//			if (getPtNetwork() != null) getPtNetwork().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getCompany() != null) getCompany().expand(DetailLevelEnum.ATTRIBUTE);
+	//			if (getRoutes() != null)
+	//			{
+	//				for (Route route : getRoutes())
+	//				{
+	//					route.expand(level);
+	//				}
+	//			}
+	//
+	//		}
+	//	} 
 
 	@Override
 	public String toString(String indent,int level)
@@ -368,10 +367,21 @@ public class Line extends NeptuneIdentifiedObject
 
 	public void addRestrictionConstraint(RestrictionConstraint restriction) 
 	{
-		// TODO Auto-generated method stub
-		
+		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
+		if (restriction != null && !restrictionConstraints.contains(restriction))
+			restrictionConstraints.add(restriction);
+
 	}
-	
+
+
+	public void removeRestrictionConstraint(RestrictionConstraint restriction) 
+	{
+		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
+		if (restriction != null && restrictionConstraints.contains(restriction))
+			restrictionConstraints.remove(restriction);
+
+	}
+
 	/**
 	 * return lineEndList built with PTLink relationship
 	 * <p/>
@@ -477,4 +487,44 @@ public class Line extends NeptuneIdentifiedObject
 		}
 		return true;
 	}
+
+	public long getUserNeedsAsLong()
+	{
+		long code = 0;
+		if (userNeeds == null) 
+		{
+			userNeeds = new ArrayList<UserNeedEnum>();
+		}
+		for (UserNeedEnum need : userNeeds) 
+		{
+			code += (int)Math.pow(2, need.ordinal());
+		}
+		return code;
+	}
+
+	public void setUserNeedsAsLong(long code)
+	{
+		if (userNeeds == null) 
+		{
+			userNeeds = new ArrayList<UserNeedEnum>();
+		}
+		else
+		{
+			userNeeds.clear();
+		}
+
+		if (code != 0)
+		{
+			UserNeedEnum[] values = UserNeedEnum.values();
+			for (UserNeedEnum value : values) 
+			{
+				int codeBit = (int) Math.pow(2, value.ordinal());
+				if (codeBit == (code & codeBit))
+				{
+					userNeeds.add(value);
+				}
+			}	
+		}
+	}
+
 }

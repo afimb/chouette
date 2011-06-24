@@ -8,8 +8,7 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="stopPointJdbcDao" class="fr.certu.chouette.jdbc.dao.StopPointJdbcDao">
-		<property name="dataSource" ref="chouetteDataSource" />
+	<bean id="stopPointJdbcDao" class="fr.certu.chouette.jdbc.dao.StopPointJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.StopPoint</value>
 		</property>
