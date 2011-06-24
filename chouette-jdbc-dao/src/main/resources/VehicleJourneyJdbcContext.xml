@@ -57,5 +57,76 @@
 				IN (_OBJECTIDS_)
 			</value>
 		</property>
+
+		<property name="collectionAttributes">
+			<map>
+				<description>one entry for each attribute</description>
+				<entry key="vjAtStop">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectByObjectId">
+							<value>
+								SELECT * FROM ${database.schema}.VehicleJourneyAtStop
+								WHERE
+								vehiclejourneyid = ? 
+								</value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>
+								INSERT INTO ${database.schema}.VehicleJourneyAtStop
+								(
+								vehiclejourneyid,
+								stoppointid,
+								connectingserviceid,
+								boardingalightingpossibility,
+								arrivaltime,
+								departuretime,
+								waitingtime,
+								elapseduration,
+								headwayfrequency,
+								isdeparture
+								)
+								VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,
+								?)
+								</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>
+								DELETE FROM ${database.schema}.VehicleJourneyAtStop WHERE
+								vehiclejourneyid IN (_IDS_) 
+								</value>
+						</entry>
+					</map>
+				</entry>
+				
+				<entry key="timetableVj">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectByObjectId">
+							<value>
+								SELECT * FROM ${database.schema}.TimetableVehicleJourney WHERE
+								vehiclejourneyid = ? 
+								</value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>
+								INSERT INTO ${database.schema}.TimetableVehicleJourney
+								(
+								timetableid,
+								vehiclejourneyid
+								)
+								VALUES(?, ?)
+								</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>
+								DELETE FROM ${database.schema}.TimetableVehicleJourney WHERE
+								vehiclejourneyid IN (_IDS_)
+								 </value>
+						</entry>
+					</map>
+				</entry>
+			</map>
+		</property>
 	</bean>
 </beans>	
