@@ -47,13 +47,15 @@ public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern>
 		if (attributeKey.equals("stoppoint"))
 		{
 			List<JdbcStoppoint> jpoints = new ArrayList<JourneyPatternJdbcDao.JdbcStoppoint>();
-
-			for (StopPoint point : item.getStopPoints()) 
+			if (item.getStopPoints() != null)
 			{
-				JdbcStoppoint jpoint = new JdbcStoppoint();
-				jpoint.journeypatternId=item.getId();
-				jpoint.stopPointId = point.getId();
-				jpoints.add(jpoint);
+				for (StopPoint point : item.getStopPoints()) 
+				{
+					JdbcStoppoint jpoint = new JdbcStoppoint();
+					jpoint.journeypatternId=item.getId();
+					jpoint.stopPointId = point.getId();
+					jpoints.add(jpoint);
+				}
 			}
 			return jpoints;
 		}

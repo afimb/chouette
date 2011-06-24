@@ -62,7 +62,7 @@ public class VehicleJourneyAtStop extends NeptuneObject
 	@Getter @Setter private Time waitingTime;
 	@Getter @Setter private Time elapseDuration;
 	@Getter @Setter private Time headwayFrequency;
-	@Getter @Setter private Boolean departure;
+	@Getter @Setter private boolean departure;
 	//	/* (non-Javadoc)
 	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	//	 */

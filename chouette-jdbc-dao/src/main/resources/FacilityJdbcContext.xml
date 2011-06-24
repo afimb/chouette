@@ -38,8 +38,7 @@
 				projectiontype,
 				containedin
 				)
-				VALUES(?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?
-				,?, ?, ?, ?, ?, ?,? ?, ?)
+				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -74,7 +73,7 @@
 							<value>INSERT INTO ${database.schema}.facilityfeature
 								(
 								facilityid,
-								choicecode,
+								choicecode
 								)
 								VALUES(?, ?)</value>
 						</entry>

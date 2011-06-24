@@ -1,6 +1,8 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -181,4 +183,41 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		}
 		return true;
 	}
+	
+
+
+	public void sortVehicleJourneyAtStops() 
+	{
+		if (getVehicleJourneyAtStops() != null)
+		{
+			List<VehicleJourneyAtStop> vjas = getVehicleJourneyAtStops();
+			Collections.sort(vjas, new VehicleJourneyAtStopComparator());
+			vjas.get(0).setDeparture(true);
+		}
+		
+	}
+	
+	private class VehicleJourneyAtStopComparator implements Comparator<VehicleJourneyAtStop>
+	{
+
+		@Override
+		public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) 
+		{
+			if (o1.getElapseDuration() != null)
+			{
+				return o1.getElapseDuration().compareTo(o2.getElapseDuration());
+			}
+			if (o1.getDepartureTime() != null)
+			{
+				return o1.getDepartureTime().compareTo(o2.getDepartureTime());				
+			}
+			if (o1.getArrivalTime() != null)
+			{
+				return o1.getArrivalTime().compareTo(o2.getArrivalTime());				
+			}
+			return 0;
+		}
+		
+	}
+	
 }
