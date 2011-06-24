@@ -18,7 +18,6 @@ import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.jdbc.exception.JdbcDaoExceptionCode;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PeerId;
 
 /**

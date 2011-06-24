@@ -63,7 +63,7 @@
 				<entry key="vjAtStop">
 					<map>
 						<description>one entry for select, insert, delete</description>
-						<entry key="sqlSelectByObjectId">
+						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.VehicleJourneyAtStop
 								WHERE
@@ -101,7 +101,7 @@
 				<entry key="timetableVj">
 					<map>
 						<description>one entry for select, insert, delete</description>
-						<entry key="sqlSelectByObjectId">
+						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.TimetableVehicleJourney WHERE
 								vehiclejourneyid = ? 
