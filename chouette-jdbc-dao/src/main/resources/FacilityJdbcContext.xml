@@ -60,5 +60,31 @@
 				(_OBJECTIDS_)
 		</value>
 		</property>
+		<property name="collectionAttributes">
+			<map>
+				<description>one entry for each attribute</description>
+				<entry key="feature">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectById">
+							<value>SELECT * FROM ${database.schema}.facilityfeature
+								WHERE facilityid = ? </value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>INSERT INTO ${database.schema}.facilityfeature
+								(
+								facilityid,
+								choicecode,
+								)
+								VALUES(?, ?)</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>DELETE FROM ${database.schema}.facilityfeature
+								WHERE facilityid IN (_IDS_) </value>
+						</entry>
+					</map>
+				</entry>
+			</map>
+		</property>
 	</bean>
 </beans>	

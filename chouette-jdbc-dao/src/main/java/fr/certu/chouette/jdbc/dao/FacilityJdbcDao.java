@@ -4,15 +4,22 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import fr.certu.chouette.jdbc.dao.JourneyPatternJdbcDao.JdbcStoppoint;
+import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 
 /**
  * 
@@ -110,5 +117,46 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		ps.setBigDecimal(19, y);
 		ps.setString(20, projectionType);
 		ps.setString(21, containedIn);
+	}
+	
+	
+	@Override
+	protected Collection<? extends Object> getAttributeValues(String attributeKey, Facility item) 
+	throws JdbcDaoException 
+	{
+		if (attributeKey.equals("feature"))
+		{
+			List<JdbcFeature> jfeatures = new ArrayList<JdbcFeature>();
+
+			for (FacilityFeature feature : item.getFacilityFeatures()) 
+			{
+				JdbcFeature jfeature = new JdbcFeature();
+				jfeature.facilityId=item.getId();
+				jfeature.choiceCode = feature.getChoiceCode();
+				jfeatures.add(jfeature);
+			}
+			return jfeatures;
+		}
+		return super.getAttributeValues(attributeKey, item);
+	}
+
+	@Override
+	protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) 
+	throws SQLException 
+	{
+		if (attributeKey.equals("feature"))
+		{
+			JdbcFeature jfeature = (JdbcFeature) attribute;
+			ps.setLong(1,jfeature.facilityId);
+			ps.setInt(2,jfeature.choiceCode);
+			return;
+		}		
+		super.populateAttributeStatement(attributeKey, ps, attribute);
+	}
+
+	class JdbcFeature
+	{
+		Long facilityId;
+		int choiceCode;
 	}
 }
