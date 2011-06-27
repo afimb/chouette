@@ -384,6 +384,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void saveAll(User user, List<Line> lines, boolean propagate,boolean fast) throws ChouetteException
 	{
+		logger.debug("start saving line collection");
 		if(propagate)
 		{
 			INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
@@ -424,6 +425,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		{
 			super.saveAll(user, lines,propagate,fast);	
 		}
+		logger.debug("end saving line collection");
 	}
 
 	@Override

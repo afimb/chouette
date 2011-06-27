@@ -57,13 +57,14 @@
 
 
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="true">
+		class="fr.certu.chouette.dao.hibernate.ChouetteSessionFactoryBean"
+		lazy-init="true">
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
 				</prop>
-				<!-- TODO : a passer en update avant livraison si create-drop-->
-				<prop key="hibernate.hbm2ddl.auto">${database.hbm2ddl.auto}</prop> 
+				<!-- TODO : a passer en update avant livraison si create-drop -->
+				<prop key="hibernate.hbm2ddl.auto">${database.hbm2ddl.auto}</prop>
 				<prop key="hibernate.show_sql">${database.showsql}</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.default_schema">${database.schema}</prop>
@@ -95,6 +96,115 @@
 				</value>
 			</list>
 		</property>
+		<!-- chouette specific parameters to complete hibernate update schema action -->
+		<property name="strategy">
+			<value>${database.hbm2ddl.auto}</value>
+		</property>
+		<property name="dropConstraintKeySql">
+			<value>ALTER TABLE ${database.schema}.{0} DROP CONSTRAINT {1} CASCADE
+			</value>
+		</property>
+		<property name="getForeignKeysSql">
+			<value>select i.constraint_name, i.table_name, k.column_name,
+				u.table_name as target_table,u.column_name as target_column,
+				r.match_option, r.update_rule, r.delete_rule
+				from
+				information_schema.table_constraints i,
+				information_schema.key_column_usage k,
+				information_schema.constraint_column_usage u,
+				information_schema.referential_constraints r
+				where i.constraint_schema = 'chouette_test' 
+				and i.constraint_type = 'FOREIGN KEY'
+				and u.constraint_schema = i.constraint_schema 
+				and u.constraint_name = i.constraint_name
+				and k.constraint_schema = i.constraint_schema 
+				and k.constraint_name =	i.constraint_name
+				and r.constraint_schema = i.constraint_schema 
+				and r.constraint_name = i.constraint_name
+				order by i.table_name, k.column_name </value>
+		</property>
+		<property name="addForeignKeySql">
+			<value>ALTER TABLE ${database.schema}.{0}
+				ADD CONSTRAINT {1} FOREIGN KEY ({2})
+				REFERENCES ${database.schema}.{3} ({4})
+				ON UPDATE {6} ON DELETE {7}</value>
+		</property>
+		<property name="cascadeDeleteFkeys">
+			<list>
+				<value>aclk_acpt_fkey</value>
+				<value>aclk_area_fkey</value>
+				<value>colk_endarea_fkey</value>
+				<value>colk_startarea_fkey</value>
+				<value>faci_colk_fkey</value>
+				<value>faci_line_fkey</value>
+				<value>faci_area_fkey</value>
+				<value>faci_stpt_fkey</value>
+				<value>facility_feature_fkey</value>
+				<value>jp_route_fkey</value>
+				<value>jpsp_jp_fkey</value>
+				<value>jpsp_stoppoint_fkey</value>
+				<value>ptlink_route_fkey</value>
+				<value>route_line_fkey</value>
+				<value>stoppoint_route_fkey</value>
+				<value>tm_date_fkey</value>
+				<value>tm_period_fkey</value>
+				<value>vjtm_tm_fkey</value>
+				<value>vjtm_vj_fkey</value>
+				<value>vj_jp_fkey</value>
+				<value>vj_route_fkey</value>
+				<value>vjas_sp_fkey</value>
+				<value>vjas_vj_fkey</value>
+			</list>
+		</property>
+		<property name="setNullDeleteFkeys">
+			<list>
+				<value>line_company_fkey</value>
+				<value>line_glines_fkey</value>
+				<value>line_ptnetwork_fkey</value>
+				<value>area_parent_fkey</value>
+				<value>vj_company_fkey</value>
+				<value>vj_timeslot_fkey</value>
+			</list>
+		</property>
+		<property name="noActionDeleteFkeys">
+			<list>
+				<value>ptlk_endstpt_fkey</value>
+				<value>ptlk_startstpt_fkey</value>
+				<value>stoppoint_area_fkey</value>
+			</list>
+		</property>
+		<property name="getPrimaryKeysSql">
+			<value>select i.constraint_name, i.table_name, u.column_name
+				from
+				information_schema.table_constraints i,
+				information_schema.constraint_column_usage u
+				where
+				i.constraint_schema = '${database.schema}'
+				and constraint_type = 'PRIMARY KEY'
+				and i.constraint_schema = u.constraint_schema
+				and i.constraint_name = u.constraint_name
+				order by i.table_name,i.constraint_name</value>
+		</property>
+		<property name="addPrimaryKeySql">
+			<value>ALTER TABLE ${database.schema}.{0}
+				ADD CONSTRAINT {1} PRIMARY KEY ({2})
+				</value>
+		</property>
+		<property name="primaryKeys">
+			<list>
+				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
+					<property name="key" value="timetablevehiclejourney_pkey" />
+					<property name="table" value="timetablevehiclejourney" />
+					<property name="columns" value="timetableid,vehiclejourneyid" />
+				</bean>
+				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
+					<property name="key" value="vehiclejourneyatstop_pkey" />
+					<property name="table" value="vehiclejourneyatstop" />
+					<property name="columns" value="vehiclejourneyid,stoppointid" />
+				</bean>
+			</list>
+		</property>
+
 	</bean>
 
 	<bean id="transactionManager"

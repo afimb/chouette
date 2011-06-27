@@ -11,11 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
-import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -45,29 +41,11 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		ps.setString(5, facility.getName());
 		ps.setString(6, facility.getComment());
 
-		Long stopAreaId = null,
-		stopPointId = null,
-		cLinkId = null,
-		lineId  = null;
+		setId(ps,7,facility.getStopArea());
+		setId(ps,8,facility.getLine());
+		setId(ps,9,facility.getConnectionLink());
+		setId(ps,10,facility.getStopPoint());
 
-		StopArea stopArea = facility.getStopArea();
-		StopPoint stopPoint = facility.getStopPoint();
-		ConnectionLink cLink = facility.getConnectionLink();
-		Line line = facility.getLine();
-
-		if(stopArea != null)
-			stopAreaId = stopArea.getId();
-		if(stopPoint != null)
-			stopPointId = stopPoint.getId();
-		if(cLink != null)
-			cLinkId = cLink.getId();
-		if(line != null)
-			lineId = line.getId();
-
-		ps.setObject(7, stopAreaId);
-		ps.setObject(8, lineId);
-		ps.setObject(9, cLinkId);
-		ps.setObject(10, stopPointId);
 		ps.setString(11, facility.getDescription());
 		ps.setBoolean(12, facility.getFreeAccess());
 

@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -19,6 +21,8 @@ import fr.certu.chouette.model.neptune.Timetable;
 
 public class TimetableJdbcDao extends AbstractJdbcDao<Timetable> 
 {
+	private static final Logger logger = Logger.getLogger(TimetableJdbcDao.class);
+	
 	@Override
 	protected void populateStatement(PreparedStatement ps, Timetable timetable)
 	throws SQLException 
@@ -85,6 +89,7 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 					jperiod.timetableId=item.getId();
 					jperiod.period = period;
 					jperiod.position = position++;
+					periods.add(jperiod);
 				}
 			}
 			return periods;
@@ -101,6 +106,7 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 					jdate.timetableId=item.getId();
 					jdate.date = date;
 					jdate.position = position++;
+					dates.add(jdate);
 				}
 			}
 			return dates;

@@ -79,15 +79,8 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 			linkOrientation = accessLink.getLinkOrientation().value();
 		ps.setString(17, linkOrientation);
 		
-		Long stopAreaId = null, 
-			 accessPointId = null;
-		
-		if(accessLink.getAccessPoint() != null)
-			accessPointId = accessLink.getAccessPoint().getId();
-		ps.setLong(18, accessPointId);
-		
-		if(accessLink.getStopArea() != null)
-			stopAreaId = accessLink.getStopArea().getId();
-		ps.setLong(19, stopAreaId);
+		setId(ps,18,accessLink.getAccessPoint());
+		setId(ps,19,accessLink.getStopArea());
+
 	}
 }

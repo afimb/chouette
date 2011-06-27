@@ -2,6 +2,7 @@ package fr.certu.chouette.jdbc.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.jdbc.exception.JdbcDaoExceptionCode;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PeerId;
 
 /**
@@ -406,5 +408,19 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	public void removeAll(List<T> objects) throws JdbcDaoException {
 		toBatchDelete(sqlDelete, objects);
 
+	}
+	
+	
+	protected void setId(PreparedStatement ps, int pos, NeptuneObject object) throws SQLException
+	{
+		if (object == null) 
+			ps.setNull(pos,Types.BIGINT);
+		else if (object.getId() == null)
+		{
+			logger.error("refer object has not id set "+object.toString("", 0));
+			throw new NullPointerException("refer object has not id set");
+		}
+		else 
+			ps.setLong(pos,object.getId());
 	}
 }

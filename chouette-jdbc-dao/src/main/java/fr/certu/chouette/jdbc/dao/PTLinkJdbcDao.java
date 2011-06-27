@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import fr.certu.chouette.model.neptune.PTLink;
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopPoint;
 
 /**
  * 
@@ -30,22 +28,9 @@ public class PTLinkJdbcDao extends AbstractJdbcDao<PTLink>
 		ps.setString(5, ptLink.getName());
 		ps.setString(6, ptLink.getComment());
 		ps.setBigDecimal(7, ptLink.getLinkDistance());
-		Long startId = null, endId = null, routeId = null;
-		
-		StopPoint start = ptLink.getStartOfLink();
-		StopPoint end = ptLink.getEndOfLink();
-		Route route = ptLink.getRoute();
-		
-		if(start != null)
-			startId = start.getId();
-		if(end != null)
-			endId = end.getId();
-		if(route != null)
-			routeId = route.getId();
-		
-		ps.setLong(8, startId);
-		ps.setLong(9, endId);
-		ps.setLong(10, routeId);
+		setId(ps,8,ptLink.getStartOfLink());
+		setId(ps,9,ptLink.getEndOfLink());
+		setId(ps,10,ptLink.getRoute());
 		
 	}
 }
