@@ -113,7 +113,7 @@
 				information_schema.key_column_usage k,
 				information_schema.constraint_column_usage u,
 				information_schema.referential_constraints r
-				where i.constraint_schema = 'chouette_test' 
+				where i.constraint_schema = '${database.schema}' 
 				and i.constraint_type = 'FOREIGN KEY'
 				and u.constraint_schema = i.constraint_schema 
 				and u.constraint_name = i.constraint_name
