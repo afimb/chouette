@@ -148,18 +148,16 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			List<StopArea> connected = new ArrayList<StopArea>();
 			for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator.hasNext();) 
 			{
-				// TODO : check if missing link exists in database
 				ConnectionLink connectionLink = iterator.next();
-				if (connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null)
-				{
-					iterator.remove();
-				}
-				else
+				if (connectionLink.getStartOfLink() != null)  
 				{
 					if (!completeStopAreas.contains(connectionLink.getStartOfLink()))
-						connected.add(connectionLink.getStartOfLink());
+						addIfMissingInCollection(connected, connectionLink.getStartOfLink());
+				}
+				if (connectionLink.getEndOfLink() != null)
+				{
 					if (!completeStopAreas.contains(connectionLink.getEndOfLink()))
-						connected.add(connectionLink.getEndOfLink());
+						addIfMissingInCollection(connected,connectionLink.getEndOfLink());
 				}
 			}
 			saveParents(user,connected,propagate,fast);
