@@ -8,7 +8,8 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="facilityJdbcDao" class="fr.certu.chouette.jdbc.dao.FacilityJdbcDao" parent="abstractJdbcDao">
+	<bean id="facilityJdbcDao" class="fr.certu.chouette.jdbc.dao.FacilityJdbcDao"
+		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.Facility</value>
 		</property>
@@ -67,20 +68,27 @@
 					<map>
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
-							<value>SELECT * FROM ${database.schema}.facilityfeature
-								WHERE facilityid = ? </value>
+							<value>
+								SELECT * FROM ${database.schema}.facilityfeature
+								WHERE facilityid = ?
+							</value>
 						</entry>
 						<entry key="sqlInsert">
-							<value>INSERT INTO ${database.schema}.facilityfeature
+							<value>
+								INSERT INTO ${database.schema}.facilityfeature
 								(
 								facilityid,
 								choicecode,
 								)
-								VALUES(?, ?)</value>
+								VALUES(?, ?)
+								</value>
 						</entry>
 						<entry key="sqlDelete">
-							<value>DELETE FROM ${database.schema}.facilityfeature
-								WHERE facilityid IN (_IDS_) </value>
+							<value>
+								DELETE FROM ${database.schema}.facilityfeature
+								WHERE facilityid IN
+								(_IDS_) 
+								</value>
 						</entry>
 					</map>
 				</entry>
