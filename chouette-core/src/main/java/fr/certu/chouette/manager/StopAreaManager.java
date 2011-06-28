@@ -11,6 +11,7 @@ package fr.certu.chouette.manager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +27,6 @@ import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
@@ -129,55 +129,63 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		List<StopArea> completeStopAreas = new ArrayList<StopArea>();
 		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
 		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
-// 		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
+		// 		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
 		List<Facility> facilities = new ArrayList<Facility>();
 		if (propagate)
 		{
-			List<StopArea> parents = getParents(stopAreas);
-			completeStopAreas.addAll(parents);
+			saveParents(user,stopAreas,propagate,fast);
 			mergeCollection(completeStopAreas,stopAreas);
 
 			for (StopArea stopArea : completeStopAreas) 
 			{
 				mergeCollection(accessLinks, stopArea.getAccessLinks());
 				mergeCollection(connectionLinks, stopArea.getConnectionLinks());
-// 				mergeCollection(constraints, stopArea.getRestrictionConstraints());
+				// 				mergeCollection(constraints, stopArea.getRestrictionConstraints());
 				mergeCollection(facilities, stopArea.getFacilities());
 			}
-			
+
 			// add targetConnectionLink if not present
 			List<StopArea> connected = new ArrayList<StopArea>();
-			for (ConnectionLink connectionLink : connectionLinks) 
+			for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator.hasNext();) 
 			{
-				if (!completeStopAreas.contains(connectionLink.getStartOfLink()))
-					connected.add(connectionLink.getStartOfLink());
-				if (!completeStopAreas.contains(connectionLink.getEndOfLink()))
-					connected.add(connectionLink.getEndOfLink());
+				// TODO : check if missing link exists in database
+				ConnectionLink connectionLink = iterator.next();
+				if (connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null)
+				{
+					iterator.remove();
+				}
+				else
+				{
+					if (!completeStopAreas.contains(connectionLink.getStartOfLink()))
+						connected.add(connectionLink.getStartOfLink());
+					if (!completeStopAreas.contains(connectionLink.getEndOfLink()))
+						connected.add(connectionLink.getEndOfLink());
+				}
 			}
-			parents = getParents(connected);
-			mergeCollection(completeStopAreas, parents);
+			saveParents(user,connected,propagate,fast);
+			//mergeCollection(completeStopAreas, parents);
 			mergeCollection(completeStopAreas, connected);
 		}
 		else
 		{
 			completeStopAreas = stopAreas;
 		}
-		
+
 		super.saveAll(user, completeStopAreas,propagate,fast);
 
 		if(propagate)
 		{
 			INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
 			INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-//			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
+			//			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
 			if(!accessLinks.isEmpty())
 				accessLinkManager.saveAll(user, accessLinks, propagate,fast);
 			if(!connectionLinks.isEmpty())
 				connectionLinkManager.saveAll(user, connectionLinks, propagate,fast);
-//			if(!constraints.isEmpty())
-//				constraintManager.saveAll(user, constraints, propagate,fast);	
+			//			if(!constraints.isEmpty())
+			//				constraintManager.saveAll(user, constraints, propagate,fast);	
 			if(!facilities.isEmpty())
 				facilityManager.saveAll(user, facilities, propagate,fast);
 		}
@@ -186,21 +194,27 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 	/**
 	 * @param stopAreas
 	 * @return
+	 * @throws ChouetteException 
 	 */
-	private List<StopArea> getParents(List<StopArea> stopAreas) {
+	private void saveParents(User user,List<StopArea> stopAreas,boolean propagate,boolean fast) throws ChouetteException 
+	{
 		List<StopArea> parents = new ArrayList<StopArea>();
-		for (StopArea stopArea : stopAreas) 
+		if (stopAreas != null)
 		{
-			addIfMissingInCollection(parents,stopArea.getParentStopArea());
+			for (StopArea stopArea : stopAreas) 
+			{
+				addIfMissingInCollection(parents,stopArea.getParentStopArea());
+			}
+			if (!parents.isEmpty())
+			{
+				saveParents(user, parents, propagate, fast);
+				// mergeCollection(granParents, parents);
+				// parents = granParents;
+				super.saveAll(user, parents, propagate, fast);
+				getLogger().debug("saving "+parents.size()+" parents");
+			}
 		}
-		if (!parents.isEmpty())
-		{
-			List<StopArea> granParents = getParents(parents);
-			mergeCollection(granParents, parents);
-			parents = granParents;
-		}
-		getLogger().debug("add "+parents.size()+" parents");
-		return parents;
+		return;
 	}
 
 	@Override

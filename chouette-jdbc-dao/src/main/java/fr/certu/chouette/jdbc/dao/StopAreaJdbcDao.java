@@ -36,11 +36,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 	@Override
 	protected void populateStatement(PreparedStatement ps, StopArea stopArea)
 	throws SQLException {
-		StopArea parent = stopArea.getParentStopArea();
-		Long parentId = null;
-		if(parent != null)
-			parentId = parent.getId();
-		ps.setObject(1, (Long) parentId);
+		setId(ps,1,stopArea.getParentStopArea());
 		ps.setString(2, stopArea.getObjectId());
 		ps.setInt(3, stopArea.getObjectVersion());
 		Timestamp timestamp = null;

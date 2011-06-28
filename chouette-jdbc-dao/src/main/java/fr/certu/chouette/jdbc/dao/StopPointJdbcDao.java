@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 
 /**
@@ -41,17 +39,9 @@ public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 			timestamp = new Timestamp(stopPoint.getCreationTime().getTime());
 		ps.setTimestamp(3, timestamp);
 		ps.setString(4, stopPoint.getCreatorId());
-		StopArea stopArea = stopPoint.getContainedInStopArea();
-		Long stopAreaId = null; 
-		if(stopArea != null)
-			stopAreaId = stopArea.getId();
-		ps.setLong(5, stopAreaId);
-		ps.setInt(6, stopPoint.getPosition());
 		
-		Long routeId = null;
-		Route route = stopPoint.getRoute();
-		if(route != null)
-			routeId = route.getId();
-		ps.setLong(7, routeId );
+		setId(ps,5,stopPoint.getContainedInStopArea());
+		ps.setInt(6, stopPoint.getPosition());
+		setId(ps,7,stopPoint.getRoute());
 	}
 }

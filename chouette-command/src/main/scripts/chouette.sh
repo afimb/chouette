@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -jar ${project.build.finalName}.jar $*
+java -Xmx800M -jar ${project.build.finalName}.jar $*

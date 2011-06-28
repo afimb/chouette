@@ -134,7 +134,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 
 			vehicleJourney.addVehicleJourneyAtStop(vehicleJourneyAtStop);
 		}
-
+        vehicleJourney.sortVehicleJourneyAtStops();
 		return vehicleJourney;
 	}
 

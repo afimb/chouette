@@ -31,14 +31,8 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 	@Override
 	protected void populateStatement(PreparedStatement ps, Line line)
 			throws SQLException {
-		Long networkId = null ;
-		Long companyId = null;
-		if(line.getPtNetwork() != null)
-			networkId = line.getPtNetwork().getId();
-		ps.setLong(1, networkId );
-		if(line.getCompany() != null)
-			companyId = line.getCompany().getId();
-		ps.setLong(2, companyId);
+		setId(ps,1,line.getPtNetwork());
+		setId(ps,2,line.getCompany());
 		ps.setString(3, line.getObjectId());
 		ps.setInt(4, line.getObjectVersion());
 		Timestamp timestamp = null;
@@ -52,10 +46,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 		ps.setString(10, line.getTransportModeName().toString());
 		ps.setString(11, line.getRegistrationNumber());
 		ps.setString(12, line.getComment());
-		Long groupOfLineId = null;
-		if(line.getGroupOfLine() != null)
-			groupOfLineId = line.getGroupOfLine().getId();
-		ps.setLong(13, groupOfLineId);
+		setId(ps,13,line.getGroupOfLine());
 		Boolean mobilityRS = false;
 		if(line.getMobilityRestrictedSuitable() != null)
 			mobilityRS = true;		

@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
@@ -52,29 +48,11 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 		ps.setString(11, vehicleJourney.getVehicleTypeIdentifier());
 		ps.setLong(12, vehicleJourney.getNumber());
 
-		Long routeId = null,
-		jPatternId = null,
-		timeSlotId = null,
-		companyId = null;
+		setId(ps,13,vehicleJourney.getRoute());
+		setId(ps,14,vehicleJourney.getJourneyPattern());
+		setId(ps,15,vehicleJourney.getTimeSlot());
+		setId(ps,16,vehicleJourney.getCompany());
 
-		Route route = vehicleJourney.getRoute();
-		JourneyPattern jPattern = vehicleJourney.getJourneyPattern();
-		TimeSlot timeSlot = vehicleJourney.getTimeSlot();
-		Company company = vehicleJourney.getCompany();
-
-		if(route != null)
-			routeId = route.getId();
-		if(jPattern != null)
-			jPatternId = jPattern.getId();
-		if(timeSlot != null)
-			timeSlotId = timeSlot.getId();
-		if(company != null)
-			companyId = company.getId();
-
-		ps.setLong(13, routeId);
-		ps.setLong(14, jPatternId);
-		ps.setObject(15, (Long)timeSlotId);
-		ps.setLong(16, companyId);
 	}
 
 
@@ -88,8 +66,8 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 		{
 			VehicleJourneyAtStop vAtStop = (VehicleJourneyAtStop) attribute;
 
-			ps.setLong(1,vAtStop.getVehicleJourney().getId());
-			ps.setLong(2,vAtStop.getStopPoint().getId());
+			setId(ps,1,vAtStop.getVehicleJourney());
+			setId(ps,2,vAtStop.getStopPoint());
 			ps.setString(3, vAtStop.getConnectingServiceId());
 
 			String bordingPossibility = null;
@@ -122,7 +100,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 			ps.setTime(7, waitingtime);
 			ps.setTime(8, elapseduration);
 			ps.setTime(9, headwayfrequency);
-			ps.setBoolean(10, vAtStop.getDeparture());
+			ps.setBoolean(10, vAtStop.isDeparture());
 
 			return;
 

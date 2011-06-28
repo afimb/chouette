@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
-import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -27,9 +25,11 @@ import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 
 public class FacilityJdbcDao extends AbstractJdbcDao<Facility> 
 {
+	private static final Logger logger = Logger.getLogger(FacilityJdbcDao.class);
 	@Override
 	protected void populateStatement(PreparedStatement ps, Facility facility)
 	throws SQLException {
+		logger.debug("inserting "+facility.toString("",0));
 		ps.setString(1, facility.getObjectId());
 		ps.setInt(2, facility.getObjectVersion());
 
@@ -40,61 +40,43 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		ps.setString(4, facility.getCreatorId());
 		ps.setString(5, facility.getName());
 		ps.setString(6, facility.getComment());
-		
-		Long stopAreaId = null,
-			 stopPointId = null,
-			 cLinkId = null,
-			 lineId  = null;
-		
-		StopArea stopArea = facility.getStopArea();
-		StopPoint stopPoint = facility.getStopPoint();
-		ConnectionLink cLink = facility.getConnectionLink();
-		Line line = facility.getLine();
-		
-		if(stopArea != null)
-			stopAreaId = stopArea.getId();
-		if(stopPoint != null)
-			stopPointId = stopPoint.getId();
-		if(cLink != null)
-			cLinkId = cLink.getId();
-		if(line != null)
-			lineId = line.getId();
-		
-		ps.setLong(7, stopAreaId);
-		ps.setLong(8, lineId);
-		ps.setLong(9, cLinkId);
-		ps.setLong(10, stopPointId);
+
+		setId(ps,7,facility.getStopArea());
+		setId(ps,8,facility.getLine());
+		setId(ps,9,facility.getConnectionLink());
+		setId(ps,10,facility.getStopPoint());
+
 		ps.setString(11, facility.getDescription());
 		ps.setBoolean(12, facility.getFreeAccess());
-		
+
 		BigDecimal longitude = null,
-			   	   latitude = null,
-			   	   x = null,
-			   	   y = null;
-		
+		latitude = null,
+		x = null,
+		y = null;
+
 		String countrycode = null,
-			   streetname = null,
-			   longlattype = null,
-			   projectionType = null,
-			   containedIn = null;
-		
+		streetname = null,
+		longlattype = null,
+		projectionType = null,
+		containedIn = null;
+
 		FacilityLocation facilityLocation = facility.getFacilityLocation();
-		
+
 		if(facilityLocation != null)
 		{
 			longitude = facilityLocation.getLongitude();
 			latitude = facilityLocation.getLatitude();
 			if(facilityLocation.getLongLatType() != null)
 				longlattype = facilityLocation.getLongLatType().value();
-			
+
 			Address address = facilityLocation.getAddress();
-			
+
 			if(address != null)
 			{
 				countrycode = address.getCountryCode();
 				streetname = address.getStreetName();
 			}
-			
+
 			ProjectedPoint projectedPoint = facilityLocation.getProjectedPoint();
 			if(projectedPoint != null)
 			{
@@ -102,10 +84,10 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 				y = projectedPoint.getY();
 				projectionType = projectedPoint.getProjectionType();
 			}
-			
+
 			containedIn = facilityLocation.getContainedIn();
 		}
-		
+
 		ps.setBigDecimal(13, longitude);
 		ps.setBigDecimal(14, latitude);
 		ps.setString(15, longlattype);
@@ -116,8 +98,8 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		ps.setString(20, projectionType);
 		ps.setString(21, containedIn);
 	}
-	
-	
+
+
 	@Override
 	protected Collection<? extends Object> getAttributeValues(String attributeKey, Facility item) 
 	throws JdbcDaoException 
@@ -125,13 +107,15 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		if (attributeKey.equals("feature"))
 		{
 			List<JdbcFeature> jfeatures = new ArrayList<JdbcFeature>();
-
-			for (FacilityFeature feature : item.getFacilityFeatures()) 
+			if (item.getFacilityFeatures() != null)
 			{
-				JdbcFeature jfeature = new JdbcFeature();
-				jfeature.facilityId=item.getId();
-				jfeature.choiceCode = feature.getChoiceCode();
-				jfeatures.add(jfeature);
+				for (FacilityFeature feature : item.getFacilityFeatures()) 
+				{
+					JdbcFeature jfeature = new JdbcFeature();
+					jfeature.facilityId=item.getId();
+					jfeature.choiceCode = feature.getChoiceCode();
+					jfeatures.add(jfeature);
+				}
 			}
 			return jfeatures;
 		}

@@ -9,7 +9,6 @@ import java.util.List;
 
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 
 /**
@@ -33,11 +32,7 @@ public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern>
 		ps.setString(6, journeyPattern.getComment());
 		ps.setString(7, journeyPattern.getRegistrationNumber());
 		ps.setString(8, journeyPattern.getPublishedName());
-		Route route = journeyPattern.getRoute();
-		Long routeId = null;
-		if(route != null)
-			routeId = route.getId();
-		ps.setLong(9, routeId);
+		setId(ps,9,journeyPattern.getRoute());
 	}
 
 	@Override
@@ -47,13 +42,15 @@ public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern>
 		if (attributeKey.equals("stoppoint"))
 		{
 			List<JdbcStoppoint> jpoints = new ArrayList<JourneyPatternJdbcDao.JdbcStoppoint>();
-
-			for (StopPoint point : item.getStopPoints()) 
+			if (item.getStopPoints() != null)
 			{
-				JdbcStoppoint jpoint = new JdbcStoppoint();
-				jpoint.journeypatternId=item.getId();
-				jpoint.stopPointId = point.getId();
-				jpoints.add(jpoint);
+				for (StopPoint point : item.getStopPoints()) 
+				{
+					JdbcStoppoint jpoint = new JdbcStoppoint();
+					jpoint.journeypatternId=item.getId();
+					jpoint.stopPointId = point.getId();
+					jpoints.add(jpoint);
+				}
 			}
 			return jpoints;
 		}

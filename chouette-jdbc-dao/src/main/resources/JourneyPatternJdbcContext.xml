@@ -64,7 +64,7 @@
 							<value>INSERT INTO ${database.schema}.journeypattern_stoppoint
 								(
 								journeypatternid,
-								stoppointid,
+								stoppointid
 								)
 								VALUES(?, ?)</value>
 						</entry>

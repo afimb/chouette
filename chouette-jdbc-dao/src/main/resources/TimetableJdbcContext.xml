@@ -111,7 +111,7 @@
 								date,
 								position
 								)
-								VALUES(?, ?, ?, ?)</value>
+								VALUES(?, ?, ?)</value>
 						</entry>
 						<entry key="sqlDelete">
 							<value>

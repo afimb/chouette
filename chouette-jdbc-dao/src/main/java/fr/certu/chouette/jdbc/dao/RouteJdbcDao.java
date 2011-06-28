@@ -42,11 +42,8 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		Long oppositeRouteId = new Long(0);
 		if(route.getOppositeRouteId() != null)
 			oppositeRouteId = route.getOppositeRouteId();
-		ps.setLong(6, oppositeRouteId);
-		Long lineId = null;
-		if(route.getLine() != null)
-			lineId = route.getLine().getId();
-		ps.setLong(7, lineId);
+		ps.setObject(6, oppositeRouteId);
+		setId(ps,7,route.getLine());
 		ps.setString(8, route.getPublishedName());
 		ps.setString(9, route.getNumber());
 		
