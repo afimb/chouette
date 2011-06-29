@@ -24,9 +24,7 @@
 	
 	<decorator name="neptune-validation" page="neptune-validation.jsp" >
         <pattern>/neptune-validation/*</pattern>
-
     </decorator>
-
 
    <decorator name="main" page="main.jsp" >
         <pattern>/*</pattern>
