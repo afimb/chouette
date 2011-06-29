@@ -13,7 +13,19 @@ public class ActionLock
 	private static int timeout;
 	private Calendar takenAt = null;
 	private String sessionId = null;
+        private static ActionLock current;
+        
+        public ActionLock() {
+            if (current == null)
+                current = this;
+        }
 	
+        public static ActionLock getInstance() {
+            if (current == null)
+                new ActionLock();
+            return current;
+        }
+        
 	public void reserveLock(String sessionId)
 	{
 		initTakenAt();
