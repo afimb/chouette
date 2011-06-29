@@ -68,7 +68,7 @@
 				IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<property name="sqlUpdate">
+		<!-- <property name="sqlUpdate">
 			<value>
 				UPDATE ${database.schema}.LINE
 				SET
@@ -89,6 +89,13 @@
 				mobilityrestrictedsuitable = ?
 				WHERE objectid = ?
 			</value>
+		</property> -->
+		<property name="sqlDelete">
+			<value>
+				DELETE FROM ${database.schema}.LINE WHERE objectid
+				IN
+				(_OBJECTIDS_)
+		</value>
 		</property>
 	</bean>
 </beans>	

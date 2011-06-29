@@ -20,13 +20,24 @@ public class SingleActionInterceptor extends AbstractInterceptor
 {
 
 	private static final Log logger = LogFactory.getLog(SingleActionInterceptor.class);
+        private ActionLock actionLock;
 	
+        public void setActionLock(ActionLock actionLock) {
+            this.actionLock = actionLock;
+        }
+        
+        public ActionLock getActionLock() {
+            return actionLock;
+        }
+        
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception
 	{
-		ApplicationContext applicationContext = SingletonManager.getApplicationContext(); 
-		ActionLock actionLock = (ActionLock) applicationContext.getBean("actionLock");
-		
+		/*ApplicationContext applicationContext = SingletonManager.getApplicationContext(); 
+		ActionLock actionLock = (ActionLock) applicationContext.getBean("actionLock");*/
+            
+                setActionLock(ActionLock.getInstance());
+                
 		HttpSession session = ServletActionContext.getRequest().getSession();
 		String sessionId = session.getId();
 		String lockSessionId = actionLock.getSessionId();
