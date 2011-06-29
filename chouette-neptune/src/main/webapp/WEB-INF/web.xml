@@ -31,7 +31,16 @@ timetables of public transport networks, in accordance with a standard exchange 
   <param-name>contextConfigLocation</param-name>
   <param-value>classpath*:chouetteContext.xml</param-value>
  </context-param>  
- encodage utf-8 -->
+ encodage utf-8 
+  <filter> 
+<filter-name>openSessionInViewFilter</filter-name> 
+<filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class> 
+</filter> 
+
+<filter-mapping> 
+<filter-name>openSessionInViewFilter</filter-name> 
+<servlet-name>action</servlet-name> 
+</filter-mapping> -->
  <filter>
   <filter-name>Spring character encoding filter</filter-name>
   <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

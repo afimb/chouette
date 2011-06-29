@@ -205,6 +205,7 @@
         <property name="useAltibus" value="${import.xml.altibus}"/>
         <property name="usePegase" value="${import.csv.pegase}"/>
 	<property name="importHastusLogFileName" value="${import.csv.hastus.log}"/>
+	<property name="tmprep" value="${chouette.tempdir}"/>
     </bean>
 
     <bean id="LineFilesComparisonServiceBean" scope="prototype"
@@ -233,6 +234,8 @@
         <property name="databasePurgeManager" ref="databasePurgeManager"/>
         <property name="useGeometry" value="${validation.tm.geometry}"/>
         <property name="inclusif" value="${validation.tm.inclusif}"/>
+        <property name="coordonnees" ref="coordonnees"/>
+        <property name="convertisseur" ref="convertisseur"/>
     </bean>
 
     <bean id="ExportActionBean" scope="prototype"
@@ -265,6 +268,7 @@
     <bean id="AProposDe" scope="prototype"
         class="fr.certu.chouette.struts.AProposDeAction">
         <property name="versionApplication" value="${chouette.version}"/>
+        <property name="releaseApplication" value="${chouette.release}"/>
     </bean>
 
     <bean id="DownloadFileAction" scope="prototype"

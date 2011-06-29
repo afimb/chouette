@@ -78,7 +78,7 @@
   <field name="countryCode" >
     <field-validator type="regex">
       <param name="fieldName">countryCode</param>
-      <param name="expression">^\d{5}$</param>
+      <param name="expression">^((\d{2})|(2[AB]))\d{3}$</param>
       <message key="errors.insee"/>
     </field-validator>
   </field>

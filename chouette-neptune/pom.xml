@@ -1,7 +1,6 @@
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <name>Chouette Neptune</name>
     <modelVersion>4.0.0</modelVersion>
@@ -16,50 +15,54 @@
     <packaging>war</packaging>
     <dependencies>
         <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-core</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-exchange-neptune</artifactId>
-        </dependency>
-        <!--  Struts 2 -->
+		<!-- Struts 2 -->
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-core</artifactId>
-            <version>2.2.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-sitemesh-plugin</artifactId>
-            <version>2.2.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-spring-plugin</artifactId>
-            <version>2.2.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-config-browser-plugin</artifactId>
-            <version>2.2.1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-convention-plugin</artifactId>
-            <version>2.2.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-json-plugin</artifactId>
-            <version>2.2.1.1</version>
         </dependency>
         <dependency>
             <groupId>oro</groupId>
             <artifactId>oro</artifactId>
         </dependency>
-                    <!-- Servlet & Jsp -->
+		<!-- Display Tag for Struts 2 -->
+        <dependency>
+            <groupId>displaytag</groupId>
+            <artifactId>displaytag</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+		<!-- Servlet & Jsp -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -70,15 +73,43 @@
             <artifactId>jsp-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Dwr -->
+		<!-- Dwr -->
         <dependency>
             <groupId>uk.ltd.getahead</groupId>
             <artifactId>dwr</artifactId>
         </dependency>
-        <!-- SiteMesh -->
+		<!-- SiteMesh -->
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>sitemesh</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+         <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-attic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-exchange-neptune</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-hibernate-dao</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette</groupId>
+            <artifactId>chouette-jdbc-dao</artifactId>
         </dependency>
     </dependencies>
     <pluginRepositories>
@@ -107,12 +138,13 @@
                 </includes>
             </resource>
             <resource>
+                <targetPath>${project.build.outputDirectory}</targetPath>
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <targetPath>${basedir}/src/main/resources</targetPath>
-                <directory>${project.parent.basedir}/config/dev</directory>
+                <targetPath>${project.build.outputDirectory}</targetPath>
+                <directory>../config/dev</directory>
                 <filtering>false</filtering>
             </resource>
         </resources>
@@ -124,8 +156,7 @@
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <userRealms>
-                        <userRealm implementation=
-      "org.mortbay.jetty.security.HashUserRealm">
+                        <userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
                             <name>Espace membres</name>
                             <config>${project.parent.basedir}/config/dev/jetty.properties</config>
                         </userRealm>
@@ -164,11 +195,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                 <configuration>
+                <configuration>
                     <warName>dist/chouette</warName>
                     <manifest>
                         <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                     </manifest>
+                    <!--webResources>
+                        <resource>                            
+                            <directory>../config/dev</directory>                            
+                            <excludes>
+                                <exclude>log4j.properties</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources-->
                     <archive>
                         <manifestEntries>
                             <Specification-Title>${project.name}</Specification-Title>

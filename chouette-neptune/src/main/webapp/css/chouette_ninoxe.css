@@ -1,0 +1,952 @@
+/****************************************************************/
+/*                         BASE                               	*/
+/****************************************************************/
+BODY
+{
+  BACKGROUND-COLOR: #B789A6;
+  TEXT-ALIGN: center;
+  FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
+  COLOR: #1A408B;
+  PADDING: 10px;
+}
+
+
+img{
+  border-style: none;
+  border-width: 0px;
+}
+
+table
+{
+  border-collapse: collapse;
+}
+
+FORM
+{
+  PADDING: 0px;
+  MARGIN: 0px;
+}
+
+A
+{
+  COLOR: #1A408B;
+  TEXT-DECORATION: none;
+}
+
+A:hover
+{
+  TEXT-DECORATION: underline;
+}
+
+/****************************************************************/
+/*                         DECORATOR                           	*/
+/****************************************************************/
+#login
+{
+  margin: auto;
+  width: 400px;
+}
+
+#global
+{
+  BACKGROUND-COLOR: #FFFFFF;
+  BORDER: 1px solid #1A408B;
+  MARGIN: auto;
+  PADDING: 10px;
+}
+
+#baseline {
+  PADDING: 10px;
+  MARGIN-LEFT: 100px;
+  WIDTH: 500px;
+  TEXT-ALIGN: center;
+  BACKGROUND-COLOR: #B0BCD6;
+}
+
+/* zone principale */
+#main {
+  TEXT-ALIGN: left;
+  CLEAR: both;
+  PADDING-TOP: 15px;
+}
+
+
+/****************************************************************/
+/*                         HEADER                             	*/
+/****************************************************************/
+#header
+{
+}
+
+#header .layout
+{
+  border: 1px solid #657CB0;
+  height: 108px;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+#header .ministere
+{
+  width: 85px;
+  padding: 0px;
+  margin: 0px;
+}
+
+#header .medad
+{
+  display: block;
+  height: 108px;
+  width: 85px;
+}
+
+#header .partners
+{
+  width: 114px;
+  padding: 0px;
+  margin: 0px;
+}
+
+#header .certu
+{
+  display: block;
+  height: 52px;
+  width: 114px;
+}
+
+#header .predim
+{
+  display: block;
+  height: 56px;
+  width: 114px;
+}
+
+
+.logo
+{
+  background-color: #B789A6;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.chouette
+{
+  font-size:24px;
+  text-align: center;
+}
+
+.definition
+{
+  font-size:14px;
+  text-align: center;
+}
+
+
+.languages
+{
+  height: 106px;
+  width: 180px;
+  font-weight: bold;
+  font-size:12px;
+}
+
+.languages UL
+{
+  list-style: none;
+  text-align:center;
+  padding-left: 15px;
+}
+
+.languages LI
+{
+  margin:5px;
+  DISPLAY: inline;
+}
+
+
+
+/****************************************************************/
+/*                        MENU                                  */
+/****************************************************************/
+#menu
+{
+  FLOAT: left;
+  WIDTH: 170px;
+  BORDER: 1px solid #B0BCD6;
+  TEXT-ALIGN: left;
+  PADDING: 2px;
+  font-size:12px;
+}
+
+#menu .submenu
+{
+  MARGIN-BOTTOM: 30px;
+}
+
+#menu .submenu DIV
+{
+  PADDING-LEFT: 15px;
+  BACKGROUND-COLOR: #F2F3F8;
+  BORDER-BOTTOM: 1px solid #B0BCD6;
+  FONT-WEIGHT: bold;
+  font-size: 14px;
+}
+
+#menu .submenu UL {
+  LIST-STYLE: none;
+  MARGIN: 0px 0px 0px 15px;
+  PADDING: 0px;
+}
+
+#menu .submenu UL LI {
+  MARGIN: 2px 0px 0px 0px;
+}
+
+#menu .selectionne
+{
+  font-weight: bold;
+  color: purple;
+}
+
+/* autre */
+#help {
+  FLOAT: right;
+}
+
+/****************************************************************/
+/*                        CONTENT                               */
+/****************************************************************/
+#content {
+  margin: 0px 0px 0px 190px;
+}
+
+#content .selection {
+  BORDER: 1px solid #B0BCD6;
+  PADDING: 2px;
+  FONT-WEIGHT: bold;
+}
+#content .selection .selprinc {
+  BACKGROUND-COLOR: #FB9D1F;
+  PADDING: 2px 5px 10px 15px;
+  BORDER-BOTTOM: 1px solid #B0BCD6;
+}
+#content .selection .selprinc SPAN {
+  COLOR: #FFFFFF;
+}
+#content .selection .selsec {
+  BACKGROUND-COLOR: #FBBE6D;
+  PADDING: 2px 5px 20px 15px;
+}
+#content .selection .selsec SPAN {
+  FONT-WEIGHT: normal;
+}
+
+#content H1 {
+  TEXT-ALIGN: center;
+  MARGIN: 20px 0px 20px 0px;
+  FONT-WEIGHT: bold;
+  COLOR: #5A73AB;
+}
+
+#content .options {
+  MARGIN-BOTTOM: 20px;
+}
+#content .options INPUT {
+  MARGIN-LEFT: 20px;
+  BORDER: 1px solid #FA980F;
+  BACKGROUND-COLOR: #FDDDB4;
+  FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
+  COLOR: #1A408B;
+}
+
+#content .tools {
+  TEXT-ALIGN: right;
+  FONT-WEIGHT: bold;
+  MARGIN-BOTTOM: 5px;
+}
+#content .tools UL {
+  LIST-STYLE: none;
+  PADDING: 0px;
+  MARGIN: 0px;
+}
+#content .tools LI {
+  MARGIN-LEFT: 10px;
+  DISPLAY: inline;
+}
+
+#content .fullsize {
+  WIDTH: 100%;
+}
+
+/* tableaux */
+#content TABLE {
+  BORDER-COLLAPSE: collapse;
+}
+
+#content TH {
+  FONT-WEIGHT: bold;
+  TEXT-ALIGN: left;
+  padding: 5px;
+}
+#content TD {
+
+}
+
+#content .courses {
+  WIDTH: 100%;
+  TEXT-ALIGN: center;
+}
+
+#content .shortcuts {
+  MARGIN-LEFT: 35px;
+  MARGIN-TOP: 5px;
+  FONT-WEIGHT: bold;
+}
+#content .shortcuts A {
+  COLOR: #FA9A12;
+}
+#content .shortcuts UL {
+  LIST-STYLE: none;
+  PADDING: 0px;
+  MARGIN: 0px;
+}
+#content .shortcuts LI {
+  DISPLAY: inline;
+}
+
+/* pied de page */
+#foot {
+  CLEAR: both;
+}
+
+
+/****************************************************************/
+/*	Css pour l'édition d'un tableau de marche					*/
+/****************************************************************/
+.editTableauMarche UL, LI
+{
+  list-style: none;
+  list-style-type: none;
+  text-align: left;
+}
+
+/****************************************************************/
+/*          AUTOCOMPLETE                                        */
+/****************************************************************/
+div.autocomplete
+{
+  position:absolute;
+  width:250px;
+  background-color:#FEFEFE;
+  border:1px solid #999;
+  margin:0;
+  padding:0;
+  color: #888;
+}
+
+div.autocomplete ul
+{
+  list-style-type:none;
+  margin:0;
+  padding:0;
+}
+
+div.autocomplete ul li.selected { background-color: #FFE4FB;}
+
+div.autocomplete ul li
+{
+  list-style-type:none;
+  display:block;
+  margin:0;
+  padding:2px;
+  height:15px;
+  cursor:pointer;
+}
+
+/****************************************************************/
+/*	Css pour le tableau des horaires							*/
+/****************************************************************/
+#horairesCourses TABLE {
+  border: 1px solid #666;
+  width: 80%;
+  margin: 20px 0 2px 0 !important;
+}
+
+#horairesCourses th, #horairesCourses td {
+  padding: 2px 4px 2px 4px !important;
+  text-align: center;
+  vertical-align: top;
+}
+
+#horairesCourses THEAD TR {
+  background-color: #fc0;
+}
+
+#horairesCourses LI
+{
+  height: 25px;
+  min-height: 25px;
+  display : list-item;
+  list-style-image : none;
+ 	list-style-position: outside;
+ 	list-style: none;
+ 	list-style-type: none;
+}
+
+#horairesCourses OL
+{
+  padding: 0px 0px 0px 0px;
+}
+
+/****************************************************************/
+/*	Css pour le tableau de la pagination						*/
+/****************************************************************/
+#pagination
+{
+  border: 0px;
+}
+
+#pagination thead
+{
+  font-size:16px;
+}
+
+#pagination th, #pagination td
+{
+  padding: 1px 2px 1px 2px !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+/****************************************************************/
+/*	Css pour les messages et les erreurs						*/
+/****************************************************************/
+.message
+{
+  color: green;
+  font-size: 12px;
+  font-weight: bold;
+  list-style: none;
+  list-style-type: none;
+}
+
+.erreur
+{
+  color: red;
+  font-size: 12px;
+  font-weight: bold;
+  list-style: none;
+  list-style-type: none;
+}
+
+.edit
+{
+  width: 700px;
+  padding-top: 20px;
+  margin: auto;
+}
+
+
+
+.panelData
+{
+  font-weight: bold;
+  font-size: 12px;
+  margin: 2px 0px 10px 0px;
+
+}
+
+.panelDataSection
+{
+  font-size: 14px;
+  padding: 3px 0px 3px 20px;
+  BACKGROUND-COLOR: #FaFaFa;
+  margin: 10px 0px 0px 0px;
+  BORDER-LEFT: 1px solid #B0BCD6;
+  BORDER-RIGHT: 1px solid #B0BCD6;
+  BORDER-TOP: 1px solid #B0BCD6;
+  FONT-WEIGHT: bold;
+}
+
+.panelDataInnerForm {
+  border: 0px solid #666;
+  width: 80%;
+  margin: 2px 0 2px 0 !important;
+}
+
+.panel
+{
+  BACKGROUND-COLOR: #FFFFFF;
+  margin: 0px 0px 2px 0px;
+  BORDER: 1px solid #B0BCD6;
+}
+
+.actions a, a href
+{
+}
+/****************************************************************/
+/*	Css pour les input											*/
+/****************************************************************/
+.texteNonEditable
+{
+  background-color: #dcdcdc;
+}
+
+/****************************************************************/
+/*                         DISPLAYTAG                          	*/
+/****************************************************************/
+#displaytag
+{
+  font-size: 12px;
+  margin: 0px 20px 0px 20px;
+}
+
+#displaytag TABLE {
+  border: 1px solid #666;
+  width: 100%;
+  margin: 20px 0 20px 0 !important;
+  border-collapse: separate;
+}
+
+#displaytag TH, #displaytag TD {
+  padding: 2px 4px 2px 4px !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#displaytag THEAD TR {
+  background-color: #fc0;
+}
+
+#displaytag th.sorted {
+  background-color: orange;
+}
+
+#displaytag th a, #displaytag th a:visited {
+  color: black;
+}
+
+#displaytag th a:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+#displaytag th.sorted a, #displaytag th.sortable a {
+  background-position: right;
+  background-repeat: no-repeat;
+  display: block;
+  width: 100%;
+}
+
+#displaytag th.sortable a {
+  background-image: url(../images/arrow_off.png);
+}
+
+#displaytag th.order1 a {
+  background-image: url(../images/arrow_down.png);
+}
+
+#displaytag th.order2 a {
+  background-image: url(../images/arrow_up.png);
+}
+
+#displaytag tr.even {
+  background-color: #fea
+}
+
+#displaytag tr.odd {
+  background-color: #fff
+}
+
+#displaytag tr.selected {
+  background-color: #aaddff;
+}
+
+#displaytag tr.even td {
+  background-color: #fea;
+  border:none;
+  width:50px;
+  padding-left:2px;
+  padding-right:2px;
+  text-align:center;
+}
+
+#displaytag tr td input[type=text]{
+  width:50px;
+  padding-left:2px;
+  padding-right:2px;
+  text-align:center;
+}
+
+#displaytag tr.odd td {
+  background-color: #fff;
+  border:none;
+  width:50px;
+  padding-left:2px;
+  padding-right:2px;
+  text-align:center;
+}
+
+#displaytag tr.even td.enCoursDEdition {
+  background-color:#aaddff;
+}
+
+#displaytag tr.odd td.enCoursDEdition {
+  background-color:#aaddff;
+}
+
+#displaytag tr.even td.enCoursDEdition input {
+  background-color:white;
+}
+
+#displaytag tr.odd td.enCoursDEdition input {
+  background-color:white;
+}
+
+#displaytag div.exportlinks {
+  background-color: #eee;
+  border: 1px dotted #999;
+  padding: 2px 4px 2px 4px;
+  margin: 2px 0 10px 0;
+  width: 79%;
+}
+
+#displaytag span.export {
+  padding: 0 4px 1px 20px;
+  display: inline;
+  display: inline-block;
+  cursor: pointer;
+}
+
+#displaytag span.excel {
+  background-image: url(../images/ico_file_excel.png);
+}
+
+#displaytag span.csv {
+  background-image: url(../images/ico_file_csv.png);
+}
+
+#displaytag span.xml {
+  background-image: url(../images/ico_file_xml.png);
+}
+
+#displaytag span.pdf {
+  background-image: url(../images/ico_file_pdf.png);
+}
+
+#displaytag span.rtf {
+  background-image: url(../images/ico_file_rtf.png);
+}
+
+#displaytag span.pagebanner {
+  background-color: #eee;
+  border: 1px dotted #999;
+  padding: 2px 4px 2px 4px;
+  margin-top: 10px;
+  display: block;
+  border-bottom: none;
+}
+
+#displaytag span.pagelinks {
+  background-color: #eee;
+  border: 1px dotted #999;
+  padding: 2px 4px 2px 4px;
+  display: block;
+  border-top: none;
+  margin-bottom: -5px;
+}
+
+#displaytag td.itineraire
+{
+  border-bottom: 1px solid red !important;
+}
+
+/****************************************************************/
+/*                  STRUTS THEME XHTML                         	*/
+/****************************************************************/
+.wwFormTable
+{}
+.wwFormTable td
+{
+  vertical-align: middle;
+  padding: 5px;
+}
+.label {font-size: 12px;}
+.errorLabel {  font-size: 12px;font-style:italic; color:red; }
+.errorMessage {  font-size: 12px;font-weight:bold; color:red; }
+.checkboxLabel {}
+.checkboxErrorLabel {color:red; }
+.required {color:red;}
+.tdLabel {text-align:right; vertical-align:top; }
+
+/****************************************************************/
+/*                  STRUTS THEME CSS_XHTML                    	*/
+/****************************************************************/
+.wwgrp
+{
+  padding: 5px 0px 5px 0px;
+  display: inline-block;
+}
+
+/*.wwgrp:after
+{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+}*/
+
+.wwlbl
+{
+  float: left;
+  width: 170px;
+  text-align: right;
+  line-height: 25px;
+}
+
+.wwctrl
+{
+  padding-left: 5px;
+  float: left;
+  text-align: left;
+  height: 25px;
+}
+
+/****************************************************************/
+/*                        MAIN                                 	*/
+/****************************************************************/
+.asterisque
+{
+  margin: 5px 0px 5px 0px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: red;
+  line-height: 25px;
+}
+
+.submit input
+{
+  margin: 5px;
+}
+
+.informations p
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+.left{float: left;}
+.right{float: right;}
+
+.spacer {clear: both;}
+
+.checkboxlist
+{
+  display: table-column-group;
+  text-decoration: underline;
+  color: fuchsia;
+}
+
+/****************************************************************/
+/*                        STOPAREA                            	*/
+/****************************************************************/
+.editStopPlace
+{
+  position: absolute;
+  width: 440px;
+  padding-top: 10px;
+}
+
+#stoparea fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#stoparea fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#stoparea legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                        BOARDING POSITION                    	*/
+/****************************************************************/
+.editBoardingPosition
+{
+  position: absolute;
+  width: 440px;
+  padding-top: 10px;
+}
+
+#boardingPosition fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#boardingPosition fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#boardingPosition legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                        NETWORK                              	*/
+/****************************************************************/
+#network .wwlbl
+{
+  width: 250px;
+}
+
+/****************************************************************/
+/*                        COMPANY                              	*/
+/****************************************************************/
+#company .wwlbl
+{
+  width: 250px;
+}
+
+/****************************************************************/
+/*                        LINE                                	*/
+/****************************************************************/
+.editLine
+{
+  position: absolute;
+  width: 440px;
+  padding-top: 10px;
+}
+
+#line fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#line fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#line legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                   CONNECTION LINK                           	*/
+/****************************************************************/
+.editConnectionLink
+{
+  position: absolute;
+  width: 440px;
+  padding-top: 10px;
+}
+
+
+#connectionLink fieldset
+{
+  margin-top: 10px;
+  border: 1px solid #B0BCD6;
+}
+
+#connectionLink fieldset .wwlbl
+{
+  width: 100px;
+}
+
+#connectionLink legend
+{
+  font-size: 12px;
+  font-weight: bold
+}
+
+/****************************************************************/
+/*                        MAP                                 	*/
+/****************************************************************/
+#map-view
+{
+  position: absolute;
+  width: 20px;
+  height: 700px;
+  background-color: #B0BCD6;
+}
+
+#map-view-text
+{
+
+  font-weight: bold;
+  font-size: 28px;
+  color: white;
+  text-align: center;
+  padding-top: 340px;
+}
+
+.map-wrapper
+{
+  margin-left: 450px;
+  height: 700px;
+}
+
+/****************************************************************/
+/*	css Neptune validation
+/****************************************************************/
+.neptune-panel-inSide
+{
+ 	background-color: #FFFFFF;
+  	padding: 5px 5px;
+  	margin:0 0 5px 100px;
+  	width: 80%;
+  	font-size: 12px;
+  	border: 1px solid #B0BCD6;
+}
+.neptune-panel{
+	font-family: Arial, Verdana, Helvetica, sans-serif;
+	font-size: 13px;
+	background-color: #FFFFFF;
+  	margin: 0px 0px 2px 0px;
+  	padding: 10px 10px 10px 10px;
+ 	border: 1px solid #B0BCD6;
+	}
+.OK{
+	background: url(../images/OK.png) no-repeat 95% 0%;
+	}
+	
+.UNCHECK {
+	background: url(../images/UNCHECK.png) no-repeat 95% 0%;
+	}
+	
+.WARNING{
+	background: url(../images/WARNING.png) no-repeat 95% 0%;
+	}		
+
+.ERROR{
+	background: url(../images/ERROR.png) no-repeat 95% 0%;
+	color: red;
+	}
+.FATAL{
+	background: url(../images/FATAL.png) no-repeat 95% 0%;
+	color: red;
+	}
+	
+.detail {
+	margin: 0 0 0 660px;
+	padding: 5px 0 0 0;
+	}				
