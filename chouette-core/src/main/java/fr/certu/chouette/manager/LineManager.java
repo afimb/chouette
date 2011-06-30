@@ -296,6 +296,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void removeAll(User user, Collection<Line> lines, boolean propagate) throws ChouetteException
 	{
+		/*
 		logger.debug("start deleting Lines");
 		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -316,6 +317,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			constraintManager.removeAll(user, constraints,propagate);	
 
 		logger.debug("delete Lines");
+		*/
 		super.removeAll(user, lines,propagate);
 	}
 

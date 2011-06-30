@@ -7,7 +7,8 @@
   xsi:schemaLocation="
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+  default-init-method="init">
 
     <bean class="fr.certu.chouette.struts.ChouettePropertyPlaceholderConfigurer">
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
@@ -182,9 +183,11 @@
         <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     </bean>
 
+    <!-- ME: migrating in progress -->
     <bean id="ImportActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.upload.ImportAction">
+        <property name="lineManager" ref="lineManager" />
         <property name="importateur" ref="importateur"/>
         <property name="lecteurCSV" ref="lecteurCSV"/>
         <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
@@ -194,7 +197,7 @@
         <property name="identificationManager" ref="identificationManager"/>
         <property name="importHorairesManager" ref="importHorairesManager"/>
         <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
-        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
+<!--         <property name="lecteurFichierXML" ref="lecteurFichierXML"/> -->
         <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
         <property name="amivifAdapter" ref="amivifAdapter"/>
         <property name="useAmivif" value="${ligne.amivif}"/>
