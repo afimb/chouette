@@ -30,11 +30,6 @@
       <s:url id="editUrl" action="edit" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
       </s:url>
-      <s:url id="exportChouette" action="exportChouette" namespace="/company">
-        <s:param name="idTransporteur">${transporteur.id}</s:param>
-        <s:param name="exportMode">${'CHOUETTE'}</s:param>
-        <s:param name="operationMode">STORE</s:param>
-      </s:url>
       <s:url id="exportNeptune" action="exportChouette" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
         <s:param name="exportMode">${'NEPTUNE'}</s:param>
@@ -47,10 +42,9 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column titleKey="table.title.name" property="company.name" sortable="true" headerClass="sortable"/>
-    <display:column titleKey="table.title.postalCode" property="company.code" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.name" property="name" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.postalCode" property="code" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportChouette}"><s:text name="text.transporteur.export.chouette"/></s:a><br>
       <s:a href="%{exportNeptune}"><s:text name="text.transporteur.export.neptune"/></s:a>
     </display:column>
   </display:table>

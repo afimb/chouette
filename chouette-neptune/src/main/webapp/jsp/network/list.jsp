@@ -29,11 +29,6 @@
       <s:url id="editUrl" action="edit" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
       </s:url>
-      <s:url id="exportChouette" action="exportChouette" namespace="/network">
-        <s:param name="idReseau">${reseau.id}</s:param>
-        <s:param name="exportMode">${'CHOUETTE'}</s:param>
-        <s:param name="operationMode">STORE</s:param>
-      </s:url>
       <s:url id="exportNeptune" action="exportChouette" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
         <s:param name="exportMode">${'NEPTUNE'}</s:param>
@@ -56,9 +51,8 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-    <display:column titleKey="table.title.name" property="ptNetwork.name" sortable="true" headerClass="sortable"/>
+    <display:column titleKey="table.title.name" property="name" sortable="true" headerClass="sortable"/>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportChouette}"><s:text name="text.reseau.export.chouette"/></s:a><br>
       <s:a href="%{exportNeptune}"><s:text name="text.reseau.export.neptune"/></s:a>
       <s:if test="useGtfs == 'true'">
         <br><s:a href="%{exportGTFS}"><s:text name="text.reseau.export.gtfs"/></s:a>

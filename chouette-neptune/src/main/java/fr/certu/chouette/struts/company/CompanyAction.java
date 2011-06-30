@@ -1,19 +1,5 @@
 package fr.certu.chouette.struts.company;
 
-import chouette.schema.ChouettePTNetworkTypeType;
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
-import fr.certu.chouette.modele.Ligne;
-import fr.certu.chouette.struts.GeneriqueAction;
-import fr.certu.chouette.modele.Transporteur;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.database.IExportManager;
-import fr.certu.chouette.service.database.IExportManager.ExportMode;
-import fr.certu.chouette.service.database.ITransporteurManager;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
-import fr.certu.chouette.service.validation.commun.ValidationException;
-import fr.certu.chouette.service.validation.util.MainSchemaProducer;
-import fr.certu.chouette.service.xml.ILecteurFichierXML;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,15 +8,40 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class CompanyAction extends GeneriqueAction implements ModelDriven<Transporteur>, Preparable {
+import chouette.schema.ChouettePTNetworkTypeType;
+
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.service.commun.ServiceException;
+import fr.certu.chouette.service.database.IExportManager;
+import fr.certu.chouette.service.database.IExportManager.ExportMode;
+import fr.certu.chouette.service.validation.commun.TypeInvalidite;
+import fr.certu.chouette.service.validation.commun.ValidationException;
+import fr.certu.chouette.service.validation.util.MainSchemaProducer;
+import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import fr.certu.chouette.struts.GeneriqueAction;
+
+public class CompanyAction extends GeneriqueAction implements ModelDriven<Company>, Preparable {
 
     private static final Log log = LogFactory.getLog(CompanyAction.class);
-    private Transporteur companyModel = new Transporteur();
-    private ITransporteurManager transporteurManager;
+    private Company companyModel = new Company();
+    @Getter @Setter private INeptuneManager<Company> companyManager;
+    @Getter @Setter INeptuneManager<Line> lineManager;
     private Long idTransporteur;
     private String mappedRequest;
     private ExportMode exportMode;
@@ -38,7 +49,8 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
     private String nomFichier;
     private IExportManager exportManager;
     private ILecteurFichierXML lecteurFichierXML;
-
+    private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+    
     public Long getIdTransporteur() {
         return idTransporteur;
     }
@@ -50,25 +62,27 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
     /********************************************************
      *                  MODEL + PREPARE                     *
      ********************************************************/
-    public Transporteur getModel() {
+    public Company getModel() {
         return companyModel;
     }
 
     public void prepare() throws Exception {
         log.debug("Prepare with id : " + getIdTransporteur());
         if (getIdTransporteur() == null) {
-            companyModel = new Transporteur();
+            companyModel = new Company();
         } else {
-            companyModel = transporteurManager.lire(getIdTransporteur());
+        	Filter filter = Filter.getNewEqualsFilter("id", getIdTransporteur());
+            companyModel = companyManager.get(null, filter, level);
         }
     }
 
     /********************************************************
-     *                           CRUD                       *
+     *                           CRUD                       
+     * @throws ChouetteException *
      ********************************************************/
     @SkipValidation
-    public String list() {
-        this.request.put("transporteurs", transporteurManager.lire());
+    public String list() throws ChouetteException {
+        this.request.put("transporteurs", companyManager.getAll(null));
         log.debug("List of companies");
         return LIST;
     }
@@ -81,7 +95,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
 
     public String save() {
         try {
-            transporteurManager.creer(getModel());
+            companyManager.addNew(null, getModel());
         }
         catch(Exception e) {
             addActionMessage(getText("transporteur.homonyme"));
@@ -101,7 +115,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
 
     public String update() {
         try {
-            transporteurManager.modifier(getModel());
+        	companyManager.update(null, getModel());
         }
         catch(Exception e) {
             addActionMessage(getText("transporteur.homonyme"));
@@ -113,8 +127,8 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
         return REDIRECTLIST;
     }
 
-    public String delete() {
-        transporteurManager.supprimer(getModel().getId());
+    public String delete() throws ChouetteException {
+        companyManager.remove(null, getModel(), false);
         addActionMessage(getText("transporteur.delete.ok"));
         log.debug("Delete company with id : " + getModel().getId());
         return REDIRECTLIST;
@@ -130,7 +144,9 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
     public String exportChouette() throws Exception {
         try {
             log.debug("Export Chouette : toutes les lignes du transporteur : " + idTransporteur);
-            List<Ligne> lignes = transporteurManager.getLignesTransporteur(idTransporteur);
+            
+            Filter filter = Filter.getNewEqualsFilter("company.id", idTransporteur);
+			List<Line> lignes = lineManager.getAll(null, filter , level); 
             if ((lignes == null) || (lignes.size() == 0)) {
                 addActionMessage(getText("export.company.noline"));
                 return REDIRECTLIST;
@@ -141,7 +157,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
             ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
             zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
             nomFichier = "C_" + exportMode + "_" + id + ".zip";
-            for (Ligne ligne : lignes) {
+            for (Line ligne : lignes) {
                 ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
                 try {
                     MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
@@ -191,9 +207,6 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Transp
     /********************************************************
      *                        MANAGER                       *
      ********************************************************/
-    public void setTransporteurManager(ITransporteurManager transporteurManager) {
-        this.transporteurManager = transporteurManager;
-    }
 
     public void setExportManager(IExportManager exportManager) {
         this.exportManager = exportManager;

@@ -70,11 +70,6 @@
         <s:param name="origin">ligne</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
-      <s:url id="removeLigneChouette" action="deleteChouette" namespace="/line">
-        <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="exportMode">${'CHOUETTE'}</s:param>
-        <s:param name="operationMode">STORE</s:param>
-      </s:url>
       <s:url id="removeLigneNeptune" action="deleteChouette" namespace="/line">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="exportMode">${'NEPTUNE'}</s:param>
@@ -83,11 +78,6 @@
       <s:url id="exportAmivif" action="exportAmivif" namespace="/export">
         <s:param name="idLigne">${ligne.id}</s:param>
         <s:param name="origin">ligne</s:param>
-        <s:param name="operationMode">STORE</s:param>
-      </s:url>
-      <s:url id="exportChouette" action="exportChouette" namespace="/line">
-        <s:param name="idLigne">${ligne.id}</s:param>
-        <s:param name="exportMode">${'CHOUETTE'}</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportNeptune" action="exportChouette" namespace="/line">
@@ -106,10 +96,6 @@
         </s:a>
       </div>
       <div style="float: left; text-align: left;">
-        <s:a href="%{removeLigneChouette}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
-          <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.chouette"/>
-        </s:a>
-        <br>
         <s:a href="%{removeLigneNeptune}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
           <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.neptune"/>
         </s:a>
@@ -117,6 +103,7 @@
         <s:a href="%{removeLigne}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
           <img border="0" src="<s:url value='/images/supprimer.png'/>" alt="Delete" title="<s:text name="tooltip.delete"/>"><s:text name="text.ligne.delete.network"/>
         </s:a>
+        <br>
         <s:if test="useAmivif == 'true'">
           <br>
           <s:a href="%{removeLigneAmivif}" onclick="return confirm('%{getText('ligne.delete.confirmation')}');">
@@ -143,8 +130,6 @@
         <s:a href="%{itinerary}"><s:text name="table.text.route"/></s:a>
     </display:column>
     <display:column titleKey="table.title.export">
-      <s:a href="%{exportChouette}"><s:text name="text.ligne.export.chouette" /></s:a>
-      <br>
       <s:a href="%{exportNeptune}"><s:text name="text.ligne.export.neptune" /></s:a>
       <s:if test="useAmivif == 'true'">
         <br>

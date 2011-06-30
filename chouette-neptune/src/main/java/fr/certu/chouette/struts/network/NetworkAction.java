@@ -1,23 +1,5 @@
 package fr.certu.chouette.struts.network;
 
-import chouette.schema.ChouettePTNetworkTypeType;
-import fr.certu.chouette.struts.GeneriqueAction;
-import fr.certu.chouette.modele.Reseau;
-import fr.certu.chouette.service.database.IReseauManager;
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
-import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.modele.Ligne;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.export.gtfs.IGTFSFileWriter;
-import fr.certu.chouette.service.export.geoportail.IGeoportailFileWriter;
-import fr.certu.chouette.service.database.IExportManager;
-import fr.certu.chouette.service.database.IExportManager.ExportMode;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
-import fr.certu.chouette.service.validation.commun.ValidationException;
-import fr.certu.chouette.service.validation.util.MainSchemaProducer;
-import fr.certu.chouette.service.xml.ILecteurEchangeXML;
-import fr.certu.chouette.service.xml.ILecteurFichierXML;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,15 +11,45 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau>, Preparable {
+import chouette.schema.ChouettePTNetworkTypeType;
+
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.echange.ILectureEchange;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.modele.Reseau;
+import fr.certu.chouette.service.commun.ServiceException;
+import fr.certu.chouette.service.database.IExportManager;
+import fr.certu.chouette.service.database.IExportManager.ExportMode;
+import fr.certu.chouette.service.export.geoportail.IGeoportailFileWriter;
+import fr.certu.chouette.service.export.gtfs.IGTFSFileWriter;
+import fr.certu.chouette.service.validation.commun.TypeInvalidite;
+import fr.certu.chouette.service.validation.commun.ValidationException;
+import fr.certu.chouette.service.validation.util.MainSchemaProducer;
+import fr.certu.chouette.service.xml.ILecteurEchangeXML;
+import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import fr.certu.chouette.struts.GeneriqueAction;
+
+public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetwork>, Preparable {
 
     private static final Log log = LogFactory.getLog(NetworkAction.class);
-    private Reseau model = new Reseau();
-    private IReseauManager reseauManager;
+    private PTNetwork model = new PTNetwork();
+    @Getter @Setter private INeptuneManager<PTNetwork> networkManager;
+    @Getter @Setter private INeptuneManager<Line> lineManager;
     private Long idReseau;
     private String mappedRequest;
     private ExportMode exportMode;
@@ -52,6 +64,8 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     private String useGeoportail;
     private static int GTFS = 0;
     private static int GEOPORTAIL = 1;
+    private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+	
 
     public void setUseGtfs(String useGtfs) {
         this.useGtfs = useGtfs;
@@ -80,25 +94,27 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     /********************************************************
      *                  MODEL + PREPARE                     *
      ********************************************************/
-    public Reseau getModel() {
+    public PTNetwork getModel() {
         return model;
     }
 
     public void prepare() throws Exception {
         log.debug("Prepare with id : " + getIdReseau());
         if (getIdReseau() == null) {
-            model = new Reseau();
+            model = new PTNetwork();
         } else {
-            model = reseauManager.lire(getIdReseau());
+        	Filter filter = Filter.getNewEqualsFilter("id", getIdReseau());
+            model = networkManager.get(null, filter, level);
         }
     }
 
     /********************************************************
-     *                           CRUD                       *
+     *                           CRUD                       
+     * @throws ChouetteException *
      ********************************************************/
     @SkipValidation
-    public String list() {
-        this.request.put("reseaux", reseauManager.lire());
+    public String list() throws ChouetteException {
+        this.request.put("reseaux", networkManager.getAll(null));
         log.debug("List of networks");
         return LIST;
     }
@@ -111,7 +127,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
 
     public String save() {
         try {
-            reseauManager.creer(model);
+            networkManager.addNew(null, model);
         }
         catch(Exception e) {
             addActionMessage(getText("reseau.homonyme"));
@@ -131,7 +147,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
 
     public String update() {
         try {
-            reseauManager.modifier(model);
+        	networkManager.update(null, model);
         }
         catch(Exception e) {
             addActionMessage(getText("reseau.homonyme"));
@@ -143,8 +159,8 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
         return REDIRECTLIST;
     }
 
-    public String delete() {
-        reseauManager.supprimer(model.getId());
+    public String delete() throws ChouetteException {
+        networkManager.remove(null, model, false);
         addActionMessage(getText("reseau.delete.ok"));
         log.debug("Delete network with id : " + model.getId());
         return REDIRECTLIST;
@@ -189,7 +205,8 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
         try {
             String exportModeStr = exportMode.toString();
             log.debug("Export " + exportModeStr + " : toutes les lignes du reseau : " + idReseau);
-            List<Ligne> lignes = reseauManager.getLignesReseau(idReseau);
+            Filter filter = Filter.getNewEqualsFilter("company.id", idReseau);
+			List<Line> lignes = lineManager.getAll(null, filter , level); 
             if ((lignes == null) || (lignes.size() == 0)) {
                 addActionMessage(getText("export.network.noline"));
                 return REDIRECTLIST;
@@ -202,7 +219,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
             nomFichier = "C_" + exportModeStr + "_" + id + ".zip";
             if ("GEOPORTAIL".equals(exportModeStr)) {
                 List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
-                for (Ligne ligne : lignes) {
+                for (Line ligne : lignes) {
                     lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
                 }
                 write(lecturesEchanges, "aot", zipOutputStream, GEOPORTAIL);
@@ -330,7 +347,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
                 /*******************************************************************************************/
             } else if ("GTFS".equals(exportModeStr)) {
                 List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
-                for (Ligne ligne : lignes) {
+                for (Line ligne : lignes) {
                     lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
                 }
                 write(lecturesEchanges, "agency", zipOutputStream, GTFS);
@@ -342,7 +359,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
                 write(lecturesEchanges, "calendar_dates", zipOutputStream, GTFS);
                 addActionMessage(getText("reseau.export.gtfs.ok"));
             } else {
-                for (Ligne ligne : lignes) {
+                for (Line ligne : lignes) {
                     ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
                     try {
                         MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
@@ -393,9 +410,6 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<Reseau
     /********************************************************
      *                        MANAGER                       *
      ********************************************************/
-    public void setReseauManager(IReseauManager reseauManager) {
-        this.reseauManager = reseauManager;
-    }
 
     public void setExportManager(IExportManager exportManager) {
         this.exportManager = exportManager;

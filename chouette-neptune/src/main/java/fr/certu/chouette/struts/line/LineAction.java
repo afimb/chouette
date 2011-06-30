@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -27,14 +25,14 @@ import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.modele.Reseau;
-import fr.certu.chouette.modele.Transporteur;
+import fr.certu.chouette.plugin.exchange.FormatDescription;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.database.IExportManager.ExportMode;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
 import fr.certu.chouette.service.validation.commun.ValidationException;
-import fr.certu.chouette.service.validation.util.MainSchemaProducer;
 import fr.certu.chouette.service.xml.ILecteurFichierXML;
 import fr.certu.chouette.struts.GeneriqueAction;
 @SuppressWarnings("unchecked")
@@ -57,8 +55,8 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 	@Getter @Setter private List<Company> companies;
 	@Getter @Setter private String networkName = "";
 	@Getter @Setter private String companyName = "";
-	@Getter  private IExportManager exportManager;
-	@Getter  private ILecteurFichierXML lecteurFichierXML;
+	@Getter @Setter private IExportManager exportManager;
+	@Getter @Setter private ILecteurFichierXML lecteurFichierXML;
 	@Getter @Setter private ExportMode exportMode;
 	@Getter @Setter private File temp;
 	@Getter @Setter private String nomFichier;
@@ -219,32 +217,32 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 			// Destruction de ce fichier temporaire à la sortie du programme
 			temp.deleteOnExit();
 
-			ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne, exportMode);
+			List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+			
+			List<FormatDescription> formats = lineManager.getExportFormats(null);
+			ReportHolder reportHolder = new ReportHolder();
+			String formatDescriptor = formats.get(0).getName();
+			List<Line> lines = new ArrayList<Line>();
+			lines.add(lineManager.getByObjectId(lineModel.getObjectId()));
 			try
 			{
-				MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
-				mainSchemaProducer.getASG(ligneLue);
+				//Nom du fichier de sortie
+				nomFichier = "C_" + exportMode + "_" + lineModel.getRegistrationNumber() + ".xml";
+				SimpleParameterValue simpleParameterValue = new SimpleParameterValue("outputFile");
+				simpleParameterValue.setFilenameValue(nomFichier);
+				
+				parameters.add(simpleParameterValue);	
 
-				//	Nom du fichier de sortie
-				nomFichier = "C_" + exportMode + "_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
-				lecteurFichierXML.ecrire(ligneLue, temp);
+				lineManager.doExport(null, lines, formatDescriptor , parameters, reportHolder);
 			} catch (ValidationException e)
 			{
-				List<TypeInvalidite> categories = e.getCategories();
-				if (categories != null)
-				{
-					for (TypeInvalidite category : categories)
-					{
-						Set<String> messages = e.getTridentIds(category);
-						for (String message : messages)
-						{
-							addActionError(message);
-							log.error(message);
-						}
-					}
-				}
-				nomFichier = "C_INVALIDE_" + exportMode + "_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
-				lecteurFichierXML.ecrire(ligneLue, temp);
+
+				nomFichier = "C_INVALIDE_" + exportMode + "_" + lineModel.getRegistrationNumber() + ".xml";
+				SimpleParameterValue simpleParameterValue = new SimpleParameterValue("outputFile");
+				simpleParameterValue.setFilenameValue(nomFichier);
+				
+				parameters.add(simpleParameterValue);
+				lineManager.doExport(null, lines, formatDescriptor, parameters, reportHolder);
 			}
 		} catch (ServiceException exception)
 		{
@@ -255,44 +253,44 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		return EXPORT;
 	}
 
-	@SkipValidation
-	public String deleteChouette() throws Exception
-	{
-		try
+		@SkipValidation
+		public String deleteChouette() throws Exception
 		{
-			// Creation d'un fichier temporaire
-			temp = File.createTempFile("exportSupprimerChouette", ".xml");
-			// Destruction de ce fichier temporaire à la sortie du programme
-			temp.deleteOnExit();
-			ChouetteRemoveLineTypeType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
-			//	Nom du fichier de sortie
-			nomFichier = "S_" + exportMode + "_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
-			lecteurFichierXML.ecrire(ligneLue, temp);
-			Filter filter = Filter.getNewEqualsFilter("id",idLigne);
-			Line line = lineManager.get(null, filter , level);
-			lineManager.remove(null, line, propagate);
-		} catch (ServiceException exception)
-		{
-			log.debug("ServiceException : " + exception.getMessage());
-			addActionError(getText(exception.getCode().name()));
-			return REDIRECTLIST;
+			try
+			{
+				// Creation d'un fichier temporaire
+				temp = File.createTempFile("exportSupprimerChouette", ".xml");
+				// Destruction de ce fichier temporaire à la sortie du programme
+				temp.deleteOnExit();
+				ChouetteRemoveLineTypeType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
+				//	Nom du fichier de sortie
+				nomFichier = "S_" + exportMode + "_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
+				lecteurFichierXML.ecrire(ligneLue, temp);
+				Filter filter = Filter.getNewEqualsFilter("id",idLigne);
+				Line line = lineManager.get(null, filter , level);
+				lineManager.remove(null, line, propagate);
+			} catch (ServiceException exception)
+			{
+				log.debug("ServiceException : " + exception.getMessage());
+				addActionError(getText(exception.getCode().name()));
+				return REDIRECTLIST;
+			}
+	
+			return EXPORT;
 		}
-
-		return EXPORT;
-	}
 	/********************************************************
 	 *                    MANAGER                           *
 	 ********************************************************/
 
-	public void setExportManager(IExportManager exportManager)
-	{
-		this.exportManager = exportManager;
-	}
-
-	public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML)
-	{
-		this.lecteurFichierXML = lecteurFichierXML;
-	}
+		public void setExportManager(IExportManager exportManager)
+		{
+			this.exportManager = exportManager;
+		}
+	
+		public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML)
+		{
+			this.lecteurFichierXML = lecteurFichierXML;
+		}
 
 	/********************************************************
 	 * METHOD ACTION *
@@ -342,22 +340,22 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		}
 	}
 
-	 public void setReseaux(List<PTNetwork> reseaux) {
-	        this.networks = reseaux;
-	    }
-	    
-	    public List<PTNetwork> getReseaux() {
-	        return networks;
-	    }
-	    
-	    public List<Company> getTransporteurs() {
-	        return companies;
-	    }
-	    
-	    public void setTransporteurs(List<Company> transporteurs) {
-	        this.companies = transporteurs;
-	    }
-	    
+	public void setReseaux(List<PTNetwork> reseaux) {
+		this.networks = reseaux;
+	}
+
+	public List<PTNetwork> getReseaux() {
+		return networks;
+	}
+
+	public List<Company> getTransporteurs() {
+		return companies;
+	}
+
+	public void setTransporteurs(List<Company> transporteurs) {
+		this.companies = transporteurs;
+	}
+
 	public String getTransporteur(Long companyId)
 	{
 		if (companyId != null)

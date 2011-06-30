@@ -4,9 +4,9 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.TransportModeNameType;
-
 import com.opensymphony.xwork2.conversion.TypeConversionException;
+
+import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 public final class TransportModeNameTypeConverter extends StrutsTypeConverter
 {
@@ -19,19 +19,19 @@ public final class TransportModeNameTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (TransportModeNameType.fromValue(value[0])==null)
+		if (TransportModeNameEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return TransportModeNameType.fromValue(value[0]);
+		return TransportModeNameEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(TransportModeNameType.class))
+		if (!arg1.getClass().equals(TransportModeNameEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((TransportModeNameType)arg1).toString();
+		return ((TransportModeNameEnum)arg1).toString();
 	}
 }
