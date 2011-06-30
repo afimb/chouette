@@ -45,7 +45,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
 	public StopAreaManager() 
 	{
-		super(StopArea.class);
+		super(StopArea.class,StopArea.STOPAREA_KEY);
 	}
 
 	@Override
@@ -129,7 +129,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		List<StopArea> completeStopAreas = new ArrayList<StopArea>();
 		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
 		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
-		// 		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
 		List<Facility> facilities = new ArrayList<Facility>();
 		if (propagate)
 		{
@@ -140,7 +139,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			{
 				mergeCollection(accessLinks, stopArea.getAccessLinks());
 				mergeCollection(connectionLinks, stopArea.getConnectionLinks());
-				// 				mergeCollection(constraints, stopArea.getRestrictionConstraints());
 				mergeCollection(facilities, stopArea.getFacilities());
 			}
 
@@ -148,22 +146,19 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			List<StopArea> connected = new ArrayList<StopArea>();
 			for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator.hasNext();) 
 			{
-				// TODO : check if missing link exists in database
 				ConnectionLink connectionLink = iterator.next();
-				if (connectionLink.getStartOfLink() == null || connectionLink.getEndOfLink() == null)
-				{
-					iterator.remove();
-				}
-				else
+				if (connectionLink.getStartOfLink() != null)  
 				{
 					if (!completeStopAreas.contains(connectionLink.getStartOfLink()))
-						connected.add(connectionLink.getStartOfLink());
+						addIfMissingInCollection(connected, connectionLink.getStartOfLink());
+				}
+				if (connectionLink.getEndOfLink() != null)
+				{
 					if (!completeStopAreas.contains(connectionLink.getEndOfLink()))
-						connected.add(connectionLink.getEndOfLink());
+						addIfMissingInCollection(connected,connectionLink.getEndOfLink());
 				}
 			}
 			saveParents(user,connected,propagate,fast);
-			//mergeCollection(completeStopAreas, parents);
 			mergeCollection(completeStopAreas, connected);
 		}
 		else

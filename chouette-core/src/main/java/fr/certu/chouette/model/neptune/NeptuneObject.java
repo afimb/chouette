@@ -9,7 +9,9 @@ package fr.certu.chouette.model.neptune;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -63,6 +65,31 @@ public abstract class NeptuneObject implements Serializable
 		return ids;
 	}
 
+	/**
+	 * Build a map of internal Ids (Id) from a list of Neptune Objects 
+	 * 
+	 * @param neptuneObjects the list to parse
+	 * @return the ids map
+	 */
+	public static <T extends NeptuneObject> Map<Long,T > mapOnIds(List<T> neptuneObjects)
+	{
+		Map<Long,T> map = new HashMap<Long,T>();
+		if(neptuneObjects != null)
+		{
+			for (T neptuneObject : neptuneObjects) 
+			{
+				if(neptuneObject != null)
+				{
+					Long id = neptuneObject.getId();
+					if(id != null)
+					{
+						map.put(id, neptuneObject);
+					}
+				}
+			}
+		}
+		return map;
+	}
 
 	
 	/* (non-Javadoc)

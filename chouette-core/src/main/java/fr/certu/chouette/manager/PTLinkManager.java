@@ -28,7 +28,7 @@ public class PTLinkManager extends AbstractNeptuneManager<PTLink> {
 	private static final Logger logger = Logger.getLogger(PTLinkManager.class);
 	public PTLinkManager() 
 	{
-		super(PTLink.class);
+		super(PTLink.class,PTLink.PTLINK_KEY);
 	}
 
 	@Override

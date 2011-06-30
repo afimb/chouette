@@ -20,7 +20,7 @@ public class TimetableManager extends AbstractNeptuneManager<Timetable> {
 	private static final Logger logger = Logger.getLogger(TimetableManager.class); 
 
 	public TimetableManager() {
-		super(Timetable.class);
+		super(Timetable.class,Timetable.TIMETABLE_KEY);
 	}
 
 	@Override

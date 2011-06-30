@@ -3,12 +3,10 @@ package fr.certu.chouette.model.neptune;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 public class StopArea extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
@@ -36,6 +34,8 @@ public class StopArea extends NeptuneIdentifiedObject {
 
     //    private static List<RestrictionConstraint> unvalidRestrictionConstraints;
 	@Getter @Setter private List<Facility> facilities;
+	
+	// @Getter @Setter private List<RoutingConstraintOnLine> routingConstraintOnLines;
 
 	public void addFacility(Facility facility)
 	{

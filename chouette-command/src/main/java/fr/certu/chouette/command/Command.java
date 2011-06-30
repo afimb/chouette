@@ -237,6 +237,7 @@ public class Command
 		if (getBoolean(globals, "interactive"))
 		{
 			String line = "";
+			verbose = true;
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 			String activeObject = getActiveObject(globals);
 			while (true)
@@ -378,6 +379,7 @@ public class Command
 		}
 
 		INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
+		long tdeb = System.currentTimeMillis();
 
 		if (name.equals("get"))
 		{
@@ -463,7 +465,12 @@ public class Command
 		}
 		else
 		{
-			throw new Exception("Command "+commandNumber+": unknown command :" +command);
+			throw new Exception("Command "+commandNumber+": unknown command :" +command.getName());
+		}
+		long tfin = System.currentTimeMillis();
+		if (verbose)
+		{
+			System.out.println("command "+command.getName()+" executed in "+getTimeAsString(tfin-tdeb));
 		}
 		return beans;
 	}
@@ -1012,14 +1019,16 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
-		// boolean propagate = getBoolean(parameters, "propagate");
+		boolean propagate = getBoolean(parameters, "propagate");
+		/*
 		for (NeptuneIdentifiedObject bean : beans) 
 		{
 			Filter filter = Filter.getNewEqualsFilter("id", bean.getId());
 			manager.removeAll(null, filter);
 		}
+		*/
 		
-		// manager.removeAll(null, beans,propagate);
+		manager.removeAll(null, beans,propagate);
 		beans.clear();
 	}
 
@@ -2146,5 +2155,41 @@ public class Command
 		if (quote) throw new Exception("Line "+linenumber+": missing ending doublequote");
 		return args.toArray(new String[0]);
 	}
+	
+	/**
+	 * convert a duration in millisecond to literal
+	 *
+	 * the returned format depends on the duration :
+	 * <br>if duration > 1 hour, format is HH h MM m SS s
+	 * <br>else if duration > 1 minute , format is MM m SS s
+	 * <br>else if duration > 1 second , format is SS s
+	 * <br>else (duration < 1 second) format is LLL ms
+	 *
+	 * @param duration the duration to convert
+	 * @return the duration
+	 */
+	private String getTimeAsString(long duration)
+	{
+		long d = duration;
+		long milli = d % 1000;
+		d /= 1000;
+		long sec = d % 60;
+		d /= 60;
+		long min = d % 60;
+		d /= 60;
+		long hour = d;
+
+		String res = "";
+		if (hour > 0)
+			res += hour+" h "+min+" m "+sec + " s " ;
+		else if (min > 0)
+			res += min+" m "+sec + " s " ;
+		else if (sec > 0)
+			res += sec + " s " ;
+		res += milli + " ms" ;
+		return res;
+	}
+
+
 
 }

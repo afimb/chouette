@@ -28,7 +28,7 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 
 	public PTNetworkManager() 
 	{
-		super(PTNetwork.class);
+		super(PTNetwork.class,PTNetwork.PTNETWORK_KEY);
 	}
 
 	@Override

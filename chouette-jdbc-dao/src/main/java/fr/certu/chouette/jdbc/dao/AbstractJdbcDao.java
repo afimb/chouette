@@ -139,8 +139,13 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			}
 
 		}
+		afterSaveOrUpdateAllProcessing(objects);
 	}
 
+	protected void afterSaveOrUpdateAllProcessing(List<T> objects) throws JdbcDaoException 
+	{
+		// nothing to do 
+	}
 	/**
 	 * This method allowed to dispatch a list of complete objects to two list in parameter
 	 * @param list the complete list of objects

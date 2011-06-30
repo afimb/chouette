@@ -3,10 +3,13 @@ package fr.certu.chouette.jdbc.dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.Route;
 
 /**
@@ -54,4 +57,33 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		ps.setString(11, route.getComment());
 		ps.setString(12, route.getWayBack());
 	}
+	
+	@Override
+	protected void afterSaveOrUpdateAllProcessing(List<Route> routes) throws JdbcDaoException 
+	{
+		Map<String,Route> map = Route.mapOnObjectIds(routes);
+		List<Route> toUpdate =  new ArrayList<Route>();
+		for (Route route : routes) 
+		{
+			if (route.getWayBackRouteId() != null && route.getOppositeRouteId() == null)
+			{
+				Route wayBack = map.get(route.getWayBackRouteId());
+				if (wayBack == null)
+				{
+					logger.warn("wayback route with id = "+route.getWayBackRouteId()+" not found for route "+route.getObjectId());
+				    route.setWayBackRouteId(null);
+				}
+				else
+				{
+				   route.setOppositeRouteId(wayBack.getId());
+				   toUpdate.add(route);
+				}
+			}
+		}
+		if (!toUpdate.isEmpty())
+		{
+			saveOrUpdateAll(toUpdate);
+		}
+	}
+
 }

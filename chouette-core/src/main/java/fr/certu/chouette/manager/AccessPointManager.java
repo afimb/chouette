@@ -14,7 +14,7 @@ public class AccessPointManager extends AbstractNeptuneManager<AccessPoint>
     private static final Logger logger = Logger.getLogger(AccessPointManager.class);
 	
 	public AccessPointManager() {
-		super(AccessPoint.class);
+		super(AccessPoint.class,AccessPoint.ACCESSPOINT_KEY);
 	}
 
 	@Override
