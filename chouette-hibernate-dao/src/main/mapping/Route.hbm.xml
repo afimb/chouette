@@ -59,7 +59,7 @@
 		</bag>
         -->
 		<many-to-one name="line" insert="true" update="true" foreign-key="route_line_fkey"
-			class="Line" lazy="no-proxy" outer-join="auto" column="lineId" not-null="true">
+			class="Line" lazy="no-proxy" outer-join="auto" column="lineId">
 			 </many-to-one>
 
 	</class>

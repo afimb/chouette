@@ -41,7 +41,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	private String mappedRequest;
 	private String oppositeRouteId;
 	private List<Route> itinerairesSansItineraireEdite; // TODO rename
-
+	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+	
 	public Long getIdItineraire()
 	{
 		return routeId;
@@ -73,6 +74,10 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	public void prepare() throws Exception
 	{
 		log.debug("Prepare with id : " + getIdItineraire());
+		
+		Filter filter1 = Filter.getNewEqualsFilter("id", getIdLigne());
+		line = lineManager.get(null, filter1, level);
+		
 		if (getIdItineraire() == null)
 		{
 			routeModel = new Route();
@@ -80,14 +85,14 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		else
 		{
 			Filter filter = Filter.getNewEqualsFilter("id", getIdItineraire());
-			routeModel = routeManager.get(null,filter,DetailLevelEnum.ATTRIBUTE);
+			routeModel = routeManager.get(null,filter,level);
 		}
 
 		if (getIdLigne() != null)
 		{
 			// TODO : Le virer grâce a OGNL
 			Filter filter = Filter.getNewEqualsFilter("line.id", lineId);
-			itinerairesSansItineraireEdite = routeManager.getAll(null,filter,DetailLevelEnum.ATTRIBUTE);
+			itinerairesSansItineraireEdite = routeManager.getAll(null,filter,level);
 			//	Suppression dans la liste des itinéraires de celui étant édité
 			for (Route itineraire : itinerairesSansItineraireEdite)
 			{
