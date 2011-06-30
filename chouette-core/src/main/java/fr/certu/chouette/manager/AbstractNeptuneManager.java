@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -58,6 +59,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 	@Getter @Setter private String objectIdDefaultPrefix ;
 
+	private static Random random = new Random(System.currentTimeMillis());
 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
@@ -165,7 +167,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
-		getDao().save(bean);
+		save(user,bean,false);
 		return bean;
 	}
 
@@ -345,9 +347,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 		if (object.getId() == null)
 		{
+			object.setObjectId("::pending_Id::"+random.nextLong()); // mandatory in database
 			getDao().save(object);
 		}
-		if (object.getObjectId() == null) setObjectId(user, object, null);
+		if (object.getObjectId() == null || object.getObjectId().startsWith("::pending_Id::")) setObjectId(user, object, null);
 		getLogger().debug("saving object :"+object.getObjectId());
 		if (object.getCreationTime() == null) object.setCreationTime(new Date());
 		if (object.getObjectVersion() <= 0) object.setObjectVersion(1);
@@ -370,6 +373,11 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void saveAll(User user, List<T> beans,boolean propagate, boolean fast) throws ChouetteException 
 	{
+		Date creationTime = new Date();
+		for (T object : beans) 
+		{
+			if (object.getCreationTime() == null) object.setCreationTime(creationTime);
+		}
 		if(fast)
 		{
 			if(getJdbcDao() == null)

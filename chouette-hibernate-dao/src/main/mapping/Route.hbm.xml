@@ -29,7 +29,7 @@
 		<property name="objectVersion" type="int" />
 		<property name="creationTime" type="java.util.Date" />
 		<property name="creatorId" type="string" />
-		<property name="name" />
+		<property name="name"/>
 		<property name="oppositeRouteId" type="long" />
 		<property name="publishedName" />
 		<property name="number" />
@@ -59,7 +59,7 @@
 		</bag>
         -->
 		<many-to-one name="line" insert="true" update="true" foreign-key="route_line_fkey"
-			class="Line" lazy="no-proxy" outer-join="auto" column="lineId">
+			class="Line" lazy="no-proxy" outer-join="auto" column="lineId" not-null="true">
 			 </many-to-one>
 
 	</class>
