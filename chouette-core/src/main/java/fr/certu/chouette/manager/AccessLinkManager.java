@@ -22,7 +22,7 @@ public class AccessLinkManager extends AbstractNeptuneManager<AccessLink>
 	private static final Logger logger = Logger.getLogger(AccessLinkManager.class);
 
 	public AccessLinkManager() {
-		super(AccessLink.class);
+		super(AccessLink.class,AccessLink.ACCESSLINK_KEY);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class RestrictionConstraintManager extends AbstractNeptuneManager<Restric
 	private static final Logger logger = Logger.getLogger(RestrictionConstraintManager.class); 
 
 	public RestrictionConstraintManager() {
-		super(RestrictionConstraint.class);
+		super(RestrictionConstraint.class,RestrictionConstraint.STOPAREA_KEY);
 	}
 
 	@Override

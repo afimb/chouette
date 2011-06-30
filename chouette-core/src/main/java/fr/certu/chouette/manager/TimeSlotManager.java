@@ -21,7 +21,7 @@ public class TimeSlotManager extends AbstractNeptuneManager<TimeSlot> {
 	private static final Logger logger = Logger.getLogger(TimeSlotManager.class); 
 
 	public TimeSlotManager() {
-		super(TimeSlot.class);
+		super(TimeSlot.class,TimeSlot.TIMESLOT_KEY);
 	}
 
 	@Override

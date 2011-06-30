@@ -31,7 +31,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	private static final Logger logger = Logger.getLogger(JourneyPatternManager.class); 
 	public JourneyPatternManager() 
 	{
-		super(JourneyPattern.class);
+		super(JourneyPattern.class,JourneyPattern.JOURNEYPATTERN_KEY);
 	}
 
 	@Override

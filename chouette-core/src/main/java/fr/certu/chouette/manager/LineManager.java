@@ -54,7 +54,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 
 	public LineManager() 
 	{
-		super(Line.class);
+		super(Line.class,Line.LINE_KEY);
 	}
 
 	@Override

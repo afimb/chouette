@@ -60,6 +60,17 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	T getNewInstance(User user) throws ChouetteException;
 
 	/**
+	 * set an object id for a bean without one
+	 * 
+	 * @param user user account for security check 
+	 * @param bean the bean to update
+	 * @param prefix prefix for object id (null for default value)
+	 * 
+	 * @throws ChouetteException
+	 */
+	void setObjectId(User user,T bean,String prefix) throws ChouetteException;
+	
+	/**
 	 * insert a new bean in storage<br/>
 	 * the bean may include dependency beans, either existing or not<br/>
 	 * when the dependency bean exists, it may be updated (if needed)<br/>
@@ -242,7 +253,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	List<FormatDescription> getExportFormats(User user) throws ChouetteException;
 
 	/**
-	 * export beans in specified format<br/>
+	 * export preloaded beans in specified format<br/>
 	 * 
 	 * 
 	 * @param user user account for security check 
@@ -253,6 +264,19 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @throws ChouetteException invalid user access or export failure
 	 */
 	void doExport(User user,List<T> beans, String formatDescriptor, List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
+
+	/**
+	 * export beans from database in specified format<br/>
+	 * 
+	 * 
+	 * @param user user account for security check 
+	 * @param beanIds ids of beans to export
+	 * @param formatDescriptor name of the format found in ExportFormatDescription structure
+	 * @param parameters export parameter according to specified format
+	 * @param report export reporting container
+	 * @throws ChouetteException invalid user access or export failure
+	 */
+	void doExportFromDatabase(User user,List<Long> beanIds, String formatDescriptor, List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
 
 	/**
 	 * get usage information for all existing export format for deleted objects

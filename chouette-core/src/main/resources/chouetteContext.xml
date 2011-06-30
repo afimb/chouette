@@ -9,7 +9,12 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
    default-init-method="init" default-lazy-init="false">
 	
-	<bean id="accessLinkManager" class="fr.certu.chouette.manager.AccessLinkManager">
+	<bean id="abstractNeptuneManager" class="fr.certu.chouette.manager.AbstractNeptuneManager" abstract="true" >
+        <property name="objectIdDefaultPrefix" value="${system.code}"/>
+	</bean>
+	
+	
+	<bean id="accessLinkManager" class="fr.certu.chouette.manager.AccessLinkManager" parent="abstractNeptuneManager">
 	</bean>
 	<bean id="accessPointManager" class="fr.certu.chouette.manager.AccessPointManager">
 	</bean>

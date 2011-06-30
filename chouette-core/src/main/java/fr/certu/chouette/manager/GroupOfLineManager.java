@@ -15,7 +15,7 @@ public class GroupOfLineManager extends AbstractNeptuneManager<GroupOfLine>
 	private static final Logger logger = Logger.getLogger(GroupOfLineManager.class); 
 	public GroupOfLineManager() 
 	{
-		super(GroupOfLine.class);
+		super(GroupOfLine.class,GroupOfLine.GROUPOFLINE_KEY);
 	}
 
 	@Override

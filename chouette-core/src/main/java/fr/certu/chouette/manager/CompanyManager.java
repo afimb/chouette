@@ -32,7 +32,7 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 
 	public CompanyManager()
 	{
-		super(Company.class);
+		super(Company.class,Company.COMPANY_KEY);
 	}
 	@Override
 	public void removeAll(User user,Collection<Company> companies,boolean propagate) throws ChouetteException

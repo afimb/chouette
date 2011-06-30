@@ -35,7 +35,7 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 
 	public VehicleJourneyManager()
 	{
-		super(VehicleJourney.class);
+		super(VehicleJourney.class,VehicleJourney.VEHICLEJOURNEY_KEY);
 	}
 
 	@Override

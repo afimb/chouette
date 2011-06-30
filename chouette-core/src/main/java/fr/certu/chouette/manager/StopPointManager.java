@@ -36,7 +36,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 
 	public StopPointManager() 
 	{
-		super(StopPoint.class);
+		super(StopPoint.class,StopPoint.STOPPOINT_KEY);
 	}
 
 	@Override

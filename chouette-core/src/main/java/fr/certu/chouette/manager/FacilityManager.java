@@ -15,7 +15,7 @@ public class FacilityManager extends AbstractNeptuneManager<Facility>
 	
 	public FacilityManager() 
 	{
-		super(Facility.class);
+		super(Facility.class,Facility.FACILITY_KEY);
 	}
 
 	@Override

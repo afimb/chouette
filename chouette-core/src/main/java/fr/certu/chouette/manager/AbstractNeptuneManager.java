@@ -9,6 +9,7 @@ package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	// data storage access by jdbc
 	@Getter @Setter private IJdbcDaoTemplate<T> jdbcDao;
 
+	@Getter @Setter private String objectIdDefaultPrefix ;
+
 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
@@ -69,11 +72,14 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	private Class<?> neptuneType ;
 
+	private @Getter String objectIdKey;
 
-	public AbstractNeptuneManager(Class<?> neptuneType) 
+
+	public AbstractNeptuneManager(Class<?> neptuneType,String objectIdKey) 
 	{
 		managers.put(neptuneType, this);
 		this.neptuneType = neptuneType;
+		this.objectIdKey = objectIdKey;
 	}
 
 
@@ -89,6 +95,22 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		{
 			throw new CoreRuntimeException(CoreExceptionCode.FATAL, e);
 		} 
+	}
+
+
+
+
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#setObjectId(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, java.lang.String)
+	 */
+	@Override
+	public void setObjectId(User user, T bean, String prefix) throws ChouetteException 
+	{
+		if (bean.getObjectId() != null) return;
+		if (bean.getId() == null) return;
+		String objectId = (prefix == null?objectIdDefaultPrefix:prefix)+":"+objectIdKey+":"+bean.getId().toString();
+		bean.setObjectId(objectId);
 	}
 
 	/**
@@ -320,21 +342,30 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	public void save(User user, T object ,boolean propagate) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+
+		if (object.getId() == null)
+		{
+			getDao().save(object);
+		}
+		if (object.getObjectId() == null) setObjectId(user, object, null);
 		getLogger().debug("saving object :"+object.getObjectId());
+		if (object.getCreationTime() == null) object.setCreationTime(new Date());
+		if (object.getObjectVersion() <= 0) object.setObjectVersion(1);
 		getDao().save(object);
 	}
+
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#saveAll(fr.certu.chouette.model.user.User, java.util.List)
 	 */
-//	@Override
-//	public final void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
-//	{
-//
-////		if(getJdbcDao() == null)
-////			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
-////
-////		getJdbcDao().saveOrUpdateAll(beans);
-//	}
+	//	@Override
+	//	public final void saveAll(User user, List<T> beans,boolean propagate) throws ChouetteException 
+	//	{
+	//
+	////		if(getJdbcDao() == null)
+	////			throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
+	////
+	////		getJdbcDao().saveOrUpdateAll(beans);
+	//	}
 
 	@Override
 	public void saveAll(User user, List<T> beans,boolean propagate, boolean fast) throws ChouetteException 
@@ -393,6 +424,28 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
 
 		plugin.doExport(beans,parameters,report);
+
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#doExportFromDatabase(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
+	 */
+	@Override
+	public void doExportFromDatabase(User user, List<Long> beanIds,
+			String formatDescriptor, List<ParameterValue> parameters,
+			ReportHolder report) 
+	throws ChouetteException 
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+		IExportPlugin<T> plugin = exportPluginMap.get(formatDescriptor);
+		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
+        Filter clause = Filter.getNewInFilter("id", beanIds);
+		List<T> beans = getDao().select(clause);
+		if (!beans.isEmpty())
+		{
+			plugin.doExport(beans,parameters,report);
+		}
 
 	}
 

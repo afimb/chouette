@@ -43,7 +43,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 
 	public RouteManager() 
 	{
-		super(Route.class);
+		super(Route.class,Route.ROUTE_KEY);
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink
 	private static final Logger logger = Logger.getLogger(ConnectionLinkManager.class); 
 	public ConnectionLinkManager()
 	{
-		super(ConnectionLink.class);
+		super(ConnectionLink.class,ConnectionLink.CONNECTIONLINK_KEY);
 	}
 
 	@Override

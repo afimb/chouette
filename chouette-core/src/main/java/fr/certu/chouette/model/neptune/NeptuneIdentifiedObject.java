@@ -10,7 +10,9 @@ package fr.certu.chouette.model.neptune;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -123,6 +125,34 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 
 		return objectIds;
 	}
+
+	
+	/**
+	 * Build a map of objectIds (Id) from a list of Neptune Identified Objects 
+	 * 
+	 * @param neptuneObjects the list to parse
+	 * @return the ids map
+	 */
+	public static <T extends NeptuneIdentifiedObject> Map<String,T > mapOnObjectIds(List<T> neptuneObjects)
+	{
+		Map<String,T> map = new HashMap<String,T>();
+		if(neptuneObjects != null)
+		{
+			for (T neptuneObject : neptuneObjects) 
+			{
+				if(neptuneObject != null)
+				{
+					String id = neptuneObject.getObjectId();
+					if(id != null)
+					{
+						map.put(id, neptuneObject);
+					}
+				}
+			}
+		}
+		return map;
+	}
+
 
 
 	/* (non-Javadoc)

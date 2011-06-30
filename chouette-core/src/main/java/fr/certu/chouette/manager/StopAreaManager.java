@@ -45,7 +45,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
 	public StopAreaManager() 
 	{
-		super(StopArea.class);
+		super(StopArea.class,StopArea.STOPAREA_KEY);
 	}
 
 	@Override
@@ -129,7 +129,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		List<StopArea> completeStopAreas = new ArrayList<StopArea>();
 		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
 		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
-		// 		List<RestrictionConstraint> constraints = new ArrayList<RestrictionConstraint>();
 		List<Facility> facilities = new ArrayList<Facility>();
 		if (propagate)
 		{
@@ -140,7 +139,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			{
 				mergeCollection(accessLinks, stopArea.getAccessLinks());
 				mergeCollection(connectionLinks, stopArea.getConnectionLinks());
-				// 				mergeCollection(constraints, stopArea.getRestrictionConstraints());
 				mergeCollection(facilities, stopArea.getFacilities());
 			}
 
@@ -161,7 +159,6 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 				}
 			}
 			saveParents(user,connected,propagate,fast);
-			//mergeCollection(completeStopAreas, parents);
 			mergeCollection(completeStopAreas, connected);
 		}
 		else
