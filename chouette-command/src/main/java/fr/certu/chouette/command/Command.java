@@ -459,6 +459,15 @@ public class Command
 			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
 			executeExport(beans,manager,parameters);
 		}
+		else if (name.equals("getDeletionExportFormats"))
+		{
+			executeGetDeletionFormats(manager,parameters);
+		}
+		else if (name.equals("exportForDeletion"))
+		{
+			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
+			executeExportDeletion(beans,manager,parameters);
+		}
 		else if (name.equals("info"))
 		{
 			executeInfo(manager);
@@ -501,7 +510,7 @@ public class Command
 			}
 			if (description == null)
 			{
-				throw new IllegalArgumentException("format "+format+" unavailable, check command getImportFormats for list ");
+				throw new IllegalArgumentException("format "+format+" unavailable, check command getExportFormats for list ");
 			}
 
 
@@ -515,7 +524,7 @@ public class Command
 				{
 					if (desc.isMandatory())
 					{
-						throw new IllegalArgumentException("parameter -"+name+" is required, check command getImportFormats for list ");
+						throw new IllegalArgumentException("parameter -"+name+" is required, check command getExportFormats for list ");
 					}
 				}
 				else
@@ -535,7 +544,7 @@ public class Command
 					{
 						if (vals.size() != 1)
 						{
-							throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getImportFormats for list ");
+							throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getExportFormats for list ");
 						}
 						String simpleval = vals.get(0);
 
@@ -555,6 +564,105 @@ public class Command
 
 			ReportHolder holder = new ReportHolder();
 			manager.doExport(null, beans, format, values, holder );
+			if (holder.getReport() != null)
+			{
+				Report r = holder.getReport();
+				System.out.println(r.getLocalizedMessage());
+				printItems("",r.getItems());
+			}
+		}
+		catch (ChouetteException e)
+		{
+			logger.error(e.getMessage());
+
+			Throwable caused = e.getCause();
+			while (caused != null)
+			{
+				logger.error("caused by "+ caused.getMessage());
+				caused = caused.getCause();
+			}
+			throw new RuntimeException("export failed, see details in log");
+		}
+	}
+	/**
+	 * @param beans
+	 * @param manager
+	 * @param parameters
+	 */
+	private void executeExportDeletion(List<NeptuneIdentifiedObject> beans,
+			INeptuneManager<NeptuneIdentifiedObject> manager,
+			Map<String, List<String>> parameters) 
+	{
+		String format = getSimpleString(parameters,"format");
+		try
+		{
+			List<FormatDescription> formats = manager.getDeleteExportFormats(null);
+			FormatDescription description = null;
+
+			for (FormatDescription formatDescription : formats)
+			{
+				if (formatDescription.getName().equalsIgnoreCase(format))
+				{
+					description=formatDescription;
+					break;
+				}
+			}
+			if (description == null)
+			{
+				throw new IllegalArgumentException("format "+format+" unavailable, check command getDeletionExportFormats for list ");
+			}
+
+
+			List<ParameterValue> values = new ArrayList<ParameterValue>();
+			for (ParameterDescription desc : description.getParameterDescriptions())
+			{
+				String name = desc.getName();
+				String key = name.toLowerCase();
+				List<String> vals = parameters.get(key);
+				if (vals == null)
+				{
+					if (desc.isMandatory())
+					{
+						throw new IllegalArgumentException("parameter -"+name+" is required, check command getDeletionExportFormats for list ");
+					}
+				}
+				else
+				{
+					if (desc.isCollection())
+					{
+						ListParameterValue val = new ListParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathList(vals); break;
+						case STRING : val.setStringList(vals); break;
+						case FILENAME : val.setFilenameList(vals); break;
+						}
+						values.add(val);
+					}
+					else
+					{
+						if (vals.size() != 1)
+						{
+							throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getDeletionExportFormats for list ");
+						}
+						String simpleval = vals.get(0);
+
+						SimpleParameterValue val = new SimpleParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathValue(simpleval); break;
+						case STRING : val.setStringValue(simpleval); break;
+						case FILENAME : val.setFilenameValue(simpleval); break;
+						case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
+						case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+						}
+						values.add(val);
+					}
+				}
+			}
+
+			ReportHolder holder = new ReportHolder();
+			manager.doExportDeleted(null, beans, format, values, holder );
 			if (holder.getReport() != null)
 			{
 				Report r = holder.getReport();
@@ -813,6 +921,18 @@ public class Command
 	{
 
 		List<FormatDescription> formats = manager.getImportFormats(null);
+		for (FormatDescription formatDescription : formats)
+		{
+			System.out.println(formatDescription);
+		}
+
+
+	}
+
+	private void executeGetDeletionFormats(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters) throws ChouetteException
+	{
+
+		List<FormatDescription> formats = manager.getDeleteExportFormats(null);
 		for (FormatDescription formatDescription : formats)
 		{
 			System.out.println(formatDescription);

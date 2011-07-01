@@ -1,14 +1,11 @@
 package fr.certu.chouette.struts.route;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
@@ -22,9 +19,6 @@ import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.modele.Itineraire;
-import fr.certu.chouette.service.database.IItineraireManager;
-import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.struts.GeneriqueAction;
 
 public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, Preparable

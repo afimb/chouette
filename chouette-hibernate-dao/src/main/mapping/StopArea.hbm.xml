@@ -60,5 +60,10 @@
 		</component>
 		<many-to-one class="StopArea" column="parentId"
 			lazy="no-proxy" name="parentStopArea" foreign-key="area_parent_fkey"/>
+			
+		<bag name="containedStopAreas" table="stopareastoparea" lazy="false">
+			<key column="parentId" foreign-key="stoparea_parent_fkey"/>
+			<many-to-many column="childId" class="StopArea" foreign-key="stoparea_child_fkey"/>
+		</bag>
 	</class>
 </hibernate-mapping>
