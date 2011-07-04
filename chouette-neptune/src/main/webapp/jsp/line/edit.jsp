@@ -31,6 +31,7 @@
     <%-- Valeur sélectionné par défaut est contenue dans value (chaineIdTransporteur) et doit être une chaîne de caractère obligatoirement --%>
     <s:select key="idTransporteur" required="true" rename="idTransporteur" label="%{getText('idTransporteur')}" value="%{company.id}" list="transporteurs" listKey="id" listValue="name"  headerKey="-1" headerValue="%{getText('aucunTransporteur')}">
     </s:select>
+    <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable"/>
     <s:textfield key="name" required="true"/>
     <s:textfield key="publishedName" />
     <s:textfield key="registrationNumber" required="true"/>

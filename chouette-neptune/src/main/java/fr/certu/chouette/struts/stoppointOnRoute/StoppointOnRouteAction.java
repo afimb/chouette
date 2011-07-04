@@ -23,7 +23,9 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.service.database.impl.modele.EtatMajArretItineraire;
 import fr.certu.chouette.struts.GeneriqueAction;
+
 
 public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriven<StopPoint>, Preparable
 {
@@ -105,10 +107,7 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
     for (StopPoint arret : arrets) 
     {
 		Long id = arret.getId();
-		/*
-		Filter filter2 = Filter.getNewEqualsFilter("containedStopPoints.id", id);
-		StopArea arretPhysique = stopAreaManager.get(null, filter2, DetailLevelEnum.ATTRIBUTE);
-		*/
+
 		StopArea arretPhysique = arret.getContainedInStopArea();
 		if (arretPhysique != null) 
 			{
@@ -400,4 +399,5 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
   {
     this.idArretAInserer = idArretAInserer;
   }
+
 }
