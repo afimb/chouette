@@ -8,6 +8,8 @@
 package fr.certu.chouette.model.neptune;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +20,9 @@ import lombok.Setter;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.log4j.Logger;
+
+import fr.certu.chouette.filter.DetailLevelEnum;
 
 
 /**
@@ -26,6 +31,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public abstract class NeptuneObject implements Serializable
 {
+	private static final Logger logger = Logger.getLogger(NeptuneObject.class);
+	
 	private static final long serialVersionUID = -1406542019260386319L;
 	protected static final String CHILD_INDENT = "        ";
 	protected static final String CHILD_ARROW = "  -->";
@@ -37,7 +44,7 @@ public abstract class NeptuneObject implements Serializable
 
 	private boolean validationProceeded = false;
 
-	
+
 	/**
 	 * Build a list of internal Ids (Id) from a list of Neptune Objects 
 	 * 
@@ -91,7 +98,7 @@ public abstract class NeptuneObject implements Serializable
 		return map;
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -99,11 +106,11 @@ public abstract class NeptuneObject implements Serializable
 	public final String toString()
 	{
 
-		return ToStringBuilder.reflectionToString(this,
-				ToStringStyle.MULTI_LINE_STYLE);
-
-
-		//return toString("",0);
+		//		return ToStringBuilder.reflectionToString(this,
+		//				ToStringStyle.MULTI_LINE_STYLE);
+		//
+		//
+		return toString("",0);
 	}
 
 	/**
@@ -118,12 +125,39 @@ public abstract class NeptuneObject implements Serializable
 		return getClass().getSimpleName()+ "( id="+id +") ";
 	}
 
-//	/**
-//	 * @param level
-//	 */
+	
+	/**
+	 * @param level
+	 */
 //	public void expand(DetailLevelEnum level)
 //	{
+//		if (this.level.ordinal() >= level.ordinal()) return;
 //		this.level = level;
+//
+//		if (this.level.ordinal() > DetailLevelEnum.ATTRIBUTE.ordinal() )
+//		{
+//			Method[] methods = this.getClass().getMethods();
+//
+//			for (Method method : methods) 
+//			{
+//				if (method.getName().startsWith("get"))
+//				{
+//					Class<?> returnType = method.getReturnType();
+//					if ((returnType.getSuperclass() != null && returnType.getSuperclass().equals(NeptuneIdentifiedObject.class)) || returnType.equals(List.class))
+//					{
+//						try 
+//						{
+//							Object ret = method.invoke(this, new Object[0]);
+//						} 
+//						catch (Exception e) 
+//						{
+//							logger.error("cannot call "+method.getName(),e);
+//						} 
+//					}
+//				}
+//			}
+//		}
+//
 //		return;
 //	}
 

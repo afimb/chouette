@@ -36,7 +36,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	private String oppositeRouteId;
 	private List<Route> itinerairesSansItineraireEdite; // TODO rename
 	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-	
+
 	public Long getIdItineraire()
 	{
 		return routeId;
@@ -68,10 +68,17 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	public void prepare() throws Exception
 	{
 		log.debug("Prepare with id : " + getIdItineraire());
-		
-		Filter filter1 = Filter.getNewEqualsFilter("id", getIdLigne());
-		line = lineManager.get(null, filter1, level);
-		
+
+		if (getIdLigne() != null)
+		{
+			Filter filter1 = Filter.getNewEqualsFilter("id", getIdLigne());
+			line = lineManager.get(null, filter1, level);
+		}
+		else
+		{
+			line = null;
+		}
+
 		if (getIdItineraire() == null)
 		{
 			routeModel = new Route();
@@ -121,10 +128,10 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		{
 			line = null;
 		}
-		
+
 		//	Récupération des itinéraires pour un identifiant de ligne donnée
 		Filter filter = Filter.getNewEqualsFilter("line.id", lineId);
-		
+
 		List<Route> itinerairesLigne = routeManager.getAll(null,filter,DetailLevelEnum.ATTRIBUTE);
 		//	Liste des itinéraires classés
 		List<Route> itineraires = new ArrayList<Route>();
@@ -183,7 +190,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		this.request.put("itineraires", itineraires);
 		log.debug("List of route");
 		return LIST;
-		
+
 	}
 
 	@SkipValidation
@@ -195,10 +202,10 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 
 	public String save() throws Exception
 	{
-		
+
 		// link to line : 
 		if (routeModel.getLine() == null)
-		   routeModel.setLine(line);
+			routeModel.setLine(line);
 		routeManager.addNew(null,routeModel);
 
 		/*
@@ -215,7 +222,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 				routeManager.associerItineraire(routeModel.getId(), new Long(routeModel.getIdRetour()));
 			}
 		}
-		*/
+		 */
 
 		setMappedRequest(SAVE);
 		addActionMessage(getText("itineraire.create.ok"));
@@ -248,7 +255,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 				routeManager.associerItineraire(routeModel.getId(), new Long(routeModel.getIdRetour()));
 			}
 		}
-		*/
+		 */
 
 		setMappedRequest(UPDATE);
 		addActionMessage(getText("itineraire.update.ok"));
@@ -287,15 +294,15 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	/********************************************************
 	 *                        MANAGER                       *
 	 ********************************************************/
-//	public void setItineraireManager(IItineraireManager itineraryManager)
-//	{
-//		this.routeManager = itineraryManager;
-//	}
-//
-//	public void setLigneManager(ILigneManager lineManager)
-//	{
-//		this.lineManager = lineManager;
-//	}
+	//	public void setItineraireManager(IItineraireManager itineraryManager)
+	//	{
+	//		this.routeManager = itineraryManager;
+	//	}
+	//
+	//	public void setLigneManager(ILigneManager lineManager)
+	//	{
+	//		this.lineManager = lineManager;
+	//	}
 
 	/********************************************************
 	 *                   METHODE ACTION                     *

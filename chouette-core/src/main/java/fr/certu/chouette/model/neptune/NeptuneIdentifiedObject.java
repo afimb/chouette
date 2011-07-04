@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.certu.chouette.filter.DetailLevelEnum;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -183,5 +185,6 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 		if (objectId != null) return objectId.hashCode();
 		return super.hashCode();
 	}
+	
 
 }

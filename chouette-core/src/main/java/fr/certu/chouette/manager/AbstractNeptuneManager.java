@@ -204,11 +204,15 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 			{
 				bean = getDao().get((Long) filter.getFirstValue());
 			}
-			if (filter.getAttribute().equals("objectId"))
+			else if (filter.getAttribute().equals("objectId"))
 			{
 				bean = getDao().getByObjectId((String) filter.getFirstValue());
 			}
-			//bean.expand(level);
+			else
+			{
+				throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"invalid filter");
+			}
+//			bean.expand(level);
 			return bean;
 		}
 
@@ -224,12 +228,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		List<T> beans =  getDao().select(filter);
-		/*
-		for (T bean : beans)
-		{
-			bean.expand(level);
-		}
-		 */
+		
+//		for (T bean : beans)
+//		{
+//			bean.expand(level);
+//		}
+		
 
 		return beans;
 	}
@@ -594,7 +598,19 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 
-		return getDao().getByObjectId(objectId);		
+		T bean = getDao().getByObjectId(objectId);	
+//		bean.expand(DetailLevelEnum.ATTRIBUTE);
+		return bean;
+	}
+
+	@Override
+	public T getById(Long id) throws CoreException
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+
+		T bean = getDao().get(id);	
+//		bean.expand(DetailLevelEnum.ATTRIBUTE);
+		return bean;
 	}
 
 	/**
