@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+<!-- <beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
+	 -->
+	<beans 	xmlns="http://www.springframework.org/schema/beans"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+			xmlns:tx="http://www.springframework.org/schema/tx"
+			xsi:schemaLocation="http://www.springframework.org/schema/beans 
+								http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       							http://www.springframework.org/schema/aop 
+       							http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       							http://www.springframework.org/schema/tx 
+       							http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+       							default-init-method="init">
 
 	<bean id="chouetteDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource">
 		<property name="driverClassName" value="${jdbc.driver}" />
@@ -16,24 +28,24 @@
 		<property name="databaseSchema" value="${database.schema}" />
 	</bean>
 
-	<bean id="profiler" class="fr.certu.chouette.spring.profiler.SimpleProfiler">
-		<!-- execute before the transactional advice (hence the lower order number) -->
+<!-- 	<bean id="profiler" class="fr.certu.chouette.spring.profiler.SimpleProfiler">
+		execute before the transactional advice (hence the lower order number)
 		<property name="order" value="1" />
 	</bean>
 
 	<bean id="creationControleur" class="fr.certu.chouette.spring.profiler.CreationControleur">
-		<!-- execute before the transactional advice (hence the lower order number) -->
+		execute before the transactional advice (hence the lower order number)
 		<property name="order" value="0" />
 	</bean>
 
-	<!-- Enable @Transactional support -->
+	Enable @Transactional support
 	<tx:annotation-driven />
 
-	<!-- Enable @AspectJ support -->
+	Enable @AspectJ support
 	<aop:aspectj-autoproxy />
 
 	<aop:config>
-		<!-- order value is higher than the profiling aspect -->
+		order value is higher than the profiling aspect
 		<aop:advisor id="managerTx" advice-ref="txAdvice"
 			pointcut="execution(* *..manager.*Manager.*(..))" order="2" />
 		<aop:aspect id="profilingAspect" ref="profiler">
@@ -54,7 +66,7 @@
 			<tx:method name="*" rollback-for="Exception" />
 		</tx:attributes>
 	</tx:advice>
-
+ -->
 
 	<bean id="sessionFactory"
 		class="fr.certu.chouette.dao.hibernate.ChouetteSessionFactoryBean"
@@ -207,11 +219,12 @@
 
 	</bean>
 
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-
 
 	<!-- Modules DAO -->
 

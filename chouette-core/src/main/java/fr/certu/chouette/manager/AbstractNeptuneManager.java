@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
@@ -174,6 +175,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#exists(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject)
 	 */
+	@Transactional
 	@Override
 	public boolean exists(User user, T bean) throws ChouetteException
 	{
@@ -193,6 +195,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#get(fr.certu.chouette.model.user.User, fr.certu.chouette.filter.Filter, fr.certu.chouette.filter.DetailLevelEnum)
 	 */
+	@Transactional
 	@Override
 	public T get(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
 	{
@@ -219,6 +222,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getAll(fr.certu.chouette.model.user.User, fr.certu.chouette.filter.Filter, fr.certu.chouette.filter.DetailLevelEnum)
 	 */
+	@Transactional
 	@Override
 	public List<T> getAll(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
 	{
@@ -238,7 +242,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 
 
-
+	@Transactional
 	@Override
 	public List<T> getAll(User user) throws ChouetteException {
 		// TODO check User access
@@ -248,6 +252,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
 	 */
+	@Transactional
 	@Override
 	public void update(User user, T bean) throws ChouetteException
 	{
@@ -259,6 +264,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean, fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */
+	@Transactional
 	@Override
 	public void update(User user, T bean, DetailLevelEnum level)
 	throws ChouetteException
@@ -271,6 +277,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#isRemovable(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
 	 */
+	@Transactional
 	@Override
 	public boolean isRemovable(User user, T bean) throws ChouetteException
 	{
@@ -282,6 +289,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#remove(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
 	 */
+	@Transactional
 	@Override
 	public void remove(User user, T bean,boolean propagate) throws ChouetteException
 	{
@@ -293,6 +301,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#removeAll(fr.certu.chouette.model.user.User, fr.certu.chouette.manager.Filter)
 	 */
+	@Transactional
 	@Override
 	public void removeAll(User user, Collection<T> objects,boolean propagate) throws ChouetteException
 	{
@@ -305,6 +314,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		getDao().removeAll(objects);
 	}
 
+	@Transactional
 	@Override
 	public int removeAll(User user,Filter filter) throws ChouetteException
 	{
@@ -339,7 +349,8 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 
 
 	}
-
+	
+	@Transactional
 	@Override
 	public void save(User user, T object ,boolean propagate) throws ChouetteException
 	{
@@ -590,6 +601,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 	}
 
+	@Transactional
 	@Override
 	public T getByObjectId(String objectId) throws CoreException
 	{

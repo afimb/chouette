@@ -53,9 +53,10 @@
     <bean id="StoppointOnRouteActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.stoppointOnRoute.StoppointOnRouteAction">
-        <property name="itineraireManager" ref="itineraireManager"/>
-        <property name="ligneManager" ref="ligneManager"/>
-        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+        <property name="stopPointManager" ref="stopPointManager"/>
+        <property name="lineManager" ref="lineManager"/>
+        <property name="stopAreaManager" ref="stopAreaManager"/>
+        <property name="routeManager" ref="routeManager"/>
     </bean>
 
     <bean id="JSONStopPointOnRouteActionBean" scope="prototype"
@@ -148,9 +149,11 @@
     <bean id="StopAreaActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.stopArea.StopAreaAction">
-        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-        <property name="ligneManager" ref="ligneManager"/>
-        <property name="reseauManager" ref="reseauManager"/>
+        <property name="lineManager" ref="lineManager"/>
+        <property name="networkManager" ref="networkManager"/>
+         <property name="stopAreaManager" ref="stopAreaManager"/>
+         <property name="routeManager" ref="routeManager"/>
+         <property name="stopPointManager" ref="stopPointManager"/>
     </bean>
 
     <bean id="JSONBoardingPositionActionBean" scope="prototype"
