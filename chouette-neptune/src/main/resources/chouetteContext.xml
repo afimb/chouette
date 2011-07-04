@@ -116,9 +116,12 @@
     <bean id="JSONLineActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONLineAction">
-        <property name="ligneManager" ref="ligneManager"/>
+        <property name="lineManager" ref="lineManager"/>
+        <property name="stopAreaManager" ref="stopAreaManager"/>
+<!--         <property name="ligneManager" ref="ligneManager"/>
         <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-    </bean>
+ -->
+     </bean>
 
     <bean id="CompanyActionBean" scope="prototype"
         parent="GeneriqueAction"

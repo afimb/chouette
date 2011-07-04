@@ -162,6 +162,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#addNew(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneObject)
 	 */
+	@Transactional
 	@Override
 	public T addNew(User user, T bean) throws ChouetteException 
 	{
