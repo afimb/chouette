@@ -89,7 +89,7 @@
               <TD>
                 <%-- Itération sur la liste des arrèts --%>
                 <s:url action="edit"  namespace="/boardingPosition" id="arretPhysiqueUrl">
-                  <s:param name="idPositionGeographique" value="%{idPhysique}" />
+                  <s:param name="idPositionGeographique" value="%{containedInStopArea.id}" />
                   <s:param name="idLigne" value="idLigne" />
                   <s:param name="idItineraire" value="idItineraire" />
                 </s:url>
