@@ -110,7 +110,6 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public void setObjectId(User user, T bean, String prefix) throws ChouetteException 
 	{
-		if (bean.getObjectId() != null) return;
 		if (bean.getId() == null) return;
 		String objectId = (prefix == null?objectIdDefaultPrefix:prefix)+":"+objectIdKey+":"+bean.getId().toString();
 		bean.setObjectId(objectId);

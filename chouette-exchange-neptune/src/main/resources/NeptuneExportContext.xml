@@ -33,5 +33,10 @@
 		<property name="connectionLinkProducer" ref="NeptuneConnectionLinkExportProducer" />
 		<property name="timetableProducer" ref="NeptuneTimetableExportProducer" />
 	</bean>
+	
+	<bean id="NeptuneLineDeletionExport" class="fr.certu.chouette.exchange.xml.neptune.exporter.XMLNeptuneDeletionExportLinePlugin">
+		<property name="lineProducer" ref="NeptuneLineExportProducer" />
+	</bean>
+	
 
 </beans>
