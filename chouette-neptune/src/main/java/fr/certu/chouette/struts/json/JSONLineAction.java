@@ -1,65 +1,71 @@
 package fr.certu.chouette.struts.json;
 
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.database.ILigneManager;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.struts.GeneriqueAction;
-import fr.certu.chouette.struts.stopArea.StopAreaAction;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.log4j.Logger;
+
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.json.data.JSONStopArea;
+
 
 public class JSONLineAction extends GeneriqueAction
 {
-  private static final Log log = LogFactory.getLog(JSONLineAction.class);
-  private ILigneManager ligneManager;
-  private Long lineId;
-  private IPositionGeographiqueManager positionGeographiqueManager;
+  private static final Logger log = Logger.getLogger(JSONLineAction.class);
+  @Getter @Setter private INeptuneManager<Line> lineManager;
+  @Getter @Setter private Long lineId;
+  @Getter @Setter private INeptuneManager<StopArea> stopAreaManager;
 
-  public Long getLineId()
+//  public Long getLineId()
+//  {
+//    return lineId;
+//  }
+//
+//  public void setLineId(Long lineId)
+//  {
+//    this.lineId = lineId;
+//  }
+
+  public Set<JSONStopArea> getStopPlaces() throws Exception
   {
-    return lineId;
-  }
+	log.debug("getStopPlaces");
 
-  public void setLineId(Long lineId)
-  {
-    this.lineId = lineId;
-  }
-
-  public Set<PositionGeographique> getStopPlaces()
-  {
-	log.error("getStopPlaces");
-
-    List<PositionGeographique> boardingPositionsOnRoute = ligneManager.getArretsPhysiques(lineId);
-    Set<PositionGeographique> stopPlaces = new HashSet<PositionGeographique>();
-
-    for (PositionGeographique positionGeographique : boardingPositionsOnRoute)
+	Line line = lineManager.getById(lineId);
+	
+	Set<JSONStopArea> stopPlaces = new HashSet<JSONStopArea>();
+    for (Route route : line.getRoutes()) 
     {
-      if(positionGeographique.idParent != null){
-        PositionGeographique stopPlace = positionGeographiqueManager.lire(positionGeographique.idParent);
-        if (stopPlace != null)
-        {
-          stopPlaces.add(stopPlace);
-        }
-      }
-    }
+		for (StopPoint stopPoint : route.getStopPoints()) 
+		{
+			StopArea stopPlace = stopPoint.getContainedInStopArea().getParentStopArea();
+			if (stopPlace != null)
+			{
+				stopPlaces.add(new JSONStopArea(stopPlace));
+			}
+		}
+	}
+    log.debug("getStopPlaces returns "+stopPlaces.size()+" places");
     return stopPlaces;
   }
 
   /********************************************************
    *                        MANAGER                       *
    ********************************************************/
-  public void setLigneManager(ILigneManager ligneManager)
-  {
-    this.ligneManager = ligneManager;
-  }
-
-  public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager)
-  {
-    this.positionGeographiqueManager = positionGeographiqueManager;
-  }
+//  public void setLigneManager(ILigneManager ligneManager)
+//  {
+//    this.ligneManager = ligneManager;
+//  }
+//
+//  public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager)
+//  {
+//    this.positionGeographiqueManager = positionGeographiqueManager;
+//  }
 }

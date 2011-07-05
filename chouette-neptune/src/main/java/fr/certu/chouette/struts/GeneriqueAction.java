@@ -19,16 +19,14 @@ import org.apache.struts2.interceptor.PrincipalProxy;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 
-import chouette.schema.types.ChouetteAreaType;
-import chouette.schema.types.ConnectionLinkTypeType;
-import chouette.schema.types.DayTypeType;
-import chouette.schema.types.PTDirectionType;
-import chouette.schema.types.ServiceStatusValueType;
-import chouette.schema.types.TransportModeNameType;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import fr.certu.chouette.struts.outil.filAriane.FilAriane;
@@ -137,10 +135,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     List<ObjetEnumere> directions = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      PTDirectionType ptDirectionType = null;
+      PTDirectionEnum ptDirectionType = null;
       try
       {
-        ptDirectionType = PTDirectionType.fromValue(cleParTraduction.get(traduction));
+        ptDirectionType = PTDirectionEnum.fromValue(cleParTraduction.get(traduction));
 
       } catch (Exception e)
       {
@@ -236,10 +234,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 
     for (String traduction : cleParTraduction.keySet())
     {
-      DayTypeType dayTypeType = null;
+      DayTypeEnum dayTypeType = null;
       try
       {
-        dayTypeType = DayTypeType.fromValue(cleParTraduction.get(traduction));
+        dayTypeType = DayTypeEnum.fromValue(cleParTraduction.get(traduction));
 
       } catch (Exception e)
       {
@@ -278,10 +276,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     List<ObjetEnumere> serviceStatus = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ServiceStatusValueType statutType = null;
+      ServiceStatusValueEnum statutType = null;
       try
       {
-        statutType = ServiceStatusValueType.fromValue(cleParTraduction.get(traduction));
+        statutType = ServiceStatusValueEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -306,8 +304,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type == ChouetteAreaType.STOPPLACE || type == ChouetteAreaType.COMMERCIALSTOPPOINT)
+        ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type == ChouetteAreaEnum.STOPPLACE || type == ChouetteAreaEnum.COMMERCIALSTOPPOINT)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -319,8 +317,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type == ChouetteAreaType.BOARDINGPOSITION || type == ChouetteAreaType.QUAY)
+    	  ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type == ChouetteAreaEnum.BOARDINGPOSITION || type == ChouetteAreaEnum.QUAY)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -332,8 +330,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type == ChouetteAreaType.STOPPLACE)
+    	  ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type == ChouetteAreaEnum.STOPPLACE)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -345,8 +343,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type == ChouetteAreaType.COMMERCIALSTOPPOINT)
+    	  ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type == ChouetteAreaEnum.COMMERCIALSTOPPOINT)
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -380,10 +378,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     List<ObjetEnumere> boardingPosition = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ChouetteAreaType boardingPositionType = null;
+    	ChouetteAreaEnum boardingPositionType = null;
       try
       {
-        boardingPositionType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
+        boardingPositionType = ChouetteAreaEnum.fromValue(cleParTraduction.get(traduction));
 
       } catch (Exception e)
       {
@@ -417,10 +415,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     List<ObjetEnumere> stopPlace = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ChouetteAreaType stopPlaceType = null;
+    	ChouetteAreaEnum stopPlaceType = null;
       try
       {
-        stopPlaceType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
+        stopPlaceType = ChouetteAreaEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -453,10 +451,10 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     List<ObjetEnumere> connectionLink = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ConnectionLinkTypeType correspondanceType = null;
+      ConnectionLinkTypeEnum correspondanceType = null;
       try
       {
-        correspondanceType = ConnectionLinkTypeType.fromValue(cleParTraduction.get(traduction));
+        correspondanceType = ConnectionLinkTypeEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);

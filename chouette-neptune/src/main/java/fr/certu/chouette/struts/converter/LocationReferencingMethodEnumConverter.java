@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.POITypeType;
+import fr.certu.chouette.model.neptune.type.LocationReferencingMethodEnum;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class POITypeTypeConverter extends StrutsTypeConverter
+public final class LocationReferencingMethodEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
@@ -19,19 +19,19 @@ public final class POITypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (POITypeType.fromValue(value[0])==null)
+		if (LocationReferencingMethodEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return POITypeType.fromValue(value[0]);
+		return LocationReferencingMethodEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(POITypeType.class))
+		if (!arg1.getClass().equals(LocationReferencingMethodEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((POITypeType)arg1).toString();
+		return ((LocationReferencingMethodEnum)arg1).toString();
 	}
 }

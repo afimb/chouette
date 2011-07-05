@@ -43,6 +43,8 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 	@Getter @Setter private INeptuneManager<Company> companyManager;
 	@Getter @Setter private INeptuneManager<PTNetwork> networkManager;
 	@Getter @Setter private Long idLigne;
+	@Getter @Setter private Long idReseau;
+	@Getter @Setter private Long idTransporteur;
 	@Getter  private String mappedRequest;
 	@Getter @Setter private String useAmivif;
 	@Getter @Setter private boolean detruireAvecTMs;
@@ -125,6 +127,25 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		{
 			addActionMessage(getText("ligne.homonyme"));
 		}
+		if (idReseau != -1)
+		{
+			PTNetwork network = networkManager.getById(idReseau);
+			line.setPtNetwork(network);
+		}
+		else
+		{
+			line.setPtNetwork(null);
+		}
+		if (idTransporteur != -1)
+		{
+			Company company = companyManager.getById(idTransporteur);
+			line.setCompany(company);
+		}
+		else
+		{
+			line.setCompany(null);
+		}
+		/*
 		if (line.getPtNetwork().getId().equals(new Long(-1)))
 		{
 			line.setPtNetworkId(null);
@@ -133,6 +154,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		{
 			line.setCompanyId(null);
 		}
+		*/
 		lineManager.addNew(null, line);
 		setMappedRequest(SAVE);
 		addActionMessage(getText("ligne.create.ok"));

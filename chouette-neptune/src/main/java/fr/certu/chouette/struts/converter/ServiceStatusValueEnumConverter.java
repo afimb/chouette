@@ -4,11 +4,12 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.ServiceStatusValueType;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class ServiceStatusValueTypeConverter extends StrutsTypeConverter
+import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
+
+public final class ServiceStatusValueEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2)
@@ -21,20 +22,20 @@ public final class ServiceStatusValueTypeConverter extends StrutsTypeConverter
 		{
 			return null;
 		}
-		if (ServiceStatusValueType.fromValue(value[0]) == null)
+		if (ServiceStatusValueEnum.fromValue(value[0]) == null)
 		{
 			throw new TypeConversionException();
 		}
-		return ServiceStatusValueType.fromValue(value[0]);
+		return ServiceStatusValueEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1)
 	{
-		if (!arg1.getClass().equals(ServiceStatusValueType.class))
+		if (!arg1.getClass().equals(ServiceStatusValueEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((ServiceStatusValueType) arg1).toString();
+		return ((ServiceStatusValueEnum) arg1).toString();
 	}
 }

@@ -4,11 +4,12 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.LongLatTypeType;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class LongLatTypeTypeConverter extends StrutsTypeConverter
+import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
+
+public final class BoardingAlightingPossibilityEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
@@ -19,19 +20,19 @@ public final class LongLatTypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (LongLatTypeType.fromValue(value[0])==null)
+		if (BoardingAlightingPossibilityEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return LongLatTypeType.fromValue(value[0]);
+		return BoardingAlightingPossibilityEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(LongLatTypeType.class))
+		if (!arg1.getClass().equals(BoardingAlightingPossibilityEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((LongLatTypeType)arg1).toString();
+		return ((BoardingAlightingPossibilityEnum)arg1).toString();
 	}
 }

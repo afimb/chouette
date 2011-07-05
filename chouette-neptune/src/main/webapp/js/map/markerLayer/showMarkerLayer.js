@@ -42,10 +42,10 @@ Chouette.Map.initShowMarkerLayer = function(url){
       	Chouette.Map.zoomToMaxDataExtent();
       }
       stopPlaces.each(function(area){
-        if(area.latitude != null && area.longitude != null)
+        if(area.areaCentroid.latitude != null && area.areaCentroid.longitude != null)
         {
           var showMarkerLayer = Chouette.Map.map.getLayersByName("Show Marker Layer")[0];
-          var markPoint = new OpenLayers.Geometry.Point(area.longitude, area.latitude);
+          var markPoint = new OpenLayers.Geometry.Point(area.areaCentroid.longitude, area.areaCentroid.latitude);
           var markPointXY = markPoint.transform(Chouette.Map.wgsProjection,Chouette.Map.baseLayerProjection)
 
           bounds.extend(markPointXY);
@@ -80,10 +80,10 @@ Chouette.Map.showTooltipOnEvent = function(event)
 {
   var feature = event.feature;
   var text =  "<p class='popup_title'>"+feature.attributes.area.name + "</p>";
-  if(feature.attributes.area.streetName != null)
-    text += "<p>"+feature.attributes.area.streetName + "</p>";
-  if(feature.attributes.area.countryCode != null)
-    text +="<p>"+feature.attributes.area.countryCode + "</p>";
+  if(feature.attributes.area.areaCentroid.address.streetName != null)
+    text += "<p>"+feature.attributes.area.areaCentroid.address.streetName + "</p>";
+  if(feature.attributes.area.areaCentroid.address.countryCode != null)
+    text +="<p>"+feature.attributes.area.areaCentroid.address.countryCode + "</p>";
   
   var anchoredBubble = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {
     'autoSize': true,
