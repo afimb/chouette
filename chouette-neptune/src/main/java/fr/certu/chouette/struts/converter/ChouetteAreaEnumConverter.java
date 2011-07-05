@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.ChouetteAreaType;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class ChouetteAreaTypeConverter extends StrutsTypeConverter
+public final class ChouetteAreaEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
@@ -19,19 +19,19 @@ public final class ChouetteAreaTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (ChouetteAreaType.fromValue(value[0])==null)
+		if (ChouetteAreaEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return ChouetteAreaType.fromValue(value[0]);
+		return ChouetteAreaEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(ChouetteAreaType.class))
+		if (!arg1.getClass().equals(ChouetteAreaEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((ChouetteAreaType)arg1).toString();
+		return ((ChouetteAreaEnum)arg1).toString();
 	}
 }

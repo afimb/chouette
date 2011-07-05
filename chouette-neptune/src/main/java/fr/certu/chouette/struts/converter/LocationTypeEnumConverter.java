@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.DayTypeType;
+import fr.certu.chouette.model.neptune.type.LocationTypeEnum;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class DayTypeTypeConverter extends StrutsTypeConverter
+public final class LocationTypeEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
@@ -19,19 +19,19 @@ public final class DayTypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (DayTypeType.fromValue(value[0])==null)
+		if (LocationTypeEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return DayTypeType.fromValue(value[0]);
+		return LocationTypeEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(DayTypeType.class))
+		if (!arg1.getClass().equals(LocationTypeEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((DayTypeType)arg1).toString();
+		return ((LocationTypeEnum)arg1).toString();
 	}
 }

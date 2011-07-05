@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.LocationTypeType;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class LocationTypeTypeConverter extends StrutsTypeConverter
+public final class PTDirectionEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
@@ -19,19 +19,19 @@ public final class LocationTypeTypeConverter extends StrutsTypeConverter
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (LocationTypeType.fromValue(value[0])==null)
+		if (PTDirectionEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return LocationTypeType.fromValue(value[0]);
+		return PTDirectionEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(LocationTypeType.class))
+		if (!arg1.getClass().equals(PTDirectionEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((LocationTypeType)arg1).toString();
+		return ((PTDirectionEnum)arg1).toString();
 	}
 }

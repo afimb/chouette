@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.BoardingAlightingPossibilityType;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class BoardingAlightingPossibilityTypeConverter extends StrutsTypeConverter
+public final class DayTypeEnumConverter extends StrutsTypeConverter
 {
 	@Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
@@ -19,19 +19,19 @@ public final class BoardingAlightingPossibilityTypeConverter extends StrutsTypeC
 		if (value[0] == null || value[0].trim().equals("")) {
             return null;
         }
-		if (BoardingAlightingPossibilityType.fromValue(value[0])==null)
+		if (DayTypeEnum.fromValue(value[0])==null)
 		{
 			throw new TypeConversionException();
 		}
-		return BoardingAlightingPossibilityType.fromValue(value[0]);
+		return DayTypeEnum.fromValue(value[0]);
 	}
 
 	@Override
 	public String convertToString(Map arg0, Object arg1) {
-		if (!arg1.getClass().equals(BoardingAlightingPossibilityType.class))
+		if (!arg1.getClass().equals(DayTypeEnum.class))
 		{
 			throw new TypeConversionException();
 		}
-		return ((BoardingAlightingPossibilityType)arg1).toString();
+		return ((DayTypeEnum)arg1).toString();
 	}
 }

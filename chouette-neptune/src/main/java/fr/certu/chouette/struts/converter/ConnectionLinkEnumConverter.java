@@ -5,14 +5,14 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import chouette.schema.types.ConnectionLinkTypeType;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
-public final class ConnectionLinkTypeConverter extends StrutsTypeConverter
+public final class ConnectionLinkEnumConverter extends StrutsTypeConverter
 {
 
-    public ConnectionLinkTypeConverter()
+    public ConnectionLinkEnumConverter()
     {
     }
 
@@ -22,17 +22,17 @@ public final class ConnectionLinkTypeConverter extends StrutsTypeConverter
             throw new TypeConversionException();
         if(value[0] == null || value[0].trim().equals(""))
             return null;
-        if(ConnectionLinkTypeType.fromValue(value[0]) == null)
+        if(ConnectionLinkTypeEnum.fromValue(value[0]) == null)
             throw new TypeConversionException();
         else
-            return ConnectionLinkTypeType.fromValue(value[0]);
+            return ConnectionLinkTypeEnum.fromValue(value[0]);
     }
 
     public String convertToString(Map arg0, Object arg1)
     {
-        if(!arg1.getClass().equals(ConnectionLinkTypeType.class))
+        if(!arg1.getClass().equals(ConnectionLinkTypeEnum.class))
             throw new TypeConversionException();
         else
-            return ((ConnectionLinkTypeType)arg1).toString();
+            return ((ConnectionLinkTypeEnum)arg1).toString();
     }
 }
