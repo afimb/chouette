@@ -18,11 +18,9 @@ import org.apache.commons.logging.LogFactory;
 import chouette.schema.types.ChouetteAreaType;
 import chouette.schema.types.ConnectionLinkTypeType;
 import chouette.schema.types.DayTypeType;
-import chouette.schema.types.LongLatTypeType;
 import chouette.schema.types.PTDirectionType;
 import chouette.schema.types.ServiceStatusValueType;
-import chouette.schema.types.TransportModeNameType;
-import com.opensymphony.xwork2.ActionContext;
+import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 public class EnumerationApplication
 {
@@ -173,10 +171,10 @@ public class EnumerationApplication
     modes = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      TransportModeNameType modeType = null;
+    	TransportModeNameEnum modeType = null;
       try
       {
-        modeType = TransportModeNameType.fromValue(cleParTraduction.get(traduction));
+        modeType = TransportModeNameEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);

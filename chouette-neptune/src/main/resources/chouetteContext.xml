@@ -104,8 +104,6 @@
         <property name="lineManager" ref="lineManager"/>
         <property name="networkManager" ref="networkManager"/>
         <property name="companyManager" ref="companyManager"/>
-        <property name="exportManager" ref="exportManager"/>
-        <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
         <property name="useAmivif" value="${ligne.amivif}"/>
         <property name="detruireAvecTMs" value="${destructionLigne.detruireAvecTMs}"/>
         <property name="detruireAvecArrets" value="${destructionLigne.detruireAvecArrets}"/>

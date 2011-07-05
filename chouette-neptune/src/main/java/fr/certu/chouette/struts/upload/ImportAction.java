@@ -548,7 +548,7 @@ public class ImportAction extends GeneriqueAction {
 					lineManager.saveAll(null, bid, true, true);
 					String[] args = new String[1];
 					args[0] = line.getName();
-					addActionMessage(getText("message.import.xml.success", args));
+					addActionMessage(getText("message.import.xml.success", args[0]));
 				}
 				return SUCCESS;
 			}	

@@ -1,18 +1,5 @@
 package fr.certu.chouette.struts;
 
-import chouette.schema.types.ChouetteAreaType;
-import chouette.schema.types.ConnectionLinkTypeType;
-import chouette.schema.types.DayTypeType;
-//import chouette.schema.types.LongLatTypeType;
-import chouette.schema.types.PTDirectionType;
-import chouette.schema.types.ServiceStatusValueType;
-import chouette.schema.types.TransportModeNameType;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
-//import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.struts.enumeration.ObjetEnumere;
-import fr.certu.chouette.struts.outil.filAriane.FilAriane;
-//import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,12 +11,27 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.PrincipalAware;
 import org.apache.struts2.interceptor.PrincipalProxy;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
+
+import chouette.schema.types.ChouetteAreaType;
+import chouette.schema.types.ConnectionLinkTypeType;
+import chouette.schema.types.DayTypeType;
+import chouette.schema.types.PTDirectionType;
+import chouette.schema.types.ServiceStatusValueType;
+import chouette.schema.types.TransportModeNameType;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+
+import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.struts.enumeration.ObjetEnumere;
+import fr.certu.chouette.struts.outil.filAriane.FilAriane;
 
 public class GeneriqueAction extends ActionSupport implements RequestAware, SessionAware, PrincipalAware
 {
@@ -173,11 +175,11 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
 
     for (String traduction : traductionTriees)
     {
-      TransportModeNameType modeType = null;
+      TransportModeNameEnum modeType = null;
       try
       {
         log.debug("Traduction : " + traduction + " --- Traduction key : " + cleParTraduction.get(traduction));
-        modeType = TransportModeNameType.fromValue(cleParTraduction.get(traduction));
+        modeType = TransportModeNameEnum.fromValue(cleParTraduction.get(traduction));
         log.debug("modeType based on traduction key : " + modeType);
       } catch (Exception e)
       {
