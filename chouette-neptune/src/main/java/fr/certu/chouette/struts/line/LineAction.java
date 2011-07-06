@@ -33,6 +33,7 @@ import fr.certu.chouette.service.commun.ServiceException;
 import fr.certu.chouette.service.database.IExportManager.ExportMode;
 import fr.certu.chouette.service.validation.commun.ValidationException;
 import fr.certu.chouette.struts.GeneriqueAction;
+
 @SuppressWarnings("unchecked")
 public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Preparable
 {
