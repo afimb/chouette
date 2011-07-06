@@ -305,7 +305,13 @@ public class Route extends NeptuneIdentifiedObject
 	public void addStopPoint(StopPoint stopPoint)
 	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
-		if (stopPoint != null && !stopPoints.contains(stopPoint)) stopPoints.add(stopPoint);
+		if (stopPoint != null && !stopPoints.contains(stopPoint))
+		{
+			int pos = stopPoints.size();
+			stopPoints.add(stopPoint);
+			stopPoint.setPosition(pos);
+			rebuildPTLinks();
+		}
 	}
 
 	public void removeStopPoint(StopPoint stopPoint)
@@ -313,18 +319,23 @@ public class Route extends NeptuneIdentifiedObject
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
 		if (stopPoints.contains(stopPoint)) 
 		{
+			int position = stopPoints.indexOf(stopPoint);
 			stopPoints.remove(stopPoint);
+			repositionStopPoints(position);
 			rebuildPTLinks();
 		}
 	}
 	public void removeStopPointAt(int position)
 	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
-		if (stopPoints.size() < position) 
+		if (stopPoints.size() > position) 
 		{
-			stopPoints.remove(position);
+			StopPoint ret = stopPoints.remove(position);
+			repositionStopPoints(position);
 			rebuildPTLinks();
+			ret.setRoute(null);
 		}
+		return ;
 	}
 
 	public void swapStopPoints(StopPoint stopPoint1, StopPoint stopPoint2)
@@ -336,6 +347,8 @@ public class Route extends NeptuneIdentifiedObject
 		{
 			stopPoints.set(pos1,stopPoint2);
 			stopPoints.set(pos2,stopPoint1);
+			stopPoint1.setPosition(pos2);
+			stopPoint2.setPosition(pos1);
 			rebuildPTLinks();
 		}
 	}
@@ -349,6 +362,8 @@ public class Route extends NeptuneIdentifiedObject
 			StopPoint stopPoint2  = stopPoints.get(pos2);
 			stopPoints.set(pos1,stopPoint2);
 			stopPoints.set(pos2,stopPoint1);
+			stopPoint1.setPosition(pos2);
+			stopPoint2.setPosition(pos1);
 			rebuildPTLinks();
 		}
 	}
@@ -374,7 +389,16 @@ public class Route extends NeptuneIdentifiedObject
 				point.setPosition(i);
 			}
 		}
+		repositionStopPoints(position);
 		rebuildPTLinks();
+	}
+
+	private void repositionStopPoints(int start)
+	{
+		for (int i = start; i < stopPoints.size(); i++) 
+		{
+			stopPoints.get(i).setPosition(i);	
+		}
 	}
 
 	public void rebuildPTLinks()
@@ -391,7 +415,7 @@ public class Route extends NeptuneIdentifiedObject
 		{
 			StopPoint start = stopPoints.get(rank-1);
 			StopPoint end = stopPoints.get(rank);
-			PTLink link = linkBySEId.get(start.getObjectId()+"@"+end.getObjectId());
+			PTLink link = linkBySEId.remove(start.getObjectId()+"@"+end.getObjectId());
 			if (link == null)
 			{
 				link = new PTLink();
@@ -405,6 +429,10 @@ public class Route extends NeptuneIdentifiedObject
 				link.setRoute(this);
 			}
 			this.addPTLink(link);
+		}
+		for (PTLink link : linkBySEId.values()) 
+		{
+			link.setRoute(null);
 		}
 
 	}
@@ -422,7 +450,8 @@ public class Route extends NeptuneIdentifiedObject
 				iterator.remove();
 			}
 		}
-		if(journeyPatterns.isEmpty()){
+		if(journeyPatterns.isEmpty())
+		{
 			return false;
 		}
 		return true;

@@ -80,7 +80,6 @@ public class EnumerationApplication
     SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
 
     ResourceBundle rsDir = ResourceBundle.getBundle(direction, locale);
-
     Enumeration<String> rsDirEnum = rsDir.getKeys();
     while (rsDirEnum.hasMoreElements())
     {
@@ -171,7 +170,7 @@ public class EnumerationApplication
     modes = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      TransportModeNameEnum modeType = null;
+    	TransportModeNameEnum modeType = null;
       try
       {
         modeType = TransportModeNameEnum.fromValue(cleParTraduction.get(traduction));

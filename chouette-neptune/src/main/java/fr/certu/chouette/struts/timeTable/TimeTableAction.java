@@ -1,408 +1,483 @@
 package fr.certu.chouette.struts.timeTable;
 
-import chouette.schema.types.DayTypeType;
-import com.opensymphony.xwork2.ModelDriven;
-import com.opensymphony.xwork2.Preparable;
-import fr.certu.chouette.struts.converter.JourTypeTMConverter;
-import fr.certu.chouette.modele.Periode;
-import fr.certu.chouette.modele.Reseau;
-import fr.certu.chouette.modele.TableauMarche;
-import fr.certu.chouette.service.database.IReseauManager;
-import fr.certu.chouette.service.database.ITableauMarcheManager;
-import fr.certu.chouette.struts.GeneriqueAction;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class TimeTableAction extends GeneriqueAction implements Preparable, ModelDriven<TableauMarche>
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
+import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.Period;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.converter.JourTypeTMConverter;
+
+@SuppressWarnings("unchecked")
+public class TimeTableAction extends GeneriqueAction implements Preparable, ModelDriven<Timetable>
 {
 
-  private static final Log log = LogFactory.getLog(TimeTableAction.class);
-  private ITableauMarcheManager tableauMarcheManager;
-  private IReseauManager reseauManager;
-  private Long idTableauMarche;
-  private Date jour;
-  private Date debut;
-  private Date fin;
-  private Integer idxDate;
-  private Integer idxPeriod;
-  private List<DayTypeType> joursTypes;
-  private List<Reseau> reseaux;
-  private String commentaire = null;
-  private Long idReseau = null;
-  private Date dateDebutPeriode = null;
-  private Date dateFinPeriode = null;
-  private TableauMarche tableauMarcheModel = new TableauMarche();
-  private String mappedRequest;
+	private static final Log log = LogFactory.getLog(TimeTableAction.class);
+	@Getter @Setter private INeptuneManager<Timetable> timetableManager;
+	@Getter @Setter private INeptuneManager<PTNetwork> networkManager;
+	private Long idTableauMarche;
+	private Date jour;
+	private Date debut;
+	private Date fin;
+	private Integer idxDate;
+	private Integer idxPeriod;
+	private List<DayTypeEnum> joursTypes;
+	private List<PTNetwork> reseaux;
+	private String commentaire = null;
+	private Long idReseau = null;
+	private Date dateDebutPeriode = null;
+	private Date dateFinPeriode = null;
+	private Timetable tableauMarcheModel = new Timetable();
+	private String mappedRequest;
+	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+	public Long getIdTableauMarche()
+	{
+		return idTableauMarche;
+	}
 
-  public Long getIdTableauMarche()
-  {
-    return idTableauMarche;
-  }
+	public void setIdTableauMarche(Long idTableauMarche)
+	{
+		this.idTableauMarche = idTableauMarche;
+	}
 
-  public void setIdTableauMarche(Long idTableauMarche)
-  {
-    this.idTableauMarche = idTableauMarche;
-  }
+	/********************************************************
+	 *                  MODEL + PREPARE                     *
+	 ********************************************************/
+	public Timetable getModel()
+	{
+		return tableauMarcheModel;
+	}
 
-  /********************************************************
-   *                  MODEL + PREPARE                     *
-   ********************************************************/
-  public TableauMarche getModel()
-  {
-    return tableauMarcheModel;
-  }
+	public void prepare() throws Exception
+	{
+		log.debug("Prepare with id : " + getIdTableauMarche());
+		if (getIdTableauMarche() == null)
+		{
+			tableauMarcheModel = new Timetable();
+		}
+		else
+		{
+			tableauMarcheModel = timetableManager.get(null, Filter.getNewEqualsFilter("id", idTableauMarche), level);
+		}
 
-  public void prepare() throws Exception
-  {
-    log.debug("Prepare with id : " + getIdTableauMarche());
-    if (getIdTableauMarche() == null)
-    {
-      tableauMarcheModel = new TableauMarche();
-    }
-    else
-    {
-      tableauMarcheModel = tableauMarcheManager.lire(idTableauMarche);
-    }
+		// Chargement des réseaux
+		reseaux = networkManager.getAll(null);
 
-    // Chargement des réseaux
-    reseaux = reseauManager.lire();
+		//	Création de la liste des types de jours
+		joursTypes = JourTypeTMConverter.getProperties(tableauMarcheModel);
+	}
 
-    //	Création de la liste des types de jours
-    joursTypes = JourTypeTMConverter.getProperties(tableauMarcheModel);
-  }
+	/********************************************************
+	 *                           CRUD                       
+	 * @throws ChouetteException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException *
+	 ********************************************************/
 
-  /********************************************************
-   *                           CRUD                       *
-   ********************************************************/
-  @SkipValidation
-  public String list()
-  {
-    if ("".equals(commentaire))
-    {
-      commentaire = null;
-    }
-    if ("".equals(dateDebutPeriode))
-    {
-      dateDebutPeriode = null;
-    }
-    if ("".equals(dateFinPeriode))
-    {
-      dateFinPeriode = null;
-    }
+	@SkipValidation
+	public String list() throws ChouetteException, IllegalAccessException, InvocationTargetException
+	{
+		if ("".equals(commentaire))
+		{
+			commentaire = null;
+		}
+		if ("".equals(dateDebutPeriode))
+		{
+			dateDebutPeriode = null;
+		}
+		if ("".equals(dateFinPeriode))
+		{
+			dateFinPeriode = null;
+		}
 
-    this.request.put("tableauxMarche", tableauMarcheManager.lire(dateDebutPeriode, dateFinPeriode, commentaire, idReseau));
-    log.debug("List of tableauMarche");
-    return LIST;
-  }
+		List<Timetable> timetables = new ArrayList<Timetable>();
+		List<Timetable> timetablesAll = timetableManager.getAll(null);
 
-  @SkipValidation
-  public String add()
-  {
-    setMappedRequest(SAVE);
-    return EDIT;
-  }
+		if(dateDebutPeriode == null && dateFinPeriode == null && commentaire == null)
+		{
+			timetables.addAll(timetablesAll);
+		}else
+		{
+			if(commentaire != null)
+			{
+				for (Timetable timetable : timetablesAll) 
+				{
+					if(commentaire.contentEquals(timetable.getComment()) || timetable.getComment().contentEquals(commentaire))
+					{
+						timetables.add(timetable);
+					}
+				}
+			}
 
-  public String save()
-  {
-    tableauMarcheManager.creer(tableauMarcheModel);
+			if(dateDebutPeriode != null || dateFinPeriode != null)
+			{
+				for (Timetable timetable : timetablesAll) 
+				{
+					boolean isValide = false;
 
-    setMappedRequest(UPDATE);
-    String[] args = new String[1];
-    args[0] = tableauMarcheModel.getObjectId();
-    addActionMessage(getText("tableauMarche.create.ok", args));
-    // Update timetable id to update timetable
-    setIdTableauMarche(tableauMarcheModel.getId());
-    log.debug("Create tableauMarche with id : " + tableauMarcheModel.getId());
-    return REDIRECTEDIT;
-  }
+					if(timetable.getPeriods() != null)
+					{
+						for (Period period : timetable.getPeriods()) 
+						{
+							if(period != null)
+							{
+								if(commentaire != null && 
+										(dateFinPeriode == null || 
+												period.getStartDate().equals(dateFinPeriode) ||
+												period.getStartDate().after(dateFinPeriode))  &&
 
-  @SkipValidation
-  public String edit()
-  {
-    setMappedRequest(UPDATE);
-    return EDIT;
-  }
+												(dateFinPeriode == null || 
+														period.getEndDate().equals(dateDebutPeriode) ||
+														period.getStartDate().before(dateDebutPeriode) ) &&
+														(commentaire.contentEquals(timetable.getComment()) || 
+														timetable.getComment().contentEquals(commentaire))) 
+								{
+									isValide = true;
+									break;
+								}
+								else if((dateFinPeriode == null || 
+										period.getStartDate().equals(dateFinPeriode) ||
+										period.getStartDate().after(dateFinPeriode))  &&
 
-  public String update()
-  {
-    JourTypeTMConverter.setDayTypes(tableauMarcheModel, joursTypes);
+										(dateFinPeriode == null || 
+												period.getEndDate().equals(dateDebutPeriode) ||
+												period.getStartDate().before(dateDebutPeriode) ) )
+								{
+									isValide = true;
+									break;
+								}
+							}
+						}	
+					}
 
-    tableauMarcheManager.modifier(tableauMarcheModel);
-    setMappedRequest(UPDATE);
-    String[] args = new String[1];
-    args[0] = tableauMarcheModel.getObjectId();
-    addActionMessage(getText("tableauMarche.update.ok", args));
-    log.debug("Update tableauMarche with id : " + tableauMarcheModel.getId());
-    return REDIRECTEDIT;
-  }
+					if(isValide) 
+					{
+						if(timetables.contains(timetable)) 
+							timetables.remove(timetable);
+						else
+							timetables.add(timetable);
+					}
+						
+				}	 
+			}
 
-  public String delete()
-  {
-    tableauMarcheManager.supprimer(tableauMarcheModel.getId());
+		}
 
-    ArrayList args = new ArrayList();
-    args.add(tableauMarcheModel.getObjectId());
-    addActionMessage(getText("tableauMarche.delete.ok", args));
-    log.debug("Delete tableauMarche with id : " + tableauMarcheModel.getId());
+		this.request.put("tableauxMarche", timetables);
+		log.debug("List of tableauMarche");
+		return LIST;
+	}
 
-    return REDIRECTLIST;
-  }
+	@SkipValidation
+	public String add()
+	{
+		setMappedRequest(SAVE);
+		return EDIT;
+	}
 
-  @SkipValidation
-  public String cancel()
-  {
-    addActionMessage(getText("tableauMarche.cancel.ok"));
-    return REDIRECTLIST;
-  }
+	public String save() throws ChouetteException
+	{
+		timetableManager.addNew(null, tableauMarcheModel);
 
-  @Override
-  @SkipValidation
-  public String input() throws Exception
-  {
-    return INPUT;
-  }
+		setMappedRequest(UPDATE);
+		String[] args = new String[1];
+		args[0] = tableauMarcheModel.getObjectId();
+		addActionMessage(getText("tableauMarche.create.ok", args));
+		// Update timetable id to update timetable
+		setIdTableauMarche(tableauMarcheModel.getId());
+		log.debug("Create tableauMarche with id : " + tableauMarcheModel.getId());
+		return REDIRECTEDIT;
+	}
 
-  public String addPeriode()
-  {
-    if (debut != null && fin != null)
-    {
-      Periode p = new Periode();
-      p.setDebut(debut);
-      p.setFin(fin);
-      tableauMarcheModel.ajoutPeriode(p);
-      debut = null;
-      fin = null;
+	@SkipValidation
+	public String edit()
+	{
+		setMappedRequest(UPDATE);
+		return EDIT;
+	}
 
-      if (tableauMarcheModel.getId() == null)
-      {
-        tableauMarcheManager.creer(tableauMarcheModel);
-        addActionMessage(getText("tableauMarche.addperiod.ok"));
-      }
-      else
-      {
-        tableauMarcheManager.modifier(tableauMarcheModel);
-        addActionMessage(getText("tableauMarche.addperiod.ok"));
-      }
-    }
-    return REDIRECTEDIT;
-  }
+	public String update() throws ChouetteException
+	{
+		JourTypeTMConverter.setDayTypes(tableauMarcheModel, joursTypes);
 
-  public String deletePeriod()
-  {
-    if (this.idxPeriod != null)
-    {
-      Periode p = tableauMarcheModel.getPeriodes().get(idxPeriod.intValue() - 1);
-      tableauMarcheModel.retraitPeriode(p);
-      idxPeriod = null;
-    }
-    if (tableauMarcheModel.getId() == null)
-    {
-      tableauMarcheManager.creer(tableauMarcheModel);
-      addActionMessage(getText("tableauMarche.deleteperiod.ok"));
-    }
-    else
-    {
-      tableauMarcheManager.modifier(tableauMarcheModel);
-      addActionMessage(getText("tableauMarche.deleteperiod.ok"));
-    }
+		timetableManager.update(null, tableauMarcheModel);
+		setMappedRequest(UPDATE);
+		String[] args = new String[1];
+		args[0] = tableauMarcheModel.getObjectId();
+		addActionMessage(getText("tableauMarche.update.ok", args));
+		log.debug("Update tableauMarche with id : " + tableauMarcheModel.getId());
+		return REDIRECTEDIT;
+	}
 
-    return REDIRECTEDIT;
-  }
+	public String delete() throws ChouetteException
+	{
+		timetableManager.remove(null, tableauMarcheModel, false);
 
-  public String addDate()
-  {
-    if (jour != null)
-    {
-      tableauMarcheModel.ajoutDate(jour);
-      jour = null;
-    }
+		ArrayList args = new ArrayList();
+		args.add(tableauMarcheModel.getObjectId());
+		addActionMessage(getText("tableauMarche.delete.ok", args));
+		log.debug("Delete tableauMarche with id : " + tableauMarcheModel.getId());
 
-    if (tableauMarcheModel.getId() == null)
-    {
-      tableauMarcheManager.creer(tableauMarcheModel);
-      addActionMessage(getText("tableauMarche.addcalendarday.ok"));
-    }
-    else
-    {
-      tableauMarcheManager.modifier(tableauMarcheModel);
-      addActionMessage(getText("tableauMarche.addcalendarday.ok"));
-    }
+		return REDIRECTLIST;
+	}
 
-    return REDIRECTEDIT;
-  }
+	@SkipValidation
+	public String cancel()
+	{
+		addActionMessage(getText("tableauMarche.cancel.ok"));
+		return REDIRECTLIST;
+	}
 
-  public String deleteDate()
-  {
-    if (this.idxDate != null)
-    {
-      Date d = tableauMarcheModel.getDates().get(idxDate.intValue() - 1);
-      tableauMarcheModel.retraitDate(d);
-      idxDate = null;
-    }
-    if (tableauMarcheModel.getId() == null)
-    {
-      tableauMarcheManager.creer(tableauMarcheModel);
-      addActionMessage(getText("tableauMarche.deletecalendarday.ok"));
-    }
-    else
-    {
-      tableauMarcheManager.modifier(tableauMarcheModel);
-      addActionMessage(getText("tableauMarche.deletecalendarday.ok"));
-    }
+	@Override
+	@SkipValidation
+	public String input() throws Exception
+	{
+		return INPUT;
+	}
 
-    return REDIRECTEDIT;
-  }
+	public String addPeriode() throws ChouetteException
+	{
+		if (debut != null && fin != null)
+		{
+			Period p = new Period();
 
-  /********************************************************
-   *                        MANAGER                       *
-   ********************************************************/
-  public void setReseauManager(IReseauManager reseauManager)
-  {
-    this.reseauManager = reseauManager;
-  }
+			p.setStartDate(debut);
+			p.setEndDate(fin);
+			tableauMarcheModel.addPeriod(p);
+			debut = null;
+			fin = null;
 
-  public void setTableauMarcheManager(ITableauMarcheManager tableauMarcheManager)
-  {
-    this.tableauMarcheManager = tableauMarcheManager;
-  }
+			if (tableauMarcheModel.getId() == null)
+			{
+				timetableManager.addNew(null, tableauMarcheModel);
+				addActionMessage(getText("tableauMarche.addperiod.ok"));
+			}
+			else
+			{
+				timetableManager.update(null, tableauMarcheModel);
+				addActionMessage(getText("tableauMarche.addperiod.ok"));
+			}
+		}
+		return REDIRECTEDIT;
+	}
 
-  /********************************************************
-   *                   METHOD ACTION                      *
-   ********************************************************/
-  // this prepares command for button on initial screen write
-  public void setMappedRequest(String actionMethod)
-  {
-    this.mappedRequest = actionMethod;
-  }
+	public String deletePeriod() throws ChouetteException
+	{
+		if (this.idxPeriod != null)
+		{
+			Period p = tableauMarcheModel.getPeriods().get(idxPeriod.intValue() - 1);
+			tableauMarcheModel.removePeriod(p);
+			idxPeriod = null;
+		}
+		if (tableauMarcheModel.getId() == null)
+		{
+			timetableManager.addNew(null, tableauMarcheModel);
+			addActionMessage(getText("tableauMarche.deleteperiod.ok"));
+		}
+		else
+		{
+			timetableManager.update(null, tableauMarcheModel);
+			addActionMessage(getText("tableauMarche.deleteperiod.ok"));
+		}
 
-  // when invalid, the request parameter will restore command action
-  public void setActionMethod(String method)
-  {
-    this.mappedRequest = method;
-  }
+		return REDIRECTEDIT;
+	}
 
-  public String getActionMethod()
-  {
-    return mappedRequest;
-  }
+	public String addDate() throws ChouetteException
+	{
+		if (jour != null)
+		{
+			tableauMarcheModel.addCalendarDay(jour);
+			jour = null;
+		}
 
-  /********************************************************
-   *                   FILTER                             *
-   ********************************************************/
-  public Long getIdReseau()
-  {
-    return idReseau;
-  }
+		if (tableauMarcheModel.getId() == null)
+		{
+			timetableManager.addNew(null, tableauMarcheModel);
+			addActionMessage(getText("tableauMarche.addcalendarday.ok"));
+		}
+		else
+		{
+			timetableManager.update(null, tableauMarcheModel);
+			addActionMessage(getText("tableauMarche.addcalendarday.ok"));
+		}
 
-  public void setIdReseau(Long idReseau)
-  {
-    this.idReseau = idReseau;
-  }
+		return REDIRECTEDIT;
+	}
 
-  public String getCommentaire()
-  {
-    return commentaire;
-  }
+	public String deleteDate() throws ChouetteException
+	{
+		if (this.idxDate != null)
+		{
+			Date d = tableauMarcheModel.getCalendarDays().get(idxDate.intValue() - 1);
+			tableauMarcheModel.removeCalendarDay((java.sql.Date) d);
+			idxDate = null;
+		}
+		if (tableauMarcheModel.getId() == null)
+		{
+			timetableManager.addNew(null, tableauMarcheModel);
+			addActionMessage(getText("tableauMarche.deletecalendarday.ok"));
+		}
+		else
+		{
+			timetableManager.update(null, tableauMarcheModel);
+			addActionMessage(getText("tableauMarche.deletecalendarday.ok"));
+		}
 
-  public void setCommentaire(String commentaire)
-  {
-    this.commentaire = commentaire;
-  }
+		return REDIRECTEDIT;
+	}
 
-  public Date getDateDebutPeriode()
-  {
-    return dateDebutPeriode;
-  }
+	/********************************************************
+	 *                   METHOD ACTION                      *
+	 ********************************************************/
+	// this prepares command for button on initial screen write
+	public void setMappedRequest(String actionMethod)
+	{
+		this.mappedRequest = actionMethod;
+	}
 
-  public void setDateDebutPeriode(Date dateDebutPeriode)
-  {
-    this.dateDebutPeriode = dateDebutPeriode;
-  }
+	// when invalid, the request parameter will restore command action
+	public void setActionMethod(String method)
+	{
+		this.mappedRequest = method;
+	}
 
-  public Date getDateFinPeriode()
-  {
-    return dateFinPeriode;
-  }
+	public String getActionMethod()
+	{
+		return mappedRequest;
+	}
 
-  public void setDateFinPeriode(Date dateFinPeriode)
-  {
-    this.dateFinPeriode = dateFinPeriode;
-  }
+	/********************************************************
+	 *                   FILTER                             *
+	 ********************************************************/
+	public Long getIdReseau()
+	{
+		return idReseau;
+	}
 
-  /********************************************************
-   *                   METHODS                            *
-   ********************************************************/
-  public Date getJour()
-  {
-    return jour;
-  }
+	public void setIdReseau(Long idReseau)
+	{
+		this.idReseau = idReseau;
+	}
 
-  public void setJour(Date jour)
-  {
-    this.jour = jour;
-  }
+	public String getCommentaire()
+	{
+		return commentaire;
+	}
 
-  public Date getDebut()
-  {
-    return debut;
-  }
+	public void setCommentaire(String commentaire)
+	{
+		this.commentaire = commentaire;
+	}
 
-  public void setDebut(Date debut)
-  {
-    this.debut = debut;
-  }
+	public Date getDateDebutPeriode()
+	{
+		return dateDebutPeriode;
+	}
 
-  public Date getFin()
-  {
-    return fin;
-  }
+	public void setDateDebutPeriode(Date dateDebutPeriode)
+	{
+		this.dateDebutPeriode = dateDebutPeriode;
+	}
 
-  public void setFin(Date fin)
-  {
-    this.fin = fin;
-  }
+	public Date getDateFinPeriode()
+	{
+		return dateFinPeriode;
+	}
 
-  public Integer getIdxDate()
-  {
-    return idxDate;
-  }
+	public void setDateFinPeriode(Date dateFinPeriode)
+	{
+		this.dateFinPeriode = dateFinPeriode;
+	}
 
-  public void setIdxDate(Integer idxDate)
-  {
-    this.idxDate = idxDate;
-  }
+	/********************************************************
+	 *                   METHODS                            *
+	 ********************************************************/
+	public Date getJour()
+	{
+		return jour;
+	}
 
-  public Integer getIdxPeriod()
-  {
-    return idxPeriod;
-  }
+	public void setJour(Date jour)
+	{
+		this.jour = jour;
+	}
 
-  public void setIdxPeriod(Integer idxPeriod)
-  {
-    this.idxPeriod = idxPeriod;
-  }
+	public Date getDebut()
+	{
+		return debut;
+	}
 
-  public List<DayTypeType> getJoursTypes()
-  {
-    return JourTypeTMConverter.getProperties(tableauMarcheModel);
-  }
+	public void setDebut(Date debut)
+	{
+		this.debut = debut;
+	}
 
-  public void setJoursTypes(List<DayTypeType> joursTypes)
-  {
-    this.joursTypes = joursTypes;
-  }
+	public Date getFin()
+	{
+		return fin;
+	}
 
-  public List<Reseau> getReseaux()
-  {
-    return reseaux;
-  }
+	public void setFin(Date fin)
+	{
+		this.fin = fin;
+	}
 
-  public void setReseaux(List<Reseau> reseaux)
-  {
-    this.reseaux = reseaux;
-  }
+	public Integer getIdxDate()
+	{
+		return idxDate;
+	}
+
+	public void setIdxDate(Integer idxDate)
+	{
+		this.idxDate = idxDate;
+	}
+
+	public Integer getIdxPeriod()
+	{
+		return idxPeriod;
+	}
+
+	public void setIdxPeriod(Integer idxPeriod)
+	{
+		this.idxPeriod = idxPeriod;
+	}
+
+	public List<DayTypeEnum> getJoursTypes()
+	{
+		return JourTypeTMConverter.getProperties(tableauMarcheModel);
+	}
+
+	public void setJoursTypes(List<DayTypeEnum> joursTypes)
+	{
+		this.joursTypes = joursTypes;
+	}
+
+	public List<PTNetwork> getReseaux()
+	{
+		return reseaux;
+	}
+
+	public void setReseaux(List<PTNetwork> reseaux)
+	{
+		this.reseaux = reseaux;
+	}
 }

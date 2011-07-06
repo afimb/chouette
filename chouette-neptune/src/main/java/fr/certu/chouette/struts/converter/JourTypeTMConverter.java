@@ -1,35 +1,35 @@
 package fr.certu.chouette.struts.converter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import chouette.schema.types.DayTypeType;
-import fr.certu.chouette.modele.TableauMarche;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
 public class JourTypeTMConverter 
 {	
-	public static List<DayTypeType> getProperties( TableauMarche tm)
+	public static List<DayTypeEnum> getProperties( Timetable tm)
 	{
-		if ( tm==null) return new ArrayList<DayTypeType>();
+		if ( tm==null) return new ArrayList<DayTypeEnum>();
 		
-		List<DayTypeType> properties = new ArrayList<DayTypeType>();
-		for (DayTypeType dayType : tm.getDayTypes()) {
+		List<DayTypeEnum> properties = new ArrayList<DayTypeEnum>();
+		for (DayTypeEnum dayType : tm.getDayTypes()) {
 			properties.add( dayType);
 		}
 		return properties;
 	}
 	
-	public static void setDayTypes( TableauMarche tm, List<DayTypeType> properties)
+	public static void setDayTypes( Timetable tm, List<DayTypeEnum> properties)
 	{
 		if ( properties==null || tm==null) throw new IllegalArgumentException();
 		
-		Set<DayTypeType> dayTypes = new HashSet<DayTypeType>();
-		for (DayTypeType property : properties) {
+		Set<DayTypeEnum> dayTypes = new HashSet<DayTypeEnum>();
+		for (DayTypeEnum property : properties) {
 			dayTypes.add( property);
 		}
-		tm.setDayTypes( dayTypes);
+		tm.setDayTypes( Arrays.asList(dayTypes.toArray(new DayTypeEnum[0])));
 	}
-	
 }

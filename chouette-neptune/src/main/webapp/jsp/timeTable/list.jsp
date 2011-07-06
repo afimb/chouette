@@ -21,8 +21,8 @@
 <br>
 <%-- FILTRE --%>
 <div>
-  <s:form action="list" namespace="/timeTable" >
-    <s:select name="idReseau" label="%{getText('filter.network')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
+  <s:form action="list" namespace="/timeTable" ><!--
+    <s:select name="idReseau" label="%{getText('filter.network')}" value="%{idReseau}" list="reseaux" listKey="id" listValue="name" headerKey="" headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" /> -->
     <s:textfield name="commentaire" label="%{getText('filter.comment')}"></s:textfield>
     <s:textfield id="dateDebutPeriode" name="dateDebutPeriode" label="%{getText('filter.begin.interval')}"></s:textfield>
     <script type="text/javascript">

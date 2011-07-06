@@ -1,18 +1,5 @@
 package fr.certu.chouette.struts;
 
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-//import chouette.schema.types.LongLatTypeType;
-import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
-//import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
-import fr.certu.chouette.struts.enumeration.ObjetEnumere;
-import fr.certu.chouette.struts.outil.filAriane.FilAriane;
-//import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,12 +11,25 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.interceptor.PrincipalAware;
 import org.apache.struts2.interceptor.PrincipalProxy;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.SessionAware;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
+import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.struts.enumeration.ObjetEnumere;
+import fr.certu.chouette.struts.outil.filAriane.FilAriane;
 
 public class GeneriqueAction extends ActionSupport implements RequestAware, SessionAware, PrincipalAware
 {
