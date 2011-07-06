@@ -42,22 +42,15 @@
 			<key column="routeId" foreign-key="jp_route_fkey" on-delete="cascade"/>
 			<one-to-many class="JourneyPattern" />
 		</bag>
-		<bag name="ptLinks" lazy="true" inverse="true" >
+		<bag name="ptLinks" lazy="true" inverse="true" cascade="all-delete-orphan">
 			<key column="routeId" foreign-key="ptlink_route_fkey" on-delete="cascade"/>
 			<one-to-many class="PTLink" />
 		</bag>
-		<list name="stopPoints" lazy="true" inverse="true">
+		<bag name="stopPoints" lazy="true" inverse="true" cascade="all-delete-orphan" order-by="position">
 			<key column="routeId" foreign-key="stoppoint_route_fkey" on-delete="cascade"/>
-			<index column="position"/>
+			<!-- <list-index column="position" base="0"/> -->
 			<one-to-many class="StopPoint" />
-		</list>
-		<!--
-		<bag name="journeyPatternIds" table="journeyPattern" inverse="true"
-			lazy="false" cascade="none" fetch="join">
-			<key column="routeId" />
-			<element type="string" column="objectId" />
 		</bag>
-        -->
 		<many-to-one name="line" insert="true" update="true" foreign-key="route_line_fkey"
 			class="Line" lazy="no-proxy" outer-join="auto" column="lineId">
 			 </many-to-one>

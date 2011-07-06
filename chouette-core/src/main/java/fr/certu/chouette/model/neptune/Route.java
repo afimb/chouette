@@ -8,13 +8,15 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
 
@@ -306,9 +308,112 @@ public class Route extends NeptuneIdentifiedObject
 		if (stopPoint != null && !stopPoints.contains(stopPoint)) stopPoints.add(stopPoint);
 	}
 
+	public void removeStopPoint(StopPoint stopPoint)
+	{
+		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
+		if (stopPoints.contains(stopPoint)) 
+		{
+			stopPoints.remove(stopPoint);
+			rebuildPTLinks();
+		}
+	}
+	public void removeStopPointAt(int position)
+	{
+		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
+		if (stopPoints.size() < position) 
+		{
+			stopPoints.remove(position);
+			rebuildPTLinks();
+		}
+	}
+
+	public void swapStopPoints(StopPoint stopPoint1, StopPoint stopPoint2)
+	{
+		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
+		int pos1 = stopPoints.indexOf(stopPoint1);
+		int pos2 = stopPoints.indexOf(stopPoint2);
+		if (pos1 >= 0 && pos2 >= 0)
+		{
+			stopPoints.set(pos1,stopPoint2);
+			stopPoints.set(pos2,stopPoint1);
+			rebuildPTLinks();
+		}
+	}
+
+	public void swapStopPoints(int pos1, int pos2)
+	{
+		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
+		if (pos1 >= 0 && pos2 >= 0)
+		{
+			StopPoint stopPoint1 = stopPoints.get(pos1);
+			StopPoint stopPoint2  = stopPoints.get(pos2);
+			stopPoints.set(pos1,stopPoint2);
+			stopPoints.set(pos2,stopPoint1);
+			rebuildPTLinks();
+		}
+	}
+
+
+
+	public void addStopPointAt(int position, StopPoint stopPoint)
+	{
+		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
+		if (stopPoint == null || stopPoints.contains(stopPoint)) return;
+		if (position >= stopPoints.size())
+		{
+			stopPoint.setPosition(stopPoints.size());
+			stopPoints.add(stopPoint);
+		}
+		else
+		{
+			stopPoint.setPosition(position);
+			stopPoints.add(position,stopPoint);
+			for (int i = position+1; i < stopPoints.size(); i++)
+			{
+				StopPoint point = stopPoints.get(i);
+				point.setPosition(i);
+			}
+		}
+		rebuildPTLinks();
+	}
+
+	public void rebuildPTLinks()
+	{
+		if (ptLinks == null) ptLinks= new ArrayList<PTLink>();
+		Map<String,PTLink> linkBySEId = new HashMap<String,PTLink>();
+		for (PTLink link : ptLinks) 
+		{
+			linkBySEId.put(link.getStartOfLink().getObjectId()+"@"+link.getEndOfLink().getObjectId(), link);
+		}
+		ptLinks.clear();
+		String baseId = this.getObjectId().split(":")[0]+":"+NeptuneIdentifiedObject.PTLINK_KEY+":";
+		for (int rank = 1; rank < stopPoints.size(); rank++)
+		{
+			StopPoint start = stopPoints.get(rank-1);
+			StopPoint end = stopPoints.get(rank);
+			PTLink link = linkBySEId.get(start.getObjectId()+"@"+end.getObjectId());
+			if (link == null)
+			{
+				link = new PTLink();
+				link.setStartOfLink(start);
+				link.setEndOfLink(end);
+				String startId = start.getObjectId().split(":")[2];
+				String endId = end.getObjectId().split(":")[2];
+				String objectId = baseId+startId+"A"+endId;
+				link.setObjectId(objectId);
+				link.setCreationTime(new Date());
+				link.setRoute(this);
+			}
+			this.addPTLink(link);
+		}
+
+	}
+
 	@Override
-	public boolean clean() {
-		if(journeyPatterns == null){
+	public boolean clean() 
+	{
+		if(journeyPatterns == null)
+		{
 			return false;
 		}
 		for (Iterator<JourneyPattern> iterator = journeyPatterns.iterator(); iterator.hasNext();) {

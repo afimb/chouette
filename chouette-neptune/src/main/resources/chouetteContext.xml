@@ -58,6 +58,7 @@
         <property name="lineManager" ref="lineManager"/>
         <property name="stopPointManager" ref="stopPointManager"/>
         <property name="stopAreaManager" ref="stopAreaManager"/>
+        <property name="ptLinkManager" ref="PTLinkManager"/>
         <!-- <property name="itineraireManager" ref="itineraireManager"/>
         <property name="ligneManager" ref="ligneManager"/>
         <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/> -->

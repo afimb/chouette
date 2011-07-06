@@ -26,7 +26,7 @@ public class StopPoint extends NeptuneIdentifiedObject
 	@Getter @Setter private Line line;
 	@Getter @Setter private String ptNetworkIdShortcut;
 	@Getter @Setter private PTNetwork ptNetwork;
-	@Getter @Setter private Integer position;
+	@Getter @Setter private int position;
 	@Getter @Setter private Route route;
 	
 	@Getter @Setter private List<Facility> facilities;
