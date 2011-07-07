@@ -47,7 +47,6 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 	@Getter @Setter private Long idReseau;
 	@Getter @Setter private Long idTransporteur;
 	@Getter  private String mappedRequest;
-	@Getter @Setter private String useAmivif;
 	@Getter @Setter private boolean detruireAvecTMs;
 	@Getter @Setter private boolean detruireAvecArrets;
 	@Getter @Setter private boolean detruireAvecTransporteur;

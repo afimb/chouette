@@ -36,7 +36,6 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
   private ICorrespondanceManager correspondanceManager;
   private IPositionGeographiqueManager positionGeographiqueManager;
-  private String useHastus;
   private Long idCorrespondance;
   private PositionGeographique criteria;
   private PositionGeographique start;
@@ -322,15 +321,6 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
   /********************************************************
    *                        INIT                          *
    ********************************************************/
-  public void setUseHastus(String useHastus)
-  {
-    this.useHastus = useHastus;
-  }
-
-  public String getUseHastus()
-  {
-    return useHastus;
-  }
 
   /********************************************************
    *                        MANAGER ET IMPORATEUR                     *

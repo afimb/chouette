@@ -5,8 +5,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
 import fr.certu.chouette.modele.Ligne;
-import fr.certu.chouette.service.amivif.IAmivifAdapter;
-import fr.certu.chouette.service.amivif.ILecteurAmivifXML;
 import fr.certu.chouette.service.database.IExportManager;
 import fr.certu.chouette.service.database.ILigneManager;
 import fr.certu.chouette.service.database.IReseauManager;
@@ -49,8 +47,6 @@ public class ExportAction extends GeneriqueAction
   private IExportManager exportManager;
   private IExportHorairesManager exportHorairesManager;
   private IExportCorrespondances exportCorrespondances;
-  private IAmivifAdapter amivifAdapter;
-  private ILecteurAmivifXML lecteurAmivifXML;
   private ILecteurFichierXML lecteurFichierXML;
   private LecteurCSV lecteurCSV;
   private File temp;
@@ -226,18 +222,6 @@ public class ExportAction extends GeneriqueAction
     return SUCCESS;
   }
 
-  public String exportAmivif() throws Exception
-  {
-    // Creation d'un fichier temporaire
-    temp = File.createTempFile("exportAmivif", ".xml");
-    // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();
-    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne);
-    //	Nom du fichier de sortie
-    nomFichier = "AMIV_S_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
-    lecteurAmivifXML.ecrire(amivifAdapter.getCTA(ligneLue), temp);
-    return SUCCESS;
-  }
 
   public String exportSupprimerChouette() throws Exception
   {
@@ -253,19 +237,6 @@ public class ExportAction extends GeneriqueAction
     return SUCCESS;
   }
 
-  public String exportSupprimerAmivif() throws Exception
-  {
-    // Creation d'un fichier temporaire
-    temp = File.createTempFile("exportSupprimerAmivif", ".xml");
-    // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();
-    ChouetteRemoveLineTypeType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
-    //	Nom du fichier de sortie
-    nomFichier = "AMIV_D_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
-    lecteurAmivifXML.ecrire(amivifAdapter.getCTA(ligneLue), temp);
-    ligneManager.supprimer(idLigne);
-    return SUCCESS;
-  }
 
   public String exportHorairesItineraire() throws Exception
   {
@@ -328,10 +299,6 @@ public class ExportAction extends GeneriqueAction
     this.idItineraire = idItineraire;
   }
 
-  public void setAmivifAdapter(IAmivifAdapter amivifAdapter)
-  {
-    this.amivifAdapter = amivifAdapter;
-  }
 
   public void setLigneManager(ILigneManager ligneManager)
   {
@@ -370,10 +337,6 @@ public class ExportAction extends GeneriqueAction
     return ligneManager.lire();
   }
 
-  public void setLecteurAmivifXML(ILecteurAmivifXML lecteurAmivifXML)
-  {
-    this.lecteurAmivifXML = lecteurAmivifXML;
-  }
 
   public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML)
   {

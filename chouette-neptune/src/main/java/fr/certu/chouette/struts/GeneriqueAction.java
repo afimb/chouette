@@ -67,7 +67,6 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
   public static final int SCHOOLHOLLIDAY_TYPE = 9;
   public static final int PUBLICHOLLIDAY_TYPE = 10;
   public static final int MARKETDAY_TYPE = 11;
-  private boolean menuComparisonEnabled;
   private String geoportalApiKey;
   private String baseLayerSource;
   private String lambertSRID;
@@ -494,18 +493,6 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
     }
   }
 
-  /********************************************************
-   *           Comparison enabled in the menu             *
-   ********************************************************/
-  public boolean isMenuComparisonEnabled()
-  {
-    return menuComparisonEnabled;
-  }
-
-  public void setMenuComparisonEnabled(boolean menuComparisonEnabled)
-  {
-    this.menuComparisonEnabled = menuComparisonEnabled;
-  }
 
   /********************************************************
    *           Geoportal api key                          *

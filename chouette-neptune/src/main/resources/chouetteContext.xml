@@ -27,7 +27,6 @@
         abstract="true"
         scope="prototype"
         class="fr.certu.chouette.struts.GeneriqueAction">
-        <property name="menuComparisonEnabled" value="${menu.comparison.enabled}"/>
         <property name="baseLayerSource" value="${map.baseLayerSource}"/>
         <property name="geoportalApiKey" value="${map.geoportalApiKey}"/>
         <property name="lambertSRID" value="${Lambert.SRID}"/>
@@ -99,7 +98,6 @@
         <property name="lineManager" ref="lineManager"/>
         <property name="networkManager" ref="networkManager"/>
         <property name="companyManager" ref="companyManager"/>
-        <property name="useAmivif" value="${ligne.amivif}"/>
         <property name="detruireAvecTMs" value="${destructionLigne.detruireAvecTMs}"/>
         <property name="detruireAvecArrets" value="${destructionLigne.detruireAvecArrets}"/>
         <property name="detruireAvecTransporteur" value="${destructionLigne.detruireAvecTransporteur}"/>
@@ -174,7 +172,6 @@
         <property name="correspondanceManager" ref="correspondanceManager"/>
         <property name="importCorrespondances" ref="importCorrespondances"/>
         <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-        <property name="useHastus" value="${import.csv.hastus}"/>
     </bean>
 
     <bean id="JSONConnectionLinkActionBean" scope="prototype"
@@ -197,46 +194,15 @@
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.upload.ImportAction">
         <property name="lineManager" ref="lineManager" />
+        
         <property name="importateur" ref="importateur"/>
         <property name="lecteurCSV" ref="lecteurCSV"/>
         <property name="lecteurCSVPrincipal" ref="lecteurCSVPrincipal"/>
-        <property name="lecteurCVSHastus" ref="lecteurCSVHastus"/>
-        <property name="lecteurCVSPegase" ref="lecteurCSVPegase"/>
-        <property name="lecteurXMLAltibus" ref="lecteurXMLAltibus"/>
         <property name="identificationManager" ref="identificationManager"/>
         <property name="importHorairesManager" ref="importHorairesManager"/>
-        <property name="lecteurEchangeXML" ref="lecteurEchangeXML"/>
-<!--         <property name="lecteurFichierXML" ref="lecteurFichierXML"/> -->
-        <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
-        <property name="amivifAdapter" ref="amivifAdapter"/>
-        <property name="useAmivif" value="${ligne.amivif}"/>
         <property name="useCSVGeneric" value="${import.csv.multilignes}"/>
-        <property name="useHastus" value="${import.csv.hastus}"/>
-        <property name="logFileName" value="${import.csv.hastus.log}" />
         <property name="reducteur" ref="reducteur" />
-        <property name="useAltibus" value="${import.xml.altibus}"/>
-        <property name="usePegase" value="${import.csv.pegase}"/>
-	<property name="importHastusLogFileName" value="${import.csv.hastus.log}"/>
 	<property name="tmprep" value="${chouette.tempdir}"/>
-    </bean>
-
-    <bean id="LineFilesComparisonServiceBean" scope="prototype"
-        parent="GeneriqueAction"
-        class="fr.certu.chouette.struts.lineFilesComparisonService.LineFilesComparisonServiceAction">
-        <property name="identificationManager" ref="identificationManager"/>
-        <property name="exchangeFormat" value="Chouette"/>
-        <property name="enableVerboseMode" value="false"/>
-
-        <property name="availableExchangeFormats">
-            <map>
-                <entry key="Chouette">
-                    <ref bean="ExchangeableChouetteLineComparator"/>
-                </entry>
-                <entry key="Stif">
-                    <ref bean="ExchangeableAmivifLineComparator"/>
-                </entry>
-            </map>
-        </property>
     </bean>
 
     <bean id="Validation" scope="prototype"
@@ -256,8 +222,6 @@
         <property name="exportManager" ref="exportManager"/>
         <property name="exportHorairesManager" ref="exportHorairesManager"/>
         <property name="exportCorrespondances" ref="exportCorrespondances"/>
-        <property name="amivifAdapter" ref="amivifAdapter"/>
-        <property name="lecteurAmivifXML" ref="lecteurAmivifXML"/>
         <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
         <property name="ligneManager" ref="ligneManager"/>
         <property name="transporteurManager" ref="transporteurManager"/>
