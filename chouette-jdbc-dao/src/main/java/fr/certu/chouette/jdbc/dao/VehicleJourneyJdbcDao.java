@@ -101,6 +101,8 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 			ps.setTime(8, elapseduration);
 			ps.setTime(9, headwayfrequency);
 			ps.setBoolean(10, vAtStop.isDeparture());
+			ps.setBoolean(11, vAtStop.isArrival());
+			ps.setLong(12, vAtStop.getOrder());
 
 			return;
 

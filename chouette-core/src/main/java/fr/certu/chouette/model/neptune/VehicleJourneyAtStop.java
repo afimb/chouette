@@ -5,8 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
-
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
@@ -63,6 +61,7 @@ public class VehicleJourneyAtStop extends NeptuneObject
 	@Getter @Setter private Time elapseDuration;
 	@Getter @Setter private Time headwayFrequency;
 	@Getter @Setter private boolean departure;
+	@Getter @Setter private boolean arrival;
 	//	/* (non-Javadoc)
 	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	//	 */

@@ -83,10 +83,12 @@
 								waitingtime,
 								elapseduration,
 								headwayfrequency,
-								isdeparture
+								isdeparture,
+								isarrival,
+								position
 								)
 								VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,
-								?)
+								?, ?, ?)
 								</value>
 						</entry>
 						<entry key="sqlDelete">

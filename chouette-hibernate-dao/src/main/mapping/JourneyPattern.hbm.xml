@@ -71,7 +71,7 @@
 				<comment>Route Reference</comment>
 			</column>
 		</many-to-one>
-		<bag inverse="true" lazy="true" name="vehicleJourneys">
+		<bag inverse="true" lazy="true" name="vehicleJourneys" cascade="all-delete-orphan">
 			<key column="journeyPatternId" foreign-key="vj_jp_fkey"  on-delete="cascade"/>
 			<one-to-many class="VehicleJourney" />
 		</bag>

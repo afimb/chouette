@@ -38,7 +38,7 @@
 		<property name="comment" />
 		<property name="wayBack" />
 		<!-- relations --> 
-		<bag name="journeyPatterns" lazy="true" inverse="true" >
+		<bag name="journeyPatterns" lazy="true" inverse="true" cascade="all-delete-orphan">
 			<key column="routeId" foreign-key="jp_route_fkey" on-delete="cascade"/>
 			<one-to-many class="JourneyPattern" />
 		</bag>

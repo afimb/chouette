@@ -302,6 +302,11 @@ public class Route extends NeptuneIdentifiedObject
 		if(ptLinks != null) ptLinks.remove(ptLink);
 	}
 
+	/**
+	 * add a stopPoint at end of route sequence
+	 * 
+	 * @param stopPoint
+	 */
 	public void addStopPoint(StopPoint stopPoint)
 	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
@@ -314,32 +319,77 @@ public class Route extends NeptuneIdentifiedObject
 		}
 	}
 
+	/**
+	 * remove stoppoint for route
+	 * 
+	 * @param stopPoint stoppoint to be removed
+	 */
 	public void removeStopPoint(StopPoint stopPoint)
 	{
+		if (stopPoint == null) return;
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
 		if (stopPoints.contains(stopPoint)) 
 		{
 			int position = stopPoints.indexOf(stopPoint);
+			removeJourneyPatternsStopPoint(stopPoint);
 			stopPoints.remove(stopPoint);
+			stopPoint.setRoute(null);
 			repositionStopPoints(position);
 			rebuildPTLinks();
 		}
 	}
+
+	/**
+	 * remove stoppoint for route
+	 * 
+	 * @param position position (rank) of stoppoint to be removed
+	 */
 	public void removeStopPointAt(int position)
 	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
 		if (stopPoints.size() > position) 
 		{
-			StopPoint ret = stopPoints.remove(position);
-			repositionStopPoints(position);
-			rebuildPTLinks();
-			ret.setRoute(null);
+			removeStopPoint(stopPoints.get(position));
 		}
 		return ;
 	}
 
+	/**
+	 * apply stoppoint deletion on journeyPatterns
+	 * 
+	 * @param stopPoint stopPoint to remove
+	 */
+	private void removeJourneyPatternsStopPoint(StopPoint stopPoint) 
+	{
+		if (getJourneyPatterns() == null) return;
+		for (JourneyPattern journeyPattern : getJourneyPatterns()) 
+		{
+			if (journeyPattern.getStopPoints() != null)
+			{
+				List<StopPoint> jpPoints = journeyPattern.getStopPoints();
+
+				if (jpPoints.contains(stopPoint))
+				{
+					for (VehicleJourney vehicleJourney : journeyPattern.getVehicleJourneys()) 
+					{
+						vehicleJourney.removeStopPoint(stopPoint);
+					}
+				}
+				jpPoints.remove(stopPoint);
+			}
+		}
+
+	}
+
+	/**
+	 * swap stoppoints position on route
+	 * 
+	 * @param stopPoint1 first stoppoint to swap
+	 * @param stopPoint2 second stoppoint to swap
+	 */
 	public void swapStopPoints(StopPoint stopPoint1, StopPoint stopPoint2)
 	{
+		if (stopPoint1.equals(stopPoint2)) return;
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
 		int pos1 = stopPoints.indexOf(stopPoint1);
 		int pos2 = stopPoints.indexOf(stopPoint2);
@@ -350,26 +400,63 @@ public class Route extends NeptuneIdentifiedObject
 			stopPoint1.setPosition(pos2);
 			stopPoint2.setPosition(pos1);
 			rebuildPTLinks();
+			refreshJourneyPatternsStopPoint(stopPoint1,stopPoint2);
 		}
 	}
 
+	/**
+	 * swap stoppoints position on route
+	 * 
+	 * @param pos1 first position to swap
+	 * @param pos2 second position to swap
+	 */
 	public void swapStopPoints(int pos1, int pos2)
 	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
-		if (pos1 >= 0 && pos2 >= 0)
+		if (pos1 >= 0 && pos2 >= 0 && pos1 < stopPoints.size() && pos2 < stopPoints.size() && pos1 != pos2)
 		{
 			StopPoint stopPoint1 = stopPoints.get(pos1);
 			StopPoint stopPoint2  = stopPoints.get(pos2);
-			stopPoints.set(pos1,stopPoint2);
-			stopPoints.set(pos2,stopPoint1);
-			stopPoint1.setPosition(pos2);
-			stopPoint2.setPosition(pos1);
-			rebuildPTLinks();
+			swapStopPoints(stopPoint1,stopPoint2);
 		}
 	}
 
+	/**
+	 * refresh order for every vehiclejourneys in journeyPattern concerned by swaping stoppoint positions
+	 * 
+	 * @param stopPoints stoppoint previously swapped
+	 */
+	private void refreshJourneyPatternsStopPoint(StopPoint... stopPoints) 
+	{
+		if (getJourneyPatterns() == null) return;
+		for (JourneyPattern journeyPattern : getJourneyPatterns()) 
+		{
+			if (journeyPattern.getStopPoints() != null)
+			{
+				List<StopPoint> jpPoints = journeyPattern.getStopPoints();
 
+				for (StopPoint stopPoint : jpPoints) 
+				{
+					if (jpPoints.contains(stopPoint))
+					{
+						for (VehicleJourney vehicleJourney : journeyPattern.getVehicleJourneys()) 
+						{
+							vehicleJourney.sortVehicleJourneyAtStops();
+						}
+						break;
+					}
+				}
+			}
+		}
 
+	}
+
+	/**
+	 * insert a stopPoint in route at a specific position
+	 * 
+	 * @param position position for the stoppoint
+	 * @param stopPoint stpopoint to be inserted
+	 */
 	public void addStopPointAt(int position, StopPoint stopPoint)
 	{
 		if(stopPoints == null) stopPoints = new ArrayList<StopPoint>();
@@ -393,6 +480,11 @@ public class Route extends NeptuneIdentifiedObject
 		rebuildPTLinks();
 	}
 
+	/**
+	 * refresh position attribute for every stoppoint in route
+	 * 
+	 * @param start first position to refresh
+	 */
 	private void repositionStopPoints(int start)
 	{
 		for (int i = start; i < stopPoints.size(); i++) 
@@ -401,6 +493,9 @@ public class Route extends NeptuneIdentifiedObject
 		}
 	}
 
+	/**
+	 * rebuild PTLink when stoppoints have changed (insert, delete or swap)
+	 */
 	public void rebuildPTLinks()
 	{
 		if (ptLinks == null) ptLinks= new ArrayList<PTLink>();
@@ -432,11 +527,16 @@ public class Route extends NeptuneIdentifiedObject
 		}
 		for (PTLink link : linkBySEId.values()) 
 		{
-			link.setRoute(null);
+			link.setRoute(null); // for deletion
+			link.setStartOfLink(null);
+			link.setEndOfLink(null);
 		}
 
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#clean()
+	 */
 	@Override
 	public boolean clean() 
 	{
