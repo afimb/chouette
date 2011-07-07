@@ -35,7 +35,7 @@
 		</bag>
 			
 		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan"
-			table="vehicleJourneyAtStop">
+			table="vehicleJourneyAtStop" order-by="position">
 			<key column="vehicleJourneyId" foreign-key="vjas_vj_fkey"/>
 
 			<composite-element class="VehicleJourneyAtStop">
@@ -46,7 +46,7 @@
 				<property name="connectingServiceId" />
 				<property column="boardingAlightingPossibility" name="boardingAlightingPossibility"
 					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" />
-				<!-- <property name="order" column="rank" /> -->
+				<property name="order"  type="long" column="position"/>
 				<property name="arrivalTime" type="time" />
 				<property name="departureTime" type="time" />
 				<property name="waitingTime" type="time" />
@@ -54,6 +54,10 @@
 				<property name="headwayFrequency" type="time" />
 				<property name="departure" type="boolean">
 					<column name="isDeparture" default="false">
+					</column>
+				</property>
+				<property name="arrival" type="boolean">
+					<column name="isArrival" default="false">
 					</column>
 				</property>
 			</composite-element>
