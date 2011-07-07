@@ -545,17 +545,6 @@
     </action>
   </package>
 
-  <!-- Massive Export -->
-  <package name="massiveExport" extends="struts" namespace="/massiveExport">
-    <action name="*" class="MassiveExportActionBean" method="{1}">
-      <result name="list">/jsp/massiveExport/massive_export.jsp</result>
-      <result name="export" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="input">/jsp/massiveExport/massive_export.jsp</result>
-    </action>
-  </package>
 
 
   <package name="neptuneValidation" extends="struts" namespace="/neptune-validation">

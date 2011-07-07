@@ -166,12 +166,12 @@
         <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
     </bean>
 
+    <!-- ME: migrating in progress : Neptune OK, CSV in stand-by -->
     <bean id="ConnectionLinkActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.connectionLink.ConnectionLinkAction">
-        <property name="correspondanceManager" ref="correspondanceManager"/>
-        <property name="importCorrespondances" ref="importCorrespondances"/>
-        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
+        <property name="connectionLinkManager" ref="connectionLinkManager"/>
+        <property name="stopAreaManager" ref="stopAreaManager"/>
     </bean>
 
     <bean id="JSONConnectionLinkActionBean" scope="prototype"
@@ -227,14 +227,6 @@
         <property name="transporteurManager" ref="transporteurManager"/>
         <property name="reseauManager" ref="reseauManager"/>
         <property name="lecteurCSV" ref="lecteurCSV"/>
-    </bean>
-
-    <bean id="MassiveExportActionBean" scope="prototype"
-        parent="GeneriqueAction"
-        class="fr.certu.chouette.struts.massiveExport.MassiveExportAction">
-        <property name="networkManager" ref="reseauManager"/>
-        <property name="massiveExportManager" ref="massiveExportManager"/>
-        <property name="excludeConnectionLinks" value="${massiveExport.ihm.excludeConnectionLinks}"/>
     </bean>
 
     <bean id="Deconnexion" scope="prototype"
