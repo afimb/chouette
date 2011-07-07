@@ -73,11 +73,11 @@
     <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
-        <property name="itineraireManager" ref="itineraireManager"/>
-        <property name="horaireManager" ref="horaireManager"/>
-        <property name="courseManager" ref="courseManager"/>
-        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
-        <property name="missionManager" ref="missionManager"/>
+       <property name="routeManager" ref="routeManager"/>
+        <property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>
+        <property name="stopAreaManager" ref="stopAreaManager"/>
+        <property name="stopPointManager" ref="stopPointManager"/>
+        <property name="journeyPatternManager" ref="journeyPatternManager"/>
         <property name="pagination" ref="Pagination"/>
         <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
         <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
