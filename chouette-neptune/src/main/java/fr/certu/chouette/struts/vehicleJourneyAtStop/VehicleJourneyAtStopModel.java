@@ -1,46 +1,48 @@
 package fr.certu.chouette.struts.vehicleJourneyAtStop;
 
-import fr.certu.chouette.modele.ArretItineraire;
-import fr.certu.chouette.modele.Course;
-import fr.certu.chouette.modele.Horaire;
-import fr.certu.chouette.modele.Mission;
-import fr.certu.chouette.modele.PositionGeographique;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.apache.log4j.Logger;
+
+import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.modele.ArretItineraire;
 
 public class VehicleJourneyAtStopModel
 {
 
-  private static final Log log = LogFactory.getLog(VehicleJourneyAtStopModel.class);
-  private Map<Long, Mission> missionParIdCourse;
-  private Map<Long, List<Horaire>> horairesParIdCourse;
+  private static final Logger log = Logger.getLogger(VehicleJourneyAtStopModel.class);
+  private Map<Long, JourneyPattern> missionParIdCourse;
+  private Map<Long, List<VehicleJourneyAtStop>> horairesParIdCourse;
   private Map<Long, Integer> positionArretParIdArret;
-  private Map<Long, PositionGeographique> arretPhysiqueParIdArret;
+  private Map<Long, StopArea> arretPhysiqueParIdArret;
   private Map<Long, SortedSet<Integer>> tableauxMarcheParIdCourse;
   private Map<Long, String> tableauxMarche;
   private List<Date> heuresCourses;
   private List<Integer> idsHorairesInvalides;
-  private List<Horaire> horairesCourses;
-  private List<ArretItineraire> arretsItineraire;
+  private List<VehicleJourneyAtStop> horairesCourses;
+  private List<StopPoint> arretsItineraire;
   private Date tempsDecalage;
   private Integer nbreCourseDecalage;
   private Long idCourseADecaler;
 
-  private List<Course> coursesPage;
+  private List<VehicleJourney> coursesPage;
 
   /********************************************************
    *                  STOPPOINTS                          *
    ********************************************************/
-  public List<ArretItineraire> getArretsItineraire()
+  public List<StopPoint> getArretsItineraire()
   {
     return arretsItineraire;
   }
 
-  public void setArretsItineraire(List<ArretItineraire> arretsItineraire)
+  public void setArretsItineraire(List<StopPoint> arretsItineraire)
   {
     this.arretsItineraire = arretsItineraire;
   }
@@ -83,9 +85,9 @@ public class VehicleJourneyAtStopModel
     return heuresCourses;
   }
 
-  public void setHeuresCourses(List<Date> heuresCourses)
+  public void setHeuresCourses(List<java.sql.Date> heuresCourses2)
   {
-    this.heuresCourses = heuresCourses;
+    this.heuresCourses = heuresCourses2;
   }
 
   /********************************************************
@@ -125,22 +127,22 @@ public class VehicleJourneyAtStopModel
     this.idsHorairesInvalides = idsHorairesInvalides;
   }
 
-  public List<Horaire> getHorairesCourses()
+  public List<VehicleJourneyAtStop> getHorairesCourses()
   {
     return horairesCourses;
   }
 
-  public void setHorairesCourses(List<Horaire> horairesCourses)
+  public void setHorairesCourses(List<VehicleJourneyAtStop> horairesCourses)
   {
     this.horairesCourses = horairesCourses;
   }
 
-  public Map<Long, List<Horaire>> getHorairesParIdCourse()
+  public Map<Long, List<VehicleJourneyAtStop>> getHorairesParIdCourse()
   {
     return horairesParIdCourse;
   }
 
-  public void setHorairesParIdCourse(Map<Long, List<Horaire>> horairesParIdCourse)
+  public void setHorairesParIdCourse(Map<Long, List<VehicleJourneyAtStop>> horairesParIdCourse)
   {
     this.horairesParIdCourse = horairesParIdCourse;
   }
@@ -158,12 +160,12 @@ public class VehicleJourneyAtStopModel
     this.positionArretParIdArret = positionArretParIdArret;
   }
 
-  public Map<Long, PositionGeographique> getArretPhysiqueParIdArret()
+  public Map<Long, StopArea> getArretPhysiqueParIdArret()
   {
     return arretPhysiqueParIdArret;
   }
 
-  public void setArretPhysiqueParIdArret(Map<Long, PositionGeographique> arretPhysiqueParIdArret)
+  public void setArretPhysiqueParIdArret(Map<Long, StopArea> arretPhysiqueParIdArret)
   {
     this.arretPhysiqueParIdArret = arretPhysiqueParIdArret;
   }
@@ -171,12 +173,12 @@ public class VehicleJourneyAtStopModel
   /********************************************************
    *               JOURNEY PATTERN                        *
    ********************************************************/
-  public Map<Long, Mission> getMissionParIdCourse()
+  public Map<Long, JourneyPattern> getMissionParIdCourse()
   {
     return missionParIdCourse;
   }
 
-  public void setMissionParIdCourse(Map<Long, Mission> missionParIdCourse)
+  public void setMissionParIdCourse(Map<Long, JourneyPattern> missionParIdCourse)
   {
     this.missionParIdCourse = missionParIdCourse;
   }
@@ -184,12 +186,12 @@ public class VehicleJourneyAtStopModel
   /********************************************************
    *               PAGE                                   *
    ********************************************************/
-  public List<Course> getCoursesPage()
+  public List<VehicleJourney> getCoursesPage()
   {
     return coursesPage;
   }
 
-  public void setCoursesPage(List<Course> coursesPage)
+  public void setCoursesPage(List<VehicleJourney> coursesPage)
   {
     this.coursesPage = coursesPage;
   }

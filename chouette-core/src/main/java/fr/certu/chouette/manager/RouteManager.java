@@ -187,20 +187,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 			List<PTLink> ptLinks = route.getPtLinks();
 			if (ptLinks == null || ptLinks.isEmpty())
 			{
-				String baseId = route.getObjectId().split(":")[0]+":"+NeptuneIdentifiedObject.PTLINK_KEY+":";
-				INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
-				for (int rank = 1; rank < stopPoints.size(); rank++)
-				{
-					PTLink link = ptLinkManager.getNewInstance(user);
-					link.setStartOfLink(stopPoints.get(rank-1));
-					link.setEndOfLink(stopPoints.get(rank));
-					String startId = stopPoints.get(rank-1).getObjectId().split(":")[2];
-					String endId = stopPoints.get(rank).getObjectId().split(":")[2];
-					String objectId = baseId+startId+"A"+endId;
-					link.setObjectId(objectId);
-					link.setRoute(route);
-					route.addPTLink(link);
-				}
+				route.rebuildPTLinks();
 			}
 			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
 			for (StopPoint stopPoint : stopPoints) 
@@ -210,10 +197,11 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		}
 
 		List<PTLink> ptLinks = route.getPtLinks();
-		if (ptLinks == null || ptLinks.isEmpty())
+		if (ptLinks != null)
 		{
 			for (PTLink ptLink : ptLinks) 
 			{
+				
 				route.addPTLinkId(ptLink.getObjectId());
 			}
 		}
@@ -229,6 +217,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		}
 
 	}
+	
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{

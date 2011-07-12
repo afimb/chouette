@@ -15,14 +15,12 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chouette.schema.types.ChouetteAreaType;
-import chouette.schema.types.ConnectionLinkTypeType;
-import chouette.schema.types.DayTypeType;
-import chouette.schema.types.LongLatTypeType;
-import chouette.schema.types.PTDirectionType;
-import chouette.schema.types.ServiceStatusValueType;
-import chouette.schema.types.TransportModeNameType;
-import com.opensymphony.xwork2.ActionContext;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
+import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 public class EnumerationApplication
 {
@@ -82,7 +80,6 @@ public class EnumerationApplication
     SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
 
     ResourceBundle rsDir = ResourceBundle.getBundle(direction, locale);
-
     Enumeration<String> rsDirEnum = rsDir.getKeys();
     while (rsDirEnum.hasMoreElements())
     {
@@ -98,10 +95,10 @@ public class EnumerationApplication
     directions = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      PTDirectionType ptDirectionType = null;
+      PTDirectionEnum ptDirectionType = null;
       try
       {
-        ptDirectionType = PTDirectionType.fromValue(cleParTraduction.get(traduction));
+        ptDirectionType = PTDirectionEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -132,10 +129,10 @@ public class EnumerationApplication
 
     for (String traduction : cleParTraduction.keySet())
     {
-      DayTypeType dayTypeType = null;
+      DayTypeEnum dayTypeType = null;
       try
       {
-        dayTypeType = DayTypeType.fromValue(cleParTraduction.get(traduction));
+        dayTypeType = DayTypeEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -173,10 +170,10 @@ public class EnumerationApplication
     modes = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      TransportModeNameType modeType = null;
+    	TransportModeNameEnum modeType = null;
       try
       {
-        modeType = TransportModeNameType.fromValue(cleParTraduction.get(traduction));
+        modeType = TransportModeNameEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -208,10 +205,10 @@ public class EnumerationApplication
     statuts = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ServiceStatusValueType statutType = null;
+      ServiceStatusValueEnum statutType = null;
       try
       {
-        statutType = ServiceStatusValueType.fromValue(cleParTraduction.get(traduction));
+        statutType = ServiceStatusValueEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -243,10 +240,10 @@ public class EnumerationApplication
     correspondances = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ConnectionLinkTypeType correspondanceType = null;
+      ConnectionLinkTypeEnum correspondanceType = null;
       try
       {
-        correspondanceType = ConnectionLinkTypeType.fromValue(cleParTraduction.get(traduction));
+        correspondanceType = ConnectionLinkTypeEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
@@ -280,22 +277,22 @@ public class EnumerationApplication
     arretTypes = new ArrayList<ObjetEnumere>();
     for (String traduction : traductionTriees)
     {
-      ChouetteAreaType areaType = null;
+      ChouetteAreaEnum areaType = null;
       try
       {
-        areaType = ChouetteAreaType.fromValue(cleParTraduction.get(traduction));
+        areaType = ChouetteAreaEnum.fromValue(cleParTraduction.get(traduction));
       } catch (Exception e)
       {
         log.error(e.getMessage(), e);
       }
       ObjetEnumere objetEnumere = new ObjetEnumere(areaType, traduction);
-      if (ChouetteAreaType.BOARDINGPOSITION.equals(areaType)
-              || ChouetteAreaType.QUAY.equals(areaType))
+      if (ChouetteAreaEnum.BOARDINGPOSITION.equals(areaType)
+              || ChouetteAreaEnum.QUAY.equals(areaType))
       {
         zonesTypes.add(objetEnumere);
         toutesZonesTypes.add(objetEnumere);
-      } else if (ChouetteAreaType.COMMERCIALSTOPPOINT.equals(areaType)
-              || ChouetteAreaType.STOPPLACE.equals(areaType))
+      } else if (ChouetteAreaEnum.COMMERCIALSTOPPOINT.equals(areaType)
+              || ChouetteAreaEnum.STOPPLACE.equals(areaType))
       {
         arretTypes.add(objetEnumere);
         toutesZonesTypes.add(objetEnumere);
@@ -304,10 +301,10 @@ public class EnumerationApplication
     }
   }
 
-  public static List<ObjetEnumere> getModeTransportEnum()
-  {
-    return modes;
-  }
+//  public static List<ObjetEnumere> getModeTransportEnum()
+//  {
+//    return modes;
+//  }
 
   public static List<ObjetEnumere> getDirectionEnum()
   {
@@ -334,8 +331,8 @@ public class EnumerationApplication
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.ordinal() == ChouetteAreaType.STOPPLACE.ordinal() || type.ordinal() == ChouetteAreaType.COMMERCIALSTOPPOINT.ordinal())
+        ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.ordinal() == ChouetteAreaEnum.STOPPLACE.ordinal() || type.ordinal() == ChouetteAreaEnum.COMMERCIALSTOPPOINT.ordinal())
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -346,8 +343,8 @@ public class EnumerationApplication
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.ordinal() == ChouetteAreaType.BOARDINGPOSITION.ordinal() || type.ordinal() == ChouetteAreaType.QUAY.ordinal())
+        ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.ordinal() == ChouetteAreaEnum.BOARDINGPOSITION.ordinal() || type.ordinal() == ChouetteAreaEnum.QUAY.ordinal())
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -358,8 +355,8 @@ public class EnumerationApplication
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.ordinal() == ChouetteAreaType.STOPPLACE.ordinal())
+        ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.ordinal() == ChouetteAreaEnum.STOPPLACE.ordinal())
         {
           l.add(toutesZonesTypes.get(i));
         }
@@ -370,8 +367,8 @@ public class EnumerationApplication
       List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
       for (int i = 0; i < toutesZonesTypes.size(); i++)
       {
-        ChouetteAreaType type = (ChouetteAreaType) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
-        if (type.ordinal() == ChouetteAreaType.COMMERCIALSTOPPOINT.ordinal())
+        ChouetteAreaEnum type = (ChouetteAreaEnum) toutesZonesTypes.get(i).getEnumeratedTypeAccess();
+        if (type.ordinal() == ChouetteAreaEnum.COMMERCIALSTOPPOINT.ordinal())
         {
           l.add(toutesZonesTypes.get(i));
         }

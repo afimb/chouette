@@ -94,13 +94,13 @@ Chouette.Map.report = function(event) {
 
 Chouette.Map.updateEditMarker = function(){
   var editMarkerLayer = this.map.getLayersByName("Edit Marker Layer")[0];
-  if($(this.EDIT_MARKER_TYPE+"_latitude").value != "" && $(this.EDIT_MARKER_TYPE+"_longitude").value != ""){
+  if($(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value != "" && $(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value != ""){
     if(this.editMarker != null){
-      var newCoords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.baseLayerProjection);
+      var newCoords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value,$(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value).transform(this.wgsProjection,this.baseLayerProjection);
       this.editMarker.move(newCoords);
     }
     else{
-      this.editMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.baseLayerProjection));
+      this.editMarker = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point($(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value,$(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value).transform(this.wgsProjection,this.baseLayerProjection));
       this.drawControls.draw.deactivate();
       this.drawControls.modify.activate();
       editMarkerLayer.addFeatures([this.editMarker]);
@@ -146,76 +146,76 @@ Chouette.Map.updateCoordsFieldsFromMarker = function(){
   var point = this.editMarker.geometry.clone();
 
   point.transform(this.baseLayerProjection,this.wgsProjection);
-  $(this.EDIT_MARKER_TYPE+"_latitude").value=point.y.toFixed(6);
-  $(this.EDIT_MARKER_TYPE+"_longitude").value=point.x.toFixed(6);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value=point.y.toFixed(6);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value=point.x.toFixed(6);
 
   point.transform(this.wgsProjection,this.lambertProjection);
-  $(this.EDIT_MARKER_TYPE+"_x").value=point.x.toFixed(2);
-  $(this.EDIT_MARKER_TYPE+"_y").value=point.y.toFixed(2);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value=point.x.toFixed(2);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value=point.y.toFixed(2);
 };
 
 Chouette.Map.updateLatLonFieldsCoordsFromXY = function(){
-  var coords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_x").value,$(this.EDIT_MARKER_TYPE+"_y").value).transform(this.lambertProjection,this.wgsProjection);
-  $(this.EDIT_MARKER_TYPE+"_latitude").value=coords.lat.toFixed(6);
-  $(this.EDIT_MARKER_TYPE+"_longitude").value=coords.lon.toFixed(6);
+  var coords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value,$(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value).transform(this.lambertProjection,this.wgsProjection);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value=coords.lat.toFixed(6);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value=coords.lon.toFixed(6);
 };
 
 Chouette.Map.updateXYFieldsCoordsFromLatLon = function(){
-  var coords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_longitude").value,$(this.EDIT_MARKER_TYPE+"_latitude").value).transform(this.wgsProjection,this.lambertProjection);
-  $(this.EDIT_MARKER_TYPE+"_x").value=coords.lon.toFixed(2);
-  $(this.EDIT_MARKER_TYPE+"_y").value=coords.lat.toFixed(2);
+  var coords = new OpenLayers.LonLat($(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value,$(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value).transform(this.wgsProjection,this.lambertProjection);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value=coords.lon.toFixed(2);
+  $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value=coords.lat.toFixed(2);
 };
 
 Chouette.Map.updateCoordsFrom = function(field){
   switch(field){
     case 'x' :
-      var x = parseFloat($(this.EDIT_MARKER_TYPE+"_x").value);
+      var x = parseFloat($(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value);
       if(isNaN(x)){
-        $(this.EDIT_MARKER_TYPE+"_x").value = "";
-        $(this.EDIT_MARKER_TYPE+"_longitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value = "";
       }
       else{
-        $(this.EDIT_MARKER_TYPE+"_x").value = x.toFixed(2);
-        if($(this.EDIT_MARKER_TYPE+"_y").value != ""){
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value = x.toFixed(2);
+        if($(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value != ""){
           this.updateLatLonFieldsCoordsFromXY();
         }
       }
       break;
     case 'y' :
-      var y = parseFloat($(this.EDIT_MARKER_TYPE+"_y").value);
+      var y = parseFloat($(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value);
       if(isNaN(y)){
-        $(this.EDIT_MARKER_TYPE+"_y").value = "";
-        $(this.EDIT_MARKER_TYPE+"_latitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value = "";
       }
       else{
-        $(this.EDIT_MARKER_TYPE+"_y").value = y.toFixed(2);
-        if($(this.EDIT_MARKER_TYPE+"_x").value != ""){
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value = y.toFixed(2);
+        if($(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value != ""){
           this.updateLatLonFieldsCoordsFromXY();
         }
       }
       break;
     case 'lat' :
-      var lat = parseFloat($(this.EDIT_MARKER_TYPE+"_latitude").value);
+      var lat = parseFloat($(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value);
       if(isNaN(lat)){
-        $(this.EDIT_MARKER_TYPE+"_latitude").value = "";
-        $(this.EDIT_MARKER_TYPE+"_y").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_y").value = "";
       }
       else{
-        $(this.EDIT_MARKER_TYPE+"_latitude").value = lat.toFixed(6);
-        if($(this.EDIT_MARKER_TYPE+"_longitude").value != ""){
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value = lat.toFixed(6);
+        if($(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value != ""){
           this.updateXYFieldsCoordsFromLatLon();
         }
       }
       break;
     case 'lon' :
-      var lon = parseFloat($(this.EDIT_MARKER_TYPE+"_longitude").value);
+      var lon = parseFloat($(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value);
       if(isNaN(lon)){
-        $(this.EDIT_MARKER_TYPE+"_longitude").value = "";
-        $(this.EDIT_MARKER_TYPE+"_x").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value = "";
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_projectedPoint_x").value = "";
       }
       else{
-        $(this.EDIT_MARKER_TYPE+"_longitude").value = lon.toFixed(6);
-        if($(this.EDIT_MARKER_TYPE+"_latitude").value != ""){
+        $(this.EDIT_MARKER_TYPE+"_areaCentroid_longitude").value = lon.toFixed(6);
+        if($(this.EDIT_MARKER_TYPE+"_areaCentroid_latitude").value != ""){
           this.updateXYFieldsCoordsFromLatLon();
         }
       }

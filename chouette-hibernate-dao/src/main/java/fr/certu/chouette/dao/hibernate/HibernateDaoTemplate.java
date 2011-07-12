@@ -258,7 +258,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 			object.setId(existing.getId());
 			getHibernateTemplate().merge( object);
 		}
-		getHibernateTemplate().flush();
+		// getHibernateTemplate().flush();
 	}
 
 	/* (non-Javadoc)

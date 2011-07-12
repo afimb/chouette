@@ -46,6 +46,6 @@
     <display:column titleKey="table.title.type" >
       <s:text name="%{#attr.positionGeographique.areaType}"/>
     </display:column>
-    <display:column titleKey="table.title.inseeCode" property="countryCode" />
+    <display:column titleKey="table.title.inseeCode" property="areaCentroid.address.countryCode" />
   </display:table>
 </div>

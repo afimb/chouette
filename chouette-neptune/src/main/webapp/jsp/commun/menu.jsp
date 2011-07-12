@@ -61,21 +61,11 @@
             <s:url id="urlImportMenu" action="execute" namespace="/upload" includeParams="none"/>
             <li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>
 
-            <%-- Export Massif --%>
-            <s:if test="menuComparisonEnabled == true">
-                <s:url id="urlMassiveExportMenu" action="list" namespace="/massiveExport" includeParams="none"/>
-                <li><s:a href="%{urlMassiveExportMenu}" id="massiveExportMenu"><s:text name="text.exportMassif"/></s:a></li>
-            </s:if>
 
             <%-- Validation --%>	
             <s:url id="urlValidationMenu" action="Validation_execute" namespace="/" includeParams="none"/>
             <li><s:a href="%{urlValidationMenu}" id="validationMenu"><s:text name="text.validation"/></s:a></li>
 
-            <%-- Comparaison --%>
-            <s:if test="menuComparisonEnabled == true">
-                <s:url id="urlComparaisonMenu" action="index" namespace="/lineFilesComparisonService" includeParams="none"/>
-                <li><s:a href="%{urlComparaisonMenu}" id="comparaisonMenu"><s:text name="text.comparaison"/></s:a></li>
-            </s:if>
         </ul>
     </div>
 </div>
@@ -254,16 +244,3 @@
     </SCRIPT>	
 </s:else>
 
-<%-- Comparaison --%>	
-
-<s:if test="menuComparisonEnabled == true && filAriane.cleTexteDernierElementFilAriane == getText('index.title')">
-    <SCRIPT type="text/javascript">
-        $('comparaisonMenu').className='selectionne';
-    </SCRIPT>	
-</s:if>
-
-<s:elseif test="menuComparisonEnabled == true && filAriane.cleTexteDernierElementFilAriane != getText('index.title')">
-    <SCRIPT type="text/javascript">
-        $('comparaisonMenu').className='';
-    </SCRIPT>
-</s:elseif>

@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.TimeSlot;
@@ -31,7 +32,7 @@ import fr.certu.chouette.model.user.User;
 @SuppressWarnings("unchecked")
 public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney> 
 {
-    private static final Logger logger = Logger.getLogger(VehicleJourneyManager.class);
+	private static final Logger logger = Logger.getLogger(VehicleJourneyManager.class);
 
 	public VehicleJourneyManager()
 	{
@@ -51,11 +52,11 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 		if(line != null)
 			vehicleJourney.setLineIdShortcut(line.getObjectId());
 
+		// vehicleJourney.sortVehicleJourneyAtStops();
 		List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
 		for (int i = 0; i < vjass.size(); i++)
 		{
 			VehicleJourneyAtStop vjas = vjass.get(i);
-			vjas.setOrder(i+1);
 			vjas.setVehicleJourney(vehicleJourney);
 			vjas.setVehicleJourneyId(vehicleJourney.getObjectId());
 		}
@@ -89,6 +90,70 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 				companyManager.saveAll(user, companies, propagate,fast);
 		}
 
+		for (VehicleJourney vehicleJourney : vehicleJourneys) 
+		{
+			vehicleJourney.sortVehicleJourneyAtStops();
+		}
+
 		super.saveAll(user, vehicleJourneys,propagate,fast);
 	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#addNew(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+	 */
+	@Override
+	public VehicleJourney addNew(User user, VehicleJourney vehicleJourney)
+	throws ChouetteException 
+	{
+		vehicleJourney.sortVehicleJourneyAtStops();
+		return super.addNew(user, vehicleJourney);
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+	 */
+	@Override
+	public void update(User user, VehicleJourney vehicleJourney) throws ChouetteException 
+	{
+		vehicleJourney.sortVehicleJourneyAtStops();
+		super.update(user, vehicleJourney);
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, fr.certu.chouette.filter.DetailLevelEnum)
+	 */
+	@Override
+	public void update(User user, VehicleJourney vehicleJourney, DetailLevelEnum level)
+	throws ChouetteException 
+	{
+		vehicleJourney.sortVehicleJourneyAtStops();
+		super.update(user, vehicleJourney, level);
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#save(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, boolean)
+	 */
+	@Override
+	public void save(User user, VehicleJourney vehicleJourney, boolean propagate)
+	throws ChouetteException 
+	{
+		vehicleJourney.sortVehicleJourneyAtStops();
+		super.save(user, vehicleJourney, propagate);
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#saveOrUpdateAll(fr.certu.chouette.model.user.User, java.util.List)
+	 */
+	@Override
+	public void saveOrUpdateAll(User user, List<VehicleJourney> vehicleJourneys)
+	throws ChouetteException 
+	{
+		for (VehicleJourney vehicleJourney : vehicleJourneys) 
+		{
+			vehicleJourney.sortVehicleJourneyAtStops();
+		}
+		super.saveOrUpdateAll(user, vehicleJourneys);
+	}
+
+
 }

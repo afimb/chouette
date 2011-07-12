@@ -31,13 +31,9 @@ public class DownloadFileAction extends GeneriqueAction
 
   public void setPreviousAction(String previousAction)
   {
-    if (previousAction.equals("MassiveExportAction"))
-    {
-      directory = "exports/";
-    } else
-    {
+    
       directory = "";
-    }
+    
   }
 
   public InputStream getInputStream()

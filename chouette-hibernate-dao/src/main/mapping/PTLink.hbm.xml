@@ -14,10 +14,10 @@
 		<property name="name" type="string" />
 		<property name="comment" type="string" />
 		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" />
-		<many-to-one class="StopPoint" column="startOfLinkId"
-			insert="false" lazy="no-proxy" name="startOfLink" foreign-key="ptlk_startstpt_fkey"/>
+		<many-to-one class="StopPoint" column="startOfLinkId" 
+			insert="true" update="true" lazy="no-proxy" name="startOfLink" foreign-key="ptlk_startstpt_fkey"/>
 		<many-to-one class="StopPoint" column="endOfLinkId"
-			insert="false" lazy="no-proxy" name="endOfLink" foreign-key="ptlk_endstpt_fkey"/>
+			insert="true" update="true" lazy="no-proxy" name="endOfLink" foreign-key="ptlk_endstpt_fkey"/>
 		<many-to-one class="Route" column="routeId" lazy="no-proxy"
 			name="route" />
 	</class>

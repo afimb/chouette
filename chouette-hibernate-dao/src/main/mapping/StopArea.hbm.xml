@@ -65,5 +65,9 @@
 			<key column="parentId" foreign-key="stoparea_parent_fkey"/>
 			<many-to-many column="childId" class="StopArea" foreign-key="stoparea_child_fkey"/>
 		</bag>
+		<bag name="containedStopPoints"  lazy="false" inverse="true">
+			<key column="stopareaid" foreign-key="stoppoint_area_fkey"/>
+			<one-to-many class="StopPoint" />
+		</bag>
 	</class>
 </hibernate-mapping>

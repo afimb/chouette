@@ -59,9 +59,9 @@
   <div class="panelDataSection"><s:text name="tableauMarche.dates"/></div>
   <div class="panel">
     <div label="Dates" id="displaytag">
-      <display:table uid="datesTable" name="dates" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1" requestURI="" export="false">
+      <display:table uid="datesTable" name="calendarDays" sort="list" pagesize="10" defaultorder="ascending" defaultsort="1" requestURI="" export="false">
         <display:column titleKey="table.title.date" sortable="true" headerClass="sortable" comparator="fr.certu.chouette.struts.util.DateComparator">
-          <s:property value="%{dates[#attr.datesTable_rowNum - 1]}" />
+          <s:property value="%{calendarDays[#attr.datesTable_rowNum - 1]}" />
         </display:column>
         <display:column titleKey="table.title.action">
           <s:url id="deleteUrl" action="deleteDate" namespace="/timeTable">
@@ -104,12 +104,12 @@
   <div class="panel">
     <!-- Affichage liste des périodes -->
     <div id="displaytag">
-      <display:table uid="periodsTable" name="periodes" sort="list" pagesize="10" defaultorder="ascending" defaultsort="2" export="false" requestURI="">
+      <display:table uid="periodsTable" name="periods" sort="list" pagesize="10" defaultorder="ascending" defaultsort="2" export="false" requestURI="">
         <display:column titleKey="table.title.begin" sortable="true" headerClass="sortable">
-          <s:property value="%{periodes[#attr.periodsTable_rowNum - 1].debut}" />
+          <s:property value="%{periods[#attr.periodsTable_rowNum - 1].startDate}" />
         </display:column>
         <display:column titleKey="table.title.end" sortable="true" headerClass="sortable">
-          <s:property value="%{periodes[#attr.periodsTable_rowNum - 1].fin}" />
+          <s:property value="%{periods[#attr.periodsTable_rowNum - 1].endDate}" />
         </display:column>
         <display:column titleKey="table.title.action">
           <s:url id="deleteUrl" action="deletePeriod" namespace="/timeTable">

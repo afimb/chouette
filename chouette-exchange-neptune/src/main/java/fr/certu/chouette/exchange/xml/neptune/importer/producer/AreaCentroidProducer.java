@@ -22,8 +22,10 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,cho
 		areaCentroid.setComment(getNonEmptyTrimedString(xmlAreaCentroid.getComment()));
 		
 		// LongLatType mandatory
-		if(xmlAreaCentroid.getLongLatType() != null){
-			try {
+		if(xmlAreaCentroid.getLongLatType() != null)
+		{
+			try 
+			{
 				areaCentroid.setLongLatType(LongLatTypeEnum.fromValue(xmlAreaCentroid.getLongLatType().value()));
 			}
 			catch (IllegalArgumentException e) 
@@ -44,19 +46,23 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,cho
 		
 		// Address optional
 		chouette.schema.Address xmlAddress = xmlAreaCentroid.getAddress();		
-		if(xmlAddress != null){
+		if(xmlAddress != null)
+		{
 			Address address = new Address();
 			address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
 			address.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
+			areaCentroid.setAddress(address);
 		}
 		
 		// ProjectedPoint optional
 		chouette.schema.ProjectedPoint xmlProjectedPoint = xmlAreaCentroid.getProjectedPoint();
-		if(xmlProjectedPoint != null){
+		if(xmlProjectedPoint != null)
+		{
 			ProjectedPoint projectedPoint = new ProjectedPoint();
 			projectedPoint.setX(xmlProjectedPoint.getX());
 			projectedPoint.setY(xmlProjectedPoint.getY());
 			projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
+			areaCentroid.setProjectedPoint(projectedPoint);
 		}
 		
 		return areaCentroid;

@@ -3,11 +3,11 @@ package fr.certu.chouette.model.neptune;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
@@ -184,15 +184,41 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		return true;
 	}
 	
-
+	public void removeStopPoint(StopPoint stopPoint)
+	{
+		if (getVehicleJourneyAtStops() != null)
+		{
+			List<VehicleJourneyAtStop> vjas = getVehicleJourneyAtStops();
+			for (Iterator<VehicleJourneyAtStop> iterator = vjas.iterator(); iterator.hasNext();)
+			{
+				VehicleJourneyAtStop vehicleJourneyAtStop =  iterator.next();
+				if (stopPoint.equals(vehicleJourneyAtStop.getStopPoint()))
+				{
+					vehicleJourneyAtStop.setStopPoint(null);
+					iterator.remove();
+					break;
+				}
+				
+			}
+			sortVehicleJourneyAtStops();
+		}
+	}
 
 	public void sortVehicleJourneyAtStops() 
 	{
 		if (getVehicleJourneyAtStops() != null)
 		{
-			List<VehicleJourneyAtStop> vjas = getVehicleJourneyAtStops();
-			Collections.sort(vjas, new VehicleJourneyAtStopComparator());
-			vjas.get(0).setDeparture(true);
+			List<VehicleJourneyAtStop> vjass = getVehicleJourneyAtStops();
+			Collections.sort(vjass, new VehicleJourneyAtStopComparator());
+			int last = vjass.size()-1;
+			for (int i = 0; i < vjass.size(); i ++) 
+			{
+				VehicleJourneyAtStop vjas = vjass.get(i);
+				vjas.setDeparture(i==0);
+				vjas.setOrder(i+1);
+				vjas.setArrival(i==last);
+			}
+			
 		}
 		
 	}
@@ -203,17 +229,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		@Override
 		public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) 
 		{
-			if (o1.getElapseDuration() != null)
+			StopPoint point1 = o1.getStopPoint();
+			StopPoint point2 = o2.getStopPoint();
+			if (point1 != null && point2 != null)
 			{
-				return o1.getElapseDuration().compareTo(o2.getElapseDuration());
-			}
-			if (o1.getDepartureTime() != null)
-			{
-				return o1.getDepartureTime().compareTo(o2.getDepartureTime());				
-			}
-			if (o1.getArrivalTime() != null)
-			{
-				return o1.getArrivalTime().compareTo(o2.getArrivalTime());				
+				return point1.getPosition() - point2.getPosition();
 			}
 			return 0;
 		}

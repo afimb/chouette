@@ -37,8 +37,8 @@
       <s:textfield key="name" required="true"/>
       <s:textfield key="comment"/>
       <s:textfield key="nearestTopicName" />
-      <s:textfield key="streetName" />
-      <s:textfield key="countryCode" />
+      <s:textfield key="areaCentroid.address.streetName" />
+      <s:textfield key="areaCentroid.address.countryCode" />
       <s:textfield key="fareCode" />
       <s:textfield key="registrationNumber" />
 
@@ -52,11 +52,11 @@
       <fieldset>
         <legend><s:text name="text.positionGeographique.dataGeo.fieldset"/></legend>
         <p><s:text name="lambert.%{lambertSRID}"/></p>
-        <s:textfield key="x"  onblur="Chouette.Map.updateCoordsFrom('x')"/>
-        <s:textfield key="y" onblur="Chouette.Map.updateCoordsFrom('y')"/>
+        <s:textfield key="areaCentroid.projectedPoint.x"  onblur="Chouette.Map.updateCoordsFrom('x')"/>
+        <s:textfield key="areaCentroid.projectedPoint.y" onblur="Chouette.Map.updateCoordsFrom('y')"/>
         <p><s:text name="wsg84"/></p>
-        <s:textfield key="longitude" onblur="Chouette.Map.updateCoordsFrom('lon')"/>
-        <s:textfield key="latitude" onblur="Chouette.Map.updateCoordsFrom('lat')"/>
+        <s:textfield key="areaCentroid.longitude" onblur="Chouette.Map.updateCoordsFrom('lon')"/>
+        <s:textfield key="areaCentroid.latitude" onblur="Chouette.Map.updateCoordsFrom('lat')"/>
       </fieldset>
 
       <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>

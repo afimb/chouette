@@ -26,6 +26,7 @@
     <s:hidden name="operationMode" value="%{'STORE'}" />
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
+    <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable"/>
     <s:textfield key="name" required="true"/>
     <s:textfield key="shortName"/>
     <s:textfield key="organisationalUnit"/>
