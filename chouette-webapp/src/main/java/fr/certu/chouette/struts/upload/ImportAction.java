@@ -27,24 +27,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
 
 @SuppressWarnings("serial")
 public class ImportAction extends GeneriqueAction {
 
-    private static final Log logger = LogFactory.getLog(ImportAction.class);
+    //private static final Log logger = LogFactory.getLog(ImportAction.class);
     private static final String SUCCESS_ITINERAIRE = "success_itineraire";
     private static final String INPUT_ITINERAIRE = "input_itineraire";
-    private static final Logger log = Logger.getLogger(ImportAction.class);
+    private static final Logger logger = Logger.getLogger(ImportAction.class);
     private String fichierContentType;
     private File fichier;
     private boolean incremental;
@@ -156,7 +156,7 @@ public class ImportAction extends GeneriqueAction {
         String canonicalPath = null;
         try {
             canonicalPath = fichier.getCanonicalPath();
-            log.debug("IMPORT DU FICHIER PEGASE : " + canonicalPath);
+            logger.debug("IMPORT DU FICHIER PEGASE : " + canonicalPath);
         } catch (Exception e) {
             addActionError(getExceptionMessage(e));
             return INPUT;
@@ -184,7 +184,7 @@ public class ImportAction extends GeneriqueAction {
                 args[0] = lectureEchange.getLigneRegistration();
                 args[1] = getExceptionMessage(e);
                 addActionError(getText("message.import.pegase.line.failure", args));
-                log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+                logger.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
             }
         }
         if (echec) {
@@ -247,13 +247,13 @@ public class ImportAction extends GeneriqueAction {
 
 
         if (incremental) {
-            log.debug("IMPORT INCREMENTAL DU FICHIER : " + canonicalPath);
+            logger.debug("IMPORT INCREMENTAL DU FICHIER : " + canonicalPath);
         } else {
-            log.debug("IMPORT DU FICHIER : " + canonicalPath);
+            logger.debug("IMPORT DU FICHIER : " + canonicalPath);
         }
 
         //String newCanonicalPath = reducteur.reduire(canonicalPath, true);
-        //log.debug("DECOMPRESSION VERS LE FICHIER : "+newCanonicalPath);
+        //logger.debug("DECOMPRESSION VERS LE FICHIER : "+newCanonicalPath);
         try {
             //lecteurCSVHastus.lireCheminFichier(newCanonicalPath);
             lecteurCSVHastus.lireCheminFichier(canonicalPath);
@@ -287,7 +287,7 @@ public class ImportAction extends GeneriqueAction {
                 args[0] = lectureEchange.getLigneRegistration();
                 args[1] = getExceptionMessage(e);
                 addActionError(getText("message.import.hastus.line.failure", args));
-                log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+                logger.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
             }
         }
         if (echec) {
@@ -303,6 +303,7 @@ public class ImportAction extends GeneriqueAction {
         String canonicalPath = null;
         try {
             canonicalPath = fichier.getCanonicalPath();
+            logger.debug("Importing Generic CSV File \""+canonicalPath+"\"");
         } catch (Exception e) {
             addActionError(getExceptionMessage(e));
             return INPUT;
@@ -385,7 +386,7 @@ public class ImportAction extends GeneriqueAction {
                  */
             } catch (Exception e) {
                 addActionMessage(getText("message.import.generical.csv.failure"));
-                log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+                logger.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
                 return INPUT;
             }
         }
@@ -430,7 +431,7 @@ public class ImportAction extends GeneriqueAction {
             importateur.importer(true, lectureEchange);
         } catch (ServiceException e) {
             addActionMessage(getText("message.import.csv.failure"));
-            log.error("Impossible de creer la ligne en base, msg = " + e.getMessage(), e);
+            logger.error("Impossible de creer la ligne en base, msg = " + e.getMessage(), e);
             return INPUT;
         }
         addActionMessage(getText("message.import.csv.success"));
@@ -490,7 +491,7 @@ public class ImportAction extends GeneriqueAction {
             importateur.importer(false, lectureEchange);
         } catch (ServiceException serviceException) {
             addActionError(getText("message.import.xml.failure"));
-            log.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
+            logger.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
             return INPUT;
         }
         String[] args = new String[1];
@@ -516,7 +517,7 @@ public class ImportAction extends GeneriqueAction {
             importateur.importer(false, lectureEchange);
         } catch (ServiceException serviceException) {
             addActionError(getText("message.import.amivif.xml.failure"));
-            log.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
+            logger.error("Impossible de créer la ligne en base, msg = " + serviceException.getMessage(), serviceException);
             return INPUT;
         }
         addActionMessage(getText("message.import.amivif.xml.success"));
@@ -560,7 +561,7 @@ public class ImportAction extends GeneriqueAction {
         } //catch (ServiceException e) 
         catch (Exception e) {
             addActionMessage(getText("message.import.vehicleJourneyAtStop.failure"));
-            log.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
+            logger.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
             return INPUT_ITINERAIRE;
         }
         addActionMessage(getText("message.import.vehicleJourneyAtStop.success"));
@@ -583,14 +584,14 @@ public class ImportAction extends GeneriqueAction {
                             break;
                         }
                         addActionError(message);
-                        //log.error(message);
+                        //logger.error(message);
                         count++;
                     }
                 }
             } else {
                 ServiceException serviceException = (ServiceException) exception;
                 addActionError(getText("message.import.file.exception"));
-                log.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
+                logger.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
             }
         }
         //TODO 
@@ -684,7 +685,7 @@ public class ImportAction extends GeneriqueAction {
     }
 
     public void setFichierContentType(String fichierContentType) {
-        log.debug(fichierContentType);
+        logger.debug(fichierContentType);
         this.fichierContentType = fichierContentType;
     }
 

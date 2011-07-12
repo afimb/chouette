@@ -24,6 +24,7 @@
         <property name="lecteurMission" ref="lecteurExcelMission"/>
         <property name="lecteurItineraire" ref="lecteurExcelItineraire"/>
         <property name="lecteurArret" ref="lecteurExcelArret"/>
+	<property name="logFileName" value="${import.csv.multilignes.log}" />
     </bean>
 
     <bean id="lecteurExcelTableauMarche" 

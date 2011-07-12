@@ -74,18 +74,34 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 	    List<String> objectIdZonesGeneriques = new ArrayList<String>();
 	    lectureEchange.setZonesCommerciales(lecteurZone.getZones(ligne));
 	    lectureEchange.setArretsPhysiques(lecteurZone.getArretsPhysiques(ligne));
+            if (lectureEchange.getZonesCommerciales() != null)///????
 	    for (PositionGeographique zone : lectureEchange.getZonesCommerciales())
 		objectIdZonesGeneriques.add(zone.getObjectId());
+            else {
+                logger.error("La ligne "+ligne.getName()+" : "+ligne.getNumber()+" n'a pas de zones comerciales.");
+                continue;
+            }
+            if (lectureEchange.getArretsPhysiques() != null)///????
 	    for (PositionGeographique arretPhysique : lectureEchange.getArretsPhysiques())
 		objectIdZonesGeneriques.add(arretPhysique.getObjectId());
+            else {
+                logger.error("La ligne "+ligne.getName()+" : "+ligne.getNumber()+" n'a pas d'arrêts physiques.");
+                continue;
+            }
 	    lectureEchange.setObjectIdZonesGeneriques(objectIdZonesGeneriques);
 	    lectureEchange.setZoneParenteParObjectId(lecteurZone.getZoneParenteParObjectId(ligne));
 	    //for (String key : lectureEchange.getZoneParenteParObjectId().keySet())
 	    //logger.error("HHHHHH "+ligne.getPublishedName()+"\t:\t"+lectureEchange.getZoneParenteParObjectId().get(key)+"\t:\t"+key);
+            if (lectureEchange.getZonesCommerciales() != null)///????
 	    for (PositionGeographique zone : lectureEchange.getZonesCommerciales())
 		logger.debug("ZONES : "+zone.getName());
+            else
+                continue;
+            if (lectureEchange.getArretsPhysiques() != null)///????
 	    for (PositionGeographique arretPhysique : lectureEchange.getArretsPhysiques())
 		logger.debug("ARRETPHYSIQUE : "+arretPhysique.getName());
+            else
+                continue;
 	    // Missions
 	    lectureEchange.setMissions(lecteurMission.getMissions().get(ligne)); 
 	    // COURSES
@@ -95,6 +111,8 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
 	    List<Horaire> horaires = new ArrayList<Horaire>();
 	    List<TableauMarche> _tableauxMarche = new ArrayList<TableauMarche>();
 	    Set<TableauMarche> _tableauxM = new HashSet<TableauMarche>();
+            if (courses == null)
+                continue;
 	    for (Course course : courses) {
 		if (lecteurHoraire.getHoraires() != null)
 		    if (lecteurHoraire.getHoraires().get(course) != null)
@@ -147,6 +165,7 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
             initialisation();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd__HH_mm_ss");
             logFileName = logFileName + "_" + sdf.format(Calendar.getInstance().getTime());
+            logger.debug("Fichier de log : "+logFileName);
 	    fw = new FileWriter(logFileName, false);
 	    fw.write("##############################################################################################################\n");
 	    fw.write("# LECTURE DES DONNEES CSV \""+chemin+"\" #\n");
@@ -282,23 +301,30 @@ public class LecteurCSVPrincipal implements ILecteurPrincipal {
             }
         }
         catch(MissingResourceException e) { // No resource bundle for "importCSV" can be found
+            e.printStackTrace();
         }
         catch(IllegalArgumentException e) { // The pattern "yyyy_MM_dd__HH_mm_ss" is invalid
+            e.printStackTrace();
         }
         catch(UnsupportedEncodingException e) { // If 'JeuCaracteres' is not supported)
+            e.printStackTrace();
         }
         catch(IOException e) { // if the file 'logFileName' exists but is a directory rather than a regular file, does not exist but cannot be created, or cannot be opened for any other reason (new FileWriter)
+            e.printStackTrace();
             // Or if an IO error occur (write)
             // Or if bad things happen during the read (readNext)
         }
         catch(NullPointerException e) { // If the 'chemin' is null
+            e.printStackTrace();
         }
         catch(SecurityException e) { // If a security manager exists and its SecurityManager.checkRead(java.lang.String) method denies read access to the file or directory
+            e.printStackTrace();
         }
         //catch (FileNotFoundException e) {
             //throw new ServiceException(CodeIncident.ERR_CSV_NON_TROUVE,  e);
         //}
         catch (ServiceException e) {
+            e.printStackTrace();
             throw e;
         }
         catch (Exception e) {
