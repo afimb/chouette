@@ -235,71 +235,81 @@ public class Route extends NeptuneIdentifiedObject
 	 * add a journeyPatternId to list only if not already present
 	 * @param journeyPatternId
 	 */
-	public void addJourneyPatternId(String journeyPatternId){
+	public void addJourneyPatternId(String journeyPatternId)
+	{
 		if(journeyPatternIds == null) journeyPatternIds = new ArrayList<String>();
-		journeyPatternIds.add(journeyPatternId);
+		if (!journeyPatternIds.contains(journeyPatternId)) journeyPatternIds.add(journeyPatternId);
 	}
 
 	/**
 	 * add a journeyPattern to list only if not already present
 	 * @param journeyPattern
 	 */
-	public void addJourneyPattern(JourneyPattern journeyPattern){
+	public void addJourneyPattern(JourneyPattern journeyPattern)
+	{
 		if(journeyPatterns == null) journeyPatterns = new ArrayList<JourneyPattern>();
-		journeyPatterns.add(journeyPattern);
+		if (!journeyPatterns.contains(journeyPattern)) journeyPatterns.add(journeyPattern);
 	}
 
 	/**
 	 * add a ptLinkId to list only if not already present
 	 * @param ptLinkId
 	 */
-	public void addPTLinkId(String ptLinkId){
+	public void addPTLinkId(String ptLinkId)
+	{
 		if(ptLinkIds == null) ptLinkIds = new ArrayList<String>();
-		if (!ptLinkIds.contains(ptLinkId))
-			ptLinkIds.add(ptLinkId);
+		if (!ptLinkIds.contains(ptLinkId)) ptLinkIds.add(ptLinkId);
 	}
 
 	/**
 	 * add a ptLink to list only if not already present
 	 * @param ptLink
 	 */
-	public void addPTLink(PTLink ptLink){
+	public void addPTLink(PTLink ptLink)
+	{
 		if(ptLinks == null) ptLinks = new ArrayList<PTLink>();
-		if (!ptLinks.contains(ptLink))
-			ptLinks.add(ptLink);
+		if (!ptLinks.contains(ptLink)) ptLinks.add(ptLink);
 	}
 
 	/**
 	 * remove a journeyPatternId from list if present
 	 * @param journeyPatternId
 	 */
-	public void removeJourneyPatternId(String journeyPatternId){
-		if(journeyPatternIds != null) journeyPatternIds.remove(journeyPatternId);
+	public void removeJourneyPatternId(String journeyPatternId)
+	{
+		if (journeyPatternIds == null) journeyPatternIds = new ArrayList<String>();
+		if (journeyPatternIds.contains(journeyPatternId)) journeyPatternIds.remove(journeyPatternId);
 	}
 
 	/**
 	 * remove a journeyPattern from list if present
 	 * @param journeyPattern
 	 */
-	public void removeJourneyPattern(JourneyPattern journeyPattern){
-		if(journeyPatterns != null) journeyPatterns.remove(journeyPattern);
+	public void removeJourneyPattern(JourneyPattern journeyPattern)
+	{
+		if (journeyPatterns == null) journeyPatterns = new ArrayList<JourneyPattern>();
+		if (journeyPatterns.contains(journeyPattern)) journeyPatterns.remove(journeyPattern);
 	}
 
 	/**
 	 * remove a ptLinkId from list if present
 	 * @param ptLinkId
 	 */
-	public void removePTLinkId(String ptLinkId){
-		if(ptLinkIds != null) ptLinkIds.remove(ptLinkId);
-		ptLinkIds.add(ptLinkId);
+	public void removePTLinkId(String ptLinkId)
+	{
+		if(ptLinkIds == null) ptLinkIds = new ArrayList<String>();
+		if(ptLinkIds.contains(ptLinkId)) ptLinkIds.remove(ptLinkId);
+
 	}
 
 	/**
 	 * remove a ptLink from list if present
 	 * @param ptLink
 	 */
-	public void removePTLink(PTLink ptLink){
-		if(ptLinks != null) ptLinks.remove(ptLink);
+	public void removePTLink(PTLink ptLink)
+	{
+		if(ptLinks == null) ptLinks = new ArrayList<PTLink>();
+		if(ptLinks.contains(ptLink)) ptLinks.remove(ptLink);
 	}
 
 	/**

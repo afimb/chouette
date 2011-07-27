@@ -35,5 +35,17 @@ public class GroupOfLine extends NeptuneIdentifiedObject{
 		if (!lines.contains(line))
 			lines.add(line);
 	}
+	
+	
+	/**
+	 * remove a line from the group
+	 * 
+	 * @param line
+	 */
+	public void removeLine(Line line){
+		if(lines == null) lines = new ArrayList<Line>();
+		if (lines.contains(line))
+			lines.remove(line);
+	}
 
 }

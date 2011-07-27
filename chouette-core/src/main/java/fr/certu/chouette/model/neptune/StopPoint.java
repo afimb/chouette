@@ -35,6 +35,12 @@ public class StopPoint extends NeptuneIdentifiedObject
 		if(facilities == null) facilities = new ArrayList<Facility>();
 		if(!facilities.contains(facility)) facilities.add(facility);
 	}
+	
+	public void removeFacility(Facility facility)
+	{
+		if(facilities == null) facilities = new ArrayList<Facility>();
+		if(facilities.contains(facility)) facilities.remove(facility);
+	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneObject#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 	 */

@@ -10,7 +10,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
@@ -115,16 +114,20 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
-		userNeeds.add(userNeed);
-		synchronizeUserNeeds();
+		if (!userNeeds.contains(userNeed))
+		{
+			userNeeds.add(userNeed);
+			synchronizeUserNeeds();
+		}
 	}
 
 	public void removeUserNeed(UserNeedEnum userNeed){
-		if(userNeeds != null)
+		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
 			userNeeds.remove(userNeed);
 		synchronizeUserNeeds();
 	}
-//	/* (non-Javadoc)
+
+	//	/* (non-Javadoc)
 //	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
 //	 */
 //	@Override

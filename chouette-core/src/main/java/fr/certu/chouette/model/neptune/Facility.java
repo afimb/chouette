@@ -41,6 +41,11 @@ public class Facility extends NeptuneIdentifiedObject {
 	public void addFacilityFeature(FacilityFeature facilityFeature)
 	{
 		if (facilityFeatures == null) facilityFeatures = new ArrayList<FacilityFeature>();
-		facilityFeatures.add(facilityFeature);
+		if (!facilityFeatures.contains(facilityFeature)) facilityFeatures.add(facilityFeature);
+	}
+	public void removeFacilityFeature(FacilityFeature facilityFeature)
+	{
+		if (facilityFeatures == null) facilityFeatures = new ArrayList<FacilityFeature>();
+		if (facilityFeatures.contains(facilityFeature)) facilityFeatures.remove(facilityFeature);
 	}
 }

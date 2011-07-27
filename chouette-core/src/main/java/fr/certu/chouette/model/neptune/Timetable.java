@@ -45,7 +45,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	public void addCalendarDay(Date calendarDay)
 	{
 		if (calendarDays == null) calendarDays = new ArrayList<Date>();
-		if (calendarDay != null)
+		if (calendarDay != null && !calendarDays.contains(calendarDay))
 		{
 			calendarDays.add(calendarDay);
 		}
@@ -63,10 +63,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	public void addPeriod(Period period)
 	{
 		if (periods == null) periods = new ArrayList<Period>();
-		if (period != null)
-		{
-			periods.add(period);
-		}
+		if (period != null && !periods.contains(period)) periods.add(period);
+
 	}
 
 	public void removePeriod(Period period)
@@ -102,33 +100,43 @@ public class Timetable extends NeptuneIdentifiedObject {
 		}
 	}
 
-//	/* (non-Javadoc)
-//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-//	 */
-//	@Override
-//	public void expand(DetailLevelEnum level)
-//	{
-//		// to avoid circular call check if level is already set according to this level
-//		if (getLevel().ordinal() >= level.ordinal()) return;
-//		super.expand(level);
-//		switch (level)
-//		{
-//		case ATTRIBUTE : 
-//			vehicleJourneys = null;
-//			break;
-//		case NARROW_DEPENDENCIES : 
-//		case STRUCTURAL_DEPENDENCIES : 
-//		case ALL_DEPENDENCIES :
-//			if (getVehicleJourneys() != null)
-//			{
-//				for (VehicleJourney vehicleJourney : getVehicleJourneys())
-//				{
-//					vehicleJourney.expand(DetailLevelEnum.ATTRIBUTE);
-//				}
-//			}
-//			break;
-//		}
-//	} 
+	public void removeVehicleJourney(VehicleJourney vehicleJourney)
+	{
+		if (vehicleJourneys == null) vehicleJourneys = new ArrayList<VehicleJourney>();
+		if (vehicleJourney != null && vehicleJourneys.contains(vehicleJourney))
+		{
+			vehicleJourneys.remove(vehicleJourney);
+		}
+	}
+
+
+	//	/* (non-Javadoc)
+	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
+	//	 */
+	//	@Override
+	//	public void expand(DetailLevelEnum level)
+	//	{
+	//		// to avoid circular call check if level is already set according to this level
+	//		if (getLevel().ordinal() >= level.ordinal()) return;
+	//		super.expand(level);
+	//		switch (level)
+	//		{
+	//		case ATTRIBUTE : 
+	//			vehicleJourneys = null;
+	//			break;
+	//		case NARROW_DEPENDENCIES : 
+	//		case STRUCTURAL_DEPENDENCIES : 
+	//		case ALL_DEPENDENCIES :
+	//			if (getVehicleJourneys() != null)
+	//			{
+	//				for (VehicleJourney vehicleJourney : getVehicleJourneys())
+	//				{
+	//					vehicleJourney.expand(DetailLevelEnum.ATTRIBUTE);
+	//				}
+	//			}
+	//			break;
+	//		}
+	//	} 
 
 	@Override
 	public String toString(String indent,int level)
@@ -208,7 +216,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 			dayTypes.clear();
 		}
 		if (intDayTypes == null) intDayTypes = 0;;	
-		
+
 		DayTypeEnum[] dayTypeEnum = DayTypeEnum.values();
 		for (DayTypeEnum dayType : dayTypeEnum) 
 		{

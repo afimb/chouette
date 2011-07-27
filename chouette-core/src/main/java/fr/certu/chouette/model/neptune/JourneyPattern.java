@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import fr.certu.chouette.filter.DetailLevelEnum;
 
 public class JourneyPattern extends NeptuneIdentifiedObject
 {
@@ -132,12 +131,26 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		if (!stopPoints.contains(stopPoint))
 			stopPoints.add(stopPoint);
 	}
+	
+	public void removeStopPoint(StopPoint stopPoint)
+	{
+		if (stopPoints== null) stopPoints = new ArrayList<StopPoint>();
+		if (stopPoints.contains(stopPoint))
+			stopPoints.remove(stopPoint);
+	}
 
 	public void addVehicleJourney(VehicleJourney vehicleJourney)
 	{
 		if (vehicleJourneys== null) vehicleJourneys = new ArrayList<VehicleJourney>();
 		if (!vehicleJourneys.contains(vehicleJourney))
 			vehicleJourneys.add(vehicleJourney);
+	}
+	
+	public void removeVehicleJourney(VehicleJourney vehicleJourney)
+	{
+		if (vehicleJourneys== null) vehicleJourneys = new ArrayList<VehicleJourney>();
+		if (vehicleJourneys.contains(vehicleJourney))
+			vehicleJourneys.remove(vehicleJourney);
 	}
 
 	@Override

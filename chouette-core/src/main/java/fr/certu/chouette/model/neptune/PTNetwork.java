@@ -150,7 +150,14 @@ public class PTNetwork extends NeptuneIdentifiedObject
 	public void addLine(Line line)
 	{
 		if (lines== null) lines = new ArrayList<Line>();
-		lines.add(line);
+		if (!lines.contains(line)) lines.add(line);
 	}
+	
+	public void removeLine(Line line)
+	{
+		if (lines== null) lines = new ArrayList<Line>();
+		if (lines.contains(line)) lines.remove(line);
+	}
+
 	
 }

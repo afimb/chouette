@@ -39,14 +39,26 @@ public class StopArea extends NeptuneIdentifiedObject {
 
 	public void addFacility(Facility facility)
 	{
-		if(facilities == null) facilities = new ArrayList<Facility>();
-		if(!facilities.contains(facility)) facilities.add(facility);
+		if (facilities == null) facilities = new ArrayList<Facility>();
+		if (!facilities.contains(facility)) facilities.add(facility);
+	}
+	
+	public void removeFacility(Facility facility)
+	{
+		if( facilities == null) facilities = new ArrayList<Facility>();
+		if (facilities.contains(facility)) facilities.remove(facility);
 	}
 
 	public void addBoundaryPoint(String boundaryPoint)
 	{
 		if (boundaryPoints == null) boundaryPoints = new ArrayList<String>();
-		boundaryPoints.add(boundaryPoint);
+		if (!boundaryPoints.contains(boundaryPoint)) boundaryPoints.add(boundaryPoint);
+	}
+	
+	public void removeBoundaryPoint(String boundaryPoint)
+	{
+		if (boundaryPoints == null) boundaryPoints = new ArrayList<String>();
+		if (boundaryPoints.contains(boundaryPoint)) boundaryPoints.remove(boundaryPoint);
 	}
 
 	public void addContainedStopId(String containedStopId)
@@ -55,6 +67,12 @@ public class StopArea extends NeptuneIdentifiedObject {
 		if (!containedStopIds.contains(containedStopId))
 			containedStopIds.add(containedStopId);
 	}
+	public void removeContainedStopId(String containedStopId)
+	{
+		if (containedStopIds == null) containedStopIds = new ArrayList<String>();
+		if (containedStopIds.contains(containedStopId))
+			containedStopIds.remove(containedStopId);
+	}
 
 	public void addContainedStopArea(StopArea containedStopArea)
 	{
@@ -62,12 +80,25 @@ public class StopArea extends NeptuneIdentifiedObject {
 		if (!containedStopAreas.contains(containedStopArea))
 			containedStopAreas.add(containedStopArea);
 	}
+	
+	public void removeContainedStopArea(StopArea containedStopArea)
+	{
+		if (containedStopAreas == null) containedStopAreas = new ArrayList<StopArea>();
+		if (containedStopAreas.contains(containedStopArea))
+			containedStopAreas.remove(containedStopArea);
+	}
 
 	public void addContainedStopPoint(StopPoint containedStopPoint)
 	{
 		if (containedStopPoints == null) containedStopPoints = new ArrayList<StopPoint>();
 		if (!containedStopPoints.contains(containedStopPoint))
 			containedStopPoints.add(containedStopPoint);
+	}
+	public void removeContainedStopPoint(StopPoint containedStopPoint)
+	{
+		if (containedStopPoints == null) containedStopPoints = new ArrayList<StopPoint>();
+		if (containedStopPoints.contains(containedStopPoint))
+			containedStopPoints.remove(containedStopPoint);
 	}
 
 	public void addUserNeed(UserNeedEnum userNeed)
@@ -79,12 +110,21 @@ public class StopArea extends NeptuneIdentifiedObject {
 	public void addConnectionLink(ConnectionLink connectionLink)
 	{
 		if (connectionLinks == null) connectionLinks = new ArrayList<ConnectionLink>();
-		connectionLinks.add(connectionLink);
+		if (!connectionLinks.contains(connectionLink)) connectionLinks.add(connectionLink);
+	}
+	public void removeConnectionLink(ConnectionLink connectionLink)
+	{
+		if (connectionLinks == null) connectionLinks = new ArrayList<ConnectionLink>();
+		if (connectionLinks.contains(connectionLink)) connectionLinks.remove(connectionLink);
 	}
 
 	public void addAccessLink(AccessLink accessLink){
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
-		accessLinks.add(accessLink);
+		if (!accessLinks.contains(accessLink)) accessLinks.add(accessLink);
+	}
+	public void removeAccessLink(AccessLink accessLink){
+		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
+		if (accessLinks.contains(accessLink)) accessLinks.remove(accessLink);
 	}
 
 	/*

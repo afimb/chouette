@@ -48,8 +48,17 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	/**
 	 * @param accessLink
 	 */
-	public void addAccessLink(AccessLink accessLink){
+	public void addAccessLink(AccessLink accessLink)
+	{
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
-		accessLinks.add(accessLink);
+		if (!accessLinks.contains(accessLink)) accessLinks.add(accessLink);
 	}
+	
+	public void removeAccessLink(AccessLink accessLink)
+	{
+		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
+		if (accessLinks.contains(accessLink)) accessLinks.remove(accessLink);
+	}
+	
+	
 }

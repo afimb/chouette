@@ -110,12 +110,15 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
-		userNeeds.add(userNeed);
-		synchronizeUserNeeds();
+		if (!userNeeds.contains(userNeed))
+		{
+			userNeeds.add(userNeed);
+			synchronizeUserNeeds();
+		}
 	}
 
 	public void removeUserNeed(UserNeedEnum userNeed){
-		if(userNeeds != null)
+		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
 			userNeeds.remove(userNeed);
 		synchronizeUserNeeds();
 	}
@@ -162,7 +165,7 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	public List<UserNeedEnum> getUserNeeds() 
 	{
 		if (intUserNeeds == null) return userNeeds;	
-		//CASTOREVO
+
 		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
 		for (UserNeedEnum userNeedEnum : userNeedEnums) 
 		{
@@ -178,9 +181,11 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
 	{
 		userNeeds = userNeedEnums;
-		//CASTOREVO
+
 		synchronizeUserNeeds();
 	}
+
+
 
 	private void synchronizeUserNeeds() {
 		intUserNeeds = 0;

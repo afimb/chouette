@@ -7,7 +7,6 @@
  */
 package fr.certu.chouette.model.neptune;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

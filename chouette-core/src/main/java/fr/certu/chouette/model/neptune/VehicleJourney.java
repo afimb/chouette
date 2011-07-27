@@ -165,6 +165,13 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		if (timetable != null && !timetables.contains(timetable))
 			timetables.add(timetable);
 	}
+	
+	public void removeTimetable(Timetable timetable)
+	{
+		if (timetables== null) timetables = new ArrayList<Timetable>();
+		if (timetable != null && timetables.contains(timetable))
+			timetables.remove(timetable);
+	}
 
 	public List<VehicleJourney> getVehicleJourneysByRoute(String routeId){
 		List<VehicleJourney> res = new ArrayList<VehicleJourney>();
