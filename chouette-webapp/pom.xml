@@ -111,6 +111,10 @@
             <groupId>fr.certu.chouette</groupId>
             <artifactId>chouette-jdbc-dao</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fr.certu.chouette.maven</groupId>
+            <artifactId>chouette-maven-plugin</artifactId>
+        </dependency>
     </dependencies>
     <pluginRepositories>
         <pluginRepository>
