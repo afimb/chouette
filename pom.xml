@@ -10,6 +10,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>chouette-maven-plugin</module>
 		<module>chouette-attic</module>
 		<module>chouette-webapp</module>
 		<module>chouette-castor-altibus</module>
@@ -501,6 +502,11 @@
 			</properties>
 		</profile>
 	</profiles>
+	<properties>
+		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
+		<build.timestamp>${maven.build.timestamp}</build.timestamp>
+		<chouette.publishRelease.activateArtifactFolder>true</chouette.publishRelease.activateArtifactFolder>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>

@@ -170,11 +170,12 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>chouette_${BUILD_TAG}</finalName>
-                    <descriptors>
-                        <descriptor>src/main/resources/assemblies/cbc.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                	<finalName>chouette_${BUILD_TAG}</finalName>
+                	<appendAssemblyId>false</appendAssemblyId>
+                	<descriptors>
+                 		<descriptor>src/main/resources/assemblies/cbc.xml</descriptor>
+                 	</descriptors>
+             	</configuration>
                 <executions>
                     <execution>
                         <id>make-assembly</id> <!-- this is used for inheritance merges -->
@@ -216,6 +217,18 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+	            <groupId>fr.certu.chouette.maven</groupId>
+	            <artifactId>chouette-maven-plugin</artifactId>
+	            <version>1.0.0</version>
+	            <configuration>
+	            	<buildArtifact>${artifactId}</buildArtifact>
+					<buildTimestamp>${build.timestamp}</buildTimestamp>
+					<inputName>chouette_${BUILD_TAG}.tar.gz</inputName>
+					<outputName>${artifactId}_${build.timestamp}.tar.gz</outputName>
+					<maxReleasesCount>5</maxReleasesCount>
+	            </configuration>
             </plugin>
         </plugins>
     </build>
