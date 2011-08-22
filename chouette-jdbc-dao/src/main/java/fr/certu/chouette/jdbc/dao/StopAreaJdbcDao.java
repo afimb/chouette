@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -52,7 +53,10 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setString(8, areaType);
 		ps.setString(9, stopArea.getRegistrationNumber());
 		ps.setString(10, stopArea.getNearestTopicName());
-		ps.setInt(11, stopArea.getFareCode());
+		if (stopArea.getFareCode() != null)
+		   ps.setInt(11, stopArea.getFareCode());
+		else
+			ps.setNull(11, Types.INTEGER);
 		
 		AreaCentroid areaCentroid = stopArea.getAreaCentroid();
 		BigDecimal longitude = null, 

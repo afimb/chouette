@@ -3,6 +3,8 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -20,6 +22,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationJourneyPattern implements IValidationPlugin<JourneyPattern> {
 
+	private static final Logger logger = Logger.getLogger(ValidationJourneyPattern.class);
     private ValidationStepDescription validationStepDescription;
 
     public void init() {
@@ -38,6 +41,7 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
 
     private List<ValidationClassReportItem> validate(List<JourneyPattern> journeyPatterns) {
 
+    	logger.info("start validate "+journeyPatterns.size()+" journey patterns");
         ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
         
         ReportItem sheet8 = new SheetReportItem("Test2_Sheet8", 8);
@@ -97,6 +101,7 @@ public class ValidationJourneyPattern implements IValidationPlugin<JourneyPatter
         category2.addItem(sheet15);
         category2.addItem(sheet16);
         result.add(category2);
+    	logger.info("journey pattern validation terminated");
         return result;
     }
 }

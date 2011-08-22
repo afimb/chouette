@@ -18,6 +18,7 @@
 	<bean id="NeptuneAreaCentroidImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AreaCentroidProducer" />
 	<bean id="NeptuneConnectionLinkImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.ConnectionLinkProducer" />
 	<bean id="NeptuneTimetableImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer" />
+	<bean id="NeptuneTimeSlotImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.TimeSlotProducer" />
 	<bean id="NeptuneAccessLinkImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessLinkProducer" />
 	<bean id="NeptuneAccessPointImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.AccessPointProducer" />
 	<bean id="NeptuneFacilityImportProducer" class="fr.certu.chouette.exchange.xml.neptune.importer.producer.FacilityProducer" />
@@ -38,6 +39,7 @@
 		<property name="areaCentroidProducer" ref="NeptuneAreaCentroidImportProducer" />
 		<property name="connectionLinkProducer" ref="NeptuneConnectionLinkImportProducer" />
 		<property name="timetableProducer" ref="NeptuneTimetableImportProducer" />
+		<property name="timeSlotProducer" ref="NeptuneTimeSlotImportProducer" />
 		<property name="accessLinkProducer" ref="NeptuneAccessLinkImportProducer" />
 		<property name="accessPointProducer" ref="NeptuneAccessPointImportProducer" />
 		<property name="facilityProducer" ref="NeptuneFacilityImportProducer" />

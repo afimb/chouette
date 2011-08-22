@@ -27,13 +27,13 @@ Chouette.Map.lambertProjection = new OpenLayers.Projection("EPSG:"+$("lambertSRI
 
 Chouette.Map.initMap = function(){
   OpenLayers.Lang.setCode($("currentLocale").value);
-  OpenLayers.ImgPath = "../images/map/"
+  OpenLayers.ImgPath = "../images/map/";
   var mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(this.wgsProjection,this.baseLayerProjection, true);
   // === INIT MAP ===
   this.map = new OpenLayers.Map('map', {
     projection: this.baseLayerProjection,
-    maxExtent: mapBounds,
-    restrictedExtent: mapBounds,
+    // maxExtent: mapBounds,
+    // restrictedExtent: mapBounds,
     units: this.baseLayerProjection.getUnits(),
     controls:[
     new OpenLayers.Control.PanZoomBar(),

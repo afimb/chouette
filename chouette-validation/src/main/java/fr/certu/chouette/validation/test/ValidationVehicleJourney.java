@@ -1,11 +1,17 @@
 package fr.certu.chouette.validation.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import lombok.Getter;
+
+import org.apache.log4j.Logger;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -14,6 +20,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -50,6 +57,8 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourney>{
 
+	private static final Logger logger = Logger.getLogger(ValidationVehicleJourney.class);
+
 	private ValidationStepDescription validationStepDescription;
 	private final long DIVIDER = 1000 * 3600;
 
@@ -67,6 +76,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 	}
 
 	private List<ValidationClassReportItem> validate(List<VehicleJourney> vehicleJourneys, ValidationParameters parameters){
+		logger.info("start validate "+vehicleJourneys.size()+" vehicle journeys");
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
@@ -103,7 +113,7 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		Map<String, Set<VehicleJourney>> map = new TreeMap<String, Set<VehicleJourney>>();
-		Set<VehicleJourney> set = new HashSet<VehicleJourney>();
+		// Set<VehicleJourney> set = new HashSet<VehicleJourney>();
 
 		double param3_15 = parameters.getTest3_15_MinimalTime();
 		double min3_7 = parameters.getTest3_7_MinimalDistance();
@@ -114,25 +124,31 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 		long min = parameters.getTest3_16c_MinimalTime();
 		long max = parameters.getTest3_16c_MaximalTime();
 
-		if(vehicleJourneys != null){
-			for (int i=0; i<vehicleJourneys.size();i++) {
+		if(vehicleJourneys != null)
+		{
+			for (int i=0; i<vehicleJourneys.size();i++) 
+			{
 				VehicleJourney vehicleJourney = vehicleJourneys.get(i);
-                                
-                                //Test 2.5.2
-                                if (vehicleJourney.getTimetables() == null || vehicleJourney.getTimetables().isEmpty()) {
+
+				//Test 2.5.2
+				if (vehicleJourney.getTimetables() == null || vehicleJourney.getTimetables().isEmpty()) {
 					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step2_error",Report.STATE.ERROR);
 					reportItem2.addItem(detailReportItem);
-                                } else {
+				} else {
 					reportItem2.updateStatus(Report.STATE.OK);	
-                                }
-                            
+				}
+
 				String key = vehicleJourney.getRouteId();
 				Set<VehicleJourney> values = map.get(key); 
-				if(values != null && !values.isEmpty()){
+				if(values != null )
+				{
 					values.add(vehicleJourney);
-				}else {
-					set.add(vehicleJourney);
-					map.put(vehicleJourney.getRouteId(),set);	
+				}
+				else 
+				{
+					values = new HashSet<VehicleJourney>();
+					values.add(vehicleJourney);
+					map.put(vehicleJourney.getRouteId(),values);	
 				}
 				if(vehicleJourney.getRoute() != null){
 					if(!vehicleJourney.getRouteId().equals(vehicleJourney.getRoute().getObjectId())){
@@ -157,97 +173,105 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 					}else
 						report2_18_1.updateStatus(Report.STATE.OK);
 				}
-				List<String> stopPointObjectIds = (vehicleJourney.getJourneyPattern() != null && vehicleJourney.getJourneyPattern().getStopPoints() != null) ? 
-						VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints()) : null;
+				List<String> stopPointObjectIds = (vehicleJourney.getJourneyPattern() != null && vehicleJourney.getJourneyPattern().getStopPoints() != null) ? VehicleJourney.extractObjectIds(vehicleJourney.getJourneyPattern().getStopPoints()) : null;
 
-						List<String> stopPointIds = (vehicleJourney.getJourneyPattern() != null) ? 
-								vehicleJourney.getJourneyPattern().getStopPointIds() : null;
-								if(stopPointObjectIds != null && stopPointIds != null){
-									//Test 2.18.2 a
-									if(!stopPointIds.containsAll(stopPointObjectIds)){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", 
-												Report.STATE.ERROR);
-										report2_18_2.addItem(detailReportItem);	
-									}else
-										report2_18_2.updateStatus(Report.STATE.OK);
+				List<String> stopPointIds = (vehicleJourney.getJourneyPattern() != null) ?  vehicleJourney.getJourneyPattern().getStopPointIds() : null;
+				if(stopPointObjectIds != null && stopPointIds != null){
+					//Test 2.18.2 a
+					if(!stopPointIds.containsAll(stopPointObjectIds)){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_a", 
+								Report.STATE.ERROR);
+						report2_18_2.addItem(detailReportItem);	
+					}else
+						report2_18_2.updateStatus(Report.STATE.OK);
 
-									int count = 0;
-									List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
-									for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
-										if(stopPointObjectIds.contains(vehicleJourneyAtStop.getStopPointId()))
-											count++;
-									}
+					int count = 0;
+					List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
+					for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
+						if(stopPointObjectIds.contains(vehicleJourneyAtStop.getStopPointId()))
+							count++;
+					}
 
-									//Test 2.18.2 b
-									if(count == 0){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_b", Report.STATE.ERROR);
-										report2_18_2.addItem(detailReportItem);	
-									}else
-										report2_18_2.updateStatus(Report.STATE.OK);
-								}
-								//Test 2.19.1
-								String lineShortCutId = vehicleJourney.getLineIdShortcut();
-								if(lineShortCutId != null){
-									if(vehicleJourney.getLine() == null){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,
-												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-										report2_19.addItem(detailReportItem);	
-									}else
-										report2_19.updateStatus(Report.STATE.OK);	
-								}
+					//Test 2.18.2 b
+					if(count == 0){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet18_Step2_error_b", Report.STATE.ERROR);
+						report2_18_2.addItem(detailReportItem);	
+					}else
+						report2_18_2.updateStatus(Report.STATE.OK);
+				}
+				//Test 2.19.1
+				String lineShortCutId = vehicleJourney.getLineIdShortcut();
+				if(lineShortCutId != null){
+					if(vehicleJourney.getLine() == null){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet19_Step1_error", Report.STATE.ERROR,
+								vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+						report2_19.addItem(detailReportItem);	
+					}else
+						report2_19.updateStatus(Report.STATE.OK);	
+				}
 
-								//Test 2.20.1
-								String companyId = vehicleJourney.getCompanyId();
-								if(companyId != null){
-									String companyObjectId = (vehicleJourney.getCompany() != null) ? vehicleJourney.getCompany().getObjectId() : null;
-									if(!companyId.equals(companyObjectId)){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR,
-												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-										report2_20.addItem(detailReportItem);	
-									}else
-										report2_20.updateStatus(Report.STATE.OK);	
-								}
+				//Test 2.20.1
+				String companyId = vehicleJourney.getCompanyId();
+				if(companyId != null){
+					String companyObjectId = (vehicleJourney.getCompany() != null) ? vehicleJourney.getCompany().getObjectId() : null;
+					if(!companyId.equals(companyObjectId)){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet20_Step1_error", Report.STATE.ERROR,
+								vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+						report2_20.addItem(detailReportItem);	
+					}else
+						report2_20.updateStatus(Report.STATE.OK);	
+				}
 
-								//Test 2.21.1
-								String timeSlotId = vehicleJourney.getTimeSlotId();
-								TimeSlot timeSlot = vehicleJourney.getTimeSlot();
-								if(timeSlotId != null){
-									if(timeSlot == null){
-										ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, 
-												vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-										report2_21.addItem(detailReportItem);	
-									}else
-										report2_21.updateStatus(Report.STATE.OK);	
-								}
-								//Test 2.24.1
-								String routeIdFromVJ = (vehicleJourney.getRouteId() != null) ? vehicleJourney.getRouteId() : "";
-								String routeIdFromJP = (vehicleJourney.getJourneyPattern() != null) ? vehicleJourney.getJourneyPattern().getRouteId() : null;
-								if(!routeIdFromVJ.equals(routeIdFromJP)){
-									ReportItem detailReportItem = new DetailReportItem("Test2_Sheet24_Step1_error", Report.STATE.ERROR);
-									report2_24.addItem(detailReportItem);	
-								}else
-									report2_24.updateStatus(Report.STATE.OK);
-								//Test 3.16.2
-								if (vehicleJourney.getTimetables() != null)
-								{
-									for (Timetable timetable : vehicleJourney.getTimetables()) {
-										if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
-											ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
-													vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-											report3_16_2.addItem(detailReportItem);	
-										}else
-											report3_16_2.updateStatus(Report.STATE.OK);
-									}	
-								}
+				//Test 2.21.1
+				String timeSlotId = vehicleJourney.getTimeSlotId();
+				TimeSlot timeSlot = vehicleJourney.getTimeSlot();
+				if(timeSlotId != null){
+					if(timeSlot == null){
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet21_Step1_error", Report.STATE.ERROR, 
+								vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+						report2_21.addItem(detailReportItem);	
+					}else
+						report2_21.updateStatus(Report.STATE.OK);	
+				}
+				//Test 2.24.1
+				String routeIdFromVJ = (vehicleJourney.getRouteId() != null) ? vehicleJourney.getRouteId() : "";
+				String routeIdFromJP = (vehicleJourney.getJourneyPattern() != null) ? vehicleJourney.getJourneyPattern().getRouteId() : null;
+				if(!routeIdFromVJ.equals(routeIdFromJP)){
+					ReportItem detailReportItem = new DetailReportItem("Test2_Sheet24_Step1_error", Report.STATE.ERROR);
+					report2_24.addItem(detailReportItem);	
+				}else
+					report2_24.updateStatus(Report.STATE.OK);
+				//Test 3.16.2
+				if (vehicleJourney.getTimetables() != null)
+				{
+					for (Timetable timetable : vehicleJourney.getTimetables()) {
+						if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
+							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
+									vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+							report3_16_2.addItem(detailReportItem);	
+						}else
+							report3_16_2.updateStatus(Report.STATE.OK);
+					}	
+				}
 			}
+			
+			/// 
+			logger.info("Tests 2.22.1,... on "+map.size()+" routes");
 
 			//
-			Map<String, Set<VehicleJourneyAtStop[]>> doubletMap = new TreeMap<String, Set<VehicleJourneyAtStop[]>>();
-			for (String key : map.keySet()) {
-				Set<VehicleJourney> vJSet = map.get(key);
-				for (VehicleJourney vehicleJourney : vJSet) {
+			// Map<String, Set<VehicleJourneyAtStop[]>> doubletMap = new TreeMap<String, Set<VehicleJourneyAtStop[]>>();
+			Map<String, List<IntervalDuration>> segmentDurationMap = new HashMap<String, List<IntervalDuration>>();
+			//for (String key : map.keySet()) 
+			for (Iterator<Set<VehicleJourney>> iterator = map.values().iterator(); iterator.hasNext();) 
+			{
+				Set<VehicleJourney> vJSet = iterator.next() ;//map.get(key);
+				iterator.remove();
+				//System.gc();
+				
+				for (VehicleJourney vehicleJourney : vJSet) 
+				{
 					List<VehicleJourneyAtStop> vehicleJourneyAtStops =vehicleJourney.getVehicleJourneyAtStops();
-					Set<VehicleJourneyAtStop[]> stopsSet = new HashSet<VehicleJourneyAtStop[]>();
+					// Set<VehicleJourneyAtStop[]> stopsSet = new HashSet<VehicleJourneyAtStop[]>();
 					if(vehicleJourneyAtStops != null){
 						for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops){
 
@@ -304,7 +328,16 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 											VehicleJourneyAtStop[] vJAtStops = new VehicleJourneyAtStop[2];
 											vJAtStops[0] = vJAtStop;
 											vJAtStops[1] = vJAtStop2;
-											stopsSet.add(vJAtStops);
+											// stopsSet.add(vJAtStops);
+											IntervalDuration duration = new IntervalDuration(vJAtStop, vJAtStop2);
+											List<IntervalDuration> list = segmentDurationMap.get(duration.getStopPairKey());
+											if (list == null)
+											{
+												list = new ArrayList<ValidationVehicleJourney.IntervalDuration>();
+												segmentDurationMap.put(duration.getStopPairKey(),list);
+											}
+											list.add(duration);
+
 											//Test 3.7.1
 											String stopPointId2 = vJAtStop2.getStopPointId();
 											StopPoint stopPoint2 = vJAtStop2.getStopPointByObjectId(stopPointId2);
@@ -356,41 +389,67 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 												report3_16_3.addItem(detailReportItem);	
 											}else
 												report3_16_3.updateStatus(Report.STATE.OK);
+											// TODO: reprendre les boucles avec des vjas ordonnés
+											break;
 										}
 									}
 								}
 							}
 						}
 					}
-					doubletMap.put(vehicleJourney.getObjectId(), stopsSet);
+					//doubletMap.put(vehicleJourney.getObjectId(), stopsSet);
 				}
 			}
-			//Test 3.16.1
-			for (String key : doubletMap.keySet()) {
-				Set<VehicleJourneyAtStop[]> stopsSet = doubletMap.get(key);
-				for (VehicleJourneyAtStop[] vjAtStops : stopsSet) {
-					for (String key2 : doubletMap.keySet()) {
-						if(!key.equals(key2)){
-							Set<VehicleJourneyAtStop[]> stopsSet2 = doubletMap.get(key2);
-							for (VehicleJourneyAtStop[] vjAtStops2 : stopsSet2) {
-								if(vjAtStops[0].getStopPointId().equals(vjAtStops2[0].getStopPointId()) && 
-										vjAtStops[1].getStopPointId().equals(vjAtStops2[1].getStopPointId())){
-									long diffAbsolute1 = Math.abs(vjAtStops[0].getDepartureTime().getTime() - vjAtStops[1].getArrivalTime().getTime());
-									long diffAbsolute2 = Math.abs(vjAtStops2[0].getDepartureTime().getTime() - vjAtStops2[1].getArrivalTime().getTime());
-									long diff = Math.abs(diffAbsolute1-diffAbsolute2)/ DIVIDER;
-									if(diff >= min && diff<=max)	
-										report3_16_1.updateStatus(Report.STATE.OK);
-									else {
-										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,
-												vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId(), String.valueOf(diff));
-										report3_16_1.addItem(detailReportItem);	
-									}
-								}
-							}	
+			//Test 3.16.1 tout faux !!! 
+			logger.info("Test 3.16.1 on "+segmentDurationMap.size()+" segments");
+
+			for (List<IntervalDuration> durations : segmentDurationMap.values()) 
+			{
+				if (durations.size() > 1)
+				{
+					for (int i = 0; i < durations.size()-1; i++)
+					{
+						long diffAbsolute1 = durations.get(i).getDurationInMillis();
+						for (int j = i+1; j < durations.size(); j++)
+						{
+							long diffAbsolute2 = durations.get(j).getDurationInMillis();
+							long diff = Math.abs(diffAbsolute1-diffAbsolute2)/ DIVIDER;
+							if(diff <= max - min)	 // hein que quoi ??? 
+								report3_16_1.updateStatus(Report.STATE.OK);
+							else {
+								ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,
+										durations.get(i).getFirstStopPointId(),durations.get(j).getFirstStopPointId(), String.valueOf(diff));
+								report3_16_1.addItem(detailReportItem);	
+							}
 						}
 					}
 				}
 			}
+			//			for (String key : doubletMap.keySet()) {
+			//				Set<VehicleJourneyAtStop[]> stopsSet = doubletMap.get(key);
+			//				for (VehicleJourneyAtStop[] vjAtStops : stopsSet) {
+			//					for (String key2 : doubletMap.keySet()) {
+			//						if(!key.equals(key2)){
+			//							Set<VehicleJourneyAtStop[]> stopsSet2 = doubletMap.get(key2);
+			//							for (VehicleJourneyAtStop[] vjAtStops2 : stopsSet2) {
+			//								if(vjAtStops[0].getStopPointId().equals(vjAtStops2[0].getStopPointId()) && 
+			//										vjAtStops[1].getStopPointId().equals(vjAtStops2[1].getStopPointId())){
+			//									long diffAbsolute1 = Math.abs(vjAtStops[0].getDepartureTime().getTime() - vjAtStops[1].getArrivalTime().getTime());
+			//									long diffAbsolute2 = Math.abs(vjAtStops2[0].getDepartureTime().getTime() - vjAtStops2[1].getArrivalTime().getTime());
+			//									long diff = Math.abs(diffAbsolute1-diffAbsolute2)/ DIVIDER;
+			//									if(diff >= min && diff<=max)	
+			//										report3_16_1.updateStatus(Report.STATE.OK);
+			//									else {
+			//										ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,
+			//												vjAtStops[0].getStopPointId(),vjAtStops2[1].getStopPointId(), String.valueOf(diff));
+			//										report3_16_1.addItem(detailReportItem);	
+			//									}
+			//								}
+			//							}	
+			//						}
+			//					}
+			//				}
+			//			}
 		}
 
 		reportItem2.computeDetailItemCount();
@@ -443,7 +502,39 @@ public class ValidationVehicleJourney implements IValidationPlugin<VehicleJourne
 
 		result.add(category2);
 		result.add(category3);
+		logger.info("vehicle journey validation terminated");
+
 		return result;
+	}
+
+	class IntervalDuration 
+	{
+		@Getter String vehicleJourneyId;
+//		@Getter String routeId;
+//		@Getter String lineId;
+		@Getter String firstStopPointId;
+		@Getter String nextStopPointId;
+		@Getter long rank;
+		@Getter long durationInMillis;
+		@Getter String stopPairKey ;
+
+		public IntervalDuration(VehicleJourneyAtStop first, VehicleJourneyAtStop next)
+		{
+			vehicleJourneyId = first.getVehicleJourney().getObjectId();
+//			Route route = (first.getVehicleJourney().getRoute() != null)? first.getVehicleJourney().getRoute():first.getVehicleJourney().getJourneyPattern().getRoute();
+//			if (route != null)
+//			{
+//				routeId = route.getObjectId();
+//				if (route.getLine() != null)
+//					lineId = route.getLine().getObjectId();
+//			}
+			rank = first.getOrder();
+			durationInMillis = next.getArrivalTime().getTime() - first.getDepartureTime().getTime() ;
+			if (durationInMillis < 0) durationInMillis += 86400000; // passage à minuit
+			firstStopPointId = first.getStopPoint().getObjectId();
+			nextStopPointId = next.getStopPoint().getObjectId();
+			stopPairKey = firstStopPointId+"@"+nextStopPointId;
+		}
 	}
 
 }

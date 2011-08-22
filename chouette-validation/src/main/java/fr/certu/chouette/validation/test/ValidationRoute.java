@@ -3,6 +3,8 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
@@ -22,6 +24,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  *
  */
 public class ValidationRoute implements IValidationPlugin<Route> {
+	private static final Logger logger = Logger.getLogger(ValidationRoute.class);
 
 	private ValidationStepDescription description;
 
@@ -42,6 +45,8 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 	}
 
 	private List<ValidationClassReportItem> validate(List<Route> routes) {
+		
+    	logger.info("start validate "+routes.size()+" routes");
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
@@ -138,6 +143,8 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 
 		result.add(category2);
 		result.add(category3);
+    	logger.info("route validation terminated");
+
 		return result;
 	}
 }

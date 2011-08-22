@@ -6,6 +6,8 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Facility;
@@ -32,6 +34,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationLine implements IValidationPlugin<Line> {
 
+	private static final Logger logger = Logger.getLogger(ValidationLine.class);
 	@Getter
 	private ValidationStepDescription description;
 
@@ -46,6 +49,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
 	}
 
 	private List<ValidationClassReportItem> validate(List<Line> lines) {
+    	logger.info("start validate "+lines.size()+" lines");
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
@@ -480,6 +484,7 @@ public class ValidationLine implements IValidationPlugin<Line> {
 
 		result.add(category2);
 		result.add(category3);
+    	logger.info("line validation terminated");
 		return result;
 	}
 }

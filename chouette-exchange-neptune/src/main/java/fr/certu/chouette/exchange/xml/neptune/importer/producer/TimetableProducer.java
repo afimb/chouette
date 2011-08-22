@@ -42,7 +42,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, chouette
 		
 		if(xmlTimetable.getPeriod() != null){
 			for(chouette.schema.Period xmlPeriod : xmlTimetable.getPeriod()){
-				timetable.addPeriod(new Period(getSqlDate(xmlPeriod.getStartOfPeriod()),getSqlDate(xmlPeriod.getStartOfPeriod())));
+				timetable.addPeriod(new Period(getSqlDate(xmlPeriod.getStartOfPeriod()),getSqlDate(xmlPeriod.getEndOfPeriod())));
 			}
 		}
 		
