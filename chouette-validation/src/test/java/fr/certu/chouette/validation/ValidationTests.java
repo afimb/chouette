@@ -1,0 +1,216 @@
+package fr.certu.chouette.validation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.Report.STATE;
+import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.ValidationParameters;
+
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+
+public class ValidationTests extends AbstractTestNGSpringContextTests
+{
+
+	private ValidationParameters validationParameters; 
+
+	private INeptuneManager<Line> lineManager;
+
+	@Test (groups = {"validation"}, description = "test" )
+	@Parameters({ "description","validationParameterSet","testFile", "okCount", "uncheckCount", "warningCount","errorCount","fatalCount","mandatoryErrorTest","mandatoryWarningTest" })
+	public void verifyValidation(String description,String validationParameterSet,String testFile,int okCount,int uncheckCount,
+			int warningCount,int errorCount,int fatalCount,String mandatoryErrorTest,String mandatoryWarningTest) throws ChouetteException 
+			{
+
+		lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
+		validationParameters = (ValidationParameters) applicationContext.getBean(validationParameterSet);
+		List<ParameterValue> values = new ArrayList<ParameterValue>();
+		SimpleParameterValue file = new SimpleParameterValue("xmlFile");
+		file.setFilepathValue(testFile);
+		values.add(file);
+		SimpleParameterValue validate = new SimpleParameterValue("validateXML");
+		validate.setBooleanValue(Boolean.TRUE);
+		values.add(validate);
+		ReportHolder reportHolder = new ReportHolder();
+		List<Line> lines = lineManager.doImport(null, "XMLNeptuneLine", values, reportHolder );
+
+		Report importReport = reportHolder.getReport();
+		System.out.println(importReport.getLocalizedMessage());
+		printItems("",importReport.getItems());
+
+		Report valReport = null;
+		if (lines != null && !lines.isEmpty())
+		{
+			valReport = lineManager.validate(null, lines, validationParameters, true);
+			System.out.println(valReport.getLocalizedMessage());
+			printItems("",valReport.getItems());
+		}
+
+		checkMandatoryTest(mandatoryErrorTest, importReport, valReport,STATE.ERROR);
+		checkMandatoryTest(mandatoryWarningTest, importReport, valReport,STATE.WARNING);
+		Map<STATE, Integer> mapCount = getCountMap(valReport,importReport);
+
+		int okCountEffecive = mapCount.get(STATE.OK).intValue();
+		int uncheckCountEffecive = mapCount.get(STATE.UNCHECK).intValue();
+		int warningCountEffecive = mapCount.get(STATE.WARNING).intValue();
+		int errorCountEffecive = mapCount.get(STATE.ERROR).intValue();
+		int fatalCountEffecive = mapCount.get(STATE.FATAL).intValue();
+		String msg = "("+okCountEffecive+","+uncheckCountEffecive+","+warningCountEffecive+","+errorCountEffecive+","+fatalCountEffecive+")";
+
+		Assert.assertEquals(okCountEffecive, okCount,"wrong count of Ok states "+msg);
+		Assert.assertEquals(uncheckCountEffecive, uncheckCount,"wrong count of Uncheck states "+msg);
+		Assert.assertEquals(warningCountEffecive, warningCount,"wrong count of Warning states "+msg);
+		Assert.assertEquals(errorCountEffecive, errorCount,"wrong count of Error states "+msg);
+		Assert.assertEquals(fatalCountEffecive, fatalCount,"wrong count of Fatal states "+msg);
+
+
+			}
+
+	/**
+	 * @param mandatoryTest
+	 * @param importReport
+	 * @param valReport
+	 * @param state 
+	 */
+	private void checkMandatoryTest(String mandatoryTest, Report importReport,
+			Report valReport, STATE state) {
+		if (!mandatoryTest.equals("none"))
+		{
+			boolean found = false;
+			String[] token = mandatoryTest.split("\\.");
+			int cat = Integer.parseInt(token[0]);
+			int fic = Integer.parseInt(token[1]);
+			for (ReportItem classItem : importReport.getItems()) 
+			{
+				
+				if (classItem.getOrder() == cat)
+				{
+					for (ReportItem ficItem : classItem.getItems())
+					{
+						if (ficItem.getOrder() == fic)
+						{
+							found = true;
+							Assert.assertEquals(ficItem.getStatus(), state, "Wrong test "+mandatoryTest+" state");
+							break;
+						}
+					}
+				}
+				if (found) break;
+			}
+			if (!found && valReport != null)
+			{
+				for (ReportItem classItem : valReport.getItems()) 
+				{
+					
+					if (classItem.getOrder() == cat)
+					{
+						for (ReportItem ficItem : classItem.getItems())
+						{
+							if (ficItem.getOrder() == fic)
+							{
+								found = true;
+								Assert.assertEquals(ficItem.getStatus(), state, "Wrong test "+mandatoryTest+" state");
+								break;
+							}
+						}
+					}
+					if (found) break;
+				}
+			}
+			if (!found) Assert.fail("Test "+mandatoryTest+" which must have STATE = "+state+" is missing");
+		}
+	}
+
+	private void printItems(String indent,List<ReportItem> items) 
+	{
+		if (items == null) return;
+		for (ReportItem item : items) 
+		{
+			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			printItems(indent+"   ",item.getItems());
+		}
+
+	}
+
+	private  Map<STATE, Integer> getCountMap(Report reportValidation, Report reportImport){
+		Map<STATE, Integer> countMap = new TreeMap<Report.STATE, Integer>();
+		int nbUNCHECK = 0;
+		int nbOK = 0;
+		int nbWARN = 0;
+		int nbERROR = 0;
+		int nbFATAL = 0;
+		if(reportValidation != null){
+			for (ReportItem item1  : reportValidation.getItems()) // Categories
+			{
+				for (ReportItem item2 : item1.getItems()) // fiche
+				{
+					for (ReportItem item3 : item2.getItems()) //test
+					{
+						STATE status = item3.getStatus();
+						switch (status)
+						{
+						case UNCHECK : 
+							nbUNCHECK++;						
+							break;
+						case OK : 
+							nbOK++;						
+							break;
+						case WARNING : 
+							nbWARN++; 						
+							break;
+						case ERROR : 
+							nbERROR++;	
+							break;
+						case FATAL : 
+							nbFATAL++;		
+							break;
+						}
+					}
+				}
+			}	
+		}
+
+		//Import report
+		if(reportImport != null){
+			for (ReportItem item1  : reportImport.getItems()) {// Categories
+				if(item1.getItems() != null){
+					for (ReportItem item2 : item1.getItems()) {// fiche
+						if(item2.getItems() != null){
+							STATE status = item2.getStatus();
+							switch (status){
+							case UNCHECK : nbUNCHECK++; break;
+							case OK :nbOK++; break;
+							case WARNING :nbWARN++; break;
+							case ERROR : nbERROR++; break;
+							case FATAL : nbFATAL++; break;
+							}	
+						}		
+					}
+				}	
+			}	
+		}
+		countMap.put(STATE.OK, nbOK);
+		countMap.put(STATE.WARNING, nbWARN);
+		countMap.put(STATE.ERROR, nbERROR);
+		countMap.put(STATE.FATAL, nbFATAL);
+		countMap.put(STATE.UNCHECK, nbUNCHECK);
+		return countMap;
+	}
+
+
+}
