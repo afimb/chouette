@@ -1,4 +1,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+
+
 	<modelVersion>4.0.0</modelVersion>
 	<modules>
 		<module>chouette-maven-plugin</module>
@@ -504,6 +507,10 @@
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<chouette.publishRelease.activateArtifactFolder>true</chouette.publishRelease.activateArtifactFolder>
 	</properties>
+	<groupId>fr.certu.chouette</groupId>
+	<artifactId>chouette</artifactId>
+	<packaging>pom</packaging>
+	<version>1.6.1</version>
 	<build>
 		<plugins>
 			<plugin>

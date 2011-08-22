@@ -50,15 +50,15 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 		List<Line> lines = lineManager.doImport(null, "XMLNeptuneLine", values, reportHolder );
 
 		Report importReport = reportHolder.getReport();
-		System.out.println(importReport.getLocalizedMessage());
-		printItems("",importReport.getItems());
+//		System.out.println(importReport.getLocalizedMessage());
+//		printItems("",importReport.getItems());
 
 		Report valReport = null;
 		if (lines != null && !lines.isEmpty())
 		{
 			valReport = lineManager.validate(null, lines, validationParameters, true);
-			System.out.println(valReport.getLocalizedMessage());
-			printItems("",valReport.getItems());
+//			System.out.println(valReport.getLocalizedMessage());
+//			printItems("",valReport.getItems());
 		}
 
 		checkMandatoryTest(mandatoryErrorTest, importReport, valReport,STATE.ERROR);
@@ -105,6 +105,9 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 						if (ficItem.getOrder() == fic)
 						{
 							found = true;
+							System.out.println(classItem.getStatus().name()+" : "+classItem.getLocalizedMessage());
+							System.out.println("   "+ficItem.getStatus().name()+" : "+ficItem.getLocalizedMessage());
+							printItems("      ", ficItem.getItems());
 							Assert.assertEquals(ficItem.getStatus(), state, "Wrong test "+mandatoryTest+" state");
 							break;
 						}
@@ -124,6 +127,9 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 							if (ficItem.getOrder() == fic)
 							{
 								found = true;
+								System.out.println(classItem.getStatus().name()+" : "+classItem.getLocalizedMessage());
+								System.out.println("   "+ficItem.getStatus().name()+" : "+ficItem.getLocalizedMessage());
+								printItems("      ", ficItem.getItems());
 								Assert.assertEquals(ficItem.getStatus(), state, "Wrong test "+mandatoryTest+" state");
 								break;
 							}
