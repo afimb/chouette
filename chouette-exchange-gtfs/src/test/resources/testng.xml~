@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Factory" verbose="5" >
+  <test name="ImportNeptune" >
+  <parameter name="neptuneFile"  value="C_NEPTUNE_3.xml"/>
+  <parameter name="neptuneZip"  value="lignes_neptune.zip"/>
+    <packages>
+      <package name="fr.certu.chouette.exchange.xml.neptune" >
+      </package>
+   </packages>
+  </test>
+  
+</suite>

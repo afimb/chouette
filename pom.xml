@@ -19,6 +19,7 @@
 		<module>chouette-core</module>
 		<module>chouette-hibernate-dao</module>
 		<module>chouette-exchange-neptune</module>
+		<module>chouette-exchange-gtfs</module>
 		<module>chouette-command</module>
 		<module>chouette-neptune</module>
 		<module>chouette-validation</module>
@@ -137,6 +138,11 @@
 			<dependency>
 				<groupId>fr.certu.chouette</groupId>
 				<artifactId>chouette-exchange-neptune</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>fr.certu.chouette</groupId>
+				<artifactId>chouette-exchange-gtfs</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
