@@ -1,0 +1,262 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Validation phase 2" verbose="1" >
+<!--  -->
+ 	<test name="Test_2_1_1" preserve-order="true">
+		<parameter name="description" value="ObjectId of imported line must be in PtNetwork lineId list" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.1.1.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.1" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+  	<test name="Test_2_1_2" preserve-order="true">
+		<parameter name="description" value="PtNetwork ObjectId must be the same as Line.ptNetworkIdShortCut" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.1.2.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.1" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+  	<test name="Test_2_2_1" preserve-order="true">
+		<parameter name="description" value="ObjectId of imported line must be in GroupOfLines lineId list" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.2.1.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.2" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+  	<test name="Test_2_3_1" preserve-order="true">
+		<parameter name="description" value="ObjectId in StopArea.Contains must exists as StopArea or StopPoint" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.3.1.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.3" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+  	<test name="Test_2_4_1a" preserve-order="true">
+		<parameter name="description" value="StartOfLink and EndOfLink of ConnectionLink should be differents" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.4.1a.xml" />
+		<parameter name="okCount" value="36" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="2" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="none" />
+		<parameter name="mandatoryWarningTest" value="2.4" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+  	<test name="Test_2_4_1b" preserve-order="true">
+		<parameter name="description" value="At least one of StartOfLink or EndOfLink of ConnectionLink must exists" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.4.1b.xml" />
+		<parameter name="okCount" value="36" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.4" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+   	<test name="Test_2_5_1" preserve-order="true">
+		<parameter name="description" value="Timetable must at least refers one existing VehicleJourney" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.5.1.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.5" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_5_2" preserve-order="true">
+		<parameter name="description" value="Each VehicleJourney is refered by at least one Timetable" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.5.2.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.5" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+
+  	<test name="Test_2_6_1" preserve-order="true">
+		<parameter name="description" value="LineEnds of line must exists in file" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.6.1.xml" />
+		<parameter name="okCount" value="34" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="4" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.6" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_6_2" preserve-order="true">
+		<parameter name="description" value="LineEnds must be at the ends of the routes" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.6.2.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="2" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.6" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_7_1" preserve-order="true">
+		<parameter name="description" value="RouteIds of line must exist" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.7.1.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="2" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.7" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_8_1" preserve-order="true">
+		<parameter name="description" value="Route and journeyPatterns must be cross-referenced" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.8.1.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="2" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.8" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_8_2" preserve-order="true">
+		<parameter name="description" value="RouteId of journeyPattern must exists" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.8.2.xml" />
+		<parameter name="okCount" value="34" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="3" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.8" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_8_3_ab" preserve-order="true">
+		<parameter name="description" value="Each StopPoint must be in a journeypattern, only start and end of one PTlink" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.8.3a-b.xml" />
+		<parameter name="okCount" value="33" />
+		<parameter name="uncheckCount" value="8" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="5" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.8" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+  	<test name="Test_2_8_3_c" preserve-order="true">
+		<parameter name="description" value="PTlinks must be in a unique route" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.8.3c.xml" />
+		<parameter name="okCount" value="34" />
+		<parameter name="uncheckCount" value="8" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="4" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.8" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+  	<test name="Test_2_8_3_d" preserve-order="true">
+		<parameter name="description" value="StopPoints of journeyPatterns must be in the PTLinks of the JourneyPattern's Route" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/2.8.3d.xml" />
+		<parameter name="okCount" value="35" />
+		<parameter name="uncheckCount" value="9" />
+		<parameter name="warningCount" value="1" />
+		<parameter name="errorCount" value="2" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="2.8" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	
+	
+</suite>
+

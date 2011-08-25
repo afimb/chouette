@@ -1,14 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>chouette</artifactId>
-    <groupId>fr.certu.chouette</groupId>
-    <version>1.6.1</version>
-  </parent>
-  <groupId>fr.certu.chouette</groupId>
-  <artifactId>chouette-validation</artifactId>
-  <version>1.6.1</version>
-  <name>Chouette Validation</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>chouette</artifactId>
+		<groupId>fr.certu.chouette</groupId>
+		<version>1.6.1</version>
+	</parent>
+	<groupId>fr.certu.chouette</groupId>
+	<artifactId>chouette-validation</artifactId>
+	<version>1.6.1</version>
+	<name>Chouette Validation</name>
 
 	<dependencies>
 		<dependency>
@@ -48,7 +49,7 @@
 			<artifactId>chouette-exchange-neptune</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<resources>
@@ -75,6 +76,10 @@
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>
+			<testResource>
+				<directory>../config/test</directory>
+			</testResource>
+
 		</testResources>
 		<plugins>
 			<plugin>
@@ -82,7 +87,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+						<suiteXmlFile>src/test/resources/phase1.xml</suiteXmlFile>
+						<suiteXmlFile>src/test/resources/phase2.xml</suiteXmlFile>
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>

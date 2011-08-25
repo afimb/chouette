@@ -22,7 +22,7 @@
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>castor-xml</artifactId>
 			<exclusions>
-				<exclusion>
+ 				<exclusion>
 					<groupId>xerces</groupId>
 					<artifactId>xerces</artifactId>
 				</exclusion>
@@ -39,17 +39,17 @@
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<scope>runtime</scope>
+ 			<scope>runtime</scope> 
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>apache-oro</groupId>
 			<artifactId>jakarta-oro</artifactId>
 		</dependency>
-	</dependencies>
+ -->	</dependencies>
 	<build>
 		<resources>
 			<resource>
