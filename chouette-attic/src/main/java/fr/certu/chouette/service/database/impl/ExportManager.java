@@ -237,6 +237,7 @@ public class ExportManager implements IExportManager
 		Collection<Long> positionIds = new ArrayList<Long>();
 		positionIds.addAll(objectIdParArretPhysiqueId.keySet());
 		positionIds.addAll(zonesParentesParId.keySet());
+                if (positionIds != null && !positionIds.isEmpty()) {
 		List<Correspondance> correspondances = correspondanceManager.selectionParPositions(positionIds);
 		Collection<Long> positionHorsLigneIds = new HashSet<Long>();
 		for (Correspondance correspondance : correspondances) 
@@ -264,6 +265,7 @@ public class ExportManager implements IExportManager
 				throw new ServiceException(CodeIncident.IDENTIFIANT_INCONNU, CodeDetailIncident.CONNECTIONLINK_ARRIVAL,correspondance.getIdArrivee(),correspondance.getId());
 			resultat.addConnectionLink(correspondance.getConnectionLink());
 		}
+                }
 	}
 
 	private void construireCourseTM(final List<Itineraire> itineraires) 
@@ -274,7 +276,7 @@ public class ExportManager implements IExportManager
 		Collection<Long> idItineraires = new HashSet<Long>(objectIdParIdItineraire.keySet());
 		List<Horaire> tousHoraires = itineraireManager.getHorairesItineraires(idItineraires);
 		logger.debug("début tri");
-		SortedSet<Horaire> horairesTries = new TreeSet<Horaire>(new ComparatorHoraire<Horaire>());
+		SortedSet<Horaire> horairesTries = new TreeSet<Horaire>(new ExportManager.ComparatorHoraire<Horaire>());
 		horairesTries.addAll(tousHoraires);
 		tousHoraires = new ArrayList<Horaire>(horairesTries);
 		logger.debug("fin tri");

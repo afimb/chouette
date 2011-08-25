@@ -13,15 +13,15 @@
                     <tr>
                         <td class="ministere">
                             <a href="http://www.equipement.gouv.fr/" target="_blank" class="medad">
-                                <img alt="Visiter le site du Ministère de l'Ecologie, du Développement Durable, des Transports et du Logement" src="<%=request.getContextPath()%>/images/logoMedad.gif">
+                                <img alt="Visiter le site du Ministï¿½re de l'Ecologie, du Dï¿½veloppement Durable, des Transports et du Logement" src="<%=request.getContextPath()%>/images/logoMedad.gif">
                             </a>
                         </td>
                         <td class="partners">
                             <a href="http://www.certu.fr" target="_blank" class="certu">
-                                <img alt="Visiter le site du Centre d'Etudes sur les Réseaux, les Transports, l'Urbanisme et les constructions publiques" src="<%=request.getContextPath()%>/images/logoCertuSmall.gif">
+                                <img alt="Visiter le site du Centre d'Etudes sur les Rï¿½seaux, les Transports, l'Urbanisme et les constructions publiques" src="<%=request.getContextPath()%>/images/logoCertuSmall.gif">
                             </a>
                             <a href="http://www.predim.org" target="_blank" class="predim">
-                                <img alt="Visiter le site de la Plate-forme de Recherche et d'Expérimentation pour le Développement de l'information Multimodale" src="<%=request.getContextPath()%>/images/logoPredim.gif">
+                                <img alt="Visiter le site de la Plate-forme de Recherche et d'Expï¿½rimentation pour le Dï¿½veloppement de l'information Multimodale" src="<%=request.getContextPath()%>/images/logoPredim.gif">
                             </a>
                         </td>
                         <td class="logo">

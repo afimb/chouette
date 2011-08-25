@@ -22,6 +22,6 @@
 
 	</bean>
 	
-	<import resource="GTFSExportContext.xml"/>
+	<import resource="GtfsExportContext.xml"/>
 	
 </beans>

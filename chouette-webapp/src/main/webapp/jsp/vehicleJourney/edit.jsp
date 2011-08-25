@@ -38,7 +38,7 @@
     <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable" cssStyle="width: 250px;"/>
     <s:textfield key="publishedJourneyIdentifier" />
     <s:if test="id != null">
-      <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" />
     </s:if>
     <s:else>
       <s:select key="transportMode" list="modesOfTransportEnum" listKey="enumeratedTypeAccess" listValue="textePropriete" value="%{modeTransportLigne}"/>
