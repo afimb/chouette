@@ -22,14 +22,14 @@
 			 <s:iterator value="items" var="test" status="itemsStatus">
 			 	<s:div cssClass="%{status}">
 			 	<div>
-					<s:a href="#-1" onclick="showIt('detail%{#status.index}_%{#itemsStatus.index}','showIt_%{#status.index}_%{#itemsStatus.index}');" 
-						id="showIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
-						<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}"/>						
-					</s:a> 
-					<s:a href="#-1" onclick="hideIt('detail%{#status.index}_%{#itemsStatus.index}','hideIt_%{#status.index}_%{#itemsStatus.index}');" 
-						id="hideIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
-						<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}"/>
-					</s:a>
+					<!--s:a href="#-1" onclick="showIt('detail%{#status.index}_%{#itemsStatus.index}','showIt_%{#status.index}_%{#itemsStatus.index}');" 
+						id="showIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.show')}"-->
+						<!--img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}"/-->						
+					<!--/s:a--> 
+					<!--s:a href="#-1" onclick="hideIt('detail%{#status.index}_%{#itemsStatus.index}','hideIt_%{#status.index}_%{#itemsStatus.index}');" 
+						id="hideIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}"-->
+						<!--img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}"/-->
+					<!--/s:a-->
 						<s:label value="%{report.order}.%{#sheet.order}.%{#test.order}" />
 				</div>
 			 		<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-15px">
@@ -38,7 +38,7 @@
 			 		<s:if test="%{getStatus().name() != 'OK' && getStatus().name() != 'UNCHECK' }">
 							<s:div cssStyle="margin-left: 20px;">
 								</s:div>
-									 <s:div cssClass="neptune-panel-inSide" id="detail%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
+                                            <s:div cssClass="neptune-panel-inSide" id="detail%{#status.index}_%{#itemsStatus.index}"><!-- cssStyle="display:none;"-->
 										<ol>
 										 <s:iterator value="items">
 										     <li>

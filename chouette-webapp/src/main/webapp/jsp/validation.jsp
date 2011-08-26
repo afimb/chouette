@@ -21,11 +21,12 @@
     <s:text name="text.goto.bateri"/> <s:a href="http://www.bateri.fr/">http://www.bateri.fr/</s:a>
   </FIELDSET>
   <br><br>-->
+
   <FIELDSET style="width: 500px;">
     <LEGEND><b><s:text name="title.shift.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form validate="true" id="decalageForm" action="Validation_decaler" enctype="multipart/form-data" method="POST">
       <s:textfield maxlength="5" id="decalage" name="decalage" key="decalage" required="true"/>
-      <s:submit value="%{getText('action.shift')}" formId="decalageForm"/>
+      <s:submit value="%{getText('action.shift')}" formId="decalageForm" onclick="return confirm('%{getText('decalage.horaire.confirmation')}');"/>
     </s:form>
   </FIELDSET>
   <s:if test="useGeometry == 'true'">
@@ -33,14 +34,14 @@
     <FIELDSET style="width: 500px;">
       <LEGEND><b><s:text name="title.calculate.coordinates"/></b></LEGEND>
       <s:form id="barycentreForm" action="Validation_barycentre" enctype="multipart/form-data" method="POST">
-        <s:submit value="%{getText('action.calculate.barycentre')}" formId="barycentreForm"/>
+        <s:submit value="%{getText('action.calculate.barycentre')}" formId="barycentreForm" onclick="return confirm('%{getText('calcul.barycentre.confirmation')}');"/>
       </s:form>
     </FIELDSET>
     <br><br>
     <FIELDSET style="width: 500px;">
       <LEGEND><b><s:text name="title.convert"/></b></LEGEND>
       <s:form id="conversionForm" action="Validation_convertir" enctype="multipart/form-data" method="POST">
-        <s:submit value="%{getText('action.convert')}" formId="convertionForm"/>
+        <s:submit value="%{getText('action.convert')}" formId="convertionForm" onclick="return confirm('%{getText('conversion.coordonnee.confirmation')}');"/>
       </s:form>
     </FIELDSET>
   </s:if>
@@ -61,7 +62,7 @@
         //-->
       </script>
       <s:radio name="beforeDatePurge" id="beforeDatePurge" list="#{'true': getText('beforeDatePurge.beforeDate'),'false': getText('beforeDatePurge.afterDate') }" value="true" label="%{getText('beforeDatePurge.label')}"/>
-      <s:submit value="%{getText('action.purge')}" formId="purgeForm"/>
+      <s:submit value="%{getText('action.purge')}" formId="purgeForm" onclick="return confirm('%{getText('purge.donnee.confirmation')}');"/>
     </s:form>
   </FIELDSET>
 </div>	

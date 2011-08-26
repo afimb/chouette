@@ -192,7 +192,42 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
                     result = SUCCESS;
                 } else {
                     //no line to import
-                    addActionError(getText("error.import.file.failure"));
+                    /*
+                    boolean afficheMessage = true;
+                    List<ReportItem> sheets = report.getItems();
+                    if (sheets != null) {
+                        sheets :
+                        for (Report sheet : sheets) {
+                            //addActionError("Sheet " + sheet.getOriginKey() + " : " + sheet.getLocalizedMessage()+ " : "+sheet.getStatus());
+                            if (sheet.getStatus().equals(Report.STATE.ERROR) || sheet.getStatus().equals(Report.STATE.FATAL)) {
+                                afficheMessage = false;
+                                break sheets;
+                            }
+                            List<ReportItem> items = sheet.getItems();
+                            if (items != null) {
+                                for (Report item : items) {
+                                    //addActionError("Item " + item.getOriginKey() + " : " + item.getLocalizedMessage()+ " : "+item.getStatus());
+                                    if (item.getStatus().equals(Report.STATE.ERROR) || item.getStatus().equals(Report.STATE.FATAL)) {
+                                        afficheMessage = false;
+                                        break sheets;
+                                    }
+                                    List<ReportItem> sub_items = item.getItems();
+                                    if (sub_items != null) {
+                                        for (Report sub_item : sub_items) {
+                                            //addActionError("Sub Item " + sub_item.getOriginKey() + " : " + sub_item.getLocalizedMessage()+ " : "+sub_item.getStatus());
+                                            if (sub_item.getStatus().equals(Report.STATE.ERROR) || sub_item.getStatus().equals(Report.STATE.FATAL)) {
+                                                afficheMessage = false;
+                                                break sheets;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (afficheMessage)
+                        addActionError(getText("error.import.file.failure"));
+                     */
                     result = SUCCESS;
                 }
             } else {
@@ -244,7 +279,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
             return ERROR;
         }
 
-        if (validate) {
+        if (validate && session.get("lines") != null) {
             if (res.equals(SUCCESS)) {
                 reportValidation = lineManager.validate(null, lines, validationParam);
                 boolean isDefault = false;

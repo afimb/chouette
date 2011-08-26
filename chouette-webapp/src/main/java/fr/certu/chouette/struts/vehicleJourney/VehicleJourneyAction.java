@@ -160,6 +160,14 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
   {
     this.request.put("courses", itineraireManager.getCoursesItineraire(idItineraire));
     log.debug("List of vehicleJourney");
+    if (actionMsg != null) {
+        addActionMessage(actionMsg);
+        actionMsg = null;
+    }
+    if (errorMsg != null) {
+        addActionError(errorMsg);
+        errorMsg = null;
+    }
     return LIST;
   }
 
@@ -169,6 +177,10 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     setMappedRequest(SAVE);
     return EDIT;
   }
+  
+  private static String actionMsg = null;
+  private static String errorMsg = null;
+  
 
   public String save()
   {
@@ -183,7 +195,8 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
     	model.setVehicleTypeIdentifier(null);
 
     courseManager.creer(model);
-    addActionMessage(getText("course.create.ok"));
+    //addActionMessage(getText("course.create.ok"));
+    actionMsg = getText("course.create.ok");
     setMappedRequest(SAVE);
     log.debug("Create vehicleJourney with id : " + getModel().getId());
     return REDIRECTLIST;

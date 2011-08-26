@@ -2,7 +2,7 @@
 
 <suite name="Factory" verbose="5" >
   <test name="ExportGTFS" >
-  <parameter name="gtfsZip"  value="lignes_gtfs.zip"/>
+  <parameter name="gtfsZip"  value="gtfs_feed.zip"/>
     <packages>
       <package name="fr.certu.chouette.exchange.csv.gtfs" >
       </package>

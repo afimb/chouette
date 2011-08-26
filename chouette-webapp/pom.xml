@@ -104,14 +104,6 @@
             <artifactId>chouette-validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-hibernate-dao</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-jdbc-dao</artifactId>
-        </dependency>
-        <dependency>
             <groupId>fr.certu.chouette.maven</groupId>
             <artifactId>chouette-maven-plugin</artifactId>
             <version>1.0.0</version>
