@@ -132,7 +132,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		List<Facility> facilities = new ArrayList<Facility>();
 		if (propagate)
 		{
-			saveParents(user,stopAreas,propagate,fast);
+			saveParents(user,stopAreas,propagate,fast,accessLinks,connectionLinks,facilities);
 			mergeCollection(completeStopAreas,stopAreas);
 
 			for (StopArea stopArea : completeStopAreas) 
@@ -158,7 +158,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 						addIfMissingInCollection(connected,connectionLink.getEndOfLink());
 				}
 			}
-			saveParents(user,connected,propagate,fast);
+			saveParents(user,connected,propagate,fast,accessLinks,connectionLinks,facilities);
 			mergeCollection(completeStopAreas, connected);
 		}
 		else
@@ -176,22 +176,31 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
 			if(!accessLinks.isEmpty())
+			{
 				accessLinkManager.saveAll(user, accessLinks, propagate,fast);
+			}
 			if(!connectionLinks.isEmpty())
+			{
 				connectionLinkManager.saveAll(user, connectionLinks, propagate,fast);
+			}
 			//			if(!constraints.isEmpty())
 			//				constraintManager.saveAll(user, constraints, propagate,fast);	
 			if(!facilities.isEmpty())
+			{
 				facilityManager.saveAll(user, facilities, propagate,fast);
+			}
 		}
 	}
 
 	/**
 	 * @param stopAreas
+	 * @param facilities 
+	 * @param connectionLinks 
+	 * @param accessLinks 
 	 * @return
 	 * @throws ChouetteException 
 	 */
-	private void saveParents(User user,List<StopArea> stopAreas,boolean propagate,boolean fast) throws ChouetteException 
+	private void saveParents(User user,List<StopArea> stopAreas,boolean propagate,boolean fast, List<AccessLink> accessLinks, List<ConnectionLink> connectionLinks, List<Facility> facilities) throws ChouetteException 
 	{
 		List<StopArea> parents = new ArrayList<StopArea>();
 		if (stopAreas != null)
@@ -202,9 +211,14 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 			}
 			if (!parents.isEmpty())
 			{
-				saveParents(user, parents, propagate, fast);
-				// mergeCollection(granParents, parents);
-				// parents = granParents;
+				saveParents(user, parents, propagate, fast,accessLinks,connectionLinks,facilities);
+				for (StopArea stopArea : parents) 
+				{
+					mergeCollection(accessLinks, stopArea.getAccessLinks());
+					mergeCollection(connectionLinks, stopArea.getConnectionLinks());
+					mergeCollection(facilities, stopArea.getFacilities());
+				}
+
 				super.saveAll(user, parents, propagate, fast);
 				getLogger().debug("saving "+parents.size()+" parents");
 			}

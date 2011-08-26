@@ -1178,7 +1178,22 @@
 			<containedIn>INRETS:StopArea:MIDT</containedIn>
 			<name>INRETS:StopArea:GARE DU MIDI</name>
 			<lineIdShortcut>INRETS:Line:B027</lineIdShortcut>
-			<ptNetworkIdShortcut>INRETS:PtNetwork:1</ptNetworkIdShortcut>
+		</StopPoint>
+		<StopPoint>
+			<objectId>INRETS:StopPoint:B027C111231</objectId>
+			<objectVersion>1</objectVersion>
+			<creationTime>2008-01-23T10:27:31.000+01:00</creationTime>
+			<longitude>4.346966</longitude>
+			<latitude>50.836006</latitude>
+			<longLatType>Standard</longLatType>
+			<projectedPoint>
+				<X>147760.94</X>
+				<Y>169594.64</Y>
+				<projectionType>Lambert72</projectionType>
+			</projectedPoint>
+			<containedIn>INRETS:StopArea:MIDT</containedIn>
+			<name>INRETS:StopArea:GARE DU MIDI</name>
+			<lineIdShortcut>INRETS:Line:B027</lineIdShortcut>
 		</StopPoint>
 		<StopPoint>
 			<objectId>INRETS:StopPoint:B027C12418</objectId>
@@ -1194,7 +1209,6 @@
 			</projectedPoint>
 			<containedIn>INRETS:StopArea:FONT</containedIn>
 			<name>INRETS:StopArea:FONTAINAS</name>
-			<ptNetworkIdShortcut>INRETS:PtNetwork:1</ptNetworkIdShortcut>
 		</StopPoint>
 		<StopPoint>
 			<objectId>INRETS:StopPoint:B027C12467</objectId>
@@ -1248,12 +1262,35 @@
 			<longitude>4.351777</longitude>
 			<latitude>50.840408</latitude>
 			<longLatType>Standard</longLatType>
+			<address>
+				<streetName>Rue de Paris</streetName>
+				<countryCode>78000</countryCode>
+			</address>
 			<projectedPoint>
 				<X>148804.37</X>
 				<Y>170084.08</Y>
 				<projectionType>Lambert72</projectionType>
 			</projectedPoint>
 			<containedIn>INRETS:StopArea:CHPL</containedIn>
+			<name>INRETS:StopArea:CHAPELLE</name>
+		</StopPoint>
+		<StopPoint>
+			<objectId>INRETS:StopPoint:B027C21167</objectId>
+			<objectVersion>1</objectVersion>
+			<creationTime>2008-01-23T10:27:31.000+01:00</creationTime>
+			<longitude>4.350554</longitude>
+			<latitude>50.840122</latitude>
+			<longLatType>Standard</longLatType>
+			<address>
+				<streetName>Rue de Paris</streetName>
+				<countryCode>78000</countryCode>
+			</address>
+			<projectedPoint>
+				<X>148718.26</X>
+				<Y>170052.16</Y>
+				<projectionType>Lambert72</projectionType>
+			</projectedPoint>
+			<containedIn>INRETS:StopArea:PSAB</containedIn> <!-- area ddereft pour test sur adresse -->
 			<name>INRETS:StopArea:CHAPELLE</name>
 		</StopPoint>
 		<StopPoint>
@@ -1843,21 +1880,6 @@
 			<name>INRETS:StopArea:GRAND SABLON</name>
 		</StopPoint>
 		<StopPoint>
-			<objectId>INRETS:StopPoint:B027C21167</objectId>
-			<objectVersion>1</objectVersion>
-			<creationTime>2008-01-23T10:27:31.000+01:00</creationTime>
-			<longitude>4.350554</longitude>
-			<latitude>50.840122</latitude>
-			<longLatType>Standard</longLatType>
-			<projectedPoint>
-				<X>148718.26</X>
-				<Y>170052.16</Y>
-				<projectionType>Lambert72</projectionType>
-			</projectedPoint>
-			<containedIn>INRETS:StopArea:CHPL</containedIn>
-			<name>INRETS:StopArea:CHAPELLE</name>
-		</StopPoint>
-		<StopPoint>
 			<objectId>INRETS:StopPoint:B027C21168</objectId>
 			<objectVersion>1</objectVersion>
 			<creationTime>2008-01-23T10:27:31.000+01:00</creationTime>
@@ -2144,7 +2166,7 @@
 			<name>INRETS:Route:ANDROMEDE => GARE DU MIDI</name>
 			<publishedName>ANDROMEDE => GARE DU MIDI</publishedName>
 			<routeId>INRETS:Route:B027C2</routeId>
-			<stopPointList>INRETS:StopPoint:B027C215390</stopPointList>
+			<stopPointList>INRETS:StopPoint:B027C21539</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C23909</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C23910</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C23919</stopPointList>
@@ -2156,7 +2178,6 @@
 			<stopPointList>INRETS:StopPoint:B027C21157</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C21158</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C21476</stopPointList>
-			<stopPointList>INRETS:StopPoint:C027C21476</stopPointList> <!-- unknonw id -->
 			<stopPointList>INRETS:StopPoint:B027C21497</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C21160</stopPointList>
 			<stopPointList>INRETS:StopPoint:B027C21162</stopPointList>

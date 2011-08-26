@@ -3281,6 +3281,13 @@
     <longLatType>WGS84</longLatType>
     <containedIn>NINOXE:StopArea:15624993</containedIn>
   </AccessPoint>
+	  <AccessPoint>
+    <objectId>NINOXE:AccessPoint:10002</objectId>
+            <longitude>4.036993939214722</longitude>
+            <latitude>49.24915101840978</latitude>
+    <longLatType>WGS84</longLatType>
+    <containedIn>NINOXE:StopArea:15624993</containedIn>
+  </AccessPoint>
   <AccessLink>
     <objectId>NINOXE:AccessLink:11</objectId>
     <startOfLink>NINOXE:AccessPoint:10001</startOfLink>
@@ -3289,7 +3296,7 @@
   </AccessLink>
   <AccessLink>
     <objectId>NINOXE:AccessLink:12</objectId>
-    <startOfLink>NINOXE:AccessPoint:10001</startOfLink>
+    <startOfLink>NINOXE:AccessPoint:10002</startOfLink>
     <endOfLink>NINOXE:AccessPoint:10001</endOfLink>
     <linkDistance>10</linkDistance>
   </AccessLink>

@@ -65,7 +65,7 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
 
 					if (stopPointIds != null) {
 						if (!stopPointIds.containsAll(containedStopIds)) {
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR);
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR,stopArea.getObjectId());
 							report2_3.addItem(detailReportItem);
 						} else {
 							report2_3.updateStatus(Report.STATE.OK);
@@ -75,7 +75,7 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
 					List<String> containedAreas = StopArea.extractObjectIds(stopArea.getContainedStopAreas());
 					if (containedAreas != null) {
 						if (!containedAreas.containsAll(containedStopIds)) {
-							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR);
+							ReportItem detailReportItem = new DetailReportItem("Test2_Sheet3_Step1_error", Report.STATE.ERROR,stopArea.getObjectId());
 							report2_3.addItem(detailReportItem);
 						} else {
 							report2_3.updateStatus(Report.STATE.OK);

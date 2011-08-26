@@ -1,5 +1,9 @@
 package fr.certu.chouette.validation;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +30,7 @@ import fr.certu.chouette.plugin.validation.ValidationParameters;
 
 public class ValidationTests extends AbstractTestNGSpringContextTests
 {
-
+	private static final boolean produce = false;
 	private ValidationParameters validationParameters; 
 
 	private INeptuneManager<Line> lineManager;
@@ -50,15 +54,15 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 		List<Line> lines = lineManager.doImport(null, "XMLNeptuneLine", values, reportHolder );
 
 		Report importReport = reportHolder.getReport();
-//		System.out.println(importReport.getLocalizedMessage());
-//		printItems("",importReport.getItems());
+		//		System.out.println(importReport.getLocalizedMessage());
+		//		printItems("",importReport.getItems());
 
 		Report valReport = null;
 		if (lines != null && !lines.isEmpty())
 		{
 			valReport = lineManager.validate(null, lines, validationParameters, true);
-//			System.out.println(valReport.getLocalizedMessage());
-//			printItems("",valReport.getItems());
+			//			System.out.println(valReport.getLocalizedMessage());
+			//			printItems("",valReport.getItems());
 		}
 
 		checkMandatoryTest(mandatoryErrorTest, importReport, valReport,STATE.ERROR);
@@ -72,12 +76,41 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 		int fatalCountEffecive = mapCount.get(STATE.FATAL).intValue();
 		String msg = "("+okCountEffecive+","+uncheckCountEffecive+","+warningCountEffecive+","+errorCountEffecive+","+fatalCountEffecive+")";
 
-		Assert.assertEquals(okCountEffecive, okCount,"wrong count of Ok states "+msg);
-		Assert.assertEquals(uncheckCountEffecive, uncheckCount,"wrong count of Uncheck states "+msg);
-		Assert.assertEquals(warningCountEffecive, warningCount,"wrong count of Warning states "+msg);
-		Assert.assertEquals(errorCountEffecive, errorCount,"wrong count of Error states "+msg);
-		Assert.assertEquals(fatalCountEffecive, fatalCount,"wrong count of Fatal states "+msg);
+		if (produce)
+		{
+			File f = new File("phases.xml");
+			try {
+				
+				PrintWriter w = new PrintWriter(new FileWriter(f, true));
+				w.println("<test name=\"Test_3_01_1\" preserve-order=\"true\">");
+				w.println("	<parameter name=\"description\" value=\""+description+"\" />");
+				w.println("	<parameter name=\"validationParameterSet\" value=\""+validationParameterSet+"\" />");
+				w.println("	<parameter name=\"testFile\" value=\""+testFile+"\" />");
+				w.println("	<parameter name=\"okCount\" value=\""+okCountEffecive+"\" />");
+				w.println("	<parameter name=\"uncheckCount\" value=\""+uncheckCountEffecive+"\" />");
+				w.println("	<parameter name=\"warningCount\" value=\""+warningCountEffecive+"\" />");
+				w.println("	<parameter name=\"errorCount\" value=\""+errorCountEffecive+"\" />");
+				w.println("	<parameter name=\"fatalCount\" value=\""+fatalCountEffecive+"\" />");
+				w.println("	<parameter name=\"mandatoryErrorTest\" value=\""+mandatoryErrorTest+"\" />");
+				w.println("	<parameter name=\"mandatoryWarningTest\" value=\""+mandatoryWarningTest+"\" />");
+				w.println("	<classes>");
+				w.println("		<class name=\"fr.certu.chouette.validation.ValidationTests\" />");
+				w.println("	</classes>");
+				w.println("</test>");
+				w.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 
+			}
+		}
+		else
+		{
+			Assert.assertEquals(okCountEffecive, okCount,"wrong count of Ok states "+msg);
+			Assert.assertEquals(uncheckCountEffecive, uncheckCount,"wrong count of Uncheck states "+msg);
+			Assert.assertEquals(warningCountEffecive, warningCount,"wrong count of Warning states "+msg);
+			Assert.assertEquals(errorCountEffecive, errorCount,"wrong count of Error states "+msg);
+			Assert.assertEquals(fatalCountEffecive, fatalCount,"wrong count of Fatal states "+msg);
+		}
 
 			}
 
@@ -97,7 +130,7 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 			int fic = Integer.parseInt(token[1]);
 			for (ReportItem classItem : importReport.getItems()) 
 			{
-				
+
 				if (classItem.getOrder() == cat)
 				{
 					for (ReportItem ficItem : classItem.getItems())
@@ -119,7 +152,7 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 			{
 				for (ReportItem classItem : valReport.getItems()) 
 				{
-					
+
 					if (classItem.getOrder() == cat)
 					{
 						for (ReportItem ficItem : classItem.getItems())

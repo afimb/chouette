@@ -31,11 +31,11 @@
 			<class name="fr.certu.chouette.validation.ValidationTests" />
 		</classes>
 	</test>
-	<test name="Test_1_2_1b" preserve-order="true">
+<!-- 	<test name="Test_1_2_1b" preserve-order="true">
 		<parameter name="description" value="objectId with underscore : now accepted" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/1.2.1b.xml" />
-		<parameter name="okCount" value="36" />
+		<parameter name="okCount" value="35" />
 		<parameter name="uncheckCount" value="9" />
 		<parameter name="warningCount" value="1" />
 		<parameter name="errorCount" value="3" />
@@ -46,7 +46,7 @@
 			<class name="fr.certu.chouette.validation.ValidationTests" />
 		</classes>
 	</test>
-
+ -->
  	<test name="Test_1_2_1b_bis" preserve-order="true">
 		<parameter name="description" value="objectId with invalid caracter : comma" />
 		<parameter name="validationParameterSet" value="validation" />

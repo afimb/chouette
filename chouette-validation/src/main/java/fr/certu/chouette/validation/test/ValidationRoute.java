@@ -49,16 +49,18 @@ public class ValidationRoute implements IValidationPlugin<Route> {
     	logger.info("start validate "+routes.size()+" routes");
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
-		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
+//		ValidationClassReportItem category3 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.THREE);
 
-		ReportItem sheet8 = new SheetReportItem("Test2_Sheet8", 8);
-		ReportItem sheet9 = new SheetReportItem("Test2_Sheet9", 9);
-		ReportItem sheet3_11 = new SheetReportItem("Test3_Sheet11", 11);
+		ReportItem sheet2_8 = new SheetReportItem("Test2_Sheet8", 8);
+		ReportItem sheet2_9 = new SheetReportItem("Test2_Sheet9", 9);
+		ReportItem sheet2_14 = new SheetReportItem("Test2_Sheet14", 14);
+		// ReportItem sheet3_11 = new SheetReportItem("Test3_Sheet11", 11);
 
 		SheetReportItem report2_8_1 = new SheetReportItem("Test2_Sheet8_Step1", 1);
 		//SheetReportItem report2_8_3 = new SheetReportItem("Test2_Sheet8_Step3", 3);
 		SheetReportItem report2_9_1 = new SheetReportItem("Test2_Sheet9_Step1", 1);
-		SheetReportItem report3_11 = new SheetReportItem("Test3_Sheet11_Step1", 1);
+		SheetReportItem report2_14_2 = new SheetReportItem("Test2_Sheet14_Step2", 2);
+		// SheetReportItem report3_11_1 = new SheetReportItem("Test3_Sheet11_Step1", 1);
 
 		for (Route route : routes) {
                         if (route.getJourneyPatterns() == null) {
@@ -98,15 +100,18 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 			List<PTLink> ptLinks = route.getPtLinks();
 			if (ptLinks != null)
 			{
-				//Test 3.11.1
-				for (int i = 0; i < ptLinks.size(); i++) {
+				//Test  2.14.2 , ( 3.11.1 abandonned) 
+				for (int i = 0; i < ptLinks.size(); i++) 
+				{
 					PTLink ptLink = ptLinks.get(i);
 					int count1 = 0;
 					int count2 = 0;
 					boolean error = false;
-					for (int j = i + 1; j < ptLinks.size(); j++) {
+					for (int j = i + 1; j < ptLinks.size() && !error; j++) 
+					{
 						PTLink ptLink2 = ptLinks.get(j);
-						if (ptLink.getEndOfLinkId().equals(ptLink2.getEndOfLinkId()) || ptLink.getStartOfLinkId().equals(ptLink2.getStartOfLinkId())) {
+						if (ptLink.getEndOfLinkId().equals(ptLink2.getEndOfLinkId()) || ptLink.getStartOfLinkId().equals(ptLink2.getStartOfLinkId())) 
+						{
 							error = true;
 						}
 						if (ptLink.getStartOfLinkId().equals(ptLink2.getEndOfLinkId())) {
@@ -117,10 +122,13 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 						}
 					}
 					if (count1 > 1 || count2 > 1 || error) {
-						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet11_Step1_warning", Report.STATE.WARNING);
-						report3_11.addItem(detailReportItem);
+						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step2_error", Report.STATE.ERROR,ptLink.getObjectId() );
+						report2_14_2.addItem(detailReportItem);
+//						ReportItem detailReportItem = new DetailReportItem("Test3_Sheet11_Step1_warning", Report.STATE.WARNING);
+//						report3_11_1.addItem(detailReportItem);
 					} else {
-						report3_11.updateStatus(Report.STATE.OK);
+						report2_14_2.updateStatus(Report.STATE.OK);
+//						report3_11_1.updateStatus(Report.STATE.OK);
 					}
 				}
 			}
@@ -130,19 +138,22 @@ public class ValidationRoute implements IValidationPlugin<Route> {
 		report2_8_1.computeDetailItemCount();
 		//report2_8_3.computeDetailItemCount();
 		report2_9_1.computeDetailItemCount();
-		report3_11.computeDetailItemCount();
+		report2_14_2.computeDetailItemCount();
+//		report3_11.computeDetailItemCount();
 
-		sheet8.addItem(report2_8_1);
+		sheet2_8.addItem(report2_8_1);
 		//sheet8.addItem(report2_8_3);
-		sheet9.addItem(report2_9_1);
-		sheet3_11.addItem(report3_11);
+		sheet2_9.addItem(report2_9_1);
+		sheet2_14.addItem(report2_14_2);
+//		sheet3_11.addItem(report3_11);
 
-		category2.addItem(sheet8);
-		category2.addItem(sheet9);
-		category3.addItem(sheet3_11);
+		category2.addItem(sheet2_8);
+		category2.addItem(sheet2_9);
+		category2.addItem(sheet2_14);
+//		category3.addItem(sheet3_11);
 
 		result.add(category2);
-		result.add(category3);
+//		result.add(category3);
     	logger.info("route validation terminated");
 
 		return result;

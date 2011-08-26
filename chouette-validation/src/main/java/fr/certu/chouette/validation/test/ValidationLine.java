@@ -60,22 +60,22 @@ public class ValidationLine implements IValidationPlugin<Line> {
 		ReportItem sheet6 = new SheetReportItem("Test2_Sheet6", 6);
 		ReportItem sheet7 = new SheetReportItem("Test2_Sheet7", 7);
 		ReportItem sheet8 = new SheetReportItem("Test2_Sheet8", 8);
-		ReportItem sheet15 = new SheetReportItem("Test2_Sheet15", 15);
+//		ReportItem sheet15 = new SheetReportItem("Test2_Sheet15", 15);
 		ReportItem sheet3_4 = new SheetReportItem("Test3_Sheet4", 4);
-		ReportItem sheet2_26 = new SheetReportItem("Test2_Sheet26", 26);
+//		ReportItem sheet2_26 = new SheetReportItem("Test2_Sheet26", 26);
 		ReportItem sheet2_27 = new SheetReportItem("Test2_Sheet27", 27);
 		ReportItem sheet2_28 = new SheetReportItem("Test2_Sheet28", 28);
 
 		SheetReportItem report2_1_1 = new SheetReportItem("Test2_Sheet1_Step1", 1);
 		SheetReportItem report2_1_2 = new SheetReportItem("Test2_Sheet1_Step2", 2);
 		SheetReportItem report2_2_1 = new SheetReportItem("Test2_Sheet2_Step1", 1);
-		SheetReportItem report2_15_2 = new SheetReportItem("Test2_Sheet15_Step2", 2);
+//		SheetReportItem report2_15_2 = new SheetReportItem("Test2_Sheet15_Step2", 2);
 		SheetReportItem report2_6_1 = new SheetReportItem("Test2_Sheet6_Step1", 1);
 		SheetReportItem report2_6_2 = new SheetReportItem("Test2_Sheet6_Step2", 2);
 		SheetReportItem report2_7_1 = new SheetReportItem("Test2_Sheet7_Step1", 1);
 		SheetReportItem report2_8_3 = new SheetReportItem("Test2_Sheet8_Step3", 3);
 		SheetReportItem report3_4_1 = new SheetReportItem("Test3_Sheet4_Step1", 1);
-		SheetReportItem report2_26_1 = new SheetReportItem("Test2_Sheet26_Step1", 1);
+//		SheetReportItem report2_26_1 = new SheetReportItem("Test2_Sheet26_Step1", 1);
 		SheetReportItem report2_27_1 = new SheetReportItem("Test2_Sheet27_Step1", 1);
 		SheetReportItem report2_28_1 = new SheetReportItem("Test2_Sheet28_Step1", 1);
 
@@ -389,38 +389,39 @@ public class ValidationLine implements IValidationPlugin<Line> {
 			if (importedItems != null) {
 
 				//Test 2.15.2
-				boolean propertyIsError = false;
-				for (StopPoint stopPoint : importedItems.getStopPoints()) {
-					boolean notFound = true;
-					for (JourneyPattern journeyPattern : importedItems.getJourneyPatterns()) {
-						if (journeyPattern.getStopPointIds() != null && journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())) {
-							notFound = false;
-							propertyIsError = true;
-							break;
-						}
-					}
-					if (notFound) {
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step2_error", Report.STATE.ERROR);
-						report2_15_2.addItem(detailReportItem);
-					}
-				}
-				if (!propertyIsError) {
-					report2_15_2.updateStatus(Report.STATE.OK);                    
-				}
+//				boolean propertyIsError = false;
+//				for (StopPoint stopPoint : importedItems.getStopPoints()) {
+//					boolean notFound = true;
+//					for (JourneyPattern journeyPattern : importedItems.getJourneyPatterns()) {
+//						if (journeyPattern.getStopPointIds() != null && journeyPattern.getStopPointIds().contains(stopPoint.getObjectId())) {
+//							notFound = false;
+//							propertyIsError = true;
+//							break;
+//						}
+//					}
+//					if (notFound) {
+//						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet15_Step2_error", Report.STATE.ERROR);
+//						report2_15_2.addItem(detailReportItem);
+//					}
+//				}
+//				if (!propertyIsError) {
+//					report2_15_2.updateStatus(Report.STATE.OK);                    
+//				}
 
-				//Test 2.26.1
-				List<AccessPoint> accessPoints = importedItems.getAccessPoints();
 				List<String> stopAreaIds = Line.extractObjectIds(importedItems.getStopAreas());
-				List<String> accessLinkIds = Line.extractObjectIds(importedItems.getAccessLinks());
-				for (AccessPoint accessPoint : accessPoints) {
-					String containedInId = accessPoint.getContainedIn();
-					if (stopAreaIds.contains(containedInId) || accessLinkIds.contains(containedInId)) {
-						report2_26_1.updateStatus(Report.STATE.OK);
-					} else {
-						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet26_Step1_error", Report.STATE.ERROR);
-						report2_26_1.addItem(detailReportItem);
-					}
-				}
+				//Test 2.26.1
+//				List<AccessPoint> accessPoints = importedItems.getAccessPoints();
+//				
+//				List<String> accessLinkIds = Line.extractObjectIds(importedItems.getAccessLinks());
+//				for (AccessPoint accessPoint : accessPoints) {
+//					String containedInId = accessPoint.getContainedIn();
+//					if (stopAreaIds.contains(containedInId) || accessLinkIds.contains(containedInId)) {
+//						report2_26_1.updateStatus(Report.STATE.OK);
+//					} else {
+//						ReportItem detailReportItem = new DetailReportItem("Test2_Sheet26_Step1_error", Report.STATE.ERROR);
+//						report2_26_1.addItem(detailReportItem);
+//					}
+//				}
 				//Test 2.27.1
 				List<Facility> facilities = importedItems.getFacilities();
 				for (Facility facility : facilities) {
@@ -488,9 +489,9 @@ public class ValidationLine implements IValidationPlugin<Line> {
 		report2_6_2.computeDetailItemCount();
 		report2_7_1.computeDetailItemCount();
 		report2_8_3.computeDetailItemCount();
-		report2_15_2.computeDetailItemCount();
+//		report2_15_2.computeDetailItemCount();
 		report3_4_1.computeDetailItemCount();
-		report2_26_1.computeDetailItemCount();
+//		report2_26_1.computeDetailItemCount();
 		report2_27_1.computeDetailItemCount();
 		report2_28_1.computeDetailItemCount();
 
@@ -501,9 +502,9 @@ public class ValidationLine implements IValidationPlugin<Line> {
 		sheet6.addItem(report2_6_2);
 		sheet7.addItem(report2_7_1);
 		sheet8.addItem(report2_8_3);
-		sheet15.addItem(report2_15_2);
+//		sheet15.addItem(report2_15_2);
 		sheet3_4.addItem(report3_4_1);
-		sheet2_26.addItem(report2_26_1);
+//		sheet2_26.addItem(report2_26_1);
 		sheet2_27.addItem(report2_27_1);
 		sheet2_28.addItem(report2_28_1);
 
@@ -512,8 +513,8 @@ public class ValidationLine implements IValidationPlugin<Line> {
 		category2.addItem(sheet6);
 		category2.addItem(sheet7);
 		category2.addItem(sheet8);
-		category2.addItem(sheet15);
-		category2.addItem(sheet2_26);
+//		category2.addItem(sheet15);
+//		category2.addItem(sheet2_26);
 		category2.addItem(sheet2_27);
 		category2.addItem(sheet2_28);
 		category3.addItem(sheet3_4);

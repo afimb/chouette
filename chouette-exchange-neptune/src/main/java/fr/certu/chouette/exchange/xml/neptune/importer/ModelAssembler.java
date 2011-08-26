@@ -220,16 +220,21 @@ public class ModelAssembler
 			route.setJourneyPatterns(getObjectsFromIds(route.getJourneyPatternIds(), JourneyPattern.class));
 			// route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
 
-			route.setPtLinks(sortPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class)));
+			
+			route.setPtLinks(getObjectsFromIds(route.getPtLinkIds(), PTLink.class));
 			List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 			int position = 0;
 			if (route.getPtLinks() != null)
 			{
+				List<PTLink> sortedLinks = sortPtLinks(route.getPtLinks());
 				for (PTLink ptLink : route.getPtLinks()) 
 				{
 					ptLink.setRoute(route);
 					ptLink.setRouteId(route.getObjectId());
-
+				}
+				
+				for (PTLink ptLink : sortedLinks) 
+				{
 					StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
 					startPoint.setPosition(position++);
 					startPoint.setRoute(route);

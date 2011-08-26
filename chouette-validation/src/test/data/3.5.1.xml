@@ -1185,7 +1185,7 @@
 			<creationTime>2008-01-23T10:27:31.000+01:00</creationTime>
 			<longitude>4.346966</longitude>
 			<latitude>50.836006</latitude>
-			<longLatType>WGS84</longLatType>
+			<longLatType>WGS84</longLatType> <!-- not same loglattype -->
 			<projectedPoint>
 				<X>147760.94</X>
 				<Y>169594.64</Y>
@@ -1216,7 +1216,7 @@
 			<creationTime>2008-01-23T10:27:31.000+01:00</creationTime>
 			<longitude>4.344294</longitude>
 			<latitude>50.831806</latitude>
-			<longLatType>Standard</longLatType>
+			<longLatType>Standard</longLatType> 
 			<projectedPoint>
 				<X>148277.04</X>
 				<Y>169127.47</Y>

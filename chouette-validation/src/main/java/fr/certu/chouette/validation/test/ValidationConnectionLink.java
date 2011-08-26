@@ -5,12 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.operation.distance.DistanceOp;
-
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;
@@ -28,7 +22,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  * @author mamadou keira
  *
  */
-public class ValidationConnectionLink implements IValidationPlugin<ConnectionLink> 
+public class ValidationConnectionLink extends AbstractValidation implements IValidationPlugin<ConnectionLink> 
 {
 	private static final Logger logger = Logger.getLogger(ValidationConnectionLink.class);
 	private ValidationStepDescription validationStepDescription;
@@ -106,21 +100,23 @@ public class ValidationConnectionLink implements IValidationPlugin<ConnectionLin
 			AreaCentroid areaCentroidStart = (startOfLink != null) ? startOfLink.getAreaCentroid() : null;
 			AreaCentroid areaCentroidEnd = (endOfLink != null) ? endOfLink.getAreaCentroid() : null;
 
-			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
+//			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
 			double yStart = (areaCentroidStart != null && areaCentroidStart.getLatitude() != null) ? areaCentroidStart.getLatitude().doubleValue() : 0;
 			double xStart = (areaCentroidStart != null && areaCentroidStart.getLongitude() != null) ? areaCentroidStart.getLongitude().doubleValue() : 0;
-			int SRIDstart = (areaCentroidStart != null && areaCentroidStart.getLongLatType() != null) ? areaCentroidStart.getLongLatType().epsgCode() : 0;
-			GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDstart);
-			Point pointStart = factoryStart.createPoint(new Coordinate(xStart, yStart));
+//			int SRIDstart = (areaCentroidStart != null && areaCentroidStart.getLongLatType() != null) ? areaCentroidStart.getLongLatType().epsgCode() : 0;
+//			GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDstart);
+//			Point pointStart = factoryStart.createPoint(new Coordinate(xStart, yStart));
 
 			double yEnd = (areaCentroidEnd != null && areaCentroidEnd.getLatitude() != null) ? areaCentroidEnd.getLatitude().doubleValue() : 0;
 			double xEnd = (areaCentroidEnd != null && areaCentroidEnd.getLongitude() != null) ? areaCentroidEnd.getLongitude().doubleValue() : 0;
-			int SRIDend = (areaCentroidEnd != null && areaCentroidEnd.getLongLatType() != null) ? areaCentroidEnd.getLongLatType().epsgCode() : 0;
-			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
-			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
-			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
-
-			double distance = distanceOp.distance() * CONVERTER;
+//			int SRIDend = (areaCentroidEnd != null && areaCentroidEnd.getLongLatType() != null) ? areaCentroidEnd.getLongLatType().epsgCode() : 0;
+//			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
+//			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
+//			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
+//
+//			double distance = distanceOp.distance() * CONVERTER;
+			
+			double distance = distance(xStart,yStart,xEnd,yEnd) / 1000; // in kilometers meters 
 			//Test 3.8.1  a
 			double timeA = (connectionLink.getDefaultDuration() != null) ? connectionLink.getDefaultDuration().getTime() / DIVIDER : 0;
 			double speedA = distance / timeA;

@@ -230,10 +230,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			}
 
 			HashSet<StopArea> stopAreas = new HashSet<StopArea>();
-			HashSet<String> stopPointRefs = new HashSet<String>(); // for cleaning stoparea contains refs
+			HashSet<String> stopRefs = new HashSet<String>(); // for cleaning stoparea contains refs
 			for(StopPoint stopPoint : stopPoints)
 			{
-				stopPointRefs.add(stopPoint.getObjectId());
+				stopRefs.add(stopPoint.getObjectId());
 				chouetteLineDescription.addStopPoint(stopPointProducer.produce(stopPoint));
 				stopAreas.addAll(extractStopAreaHierarchy(stopPoint.getContainedInStopArea()));
 			}
@@ -251,22 +251,21 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 			HashSet<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
 			for(StopArea stopArea : stopAreas)
 			{
+				stopRefs.add(stopArea.getObjectId());
+			}
+			for(StopArea stopArea : stopAreas)
+			{
 				chouette.schema.StopArea chouetteStopArea = stopAreaProducer.produce(stopArea);
-				if (stopArea.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION) || 
-						stopArea.getAreaType().equals(ChouetteAreaEnum.QUAY)  )
+				// remove external stopPoints or stopareas
+				List<String> pointRefs = chouetteStopArea.getContainsAsReference();
+				for (Iterator<String> iterator = pointRefs.iterator(); iterator.hasNext();) 
 				{
-					// remove external stopPoints
-					List<String> pointRefs = chouetteStopArea.getContainsAsReference();
-					for (Iterator<String> iterator = pointRefs.iterator(); iterator
-					.hasNext();) 
+					String ref = iterator.next();
+					if (!stopRefs.contains(ref))
 					{
-						String ref = iterator.next();
-						if (!stopPointRefs.contains(ref))
-						{
-							iterator.remove();
-						}
-						
+						iterator.remove();
 					}
+
 				}
 				chouetteArea.addStopArea(chouetteStopArea);
 				if(stopArea.getAreaCentroid() != null){
@@ -317,13 +316,17 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 		return rootObject;
 	}
 
-	private List<StopArea> extractStopAreaHierarchy(StopArea stopArea){
+	private List<StopArea> extractStopAreaHierarchy(StopArea stopArea)
+	{
 		List<StopArea> stopAreas = new ArrayList<StopArea>();
-		if(stopArea!= null){
+		if(stopArea!= null)
+		{
+			logger.info("add StopArea "+stopArea.getObjectId());
 			stopAreas.add(stopArea);
 			StopArea parent = stopArea.getParentStopArea();
 			while (parent != null) {
 				stopAreas.add(parent);
+				logger.info("add StopArea parent "+parent.getObjectId());
 				parent = parent.getParentStopArea();
 			}
 		}

@@ -1922,10 +1922,10 @@
 			<startOfLink>INRETS:StopPoint:B027C11125</startOfLink>
 			<endOfLink>INRETS:StopPoint:B027C11126</endOfLink>
 		</PtLink>
-		<PtLink>
+		<PtLink> <!-- ptlink in error -->
 			<objectId>INRETS:PtLink:B027C111261127</objectId>
-			<startOfLink>INRETS:StopPoint:B027C11126</startOfLink>
-			<endOfLink>INRETS:StopPoint:B027C11127</endOfLink>
+			<startOfLink>INRETS:StopPoint:B027C11127</startOfLink>
+			<endOfLink>INRETS:StopPoint:B027C11126</endOfLink>
 		</PtLink>
 		<PtLink>
 			<objectId>INRETS:PtLink:B027C111271128</objectId>
