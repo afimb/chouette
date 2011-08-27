@@ -42,6 +42,7 @@ public class ValidationParameters
 	@Getter @Setter private long test3_15_MinimalTime;
 	@Getter @Setter private long test3_16c_MinimalTime;
 	@Getter @Setter private long test3_16c_MaximalTime;
+	@Getter @Setter private long test3_16_1_MaximalTime;
 	@Getter @Setter private long test3_16_3a_MinimalTime;
 	@Getter @Setter private long test3_16_3b_MinimalTime;
 	@Getter @Setter private float test3_21a_MinimalSpeed;

@@ -261,7 +261,9 @@
 		<property name="test3_9_MaximalSpeed"    value="${test3_9_MaximalSpeed}" />
 		<property name="test3_10_MinimalDistance" value="${test3_10_MinimalDistance}" />
 		<property name="test3_15_MinimalTime"   value="${test3_15_MinimalTime}" />
-		<property name="test3_16_3a_MinimalTime"   value="${test3_16_3a_MinimalTime}" />
+		<property name="test3_16_1_MaximalTime" value="${test3_16_1_MaximalTime}" />
+		<property name="test3_16_3a_MinimalTime" value="${test3_16_3a_MinimalTime}" />
+		<property name="test3_16_3b_MinimalTime" value="${test3_16_3b_MinimalTime}" />
 		<property name="test3_16c_MinimalTime"   value="${test3_16c_MinimalTime}" />
 		<property name="test3_16c_MaximalTime"   value="${test3_16c_MaximalTime}" />
 		<property name="test3_21a_MinimalSpeed"   value="${test3_21a_MinimalSpeed}" />

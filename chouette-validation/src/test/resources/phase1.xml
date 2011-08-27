@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Validation phase 1" verbose="1" >
- 	<test name="Test_1_1_1" preserve-order="true">
+<suite name="Validation phase 1" verbose="1">
+	<test name="Test_1_1_1" preserve-order="true">
 		<parameter name="description" value="wrong XML" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/1.1.1.xml" />
@@ -31,23 +31,7 @@
 			<class name="fr.certu.chouette.validation.ValidationTests" />
 		</classes>
 	</test>
-<!-- 	<test name="Test_1_2_1b" preserve-order="true">
-		<parameter name="description" value="objectId with underscore : now accepted" />
-		<parameter name="validationParameterSet" value="validation" />
-		<parameter name="testFile" value="src/test/data/1.2.1b.xml" />
-		<parameter name="okCount" value="35" />
-		<parameter name="uncheckCount" value="9" />
-		<parameter name="warningCount" value="1" />
-		<parameter name="errorCount" value="3" />
-		<parameter name="fatalCount" value="0" />
-		<parameter name="mandatoryErrorTest" value="none" />
-		<parameter name="mandatoryWarningTest" value="none" />
-		<classes>
-			<class name="fr.certu.chouette.validation.ValidationTests" />
-		</classes>
-	</test>
- -->
- 	<test name="Test_1_2_1b_bis" preserve-order="true">
+	<test name="Test_1_2_1b_bis" preserve-order="true">
 		<parameter name="description" value="objectId with invalid caracter : comma" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/1.2.1b_bis.xml" />

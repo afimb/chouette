@@ -7574,8 +7574,8 @@
 			<vehicleJourneyAtStop>
 				<stopPointId>INRETS:StopPoint:B028C11409</stopPointId>
 				<vehicleJourneyId>INRETS:VehicleJourney:7009</vehicleJourneyId>
-				<arrivalTime>12:35:00</arrivalTime>
-				<departureTime>12:35:00</departureTime>
+				<arrivalTime>12:32:00</arrivalTime>
+				<departureTime>12:32:00</departureTime>
 			</vehicleJourneyAtStop>
 			<vehicleJourneyAtStop>
 				<stopPointId>INRETS:StopPoint:B028C11410</stopPointId>

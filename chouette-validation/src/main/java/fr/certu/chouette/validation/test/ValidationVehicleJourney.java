@@ -53,7 +53,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 	private static final Logger logger = Logger.getLogger(ValidationVehicleJourney.class);
 
 	private ValidationStepDescription validationStepDescription;
-	private final double DIVIDER = 1000 * 3600;
+	private final double DIVIDER = 1000 ; 
 
 	public void init(){
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
@@ -101,7 +101,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		SheetReportItem report3_9 = new SheetReportItem("Test3_Sheet9_Step1",1);
 		SheetReportItem report3_15 = new SheetReportItem("Test3_Sheet15_Step1",1);
 		SheetReportItem report3_16_1 = new SheetReportItem("Test3_Sheet16_Step1",1);
-		SheetReportItem report3_16_2 = new SheetReportItem("Test3_Sheet16_Step2",2);
+		// SheetReportItem report3_16_2 = new SheetReportItem("Test3_Sheet16_Step2",2);
 		SheetReportItem report3_16_3 = new SheetReportItem("Test3_Sheet16_Step3",3);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
@@ -113,9 +113,11 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		double max3_7 = parameters.getTest3_7_MaximalDistance();
 		double min3_9 = parameters.getTest3_9_MinimalSpeed();
 		double max3_9 = parameters.getTest3_9_MaximalSpeed();
-		long param3_16_3 = parameters.getTest3_16_3a_MinimalTime();
-		long min = parameters.getTest3_16c_MinimalTime();
-		long max = parameters.getTest3_16c_MaximalTime();
+		long param3_16_1 = parameters.getTest3_16_1_MaximalTime();
+		long param3_16_3a = parameters.getTest3_16_3a_MinimalTime();
+		long param3_16_3b = parameters.getTest3_16_3b_MinimalTime();
+		// long min = parameters.getTest3_16c_MinimalTime();
+		// long max = parameters.getTest3_16c_MaximalTime();
 
 		if(vehicleJourneys != null)
 		{
@@ -245,17 +247,17 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 				}else
 					report2_24.updateStatus(Report.STATE.OK);
 				//Test 3.16.2
-				if (vehicleJourney.getTimetables() != null)
-				{
-					for (Timetable timetable : vehicleJourney.getTimetables()) {
-						if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
-							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
-									vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-							report3_16_2.addItem(detailReportItem);	
-						}else
-							report3_16_2.updateStatus(Report.STATE.OK);
-					}	
-				}
+//				if (vehicleJourney.getTimetables() != null)
+//				{
+//					for (Timetable timetable : vehicleJourney.getTimetables()) {
+//						if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
+//							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
+//									vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+//							report3_16_2.addItem(detailReportItem);	
+//						}else
+//							report3_16_2.updateStatus(Report.STATE.OK);
+//					}	
+//				}
 			}
 
 			//
@@ -385,11 +387,12 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 
 											}
 											//Test 3.16.3 a
-											double departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /DIVIDER : 0;
-											double arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /DIVIDER : DIVIDER ;
-											if(Math.abs(arrivalTime - departureTime) > param3_16_3){
+											double departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /1000 : 0;
+											double arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /1000 : ((vJAtStop2.getDepartureTime() != null) ? vJAtStop2.getDepartureTime().getTime() /1000 : 1000) ;
+											long diffTime = (long) (Math.abs(arrivalTime - departureTime));
+											if(diffTime > param3_16_3a){
 												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_a", Report.STATE.ERROR,
-														String.valueOf(param3_16_3));
+														String.valueOf(diffTime),String.valueOf(param3_16_3a));
 												report3_16_3.addItem(detailReportItem);	
 											}
 
@@ -397,13 +400,13 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 											if(departureTime <= arrivalTime)
 												report3_16_3.updateStatus(Report.STATE.OK);
 											//Test 3.16.3 b (suite)
-											else if(arrivalTime > param3_16_3) {
+											else if(arrivalTime > param3_16_3b) {
 												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_b", Report.STATE.ERROR,
-														String.valueOf(param3_16_3));
+														String.valueOf(param3_16_3b));
 												report3_16_3.addItem(detailReportItem);	
 											}else
 												report3_16_3.updateStatus(Report.STATE.OK);
-											// TODO: reprendre les boucles avec des vjas ordonnés
+											
 											break;
 										}
 									}
@@ -414,7 +417,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 					//doubletMap.put(vehicleJourney.getObjectId(), stopsSet);
 				}
 			}
-			//Test 3.16.1 tout faux !!! 
+			//Test 3.16.1 
 
 			for (List<IntervalDuration> durations : segmentDurationMap.values()) 
 			{
@@ -426,12 +429,12 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 						for (int j = i+1; j < durations.size(); j++)
 						{
 							long diffAbsolute2 = durations.get(j).getDurationInMillis();
-							long diff = (long) (Math.abs(diffAbsolute1-diffAbsolute2)/ DIVIDER);
-							if(diff <= max - min)	 // hein que quoi ??? 
+							long diff = (long) (Math.abs(diffAbsolute1-diffAbsolute2)/ 1000);
+							if(diff <= param3_16_1)	 
 								report3_16_1.updateStatus(Report.STATE.OK);
 							else {
 								ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step1_error", Report.STATE.ERROR,
-										durations.get(i).getFirstStopPointId(),durations.get(j).getFirstStopPointId(), String.valueOf(diff));
+										durations.get(i).getFirstStopPointId(),durations.get(i).getNextStopPointId(), String.valueOf(diff));
 								report3_16_1.addItem(detailReportItem);	
 							}
 						}
@@ -479,7 +482,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		report3_9.computeDetailItemCount();
 		report3_15.computeDetailItemCount();
 		report3_16_1.computeDetailItemCount();
-		report3_16_2.computeDetailItemCount();
+		// report3_16_2.computeDetailItemCount();
 		report3_16_3.computeDetailItemCount();
 
 		sheet5.addItem(reportItem2);
@@ -496,7 +499,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		sheet3_9.addItem(report3_9);
 		sheet3_15.addItem(report3_15);
 		sheet3_16.addItem(report3_16_1);
-		sheet3_16.addItem(report3_16_2);
+		// sheet3_16.addItem(report3_16_2);
 		sheet3_16.addItem(report3_16_3);
 
 		category2.addItem(sheet5);

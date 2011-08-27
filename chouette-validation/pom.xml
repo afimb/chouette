@@ -87,8 +87,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<suiteXmlFiles>
-<!-- 						<suiteXmlFile>src/test/resources/phase1.xml</suiteXmlFile>
-						<suiteXmlFile>src/test/resources/phase2.xml</suiteXmlFile> -->
+  						<suiteXmlFile>src/test/resources/phase1.xml</suiteXmlFile>
+						<suiteXmlFile>src/test/resources/phase2.xml</suiteXmlFile>
 						<suiteXmlFile>src/test/resources/phase3.xml</suiteXmlFile>
 					</suiteXmlFiles>
 				</configuration>

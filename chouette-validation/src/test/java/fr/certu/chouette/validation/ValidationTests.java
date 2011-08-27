@@ -12,6 +12,8 @@ import java.util.TreeMap;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.ITestContext;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -34,7 +36,17 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 	private ValidationParameters validationParameters; 
 
 	private INeptuneManager<Line> lineManager;
+	
+	private String currentTest ;
+	
+	@BeforeTest
+	public void beforeTest(ITestContext ctx) 
+	{
+		currentTest = ctx.getCurrentXmlTest().getName();
+	}
 
+
+	@SuppressWarnings("unchecked")
 	@Test (groups = {"validation"}, description = "test" )
 	@Parameters({ "description","validationParameterSet","testFile", "okCount", "uncheckCount", "warningCount","errorCount","fatalCount","mandatoryErrorTest","mandatoryWarningTest" })
 	public void verifyValidation(String description,String validationParameterSet,String testFile,int okCount,int uncheckCount,
@@ -82,7 +94,7 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 			try {
 				
 				PrintWriter w = new PrintWriter(new FileWriter(f, true));
-				w.println("<test name=\"Test_3_01_1\" preserve-order=\"true\">");
+				w.println("<test name=\""+currentTest+"\" preserve-order=\"true\">");
 				w.println("	<parameter name=\"description\" value=\""+description+"\" />");
 				w.println("	<parameter name=\"validationParameterSet\" value=\""+validationParameterSet+"\" />");
 				w.println("	<parameter name=\"testFile\" value=\""+testFile+"\" />");
