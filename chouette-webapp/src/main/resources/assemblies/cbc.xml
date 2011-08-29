@@ -21,6 +21,38 @@
             <destName>chouette.properties</destName>
         </file>
         <file>
+            <source>src/main/resources/chouette_env.properties</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/point-acces-50.png</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/point-embarquement-50.png</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/pole-echange-50.png</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/quai-50.png</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/zonecommerciale-50.png</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/Readme.txt</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>src/main/resources/TCL.jpg</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
             <source>../LICENCE.txt</source>
             <outputDirectory>/</outputDirectory>
         </file>
