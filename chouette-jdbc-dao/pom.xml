@@ -6,11 +6,11 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.6.1</version>
+		<version>1.6.2</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-jdbc-dao</artifactId>
-	<version>1.6.1</version>
+	<version>1.6.2</version>
 	<name>Chouette Jdbc Dao</name>
 	<description>
 		This module is used for the massive import followed by saving in database without the hibernate mechanism.
