@@ -9,24 +9,24 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>target/lib</directory>
+			<directory>${project.build.directory}/lib</directory>
 			<includes>
 				<include>*.jar</include>
 			</includes>
-			<outputDirectory>/lib</outputDirectory>
+			<outputDirectory>${project.build.directory}/lib</outputDirectory>
 		</fileSet>
 	</fileSets>
 	<files>
 		<file>
-			<source>target/${project.build.finalName}.jar</source>
+			<source>${project.build.directory}/${project.build.finalName}.jar</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>target/chouette.bat</source>
+			<source>${project.build.directory}/chouette.bat</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>target/chouette.sh</source>
+			<source>${project.build.directory}/chouette.sh</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
