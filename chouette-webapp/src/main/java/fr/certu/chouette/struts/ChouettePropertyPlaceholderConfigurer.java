@@ -19,7 +19,6 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javax.servlet.ServletContext;
-import org.apache.log4j.Appender;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
