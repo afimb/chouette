@@ -57,6 +57,7 @@
 		<s:include value="/jsp/commun/messages.jsp" />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
+	<h4><s:text name="neptune.field.units"></s:text></h4>
 	<s:div>
 	 	<table>
 		 	<tr>
@@ -155,19 +156,26 @@
 		 	</tr>
 		 	<tr>
 			 	<td> 
-			 	 <s:text name="neptune.field.minimum.time.3.16"></s:text>
+			 	 <s:text name="neptune.field.maximum.time.3.16.1"></s:text>
 			 	</td>
 			 	<td>
-			 	   <s:textfield name="validationParam.test3_16_3a_MinimalTime" label="%{getText('neptune.field.minimum.time.3.16')}" size="5"/>
+			 	   <s:textfield name="validationParam.test3_16_1_MaximalTime" label="%{getText('neptune.field.maximum.time.3.16.1')}" size="5"/>
 			 	</td>
 		 	</tr>
 		 	<tr>
 			 	<td> 
-			 	 <s:text name="neptune.field.minimum.time.on.maximum.3.16c"></s:text>
+			 	 <s:text name="neptune.field.maximum.time.3.16.3a"></s:text>
 			 	</td>
 			 	<td>
-			 	   <s:textfield name="validationParam.test3_16c_MinimalTime" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" size="5"/>/
-				  	<s:textfield name="validationParam.test3_16c_MaximalTime" size="5" label="/"/>
+			 	   <s:textfield name="validationParam.test3_16_3a_MaximalTime" label="%{getText('neptune.field.maximum.time.3.16.3a')}" size="5"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.maximum.time.3.16.3b"></s:text>
+			 	</td>
+			 	<td>
+			 	   <s:textfield name="validationParam.test3_16_3b_MaximalTime" label="%{getText('neptune.field.maximum.time.3.16.3b')}" size="5"/>
 			 	</td>
 		 	</tr>
 		 	<tr>

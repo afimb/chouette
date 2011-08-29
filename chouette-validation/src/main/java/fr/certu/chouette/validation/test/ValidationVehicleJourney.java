@@ -114,10 +114,8 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		double min3_9 = parameters.getTest3_9_MinimalSpeed();
 		double max3_9 = parameters.getTest3_9_MaximalSpeed();
 		long param3_16_1 = parameters.getTest3_16_1_MaximalTime();
-		long param3_16_3a = parameters.getTest3_16_3a_MinimalTime();
-		long param3_16_3b = parameters.getTest3_16_3b_MinimalTime();
-		// long min = parameters.getTest3_16c_MinimalTime();
-		// long max = parameters.getTest3_16c_MaximalTime();
+		long param3_16_3a = parameters.getTest3_16_3a_MaximalTime();
+		long param3_16_3b = parameters.getTest3_16_3b_MaximalTime();
 
 		if(vehicleJourneys != null)
 		{

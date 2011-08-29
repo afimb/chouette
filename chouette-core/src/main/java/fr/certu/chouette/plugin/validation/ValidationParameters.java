@@ -40,11 +40,9 @@ public class ValidationParameters
 	@Getter @Setter private float test3_9_MaximalSpeed;
 	@Getter @Setter private float test3_10_MinimalDistance;
 	@Getter @Setter private long test3_15_MinimalTime;
-	@Getter @Setter private long test3_16c_MinimalTime;
-	@Getter @Setter private long test3_16c_MaximalTime;
 	@Getter @Setter private long test3_16_1_MaximalTime;
-	@Getter @Setter private long test3_16_3a_MinimalTime;
-	@Getter @Setter private long test3_16_3b_MinimalTime;
+	@Getter @Setter private long test3_16_3a_MaximalTime;
+	@Getter @Setter private long test3_16_3b_MaximalTime;
 	@Getter @Setter private float test3_21a_MinimalSpeed;
 	@Getter @Setter private float test3_21a_MaximalSpeed;
 	@Getter @Setter private float test3_21b_MinimalSpeed;

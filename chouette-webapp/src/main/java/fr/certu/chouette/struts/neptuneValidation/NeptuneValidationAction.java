@@ -107,10 +107,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 						validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_10_MinimalDistance"))
 						validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
-					if(cookieName.equals("test3_16c_MaximalTime"))
-						validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
-					if(cookieName.equals("test3_16c_MinimalTime"))
-						validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
 					if(cookieName.equals("test3_7_MaximalDistance"))
 						validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_7_MinimalDistance"))
@@ -146,8 +142,12 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 						validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_15_MinimalTime"))
 						validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
-					if(cookieName.equals("test3_16_3a_MinimalTime"))
-						validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_1_MaximalTime"))
+						validationParam.setTest3_16_1_MaximalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_3a_MaximalTime"))
+						validationParam.setTest3_16_3a_MaximalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_3b_MaximalTime"))
+						validationParam.setTest3_16_3b_MaximalTime(Long.valueOf(cookieValue));
 
 					if(cookieName.equals("test3_21a_MaximalSpeed"))
 						validationParam.setTest3_21a_MaximalSpeed(Float.valueOf(cookieValue));
@@ -292,9 +292,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
                     saveCookie("test3_2_Polygon", validationParam.getTest3_2_PolygonPoints());
                     saveCookie("test3_10_MinimalDistance", validationParam.getTest3_10_MinimalDistance());
 
-                    saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
-                    saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
-
                     saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
 
                     saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
@@ -315,7 +312,9 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
                     saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
                     saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
                     saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
-                    saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
+                    saveCookie("test3_16_1_MaximalTime", validationParam.getTest3_16_1_MaximalTime());
+                    saveCookie("test3_16_3a_MaximalTime", validationParam.getTest3_16_3a_MaximalTime());
+                    saveCookie("test3_16_3b_MaximalTime", validationParam.getTest3_16_3b_MaximalTime());
 
                     saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
                     saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
