@@ -510,7 +510,7 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
 	<packaging>pom</packaging>
-	<version>1.6.1</version>
+	<version>1.6.2</version>
 	<build>
 		<plugins>
 			<plugin>

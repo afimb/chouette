@@ -4,11 +4,11 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.6.1</version>
+		<version>1.6.2</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-exchange-neptune</artifactId>
-	<version>1.6.1</version>
+	<version>1.6.2</version>
 	<name>Chouette Exchange Neptune</name>
 
 	<dependencies>
