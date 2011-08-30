@@ -159,6 +159,11 @@
 				<artifactId>chouette-jdbc-dao</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+            	<groupId>fr.certu.chouette.maven</groupId>
+            	<artifactId>chouette-maven-plugin</artifactId>
+            	<version>1.0.0</version>
+        	</dependency>
 
 			<!-- FRAMEWORKS DEPENDENCIES WITH VERSION -->
 			<!-- NO VERSION ALLOWED IN MODULES -->
@@ -526,6 +531,10 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>1.0-beta-2</version>
 			</plugin>
+			<plugin>
+            	<groupId>fr.certu.chouette.maven</groupId>
+            	<artifactId>chouette-maven-plugin</artifactId>
+        	</plugin>
 		</plugins>
 	</build>
 </project>
