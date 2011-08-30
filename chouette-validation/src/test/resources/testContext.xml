@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:spring.properties</value>
+				<value>classpath:chouette.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+	</bean>
+
+	<bean id="validation"
+		class="fr.certu.chouette.plugin.validation.ValidationParameters">
+		<property name="test3_1_MinimalDistance" value="${test3_1_MinimalDistance}" />
+		<property name="test3_2_MinimalDistance" value="${test3_2_MinimalDistance}" />
+		<property name="test3_2_PolygonPoints" value="${test3_2_Polygon}" />
+		<property name="test3_7_MinimalDistance" value="${test3_7_MinimalDistance}" />
+		<property name="test3_7_MaximalDistance" value="${test3_7_MaximalDistance}" />
+		<property name="test3_8a_MinimalSpeed" value="${test3_8a_MinimalSpeed}" />
+		<property name="test3_8a_MaximalSpeed" value="${test3_8a_MaximalSpeed}" />
+		<property name="test3_8b_MinimalSpeed" value="${test3_8b_MinimalSpeed}" />
+		<property name="test3_8b_MaximalSpeed" value="${test3_8b_MaximalSpeed}" />
+		<property name="test3_8c_MinimalSpeed" value="${test3_8c_MinimalSpeed}" />
+		<property name="test3_8c_MaximalSpeed" value="${test3_8c_MaximalSpeed}" />
+		<property name="test3_8d_MinimalSpeed" value="${test3_8d_MinimalSpeed}" />
+		<property name="test3_8d_MaximalSpeed" value="${test3_8d_MaximalSpeed}" />
+		<property name="test3_9_MinimalSpeed" value="${test3_9_MinimalSpeed}" />
+		<property name="test3_9_MaximalSpeed" value="${test3_9_MaximalSpeed}" />
+		<property name="test3_10_MinimalDistance" value="${test3_10_MinimalDistance}" />
+		<property name="test3_15_MinimalTime" value="${test3_15_MinimalTime}" />
+		<property name="test3_16_1_MaximalTime" value="${test3_16_1_MaximalTime}" />
+		<property name="test3_16_3a_MaximalTime" value="${test3_16_3a_MaximalTime}" />
+		<property name="test3_16_3b_MaximalTime" value="${test3_16_3b_MaximalTime}" />
+		<property name="test3_21a_MinimalSpeed" value="${test3_21a_MinimalSpeed}" />
+		<property name="test3_21a_MaximalSpeed" value="${test3_21a_MaximalSpeed}" />
+		<property name="test3_21b_MinimalSpeed" value="${test3_21b_MinimalSpeed}" />
+		<property name="test3_21b_MaximalSpeed" value="${test3_21b_MaximalSpeed}" />
+		<property name="test3_21c_MinimalSpeed" value="${test3_21c_MinimalSpeed}" />
+		<property name="test3_21c_MaximalSpeed" value="${test3_21c_MaximalSpeed}" />
+		<property name="test3_21d_MinimalSpeed" value="${test3_21d_MinimalSpeed}" />
+		<property name="test3_21d_MaximalSpeed" value="${test3_21d_MaximalSpeed}" />
+		<property name="projection_reference" value="${projection_reference}" />
+	</bean>
+
+	<bean id="validation_3_7_1"
+		class="fr.certu.chouette.plugin.validation.ValidationParameters">
+		<property name="test3_1_MinimalDistance" value="${test3_1_MinimalDistance}" />
+		<property name="test3_2_MinimalDistance" value="${test3_2_MinimalDistance}" />
+		<property name="test3_2_PolygonPoints" value="${test3_2_Polygon}" />
+		<property name="test3_7_MinimalDistance" value="${test3_7_MinimalDistance}" />
+		<property name="test3_7_MaximalDistance" value="2000" />
+		<property name="test3_8a_MinimalSpeed" value="${test3_8a_MinimalSpeed}" />
+		<property name="test3_8a_MaximalSpeed" value="${test3_8a_MaximalSpeed}" />
+		<property name="test3_8b_MinimalSpeed" value="${test3_8b_MinimalSpeed}" />
+		<property name="test3_8b_MaximalSpeed" value="${test3_8b_MaximalSpeed}" />
+		<property name="test3_8c_MinimalSpeed" value="${test3_8c_MinimalSpeed}" />
+		<property name="test3_8c_MaximalSpeed" value="${test3_8c_MaximalSpeed}" />
+		<property name="test3_8d_MinimalSpeed" value="${test3_8d_MinimalSpeed}" />
+		<property name="test3_8d_MaximalSpeed" value="${test3_8d_MaximalSpeed}" />
+		<property name="test3_9_MinimalSpeed" value="${test3_9_MinimalSpeed}" />
+		<property name="test3_9_MaximalSpeed" value="${test3_9_MaximalSpeed}" />
+		<property name="test3_10_MinimalDistance" value="${test3_10_MinimalDistance}" />
+		<property name="test3_15_MinimalTime" value="${test3_15_MinimalTime}" />
+		<property name="test3_16_1_MaximalTime" value="${test3_16_1_MaximalTime}" />
+		<property name="test3_16_3a_MaximalTime" value="${test3_16_3a_MaximalTime}" />
+		<property name="test3_16_3b_MaximalTime" value="${test3_16_3b_MaximalTime}" />
+		<property name="test3_21a_MinimalSpeed" value="${test3_21a_MinimalSpeed}" />
+		<property name="test3_21a_MaximalSpeed" value="${test3_21a_MaximalSpeed}" />
+		<property name="test3_21b_MinimalSpeed" value="${test3_21b_MinimalSpeed}" />
+		<property name="test3_21b_MaximalSpeed" value="${test3_21b_MaximalSpeed}" />
+		<property name="test3_21c_MinimalSpeed" value="${test3_21c_MinimalSpeed}" />
+		<property name="test3_21c_MaximalSpeed" value="${test3_21c_MaximalSpeed}" />
+		<property name="test3_21d_MinimalSpeed" value="${test3_21d_MinimalSpeed}" />
+		<property name="test3_21d_MaximalSpeed" value="${test3_21d_MaximalSpeed}" />
+		<property name="projection_reference" value="${projection_reference}" />
+	</bean>
+
+
+</beans>

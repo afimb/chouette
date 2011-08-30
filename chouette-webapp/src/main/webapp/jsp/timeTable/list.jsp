@@ -71,7 +71,7 @@
         <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
       </s:a>
     </display:column>
-      <display:column titleKey="table.title.route" sortable="false" headerClass="sortable">
+    <display:column titleKey="table.title.route" sortable="false" headerClass="sortable">
       ${tableauMarche.comment}&nbsp;(${tableauMarche.objectId})
     </display:column>
   </display:table>

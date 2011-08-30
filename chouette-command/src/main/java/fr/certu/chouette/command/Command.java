@@ -9,7 +9,10 @@ package fr.certu.chouette.command;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -100,6 +103,7 @@ public class Command
 		shortCuts.put("f", "file");
 		shortCuts.put("i", "interactive");
 		shortCuts.put("l", "level");
+		shortCuts.put("v", "verbose");
 	}
 
 	/**
@@ -331,13 +335,13 @@ public class Command
 		Map<String, List<String>> parameters = command.getParameters();
 		if (verbose)
 		{
-			System.out.println("Command "+name);
+			System.out.println("Command "+commandNumber+" : "+name);
 			for (String key : parameters.keySet())
 			{
 				System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
 			}
 		}
-		logger.info("Command "+name);
+		logger.info("Command "+commandNumber+" : "+name);
 		for (String key : parameters.keySet())
 		{
 			logger.info("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
@@ -439,7 +443,7 @@ public class Command
 		{
 			beans = executeImport(manager,parameters);
 		}
-		
+
 		else if (name.equals("print"))
 		{
 			if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
@@ -564,11 +568,12 @@ public class Command
 
 			ReportHolder holder = new ReportHolder();
 			manager.doExport(null, beans, format, values, holder );
+			PrintStream stream = System.out;
 			if (holder.getReport() != null)
 			{
 				Report r = holder.getReport();
-				System.out.println(r.getLocalizedMessage());
-				printItems("",r.getItems());
+				stream.println(r.getLocalizedMessage());
+				printItems(stream,"",r.getItems());
 			}
 		}
 		catch (ChouetteException e)
@@ -667,7 +672,7 @@ public class Command
 			{
 				Report r = holder.getReport();
 				System.out.println(r.getLocalizedMessage());
-				printItems("",r.getItems());
+				printItems(System.out,"",r.getItems());
 			}
 		}
 		catch (ChouetteException e)
@@ -832,7 +837,7 @@ public class Command
 			{
 				Report r = holder.getReport();
 				System.out.println(r.getLocalizedMessage());
-				printItems("",r.getItems());
+				printItems(System.out,"",r.getItems());
 
 			}
 			if (beans == null )
@@ -875,9 +880,25 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
+		String fileName = getSimpleString(parameters, "file", "");
+		boolean append = getBoolean(parameters, "append");
+		
 		Report valReport = manager.validate(null, beans, validationParameters);
-		System.out.println(valReport.getLocalizedMessage());
-		printItems("",valReport.getItems());
+        PrintStream stream = System.out;
+		if (!fileName.isEmpty())
+		{
+			try 
+			{
+				stream = new PrintStream(new FileOutputStream(new File(fileName), append));
+			} catch (FileNotFoundException e) 
+			{
+				System.err.println("cannot open file :"+fileName);
+				fileName = "";
+			}
+		}
+        	
+		stream.println(valReport.getLocalizedMessage());
+		printItems(stream,"",valReport.getItems());
 		int nbUNCHECK = 0;
 		int nbOK = 0;
 		int nbWARN = 0;
@@ -903,16 +924,20 @@ public class Command
 
 			}
 		}
-		System.out.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
+		stream.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
+        if (!fileName.isEmpty())
+        {
+        	stream.close();
+        }
 	}
 
-	private void printItems(String indent,List<ReportItem> items) 
+	private void printItems(PrintStream stream, String indent,List<ReportItem> items) 
 	{
 		if (items == null) return;
 		for (ReportItem item : items) 
 		{
-			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(indent+"   ",item.getItems());
+			stream.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			printItems(stream,indent+"   ",item.getItems());
 		}
 
 	}
@@ -1118,14 +1143,18 @@ public class Command
 			Map<String, List<String>> parameters)
 	throws ChouetteException 
 	{
-//		for (NeptuneIdentifiedObject bean : beans) 
-//		{
-//			manager.update(null, bean);
-//		}
+		for (NeptuneIdentifiedObject bean : beans) 
+		{
+			boolean propagate = getBoolean(parameters, "propagate");
+			boolean slow = getBoolean(parameters, "slow");
+			List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
+			oneBean.add(bean);
+			manager.saveAll(null, oneBean, propagate, !slow);
+		}
 
-		boolean propagate = getBoolean(parameters, "propagate");
-		boolean slow = getBoolean(parameters, "slow");
-		manager.saveAll(null, beans, propagate, !slow);
+		//		boolean propagate = getBoolean(parameters, "propagate");
+		//		boolean slow = getBoolean(parameters, "slow");
+		//		manager.saveAll(null, beans, propagate, !slow);
 	}
 
 	/**
@@ -1146,8 +1175,8 @@ public class Command
 			Filter filter = Filter.getNewEqualsFilter("id", bean.getId());
 			manager.removeAll(null, filter);
 		}
-		*/
-		
+		 */
+
 		manager.removeAll(null, beans,propagate);
 		beans.clear();
 	}
@@ -1167,7 +1196,7 @@ public class Command
 		{
 			manager.completeObject(null, bean);
 		}
-		
+
 	}
 
 	/**
@@ -1890,18 +1919,18 @@ public class Command
 		}
 
 		printBloc(bundle,"Header","");
-		
+
 		printBloc(bundle,"Option","   ");
-		
+
 		System.out.println("");
-		
+
 		String[] commands = getHelpString(bundle,"Commands").split(" ");
 		for (String command : commands) 
 		{
 			printCommandDetail(bundle,command,"   ");
 			System.out.println("");
 		}
-		
+
 		printBloc(bundle,"Footer","");
 	}
 
@@ -1916,7 +1945,7 @@ public class Command
 			return null;
 		}
 	}
-	
+
 	private static void printBloc(ResourceBundle bundle,String key,String indent)
 	{ 
 		// print  options
@@ -1933,7 +1962,7 @@ public class Command
 			rank++;
 		} while (line != null);
 	}
-	
+
 	private static void printCommandDetail(ResourceBundle bundle,String key,String indent)
 	{ 
 		// print  command
@@ -1950,7 +1979,7 @@ public class Command
 		{
 			System.out.println(indent+"   "+line);
 		}
-		
+
 	}
 
 	/**
@@ -1975,7 +2004,7 @@ public class Command
 				return;
 			}
 		}
-		
+
 		String[] commands = getHelpString(bundle,"Commands").split(" ");
 		if (interactive)
 		{
@@ -1996,8 +2025,8 @@ public class Command
 
 	}
 
-	
-	
+
+
 	/**
 	 * 
 	 */
@@ -2022,7 +2051,7 @@ public class Command
 		}
 		String lowerCommand = command.toLowerCase();
 		printCommandDetail(bundle,lowerCommand,"   ");
-		
+
 
 	}
 
@@ -2275,7 +2304,7 @@ public class Command
 		if (quote) throw new Exception("Line "+linenumber+": missing ending doublequote");
 		return args.toArray(new String[0]);
 	}
-	
+
 	/**
 	 * convert a duration in millisecond to literal
 	 *

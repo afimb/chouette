@@ -8,11 +8,11 @@
     <parent>
         <groupId>fr.certu.chouette</groupId>
         <artifactId>chouette</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2</version>
     </parent>
     <groupId>fr.certu.chouette</groupId>
     <artifactId>chouette-attic</artifactId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
@@ -26,6 +26,12 @@
         <dependency>
             <groupId>fr.certu.chouette.schema</groupId>
             <artifactId>chouette-castor-neptune</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jakarta-oro</artifactId>
+                    <groupId>apache-oro</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Apache commons -->
         <dependency>

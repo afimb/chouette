@@ -49,6 +49,9 @@ public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern
 		//Comment optional
 		journeyPattern.setComment(getNonEmptyTrimedString(xmlJourneyPattern.getComment()));
 		
+		// lineIdShortCut 
+		journeyPattern.setLineIdShortcut(getNonEmptyTrimedString(xmlJourneyPattern.getLineIdShortcut()));
+		
 		return journeyPattern;
 	}
 

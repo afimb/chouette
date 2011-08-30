@@ -1,10 +1,7 @@
 package fr.certu.chouette.struts.upload;
 
 import amivif.schema.RespPTLineStructTimetable;
-import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.modele.TableauMarche;
 import fr.certu.chouette.service.amivif.IAmivifAdapter;
 import fr.certu.chouette.service.amivif.ILecteurAmivifXML;
 import fr.certu.chouette.service.commun.CodeIncident;
@@ -27,14 +24,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-//import java.util.HashMap;
 import java.util.List;
-//import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
 
@@ -102,7 +95,16 @@ public class ImportAction extends GeneriqueAction {
         try {
             canonicalPath = fichier.getCanonicalPath();
         } catch (IOException e) {
-            e.printStackTrace();
+            StackTraceElement[] stackTraces = e.getStackTrace();
+            String msg = "";
+            if (stackTraces != null) {
+                for (int i = 0; i < stackTraces.length; i++) {
+                    msg += stackTraces[i].getClassName() + "." + stackTraces[i].getMethodName()
+                            + "(" + stackTraces[i].getLineNumber() + ")\n";
+                }
+            }
+            addActionError(msg);
+            return INPUT;
         }
         String newCanonicalPath = reducteur.reduire(canonicalPath, true);
         addActionMessage(getText("message.reduce.hastus.data") + newCanonicalPath);
@@ -114,7 +116,16 @@ public class ImportAction extends GeneriqueAction {
         try {
             canonicalPath = fichier.getCanonicalPath();
         } catch (IOException e) {
-            e.printStackTrace();
+            StackTraceElement[] stackTraces = e.getStackTrace();
+            String msg = "";
+            if (stackTraces != null) {
+                for (int i = 0; i < stackTraces.length; i++) {
+                    msg += stackTraces[i].getClassName() + "." + stackTraces[i].getMethodName()
+                            + "(" + stackTraces[i].getLineNumber() + ")\n";
+                }
+            }
+            addActionError(msg);
+            return INPUT;
         }
         String newCanonicalPath = reducteur.reduire(canonicalPath, true);
         try {
@@ -303,7 +314,7 @@ public class ImportAction extends GeneriqueAction {
         String canonicalPath = null;
         try {
             canonicalPath = fichier.getCanonicalPath();
-            logger.debug("Importing Generic CSV File \""+canonicalPath+"\"");
+            logger.debug("Importing Generic CSV File \"" + canonicalPath + "\"");
         } catch (Exception e) {
             addActionError(getExceptionMessage(e));
             return INPUT;
@@ -444,6 +455,10 @@ public class ImportAction extends GeneriqueAction {
             String result = SUCCESS;
             ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(fichier));
             ZipEntry zipEntry = zipInputStream.getNextEntry();
+            if (zipEntry == null) {
+                addActionError(getText("zipfile.empty"));
+                return INPUT;
+            }
             while (zipEntry != null) {
                 byte[] bytes = new byte[4096];
                 int len = zipInputStream.read(bytes);
@@ -461,7 +476,10 @@ public class ImportAction extends GeneriqueAction {
             }
             return result;
         } catch (Exception e) {
-            addActionError(getExceptionMessage(e) + " : " + temp.getAbsolutePath());
+            if (temp != null)
+                addActionError(getExceptionMessage(e) + " : " + temp.getAbsolutePath());
+            else
+                addActionError(getExceptionMessage(e));
             return INPUT;
         }
     }

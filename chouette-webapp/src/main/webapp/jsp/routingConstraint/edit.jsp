@@ -34,7 +34,7 @@
       </tr>
     </s:if>
     <s:else>
-      <s:select key="idLigne"  list="lignes" listKey="id" listValue="fullName" required="true"/>
+      <s:select key="idLigne"  list="lignes" listKey="id" listValue="name" required="true"/>
     </s:else>
 
     <%-- Actions --%>

@@ -7,11 +7,11 @@
     <parent>
         <groupId>fr.certu.chouette</groupId>
         <artifactId>chouette</artifactId>
-        <version>1.6.1</version>
+        <version>1.6.2</version>
     </parent>
     <groupId>fr.certu.chouette</groupId>
     <artifactId>chouette-webapp</artifactId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -102,14 +102,6 @@
         <dependency>
             <groupId>fr.certu.chouette</groupId>
             <artifactId>chouette-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-hibernate-dao</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.certu.chouette</groupId>
-            <artifactId>chouette-jdbc-dao</artifactId>
         </dependency>
         <dependency>
             <groupId>fr.certu.chouette.maven</groupId>

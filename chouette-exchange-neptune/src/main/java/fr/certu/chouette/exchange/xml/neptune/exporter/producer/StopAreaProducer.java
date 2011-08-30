@@ -1,7 +1,7 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import chouette.schema.StopAreaExtension;
 import chouette.schema.types.ChouetteAreaType;
@@ -26,10 +26,10 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 		}
 		castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
-		List<String> containsList = new ArrayList<String>();
+		Set<String> containsList = new HashSet<String>();
 		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
 		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));
-		castorStopArea.setContains(containsList);
+		castorStopArea.getContainsAsReference().addAll(containsList);
 
 		StopAreaExtension stopAreaExtension = new StopAreaExtension();
 		stopAreaExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea.getUserNeeds()));

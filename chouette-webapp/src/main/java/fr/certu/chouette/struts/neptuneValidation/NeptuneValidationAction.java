@@ -107,10 +107,6 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 						validationParam.setTest3_2_MinimalDistance(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_10_MinimalDistance"))
 						validationParam.setTest3_10_MinimalDistance(Float.valueOf(cookieValue));
-					if(cookieName.equals("test3_16c_MaximalTime"))
-						validationParam.setTest3_16c_MaximalTime(Long.valueOf(cookieValue));
-					if(cookieName.equals("test3_16c_MinimalTime"))
-						validationParam.setTest3_16c_MinimalTime(Long.valueOf(cookieValue));
 					if(cookieName.equals("test3_7_MaximalDistance"))
 						validationParam.setTest3_7_MaximalDistance(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_7_MinimalDistance"))
@@ -146,8 +142,12 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 						validationParam.setTest3_9_MinimalSpeed(Float.valueOf(cookieValue));
 					if(cookieName.equals("test3_15_MinimalTime"))
 						validationParam.setTest3_15_MinimalTime(Long.valueOf(cookieValue));
-					if(cookieName.equals("test3_16_3a_MinimalTime"))
-						validationParam.setTest3_16_3a_MinimalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_1_MaximalTime"))
+						validationParam.setTest3_16_1_MaximalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_3a_MaximalTime"))
+						validationParam.setTest3_16_3a_MaximalTime(Long.valueOf(cookieValue));
+					if(cookieName.equals("test3_16_3b_MaximalTime"))
+						validationParam.setTest3_16_3b_MaximalTime(Long.valueOf(cookieValue));
 
 					if(cookieName.equals("test3_21a_MaximalSpeed"))
 						validationParam.setTest3_21a_MaximalSpeed(Float.valueOf(cookieValue));
@@ -175,146 +175,177 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
 
 	}
 
-	private String importNeptune() throws ChouetteException, IOException 
-	{
-		String result = INPUT;
-		session.clear();
-		if(file != null && file.length()>0){
-			formats = lineManager.getImportFormats(null);
-			imported = importXmlFile(file);
-			if(imported)
-			{
-				session.put("lines", lines);
-				if(lines != null && !lines.isEmpty())
-				{
-					setImported(true);
-					result = SUCCESS;
-				}else {
-					addActionError(getText("error.import.file.failure"));
-					result = SUCCESS;	
-				}
-			}else
-				result = ERROR;
-		}else{
-			addActionError(getText("error.import.file.require"));
-			result = ERROR;
-		}
-		session.put("imported", imported);
-		return result;
-	}
+    private String importNeptune() throws ChouetteException, IOException {
+        String result = ERROR;
+        session.clear();
+        if (file == null) {
+            addActionError(getText("error.import.file.require"));
+        } else if (file.length() == 0) {
+            addActionError(getText("error.import.file.empty"));
+        } else {
+            formats = lineManager.getImportFormats(null);
+            imported = importXmlFile(file);
+            if (imported) {
+                session.put("lines", lines);
+                if (lines != null && !lines.isEmpty()) {
+                    setImported(true);
+                    result = SUCCESS;
+                } else {
+                    //no line to import
+                    /*
+                    boolean afficheMessage = true;
+                    List<ReportItem> sheets = report.getItems();
+                    if (sheets != null) {
+                        sheets :
+                        for (Report sheet : sheets) {
+                            //addActionError("Sheet " + sheet.getOriginKey() + " : " + sheet.getLocalizedMessage()+ " : "+sheet.getStatus());
+                            if (sheet.getStatus().equals(Report.STATE.ERROR) || sheet.getStatus().equals(Report.STATE.FATAL)) {
+                                afficheMessage = false;
+                                break sheets;
+                            }
+                            List<ReportItem> items = sheet.getItems();
+                            if (items != null) {
+                                for (Report item : items) {
+                                    //addActionError("Item " + item.getOriginKey() + " : " + item.getLocalizedMessage()+ " : "+item.getStatus());
+                                    if (item.getStatus().equals(Report.STATE.ERROR) || item.getStatus().equals(Report.STATE.FATAL)) {
+                                        afficheMessage = false;
+                                        break sheets;
+                                    }
+                                    List<ReportItem> sub_items = item.getItems();
+                                    if (sub_items != null) {
+                                        for (Report sub_item : sub_items) {
+                                            //addActionError("Sub Item " + sub_item.getOriginKey() + " : " + sub_item.getLocalizedMessage()+ " : "+sub_item.getStatus());
+                                            if (sub_item.getStatus().equals(Report.STATE.ERROR) || sub_item.getStatus().equals(Report.STATE.FATAL)) {
+                                                afficheMessage = false;
+                                                break sheets;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (afficheMessage)
+                        addActionError(getText("error.import.file.failure"));
+                     */
+                    result = SUCCESS;
+                }
+            } else {
+                // bad file format
+                addActionError(getText("error.import.file.type"));
+                result = ERROR;
+            }
+        }
+        session.put("imported", imported);
+        return result;
+    }
 
-	private boolean importXmlFile(File file) throws ChouetteException
-	{
-		boolean result = false;
-		if(!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("xml") && 
-				!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("zip"))
-			return false;
-		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+    private boolean importXmlFile(File file) throws ChouetteException {
+        if (!FilenameUtils.getExtension(fileFileName).toLowerCase().equals("xml")
+                && !FilenameUtils.getExtension(fileFileName).toLowerCase().equals("zip")) {
+            return false;
+        }
+        List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+        SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+        simpleParameterValue.setFilepathValue(file.getPath());
+        parameters.add(simpleParameterValue);
+        
+        SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validateXML");
+        simpleParameterValue2.setBooleanValue(validate);
+        parameters.add(simpleParameterValue2);
 
-		simpleParameterValue.setFilepathValue(file.getPath());
-		parameters.add(simpleParameterValue);
-		SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validateXML");
-		simpleParameterValue2.setBooleanValue(validate);
+        SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("fileFormat");
+        simpleParameterValue3.setStringValue(FilenameUtils.getExtension(fileFileName));
+        parameters.add(simpleParameterValue3);
+        
+        ReportHolder reportHolder = new ReportHolder();
 
-		SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("fileFormat");
-		simpleParameterValue3.setStringValue(FilenameUtils.getExtension(fileFileName));
-		parameters.add(simpleParameterValue3);
-		parameters.add(simpleParameterValue2);	
-		ReportHolder reportHolder = new ReportHolder();
+        lines = lineManager.doImport(null, formats.get(0).getName(), parameters, reportHolder);
+        report = reportHolder.getReport();
+        session.put("fileFileName", fileFileName);
+        session.put("report", report);
+        return true;
+    }
 
-		lines = lineManager.doImport(null,formats.get(0).getName(),parameters, reportHolder);
-		report = reportHolder.getReport();
-		session.put("fileFileName",fileFileName);
-		session.put("report", report);
-		if(lines != null && !lines.isEmpty())
-		{
-			result = true;
-		}	
-		return result;
-	}
+    public String validation() throws ChouetteException, IOException {
+        String res = null;
+        if (file != null) {
+            res = importNeptune();
+        } else if (session.get("lines") != null) {
+            lines = (List<Line>) session.get("lines");
+            res = SUCCESS;
+        } else {
+            addActionError(getText("error.import.file.require"));
+            return ERROR;
+        }
 
-	public String validation() throws ChouetteException, IOException
-	{
-		String res = null;
-		if(file != null)
-			res = importNeptune();
-		else if(session.get("lines") != null)
-		{
-			lines = (List<Line>) session.get("lines");
-			res = SUCCESS;
-		}else{
-			addActionError(getText("error.import.file.require"));
-			return ERROR;
-		}
+        if (validate && session.get("lines") != null) {
+            if (res.equals(SUCCESS)) {
+                reportValidation = lineManager.validate(null, lines, validationParam);
+                boolean isDefault = false;
+                if (session.get("isDefault") != null) {
+                    isDefault = (Boolean) session.get("isDefault");
+                }
+                if (!isDefault) {
+                    // Save to cookie
+                    saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
+                    saveCookie("test3_2_Polygon", validationParam.getTest3_2_PolygonPoints());
+                    saveCookie("test3_10_MinimalDistance", validationParam.getTest3_10_MinimalDistance());
 
-		if(validate)
-			if(res.equals(SUCCESS))
-			{
-				reportValidation = lineManager.validate(null,lines,validationParam);
-				boolean isDefault = false;
-				if(session.get("isDefault") != null)
-					isDefault = (Boolean)session.get("isDefault");
-				if(!isDefault){
-					// Save to cookie
-					saveCookie("test3_1_MinimalDistance", validationParam.getTest3_1_MinimalDistance());
-					saveCookie("test3_2_Polygon", validationParam.getTest3_2_PolygonPoints());
-					saveCookie("test3_10_MinimalDistance",validationParam.getTest3_10_MinimalDistance());
+                    saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
 
-					saveCookie("test3_16c_MaximalTime", validationParam.getTest3_16c_MaximalTime());
-					saveCookie("test3_16c_MinimalTime", validationParam.getTest3_16c_MinimalTime());
+                    saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
+                    saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
 
-					saveCookie("test3_2_MinimalDistance", validationParam.getTest3_2_MinimalDistance());
+                    saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
+                    saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
 
-					saveCookie("test3_7_MaximalDistance", validationParam.getTest3_7_MaximalDistance());
-					saveCookie("test3_7_MinimalDistance", validationParam.getTest3_7_MinimalDistance());
+                    saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
+                    saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
 
-					saveCookie("test3_8a_MaximalSpeed", validationParam.getTest3_8a_MaximalSpeed());
-					saveCookie("test3_8a_MinimalSpeed", validationParam.getTest3_8a_MinimalSpeed());
+                    saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
+                    saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
 
-					saveCookie("test3_8b_MaximalSpeed", validationParam.getTest3_8b_MaximalSpeed());
-					saveCookie("test3_8b_MinimalSpeed", validationParam.getTest3_8b_MinimalSpeed());
+                    saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
+                    saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
 
-					saveCookie("test3_8c_MaximalSpeed", validationParam.getTest3_8c_MaximalSpeed());
-					saveCookie("test3_8c_MinimalSpeed", validationParam.getTest3_8c_MinimalSpeed());
+                    saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
+                    saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
+                    saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
+                    saveCookie("test3_16_1_MaximalTime", validationParam.getTest3_16_1_MaximalTime());
+                    saveCookie("test3_16_3a_MaximalTime", validationParam.getTest3_16_3a_MaximalTime());
+                    saveCookie("test3_16_3b_MaximalTime", validationParam.getTest3_16_3b_MaximalTime());
 
-					saveCookie("test3_8d_MaximalSpeed", validationParam.getTest3_8d_MaximalSpeed());
-					saveCookie("test3_8d_MinimalSpeed", validationParam.getTest3_8d_MinimalSpeed());
+                    saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
+                    saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
 
-					saveCookie("test3_9_MaximalSpeed", validationParam.getTest3_9_MaximalSpeed());
-					saveCookie("test3_9_MinimalSpeed", validationParam.getTest3_9_MinimalSpeed());
-					saveCookie("test3_15_MinimalTime", validationParam.getTest3_15_MinimalTime());
-					saveCookie("test3_16_3a_MinimalTime", validationParam.getTest3_16_3a_MinimalTime());
+                    saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
+                    saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
 
-					saveCookie("test3_21a_MaximalSpeed", validationParam.getTest3_21a_MaximalSpeed());
-					saveCookie("test3_21a_MinimalSpeed", validationParam.getTest3_21a_MinimalSpeed());
+                    saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
+                    saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
 
-					saveCookie("test3_21b_MaximalSpeed", validationParam.getTest3_21b_MaximalSpeed());
-					saveCookie("test3_21b_MinimalSpeed", validationParam.getTest3_21b_MinimalSpeed());
+                    saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
+                    saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
 
-					saveCookie("test3_21c_MaximalSpeed", validationParam.getTest3_21c_MaximalSpeed());
-					saveCookie("test3_21c_MinimalSpeed", validationParam.getTest3_21c_MinimalSpeed());
+                    saveCookie("projection_reference", validationParam.getProjection_reference());
+                }
+            }
+        }
 
-					saveCookie("test3_21d_MaximalSpeed", validationParam.getTest3_21d_MaximalSpeed());
-					saveCookie("test3_21d_MinimalSpeed", validationParam.getTest3_21d_MinimalSpeed());
+        if (save) {
+            lineManager.saveAll(null, lines, true, true);
+            addActionMessage("successfully saved");
+            return INPUT;
+        }
 
-					saveCookie("projection_reference", validationParam.getProjection_reference());
-				}
-			}
-
-		if(save)
-		{ 
-			lineManager.saveAll(null, lines, true,true);
-			addActionMessage("successfully saved");
-			return INPUT;
-		}
-
-		if(res.equals(INPUT) || res.equals(SUCCESS))
-			res =  LIST;
-		else 
-			return res;
-		return res;
-	}
+        if (res.equals(INPUT) || res.equals(SUCCESS)) {
+            res = LIST;
+        } else {
+            return res;
+        }
+        return res;
+    }
 
 	/**
 	 * Saving to cookie

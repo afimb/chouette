@@ -1,0 +1,50 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Validation phase 1" verbose="1">
+	<test name="Test_1_1_1" preserve-order="true">
+		<parameter name="description" value="wrong XML" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/1.1.1.xml" />
+		<parameter name="okCount" value="0" />
+		<parameter name="uncheckCount" value="0" />
+		<parameter name="warningCount" value="0" />
+		<parameter name="errorCount" value="1" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="1.1" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	<test name="Test_1_2_1" preserve-order="true">
+		<parameter name="description" value="wrong XSD" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/1.2.1.xml" />
+		<parameter name="okCount" value="0" />
+		<parameter name="uncheckCount" value="0" />
+		<parameter name="warningCount" value="0" />
+		<parameter name="errorCount" value="1" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="1.2" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+	<test name="Test_1_2_1b_bis" preserve-order="true">
+		<parameter name="description" value="objectId with invalid caracter : comma" />
+		<parameter name="validationParameterSet" value="validation" />
+		<parameter name="testFile" value="src/test/data/1.2.1b_bis.xml" />
+		<parameter name="okCount" value="0" />
+		<parameter name="uncheckCount" value="0" />
+		<parameter name="warningCount" value="0" />
+		<parameter name="errorCount" value="1" />
+		<parameter name="fatalCount" value="0" />
+		<parameter name="mandatoryErrorTest" value="1.2" />
+		<parameter name="mandatoryWarningTest" value="none" />
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTests" />
+		</classes>
+	</test>
+</suite>
+

@@ -1,7 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import org.exolab.castor.types.Duration;
-import org.exolab.castor.types.Time;
 
 import chouette.schema.VehicleJourneyAtStopTypeChoice;
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;

@@ -117,6 +117,11 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	@Override
 	public void saveOrUpdateAll(final List<T> objects) throws JdbcDaoException
 	{			
+		if (objects.isEmpty()) 
+		{
+			logger.debug("no object to save");
+			return;
+		}
 		final List<T> insertables = new ArrayList<T>();
 		final List<T> updatables = new ArrayList<T>();
 

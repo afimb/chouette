@@ -4,6 +4,7 @@ package fr.certu.chouette.exchange.xml.neptune.exporter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.apache.log4j.Logger;
@@ -28,10 +29,37 @@ public class NeptuneFileWriter
 	public void write(ChouettePTNetworkTypeType chouette, File file) 
 	{
 		FileOutputStream   fileOutputStream   = null;
+		try
+		{
+		fileOutputStream   = new FileOutputStream(file);
+        write(chouette,fileOutputStream);
+		
+		}
+		catch(IOException e) 
+		{
+			throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
+		}
+		finally 
+		{
+			if (fileOutputStream != null) 
+			{
+				try 
+				{
+					fileOutputStream.close();
+				}
+				catch(IOException e) 
+				{
+					throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
+				}
+			}
+		}
+	}
+	
+	public void write(ChouettePTNetworkTypeType chouette, OutputStream fileOutputStream) 
+	{
 		OutputStreamWriter outputStreamWriter = null;
 		try 
 		{
-			fileOutputStream   = new FileOutputStream(file);
 			outputStreamWriter = new OutputStreamWriter(fileOutputStream, CHARSET);
 			Marshaller marshaller = new Marshaller(outputStreamWriter);
 			marshaller.setEncoding(CHARSET);
@@ -40,7 +68,6 @@ public class NeptuneFileWriter
 			marshaller.setValidation(false);
 			marshaller.marshal(chouette);
 			outputStreamWriter.close();
-			fileOutputStream.close();
 		}
 		catch(IOException e) 
 		{
@@ -60,17 +87,6 @@ public class NeptuneFileWriter
 				try 
 				{
 					outputStreamWriter.close();
-				}
-				catch(IOException e) 
-				{
-					throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE,  e);
-				}
-			}
-			if (fileOutputStream != null) 
-			{
-				try 
-				{
-					fileOutputStream.close();
 				}
 				catch(IOException e) 
 				{

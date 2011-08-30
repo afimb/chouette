@@ -1,6 +1,16 @@
                         CHOUETTE RELEASE NOTES
                         ======================
 
+* Version 1.6.2
+  publiée en aout 2011, cette version de Chouette ajoute les
+  fonctionnalités suivantes :
+  - Validation Neptune : Implémentation des tests BATERI (Tests de validation
+    des données aux format XML Neptune).
+  - Export Géopportail : Export des données associées aux arrêts en vue
+    de leurs publications sur le Géoprtail.
+  - Chouette Commande : Un moyen d'exécuter les différentes donctionnalités de
+    Chouette en ligne de commande (sans utilisation d'interface WEB).
+
 * Version 1.5
   Publiée en septembre 2010, cette version de Chouette ajoute les
   fonctionnalités suivantes :

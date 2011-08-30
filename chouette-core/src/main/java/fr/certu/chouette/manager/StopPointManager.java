@@ -197,6 +197,10 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 				stopPoint.setLongLatType(centroid.getLongLatType());
 				stopPoint.setProjectedPoint(centroid.getProjectedPoint());
 			}
+			else
+			{
+				logger.error("stopPoint "+stopPoint.getObjectId()+" has an area without centroid "+area.getObjectId()); 
+			}
 			stopPoint.setName(area.getName());
 		}
 	}

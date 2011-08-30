@@ -3,12 +3,6 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.operation.distance.DistanceOp;
-
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -27,11 +21,11 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  * @author mamadou keira
  *
  */
-public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
+public class ValidationAccessLink extends AbstractValidation implements IValidationPlugin<AccessLink>{
 
 	private ValidationStepDescription validationStepDescription;
 	private final double DIVIDER = 1000 * 3600;
-	private final double CONVERTER = 6371 /180;
+	private final double CONVERTER = 6378 /180;
 	public void init(){
 		//TODO
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());
@@ -68,34 +62,40 @@ public class ValidationAccessLink implements IValidationPlugin<AccessLink>{
 		
 		for (AccessLink accessLink : accessLinks) {
 			//Test 2.25.1
-			if(accessLink.getStartOfLinkId() == null || accessLink.getEndOfLinkId() == null){
+			if(accessLink.getStartOfLinkId().equals(accessLink.getEndOfLinkId())){
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet25_Step1_error_a",Report.STATE.ERROR);
 				report2_25.addItem(detailReportItem);
-			}else if(accessLink.getStopArea() != null || accessLink.getAccessPoint() != null){
-				report2_25.updateStatus(Report.STATE.OK);
-			}else {
+			}
+			else if (accessLink.getStopArea() == null || accessLink.getAccessPoint() == null)
+			{
 				ReportItem detailReportItem = new DetailReportItem("Test2_Sheet25_Step1_error_b",Report.STATE.ERROR);
 				report2_25.addItem(detailReportItem);
-			}	
+			}
+			else
+			{
+				report2_25.updateStatus(Report.STATE.OK);
+			}
+				
 			//Test 3.21
 			StopArea stopArea = accessLink.getStopArea();
 			AccessPoint accessPoint = accessLink.getAccessPoint();
 			AreaCentroid areaCentroidStart = (stopArea != null) ? stopArea.getAreaCentroid() : null; 
 
-			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
+//			PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
 			double yStart = (areaCentroidStart != null && areaCentroidStart.getLatitude() != null) ? areaCentroidStart.getLatitude().doubleValue() : 0;
 			double xStart = (areaCentroidStart != null && areaCentroidStart.getLongitude() != null) ? areaCentroidStart.getLongitude().doubleValue() : 0;
-			int SRIDstart = (areaCentroidStart != null && areaCentroidStart.getLongLatType()!= null) ? areaCentroidStart.getLongLatType().epsgCode() : 0;
-			GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDstart);
-			Point pointStart = factoryStart.createPoint(new Coordinate(xStart, yStart));
+//			int SRIDstart = (areaCentroidStart != null && areaCentroidStart.getLongLatType()!= null) ? areaCentroidStart.getLongLatType().epsgCode() : 0;
+//			GeometryFactory factoryStart = new GeometryFactory(precisionModel, SRIDstart);
+//			Point pointStart = factoryStart.createPoint(new Coordinate(xStart, yStart));
 
 			double yEnd = (accessPoint != null && accessPoint.getLatitude() != null) ? accessPoint.getLatitude().doubleValue() : 0;		
 			double xEnd = (accessPoint != null && accessPoint.getLongitude() != null) ? accessPoint.getLongitude().doubleValue() : 0;				
-			int SRIDend = (accessPoint != null && accessPoint.getLongLatType()!= null) ? accessPoint.getLongLatType().epsgCode() : 0;								
-			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
-			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
-			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
-			double distance = distanceOp.distance()*CONVERTER;
+//			int SRIDend = (accessPoint != null && accessPoint.getLongLatType()!= null) ? accessPoint.getLongLatType().epsgCode() : 0;								
+//			GeometryFactory factoryEnd = new GeometryFactory(precisionModel, SRIDend);
+//			Point pointEnd = factoryEnd.createPoint(new Coordinate(xEnd, yEnd));
+//			DistanceOp distanceOp = new DistanceOp(pointStart, pointEnd);
+//			double distance = distanceOp.distance()*CONVERTER;
+			double distance = distance(xStart,yStart,xEnd,yEnd) / 1000; // in kilometers meters 
 			//Test 3.21.1  a
 			double timeA = (accessLink.getDefaultDuration() != null) ? accessLink.getDefaultDuration().getTime() / DIVIDER  : 0 ;
 			double speedA = distance /timeA;

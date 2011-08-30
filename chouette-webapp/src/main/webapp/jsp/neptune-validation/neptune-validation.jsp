@@ -22,14 +22,14 @@
 			 <s:iterator value="items" var="test" status="itemsStatus">
 			 	<s:div cssClass="%{status}">
 			 	<div>
-					<s:a href="#-1" onclick="showIt('detail%{#status.index}_%{#itemsStatus.index}','showIt_%{#status.index}_%{#itemsStatus.index}');" 
-						id="showIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.show')}">
-						<img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}"/>						
-					</s:a> 
-					<s:a href="#-1" onclick="hideIt('detail%{#status.index}_%{#itemsStatus.index}','hideIt_%{#status.index}_%{#itemsStatus.index}');" 
-						id="hideIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}">
-						<img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}"/>
-					</s:a>
+					<!--s:a href="#-1" onclick="showIt('detail%{#status.index}_%{#itemsStatus.index}','showIt_%{#status.index}_%{#itemsStatus.index}');" 
+						id="showIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.show')}"-->
+						<!--img src="<s:url value='/images/plus.png'/>" alt="%{getText('text.detail.show')}"/-->						
+					<!--/s:a--> 
+					<!--s:a href="#-1" onclick="hideIt('detail%{#status.index}_%{#itemsStatus.index}','hideIt_%{#status.index}_%{#itemsStatus.index}');" 
+						id="hideIt_%{#status.index}_%{#itemsStatus.index}" title="%{getText('text.detail.hide')}"-->
+						<!--img src="<s:url value='/images/moins.png'/>" alt="%{getText('text.detail.hide')}"/-->
+					<!--/s:a-->
 						<s:label value="%{report.order}.%{#sheet.order}.%{#test.order}" />
 				</div>
 			 		<s:div cssStyle="width: 700px; padding-left:100px; margin-top:-15px">
@@ -38,7 +38,7 @@
 			 		<s:if test="%{getStatus().name() != 'OK' && getStatus().name() != 'UNCHECK' }">
 							<s:div cssStyle="margin-left: 20px;">
 								</s:div>
-									 <s:div cssClass="neptune-panel-inSide" id="detail%{#status.index}_%{#itemsStatus.index}" cssStyle="display:none;">
+                                            <s:div cssClass="neptune-panel-inSide" id="detail%{#status.index}_%{#itemsStatus.index}"><!-- cssStyle="display:none;"-->
 										<ol>
 										 <s:iterator value="items">
 										     <li>
@@ -57,6 +57,7 @@
 		<s:include value="/jsp/commun/messages.jsp" />
 	<div class="panelDataSection"><s:text name="neptune.field.title" /></div>
 	<div class="neptune-panel">
+	<h4><s:text name="neptune.field.units"></s:text></h4>
 	<s:div>
 	 	<table>
 		 	<tr>
@@ -155,19 +156,26 @@
 		 	</tr>
 		 	<tr>
 			 	<td> 
-			 	 <s:text name="neptune.field.minimum.time.3.16"></s:text>
+			 	 <s:text name="neptune.field.maximum.time.3.16.1"></s:text>
 			 	</td>
 			 	<td>
-			 	   <s:textfield name="validationParam.test3_16_3a_MinimalTime" label="%{getText('neptune.field.minimum.time.3.16')}" size="5"/>
+			 	   <s:textfield name="validationParam.test3_16_1_MaximalTime" label="%{getText('neptune.field.maximum.time.3.16.1')}" size="5"/>
 			 	</td>
 		 	</tr>
 		 	<tr>
 			 	<td> 
-			 	 <s:text name="neptune.field.minimum.time.on.maximum.3.16c"></s:text>
+			 	 <s:text name="neptune.field.maximum.time.3.16.3a"></s:text>
 			 	</td>
 			 	<td>
-			 	   <s:textfield name="validationParam.test3_16c_MinimalTime" label="%{getText('neptune.field.minimum.time.on.maximum.3.16c')}" size="5"/>/
-				  	<s:textfield name="validationParam.test3_16c_MaximalTime" size="5" label="/"/>
+			 	   <s:textfield name="validationParam.test3_16_3a_MaximalTime" label="%{getText('neptune.field.maximum.time.3.16.3a')}" size="5"/>
+			 	</td>
+		 	</tr>
+		 	<tr>
+			 	<td> 
+			 	 <s:text name="neptune.field.maximum.time.3.16.3b"></s:text>
+			 	</td>
+			 	<td>
+			 	   <s:textfield name="validationParam.test3_16_3b_MaximalTime" label="%{getText('neptune.field.maximum.time.3.16.3b')}" size="5"/>
 			 	</td>
 		 	</tr>
 		 	<tr>
