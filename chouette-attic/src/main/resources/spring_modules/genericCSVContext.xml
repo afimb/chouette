@@ -43,6 +43,7 @@
         <property name="cleVendredi" value="Vendredi (O/N)" />
         <property name="cleSamedi" value="Samedi (O/N)" />
         <property name="cleDimanche" value="Dimanche (O/N)" />
+        <property name="cleDateFormat" value="dd/MM/yyyy" />
     </bean>
 
     <bean id="lecteurExcelReseau"

@@ -1,5 +1,6 @@
 package fr.certu.chouette.service.importateur.multilignes.genericcsv.excel;
 
+import chouette.schema.Address;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -11,10 +12,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import fr.certu.chouette.service.database.ChouetteDriverManagerDataSource;
 import chouette.schema.types.ChouetteAreaType;
+import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.modele.Ligne;
 import fr.certu.chouette.modele.PositionGeographique;
 import fr.certu.chouette.service.identification.IIdentificationManager;
 import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurZone;
+import fr.certu.chouette.service.validation.LongLatType;
 import java.util.ResourceBundle;
 
 public class LecteurZone implements ILecteurZone {
@@ -98,6 +101,17 @@ public class LecteurZone implements ILecteurZone {
             hash = 37 * hash + (this.codePostal != null ? this.codePostal.hashCode() : 0);
             return hash;
         }
+        
+        public String toSimpleString() {
+            String result = "";
+            if (name != null)
+                result += name.trim().replace(' ', '_');
+            if (adresse != null)
+                result += '_' + adresse.trim().replace(' ', '_');
+            if (codePostal != null)
+                result += '_' + codePostal.trim().replace(' ', '_');
+            return result;
+        }
     }
     
     @Override
@@ -160,9 +174,9 @@ public class LecteurZone implements ILecteurZone {
     @Override
     public void lire(Ligne ligne, String[] ligneCSV) {
 	PositionGeographique positionGeographique;
-	if (ligneCSV[7] != null)
-	    if (ligneCSV[7].trim().length() > 0) {
-		positionGeographique = zones.get(ligneCSV[7].substring(0, ligneCSV[7].indexOf('(')).trim());
+	if (ligneCSV[6] != null)
+	    if (ligneCSV[6].trim().length() > 0) {
+		positionGeographique = zones.get(ligneCSV[6].trim());
 		if (positionGeographique == null) {
 		    /*
 		    boolean created = false;
@@ -242,20 +256,40 @@ public class LecteurZone implements ILecteurZone {
 		    }
 		    if (!created) {
 		    */
-		    logger.debug("CREATION DE ZONE COMMERCIALE : "+ligneCSV[7].substring(0, ligneCSV[7].indexOf('(')).trim());
+		    logger.debug("CREATING COMMERCIAL STOP : "+ligneCSV[6].trim());
 		    positionGeographique = new PositionGeographique();
-		    positionGeographique.setName(ligneCSV[7].substring(0, ligneCSV[7].indexOf('(')).trim());
+		    positionGeographique.setName(ligneCSV[6].trim());
 		    counter++;
-		    positionGeographique.setObjectId(identificationManager.getIdFonctionnel("StopArea", String.valueOf(counter)));
+		    positionGeographique.setObjectId(identificationManager.getIdFonctionnel("StopArea", ligneCSV[6].trim().replace(' ', '_')));
 		    positionGeographique.setAreaType(ChouetteAreaType.COMMERCIALSTOPPOINT);
+                    /*
+                    if (ligneCSV[0] != null)
+			if (ligneCSV[0].trim().length() > 0)
+                            positionGeographique.setX(new BigDecimal(ligneCSV[0]));
+                    if (ligneCSV[1] != null)
+			if (ligneCSV[1].trim().length() > 0)
+                            positionGeographique.setY(new BigDecimal(ligneCSV[1]));
+                    if (positionGeographique.getX() != null && positionGeographique.getY() != null)
+                        positionGeographique.setProjectionType("LAMBERT I");
+                    if (ligneCSV[2] != null)
+			if (ligneCSV[2].trim().length() > 0)
+                            positionGeographique.setLatitude(new BigDecimal(ligneCSV[2]));
+                    if (ligneCSV[3] != null)
+			if (ligneCSV[3].trim().length() > 0)
+                            positionGeographique.setLongitude(new BigDecimal(ligneCSV[3]));
+                    positionGeographique.setLongLatType(LongLatTypeType.WGS84);
+                    if (ligneCSV[4] != null)
+			if (ligneCSV[4].trim().length() > 0) {
+                            positionGeographique.getAreaCentroid().getAddress().setCountryCode(ligneCSV[4].trim());
+                        }
+                     */
 		    if (ligneCSV[5] != null)
 			if (ligneCSV[5].trim().length() > 0)
 			    positionGeographique.setCountryCode(ligneCSV[5].trim());
 		    zones.put(positionGeographique.getName(), positionGeographique);
-		    //}
 		}
 		else
-		    logger.debug("RECHARGEMENT DE ZONE COMMERCIALE : "+ligneCSV[7].substring(0, ligneCSV[7].indexOf('(')).trim());
+		    logger.debug("READING COMMERCIAL STOP : "+ligneCSV[6].trim());
 		
 		if (zonesParLigne.get(ligne) == null)
 		    zonesParLigne.put(ligne, new ArrayList<PositionGeographique>());
@@ -271,24 +305,26 @@ public class LecteurZone implements ILecteurZone {
 			    }
 			PositionGeographique arretPhysique = arretsPhysiques.get(id);
 			if (arretPhysique == null) {
-			    logger.debug("\tCREATION D'ARRET PHYSIQUE : "+ligneCSV[7].trim());
+			    logger.debug("\tCREATING STOP : "+ligneCSV[7].trim());
 			    //arretPhysique = PositionGeographique.creerArretPhysique(ligneCSV[7].trim());
 			    arretPhysique = new PositionGeographique();
 			    arretPhysique.setName(ligneCSV[7].trim());
 			    arretPhysique.setAreaType(ChouetteAreaType.BOARDINGPOSITION);
 
-			    /*if (ligneCSV[0] != null)
-			      if (ligneCSV[0].trim().length() > 0)
-			      arretPhysique.setX(new BigDecimal(ligneCSV[0].trim()));
-			      if (ligneCSV[1] != null)
-			      if (ligneCSV[1].trim().length() > 0)
-			      arretPhysique.setY(new BigDecimal(ligneCSV[1].trim()));*/
+			    if (ligneCSV[0] != null)
+                                if (ligneCSV[0].trim().length() > 0)
+                                    arretPhysique.setX(new BigDecimal(ligneCSV[0].trim()));
+                            if (ligneCSV[1] != null)
+                                if (ligneCSV[1].trim().length() > 0)
+                                    arretPhysique.setY(new BigDecimal(ligneCSV[1].trim()));
 			    if (ligneCSV[2] != null)
 				if (ligneCSV[2].trim().length() > 0)
 				    arretPhysique.setLatitude(new BigDecimal(ligneCSV[2].trim()));
 			    if (ligneCSV[3] != null)
 				if (ligneCSV[3].trim().length() > 0)
 				    arretPhysique.setLongitude(new BigDecimal(ligneCSV[3].trim()));
+                            if (arretPhysique.getLongitude() != null && arretPhysique.getLatitude() != null)
+                                arretPhysique.setLongLatType(LongLatTypeType.WGS84);
 			    if (ligneCSV[4] != null)
 				if (ligneCSV[4].trim().length() > 0)
 				    arretPhysique.setStreetName(ligneCSV[4].trim()); // Adresse
@@ -298,7 +334,7 @@ public class LecteurZone implements ILecteurZone {
 
 
 			    counter++;
-			    arretPhysique.setObjectId(identificationManager.getIdFonctionnel("StopArea", String.valueOf(counter)));
+			    arretPhysique.setObjectId(identificationManager.getIdFonctionnel("StopArea", id.toSimpleString()));
 			    //positionGeographique.getStopArea().addContains(arretPhysique.getObjectId());
 			    if (arretsPhysiquesParZoneParente.get(positionGeographique) == null)
 				arretsPhysiquesParZoneParente.put(positionGeographique, new HashSet<PositionGeographique>());
@@ -311,7 +347,7 @@ public class LecteurZone implements ILecteurZone {
 			    //logger.error("ZZZZZZ "+ligne.getPublishedName()+"\t:\t"+positionGeographique.getObjectId()+"\t:\t"+arretPhysique.getObjectId());
 			}
 			else
-			    logger.debug("\tRECHARGEMENT D'ARRET PHYSIQUE : "+ligneCSV[7].trim());
+			    logger.debug("\tREADING STOP : "+ligneCSV[7].trim());
 			arretsPhysiquesOrdonnes.add(arretPhysique);
 		    }
 	    }
