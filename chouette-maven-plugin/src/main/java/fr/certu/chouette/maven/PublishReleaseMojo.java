@@ -81,7 +81,7 @@ public class PublishReleaseMojo
 
     /**
      * Build inputName.
-     * @parameter
+     * @parameter default-value="${project.build.finalName}.tar.gz"
      * @required
      */
     private String inputName; 
@@ -104,10 +104,19 @@ public class PublishReleaseMojo
      */
     private boolean activateArtifactFolder;
     
+    /**
+     * Activate artifact exec boolean.
+     * @parameter expression="${chouette.publishRelease.activateExec}" default-value=false
+     */
+    private boolean activateExec;
+    
     public void execute()
         throws MojoExecutionException
     {
-        if(activateArtifactFolder){
+        if(!activateExec){
+        	return;
+        }
+    	if(activateArtifactFolder){
         	outputDirectory = new File(outputDirectory+"/"+buildArtifact);
         }
     	File f = outputDirectory;
