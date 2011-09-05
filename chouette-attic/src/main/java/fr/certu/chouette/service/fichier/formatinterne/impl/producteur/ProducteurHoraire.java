@@ -39,6 +39,8 @@ public class ProducteurHoraire implements IProducteurSpecifique {
 		List<Horaire> horaires = echange.getHoraires();
 		List<Horaire> horairesNouveaux = new ArrayList<Horaire>();
 		for (Horaire horaire : horaires) {
+		    if (horaire.getVehicleJourneyId() == null || horaire.getStopPointId() == null)
+			continue;
 			String objectIdCourse = horaire.getVehicleJourneyId();
 			String objectIdArret = horaire.getStopPointId();
 			Long idCourse = getIdObligatoire(objectIdCourse, idParObjectId);

@@ -89,16 +89,18 @@ public class LecteurLigne implements ILecteurLigne {
 	    validerCompletudeDonneeEnCours();
 	    cellulesNonRenseignees = new HashSet<String>(titres);
 	    ligneEnCours = new Ligne();
-	    ligneEnCours.setObjectId(identificationManager.getIdFonctionnel("Line", String.valueOf(lignes.size()+1)));
 	    ligneEnCours.setObjectVersion(1);
 	    ligneEnCours.setCreationTime(new Date());
 	    lignes.add(ligneEnCours);
-	    logger.debug("Nouvelle ligne");
+	    logger.debug("NEW LINE : "+valeur);
 	}
 	if (!cellulesNonRenseignees.remove(titre))
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.TIMETABLE_DUPLICATEDATA,titre);
-	if (cleNom.equals(titre))
+	if (cleNom.equals(titre)) {
 	    ligneEnCours.setName(valeur);
+            ligneEnCours.setRegistrationNumber(ligneEnCours.getName());
+	    ligneEnCours.setObjectId(identificationManager.getIdFonctionnel("Line", ligneEnCours.getName().replace(' ', '_')));
+        }
 	else if (cleNomPublic.equals(titre))
 	    ligneEnCours.setPublishedName(valeur);
 	else if (cleNumero.equals(titre))
@@ -116,7 +118,6 @@ public class LecteurLigne implements ILecteurLigne {
 	//ligneEnCours.setId(id);
 	//ligneEnCours.setIdReseau(idReseau);
 	//ligneEnCours.setIdTransporteur(idTransporteur);
-	//ligneEnCours.setRegistrationNumber(registrationNumber);
     }
     
     private TransportModeNameType getTransportModeNameType(String transportMode) {

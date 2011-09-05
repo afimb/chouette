@@ -13,187 +13,194 @@ import fr.certu.chouette.service.importateur.multilignes.genericcsv.ILecteurTran
 import java.util.ResourceBundle;
 
 public class LecteurTransporteur implements ILecteurTransporteur {
-    
-    private static final Logger                 logger                 = Logger.getLogger(LecteurTransporteur.class);
-    private              int                    colonneDesTitres;      // 7
-    private              IIdentificationManager identificationManager; // 
-    private              String                 cleNom;                // "Nom de l'entreprise de transport"
-    private              String                 cleCode;               // "Code transporteur"
-    private              String                 cleNomCourt;           // "Nom court"
-    private              String                 cleDescription;        // "Description du transporteur"
-    private              String                 cleCodePostal;         // "Code postal"
-    private              String                 cleTelephone;          // "Téléphone"
-    private              String                 cleFax;                // "Fax"
-    private              String                 cleEmail;              // "Email"
-    private              Transporteur           transporteur;
-    private              Set<String>            cellulesNonRenseignees;
-    private              Set<String>            titres;
-    private              ResourceBundle         bundle;
-    private              String                 lineNumber;
-    
+
+    private static final Logger logger = Logger.getLogger(LecteurTransporteur.class);
+    private int colonneDesTitres;      // 7
+    private IIdentificationManager identificationManager; // 
+    private String cleNom;                // "Nom de l'entreprise de transport"
+    private String cleCode;               // "Code transporteur"
+    private String cleNomCourt;           // "Nom court"
+    private String cleDescription;        // "Description du transporteur"
+    private String cleCodePostal;         // "Code postal"
+    private String cleTelephone;          // "Téléphone"
+    private String cleFax;                // "Fax"
+    private String cleEmail;              // "Email"
+    private Transporteur transporteur;
+    private Set<String> cellulesNonRenseignees;
+    private Set<String> titres;
+    private ResourceBundle bundle;
+    private String lineNumber;
+
     @Override
     public Transporteur getTransporteur() {
-	return transporteur;
+        return transporteur;
     }
-    
+
     @Override
     public void reinit(ResourceBundle bundle) {
-	titres = new HashSet<String>();
-	transporteur = null;
-	titres.add(cleNom);
-	titres.add(cleCode);
-	titres.add(cleNomCourt);
-	titres.add(cleDescription);
-	titres.add(cleCodePostal);
-	titres.add(cleTelephone);
-	titres.add(cleFax);
-	titres.add(cleEmail);
-	cellulesNonRenseignees = new HashSet<String>(titres);
+        titres = new HashSet<String>();
+        transporteur = null;
+        titres.add(cleNom);
+        titres.add(cleCode);
+        titres.add(cleNomCourt);
+        titres.add(cleDescription);
+        titres.add(cleCodePostal);
+        titres.add(cleTelephone);
+        titres.add(cleFax);
+        titres.add(cleEmail);
+        cellulesNonRenseignees = new HashSet<String>(titres);
         this.bundle = bundle;
     }
-    
+
     @Override
     public boolean isTitreReconnu(String[] ligneCSV) {
-	if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres+1))
-	    return false;
-	String titre = ligneCSV[colonneDesTitres];
-	if (titre == null)
-	    return false;
-	return titres.contains(titre);
+        if ((ligneCSV == null) || (ligneCSV.length < colonneDesTitres + 1)) {
+            return false;
+        }
+        String titre = ligneCSV[colonneDesTitres];
+        if (titre == null) {
+            return false;
+        }
+        return titres.contains(titre);
     }
-    
+
     private boolean isTitreNouvelleDonnee(String titre) {
-	return cleNom.equals(titre);
+        return cleNom.equals(titre);
     }
-    
+
     private void validerCompletudeDonneeEnCours() {
-	if (transporteur != null)
-	    validerCompletude();
+        if (transporteur != null) {
+            validerCompletude();
+        }
     }
-    
+
     @Override
     public void lire(String[] ligneCSV, String _lineNumber) {
         this.lineNumber = _lineNumber;
-	if (ligneCSV.length < colonneDesTitres+2)
-	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT,ligneCSV.length,(colonneDesTitres+2));
-	String titre = ligneCSV[colonneDesTitres];
-	String valeur = ligneCSV[colonneDesTitres+1];
-	if (isTitreNouvelleDonnee(titre)) {
-	    logger.debug("DEBUT DE LECTURE DU TRANSPORTEUR.");
-	    validerCompletudeDonneeEnCours();
-	    cellulesNonRenseignees = new HashSet<String>(titres);
-	    transporteur = new Transporteur();
-	    transporteur.setObjectId(identificationManager.getIdFonctionnel("Company", "1"));
-	    transporteur.setObjectVersion(1);
-	    transporteur.setCreationTime(new Date());
-	}
-	if (!cellulesNonRenseignees.remove(titre))
-	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_DUPLICATELINE,titre);
-	if (cleNom.equals(titre))
-	    transporteur.setName(valeur);
-	else if (cleCode.equals(titre))
-	    transporteur.setRegistrationNumber(valeur);
-	else if (cleNomCourt.equals(titre))
-	    transporteur.setShortName(titre);
-	else if (cleDescription.equals(titre))
-	    transporteur.setOrganisationalUnit(valeur);
-	else if (cleCodePostal.equals(titre))
-	    transporteur.setCode(titre);
-	else if (cleTelephone.equals(titre))
-	    transporteur.setPhone(titre);
-	else if (cleFax.equals(titre))
-	    transporteur.setFax(titre);
-	else if (cleEmail.equals(titre))
-	    transporteur.setEmail(titre);
-	//transporteur.setCreatorId(creatorId);
-	//transporteur.setId(id);
-	//transporteur.setOperatingDepartmentName(operatingDepartmentName);
+        if (ligneCSV.length < colonneDesTitres + 2) {
+            throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_COUNT, ligneCSV.length, (colonneDesTitres + 2));
+        }
+        String titre = ligneCSV[colonneDesTitres];
+        String valeur = ligneCSV[colonneDesTitres + 1];
+        if (isTitreNouvelleDonnee(titre)) {
+            logger.debug("START READING COMPANY.");
+            validerCompletudeDonneeEnCours();
+            cellulesNonRenseignees = new HashSet<String>(titres);
+            transporteur = new Transporteur();
+            transporteur.setObjectVersion(1);
+            transporteur.setCreationTime(new Date());
+        }
+        if (!cellulesNonRenseignees.remove(titre)) {
+            throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_DUPLICATELINE, titre);
+        }
+        if (cleNom.equals(titre)) {
+            transporteur.setName(valeur);
+            transporteur.setObjectId(identificationManager.getIdFonctionnel("Company", transporteur.getName().replace(' ', '_')));
+        } else if (cleCode.equals(titre)) {
+            transporteur.setRegistrationNumber(valeur);
+        } else if (cleNomCourt.equals(titre)) {
+            transporteur.setShortName(titre);
+        } else if (cleDescription.equals(titre)) {
+            transporteur.setOrganisationalUnit(valeur);
+        } else if (cleCodePostal.equals(titre)) {
+            transporteur.setCode(titre);
+        } else if (cleTelephone.equals(titre)) {
+            transporteur.setPhone(titre);
+        } else if (cleFax.equals(titre)) {
+            transporteur.setFax(titre);
+        } else if (cleEmail.equals(titre)) {
+            transporteur.setEmail(titre);
+        }
+        //transporteur.setCreatorId(creatorId);
+        //transporteur.setId(id);
+        //transporteur.setOperatingDepartmentName(operatingDepartmentName);
     }
-    
+
     @Override
     public void validerCompletude() {
-	if (cellulesNonRenseignees.size() > 0)
-	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_MISSINGDATA,cellulesNonRenseignees.toString());
-	logger.debug("FIN DE LECTURE DU TRANSPORTEUR.");
+        if (cellulesNonRenseignees.size() > 0) {
+            throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COMPANY_MISSINGDATA, cellulesNonRenseignees.toString());
+        }
+        logger.debug("START READING COMPANY.");
     }
-    
+
     public IIdentificationManager getIdentificationManager() {
-	return identificationManager;
+        return identificationManager;
     }
-    
+
     public void setIdentificationManager(IIdentificationManager identificationManager) {
-	this.identificationManager = identificationManager;
+        this.identificationManager = identificationManager;
     }
-    
+
     public String getCleNom() {
-	return cleNom;
+        return cleNom;
     }
-    
+
     public void setCleNom(String cleNom) {
-	this.cleNom = cleNom;
+        this.cleNom = cleNom;
     }
-    
+
     public String getCleCode() {
-	return cleCode;
+        return cleCode;
     }
-    
+
     public void setCleCode(String cleCode) {
-	this.cleCode = cleCode;
+        this.cleCode = cleCode;
     }
-    
+
     public int getColonneDesTitres() {
-	return colonneDesTitres;
+        return colonneDesTitres;
     }
-    
+
     public void setColonneDesTitres(int colonneDesTitres) {
-	this.colonneDesTitres = colonneDesTitres;
+        this.colonneDesTitres = colonneDesTitres;
     }
-    
+
     public String getCleNomCourt() {
-	return cleNomCourt;
+        return cleNomCourt;
     }
-    
+
     public void setCleNomCourt(String cleNomCourt) {
-	this.cleNomCourt = cleNomCourt;
+        this.cleNomCourt = cleNomCourt;
     }
-    
+
     public String getCleDescription() {
-	return cleDescription;
+        return cleDescription;
     }
-    
+
     public void setCleDescription(String cleDescription) {
-	this.cleDescription = cleDescription;
+        this.cleDescription = cleDescription;
     }
-    
+
     public String getCleCodePostal() {
-	return cleCodePostal;
+        return cleCodePostal;
     }
-    
+
     public void setCleCodePostal(String cleCodePostal) {
-	this.cleCodePostal = cleCodePostal;
+        this.cleCodePostal = cleCodePostal;
     }
-    
+
     public String getCleTelephone() {
-	return cleTelephone;
+        return cleTelephone;
     }
-    
+
     public void setCleTelephone(String cleTelephone) {
-	this.cleTelephone = cleTelephone;
+        this.cleTelephone = cleTelephone;
     }
-    
+
     public String getCleFax() {
-	return cleFax;
+        return cleFax;
     }
-    
+
     public void setCleFax(String cleFax) {
-	this.cleFax = cleFax;
+        this.cleFax = cleFax;
     }
-    
+
     public String getCleEmail() {
-	return cleEmail;
+        return cleEmail;
     }
-    
+
     public void setCleEmail(String cleEmail) {
-	this.cleEmail = cleEmail;
+        this.cleEmail = cleEmail;
     }
 }

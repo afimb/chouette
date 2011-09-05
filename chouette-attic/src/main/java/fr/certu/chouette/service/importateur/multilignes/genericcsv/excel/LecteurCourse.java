@@ -130,12 +130,12 @@ public class LecteurCourse implements ILecteurCourse {
 		    if (finDeLigne)
 			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.COLUMN_POSITION,value);
 		    if ((value.trim().equals(ALLER)) || (value.trim().equals(RETOUR)))
-			coursesEnCours.add(createCourse(value.trim()));
+			coursesEnCours.add(createCourse(value.trim(), ligne));
 		    else
 			throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.VEHICLEJOURNEY_ORIENTATION,value.trim());
 		}
 	    }
-	    if (coursesEnCours.size() != 0)
+	    if (!coursesEnCours.isEmpty())
 		coursesParLigne.put(ligneEnCours, coursesEnCours);
 	}
 	if (!cellulesNonRenseignees.remove(titre))
@@ -184,10 +184,10 @@ public class LecteurCourse implements ILecteurCourse {
 	}
     }
     
-    private Course createCourse(String sens) {
-	logger.debug("Nouvelle course");
+    private Course createCourse(String sens, Ligne ligne) {
+	logger.debug("NEW VEHICLE JOURNEY");
 	Course course = new Course();
-	course.setObjectId(identificationManager.getIdFonctionnel("VehicleJourney", String.valueOf(len)));
+	course.setObjectId(identificationManager.getIdFonctionnel("VehicleJourney", ligne.getObjectId().substring(ligne.getObjectId().lastIndexOf(':')+1)+'_'+String.valueOf(len)));
 	course.setCreationTime(new Date());
 	course.setObjectVersion(1);
 	len++;
@@ -244,7 +244,7 @@ public class LecteurCourse implements ILecteurCourse {
 	    if (caldendriersParRef.get(alias) == null)
 		throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.UNKNOWN_ALIAS,alias);
 	    caldendriersParRef.get(alias).addVehicleJourneyId(vehicleJourneyId);
-	    logger.debug("ZZZ TM : \""+caldendriersParRef.get(alias).getObjectId());
+	    logger.debug("TM : \""+caldendriersParRef.get(alias).getObjectId());
 	}
     }
     
@@ -253,6 +253,7 @@ public class LecteurCourse implements ILecteurCourse {
 	    validerCompletude();
     }
 	
+    @Override
     public void validerCompletude() {
 	if (cellulesNonRenseignees.size() > 0)
 	    throw new ServiceException(CodeIncident.ERR_CSV_FORMAT_INVALIDE, CodeDetailIncident.VEHICLEJOURNEY_MISSINGDATA,cellulesNonRenseignees);
@@ -310,6 +311,7 @@ public class LecteurCourse implements ILecteurCourse {
 	return caldendriersParRef;
     }
     
+    @Override
     public void setTableauxMarchesParRef(Map<String, TableauMarche> caldendriersParRef) {
 	this.caldendriersParRef = caldendriersParRef;
     }

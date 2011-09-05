@@ -33,6 +33,7 @@ public class ProducteurItineraire implements IProducteurSpecifique {
 		Map<String, Long> resultat = new Hashtable<String, Long>();
 		List<Itineraire> itineraires = echange.getItineraires();
 		List<Itineraire> nouveauxItineraires = new ArrayList<Itineraire>();
+		if (itineraires != null)
 		for (Itineraire itineraire : itineraires) {
 			String objectId = itineraire.getObjectId();
 			Long idItineraire = resultat.get(objectId);

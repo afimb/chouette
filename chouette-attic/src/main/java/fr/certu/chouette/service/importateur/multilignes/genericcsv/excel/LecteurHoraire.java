@@ -51,7 +51,7 @@ public class LecteurHoraire implements ILecteurHoraire {
     public void lire(String[] ligneCSV, List<Course> courses) {
 	coursesEnCours = courses;
 	boolean arretSansHoraire = true;
-	for (int i = colonneDesTitres+1; i < ligneCSV.length; i++) {
+	for (int i = colonneDesTitres + 1; i < ligneCSV.length; i++) {
 	    if (coursesEnCours.size() <= i-(colonneDesTitres+1))
 		return;
 	    Course course = coursesEnCours.get(i-(colonneDesTitres+1));

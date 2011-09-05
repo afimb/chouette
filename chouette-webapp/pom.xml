@@ -105,7 +105,6 @@
         <dependency>
             <groupId>fr.certu.chouette.maven</groupId>
             <artifactId>chouette-maven-plugin</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
     <pluginRepositories>
@@ -224,6 +223,7 @@
 					<buildTimestamp>${build.timestamp}</buildTimestamp>
 					<inputName>chouette_${BUILD_TAG}.tar.gz</inputName>
 					<outputName>${artifactId}_${build.timestamp}.tar.gz</outputName>
+					<activateExec>true</activateExec>
 					<maxReleasesCount>5</maxReleasesCount>
 	            </configuration>
             </plugin>
