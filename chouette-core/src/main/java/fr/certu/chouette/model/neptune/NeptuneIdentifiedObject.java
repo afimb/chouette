@@ -29,6 +29,14 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
+	// constant for persistence fields
+	public static final String OBJECT_ID = "objectId"; 
+	public static final String OBJECT_VERSION = "objectVersion"; 
+	public static final String CREATION_TIME = "creationTime"; 
+	public static final String CREATOR_ID = "creatorId"; 
+	public static final String NAME = "name"; 
+
+	// constants for ObjectId prefixes
 	public static final String ACCESSPOINT_KEY="AccessPoint";
 	public static final String ACCESSLINK_KEY="AccessLink";
 	public static final String AREACENTROID_KEY="AreaCentroid";

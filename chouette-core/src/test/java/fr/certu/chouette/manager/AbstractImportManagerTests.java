@@ -34,7 +34,7 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		this.beanName = beanName;
 		this.bean = bean;
 		importMock = createMock(IImportPlugin.class );
-		importDescription = new FormatDescription() ;
+		importDescription = new FormatDescription(this.getClass().getName()) ;
 		importDescription.setName("TestImportPlugin");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
 		importDescription.setParameterDescriptions(params);		

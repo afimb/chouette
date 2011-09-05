@@ -4,11 +4,10 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.6.2</version>
+		<version>1.7.0-SNAPSHOT</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-exchange-gtfs</artifactId>
-	<version>1.6.2</version>
 	<name>Chouette Exchange GTFS</name>
 
 	<dependencies>
@@ -53,6 +52,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<version>1.7.0-SNAPSHOT</version>
 	<build>
 		<resources>
 			<resource>

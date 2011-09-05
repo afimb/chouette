@@ -109,9 +109,6 @@
         class="fr.certu.chouette.struts.json.JSONLineAction">
         <property name="lineManager" ref="lineManager"/>
         <property name="stopAreaManager" ref="stopAreaManager"/>
-<!--         <property name="ligneManager" ref="ligneManager"/>
-        <property name="positionGeographiqueManager" ref="positionGeographiqueManager"/>
- -->
      </bean>
 
     <bean id="CompanyActionBean" scope="prototype"
@@ -208,9 +205,12 @@
     <bean id="Validation" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.ValidationAction">
-        <property name="managerDataSource" ref="chouetteDataSourceAdministrateur"/>
+        <property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>
+        <property name="stopAreaManager" ref="stopAreaManager"/>
+        <property name="timetableManager" ref="timetableManager"/>
         <property name="databasePurgeManager" ref="databasePurgeManager"/>
         <property name="useGeometry" value="${validation.tm.geometry}"/>
+        <property name="useValidation" value="${validation.tm.validation}"/>
         <property name="inclusif" value="${validation.tm.inclusif}"/>
         <property name="coordonnees" ref="coordonnees"/>
         <property name="convertisseur" ref="convertisseur"/>

@@ -8,8 +8,21 @@ import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class StopArea extends NeptuneIdentifiedObject {
+public class StopArea extends NeptuneIdentifiedObject 
+{
 	private static final long serialVersionUID = 4548672479038099240L;
+	// constant for persistence fields
+	public static final String COMMENT = "comment"; 
+	public static final String AREA_TYPE = "areaType"; 
+	public static final String REGISTRATION_NUMBER = "registrationNumber"; 
+	public static final String NEAREST_TOPIC_NAME = "nearestTopicName"; 
+	public static final String FARECODE ="fareCode"; 
+	public static final String AREACENTROID="areaCentroid"; 
+	public static final String PARENTSTOPAREA="parentStopArea"; 
+	public static final String CONTAINEDSTOPAREAS="containedStopAreas"; 
+	public static final String CONTAINEDSTOPPOINTS="containedStopPoints";
+	
+	
 	@Getter @Setter private List<String> boundaryPoints;
 	@Getter @Setter private String areaCentroidId;
 	@Getter @Setter private AreaCentroid areaCentroid;

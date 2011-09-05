@@ -11,6 +11,10 @@ import lombok.Setter;
  */
 public class Address 
 {
+	// constant for persistence fields
+	public static final String COUNTRY_CODE="countryCode"; 
+	public static final String STREET_NAME="streetName"; 
+
 	/**
 	 * address street name 
 	 */

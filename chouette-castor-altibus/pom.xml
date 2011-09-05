@@ -5,11 +5,10 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.6.2</version>
+		<version>1.7.0-SNAPSHOT</version>
 	</parent>
 	<groupId>fr.certu.chouette.schema</groupId>
 	<artifactId>chouette-castor-altibus</artifactId>
-	<version>1.6.2</version>
 	<name>Castor Altibus Mapping</name>
 	<packaging>jar</packaging>
 	<dependencies>
@@ -47,6 +46,7 @@
 			<url>http://people.apache.org/repo/m2-snapshot-repository/</url>
 		</pluginRepository>
 	</pluginRepositories>
+	<version>1.7.0-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>

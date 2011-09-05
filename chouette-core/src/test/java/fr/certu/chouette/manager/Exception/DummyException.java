@@ -6,7 +6,7 @@
  *
  */
 
-package fr.certu.chouette.manager.Exception;
+package fr.certu.chouette.manager.exception;
 
 import fr.certu.chouette.common.ChouetteException;
 

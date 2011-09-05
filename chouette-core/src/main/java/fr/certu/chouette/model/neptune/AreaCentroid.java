@@ -18,6 +18,13 @@ import lombok.Setter;
 public class AreaCentroid extends NeptuneIdentifiedObject 
 {
 	private static final long serialVersionUID = -5908896146442329392L;
+	
+	// constant for persistence fields
+	public static final String LONGITUDE ="longitude"; 
+	public static final String LATITUDE ="latitude"; 
+	public static final String LONGLAT_TYPE="longLatType"; 
+	public static final String PROJECTED_POINT="projectedPoint"; 
+	public static final String ADDRESS="address"; 
 	/**
 	 * postal Address 
 	 * <br/><i>readable/writable</i>

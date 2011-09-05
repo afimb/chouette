@@ -5,11 +5,10 @@
     <parent>
         <groupId>fr.certu.chouette</groupId>
         <artifactId>chouette</artifactId>
-        <version>1.6.2</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
     <groupId>fr.certu.chouette.schema</groupId>
     <artifactId>chouette-castor-amivif</artifactId>
-    <version>1.6.2</version>
     <name>Castor Amivif Mapping</name>
     <packaging>jar</packaging>
     <dependencies>
@@ -37,6 +36,7 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
     </dependencies>
+    <version>1.7.0-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>

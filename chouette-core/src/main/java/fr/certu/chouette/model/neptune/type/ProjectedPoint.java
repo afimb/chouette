@@ -15,6 +15,12 @@ import lombok.Setter;
 public class ProjectedPoint implements Serializable
 {
 	private static final long serialVersionUID = -2981993156157564399L;
+
+	// constant for persistence fields
+	public static final String X="x"; 
+	public static final String Y="y"; 
+	public static final String PROJECTION_TYPE="projectionType"; 
+
 	/**
 	 * x coordinate
 	 */

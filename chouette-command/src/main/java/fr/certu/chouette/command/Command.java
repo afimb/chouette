@@ -476,6 +476,18 @@ public class Command
 		{
 			executeInfo(manager);
 		}
+		else if (name.equals("setValidationParameters"))
+		{
+			executeSetValidationParameters(parameters);
+		}
+		else if (name.equals("showValidationParameters"))
+		{
+			executeShowValidationParameters();
+		}
+		else if (name.equals("infoValidationParameters"))
+		{
+		    executeInfoValidationParameters();
+		}
 		else
 		{
 			throw new Exception("Command "+commandNumber+": unknown command :" +command.getName());
@@ -489,6 +501,60 @@ public class Command
 	}
 
 
+	private void executeShowValidationParameters() 
+	{
+		if (validationParameters == null)
+		{
+			System.out.println("no validationParameters defined ; use setValidationParameters to initialize it");
+		}
+		else
+		{
+			System.out.println(validationParameters);
+		}
+		
+	}
+
+	private void executeSetValidationParameters(Map<String, List<String>> parameters) 
+	{
+		for (String key : parameters.keySet()) 
+		{
+			String value = getSimpleString(parameters,key);
+			if (validationParameters == null) validationParameters = new ValidationParameters();
+			try 
+			{
+				setAttribute(validationParameters, key, value);
+			} 
+			catch (Exception e) 
+			{
+				logger.error(e.getMessage());
+				System.err.println("unknown or unvalid parameter " + key);
+			}	
+		}
+	}
+
+	private void executeInfoValidationParameters() throws Exception
+	{
+		try
+		{
+			Class<?> c = validationParameters.getClass();
+			Field[] fields =  c.getDeclaredFields();
+			for (Field field : fields) 
+			{
+				if (field.getName().equals("test3_2_Polygon")) continue;
+				int m = field.getModifiers();
+				if (Modifier.isPrivate(m) && !Modifier.isStatic(m) )
+				{
+					   printField(c,field,"");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
 	/**
 	 * @param beans
 	 * @param manager
@@ -703,7 +769,7 @@ public class Command
 		List<FormatDescription> formats = manager.getExportFormats(null);
 		for (FormatDescription formatDescription : formats)
 		{
-			System.out.println(formatDescription);
+			System.out.println(formatDescription.toString(locale));
 		}
 
 
@@ -948,9 +1014,8 @@ public class Command
 		List<FormatDescription> formats = manager.getImportFormats(null);
 		for (FormatDescription formatDescription : formats)
 		{
-			System.out.println(formatDescription);
+			System.out.println(formatDescription.toString(locale));
 		}
-
 
 	}
 
@@ -960,7 +1025,7 @@ public class Command
 		List<FormatDescription> formats = manager.getDeleteExportFormats(null);
 		for (FormatDescription formatDescription : formats)
 		{
-			System.out.println(formatDescription);
+			System.out.println(formatDescription.toString(locale));
 		}
 
 

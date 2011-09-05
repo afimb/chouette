@@ -56,7 +56,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line> {
      * 
      */
     public XMLNeptuneImportLinePlugin() {
-        description = new FormatDescription();
+        description = new FormatDescription(this.getClass().getName());
         description.setName("XMLNeptuneLine");
         List<ParameterDescription> params = new ArrayList<ParameterDescription>();
         ParameterDescription param1 = new ParameterDescription("xmlFile", ParameterDescription.TYPE.FILEPATH, false, true);

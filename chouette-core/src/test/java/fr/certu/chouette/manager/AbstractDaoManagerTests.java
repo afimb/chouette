@@ -14,7 +14,7 @@ import fr.certu.chouette.common.ChouetteRuntimeException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.manager.Exception.DummyRuntimeException;
+import fr.certu.chouette.manager.exception.DummyRuntimeException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject> extends AbstractManagerTests<T>
 {

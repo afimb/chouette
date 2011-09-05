@@ -35,11 +35,11 @@ public abstract class AbstractExportManagerTests<T extends NeptuneIdentifiedObje
 		this.beanName = beanName;
 		this.bean = bean;
 		exportMock = createMock(IExportPlugin.class );
-		exportDescription = new FormatDescription() ;
+		exportDescription = new FormatDescription(this.getClass().getName()) ;
 		exportDescription.setName("TestExportPlugin");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
 		exportDescription.setParameterDescriptions(params);		
-		exportDeletionDescription = new FormatDescription() ;
+		exportDeletionDescription = new FormatDescription(this.getClass().getName()) ;
 		exportDeletionDescription.setName("TestExportDeletionPlugin");
 		exportDeletionDescription.setParameterDescriptions(params);		
 	}

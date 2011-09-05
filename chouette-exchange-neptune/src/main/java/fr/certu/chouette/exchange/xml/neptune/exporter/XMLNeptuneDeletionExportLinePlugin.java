@@ -30,7 +30,7 @@ public class XMLNeptuneDeletionExportLinePlugin implements IExportPlugin<Line> {
 
 	
 	public XMLNeptuneDeletionExportLinePlugin() {
-		description = new FormatDescription();
+		description = new FormatDescription(this.getClass().getName());
 		description.setName("XMLNeptuneLine");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
 		ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILENAME, false, true);
