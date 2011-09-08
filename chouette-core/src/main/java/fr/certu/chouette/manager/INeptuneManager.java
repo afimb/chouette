@@ -7,13 +7,11 @@
  */
 package fr.certu.chouette.manager;
 
-import java.util.Collection;
 import java.util.List;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -47,7 +45,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * 
 	 * @param dao an IDaoTemplate implementation
 	 */
-	void setJdbcDao(IJdbcDaoTemplate<T> dao);
+	void setJdbcDao(IDaoTemplate<T> dao);
 
 	// Create
 	/**
@@ -148,6 +146,15 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	T getById(Long id) throws ChouetteException;
 	
+    /**
+     * count object which respond to clause (may be null)
+     * @param user
+     * @param clause clause (may be null)
+     * @return
+     * @throws ChouetteException
+     */
+    long count(User user, Filter clause) throws ChouetteException;
+
 
 	// Update 
 	/**
@@ -209,7 +216,24 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 */
 	int removeAll(User user,Filter filter)  throws ChouetteException;
 
-	void removeAll(User user,Collection<T> objects, boolean propagate)  throws ChouetteException;
+	/**
+	 * remove a list of beans 
+	 * @param user
+	 * @param objects
+	 * @param propagate
+	 * @throws ChouetteException
+	 */
+	void removeAll(User user,List<T> objects, boolean propagate)  throws ChouetteException;
+
+    /**
+     * purge incomplete beans 
+     * 
+     * @param user
+     * @return
+     * @throws ChouetteException
+     */
+    int purge(User user) throws ChouetteException;
+
 	// importation
 
 	/**

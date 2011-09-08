@@ -8,7 +8,6 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,6 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
@@ -294,7 +292,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	}
 
 	@Override
-	public void removeAll(User user, Collection<Line> lines, boolean propagate) throws ChouetteException
+	public void removeAll(User user, List<Line> lines, boolean propagate) throws ChouetteException
 	{
 		/*
 		logger.debug("start deleting Lines");

@@ -104,16 +104,16 @@ public class DaoInjector <T extends NeptuneIdentifiedObject>
 	{
 		return new DaoInjector<VehicleJourney>();
 	}
-	
-	
+
+
 	@Getter @Setter private INeptuneManager<T> manager;
 	@Getter @Setter private IDaoTemplate<T> dao;
-	@Getter @Setter private IJdbcDaoTemplate<T> jdbcDao;
-	
+	@Getter @Setter private IDaoTemplate<T> jdbcDao;
+
 	public void init()
 	{
 		if (dao != null)
-		 manager.setDao(dao);
+			manager.setDao(dao);
 		if (jdbcDao != null)
 			manager.setJdbcDao(jdbcDao);
 	}

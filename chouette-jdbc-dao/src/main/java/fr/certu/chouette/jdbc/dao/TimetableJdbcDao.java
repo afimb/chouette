@@ -9,11 +9,12 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 
 /**
+ * manage mass storage for Timetables
+ * 
  * 
  * @author mamadou keira
  * 
@@ -23,6 +24,9 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 {
 	private static final Logger logger = Logger.getLogger(TimetableJdbcDao.class);
 	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateStatement(java.sql.PreparedStatement, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+	 */
 	@Override
 	protected void populateStatement(PreparedStatement ps, Timetable timetable)
 	throws SQLException 
@@ -70,17 +74,17 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 
 	}
 
-
-
-
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#getAttributeValues(java.lang.String, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+	 */
 	@Override
 	protected Collection<? extends Object> getAttributeValues(
-			String attributeKey, Timetable item) throws JdbcDaoException 
+			String attributeKey, Timetable item)
 			{
 		if (attributeKey.equals("period"))
 		{
 			Collection<JdbcPeriod> periods = new ArrayList<TimetableJdbcDao.JdbcPeriod>();
-			int position = 1;
+			int position = 0;
 			if (item.getPeriods() != null)
 			{
 				for (Period period : item.getPeriods()) 
@@ -97,7 +101,7 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 		if (attributeKey.equals("date"))
 		{
 			Collection<JdbcDate> dates = new ArrayList<TimetableJdbcDao.JdbcDate>();
-			int position = 1;
+			int position = 0;
 			if (item.getCalendarDays() != null)
 			{
 				for (Date date : item.getCalendarDays()) 
@@ -116,6 +120,11 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 			}
 
 
+	
+	/**
+	 * period sub item 
+	 *
+	 */
 	class JdbcPeriod 
 	{
 		public Long timetableId;
@@ -123,11 +132,16 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 		public int position;
 	}
 
+	/**
+	 * date sub item
+	 *
+	 */
 	class JdbcDate
 	{
 		public Long timetableId;
 		public Date date;
 		public int position;
 	}
+
 
 }

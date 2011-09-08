@@ -12,6 +12,11 @@
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.VehicleJourney</value>
 		</property>
+		<property name="sqlPurge">
+			<value>
+                 DELETE FROM ${database.schema}.vehiclejourney WHERE id NOT IN (SELECT distinct vehicleJourneyId FROM ${database.schema}.timetablevehiclejourney 
+			</value>
+		</property>
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.VehicleJourney

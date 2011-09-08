@@ -46,6 +46,9 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	@Setter private String mappedRequest;
 	@Getter @Setter private String fichierContentType;
 	@Getter @Setter private File fichier;
+    private static String actionMsg = null;
+    private static String actionErr = null;    
+    private static String fieldErr = null;    
 
 
 
@@ -81,6 +84,20 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	{
 		this.request.put("correspondances", connectionLinkManager.getAll(null));
 		log.debug("List of connectionLinks");
+		        if (actionMsg != null) {
+            addActionMessage(actionMsg);
+            actionMsg = null;
+        }
+        if (fieldErr != null &&  actionErr != null) {
+            addFieldError(actionErr, actionErr);
+            fieldErr = null;
+            actionErr = null;
+        }
+        else if (actionErr != null) {
+            addActionError(actionErr);
+            actionErr = null;
+        }
+
 		return LIST;
 	}
 
@@ -96,11 +113,11 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 		try
 		{
 			connectionLinkManager.addNew(null,getModel());
-			addActionMessage(getText("connectionlink.create.ok"));
+            actionMsg = getText("connectionlink.create.ok");
 		}
 		catch (Exception exception)
 		{
-			addActionError(getText("connectionlink.create.ko"));
+            actionErr = getText("connectionlink.create.ko");
 		}
 		setMappedRequest(UPDATE);
 		setIdCorrespondance(model.getId());
@@ -112,6 +129,20 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	public String edit()
 	{
 		setMappedRequest(UPDATE);
+		        if (actionMsg != null) {
+            addActionMessage(actionMsg);
+            actionMsg = null;
+        }
+        if (fieldErr != null &&  actionErr != null) {
+            addFieldError(actionErr, actionErr);
+            fieldErr = null;
+            actionErr = null;
+        }
+        else if (actionErr != null) {
+            addActionError(actionErr);
+            actionErr = null;
+        }
+
 		return EDIT;
 	}
 
@@ -120,11 +151,11 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 		try
 		{
 			connectionLinkManager.update(null,getModel());
-			addActionMessage(getText("connectionlink.update.ok"));
+            actionMsg = getText("connectionlink.update.ok");
 		}
 		catch (Exception ex)
 		{
-			addActionError(getText("connectionlink.update.ko"));
+            actionErr = getText("connectionlink.update.ko");
 		}
 		setMappedRequest(UPDATE);
 		log.debug("Update connectionLink with id : " + getModel().getId());
@@ -135,12 +166,12 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	{
 		try {
 			connectionLinkManager.remove(null,getModel(),false);
-			addActionMessage(getText("connectionlink.delete.ok"));
+        actionMsg = getText("connectionlink.delete.ok");
 			log.debug("Delete connectionLink with id : " + getModel().getId());
 
 
 		} catch (ChouetteException e) {
-			addActionError(getText("connectionlink.delete.ko"));
+			actionErr= getText("connectionlink.delete.ko");
 		}
 		return REDIRECTLIST;
 	}
@@ -148,7 +179,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	@SkipValidation
 	public String cancel()
 	{
-		addActionMessage(getText("connectionlink.cancel.ok"));
+        actionMsg = getText("connectionlink.cancel.ok");
 		return REDIRECTLIST;
 	}
 
@@ -226,7 +257,10 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 			StopArea startOfLink = stopAreaManager.getById(idPositionGeographique);
 			model.setStartOfLink(startOfLink);
 			connectionLinkManager.update(null,model);
+            actionMsg = getText("connectionlink.addStart.ok");
 		}
+        else
+            actionErr = getText("connectionlink.addStart.nok");
 		return REDIRECTEDIT;
 	}
 
@@ -239,7 +273,10 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 			StopArea endOfLink = stopAreaManager.getById(idPositionGeographique);
 			model.setEndOfLink(endOfLink);
 			connectionLinkManager.update(null,model);
+            actionMsg = getText("connectionlink.addEnd.ok");
 		}
+        else
+            actionErr = getText("connectionlink.addEnd.nok");
 		return REDIRECTEDIT;
 	}
 
@@ -252,64 +289,51 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 	{
 		log.debug("Import ConnectionLinks");
 
-//		// Validate File path
-//		String canonicalPath = null;
-//		try
-//		{
-//			canonicalPath = fichier.getCanonicalPath();
-//		}
-//		catch (Exception exception)
-//		{
-//			log.debug("Invalid path file : " + exception.getMessage());
-//			addFieldError("fichier", getText("invalid.path.file"));
-//			return REDIRECTLIST;
-//		}
-//
-//		// Connection links importation
-//		try
-//		{
-//			List<String> messages = importateurCorrespondances.lire(canonicalPath);
-//			if (messages != null)
-//			{
-//				// same error on several connectionlinks, retreive duplicates
-//				Map<String, String> duplicates = new HashMap<String, String>();
-//				if (messages.size() > 0)
-//				{
-//					for (String errMsg : messages)
-//					{
-//						if (!duplicates.containsKey(errMsg))
-//						{
-//							duplicates.put(errMsg, null);
-//							log.debug(errMsg);
-//							addActionError(errMsg);
-//						}
-//					}
-//				}
-//				else
-//				{
-//					log.debug("Could not import connection links");
-//					addActionError(getText("import.connectionLink.failure"));
-//				}
-//			}
-//			else
-//			{
-//				log.debug("Import connection links success");
-//				addActionMessage(getText("import.connectionLink.success"));
-//			}
-//		}
-//		catch (ServiceException serviceException)
-//		{
-//			if (CodeIncident.ERR_CSV_NON_TROUVE.equals(serviceException.getCode()))
-//			{
-//				log.debug("Unable to find csv file : " + serviceException.getMessage());
-//				addFieldError("fichier", getText("import.csv.fichier.introuvable"));
-//			}
-//			else
-//			{
-//				log.debug("Bad format file : " + serviceException.getMessage());
-//				addActionError(getText("import.csv.format.ko"));
-//			}
-//		}
+/*
+        // Validate File path
+        String canonicalPath = null;
+        try {
+            canonicalPath = fichier.getCanonicalPath();
+        } catch (Exception exception) {
+            log.debug("Invalid path file : " + exception.getMessage());
+            fieldErr = "fichier";
+            actionErr = getText("invalid.path.file");
+            return REDIRECTLIST;
+        }
+
+        // Connection links importation
+        try {
+            List<String> messages = importateurCorrespondances.lire(canonicalPath);
+            if (messages != null) {
+                // same error on several connectionlinks, retreive duplicates
+                Map<String, String> duplicates = new HashMap<String, String>();
+                if (messages.size() > 0) {
+                    for (String errMsg : messages) {
+                        if (!duplicates.containsKey(errMsg)) {
+                            duplicates.put(errMsg, null);
+                            log.debug(errMsg);
+                            actionErr = errMsg;
+                        }
+                    }
+                } else {
+                    log.debug("Could not import connection links");
+                    actionErr = getText("import.connectionLink.failure");
+                }
+            } else {
+                log.debug("Import connection links success");
+                actionMsg = getText("import.connectionLink.success");
+            }
+        } catch (ServiceException serviceException) {
+            if (CodeIncident.ERR_CSV_NON_TROUVE.equals(serviceException.getCode())) {
+                log.debug("Unable to find csv file : " + serviceException.getMessage());
+                fieldErr = "fichier";
+                actionErr = getText("import.csv.fichier.introuvable");
+            } else {
+                log.debug("Bad format file : " + serviceException.getMessage());
+                actionErr = getText("import.csv.format.ko");
+            }
+        }
+*/
 
 		return REDIRECTLIST;
 	}
@@ -360,7 +384,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 			}
 			catch (Exception ex)
 			{
-				addActionError( getExceptionMessage(ex));
+				addActionError(getExceptionMessage(ex));
 			}
 		}
 		else

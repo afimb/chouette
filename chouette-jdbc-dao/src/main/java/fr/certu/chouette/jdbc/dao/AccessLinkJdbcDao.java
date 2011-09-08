@@ -83,4 +83,6 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 		setId(ps,19,accessLink.getStopArea());
 
 	}
+
+
 }

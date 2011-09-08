@@ -3,10 +3,10 @@
 /****************************************************************/
 BODY
 {
-  BACKGROUND-COLOR: #7FF798;
+  BACKGROUND-COLOR: #19D73D; 
   TEXT-ALIGN: center;
   FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
-  COLOR: #1A408B;
+  COLOR: black; /* #1A408B; */
   PADDING: 10px;
 }
 
@@ -29,7 +29,7 @@ FORM
 
 A
 {
-  COLOR: #1A408B;
+  COLOR: black; /*#1A408B;*/
   TEXT-DECORATION: none;
 }
 
@@ -125,7 +125,7 @@ A:hover
 
 .logo
 {
-  background-color: #7FF798;
+  background-color: #19D73D;
   color: #FFFFFF;
   font-weight: bold;
 }

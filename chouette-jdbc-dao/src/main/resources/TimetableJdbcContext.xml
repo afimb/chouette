@@ -124,5 +124,13 @@
 				</entry>
 			</map>
 		</property>
+		<property name="sqlPurge">
+			<value>
+                 DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
+                    (SELECT DISTINCT (timetableid) FROM ${database.schema}.Timetable_Date 
+                    UNION 
+                     SELECT DISTINCT (timetableid) FROM ${database.schema}.Timetable_Period) 
+			</value>
+		</property>
 	</bean>
 </beans>	

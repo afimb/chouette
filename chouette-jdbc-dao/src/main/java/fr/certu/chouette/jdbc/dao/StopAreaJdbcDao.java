@@ -7,6 +7,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -15,6 +18,7 @@ import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
+ * manage mass storage for StopAreas
  * 
  * @author mamadou keira
  * 
@@ -23,6 +27,14 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 @SuppressWarnings("unchecked")
 public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea> 
 {
+	@Getter @Setter private String sqlPurge1; 
+	@Getter @Setter private String sqlPurge2; 
+	@Getter @Setter private String sqlPurge3; 
+	@Getter @Setter private String sqlPurge4; 
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#getAll()
+	 */
 	@Override
 	public List<StopArea> getAll() 
 	{
@@ -34,6 +46,9 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateStatement(java.sql.PreparedStatement, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+	 */
 	@Override
 	protected void populateStatement(PreparedStatement ps, StopArea stopArea)
 	throws SQLException {
@@ -100,4 +115,26 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setString(19, streetName);
 	
 	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#purge()
+	 */
+	@Override
+	public synchronized int purge() 
+	{
+		int count = 0;
+		setSqlPurge(sqlPurge1);
+		count += super.purge();
+		setSqlPurge(sqlPurge2);
+		count += super.purge();
+		setSqlPurge(sqlPurge3);
+		count += super.purge();
+		setSqlPurge(sqlPurge4);
+		count += super.purge();
+		return count;
+	}
+	
+	
+	
 }

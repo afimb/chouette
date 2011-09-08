@@ -62,6 +62,9 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 	private Long idTableauMarche;
 	private Date seuilDateDepartCourse = null;
 	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+	public static String actionMsg = null;
+	public static String actionErr = null;
+
 
 	public void setIdItineraire(Long idItineraire)
 	{
@@ -85,7 +88,6 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 
 	public Long getIdTableauMarche()
 	{
-		String timetableId = idTableauMarche == null ? "null" : idTableauMarche.toString();
 		return idTableauMarche;
 	}
 
@@ -127,36 +129,36 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 			/**
 			 * TODO
 			 */
-//			for (VehicleJourney vehicleJourney : vJourneys) 
-//			{
-//				boolean isValideTimeTable = false;
-//				boolean isValideVJAtStop = false;
-//				for (Timetable timetable : vehicleJourney.getTimetables())
-//				{
-//					if(timetable != null && timetable.getId() != null)
-//					{
-//						if(timetable.getId().equals(getIdTableauMarche()))
-//						{
-//							isValideTimeTable = true;
-//							break;
-//						}	
-//					}
-//				}
-//
-//				for (VehicleJourneyAtStop atStop : vehicleJourney.getVehicleJourneyAtStops())
-//				{
-//					if(atStop != null && atStop.getId() != null && atStop.getDepartureTime() != null) 
-//					{
-//						if(atStop.getId().equals(getIdTableauMarche()) && atStop.getDepartureTime().after(getSeuilDateDepartCourse()))
-//						{
-//							isValideVJAtStop = true;
-//							break;
-//						}	
-//					}
-//				}
-//				if(isValideTimeTable || isValideVJAtStop)
-//					courses.add(vehicleJourney);
-//			}
+			//			for (VehicleJourney vehicleJourney : vJourneys) 
+			//			{
+			//				boolean isValideTimeTable = false;
+			//				boolean isValideVJAtStop = false;
+			//				for (Timetable timetable : vehicleJourney.getTimetables())
+			//				{
+			//					if(timetable != null && timetable.getId() != null)
+			//					{
+			//						if(timetable.getId().equals(getIdTableauMarche()))
+			//						{
+			//							isValideTimeTable = true;
+			//							break;
+			//						}	
+			//					}
+			//				}
+			//
+			//				for (VehicleJourneyAtStop atStop : vehicleJourney.getVehicleJourneyAtStops())
+			//				{
+			//					if(atStop != null && atStop.getId() != null && atStop.getDepartureTime() != null) 
+			//					{
+			//						if(atStop.getId().equals(getIdTableauMarche()) && atStop.getDepartureTime().after(getSeuilDateDepartCourse()))
+			//						{
+			//							isValideVJAtStop = true;
+			//							break;
+			//						}	
+			//					}
+			//				}
+			//				if(isValideTimeTable || isValideVJAtStop)
+			//					courses.add(vehicleJourney);
+			//			}
 			log.debug("Courses size: " + courses.size());
 
 			// GESTION DE LA PAGINATION
@@ -315,6 +317,14 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 	@SkipValidation
 	public String list()
 	{
+		if (actionMsg != null) {
+			addActionMessage(actionMsg);
+			actionMsg = null;
+		}
+		if (actionErr != null) {
+			addActionError(actionErr);
+			actionErr = null;
+		}
 		return LIST;
 	}
 
@@ -328,7 +338,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 	{
 		setIdTableauMarche(null);
 		setSeuilDateDepartCourse(null);
-		addActionMessage(getText("horairesDePassage.cancel.ok"));
+		actionMsg = getText("horairesDePassage.cancel.ok");
 		return REDIRECTLIST;
 	}
 
@@ -346,56 +356,77 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 		List<StopPoint> arretsItineraire = model.getArretsItineraire();
 		Long idCourseADecaler = model.getIdCourseADecaler();
 		Integer nbreCourseDecalage = model.getNbreCourseDecalage();
-		if (idCourseADecaler != null && nbreCourseDecalage >= 1)
-		{
-			// Récupération des horaires de la course qu'il faut décaler d'un certain temps
-			List<VehicleJourneyAtStop> horairesADecaler = model.getHorairesParIdCourse().get(idCourseADecaler);
-			//log.debug("horairesADecaler : " + horairesADecaler);
-			List<VehicleJourneyAtStop> horairesADecalerResultat = new ArrayList<VehicleJourneyAtStop>();
-
-			//création de la liste des ids des tableaux de marche de la course de référence
-			List<Long> tableauxMarcheIds = new ArrayList<Long>();
-			VehicleJourney vehicleJourney = vehicleJourneyManager.getById(idCourseADecaler);
-			List<Timetable> timetables = vehicleJourney.getTimetables();
-
-			//TODO gestion du décalage (EtatMajHoraire ???)
-			//			for (int i = 0; i < nbreCourseDecalage; i++)
-			//			{
-			//				// Création d'une course
-			//				VehicleJourney course = new VehicleJourney();
-			//				Route route = routeManager.get(null, Filter.getNewEqualsFilter("id", getIdItineraire()), level);
-			//				course.setRoute(route);
-			//				vehicleJourneyManager.addNew(null, course);
-			//				// Copie des tableaux de marche de la course de référence dans la nouvelle
-			//				associerCourseTableauxMarche(course.getId(), timetables);
-			//				// Ajout du temps de décalage à toutes les dates
-			//				int compteurHoraire = 0;
-			//				Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
-			//				for (VehicleJourneyAtStop horaire : horairesADecaler)
-			//				{
-			//					if (horaire != null)
-			//					{
-			//						Date heureDepartOrigine = horaire.getDepartureTime();
-			//						Date heureDepartResultat = new Date(heureDepartOrigine.getTime() + tempsDecalageMillis);
-			//						//	Mise à jour de la liste d'horaire résultat
-			//						Horaire horaireResultat = new Horaire();
-			//						horaireResultat.setIdArret(horaire.getIdArret());
-			//						horaireResultat.setIdCourse(horaire.getIdCourse());
-			//						horaireResultat.setDepartureTime(heureDepartResultat);
-			//						horairesADecalerResultat.add(horaireResultat);
-			//						Long idArretItineraire = getIdArretParIndice(compteurHoraire, arretsItineraire);
-			//						majHoraires.add(EtatMajHoraire.getCreation(idArretItineraire, course.getId(), heureDepartResultat));
-			//					} else
-			//					{
-			//						horairesADecalerResultat.add(null);
-			//					}
-			//					compteurHoraire++;
-			//				}
-			//				horaireManager.modifier(majHoraires);
-			//				horairesADecaler = horairesADecalerResultat;
-			//				horairesADecalerResultat = new ArrayList<Horaire>();
-			//			}
+		if (idCourseADecaler == null) {
+			actionErr = getText("course.decalage.noid");
+			return REDIRECTLIST;
 		}
+		if (nbreCourseDecalage == null || nbreCourseDecalage.intValue() <= 0) {
+			actionErr = getText("course.decalage.nonewcourse");
+			return REDIRECTLIST;
+		}
+		if (tempsDecalageMillis / 1000 <= 0) {
+			actionErr = getText("course.decalage.nogap");
+			return REDIRECTLIST;
+		}
+
+
+		// Récupération des horaires de la course qu'il faut décaler d'un certain temps
+		List<VehicleJourneyAtStop> horairesADecaler = model.getHorairesParIdCourse().get(idCourseADecaler);
+		//log.debug("horairesADecaler : " + horairesADecaler);
+		List<VehicleJourneyAtStop> horairesADecalerResultat = new ArrayList<VehicleJourneyAtStop>();
+
+		//création de la liste des ids des tableaux de marche de la course de référence
+		List<Long> tableauxMarcheIds = new ArrayList<Long>();
+		VehicleJourney vehicleJourney = vehicleJourneyManager.getById(idCourseADecaler);
+		List<Timetable> timetables = vehicleJourney.getTimetables();
+
+		//TODO gestion du décalage (EtatMajHoraire ???)
+		int nbreCourseDecalageInt = nbreCourseDecalage.intValue();
+		//	        int count = 0;
+		//	        decalage:
+		//	        for (int i = 0; i < nbreCourseDecalage; i++) {
+		//	            // Création d'une course
+		//	            Course course = new Course();
+		//	            // Ajout du temps de décalage à toutes les dates
+		//	            int compteurHoraire = 0;
+		//	            Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
+		//	            boolean isfirstHoraire = true;
+		//	            for (Horaire horaire : horairesADecaler) {
+		//	                if (horaire != null) {
+		//	                    Date heureDepartOrigine = horaire.getDepartureTime();
+		//	                    Date heureDepartResultat = new Date(heureDepartOrigine.getTime() + tempsDecalageMillis);
+		//	                    if (isfirstHoraire && heureDepartResultat.before(heureDepartOrigine)) {
+		//	                        actionErr = "course.decalage.partial";
+		//	                        nbreCourseDecalageInt = count;
+		//	                        break decalage;
+		//	                    }
+		//	                    isfirstHoraire =false;
+		//	                    //	Mise à jour de la liste d'horaire résultat
+		//	                    Horaire horaireResultat = new Horaire();
+		//	                    horaireResultat.setIdArret(horaire.getIdArret());
+		//	                    horaireResultat.setIdCourse(horaire.getIdCourse());
+		//	                    horaireResultat.setDepartureTime(heureDepartResultat);
+		//	                    horairesADecalerResultat.add(horaireResultat);
+		//	                    Long idArretItineraire = getIdArretParIndice(compteurHoraire, arretsItineraire);
+		//	                    majHoraires.add(EtatMajHoraire.getCreation(idArretItineraire, course.getId(), heureDepartResultat));
+		//	                } else {
+		//	                    horairesADecalerResultat.add(null);
+		//	                }
+		//	                compteurHoraire++;
+		//	            }
+		//	            count++;
+		//	            course.setIdItineraire(getIdItineraire());
+		//	            courseManager.creer(course);
+		//	            // Copie des tableaux de marche de la course de référence dans la nouvelle
+		//	            courseManager.associerCourseTableauxMarche(course.getId(), tableauxMarcheIds);
+		//	            horaireManager.modifier(majHoraires);
+		//	            horairesADecaler = horairesADecalerResultat;
+		//	            horairesADecalerResultat = new ArrayList<Horaire>();
+		//	        }
+
+		String[] args = {""+idCourseADecaler.longValue(), ""+nbreCourseDecalageInt, ""+(tempsDecalageMillis / 1000)};
+		actionMsg = getText("course.decalage.ok", args);
+
 		return REDIRECTLIST;
 	}
 
@@ -447,7 +478,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 		//			indexPremiereDonneeDansCollectionPaginee++;
 		//		}
 		//		horaireManager.modifier(majHoraires);
-		
+
 		return REDIRECTLIST;
 	}
 

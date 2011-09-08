@@ -21,6 +21,7 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.common.ChouetteRuntimeException;
 import fr.certu.chouette.critere.AndClause;
 import fr.certu.chouette.critere.IClause;
 import fr.certu.chouette.critere.ScalarClause;
@@ -96,6 +97,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	private Integer START_INDEX_AJAX_LIST = 0;
 	private Integer END_INDEX_AJAX_LIST = 10;
 	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
+	    private static String actionMsg = null;
+    private static String actionErr = null;    
+
 
 	public Long getIdItineraire()
 	{
@@ -280,6 +284,14 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		List<StopArea> positionGeographiques = stopAreaManager.getAll(null, filter, level);
 		request.put("positionGeographiques", positionGeographiques);
 		log.debug("List of stopArea");
+        if (actionMsg != null) {
+            addActionMessage(actionMsg);
+            actionMsg = null;
+        }
+        if (actionErr != null) {
+            addActionError(actionErr);
+            actionErr = null;
+        }
 		return LIST;
 	}
 
@@ -295,11 +307,11 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		stopAreaManager.addNew(null, model);
 		if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
 		{
-			addActionMessage(getText("arretPhysique.create.ok"));
+            actionMsg = getText("arretPhysique.create.ok");
 			log.debug("Create boardingPosition with id : " + model.getId());
 		} else
 		{
-			addActionMessage(getText("zone.create.ok"));
+            actionMsg = getText("zone.create.ok");
 			log.debug("Create stopPlace with id : " + model.getId());
 		}
 		setIdPositionGeographique(model.getId());
@@ -324,7 +336,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 					if (!((areaCentroid.getLongitude() != null && areaCentroid.getLatitude() != null)
 							|| (projectedPoint != null)))
 					{
-						addActionMessage(getText("stopplace.children.nocoordinates"));
+                    actionMsg = getText("stopplace.children.nocoordinates");
 						break;
 					}
 				}
@@ -333,6 +345,14 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		}
 
 		setMappedRequest(UPDATE);
+        if (actionMsg != null) {
+            addActionMessage(actionMsg);
+            actionMsg = null;
+        }
+        if (actionErr != null) {
+            addActionError(actionErr);
+            actionErr = null;
+        }
 		return EDIT;
 	}
 
@@ -341,11 +361,11 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		stopAreaManager.update(null, model);
 		if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
 		{
-			addActionMessage(getText("arretPhysique.update.ok"));
+            actionMsg = getText("arretPhysique.update.ok");
 			log.debug("Update boardingPosition with id : " + model.getId());
 		} else
 		{
-			addActionMessage(getText("zone.update.ok"));
+            actionMsg = getText("zone.update.ok");
 			log.debug("Update stopPlace with id : " + model.getId());
 		}
 
@@ -355,14 +375,22 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 
 	public String delete() throws ChouetteException
 	{
+		try
+		{
 		stopAreaManager.remove(null, model, false);
+	}
+	catch (ChouetteRuntimeException e)
+	{
+            actionErr = getText("arretPhysique.used");
+            return REDIRECTLIST;
+        }
 		if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
 		{
-			addActionMessage(getText("arretPhysique.delete.ok"));
+            actionMsg = getText("arretPhysique.delete.ok");
 			log.debug("Delete boardingPosition with id : " + model.getId());
 		} else
 		{
-			addActionMessage(getText("zone.delete.ok"));
+            actionMsg = getText("zone.delete.ok");
 			log.debug("Delete stopPlace with id : " + model.getId());
 		}
 
@@ -374,10 +402,10 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	{
 		if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
 		{
-			addActionMessage(getText("arretPhysique.cancel.ok"));
+            actionMsg = getText("arretPhysique.cancel.ok");
 		} else
 		{
-			addActionMessage(getText("zone.cancel.ok"));
+            actionMsg = getText("zone.cancel.ok");
 		}
 		return REDIRECTLIST;
 	}
@@ -394,10 +422,11 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	{
 		if (idArretSource == null || idArretDestination == null)
 		{
-			addActionError(getText("arretPhysique.merge.ko"));
+            actionErr = getText("arretPhysique.merge.ko");
 		} else
 		{
-			addActionMessage(getText("arretPhysique.merge.ok"));
+            actionMsg = getText("arretPhysique.merge.ok");
+            // TODO 
 			//positionGeographiqueManager.fusionnerPositionsGeographiques(idArretSource, idArretDestination);
 		}
 		return REDIRECTLIST;

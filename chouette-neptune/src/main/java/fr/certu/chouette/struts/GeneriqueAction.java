@@ -184,6 +184,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       }
       modes.add(new ObjetEnumere(modeType, traduction));
     }
+        //To make the first line of the list empty in the web view
+        modes.add(0, null);
 
     return modes;
 

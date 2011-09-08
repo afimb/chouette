@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
 
@@ -37,7 +36,6 @@ public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern>
 
 	@Override
 	protected Collection<? extends Object> getAttributeValues(String attributeKey, JourneyPattern item) 
-	throws JdbcDaoException 
 	{
 		if (attributeKey.equals("stoppoint"))
 		{

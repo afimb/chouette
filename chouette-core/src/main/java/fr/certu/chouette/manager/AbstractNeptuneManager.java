@@ -26,7 +26,6 @@ import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.dao.IJdbcDaoTemplate;
 import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -56,7 +55,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Getter @Setter private IDaoTemplate<T> dao; 
 
 	// data storage access by jdbc
-	@Getter @Setter private IJdbcDaoTemplate<T> jdbcDao;
+	@Getter @Setter private IDaoTemplate<T> jdbcDao;
 
 	@Getter @Setter private String objectIdDefaultPrefix ;
 
@@ -244,8 +243,6 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 
-
-
 	@Transactional
 	@Override
 	public List<T> getAll(User user) throws ChouetteException {
@@ -253,6 +250,30 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		return getDao().getAll();
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#count(fr.certu.chouette.model.user.User, fr.certu.chouette.filter.Filter)
+	 */
+	@Override
+	public long count(User user, Filter clause) throws ChouetteException 
+	{
+		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+        return getDao().count(clause);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.manager.INeptuneManager#purge(fr.certu.chouette.model.user.User, boolean)
+	 */
+	@Override
+	public int purge(User user) throws ChouetteException 
+	{
+		if (getJdbcDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+        return getJdbcDao().purge();
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean)
 	 */
@@ -307,7 +328,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Transactional
 	@Override
-	public void removeAll(User user, Collection<T> objects,boolean propagate) throws ChouetteException
+	public void removeAll(User user, List<T> objects,boolean propagate) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		/*

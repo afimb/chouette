@@ -17,8 +17,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	@Getter @Setter private String version;
 	private List<DayTypeEnum> dayTypes;    //Never be persisted
 	@Getter @Setter private Integer intDayTypes;
-	@Getter @Setter private List<Date> calendarDays;
-	@Getter @Setter private List<Period> periods;
+	@Getter @Setter private List<Date> calendarDays = new ArrayList<Date>();
+	@Getter @Setter private List<Period> periods  = new ArrayList<Period>();
 	@Getter @Setter private List<String> vehicleJourneyIds;
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
 

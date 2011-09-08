@@ -15,9 +15,11 @@ import lombok.Setter;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import fr.certu.chouette.dao.IJdbcDaoTemplate;
+import fr.certu.chouette.dao.IDaoTemplate;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.jdbc.exception.JdbcDaoExceptionCode;
+import fr.certu.chouette.jdbc.exception.JdbcDaoRuntimeException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PeerId;
@@ -30,7 +32,7 @@ import fr.certu.chouette.model.neptune.PeerId;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject>
-extends JdbcDaoSupport implements IJdbcDaoTemplate<T> 
+extends JdbcDaoSupport implements IDaoTemplate<T> 
 {
 	@Getter @Setter protected String sqlSelectAll;
 	@Getter @Setter protected String sqlSelectByObjectId;
@@ -39,6 +41,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	@Getter @Setter protected String sqlUpdate;
 	@Getter @Setter protected String sqlDelete;
 	@Getter @Setter protected Map<String, Map<String,String>> collectionAttributes;
+	@Getter @Setter protected String sqlPurge;
 
 	/**
 	 * Transform an array to sql IN clause
@@ -78,10 +81,10 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @throws JdbcDaoException 
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	public List<PeerId> get(List<String> objectids) throws JdbcDaoException
+	public List<PeerId> get(List<String> objectids)
 	{
 		if(sqlSelectByObjectIdWithInClause == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+			throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
 					"implements sqlSelectByObjectIdWithInClause request statement in xml file :"+objectids.get(0).split(":")[1]+"JdbcDaoConext.xml");
 
 		String[] myArray = objectids.toArray(new String[objectids.size()]);
@@ -107,15 +110,12 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param type
 	 * @throws SQLException
 	 */
-	protected  void populateStatement(PreparedStatement ps, T type) throws SQLException
-	{
-		
-	}
+	protected abstract  void populateStatement(PreparedStatement ps, T type) throws SQLException ;
 	
 
 
 	@Override
-	public void saveOrUpdateAll(final List<T> objects) throws JdbcDaoException
+	public void saveOrUpdateAll(final List<T> objects) 
 	{			
 		if (objects.isEmpty()) 
 		{
@@ -139,7 +139,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 				toBatchInsert(sqlInsert, updatables);
 			}else 
 			{
-				throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+				throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
 						"implements sqlUpdate AND/OR sqlDelete request statement in xml file :"+objects.get(0).getClass().getName()+"JdbcDaoConext.xml");	
 			}
 
@@ -147,7 +147,12 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		afterSaveOrUpdateAllProcessing(objects);
 	}
 
-	protected void afterSaveOrUpdateAllProcessing(List<T> objects) throws JdbcDaoException 
+	/**
+	 * may be overrided for specific post processing actions
+	 * 
+	 * @param objects
+	 */
+	protected void afterSaveOrUpdateAllProcessing(List<T> objects) 
 	{
 		// nothing to do 
 	}
@@ -158,7 +163,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param updatables the real updatable or deletable objects
 	 * @throws JdbcDaoException 
 	 */
-	protected void dispatchObjects(List<T> list,List<T> insertables, List<T> updatables) throws JdbcDaoException
+	protected void dispatchObjects(List<T> list,List<T> insertables, List<T> updatables)
 	{
 		Map<String,T> map = new HashMap<String, T>();
 		for (T type : list) 
@@ -185,10 +190,10 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @return an array of the number of rows affected by each statement
 	 * @throws JdbcDaoException 
 	 */
-	protected int[] toBatchUpdate(String sql, final List<T> list) throws JdbcDaoException
+	protected int[] toBatchUpdate(String sql, final List<T> list) 
 	{
 		if(sql == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+			throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
 					"implements sqlUpdate request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 
 		int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
@@ -221,7 +226,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param list
 	 * @throws JdbcDaoException
 	 */
-	private void toBatchDeleteCollectionAttributes(List<T> list) throws JdbcDaoException 
+	private void toBatchDeleteCollectionAttributes(List<T> list) 
 	{
 		if (collectionAttributes != null && !collectionAttributes.isEmpty())
 		{
@@ -240,11 +245,11 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @throws JdbcDaoException
 	 */
 	private void toBatchDeleteCollectionAttribute(List<T> list,
-			String attributeKey, Map<String, String> map) throws JdbcDaoException 
+			String attributeKey, Map<String, String> map) 
 	{
 		String sql = map.get("sqlDelete");
 		if(sql == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE, 
+			throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE, 
 					"implements sqlDelete request statement for "+attributeKey+" in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 		
 		List<Long> ids = T.extractIds(list);
@@ -262,10 +267,10 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @return an array of the number of rows affected by each statement
 	 * @throws JdbcDaoException 
 	 */
-	protected int[] toBatchInsert(String sql, final List<T> list) throws JdbcDaoException
+	protected int[] toBatchInsert(String sql, final List<T> list)
 	{
 		if(sql == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+			throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
 					"implements sqlInsert request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 
 		int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() 
@@ -298,7 +303,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 			type.setId(peerId.getId());
 		}
 		
-        // insert in secondary tables for multiple occurence attributes
+        // insert in secondary tables for multiple occurrence attributes
 		toBatchInsertCollectionAttributes(list);
 		
 		return rows;
@@ -310,7 +315,7 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param list
 	 * @throws JdbcDaoException
 	 */
-	private void toBatchInsertCollectionAttributes(List<T> list) throws JdbcDaoException 
+	private void toBatchInsertCollectionAttributes(List<T> list)  
 	{
 		if (collectionAttributes != null && !collectionAttributes.isEmpty())
 		{
@@ -331,11 +336,11 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @throws JdbcDaoException
 	 */
 	private void toBatchInsertCollectionAttribute(List<T> list,final String attributeKey,
-			Map<String, String> map) throws JdbcDaoException 
+			Map<String, String> map) 
 	{
 		String sql = map.get("sqlInsert");
 		if(sql == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE, 
+			throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE, 
 					"implements sqlInsert request statement for "+attributeKey+" in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 		
         final List<Object> attributes = new ArrayList<Object>();
@@ -370,9 +375,9 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @return
 	 * @throws JdbcDaoException
 	 */
-	protected Collection<? extends Object> getAttributeValues(String attributeKey, T item) throws JdbcDaoException 
+	protected Collection<? extends Object> getAttributeValues(String attributeKey, T item) 
 	{
-		throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,"getAttributeValues is not implemented for "+this.getClass().getName());
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,"getAttributeValues is not implemented for "+this.getClass().getName());
 	}
 
 	/**
@@ -394,10 +399,10 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 	 * @param list of {@link NeptuneIdentifiedObject}
 	 * @throws JdbcDaoException 
 	 */
-	protected int[] toBatchDelete(String sql, List<T> list) throws JdbcDaoException
+	protected int[] toBatchDelete(String sql, List<T> list) 
 	{
 		if(sql == null)
-			throw new JdbcDaoException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
+			throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE, 
 					"implements sqlDelete request statement in xml file :"+list.get(0).getClass().getName()+"JdbcDaoConext.xml");
 
 		List<String> objectids = T.extractObjectIds(list);
@@ -409,18 +414,31 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		return rows;
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#getAll()
+	 */
 	@Override
 	public List<T> getAll() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#removeAll(java.util.List)
+	 */
 	@Override
-	public void removeAll(List<T> objects) throws JdbcDaoException {
+	public void removeAll(List<T> objects)  {
 		toBatchDelete(sqlDelete, objects);
 
 	}
 	
 	
+	/**
+	 * add object database id in prepared statement
+	 * @param ps prepared statement
+	 * @param pos position in statement
+	 * @param object object
+	 * @throws SQLException
+	 */
 	protected void setId(PreparedStatement ps, int pos, NeptuneObject object) throws SQLException
 	{
 		if (object == null) 
@@ -433,4 +451,101 @@ extends JdbcDaoSupport implements IJdbcDaoTemplate<T>
 		else 
 			ps.setLong(pos,object.getId());
 	}
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#purge()
+	 */
+	@Override
+	public int purge() 
+	{
+		if (sqlPurge == null)
+		{
+			return 0;
+		}
+		return getJdbcTemplate().update(sqlPurge);
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
+	 */
+	@Override
+	public T get(Long id) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"get");
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#save(fr.certu.chouette.model.neptune.NeptuneObject)
+	 */
+	@Override
+	public void save(T object) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"save");
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#remove(java.lang.Long)
+	 */
+	@Override
+	public void remove(Long id) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"remove");
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#removeAll(fr.certu.chouette.filter.Filter)
+	 */
+	@Override
+	public int removeAll(Filter clause) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"removeAll");
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#update(fr.certu.chouette.model.neptune.NeptuneObject)
+	 */
+	@Override
+	public void update(T object) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"update");
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#getByObjectId(java.lang.String)
+	 */
+	@Override
+	public T getByObjectId(String objectId) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"getByObjectId");
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
+	 */
+	@Override
+	public List<T> select(Filter clause) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"select");
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#exists(java.lang.Long)
+	 */
+	@Override
+	public boolean exists(Long id) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"exists");
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#exists(java.lang.String)
+	 */
+	@Override
+	public boolean exists(String objectId) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"exists");
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.IDaoTemplate#count(fr.certu.chouette.filter.Filter)
+	 */
+	@Override
+	public long count(Filter clause) {
+		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED,"count");
+	}
+	
 }

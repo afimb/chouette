@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.FacilityLocation;
@@ -102,7 +101,7 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 
 	@Override
 	protected Collection<? extends Object> getAttributeValues(String attributeKey, Facility item) 
-	throws JdbcDaoException 
+	
 	{
 		if (attributeKey.equals("feature"))
 		{

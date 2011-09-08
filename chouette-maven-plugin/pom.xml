@@ -3,12 +3,12 @@
   <parent>
     <artifactId>chouette</artifactId>
     <groupId>fr.certu.chouette</groupId>
-    <version>1.6.2</version>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
   <groupId>fr.certu.chouette.maven</groupId>
   <artifactId>chouette-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.0</version>
+  <version>1.7.0-SNAPSHOT</version>
   <name>Maven Plugin for Chouette</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -20,7 +20,6 @@
   	<dependency>
 		<groupId>commons-io</groupId>
 		<artifactId>commons-io</artifactId>
-		<version>1.3.2</version>
 	</dependency>
   </dependencies>
 </project>

@@ -115,13 +115,15 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
             if (fileName == null)
                 resourceBundle = new PropertyResourceBundle(new InputStreamReader(new FileInputStream(chouette_env+"chouette_env.properties"), "UTF-8"));
             else
-                resourceBundle = new PropertyResourceBundle(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+                resourceBundle = new PropertyResourceBundle(new InputStreamReader(new FileInputStream(fileName.trim()), "UTF-8"));
         }
         catch (FileNotFoundException ex) {
             Logger.getLogger(ChouettePropertyPlaceholderConfigurer.class).error("File not found "+fileName);
+            return;
         }
         catch(IOException e) {
             Logger.getLogger(ChouettePropertyPlaceholderConfigurer.class).error("IO Exception while reading "+fileName);
+            return;
         }
         Enumeration<String> keys = resourceBundle.getKeys();
         while (keys.hasMoreElements()) {

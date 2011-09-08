@@ -5,11 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import lombok.Getter;
@@ -28,10 +26,10 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.database.IDatabasePurgeManager;
-import fr.certu.chouette.service.geographie.IConvertisseur;
-import fr.certu.chouette.service.geographie.ICoordonnees;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.tool.ICleanTool;
+import fr.certu.chouette.tool.IGeographicTool;
 
 @SuppressWarnings("serial")
 public class ValidationAction extends GeneriqueAction
@@ -43,10 +41,9 @@ public class ValidationAction extends GeneriqueAction
 	@Setter private INeptuneManager<VehicleJourney> vehicleJourneyManager;
 	@Setter private INeptuneManager<StopArea> stopAreaManager;
 	@Setter private INeptuneManager<Timetable> timetableManager;
-	@Setter private ICoordonnees coordonnees;
-	@Setter private IConvertisseur convertisseur;
+	@Setter private IGeographicTool geographicTool;
 
-	@Setter private IDatabasePurgeManager databasePurgeManager; 
+	@Setter private ICleanTool cleanTool; 
 
 	private boolean withErrors = false;
 	@Getter @Setter private String inclusif;
@@ -478,18 +475,32 @@ public class ValidationAction extends GeneriqueAction
 
 
 
+	/**
+	 * purge les données de la base 
+	 * 
+	 * @return
+	 */
 	public String purger()
 	{
 		try{
-			HashMap<String, String> report = databasePurgeManager.purgeDatabase(purgeBoundaryDate, beforeDatePurge);
-			addActionMessage(getText("message.validate.purge.success"));
-			Iterator<Entry<String, String>> reportIterator = report.entrySet().iterator();
-			while(reportIterator.hasNext()){
-				Entry<String, String> entry = reportIterator.next();
-				addActionMessage(getText("message.validate.purge."+entry.getKey()) + entry.getValue());
+			Report report = cleanTool.purgeAllItems(new java.sql.Date(purgeBoundaryDate.getTime()), beforeDatePurge);
+			if (report.getStatus().equals(Report.STATE.OK))
+			{
+				addActionMessage(getText("message.validate.purge.success"));
+				for (ReportItem item : report.getItems()) 
+				{
+					addActionMessage(item.getLocalizedMessage());
+				}
+			}
+			else
+			{
+				for (ReportItem item : report.getItems()) 
+				{
+					addActionError(item.getLocalizedMessage());
+				}
 			}
 		}
-		catch(ServiceException e){
+		catch(Exception e){
 			addActionError(getText("message.validate.purge.error")+ e.getMessage());
 		}
 
@@ -500,9 +511,7 @@ public class ValidationAction extends GeneriqueAction
 	{
 		try
 		{
-			//ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-			//ICoordonnees coordonnees = (ICoordonnees) applicationContext.getBean("coordonnees");
-			coordonnees.calculBarycentre();
+			geographicTool.propagateBarycentre();
 			addActionMessage(getText("message.validate.barycentre.calculation"));
 		}
 		catch (RuntimeException e)
@@ -516,9 +525,7 @@ public class ValidationAction extends GeneriqueAction
 	{
 		try
 		{
-			//ApplicationContext applicationContext = SingletonManager.getApplicationContext();
-			//IConvertisseur convertisseur = (IConvertisseur) applicationContext.getBean("convertisseur");
-			convertisseur.deLambertAWGS84();
+			geographicTool.convertToWGS84();
 			addActionMessage(getText("message.validate.convert"));
 		}
 		catch (RuntimeException e)

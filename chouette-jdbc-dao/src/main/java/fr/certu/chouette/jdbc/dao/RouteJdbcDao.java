@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.Route;
 
 /**
@@ -59,7 +58,7 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 	}
 	
 	@Override
-	protected void afterSaveOrUpdateAllProcessing(List<Route> routes) throws JdbcDaoException 
+	protected void afterSaveOrUpdateAllProcessing(List<Route> routes) 
 	{
 		Map<String,Route> map = Route.mapOnObjectIds(routes);
 		List<Route> toUpdate =  new ArrayList<Route>();

@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import fr.certu.chouette.jdbc.exception.JdbcDaoException;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
@@ -123,7 +122,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 
 
 	@Override
-	protected Collection<? extends Object> getAttributeValues(String attributeKey, VehicleJourney item) throws JdbcDaoException 
+	protected Collection<? extends Object> getAttributeValues(String attributeKey, VehicleJourney item) 
 	{
 		if (attributeKey.equals("vjAtStop"))
 		{

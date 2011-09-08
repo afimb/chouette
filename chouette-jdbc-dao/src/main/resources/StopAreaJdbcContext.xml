@@ -12,6 +12,28 @@
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.StopArea</value>
 		</property>
+		<property name="sqlPurge1">
+			<value>
+				DELETE FROM ${database.schema}.StopArea WHERE areaType IN ('BoardingPosition','Quay') AND (id NOT IN (SELECT distinct stopAreaId FROM ${database.schema}.StopPoint))
+			</value>
+		</property>
+		<property name="sqlPurge2">
+			<value>
+				DELETE FROM ${database.schema}.StopArea WHERE areaType = 'CommercialStopPoint' AND (id NOT IN (SELECT distinct parentId FROM ${database.schema}.StopArea))
+			</value>
+		</property>
+		<property name="sqlPurge3">
+			<value>
+				DELETE FROM ${database.schema}.StopArea WHERE areaType = 'StopPlace' AND (id NOT IN (SELECT distinct parentId FROM ${database.schema}.StopArea))
+			</value>
+		</property>
+		<!-- 
+		<property name="sqlPurge4">
+			<value>
+				DELETE FROM ${database.schema}.StopArea WHERE areaType = 'ITL' AND (id NOT IN (SELECT distinct parentId FROM ${database.schema}.stopareastoparea))
+			</value>
+		</property>
+		 -->
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.StopArea

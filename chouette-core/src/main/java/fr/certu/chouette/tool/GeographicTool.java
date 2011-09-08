@@ -34,20 +34,20 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
  * @author michel
  *
  */
-public class GeographicTool 
+public class GeographicTool implements IGeographicTool
 {
 	private static final Logger logger = Logger.getLogger(GeographicTool.class);
-	
+
 	@Setter private INeptuneManager<StopArea> stopAreaManager;
 
-	@Setter private int epsgLambert = 27572;  // Lambert2e
-	@Setter private int epsgWGS84 = 4326;  // WGS84
-	
+	private int epsgLambert = 27572;  // Lambert2e
+	private int epsgWGS84 = 4326;  // WGS84
+
 	private MathTransform transformWGS84;
 	private MathTransform transformLambert2e;
 	CoordinateReferenceSystem sourceCRS;
 	CoordinateReferenceSystem targetCRS;
-	
+
 	GeometryFactory factoryWGS84;
 	GeometryFactory factoryLambert2e;
 
@@ -63,20 +63,17 @@ public class GeographicTool
 		catch (FactoryException e) 
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("fail to initialize Geographic Tool :" +e.getMessage());
 		}
 		factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
 		factoryWGS84 = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgWGS84);
 
 	}
 
-	/**
-	 * compute coordinates for parents StopAreas with barycentre of containedStopAreas<br/>
-	 * 
-	 * when a child is not localized, it will be by-passed<br/>
-	 * when no child is localized, parent won't be localized
-	 * 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.tool.IGeographicTool#propagateBarycentre()
 	 */
+	@Override
 	public void propagateBarycentre() 
 	{
 		Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
@@ -221,7 +218,7 @@ public class GeographicTool
 		{
 			try 
 			{
-				stopAreaManager.saveAll(null, toBeSaved, false, false);
+				stopAreaManager.saveOrUpdateAll(null, toBeSaved);
 			} 
 			catch (ChouetteException e) 
 			{
@@ -231,10 +228,102 @@ public class GeographicTool
 		}
 
 	}
-	
-	public void convertToWGS84(AreaCentroid centroid)
+
+
+
+	@Override
+	public void convertToWGS84() 
 	{
-		if (sourceCRS == null ) return ;
+		// build filter on projected point x and y not nulls and lattitude or longitude nulls
+		Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
+		Filter lonFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE);
+		Filter xFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.X));
+		Filter yFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.Y));
+		Filter coordFilter = Filter.getNewAndFilter(xFilter,yFilter,Filter.getNewOrFilter(latFilter,lonFilter));
+		List<StopArea> areas;
+		List<StopArea> toBeSaved = new ArrayList<StopArea>();
+		try 
+		{
+			areas = stopAreaManager.getAll(null,coordFilter,null);
+		} 
+		catch (ChouetteException e) 
+		{
+			// TODO report error
+			logger.error("cannot load StopAreas :" +e.getMessage());
+			return;
+		}
+		for (StopArea stopArea : areas) 
+		{
+			if (convertToWGS84(stopArea)) 
+			{
+				toBeSaved.add(stopArea);
+			}
+		}
+		if (!toBeSaved.isEmpty())
+		{
+			try 
+			{
+				stopAreaManager.saveOrUpdateAll(null, toBeSaved);
+			} 
+			catch (ChouetteException e) 
+			{
+				// TODO add report
+				logger.error("cannot save StopAreas :" +e.getMessage());
+			}
+		}
+		
+	}
+
+	@Override
+	public void convertToLambert2e() 
+	{
+		// build filter on projected point x or y nulls and lattitude and longitude not nulls
+		Filter xFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.X);
+		Filter yFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.Y);
+		Filter latFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE));
+		Filter lonFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE));
+		Filter coordFilter = Filter.getNewAndFilter(latFilter,lonFilter,Filter.getNewOrFilter(xFilter,yFilter));
+		List<StopArea> areas;
+		List<StopArea> toBeSaved = new ArrayList<StopArea>();
+		try 
+		{
+			areas = stopAreaManager.getAll(null,coordFilter,null);
+		} 
+		catch (ChouetteException e) 
+		{
+			// TODO report error
+			logger.error("cannot load StopAreas :" +e.getMessage());
+			return;
+		}
+		for (StopArea stopArea : areas) 
+		{
+			if (convertToLambert2e(stopArea)) 
+			{
+				toBeSaved.add(stopArea);
+			}
+		}
+		if (!toBeSaved.isEmpty())
+		{
+			try 
+			{
+				stopAreaManager.saveOrUpdateAll(null, toBeSaved);
+			} 
+			catch (ChouetteException e) 
+			{
+				// TODO add report
+				logger.error("cannot save StopAreas :" +e.getMessage());
+			}
+		}
+		
+		
+	}
+	
+	private boolean convertToWGS84(StopArea area)
+	{
+		if (sourceCRS == null ) return false;
+		AreaCentroid centroid = area.getAreaCentroid();
+		if (centroid == null) return false;
+
 		Point point = factoryLambert2e.createPoint(new Coordinate(centroid.getProjectedPoint().getX().doubleValue(),
 				centroid.getProjectedPoint().getY().doubleValue()));
 
@@ -245,18 +334,24 @@ public class GeographicTool
 			centroid.setLongitude(BigDecimal.valueOf(coord.y));
 			centroid.setLatitude(BigDecimal.valueOf(coord.x));
 			centroid.setLongLatType(LongLatTypeEnum.WGS84);
-		    	
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
+		} 
+		catch (Exception e) 
+		{
+			// TODO report or throw exception
+			logger.error("fail to convert projected point to wgs84 :" +e.getMessage());
+			return false;
+		}
+		return true;
 
 	}
-	
-	public void convertToLambert2e(AreaCentroid centroid)
+
+
+	private boolean convertToLambert2e(StopArea area)
 	{
-		if (targetCRS == null ) return ;
+		if (targetCRS == null ) return false;
+		AreaCentroid centroid = area.getAreaCentroid();
+		if (centroid == null) return false;
 		Point point = factoryWGS84.createPoint(new Coordinate(centroid.getLatitude().doubleValue(),
 				centroid.getLongitude().doubleValue()));
 
@@ -269,17 +364,15 @@ public class GeographicTool
 			p.setX(BigDecimal.valueOf(coord.x));
 			p.setY(BigDecimal.valueOf(coord.y));
 			p.setProjectionType("epsg:"+epsgLambert);
-		    	
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
+		} 
+		catch (Exception e) 
+		{
+			// TODO report or or throw exception
+			logger.error("fail to convert from wgs84 to projected point :" +e.getMessage());
+			return false;
+		}
+		return true;
 
 	}
-
-
-
-
-
 }

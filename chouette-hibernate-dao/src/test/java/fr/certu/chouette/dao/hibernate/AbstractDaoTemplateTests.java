@@ -101,6 +101,21 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		Assert.assertTrue(newBean.getId().equals(id),"found Bean should have asked id="+id+"");
 	}
 
+	@Test (groups = {"hibernate"}, description = "daoTemplate should return count of objects" )
+	public void verifyCount() 
+	{
+		refreshBean();
+		// bean.setId(Long.valueOf(0));
+		daoTemplate.save(bean);
+		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean should have id different of zero");
+		Long id = bean.getId();
+		long count = daoTemplate.count(null);
+		Assert.assertTrue(count > 0,"count Bean should not be 0");
+		Filter filter = Filter.getNewEqualsFilter("id", id);
+		count = daoTemplate.count(filter);
+		Assert.assertTrue(count == 1,"count Bean should be 1");
+	}
+
 	@Test (groups = {"hibernate"}, description = "daoTemplate should check id existance" )
 	public void verifyExistsFromId() 
 	{

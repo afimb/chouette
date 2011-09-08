@@ -28,7 +28,7 @@
 				<property name="endDate" column="periodend" type="date" />
 			</composite-element>
 		</list>
-		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="false" inverse="true">
+		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="true" inverse="true">
 			<key column="timetableId" />
 			<many-to-many column="vehiclejourneyId" class="VehicleJourney" />
 		</bag>

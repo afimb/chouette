@@ -8,7 +8,6 @@
 
 package fr.certu.chouette.manager;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -35,7 +34,7 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 		super(Company.class,Company.COMPANY_KEY);
 	}
 	@Override
-	public void removeAll(User user,Collection<Company> companies,boolean propagate) throws ChouetteException
+	public void removeAll(User user,List<Company> companies,boolean propagate) throws ChouetteException
 	{
 		for (Company company : companies) 
 		{

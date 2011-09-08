@@ -9,7 +9,7 @@
 	default-init-method="init">
 
 	<bean id="lineJdbcDao" class="fr.certu.chouette.jdbc.dao.LineJdbcDao" parent="abstractJdbcDao">
-	<!-- 
+	<!-- futur purpose : mapping for Filter managing
 		<property name="attributes">
 		<map>
 		<entry key="ptNetwork.id">      <list><value>ptnetworkid</value>       <value>BIGINT</value></list></entry>
@@ -32,6 +32,11 @@
 		 -->
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.LINE</value>
+		</property>
+		<property name="sqlPurge">
+			<value>
+				DELETE FROM ${database.schema}.line WHERE id NOT IN (SELECT lineId FROM ${database.schema}.route)
+			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>

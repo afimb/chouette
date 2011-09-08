@@ -41,7 +41,7 @@ import fr.certu.chouette.struts.GeneriqueAction;
 @SuppressWarnings("serial")
 public class ImportAction extends GeneriqueAction {
 
-	private static final Logger log = Logger.getLogger(ImportAction.class);
+	private static final Logger logger = Logger.getLogger(ImportAction.class);
 	private static final String SUCCESS_ITINERAIRE = "success_itineraire";
 	private static final String INPUT_ITINERAIRE = "input_itineraire";
 	private String fichierContentType;
@@ -88,6 +88,7 @@ public class ImportAction extends GeneriqueAction {
 		String canonicalPath = null;
 		try {
 			canonicalPath = fichier.getCanonicalPath();
+			            logger.debug("Importing Generic CSV File \"" + canonicalPath + "\"");
 		} catch (Exception e) {
 			addActionError(getExceptionMessage(e));
 			return INPUT;
@@ -122,7 +123,7 @@ public class ImportAction extends GeneriqueAction {
 				importateur.importer(false, lectureEchange);
 			} catch (Exception e) {
 				addActionMessage(getText("message.import.generical.csv.failure"));
-				log.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
+				logger.error("Impossible de créer la ligne en base, msg = " + e.getMessage(), e);
 				return INPUT;
 			}
 		}
@@ -167,7 +168,7 @@ public class ImportAction extends GeneriqueAction {
 			importateur.importer(true, lectureEchange);
 		} catch (ServiceException e) {
 			addActionMessage(getText("message.import.csv.failure"));
-			log.error("Impossible de creer la ligne en base, msg = " + e.getMessage(), e);
+			logger.error("Impossible de creer la ligne en base, msg = " + e.getMessage(), e);
 			return INPUT;
 		}
 		addActionMessage(getText("message.import.csv.success"));
@@ -189,6 +190,10 @@ public class ImportAction extends GeneriqueAction {
 			String result = SUCCESS;
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(fichier));
 			ZipEntry zipEntry = zipInputStream.getNextEntry();
+            if (zipEntry == null) {
+                addActionError(getText("zipfile.empty"));
+                return INPUT;
+            }
 			while (zipEntry != null) {
 				byte[] bytes = new byte[4096];
 				int len = zipInputStream.read(bytes);
@@ -206,7 +211,10 @@ public class ImportAction extends GeneriqueAction {
 			}
 			return result;
 		} catch (Exception e) {
-			addActionError(getExceptionMessage(e) + " : " + temp.getAbsolutePath());
+            if (temp != null)
+                addActionError(getExceptionMessage(e) + " : " + temp.getAbsolutePath());
+            else
+                addActionError(getExceptionMessage(e));
 			return INPUT;
 		}
 	}
@@ -269,7 +277,7 @@ public class ImportAction extends GeneriqueAction {
 				if (reportHolder.getReport() != null)
 				{
 					Report r = reportHolder.getReport();
-					log.info(r.getLocalizedMessage());
+					logger.info(r.getLocalizedMessage());
 					logItems("",r.getItems(),Level.INFO);
 
 				}
@@ -288,7 +296,7 @@ public class ImportAction extends GeneriqueAction {
 			if (reportHolder.getReport() != null)
 			{
 				Report r = reportHolder.getReport();
-				log.error(r.getLocalizedMessage());
+				logger.error(r.getLocalizedMessage());
 				logItems("",r.getItems(),Level.ERROR);
 
 			}
@@ -313,7 +321,7 @@ public class ImportAction extends GeneriqueAction {
 		if (items == null) return;
 		for (ReportItem item : items) 
 		{
-			log.log(level,indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			logger.log(level,indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
 			logItems(indent+"   ",item.getItems(),level);
 		}
 
@@ -356,7 +364,7 @@ public class ImportAction extends GeneriqueAction {
 		} //catch (ServiceException e) 
 		catch (Exception e) {
 			addActionMessage(getText("message.import.vehicleJourneyAtStop.failure"));
-			log.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
+			logger.error("Impossible d'importer les horaires de l'itineraire, msg = " + e.getMessage(), e);
 			return INPUT_ITINERAIRE;
 		}
 		addActionMessage(getText("message.import.vehicleJourneyAtStop.success"));
@@ -395,13 +403,13 @@ public class ImportAction extends GeneriqueAction {
 			} else {
 				ServiceException serviceException = (ServiceException) exception;
 				addActionError(getText("message.import.file.exception"));
-				log.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
+				logger.error("Impossible de recuperer le fichier, msg = " + serviceException.getMessage(), serviceException);
 			}
 		}
 		else
 		{
 			addActionError(getText("message.import.file.exception"));
-			log.error("Impossible de recuperer le fichier, msg = " + exception.getMessage(), exception);
+			logger.error("Impossible de recuperer le fichier, msg = " + exception.getMessage(), exception);
 		}
 
 	}
@@ -475,7 +483,7 @@ public class ImportAction extends GeneriqueAction {
 	}
 
 	public void setFichierContentType(String fichierContentType) {
-		log.debug(fichierContentType);
+		logger.debug(fichierContentType);
 		this.fichierContentType = fichierContentType;
 	}
 

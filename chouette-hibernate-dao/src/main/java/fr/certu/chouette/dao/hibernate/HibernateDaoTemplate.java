@@ -1,6 +1,5 @@
 package fr.certu.chouette.dao.hibernate;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -316,7 +315,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	}
 
 	@Override
-	public void removeAll(Collection<T> objects) 
+	public void removeAll(List<T> objects) 
 	{
         logger.debug("invoke removeAll on "+type.getSimpleName());
 
@@ -356,5 +355,22 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 		}
 		getHibernateTemplate().saveOrUpdateAll(objects);
 		getHibernateTemplate().flush();
+	}
+
+	@Override
+	public int purge() 
+	{
+		throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.NOT_YET_IMPLEMENTED, "purge");
+	}
+
+	@Override
+	public long count(Filter clause) 
+	{
+		if (clause == null) clause = Filter.getNewEmptyFilter();
+		Session session = getSession();
+		FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
+		String hql = translator.translateToHQLCount(clause, getSessionFactory().getClassMetadata(type));
+		logger.debug("hql = "+hql);
+		return ((Long) session.createQuery(hql).uniqueResult()).longValue();
 	}
 }
