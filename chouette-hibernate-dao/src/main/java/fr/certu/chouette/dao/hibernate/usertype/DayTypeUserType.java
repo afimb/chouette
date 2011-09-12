@@ -118,6 +118,7 @@ public class DayTypeUserType implements UserType
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#returnedClass()
 	 */
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return DayTypeEnum.class;
 	}

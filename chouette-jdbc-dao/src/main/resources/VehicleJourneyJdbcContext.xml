@@ -14,7 +14,7 @@
 		</property>
 		<property name="sqlPurge">
 			<value>
-                 DELETE FROM ${database.schema}.vehiclejourney WHERE id NOT IN (SELECT distinct vehicleJourneyId FROM ${database.schema}.timetablevehiclejourney 
+                 DELETE FROM ${database.schema}.vehiclejourney WHERE id NOT IN (SELECT distinct vehicleJourneyId FROM ${database.schema}.timetablevehiclejourney) 
 			</value>
 		</property>
 		<property name="sqlInsert">

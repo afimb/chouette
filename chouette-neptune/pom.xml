@@ -85,6 +85,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
@@ -101,6 +102,10 @@
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-services</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>

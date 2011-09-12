@@ -49,19 +49,5 @@
 	<bean id="vehicleJourneyManager" class="fr.certu.chouette.manager.VehicleJourneyManager" parent="abstractNeptuneManager">
 	</bean>
 
-    <!--  tools -->
-    <bean id="geographicTool" class="fr.certu.chouette.tool.GeographicTool" lazy-init="true">
-    	<property name="stopAreaManager" ref="stopAreaManager"/>
-    </bean>
-    
-    <bean id="cleanTool" class="fr.certu.chouette.tool.CleanTool" lazy-init="true">
-    	<property name="stopAreaManager" ref="stopAreaManager"/>
-    	<property name="lineManager" ref="lineManager"/>
-    	<property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>
-    	<property name="routeManager" ref="routeManager"/>
-    	<property name="journeyPatternManager" ref="journeyPatternManager"/>
-    	<property name="connectionLinkManager" ref="connectionLinkManager"/>
-    	<property name="timetableManager" ref="timetableManager"/>
-    </bean>
 
 </beans>

@@ -23,6 +23,7 @@ public class BitwiseAndSQLFunction extends StandardSQLFunction implements SQLFun
 	
 	// EX. / bitwise_and(tableauMarche.intDayTypes, 128) = 128
 	// SERA TRADUITE EN / tableauMarche.intDayTypes & 128 DANS LA REQUETE SQL GENEREE PAR HIBERNATE
+	@SuppressWarnings("rawtypes")
 	public String render(List args, SessionFactoryImplementor sessionFactory) throws QueryException {
        if (args.size() != 2){
            throw new IllegalArgumentException("LA FONCTION PREND OBLIGATOIREMENT 2 PARAMETRES :(");

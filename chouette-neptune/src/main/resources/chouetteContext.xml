@@ -208,8 +208,8 @@
         <property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>
         <property name="stopAreaManager" ref="stopAreaManager"/>
         <property name="timetableManager" ref="timetableManager"/>
-        <property name="geographicTool" ref="geographicTool"/>
-        <property name="cleanTool" ref="cleanTool"/>
+        <property name="geographicService" ref="geographicService"/>
+        <property name="cleanService" ref="cleanService"/>
         <property name="useGeometry" value="${validation.tm.geometry}"/>
         <property name="useValidation" value="${validation.tm.validation}"/>
         <property name="inclusif" value="${validation.tm.inclusif}"/>

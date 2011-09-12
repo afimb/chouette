@@ -1,4 +1,4 @@
-package fr.certu.chouette.tool;
+package fr.certu.chouette.service.geographic;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,9 +34,9 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
  * @author michel
  *
  */
-public class GeographicTool implements IGeographicTool
+public class GeographicService implements IGeographicService
 {
-	private static final Logger logger = Logger.getLogger(GeographicTool.class);
+	private static final Logger logger = Logger.getLogger(GeographicService.class);
 
 	@Setter private INeptuneManager<StopArea> stopAreaManager;
 
@@ -113,7 +113,7 @@ public class GeographicTool implements IGeographicTool
 					if (physical.getAreaCentroid() != null && physical.getAreaCentroid().getLatitude() != null && physical.getAreaCentroid().getLongitude() != null)
 					{
 						sumLatitude += physical.getAreaCentroid().getLatitude().doubleValue();
-						sumLatitude += physical.getAreaCentroid().getLatitude().doubleValue();
+						sumLongitude += physical.getAreaCentroid().getLongitude().doubleValue();
 						count ++;
 						if (longLatType == null && physical.getAreaCentroid().getLongLatType() != null)
 						{
@@ -166,7 +166,7 @@ public class GeographicTool implements IGeographicTool
 						if (child.getAreaCentroid() != null && child.getAreaCentroid().getLatitude() != null && child.getAreaCentroid().getLongitude() != null)
 						{
 							sumLatitude += child.getAreaCentroid().getLatitude().doubleValue();
-							sumLatitude += child.getAreaCentroid().getLatitude().doubleValue();
+							sumLongitude += child.getAreaCentroid().getLongitude().doubleValue();
 							count ++;
 							if (longLatType == null && child.getAreaCentroid().getLongLatType() != null)
 							{

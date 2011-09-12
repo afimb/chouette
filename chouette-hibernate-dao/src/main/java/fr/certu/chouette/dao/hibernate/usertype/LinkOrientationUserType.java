@@ -120,6 +120,7 @@ public class LinkOrientationUserType implements UserType
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#returnedClass()
 	 */
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return LinkOrientationEnum.class;
 	}

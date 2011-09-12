@@ -19,12 +19,12 @@
 		</property>
 		<property name="sqlPurge2">
 			<value>
-				DELETE FROM ${database.schema}.StopArea WHERE areaType = 'CommercialStopPoint' AND (id NOT IN (SELECT distinct parentId FROM ${database.schema}.StopArea))
+				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType = 'CommercialStopPoint' AND NOT (EXISTS (SELECT p.id FROM ${database.schema}.StopArea p WHERE p.parentId = s.id))
 			</value>
 		</property>
 		<property name="sqlPurge3">
 			<value>
-				DELETE FROM ${database.schema}.StopArea WHERE areaType = 'StopPlace' AND (id NOT IN (SELECT distinct parentId FROM ${database.schema}.StopArea))
+				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType = 'StopPlace' AND NOT (EXISTS (SELECT p.id FROM ${database.schema}.StopArea p WHERE p.parentId = s.id))
 			</value>
 		</property>
 		<!-- 

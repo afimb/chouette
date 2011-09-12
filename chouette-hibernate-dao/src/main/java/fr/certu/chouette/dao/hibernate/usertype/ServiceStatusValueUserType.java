@@ -119,6 +119,7 @@ public class ServiceStatusValueUserType implements UserType
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#returnedClass()
 	 */
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return ServiceStatusValueEnum.class;
 	}

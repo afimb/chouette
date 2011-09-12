@@ -1,4 +1,4 @@
-package fr.certu.chouette.tool;
+package fr.certu.chouette.service.cleaning;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -24,14 +24,12 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.tool.report.CleanReport;
-import fr.certu.chouette.tool.report.CleanReportItem;
 
-public class CleanTool implements ICleanTool
+public class CleanService implements ICleanService
 {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private static final SimpleDateFormat sdftime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final Logger logger = Logger.getLogger(CleanTool.class);
+	private static final Logger logger = Logger.getLogger(CleanService.class);
 
 	@Setter private INeptuneManager<StopArea> stopAreaManager; 
 	@Setter private INeptuneManager<Line> lineManager; 
@@ -45,6 +43,7 @@ public class CleanTool implements ICleanTool
 	public Report purgeAllItems(Date boundaryDate, boolean before) 
 	{
 		CleanReport purgeReport = new CleanReport();
+		purgeReport.setStatus(CleanReport.STATE.OK);
 		purgeReport.addItem(new CleanReportItem("Header",CleanReport.STATE.OK,sdftime.format(Calendar.getInstance().getTime()),sdf.format(boundaryDate)));
 
 		try 

@@ -183,7 +183,8 @@ public class PublishReleaseMojo
     	return sb.toString();
     }
     
-    private void keepMostRecentFiles(int numberOfFiles){
+    @SuppressWarnings("unchecked")
+	private void keepMostRecentFiles(int numberOfFiles){
     	getLog().info("Keep the "+numberOfFiles+" most recent files");
     	List<File> dirFiles = new ArrayList<File>(FileUtils.listFiles(outputDirectory, new String[]{"tar.gz"}, false));
     	if(dirFiles.size() > numberOfFiles){

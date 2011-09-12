@@ -1,6 +1,10 @@
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+
+import lombok.Getter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -16,6 +20,10 @@ public class FilterToHibernateClauseTranslator {
 
 	private static final Logger logger = Logger.getLogger(FilterToHibernateClauseTranslator.class);
 	private HashSet<String> aliasses;
+	
+	@Getter private List<Object> values = new ArrayList<Object>();
+	
+	
 
 	/**
 	 * @param clause
@@ -235,6 +243,7 @@ public class FilterToHibernateClauseTranslator {
 
 	public String translateToHQLCount(Filter clause, ClassMetadata metadata) 
 	{
+		values.clear();
 		aliasses = new HashSet<String>();
 		if (clause == null) throw new NullPointerException("JE VIENS DE RENCONTRER UNE CLAUSE NON INITIALISEE .. J'ARRETE TOUT TRAITEMENT");
 
@@ -378,7 +387,12 @@ public class FilterToHibernateClauseTranslator {
 		}
 		if (value instanceof String)
 		{
-			return StringHelper.quote((String) value);
+			return StringHelper.quote(value.toString());
+		}
+		if (value instanceof Enum)
+		{
+			values.add(value);
+			return "?";
 		}
 		throw new NullPointerException(value.getClass().getName()+" to HQL not yet implemented");
 

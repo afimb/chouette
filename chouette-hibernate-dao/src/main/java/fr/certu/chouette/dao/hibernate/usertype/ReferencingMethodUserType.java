@@ -120,6 +120,7 @@ public class ReferencingMethodUserType implements UserType
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#returnedClass()
 	 */
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return LocationReferencingMethodEnum.class;
 	}

@@ -32,8 +32,7 @@ public final class BigDecimalConverter extends StrutsTypeConverter
 			valeur = valeur.replace( ',', '.');
 			
 			bigDecimal = new BigDecimal( valeur);
-			if ( bigDecimal==null)
-				throw new TypeConversionException();
+
 		}
 		catch( NumberFormatException e)
 		{

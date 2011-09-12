@@ -119,6 +119,7 @@ public class BoardingAlightingPossibilityUserType implements UserType
 	/**
 	 * @see UserType#returnedClass()
 	 */
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return BoardingAlightingPossibilityEnum.class;
 	}

@@ -119,6 +119,7 @@ public class LocationTypeTypeUserType implements UserType
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#returnedClass()
 	 */
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return LocationTypeEnum.class;
 	}

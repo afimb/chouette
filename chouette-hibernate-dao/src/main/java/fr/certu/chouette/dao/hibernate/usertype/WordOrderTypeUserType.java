@@ -88,6 +88,7 @@ public class WordOrderTypeUserType implements UserType
    public int hashCode(Object x) throws HibernateException {
        return x.hashCode();
    }
+	@SuppressWarnings("rawtypes")
 	public Class returnedClass() {
 		return WordOrderEnum.class;
 	}

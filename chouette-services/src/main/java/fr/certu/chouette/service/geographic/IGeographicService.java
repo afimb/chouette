@@ -1,7 +1,7 @@
-package fr.certu.chouette.tool;
+package fr.certu.chouette.service.geographic;
 
 
-public interface IGeographicTool 
+public interface IGeographicService 
 {
 	/**
 	 * compute coordinates for parents StopAreas with barycentre of containedStopAreas<br/>

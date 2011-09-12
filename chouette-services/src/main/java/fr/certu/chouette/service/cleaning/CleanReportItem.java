@@ -6,7 +6,7 @@
  *
  */
 
-package fr.certu.chouette.tool.report;
+package fr.certu.chouette.service.cleaning;
 
 import fr.certu.chouette.plugin.report.ReportItem;
 

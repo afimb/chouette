@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueObjectException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -371,6 +372,17 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 		FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
 		String hql = translator.translateToHQLCount(clause, getSessionFactory().getClassMetadata(type));
 		logger.debug("hql = "+hql);
-		return ((Long) session.createQuery(hql).uniqueResult()).longValue();
+		if (translator.getValues().isEmpty())
+		   return ((Long) session.createQuery(hql).uniqueResult()).longValue();
+		else
+		{
+			Query query = session.createQuery(hql);
+			int pos = 0;
+			for (Object value : translator.getValues()) 
+			{
+				query.setParameter(pos++, value);
+			}
+			return ((Long) query.uniqueResult()).longValue();
+		}
 	}
 }

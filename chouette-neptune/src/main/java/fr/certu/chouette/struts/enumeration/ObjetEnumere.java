@@ -5,13 +5,14 @@ package fr.certu.chouette.struts.enumeration;
  * @author luc
  *
  */
-@SuppressWarnings("unchecked")
 public class ObjetEnumere
 {
 	
+	@SuppressWarnings("rawtypes")
 	private Enum  enumeratedTypeAccess;
 	private String textePropriete;
 	
+	@SuppressWarnings("rawtypes")
 	public ObjetEnumere(Enum enumeratedTypeAccess, String textePropriete)
 	//public ObjetEnumere(EnumeratedTypeAccess  enumeratedTypeAccess, String textePropriete) 
 	{
@@ -24,11 +25,13 @@ public class ObjetEnumere
 		this.textePropriete = textePropriete;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Enum getEnumeratedTypeAccess() 
 	{
 		return enumeratedTypeAccess;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void setEnumeratedTypeAccess(Enum enumeratedTypeAccess) 
 	{
 		this.enumeratedTypeAccess = enumeratedTypeAccess;

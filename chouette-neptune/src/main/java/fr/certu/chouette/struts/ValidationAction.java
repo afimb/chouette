@@ -28,8 +28,8 @@ import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.tool.ICleanTool;
-import fr.certu.chouette.tool.IGeographicTool;
+import fr.certu.chouette.service.cleaning.ICleanService;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
 @SuppressWarnings("serial")
 public class ValidationAction extends GeneriqueAction
@@ -41,9 +41,9 @@ public class ValidationAction extends GeneriqueAction
 	@Setter private INeptuneManager<VehicleJourney> vehicleJourneyManager;
 	@Setter private INeptuneManager<StopArea> stopAreaManager;
 	@Setter private INeptuneManager<Timetable> timetableManager;
-	@Setter private IGeographicTool geographicTool;
+	@Setter private IGeographicService geographicService;
 
-	@Setter private ICleanTool cleanTool; 
+	@Setter private ICleanService cleanService; 
 
 	private boolean withErrors = false;
 	@Getter @Setter private String inclusif;
@@ -483,7 +483,7 @@ public class ValidationAction extends GeneriqueAction
 	public String purger()
 	{
 		try{
-			Report report = cleanTool.purgeAllItems(new java.sql.Date(purgeBoundaryDate.getTime()), beforeDatePurge);
+			Report report = cleanService.purgeAllItems(new java.sql.Date(purgeBoundaryDate.getTime()), beforeDatePurge);
 			if (report.getStatus().equals(Report.STATE.OK))
 			{
 				addActionMessage(getText("message.validate.purge.success"));
@@ -500,7 +500,9 @@ public class ValidationAction extends GeneriqueAction
 				}
 			}
 		}
-		catch(Exception e){
+		catch(Exception e)
+		{
+			logger.error("purge failed "+e.getMessage(),e);
 			addActionError(getText("message.validate.purge.error")+ e.getMessage());
 		}
 
@@ -511,7 +513,7 @@ public class ValidationAction extends GeneriqueAction
 	{
 		try
 		{
-			geographicTool.propagateBarycentre();
+			geographicService.propagateBarycentre();
 			addActionMessage(getText("message.validate.barycentre.calculation"));
 		}
 		catch (RuntimeException e)
@@ -525,7 +527,7 @@ public class ValidationAction extends GeneriqueAction
 	{
 		try
 		{
-			geographicTool.convertToWGS84();
+			geographicService.convertToWGS84();
 			addActionMessage(getText("message.validate.convert"));
 		}
 		catch (RuntimeException e)

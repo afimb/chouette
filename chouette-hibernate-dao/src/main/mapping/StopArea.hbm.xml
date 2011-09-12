@@ -61,10 +61,23 @@
 		<many-to-one class="StopArea" column="parentId"
 			lazy="no-proxy" name="parentStopArea" foreign-key="area_parent_fkey"/>
 			
+		<bag name="containedStopAreas"  lazy="true" inverse="true">
+			<key column="parentId" foreign-key="area_parent_fkey"/>
+			<one-to-many class="StopArea" />
+		</bag>
+		
+		<bag name="accessLinks" table="accesslink" lazy="true"
+			cascade="all">
+			<key column="stopAreaId" foreign-key="aclk_area_fkey" />
+			<one-to-many class="AccessLink" />
+		</bag>
+		
+		<!-- 
 		<bag name="containedStopAreas" table="stopareastoparea" lazy="false">
 			<key column="parentId" foreign-key="stoparea_parent_fkey"/>
 			<many-to-many column="childId" class="StopArea" foreign-key="stoparea_child_fkey"/>
-		</bag>
+		</bag>  -->
+		
 		<bag name="containedStopPoints"  lazy="false" inverse="true">
 			<key column="stopareaid" foreign-key="stoppoint_area_fkey"/>
 			<one-to-many class="StopPoint" />
