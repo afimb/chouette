@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
@@ -46,6 +46,7 @@ public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink
 		return logger;
 	}
 
+	@Transactional
 	@Override
 	public void saveAll(User user, List<ConnectionLink> connectionLinks, boolean propagate,boolean fast) throws ChouetteException 
 	{
@@ -63,7 +64,7 @@ public class ConnectionLinkManager extends AbstractNeptuneManager<ConnectionLink
 			Filter filter = Filter.getNewInFilter("objectId", areaIds.toArray(new String[0])); 
 			INeptuneManager<StopArea> areaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
 
-			List<StopArea> stopareas = areaManager.getAll(user, filter, DetailLevelEnum.ATTRIBUTE);
+			List<StopArea> stopareas = areaManager.getAll(user, filter);
 			Map<String,StopArea> map = new HashMap<String, StopArea>();
 			for (StopArea stopArea : stopareas) 
 			{

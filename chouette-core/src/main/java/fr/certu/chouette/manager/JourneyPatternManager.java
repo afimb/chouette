@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -93,12 +93,12 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 
 		return globalReport;
 	}
+	@Transactional
 	@Override
 	public void remove(User user,JourneyPattern journeyPattern,boolean propagate) throws ChouetteException{
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		Filter filter = Filter.getNewEqualsFilter("journeyPattern.id", journeyPattern.getId());
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter, level);
+		List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter);
 		if(vehicleJourneys != null && !vehicleJourneys.isEmpty())
 			vjManager.removeAll(user, vehicleJourneys,propagate);
 		super.remove(user, journeyPattern,propagate);
@@ -142,7 +142,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 		}
 
 	}
-
+	@Transactional
 	@Override
 	public void saveAll(User user, List<JourneyPattern> journeyPatterns, boolean propagate,boolean fast) throws ChouetteException 
 	{
@@ -162,7 +162,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 
 		}
 	}
-	
+	@Transactional
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{

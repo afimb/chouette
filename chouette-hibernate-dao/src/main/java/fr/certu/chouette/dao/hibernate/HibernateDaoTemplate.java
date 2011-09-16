@@ -248,16 +248,28 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	public void save(T object)
 	{
         logger.debug("invoke save on "+type.getSimpleName());
-		T existing = getByObjectId(object.getObjectId());
-		if (existing == null)
+        
+		try
 		{
 			getHibernateTemplate().saveOrUpdate( object);
 		}
-		else
+		catch(HibernateSystemException hse)
 		{
-			object.setId(existing.getId());
-			getHibernateTemplate().merge( object);
-		}
+			if ( hse.getCause()!=null && 
+					hse.getCause() instanceof NonUniqueObjectException)
+				getHibernateTemplate().merge( object);
+			else throw hse;
+		}	
+//		T existing = getByObjectId(object.getObjectId());
+//		if (existing == null)
+//		{
+//			getHibernateTemplate().saveOrUpdate( object);
+//		}
+//		else
+//		{
+//			object.setId(existing.getId());
+//			getHibernateTemplate().merge( object);
+//		}
 		// getHibernateTemplate().flush();
 	}
 
@@ -279,7 +291,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 				getHibernateTemplate().merge( object);
 			else throw hse;
 		}	
-		getHibernateTemplate().flush();
+		// getHibernateTemplate().flush();
 	}
 
 	/* (non-Javadoc)

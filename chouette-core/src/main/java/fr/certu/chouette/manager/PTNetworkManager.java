@@ -10,9 +10,9 @@ package fr.certu.chouette.manager;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -30,13 +30,12 @@ public class PTNetworkManager extends AbstractNeptuneManager<PTNetwork>
 	{
 		super(PTNetwork.class,PTNetwork.PTNETWORK_KEY);
 	}
-
+	@Transactional
 	@Override
 	public void remove(User user,PTNetwork ptNetwork,boolean propagate) throws ChouetteException
 	{
 		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<Line> lines = lineManager.getAll(user, Filter.getNewEqualsFilter("ptNetwork.id", ptNetwork.getId()), level);
+		List<Line> lines = lineManager.getAll(user, Filter.getNewEqualsFilter("ptNetwork.id", ptNetwork.getId()));
 		if(propagate)
 			lineManager.removeAll(user,lines,propagate);
 		else {

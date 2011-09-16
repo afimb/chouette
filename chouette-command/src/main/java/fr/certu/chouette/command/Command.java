@@ -47,7 +47,6 @@ import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
@@ -1049,11 +1048,7 @@ public class Command
 
 			for (String id : sids)
 			{
-				// Filter filter = Filter.getNewEqualsFilter("id", Long.valueOf(id));
 				ids.add(Long.valueOf(id));
-				// System.out.println("search for id "+Long.valueOf(id)+ "("+id+")");
-				// NeptuneBean bean = manager.get(null, filter, NeptuneBeanManager.DETAIL_LEVEL.ATTRIBUTE);
-				// System.out.println(bean);
 			}
 			filter = Filter.getNewInFilter("id", ids);
 		}
@@ -1149,21 +1144,8 @@ public class Command
 		}
 
 
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		if (parameters.containsKey("level"))
-		{
-			String slevel = getSimpleString(parameters,"level");
-			if (slevel.equalsIgnoreCase("narrow"))
-			{
-				level = DetailLevelEnum.NARROW_DEPENDENCIES;
-			}
-			else if (slevel.equalsIgnoreCase("structure"))
-			{
-				level = DetailLevelEnum.STRUCTURAL_DEPENDENCIES;
-			}
-		}
 
-		List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter, level);
+		List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
 
 		if (verbose)
 		{
@@ -1782,7 +1764,7 @@ public class Command
 			throw new Exception("unknown object "+typeName+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
 		}
 		Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
-		NeptuneIdentifiedObject reference = manager.get(null, filter, DetailLevelEnum.ATTRIBUTE);
+		NeptuneIdentifiedObject reference = manager.get(null, filter);
 		if (reference != null) 
 		{
 			method.invoke(object, reference);

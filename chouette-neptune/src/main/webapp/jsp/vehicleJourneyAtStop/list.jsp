@@ -29,9 +29,9 @@
     <s:param name="idItineraire" value="idItineraire" />
     <s:param name="idLigne" value="idLigne" />
     <s:param name="idTableauMarche" value="idTableauMarche" />
-    <s:param name="seuilDateDepartCourse">
-      <s:if test="seuilDateDepartCourse != null">
-        <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+    <s:param name="seuilHeureDepartCourse">
+      <s:if test="seuilHeureDepartCourse != null">
+        <s:date name="seuilHeureDepartCourse" format="HH:mm"/>
       </s:if>
     </s:param>
     <s:param name="page" value="page" />
@@ -49,7 +49,7 @@
                 list="tableauxMarche"
                 headerKey=""
                 headerValue="%{getText('horairesDePassage.tableauMarcheTous')}" />
-      <s:textfield name="seuilDateDepartCourse" label="%{getText('filtre.select.seuilDateDepartCourse')}"></s:textfield>
+      <s:textfield name="seuilHeureDepartCourse" label="%{getText('filtre.select.seuilHeureDepartCourse')}"></s:textfield>
       <s:hidden name="idItineraire" value="%{idItineraire}" />
       <s:hidden name="idLigne" value="%{idLigne}" />
       <%-- FORCER LE NUMERO DE PAGE A 1 CAR UNE NOUVELLE RECHERCHE NECESSITE D'ALLER SUR LA PREMIERE PAGE DE RESULTAT DE RECHERCHE --%>
@@ -72,7 +72,7 @@
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
       <s:hidden name="idLigne" value="%{idLigne}"/>
       <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
-      <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
+      <s:hidden name="seuilHeureDepartCourse" value="%{seuilHeureDepartCourse}" />
       <s:hidden name="page" value="%{page}"/>
       <tr>
         <td colspan="2">
@@ -92,7 +92,7 @@
       <s:hidden name="idItineraire" value="%{idItineraire}" />
       <s:hidden name="idLigne" value="%{idLigne}" />
       <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
-      <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
+      <s:hidden name="seuilHeureDepartCourse" value="%{seuilHeureDepartCourse}" />
       <s:hidden name="page" value="%{page}" />
       <div ALIGN="center"></div>
       <br/>

@@ -60,7 +60,7 @@
 					<comment>JourneyPattern Reference</comment>
 				</column>
 			</key>
-			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey">
+			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey" order-by="position">
 				<column name="stopPointId"  >
 					<comment>StopPoint Reference</comment>
 				</column>

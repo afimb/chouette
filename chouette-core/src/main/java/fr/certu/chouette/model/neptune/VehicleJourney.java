@@ -1,6 +1,8 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -8,92 +10,401 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.user.User;
+import fr.certu.chouette.manager.VehicleJourneyManager;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
+/**
+ * Neptune VehicleJourney  
+ * <p/>
+ * <b>Note</b> VehicleJourney class contains method to manipulate VehicleJourneyAtStop in logic 
+ * with StopPoint's position on Route and StopPoint list in JourneyPatterns
+ * <br/> it is mandatory to respect instruction on each of these methods
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
+ * 
+ */
 public class VehicleJourney extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = 304336286208135064L;
-	@Getter @Setter private ServiceStatusValueEnum serviceStatusValue;
-	@Getter @Setter private TransportModeNameEnum transportMode;
-	@Getter @Setter private String comment;
-	@Getter @Setter private String facility;
-	@Getter @Setter private long number;
-	@Getter @Setter private String routeId;
-	@Getter @Setter private Route route;
-	@Getter @Setter private String journeyPatternId;
-	@Getter @Setter private JourneyPattern journeyPattern;
-	@Getter @Setter private String timeSlotId;
-	@Getter @Setter private TimeSlot timeSlot;
-	@Getter @Setter private String publishedJourneyName;
-	@Getter @Setter private String publishedJourneyIdentifier;
-	@Getter @Setter private String vehicleTypeIdentifier;
-	@Getter @Setter private String companyId;
-	@Getter @Setter private Company company;
-	@Getter @Setter private String lineIdShortcut;
-	@Getter @Setter private Line line;
-	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops;
-	@Getter @Setter private List<Timetable> timetables;
 
-	//	/* (non-Javadoc)
-	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	//	 */
-	//	@Override
-	//	public void expand(DetailLevelEnum level)
-	//	{
-	//		// to avoid circular call check if level is already set according to this level
-	//		if (getLevel().ordinal() >= level.ordinal()) return;
-	//		super.expand(level);
-	//		switch (level)
-	//		{
-	//		case ATTRIBUTE : 
-	//			route = null;
-	//			journeyPattern = null;
-	//			timeSlot = null;
-	//			vehicleJourneyAtStops = null;
-	//			timetables = null;
-	//			break;
-	//		case NARROW_DEPENDENCIES : 
-	//			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-	//			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
-	//			if (getTimeSlot() != null) getTimeSlot().expand(DetailLevelEnum.ATTRIBUTE);
-	//			if (getVehicleJourneyAtStops() != null)
-	//			{
-	//				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
-	//				{
-	//					vehicleJourneyAtStop.expand(DetailLevelEnum.ATTRIBUTE);
-	//				}
-	//			}
-	//			if (getTimetables() != null)
-	//			{
-	//				for (Timetable timetable : getTimetables())
-	//				{
-	//					timetable.expand(DetailLevelEnum.ATTRIBUTE);
-	//				}
-	//			}
-	//			break;
-	//		case STRUCTURAL_DEPENDENCIES : 
-	//		case ALL_DEPENDENCIES :
-	//			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-	//			if (getJourneyPattern() != null) getJourneyPattern().expand(DetailLevelEnum.ATTRIBUTE);
-	//			if (getTimeSlot() != null) getTimeSlot().expand(level);
-	//			if (getVehicleJourneyAtStops() != null)
-	//			{
-	//				for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
-	//				{
-	//					vehicleJourneyAtStop.expand(level);
-	//				}
-	//			}
-	//			if (getTimetables() != null)
-	//			{
-	//				for (Timetable timetable : getTimetables())
-	//				{
-	//					timetable.expand(level);
-	//				}
-	//			}
-	//			break;
-	//		}
-	//	}
+	// private static final Logger logger = Logger.getLogger(VehicleJourney.class);
+	// constant for persistence fields
+	public static final String COMMENT = "comment"; 
+	public static final String SERVICE_STATUS = "serviceStatusValue"; 
+	public static final String TRANSPORT_MODE = "transportMode"; 
+	public static final String PUBLISHED_JOURNEY_NAME = "publishedJourneyName"; 
+	public static final String PUBLISHED_JOURNEY_IDENTIFIER ="publishedJourneyIdentifier"; 
+	public static final String FACILITY="facility"; 
+	public static final String VEHICLE_TYPE_IDENTIFIER="vehicleTypeIdentifier"; 
+	public static final String NUMBER="number"; 
+	public static final String ROUTE="route";
+	public static final String JOURNEY_PATTERN="journeyPattern";
+	public static final String TIMESLOT="timeSlot";
+	public static final String COMPANY="company";
+	public static final String TIMETABLES="timetables";
+	public static final String VEHICLE_JOURNEY_AT_STOPS="vehicleJourneyAtStops";
+	
+	/**
+	 * Service Status 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private ServiceStatusValueEnum serviceStatusValue;
+	/**
+	 * Transport Mode 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private TransportModeNameEnum transportMode;
+	/**
+	 * Comment 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String comment;
+	/**
+	 * Facility
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String facility;
+	/**
+	 * number 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private long number;
+	/**
+	 * route objectId 
+	 * <br/><i>readable/writable</i>
+	 * <p/>null if vehicleJourney is read from database; call {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to initialize
+	 */
+	@Getter @Setter private String routeId;
+	/**
+	 * route 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private Route route;
+	/**
+	 * journeyPattern objectId 
+	 * <br/><i>readable/writable</i>
+	 * <p/>null if vehicleJourney is read from database; call {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to initialize
+	 */
+	@Getter @Setter private String journeyPatternId;
+	/**
+	 * journey pattern 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private JourneyPattern journeyPattern;
+	/**
+	 * timeSlot objectId 
+	 * <br/><i>readable/writable</i>
+	 * <p/>null if vehicleJourney is read from database; call {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to initialize
+	 */
+	@Getter @Setter private String timeSlotId;
+	/**
+	 * timeSlot 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private TimeSlot timeSlot;
+	/**
+	 * publishedJourneyName 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String publishedJourneyName;
+	/**
+	 * publishedJourneyIdentifier 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String publishedJourneyIdentifier;
+	/**
+	 * vehicleTypeIdentifier 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String vehicleTypeIdentifier;
+	/**
+	 * company objectId 
+	 * <br/><i>readable/writable</i>
+	 * <p/>null if vehicleJourney is read from database; call {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to initialize
+	 */
+	@Getter @Setter private String companyId;
+	/**
+	 * company 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private Company company;
+	/**
+	 * line objectId 
+	 * <br/><i>readable/writable</i>
+	 * <p/>null if vehicleJourney is read from database; call {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to initialize
+	 */
+	@Getter @Setter private String lineIdShortcut;
+	/**
+	 * line 
+	 * <br/><i>readable/writable</i>
+	 * <p/>null if vehicleJourney is read from database; call {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to initialize
+	 */
+	@Getter @Setter private Line line;
+	/**
+	 * vehicleJourneyAtStops 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
+	/**
+	 * timetables 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private List<Timetable> timetables = new ArrayList<Timetable>();
+
+	/**
+	 * add a VehicleJourneyAtStop if not already present
+	 * <p/>adding won't sort VehicleJourneyAtStops in VehicleJourney
+	 * <br/>use {@link #sortVehicleJourneyAtStops()} to ordinate them
+	 * <br/>use {@link #checkJourneyPattern()} to link VehicleJourney on appropriate JourneyPattern if necessary
+	 * <p/>no <code>removeVehicleJourneyAtStop</code> is implemented, use {@link #removeStopPoint(StopPoint)} instead
+	 * 
+	 * @param vehicleJourneyAtStop
+	 */
+	public void addVehicleJourneyAtStop(VehicleJourneyAtStop vehicleJourneyAtStop)
+	{
+		if (vehicleJourneyAtStops== null) 
+			vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
+		if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop)) 
+		{
+			vehicleJourneyAtStops.add(vehicleJourneyAtStop);				
+		}
+	}	
+	
+	/**
+	 * add a collection of VehicleJourneyAtStops if not already presents
+	 * <p/>adding won't sort VehicleJourneyAtStops in VehicleJourney
+	 * <br/>use {@link #sortVehicleJourneyAtStops()} to ordinate them
+	 * <br/>use {@link #checkJourneyPattern()} to link VehicleJourney on appropriate JourneyPattern if necessary
+	 * 
+	 * @param vehicleJourneyAtStopCollection VehicleJourneyAtStops to add
+	 */
+	public void addVehicleJourneyAtStops(Collection<VehicleJourneyAtStop> vehicleJourneyAtStopCollection)
+	{
+		if (vehicleJourneyAtStops== null) 
+			vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
+		for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStopCollection) 
+		{
+			if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop)) 
+			{
+				vehicleJourneyAtStops.add(vehicleJourneyAtStop);				
+			}			
+		}
+	}	
+
+	
+	/**
+	 * add a timeTable if not already presents
+	 * @param timetable to add
+	 */
+	public void addTimetable(Timetable timetable)
+	{
+		if (timetables== null) timetables = new ArrayList<Timetable>();
+		if (timetable != null && !timetables.contains(timetable))
+			timetables.add(timetable);
+	}
+
+	/**
+	 * add a collection of timetables if not already presents
+	 * @param timetable to add
+	 */
+	public void addTimetables(Collection<Timetable> timetableCollection)
+	{
+		if (timetables== null) timetables = new ArrayList<Timetable>();
+		for (Timetable timetable : timetableCollection) 
+		{
+			if (timetable != null && !timetables.contains(timetable))
+				timetables.add(timetable);
+		}
+	}
+
+	/**
+	 * remove a timetable if present
+	 * 
+	 * @param timetable
+	 */
+	public void removeTimetable(Timetable timetable)
+	{
+		if (timetables== null) timetables = new ArrayList<Timetable>();
+		if (timetable != null && timetables.contains(timetable))
+			timetables.remove(timetable);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#clean()
+	 */
+	@Override
+	public boolean clean() {
+		if(vehicleJourneyAtStops == null || vehicleJourneyAtStops.isEmpty()){
+			return false;
+		}
+		if(timetables == null || timetables.isEmpty()){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * remove the vehicleJourneyAtStop attached to a StopPoint
+	 * <p/>vehicleJourneyAtStop's order will be recalculated
+	 * <br/>use {@link #checkJourneyPattern()} to link VehicleJourney on appropriate JourneyPattern if necessary
+	 * 
+	 * @param stopPoint stopPoint to remove
+	 */
+	public void removeStopPoint(StopPoint stopPoint)
+	{
+		if (vehicleJourneyAtStops != null)
+		{
+			List<VehicleJourneyAtStop> vjas = vehicleJourneyAtStops;
+			boolean found = false;
+			for (Iterator<VehicleJourneyAtStop> iterator = vjas.iterator(); iterator.hasNext();)
+			{
+				VehicleJourneyAtStop vehicleJourneyAtStop =  iterator.next();
+				if (stopPoint.equals(vehicleJourneyAtStop.getStopPoint()))
+				{
+					vehicleJourneyAtStop.setStopPoint(null);
+					iterator.remove();
+					found = true;
+					break;
+				}
+
+			}
+			if (found)
+			{
+				sortVehicleJourneyAtStops();
+			}
+		}
+	}
+
+	/**
+	 * order VehicleJourneyAtStops on StopPoint positions, calculate order and departure/arrival flags
+	 */
+	public void sortVehicleJourneyAtStops() 
+	{
+		if (getVehicleJourneyAtStops() != null)
+		{
+			List<VehicleJourneyAtStop> vjass = getVehicleJourneyAtStops();
+			Collections.sort(vjass, new VehicleJourneyAtStopComparator());
+			int last = vjass.size()-1;
+			for (int i = 0; i < vjass.size(); i ++) 
+			{
+				VehicleJourneyAtStop vjas = vjass.get(i);
+				vjas.setDeparture(i==0);
+				vjas.setOrder(i+1);
+				vjas.setArrival(i==last);
+			}
+
+		}
+
+	}
+
+	/**
+	 * check and rebuild journeyPattern if necessary 
+	 * <p/>
+	 * <b>Warning</b> if true is returned and journeypattern.getId() is null : 
+	 *  the journeyPattern must be first saved separately and, after,
+	 *  must be added to route and route must be added to journeyPattern,
+	 *  therefore, route must be updated (vehicleJourney will be updated in this action)
+	 *  
+	 * @return true if journeyPattern has changed
+	 */
+	public boolean checkJourneyPattern()
+	{
+		sortVehicleJourneyAtStops();
+		String vjKey = getStopPointsAsKey();
+		if (journeyPattern != null)
+		{
+			String jpKey = journeyPattern.getStopPointsAsKey();
+			if (jpKey.equals(vjKey)) return false;
+			journeyPattern.removeVehicleJourney(this);
+		}
+		List<JourneyPattern> jps = getRoute().getJourneyPatterns();
+
+		for (JourneyPattern jp : jps) 
+		{
+			String jpKey = jp.getStopPointsAsKey();
+			if (jpKey.equals(vjKey))
+			{
+				journeyPattern = jp;
+				journeyPattern.addVehicleJourney(this);
+				return true;
+			}
+		}
+
+		// create a new JourneyPattern
+		journeyPattern = new JourneyPattern();
+		journeyPattern.setCreationTime(Calendar.getInstance().getTime());
+		// journeyPattern.setRoute(route);
+		String prefix = route.getObjectId().split(":")[0];
+		journeyPattern.setObjectId(prefix);
+		// journeyPattern.addVehicleJourney(this);
+		for (VehicleJourneyAtStop vjas : vehicleJourneyAtStops) 
+		{
+			journeyPattern.addStopPoint(vjas.getStopPoint());
+		}
+		// route.addJourneyPattern(journeyPattern)
+		// put a copy of vehicleJourney in journeyPattern
+		VehicleJourney copy = copy();
+		journeyPattern.addVehicleJourney(copy);
+
+		return true;
+	}
+
+	/**
+	 * create a copy of the vehicleJourney 
+	 * @return
+	 */
+	private VehicleJourney copy()
+	{
+		VehicleJourney copy = new VehicleJourney();
+		copy.setComment(comment);
+		copy.setCompany(company);
+		copy.setCreationTime(getCreationTime());
+		copy.setCreatorId(getCreatorId());
+		copy.setFacility(facility);
+		copy.setJourneyPattern(journeyPattern);
+		// copy.setLine(line); // not persisted
+		copy.setName(getName());
+		copy.setNumber(number);
+		copy.setObjectId(getObjectId());
+		copy.setObjectVersion(getObjectVersion());
+		copy.setPublishedJourneyIdentifier(publishedJourneyIdentifier);
+		copy.setPublishedJourneyName(publishedJourneyName);
+		copy.setRoute(route); 
+		copy.setServiceStatusValue(serviceStatusValue);
+		copy.setTimeSlot(timeSlot);
+		copy.addTimetables(timetables);
+		copy.addVehicleJourneyAtStops(vehicleJourneyAtStops);
+		copy.setVehicleTypeIdentifier(vehicleTypeIdentifier);
+		return copy;
+	}
+	
+	/**
+	 * build a unique key form vehicleJourney based on ordered stoppoint ids
+	 * 
+	 * <p/>use to match journeyPattern stopPointKey 
+	 * 
+	 * @return
+	 */
+	private String getStopPointsAsKey()
+	{
+
+		if (vehicleJourneyAtStops != null)
+		{
+			StringBuffer buffer = new StringBuffer();
+			for (VehicleJourneyAtStop vjas : vehicleJourneyAtStops) 
+			{
+				buffer.append(vjas.getStopPoint().getId());
+				buffer.append(',');
+			}
+			return buffer.toString();
+		}
+		return "empty vehicleJourney";
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -151,88 +462,17 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		return sb.toString();
 	}
 
-	public void addVehicleJourneyAtStop(VehicleJourneyAtStop vehicleJourneyAtStop)
-	{
-		if (vehicleJourneyAtStops== null) 
-			vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
-		if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop)) 
-			vehicleJourneyAtStops.add(vehicleJourneyAtStop);
-	}	
 
-	public void addTimetable(Timetable timetable)
-	{
-		if (timetables== null) timetables = new ArrayList<Timetable>();
-		if (timetable != null && !timetables.contains(timetable))
-			timetables.add(timetable);
-	}
-	
-	public void removeTimetable(Timetable timetable)
-	{
-		if (timetables== null) timetables = new ArrayList<Timetable>();
-		if (timetable != null && timetables.contains(timetable))
-			timetables.remove(timetable);
-	}
-
-	public List<VehicleJourney> getVehicleJourneysByRoute(String routeId){
-		List<VehicleJourney> res = new ArrayList<VehicleJourney>();
-		if(this.routeId.equals(routeId))
-			res.add(this);
-		return res;
-	}
-
-	@Override
-	public boolean clean() {
-		if(vehicleJourneyAtStops == null || vehicleJourneyAtStops.isEmpty()){
-			return false;
-		}
-		if(timetables == null || timetables.isEmpty()){
-			return false;
-		}
-		return true;
-	}
-	
-	public void removeStopPoint(StopPoint stopPoint)
-	{
-		if (getVehicleJourneyAtStops() != null)
-		{
-			List<VehicleJourneyAtStop> vjas = getVehicleJourneyAtStops();
-			for (Iterator<VehicleJourneyAtStop> iterator = vjas.iterator(); iterator.hasNext();)
-			{
-				VehicleJourneyAtStop vehicleJourneyAtStop =  iterator.next();
-				if (stopPoint.equals(vehicleJourneyAtStop.getStopPoint()))
-				{
-					vehicleJourneyAtStop.setStopPoint(null);
-					iterator.remove();
-					break;
-				}
-				
-			}
-			sortVehicleJourneyAtStops();
-		}
-	}
-
-	public void sortVehicleJourneyAtStops() 
-	{
-		if (getVehicleJourneyAtStops() != null)
-		{
-			List<VehicleJourneyAtStop> vjass = getVehicleJourneyAtStops();
-			Collections.sort(vjass, new VehicleJourneyAtStopComparator());
-			int last = vjass.size()-1;
-			for (int i = 0; i < vjass.size(); i ++) 
-			{
-				VehicleJourneyAtStop vjas = vjass.get(i);
-				vjas.setDeparture(i==0);
-				vjas.setOrder(i+1);
-				vjas.setArrival(i==last);
-			}
-			
-		}
-		
-	}
-	
-	private class VehicleJourneyAtStopComparator implements Comparator<VehicleJourneyAtStop>
+	/**
+	 * compare VehicleJourneyAtStop on StoPoint position in route
+	 * 
+	 */
+	public class VehicleJourneyAtStopComparator implements Comparator<VehicleJourneyAtStop>
 	{
 
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
 		@Override
 		public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) 
 		{
@@ -244,7 +484,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			}
 			return 0;
 		}
-		
+
 	}
-	
+
 }

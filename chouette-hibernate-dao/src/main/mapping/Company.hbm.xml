@@ -2,8 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="Company" table="Company" dynamic-insert="false"
-		dynamic-update="false">
+	<class name="Company" table="Company" >
 		<comment>company operating a public transport service</comment>
 		<id name="id" type="long">
 			<column name="id">

@@ -20,7 +20,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -235,7 +234,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 		}
 
 
-		List<StopArea> positionGeographiquesResultat = stopAreaManager.getAll(null,filter,DetailLevelEnum.ATTRIBUTE);
+		List<StopArea> positionGeographiquesResultat = stopAreaManager.getAll(null,filter);
 
 		request.put("positionGeographiquesResultat", positionGeographiquesResultat);
 

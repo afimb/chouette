@@ -22,9 +22,9 @@
     <tr>
       <td>
         <s:url id="pagePrecedente" action="list" namespace="/vehicleJourneyAtStop">
-          <s:param name="seuilDateDepartCourse">
-            <s:if test="seuilDateDepartCourse != null">
-              <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+          <s:param name="seuilHeureDepartCourse">
+            <s:if test="seuilHeureDepartCourse != null">
+              <s:date name="seuilHeureDepartCourse" format="HH:mm"/>
             </s:if>
           </s:param>
           <s:param name="idTableauMarche" value="%{idTableauMarche}"></s:param>
@@ -37,9 +37,9 @@
       <s:iterator value="pagination.pages" status="rangPage" id="page">
         <td>
           <s:url id="pageIterateur" action="list" namespace="/vehicleJourneyAtStop">
-            <s:param name="seuilDateDepartCourse">
-              <s:if test="seuilDateDepartCourse != null">
-                <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+            <s:param name="seuilHeureDepartCourse">
+              <s:if test="seuilHeureDepartCourse != null">
+                <s:date name="seuilHeureDepartCourse" format="HH:mm"/>
               </s:if>
             </s:param>
             <s:param name="idTableauMarche" value="%{idTableauMarche}"></s:param>
@@ -57,9 +57,9 @@
       </s:iterator>
       <td>
         <s:url id="pageSuivante" action="list" namespace="/vehicleJourneyAtStop">
-          <s:param name="seuilDateDepartCourse">
-            <s:if test="seuilDateDepartCourse != null">
-              <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+          <s:param name="seuilHeureDepartCourse">
+            <s:if test="seuilHeureDepartCourse != null">
+              <s:date name="seuilHeureDepartCourse" format="HH:mm"/>
             </s:if>
           </s:param>
           <s:param name="idTableauMarche" value="%{idTableauMarche}"></s:param>

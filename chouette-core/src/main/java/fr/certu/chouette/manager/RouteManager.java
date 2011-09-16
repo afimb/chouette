@@ -14,11 +14,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.PTLink;
@@ -104,6 +104,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 
 		return globalReport;
 	}
+	@Transactional
 	@Override
 	public void remove(User user,Route route,boolean propagate) throws ChouetteException
 	{
@@ -112,14 +113,13 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
 		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
 		Filter filter = Filter.getNewEqualsFilter("route.id", route.getId());
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		List<JourneyPattern> jps = jpManager.getAll(user, filter, level);
+		List<JourneyPattern> jps = jpManager.getAll(user, filter);
 		if(jps != null && !jps.isEmpty())
 			jpManager.removeAll(user, jps,propagate);
-		List<PTLink> ptLinks = ptLinkManager.getAll(user, filter, level);
+		List<PTLink> ptLinks = ptLinkManager.getAll(user, filter);
 		if(ptLinks != null && !ptLinks.isEmpty())
 			ptLinkManager.removeAll(user, ptLinks,propagate);
-		List<StopPoint> stopPoints = stopPointManager.getAll(user, filter, level);
+		List<StopPoint> stopPoints = stopPointManager.getAll(user, filter);
 		if(stopPoints != null && !stopPoints.isEmpty())
 		{
 			Collections.sort(stopPoints,new Comparator<StopPoint>() 
@@ -141,7 +141,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	{
 		return logger;
 	}
-
+	@Transactional
 	@Override
 	public void saveAll(User user, List<Route> routes, boolean propagate,boolean fast) throws ChouetteException 
 	{
@@ -214,7 +214,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 		}
 
 	}
-	
+	@Transactional
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{

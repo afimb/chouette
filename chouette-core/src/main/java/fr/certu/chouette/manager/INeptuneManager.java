@@ -12,7 +12,6 @@ import java.util.List;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
@@ -103,22 +102,20 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * 
 	 * @param user user account for security check 
 	 * @param filter parameters for search
-	 * @param level returned detail level
 	 * @return the bean found or null if not found
 	 * @throws ChouetteException invalid user access or not unicity criteria
 	 */
-	T get(User user, Filter filter, DetailLevelEnum level) throws ChouetteException;
+	T get(User user, Filter filter) throws ChouetteException;
 
 	/**
 	 * find a list of beans on a criteria (may be empty)
 	 * 
 	 * @param user user account for security check 
 	 * @param filter parameters for search
-	 * @param level returned detail level
 	 * @return the beans found 
 	 * @throws ChouetteException invalid user access or storage access problem
 	 */
-	List<T> getAll(User user, Filter filter, DetailLevelEnum level)  throws ChouetteException;
+	List<T> getAll(User user, Filter filter)  throws ChouetteException;
 
 	/**
 	 * return all Neptune Identified object 
@@ -160,26 +157,13 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	/**
 	 * update an existing bean <br/>
 	 * the bean may contain dependencies with new beans, in this case, the new beans will be added<br/>
-	 * in the other case, change in the dependency beans will be ignored
+	 * in the other case, change in the dependency beans will be also saved 
 	 * 
 	 * @param user user account for security check 
 	 * @param bean the bean to update
 	 * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
 	 */
 	void update(User user,T bean)  throws ChouetteException;
-
-	/**
-	 * update an existing bean <br/>
-	 * the bean may contain dependencies with new beans, in this case, the new beans will be added in cascade<br/>
-	 * in the other case, change in the dependency beans will be checked with level detail
-	 * 
-	 * @param user user account for security check 
-	 * @param bean the bean to update
-	 * @param level detail level to follow for updated dependencies
-	 * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
-	 */
-	void update(User user,T bean,DetailLevelEnum level )  throws ChouetteException;
-
 
 	// Delete
 	/**

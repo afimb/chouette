@@ -26,7 +26,6 @@ import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.echange.ILectureEchange;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Line;
@@ -64,7 +63,6 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
     private String useGeoportail;
     private static int GTFS = 0;
     private static int GEOPORTAIL = 1;
-    private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 	
 
     public void setUseGtfs(String useGtfs) {
@@ -104,7 +102,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
             model = new PTNetwork();
         } else {
         	Filter filter = Filter.getNewEqualsFilter("id", getIdReseau());
-            model = networkManager.get(null, filter, level);
+            model = networkManager.get(null, filter);
         }
     }
 
@@ -206,7 +204,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
             String exportModeStr = exportMode.toString();
             log.debug("Export " + exportModeStr + " : toutes les lignes du reseau : " + idReseau);
             Filter filter = Filter.getNewEqualsFilter("company.id", idReseau);
-			List<Line> lignes = lineManager.getAll(null, filter , level); 
+			List<Line> lignes = lineManager.getAll(null, filter); 
             if ((lignes == null) || (lignes.size() == 0)) {
                 addActionMessage(getText("export.network.noline"));
                 return REDIRECTLIST;

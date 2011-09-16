@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -104,6 +104,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		}
 		return ;
 	}
+	@Transactional
 	@Override
 	public void remove(User user,StopPoint stopPoint,boolean propagate) throws ChouetteException
 	{
@@ -111,11 +112,10 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-		StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1), level);
+		StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1));
 		List<PTLink> ptLinks = ptLinkManager.getAll(user, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("startOfLink.id", stopPoint.getId()),
-				Filter.getNewEqualsFilter("endOfLink.id", stopPoint.getId())), level); 
+				Filter.getNewEqualsFilter("endOfLink.id", stopPoint.getId()))); 
 		if(ptLinks != null && !ptLinks.isEmpty())
 		{
 			int size = ptLinks.size(); 
@@ -132,11 +132,11 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			}else if(size == 1)
 				ptLinkManager.remove(user, ptLinks.get(0),propagate);
 		}
-		Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()), level);
+		Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()));
 		if(facility != null)
 			facilityManager.remove(user, facility,propagate);
 		List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("route.id",
-				stopPoint.getRoute().getId()), level);
+				stopPoint.getRoute().getId()));
 
 		for (VehicleJourney vehicleJourney : vjs) 
 		{
@@ -159,7 +159,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 		}
 		List<StopPoint> stopPoints4Route = getAll(user, Filter.getNewAndFilter(
 				Filter.getNewEqualsFilter("route.id", stopPoint.getRoute().getId()),
-				Filter.getNewGreaterFilter("position", stopPoint.getPosition())), level);
+				Filter.getNewGreaterFilter("position", stopPoint.getPosition())));
 		for (StopPoint  sp : stopPoints4Route) 
 		{
 			sp.setPosition(sp.getPosition() - 1);
@@ -203,7 +203,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			stopPoint.setName(area.getName());
 		}
 	}
-
+	@Transactional
 	@Override
 	public void saveAll(User user, List<StopPoint> stopPoints, boolean propagate,boolean fast) throws ChouetteException 
 	{
@@ -235,7 +235,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 			super.saveAll(user, stopPoints,propagate,fast);	
 		}
 	}
-	
+	@Transactional
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{

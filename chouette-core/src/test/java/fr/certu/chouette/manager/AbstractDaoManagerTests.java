@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.common.ChouetteRuntimeException;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.exception.DummyRuntimeException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -41,7 +40,7 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 		manager.setDao(daoMock);
 		expect(daoMock.get(bean.getId())).andReturn(bean);
 		replay(daoMock);
-		T retBean = manager.get(null, Filter.getNewEqualsFilter("id", bean.getId()), DetailLevelEnum.ATTRIBUTE);
+		T retBean = manager.get(null, Filter.getNewEqualsFilter("id", bean.getId()));
 		Assert.assertTrue(retBean != null,"bean should not be null");
 		Assert.assertTrue(retBean.getId() == bean.getId(),"bean should have expected id");
 		verify(daoMock);
@@ -54,7 +53,7 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 		manager.setDao(daoMock);
 		expect(daoMock.getByObjectId(bean.getObjectId())).andReturn(bean);
 		replay(daoMock);
-		T retBean = manager.get(null, Filter.getNewEqualsFilter("objectId", bean.getObjectId()), DetailLevelEnum.ATTRIBUTE);
+		T retBean = manager.get(null, Filter.getNewEqualsFilter("objectId", bean.getObjectId()));
 		Assert.assertTrue(retBean != null,"bean should not be null");
 		Assert.assertTrue(retBean.getId() == bean.getId(),"bean should have expected objectid");
 		verify(daoMock);
@@ -67,7 +66,7 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 			manager.setDao(daoMock);
 			expect(daoMock.get(bean.getId())).andThrow(new DummyRuntimeException("no such id"));
 			replay(daoMock);
-			manager.get(null, Filter.getNewEqualsFilter("id", bean.getId()), DetailLevelEnum.ATTRIBUTE);
+			manager.get(null, Filter.getNewEqualsFilter("id", bean.getId()));
 		}
 		finally
 		{
@@ -82,7 +81,7 @@ public abstract class AbstractDaoManagerTests<T extends NeptuneIdentifiedObject>
 			manager.setDao(daoMock);
 			expect(daoMock.getByObjectId(bean.getObjectId())).andThrow(new DummyRuntimeException("no such id"));
 			replay(daoMock);
-			manager.get(null, Filter.getNewEqualsFilter("objectId", bean.getObjectId()), DetailLevelEnum.ATTRIBUTE);
+			manager.get(null, Filter.getNewEqualsFilter("objectId", bean.getObjectId()));
 		}
 		finally
 		{

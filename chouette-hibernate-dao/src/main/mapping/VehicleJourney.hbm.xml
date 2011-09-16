@@ -4,60 +4,181 @@
 
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="VehicleJourney" table="VehicleJourney">
-		<id column="id" name="id" type="long">
+		<comment>Vehicle journey</comment>
+		<id name="id" type="long">
+			<column name="id">
+				<comment>Internal identification</comment>
+			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" />
-		<property name="objectVersion" type="int" />
-		<property name="creationTime" type="java.util.Date" />
-		<property name="creatorId" type="string" />
-		<property name="comment" type="string" />
-		<property column="statusValue" name="serviceStatusValue"
-			type="fr.certu.chouette.dao.hibernate.usertype.ServiceStatusValueUserType" />
-		<property column="transportMode" name="transportMode"
-			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType" />
-		<property column="publishedJourneyName" name="publishedJourneyName" />
-		<property column="publishedJourneyIdentifier" name="publishedJourneyIdentifier" />
-		<property column="facility" name="facility" type="string" />
-		<property name="vehicleTypeIdentifier" type="string" />
-		<property column="number" name="number" type="long" />
-		<many-to-one class="Route" column="routeId" lazy="no-proxy"
-			name="route" foreign-key="vj_route_fkey"/>
-		<many-to-one class="JourneyPattern" column="journeyPatternId"
-			lazy="no-proxy" name="journeyPattern" />
-		<many-to-one class="TimeSlot" column="timeSlotId" lazy="no-proxy"
-			name="timeSlot" foreign-key="vj_timeslot_fkey"/>
-		<many-to-one class="Company" column="companyId" lazy="no-proxy"
-			name="company" foreign-key="vj_company_fkey"/>
-		<bag name="timetables" table="timetablevehiclejourney" lazy="false">
-			<key column="vehiclejourneyId" foreign-key="vjtm_vj_fkey"/>
-			<many-to-many column="timetableId" class="Timetable" foreign-key="vjtm_tm_fkey"/>
+		<natural-id>
+			<property name="objectId" type="string" unique="true">
+				<column name="objectId" not-null="true">
+					<comment>Neptune identification</comment>
+				</column>
+			</property>
+		</natural-id>
+
+		<property name="objectVersion" type="int">
+			<column name="objectVersion" default="1">
+				<comment>Version of this object</comment>
+			</column>
+		</property>
+		<property name="creationTime" type="java.util.Date">
+			<column name="creationTime">
+				<comment>Creation date and time</comment>
+			</column>
+		</property>
+		<property name="creatorId" type="string">
+			<column name="creatorId">
+				<comment>Creator identification</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<property name="serviceStatusValue"
+			type="fr.certu.chouette.dao.hibernate.usertype.ServiceStatusValueUserType">
+			<column name="statusValue">
+				<comment>Service Status</comment>
+			</column>
+		</property>
+		<property name="transportMode"
+			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType">
+			<column name="transportMode">
+				<comment>Transport mode</comment>
+			</column>
+		</property>
+		<property name="publishedJourneyName">
+			<column name="publishedJourneyName">
+				<comment>Name for travelers</comment>
+			</column>
+		</property>
+		<property name="publishedJourneyIdentifier">
+			<column name="publishedJourneyIdentifier">
+				<comment>Identifier for travelers</comment>
+			</column>
+		</property>
+		<property name="facility" type="string">
+			<column name="facility">
+				<comment>facility</comment>
+			</column>
+		</property>
+		<property name="vehicleTypeIdentifier" type="string">
+			<column name="vehicleTypeIdentifier">
+				<comment>Vehicle type</comment>
+			</column>
+		</property>
+		<property name="number" type="long">
+			<column name="number">
+				<comment>Number of the vehicle journey</comment>
+			</column>
+		</property>
+		<many-to-one class="Route" lazy="no-proxy" name="route"
+			foreign-key="vj_route_fkey">
+			<column name="routeId">
+				<comment>Route foreign key</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="JourneyPattern" lazy="no-proxy" name="journeyPattern"
+			foreign-key="vj_jp_fkey">
+			<column name="journeyPatternId">
+				<comment>JourneyPattern foreign key</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="TimeSlot" lazy="no-proxy" name="timeSlot"
+			foreign-key="vj_timeslot_fkey">
+			<column name="timeSlotId">
+				<comment>TimeSlot foreign key</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="Company" lazy="no-proxy" name="company"
+			foreign-key="vj_company_fkey">
+			<column name="companyId">
+				<comment>Company foreign key</comment>
+			</column>
+		</many-to-one>
+		<bag name="timetables" table="timetablevehiclejourney" lazy="true">
+			<comment>Timetable on Vehicle journeys cross reference</comment>
+			<key foreign-key="vjtm_vj_fkey">
+				<column name="vehiclejourneyId">
+					<comment>VehicleJourney foreign key</comment>
+				</column>
+			</key>
+			<many-to-many class="Timetable" foreign-key="vjtm_tm_fkey">
+				<column name="timetableId">
+					<comment>Timetable foreign key</comment>
+				</column>
+			</many-to-many>
 		</bag>
-			
+
 		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan"
 			table="vehicleJourneyAtStop" order-by="position">
-			<key column="vehicleJourneyId" foreign-key="vjas_vj_fkey"/>
+			<comment>Vehicle Journey at Stop</comment>
+			<key foreign-key="vjas_vj_fkey">
+				<column name="vehicleJourneyId">
+					<comment>VehicleJourney foreign key (1st part of primary key)</comment>
+				</column>
+			</key>
 
 			<composite-element class="VehicleJourneyAtStop">
-				<many-to-one class="StopPoint" column="stopPointId"
-					lazy="no-proxy" name="stopPoint" cascade="none" foreign-key="vjas_sp_fkey"/>
-				<!-- <many-to-one class="VehicleJourney" column="vehicleJourneyId" lazy="no-proxy" 
-					name="vehicleJourney" /> -->
-				<property name="connectingServiceId" />
-				<property column="boardingAlightingPossibility" name="boardingAlightingPossibility"
-					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" />
-				<property name="order"  type="long" column="position"/>
-				<property name="arrivalTime" type="time" />
-				<property name="departureTime" type="time" />
-				<property name="waitingTime" type="time" />
-				<property name="elapseDuration" type="time" />
-				<property name="headwayFrequency" type="time" />
+				<many-to-one class="StopPoint"
+					lazy="no-proxy" name="stopPoint" cascade="none" foreign-key="vjas_sp_fkey">
+					<column name="stopPointId">
+						<comment>StopPoint foreign key (2nd part of primary key)</comment>
+					</column>
+				</many-to-one>
+				<property name="connectingServiceId">
+					<column name="connectingServiceId">
+						<comment>connectingServiceId</comment>
+					</column>
+				</property>
+				<property name="boardingAlightingPossibility"
+					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" >
+					<column name="boardingAlightingPossibility">
+						<comment>boardingAlightingPossibility</comment>
+					</column>
+					</property>
+				<property name="order" type="long">
+					<column name="position">
+						<comment>order in JourneyPattern</comment>
+					</column>
+				</property>
+				<property name="arrivalTime" type="time" >
+					<column name="arrivalTime">
+						<comment>Arrival time</comment>
+					</column>
+				</property>
+				<property name="departureTime" type="time" >
+					<column name="departureTime">
+						<comment>Departure time</comment>
+					</column>
+				</property>
+				<property name="waitingTime" type="time" >
+					<column name="waitingTime">
+						<comment>Waiting time</comment>
+					</column>
+				</property>
+				<property name="elapseDuration" type="time" >
+					<column name="elapseDuration">
+						<comment>elapse duration</comment>
+					</column>
+				</property>
+				<property name="headwayFrequency" type="time" >
+					<column name="headwayFrequency">
+						<comment>headway frequency</comment>
+					</column>
+				</property>
 				<property name="departure" type="boolean">
 					<column name="isDeparture" default="false">
+						<comment>First stop of the vehicle journey</comment>
 					</column>
 				</property>
 				<property name="arrival" type="boolean">
 					<column name="isArrival" default="false">
+						<comment>Last stop of the vehicle journey</comment>
 					</column>
 				</property>
 			</composite-element>

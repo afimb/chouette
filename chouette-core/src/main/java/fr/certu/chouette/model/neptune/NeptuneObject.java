@@ -8,8 +8,6 @@
 package fr.certu.chouette.model.neptune;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +16,6 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.log4j.Logger;
-
-import fr.certu.chouette.filter.DetailLevelEnum;
-
 
 /**
  * basic class for every Neptune object
@@ -31,7 +23,6 @@ import fr.certu.chouette.filter.DetailLevelEnum;
 
 public abstract class NeptuneObject implements Serializable
 {
-	private static final Logger logger = Logger.getLogger(NeptuneObject.class);
 	
 	// constant for persistence fields
 	public static final String ID = "id"; 
@@ -43,7 +34,6 @@ public abstract class NeptuneObject implements Serializable
 	protected static final String CHILD_LIST_ARROW = "      -->";
 
 	@Getter @Setter private Long id;
-//	@Getter private DetailLevelEnum level = DetailLevelEnum.UNINITIALIZED;
 
 	private boolean validationProceeded = false;
 
@@ -129,41 +119,6 @@ public abstract class NeptuneObject implements Serializable
 	}
 
 	
-	/**
-	 * @param level
-	 */
-//	public void expand(DetailLevelEnum level)
-//	{
-//		if (this.level.ordinal() >= level.ordinal()) return;
-//		this.level = level;
-//
-//		if (this.level.ordinal() > DetailLevelEnum.ATTRIBUTE.ordinal() )
-//		{
-//			Method[] methods = this.getClass().getMethods();
-//
-//			for (Method method : methods) 
-//			{
-//				if (method.getName().startsWith("get"))
-//				{
-//					Class<?> returnType = method.getReturnType();
-//					if ((returnType.getSuperclass() != null && returnType.getSuperclass().equals(NeptuneIdentifiedObject.class)) || returnType.equals(List.class))
-//					{
-//						try 
-//						{
-//							Object ret = method.invoke(this, new Object[0]);
-//						} 
-//						catch (Exception e) 
-//						{
-//							logger.error("cannot call "+method.getName(),e);
-//						} 
-//					}
-//				}
-//			}
-//		}
-//
-//		return;
-//	}
-
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -175,7 +130,7 @@ public abstract class NeptuneObject implements Serializable
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof  NeptuneObject))
 			return false;
 		NeptuneObject another = (NeptuneObject) obj;
 		if (id != null) return id.equals(another.getId());

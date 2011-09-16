@@ -41,33 +41,6 @@ public class StopPoint extends NeptuneIdentifiedObject
 		if(facilities == null) facilities = new ArrayList<Facility>();
 		if(facilities.contains(facility)) facilities.remove(facility);
 	}
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.model.neptune.NeptuneObject#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	 */
-//	@Override
-//	public void expand(DetailLevelEnum level)
-//	{
-//		// to avoid circular call check if level is already set according to this level
-//		if (getLevel().ordinal() >= level.ordinal()) return;
-//		super.expand(level);
-//		/*
-//		switch (level)
-//		{
-//		case ATTRIBUTE : 
-////			route = null;
-////			containedInStopArea = null;
-//			break;
-//		case NARROW_DEPENDENCIES : 
-//			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-//			if (getContainedInStopArea() != null) getContainedInStopArea().expand(DetailLevelEnum.ATTRIBUTE);
-//			break;
-//		case STRUCTURAL_DEPENDENCIES : 
-//		case ALL_DEPENDENCIES :
-//			if (getRoute() != null) getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-//			if (getContainedInStopArea() != null) getContainedInStopArea().expand(level);
-//		}
-//		*/
-//	}
 
 	@Override
 	public String toString(String indent,int level)

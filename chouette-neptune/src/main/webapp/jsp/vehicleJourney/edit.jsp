@@ -29,7 +29,7 @@
     <s:hidden name="idItineraire" value="%{idItineraire}"/>
     <s:hidden name="idLigne" value="%{idLigne}" />
     <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
-    <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
+    <s:hidden name="seuilHeureDepartCourse" value="%{seuilHeureDepartCourse}" />
     <s:hidden name="page" value="%{page}" />
     <s:hidden key="actionMethod" value="%{actionMethod}"/>
     <s:hidden name="operationMode" value="%{'STORE'}" />
@@ -104,7 +104,7 @@
         <s:a href="%{editTableauMarche}">
           <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
         </s:a>&nbsp;&nbsp;
-        <s:a href="%{supprimerAssociationTableauMarche}" onclick="return confirm('%{getText('popup.confirmer')}'">
+        <s:a href="%{supprimerAssociationTableauMarche}" onclick="return confirm('%{getText('popup.confirmer')}')">
           <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
         </s:a>
       </display:column>

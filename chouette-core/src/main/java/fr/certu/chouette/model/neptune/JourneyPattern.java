@@ -23,52 +23,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys; // FK inverse
 
 
-//	/* (non-Javadoc)
-//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-//	 */
-//	@Override
-//	public void expand(DetailLevelEnum level)
-//	{
-//		// to avoid circular call check if level is already set according to this level
-//		if (getLevel().ordinal() >= level.ordinal()) return;
-//		super.expand(level);
-//		switch (level)
-//		{
-//		case ATTRIBUTE : 
-//			stopPoints = null;
-//			route = null;
-//			vehicleJourneys = null;
-//			break;
-//		case NARROW_DEPENDENCIES : 
-//			getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-//			for (StopPoint stopPoint : getStopPoints())
-//			{
-//				stopPoint.expand(DetailLevelEnum.ATTRIBUTE);
-//			}
-//			for (VehicleJourney vehicleJourney : getVehicleJourneys())
-//			{
-//				vehicleJourney.expand(DetailLevelEnum.ATTRIBUTE);
-//			}
-//			break;
-//		case STRUCTURAL_DEPENDENCIES : 
-//			getRoute().expand(DetailLevelEnum.ATTRIBUTE);
-//			for (StopPoint stopPoint : getStopPoints())
-//			{
-//				stopPoint.expand(level);
-//			}
-//			vehicleJourneys = null;
-//		case ALL_DEPENDENCIES :
-//			getRoute().expand(level);
-//			for (StopPoint stopPoint : getStopPoints())
-//			{
-//				stopPoint.expand(DetailLevelEnum.ATTRIBUTE);
-//			}
-//			for (VehicleJourney vehicleJourney : getVehicleJourneys())
-//			{
-//				vehicleJourney.expand(level);
-//			}
-//		}
-//	} 
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -131,7 +85,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		if (!stopPoints.contains(stopPoint))
 			stopPoints.add(stopPoint);
 	}
-	
+
 	public void removeStopPoint(StopPoint stopPoint)
 	{
 		if (stopPoints== null) stopPoints = new ArrayList<StopPoint>();
@@ -145,13 +99,31 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		if (!vehicleJourneys.contains(vehicleJourney))
 			vehicleJourneys.add(vehicleJourney);
 	}
-	
+
 	public void removeVehicleJourney(VehicleJourney vehicleJourney)
 	{
 		if (vehicleJourneys== null) vehicleJourneys = new ArrayList<VehicleJourney>();
 		if (vehicleJourneys.contains(vehicleJourney))
 			vehicleJourneys.remove(vehicleJourney);
 	}
+
+
+	public String getStopPointsAsKey()
+	{
+		
+		if (stopPoints != null)
+		{
+			StringBuffer buffer = new StringBuffer();
+			for (StopPoint point : stopPoints) 
+			{
+				buffer.append(point.getId());
+				buffer.append(',');
+			}
+			return buffer.toString();
+		}
+        return "empty journeyPattern";
+	}
+
 
 	@Override
 	public boolean clean() {

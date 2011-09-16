@@ -22,7 +22,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Company;
@@ -38,7 +37,9 @@ import fr.certu.chouette.struts.GeneriqueAction;
 
 public class CompanyAction extends GeneriqueAction implements ModelDriven<Company>, Preparable {
 
-    private static final Log log = LogFactory.getLog(CompanyAction.class);
+	private static final long serialVersionUID = -4424720354695864931L;
+	
+	private static final Log log = LogFactory.getLog(CompanyAction.class);
     private Company companyModel = new Company();
     @Getter @Setter private INeptuneManager<Company> companyManager;
     @Getter @Setter INeptuneManager<Line> lineManager;
@@ -49,7 +50,6 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Compan
     private String nomFichier;
     private IExportManager exportManager;
     private ILecteurFichierXML lecteurFichierXML;
-    private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
     
     public Long getIdTransporteur() {
         return idTransporteur;
@@ -72,7 +72,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Compan
             companyModel = new Company();
         } else {
         	Filter filter = Filter.getNewEqualsFilter("id", getIdTransporteur());
-            companyModel = companyManager.get(null, filter, level);
+            companyModel = companyManager.get(null, filter);
         }
     }
 
@@ -146,7 +146,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Compan
             log.debug("Export Chouette : toutes les lignes du transporteur : " + idTransporteur);
             
             Filter filter = Filter.getNewEqualsFilter("company.id", idTransporteur);
-			List<Line> lignes = lineManager.getAll(null, filter , level); 
+			List<Line> lignes = lineManager.getAll(null, filter ); 
             if ((lignes == null) || (lignes.size() == 0)) {
                 addActionMessage(getText("export.company.noline"));
                 return REDIRECTLIST;

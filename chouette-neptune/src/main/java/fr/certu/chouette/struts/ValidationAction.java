@@ -403,7 +403,7 @@ public class ValidationAction extends GeneriqueAction
 			Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
 			Filter lonFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE);
 			Filter filter = Filter.getNewOrFilter(latFilter,lonFilter);
-			List<StopArea> areas = stopAreaManager.getAll(null,filter,null);
+			List<StopArea> areas = stopAreaManager.getAll(null,filter);
 			if (!areas.isEmpty())
 			{
 				withErrors = true;
@@ -444,7 +444,7 @@ public class ValidationAction extends GeneriqueAction
 		
 		try 
 		{
-			List<StopArea> areas = stopAreaManager.getAll(null,filter,null);
+			List<StopArea> areas = stopAreaManager.getAll(null,filter);
 			if (!areas.isEmpty())
 			{
 				withErrors = true;

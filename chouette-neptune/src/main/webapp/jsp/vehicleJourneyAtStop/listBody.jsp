@@ -12,9 +12,9 @@
             <s:param name="idItineraire" value="idItineraire" />
             <s:param name="idLigne" value="idLigne" />
             <s:param name="idTableauMarche" value="idTableauMarche" />
-            <s:param name="seuilDateDepartCourse">
-              <s:if test="seuilDateDepartCourse != null">
-                <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+            <s:param name="seuilHeureDepartCourse">
+              <s:if test="seuilDHeureDepartCourse != null">
+                <s:date name="seuilHeureDepartCourse" format="HH:mm"/>
               </s:if>
             </s:param>
             <s:param name="page" value="page" />
@@ -24,9 +24,9 @@
             <s:param name="idItineraire" value="idItineraire" />
             <s:param name="idLigne" value="idLigne" />
             <s:param name="idTableauMarche" value="idTableauMarche" />
-            <s:param name="seuilDateDepartCourse">
-              <s:if test="seuilDateDepartCourse != null">
-                <s:date name="seuilDateDepartCourse" format="HH:mm"/>
+            <s:param name="seuilHeureDepartCourse">
+              <s:if test="seuilHeureDepartCourse != null">
+                <s:date name="seuilHeureDepartCourse" format="HH:mm"/>
               </s:if>
             </s:param>
             <s:param name="operationMode" value="%{'STORE'}" />
@@ -76,11 +76,11 @@
             <s:param name="page" value="page" />
           </s:url>
           <s:a href="%{editMission}">
-            <s:if test="missionParIdCourse[idMission].name == null || missionParIdCourse[idMission].name == ''">
+            <s:if test="missionParIdMission[idMission].name == null || missionParIdMission[idMission].name == ''">
               <s:text name="horairesDePassage.anonyme" />
             </s:if>
             <s:else>
-              <s:property value="missionParIdCourse[idMission].name" />
+              <s:property value="missionParIdMission[idMission].name" />
             </s:else>
           </s:a>
         </td>

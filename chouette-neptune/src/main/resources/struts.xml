@@ -439,7 +439,7 @@
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="seuilHeureDepartCourse">${seuilHeureDepartCourse}</param>
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
@@ -459,7 +459,7 @@
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="seuilHeureDepartCourse">${seuilHeureDepartCourse}</param>
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
@@ -469,7 +469,7 @@
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="seuilHeureDepartCourse">${seuilHeureDepartCourse}</param>
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>
@@ -491,7 +491,7 @@
         <param name="idItineraire">${idItineraire}</param>
         <param name="idLigne">${idLigne}</param>
         <param name="idTableauMarche">${idTableauMarche}</param>
-        <param name="seuilDateDepartCourse">${seuilDateDepartCourse}</param>
+        <param name="seuilHeureDepartCourse">${seuilHeureDepartCourse}</param>
         <param name="page">${page}</param>
         <param name="operationMode">RETRIEVE</param>
       </result>

@@ -28,7 +28,7 @@
   <s:hidden name="idItineraire" value="%{idItineraire}"/>
   <s:hidden name="idLigne" value="%{idLigne}" />
   <s:hidden name="idTableauMarche" value="%{idTableauMarche}" />
-  <s:hidden name="seuilDateDepartCourse" value="%{seuilDateDepartCourse}" />
+  <s:hidden name="seuilHeureDepartCourse" value="%{seuilHeureDepartCourse}" />
   <s:hidden name="page" value="%{page}" />
   <s:hidden key="actionMethod" value="%{actionMethod}"/>
 

@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -172,15 +170,24 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	public boolean equals(Object obj) 
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (!(obj instanceof  NeptuneIdentifiedObject))
+		{
 			return false;
+		}
 		NeptuneIdentifiedObject another = (NeptuneIdentifiedObject) obj;
-		if (objectId != null) return objectId.equals(another.getObjectId());
-
-		return false;
+		if (objectId != null) 
+		{
+			return objectId.equals(another.getObjectId());
+		}
+		
+		return super.equals(obj);
 	}
 
 

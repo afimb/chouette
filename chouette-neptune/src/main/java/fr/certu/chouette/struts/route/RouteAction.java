@@ -13,7 +13,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Line;
@@ -35,7 +34,6 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	private String mappedRequest;
 	private String oppositeRouteId;
 	private List<Route> itinerairesSansItineraireEdite; // TODO rename
-	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 
 	public Long getIdItineraire()
 	{
@@ -72,7 +70,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		if (getIdLigne() != null)
 		{
 			Filter filter1 = Filter.getNewEqualsFilter("id", getIdLigne());
-			line = lineManager.get(null, filter1, level);
+			line = lineManager.get(null, filter1);
 		}
 		else
 		{
@@ -86,14 +84,14 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		else
 		{
 			Filter filter = Filter.getNewEqualsFilter("id", getIdItineraire());
-			routeModel = routeManager.get(null,filter,level);
+			routeModel = routeManager.get(null,filter);
 		}
 
 		if (getIdLigne() != null)
 		{
 			// TODO : Le virer grâce a OGNL
 			Filter filter = Filter.getNewEqualsFilter("line.id", lineId);
-			itinerairesSansItineraireEdite = routeManager.getAll(null,filter,level);
+			itinerairesSansItineraireEdite = routeManager.getAll(null,filter);
 			//	Suppression dans la liste des itinéraires de celui étant édité
 			for (Route itineraire : itinerairesSansItineraireEdite)
 			{
@@ -118,7 +116,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 			line = null;
 			try 
 			{
-				line =  lineManager.get(null, filter, DetailLevelEnum.ATTRIBUTE);
+				line =  lineManager.get(null, filter);
 			} catch (ChouetteException e) 
 			{
 				log.error(e.getLocalizedMessage(),e);
@@ -132,7 +130,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		//	Récupération des itinéraires pour un identifiant de ligne donnée
 		Filter filter = Filter.getNewEqualsFilter("line.id", lineId);
 
-		List<Route> itinerairesLigne = routeManager.getAll(null,filter,DetailLevelEnum.ATTRIBUTE);
+		List<Route> itinerairesLigne = routeManager.getAll(null,filter);
 		//	Liste des itinéraires classés
 		List<Route> itineraires = new ArrayList<Route>();
 		//	Liste de tous les ids de retour de la liste des itinéraires initiale
@@ -339,7 +337,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	public boolean isArretsVide(Long idItineraire) throws Exception
 	{
 		Filter filter = Filter.getNewEqualsFilter("route.id", idItineraire);
-		return stopPointManager.getAll(null,filter,DetailLevelEnum.ATTRIBUTE).isEmpty();
+		return stopPointManager.getAll(null,filter).isEmpty();
 	}
 
 	public String getSensItineraire()

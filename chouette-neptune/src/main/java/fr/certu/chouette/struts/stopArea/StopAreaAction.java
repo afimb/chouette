@@ -22,14 +22,8 @@ import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.common.ChouetteRuntimeException;
-import fr.certu.chouette.critere.AndClause;
-import fr.certu.chouette.critere.IClause;
-import fr.certu.chouette.critere.ScalarClause;
-import fr.certu.chouette.critere.VectorClause;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.manager.StopAreaManager;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -39,13 +33,6 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
-import fr.certu.chouette.modele.Itineraire;
-import fr.certu.chouette.modele.Ligne;
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.modele.Reseau;
-import fr.certu.chouette.service.database.ILigneManager;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.service.database.IReseauManager;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.struts.enumeration.EnumerationApplication;
 
@@ -96,7 +83,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	private String boardingPositionName = "";
 	private Integer START_INDEX_AJAX_LIST = 0;
 	private Integer END_INDEX_AJAX_LIST = 10;
-	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 	    private static String actionMsg = null;
     private static String actionErr = null;    
 
@@ -147,7 +133,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 			model = new StopArea();
 		} else
 		{
-			model = stopAreaManager.get(null, Filter.getNewEqualsFilter("id",getIdPositionGeographique()), level);
+			model = stopAreaManager.get(null, Filter.getNewEqualsFilter("id",getIdPositionGeographique()));
 
 		}
 
@@ -165,18 +151,18 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		}
 
 		//	Création des zones filles et parentes
-		children = stopAreaManager.getAll(null, Filter.getNewEqualsFilter("parentStopArea.id",idPositionGeographique ), level);
+		children = stopAreaManager.getAll(null, Filter.getNewEqualsFilter("parentStopArea.id",idPositionGeographique ));
 
 		if (model.getParentStopArea() != null)
 		{
-			father = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", model.getParentStopArea().getId()), level);
+			father = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", model.getParentStopArea().getId()));
 		}
 
 		// Création de la liste des itinéraires
 		//itineraires = positionGeographiqueManager.getItinerairesArretPhysique(idPositionGeographique);
 		//Getting stopPoints by stopArea
 		List<StopPoint> stopPoints = stopPointManager.getAll(null, 
-				Filter.getNewEqualsFilter("containedInStopArea.id",idPositionGeographique), level);
+				Filter.getNewEqualsFilter("containedInStopArea.id",idPositionGeographique));
 //
 //		List<String> objectIds = StopPoint.extractObjectIds(stopPoints);
 //		
@@ -199,7 +185,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 			Line line = itineraire.getLine();
 			if (line != null)
 			{
-				lignes.add(lineManager.get(null, Filter.getNewEqualsFilter("id",line.getId() ), level));
+				lignes.add(lineManager.get(null, Filter.getNewEqualsFilter("id",line.getId() )));
 			}
 		}
 		
@@ -281,7 +267,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 				filterOr);
 				
 				
-		List<StopArea> positionGeographiques = stopAreaManager.getAll(null, filter, level);
+		List<StopArea> positionGeographiques = stopAreaManager.getAll(null, filter);
 		request.put("positionGeographiques", positionGeographiques);
 		log.debug("List of stopArea");
         if (actionMsg != null) {
@@ -526,7 +512,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 					filter1,
 					filter2,
 					filter3);
-			positionGeographiquesResultat = stopAreaManager.getAll(null, filter, level);
+			positionGeographiquesResultat = stopAreaManager.getAll(null, filter);
 		}
 		
 		request.put("positionGeographiquesResultat", positionGeographiquesResultat);
@@ -538,7 +524,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	{
 		if (idChild != null)
 		{
-			StopArea child = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idChild), level);
+			StopArea child = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idChild));
 			if(child != null)
 			{
 				child.setParentStopArea(null);
@@ -553,8 +539,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	{
 		if (idChild != null && idPositionGeographique != null)
 		{
-			StopArea child = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idChild), level);
-			StopArea parent = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idPositionGeographique), level);
+			StopArea child = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idChild));
+			StopArea parent = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idPositionGeographique));
 			if(child != null)
 			{
 				child.setParentStopArea(parent);
@@ -571,8 +557,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	{
 		if (idFather != null && idPositionGeographique != null)
 		{
-			StopArea stopArea = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idPositionGeographique), level);
-			StopArea father = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idFather), level);
+			StopArea stopArea = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idPositionGeographique));
+			StopArea father = stopAreaManager.get(null, Filter.getNewEqualsFilter("id", idFather));
 			if(stopArea != null) 
 			{
 				stopArea.setParentStopArea(father);
@@ -815,7 +801,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		//List<PositionGeographique> boardingPositions = positionGeographiqueManager.lireArretsPhysiques();
 		List<StopArea> boardingPositions = stopAreaManager.getAll(null, Filter.getNewOrFilter(
 				Filter.getNewEqualsFilter("areaType",ChouetteAreaEnum.QUAY ),
-				Filter.getNewEqualsFilter("areaType",ChouetteAreaEnum.BOARDINGPOSITION)), level);
+				Filter.getNewEqualsFilter("areaType",ChouetteAreaEnum.BOARDINGPOSITION)));
 		
 		// Filter boarding position with the name in request
 		int count = 0;

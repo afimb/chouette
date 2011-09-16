@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import lombok.Setter;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  * 
- * @author mamadou keira
  */
 public class AccessLink extends NeptuneIdentifiedObject{
 	private static final long serialVersionUID = 7835556134861322471L;
@@ -77,7 +77,7 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	 */
 	private List<UserNeedEnum> userNeeds; //Never be persisted
 	/**
-	 * 
+	 * encoded form of userNeeds for database purpose
 	 */
 	@Getter @Setter private Integer intUserNeeds; //BD
 	/**
@@ -105,8 +105,21 @@ public class AccessLink extends NeptuneIdentifiedObject{
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private ConnectionLinkTypeEnum linkType; 
+	/**
+	 * Link Orientation (for Database purpose) <p/>
+	 * database can't save startLink or endlink because they may be of alternative types<br/>
+	 * linkOrientation helps to know which one (stopArea or accessPoint) is startOfLink.
+	 * <br/><i>readable/writable</i>
+	 */
 	@Getter @Setter private LinkOrientationEnum linkOrientation; 
 
+	/**
+	 * add a userNeed value in userNeeds collection if not already present
+	 * <br/>intUserNeeds will be automatically synchronized
+	 * <br/><i>readable/writable</i>
+	 * 
+	 * @param userNeed the userNeed to add
+	 */
 	public void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
@@ -117,12 +130,95 @@ public class AccessLink extends NeptuneIdentifiedObject{
 		}
 	}
 
+	/**
+	 * add a collection of userNeed values in userNeeds collection if not already present
+	 * <br/>intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedCollection the userNeeds to add
+	 */
+	public void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
+	{
+		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
+		boolean added = false;
+		for (UserNeedEnum userNeed : userNeedCollection) 
+		{
+			if (!userNeeds.contains(userNeed))
+			{
+				userNeeds.add(userNeed);
+				added = true;
+			}
+		}
+		if (added)
+		{
+			synchronizeUserNeeds();
+		}
+	}
+
+	/**
+	 * remove a userNeed value for userNeeds collection if present
+	 * <br/>intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeed the userNeed to remove
+	 */
 	public void removeUserNeed(UserNeedEnum userNeed){
 		if (userNeeds == null) userNeeds = new ArrayList<UserNeedEnum>();
-			userNeeds.remove(userNeed);
+
+		if (userNeeds.remove(userNeed))
+		{
+			synchronizeUserNeeds();
+		}
+	}
+
+	/**
+	 * get UserNeeds list
+	 * 
+	 * @return userNeeds
+	 */
+	public List<UserNeedEnum> getUserNeeds() 
+	{
+		if (intUserNeeds == null) return userNeeds;	
+
+		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
+		for (UserNeedEnum userNeedEnum : userNeedEnums) 
+		{
+			int filtre = (int) Math.pow(2, userNeedEnum.ordinal());
+			if (filtre == (intUserNeeds.intValue() & filtre))
+			{
+				addUserNeed(userNeedEnum);
+			}
+		}	
+		return userNeeds;
+	}
+
+	/**
+	 * set the userNeeds list 
+	 * <br/>intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedEnums list of UserNeeds to set
+	 */
+	public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
+	{
+		userNeeds = userNeedEnums;
+
 		synchronizeUserNeeds();
 	}
 
+	/**
+	 * synchronize intUserNeeds with userNeeds List content
+	 */
+	private void synchronizeUserNeeds() {
+		intUserNeeds = 0;
+		if (userNeeds == null) return;
+
+		for (UserNeedEnum userNeedEnum : userNeeds) 
+		{
+			intUserNeeds += (int)Math.pow(2, userNeedEnum.ordinal());
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+	 */
 	@Override
 	public String toString(String indent, int level) {
 		StringBuilder sb = new StringBuilder(super.toString(indent,level));
@@ -152,6 +248,12 @@ public class AccessLink extends NeptuneIdentifiedObject{
 		return sb.toString();
 	}
 
+	/**
+	 * format durations for toString()
+	 * 
+	 * @param date duration in Date format
+	 * @return duration in String format
+	 */
 	private String formatDate(Date date){
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		if(date != null){
@@ -162,39 +264,6 @@ public class AccessLink extends NeptuneIdentifiedObject{
 		}
 	}
 
-	public List<UserNeedEnum> getUserNeeds() 
-	{
-		if (intUserNeeds == null) return userNeeds;	
 
-		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
-		for (UserNeedEnum userNeedEnum : userNeedEnums) 
-		{
-			int filtre = (int) Math.pow(2, userNeedEnum.ordinal());
-			if (filtre == (intUserNeeds.intValue() & filtre))
-			{
-				addUserNeed(userNeedEnum);
-			}
-		}	
-		return userNeeds;
-	}
-
-	public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
-	{
-		userNeeds = userNeedEnums;
-
-		synchronizeUserNeeds();
-	}
-
-
-
-	private void synchronizeUserNeeds() {
-		intUserNeeds = 0;
-		if (userNeeds == null) return;
-
-		for (UserNeedEnum userNeedEnum : userNeeds) 
-		{
-			intUserNeeds += (int)Math.pow(2, userNeedEnum.ordinal());
-		}
-	}
 }
 

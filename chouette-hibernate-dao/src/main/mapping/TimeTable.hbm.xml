@@ -4,34 +4,100 @@
 
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Timetable" table="Timetable">
-		<id column="id" name="id" type="long">
+		<comment>Timetables</comment>
+		<id name="id" type="long">
+			<column name="id">
+				<comment>Internal identification</comment>
+			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" not-null="true"/>
-		<property name="objectVersion" type="int" />
-		<property name="creationTime" type="java.util.Date" />
-		<property name="creatorId" type="string" />
+		<natural-id>
+			<property name="objectId" type="string" unique="true">
+				<column name="objectId" not-null="true">
+					<comment>Neptune identification</comment>
+				</column>
+			</property>
+		</natural-id>
 
-		<property name="comment" type="string" />
-		<property name="version" type="string" />
-		<property name="intDayTypes" />
+		<property name="objectVersion" type="int">
+			<column name="objectVersion" default="1">
+				<comment>Version of this object</comment>
+			</column>
+		</property>
+		<property name="creationTime" type="java.util.Date">
+			<column name="creationTime">
+				<comment>Creation date and time</comment>
+			</column>
+		</property>
+		<property name="creatorId" type="string">
+			<column name="creatorId">
+				<comment>Creator identification</comment>
+			</column>
+		</property>
+
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<property name="version" type="string">
+			<column name="version">
+				<comment>version</comment>
+			</column>
+		</property>
+		<property name="intDayTypes">
+			<column name="intDayTypes">
+				<comment>coded DayTypeEnum list (Monday,Tuesday, ...)</comment>
+			</column>
+		</property>
 		<list lazy="false" name="calendarDays" table="timetable_date">
-			<key column="timetableId"  foreign-key="tm_date_fkey"/>
-			<list-index base="0" column="position" />
-			<element column="date" type="date" />
+			<comment>Applicable Calendar days for Timetable</comment>
+			<key foreign-key="tm_date_fkey">
+				<column name="timetableId">
+					<comment>timetable foreign key</comment>
+				</column>
+			</key>
+			<list-index base="0">
+				<column name="position">
+					<comment>order of date</comment>
+				</column>
+			</list-index>
+			<element type="date">
+				<column name="date">
+					<comment>calendar date</comment>
+				</column>
+			</element>
 		</list>
 		<list lazy="false" name="periods" table="timetable_period">
-			<key column="timeTableId" foreign-key="tm_period_fkey"/>
-			<list-index base="0" column="position" />
+			<comment>Applicable Periods for Timetable</comment>
+			<key foreign-key="tm_period_fkey">
+				<column name="timetableId">
+					<comment>timetable foreign key</comment>
+				</column>
+			</key>
+			<list-index base="0">
+				<column name="position">
+					<comment>order of date</comment>
+				</column>
+			</list-index>
 			<composite-element class="Period">
-				<property name="startDate" column="periodstart" type="date" />
-				<property name="endDate" column="periodend" type="date" />
+				<property name="startDate" type="date">
+					<column name="periodstart">
+						<comment>start date of period</comment>
+					</column>
+				</property>
+				<property name="endDate" type="date" >
+					<column name="periodend">
+						<comment>end date of period</comment>
+					</column>
+				</property>
 			</composite-element>
 		</list>
-		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="true" inverse="true">
+		<!-- comments for this bag are sets in VehicleJourney.hbm.xml -->
+		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="true"
+			inverse="true">
 			<key column="timetableId" />
 			<many-to-many column="vehiclejourneyId" class="VehicleJourney" />
 		</bag>
-		
 	</class>
 </hibernate-mapping>

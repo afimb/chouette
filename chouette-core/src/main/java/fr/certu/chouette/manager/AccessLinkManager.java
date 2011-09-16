@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -31,6 +32,7 @@ public class AccessLinkManager extends AbstractNeptuneManager<AccessLink>
 	}
 
 	@SuppressWarnings("unchecked")
+	@Transactional
 	@Override
 	public void saveAll(User user, List<AccessLink> links, boolean propagate,boolean fast)
 	throws ChouetteException 

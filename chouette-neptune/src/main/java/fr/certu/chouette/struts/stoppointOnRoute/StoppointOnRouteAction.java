@@ -13,7 +13,6 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
@@ -74,7 +73,7 @@ public class StoppointOnRouteAction extends GeneriqueAction implements ModelDriv
 		Filter filter = Filter.getNewEqualsFilter("route.id", idItineraire);
 		filter.addOrder(FilterOrder.asc("position"));
 
-		arrets = stopPointManager.getAll(null,filter,DetailLevelEnum.NARROW_DEPENDENCIES);
+		arrets = stopPointManager.getAll(null,filter);
 
 		arretPhysiqueParIdArret = new HashMap<Long, StopArea>();
 		for (StopPoint arret : arrets) 

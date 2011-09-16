@@ -1,8 +1,8 @@
 package fr.certu.chouette.struts.timeTable;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -16,7 +16,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -47,7 +46,6 @@ public class TimeTableAction extends GeneriqueAction implements Preparable, Mode
 	private Date dateFinPeriode = null;
 	private Timetable tableauMarcheModel = new Timetable();
 	private String mappedRequest;
-	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 	public Long getIdTableauMarche()
 	{
 		return idTableauMarche;
@@ -75,7 +73,7 @@ public class TimeTableAction extends GeneriqueAction implements Preparable, Mode
 		}
 		else
 		{
-			tableauMarcheModel = timetableManager.get(null, Filter.getNewEqualsFilter("id", idTableauMarche), level);
+			tableauMarcheModel = timetableManager.get(null, Filter.getNewEqualsFilter("id", idTableauMarche));
 		}
 
 		// Chargement des réseaux

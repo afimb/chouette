@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
@@ -291,33 +292,6 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		return report;
 	}
 
-	@Override
-	public void removeAll(User user, List<Line> lines, boolean propagate) throws ChouetteException
-	{
-		/*
-		logger.debug("start deleting Lines");
-		INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-		INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-		INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-
-		DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-
-		List<Long> ids = getIds(lines);
-		Filter filter = Filter.getNewInFilter("line.id", ids);
-		List<Route> routes = routeManager.getAll(user, filter, level);
-		if(routes != null && !routes.isEmpty())
-			routeManager.removeAll(user, routes, propagate);
-		Facility facility = facilityManager.get(user, filter, level);
-		if(facility != null)
-			facilityManager.remove(user, facility,propagate);
-		List<RestrictionConstraint> constraints = constraintManager.getAll(user, filter, level);
-		if(constraints != null && !constraints.isEmpty())
-			constraintManager.removeAll(user, constraints,propagate);	
-
-		logger.debug("delete Lines");
-		*/
-		super.removeAll(user, lines,propagate);
-	}
 
 	@Override
 	protected Logger getLogger() 
@@ -380,7 +354,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			}
 		}
 	}
-
+	@Transactional
 	@Override
 	public void saveAll(User user, List<Line> lines, boolean propagate,boolean fast) throws ChouetteException
 	{
@@ -428,6 +402,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		logger.debug("end saving line collection");
 	}
 
+	@Transactional
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{

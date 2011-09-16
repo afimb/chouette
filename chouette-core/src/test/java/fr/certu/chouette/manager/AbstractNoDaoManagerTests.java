@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 
@@ -28,13 +27,13 @@ public abstract class AbstractNoDaoManagerTests<T extends NeptuneIdentifiedObjec
 
     @Test(groups = {"noDao"}, expectedExceptions = {CoreException.class}, description = "manager should report no dao available")
     public void verifyGetWithoutDao() throws ChouetteException {
-        manager.get(null, Filter.getNewEmptyFilter(), DetailLevelEnum.ATTRIBUTE);
+        manager.get(null, Filter.getNewEmptyFilter());
         Assert.fail("expected exception not raised");
     }
 
     @Test(groups = {"noDao"}, expectedExceptions = {CoreException.class}, description = "manager should report no dao available")
     public void verifyGetAllWithoutDao() throws ChouetteException {
-        manager.getAll(null, Filter.getNewEmptyFilter(), DetailLevelEnum.ATTRIBUTE);
+        manager.getAll(null, Filter.getNewEmptyFilter());
         Assert.fail("expected exception not raised");
     }
 

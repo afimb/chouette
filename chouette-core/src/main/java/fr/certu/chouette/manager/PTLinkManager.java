@@ -9,6 +9,7 @@
 package fr.certu.chouette.manager;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
@@ -33,7 +34,7 @@ public class PTLinkManager extends AbstractNeptuneManager<PTLink> {
 	protected Logger getLogger() {
 		return logger;
 	}
-	
+	@Transactional
 	@Override
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{

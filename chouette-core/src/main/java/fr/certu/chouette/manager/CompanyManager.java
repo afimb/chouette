@@ -11,9 +11,9 @@ package fr.certu.chouette.manager;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
@@ -21,6 +21,8 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
 
 /**
+ * 
+ * 
  * @author michel
  *
  */
@@ -33,6 +35,7 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 	{
 		super(Company.class,Company.COMPANY_KEY);
 	}
+	@Transactional
 	@Override
 	public void removeAll(User user,List<Company> companies,boolean propagate) throws ChouetteException
 	{
@@ -42,9 +45,8 @@ public class CompanyManager extends AbstractNeptuneManager<Company>
 			INeptuneManager<Line> lineManager = (INeptuneManager<Line>) getManager(Line.class);
 			INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>)getManager(VehicleJourney.class);
 			Filter filter = Filter.getNewEqualsFilter("company.id", company.getId());
-			DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
-			List<Line> lines = lineManager.getAll(user, filter, level);
-			List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter, level);
+			List<Line> lines = lineManager.getAll(user, filter);
+			List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter);
 			if(propagate)
 			{
 				lineManager.removeAll(user, lines,propagate);

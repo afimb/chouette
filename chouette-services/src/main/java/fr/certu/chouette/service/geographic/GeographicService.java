@@ -88,8 +88,8 @@ public class GeographicService implements IGeographicService
 		// TODO ITL
 		try 
 		{
-			commercials = stopAreaManager.getAll(null,comFilter,null);
-			stopPlaces = stopAreaManager.getAll(null,placeFilter,null);
+			commercials = stopAreaManager.getAll(null,comFilter);
+			stopPlaces = stopAreaManager.getAll(null,placeFilter);
 		} 
 		catch (ChouetteException e) 
 		{
@@ -244,7 +244,7 @@ public class GeographicService implements IGeographicService
 		List<StopArea> toBeSaved = new ArrayList<StopArea>();
 		try 
 		{
-			areas = stopAreaManager.getAll(null,coordFilter,null);
+			areas = stopAreaManager.getAll(null,coordFilter);
 		} 
 		catch (ChouetteException e) 
 		{
@@ -287,7 +287,7 @@ public class GeographicService implements IGeographicService
 		List<StopArea> toBeSaved = new ArrayList<StopArea>();
 		try 
 		{
-			areas = stopAreaManager.getAll(null,coordFilter,null);
+			areas = stopAreaManager.getAll(null,coordFilter);
 		} 
 		catch (ChouetteException e) 
 		{

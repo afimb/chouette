@@ -26,7 +26,6 @@ import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.user.User;
@@ -196,7 +195,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Transactional
 	@Override
-	public T get(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
+	public T get(User user, Filter filter) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
@@ -227,17 +226,11 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	@Transactional
 	@Override
-	public List<T> getAll(User user, Filter filter, DetailLevelEnum level) throws ChouetteException
+	public List<T> getAll(User user, Filter filter) throws ChouetteException
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 		// TODO : check user access
 		List<T> beans =  getDao().select(filter);
-
-		//		for (T bean : beans)
-		//		{
-		//			bean.expand(level);
-		//		}
-
 
 		return beans;
 	}
@@ -283,19 +276,6 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
 
-		getDao().update(bean);
-	}
-
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.NeptuneBeanManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneBean, fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	 */
-	@Transactional
-	@Override
-	public void update(User user, T bean, DetailLevelEnum level)
-	throws ChouetteException
-	{
-		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		// TODO Auto-generated method stub
 		getDao().update(bean);
 	}
 

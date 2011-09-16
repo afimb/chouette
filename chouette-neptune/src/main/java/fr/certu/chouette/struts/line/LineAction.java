@@ -17,7 +17,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Company;
@@ -63,7 +62,6 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 	@Getter @Setter private Long filterCompanyId;
 	@Getter @Setter private String filterLineName;
 
-	private DetailLevelEnum level = DetailLevelEnum.ATTRIBUTE;
 	private boolean propagate = false;
 
 	/********************************************************
@@ -76,7 +74,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 
 	public void prepare() throws Exception
 	{
-		log.debug("Prepare with id : " + getIdLigne());
+		// log.debug("Prepare with id : " + getIdLigne());
 		if (getIdLigne() == null)
 		{
 			lineModel = new Line();
@@ -84,7 +82,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		{
 			//lineModel = ligneManager.lire(getIdLigne());
 			Filter filter = Filter.getNewEqualsFilter("id", getIdLigne());
-			lineModel = lineManager.get(null, filter, level);
+			lineModel = lineManager.get(null, filter);
 		}
 
 		networks = new ArrayList<PTNetwork>(networkManager.getAll(null));
@@ -98,13 +96,13 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 	@SkipValidation
 	public String list() throws ChouetteException
 	{
-		log.debug("List of lines");
+		// log.debug("List of lines");
 		Filter filter = Filter.getNewAndFilter(
 				Filter.getNewEqualsFilter("ptNetwork.id", filterNetworkId), 
 				Filter.getNewEqualsFilter("company.id", filterCompanyId),
 				Filter.getNewLikeFilter("name", filterLineName)
 		);
-		List<Line> lines = lineManager.getAll(null, filter, level);
+		List<Line> lines = lineManager.getAll(null, filter);
 		request.put("lignes", lines);
 		return LIST;
 	}
@@ -158,7 +156,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		lineManager.addNew(null, line);
 		setMappedRequest(SAVE);
 		addActionMessage(getText("ligne.create.ok"));
-		log.debug("Create line with id : " + getModel().getId());
+		// log.debug("Create line with id : " + getModel().getId());
 
 		return REDIRECTLIST;
 	}
@@ -192,7 +190,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		lineManager.update(null, line);
 		setMappedRequest(UPDATE);
 		addActionMessage(getText("ligne.update.ok"));
-		log.debug("Update network with id : " + getModel().getId());
+		// log.debug("Update network with id : " + getModel().getId());
 
 
 		return REDIRECTLIST;
@@ -203,7 +201,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		lineManager.remove(null, getModel(),propagate);
 
 		addActionMessage(getText("ligne.delete.ok"));
-		log.debug("Delete line with id : " + getModel().getId());
+		// log.debug("Delete line with id : " + getModel().getId());
 
 		return REDIRECTLIST;
 	}
@@ -307,7 +305,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 			}
 
 			Filter filter = Filter.getNewEqualsFilter("id",idLigne);
-			Line line = lineManager.get(null, filter , level);
+			Line line = lineManager.get(null, filter );
 			lineManager.remove(null, line, propagate);
 		} catch (ServiceException exception)
 		{
@@ -353,7 +351,6 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 		{
 			for (PTNetwork network : networks)
 			{
-				log.debug("networkId : " + networkId);
 				if (network.getId().equals(networkId))
 				{
 					networkName = network.getName();

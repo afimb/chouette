@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+
 public class Pagination
 {
 
@@ -15,7 +17,7 @@ public class Pagination
   private Integer nbColonnesParPage;
   private Integer numeroPageCourante;
 
-  public List getCollectionPageCourante(List list)
+  public <T extends NeptuneIdentifiedObject> List<T> getCollectionPageCourante(List<T> list)
   {
     try
     {

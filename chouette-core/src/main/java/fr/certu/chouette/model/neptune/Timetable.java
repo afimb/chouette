@@ -1,14 +1,13 @@
 package fr.certu.chouette.model.neptune;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import fr.certu.chouette.filter.DetailLevelEnum;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
 public class Timetable extends NeptuneIdentifiedObject {
@@ -110,33 +109,6 @@ public class Timetable extends NeptuneIdentifiedObject {
 	}
 
 
-	//	/* (non-Javadoc)
-	//	 * @see fr.certu.chouette.model.neptune.NeptuneBean#expand(fr.certu.chouette.manager.NeptuneBeanManager.DETAIL_LEVEL)
-	//	 */
-	//	@Override
-	//	public void expand(DetailLevelEnum level)
-	//	{
-	//		// to avoid circular call check if level is already set according to this level
-	//		if (getLevel().ordinal() >= level.ordinal()) return;
-	//		super.expand(level);
-	//		switch (level)
-	//		{
-	//		case ATTRIBUTE : 
-	//			vehicleJourneys = null;
-	//			break;
-	//		case NARROW_DEPENDENCIES : 
-	//		case STRUCTURAL_DEPENDENCIES : 
-	//		case ALL_DEPENDENCIES :
-	//			if (getVehicleJourneys() != null)
-	//			{
-	//				for (VehicleJourney vehicleJourney : getVehicleJourneys())
-	//				{
-	//					vehicleJourney.expand(DetailLevelEnum.ATTRIBUTE);
-	//				}
-	//			}
-	//			break;
-	//		}
-	//	} 
 
 	@Override
 	public String toString(String indent,int level)

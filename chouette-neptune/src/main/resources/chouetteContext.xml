@@ -41,10 +41,11 @@
         <property name="stopPointManager" ref="stopPointManager"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="JourneyPatternActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.journeyPattern.JourneyPatternAction">
-        <property name="missionManager" ref="missionManager"/>
+        <property name="journeyPatternManager" ref="journeyPatternManager"/>
     </bean>
 
     <!-- ME: migrating ended  -->
@@ -70,28 +71,29 @@
         <property name="nbTotalPages" value="${page.displayed}"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="VehicleJourneyAtStopActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.vehicleJourneyAtStop.VehicleJourneyAtStopAction">
        <property name="routeManager" ref="routeManager"/>
         <property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>
-        <property name="stopAreaManager" ref="stopAreaManager"/>
-        <property name="stopPointManager" ref="stopPointManager"/>
         <property name="journeyPatternManager" ref="journeyPatternManager"/>
         <property name="pagination" ref="Pagination"/>
         <property name="maxNbCoursesParPage" value="${vehicleJourney.displayed}"/>
         <property name="maxNbCalendriersParCourse" value="${calendar.displayed}"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="VehicleJourneyActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.vehicleJourney.VehicleJourneyAction">
-        <property name="itineraireManager" ref="itineraireManager"/>
-        <property name="courseManager" ref="courseManager"/>
-        <property name="tableauMarcheManager" ref="tableauMarcheManager"/>
-        <property name="ligneManager" ref="ligneManager"/>
+        <property name="routeManager" ref="routeManager"/>
+        <property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>
+        <property name="timetableManager" ref="timetableManager"/>
+        <property name="lineManager" ref="lineManager"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="LineActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.line.LineAction">
@@ -104,6 +106,7 @@
         <property name="detruireAvecReseau" value="${destructionLigne.detruireAvecReseau}"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="JSONLineActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.json.JSONLineAction">
@@ -111,6 +114,7 @@
         <property name="stopAreaManager" ref="stopAreaManager"/>
      </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="CompanyActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.company.CompanyAction">
@@ -120,6 +124,7 @@
         <property name="lecteurFichierXML" ref="lecteurFichierXML"/>
     </bean>
 
+    <!-- ME: migrating ended  : export todo-->
     <bean id="NetworkActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.network.NetworkAction">
@@ -134,6 +139,7 @@
         <property name="useGeoportail" value="${network.geoportail}"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="TimeTableActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.timeTable.TimeTableAction">
@@ -141,6 +147,7 @@
         <property name="networkManager" ref="networkManager"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="StopAreaActionBean" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.stopArea.StopAreaAction">
@@ -202,6 +209,7 @@
 	<property name="tmprep" value="${chouette.tempdir}"/>
     </bean>
 
+    <!-- ME: migrating ended  -->
     <bean id="Validation" scope="prototype"
         parent="GeneriqueAction"
         class="fr.certu.chouette.struts.ValidationAction">
