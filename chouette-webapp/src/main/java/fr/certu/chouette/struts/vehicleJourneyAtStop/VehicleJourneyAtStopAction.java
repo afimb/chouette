@@ -285,6 +285,8 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
         for (int i = 0; i < nbreCourseDecalage; i++) {
             // Création d'une course
             Course course = new Course();
+            course.setIdItineraire(getIdItineraire());
+            courseManager.creer(course);
             // Ajout du temps de décalage à toutes les dates
             int compteurHoraire = 0;
             Collection<EtatMajHoraire> majHoraires = new ArrayList<EtatMajHoraire>();
@@ -313,8 +315,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
                 compteurHoraire++;
             }
             count++;
-            course.setIdItineraire(getIdItineraire());
-            courseManager.creer(course);
+            courseManager.modifier(course);
             // Copie des tableaux de marche de la course de référence dans la nouvelle
             courseManager.associerCourseTableauxMarche(course.getId(), tableauxMarcheIds);
             horaireManager.modifier(majHoraires);
