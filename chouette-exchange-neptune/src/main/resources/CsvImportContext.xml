@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+   default-init-method="init">
+
+
+	<bean id="NeptuneLineImportProducer" class="fr.certu.chouette.exchange.csv.neptune.importer.producer.LineProducer" />
+	<bean id="NeptuneCompanyImportProducer" class="fr.certu.chouette.exchange.csv.neptune.importer.producer.CompanyProducer" />
+	<bean id="NeptuneNetworkImportProducer" class="fr.certu.chouette.exchange.csv.neptune.importer.producer.PTNetworkProducer" />
+	<bean id="NeptuneTimetableImportProducer" class="fr.certu.chouette.exchange.csv.neptune.importer.producer.TimetableProducer" />
+	
+	<bean id="NeptuneLineImport" class="fr.certu.chouette.exchange.csv.neptune.importer.CSVNeptuneImportLinePlugin">
+		<property name="lineProducer" ref="NeptuneLineImportProducer" />
+		<property name="companyProducer" ref="NeptuneCompanyImportProducer" />
+		<property name="ptNetworkProducer" ref="NeptuneNetworkImportProducer" />
+		<property name="timetableProducer" ref="NeptuneTimetableImportProducer" />
+	</bean>
+
+</beans>

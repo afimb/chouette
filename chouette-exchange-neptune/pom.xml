@@ -51,6 +51,10 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+		</dependency>
 	</dependencies>
 	<version>1.7.0-SNAPSHOT</version>
 	<build>

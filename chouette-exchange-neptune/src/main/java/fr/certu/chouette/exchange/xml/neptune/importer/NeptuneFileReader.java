@@ -28,7 +28,7 @@ import org.xml.sax.SAXParseException;
 
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
-import fr.certu.chouette.exchange.xml.neptune.LoggingManager;
+import fr.certu.chouette.exchange.LoggingManager;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 
