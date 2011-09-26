@@ -124,7 +124,13 @@
 				</entry>
 			</map>
 		</property>
-		<property name="sqlPurge">
+		<property name="sqlPurge1">
+			<value>
+                 DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
+                    (SELECT DISTINCT (timetableid) FROM ${database.schema}.TimetableVehicleJourney) 
+			</value>
+		</property>
+		<property name="sqlPurge2">
 			<value>
                  DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
                     (SELECT DISTINCT (timetableid) FROM ${database.schema}.Timetable_Date 

@@ -246,11 +246,11 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
             return false;
         }
         List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-        SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+        SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
         simpleParameterValue.setFilepathValue(file.getPath());
         parameters.add(simpleParameterValue);
         
-        SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validateXML");
+        SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validate");
         simpleParameterValue2.setBooleanValue(validate);
         parameters.add(simpleParameterValue2);
 

@@ -1,14 +1,15 @@
-package fr.certu.chouette.exchange.csv.neptune.importer.producer;
+package fr.certu.chouette.exchange.csv.importer.producer;
 
-import java.io.IOException;
+import org.apache.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVReader;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeException;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
+import fr.certu.chouette.exchange.csv.exception.ExchangeException;
+import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
+import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
 import fr.certu.chouette.model.neptune.Company;
 
 public class CompanyProducer extends AbstractModelProducer<Company> {
 
+   private static final Logger logger = Logger.getLogger(CompanyProducer.class);
 	public static final String COMPANY_NAME_TITLE = "Nom de l'entreprise de transport";
 	public static final String CODE_TITLE = "Code Transporteur";
 	public static final String SHORT_NAME_TITLE = "Nom court";
@@ -17,11 +18,10 @@ public class CompanyProducer extends AbstractModelProducer<Company> {
 	public static final String PHONE_TITLE = "Téléphone";
 	public static final String FAX_TITLE = "Fax";
 	public static final String EMAIL_TITLE = "Email";
-	
-	public static final int TITLE_COLUMN = 7;
-		
+			
 	@Override
-	public Company produce(CSVReader csvReader, String[] firstLine){
+	public Company produce(ChouetteCsvReader csvReader, String[] firstLine,String objectIdPrefix) throws ExchangeException
+	{
 		Company company = new Company();
 		if(firstLine[TITLE_COLUMN].equals(COMPANY_NAME_TITLE)){
 			company.setName(firstLine[TITLE_COLUMN+1]);
@@ -31,32 +31,19 @@ public class CompanyProducer extends AbstractModelProducer<Company> {
 		}
 		try {
 			company.setRegistrationNumber(loadStringParam(csvReader, CODE_TITLE));
-			company.setShortName(loadStringParam(csvReader, DESCRIPTION_TITLE));
+			company.setShortName(loadStringParam(csvReader, SHORT_NAME_TITLE));
 			company.setOrganisationalUnit(loadStringParam(csvReader, DESCRIPTION_TITLE));
 			company.setCode(loadStringParam(csvReader, ZIPCODE_TITLE));
 			company.setPhone(loadStringParam(csvReader, PHONE_TITLE));
 			company.setFax(loadStringParam(csvReader, FAX_TITLE));
 			company.setEmail(loadStringParam(csvReader, EMAIL_TITLE));
+			company.setObjectId(objectIdPrefix+":"+Company.COMPANY_KEY+":"+toIdString(company.getShortName()));
 
 		} catch (ExchangeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+         logger.error("CSV reading failed",e);
+         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e.getMessage());
 		}
 		return company;
 	}
 
-	private String loadStringParam(CSVReader csvReader, String title) throws ExchangeException{
-		String[] currentLine = null;
-		try {
-			currentLine = csvReader.readNext();
-		} catch (IOException e) {
-			throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e);
-		}
-		if(currentLine[TITLE_COLUMN].equals(title)){
-			return currentLine[TITLE_COLUMN+1];
-		}
-		else{
-			throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE,"Unable to read '"+title+"' in csv file");
-		}
-	}
 }

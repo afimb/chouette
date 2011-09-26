@@ -14,6 +14,35 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-exchange-neptune</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-exchange-csv</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-hibernate-dao</artifactId>
+		</dependency>
+		<!-- Spring -->
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-jdbc-dao</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 		</dependency>
@@ -86,34 +115,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-attic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-exchange-neptune</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-services</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-hibernate-dao</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-jdbc-dao</artifactId>
 		</dependency>
 	</dependencies>
 	<pluginRepositories>

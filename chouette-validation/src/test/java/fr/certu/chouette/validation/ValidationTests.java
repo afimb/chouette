@@ -56,14 +56,14 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 		lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
 		validationParameters = (ValidationParameters) applicationContext.getBean(validationParameterSet);
 		List<ParameterValue> values = new ArrayList<ParameterValue>();
-		SimpleParameterValue file = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue file = new SimpleParameterValue("inputFile");
 		file.setFilepathValue(testFile);
 		values.add(file);
-		SimpleParameterValue validate = new SimpleParameterValue("validateXML");
+		SimpleParameterValue validate = new SimpleParameterValue("validate");
 		validate.setBooleanValue(Boolean.TRUE);
 		values.add(validate);
 		ReportHolder reportHolder = new ReportHolder();
-		List<Line> lines = lineManager.doImport(null, "XMLNeptuneLine", values, reportHolder );
+		List<Line> lines = lineManager.doImport(null, "NEPTUNE", values, reportHolder );
 
 		Report importReport = reportHolder.getReport();
 		//		System.out.println(importReport.getLocalizedMessage());

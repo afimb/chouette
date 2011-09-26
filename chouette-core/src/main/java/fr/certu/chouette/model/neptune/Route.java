@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
@@ -27,7 +26,6 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
-@NoArgsConstructor
 public class Route extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = -2249654966081042738L;
@@ -46,7 +44,7 @@ public class Route extends NeptuneIdentifiedObject
 
 	@Getter @Setter private Line line;
 	/**
-	 * Public name for travellers
+	 * Public name for travelers
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private String publishedName; // BD
@@ -90,7 +88,6 @@ public class Route extends NeptuneIdentifiedObject
 	@Getter @Setter private List<String> journeyPatternIds; 
 	/**
 	 * The route's journey patterns objects <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<JourneyPattern> journeyPatterns; // FK inverse manquante à ajouter 
@@ -103,14 +100,22 @@ public class Route extends NeptuneIdentifiedObject
 	@Getter @Setter private List<String> ptLinkIds; 
 	/**
 	 * The route's ptLink objects <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<PTLink> ptLinks; // Table + FK inverse 
-
-
+   /**
+    * The route's stopPoints objects <br/>
+    * <br/><i>readable/writable</i>
+    */
 	@Getter @Setter private List<StopPoint> stopPoints;
 
+	
+	public Route()
+	{
+	   journeyPatterns = new ArrayList<JourneyPattern>();
+	   ptLinks = new ArrayList<PTLink>();
+	   stopPoints = new ArrayList<StopPoint>();
+	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)

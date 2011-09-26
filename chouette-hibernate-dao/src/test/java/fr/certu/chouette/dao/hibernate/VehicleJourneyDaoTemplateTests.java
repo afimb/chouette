@@ -11,7 +11,6 @@ package fr.certu.chouette.dao.hibernate;
 import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
 /**

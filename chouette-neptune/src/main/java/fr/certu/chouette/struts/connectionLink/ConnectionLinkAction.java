@@ -12,8 +12,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -31,7 +30,7 @@ public class ConnectionLinkAction extends GeneriqueAction implements ModelDriven
 {
 
 	private static final long serialVersionUID = 6964959559153714259L;
-	private static final Log log = LogFactory.getLog(ConnectionLinkAction.class);
+	private static final Logger log = Logger.getLogger(ConnectionLinkAction.class);
 	@Getter @Setter private INeptuneManager<ConnectionLink> connectionLinkManager;
 	@Getter @Setter private INeptuneManager<StopArea> stopAreaManager;
 	@Getter @Setter private Long idCorrespondance;

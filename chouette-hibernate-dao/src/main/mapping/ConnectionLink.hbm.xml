@@ -16,7 +16,8 @@
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
-		<property name="objectVersion" type="int" >
+
+		<property name="objectVersion" type="int">
 			<column name="objectVersion" default="1">
 				<comment>Version of this object</comment>
 			</column>

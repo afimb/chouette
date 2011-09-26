@@ -20,16 +20,26 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 /**
  * manage mass storage for StopAreas
  * 
- * @author mamadou keira
- * 
  */
 
 @SuppressWarnings("unchecked")
 public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea> 
 {
+	/**
+	 * first SQL purge request : remove every physical stops without StopPoint
+	 */
 	@Getter @Setter private String sqlPurge1; 
+   /**
+    * second SQL purge request : remove every commercial stops without child
+    */
 	@Getter @Setter private String sqlPurge2; 
+   /**
+    * third SQL purge request : remove every stopplace stops without child
+    */
 	@Getter @Setter private String sqlPurge3; 
+   /**
+    * fourth SQL purge request : remove every restriction constraints without dependency 
+    */
 	@Getter @Setter private String sqlPurge4; 
 	
 	/* (non-Javadoc)

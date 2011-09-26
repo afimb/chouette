@@ -11,14 +11,11 @@
 			</column>
 			<generator class="identity" />
 		</id>
-		<natural-id>
-			<property name="objectId" type="string" unique="true">
-				<column name="objectId" not-null="true">
-					<comment>Neptune identification</comment>
-				</column>
-			</property>
-		</natural-id>
-
+		<property name="objectId" type="string" unique="true">
+			<column name="objectId" not-null="true">
+				<comment>Neptune identification</comment>
+			</column>
+		</property>
 		<property name="objectVersion" type="int">
 			<column name="objectVersion" default="1">
 				<comment>Version of this object</comment>
@@ -124,8 +121,8 @@
 			</key>
 
 			<composite-element class="VehicleJourneyAtStop">
-				<many-to-one class="StopPoint"
-					lazy="no-proxy" name="stopPoint" cascade="none" foreign-key="vjas_sp_fkey">
+				<many-to-one class="StopPoint" lazy="no-proxy" name="stopPoint"
+					cascade="none" foreign-key="vjas_sp_fkey">
 					<column name="stopPointId">
 						<comment>StopPoint foreign key (2nd part of primary key)</comment>
 					</column>
@@ -136,37 +133,37 @@
 					</column>
 				</property>
 				<property name="boardingAlightingPossibility"
-					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType" >
+					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType">
 					<column name="boardingAlightingPossibility">
 						<comment>boardingAlightingPossibility</comment>
 					</column>
-					</property>
+				</property>
 				<property name="order" type="long">
 					<column name="position">
 						<comment>order in JourneyPattern</comment>
 					</column>
 				</property>
-				<property name="arrivalTime" type="time" >
+				<property name="arrivalTime" type="time">
 					<column name="arrivalTime">
 						<comment>Arrival time</comment>
 					</column>
 				</property>
-				<property name="departureTime" type="time" >
+				<property name="departureTime" type="time">
 					<column name="departureTime">
 						<comment>Departure time</comment>
 					</column>
 				</property>
-				<property name="waitingTime" type="time" >
+				<property name="waitingTime" type="time">
 					<column name="waitingTime">
 						<comment>Waiting time</comment>
 					</column>
 				</property>
-				<property name="elapseDuration" type="time" >
+				<property name="elapseDuration" type="time">
 					<column name="elapseDuration">
 						<comment>elapse duration</comment>
 					</column>
 				</property>
-				<property name="headwayFrequency" type="time" >
+				<property name="headwayFrequency" type="time">
 					<column name="headwayFrequency">
 						<comment>headway frequency</comment>
 					</column>

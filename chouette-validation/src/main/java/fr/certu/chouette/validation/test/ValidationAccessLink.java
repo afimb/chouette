@@ -25,7 +25,6 @@ public class ValidationAccessLink extends AbstractValidation implements IValidat
 
 	private ValidationStepDescription validationStepDescription;
 	private final double DIVIDER = 1000 * 3600;
-	private final double CONVERTER = 6378 /180;
 	public void init(){
 		//TODO
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());

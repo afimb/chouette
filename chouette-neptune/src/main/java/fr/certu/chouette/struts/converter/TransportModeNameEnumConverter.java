@@ -12,7 +12,8 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 public final class TransportModeNameEnumConverter extends StrutsTypeConverter
 {
 	private final static Logger logger = Logger.getLogger(TransportModeNameEnumConverter.class); 
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
 		if (value.length != 1)
 		{
@@ -33,7 +34,8 @@ public final class TransportModeNameEnumConverter extends StrutsTypeConverter
 		return TransportModeNameEnum.fromValue(value[0]);
 	}
 
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public String convertToString(Map arg0, Object arg1) {
 		if (!arg1.getClass().equals(TransportModeNameEnum.class))
 		{

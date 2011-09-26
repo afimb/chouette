@@ -55,7 +55,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	public void verifyCheckFileExtension() throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/dummyFile.tmp");
 		parameters.add(simpleParameterValue);
 		ReportHolder report = new ReportHolder();
@@ -68,7 +68,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	public void verifyCheckUnknownParameter() throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/dummyFile.xml");
 		parameters.add(simpleParameterValue);
 		simpleParameterValue = new SimpleParameterValue("dummyParameter");
@@ -84,7 +84,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	public void verifyCheckMandatoryParameter() throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("validateXML");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("validate");
 		simpleParameterValue.setBooleanValue(true);
 		parameters.add(simpleParameterValue);
 		ReportHolder report = new ReportHolder();
@@ -98,7 +98,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	public void verifyCheckFileType() throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/dummyFile.xml");
 		parameters.add(simpleParameterValue);
 		simpleParameterValue = new SimpleParameterValue("fileFormat");
@@ -111,10 +111,10 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	}
 		
     //@Test (groups = {"CheckParameters"}, description = "Import Plugin should reject file not found",dependsOnMethods={"getBean"})
-	public void verifyCheckXMLFileExists() throws ChouetteException
+	public void verifyCheckinputFileExists() throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/dummyFile.tmp");
 		parameters.add(simpleParameterValue);
 		simpleParameterValue = new SimpleParameterValue("fileFormat");
@@ -141,7 +141,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		FormatDescription description = importLine.getDescription();
 		List<ParameterDescription> params = description.getParameterDescriptions();
 
-		Assert.assertEquals(description.getName(), "XMLNeptuneLine");
+		Assert.assertEquals(description.getName(), "NEPTUNE");
 		Assert.assertNotNull(params,"params should not be null");
 		Assert.assertEquals(params.size(), 3," params size must equal 3");
 		LOGGER.info("Description \n "+description.toString());
@@ -155,7 +155,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	{
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/"+neptuneFile);
 		parameters.add(simpleParameterValue);
 
@@ -180,10 +180,10 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	{
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/"+neptuneFile);
 		parameters.add(simpleParameterValue);
-		SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validateXML");
+		SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validate");
 		simpleParameterValue2.setBooleanValue(true);
 		parameters.add(simpleParameterValue2);
 
@@ -201,7 +201,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	{
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/"+neptuneZip);
 		parameters.add(simpleParameterValue);
 

@@ -27,8 +27,8 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternPr
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProducer;
-import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.RestrictionConstraintProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimeSlotProducer;
@@ -55,7 +55,6 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import org.apache.log4j.Logger;
 
 /**
  * note : repartir du fr.certu.chouette.service.validation.util.MainSchemaProducer 
@@ -65,9 +64,8 @@ import org.apache.log4j.Logger;
  */
 public class NeptuneConverter
 {
-    private static Logger logger = Logger.getLogger(NeptuneConverter.class);
 
-    @Getter @Setter private LineProducer lineProducer;
+   @Getter @Setter private LineProducer lineProducer;
 	@Getter @Setter private RouteProducer routeProducer;
 	@Getter @Setter private PTNetworkProducer networkProducer;
 	@Getter @Setter private CompanyProducer companyProducer;

@@ -13,7 +13,8 @@ public final class BigDecimalConverter extends StrutsTypeConverter
 {
 	private static final Log log = LogFactory.getLog(BigDecimalConverter.class);
 	
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
 		if (value.length != 1)
 		{
@@ -42,7 +43,8 @@ public final class BigDecimalConverter extends StrutsTypeConverter
 		return bigDecimal;
 	}
 
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public String convertToString(Map arg0, Object arg1) {
 		if (!arg1.getClass().equals(BigDecimal.class))
 		{

@@ -80,7 +80,7 @@
       <s:hidden name="idItineraire" value="%{idItineraire}"/>
       <s:hidden name="idLigne" value="%{idLigne}" />
       <s:hidden name="operationMode" value="%{'STORE'}" />
-      <s:textfield name="saisieTableauMarche" id="tableauMarches_auto_complete" size="60" value="" />
+      <s:textfield name="saisieTableauMarche" id="tableauMarches_auto_complete" size="100" value="" />
       <s:hidden name="saisieTableauMarcheKey" id="saisieTableauMarcheKey" value=""/>
       <div id="tableauMarches_auto_complete_list" class="autocomplete"></div>
 

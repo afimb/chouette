@@ -41,7 +41,8 @@ public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider
   public static final String UNDEFINED_KEY = "???";
   private static Log log = LogFactory.getLog(I18nStruts2Adapter.class);
 
-  @Override
+  @SuppressWarnings("rawtypes")
+@Override
   public Locale resolveLocale(HttpServletRequest request)
   {
     Locale result = null;
@@ -70,7 +71,8 @@ public class I18nStruts2Adapter implements LocaleResolver, I18nResourceProvider
     return result;
   }
 
-  @Override
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+@Override
   public String getResource(String resourceKey, String defaultValue, Tag tag, PageContext pageContext)
   {
     String key = (resourceKey != null) ? resourceKey : defaultValue;

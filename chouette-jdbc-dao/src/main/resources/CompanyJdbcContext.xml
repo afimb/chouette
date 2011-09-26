@@ -12,6 +12,11 @@
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.COMPANY</value>
 		</property>
+		<property name="sqlPurge">
+			<value>
+				DELETE FROM ${database.schema}.COMPANY WHERE id NOT IN (SELECT distinct companyId FROM ${database.schema}.line union SELECT distinct companyId FROM ${database.schema}.vehicleJourney)
+			</value>
+		</property>
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.COMPANY

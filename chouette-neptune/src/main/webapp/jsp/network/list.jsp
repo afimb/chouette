@@ -31,17 +31,17 @@
       </s:url>
       <s:url id="exportNeptune" action="exportChouette" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
-        <s:param name="exportMode">${'NEPTUNE'}</s:param>
+        <s:param name="exportMode">NEPTUNE</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportGTFS" action="exportChouette" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
-        <s:param name="exportMode">${'GTFS'}</s:param>
+        <s:param name="exportMode">GTFS</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:url id="exportGeoportail" action="exportChouette" namespace="/network">
         <s:param name="idReseau">${reseau.id}</s:param>
-        <s:param name="exportMode">${'GEOPORTAIL'}</s:param>
+        <s:param name="exportMode">GEOPORTAIL</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:a href="%{editUrl}">

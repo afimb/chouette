@@ -1,54 +1,50 @@
 package fr.certu.chouette.struts.json;
 
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.struts.GeneriqueAction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.user.User;
+import fr.certu.chouette.struts.GeneriqueAction;
+
 public class JSONStopPointOnRouteAction extends GeneriqueAction
 {
+   private static final long serialVersionUID = 1186464748780172832L;
+   @Setter private INeptuneManager<StopArea> stopAreaManager;
+   @Getter @Setter private String stopPointName;
+   @Setter List<StopArea> stopPoints; // TODO a supprimer ?
+   private User user = null;
 
-  private IPositionGeographiqueManager positionGeographiqueManager;
-  private String stopPointName;
-  List<PositionGeographique> stopPoints;
 
-  public String getStopPointName()
-  {
-    return stopPointName;
-  }
+   @SuppressWarnings("rawtypes")
+   public Map getStopPoints()
+   {
 
-  public void setStopPointName(String stopPointName)
-  {
-    this.stopPointName = stopPointName;
-  }
+      try
+      {
+         List<StopArea> stopPointsOnRoute = stopAreaManager.getAll(user , StopArea.physicalStopsFilter);
 
-  public Map getStopPoints()
-  {
-    List<PositionGeographique> stopPointsOnRoute = positionGeographiqueManager.lireArretsPhysiques();
 
-    Map result = new HashMap();
-    for (PositionGeographique positionGeographique : stopPointsOnRoute)
-    {
-      String name = positionGeographique.getName();
-      if(name.contains(stopPointName))
-      result.put(positionGeographique.getId(), positionGeographique.getName());
-    }
+         Map<Long,String> result = new HashMap<Long,String>();
+         for (StopArea positionGeographique : stopPointsOnRoute)
+         {
+            String name = positionGeographique.getName();
+            if(name.contains(stopPointName))
+               result.put(positionGeographique.getId(), positionGeographique.getName());
+         }
 
-    return result;
-  }
+         return result;
+      }
+      catch (ChouetteException e)
+      {
+         addActionError(e.getLocalizedMessage());
+         return null;
+      }
+   }
 
-  public void setStopPoints(List<PositionGeographique> stopPoints)
-  {
-    this.stopPoints = stopPoints;
-  }
-
-  /********************************************************
-   *                        MANAGER                       *
-   ********************************************************/
-  public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager)
-  {
-    this.positionGeographiqueManager = positionGeographiqueManager;
-  }
 }

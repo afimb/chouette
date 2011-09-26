@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;

@@ -1,8 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.sql.Time;
-import java.util.Date;
-
 import chouette.schema.Registration;
 import chouette.schema.TridentObjectTypeType;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;

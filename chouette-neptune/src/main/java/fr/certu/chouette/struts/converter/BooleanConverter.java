@@ -13,7 +13,8 @@ public final class BooleanConverter extends StrutsTypeConverter
 {
 	private static final Log log = LogFactory.getLog(BooleanConverter.class);
 	
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
 		if (value.length != 1)
 		{
@@ -35,7 +36,8 @@ public final class BooleanConverter extends StrutsTypeConverter
 		return bool;
 	}
 
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public String convertToString(Map arg0, Object arg1) {
 		if (!arg1.getClass().equals(boolean.class) && !arg1.getClass().equals(Boolean.class))
 		{

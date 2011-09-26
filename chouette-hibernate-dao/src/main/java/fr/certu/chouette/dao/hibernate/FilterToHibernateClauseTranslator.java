@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Getter;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.annotations.common.util.StringHelper;
@@ -18,7 +17,7 @@ import fr.certu.chouette.filter.Filter;
 
 public class FilterToHibernateClauseTranslator {
 
-	private static final Logger logger = Logger.getLogger(FilterToHibernateClauseTranslator.class);
+	//private static final Logger logger = Logger.getLogger(FilterToHibernateClauseTranslator.class);
 	private HashSet<String> aliasses;
 	
 	@Getter private List<Object> values = new ArrayList<Object>();

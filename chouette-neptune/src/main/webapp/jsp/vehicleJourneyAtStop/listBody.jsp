@@ -70,17 +70,17 @@
       <s:iterator value="coursesPage" >
         <td>
           <s:url id="editMission" action="edit" namespace="/journeyPattern">
-            <s:param name="idMission" value="idMission" />
+            <s:param name="idMission" value="journeyPattern.id" />
             <s:param name="idLigne" value="idLigne" />
             <s:param name="idItineraire" value="idItineraire" />
             <s:param name="page" value="page" />
           </s:url>
           <s:a href="%{editMission}">
-            <s:if test="missionParIdMission[idMission].name == null || missionParIdMission[idMission].name == ''">
+            <s:if test="journeyPattern.name == null || journeyPattern.name == ''">
               <s:text name="horairesDePassage.anonyme" />
             </s:if>
             <s:else>
-              <s:property value="missionParIdMission[idMission].name" />
+              <s:property value="journeyPattern.name" />
             </s:else>
           </s:a>
         </td>

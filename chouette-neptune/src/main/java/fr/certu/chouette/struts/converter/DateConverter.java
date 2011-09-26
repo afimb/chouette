@@ -23,13 +23,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import fr.certu.chouette.service.commun.CodeDetailIncident;
-import fr.certu.chouette.service.commun.CodeIncident;
-import fr.certu.chouette.service.commun.ServiceException;
+import fr.certu.chouette.struts.exception.CodeDetailIncident;
+import fr.certu.chouette.struts.exception.CodeIncident;
+import fr.certu.chouette.struts.exception.ServiceException;
 
 /**
  * 
@@ -37,15 +35,14 @@ import fr.certu.chouette.service.commun.ServiceException;
 public class DateConverter extends StrutsTypeConverter
 {
 
-	private static final Log				log			= LogFactory.getLog(DateConverter.class);
-
 	private static final SimpleDateFormat	sdfDate		= new SimpleDateFormat("dd/MM/yyyy");
 
 	private static final SimpleDateFormat	sdfHoraire	= new SimpleDateFormat("HH:mm");
 
 	private static final Calendar			calendar	= Calendar.getInstance();
 
-	public Object convertFromString(Map context, String[] values, Class toClass)
+	@SuppressWarnings("rawtypes")
+   public Object convertFromString(Map context, String[] values, Class toClass)
 	{
 		if (values != null && values.length > 0 && values[0] != null && !values[0].isEmpty())
 		{
@@ -69,7 +66,8 @@ public class DateConverter extends StrutsTypeConverter
 		return null;
 	}
 
-	public String convertToString(Map context, Object o)
+	@SuppressWarnings("rawtypes")
+   public String convertToString(Map context, Object o)
 	{
 		if (o instanceof Date)
 		{

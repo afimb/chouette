@@ -12,8 +12,9 @@ import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.Getter;
+
+import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
@@ -25,16 +26,16 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 public class EnumerationApplication
 {
 
-  private static final Log log = LogFactory.getLog(EnumerationApplication.class);
-  private String strutsProperties;
+  private static final Logger log = Logger.getLogger(EnumerationApplication.class);
+  @Getter private String strutsProperties;
   private String direction;
   private String jourType;
   private String mode;
   private String statut;
-  private String longitudeLatitude;
+  @Getter private String longitudeLatitude;
   private String correspondance;
   private String zoneType;
-  private String cleLangue; // = "struts.locale";
+  @Getter private String cleLangue; // = "struts.locale";
   public static final String MODE_LAST_ENTRY = "Other";
   public static final String AUTHORIZEDTYPESET_ALL = "All";
   public static final String AUTHORIZEDTYPESET_C = "CommercialStop";

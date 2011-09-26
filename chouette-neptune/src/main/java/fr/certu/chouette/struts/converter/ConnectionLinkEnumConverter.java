@@ -16,7 +16,8 @@ public final class ConnectionLinkEnumConverter extends StrutsTypeConverter
     {
     }
 
-    public Object convertFromString(Map arg0, String value[], Class arg2)
+    @SuppressWarnings("rawtypes")
+   public Object convertFromString(Map arg0, String value[], Class arg2)
     {
         if(value.length != 1)
             throw new TypeConversionException();
@@ -28,7 +29,8 @@ public final class ConnectionLinkEnumConverter extends StrutsTypeConverter
             return ConnectionLinkTypeEnum.fromValue(value[0]);
     }
 
-    public String convertToString(Map arg0, Object arg1)
+    @SuppressWarnings("rawtypes")
+   public String convertToString(Map arg0, Object arg1)
     {
         if(!arg1.getClass().equals(ConnectionLinkTypeEnum.class))
             throw new TypeConversionException();

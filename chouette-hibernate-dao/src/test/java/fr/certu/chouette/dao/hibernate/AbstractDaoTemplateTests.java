@@ -263,14 +263,12 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		line.setPtNetwork(network);
 		HibernateDaoTemplate<PTNetwork> networkTemplate = (HibernateDaoTemplate<PTNetwork>) applicationContext.getBean("networkDao");
 		networkTemplate.save(network);
-		line.setPtNetworkId(network.getId());
 		logger.info("created network with id = "+network.getId());
 
 		Company company = createCompany();
 		line.setCompany(company);
 		HibernateDaoTemplate<Company> companyTemplate = (HibernateDaoTemplate<Company>) applicationContext.getBean("companyDao");
 		companyTemplate.save(company);
-		line.setCompanyId(company.getId());
 		logger.info("created company with id = "+company.getId());
 		return line;
 	}

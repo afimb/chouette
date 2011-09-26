@@ -36,6 +36,7 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.struts.enumeration.EnumerationApplication;
 
+@SuppressWarnings("serial")
 public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopArea>, Preparable
 {
 
@@ -65,7 +66,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	private String actionSuivante;
 	// Numéro de la page actuelle pour la navigation parmi les différentes
 	// courses
-	private Integer page;
+	// private Integer page;
 	//	Chaine de caractere implémenté pour complété les retours des actions fait par struts
 	private String nomArret = null;
 	private String codeInsee = null;
@@ -81,8 +82,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	private String nomArretDestination = null;
 	private Long idArretSource = null;
 	private String boardingPositionName = "";
-	private Integer START_INDEX_AJAX_LIST = 0;
-	private Integer END_INDEX_AJAX_LIST = 10;
+	// private Integer START_INDEX_AJAX_LIST = 0;
+	// private Integer END_INDEX_AJAX_LIST = 10;
 	    private static String actionMsg = null;
     private static String actionErr = null;    
 
@@ -178,7 +179,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		
 		ligneParIdItineraire = new Hashtable<Long, Line>();
 		// Création de la liste des identifiants de lignes (pas de doublons)
-		Collection<Long> idsLignes = new HashSet<Long>();
+		// Collection<Long> idsLignes = new HashSet<Long>();
 		List<Line> lignes = new ArrayList<Line>();
 		for (Route itineraire : itineraires)
 		{
@@ -223,7 +224,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	 *                           CRUD                       
 	 * @throws ChouetteException *
 	 ********************************************************/
-	@SkipValidation
+	@SuppressWarnings("unchecked")
+   @SkipValidation
 	public String list() throws ChouetteException
 	{
 		// Récupération du namespace pour basculer sur des arrèts physiques ou zones
@@ -461,7 +463,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 		return SEARCH;
 	}
 
-	@SkipValidation
+	@SuppressWarnings("unchecked")
+   @SkipValidation
 	public String searchResults() throws ChouetteException
 	{
 		List<StopArea> positionGeographiquesResultat = new ArrayList<StopArea>();
@@ -672,10 +675,10 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	/********************************************************
 	 *                   OTHER METHODS                      *
 	 ********************************************************/
-	public void setPage(int page)
-	{
-		this.page = page;
-	}
+//	public void setPage(int page)
+//	{
+//		this.page = page;
+//	}
 
 	public String getActionSuivante()
 	{
@@ -796,7 +799,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 	 *              AJAX AUTOCOMPLETE                       
 	 * @throws ChouetteException *
 	 ********************************************************/
-	@SkipValidation
+	@SuppressWarnings("unchecked")
+   @SkipValidation
 	public String ajaxBoardingPositions() throws ChouetteException {
 		//List<PositionGeographique> boardingPositions = positionGeographiqueManager.lireArretsPhysiques();
 		List<StopArea> boardingPositions = stopAreaManager.getAll(null, Filter.getNewOrFilter(

@@ -3,8 +3,6 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;
@@ -24,10 +22,8 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationConnectionLink extends AbstractValidation implements IValidationPlugin<ConnectionLink> 
 {
-	private static final Logger logger = Logger.getLogger(ValidationConnectionLink.class);
 	private ValidationStepDescription validationStepDescription;
 	private final double DIVIDER = 1000 * 3600;
-	private final double CONVERTER = 6371 / 180;
 
 	public void init() {
 		validationStepDescription = new ValidationStepDescription("", ValidationClassReportItem.CLASS.TWO.ordinal());

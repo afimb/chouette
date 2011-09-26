@@ -16,9 +16,6 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -47,7 +44,6 @@ import fr.certu.chouette.model.neptune.type.ImportedItems;
  */
 public class ModelAssembler 
 {
-	private static Logger logger = Logger.getLogger(ModelAssembler.class);
 
 	@Getter @Setter private Line line;
 	@Getter @Setter private List<Route> routes;

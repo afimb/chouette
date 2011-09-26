@@ -1,48 +1,49 @@
 package fr.certu.chouette.struts.json;
 
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
-import fr.certu.chouette.struts.GeneriqueAction;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.user.User;
+import fr.certu.chouette.struts.GeneriqueAction;
+
 public class JSONBoardingPositionAction extends GeneriqueAction
 {
 
-  private IPositionGeographiqueManager positionGeographiqueManager;
-  private String boardingPositionName;
+   private static final long            serialVersionUID = -1975801282206724821L;
+   @Setter private INeptuneManager<StopArea> stopAreaManager;
+   @Getter @Setter private String                       boardingPositionName;
+   private User user = null;
 
-  public String getBoardingPositionName()
-  {
-    return boardingPositionName;
-  }
 
-  public void setBoardingPositionName(String boardingPositionName)
-  {
-    this.boardingPositionName = boardingPositionName;
-  }
+   @SuppressWarnings("rawtypes")
+   public Map getBoardingPositions()
+   {
+      try
+      {
+         List<StopArea> boardingPositionsOnRoute;
+         boardingPositionsOnRoute = stopAreaManager.getAll(user ,StopArea.physicalStopsFilter);
 
-  public Map getBoardingPositions()
-  {
-    List<PositionGeographique> boardingPositionsOnRoute = positionGeographiqueManager.lireArretsPhysiques();
+         Map<Long,String> result = new HashMap<Long,String>();
+         for (StopArea positionGeographique : boardingPositionsOnRoute)
+         {
+            String name = positionGeographique.getName();
+            if (name.contains(boardingPositionName))
+               result.put(positionGeographique.getId(), positionGeographique.getName());
+         }
 
-    Map result = new HashMap();
-    for (PositionGeographique positionGeographique : boardingPositionsOnRoute)
-    {
-      String name = positionGeographique.getName();
-      if(name.contains(boardingPositionName))
-      result.put(positionGeographique.getId(), positionGeographique.getName());
-    }
+         return result;
+      }
+      catch (ChouetteException e)
+      {
+         addActionError(e.getLocalizedMessage());
+         return null;
+      }
+   }
 
-    return result;
-  }
-
-  /********************************************************
-   *                        MANAGER                       *
-   ********************************************************/
-  public void setPositionGeographiqueManager(IPositionGeographiqueManager positionGeographiqueManager)
-  {
-    this.positionGeographiqueManager = positionGeographiqueManager;
-  }
 }

@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -47,7 +46,6 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -76,7 +74,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line> {
 
 	public XMLNeptuneExportLinePlugin() {
 		description = new FormatDescription(this.getClass().getName());
-		description.setName("XMLNeptuneLine");
+		description.setName("NEPTUNE");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
 		ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILENAME, false, true);
 		param1.setAllowedExtensions(Arrays.asList(new String[]{"xml","zip"}));

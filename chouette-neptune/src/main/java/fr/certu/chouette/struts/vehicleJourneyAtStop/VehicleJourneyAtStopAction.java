@@ -361,6 +361,7 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 		// gestion du décalage (EtatMajHoraire ???)
 		int nbreCourseDecalageInt = nbreCourseDecalage.intValue();
 		int count = 0;
+		String objectIdPrefix = vehicleJourney.getObjectId().split(":")[0];
 		decalage:
 			for (int i = 0; i < nbreCourseDecalage; i++) 
 			{
@@ -390,7 +391,9 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 					}
 					compteurHoraire++;
 				}
-				count++;
+				course.setObjectId(objectIdPrefix);
+				vehicleJourneyManager.save(user, course, false);
+            count++;
 				course.setRoute(route);
 				course.setJourneyPattern(journeyPattern);
 				journeyPattern.addVehicleJourney(course);
@@ -505,8 +508,8 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 					}
 				}
 			}
-			// save change before new JourneyPatterns (if not : maybe conflict on objectids)
-			routeManager.update(user, model.getRoute());
+			// save change before new JourneyPatterns
+			//routeManager.update(user, model.getRoute());
 
 			if (journeyPatternAdded.size() > 0)
 			{
@@ -516,8 +519,8 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 					jp.setRoute(model.getRoute());
 					model.getRoute().addJourneyPattern(jp);
 				}
-				routeManager.update(user, model.getRoute());
 			}
+			routeManager.update(user, model.getRoute());
 		} 
 		catch (Exception e) 
 		{

@@ -31,10 +31,10 @@ import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.service.cleaning.ICleanService;
 import fr.certu.chouette.service.geographic.IGeographicService;
 
-@SuppressWarnings("serial")
 public class ValidationAction extends GeneriqueAction
 {
-	private static final Logger logger = Logger.getLogger(ValidationAction.class);
+   private static final long serialVersionUID = -4184571575287686925L;
+   private static final Logger logger = Logger.getLogger(ValidationAction.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 

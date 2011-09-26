@@ -18,7 +18,6 @@ import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
-import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.IValidationPlugin;
@@ -35,7 +34,6 @@ import fr.certu.chouette.validation.report.SheetReportItem;
 public class ValidationStopPoint extends AbstractValidation implements IValidationPlugin<StopPoint> {
 
 	private ValidationStepDescription validationStepDescription;
-	private final double CONVERTER = 6371 / 180;
 
 	public void init() {
 		//TODO
@@ -94,11 +92,6 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
 		String pj = parameters.getProjection_reference();
 		final int TEST = 99999;
-		int sridParam = TEST;
-		if (pj != null) 
-		{
-			sridParam = LongLatTypeEnum.fromValue(pj.trim()).epsgCode();
-		}
 		Map<String, Set<StopPoint>> stopPointsFromPTLinkMap = new HashMap<String, Set<StopPoint>>();
 		int size = stopPoints.size();
 
@@ -231,8 +224,8 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 			//Test 3.10
 			int count = 0;
 			List<PTLink> ptLinks4Route = new ArrayList<PTLink>();
-			boolean exists = false;
-			boolean existsPTLink = false;
+			// boolean exists = false;
+			// boolean existsPTLink = false;
 			Set<StopPoint> stopPointsSet = new HashSet<StopPoint>();
 			ImportedItems importedItems = (stopPoint.getLine() != null) ? stopPoint.getLine().getImportedItems() : null;
 			if (importedItems != null) {
@@ -246,7 +239,7 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 							|| stopPoint.getObjectId().equals(end.getObjectId())) {
 						count++;
 						ptLinks4Route.add(ptLink);
-						exists = true;
+						// exists = true;
 					}
 					stopPointsSet.add(start);
 					stopPointsSet.add(end);
@@ -280,7 +273,7 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 					List<Route> routes = importedItems.getRoutes();
 					for (Route route : routes) {
 						if (route.getPtLinkIds().contains(ptLink.getObjectId())) {
-							existsPTLink = true;
+							// existsPTLink = true;
 						}
 					}
 					//Test 2.14.1 b

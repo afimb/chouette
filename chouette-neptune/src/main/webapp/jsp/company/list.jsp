@@ -32,7 +32,7 @@
       </s:url>
       <s:url id="exportNeptune" action="exportChouette" namespace="/company">
         <s:param name="idTransporteur">${transporteur.id}</s:param>
-        <s:param name="exportMode">${'NEPTUNE'}</s:param>
+        <s:param name="exportMode">NEPTUNE</s:param>
         <s:param name="operationMode">STORE</s:param>
       </s:url>
       <s:a href="%{editUrl}">

@@ -3,465 +3,503 @@ package fr.certu.chouette.struts.network;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
-
-import chouette.schema.ChouettePTNetworkTypeType;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.echange.ILectureEchange;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.modele.Reseau;
-import fr.certu.chouette.service.commun.ServiceException;
-import fr.certu.chouette.service.database.IExportManager;
-import fr.certu.chouette.service.database.IExportManager.ExportMode;
-import fr.certu.chouette.service.export.geoportail.IGeoportailFileWriter;
-import fr.certu.chouette.service.export.gtfs.IGTFSFileWriter;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
-import fr.certu.chouette.service.validation.commun.ValidationException;
-import fr.certu.chouette.service.validation.util.MainSchemaProducer;
-import fr.certu.chouette.service.xml.ILecteurEchangeXML;
-import fr.certu.chouette.service.xml.ILecteurFichierXML;
+import fr.certu.chouette.model.user.User;
+import fr.certu.chouette.plugin.exchange.FormatDescription;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.exception.ServiceException;
 
-public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetwork>, Preparable {
+public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetwork>, Preparable
+{
 
-    private static final Log log = LogFactory.getLog(NetworkAction.class);
-    private PTNetwork model = new PTNetwork();
-    @Getter @Setter private INeptuneManager<PTNetwork> networkManager;
-    @Getter @Setter private INeptuneManager<Line> lineManager;
-    private Long idReseau;
-    private String mappedRequest;
-    private ExportMode exportMode;
-    private String nomFichier;
-    private File temp;
-    private IExportManager exportManager;
-    private ILecteurFichierXML lecteurFichierXML;
-    private ILecteurEchangeXML lecteurEchangeXML;
-    private IGTFSFileWriter gtfsFileWriter;
-    private IGeoportailFileWriter geoportailFileWriter;
-    private String useGtfs;
-    private String useGeoportail;
-    private static int GTFS = 0;
-    private static int GEOPORTAIL = 1;
-	
+   private static final long          serialVersionUID = 5577647506346473140L;
+   private static final Logger        log              = Logger.getLogger(NetworkAction.class);
+   @Getter
+   private PTNetwork                  model            = new PTNetwork();
+   @Getter
+   @Setter
+   private INeptuneManager<PTNetwork> networkManager;
+   @Getter
+   @Setter
+   private INeptuneManager<Line>      lineManager;
+   @Getter
+   @Setter
+   private Long                       idReseau;
+   private String                     mappedRequest;
+   @Getter
+   @Setter
+   private String                     exportMode;
+   @Getter
+   private String                     nomFichier;
+   private File                       temp;
+   @Getter
+   @Setter
+   private String                     useGtfs;
+   @Getter
+   @Setter
+   private String                     useGeoportail;
+   private User user = null;
 
-    public void setUseGtfs(String useGtfs) {
-        this.useGtfs = useGtfs;
-    }
 
-    public String getUseGtfs() {
-        return useGtfs;
-    }
+   /********************************************************
+    * MODEL + PREPARE *
+    ********************************************************/
 
-    public void setUseGeoportail(String useGeoportail) {
-        this.useGeoportail = useGeoportail;
-    }
+   public void prepare() throws Exception
+   {
+      log.debug("Prepare with id : " + getIdReseau());
+      if (getIdReseau() == null)
+      {
+         model = new PTNetwork();
+      }
+      else
+      {
+         Filter filter = Filter.getNewEqualsFilter("id", getIdReseau());
+         model = networkManager.get(null, filter);
+      }
+   }
 
-    public String getUseGeoportail() {
-        return useGeoportail;
-    }
+   /********************************************************
+    * CRUD
+    * 
+    * @throws ChouetteException
+    *            *
+    ********************************************************/
+   @SuppressWarnings("unchecked")
+   @SkipValidation
+   public String list() throws ChouetteException
+   {
+      this.request.put("reseaux", networkManager.getAll(null));
+      log.debug("List of networks");
+      return LIST;
+   }
 
-    public Long getIdReseau() {
-        return idReseau;
-    }
+   @SkipValidation
+   public String add()
+   {
+      setMappedRequest(SAVE);
+      return EDIT;
+   }
 
-    public void setIdReseau(Long idReseau) {
-        this.idReseau = idReseau;
-    }
+   public String save()
+   {
+      try
+      {
+         networkManager.addNew(null, model);
+      }
+      catch (Exception e)
+      {
+         addActionMessage(getText("reseau.homonyme"));
+         return INPUT;
+      }
+      setMappedRequest(SAVE);
+      addActionMessage(getText("reseau.create.ok"));
+      log.debug("Create network with id : " + model.getId());
+      return REDIRECTLIST;
+   }
 
-    /********************************************************
-     *                  MODEL + PREPARE                     *
-     ********************************************************/
-    public PTNetwork getModel() {
-        return model;
-    }
+   @SkipValidation
+   public String edit()
+   {
+      setMappedRequest(UPDATE);
+      return EDIT;
+   }
 
-    public void prepare() throws Exception {
-        log.debug("Prepare with id : " + getIdReseau());
-        if (getIdReseau() == null) {
-            model = new PTNetwork();
-        } else {
-        	Filter filter = Filter.getNewEqualsFilter("id", getIdReseau());
-            model = networkManager.get(null, filter);
-        }
-    }
+   public String update()
+   {
+      try
+      {
+         networkManager.update(null, model);
+      }
+      catch (Exception e)
+      {
+         addActionMessage(getText("reseau.homonyme"));
+         return INPUT;
+      }
+      setMappedRequest(UPDATE);
+      addActionMessage(getText("reseau.update.ok"));
+      log.debug("Update network with id : " + model.getId());
+      return REDIRECTLIST;
+   }
 
-    /********************************************************
-     *                           CRUD                       
-     * @throws ChouetteException *
-     ********************************************************/
-    @SkipValidation
-    public String list() throws ChouetteException {
-        this.request.put("reseaux", networkManager.getAll(null));
-        log.debug("List of networks");
-        return LIST;
-    }
+   public String delete() throws ChouetteException
+   {
+      networkManager.remove(null, model, false);
+      addActionMessage(getText("reseau.delete.ok"));
+      log.debug("Delete network with id : " + model.getId());
+      return REDIRECTLIST;
+   }
 
-    @SkipValidation
-    public String add() {
-        setMappedRequest(SAVE);
-        return EDIT;
-    }
+   @SkipValidation
+   public String cancel()
+   {
+      addActionMessage(getText("reseau.cancel.ok"));
+      return REDIRECTLIST;
+   }
 
-    public String save() {
-        try {
-            networkManager.addNew(null, model);
-        }
-        catch(Exception e) {
-            addActionMessage(getText("reseau.homonyme"));
-            return INPUT;
-        }
-        setMappedRequest(SAVE);
-        addActionMessage(getText("reseau.create.ok"));
-        log.debug("Create network with id : " + model.getId());
-        return REDIRECTLIST;
-    }
+   @Override
+   @SkipValidation
+   public String input() throws Exception
+   {
+      return INPUT;
+   }
 
-    @SkipValidation
-    public String edit() {
-        setMappedRequest(UPDATE);
-        return EDIT;
-    }
+//   private void write(List<ILectureEchange> lecturesEchanges, String _nomFichier, ZipOutputStream zipOutputStream,
+//         int type) throws IOException
+//   {
+//      String extenstion = null;
+//      if (type == GTFS)
+//      {
+//         extenstion = ".txt";
+//      }
+//      else if (type == GEOPORTAIL)
+//      {
+//         extenstion = ".csv";
+//      }
+//      File _temp = File.createTempFile(_nomFichier, extenstion);
+//      _temp.deleteOnExit();
+//      if (type == GTFS)
+//      {
+//         gtfsFileWriter.write(lecturesEchanges, _temp, _nomFichier);
+//      }
+//      else if (type == GEOPORTAIL)
+//      {
+//         geoportailFileWriter.write(lecturesEchanges, _temp, _nomFichier);
+//      }
+//      zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + extenstion));
+//      byte[] bytes = new byte[(int) _temp.length()];
+//      FileInputStream fis = new FileInputStream(_temp);
+//      fis.read(bytes);
+//      zipOutputStream.write(bytes);
+//      zipOutputStream.flush();
+//   }
 
-    public String update() {
-        try {
-        	networkManager.update(null, model);
-        }
-        catch(Exception e) {
-            addActionMessage(getText("reseau.homonyme"));
-            return INPUT;
-        }
-        setMappedRequest(UPDATE);
-        addActionMessage(getText("reseau.update.ok"));
-        log.debug("Update network with id : " + model.getId());
-        return REDIRECTLIST;
-    }
-
-    public String delete() throws ChouetteException {
-        networkManager.remove(null, model, false);
-        addActionMessage(getText("reseau.delete.ok"));
-        log.debug("Delete network with id : " + model.getId());
-        return REDIRECTLIST;
-    }
-
-    @SkipValidation
-    public String cancel() {
-        addActionMessage(getText("reseau.cancel.ok"));
-        return REDIRECTLIST;
-    }
-
-    @Override
-    @SkipValidation
-    public String input() throws Exception {
-        return INPUT;
-    }
-
-    private void write(List<ILectureEchange> lecturesEchanges, String _nomFichier, ZipOutputStream zipOutputStream, int type) throws IOException {
-        String extenstion = null;
-        if (type == GTFS) {
-            extenstion = ".txt";
-        } else if (type == GEOPORTAIL) {
-            extenstion = ".csv";
-        }
-        File _temp = File.createTempFile(_nomFichier, extenstion);
-        _temp.deleteOnExit();
-        if (type == GTFS) {
-            gtfsFileWriter.write(lecturesEchanges, _temp, _nomFichier);
-        } else if (type == GEOPORTAIL) {
-            geoportailFileWriter.write(lecturesEchanges, _temp, _nomFichier);
-        }
-        zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + extenstion));
-        byte[] bytes = new byte[(int) _temp.length()];
-        FileInputStream fis = new FileInputStream(_temp);
-        fis.read(bytes);
-        zipOutputStream.write(bytes);
-        zipOutputStream.flush();
-    }
-
-    @SkipValidation
-    public String exportChouette() throws Exception {
-        try {
-            String exportModeStr = exportMode.toString();
-            log.debug("Export " + exportModeStr + " : toutes les lignes du reseau : " + idReseau);
-            Filter filter = Filter.getNewEqualsFilter("company.id", idReseau);
-			List<Line> lignes = lineManager.getAll(null, filter); 
-            if ((lignes == null) || (lignes.size() == 0)) {
-                addActionMessage(getText("export.network.noline"));
-                return REDIRECTLIST;
+   @SkipValidation
+   public String exportChouette() throws Exception
+   {
+      try
+      {
+         String exportModeStr = exportMode.toString();
+         log.debug("Export " + exportModeStr + " : toutes les lignes du reseau : " + idReseau);
+         List<FormatDescription> formats = lineManager.getExportFormats(user);
+         boolean found = false;
+         for (FormatDescription formatDescription : formats)
+         {
+            if (formatDescription.getName().equals(exportModeStr))
+            {
+               found = true;
+               break;
             }
-            String id = "reseau_" + idReseau;
-            temp = File.createTempFile("export" + exportModeStr, ".zip");
-            temp.deleteOnExit();
-            ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
-            zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
-            nomFichier = "C_" + exportModeStr + "_" + id + ".zip";
-            if ("GEOPORTAIL".equals(exportModeStr)) {
-                List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
-                for (Line ligne : lignes) {
-                    lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
-                }
-                write(lecturesEchanges, "aot", zipOutputStream, GEOPORTAIL);
-                write(lecturesEchanges, "chouette_metadata", zipOutputStream, GEOPORTAIL);
-                write(lecturesEchanges, "pictos", zipOutputStream, GEOPORTAIL);
-                write(lecturesEchanges, "tc_points", zipOutputStream, GEOPORTAIL);
-                /*******************************************************************************************/
-                Set<String> regs = new HashSet<String>();
-                for (ILectureEchange lectureEchange : lecturesEchanges) {
-                    Reseau reseau = lectureEchange.getReseau();
-                    if (reseau == null) {
-                        continue;
-                    }
-                    String reg = reseau.getRegistrationNumber();
-                    if (!regs.add(reg)) {
-                        continue;
-                    }
-                    String _tempName = System.getProperty("export.geoportail.readme." + reg);
-                    File _temp = null;
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Readme.txt"));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.noreadme") + " " + reseau.getName());
-                    }
-                    _tempName = System.getProperty("export.geoportail.logoFile." + reg);
-                    _temp = null;
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Logos" + File.separator + _temp.getName()));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.nologo") + " " + reseau.getName());
-                    }
-                    _tempName = System.getProperty("export.geoportail.pictos.pointaccess." + reg);
-                    _temp = null;
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.noptaccess") + " " + reseau.getName());
-                    }
-                    _tempName = System.getProperty("export.geoportail.pictos.pointembarquement." + reg);
-                    _temp = null;
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.noboarding") + " " + reseau.getName());
-                    }
-                    _temp = null;
-                    _tempName = System.getProperty("export.geoportail.pictos.poleechange." + reg);
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.noplace") + " " + reseau.getName());
-                    }
-                    _temp = null;
-                    _tempName = System.getProperty("export.geoportail.pictos.quai." + reg);
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.noquay") + " " + reseau.getName());
-                    }
-                    _temp = null;
-                    _tempName = System.getProperty("export.geoportail.pictos.zonecommerciale." + reg);
-                    if (_tempName != null) {
-                        _temp = new File(_tempName);
-                        if (_temp.exists()) {
-                            zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-                            byte[] bytes = new byte[(int) _temp.length()];
-                            FileInputStream fis = new FileInputStream(_temp);
-                            fis.read(bytes);
-                            zipOutputStream.write(bytes);
-                            zipOutputStream.flush();
-                        }
-                    } else {
-                        addActionError(getText("reseau.export.geoportail.nocommercial") + " " + reseau.getName());
-                    }
-                }
-                addActionMessage(getText("reseau.export.geoportail.ok"));
-                /*******************************************************************************************/
-            } else if ("GTFS".equals(exportModeStr)) {
-                List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
-                for (Line ligne : lignes) {
-                    lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
-                }
-                write(lecturesEchanges, "agency", zipOutputStream, GTFS);
-                write(lecturesEchanges, "stops", zipOutputStream, GTFS);
-                write(lecturesEchanges, "routes", zipOutputStream, GTFS);
-                write(lecturesEchanges, "trips", zipOutputStream, GTFS);
-                write(lecturesEchanges, "stop_times", zipOutputStream, GTFS);
-                write(lecturesEchanges, "calendar", zipOutputStream, GTFS);
-                write(lecturesEchanges, "calendar_dates", zipOutputStream, GTFS);
-                addActionMessage(getText("reseau.export.gtfs.ok"));
-            } else {
-                for (Line ligne : lignes) {
-                    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
-                    try {
-                        MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
-                        mainSchemaProducer.getASG(ligneLue);
-                    } catch (ValidationException e) {
-                        List<TypeInvalidite> categories = e.getCategories();
-                        if (categories != null) {
-                            for (TypeInvalidite category : categories) {
-                                Set<String> messages = e.getTridentIds(category);
-                                for (String message : messages) {
-                                    log.error(message);
-                                }
-                            }
-                        }
-                        String _nomFichier = "C_INVALIDE_" + exportMode + "_" + id + "_" + ligne.getId();
-                        File _temp = File.createTempFile(_nomFichier, ".xml");
-                        _temp.deleteOnExit();
-                        lecteurFichierXML.ecrire(ligneLue, _temp);
-                        zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
-                        byte[] bytes = new byte[(int) _temp.length()];
-                        FileInputStream fis = new FileInputStream(_temp);
-                        fis.read(bytes);
-                        zipOutputStream.write(bytes);
-                        zipOutputStream.flush();
-                        continue;
-                    }
-                    String _nomFichier = "C_" + exportMode + "_" + id + "_" + ligne.getId();
-                    File _temp = File.createTempFile(_nomFichier, ".xml");
-                    _temp.deleteOnExit();
-                    lecteurFichierXML.ecrire(ligneLue, _temp);
-                    zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
-                    byte[] bytes = new byte[(int) _temp.length()];
-                    FileInputStream fis = new FileInputStream(_temp);
-                    fis.read(bytes);
-                    zipOutputStream.write(bytes);
-                    zipOutputStream.flush();
-                }
+         }
+         if (!found)
+         {
+            // unknown format; send error
+            return REDIRECTLIST;
+         }
+         Filter filter = Filter.getNewEqualsFilter("ptNetwork.id", idReseau);
+         List<Line> lignes = lineManager.getAll(null, filter);
+         if ((lignes == null) || (lignes.size() == 0))
+         {
+            addActionMessage(getText("export.network.noline"));
+            return REDIRECTLIST;
+         }
+         String id = "reseau_" + idReseau;
+         temp = File.createTempFile("export" + exportModeStr, ".zip");
+         temp.deleteOnExit();
+         nomFichier = "C_" + exportModeStr + "_" + id + ".zip";
+         if ("GEOPORTAIL".equals(exportModeStr))
+         {
+            List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+            SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
+            parameters.add(outputFile);
+            
+            ReportHolder report = new ReportHolder();
+            outputFile.setFilepathValue(temp.getAbsolutePath());
+            lineManager.doExport(user  , lignes, exportMode, parameters, report );
+            if (! report.getReport().getStatus().equals(Report.STATE.OK))
+            {
+               if (temp.exists() )temp.delete();
+               nomFichier = "C_INVALIDE_" + exportMode + "_" + id ;
+               temp = File.createTempFile(nomFichier, ".txt");
+               PrintStream stream = new PrintStream(temp);
+               Report.print(stream,report.getReport(),true);
+
+            }
+//            List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
+//            for (Line ligne : lignes)
+//            {
+//               lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
+//            }
+//            write(lecturesEchanges, "aot", zipOutputStream, GEOPORTAIL);
+//            write(lecturesEchanges, "chouette_metadata", zipOutputStream, GEOPORTAIL);
+//            write(lecturesEchanges, "pictos", zipOutputStream, GEOPORTAIL);
+//            write(lecturesEchanges, "tc_points", zipOutputStream, GEOPORTAIL);
+//            /*******************************************************************************************/
+//            Set<String> regs = new HashSet<String>();
+//            for (ILectureEchange lectureEchange : lecturesEchanges)
+//            {
+//               Reseau reseau = lectureEchange.getReseau();
+//               if (reseau == null)
+//               {
+//                  continue;
+//               }
+//               String reg = reseau.getRegistrationNumber();
+//               if (!regs.add(reg))
+//               {
+//                  continue;
+//               }
+//               String _tempName = System.getProperty("export.geoportail.readme." + reg);
+//               File _temp = null;
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Readme.txt"));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.noreadme") + " " + reseau.getName());
+//               }
+//               _tempName = System.getProperty("export.geoportail.logoFile." + reg);
+//               _temp = null;
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Logos" + File.separator + _temp.getName()));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.nologo") + " " + reseau.getName());
+//               }
+//               _tempName = System.getProperty("export.geoportail.pictos.pointaccess." + reg);
+//               _temp = null;
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.noptaccess") + " " + reseau.getName());
+//               }
+//               _tempName = System.getProperty("export.geoportail.pictos.pointembarquement." + reg);
+//               _temp = null;
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.noboarding") + " " + reseau.getName());
+//               }
+//               _temp = null;
+//               _tempName = System.getProperty("export.geoportail.pictos.poleechange." + reg);
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.noplace") + " " + reseau.getName());
+//               }
+//               _temp = null;
+//               _tempName = System.getProperty("export.geoportail.pictos.quai." + reg);
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.noquay") + " " + reseau.getName());
+//               }
+//               _temp = null;
+//               _tempName = System.getProperty("export.geoportail.pictos.zonecommerciale." + reg);
+//               if (_tempName != null)
+//               {
+//                  _temp = new File(_tempName);
+//                  if (_temp.exists())
+//                  {
+//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
+//                     byte[] bytes = new byte[(int) _temp.length()];
+//                     FileInputStream fis = new FileInputStream(_temp);
+//                     fis.read(bytes);
+//                     zipOutputStream.write(bytes);
+//                     zipOutputStream.flush();
+//                  }
+//               }
+//               else
+//               {
+//                  addActionError(getText("reseau.export.geoportail.nocommercial") + " " + reseau.getName());
+//               }
+//            }
+            addActionMessage(getText("reseau.export.geoportail.ok"));
+            /*******************************************************************************************/
+         }
+         else if ("GTFS".equals(exportModeStr))
+         {
+            List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+            SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
+            parameters.add(outputFile);
+            
+            ReportHolder report = new ReportHolder();
+            outputFile.setFilepathValue(temp.getAbsolutePath());
+            lineManager.doExport(user  , lignes, exportMode, parameters, report );
+            if (! report.getReport().getStatus().equals(Report.STATE.OK))
+            {
+               if (temp.exists() )temp.delete();
+               nomFichier = "C_INVALIDE_" + exportMode + "_" + id ;
+               temp = File.createTempFile(nomFichier, ".txt");
+               PrintStream stream = new PrintStream(temp);
+               Report.print(stream,report.getReport(),true);
+
+            }
+            
+            addActionMessage(getText("reseau.export.gtfs.ok"));
+         }
+         else
+         {
+          ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
+          zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
+            List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+            SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
+            parameters.add(outputFile);
+            for (Line ligne : lignes)
+            {
+               List<Line> beans = new ArrayList<Line>();
+               beans.add(ligne);
+               ReportHolder report = new ReportHolder();
+               String _nomFichier = "C_" + exportMode + "_" + id + "_" + ligne.getId();
+               File _temp = File.createTempFile(_nomFichier, ".xml");
+               outputFile.setFilepathValue(_temp.getAbsolutePath());
+               
+               lineManager.doExport(user  , beans, exportMode, parameters, report );
+               if (! report.getReport().getStatus().equals(Report.STATE.OK))
+               {
+                  if (_temp.exists() )_temp.delete();
+                  _nomFichier = "C_INVALIDE_" + exportMode + "_" + id + "_" + ligne.getId();
+                  _temp = File.createTempFile(_nomFichier, ".xml");
+                  PrintStream stream = new PrintStream(_temp);
+                  Report.print(stream,report.getReport(),true);
+
+               }
+               zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
+               byte[] bytes = new byte[(int) _temp.length()];
+               FileInputStream fis = new FileInputStream(_temp);
+               fis.read(bytes);
+               zipOutputStream.write(bytes);
+               zipOutputStream.flush();
+               _temp.delete();
             }
             zipOutputStream.close();
-        } catch (ServiceException exception) {
-            log.debug("ServiceException : " + exception.getMessage());
-            addActionError(getText(exception.getCode().name()));
-            return REDIRECTLIST;
-        }
-        return EXPORT;
-    }
+         }
+      }
+      catch (ServiceException exception)
+      {
+         log.debug("ServiceException : " + exception.getMessage());
+         addActionError(getText(exception.getCode().name()));
+         return REDIRECTLIST;
+      }
+      return EXPORT;
+   }
 
-    /********************************************************
-     *                        MANAGER                       *
-     ********************************************************/
 
-    public void setExportManager(IExportManager exportManager) {
-        this.exportManager = exportManager;
-    }
+   /********************************************************
+    * METHOD ACTION *
+    ********************************************************/
+   // this prepares command for button on initial screen write
+   public void setMappedRequest(String actionMethod)
+   {
+      this.mappedRequest = actionMethod;
+   }
 
-    public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML) {
-        this.lecteurFichierXML = lecteurFichierXML;
-    }
+   // when invalid, the request parameter will restore command action
+   public void setActionMethod(String method)
+   {
+      this.mappedRequest = method;
+   }
 
-    public void setLecteurEchangeXML(ILecteurEchangeXML lecteurEchangeXML) {
-        this.lecteurEchangeXML = lecteurEchangeXML;
-    }
+   public String getActionMethod()
+   {
+      return mappedRequest;
+   }
 
-    public void setGtfsFileWriter(IGTFSFileWriter gtfsFileWriter) {
-        this.gtfsFileWriter = gtfsFileWriter;
-    }
+   public InputStream getInputStream() throws Exception
+   {
+      return new FileInputStream(temp.getPath());
+   }
 
-    public void setGeoportailFileWriter(IGeoportailFileWriter geoportailFileWriter) {
-        this.geoportailFileWriter = geoportailFileWriter;
-    }
-
-    /********************************************************
-     *                   METHOD ACTION                      *
-     ********************************************************/
-    // this prepares command for button on initial screen write
-    public void setMappedRequest(String actionMethod) {
-        this.mappedRequest = actionMethod;
-    }
-
-    // when invalid, the request parameter will restore command action
-    public void setActionMethod(String method) {
-        this.mappedRequest = method;
-    }
-
-    public String getActionMethod() {
-        return mappedRequest;
-    }
-
-    /********************************************************
-     *                   EXPORT MODE                        *
-     ********************************************************/
-    public ExportMode getExportMode() {
-        return exportMode;
-    }
-
-    public void setExportMode(ExportMode exportMode) {
-        this.exportMode = exportMode;
-    }
-
-    public InputStream getInputStream() throws Exception {
-        return new FileInputStream(temp.getPath());
-    }
-
-    public String getNomFichier() {
-        return nomFichier;
-    }
 }

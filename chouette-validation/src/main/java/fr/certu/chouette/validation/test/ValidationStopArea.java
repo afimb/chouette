@@ -3,7 +3,6 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.report.Report;
@@ -46,12 +45,12 @@ public class ValidationStopArea implements IValidationPlugin<StopArea> {
 	private List<ValidationClassReportItem> validate(List<StopArea> stopAreas) {
 		ValidationClassReportItem category2 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.TWO);
 		ReportItem sheet2_3 = new SheetReportItem("Test2_Sheet3", 3);
-		ReportItem sheet2_12 = new SheetReportItem("Test2_Sheet12", 12);
-		ReportItem sheet2_13 = new SheetReportItem("Test2_Sheet13", 13);
+		// ReportItem sheet2_12 = new SheetReportItem("Test2_Sheet12", 12);
+		// ReportItem sheet2_13 = new SheetReportItem("Test2_Sheet13", 13);
 
 		SheetReportItem report2_3 = new SheetReportItem("Test2_Sheet3_Step1", 1);
-		SheetReportItem report2_12 = new SheetReportItem("Test2_Sheet12_Step1", 1);
-		SheetReportItem report2_13 = new SheetReportItem("Test2_Sheet13_Step1", 1);
+		// SheetReportItem report2_12 = new SheetReportItem("Test2_Sheet12_Step1", 1);
+		// SheetReportItem report2_13 = new SheetReportItem("Test2_Sheet13_Step1", 1);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		for (StopArea stopArea : stopAreas) {

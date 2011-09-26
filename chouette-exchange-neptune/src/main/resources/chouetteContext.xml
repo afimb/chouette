@@ -6,7 +6,6 @@
    default-init-method="init">
 
     <import resource="NeptuneImportContext.xml"/>
-    <import resource="CsvImportContext.xml"/>
     <import resource="NeptuneExportContext.xml"/>
 
 	<bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
@@ -15,7 +14,6 @@
 		<property name="importPlugins">
 			<list>
 				<ref bean="NeptuneLineImport" />
-				<ref bean="CsvLineImport" />
 			</list>
 		</property>
 		<property name="exportPlugins">

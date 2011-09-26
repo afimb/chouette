@@ -25,7 +25,7 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.struts.converter.JourTypeTMConverter;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "serial" })
 public class TimeTableAction extends GeneriqueAction implements Preparable, ModelDriven<Timetable>
 {
 
@@ -225,7 +225,8 @@ public class TimeTableAction extends GeneriqueAction implements Preparable, Mode
 		return REDIRECTEDIT;
 	}
 
-	public String delete() throws ChouetteException
+	@SuppressWarnings("rawtypes")
+   public String delete() throws ChouetteException
 	{
 		timetableManager.remove(null, tableauMarcheModel, false);
 

@@ -20,7 +20,8 @@
   </s:url>
   <s:a href="%{editItineraire}"><b><s:text name="text.itineraire.create.button"/></b></s:a>
   <br><br>
-  <FIELDSET style="width: 500px;">
+   
+<%--   <FIELDSET style="width: 500px;">
     <LEGEND><b><s:text name="title.import.vehicleJourneyAtStop"/></b></LEGEND>
     <s:form id="uploadCSVForm" action="importHorairesItineraire" namespace="/upload" enctype="multipart/form-data" method="POST">
       <s:file label="%{getText('text.route.file')}" name="fichier" accept="text/csv"/>
@@ -30,6 +31,7 @@
       <s:submit value="%{getText('action.import.csv')}" formId="uploadCSVForm"/>
     </s:form>
   </FIELDSET>
+ --%>   
 </div>
 <br>
 <%-- Tableau --%>
@@ -43,7 +45,7 @@
         <TH><s:text name="table.itineraires.sens"/></TH>
         <TH><s:text name="table.itineraires.horairesDePassage"/></TH>
         <TH><s:text name="table.itineraires.arrets"/></TH>
-        <TH><s:text name="table.itineraires.export"/></TH>
+        <%-- <TH><s:text name="table.itineraires.export"/></TH> --%>
       </TR>
     </THEAD>
     <TBODY>
@@ -97,14 +99,14 @@
             </s:url>
             <s:a href="%{arretSurItineraire}"><s:text name="title.stoppointOnRoute"/></s:a>
           </TD>
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+<%--           <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
             <s:url id="exportHorairesItineraire" action="exportHorairesItineraire" namespace="/export">
               <s:param name="idItineraire" value="id"/>
               <s:param name="idLigne" value="idLigne" />
               <s:param name="origin" value="itinerary"/>
             </s:url>
             <s:a href="%{exportHorairesItineraire}"><s:text name="text.export.vehicleJourneyAtStop"/></s:a>
-          </TD>
+          </TD> --%>
         </TR>
       </s:iterator>
     </TBODY>

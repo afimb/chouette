@@ -17,6 +17,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -33,19 +34,53 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 public class Line extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = -8086291270595894778L;
-	/**
-	 * Database foreign key referring to the line's network<br/>
-	 * Meaningless after import action
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private Long ptNetworkId; // BD FK directe
-	/**
-	 * Database foreign key referring to the line's company<br/>
-	 * Not in Neptune model, it's a shortcut to default VehicleJourney operatorId <br/>
-	 * Meaningless after import action
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private Long companyId;   // BD Fk directe hors modèle (compagnie par défaut à usage interne) 
+   // constant for persistence fields
+   /**
+    * name of comment attribute for {@link Filter} attributeName construction
+    */
+   public static final String COMMENT = "comment"; 
+   /**
+    * name of number attribute for {@link Filter} attributeName construction
+    */
+   public static final String NUMBER = "number"; 
+   /**
+    * name of publishedName attribute for {@link Filter} attributeName construction
+    */
+   public static final String PUBLISHEDNAME = "publishedName"; 
+   /**
+    * name of registrationNumber attribute for {@link Filter} attributeName construction
+    */
+   public static final String REGISTRATIONNUMBER = "registrationNumber"; 
+   /**
+    * name of transportModeName attribute for {@link Filter} attributeName construction
+    */
+   public static final String TRANSPORTMODENAME = "transportModeName"; 
+   /**
+    * name of mobilityRestrictedSuitable attribute for {@link Filter} attributeName construction
+    */
+   public static final String MOBILITYRESTRICTEDSUITABLE = "mobilityRestrictedSuitable"; 
+   /**
+    * name of userNeedsAsLong attribute for {@link Filter} attributeName construction
+    * <p>
+    * needs bitwise comparison
+    */
+   public static final String USERNEEDS = "userNeedsAsLong"; 
+   /**
+    * name of ptNetwork attribute for {@link Filter} attributeName construction
+    */
+   public static final String PTNETWORK = "ptNetwork"; 
+   /**
+    * name of company attribute for {@link Filter} attributeName construction
+    */
+   public static final String COMPANY = "company"; 
+   /**
+    * name of routes attribute for {@link Filter} attributeName construction
+    */
+   public static final String ROUTES = "routes"; 
+   /**
+    * name of groupOfLine attribute for {@link Filter} attributeName construction
+    */
+   public static final String GROUPOFLINE = "groupOfLine"; 
 	/**
 	 * Number of the line (characters) 
 	 * <br/><i>readable/writable</i>
@@ -174,9 +209,7 @@ public class Line extends NeptuneIdentifiedObject
 	public String toString(String indent,int level)
 	{
 		StringBuilder sb = new StringBuilder(super.toString(indent,level));
-		sb.append("\n").append(indent).append("  ptNetworkId = ").append(ptNetworkId);
 		sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ").append(ptNetworkIdShortcut);
-		sb.append("\n").append(indent).append("  companyId = ").append(companyId);
 		sb.append("\n").append(indent).append("  number = ").append(number);
 		sb.append("\n").append(indent).append("  publishedName = ").append(publishedName);
 		sb.append("\n").append(indent).append("  transportModeName = ").append(transportModeName);

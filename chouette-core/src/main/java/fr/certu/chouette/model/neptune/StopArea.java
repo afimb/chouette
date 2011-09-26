@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
@@ -12,16 +13,68 @@ public class StopArea extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = 4548672479038099240L;
 	// constant for persistence fields
+	/**
+	 * name of comment attribute for {@link Filter} attributeName construction
+	 */
 	public static final String COMMENT = "comment"; 
+   /**
+    * name of areaType attribute for {@link Filter} attributeName construction
+    */
 	public static final String AREA_TYPE = "areaType"; 
+   /**
+    * name of registrationNumber attribute for {@link Filter} attributeName construction
+    */
 	public static final String REGISTRATION_NUMBER = "registrationNumber"; 
+   /**
+    * name of nearestTopicName attribute for {@link Filter} attributeName construction
+    */
 	public static final String NEAREST_TOPIC_NAME = "nearestTopicName"; 
+   /**
+    * name of fareCode attribute for {@link Filter} attributeName construction
+    */
 	public static final String FARECODE ="fareCode"; 
+   /**
+    * name of areaCentroid attribute for {@link Filter} attributeName construction
+    * <br/> to be combined with {@Link AreaCentroid} constants
+    */
 	public static final String AREACENTROID="areaCentroid"; 
+   /**
+    * name of parentStopArea attribute for {@link Filter} attributeName construction
+    */
 	public static final String PARENTSTOPAREA="parentStopArea"; 
+   /**
+    * name of containedStopAreas attribute for {@link Filter} attributeName construction
+    */
 	public static final String CONTAINEDSTOPAREAS="containedStopAreas"; 
+   /**
+    * name of containedStopPoints attribute for {@link Filter} attributeName construction
+    */
 	public static final String CONTAINEDSTOPPOINTS="containedStopPoints";
 	
+	/**
+	 * predefined filter to limit get on StopPlaces
+	 */
+	public static final Filter stopPlaceFilter = Filter.getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.STOPPLACE);
+   /**
+    * predefined filter to limit get on CommercialStopPoints
+    */
+   public static final Filter commercialStopPointFilter = Filter.getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+   /**
+    * predefined filter to limit get on RestrictionConstraints
+    */
+   public static final Filter restrictionConstraintFilter = Filter.getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.ITL);
+   /**
+    * predefined filter to limit get on BoardingPositions
+    */
+   public static final Filter boardingPositionFilter = Filter.getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.BOARDINGPOSITION);
+   /**
+    * predefined filter to limit get on Quays
+    */
+   public static final Filter quayFilter = Filter.getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.QUAY);
+   /**
+    * predefined filter to limit get on PhysicalStops
+    */
+   public static final Filter physicalStopsFilter = Filter.getNewOrFilter(boardingPositionFilter,quayFilter);
 	
 	@Getter @Setter private List<String> boundaryPoints;
 	@Getter @Setter private String areaCentroidId;

@@ -1,66 +1,42 @@
 package fr.certu.chouette.struts.export;
 
-import fr.certu.chouette.struts.*;
-import au.com.bytecode.opencsv.CSVWriter;
-import chouette.schema.ChouettePTNetworkTypeType;
-import chouette.schema.ChouetteRemoveLineTypeType;
-import fr.certu.chouette.modele.Ligne;
-import fr.certu.chouette.service.database.IExportManager;
-import fr.certu.chouette.service.database.ILigneManager;
-import fr.certu.chouette.service.database.IReseauManager;
-import fr.certu.chouette.service.database.ITransporteurManager;
-import fr.certu.chouette.service.exportateur.IExportCorrespondances;
-import fr.certu.chouette.service.exportateur.monoitineraire.csv.IExportHorairesManager;
-import fr.certu.chouette.service.exportateur.monoitineraire.csv.impl.EcrivainCSV;
-import fr.certu.chouette.service.importateur.monoligne.csv.LecteurCSV;
-import fr.certu.chouette.service.validation.commun.TypeInvalidite;
-import fr.certu.chouette.service.validation.commun.ValidationException;
-import fr.certu.chouette.service.validation.util.MainSchemaProducer;
-import fr.certu.chouette.service.xml.ILecteurFichierXML;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.log4j.Logger;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.user.User;
+import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.struts.GeneriqueAction;
 
 @SuppressWarnings("serial")
 public class ExportAction extends GeneriqueAction
 {
-
-  private final Log log = LogFactory.getLog(ExportAction.class);
-  private ILigneManager ligneManager;
-  private ITransporteurManager transporteurManager;
-  private IReseauManager reseauManager;
-  private Long idLigne;
-  private Long idTransporteur;
-  private Long idReseau;
-  private Long idItineraire;
-  private String nomFichier;
-  private IExportManager exportManager;
-  private IExportHorairesManager exportHorairesManager;
-  private IExportCorrespondances exportCorrespondances;
-  private ILecteurFichierXML lecteurFichierXML;
-  private LecteurCSV lecteurCSV;
+  private final Logger log = Logger.getLogger(ExportAction.class);
+  @Setter INeptuneManager<Line> lineManager; 
+//  @Setter INeptuneManager<Route> routeManager; 
+//  @Setter INeptuneManager<ConnectionLink> connectionLinkManager; 
+  @Getter @Setter private Long idLigne;
+  //@Getter @Setter private Long idTransporteur;
+  //@Getter @Setter private Long idReseau;
+  @Getter @Setter private Long idItineraire;
+  @Getter @Setter private String nomFichier;
   private File temp;
-  private String origin;
-
-  public String getOrigin()
-  {
-    return origin;
-  }
-
-  public void setOrigin(String origin)
-  {
-    this.origin = origin;
-  }
+  @Getter @Setter private String origin;
+private User user = null;
 
   public InputStream getInputStream() throws Exception
   {
@@ -73,123 +49,6 @@ public class ExportAction extends GeneriqueAction
     return SUCCESS;
   }
 
-  public String exportChouetteNetwork() throws Exception
-  {
-    log.debug("Export Chouette : toutes les lignes du reseau : " + idReseau);
-    List<Ligne> lignes = reseauManager.getLignesReseau(idReseau);
-    if ((lignes == null) || (lignes.size() == 0))
-    {
-      addActionMessage(getText("export.network.noline"));
-      return INPUT;
-    }
-    return exportLignes(lignes, "reseau_" + idReseau);
-  }
-
-  public String exportChouetteCompany() throws Exception
-  {
-    log.debug("Export Chouette : toutes les lignes du transporteur : " + idTransporteur);
-    List<Ligne> lignes = transporteurManager.getLignesTransporteur(idTransporteur);
-    if ((lignes == null) || (lignes.size() == 0))
-    {
-      addActionMessage(getText("export.company.noline"));
-      return INPUT;
-    }
-    return exportLignes(lignes, "transporteur_" + idTransporteur);
-  }
-
-  private String exportLignes(List<Ligne> lignes, String id) throws Exception
-  {
-    temp = File.createTempFile("exportChouette", ".zip");
-    temp.deleteOnExit();
-    ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
-    zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
-    nomFichier = "C_" + id + ".zip";
-    for (Ligne ligne : lignes)
-    {
-      ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(ligne.getId());
-      try
-      {
-        MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
-        mainSchemaProducer.getASG(ligneLue);
-      }
-      catch (ValidationException e)
-      {
-        List<TypeInvalidite> categories = e.getCategories();
-        if (categories != null)
-        {
-          for (TypeInvalidite category : categories)
-          {
-            Set<String> messages = e.getTridentIds(category);
-            for (String message : messages)
-            {
-              log.error(message);
-            }
-          }
-        }
-        String _nomFichier = "C_INVALIDE_" + id + "_" + ligne.getId();
-        File _temp = File.createTempFile(_nomFichier, ".xml");
-        _temp.deleteOnExit();
-        lecteurFichierXML.ecrire(ligneLue, _temp);
-        zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
-        byte[] bytes = new byte[(int) _temp.length()];
-        FileInputStream fis = new FileInputStream(_temp);
-        fis.read(bytes);
-        zipOutputStream.write(bytes);
-        zipOutputStream.flush();
-        continue;
-      }
-      String _nomFichier = "C_" + id + "_" + ligne.getId();
-      File _temp = File.createTempFile(_nomFichier, ".xml");
-      _temp.deleteOnExit();
-      lecteurFichierXML.ecrire(ligneLue, _temp);
-      zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
-      byte[] bytes = new byte[(int) _temp.length()];
-      FileInputStream fis = new FileInputStream(_temp);
-      fis.read(bytes);
-      zipOutputStream.write(bytes);
-      zipOutputStream.flush();
-    }
-    zipOutputStream.close();
-    return SUCCESS;
-  }
-
-  public String exportChouetteLine() throws Exception
-  {
-    log.debug("Export Chouette");
-    // Creation d'un fichier temporaire
-    temp = File.createTempFile("exportChouette", ".xml");
-    // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();    
-    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne);
-    try
-    {
-      MainSchemaProducer mainSchemaProducer = new MainSchemaProducer();
-      mainSchemaProducer.getASG(ligneLue);
-    }
-    catch (ValidationException e)
-    {
-      List<TypeInvalidite> categories = e.getCategories();
-      if (categories != null)
-      {
-        for (TypeInvalidite category : categories)
-        {
-          Set<String> messages = e.getTridentIds(category);
-          for (String message : messages)
-          {
-            log.error(message);
-          }
-        }
-      }
-      nomFichier = "C_INVALIDE_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
-      lecteurFichierXML.ecrire(ligneLue, temp);
-      log.debug("return result success");
-      return SUCCESS;
-    }
-    //	Nom du fichier de sortie
-    nomFichier = "C_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".xml";
-    lecteurFichierXML.ecrire(ligneLue, temp);
-    return SUCCESS;
-  }
 
   public String exportCSV() throws Exception
   {
@@ -198,132 +57,60 @@ public class ExportAction extends GeneriqueAction
     temp = File.createTempFile("exportCSV", ".csv");
     // Destruction de ce fichier temporaire à la sortie du programme
     temp.deleteOnExit();
-    ChouettePTNetworkTypeType ligneLue = exportManager.getExportParIdLigne(idLigne);
-    if (lecteurCSV == null)
+   Line line = lineManager.getById(idLigne);
+     List<Line> lignes = new ArrayList<Line>();
+     lignes.add(line);
+    List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+    SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
+    parameters.add(outputFile);
+    
+    ReportHolder report = new ReportHolder();
+    outputFile.setFilepathValue(temp.getAbsolutePath());
+    lineManager.doExport(user  , lignes, "CSV", parameters, report );
+    if (! report.getReport().getStatus().equals(Report.STATE.OK))
     {
-      log.error("EXPORT CSV : lecteurCSV == null");
-      return ERROR;
+       if (temp.exists() )temp.delete();
+       nomFichier = "C_INVALIDE_CSV_" + idLigne ;
+       temp = File.createTempFile(nomFichier, ".txt");
+       PrintStream stream = new PrintStream(temp);
+       Report.print(stream,report.getReport(),true);
+
     }
-    if (ligneLue == null)
-    {
-      log.error("EXPORT CSV : ChouettePTNetworkType null");
-      return ERROR;
-    }
-    if (!temp.exists())
-    {
-      log.error("EXPORT CSV : temp n'existe pas.");
-      return ERROR;
-    }
+    
+    addActionMessage(getText("reseau.export.gtfs.ok"));
     //	Nom du fichier de sortie
-    nomFichier = "C_" + ligneLue.getChouetteLineDescription().getLine().getRegistration().getRegistrationNumber() + ".csv";
-    log.info("EXPORT CSV: DEBUT D'ECRITURE");
-    lecteurCSV.ecrire(ligneLue, temp);
-    log.info("EXPORT CSV: FIN D'ECRITURE");
+    nomFichier = "C_" + line.getRegistrationNumber() + ".csv";
     return SUCCESS;
   }
 
 
-  public String exportSupprimerChouette() throws Exception
-  {
-    // Creation d'un fichier temporaire
-    temp = File.createTempFile("exportSupprimerChouette", ".xml");
-    // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();
-    ChouetteRemoveLineTypeType ligneLue = exportManager.getSuppressionParIdLigne(idLigne);
-    //	Nom du fichier de sortie
-    nomFichier = "S_" + ligneLue.getLine().getRegistration().getRegistrationNumber() + ".xml";
-    lecteurFichierXML.ecrire(ligneLue, temp);
-    ligneManager.supprimer(idLigne);
-    return SUCCESS;
-  }
+//  public String exportHorairesItineraire() throws Exception
+//  {
+//    // Creation d'un fichier temporaire
+//    temp = File.createTempFile("exportHorairesItineraireCsv", ".xml");
+//    // Destruction de ce fichier temporaire à la sortie du programme
+//    temp.deleteOnExit();
+//    //	Nom du fichier de sortie
+//    nomFichier = "HORAIRES_" + idItineraire + ".csv";
+//    List<String[]> donneesOut = exportHorairesManager.exporter(idItineraire);
+//    EcrivainCSV ec = new EcrivainCSV();
+//    ec.ecrire(donneesOut, temp);
+//    return SUCCESS;
+//  }
+
+//  public String exportCorrespondances() throws IOException
+//  {
+//    temp = File.createTempFile("exportCSV", ".csv");
+//    temp.deleteOnExit();
+//    nomFichier = "Correspondances" + ".csv";
+//    List<String[]> donneesOut = exportCorrespondances.exporter();
+//    CSVWriter csvWriter = new CSVWriter(new FileWriter(temp), ';');
+//    csvWriter.writeAll(donneesOut);
+//    csvWriter.close();
+//    return SUCCESS;
+//  }
 
 
-  public String exportHorairesItineraire() throws Exception
-  {
-    // Creation d'un fichier temporaire
-    temp = File.createTempFile("exportHorairesItineraireCsv", ".xml");
-    // Destruction de ce fichier temporaire à la sortie du programme
-    temp.deleteOnExit();
-    //	Nom du fichier de sortie
-    nomFichier = "HORAIRES_" + idItineraire + ".csv";
-    List<String[]> donneesOut = exportHorairesManager.exporter(idItineraire);
-    EcrivainCSV ec = new EcrivainCSV();
-    ec.ecrire(donneesOut, temp);
-    return SUCCESS;
-  }
-
-  public String exportCorrespondances() throws IOException
-  {
-    temp = File.createTempFile("exportCSV", ".csv");
-    temp.deleteOnExit();
-    nomFichier = "Correspondances" + ".csv";
-    List<String[]> donneesOut = exportCorrespondances.exporter();
-    CSVWriter csvWriter = new CSVWriter(new FileWriter(temp), ';');
-    csvWriter.writeAll(donneesOut);
-    csvWriter.close();
-    return SUCCESS;
-  }
-
-  public String getNomFichier()
-  {
-    return nomFichier;
-  }
-
-  public IExportManager getExportManager()
-  {
-    return exportManager;
-  }
-
-  public void setExportManager(IExportManager exportManager)
-  {
-    this.exportManager = exportManager;
-  }
-
-  public void setIdLigne(Long idLigne)
-  {
-    this.idLigne = idLigne;
-  }
-
-  public void setIdTransporteur(Long idTransporteur)
-  {
-    this.idTransporteur = idTransporteur;
-  }
-
-  public void setIdReseau(Long idReseau)
-  {
-    this.idReseau = idReseau;
-  }
-
-  public void setIdItineraire(Long idItineraire)
-  {
-    this.idItineraire = idItineraire;
-  }
-
-
-  public void setLigneManager(ILigneManager ligneManager)
-  {
-    this.ligneManager = ligneManager;
-  }
-
-  public void setTransporteurManager(ITransporteurManager transporteurManager)
-  {
-    this.transporteurManager = transporteurManager;
-  }
-
-  public void setReseauManager(IReseauManager reseauManager)
-  {
-    this.reseauManager = reseauManager;
-  }
-
-  public void setExportHorairesManager(IExportHorairesManager exportHorairesManager)
-  {
-    this.exportHorairesManager = exportHorairesManager;
-  }
-
-  public void setExportCorrespondances(IExportCorrespondances exportCorrespondances)
-  {
-    this.exportCorrespondances = exportCorrespondances;
-  }
 
   @Override
   public String input() throws Exception
@@ -332,25 +119,19 @@ public class ExportAction extends GeneriqueAction
     return INPUT;
   }
 
-  public List<Ligne> getLignes()
+  public List<Line> getLignes()
   {
-    return ligneManager.lire();
+    try
+   {
+      return lineManager.getAll(user);
+   }
+   catch (ChouetteException e)
+   {
+     // check error
+     return null;
+   }
   }
 
 
-  public void setLecteurFichierXML(ILecteurFichierXML lecteurFichierXML)
-  {
-    this.lecteurFichierXML = lecteurFichierXML;
-  }
-
-  public void setLecteurCSV(LecteurCSV lecteurCSV)
-  {
-    this.lecteurCSV = lecteurCSV;
-  }
-
-  public LecteurCSV getLecteurCSV()
-  {
-    return lecteurCSV;
-  }
   
 }

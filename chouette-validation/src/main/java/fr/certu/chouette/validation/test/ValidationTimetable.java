@@ -45,8 +45,8 @@ public class ValidationTimetable implements IValidationPlugin<Timetable>{
 		//SheetReportItem reportItem2 = new SheetReportItem("Test2_Sheet5_Step2",2);
 		
 		for (Timetable timetable: timetables) {
-			List<String> vjIds= timetable.getVehicleJourneyIds();
-			List<String> vehicleJourneyIds = Timetable.extractObjectIds(timetable.getVehicleJourneys());
+			// List<String> vjIds= timetable.getVehicleJourneyIds();
+			// List<String> vehicleJourneyIds = Timetable.extractObjectIds(timetable.getVehicleJourneys());
                         //Test 2.5.1
                         if (timetable.getVehicleJourneys() == null || timetable.getVehicleJourneys().isEmpty()) {
                             ReportItem detailReportItem = new DetailReportItem("Test2_Sheet5_Step1_error",Report.STATE.ERROR);

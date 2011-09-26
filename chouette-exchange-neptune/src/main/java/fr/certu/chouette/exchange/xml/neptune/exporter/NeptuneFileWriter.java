@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import org.apache.log4j.Logger;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 
@@ -19,7 +18,6 @@ import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException
 public class NeptuneFileWriter 
 {
 	
-	private static final Logger logger = Logger.getLogger(NeptuneFileWriter.class);
 	private static final String CHARSET = "ISO-8859-1"; 
 	
 	public NeptuneFileWriter()

@@ -11,7 +11,8 @@ import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 
 public final class BoardingAlightingPossibilityEnumConverter extends StrutsTypeConverter
 {
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
 		if (value.length != 1)
 		{
@@ -27,7 +28,8 @@ public final class BoardingAlightingPossibilityEnumConverter extends StrutsTypeC
 		return BoardingAlightingPossibilityEnum.fromValue(value[0]);
 	}
 
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public String convertToString(Map arg0, Object arg1) {
 		if (!arg1.getClass().equals(BoardingAlightingPossibilityEnum.class))
 		{

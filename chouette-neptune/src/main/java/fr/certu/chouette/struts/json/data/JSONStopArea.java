@@ -10,6 +10,7 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 
+@SuppressWarnings("serial")
 public class JSONStopArea extends NeptuneIdentifiedObject 
 {
 	@Getter @Setter private AreaCentroid areaCentroid;

@@ -11,14 +11,11 @@
 			</column>
 			<generator class="identity" />
 		</id>
-		<natural-id>
-			<property name="objectId" type="string" unique="true">
-				<column name="objectId" not-null="true">
-					<comment>Neptune identification</comment>
-				</column>
-			</property>
-		</natural-id>
-
+		<property name="objectId" type="string" unique="true">
+			<column name="objectId" not-null="true">
+				<comment>Neptune identification</comment>
+			</column>
+		</property>
 		<property name="objectVersion" type="int">
 			<column name="objectVersion" default="1">
 				<comment>Version of this object</comment>
@@ -86,7 +83,7 @@
 						<comment>start date of period</comment>
 					</column>
 				</property>
-				<property name="endDate" type="date" >
+				<property name="endDate" type="date">
 					<column name="periodend">
 						<comment>end date of period</comment>
 					</column>

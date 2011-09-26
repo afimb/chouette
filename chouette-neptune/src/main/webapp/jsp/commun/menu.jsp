@@ -53,10 +53,11 @@
             <s:url id="urlCorrespondancesMenu" action="list" namespace="/connectionLink" includeParams="none"/>
             <li><s:a href="%{urlCorrespondancesMenu}" id="correspondancesMenu"><s:text name="text.correspondances"/></s:a></li>
 
-            <%-- ITL --%>	
+            <%-- ITL 	
             <s:url id="urlITLMenu" action="list" namespace="/routingConstraint" includeParams="none"/>
             <li><s:a href="%{urlITLMenu}" id="ITLMenu"><s:text name="text.ITL"/></s:a></li>
-
+            --%>
+            
             <%-- Import --%>	
             <s:url id="urlImportMenu" action="execute" namespace="/upload" includeParams="none"/>
             <li><s:a href="%{urlImportMenu}" id="importMenu"><s:text name="text.import"/></s:a></li>

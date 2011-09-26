@@ -6,10 +6,10 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 import org.apache.log4j.Logger;
 
-import lombok.Getter;
-import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;

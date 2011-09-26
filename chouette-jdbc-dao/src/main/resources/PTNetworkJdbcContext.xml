@@ -12,6 +12,11 @@
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.PTNETWORK</value>
 		</property>
+		<property name="sqlPurge">
+			<value>
+				DELETE FROM ${database.schema}.PTNETWORK WHERE id NOT IN (SELECT distinct ptnetworkid FROM ${database.schema}.line)
+			</value>
+		</property>
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.PTNETWORK

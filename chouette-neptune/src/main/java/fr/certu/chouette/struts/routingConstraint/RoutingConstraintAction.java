@@ -1,39 +1,38 @@
 package fr.certu.chouette.struts.routingConstraint;
 
-import com.opensymphony.xwork2.ModelDriven;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
+import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-import fr.certu.chouette.modele.InterdictionTraficLocal;
-import fr.certu.chouette.modele.Ligne;
-import fr.certu.chouette.modele.PositionGeographique;
-import fr.certu.chouette.service.database.IITLManager;
-import fr.certu.chouette.service.database.ILigneManager;
-import fr.certu.chouette.service.database.IPositionGeographiqueManager;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.struts.GeneriqueAction;
 
-public class RoutingConstraintAction extends GeneriqueAction implements ModelDriven<InterdictionTraficLocal>, Preparable
+public class RoutingConstraintAction extends GeneriqueAction implements ModelDriven<StopArea>, Preparable
 {
-
-  private final Log log = LogFactory.getLog(RoutingConstraintAction.class);
-  private IITLManager itlManager;
-  private ILigneManager ligneManager;
-  private IPositionGeographiqueManager positionGeographiqueManager;
+   private static final long serialVersionUID = 4447966719017321167L;
+  private final Logger log = Logger.getLogger(RoutingConstraintAction.class);
+  @Getter @Setter private INeptuneManager<StopArea> stopAreaManager;
+//  private IITLManager itlManager;
+//  private ILigneManager ligneManager;
+//  private IPositionGeographiqueManager positionGeographiqueManager;
   private Long idItl;
   private Long idAreaStop;
-  private List<PositionGeographique> arrets;
-  private List<PositionGeographique> arretsDansITLList;
+//  private List<PositionGeographique> arrets;
+//  private List<PositionGeographique> arretsDansITLList;
   private String saisieNomArretExistant;
   private String saisieNomArretExistantKey;
   private String mappedRequest;
   private String name;
-  private InterdictionTraficLocal model = new InterdictionTraficLocal();
+  @Getter private StopArea model = new StopArea();
 
   public Long getIdItl()
   {
@@ -65,10 +64,10 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
     this.idAreaStop = idAreaStop;
   }
 
-  public String getChaineIdLigne()
-  {
-    return model.getIdLigne().toString();
-  }
+//  public String getChaineIdLigne()
+//  {
+//    return model.getIdLigne().toString();
+//  }
 
   /********************************************************
    *                  MODEL + PREPARE                     *
@@ -79,18 +78,14 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
     log.debug("Prepare with id : " + getIdItl());
     if (getIdItl() == null)
     {
-      model = new InterdictionTraficLocal();
+      model = new StopArea();
     }
     else
     {
-      model = itlManager.lire(getIdItl());
+      model = stopAreaManager.getById(getIdItl());
     }
   }
 
-  public InterdictionTraficLocal getModel()
-  {
-    return model;
-  }
 
   /********************************************************
    *                           CRUD                       *
@@ -105,7 +100,7 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   @SkipValidation
   public String delete()
   {
-    itlManager.supprimer(model.getId());
+    // itlManager.supprimer(model.getId());
     addActionMessage(getText("itl.delete.ok"));
     log.debug("Delete itl with id : " + model.getId());
     return REDIRECTLIST;
@@ -114,7 +109,7 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   @SkipValidation
   public String list()
   {
-    this.request.put("itls", itlManager.lire());
+    // this.request.put("itls", itlManager.lire());
     log.debug("List of itls");
     return LIST;
   }
@@ -130,7 +125,7 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   {
     try
     {
-      itlManager.creer(model);
+      // itlManager.creer(model);
       addActionMessage(getText("itl.create.ok"));
     }
     catch (Exception exception)
@@ -155,7 +150,7 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   {
     try
     {
-      itlManager.modifier(model);
+      // itlManager.modifier(model);
       addActionMessage(getText("itl.update.ok"));
     }
     catch (Exception exception)
@@ -172,18 +167,18 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   {
     if (saisieNomArretExistantKey != null && !saisieNomArretExistantKey.isEmpty())
     {
-      List<Long> l = model.getArretPhysiqueIds();
-      l.add(Long.valueOf(saisieNomArretExistantKey));
-      model.setArretPhysiqueIds(l);
-      try
-      {
-        itlManager.modifier(model);
-        addActionMessage(getText("itl.update.ok"));
-      }
-      catch (Exception ex)
-      {
-        addActionError(getText("itl.update.ko"));
-      }
+//      List<Long> l = model.getArretPhysiqueIds();
+//      l.add(Long.valueOf(saisieNomArretExistantKey));
+//      model.setArretPhysiqueIds(l);
+//      try
+//      {
+//        itlManager.modifier(model);
+//        addActionMessage(getText("itl.update.ok"));
+//      }
+//      catch (Exception ex)
+//      {
+//        addActionError(getText("itl.update.ko"));
+//      }
     }
     return REDIRECTEDIT;
   }
@@ -193,43 +188,25 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   {
     if (idAreaStop != null)
     {
-      List<Long> l = this.model.getArretPhysiqueIds();
-      int idx = l.indexOf(Long.valueOf(idAreaStop));
-      if (idx != -1)
-      {
-        l.remove(idx);
-        try
-        {
-          itlManager.modifier(model);
-          addActionMessage(getText("itl.update.ok"));
-        }
-        catch (Exception ex)
-        {
-          addActionError(getText("itl.update.ko"));
-        }
-      }
+//      List<Long> l = this.model.getArretPhysiqueIds();
+//      int idx = l.indexOf(Long.valueOf(idAreaStop));
+//      if (idx != -1)
+//      {
+//        l.remove(idx);
+//        try
+//        {
+//          itlManager.modifier(model);
+//          addActionMessage(getText("itl.update.ok"));
+//        }
+//        catch (Exception ex)
+//        {
+//          addActionError(getText("itl.update.ko"));
+//        }
+//      }
     }
     return REDIRECTEDIT;
   }
 
-  /********************************************************
-   *                        MANAGER                       *
-   ********************************************************/
-  public void setItlManager(IITLManager itlManager)
-  {
-    this.itlManager = itlManager;
-  }
-
-  public void setLigneManager(ILigneManager ligneManager)
-  {
-    this.ligneManager = ligneManager;
-  }
-
-  public void setPositionGeographiqueManager(
-          IPositionGeographiqueManager positionGeographiqueManager)
-  {
-    this.positionGeographiqueManager = positionGeographiqueManager;
-  }
 
   /********************************************************
    *                        JSON                          *
@@ -238,30 +215,30 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
   {
     String resultat = "";
 
-    List<PositionGeographique> arretsPhysiques = null;
-    if (idLigne == null)
-    {
-      arretsPhysiques = positionGeographiqueManager.lireArretsPhysiques();
-    }
-    else
-    {
-      //arretsPhysiques = arretPhysiqueManager.getArretsPhysiques(idLigne);
-      arretsPhysiques = positionGeographiqueManager.lireArretsPhysiques();
-    }
-
-    resultat += "{";
-    for (PositionGeographique arretPhysique : arretsPhysiques)
-    {
-      if (arretsPhysiques.indexOf(arretPhysique) == arretsPhysiques.size() - 1)
-      {
-        resultat += "\"" + arretPhysique.getName() + "\"" + ": " + arretPhysique.getId();
-      }
-      else
-      {
-        resultat += "\"" + arretPhysique.getName() + "\"" + ": " + arretPhysique.getId() + ",";
-      }
-    }
-    resultat += "}";
+//    List<PositionGeographique> arretsPhysiques = null;
+//    if (idLigne == null)
+//    {
+//      arretsPhysiques = positionGeographiqueManager.lireArretsPhysiques();
+//    }
+//    else
+//    {
+//      //arretsPhysiques = arretPhysiqueManager.getArretsPhysiques(idLigne);
+//      arretsPhysiques = positionGeographiqueManager.lireArretsPhysiques();
+//    }
+//
+//    resultat += "{";
+//    for (PositionGeographique arretPhysique : arretsPhysiques)
+//    {
+//      if (arretsPhysiques.indexOf(arretPhysique) == arretsPhysiques.size() - 1)
+//      {
+//        resultat += "\"" + arretPhysique.getName() + "\"" + ": " + arretPhysique.getId();
+//      }
+//      else
+//      {
+//        resultat += "\"" + arretPhysique.getName() + "\"" + ": " + arretPhysique.getId() + ",";
+//      }
+//    }
+//    resultat += "}";
     return resultat;
   }
 
@@ -288,50 +265,52 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
     this.saisieNomArretExistantKey = saisieNomArretExistantKey;
   }
 
-  public List<PositionGeographique> getArrets()
+  public List<StopArea> getArrets()
   {
-    arrets = ligneManager.getArretsPhysiques(model.getIdLigne());
-    
-    if (arretsDansITLList != null)
-    {
-      for (int i = 0; i < arretsDansITLList.size(); i++)
-      {
-        if (arrets != null)
-        {
-          for (int j = 0; j < arrets.size(); j++)
-          {
-            Long l1 = arretsDansITLList.get(i).getId();
-            Long l2 = arrets.get(j).getId();
-            if (l1.equals(l2))
-            {
-              arrets.remove(j);
-            }
-          }
-        }
-        arrets.remove(arretsDansITLList.get(i));
-      }
-    }
-
-    return arrets;
+//    arrets = ligneManager.getArretsPhysiques(model.getIdLigne());
+//    
+//    if (arretsDansITLList != null)
+//    {
+//      for (int i = 0; i < arretsDansITLList.size(); i++)
+//      {
+//        if (arrets != null)
+//        {
+//          for (int j = 0; j < arrets.size(); j++)
+//          {
+//            Long l1 = arretsDansITLList.get(i).getId();
+//            Long l2 = arrets.get(j).getId();
+//            if (l1.equals(l2))
+//            {
+//              arrets.remove(j);
+//            }
+//          }
+//        }
+//        arrets.remove(arretsDansITLList.get(i));
+//      }
+//    }
+//
+//    return arrets;
+     return null;
   }
 
-  public List<PositionGeographique> getArretsDansITLList()
+  public List<StopArea> getArretsDansITLList()
   {
-    arretsDansITLList = new ArrayList();
-    if (model != null)
-    {
-      List list_id = model.getArretPhysiqueIds();
-      if (list_id != null)
-      {
-        for (int i = 0; i < list_id.size(); i++)
-        {
-          Long id = (Long) list_id.get(i);
-          PositionGeographique ap = positionGeographiqueManager.lire(id);
-          arretsDansITLList.add(ap);
-        }
-      }
-    }
-    return arretsDansITLList;
+//    arretsDansITLList = new ArrayList();
+//    if (model != null)
+//    {
+//      List list_id = model.getArretPhysiqueIds();
+//      if (list_id != null)
+//      {
+//        for (int i = 0; i < list_id.size(); i++)
+//        {
+//          Long id = (Long) list_id.get(i);
+//          PositionGeographique ap = positionGeographiqueManager.lire(id);
+//          arretsDansITLList.add(ap);
+//        }
+//      }
+//    }
+//    return arretsDansITLList;
+     return null;
   }
 
   /********************************************************
@@ -344,20 +323,21 @@ public class RoutingConstraintAction extends GeneriqueAction implements ModelDri
    */
   public String getLigneName()
   {
-    if (model != null && model.getIdLigne() != null)
-    {
-      Ligne l = ligneManager.lire(model.getIdLigne());
-      return l.getFullName();
-    }
-    else
+//    if (model != null && model.getIdLigne() != null)
+//    {
+//      Ligne l = ligneManager.lire(model.getIdLigne());
+//      return l.getFullName();
+//    }
+//    else
     {
       return null;
     }
   }
 
-  public List<Ligne> getLignes()
+  public List<Line> getLignes()
   {
-    return ligneManager.lire();
+    // return ligneManager.lire();
+    return null;
   }
 
   /********************************************************

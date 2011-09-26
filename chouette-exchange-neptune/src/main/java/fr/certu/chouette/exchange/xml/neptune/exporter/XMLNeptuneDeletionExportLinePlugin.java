@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Setter;
-
-import org.apache.log4j.Logger;
-
 import chouette.schema.ChouetteRemoveLine;
 import chouette.schema.ChouetteRemoveLineTypeType;
 import fr.certu.chouette.common.ChouetteException;
@@ -23,7 +20,6 @@ import fr.certu.chouette.plugin.report.ReportHolder;
 
 public class XMLNeptuneDeletionExportLinePlugin implements IExportPlugin<Line> {
 
-	private static final Logger logger = Logger.getLogger(XMLNeptuneDeletionExportLinePlugin.class);
 
 	private FormatDescription description;
 	@Setter private LineProducer lineProducer;
@@ -31,7 +27,7 @@ public class XMLNeptuneDeletionExportLinePlugin implements IExportPlugin<Line> {
 	
 	public XMLNeptuneDeletionExportLinePlugin() {
 		description = new FormatDescription(this.getClass().getName());
-		description.setName("XMLNeptuneLine");
+		description.setName("NEPTUNE");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
 		ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILENAME, false, true);
 		param1.setAllowedExtensions(Arrays.asList(new String[]{"xml","zip"}));

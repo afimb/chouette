@@ -2,8 +2,8 @@ package fr.certu.chouette.dao.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.type.IntegerType;
 
 public class ExtendedPostgresSQLDialect extends PostgreSQLDialect {
 	
@@ -15,6 +15,6 @@ public class ExtendedPostgresSQLDialect extends PostgreSQLDialect {
 	public ExtendedPostgresSQLDialect() {
 		super();
 		logger.info("ENREGISTREMENT DES NOUVELLES FONCTIONS APPORTEES AU DIALECT POSTGRESQL .. ");
-		registerFunction("bitwise_and", new BitwiseAndSQLFunction("?1 & ?2", Hibernate.INTEGER));
+      registerFunction("bitwise_and", new BitwiseAndSQLFunction("?1 & ?2", new IntegerType() ));
 	}
 }

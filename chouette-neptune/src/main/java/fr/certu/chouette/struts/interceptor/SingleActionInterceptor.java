@@ -1,25 +1,21 @@
 package fr.certu.chouette.struts.interceptor;
 
 
-import java.util.Calendar;
-
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.context.ApplicationContext;
+
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
-import fr.certu.chouette.manager.SingletonManager;
-import fr.certu.chouette.service.actionLock.ActionLock;
+import fr.certu.chouette.struts.ActionLock;
+import fr.certu.chouette.struts.SingletonManager;
 
 @SuppressWarnings("serial")
 public class SingleActionInterceptor extends AbstractInterceptor 
 {
 
-	private static final Log logger = LogFactory.getLog(SingleActionInterceptor.class);
 	
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception

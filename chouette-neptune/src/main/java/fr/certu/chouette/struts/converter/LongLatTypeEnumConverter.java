@@ -10,7 +10,8 @@ import com.opensymphony.xwork2.conversion.TypeConversionException;
 
 public final class LongLatTypeEnumConverter extends StrutsTypeConverter
 {
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public Object convertFromString(Map arg0, String[] value, Class arg2) {
 		if (value.length != 1)
 		{
@@ -26,7 +27,8 @@ public final class LongLatTypeEnumConverter extends StrutsTypeConverter
 		return LongLatTypeEnum.fromValue(value[0]);
 	}
 
-	@Override
+	@SuppressWarnings("rawtypes")
+   @Override
 	public String convertToString(Map arg0, Object arg1) {
 		if (!arg1.getClass().equals(LongLatTypeEnum.class))
 		{

@@ -4,13 +4,33 @@
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="AccessPoint"
 		table="AccessPoint">
-		<id column="id" name="id" type="long">
+		<id name="id" type="long">
+			<column name="id">
+				<comment>Internal identification</comment>
+			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true" not-null="true"/>
-		<property name="objectVersion" type="int" />
-		<property name="creationTime" type="java.util.Date" />
-		<property name="creatorId" type="string" />
+		<property name="objectId" type="string" unique="true">
+			<column name="objectId" not-null="true">
+				<comment>Neptune identification</comment>
+			</column>
+		</property>
+
+		<property name="objectVersion" type="int">
+			<column name="objectVersion" default="1">
+				<comment>Version of this object</comment>
+			</column>
+		</property>
+		<property name="creationTime" type="java.util.Date">
+			<column name="creationTime">
+				<comment>Creation date and time</comment>
+			</column>
+		</property>
+		<property name="creatorId" type="string">
+			<column name="creatorId">
+				<comment>Creator identification</comment>
+			</column>
+		</property>
 		<property name="name" type="string" />
 		<property name="comment" type="string" />
 

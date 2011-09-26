@@ -8,7 +8,7 @@
   <groupId>fr.certu.chouette</groupId>
   <artifactId>chouette-services</artifactId>
   <version>1.7.0-SNAPSHOT</version>
-  <name>chouette-services</name>
+  <name>Chouette Services</name>
   <description>business services for complex actions on neptune data</description>
   
 	<dependencies>

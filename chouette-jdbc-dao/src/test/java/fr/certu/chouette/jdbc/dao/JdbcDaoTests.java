@@ -2,7 +2,6 @@ package fr.certu.chouette.jdbc.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -25,8 +24,6 @@ import fr.certu.chouette.plugin.report.ReportHolder;
 @SuppressWarnings("unchecked")
 public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 {
-	private static final Logger logger = Logger.getLogger(JdbcDaoTests.class);
-
 	private INeptuneManager<Line> lineManager;
 	private INeptuneManager<Timetable> timetableManager;
 	private INeptuneManager<VehicleJourney> vehicleJourneyManager;
@@ -69,13 +66,13 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 	{
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/"+neptuneFile);
 		parameters.add(simpleParameterValue);
 
 		ReportHolder report = new ReportHolder();
 
-		List<Line> lines = lineManager.doImport(null,"XMLNeptuneLine",parameters, report);
+		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
@@ -93,13 +90,13 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 	{
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
 		simpleParameterValue.setFilepathValue(path+"/"+neptuneZip);
 		parameters.add(simpleParameterValue);
 
 		ReportHolder report = new ReportHolder();
 
-		List<Line> lines = lineManager.doImport(null,"XMLNeptuneLine",parameters, report);
+		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
@@ -123,6 +120,7 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 	     count = routeManager.purge(null);
 	     count = lineManager.purge(null);
 	     count = stopareaManager.purge(null);
+	     Assert.assertTrue(count>=0,"count must be greater than zero");
 	}
 
 }

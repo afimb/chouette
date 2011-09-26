@@ -20,6 +20,7 @@ import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.struts.GeneriqueAction;
 
+@SuppressWarnings("serial")
 public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, Preparable
 {
 
@@ -32,7 +33,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	private Long lineId;
 	private Line line;
 	private String mappedRequest;
-	private String oppositeRouteId;
+	// private String oppositeRouteId;
 	private List<Route> itinerairesSansItineraireEdite; // TODO rename
 
 	public Long getIdItineraire()
@@ -107,7 +108,8 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 	/********************************************************
 	 *                           CRUD                       *
 	 ********************************************************/
-	@SkipValidation
+	@SuppressWarnings("unchecked")
+   @SkipValidation
 	public String list() throws Exception
 	{
 		if(lineId != null)
@@ -365,10 +367,10 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
 		}
 	}
 
-	public void setIdRetour(String idRetour)
-	{
-		this.oppositeRouteId = idRetour;
-	}
+//	public void setIdRetour(String idRetour)
+//	{
+//		this.oppositeRouteId = idRetour;
+//	}
 
 	public String getLineName()
 	{

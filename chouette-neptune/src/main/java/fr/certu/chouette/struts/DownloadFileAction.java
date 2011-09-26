@@ -1,10 +1,10 @@
 package fr.certu.chouette.struts;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.FileInputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.apache.log4j.Logger;
 
 /**
  * Action to download a file
@@ -14,44 +14,46 @@ import org.apache.commons.logging.LogFactory;
 public class DownloadFileAction extends GeneriqueAction
 {
 
-  private String fileName;
-  private String directory;
-  private InputStream inputStream;
-  private static final Log logger = LogFactory.getLog(DownloadFileAction.class);
 
-  public void setFileName(String fileName)
-  {
-    this.fileName = fileName;
-  }
+   private static final long serialVersionUID = 413791621361516790L;
+   private String fileName;
+   private String directory;
+   private InputStream inputStream;
+   private static final Logger logger = Logger.getLogger(DownloadFileAction.class);
 
-  public String getFileName()
-  {
-    return fileName;
-  }
+   public void setFileName(String fileName)
+   {
+      this.fileName = fileName;
+   }
 
-  public void setPreviousAction(String previousAction)
-  {
-    
+   public String getFileName()
+   {
+      return fileName;
+   }
+
+   public void setPreviousAction(String previousAction)
+   {
+
       directory = "";
-    
-  }
 
-  public InputStream getInputStream()
-  {
-    return inputStream;
-  }
+   }
 
-  public String downloadFile()
-  {
-    try
-    {
-      String file = directory + getFileName();
-      inputStream = new FileInputStream(file);
-    } catch (FileNotFoundException exception)
-    {
-      logger.error("file not found : " + exception);
-    }
+   public InputStream getInputStream()
+   {
+      return inputStream;
+   }
 
-    return SUCCESS;
-  }
+   public String downloadFile()
+   {
+      try
+      {
+         String file = directory + getFileName();
+         inputStream = new FileInputStream(file);
+      } catch (FileNotFoundException exception)
+      {
+         logger.error("file not found : " + exception);
+      }
+
+      return SUCCESS;
+   }
 }

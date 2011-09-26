@@ -246,11 +246,11 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
             return false;
         }
         List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-        SimpleParameterValue simpleParameterValue = new SimpleParameterValue("xmlFile");
+        SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
         simpleParameterValue.setFilepathValue(file.getPath());
         parameters.add(simpleParameterValue);
         
-        SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validateXML");
+        SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validate");
         simpleParameterValue2.setBooleanValue(validate);
         parameters.add(simpleParameterValue2);
 
@@ -260,7 +260,7 @@ public class NeptuneValidationAction extends GeneriqueAction implements Preparab
         
         ReportHolder reportHolder = new ReportHolder();
 
-        lines = lineManager.doImport(null, "XMLNeptuneLine", parameters, reportHolder);
+        lines = lineManager.doImport(null, "NEPTUNE", parameters, reportHolder);
         report = reportHolder.getReport();
         session.put("fileFileName", fileFileName);
         session.put("report", report);

@@ -4,10 +4,9 @@ import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.core.Ordered;
 
-import fr.certu.chouette.model.neptune.NeptuneObject;
-import fr.certu.chouette.dao.hibernate.exception.HibernateDaoException;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
+import fr.certu.chouette.model.neptune.NeptuneObject;
 
 //----------------------------------------------------------------------------
 /**
