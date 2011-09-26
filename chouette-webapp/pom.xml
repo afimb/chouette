@@ -105,6 +105,7 @@
         <dependency>
             <groupId>fr.certu.chouette.maven</groupId>
             <artifactId>chouette-maven-plugin</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <pluginRepositories>
