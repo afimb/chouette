@@ -221,6 +221,14 @@
 					<activateExec>true</activateExec>
 					<maxReleasesCount>5</maxReleasesCount>
 				</configuration>
+				<executions>
+				<execution>
+				<phase>install</phase>
+				<goals>
+				<goal>publish-release</goal>
+				</goals>
+				</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
