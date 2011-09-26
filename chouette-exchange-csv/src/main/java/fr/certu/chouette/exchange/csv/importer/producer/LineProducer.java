@@ -58,7 +58,10 @@ public class LineProducer extends AbstractModelProducer<Line>
    }
 
    private String                   projectedPointType        = "epsg:27582";
-
+   
+   private int stopPointIdCounter = 1;
+   private int stopAreaIdCounter = 1;
+   
    @Override
    public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix)
    {
@@ -313,7 +316,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          rank++;
          for (int row = startRow; row < endRow; row++)
          {
-            Time departureTime = getTimeValue(col, arrets.get(row), logger);
+            Time departureTime = getTimeValue(col, arrets.get(row));
             if (departureTime != null)
             {
                VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
@@ -358,7 +361,7 @@ public class LineProducer extends AbstractModelProducer<Line>
       physical = new StopArea();
       physical.setAreaType(areaType);
       physical.setName(getValue(STOPNAME_COLUMN, stopData));
-      physical.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":BP_" + physical.getName().hashCode());
+      physical.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":BP_" + getNextStopPointId());
       AreaCentroid centroid = new AreaCentroid();
       physical.setAreaCentroid(centroid);
       centroid.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
@@ -391,6 +394,19 @@ public class LineProducer extends AbstractModelProducer<Line>
       return physical;
    }
 
+   private String getNextStopPointId()
+   {
+      int ret = stopPointIdCounter++;
+      
+      return Integer.toString(ret);
+   }
+   private String getNextStopAreaId()
+   {
+      int ret = stopAreaIdCounter++;
+      
+      return Integer.toString(ret);
+   }
+
    /**
     * @param stopData
     * @param objectIdPrefix
@@ -402,7 +418,7 @@ public class LineProducer extends AbstractModelProducer<Line>
       commercial = new StopArea();
       commercial.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
       commercial.setName(getValue(AERAZONE_COLUMN, stopData));
-      commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + commercial.getName().hashCode());
+      commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + getNextStopAreaId());
       if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
       {
          AreaCentroid centroid2 = new AreaCentroid();

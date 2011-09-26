@@ -215,8 +215,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
 
       while (currentLine[TimetableProducer.TITLE_COLUMN].equals(TimetableProducer.TIMETABLE_LABEL_TITLE))
       {
-         logger.debug("timetables");
          Timetable timetable = timetableProducer.produce(csvReader, currentLine,objectIdPrefix);
+         logger.debug("timetable \n"+timetable.toString());
          timetableMap.put(timetable.getObjectId().split(":")[2], timetable);
          try
          {
@@ -229,8 +229,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          }
       }
 
-      logger.debug("network");
       ptNetwork = ptNetworkProducer.produce(csvReader, currentLine,objectIdPrefix);
+      logger.debug("network \n"+ptNetwork);
       try
       {
          currentLine = csvReader.readNext(); // empty line
@@ -241,8 +241,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
       }
 
-      logger.debug("company");
       company = companyProducer.produce(csvReader, currentLine,objectIdPrefix);
+      logger.debug("company \n"+company.toString());
       try
       {
          currentLine = csvReader.readNext(); // empty line
@@ -260,6 +260,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          line.setCompany(company);
          line.setPtNetwork(ptNetwork);
          assemble(line,timetableMap);
+         logger.debug("line \n"+line.toString());
          if (line.getRoutes().isEmpty())
          {
             logger.error("empty line removed :"+line.getNumber());

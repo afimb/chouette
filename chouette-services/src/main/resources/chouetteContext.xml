@@ -14,7 +14,7 @@
     	<property name="stopAreaManager" ref="stopAreaManager"/>
     </bean>
     
-    <bean id="cleanService" class="fr.certu.chouette.service.cleaing.CleanService">
+    <bean id="cleanService" class="fr.certu.chouette.service.cleaning.CleanService">
     	<property name="stopAreaManager" ref="stopAreaManager"/>
     	<property name="lineManager" ref="lineManager"/>
     	<property name="vehicleJourneyManager" ref="vehicleJourneyManager"/>

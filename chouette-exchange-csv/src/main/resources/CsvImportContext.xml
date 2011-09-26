@@ -16,7 +16,7 @@
 		<property name="companyProducer" ref="CSVCompanyImportProducer" />
 		<property name="ptNetworkProducer" ref="CSVNetworkImportProducer" />
 		<property name="timetableProducer" ref="CSVTimetableImportProducer" />
-		<property name="defaultObjectIdPrefix" value="{system.code}"/>
+		<property name="defaultObjectIdPrefix" value="${system.code}"/>
 	</bean>
 
 </beans>

@@ -74,7 +74,7 @@ public class StopArea extends NeptuneIdentifiedObject
    /**
     * predefined filter to limit get on PhysicalStops
     */
-   public static final Filter physicalStopsFilter = Filter.getNewOrFilter(boardingPositionFilter,quayFilter);
+   public static final Filter physicalStopsFilter = Filter.getNewInFilter(AREA_TYPE,new ChouetteAreaEnum[]{ChouetteAreaEnum.BOARDINGPOSITION,ChouetteAreaEnum.QUAY});
 	
 	@Getter @Setter private List<String> boundaryPoints;
 	@Getter @Setter private String areaCentroidId;
