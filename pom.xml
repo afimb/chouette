@@ -574,6 +574,7 @@
 			<plugin>
 				<groupId>fr.certu.chouette.maven</groupId>
 				<artifactId>chouette-maven-plugin</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
