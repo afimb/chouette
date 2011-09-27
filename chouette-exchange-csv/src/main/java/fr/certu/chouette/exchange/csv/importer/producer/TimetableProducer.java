@@ -11,9 +11,12 @@ import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.plugin.report.Report;
 
 public class TimetableProducer extends AbstractModelProducer<Timetable>
 {
@@ -35,7 +38,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
    private static final String           YES_OPTION            = "O";
 
    @Override
-   public Timetable produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix) throws ExchangeException
+   public Timetable produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report) throws ExchangeException
    {
       Timetable timetable = new Timetable();
       if (firstLine[TITLE_COLUMN].equals(TIMETABLE_LABEL_TITLE))
@@ -44,6 +47,8 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       }
       else
       {
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR, firstLine[TITLE_COLUMN] +"<>"+ TIMETABLE_LABEL_TITLE);
+         report.addItem(reportItem);
          return null;
       }
       try
@@ -99,8 +104,12 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       catch (ExchangeException e)
       {
          logger.error("CSV reading failed",e);
-         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e.getMessage());
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR, e.getLocalizedMessage());
+         report.addItem(reportItem);
+         return null;
       }
+      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_TIMETABLE, Report.STATE.OK, timetable.getName(),timetable.getComment());
+      report.addItem(reportItem);
       return timetable;
    }
 

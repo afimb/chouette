@@ -184,5 +184,24 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
       String output = input.replaceAll(" ", "_");
       return output;
    }
+   
+   /**
+    * check if csv line has no data
+    * 
+    * @param data
+    * @return true if  empty
+    */
+   public boolean checkLine(String[] data)
+   {
+      if (data == null)
+         return true;
+      for (String item : data)
+      {
+         if (item != null && !item.trim().isEmpty())
+            return false;
+      }
+      return true;
+   }
+
 
 }

@@ -33,6 +33,8 @@ import fr.certu.chouette.exchange.csv.importer.producer.CompanyProducer;
 import fr.certu.chouette.exchange.csv.importer.producer.LineProducer;
 import fr.certu.chouette.exchange.csv.importer.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.csv.importer.producer.TimetableProducer;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -45,6 +47,7 @@ import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 public class CSVImportLinePlugin implements IImportPlugin<Line>
@@ -55,7 +58,6 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
    private FormatDescription   description;
 
    private List<String>        allowedExtensions = Arrays.asList(new String[] { "csv" });
-
 
    @Getter
    @Setter
@@ -71,7 +73,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
    private LineProducer        lineProducer;
    @Getter
    @Setter
-   private String defaultObjectIdPrefix;
+   private String              defaultObjectIdPrefix;
 
    /**
     * 
@@ -89,7 +91,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       "file extension");
       param2.setAllowedExtensions(Arrays.asList(new String[] { "csv" }));
       params.add(param2);
-      ParameterDescription param3 = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false, defaultObjectIdPrefix);
+      ParameterDescription param3 = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false,
+            defaultObjectIdPrefix);
       params.add(param3);
       description.setParameterDescriptions(params);
    }
@@ -115,6 +118,9 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
    @Override
    public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
    {
+      CSVReport report = new CSVReport(CSVReport.KEY.IMPORT);
+      report.setStatus(Report.STATE.UNCHECK);
+      reportContainer.setReport(report);
       String filePath = null;
       String extension = "file extension";
       String objectIdPrefix = defaultObjectIdPrefix;
@@ -166,13 +172,14 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
 
       // simple file processing
       logger.info("start import simple file " + filePath);
-      lines = processImport(filePath,objectIdPrefix);
+      lines = processImport(filePath, objectIdPrefix, report);
       logger.info("import terminated");
       return lines;
    }
 
    /**
-    * @param objectIdPrefix 
+    * @param objectIdPrefix
+    * @param report
     * @param rootObject
     * @param validate
     * @param report
@@ -180,7 +187,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
     * @return
     * @throws ExchangeException
     */
-   private List<Line> processImport(String filePath, String objectIdPrefix) throws ExchangeException
+   private List<Line> processImport(String filePath, String objectIdPrefix, CSVReport report) throws ExchangeException
    {
       ChouetteCsvReader csvReader = null;
       Map<String, Timetable> timetableMap = new HashMap<String, Timetable>();
@@ -215,55 +222,41 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
 
       while (currentLine[TimetableProducer.TITLE_COLUMN].equals(TimetableProducer.TIMETABLE_LABEL_TITLE))
       {
-         Timetable timetable = timetableProducer.produce(csvReader, currentLine,objectIdPrefix);
-         logger.debug("timetable \n"+timetable.toString());
-         timetableMap.put(timetable.getObjectId().split(":")[2], timetable);
-         try
+         Timetable timetable = timetableProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+         if (timetable != null)
          {
-            currentLine = csvReader.readNext(); // empty line
-            currentLine = csvReader.readNext();
+            logger.debug("timetable \n" + timetable.toString());
+            timetableMap.put(timetable.getObjectId().split(":")[2], timetable);
          }
-         catch (IOException e)
-         {
-            throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
-         }
+
+         currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
+         if (currentLine == null) return null;
       }
 
-      ptNetwork = ptNetworkProducer.produce(csvReader, currentLine,objectIdPrefix);
-      logger.debug("network \n"+ptNetwork);
-      try
-      {
-         currentLine = csvReader.readNext(); // empty line
-         currentLine = csvReader.readNext();
-      }
-      catch (IOException e)
-      {
-         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
-      }
+      ptNetwork = ptNetworkProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+      if (ptNetwork == null)return null;
+         
+      logger.debug("network \n" + ptNetwork);
+      currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
+      if (currentLine == null) return null;
 
-      company = companyProducer.produce(csvReader, currentLine,objectIdPrefix);
-      logger.debug("company \n"+company.toString());
-      try
-      {
-         currentLine = csvReader.readNext(); // empty line
-         currentLine = csvReader.readNext();
-      }
-      catch (IOException e)
-      {
-         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
-      }
+      company = companyProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+      if (company == null) return null;
+      logger.debug("company \n" + company.toString());
+      currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
+      if (currentLine == null) return null;
 
       while (currentLine[LineProducer.TITLE_COLUMN].equals(LineProducer.LINE_NAME_TITLE))
       {
          logger.debug("lines");
-         Line line = lineProducer.produce(csvReader, currentLine,objectIdPrefix);
+         Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, report);
          line.setCompany(company);
          line.setPtNetwork(ptNetwork);
-         assemble(line,timetableMap);
-         logger.debug("line \n"+line.toString());
+         assemble(line, timetableMap);
+         logger.debug("line \n" + line.toString());
          if (line.getRoutes().isEmpty())
          {
-            logger.error("empty line removed :"+line.getNumber());
+            logger.error("empty line removed :" + line.getNumber());
          }
          else
          {
@@ -272,7 +265,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          try
          {
             currentLine = csvReader.readNext();
-            if (currentLine == null) break;
+            if (currentLine == null)
+               break;
          }
          catch (IOException e)
          {
@@ -282,6 +276,66 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
 
       return lines;
    }
+
+   /**
+    * @param filePath
+    * @param report
+    * @param csvReader
+    * @param currentLine
+    * @return
+    * @throws ExchangeException
+    */
+   private String[] getStartOfNextBloc(String filePath, CSVReport report, ChouetteCsvReader csvReader, boolean reportEOF)
+   throws ExchangeException
+   {
+      try
+      {
+         String[] currentLine = csvReader.readNext();
+         if (currentLine == null)
+         {
+            if (reportEOF)
+            {
+               CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.END_OF_FILE, Report.STATE.ERROR);
+               report.addItem(reportItem);
+            }
+            return null;
+         }
+         // if line not empty, maybe previous block wasn't completely parsed
+         while (!timetableProducer.checkLine(currentLine))
+         {
+            currentLine = csvReader.readNext();
+            if (currentLine == null)
+            {
+               if (reportEOF)
+               {
+                  CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.END_OF_FILE, Report.STATE.ERROR);
+                  report.addItem(reportItem);
+               }
+               return null;
+            }
+         }
+         // skip empty line bloc
+         while (timetableProducer.checkLine(currentLine))
+         {
+            currentLine = csvReader.readNext();
+            if (currentLine == null)
+            {
+               if (reportEOF)
+               {
+                  CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.END_OF_FILE, Report.STATE.ERROR);
+                  report.addItem(reportItem);
+               }
+               return null;
+            }
+         }
+         return currentLine;
+      }
+      catch (IOException e)
+      {
+         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
+      }
+   }
+
    /**
     * @param line
     * @param timetableMap
@@ -291,7 +345,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
    {
       for (Iterator<Route> iterator = line.getRoutes().iterator(); iterator.hasNext();)
       {
-         Route route =  iterator.next();
+         Route route = iterator.next();
          for (Iterator<JourneyPattern> iterator2 = route.getJourneyPatterns().iterator(); iterator2.hasNext();)
          {
             JourneyPattern journey = iterator2.next();
@@ -303,7 +357,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
                Timetable t = timetableMap.get(key);
                if (t == null)
                {
-                  logger.error("missing timetable "+key+" vehicleJourney removed :"+vj.getObjectId());
+                  logger.error("missing timetable " + key + " vehicleJourney removed :" + vj.getObjectId());
                   iterator3.remove();
                }
                else
@@ -314,13 +368,13 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             }
             if (journey.getVehicleJourneys().isEmpty())
             {
-               logger.error("empty journeyPattern removed :"+journey.getObjectId());
+               logger.error("empty journeyPattern removed :" + journey.getObjectId());
                iterator2.remove();
             }
          }
          if (route.getJourneyPatterns().isEmpty())
          {
-            logger.error("empty route removed :"+route.getObjectId());
+            logger.error("empty route removed :" + route.getObjectId());
             iterator.remove();
          }
       }

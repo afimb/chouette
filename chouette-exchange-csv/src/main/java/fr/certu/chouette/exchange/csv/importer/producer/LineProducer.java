@@ -15,6 +15,8 @@ import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -28,6 +30,7 @@ import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.plugin.report.Report;
 
 public class LineProducer extends AbstractModelProducer<Line>
 {
@@ -63,7 +66,7 @@ public class LineProducer extends AbstractModelProducer<Line>
    private int stopAreaIdCounter = 1;
    
    @Override
-   public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix)
+   public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report)
    {
       Line line = new Line();
       if (firstLine[TITLE_COLUMN].equals(LINE_NAME_TITLE))
@@ -73,6 +76,8 @@ public class LineProducer extends AbstractModelProducer<Line>
       else
       {
          logger.debug("no linename on " + firstLine[TITLE_COLUMN]);
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR,firstLine[TITLE_COLUMN]+"<>" + LINE_NAME_TITLE );
+         report.addItem(reportItem);
          return null;
       }
       try
@@ -90,6 +95,8 @@ public class LineProducer extends AbstractModelProducer<Line>
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
+      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_LINE, Report.STATE.OK, line.getName());
+      report.addItem(reportItem);
       return line;
    }
 
@@ -433,17 +440,6 @@ public class LineProducer extends AbstractModelProducer<Line>
       return commercial;
    }
 
-   private boolean checkLine(String[] arret)
-   {
-      if (arret == null)
-         return true;
-      for (String item : arret)
-      {
-         if (item != null && !item.trim().isEmpty())
-            return false;
-      }
-      return true;
-   }
 
    protected String loadStringParam(CSVReader csvReader, String title) throws ExchangeException
    {

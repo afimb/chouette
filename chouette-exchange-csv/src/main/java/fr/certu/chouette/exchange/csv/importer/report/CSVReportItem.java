@@ -18,15 +18,10 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class CSVReportItem extends ReportItem 
 {
-	public enum KEY {OK_LINE,FILE_ERROR,VALIDATION_ERROR,VALIDATION_CAUSE,FILE_IGNORED, PARSE_OBJECT, MANDATORY_TAG, UNKNOWN_ENUM, EMPTY_TAG, OBJECT_COUNT} ;
+	public enum KEY {OK_LINE,OK_TIMETABLE,OK_PTNETWORK,OK_COMPANY,FILE_ERROR,
+	   VALIDATION_ERROR,VALIDATION_CAUSE,FILE_IGNORED, PARSE_OBJECT, 
+	   MANDATORY_TAG, UNKNOWN_ENUM, EMPTY_TAG, OBJECT_COUNT, END_OF_FILE} ;
 
-	/*
-	public NeptuneReportItem(KEY key,String... args)
-	{
-       setMessageKey(key.name());
-       addMessageArgs(args);
-	}
-	*/
 	public CSVReportItem(KEY key,Report.STATE status, String... args)
 	{
 		setStatus(status);

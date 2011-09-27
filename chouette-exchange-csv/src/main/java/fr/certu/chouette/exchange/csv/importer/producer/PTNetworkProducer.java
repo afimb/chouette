@@ -5,9 +5,11 @@ import java.util.Calendar;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
-import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
+import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.plugin.report.Report;
 
 public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
 {
@@ -18,7 +20,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
    public static final String  DESCRIPTION_TITLE    = "Description du réseau";
 
    @Override
-   public PTNetwork produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix) throws ExchangeException
+   public PTNetwork produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report) throws ExchangeException
    {
       PTNetwork ptNetwork = new PTNetwork();
       if (firstLine[TITLE_COLUMN].equals(PTNETWORK_NAME_TITLE))
@@ -27,6 +29,8 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
       }
       else
       {
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR,firstLine[TITLE_COLUMN]+"<>" + PTNETWORK_NAME_TITLE );
+         report.addItem(reportItem);
          return null;
       }
       try
@@ -39,8 +43,12 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
       catch (ExchangeException e)
       {
          logger.error("CSV reading failed", e);
-         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e.getMessage());
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR, e.getLocalizedMessage());
+         report.addItem(reportItem);
+         return null;
       }
+      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_PTNETWORK, Report.STATE.OK, ptNetwork.getName(),ptNetwork.getDescription());
+      report.addItem(reportItem);
       return ptNetwork;
    }
 
