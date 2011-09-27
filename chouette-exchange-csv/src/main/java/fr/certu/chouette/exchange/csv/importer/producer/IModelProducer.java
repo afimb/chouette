@@ -10,8 +10,8 @@ package fr.certu.chouette.exchange.csv.importer.producer;
 
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
-import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
@@ -19,5 +19,5 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
  */
 public interface IModelProducer <T extends NeptuneIdentifiedObject> 
 {
-    T produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report) throws ExchangeException;
+    T produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report) throws ExchangeException;
 }

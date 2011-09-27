@@ -15,7 +15,6 @@ import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
-import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -66,7 +65,7 @@ public class LineProducer extends AbstractModelProducer<Line>
    private int stopAreaIdCounter = 1;
    
    @Override
-   public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report)
+   public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report)
    {
       Line line = new Line();
       if (firstLine[TITLE_COLUMN].equals(LINE_NAME_TITLE))

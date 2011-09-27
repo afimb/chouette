@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
-import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.plugin.report.Report;
@@ -23,7 +22,7 @@ public class CompanyProducer extends AbstractModelProducer<Company>
    public static final String  EMAIL_TITLE        = "Email";
 
    @Override
-   public Company produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report)
+   public Company produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report)
          throws ExchangeException
    {
       Company company = new Company();

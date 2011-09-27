@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
-import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.plugin.report.Report;
@@ -20,7 +19,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
    public static final String  DESCRIPTION_TITLE    = "Description du réseau";
 
    @Override
-   public PTNetwork produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report) throws ExchangeException
+   public PTNetwork produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report) throws ExchangeException
    {
       PTNetwork ptNetwork = new PTNetwork();
       if (firstLine[TITLE_COLUMN].equals(PTNETWORK_NAME_TITLE))

@@ -220,9 +220,10 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
       }
 
+      CSVReportItem timetableCountReport = new CSVReportItem(CSVReportItem.KEY.TIMETABLE_COUNT,Report.STATE.OK);
       while (currentLine[TimetableProducer.TITLE_COLUMN].equals(TimetableProducer.TIMETABLE_LABEL_TITLE))
       {
-         Timetable timetable = timetableProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+         Timetable timetable = timetableProducer.produce(csvReader, currentLine, objectIdPrefix, timetableCountReport);
          if (timetable != null)
          {
             logger.debug("timetable \n" + timetable.toString());
@@ -230,9 +231,12 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          }
 
          currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
-         if (currentLine == null) return null;
+         if (currentLine == null) break;
       }
-
+      timetableCountReport.addMessageArgs(Integer.toString(timetableMap.size()));
+      report.addItem(timetableCountReport);
+      
+      if (currentLine == null) return null;
       ptNetwork = ptNetworkProducer.produce(csvReader, currentLine, objectIdPrefix, report);
       if (ptNetwork == null)return null;
          
@@ -246,10 +250,11 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
       if (currentLine == null) return null;
 
+      CSVReportItem lineCountReport = new CSVReportItem(CSVReportItem.KEY.LINE_COUNT,Report.STATE.OK);
       while (currentLine[LineProducer.TITLE_COLUMN].equals(LineProducer.LINE_NAME_TITLE))
       {
          logger.debug("lines");
-         Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+         Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, lineCountReport);
          line.setCompany(company);
          line.setPtNetwork(ptNetwork);
          assemble(line, timetableMap);
@@ -273,6 +278,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
          }
       }
+      lineCountReport.addMessageArgs(Integer.toString(lines.size()));
+      report.addItem(lineCountReport);
 
       return lines;
    }

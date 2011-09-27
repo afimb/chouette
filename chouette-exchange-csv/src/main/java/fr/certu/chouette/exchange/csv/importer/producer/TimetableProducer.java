@@ -11,7 +11,6 @@ import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
-import fr.certu.chouette.exchange.csv.importer.report.CSVReport;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -38,7 +37,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
    private static final String           YES_OPTION            = "O";
 
    @Override
-   public Timetable produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, CSVReport report) throws ExchangeException
+   public Timetable produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report) throws ExchangeException
    {
       Timetable timetable = new Timetable();
       if (firstLine[TITLE_COLUMN].equals(TIMETABLE_LABEL_TITLE))

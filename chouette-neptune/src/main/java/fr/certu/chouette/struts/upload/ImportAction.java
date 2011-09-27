@@ -95,7 +95,7 @@ public class ImportAction extends GeneriqueAction {
          parameters.add(simpleParameterValue3);
          ReportHolder reportHolder = new ReportHolder();
          List<Line> lines = lineManager.doImport(user, "CSV", parameters, reportHolder);
-         if (reportHolder.getReport() != null && !reportHolder.getReport().getStatus().equals(Report.STATE.OK))
+         if (reportHolder.getReport() != null && reportHolder.getReport().getStatus().ordinal() > Report.STATE.WARNING.ordinal())
          {
             logReport(reportHolder.getReport(),Level.ERROR);
             addActionError(reportHolder.getReport());
@@ -105,6 +105,7 @@ public class ImportAction extends GeneriqueAction {
             if (reportHolder.getReport() != null)
             {
                logReport(reportHolder.getReport(),Level.INFO);
+               addActionMessage(reportHolder.getReport());
             }
             lineManager.saveAll(user, lines, true, true);
          }
@@ -119,10 +120,29 @@ public class ImportAction extends GeneriqueAction {
       return SUCCESS;
    }
 
+   private void addActionMessage(Report report)
+   {
+      addActionMessage(report.getLocalizedMessage());
+      addActionMessage("&nbsp;&nbsp;&nbsp;",report.getItems());
+
+   }
+
+
+   private void addActionMessage(String indent,List<ReportItem> items)
+   {
+      if (items == null) return;
+      for (ReportItem item : items) 
+      {
+         addActionMessage(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+         addActionMessage(indent+"&nbsp;&nbsp;&nbsp;",item.getItems());
+      }
+
+   }
+
    private void addActionError(Report report)
    {
       addActionError(report.getLocalizedMessage());
-      addActionError("   ",report.getItems());
+      addActionError("&nbsp;&nbsp;&nbsp;",report.getItems());
 
    }
 
@@ -135,7 +155,7 @@ public class ImportAction extends GeneriqueAction {
          if (!item.getStatus().equals(Report.STATE.OK))
          {
             addActionError(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-            addActionError(indent+"   ",item.getItems());
+            addActionError(indent+"&nbsp;&nbsp;&nbsp;",item.getItems());
          }
       }
 
@@ -385,7 +405,7 @@ public class ImportAction extends GeneriqueAction {
 
       addActionMessage(getText("message.import.vehicleJourneyAtStop.success"));
       return SUCCESS_ITINERAIRE;
-      
+
    }
 
 
