@@ -12,9 +12,6 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-webapp</artifactId>
 	<packaging>war</packaging>
-	<properties>
-		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -218,9 +215,9 @@
 				<artifactId>chouette-maven-plugin</artifactId>
 				<configuration>
 					<buildArtifact>${project.artifactId}</buildArtifact>
-					<buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+					<buildTimestamp>${build.timestamp}</buildTimestamp>
 					<inputName>chouette_${BUILD_TAG}.tar.gz</inputName>
-					<outputName>${project.artifactId}_${maven.build.timestamp}.tar.gz</outputName>
+					<outputName>${project.artifactId}_${build.timestamp}.tar.gz</outputName>
 					<activateExec>true</activateExec>
 					<maxReleasesCount>5</maxReleasesCount>
 				</configuration>
