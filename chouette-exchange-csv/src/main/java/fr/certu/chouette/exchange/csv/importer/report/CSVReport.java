@@ -14,13 +14,13 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-public class NeptuneReport extends Report 
+public class CSVReport extends Report 
 {
 	// declare message report
     public enum KEY {IMPORT};
     
 
-    public NeptuneReport(KEY key)
+    public CSVReport(KEY key)
     {
     	setOriginKey(key.name());
     }

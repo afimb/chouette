@@ -260,6 +260,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
          ReportHolder reportHolder = new ReportHolder();
          String formatDescriptor = formats.get(0).getName();
          List<Line> lines = new ArrayList<Line>();
+         lineManager.completeObject(user, lineModel);
          lines.add(lineModel);
          // Nom du fichier de sortie
          nomFichier = "C_" + exportMode + "_" + lineModel.getRegistrationNumber() + ".xml";

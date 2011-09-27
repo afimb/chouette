@@ -227,6 +227,13 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
             addActionMessage(getText("export.network.noline"));
             return REDIRECTLIST;
          }
+         else
+         {
+            for (Line line : lignes)
+            {
+               lineManager.completeObject(user, line);
+            }
+         }
          String id = "reseau_" + idReseau;
          temp = File.createTempFile("export" + exportModeStr, ".zip");
          temp.deleteOnExit();

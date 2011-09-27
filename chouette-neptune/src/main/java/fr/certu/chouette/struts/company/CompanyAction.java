@@ -190,6 +190,13 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Compan
             addActionMessage(getText("export.company.noline"));
             return REDIRECTLIST;
          }
+         else
+         {
+            for (Line line : lignes)
+            {
+               lineManager.completeObject(user, line);
+            }
+         }
          String id = "transporteur_" + idTransporteur;
          temp = File.createTempFile("exportChouette", ".zip");
          temp.deleteOnExit();

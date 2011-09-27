@@ -16,7 +16,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
  * @author michel
  *
  */
-public class NeptuneReportItem extends ReportItem 
+public class CSVReportItem extends ReportItem 
 {
 	public enum KEY {OK_LINE,FILE_ERROR,VALIDATION_ERROR,VALIDATION_CAUSE,FILE_IGNORED, PARSE_OBJECT, MANDATORY_TAG, UNKNOWN_ENUM, EMPTY_TAG, OBJECT_COUNT} ;
 
@@ -27,7 +27,7 @@ public class NeptuneReportItem extends ReportItem
        addMessageArgs(args);
 	}
 	*/
-	public NeptuneReportItem(KEY key,Report.STATE status, String... args)
+	public CSVReportItem(KEY key,Report.STATE status, String... args)
 	{
 		setStatus(status);
         setMessageKey(key.name());

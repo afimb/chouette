@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.csv.importer.producer;
 
+import java.util.Calendar;
+
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
@@ -31,6 +33,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
       {
          ptNetwork.setRegistrationNumber(loadStringParam(csvReader, CODE_TITLE));
          ptNetwork.setDescription(loadStringParam(csvReader, DESCRIPTION_TITLE));
+         ptNetwork.setVersionDate(Calendar.getInstance().getTime());
          ptNetwork.setObjectId(objectIdPrefix + ":" + PTNetwork.PTNETWORK_KEY + ":" + ptNetwork.getName());
       }
       catch (ExchangeException e)
