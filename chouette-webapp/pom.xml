@@ -12,6 +12,9 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-webapp</artifactId>
 	<packaging>war</packaging>
+	<properties>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -222,12 +225,12 @@
 					<maxReleasesCount>5</maxReleasesCount>
 				</configuration>
 				<executions>
-				<execution>
-				<phase>install</phase>
-				<goals>
-				<goal>publish-release</goal>
-				</goals>
-				</execution>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>publish-release</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
