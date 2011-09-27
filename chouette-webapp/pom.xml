@@ -221,7 +221,7 @@
 					<activateExec>true</activateExec>
 					<maxReleasesCount>5</maxReleasesCount>
 				</configuration>
-				<executions>
+<!-- 				<executions>
 					<execution>
 						<phase>install</phase>
 						<goals>
@@ -229,7 +229,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+ -->			</plugin>
 		</plugins>
 	</build>
 </project>
