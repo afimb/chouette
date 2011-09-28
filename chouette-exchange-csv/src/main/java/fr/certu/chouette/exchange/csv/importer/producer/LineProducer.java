@@ -87,19 +87,21 @@ public class LineProducer extends AbstractModelProducer<Line>
          line.setTransportModeName(TransportModeNameEnum.valueOf(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE)));
          line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getNumber()));
 
-         loadRoutes(line, csvReader, objectIdPrefix);
+         loadRoutes(line, csvReader, objectIdPrefix,report);
       }
       catch (ExchangeException e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+          logger.error("invalid line",e);
+          CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.INVALID_LINE, Report.STATE.ERROR, e.getLocalizedMessage());
+          report.addItem(reportItem);
+          return null;
       }
       CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_LINE, Report.STATE.OK, line.getName());
       report.addItem(reportItem);
       return line;
    }
 
-   private void loadRoutes(Line line, CSVReader csvReader, String objectIdPrefix) throws ExchangeException
+   private void loadRoutes(Line line, CSVReader csvReader, String objectIdPrefix, Report report) throws ExchangeException
    {
       try
       {
@@ -232,7 +234,7 @@ public class LineProducer extends AbstractModelProducer<Line>
                StopArea physical = physicals.get(getValue(STOPNAME_COLUMN, a));
                if (physical == null)
                {
-                  physical = buildPhysical(a, objectIdPrefix, areaType, commercials);
+                  physical = buildPhysical(a, objectIdPrefix, areaType, commercials, report);
                   physicals.put(physical.getName(), physical);
                }
                pt.setContainedInStopArea(physical);
@@ -272,7 +274,7 @@ public class LineProducer extends AbstractModelProducer<Line>
                StopArea physical = physicals.get(getValue(STOPNAME_COLUMN, a));
                if (physical == null)
                {
-                  physical = buildPhysical(a, objectIdPrefix, areaType, commercials);
+                  physical = buildPhysical(a, objectIdPrefix, areaType, commercials, report);
                   physicals.put(physical.getName(), physical);
                }
                pt.setContainedInStopArea(physical);
@@ -361,7 +363,7 @@ public class LineProducer extends AbstractModelProducer<Line>
     * @return
     */
    private StopArea buildPhysical(String[] stopData, String objectIdPrefix, ChouetteAreaEnum areaType,
-         Map<String, StopArea> commercials)
+         Map<String, StopArea> commercials, Report report)
    {
       StopArea physical;
       physical = new StopArea();
@@ -372,6 +374,11 @@ public class LineProducer extends AbstractModelProducer<Line>
       physical.setAreaCentroid(centroid);
       centroid.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
       centroid.setLongitude(getBigDecimalValue(LONGITUDE_COLUMN, stopData));
+      if(centroid.getLatitude() == null || centroid.getLongitude() == null){
+    	  logger.warn("stop without coordinates : " + physical.getName());
+          CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.STOP_WITHOUT_COORDS, Report.STATE.WARNING, physical.getName());
+          report.addItem(reportItem);
+      }
       if (getValue(X_COLUMN, stopData) != null)
       {
          ProjectedPoint point = new ProjectedPoint();
