@@ -27,13 +27,14 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.JourneyPatternPr
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.PTNetworkProducer;
-import fr.certu.chouette.exchange.xml.neptune.importer.producer.RestrictionConstraintProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.RouteProducer;
+import fr.certu.chouette.exchange.xml.neptune.importer.producer.RoutingConstraintProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimeSlotProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
+import fr.certu.chouette.exchange.xml.neptune.model.NeptuneRoutingConstraint;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
@@ -46,7 +47,6 @@ import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -77,14 +77,20 @@ public class NeptuneConverter
 	@Getter @Setter private AreaCentroidProducer areaCentroidProducer;
 	@Getter @Setter private ConnectionLinkProducer connectionLinkProducer;
 	@Getter @Setter private TimetableProducer timetableProducer;
-	@Getter @Setter private RestrictionConstraintProducer restrictionConstraintProducer;
-
+	@Getter @Setter private RoutingConstraintProducer routingConstraintProducer;
 	@Getter @Setter private AccessLinkProducer accessLinkProducer;
 	@Getter @Setter private AccessPointProducer accessPointProducer;
 	@Getter @Setter private GroupOfLineProducer groupOfLineProducer;
 	@Getter @Setter private FacilityProducer facilityProducer;
 	@Getter @Setter private TimeSlotProducer timeSlotProducer;
 
+	/**
+	 * extract a line
+	 * 
+	 * @param rootObject
+	 * @param parentReport
+	 * @return
+	 */
 	public Line extractLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"Line");
@@ -124,13 +130,13 @@ public class NeptuneConverter
 		return routes;
 	}
 
-	public List<RestrictionConstraint> extractRestrictionConstraints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
+	public List<NeptuneRoutingConstraint> extractRoutingConstraints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport) 
 	{
 		ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK,"ITL");
 		ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
 		ITL[] itls = lineDescription.getITL();
 
-		List<RestrictionConstraint> restrictionConstraints = restrictionConstraintProducer.produce(itls, report);
+		List<NeptuneRoutingConstraint> restrictionConstraints = routingConstraintProducer.produce(itls, report);
 
 		int count = (restrictionConstraints == null? 0 : restrictionConstraints.size());
 		ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,Integer.toString(count));

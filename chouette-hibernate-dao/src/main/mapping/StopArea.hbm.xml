@@ -1,27 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
- @@LICENCE@@ Société DRYADE
 
- Projet chouette : paramétrage Objet - Base
-
- DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
-
- Historique des modifications :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
- =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
- =============+================+==============================================
- 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
- =============+================+==============================================
-
- Version : $Revision: 1.6 $
--->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="StopArea" table="StopArea">
+	<comment>StopArea</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -49,58 +32,147 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-		<property name="comment" type="string" />
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
 		<property name="areaType"
-			type="fr.certu.chouette.dao.hibernate.usertype.ChouettteAreaTypeUserType" />
-		<property name="registrationNumber" />
-		<property name="nearestTopicName" type="string" />
-		<property name="fareCode" type="int" />
+			type="fr.certu.chouette.dao.hibernate.usertype.ChouettteAreaTypeUserType">
+			<column name="areatype">
+				<comment>Type of Area : BoardingPosition, Quay, CommercialStopPoint,
+					StopPlace or ITL)</comment>
+			</column>
+		</property>
+		<property name="registrationNumber">
+			<column name="registrationnumber">
+				<comment>Registration number</comment>
+			</column>
+		</property>
+		<property name="nearestTopicName" type="string">
+			<column name="nearesttopicname">
+				<comment>Nearest topic name</comment>
+			</column>
+		</property>
+		<property name="fareCode" type="int">
+			<column name="farecode">
+				<comment>Fare code</comment>
+			</column>
+		</property>
+		<property name="parentId" type="long">
+			<column name="parentid">
+				<comment>(deprecated) Main parent StopArea internal id for v1.6
+					compatibility</comment>
+			</column>
+		</property>
 		<component class="fr.certu.chouette.model.neptune.AreaCentroid"
 			name="areaCentroid" update="true">
 			<property column="objectId" insert="false" name="containedInStopAreaId"
 				type="string" update="false" />
 			<property name="longitude" precision="19" scale="16"
-				type="java.math.BigDecimal" />
+				type="java.math.BigDecimal">
+				<column name="longitude">
+					<comment>Longitude</comment>
+				</column>
+			</property>
 			<property name="latitude" precision="19" scale="16"
-				type="java.math.BigDecimal" />
+				type="java.math.BigDecimal">
+				<column name="latitude">
+					<comment>Latitude</comment>
+				</column>
+			</property>
 			<property name="longLatType"
-				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType" />
+				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
+				<column name="longlattype">
+					<comment>Model used for Longitude and Latitude (Standard, WGS84 or
+						WGS92)</comment>
+				</column>
+			</property>
 			<component class="fr.certu.chouette.model.neptune.type.ProjectedPoint"
 				name="projectedPoint">
-				<property name="x" type="java.math.BigDecimal" />
-				<property name="y" type="java.math.BigDecimal" />
-				<property name="projectionType" type="string" />
+				<property name="x" type="java.math.BigDecimal">
+					<column name="x">
+						<comment>X coordinate</comment>
+					</column>
+				</property>
+				<property name="y" type="java.math.BigDecimal">
+					<column name="y">
+						<comment>Y coordinate</comment>
+					</column>
+				</property>
+				<property name="projectionType" type="string">
+					<column name="projectiontype">
+						<comment>Projection used for coordinates</comment>
+					</column>
+				</property>
 			</component>
 			<component class="fr.certu.chouette.model.neptune.type.Address"
 				name="address">
-				<property name="countryCode" type="string" />
-				<property name="streetName" type="string" />
+				<property name="countryCode" type="string">
+					<column name="countrycode">
+						<comment>Zip code</comment>
+					</column>
+				</property>
+				<property name="streetName" type="string">
+					<column name="streetname">
+						<comment>Address</comment>
+					</column>
+				</property>
 			</component>
 		</component>
-		<many-to-one class="StopArea" column="parentId"
-			lazy="no-proxy" name="parentStopArea" foreign-key="area_parent_fkey"/>
-			
-		<bag name="containedStopAreas"  lazy="true" inverse="true">
-			<key column="parentId" foreign-key="area_parent_fkey"/>
-			<one-to-many class="StopArea" />
+		<!-- <many-to-one class="StopArea" column="parentId" lazy="no-proxy" name="parentStopArea" 
+			foreign-key="area_parent_fkey" /> -->
+		<!-- <bag name="containedStopAreas" lazy="true" inverse="true"> <key column="parentId" 
+			foreign-key="area_parent_fkey" /> <one-to-many class="StopArea" /> </bag> -->
+
+		<bag name="containedStopAreas" table="stopareastoparea" lazy="true">
+			<comment>StopArea hierarchical graph</comment>
+			<key foreign-key="stoparea_child_fkey">
+				<column name="childId">
+					<comment>Child reference in hierarchy</comment>
+				</column>
+			</key>
+			<many-to-many class="StopArea" foreign-key="stoparea_parent_fkey">
+				<column name="parentId">
+					<comment>Parent reference in hierarchy</comment>
+				</column>
+			</many-to-many>
 		</bag>
-		
-		<bag name="accessLinks" table="accesslink" lazy="true"
-			cascade="all">
+
+		<bag name="routingConstraintLines" table="routingconstraints_lines" lazy="true">
+			<comment>Routing constraint applicable on lines</comment>
+			<key foreign-key="routingconstraint_stoparea_fkey">
+				<column name="stopareaid">
+					<comment>Routing constraint reference</comment>
+				</column>
+			</key>
+			<many-to-many class="Line" foreign-key="routingconstraint_line_fkey">
+				<column name="lineId">
+					<comment>Line reference</comment>
+				</column>
+			</many-to-many>
+		</bag>
+
+		<bag name="parents" table="stopareastoparea" lazy="true">
+			<key column="parentId" foreign-key="stoparea_parent_fkey" />
+			<many-to-many column="childId" class="StopArea"
+				foreign-key="stoparea_child_fkey" />
+		</bag>
+
+		<bag name="containedStopPoints" lazy="false" inverse="true">
+			<key column="stopareaid" foreign-key="stoppoint_area_fkey" />
+			<one-to-many class="StopPoint" />
+		</bag>
+
+		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
 			<key column="stopAreaId" foreign-key="aclk_area_fkey" />
 			<one-to-many class="AccessLink" />
 		</bag>
-		
-		<!-- 
-		<bag name="containedStopAreas" table="stopareastoparea" lazy="false">
-			<key column="parentId" foreign-key="stoparea_parent_fkey"/>
-			<many-to-many column="childId" class="StopArea" foreign-key="stoparea_child_fkey"/>
-		</bag>  -->
-		
-		<bag name="containedStopPoints"  lazy="false" inverse="true">
-			<key column="stopareaid" foreign-key="stoppoint_area_fkey"/>
-			<one-to-many class="StopPoint" />
-		</bag>
+
 	</class>
 </hibernate-mapping>

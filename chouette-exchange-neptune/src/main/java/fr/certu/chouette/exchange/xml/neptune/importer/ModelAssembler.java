@@ -16,6 +16,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.exchange.xml.neptune.model.NeptuneRoutingConstraint;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -28,7 +29,6 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -36,6 +36,7 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 
 /**
@@ -62,7 +63,7 @@ public class ModelAssembler
 	@Getter @Setter private List<GroupOfLine> groupOfLines;
 	@Getter @Setter private List<Facility> facilities;
 	@Getter @Setter private List<TimeSlot> timeSlots;
-	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
+	@Getter @Setter private List<NeptuneRoutingConstraint> routingConstraints;
 
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
@@ -97,7 +98,7 @@ public class ModelAssembler
 		connectStopAreas();
 		connectAreaCentroids();
 		connectConnectionLinks();
-		connectRestrictionConstraints();
+		connectRoutingConstraints();
 		connectTimetables();
 		connectAccessLinks();
 		connectGroupOfLines();
@@ -172,7 +173,7 @@ public class ModelAssembler
 		item.setTimetables(timetables);
 		item.setVehicleJourneys(vehicleJourneys);
 		item.setTimeSlots(timeSlots);
-		item.setRestrictionConstraints(restrictionConstraints);
+		// item.setRestrictionConstraints(restrictionConstraints);
 
 		line.setImportedItems(item);
 		if(!groupOfLines.isEmpty())
@@ -187,21 +188,24 @@ public class ModelAssembler
 		
 	}
 
-	private void connectRestrictionConstraints() 
+	private void connectRoutingConstraints() 
 	{
-		for (RestrictionConstraint restriction : restrictionConstraints) 
+		for (NeptuneRoutingConstraint restriction : routingConstraints) 
 		{
-			if (restriction.getLineIdShortCut() != null && restriction.getLineIdShortCut().equals(line.getObjectId()))
+			if (restriction.getLineId() == null || !restriction.getLineId().equals(line.getObjectId()))
 			{
-				restriction.setLine(line);
-				line.addRestrictionConstraint(restriction);
+			   // TODO report error
 			}
-			for (String areaId : restriction.getAreaIds()) 
+			for (String areaId : restriction.getRoutingConstraintIds()) 
 			{
 				StopArea area = stopAreasDictionary.get(areaId);
-				if (area != null)
+				if (area != null && area.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
-					restriction.addArea(area);
+					line.addRoutingConstraint(area);
+				}
+				else
+				{
+				   // TODO report error
 				}
 			}
 		}
@@ -376,7 +380,7 @@ public class ModelAssembler
 			{
 				for(StopArea childStopArea : stopArea.getContainedStopAreas())
 				{
-					childStopArea.setParentStopArea(stopArea);
+					childStopArea.addParent(stopArea);
 				}
 			}
 			stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));

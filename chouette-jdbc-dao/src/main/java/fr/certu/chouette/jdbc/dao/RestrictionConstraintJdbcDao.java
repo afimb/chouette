@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
+import fr.certu.chouette.model.neptune.RestrictionConstraintOld;
 
 /**
  * 
@@ -12,10 +12,10 @@ import fr.certu.chouette.model.neptune.RestrictionConstraint;
  * 
  */
 
-public class RestrictionConstraintJdbcDao extends AbstractJdbcDao<RestrictionConstraint> 
+public class RestrictionConstraintJdbcDao extends AbstractJdbcDao<RestrictionConstraintOld> 
 {
 	@Override
-	protected void populateStatement(PreparedStatement ps, RestrictionConstraint restrictionConstraint)
+	protected void populateStatement(PreparedStatement ps, RestrictionConstraintOld restrictionConstraint)
 	throws SQLException {
 		ps.setString(1, restrictionConstraint.getName());
 		ps.setString(2, restrictionConstraint.getObjectId());

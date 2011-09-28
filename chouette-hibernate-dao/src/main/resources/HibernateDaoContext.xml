@@ -28,45 +28,6 @@
 		<property name="databaseSchema" value="${database.schema}" />
 	</bean>
 
-<!-- 	<bean id="profiler" class="fr.certu.chouette.spring.profiler.SimpleProfiler">
-		execute before the transactional advice (hence the lower order number)
-		<property name="order" value="1" />
-	</bean>
-
-	<bean id="creationControleur" class="fr.certu.chouette.spring.profiler.CreationControleur">
-		execute before the transactional advice (hence the lower order number)
-		<property name="order" value="0" />
-	</bean>
-
-	Enable @Transactional support
-	<tx:annotation-driven />
-
-	Enable @AspectJ support
-	<aop:aspectj-autoproxy />
-
-	<aop:config>
-		order value is higher than the profiling aspect
-		<aop:advisor id="managerTx" advice-ref="txAdvice"
-			pointcut="execution(* *..manager.*Manager.*(..))" order="2" />
-		<aop:aspect id="profilingAspect" ref="profiler">
-			<aop:pointcut id="serviceMethodWithReturnValue"
-				expression="execution(* *..manager.*Manager.*(..))" />
-			<aop:around method="profile" pointcut-ref="serviceMethodWithReturnValue" />
-		</aop:aspect>
-		<aop:aspect id="creatingAspect" ref="creationControleur">
-			<aop:pointcut id="createMethodWithReturnValue"
-				expression="execution(* *..*..manager.*Manager.*(..)).*Manager.addNew(..))" />
-			<aop:around method="creationProtect" pointcut-ref="createMethodWithReturnValue" />
-		</aop:aspect>
-	</aop:config>
-
-	<tx:advice id="txAdvice">
-		<tx:attributes>
-			<tx:method name="get*" read-only="false" />
-			<tx:method name="*" rollback-for="Exception" />
-		</tx:attributes>
-	</tx:advice>
- -->
 
 	<bean id="sessionFactory"
 		class="fr.certu.chouette.dao.hibernate.ChouetteSessionFactoryBean"
@@ -75,7 +36,6 @@
 			<props>
 				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
 				</prop>
-				<!-- TODO : a passer en update avant livraison si create-drop -->
 				<prop key="hibernate.hbm2ddl.auto">${database.hbm2ddl.auto}</prop>
 				<prop key="hibernate.show_sql">${database.showsql}</prop>
 				<prop key="hibernate.format_sql">true</prop>
@@ -97,8 +57,8 @@
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml
-				</value>
+<!-- 				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml
+				</value> -->
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
@@ -166,8 +126,10 @@
 				<value>vj_route_fkey</value>
 				<value>vjas_sp_fkey</value>
 				<value>vjas_vj_fkey</value>
-				<!-- <value>stoparea_parent_fkey</value> 
-				<value>stoparea_child_fkey</value> -->
+				<value>stoparea_parent_fkey</value> 
+				<value>stoparea_child_fkey</value>
+				<value>routingconstraint_line_fkey</value>
+				<value>routingconstraint_stoparea_fkey</value>
 			</list>
 		</property>
 		<property name="setNullDeleteFkeys">
@@ -175,7 +137,7 @@
 				<value>line_company_fkey</value>
 				<value>line_glines_fkey</value>
 				<value>line_ptnetwork_fkey</value>
-				<value>area_parent_fkey</value>
+				<!-- <value>area_parent_fkey</value> -->
 				<value>vj_company_fkey</value>
 				<value>vj_timeslot_fkey</value>
 			</list>
@@ -280,10 +242,10 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="restrictionConstraintDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+<!-- 	<bean id="restrictionConstraintDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createRestrictionConstraintDao">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	</bean> -->
 
 	<bean id="routeDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createRouteDao">

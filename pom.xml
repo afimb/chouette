@@ -16,21 +16,21 @@
 
 	<modules>
 		<module>chouette-maven-plugin</module>
-		<module>chouette-attic</module>
-		<module>chouette-webapp</module>
-		<module>chouette-castor-altibus</module>
-		<module>chouette-castor-amivif</module>
-		<module>chouette-castor-neptune</module>
+		<!-- <module>chouette-attic</module> -->
+		<!-- <module>chouette-webapp</module> -->
+		<!-- <module>chouette-castor-altibus</module> -->
+		<!-- <module>chouette-castor-amivif</module> -->
 		<module>chouette-core</module>
 		<module>chouette-hibernate-dao</module>
+		<module>chouette-jdbc-dao</module>
+		<module>chouette-castor-neptune</module>
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>
 		<module>chouette-exchange-csv</module>
+		<module>chouette-validation</module>
+		<module>chouette-services</module>
 		<module>chouette-command</module>
 		<module>chouette-neptune</module>
-		<module>chouette-validation</module>
-		<module>chouette-jdbc-dao</module>
-		<module>chouette-services</module>
 	</modules>
 
 	<repositories>

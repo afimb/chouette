@@ -15,7 +15,6 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -47,5 +46,5 @@ public class ImportedItems implements Serializable{
 	@Getter @Setter private List<Timetable> timetables;
 	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
 	@Getter @Setter private List<TimeSlot> timeSlots;
-	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
+	// @Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
 }

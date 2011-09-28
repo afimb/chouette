@@ -396,7 +396,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          commercials.put(commercial.getName(), commercial);
       }
       commercial.addContainedStopArea(physical);
-      physical.setParentStopArea(commercial);
+      physical.addParent(commercial);
       return physical;
    }
 

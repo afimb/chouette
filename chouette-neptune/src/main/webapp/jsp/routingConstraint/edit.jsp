@@ -1,18 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
-
+<%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
+<%-- <s:include value="/jsp/commun/mapStopPlaceJavascript.jsp" />
+<script language="JavaScript" type="text/javascript" src="<s:url value='/js/showMap.js' includeParams='none'/>" ></script>
+ --%>
 <%-- Titre et barre de navigation --%>
-<s:url id="urlITLUpdate" action="edit" namespace="/routingConstraint">
-  <s:param name="idITL" value="%{id}"/>
+<s:url id="urlPositionGeographiqueUpdate" action="edit" namespace="/routingConstraint">
+  <s:param name="idPositionGeographique" value="%{id}"/>
 </s:url>
 <s:if test="id != null">
-  <title><s:text name="text.itl.update.title" /></title>
-  <s:property value="filAriane.addElementFilAriane(getText('text.itl.update.title'), '', #urlITLUpdate)"/>
+  <title><s:text name="text.zone.update.title" /></title>
+  <s:property value="filAriane.addElementFilAriane(getText('text.zone.update.title'), '', #urlPositionGeographiqueUpdate)"/>
 </s:if> 
 <s:else>
-  <title><s:text name="text.itl.create.title" /></title>
-  <s:property value="filAriane.addElementFilAriane(getText('text.itl.create.title'), '', #urlITLUpdate)"/>
+  <title><s:text name="text.zone.create.title" /></title>
+  <s:property value="filAriane.addElementFilAriane(getText('text.zone.create.title'), '', #urlPositionGeographiqueUpdate)"/>
 </s:else>
 <div class="panelData">
   <s:property value="filAriane.texteFilAriane" escape="false"/>
@@ -20,75 +22,159 @@
 
 <s:include value="/jsp/commun/messages.jsp" />
 
-<div class="panelDataSection"><s:text name="itl"/></div>
+<%-- Caractéristiques des zones --%>
+<div class="panelDataSection"><s:text name="text.zone" /></div>
 <div class="panel">
-  <s:form cssClass="panelDataInnerForm" namespace="/routingConstraint">
-    <s:hidden name="idItl" value="%{id}"/>
-    <s:hidden name="operationMode" value="STORE" />
-    <s:hidden key="actionMethod" value="%{actionMethod}"/>
-    <s:textfield size="50" key="nom" required="true"/>
-    <s:if test="id != null">
-      <tr>
-        <td><s:text name="text.itl.line"/></td>
-        <td>${ligneName}</td>
-      </tr>
-    </s:if>
-    <s:else>
-      <s:select key="idLigne"  list="lignes" listKey="id" listValue="fullName" required="true"/>
-    </s:else>
+  <div class="editRoutingConstraint">
+    <s:form  theme="css_xhtml" id="stoparea">
+      <s:hidden name="idLigne" value="%{idLigne}"/>
+      <s:hidden name="idItineraire" value="%{idItineraire}"/>
+      <s:hidden name="actionSuivante" value="%{actionSuivante}"/>
+      <s:hidden name="idPositionGeographique" value="%{id}" />
+      <s:hidden name="operationMode" value="STORE" />
+      <s:hidden key="actionMethod" value="%{actionMethod}"/>
 
-    <%-- Actions --%>
-    <tr>
-      <td colspan="2">
+      <s:textfield key="objectId" readonly="true" cssClass="texteNonEditable"/>
+      <s:textfield key="name" required="true"/>
+      <s:textfield key="comment"/>
+<%--       <s:textfield key="nearestTopicName" />
+      <s:textfield key="areaCentroid.address.streetName" />
+      <s:textfield key="areaCentroid.address.countryCode" />
+      <s:textfield key="fareCode" />
+      <s:textfield key="registrationNumber" />
+ --%>
+      <s:if test="id != null">
+        <s:select key="areaType" required="true" list="%{getStopAreaEnum('RoutingConstraints')}" listKey="enumeratedTypeAccess" listValue="textePropriete" disabled="true"/>
+      </s:if>
+      <s:else>
+        <s:select key="areaType" required="true" list="%{getStopAreaEnum('RoutingConstraints')}" listKey="enumeratedTypeAccess" listValue="textePropriete"/>
+      </s:else>
+
+<%--       <fieldset>
+        <legend><s:text name="text.positionGeographique.dataGeo.fieldset"/></legend>
+        <p><s:text name="lambert.%{lambertSRID}"/></p>
+        <s:textfield key="areaCentroid.projectedPoint.x"  onblur="Chouette.Map.updateCoordsFrom('x')"/>
+        <s:textfield key="areaCentroid.projectedPoint.y" onblur="Chouette.Map.updateCoordsFrom('y')"/>
+        <p><s:text name="wsg84"/></p>
+        <s:textfield key="areaCentroid.longitude" onblur="Chouette.Map.updateCoordsFrom('lon')"/>
+        <s:textfield key="areaCentroid.latitude" onblur="Chouette.Map.updateCoordsFrom('lat')"/>
+      </fieldset>
+ --%>
+      <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
+      <s:include value="/jsp/commun/asterisque.jsp" />
+      <%-- Actions --%>
+      <div class="submit">
         <s:if test="id != null">
-          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssStyle="float: right;"/>
+          <s:submit key="action.update" action="%{actionMethod}"  theme="simple" cssClass="right"/>
         </s:if>
         <s:else>
-          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssStyle="float: right;"/>
+          <s:submit key="action.create" action="%{actionMethod}" theme="simple" cssClass="right"/>
         </s:else>
-        <s:submit key="action.cancel" action="cancel" theme="simple" cssStyle="float: right;"/>
-      </td>
-    </tr>
-
-    <%-- Ajout des balises tr et td pour le faire apparaitre dans le tableau --%>
-    <tr><td colspan="2"><s:include value="/jsp/commun/asterisque.jsp" /></td></tr>
-  </s:form>
+        <s:submit key="action.cancel" action="cancel" theme="simple" cssClass="right"/>
+      </div>
+    </s:form>
+  </div>
+<!--   <div class="map-wrapper">
+    <div id="map-view" onclick="Chouette.Map.showMap()"><div id="map-view-text"></div></div>
+    <div id="map"></div>
+  </div> -->
 </div>
 
-<s:if test="id != null && idLigne != null">
-  <div class="panelDataSection"><s:text name="itl.arretPhysiqueIds"/></div>
+<s:if test="id != null">
+  <%-- Zones filles --%>
+  <div class="panelDataSection">
+    <s:text name="text.positionGeographique.childArea.title" />
+  </div>
   <div class="panel">
-    <div id="displaytag">
-        <display:table uid="arretsDansITLList" name="arretsDansITLList" sort="list" pagesize="10" export="false" requestURI="">
+    <s:div label="Children" id="displaytag">
+      <display:table name="children" id="child"  excludedParams="" sort="list" pagesize="10" export="false">
         <display:column titleKey="table.title.action">
-          <s:url id="removeUrl" action="removeStop" namespace="/routingConstraint">
-            <s:param name="idItl">${id}</s:param>
-            <s:param name="idAreaStop">%{arretsDansITLList[${arretsDansITLList_rowNum} - 1].id}</s:param>
+          <s:if test='#attr.child.isZoneCategory()'>
+            <s:url id="editUrl" action="edit" namespace="/stopPlace">
+              <s:param name="idPositionGeographique">${child.id}</s:param>
+            </s:url>
+          </s:if>
+          <s:else>
+            <s:url id="editUrl" action="edit" namespace="/boardingPosition">
+              <s:param name="idPositionGeographique">${child.id}</s:param>
+            </s:url>
+          </s:else>
+          
+          <s:a href="%{editUrl}">
+            <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
+          </s:a>&nbsp;&nbsp;
+          <s:url id="removeUrl" action="removeChildFromParent" namespace="/stopPlace">
+            <s:param name="idPositionGeographique" value="%{id}" />
+            <s:param name="idChild">${child.id}</s:param>
           </s:url>
-          <s:a href="%{removeUrl}" onclick="return confirm('%{getText('popup.confirmer')}')">
+          <s:a href="%{removeUrl}">
             <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
           </s:a>
         </display:column>
-
-        <display:column titleKey="table.title.name" property="name"/>
-        <display:column titleKey="table.title.inseeCode" property="countryCode"/>
-        <display:column titleKey="table.title.address" property="streetName"/>
+        <display:column titleKey="table.title.name">
+					Zone	<s:property value="%{#attr.child.name}"/>
+        </display:column>
+        <display:column titleKey="table.title.type">
+          <s:text name="%{#attr.child.areaType}"/>
+        </display:column>
       </display:table>
-    </div>
-
-    <%-- Bloc permettant la recherche d'un arret --%>
-    <div ID="divSearchArret" STYLE="border: 1px; border-color: black;">
-      <s:form cssClass="panelDataInnerForm" action="addStop" namespace="/routingConstraint" id="creerArretForm" theme="simple">
-        <table><tr>
-            <td>
-              <s:hidden name="idItl" value="%{id}" id="idItl"/>
-              <s:select name="saisieNomArretExistantKey" value="%{saisieNomArretExistant}" key="saisieNomArretExistantKey"  list="arrets" listKey="id" listValue="fullName"/>
-            </td>
-            <td>
-              <s:submit name="action" key="action.add" formId="creerArretForm"  />
-            </td>
-          </tr></table>
-        </s:form>
-    </div>
+    </s:div>
+    <%-- Formulaire de recherche de zone fille --%>
+    <s:form id="areaSearchForm" action="search"  namespace="/routingConstraint">
+      <s:hidden name="idPositionGeographique" value="%{id}"/>
+      <s:hidden name="actionSuivante" value="addChild"/>
+      <s:submit key="action.add"/>
+    </s:form>
   </div>
-</s:if>
+
+
+  <%-- Zones parentes --%>
+<%--   <div class="panelDataSection">
+    <s:text name="text.positionGeographique.fatherArea.title" />
+  </div>
+
+  <div class="panel">
+    <s:div label="father" id="displaytag">
+      <display:table name="father"  excludedParams="" sort="list" pagesize="10" export="false">
+        <display:column titleKey="table.title.action">
+          <s:url id="editUrl" action="edit" namespace="/stopPlace">
+            <s:param name="idPositionGeographique" value="%{father.id}" />
+          </s:url>
+          <s:a href="%{editUrl}">
+            <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
+          </s:a>&nbsp;&nbsp;
+          <s:url id="removeUrl" action="removeChildFromParent" namespace="/stopPlace">
+            <s:param name="idChild" value="%{id}" />
+            <s:param name="idPositionGeographique" value="%{id}" />
+            <s:param name="idItineraire" value="%{idItineraire}"/>
+            <s:param name="idLigne" value="%{idLigne}"/>
+            <s:param name="actionSuivante" value="%{actionSuivante}"/>
+          </s:url>
+          <s:a href="%{removeUrl}">
+            <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
+          </s:a>
+        </display:column>
+        <display:column titleKey="table.title.name">
+          <s:text name="text.zone"/>	<s:property value="%{#attr.father.name}"/>
+        </display:column>
+        <display:column titleKey="table.title.type">
+          <s:text name="%{#attr.father.areaType}"/>
+        </display:column>
+      </display:table>
+    </s:div>
+    Formulaire de recherche de zone parente
+    <div ID="father">
+      <s:form id="areaSearchForm" action="search" namespace="/stopPlace">
+        <s:hidden name="idPositionGeographique" value="%{id}"/>
+        <s:hidden name="actionSuivante" value="addFather"/>
+        <s:hidden name="authorizedType" value="%{authorizedType}" />
+        <s:if test="father.id != null">
+          <s:submit key="action.replace" />
+        </s:if>
+        <s:else>
+          <s:submit key="action.add" />
+        </s:else>
+      </s:form>
+    </div>
+  </div> --%>
+</s:if>	

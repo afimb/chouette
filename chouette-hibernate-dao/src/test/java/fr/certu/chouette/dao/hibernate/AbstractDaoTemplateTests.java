@@ -32,7 +32,6 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -352,20 +351,6 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		return journeyPattern;
 	}
 
-	protected RestrictionConstraint createRestrictionConstraint() 
-	{
-		RestrictionConstraint constraint = new RestrictionConstraint();
-		constraint.setObjectId("RoutingConstraint:"+getNextObjectId());
-		constraint.setLine(createBasicLine());
-		List<StopArea> stopAreas = new ArrayList<StopArea>();
-		for (int i=0;i<3;i++) 
-		{
-			stopAreas.add(createStopArea());
-		}
-		constraint.setStopAreas(stopAreas);
-
-		return constraint;
-	}
 
 	protected ConnectionLink createConnectionLink() 
 	{

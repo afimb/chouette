@@ -118,7 +118,7 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
 				Object[] args = foreignKeys.get(keyName).toArray();
 				String message = MessageFormat.format("ForeignKey {1} on table {0},column {2} is out of check scope", args);
 				logger.warn(message);
-				if (strategy.startsWith("create"))
+				if (strategy.startsWith("create") || (!keyName.endsWith("_fkey") && strategy.startsWith("update")))
 				{
 					String sql = MessageFormat.format(dropConstraintKeySql, args);
 					stmt.executeUpdate(sql);

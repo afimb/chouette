@@ -22,7 +22,6 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -76,10 +75,10 @@ public class DaoInjector <T extends NeptuneIdentifiedObject>
 	{
 		return new DaoInjector<PTNetwork>();
 	}
-	public static final DaoInjector<RestrictionConstraint> createRestrictionConstraintDaoInjector()
-	{
-		return new DaoInjector<RestrictionConstraint>();
-	}
+//	public static final DaoInjector<RestrictionConstraint> createRestrictionConstraintDaoInjector()
+//	{
+//		return new DaoInjector<RestrictionConstraint>();
+//	}
 	public static final DaoInjector<Route> createRouteDaoInjector()
 	{
 		return new DaoInjector<Route>();

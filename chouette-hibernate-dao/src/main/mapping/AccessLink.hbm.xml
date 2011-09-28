@@ -4,6 +4,7 @@
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="AccessLink"
 		table="AccessLink">
+		<comment>Access Link</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>

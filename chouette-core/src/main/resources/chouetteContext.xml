@@ -34,8 +34,8 @@
 	</bean>
 	<bean id="networkManager" class="fr.certu.chouette.manager.PTNetworkManager" parent="abstractNeptuneManager">
 	</bean>
-	<bean id="restrictionConstraintManager" class="fr.certu.chouette.manager.RestrictionConstraintManager" parent="abstractNeptuneManager">
-	</bean>
+<!-- 	<bean id="restrictionConstraintManager" class="fr.certu.chouette.manager.RestrictionConstraintManager" parent="abstractNeptuneManager">
+	</bean> -->
 	<bean id="routeManager" class="fr.certu.chouette.manager.RouteManager" parent="abstractNeptuneManager">
 	</bean>
 	<bean id="stopAreaManager" class="fr.certu.chouette.manager.StopAreaManager" parent="abstractNeptuneManager">

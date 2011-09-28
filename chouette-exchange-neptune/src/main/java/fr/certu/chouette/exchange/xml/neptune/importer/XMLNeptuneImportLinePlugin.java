@@ -508,19 +508,18 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject, item));
       modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject, item));
       modelAssembler.setTimetables(converter.extractTimetables(rootObject, item));
-
       modelAssembler.setAccessLinks(converter.extractAccessLinks(rootObject, item));
       modelAssembler.setAccessPoints(converter.extractAccessPoints(rootObject, item));
       modelAssembler.setGroupOfLines(converter.extractGroupOfLines(rootObject, item));
       modelAssembler.setFacilities(converter.extractFacilities(rootObject, item));
       modelAssembler.setTimeSlots(converter.extractTimeSlots(rootObject, item));
-      modelAssembler.setRestrictionConstraints(converter.extractRestrictionConstraints(rootObject, item));
+      modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(rootObject, item));
       modelAssembler.connect();
 
-      ReportItem item2 = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE, Report.STATE.OK, entryName,
-            line.getName());
-      item2.addAll(item.getItems());
-      // report.addItem(item2);
+//      ReportItem item2 = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE, Report.STATE.OK, entryName,
+//            line.getName());
+//      item2.addAll(item.getItems());
+//    report.addItem(item2);
 
       rootObject.toString();
 

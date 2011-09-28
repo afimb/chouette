@@ -31,7 +31,6 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.RestrictionConstraint;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -90,10 +89,10 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
 	{
 		return new HibernateDaoTemplate<PTNetwork>( PTNetwork.class);
 	}
-	public static HibernateDaoTemplate<RestrictionConstraint> createRestrictionConstraintDao()
-	{
-		return new HibernateDaoTemplate<RestrictionConstraint>( RestrictionConstraint.class);
-	}
+//	public static HibernateDaoTemplate<RestrictionConstraint> createRestrictionConstraintDao()
+//	{
+//		return new HibernateDaoTemplate<RestrictionConstraint>( RestrictionConstraint.class);
+//	}
 	public static HibernateDaoTemplate<Route> createRouteDao()
 	{
 		return new HibernateDaoTemplate<Route>( Route.class);

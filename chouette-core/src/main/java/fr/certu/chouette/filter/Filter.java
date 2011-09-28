@@ -405,6 +405,7 @@ public class Filter
 		List<Filter> realFilters = new ArrayList<Filter>();
 		for (Filter filter : filters) 
 		{
+		   if (filter == null) continue;
 		   if (!filter.getFamilly().equals(TypeFamilly.EMPTY))	
 		   {
 			   realFilters.add(filter);
@@ -412,6 +413,7 @@ public class Filter
 		}
 		for (Filter filter : filters) 
 		{
+         if (filter == null) continue;
 			if (filter.orderList != null) addAllOrder(filter.orderList);
 			this.limit = Math.max(this.limit,filter.limit);
 			this.start = Math.min(this.start, filter.start);
@@ -421,7 +423,6 @@ public class Filter
 		this.type = type;
 		this.familly = TypeFamilly.COMBINED;
 		this.combinedFilters = realFilters.toArray(new Filter[0]);
-		// this.secondCombinedFilter = second;
 	}
 	/**
 	 * create a combined filter for a 'and' where clause

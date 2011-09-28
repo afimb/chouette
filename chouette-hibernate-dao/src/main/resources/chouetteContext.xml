@@ -62,11 +62,11 @@
 		<property name="manager" ref="networkManager" />
 		<property name="dao" ref="networkDao" />
 	</bean>
-	<bean id="restrictionConstraintDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+<!-- 	<bean id="restrictionConstraintDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createRestrictionConstraintDaoInjector">
 		<property name="manager" ref="restrictionConstraintManager" />
 		<property name="dao" ref="restrictionConstraintDao" />
-	</bean>
+	</bean> -->
 	<bean id="routeDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createRouteDaoInjector">
 		<property name="manager" ref="routeManager" />

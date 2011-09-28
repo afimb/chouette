@@ -17,7 +17,10 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.core.CoreExceptionCode;
+import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.filter.Filter;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -127,26 +130,22 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private List<String> lineEnds; // calculé quand nécessaire (StopPoints)
 	/**
 	 * The line's network object <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES<br/>
 	 * Changes have no effect on database
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private PTNetwork ptNetwork; // FK
 	/**
 	 * The line's company object <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private Company company; // FK 
 	/**
 	 * The line's companies objects <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<Company> companies; // FK 
 	/**
 	 * The line's route objects <br/>
-	 * Available on database read only if DetailLevel is at least NARROW_DEPENDENCIES
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<Route> routes; // FK 
@@ -174,17 +173,31 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter @Setter private Long groupOfLineId;
 
 	/**
-	 * The optional RestrictionConstraints of the line
+	 * The optional RoutingConstraints of the line
+	 * <p>
+	 * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum.ITL} areaType
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private List<RestrictionConstraint> restrictionConstraints;
+	@Getter @Setter private List<StopArea> routingConstraints;
 
+	  /**
+    * The optional RoutingConstraint objectIds of the line
+    * <p>
+    * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum.ITL} areaType
+    * <br/><i>readable/writable</i>
+    */
+   @Getter @Setter private List<String> routingConstraintIds;
 
+	
 	/**
 	 * ImportedItems for import neptune process
 	 */
 	@Getter @Setter private ImportedItems importedItems;
 
+   /**
+    * list of facilities
+    * <br/><i>readable/writable</i>
+    */
 	@Getter @Setter private List<Facility> facilities;
 
 	public void addFacility(Facility facility)
@@ -357,22 +370,60 @@ public class Line extends NeptuneIdentifiedObject
 	}
 
 
-	public void addRestrictionConstraint(RestrictionConstraint restriction) 
+	/**
+	 * add a routing constraint
+	 * @param routingConstraint
+	 */
+	public void addRoutingConstraint(StopArea routingConstraint) 
 	{
-		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
-		if (restriction != null && !restrictionConstraints.contains(restriction))
-			restrictionConstraints.add(restriction);
+		if (routingConstraints == null) routingConstraints = new ArrayList<StopArea>();
+      if (!routingConstraint.getAreaType().equals(ChouetteAreaEnum.ITL))
+      {
+         // routingConstraint must be of ITL type
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, routingConstraint.getAreaType().toString(), STOPAREA_KEY,
+               "routingConstraints");
+      }
+		if (routingConstraint != null && !routingConstraints.contains(routingConstraint))
+		   routingConstraints.add(routingConstraint);
 
 	}
 
-
-	public void removeRestrictionConstraint(RestrictionConstraint restriction) 
+	/**
+	 * remove a routing constraint
+	 * @param routingConstraint
+	 */
+	public void removeRoutingConstraint(StopArea routingConstraint) 
 	{
-		if (restrictionConstraints == null) restrictionConstraints = new ArrayList<RestrictionConstraint>();
-		if (restriction != null && restrictionConstraints.contains(restriction))
-			restrictionConstraints.remove(restriction);
+		if (routingConstraints == null) routingConstraints = new ArrayList<StopArea>();
+		if (routingConstraint != null && routingConstraints.contains(routingConstraint))
+		   routingConstraints.remove(routingConstraint);
 
 	}
+	
+	  /**
+    * add a routing constraint id
+    * @param routingConstraintId
+    */
+   public void addRoutingConstraintId(String routingConstraintid) 
+   {
+      if (routingConstraintIds == null) routingConstraintIds = new ArrayList<String>();
+      if (routingConstraintid != null && !routingConstraintIds.contains(routingConstraintid))
+         routingConstraintIds.add(routingConstraintid);
+
+   }
+
+   /**
+    * remove a routing constraint id
+    * @param routingConstraintId
+    */
+   public void removeRoutingConstraintId(String routingConstraintId) 
+   {
+      if (routingConstraintIds == null) routingConstraintIds = new ArrayList<String>();
+      if (routingConstraintId != null && routingConstraintIds.contains(routingConstraintId))
+         routingConstraintIds.remove(routingConstraintId);
+
+   }
+
 
 	/**
 	 * return lineEndList built with PTLink relationship
