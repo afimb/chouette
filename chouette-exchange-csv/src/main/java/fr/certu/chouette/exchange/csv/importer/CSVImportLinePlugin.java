@@ -257,7 +257,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, lineCountReport);
          line.setCompany(company);
          line.setPtNetwork(ptNetwork);
-         assemble(line, timetableMap);
+         assemble(line, timetableMap,report);
          logger.debug("line \n" + line.toString());
          if (line.getRoutes().isEmpty())
          {
@@ -348,7 +348,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
     * @param timetableMap
     * @throws ExchangeException
     */
-   private void assemble(Line line, Map<String, Timetable> timetableMap) throws ExchangeException
+   private void assemble(Line line, Map<String, Timetable> timetableMap, Report report) throws ExchangeException
    {
       for (Iterator<Route> iterator = line.getRoutes().iterator(); iterator.hasNext();)
       {
@@ -365,6 +365,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
                if (t == null)
                {
                   logger.error("missing timetable " + key + " vehicleJourney removed :" + vj.getObjectId());
+                  CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.VJ_MISSING_TIMETABLE, Report.STATE.WARNING, vj.getName());
+                  report.addItem(reportItem);
                   iterator3.remove();
                }
                else

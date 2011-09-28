@@ -86,9 +86,12 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
          List<Date> endDates = loadDatesParam(csvReader, END_DATE_TITLE);
          if (startDates.size() != endDates.size())
          {
-            throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, "bad number of dates");
+        	 logger.warn("the number of start dates is different of the number of end dates");
+             CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_TIMETABLE_PERIODS, Report.STATE.WARNING);
+             report.addItem(reportItem);
          }
-         for (int i = 0; i < startDates.size(); i++)
+         int size = Math.min(startDates.size(), endDates.size());
+         for (int i = 0; i < size; i++)
          {
             Period period = new Period(startDates.get(i), endDates.get(i));
             timetable.addPeriod(period);
