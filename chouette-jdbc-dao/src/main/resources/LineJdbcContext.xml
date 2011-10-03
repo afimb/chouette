@@ -9,27 +9,6 @@
 	default-init-method="init">
 
 	<bean id="lineJdbcDao" class="fr.certu.chouette.jdbc.dao.LineJdbcDao" parent="abstractJdbcDao">
-	<!-- futur purpose : mapping for Filter managing
-		<property name="attributes">
-		<map>
-		<entry key="ptNetwork.id">      <list><value>ptnetworkid</value>       <value>BIGINT</value></list></entry>
-		<entry key="company.id">        <list><value>companyid</value>         <value>BIGINT</value></list></entry>
-		<entry key="objectId">          <list><value>objectid</value>          <value>BIGINT</value></list></entry>
-		<entry key="objectVersion">     <list><value>objectversion</value>     <value>INTEGER</value></list></entry>
-		<entry key="creationTime">      <list><value>creationtime</value>      <value>TIMESTAMP</value></list></entry>
-		<entry key="creatorId">         <list><value>creatorid</value>         <value>VARCHAR</value></list></entry>
-		<entry key="name">              <list><value>name</value>              <value>VARCHAR</value></list></entry>
-		<entry key="number">            <list><value>number</value>            <value>VARCHAR</value></list></entry>
-		<entry key="publishedName">     <list><value>publishedname</value>     <value>VARCHAR</value></list></entry>
-		<entry key="transportModeName"> <list><value>transportmodename</value> <value>ENUM</value></list></entry>
-		<entry key="registrationNumber"><list><value>registrationnumber</value><value>VARCHAR</value></list></entry>
-		<entry key="comment">           <list><value>comment</value>           <value>VARCHAR</value></list></entry>
-		<entry key="groupOfLine.id">    <list><value>groupoflineid</value>     <value>VARCHAR</value></list></entry>
-		<entry key="mobilityRestrictedSuitable"><list><value>mobilityrestrictedsuitable</value><value>BOOLEAN</value></list></entry>
-		<entry key="userNeedsAsLong">         <list><value>userneeds</value>         <value>BIGINT</value></list></entry>
-		</map>
-		</property>
-		 -->
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.LINE</value>
 		</property>
@@ -101,6 +80,38 @@
 				IN
 				(_OBJECTIDS_)
 		</value>
+		</property>
+		<property name="collectionAttributes">
+			<map>
+				<description>one entry for each attribute</description>
+				<entry key="routingconstraints">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectById">
+							<value>
+								SELECT * FROM ${database.schema}.routingconstraints_lines WHERE
+								lineId = ? 
+								</value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>
+								INSERT INTO ${database.schema}.routingconstraints_lines
+								(
+								lineId,
+								stopareaId
+								)
+								VALUES(?, ?)
+								</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>
+								DELETE FROM ${database.schema}.routingconstraints_lines WHERE
+								lineId IN (_IDS_)
+								 </value>
+						</entry>
+					</map>
+				</entry>
+			</map>
 		</property>
 	</bean>
 </beans>	

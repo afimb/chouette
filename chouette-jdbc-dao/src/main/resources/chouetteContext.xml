@@ -65,11 +65,6 @@
 		<property name="manager" ref="networkManager" />
 		<property name="jdbcDao" ref="networkJdbcDao" />
 	</bean>
-<!-- 	<bean id="restrictionConstraintJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
-		factory-method="createRestrictionConstraintDaoInjector">
-		<property name="manager" ref="restrictionConstraintManager" />
-		<property name="jdbcDao" ref="restrictionConstraintJdbcDao" />
-	</bean> -->
 	<bean id="routeJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createRouteDaoInjector">
 		<property name="manager" ref="routeManager" />

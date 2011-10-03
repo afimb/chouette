@@ -3,11 +3,15 @@ package fr.certu.chouette.jdbc.dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import fr.certu.chouette.jdbc.dao.StopAreaJdbcDao.JdbcParentChild;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
 
 /**
  * 
@@ -53,4 +57,55 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 		ps.setBoolean(14, mobilityRS);
 		ps.setLong(15, line.getUserNeedsAsLong());
 	}
+	
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement(java.lang.String, java.sql.PreparedStatement, java.lang.Object)
+    */
+   @Override
+   protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) throws SQLException 
+   {
+
+      if (attributeKey.equals("stopAreaStopArea"))
+      {
+         JdbcParentChild child = (JdbcParentChild) attribute;
+         ps.setLong(1,child.parentId);
+         ps.setLong(2,child.childId);
+         
+         return;
+      }
+
+      super.populateAttributeStatement(attributeKey, ps, attribute);
+
+   }
+
+     @Override
+      protected Collection<? extends Object> getAttributeValues(String attributeKey, Line item) 
+      {
+         if (attributeKey.equals("routingconstraints"))
+         {
+            Collection<JdbcRoutingConstraint> routingConstraints = new ArrayList<JdbcRoutingConstraint>();
+            if (item.getRoutingConstraints() != null)
+            for (StopArea routing : item.getRoutingConstraints())
+            {
+               JdbcRoutingConstraint object = new JdbcRoutingConstraint();
+               object.stopAreaId = routing.getId();
+               object.lineId = item.getId(); 
+               routingConstraints.add(object);
+               
+            }
+            return routingConstraints;
+         }
+
+         return super.getAttributeValues(attributeKey, item);
+      }
+
+      class JdbcRoutingConstraint
+      {
+         Long lineId;
+         Long stopAreaId;
+      }
+
+
+   
+
 }

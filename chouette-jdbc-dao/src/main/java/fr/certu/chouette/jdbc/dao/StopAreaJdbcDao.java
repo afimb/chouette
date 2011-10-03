@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
@@ -59,7 +61,8 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateStatement(java.sql.PreparedStatement, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
 	 */
-	@Override
+	@SuppressWarnings("deprecation")
+   @Override
 	protected void populateStatement(PreparedStatement ps, StopArea stopArea)
 	throws SQLException {
 		setId(ps,1,stopArea.getParentStopArea());
@@ -146,5 +149,53 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 	}
 	
 	
+	  /* (non-Javadoc)
+    * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement(java.lang.String, java.sql.PreparedStatement, java.lang.Object)
+    */
+   @Override
+   protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) throws SQLException 
+   {
+
+      if (attributeKey.equals("stopAreaStopArea"))
+      {
+         JdbcParentChild child = (JdbcParentChild) attribute;
+         ps.setLong(1,child.parentId);
+         ps.setLong(2,child.childId);
+         
+         return;
+      }
+
+      super.populateAttributeStatement(attributeKey, ps, attribute);
+
+   }
+
+	  @Override
+	   protected Collection<? extends Object> getAttributeValues(String attributeKey, StopArea item) 
+	   {
+	      if (attributeKey.equals("stopAreaStopArea"))
+	      {
+            Collection<JdbcParentChild> parentChilds = new ArrayList<JdbcParentChild>();
+            if (item.getParents() != null)
+            for (StopArea parent : item.getParents())
+            {
+               JdbcParentChild object = new JdbcParentChild();
+               object.parentId = parent.getId();
+               object.childId = item.getId(); 
+               parentChilds.add(object);
+               
+            }
+            return parentChilds;
+	      }
+
+	      return super.getAttributeValues(attributeKey, item);
+	   }
+
+	   class JdbcParentChild 
+	   {
+	      Long parentId;
+	      Long childId;
+	   }
+
+
 	
 }

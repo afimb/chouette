@@ -8,32 +8,39 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="stopAreaJdbcDao" class="fr.certu.chouette.jdbc.dao.StopAreaJdbcDao" parent="abstractJdbcDao">
+	<bean id="stopAreaJdbcDao" class="fr.certu.chouette.jdbc.dao.StopAreaJdbcDao"
+		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
 			<value>SELECT * FROM ${database.schema}.StopArea</value>
 		</property>
 		<property name="sqlPurge1">
 			<value>
-				DELETE FROM ${database.schema}.StopArea WHERE areaType IN ('BoardingPosition','Quay') AND (id NOT IN (SELECT distinct stopAreaId FROM ${database.schema}.StopPoint))
+				DELETE FROM ${database.schema}.StopArea WHERE areaType IN
+				('BoardingPosition','Quay') AND (id NOT IN (SELECT distinct
+				stopAreaId FROM ${database.schema}.StopPoint))
 			</value>
 		</property>
 		<property name="sqlPurge2">
 			<value>
-				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType = 'CommercialStopPoint' AND NOT (EXISTS (SELECT p.id FROM ${database.schema}.StopArea p WHERE p.parentId = s.id))
+				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType =
+				'CommercialStopPoint' AND NOT (EXISTS (SELECT p.parentId FROM
+				${database.schema}.StopAreaStopArea p WHERE p.parentId = s.id))
 			</value>
 		</property>
 		<property name="sqlPurge3">
 			<value>
-				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType = 'StopPlace' AND NOT (EXISTS (SELECT p.id FROM ${database.schema}.StopArea p WHERE p.parentId = s.id))
+				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType =
+				'StopPlace' AND NOT (EXISTS (SELECT p.parentId FROM
+				${database.schema}.StopAreaStopArea p WHERE p.parentId = s.id))
 			</value>
 		</property>
-		<!-- 
 		<property name="sqlPurge4">
 			<value>
-				DELETE FROM ${database.schema}.StopArea WHERE areaType = 'ITL' AND (id NOT IN (SELECT distinct parentId FROM ${database.schema}.stopareastoparea))
+				DELETE FROM ${database.schema}.StopArea s WHERE s.areaType =
+				'ITL' AND NOT (EXISTS (SELECT p.parentId FROM
+				${database.schema}.StopAreaStopArea p WHERE p.parentId = s.id))
 			</value>
 		</property>
-		 -->
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.StopArea
@@ -78,12 +85,14 @@
 				UPDATE ${database.schema}.StopArea
 				SET
 				parentid = ?,
-				objectid = ?,
+				objectid =
+				?,
 				objectversion = ?,
 				creationtime = ?,
 				creatorid = ?,
 				name = ?,
-				COMMENT = ?,
+				COMMENT
+				= ?,
 				areatype = ?,
 				registrationnumber = ?,
 				nearesttopicname = ?,
@@ -97,7 +106,39 @@
 				countrycode = ?,
 				streetname = ?
 				WHERE objectid = ?
-		</value>
+			</value>
+		</property>
+		<property name="collectionAttributes">
+			<map>
+				<description>one entry for each attribute</description>
+				<entry key="stopAreaStopArea">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectById">
+							<value>
+								SELECT * FROM ${database.schema}.stopareastoparea WHERE
+								childId = ? 
+								</value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>
+								INSERT INTO ${database.schema}.stopareastoparea
+								(
+								parentId,
+								childId
+								)
+								VALUES(?, ?)
+								</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>
+								DELETE FROM ${database.schema}.stopareastoparea WHERE
+								childId IN (_IDS_)
+								 </value>
+						</entry>
+					</map>
+				</entry>
+			</map>
 		</property>
 	</bean>
 </beans>	
