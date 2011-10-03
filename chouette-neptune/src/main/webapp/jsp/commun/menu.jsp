@@ -208,9 +208,9 @@
 </s:else>
 
 <%-- ITL --%>	
-<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.itl.list.title')
-      || filAriane.cleTexteDernierElementFilAriane == getText('text.itl.create.title')
-      || filAriane.cleTexteDernierElementFilAriane == getText('text.itl.update.title')">
+<s:if test="filAriane.cleTexteDernierElementFilAriane == getText('text.routingConstraint.list.title')
+      || filAriane.cleTexteDernierElementFilAriane == getText('text.routingConstraint.create.title')
+      || filAriane.cleTexteDernierElementFilAriane == getText('text.routingConstraint.update.title')">
     <SCRIPT type="text/javascript">
         $('ITLMenu').className='selectionne';
     </SCRIPT>	

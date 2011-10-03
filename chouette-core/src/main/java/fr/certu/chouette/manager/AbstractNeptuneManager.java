@@ -364,7 +364,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		String prefix = null;
 		if (object.getId() == null)
 		{
-			if (object.getObjectId() != null)
+			if (object.getObjectId() != null && !object.getObjectId().isEmpty())
 			{
 				if (!object.getObjectId().contains(":"))
 				{

@@ -8,6 +8,7 @@
 package fr.certu.chouette.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -368,7 +369,7 @@ public class Filter
 	 * @param valueList the list of possible values
 	 * @return an In filter
 	 */
-	public static Filter getNewInFilter(String attribute,List<?> valueList)
+	public static Filter getNewInFilter(String attribute,Collection<?> valueList)
 	{
 		return new Filter(Type.IN,attribute,valueList.toArray());
 	}
@@ -419,10 +420,28 @@ public class Filter
 			this.start = Math.min(this.start, filter.start);
 		}
 		if (realFilters.size() == 0) return; // no usefull filters create empty filter 
-
+		if (realFilters.size() ==  1) 
+		{
+		   // just clone filter
+          Filter copy = realFilters.get(0);
+          this.attribute = copy.attribute;
+          this.combinedFilters = copy.combinedFilters;
+          this.familly = copy.familly;
+          this.firstValue = copy.firstValue;
+          this.limit = copy.limit;
+          this.orderList = copy.orderList;
+          this.secondValue = copy.secondValue;
+          this.start = copy.start;
+          this.type = copy.type;
+          this.valueArray = copy.valueArray;
+          
+		}
+		else
+		{
 		this.type = type;
 		this.familly = TypeFamilly.COMBINED;
 		this.combinedFilters = realFilters.toArray(new Filter[0]);
+		}
 	}
 	/**
 	 * create a combined filter for a 'and' where clause

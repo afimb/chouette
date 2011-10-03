@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -80,7 +81,7 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		for(Line line : lines)
 		{
 			Assert.assertNotNull(line.getId(),"line's id can't be null");
-			System.out.println(line.toString("\t",2));
+			Reporter.log(line.toString("\t",2));
 		}
 	}
 	
@@ -106,7 +107,7 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 			bid.add(line);
 			lineManager.saveAll(null, bid, true,true);
 			Assert.assertNotNull(line.getId(),"line's id can't be null");
-			System.out.println(line.toString("\t",0));
+         Reporter.log(line.toString("\t",0));
 		}
 		
 	}

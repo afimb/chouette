@@ -216,25 +216,6 @@ public class FilterToHibernateClauseTranslator {
 					}
 				}
 			}
-			/*
-			for (int i = 1; i < items.length -1; i++)
-			{
-				alias += "_"+items[i];
-				path += "."+items[i];
-				if (!aliasses.contains(alias))
-				{
-					aliasses.add(alias);
-					System.out.println("alias "+alias+ "créé sur "+path);
-					//criteria.createAlias(path, alias,Criteria.LEFT_JOIN);
-					subCriteria.setFetchMode(items[i], FetchMode.JOIN);
-					subCriteria = criteria.createCriteria(path,alias);
-					// criteria.setFetchMode(path, FetchMode.JOIN);
-				}
-
-			}
-			propertyName = alias+"."+items[items.length -1];
-			System.out.println("property remplacé par "+propertyName);
-			 */
 		}
 		return translateTerminal(clause);
 	}

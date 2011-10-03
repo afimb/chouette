@@ -50,16 +50,39 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    @Getter
    private INeptuneManager<Line>      lineManager;
 
+   @Getter
    private StopArea                   model                = new StopArea();
+   @Setter
    private String                     mappedRequest;
+   @Getter
+   @Setter
    private Long                       idPositionGeographique;
    // Gestion des zones
+   @Getter
+   @Setter
    private StopArea                   searchCriteria;
+   @Getter
+   @Setter
+   private Line                       lineCriteria;
+   @Getter
+   @Setter
    private List<StopArea>             children;
+   @Getter
+   @Setter
+   private List<Line>                 lines;
+   @Getter
+   @Setter
    private StopArea                   father;
+   @Getter
+   @Setter
    private Long                       idChild;
+   @Getter
+   @Setter
    private Long                       idFather;
+   @Getter
+   @Setter
    private String                     authorizedType;
+   @Getter
    private List<Route>                itineraires          = new ArrayList<Route>();
    private Map<Long, Line>            ligneParIdItineraire;
    private Map<Long, PTNetwork>       reseauParIdLigne;
@@ -68,69 +91,58 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    // modifier ArretPhysique, redirection vers :
    // - liste des horaires de passage
    // - ou liste des arrêts physiques
+   @Getter
+   @Setter
    private String                     actionSuivante;
    // Numéro de la page actuelle pour la navigation parmi les différentes
    // courses
    // private Integer page;
    // Chaine de caractere implémenté pour complété les retours des actions fait
    // par struts
+   @Getter
+   @Setter
    private String                     nomArret             = null;
+   @Getter
+   @Setter
    private String                     codeInsee            = null;
+   @Getter
+   @Setter
    private Long                       idReseau             = null;
+   @Getter
+   @Setter
    private List<PTNetwork>            reseaux;
    private Map<Long, PTNetwork>       reseauParId;
+   @Getter
+   @Setter
    private Long                       idItineraire;
+   @Getter
+   @Setter
    private Long                       idLigne;
    // Type de position Geographique
    private static final String        ARRETPHYSIQUE        = "/boardingPosition";
    private static final String        ZONE                 = "/stopPlace";
    private static final String        ITL                  = "/routingConstraint";
+   @Getter
+   @Setter
    private Long                       idArretDestination   = null;
+   @Getter
+   @Setter
    private String                     nomArretDestination  = null;
+   @Getter
+   @Setter
    private Long                       idArretSource        = null;
    private String                     boardingPositionName = "";
+   @Getter
+   @Setter
+   private Long                       idLine;
    // private Integer START_INDEX_AJAX_LIST = 0;
    // private Integer END_INDEX_AJAX_LIST = 10;
    private static String              actionMsg            = null;
    private static String              actionErr            = null;
 
-   public Long getIdItineraire()
-   {
-      return idItineraire;
-   }
-
-   public void setIdItineraire(Long idItineraire)
-   {
-      this.idItineraire = idItineraire;
-   }
-
-   public Long getIdLigne()
-   {
-      return idLigne;
-   }
-
-   public void setIdLigne(Long idLigne)
-   {
-      this.idLigne = idLigne;
-   }
-
-   public void setIdPositionGeographique(Long idPositionGeographique)
-   {
-      this.idPositionGeographique = idPositionGeographique;
-   }
-
-   public Long getIdPositionGeographique()
-   {
-      return idPositionGeographique;
-   }
-
    /********************************************************
     * MODEL + PREPARE *
     ********************************************************/
-   public StopArea getModel()
-   {
-      return model;
-   }
 
    public void prepare() throws Exception
    {
@@ -173,6 +185,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
             }
          }
       }
+
+      // lignes si ITL
+      lines = model.getRoutingConstraintLines();
 
       // Création de la liste des itinéraires
       // itineraires =
@@ -458,7 +473,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       else
       // ITL
       {
-         actionMsg = getText("itl.create.ok");
+         actionMsg = getText("routingConstraint.create.ok");
          log.debug("Create routingConstraint with id : " + model.getId());
       }
 
@@ -521,7 +536,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       else
       // ITL
       {
-         actionMsg = getText("itl.update.ok");
+         actionMsg = getText("routingConstraint.update.ok");
          log.debug("Update routingConstraint with id : " + model.getId());
       }
 
@@ -553,7 +568,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       else
       // ITL
       {
-         actionMsg = getText("itl.delete.ok");
+         actionMsg = getText("routingConstraint.delete.ok");
          log.debug("Delete routingConstraint with id : " + model.getId());
       }
 
@@ -574,7 +589,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       else
       // ITL
       {
-         actionMsg = getText("itl.cancel.ok");
+         actionMsg = getText("routingConstraint.cancel.ok");
       }
       return REDIRECTLIST;
    }
@@ -646,6 +661,11 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
                break;
             }
          }
+         else if ("addLine".equals(getActionSuivante()))
+         {
+
+            return SEARCH_LINE;
+         }
       }
       return SEARCH;
    }
@@ -657,7 +677,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       List<StopArea> positionGeographiquesResultat = new ArrayList<StopArea>();
 
       // Clause areaType
-      Collection<String> areas = new HashSet<String>();
+      Collection<String> areas = new ArrayList<String>();
       if (searchCriteria.getAreaType() != null)
       {
          areas.add(searchCriteria.getAreaType().toString());
@@ -692,23 +712,56 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       }
 
       AreaCentroid areaCentroid = searchCriteria.getAreaCentroid();
+
+      Filter filter1 = null;
+      if (searchCriteria.getName() != null && !searchCriteria.getName().isEmpty())
+      {
+         filter1 = Filter.getNewIgnoreCaseLikeFilter(StopArea.NAME, searchCriteria.getName());
+      }
+      Filter filter2 = null;
+      if (areas.size() > 0)
+      {
+         filter2 = Filter.getNewInFilter(StopArea.AREA_TYPE, areas);
+      }
+      Filter filter3 = null;
       if (areaCentroid != null)
       {
          Address address = areaCentroid.getAddress();
 
-         Filter filter1 = Filter.getNewLikeFilter("name", searchCriteria.getName());
-         Filter filter2 = Filter.getNewInFilter("areaType", (List<String>) areas);
-         Filter filter3 = null;
          if (address != null)
          {
-            filter3 = Filter.getNewLikeFilter("countryCode", address.getCountryCode());
+            filter3 = Filter.getNewLikeFilter(StopArea.AREACENTROID + "." + AreaCentroid.ADDRESS + "."
+                  + Address.COUNTRY_CODE, address.getCountryCode());
          }
-         Filter filter = Filter.getNewAndFilter(filter1, filter2, filter3);
-         positionGeographiquesResultat = stopAreaManager.getAll(null, filter);
       }
+      Filter filter = Filter.getNewAndFilter(filter1, filter2, filter3);
+      positionGeographiquesResultat = stopAreaManager.getAll(null, filter);
 
       request.put("positionGeographiquesResultat", positionGeographiquesResultat);
       return SEARCH;
+   }
+   @SuppressWarnings("unchecked")
+   @SkipValidation
+   public String searchLineResults() throws ChouetteException
+   {
+      List<Line> linesResultat = new ArrayList<Line>();
+
+
+      Filter filter1 = null;
+      if (lineCriteria.getName() != null && !lineCriteria.getName().isEmpty())
+      {
+         filter1 = Filter.getNewIgnoreCaseLikeFilter(Line.NAME, lineCriteria.getName());
+      }
+      Filter filter2 = null;
+      if (lineCriteria.getNumber() != null && !lineCriteria.getNumber().isEmpty())
+      {
+         filter2 = Filter.getNewIgnoreCaseLikeFilter(Line.NUMBER, lineCriteria.getNumber());
+      }
+      Filter filter = Filter.getNewAndFilter(filter1, filter2);
+      linesResultat = lineManager.getAll(null, filter);
+
+      request.put("linesResultat", linesResultat);
+      return SEARCH_LINE;
    }
 
    @SkipValidation
@@ -738,7 +791,24 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          if (child != null)
          {
             parent.addContainedStopArea(child);
-            child.addParent(parent);
+            stopAreaManager.update(null, parent);
+         }
+
+      }
+
+      return REDIRECTEDIT;
+   }
+
+   @SkipValidation
+   public String addLine() throws ChouetteException
+   {
+      if (idLine != null && idPositionGeographique != null)
+      {
+         Line line = lineManager.getById(idLine);
+         StopArea parent = stopAreaManager.getById(idPositionGeographique);
+         if (line != null)
+         {
+            parent.addRoutingConstraintLine(line);
             stopAreaManager.update(null, parent);
          }
 
@@ -757,7 +827,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          if (stopArea != null)
          {
             stopArea.addParent(father);
-            father.addContainedStopArea(stopArea);
             stopAreaManager.update(null, stopArea);
          }
       }
@@ -768,11 +837,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    /********************************************************
     * METHOD ACTION *
     ********************************************************/
-   // this prepares command for button on initial screen write
-   public void setMappedRequest(String actionMethod)
-   {
-      this.mappedRequest = actionMethod;
-   }
 
    // when invalid, the request parameter will restore command action
    public void setActionMethod(String method)
@@ -783,52 +847,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    public String getActionMethod()
    {
       return mappedRequest;
-   }
-
-   /********************************************************
-    * LIST FILTER *
-    ********************************************************/
-   public String getCodeInsee()
-   {
-      return codeInsee;
-   }
-
-   public void setCodeInsee(String codeInsee)
-   {
-      this.codeInsee = codeInsee;
-   }
-
-   public Long getIdReseau()
-   {
-      return idReseau;
-   }
-
-   public void setIdReseau(Long idReseau)
-   {
-      this.idReseau = idReseau;
-   }
-
-   public String getNomArret()
-   {
-      return nomArret;
-   }
-
-   public void setNomArret(String nomArret)
-   {
-      this.nomArret = nomArret;
-   }
-
-   /********************************************************
-    * SEARCH FILTER *
-    ********************************************************/
-   public void setSearchCriteria(StopArea searchCriteria)
-   {
-      this.searchCriteria = searchCriteria;
-   }
-
-   public StopArea getSearchCriteria()
-   {
-      return searchCriteria;
    }
 
    /********************************************************
@@ -861,14 +879,32 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       }
    }
 
-   public String getAuthorizedType()
+   /********************************************************
+    * Manage line association
+    * 
+    * @return
+    * @throws ChouetteException
+    *            *
+    ********************************************************/
+   @SkipValidation
+   public String removeLineFromRoutingConstraint() throws ChouetteException
    {
-      return authorizedType;
-   }
+      if (idLine != null)
+      {
+         StopArea routingConstraint = stopAreaManager.getById(idPositionGeographique);
+         List<Line> lines = routingConstraint.getRoutingConstraintLines();
+         for (Line line : lines)
+         {
+            if (line.getId().equals(idLine))
+            {
+               routingConstraint.removeRoutingConstraintLine(line);
+               break;
+            }
+         }
+         stopAreaManager.update(null, routingConstraint);
 
-   public void setAuthorizedType(String authorizedType)
-   {
-      this.authorizedType = authorizedType;
+      }
+      return REDIRECTEDIT;
    }
 
    /********************************************************
@@ -879,39 +915,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    // this.page = page;
    // }
 
-   public String getActionSuivante()
-   {
-      return actionSuivante;
-   }
-
-   public List<StopArea> getChildren()
-   {
-      return children;
-   }
-
-   public StopArea getFather()
-   {
-      return father;
-   }
-
-   public Long getIdChild()
-   {
-      return idChild;
-   }
-
-   public Long getIdFather()
-   {
-      return idFather;
-   }
-
    public Long getIdZone()
    {
       return idPositionGeographique;
-   }
-
-   public List<Route> getItineraires()
-   {
-      return itineraires;
    }
 
    public String getLiaisonItineraire(Long idPhysique)
@@ -929,71 +935,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       return reseauParIdLigne.get(idLigne);
    }
 
-   public void setActionSuivante(String actionSuivante)
-   {
-      this.actionSuivante = actionSuivante;
-   }
-
-   public void setChildren(List<StopArea> children)
-   {
-      this.children = children;
-   }
-
-   public void setFather(StopArea father)
-   {
-      this.father = father;
-   }
-
-   public void setIdChild(Long idChild)
-   {
-      this.idChild = idChild;
-   }
-
-   public void setIdFather(Long idFather)
-   {
-      this.idFather = idFather;
-   }
-
-   public String getNomArretDestination()
-   {
-      return nomArretDestination;
-   }
-
-   public void setNomArretDestination(String nomArretDestination)
-   {
-      this.nomArretDestination = nomArretDestination;
-   }
-
-   public Long getIdArretDestination()
-   {
-      return idArretDestination;
-   }
-
-   public void setIdArretDestination(Long idArretDestination)
-   {
-      this.idArretDestination = idArretDestination;
-   }
-
-   public Long getIdArretSource()
-   {
-      return idArretSource;
-   }
-
-   public void setIdArretSource(Long idArretSource)
-   {
-      this.idArretSource = idArretSource;
-   }
-
-   public List<PTNetwork> getReseaux()
-   {
-      return reseaux;
-   }
-
-   public void setReseaux(List<PTNetwork> reseaux)
-   {
-      this.reseaux = reseaux;
-   }
-
    /********************************************************
     * AJAX AUTOCOMPLETE
     * 
@@ -1006,8 +947,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    {
       // List<PositionGeographique> boardingPositions =
       // positionGeographiqueManager.lireArretsPhysiques();
-      List<StopArea> boardingPositions = stopAreaManager.getAll(
-            null,StopArea.physicalStopsFilter);
+      List<StopArea> boardingPositions = stopAreaManager.getAll(null, StopArea.physicalStopsFilter);
 
       // Filter boarding position with the name in request
       int count = 0;

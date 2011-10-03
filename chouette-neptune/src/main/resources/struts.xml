@@ -290,26 +290,6 @@
     </action>
   </package>
 
-  <!-- Mise à jour des données du modèle ITL -->
-<!--   <package name="routingConstraint" extends="struts" namespace="/routingConstraint">
-    <action name="*" method="{1}" class='RoutingConstraintActionBean'>
-      <result name="redirectEdit" type="redirectAction">
-        <param name="actionName">edit</param>
-        <param name="operationMode">RETRIEVE</param>
-        <param name="idItl">${idItl}</param>
-      </result>
-      <result name="redirectList" type="redirectAction">
-        <param name="actionName">list</param>
-        <param name="operationMode">RETRIEVE</param>
-      </result>
-      <result name="edit">/jsp/routingConstraint/edit.jsp
-      </result>
-      <result name="list">/jsp/routingConstraint/list.jsp
-      </result>
-      <result name="input">/jsp/routingConstraint/edit.jsp
-      </result>
-    </action>
-  </package> -->
 
   <!-- Mise à jour des données du modèle Itineraires -->
   <package name="route" extends="struts" namespace="/route">
@@ -370,7 +350,7 @@
   </package>
   
     <!-- Mise à jour des données du modèle routingConstraint -->
-  <package name="routingConstraint" extends="struts" namespace="routingConstraint">
+  <package name="routingConstraint" extends="struts" namespace="/routingConstraint">
     <action name="*" method="{1}" class='StopAreaActionBean'>
       <result name="redirectList" type="redirectAction">
         <param name="actionName">list</param>
@@ -388,6 +368,8 @@
       <result name="input">/jsp/routingConstraint/edit.jsp
       </result>
       <result name="search">/jsp/routingConstraint/search.jsp
+      </result>
+      <result name="searchLine">/jsp/routingConstraint/searchLine.jsp
       </result>
     </action>
   </package>

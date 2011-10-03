@@ -33,48 +33,51 @@ import fr.certu.chouette.struts.outil.filAriane.FilAriane;
 public class GeneriqueAction extends ActionSupport implements RequestAware, SessionAware, PrincipalAware
 {
 
-   private static final long serialVersionUID = 3507673074535689742L;
-   private static final Logger logger = Logger.getLogger(GeneriqueAction.class);
-   public static final String EDIT = "edit";
-   public static final String REDIRECT = "redirect";
-   public static final String SAVE = "save";
-   public static final String UPDATE = "update";
-   public static final String CREATEANDEDIT = "createAndedit";
-   public static final String LIST = "list";
-   public static final String REDIRECTLIST = "redirectList";
-   public static final String REDIRECTEDIT = "redirectEdit";
-   public static final String SEARCH = "search";
-   public static final String EXPORT = "export";
-   public static final String AUTOCOMPLETE = "autocomplete";
+   private static final long   serialVersionUID      = 3507673074535689742L;
+   private static final Logger logger                = Logger.getLogger(GeneriqueAction.class);
+   public static final String  EDIT                  = "edit";
+   public static final String  REDIRECT              = "redirect";
+   public static final String  SAVE                  = "save";
+   public static final String  UPDATE                = "update";
+   public static final String  CREATEANDEDIT         = "createAndedit";
+   public static final String  LIST                  = "list";
+   public static final String  REDIRECTLIST          = "redirectList";
+   public static final String  REDIRECTEDIT          = "redirectEdit";
+   public static final String  SEARCH                = "search";
+   public static final String  SEARCH_LINE           = "searchLine";
+   public static final String  EXPORT                = "export";
+   public static final String  AUTOCOMPLETE          = "autocomplete";
    @SuppressWarnings("rawtypes")
-   protected Map session;
+   protected Map               session;
    @SuppressWarnings("rawtypes")
-   protected Map request;
-   protected PrincipalProxy principalProxy;
-   public static final String AUTHORIZEDTYPESET_ALL = "All";
-   public static final String AUTHORIZEDTYPESET_C = "CommercialStop";
-   public static final String AUTHORIZEDTYPESET_S = "StopPlace";
-   public static final String AUTHORIZEDTYPESET_CS = "CommercialStopStopPlace";
-   public static final String AUTHORIZEDTYPESET_QB = "QuayBoardingPosition";
-   public static final String MODE_LAST_ENTRY = "Other";
-   public static final int WEEKDAY_TYPE = 0;
-   public static final int WEEKEND_TYPE = 1;
-   public static final int MONDAY_TYPE = 2;
-   public static final int TUESDAY_TYPE = 3;
-   public static final int WEDNESDAY_TYPE = 4;
-   public static final int THURSDAY_TYPE = 5;
-   public static final int FRIDAY_TYPE = 6;
-   public static final int SATURDAY_TYPE = 7;
-   public static final int SUNDAY_TYPE = 8;
-   public static final int SCHOOLHOLLIDAY_TYPE = 9;
-   public static final int PUBLICHOLLIDAY_TYPE = 10;
-   public static final int MARKETDAY_TYPE = 11;
-   private String geoportalApiKey;
-   private String baseLayerSource;
-   private String lambertSRID;
+   protected Map               request;
+   protected PrincipalProxy    principalProxy;
+   public static final String  AUTHORIZEDTYPESET_ALL = "All";
+   public static final String  AUTHORIZEDTYPESET_C   = "CommercialStop";
+   public static final String  AUTHORIZEDTYPESET_S   = "StopPlace";
+   public static final String  AUTHORIZEDTYPESET_CS  = "CommercialStopStopPlace";
+   public static final String  AUTHORIZEDTYPESET_QB  = "QuayBoardingPosition";
+   public static final String  AUTHORIZEDTYPESET_R   = "RoutingConstraint";
+   public static final String  MODE_LAST_ENTRY       = "Other";
+   public static final int     WEEKDAY_TYPE          = 0;
+   public static final int     WEEKEND_TYPE          = 1;
+   public static final int     MONDAY_TYPE           = 2;
+   public static final int     TUESDAY_TYPE          = 3;
+   public static final int     WEDNESDAY_TYPE        = 4;
+   public static final int     THURSDAY_TYPE         = 5;
+   public static final int     FRIDAY_TYPE           = 6;
+   public static final int     SATURDAY_TYPE         = 7;
+   public static final int     SUNDAY_TYPE           = 8;
+   public static final int     SCHOOLHOLLIDAY_TYPE   = 9;
+   public static final int     PUBLICHOLLIDAY_TYPE   = 10;
+   public static final int     MARKETDAY_TYPE        = 11;
+   private String              geoportalApiKey;
+   private String              baseLayerSource;
+   private String              lambertSRID;
 
    @SuppressWarnings("rawtypes")
-   public void setSession(Map session) {
+   public void setSession(Map session)
+   {
       this.session = session;
    }
 
@@ -111,7 +114,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          session.put("filAriane", filAriane);
          return filAriane;
 
-      } else
+      }
+      else
       {
          return (FilAriane) session.get("filAriane");
       }
@@ -144,11 +148,12 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          {
             ptDirectionType = PTDirectionEnum.fromValue(cleParTraduction.get(traduction));
 
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
-         //EVOCASTOR
+         // EVOCASTOR
          directions.add(new ObjetEnumere(ptDirectionType, traduction));
       }
       return directions;
@@ -183,40 +188,42 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
             logger.debug("Traduction : " + traduction + " --- Traduction key : " + cleParTraduction.get(traduction));
             modeType = TransportModeNameEnum.fromValue(cleParTraduction.get(traduction));
             logger.debug("modeType based on traduction key : " + modeType);
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
          modes.add(new ObjetEnumere(modeType, traduction));
       }
-      //To make the first line of the list empty in the web view
+      // To make the first line of the list empty in the web view
       modes.add(0, null);
 
       return modes;
 
-
-      //    Locale locale = Locale.getDefault();
-      //    Properties modesOfTransport = new Properties();
-      //    ResourceFinder resourceFinder = new ResourceFinder("");
-      //    String fileName = "modesOfTransport_" + locale.getLanguage().toLowerCase() + ".properties";
+      // Locale locale = Locale.getDefault();
+      // Properties modesOfTransport = new Properties();
+      // ResourceFinder resourceFinder = new ResourceFinder("");
+      // String fileName = "modesOfTransport_" +
+      // locale.getLanguage().toLowerCase() + ".properties";
       //
-      //    try
-      //    {
-      //      modesOfTransport = resourceFinder.findProperties(fileName);
-      //    }
-      //    catch (IOException exception)
-      //    {
-      //      log.debug("No properties file with name : " + fileName);
-      //      try
-      //      {
-      //        modesOfTransport = resourceFinder.findProperties("modesOfTransport_fr.properties");
-      //      }
-      //      catch (IOException frenchException)
-      //      {
-      //        log.debug("No properties file with name : " + fileName);
-      //      }
-      //    }
-      //    return modesOfTransport;
+      // try
+      // {
+      // modesOfTransport = resourceFinder.findProperties(fileName);
+      // }
+      // catch (IOException exception)
+      // {
+      // log.debug("No properties file with name : " + fileName);
+      // try
+      // {
+      // modesOfTransport =
+      // resourceFinder.findProperties("modesOfTransport_fr.properties");
+      // }
+      // catch (IOException frenchException)
+      // {
+      // log.debug("No properties file with name : " + fileName);
+      // }
+      // }
+      // return modesOfTransport;
    }
 
    public List<ObjetEnumere> getDayTypeEnum()
@@ -235,7 +242,7 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          }
       }
 
-      //	On ne prend que les tableaux de marche de lundi à dimanche
+      // On ne prend que les tableaux de marche de lundi à dimanche
       ObjetEnumere[] joursTypesTab = new ObjetEnumere[SUNDAY_TYPE - 1];
 
       for (String traduction : cleParTraduction.keySet())
@@ -245,12 +252,13 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          {
             dayTypeType = DayTypeEnum.fromValue(cleParTraduction.get(traduction));
 
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
-         //	On ne prend que les tableaux de marche de lundi à dimanche
-         //EVOCASTOR
+         // On ne prend que les tableaux de marche de lundi à dimanche
+         // EVOCASTOR
          if (MONDAY_TYPE <= dayTypeType.ordinal() && dayTypeType.ordinal() <= SUNDAY_TYPE)
          {
             joursTypesTab[dayTypeType.ordinal() - 2] = new ObjetEnumere(dayTypeType, traduction);
@@ -286,12 +294,13 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          try
          {
             statutType = ServiceStatusValueEnum.fromValue(cleParTraduction.get(traduction));
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
          serviceStatus.add(new ObjetEnumere(statutType, traduction));
-         //log.debug( "statutType="+statutType+" "+traduction);
+         // log.debug( "statutType="+statutType+" "+traduction);
       }
       return serviceStatus;
    }
@@ -305,7 +314,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       {
          return toutesZonesTypes;
 
-      } else if (AUTHORIZEDTYPESET_CS.equals(authorizedTypes))
+      }
+      else if (AUTHORIZEDTYPESET_CS.equals(authorizedTypes))
       {
          List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
          for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -318,7 +328,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          }
          return l;
 
-      } else if (AUTHORIZEDTYPESET_QB.equals(authorizedTypes))
+      }
+      else if (AUTHORIZEDTYPESET_QB.equals(authorizedTypes))
       {
          List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
          for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -331,7 +342,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          }
          return l;
 
-      } else if (AUTHORIZEDTYPESET_S.equals(authorizedTypes))
+      }
+      else if (AUTHORIZEDTYPESET_S.equals(authorizedTypes))
       {
          List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
          for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -344,7 +356,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          }
          return l;
 
-      } else if (AUTHORIZEDTYPESET_C.equals(authorizedTypes))
+      }
+      else if (AUTHORIZEDTYPESET_C.equals(authorizedTypes))
       {
          List<ObjetEnumere> l = new ArrayList<ObjetEnumere>();
          for (int i = 0; i < toutesZonesTypes.size(); i++)
@@ -356,7 +369,13 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
             }
          }
          return l;
-      } else
+      }
+      else if (AUTHORIZEDTYPESET_R.equals(authorizedTypes))
+      {
+         List<ObjetEnumere> l = getRoutingConstraintEnum();
+         return l;
+      }
+      else
       {
          return toutesZonesTypes;
       }
@@ -389,12 +408,13 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          {
             boardingPositionType = ChouetteAreaEnum.fromValue(cleParTraduction.get(traduction));
 
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
          boardingPosition.add(new ObjetEnumere(boardingPositionType, traduction));
-         //log.debug( "statutType="+statutType+" "+traduction);
+         // log.debug( "statutType="+statutType+" "+traduction);
       }
       return boardingPosition;
    }
@@ -425,14 +445,52 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          try
          {
             stopPlaceType = ChouetteAreaEnum.fromValue(cleParTraduction.get(traduction));
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
          stopPlace.add(new ObjetEnumere(stopPlaceType, traduction));
-         //log.debug( "statutType="+statutType+" "+traduction);
+         // log.debug( "statutType="+statutType+" "+traduction);
       }
       return stopPlace;
+   }
+
+   public List<ObjetEnumere> getRoutingConstraintEnum()
+   {
+      Map<String, String> cleParTraduction = new Hashtable<String, String>();
+      SortedSet<String> traductionTriees = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+      ResourceBundle rsDir = ResourceBundle.getBundle("routingConstraint", getLocale());
+
+      Enumeration<String> rsDirEnum = rsDir.getKeys();
+      while (rsDirEnum.hasMoreElements())
+      {
+         String cle = rsDirEnum.nextElement();
+         String traduction = rsDir.getString(cle);
+         if (traduction != null && !traduction.isEmpty())
+         {
+            cleParTraduction.put(traduction, cle);
+         }
+      }
+      traductionTriees.addAll(cleParTraduction.keySet());
+
+      List<ObjetEnumere> routingConstraints = new ArrayList<ObjetEnumere>();
+      for (String traduction : traductionTriees)
+      {
+         ChouetteAreaEnum routingConstraintType = null;
+         try
+         {
+            routingConstraintType = ChouetteAreaEnum.fromValue(cleParTraduction.get(traduction));
+         }
+         catch (Exception e)
+         {
+            logger.error(e.getMessage(), e);
+         }
+         routingConstraints.add(new ObjetEnumere(routingConstraintType, traduction));
+         // log.debug( "statutType="+statutType+" "+traduction);
+      }
+      return routingConstraints;
    }
 
    public List<ObjetEnumere> getConnectionLinkTypeEnum()
@@ -461,12 +519,13 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
          try
          {
             correspondanceType = ConnectionLinkTypeEnum.fromValue(cleParTraduction.get(traduction));
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error(e.getMessage(), e);
          }
          connectionLink.add(new ObjetEnumere(correspondanceType, traduction));
-         //log.debug( "correspondanceType="+correspondanceType+" "+traduction);
+         // log.debug( "correspondanceType="+correspondanceType+" "+traduction);
       }
       return connectionLink;
    }
@@ -500,9 +559,8 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       }
    }
 
-
    /********************************************************
-    *           Geoportal api key                          *
+    * Geoportal api key *
     ********************************************************/
    public String getGeoportalApiKey()
    {
@@ -515,31 +573,36 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
    }
 
    /********************************************************
-    *           Base Layer Source                          *
+    * Base Layer Source *
     ********************************************************/
-   public String getBaseLayerSource() {
+   public String getBaseLayerSource()
+   {
       return baseLayerSource;
    }
 
-   public void setBaseLayerSource(String baseLayerSource) {
+   public void setBaseLayerSource(String baseLayerSource)
+   {
       this.baseLayerSource = baseLayerSource;
    }
 
    /********************************************************
-    *           LambertSRID                                *
+    * LambertSRID *
     ********************************************************/
-   public String getLambertSRID() {
+   public String getLambertSRID()
+   {
       return lambertSRID;
    }
 
-   public void setLambertSRID(String lambertSRID) {
+   public void setLambertSRID(String lambertSRID)
+   {
       this.lambertSRID = lambertSRID;
    }
 
    /********************************************************
-    *           Current Locale                             *
+    * Current Locale *
     ********************************************************/
-   public String getCurrentLocale(){
+   public String getCurrentLocale()
+   {
       return this.getLocale().getLanguage();
    }
 

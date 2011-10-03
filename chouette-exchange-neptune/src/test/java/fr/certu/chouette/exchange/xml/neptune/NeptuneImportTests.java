@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 @SuppressWarnings("unchecked")
 public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 {
-	private static final Logger LOGGER = Logger.getLogger(NeptuneImportTests.class);
+	private static final Logger logger = Logger.getLogger(NeptuneImportTests.class);
 
 	private IImportPlugin<Line> importLine = null;
 	private String neptuneFile = null;
@@ -144,8 +145,8 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		Assert.assertEquals(description.getName(), "NEPTUNE");
 		Assert.assertNotNull(params,"params should not be null");
 		Assert.assertEquals(params.size(), 3," params size must equal 3");
-		LOGGER.info("Description \n "+description.toString());
-		System.out.println(description.toString());
+		logger.info("Description \n "+description.toString());
+		Reporter.log("Description \n "+description.toString());
 
 	}
 		
@@ -165,8 +166,9 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
-		for(Line line : lines){
-			System.out.println(line.toString("\t",80));
+		for(Line line : lines)
+		{
+		    Reporter.log(line.toString("\t",1));
 		}
 		printReport(report.getReport());		
 	}
@@ -213,7 +215,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
 		for (Line line : lines)
 		{
-			System.out.println(line.toString("\t",0));
+		   Reporter.log(line.toString("\t",0));
 		}
 		printReport(report.getReport());
 		
@@ -223,11 +225,11 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	{
 		if (report == null)
 		{
-			System.out.println("no report");
+		   Reporter.log("no report");
 		}
 		else
 		{
-			System.out.println(report.getStatus().name()+" : "+report.getLocalizedMessage());
+		   Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
 			printItems("   ",report.getItems());
 		}
 	}
@@ -241,7 +243,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		if (items == null) return;
 		for (ReportItem item : items) 
 		{
-			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+		   Reporter.log(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
 			printItems(indent+"   ",item.getItems());
 		}
 

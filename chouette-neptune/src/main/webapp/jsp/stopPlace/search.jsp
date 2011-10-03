@@ -22,7 +22,7 @@
 		<s:hidden name="actionSuivante" value="%{actionSuivante}" />
 		<s:textfield key="searchCriteria.name"/>
 		<s:select emptyOption="true" key="searchCriteria.areaType" list="%{getStopAreaEnum(#attr.authorizedType)}"  listKey="enumeratedTypeAccess" listValue="textePropriete"/>
-		<s:textfield key="searchCriteria.countryCode" />
+		<s:textfield key="searchCriteria.areaCentroid.address.countryCode" />
 		<s:submit key="action.search" />
   </s:form>
 </div>
@@ -42,6 +42,6 @@
 	  	<display:column titleKey="table.title.type" >
 	  		<s:text name="%{#attr.positionGeographique.areaType}"/>
 	  	</display:column>	
-	  	<display:column titleKey="table.title.inseeCode" property="countryCode" />
+	  	<display:column titleKey="table.title.inseeCode" property="areaCentroid.address.countryCode" />
 	</display:table>
 </div>
