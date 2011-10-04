@@ -9,30 +9,18 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-core</artifactId>
 	<name>Chouette Core</name>
-	<!--  added for delombok in javadoc -->
-	<!--  
-	  <profiles>
-    <profile>
-      <id>default-javac.jar</id>
-      <activation>
-        <property>
-          <name>java.vendor</name>
-          <value>Sun Microsystems Inc.</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.6</version>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-	-->
+	<!-- added for delombok in javadoc -->
+	<!-- <profiles> <profile> <id>default-javac.jar</id> <activation> <property> 
+		<name>java.vendor</name> <value>Sun Microsystems Inc.</value> </property> 
+		</activation> <dependencies> <dependency> <groupId>com.sun</groupId> <artifactId>tools</artifactId> 
+		<version>1.6</version> <scope>system</scope> <systemPath>${java.home}/../lib/tools.jar</systemPath> 
+		</dependency> </dependencies> </profile> </profiles> -->
 	<dependencies>
+		<dependency>
+			<groupId>fr.certu.chouette.maven</groupId>
+			<artifactId>chouette-maven-plugin</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -75,7 +63,7 @@
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
 		</dependency>
@@ -87,7 +75,7 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
 		</dependency>
- 		<dependency>
+		<dependency>
 			<groupId>javax.media</groupId>
 			<artifactId>jai-core</artifactId>
 		</dependency>
@@ -130,40 +118,18 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- delombok sources for javadoc 
+			<!-- delombok sources for javadoc <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-antrun-plugin</artifactId> <version>1.6</version> <dependencies> 
+				</dependencies> <executions> <execution> <id>attach-javadocs</id> <phase>package</phase> 
+				<configuration> <target> <taskdef classname="lombok.delombok.ant.DelombokTask" 
+				name="delombok" > <classpath refid="maven.compile.classpath"/> </taskdef> 
+				<mkdir dir="target/src-delomboked" /> <delombok verbose="true" encoding="UTF-8" 
+				to="target/src-delomboked" from="src/main/java" /> <mkdir dir="target/apidocs" 
+				/> <javadoc sourcepath="target/src-delomboked" defaultexcludes="yes" destdir="target/apidocs" 
+				access="private"/> </target> </configuration> <goals> <goal>run</goal> </goals> 
+				</execution> </executions> </plugin> -->
+			<!-- no delombok sources for javadoc -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-				<dependencies>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<taskdef classname="lombok.delombok.ant.DelombokTask"
-									 name="delombok" >
-									<classpath refid="maven.compile.classpath"/>
-									</taskdef>
-								<mkdir dir="target/src-delomboked" />
-								<delombok verbose="true" encoding="UTF-8"
-									to="target/src-delomboked" from="src/main/java" />
-								<mkdir dir="target/apidocs" />
-								<javadoc sourcepath="target/src-delomboked"
-									defaultexcludes="yes" destdir="target/apidocs" access="private"/>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			-->
-           <!-- no delombok sources for javadoc -->
- 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
@@ -180,7 +146,7 @@
 					</execution>
 				</executions>
 			</plugin>
- 			<!--  -->
+			<!-- -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
