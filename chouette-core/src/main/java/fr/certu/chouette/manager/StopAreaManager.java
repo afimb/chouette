@@ -271,6 +271,8 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
             centroid.setObjectId(ids[0]+":"+NeptuneIdentifiedObject.AREACENTROID_KEY+":"+ids[2]);
 
          }
+         centroid.setCreationTime(stopArea.getCreationTime());
+         centroid.setObjectVersion(stopArea.getObjectVersion());
          centroid.setContainedInStopArea(stopArea);
          centroid.setContainedInStopAreaId(stopArea.getObjectId());
          centroid.setName(stopArea.getName());

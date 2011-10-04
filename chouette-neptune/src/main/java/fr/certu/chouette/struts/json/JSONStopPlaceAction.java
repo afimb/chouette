@@ -28,9 +28,9 @@ public class JSONStopPlaceAction extends GeneriqueAction
       {
          if (stopPlaceId != null)
          {
-            Filter filter = Filter.getNewEqualsFilter(StopArea.PARENTSTOPAREA+"."+StopArea.ID, stopPlaceId);
+            StopArea parent = stopAreaManager.getById(stopPlaceId);
             List<StopArea> stopPlaces;
-            stopPlaces = stopAreaManager.getAll(user ,filter);
+            stopPlaces =parent.getContainedStopAreas();
             List<StopArea> stopPlacesWithCoordinates = new ArrayList<StopArea>();
 
             for (StopArea positionGeographique : stopPlaces)

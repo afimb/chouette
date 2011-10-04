@@ -130,7 +130,7 @@
 		<!-- <bag name="containedStopAreas" lazy="true" inverse="true"> <key column="parentId" 
 			foreign-key="area_parent_fkey" /> <one-to-many class="StopArea" /> </bag> -->
 
-		<bag name="containedStopAreas" table="stopareastoparea" lazy="true">
+		<bag name="parents" table="stopareastoparea" lazy="true">
 			<comment>StopArea hierarchical graph</comment>
 			<key foreign-key="stoparea_child_fkey">
 				<column name="childId">
@@ -158,7 +158,7 @@
 			</many-to-many>
 		</bag>
 
-		<bag name="parents" table="stopareastoparea" lazy="true">
+		<bag name="containedStopAreas" table="stopareastoparea" lazy="true">
 			<key column="parentId" foreign-key="stoparea_parent_fkey" />
 			<many-to-many column="childId" class="StopArea"
 				foreign-key="stoparea_child_fkey" />

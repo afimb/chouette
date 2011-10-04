@@ -179,11 +179,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          throw new IllegalArgumentException("invalid file type : " + extension);
       }
 
-      /*
-       * Report report = new NeptuneReport(NeptuneReport.KEY.IMPORT);
-       * report.setStatus(Report.STATE.OK); reportContainer.setReport(report);
-       */
-
       List<Line> lines = null;
 
       if (extension.equals("xml"))
@@ -406,12 +401,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       }
       catch (Exception e)
       {
-         /*
-          * ReportItem item = new
-          * NeptuneReportItem(NeptuneReportItem.KEY.FILE_ERROR
-          * ,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
-          * report.addItem(item); report.setStatus(Report.STATE.FATAL);
-          */
          // ReportItem detailReportItem = new
          // DetailReportItem("Test1_Sheet1_Step0_fatal", Report.STATE.FATAL,
          // filePath);
@@ -462,23 +451,12 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          catch (ValidationException e)
          {
             logger.error("import failed for " + entryName + " : Castor validation");
-            /*
-             * ReportItem item = new
-             * NeptuneReportItem(NeptuneReportItem.KEY.VALIDATION_ERROR
-             * ,Report.STATE.ERROR,entryName); report.addItem(item);
-             */
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,
                   entryName);
             report1_2.addItem(detailReportItem);
             Throwable t = e;
             while (t != null)
             {
-               /*
-                * ReportItem subItem = new
-                * NeptuneReportItem(NeptuneReportItem.KEY
-                * .VALIDATION_CAUSE,Report.STATE.ERROR,t.getLocalizedMessage());
-                * item.addItem(subItem);
-                */
                logger.error(t.getLocalizedMessage());
                // ReportItem detail2 = new
                // DetailReportItem("",Report.STATE.ERROR,
@@ -515,11 +493,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       modelAssembler.setTimeSlots(converter.extractTimeSlots(rootObject, item));
       modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(rootObject, item));
       modelAssembler.connect();
-
-//      ReportItem item2 = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE, Report.STATE.OK, entryName,
-//            line.getName());
-//      item2.addAll(item.getItems());
-//    report.addItem(item2);
 
       rootObject.toString();
 

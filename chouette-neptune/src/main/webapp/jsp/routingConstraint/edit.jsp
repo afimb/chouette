@@ -89,21 +89,7 @@
     <s:div label="Children" id="displaytag">
       <display:table name="children" id="child"  excludedParams="" sort="list" pagesize="10" export="false">
         <display:column titleKey="table.title.action">
-          <s:if test='#attr.child.isZoneCategory()'>
-            <s:url id="editUrl" action="edit" namespace="/stopPlace">
-              <s:param name="idPositionGeographique">${child.id}</s:param>
-            </s:url>
-          </s:if>
-          <s:else>
-            <s:url id="editUrl" action="edit" namespace="/boardingPosition">
-              <s:param name="idPositionGeographique">${child.id}</s:param>
-            </s:url>
-          </s:else>
-          
-          <s:a href="%{editUrl}">
-            <img border="0" alt="Edit" src="<s:url value='/images/editer.png'/>" title="<s:text name="tooltip.edit"/>">
-          </s:a>&nbsp;&nbsp;
-          <s:url id="removeUrl" action="removeChildFromParent" namespace="/routingConstraint">
+           <s:url id="removeUrl" action="removeChildFromParent" namespace="/routingConstraint">
             <s:param name="idPositionGeographique" value="%{id}" />
             <s:param name="idChild">${child.id}</s:param>
           </s:url>
@@ -112,7 +98,7 @@
           </s:a>
         </display:column>
         <display:column titleKey="table.title.name">
-					Zone	<s:property value="%{#attr.child.name}"/>
+			<s:property value="%{#attr.child.name}"/>
         </display:column>
         <display:column titleKey="table.title.type">
           <s:text name="%{#attr.child.areaType}"/>

@@ -44,13 +44,7 @@ public class ImportAction extends GeneriqueAction {
    @Setter INeptuneManager<Line> lineManager;
    @Setter INeptuneManager<Route> routeManager;
 
-   //	private IImportateur importateur = null;
-   //	private ILecteurCSV lecteurCSV;
-   //	private ILecteurPrincipal lecteurCSVPrincipal;
-   //	private IIdentificationManager identificationManager;
-   //	private IImportHorairesManager importHorairesManager;
    @Getter @Setter private String useCSVGeneric;
-   //	private IReducteur reducteur;
    @Getter @Setter private String tmprep;
 
    @Getter @Setter private Long idLigne;
@@ -68,7 +62,6 @@ public class ImportAction extends GeneriqueAction {
 
    public InputStream getInputStream() throws Exception {
       return inputStream;
-      //return new FileInputStream(logFile.getPath());
    }
 
    @Override

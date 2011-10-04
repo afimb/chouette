@@ -360,17 +360,17 @@ public class StopArea extends NeptuneIdentifiedObject
    /**
     * add a parent StopArea if not already present
     * 
-    * @param parentStopArea
+    * @param parent
     */
-   public void addParent(StopArea parentStopArea)
+   public void addParent(StopArea parent)
    {
       if (parents == null)
          parents = new ArrayList<StopArea>();
       // TODO check area type compatibility
 
-      if (!parents.contains(parentStopArea))
+      if (!parents.contains(parent))
       {
-         parents.add(parentStopArea);
+         parents.add(parent);
          if (parentId == null)
             updateParentId();
       }
@@ -379,16 +379,16 @@ public class StopArea extends NeptuneIdentifiedObject
    /**
     * remove a parent StopArea
     * 
-    * @param parentStopArea
+    * @param parent
     */
-   public void removeParent(StopArea parentStopArea)
+   public void removeParent(StopArea parent)
    {
       if (parents == null)
          parents = new ArrayList<StopArea>();
-      if (parents.contains(parentStopArea))
+      if (parents.contains(parent))
       {
-         parents.remove(parentStopArea);
-         if (parentId == parentStopArea.getId())
+         parents.remove(parent);
+         if (parentId == parent.getId())
             updateParentId();
       }
    }

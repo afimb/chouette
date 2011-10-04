@@ -114,8 +114,18 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
       lineManager.saveAll(null, lines, true, true);
       for(Line line : lines)
       {
-         Assert.assertNotNull(line.getId(),"line's id can't be null");
+         Assert.assertNotNull(line.getId(),"line's id can't be null "+line.getObjectId());
          Reporter.log(line.toString("\t",2));
+         Assert.assertNotNull(line.getRoutingConstraints(),"line must have routing constraints");
+         Assert.assertEquals(line.getRoutingConstraints().size(), 1,"line must have 1 routing constraint");
+         StopArea area = line.getRoutingConstraints().get(0);
+         Assert.assertNotNull(area.getId(),"ITL stopArea's id can't be null "+area.getObjectId());
+         Assert.assertNotNull(area.getContainedStopAreas(), "routing constraint area must have stopArea children");
+         Assert.assertTrue(area.getContainedStopAreas().size() > 0, "routing constraint area must have stopArea children");
+         for (StopArea child : area.getContainedStopAreas())
+         {
+            Assert.assertNotNull(child.getId(),"ITL child's id can't be null "+child.getObjectId());
+         }
       }
    }
    

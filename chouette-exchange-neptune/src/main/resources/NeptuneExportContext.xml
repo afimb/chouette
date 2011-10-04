@@ -18,6 +18,7 @@
 	<bean id="NeptuneAreaCentroidExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.AreaCentroidProducer" />
 	<bean id="NeptuneConnectionLinkExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.ConnectionLinkProducer" />
 	<bean id="NeptuneTimetableExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProducer" />
+	<bean id="NeptuneRoutingConstraintExportProducer" class="fr.certu.chouette.exchange.xml.neptune.exporter.producer.RoutingConstraintProducer" />
 
 	<bean id="NeptuneLineExport" class="fr.certu.chouette.exchange.xml.neptune.exporter.XMLNeptuneExportLinePlugin">
 		<property name="lineProducer" ref="NeptuneLineExportProducer" />
@@ -32,6 +33,7 @@
 		<property name="areaCentroidProducer" ref="NeptuneAreaCentroidExportProducer" />
 		<property name="connectionLinkProducer" ref="NeptuneConnectionLinkExportProducer" />
 		<property name="timetableProducer" ref="NeptuneTimetableExportProducer" />
+		<property name="routingConstraintProducer" ref="NeptuneRoutingConstraintExportProducer" />
 	</bean>
 	
 	<bean id="NeptuneLineDeletionExport" class="fr.certu.chouette.exchange.xml.neptune.exporter.XMLNeptuneDeletionExportLinePlugin">

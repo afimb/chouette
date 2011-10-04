@@ -12,6 +12,8 @@ import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -29,10 +31,11 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
 	private IImportPlugin<Line> importLine = null;
 	private String neptuneFile = null;
+   private String neptuneRCFile = null;
 	private String neptuneZip = null;
 	private String path="src/test/resources/";
 
-	@Test(groups={"ImportLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
+	@Test(groups={"ImportLine","ImportRCLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
 	public void getBean()
 	{
 		importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
@@ -44,6 +47,13 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 	{
 		this.neptuneFile = neptuneFile;
 	}
+	
+   @Parameters({"neptuneRCFile"})
+   @Test (groups = {"ImportRCLine"}, description = "Import Plugin should import neptune file with ITL",dependsOnMethods={"getBean"})
+   public void getNeptuneRCFile(String neptuneRCFile)
+   {
+      this.neptuneRCFile = neptuneRCFile;
+   }
 
 	@Parameters({"neptuneZip"})
 	@Test (groups = {"ImportZipLines"}, description = "Import Plugin should import neptune zip file",dependsOnMethods={"getBean"})
@@ -173,6 +183,39 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		printReport(report.getReport());		
 	}
 	
+   
+   @Test (groups = {"ImportRCLine"}, description = "Import Plugin should import file with ITL",dependsOnMethods={"getBean"})
+   public void verifyImportRCLine() throws ChouetteException
+   {
+
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+      simpleParameterValue.setFilepathValue(path+"/"+neptuneRCFile);
+      parameters.add(simpleParameterValue);
+      SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validate");
+      simpleParameterValue2.setBooleanValue(false); // file is incomplete in other aspect
+      parameters.add(simpleParameterValue2);
+
+      ReportHolder report = new ReportHolder();
+
+      List<Line> lines = importLine.doImport(parameters, report);
+
+      Assert.assertNotNull(lines,"lines can't be null");
+      Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
+      for(Line line : lines)
+      {
+          Reporter.log(line.toString("\t",1));
+          Assert.assertNotNull(line.getRoutingConstraints(),"line must have routing constraints");
+          Assert.assertEquals(line.getRoutingConstraints().size(), 1,"line must have 1 routing constraint");
+          StopArea area = line.getRoutingConstraints().get(0);
+          Assert.assertEquals(area.getAreaType(), ChouetteAreaEnum.ITL,"routing constraint area must be of "+ChouetteAreaEnum.ITL+" type");
+          Assert.assertNotNull(area.getContainedStopAreas(), "routing constraint area must have stopArea children");
+          Assert.assertNull(area.getParents(), "routing constraint area must not have stopArea parent");
+          Assert.assertTrue(area.getContainedStopAreas().size() > 0, "routing constraint area must have stopArea children");
+      }
+      printReport(report.getReport());    
+   }
+   
 	
 
 	
