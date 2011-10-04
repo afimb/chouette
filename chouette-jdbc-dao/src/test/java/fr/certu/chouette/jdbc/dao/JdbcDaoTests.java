@@ -144,7 +144,7 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
 
 		Assert.assertNotNull(lines,"lines can't be null");
-		Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
+		Assert.assertEquals(lines.size(), 2,"lines size must equals 2");
 		for(Line line : lines)
 		{
 			List<Line> bid = new ArrayList<Line>();
