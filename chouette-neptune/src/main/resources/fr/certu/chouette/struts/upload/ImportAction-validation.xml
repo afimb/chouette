@@ -1,0 +1,14 @@
+<!DOCTYPE validators PUBLIC
+"-//OpenSymphony Group//XWork Validator 1.0.3//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.3.dtd">
+
+<validators>
+	<field name="objectIdPrefix">
+		<field-validator type="regex">
+			<param name="fieldName">objectIdPrefix</param>
+			<param name="expression">(\w|_)+</param>
+			<message key="errors.objectIdPrefix" />
+		</field-validator>
+	</field>
+</validators> 
+	

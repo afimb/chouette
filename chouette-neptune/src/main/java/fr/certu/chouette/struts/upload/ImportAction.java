@@ -38,6 +38,8 @@ public class ImportAction extends GeneriqueAction {
    @Getter @Setter private File fichier;
    @Getter @Setter private boolean incremental;
    @Getter @Setter private String fichierFileName; 
+   @Getter @Setter private boolean skipXSDValidation = false;
+   @Getter @Setter private String objectIdPrefix = null;
 
    @Setter INeptuneManager<Line> lineManager;
    @Setter INeptuneManager<Route> routeManager;
@@ -171,13 +173,17 @@ public class ImportAction extends GeneriqueAction {
          addActionError(getExceptionMessage(e));
          return INPUT;
       }
-      try {
+      try 
+      {
          List<ParameterValue> parameters = new ArrayList<ParameterValue>();
          SimpleParameterValue inputFile = new SimpleParameterValue("inputFile");
          inputFile.setFilepathValue(canonicalPath);
          parameters.add(inputFile);
-         SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("fileFormat");
-         simpleParameterValue3.setStringValue(FilenameUtils.getExtension(fichierFileName));
+         SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("fileFormat");
+         simpleParameterValue2.setStringValue(FilenameUtils.getExtension(fichierFileName));
+         parameters.add(simpleParameterValue2);
+         SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("objectIdPrefix");
+         simpleParameterValue3.setStringValue(objectIdPrefix);
          parameters.add(simpleParameterValue3);
          ReportHolder reportHolder = new ReportHolder();
          List<Line> lines = lineManager.doImport(user, "CSV", parameters, reportHolder);
@@ -292,7 +298,7 @@ public class ImportAction extends GeneriqueAction {
          parameters.add(simpleParameterValue);
 
          SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("validate");
-         simpleParameterValue2.setBooleanValue(true);
+         simpleParameterValue2.setBooleanValue(!skipXSDValidation);
          parameters.add(simpleParameterValue2);	
 
          SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("fileFormat");

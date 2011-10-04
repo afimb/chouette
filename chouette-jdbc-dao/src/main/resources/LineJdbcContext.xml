@@ -81,37 +81,5 @@
 				(_OBJECTIDS_)
 		</value>
 		</property>
-		<property name="collectionAttributes">
-			<map>
-				<description>one entry for each attribute</description>
-				<entry key="routingconstraints">
-					<map>
-						<description>one entry for select, insert, delete</description>
-						<entry key="sqlSelectById">
-							<value>
-								SELECT * FROM ${database.schema}.routingconstraints_lines WHERE
-								lineId = ? 
-								</value>
-						</entry>
-						<entry key="sqlInsert">
-							<value>
-								INSERT INTO ${database.schema}.routingconstraints_lines
-								(
-								lineId,
-								stopareaId
-								)
-								VALUES(?, ?)
-								</value>
-						</entry>
-						<entry key="sqlDelete">
-							<value>
-								DELETE FROM ${database.schema}.routingconstraints_lines WHERE
-								lineId IN (_IDS_)
-								 </value>
-						</entry>
-					</map>
-				</entry>
-			</map>
-		</property>
 	</bean>
 </beans>	

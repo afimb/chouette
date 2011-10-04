@@ -133,6 +133,7 @@
 		<property name="networkManager" ref="networkManager" />
 		<property name="stopAreaManager" ref="stopAreaManager" />
 		<property name="lineManager" ref="lineManager" />
+		<property name="companyManager" ref="companyManager" />
 	</bean>
 
 	<bean id="JSONBoardingPositionActionBean" scope="prototype"
@@ -171,6 +172,7 @@
 		<property name="routeManager" ref="routeManager" />
 		<property name="useCSVGeneric" value="${import.csv.multilignes}" />
 		<property name="tmprep" value="${chouette.tempdir}" />
+		<property name="objectIdPrefix" value="${system.code}" />
 	</bean>
 
 	<!-- ME: migrating ended -->

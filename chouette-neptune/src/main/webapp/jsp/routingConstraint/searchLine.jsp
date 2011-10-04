@@ -20,6 +20,22 @@
 		<s:hidden name="idPositionGeographique" value="%{idPositionGeographique}" />
 		<s:hidden name="authorizedType" value="%{authorizedType}" />
 		<s:hidden name="actionSuivante" value="%{actionSuivante}" />
+		    <s:select	key="lineCriteria.ptNetwork.id"
+              label="%{getText('filtre.select.reseau')}"
+              list="networks"
+              listKey="id"
+              listValue="name"
+              headerKey=""
+              headerValue="%{getText('filtre.reseau.dropDownListItem.tous')}" />
+
+    <s:select 	key="lineCriteria.company.id"
+               label="%{getText('filtre.select.transporteur')}"
+               list="companies"
+               listKey="id"
+               listValue="name"
+               headerKey=""
+               headerValue="%{getText('filtre.transporteur.dropDownListItem.tous')}" />
+		
 		<s:textfield key="lineCriteria.name"/>
 		<s:textfield key="lineCriteria.number"/>
 		<s:submit key="action.search" />

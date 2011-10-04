@@ -35,8 +35,9 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 	private String neptuneFile = null;
 	private String neptuneZip = null;
 	private String path="src/test/resources/";
+   private String neptuneRCFile;
 
-	@Test(groups={"saveLine","saveLines","purge"}, description="Get a bean from context")
+	@Test(groups={"saveLine","saveRCLine","saveLines","purge"}, description="Get a bean from context")
 	public void getBean()
 	{
 		lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager") ;
@@ -54,6 +55,12 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		this.neptuneFile = neptuneFile;
 	}
 
+   @Parameters({"neptuneRCFile"})
+   @Test (groups = {"saveRCLine"}, description = "try saving routingConstraint neptune file",dependsOnMethods={"getBean"})
+   public void getNeptuneRCFile(String neptuneRCFile)
+   {
+      this.neptuneRCFile = neptuneRCFile;
+   }
 	@Parameters({"neptuneZip"})
 	@Test (groups = {"saveLines"}, description = "try saving neptune zip file",dependsOnMethods={"getBean"})
 	public void getNeptuneZip(String neptuneZip)
@@ -85,6 +92,33 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		}
 	}
 	
+   
+   @Test (groups = {"saveRCLine"}, description = "dao should save line with routingConstraints",dependsOnMethods={"getBean"})
+   public void verifyImportLineWithRoutingConstraints() throws ChouetteException
+   {
+
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+      simpleParameterValue.setFilepathValue(path+"/"+neptuneRCFile);
+      parameters.add(simpleParameterValue);
+      SimpleParameterValue validate = new SimpleParameterValue("validate");
+      validate.setBooleanValue(false);
+      parameters.add(validate);
+
+      ReportHolder report = new ReportHolder();
+
+      List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
+
+      Assert.assertNotNull(lines,"lines can't be null");
+      Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
+      lineManager.saveAll(null, lines, true, true);
+      for(Line line : lines)
+      {
+         Assert.assertNotNull(line.getId(),"line's id can't be null");
+         Reporter.log(line.toString("\t",2));
+      }
+   }
+   
 	
 	@Test (groups = {"saveLines"}, description = "dao should save lines",dependsOnMethods={"getBean"})
 	public void verifyImportZipLines() throws ChouetteException

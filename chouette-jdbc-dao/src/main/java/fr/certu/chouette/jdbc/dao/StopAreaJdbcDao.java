@@ -15,6 +15,7 @@ import lombok.Setter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AreaCentroid;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -164,6 +165,15 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
          
          return;
       }
+      if (attributeKey.equals("routingconstraints"))
+      {
+
+         JdbcRoutingConstraint routing = (JdbcRoutingConstraint) attribute;
+         ps.setLong(1,routing.lineId);
+         ps.setLong(2,routing.stopAreaId);
+
+         return;
+      }
 
       super.populateAttributeStatement(attributeKey, ps, attribute);
 
@@ -186,6 +196,22 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
             }
             return parentChilds;
 	      }
+	      if (attributeKey.equals("routingconstraints"))
+	      {
+	         Collection<JdbcRoutingConstraint> routingConstraints = new ArrayList<JdbcRoutingConstraint>();
+	         if (item.getRoutingConstraintLines() != null)
+	         {
+	            for (Line routing : item.getRoutingConstraintLines())
+	            {
+	               JdbcRoutingConstraint object = new JdbcRoutingConstraint();
+	               object.lineId = routing.getId();
+	               object.stopAreaId = item.getId(); 
+	               routingConstraints.add(object);
+
+	            }
+	         }
+	         return routingConstraints;
+	      }
 
 	      return super.getAttributeValues(attributeKey, item);
 	   }
@@ -194,6 +220,11 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 	   {
 	      Long parentId;
 	      Long childId;
+	   }
+	   class JdbcRoutingConstraint
+	   {
+	      Long lineId;
+	      Long stopAreaId;
 	   }
 
 

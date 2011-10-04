@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import fr.certu.chouette.jdbc.dao.StopAreaJdbcDao.JdbcParentChild;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 
@@ -22,90 +21,41 @@ import fr.certu.chouette.model.neptune.StopArea;
 @SuppressWarnings("unchecked")
 public class LineJdbcDao extends AbstractJdbcDao<Line> 
 {
-	@Override
-	public List<Line> getAll() 
-	{
-		String sql = sqlSelectAll;
-		List<Line> lines = getJdbcTemplate().query(sql,
-				new BeanPropertyRowMapper(Line.class));
-
-		return lines;
-	}
-	
-	@Override
-	protected void populateStatement(PreparedStatement ps, Line line)
-			throws SQLException {
-		setId(ps,1,line.getPtNetwork());
-		setId(ps,2,line.getCompany());
-		ps.setString(3, line.getObjectId());
-		ps.setInt(4, line.getObjectVersion());
-		Timestamp timestamp = null;
-		if(line.getCreationTime() != null)
-			timestamp = new Timestamp(line.getCreationTime().getTime());
-		ps.setTimestamp(5, timestamp);
-		ps.setString(6, line.getCreatorId());
-		ps.setString(7, line.getName());
-		ps.setString(8, line.getNumber());
-		ps.setString(9, line.getPublishedName());
-		ps.setString(10, line.getTransportModeName().toString());
-		ps.setString(11, line.getRegistrationNumber());
-		ps.setString(12, line.getComment());
-		setId(ps,13,line.getGroupOfLine());
-		Boolean mobilityRS = false;
-		if(line.getMobilityRestrictedSuitable() != null)
-			mobilityRS = true;		
-		ps.setBoolean(14, mobilityRS);
-		ps.setLong(15, line.getUserNeedsAsLong());
-	}
-	
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement(java.lang.String, java.sql.PreparedStatement, java.lang.Object)
-    */
    @Override
-   protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) throws SQLException 
+   public List<Line> getAll() 
    {
+      String sql = sqlSelectAll;
+      List<Line> lines = getJdbcTemplate().query(sql,
+            new BeanPropertyRowMapper(Line.class));
 
-      if (attributeKey.equals("stopAreaStopArea"))
-      {
-         JdbcParentChild child = (JdbcParentChild) attribute;
-         ps.setLong(1,child.parentId);
-         ps.setLong(2,child.childId);
-         
-         return;
-      }
-
-      super.populateAttributeStatement(attributeKey, ps, attribute);
-
+      return lines;
    }
 
-     @Override
-      protected Collection<? extends Object> getAttributeValues(String attributeKey, Line item) 
-      {
-         if (attributeKey.equals("routingconstraints"))
-         {
-            Collection<JdbcRoutingConstraint> routingConstraints = new ArrayList<JdbcRoutingConstraint>();
-            if (item.getRoutingConstraints() != null)
-            for (StopArea routing : item.getRoutingConstraints())
-            {
-               JdbcRoutingConstraint object = new JdbcRoutingConstraint();
-               object.stopAreaId = routing.getId();
-               object.lineId = item.getId(); 
-               routingConstraints.add(object);
-               
-            }
-            return routingConstraints;
-         }
+   @Override
+   protected void populateStatement(PreparedStatement ps, Line line)
+   throws SQLException {
+      setId(ps,1,line.getPtNetwork());
+      setId(ps,2,line.getCompany());
+      ps.setString(3, line.getObjectId());
+      ps.setInt(4, line.getObjectVersion());
+      Timestamp timestamp = null;
+      if(line.getCreationTime() != null)
+         timestamp = new Timestamp(line.getCreationTime().getTime());
+      ps.setTimestamp(5, timestamp);
+      ps.setString(6, line.getCreatorId());
+      ps.setString(7, line.getName());
+      ps.setString(8, line.getNumber());
+      ps.setString(9, line.getPublishedName());
+      ps.setString(10, line.getTransportModeName().toString());
+      ps.setString(11, line.getRegistrationNumber());
+      ps.setString(12, line.getComment());
+      setId(ps,13,line.getGroupOfLine());
+      Boolean mobilityRS = false;
+      if(line.getMobilityRestrictedSuitable() != null)
+         mobilityRS = true;		
+      ps.setBoolean(14, mobilityRS);
+      ps.setLong(15, line.getUserNeedsAsLong());
+   }
 
-         return super.getAttributeValues(attributeKey, item);
-      }
-
-      class JdbcRoutingConstraint
-      {
-         Long lineId;
-         Long stopAreaId;
-      }
-
-
-   
 
 }

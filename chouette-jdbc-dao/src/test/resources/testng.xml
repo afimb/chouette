@@ -3,6 +3,7 @@
 <suite name="Factory" verbose="5" >
   <test name="ImportNeptune" >
   <parameter name="neptuneFile"  value="goodAFNORLineFile.xml"/>
+  <parameter name="neptuneRCFile"  value="C_CHOUETTE_52.xml"/>
   <parameter name="neptuneZip"  value="rennes.zip"/>
     <packages>
       <package name="fr.certu.chouette.jdbc.dao" >

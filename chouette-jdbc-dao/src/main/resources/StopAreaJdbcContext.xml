@@ -138,6 +138,33 @@
 						</entry>
 					</map>
 				</entry>
+				<entry key="routingconstraints">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectById">
+							<value>
+								SELECT * FROM ${database.schema}.routingconstraints_lines WHERE
+								stopAreaId = ? 
+								</value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>
+								INSERT INTO ${database.schema}.routingconstraints_lines
+								(
+								lineId,
+								stopareaId
+								)
+								VALUES(?, ?)
+								</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>
+								DELETE FROM ${database.schema}.routingconstraints_lines WHERE
+								stopAreaId IN (_IDS_)
+								 </value>
+						</entry>
+					</map>
+				</entry>
 			</map>
 		</property>
 	</bean>

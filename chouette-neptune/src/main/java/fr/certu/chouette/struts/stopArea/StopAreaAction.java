@@ -24,6 +24,7 @@ import fr.certu.chouette.common.ChouetteRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AreaCentroid;
+import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
@@ -43,6 +44,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    @Getter
    @Setter
    private INeptuneManager<PTNetwork> networkManager;
+   @Getter
+   @Setter
+   private INeptuneManager<Company> companyManager;
    @Setter
    @Getter
    private INeptuneManager<StopArea>  stopAreaManager;
@@ -757,7 +761,18 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       {
          filter2 = Filter.getNewIgnoreCaseLikeFilter(Line.NUMBER, lineCriteria.getNumber());
       }
-      Filter filter = Filter.getNewAndFilter(filter1, filter2);
+      Filter filter3 = null;
+      if (lineCriteria.getPtNetwork() != null && lineCriteria.getPtNetwork().getId() != null)
+      {
+         filter3 = Filter.getNewEqualsFilter(Line.PTNETWORK+"."+PTNetwork.ID, lineCriteria.getPtNetwork().getId());
+      }
+      Filter filter4 = null;
+      if (lineCriteria.getCompany() != null && lineCriteria.getCompany().getId() != null)
+      {
+         filter4 = Filter.getNewEqualsFilter(Line.COMPANY+"."+Company.ID, lineCriteria.getCompany().getId());
+      }
+      
+      Filter filter = Filter.getNewAndFilter(filter1,filter2,filter3,filter4);
       linesResultat = lineManager.getAll(null, filter);
 
       request.put("linesResultat", linesResultat);
@@ -987,5 +1002,14 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
    public void setBoardingPositionName(String boardingPositionName)
    {
       this.boardingPositionName = boardingPositionName;
+   }
+   
+   public List<PTNetwork> getNetworks() throws ChouetteException
+   {
+      return networkManager.getAll(null);
+   }
+   public List<Company> getCompanies() throws ChouetteException
+   {
+      return companyManager.getAll(null);
    }
 }
