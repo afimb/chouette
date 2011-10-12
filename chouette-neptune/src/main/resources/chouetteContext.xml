@@ -117,6 +117,7 @@
 		<property name="lineManager" ref="lineManager" />
 		<property name="networkManager" ref="networkManager" />
 		<property name="useGtfs" value="${network.gtfs}" />
+		<property name="gtfsTimezone" value="${export.gtfs.timezone}" />
 		<property name="useGeoportail" value="${network.geoportail}" />
 	</bean>
 

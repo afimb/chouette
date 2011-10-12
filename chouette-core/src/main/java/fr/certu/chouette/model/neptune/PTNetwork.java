@@ -74,7 +74,7 @@ public class PTNetwork extends NeptuneIdentifiedObject
 	/**
 	 * List of the network lines <br/>
 	 * After import, may content only lines imported<br/>
-	 * Meaningless after database loading
+	 * readable from database but not updatable 
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private List<Line>				lines;

@@ -2222,13 +2222,21 @@ public class Command
 		List<String> lines = FileUtils.readLines(f);
 		List<CommandArgument> commands = new ArrayList<CommandArgument>();
 		int linenumber=1;
-		for (String line : lines) 
+		for (int i = 0; i < lines.size(); i++) 
 		{
-			line = line.trim();
+			String line = lines.get(i).trim();
 			if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) break;
 			if (!line.isEmpty() && !line.startsWith("#"))
 			{
-				CommandArgument command = parseLine(linenumber++, line);
+			   int number = linenumber++;
+			   while (line.endsWith("\\"))
+			   {
+			      line = line.substring(0, line.length()-1);
+			      i++;
+			      if (i < lines.size()) 
+			        line += lines.get(i).trim();
+			   }
+				CommandArgument command = parseLine(number, line);
 				if (command != null)
 				{
 					if (command.getName().equalsIgnoreCase("include"))

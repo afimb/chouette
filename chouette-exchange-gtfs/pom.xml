@@ -9,15 +9,12 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-exchange-gtfs</artifactId>
 	<name>Chouette Exchange GTFS</name>
+	<version>1.7.0-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette.schema</groupId>
-			<artifactId>chouette-castor-neptune</artifactId>
 		</dependency>
 
 		<dependency>
@@ -52,7 +49,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<version>1.7.0-SNAPSHOT</version>
 	<build>
 		<resources>
 			<resource>

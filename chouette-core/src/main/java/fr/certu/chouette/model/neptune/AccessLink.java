@@ -263,6 +263,33 @@ public class AccessLink extends NeptuneIdentifiedObject{
 			return null;
 		}
 	}
+	
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
+   @Override
+   public void complete()
+   {
+      if (isCompleted()) return;
+      super.complete();
+      if (getLinkOrientation() != null)
+      {
+         if (getLinkOrientation().equals(LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA))
+         {
+            if (getAccessPoint() != null)
+               setStartOfLinkId(getAccessPoint().getObjectId());
+            if (getStopArea() != null)
+               setEndOfLinkId(getStopArea().getObjectId());
+         }
+         else if (getLinkOrientation().equals(LinkOrientationEnum.STOPAREA_TO_ACCESSPOINT))
+         {
+            if (getAccessPoint() != null)
+               setEndOfLinkId(getAccessPoint().getObjectId());
+            if (getStopArea() != null)
+               setStartOfLinkId(getStopArea().getObjectId());
+         }
+      }
+   }
 
 
 }

@@ -177,41 +177,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	@Override
 	public void completeObject(User user, Route route) throws ChouetteException 
 	{
-		List<StopPoint> stopPoints = route.getStopPoints();
-		if (stopPoints != null && !stopPoints.isEmpty())
-		{
-			// generate PtLinks
-			List<PTLink> ptLinks = route.getPtLinks();
-			if (ptLinks == null || ptLinks.isEmpty())
-			{
-				route.rebuildPTLinks();
-			}
-			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-			for (StopPoint stopPoint : stopPoints) 
-			{
-				stopPointManager.completeObject(user, stopPoint);
-			}
-		}
-
-		List<PTLink> ptLinks = route.getPtLinks();
-		if (ptLinks != null)
-		{
-			for (PTLink ptLink : ptLinks) 
-			{
-				
-				route.addPTLinkId(ptLink.getObjectId());
-			}
-		}
-
-		List<JourneyPattern> jps = route.getJourneyPatterns();
-		if (jps != null && !jps.isEmpty())
-		{
-			INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
-			for (JourneyPattern journeyPattern : jps) 
-			{
-				jpManager.completeObject(user, journeyPattern);
-			}
-		}
+		route.complete();
 
 	}
 	@Transactional

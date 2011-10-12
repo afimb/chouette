@@ -233,51 +233,14 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
       return;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.manager.AbstractNeptuneManager#completeObject(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+    */
    @Override
    public void completeObject(User user, StopArea stopArea)
    throws ChouetteException 
    {
-      if (stopArea.getContainedStopIds() != null) return ; // already completed
-      List<StopPoint> containsPoints = stopArea.getContainedStopPoints();
-      if (containsPoints != null && !containsPoints.isEmpty())
-      {
-         for (StopPoint child : containsPoints) 
-         {
-            stopArea.addContainedStopId(child.getObjectId());
-         }
-      }
-      List<StopArea> containsAreas = stopArea.getContainedStopAreas();
-      if (containsAreas != null && !containsAreas.isEmpty())
-      {
-         for (StopArea child : containsAreas) 
-         {
-            stopArea.addContainedStopId(child.getObjectId());
-         }
-      }
-      if (stopArea.getParents() != null)
-      {
-         for (StopArea parent : stopArea.getParents())
-         {
-            completeObject(user, parent);
-         }
-         
-      }
-      if (stopArea.getAreaCentroid() != null)
-      {
-         AreaCentroid centroid = stopArea.getAreaCentroid();
-         if (centroid.getObjectId() == null)
-         {
-            String[] ids = stopArea.getObjectId().split(":");
-            centroid.setObjectId(ids[0]+":"+NeptuneIdentifiedObject.AREACENTROID_KEY+":"+ids[2]);
-
-         }
-         centroid.setCreationTime(stopArea.getCreationTime());
-         centroid.setObjectVersion(stopArea.getObjectVersion());
-         centroid.setContainedInStopArea(stopArea);
-         centroid.setContainedInStopAreaId(stopArea.getObjectId());
-         centroid.setName(stopArea.getName());
-         stopArea.setAreaCentroidId(stopArea.getAreaCentroid().getObjectId());
-      }
+      stopArea.complete();
    }
 
 

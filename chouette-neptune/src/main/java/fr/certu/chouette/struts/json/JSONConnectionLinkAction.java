@@ -8,31 +8,31 @@ import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.json.data.JSONStopArea;
 
 @SuppressWarnings("serial")
 public class JSONConnectionLinkAction extends GeneriqueAction
 {
 
    @Getter @Setter private Long connectionLinkId;
-   private INeptuneManager<ConnectionLink> connectionLinkManager;
+   @Setter private INeptuneManager<ConnectionLink> connectionLinkManager;
 
 
-   public Set<StopArea> getStopPlaces()
+   public Set<JSONStopArea> getStopPlaces()
    {
       try
       {
          ConnectionLink connectionLink;
          connectionLink = connectionLinkManager.getById(connectionLinkId);
-         Set<StopArea> stopPlaces = new HashSet<StopArea>();
+         Set<JSONStopArea> stopPlaces = new HashSet<JSONStopArea>();
          if (connectionLink.getStartOfLink() != null)
          {
-            stopPlaces.add(connectionLink.getStartOfLink());
+            stopPlaces.add(new JSONStopArea(connectionLink.getStartOfLink()));
          }
          if (connectionLink.getEndOfLink() != null)
          {
-            stopPlaces.add(connectionLink.getEndOfLink());
+            stopPlaces.add(new JSONStopArea(connectionLink.getEndOfLink()));
          }
          return stopPlaces;
       }

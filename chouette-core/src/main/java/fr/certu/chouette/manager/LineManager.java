@@ -301,57 +301,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void completeObject(User user, Line line) throws ChouetteException 
 	{
-		//ptNetworkShortcut
-		PTNetwork ptNetwork = line.getPtNetwork();
-		if(ptNetwork != null)
-			line.setPtNetworkIdShortcut(ptNetwork.getObjectId());
-		//lineEndIds
-		if (line.getGroupOfLine() != null)
-		{
-			line.getGroupOfLine().addLine(line);
-			line.getGroupOfLine().addLineId(line.getObjectId());
-		}
-
-		List<Route> routes = line.getRoutes();
-		if (routes != null)
-		{
-			INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
-			for (Route route : routes) 
-			{
-				routeManager.completeObject(user, route);
-				if (route.getPtLinks() != null)
-				{
-					Set<String> startStopPoints = new HashSet<String>();
-					Set<String> endStopPoints = new HashSet<String>();
-					for (PTLink link : route.getPtLinks()) 
-					{
-						if (link.getStartOfLink() != null)
-							startStopPoints.add(link.getStartOfLink().getObjectId());
-						if (link.getEndOfLink() != null)
-							endStopPoints.add(link.getEndOfLink().getObjectId());
-					}
-					for (PTLink link : route.getPtLinks()) 
-					{
-						StopPoint start = link.getStartOfLink();
-						if (start != null)
-						{
-							if (!endStopPoints.contains(start.getObjectId()))
-							{
-								line.addLineEnd(start.getObjectId());
-							}
-						}
-						StopPoint end = link.getStartOfLink();
-						if (end != null)
-						{
-							if (!startStopPoints.contains(end.getObjectId()))
-							{
-								line.addLineEnd(end.getObjectId());
-							}
-						}
-					}
-				}
-			}
-		}
+	   line.complete();
 	}
 	@Transactional
 	@Override

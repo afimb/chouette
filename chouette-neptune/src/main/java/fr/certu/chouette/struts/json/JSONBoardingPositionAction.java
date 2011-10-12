@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.user.User;
@@ -27,14 +28,16 @@ public class JSONBoardingPositionAction extends GeneriqueAction
       try
       {
          List<StopArea> boardingPositionsOnRoute;
-         boardingPositionsOnRoute = stopAreaManager.getAll(user ,StopArea.physicalStopsFilter);
+         Filter filter = Filter.getNewAndFilter(StopArea.physicalStopsFilter,
+               Filter.getNewIgnoreCaseLikeFilter(StopArea.NAME, boardingPositionName));
+         boardingPositionsOnRoute = stopAreaManager.getAll(user ,filter);
 
          Map<Long,String> result = new HashMap<Long,String>();
          for (StopArea positionGeographique : boardingPositionsOnRoute)
          {
-            String name = positionGeographique.getName();
-            if (name.contains(boardingPositionName))
-               result.put(positionGeographique.getId(), positionGeographique.getName());
+            // String name = positionGeographique.getName();
+            //  if (name.contains(boardingPositionName))
+            result.put(positionGeographique.getId(), positionGeographique.getName());
          }
 
          return result;

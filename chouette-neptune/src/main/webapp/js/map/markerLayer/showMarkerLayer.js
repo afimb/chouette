@@ -46,7 +46,7 @@ Chouette.Map.initShowMarkerLayer = function(url){
         {
           var showMarkerLayer = Chouette.Map.map.getLayersByName("Show Marker Layer")[0];
           var markPoint = new OpenLayers.Geometry.Point(area.areaCentroid.longitude, area.areaCentroid.latitude);
-          var markPointXY = markPoint.transform(Chouette.Map.wgsProjection,Chouette.Map.baseLayerProjection)
+          var markPointXY = markPoint.transform(Chouette.Map.wgsProjection,Chouette.Map.baseLayerProjection);
 
           bounds.extend(markPointXY);
           var mark = new OpenLayers.Feature.Vector(markPointXY, {

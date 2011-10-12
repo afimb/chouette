@@ -183,32 +183,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
    @Override
    public void completeObject(User user, StopPoint stopPoint) throws ChouetteException 
    {
-      PTNetwork ptNetwork = stopPoint.getPtNetwork();
-      if(ptNetwork != null)
-         stopPoint.setPtNetworkIdShortcut(ptNetwork.getObjectId());
-      Line line = stopPoint.getLine();
-      if(line != null)
-         stopPoint.setLineIdShortcut(line.getObjectId());
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
-      StopArea area = stopPoint.getContainedInStopArea(); 	
-      if (area != null)
-      {
-         area.addContainedStopPoint(stopPoint);
-         stopAreaManager.completeObject(user, area);
-         AreaCentroid centroid = area.getAreaCentroid();
-         if (centroid != null)
-         {
-            stopPoint.setLatitude(centroid.getLatitude());
-            stopPoint.setLongitude(centroid.getLongitude());
-            stopPoint.setLongLatType(centroid.getLongLatType());
-            stopPoint.setProjectedPoint(centroid.getProjectedPoint());
-         }
-         else
-         {
-            logger.error("stopPoint "+stopPoint.getObjectId()+" has an area without centroid "+area.getObjectId()); 
-         }
-         stopPoint.setName(area.getName());
-      }
+      stopPoint.complete();
    }
    @Transactional
    @Override

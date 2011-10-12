@@ -27,6 +27,10 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-exchange-gtfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-validation</artifactId>
 		</dependency>
 		<dependency>

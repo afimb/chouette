@@ -6,6 +6,9 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -13,6 +16,9 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 public class StopPoint extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = -4913573673645997423L;
+	
+	private static final Logger logger = Logger.getLogger(StopPoint.class);
+	
 	@Getter @Setter private Address address;
 	@Getter @Setter private LongLatTypeEnum longLatType;
 	@Getter @Setter private BigDecimal latitude;
@@ -79,4 +85,38 @@ public class StopPoint extends NeptuneIdentifiedObject
 
 		return sb.toString();
 	}
+	
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
+   @Override
+   public void complete()
+   {
+      if (isCompleted()) return;
+      super.complete();
+      PTNetwork ptNetwork = getPtNetwork();
+      if(ptNetwork != null)
+         setPtNetworkIdShortcut(ptNetwork.getObjectId());
+      Line line = getLine();
+      if(line != null)
+         setLineIdShortcut(line.getObjectId());
+      StopArea area = getContainedInStopArea();   
+      if (area != null)
+      {
+         area.complete();
+         AreaCentroid centroid = area.getAreaCentroid();
+         if (centroid != null)
+         {
+            setLatitude(centroid.getLatitude());
+            setLongitude(centroid.getLongitude());
+            setLongLatType(centroid.getLongLatType());
+            setProjectedPoint(centroid.getProjectedPoint());
+         }
+         else
+         {
+            logger.error("stopPoint "+getObjectId()+" has an area without centroid "+area.getObjectId()); 
+         }
+         setName(area.getName());
+      }
+   }
 }

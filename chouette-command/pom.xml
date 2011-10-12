@@ -25,6 +25,14 @@
 			<artifactId>chouette-exchange-csv</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-exchange-gtfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-export-geoportail</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>fr.certu.chouette.schema</groupId>
 			<artifactId>chouette-castor-neptune</artifactId>
 		</dependency>

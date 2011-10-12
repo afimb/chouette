@@ -11,6 +11,6 @@ Chouette.Map.init = function(){
   Chouette.Map.initEditMarkerLayer("boardingPosition");
   Chouette.Map.updateEditMarker();
   Chouette.Map.zoomOnMarker();
-}
+};
 
 window.onload = Chouette.Map.init;

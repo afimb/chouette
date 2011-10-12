@@ -37,5 +37,10 @@
     <property name="sourceName"/>
     <property name="sourceIdentifier"/>
     <property name="comment"/>
+    		<bag name="lines" lazy="true" inverse="true" >
+			<key column="PTNetworkId" foreign-key="line_ptnetwork_fkey" update="false" on-delete="noaction"/>
+			<one-to-many class="Line" />
+		</bag>
+    
   </class>
 </hibernate-mapping>

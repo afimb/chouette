@@ -440,6 +440,26 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       return sb.toString();
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
+   @Override
+   public void complete()
+   {
+      if (isCompleted()) return;
+      super.complete();
+      Line line = getLine();
+      if(line != null)
+         setLineIdShortcut(line.getObjectId());
+
+      List<VehicleJourneyAtStop> vjass = getVehicleJourneyAtStops();
+      for (int i = 0; i < vjass.size(); i++)
+      {
+         VehicleJourneyAtStop vjas = vjass.get(i);
+         vjas.setVehicleJourney(this);
+         vjas.setVehicleJourneyId(this.getObjectId());
+      }
+   }
 
    /**
     * compare VehicleJourneyAtStop on StoPoint position in route

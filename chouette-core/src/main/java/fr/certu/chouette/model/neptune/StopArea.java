@@ -738,4 +738,56 @@ public class StopArea extends NeptuneIdentifiedObject
 
       return sb.toString();
    }
+   
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
+   @Override
+   public void complete()
+   {
+      if (isCompleted()) return;
+      super.complete();
+      List<StopPoint> containsPoints = getContainedStopPoints();
+      if (containsPoints != null && !containsPoints.isEmpty())
+      {
+         for (StopPoint child : containsPoints) 
+         {
+            addContainedStopId(child.getObjectId());
+         }
+      }
+      List<StopArea> containsAreas = getContainedStopAreas();
+      if (containsAreas != null && !containsAreas.isEmpty())
+      {
+         for (StopArea child : containsAreas) 
+         {
+            addContainedStopId(child.getObjectId());
+         }
+      }
+      if (getParents() != null)
+      {
+         for (StopArea parent : getParents())
+         {
+            parent.complete();
+         }
+         
+      }
+      if (getAreaCentroid() != null)
+      {
+         AreaCentroid centroid = getAreaCentroid();
+         if (centroid.getObjectId() == null)
+         {
+            String[] ids = getObjectId().split(":");
+            centroid.setObjectId(ids[0]+":"+NeptuneIdentifiedObject.AREACENTROID_KEY+":"+ids[2]);
+
+         }
+         centroid.setCreationTime(getCreationTime());
+         centroid.setObjectVersion(getObjectVersion());
+         centroid.setContainedInStopArea(this);
+         centroid.setContainedInStopAreaId(getObjectId());
+         centroid.setName(getName());
+         setAreaCentroidId(getAreaCentroid().getObjectId());
+      }
+      
+      // TODO connectionlinks and accesslinks ? 
+   }
 }

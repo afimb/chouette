@@ -36,7 +36,7 @@
 		<property name="comment" />
 		 
 		<bag name="lines" lazy="true" inverse="true">
-			<key column="groupOfLineId" />
+			<key column="groupOfLineId" foreign-key="line_glines_fkey"/>
 			<one-to-many class="Line"/>
 		</bag>
 		 

@@ -569,5 +569,69 @@ public class Line extends NeptuneIdentifiedObject
 			}	
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+	 */
+	@Override
+	public void complete()
+	{
+	   if (isCompleted()) return;
+	   super.complete();
+	     //ptNetworkShortcut
+      PTNetwork ptNetwork = getPtNetwork();
+      if(ptNetwork != null)
+      {
+         setPtNetworkIdShortcut(ptNetwork.getObjectId());
+      }
+      
+      // groupOfLine
+      if (getGroupOfLine() != null)
+      {
+         getGroupOfLine().addLineId(getObjectId());
+      }
+
+      //lineEndIds
+      List<Route> routes = getRoutes();
+      if (routes != null)
+      {
+         for (Route route : routes) 
+         {
+            route.complete();
+            if (route.getPtLinks() != null)
+            {
+               Set<String> startStopPoints = new HashSet<String>();
+               Set<String> endStopPoints = new HashSet<String>();
+               for (PTLink link : route.getPtLinks()) 
+               {
+                  if (link.getStartOfLink() != null)
+                     startStopPoints.add(link.getStartOfLink().getObjectId());
+                  if (link.getEndOfLink() != null)
+                     endStopPoints.add(link.getEndOfLink().getObjectId());
+               }
+               for (PTLink link : route.getPtLinks()) 
+               {
+                  StopPoint start = link.getStartOfLink();
+                  if (start != null)
+                  {
+                     if (!endStopPoints.contains(start.getObjectId()))
+                     {
+                        addLineEnd(start.getObjectId());
+                     }
+                  }
+                  StopPoint end = link.getStartOfLink();
+                  if (end != null)
+                  {
+                     if (!startStopPoints.contains(end.getObjectId()))
+                     {
+                        addLineEnd(end.getObjectId());
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+	}
 
 }

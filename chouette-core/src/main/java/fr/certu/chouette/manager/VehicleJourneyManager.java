@@ -48,18 +48,7 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	@Override
 	public void completeObject(User user, VehicleJourney vehicleJourney) throws ChouetteException
 	{
-		Line line = vehicleJourney.getLine();
-		if(line != null)
-			vehicleJourney.setLineIdShortcut(line.getObjectId());
-
-		// vehicleJourney.sortVehicleJourneyAtStops();
-		List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
-		for (int i = 0; i < vjass.size(); i++)
-		{
-			VehicleJourneyAtStop vjas = vjass.get(i);
-			vjas.setVehicleJourney(vehicleJourney);
-			vjas.setVehicleJourneyId(vehicleJourney.getObjectId());
-		}
+		vehicleJourney.complete();
 	} 
 	@Transactional
 	@Override

@@ -141,4 +141,40 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		}
 		return true;
 	}
+	
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
+   @Override
+   public void complete()
+   {
+      if (isCompleted()) return;
+      super.complete();
+      Route route = getRoute();
+      if(route != null)
+      {
+         Line line = route.getLine();
+         if(line != null)
+            setLineIdShortcut(line.getObjectId());
+      }
+      List<StopPoint> stopPoints = getStopPoints();
+      List<VehicleJourney> vjs = getVehicleJourneys();
+      if (vjs != null && !vjs.isEmpty())
+      {
+         // complete StopPoints
+         if (stopPoints == null || stopPoints.isEmpty())
+         {
+            VehicleJourney vj = vjs.get(0);
+            for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) 
+            {
+               addStopPoint(vjas.getStopPoint());
+            }
+         }
+         // complete VJ
+         for (VehicleJourney vehicleJourney : vjs) 
+         {
+            vehicleJourney.complete();
+         }
+      }
+   }
 }

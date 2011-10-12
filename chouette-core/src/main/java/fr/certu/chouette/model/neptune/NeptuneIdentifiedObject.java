@@ -76,6 +76,11 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	@Getter @Setter private String name; // BD
 
 	/**
+	 * indicated if object is completed for export purpose
+	 */
+	@Getter private boolean completed = false;
+	
+	/**
 	 * Clean object dependencies : if children objects are not clean, they are dereferenced.
 	 * <br/>
 	 * This method is available for export purpose 
@@ -107,6 +112,14 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 		return s;
 	}
 
+	/**
+	 * default complete action : do nothing
+	 */
+	public void complete()
+	{
+	   completed = true;
+	}
+	
 	/**
 	 * Build a list of Neptune Ids (ObjectId) from a list of Neptune Objects 
 	 * 

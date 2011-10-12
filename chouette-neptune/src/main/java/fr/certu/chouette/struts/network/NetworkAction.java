@@ -2,7 +2,9 @@ package fr.certu.chouette.struts.network;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.zip.ZipOutputStream;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
@@ -62,6 +65,9 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
    @Getter
    @Setter
    private String                     useGeoportail;
+   @Getter
+   @Setter private String             gtfsTimezone;
+
    private User user = null;
 
 
@@ -168,48 +174,24 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
       return INPUT;
    }
 
-//   private void write(List<ILectureEchange> lecturesEchanges, String _nomFichier, ZipOutputStream zipOutputStream,
-//         int type) throws IOException
-//   {
-//      String extenstion = null;
-//      if (type == GTFS)
-//      {
-//         extenstion = ".txt";
-//      }
-//      else if (type == GEOPORTAIL)
-//      {
-//         extenstion = ".csv";
-//      }
-//      File _temp = File.createTempFile(_nomFichier, extenstion);
-//      _temp.deleteOnExit();
-//      if (type == GTFS)
-//      {
-//         gtfsFileWriter.write(lecturesEchanges, _temp, _nomFichier);
-//      }
-//      else if (type == GEOPORTAIL)
-//      {
-//         geoportailFileWriter.write(lecturesEchanges, _temp, _nomFichier);
-//      }
-//      zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + extenstion));
-//      byte[] bytes = new byte[(int) _temp.length()];
-//      FileInputStream fis = new FileInputStream(_temp);
-//      fis.read(bytes);
-//      zipOutputStream.write(bytes);
-//      zipOutputStream.flush();
-//   }
 
    @SkipValidation
    public String exportChouette() throws Exception
    {
       try
       {
-         String exportModeStr = exportMode.toString();
-         log.debug("Export " + exportModeStr + " : toutes les lignes du reseau : " + idReseau);
+
+         log.debug("Export " + exportMode + " : toutes les lignes du reseau : " + idReseau);
+         if ("GEOPORTAIL".equals(exportMode))
+         {
+            return exportGeoportail();
+         }
+
          List<FormatDescription> formats = lineManager.getExportFormats(user);
          boolean found = false;
          for (FormatDescription formatDescription : formats)
          {
-            if (formatDescription.getName().equals(exportModeStr))
+            if (formatDescription.getName().equals(exportMode))
             {
                found = true;
                break;
@@ -235,17 +217,20 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
             }
          }
          String id = "reseau_" + idReseau;
-         temp = File.createTempFile("export" + exportModeStr, ".zip");
+         temp = File.createTempFile("export" + exportMode, ".zip");
          temp.deleteOnExit();
-         nomFichier = "C_" + exportModeStr + "_" + id + ".zip";
-         if ("GEOPORTAIL".equals(exportModeStr))
+         nomFichier = "C_" + exportMode + "_" + id + ".zip";
+         if ("GTFS".equals(exportMode))
          {
             List<ParameterValue> parameters = new ArrayList<ParameterValue>();
             SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
-            parameters.add(outputFile);
-            
-            ReportHolder report = new ReportHolder();
             outputFile.setFilepathValue(temp.getAbsolutePath());
+            parameters.add(outputFile);
+            SimpleParameterValue timeZone = new SimpleParameterValue("timeZone");
+            timeZone.setStringValue(gtfsTimezone);
+            parameters.add(timeZone);
+
+            ReportHolder report = new ReportHolder();
             lineManager.doExport(user  , lignes, exportMode, parameters, report );
             if (! report.getReport().getStatus().equals(Report.STATE.OK))
             {
@@ -256,191 +241,13 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
                Report.print(stream,report.getReport(),true);
 
             }
-//            List<ILectureEchange> lecturesEchanges = new ArrayList<ILectureEchange>();
-//            for (Line ligne : lignes)
-//            {
-//               lecturesEchanges.add(lecteurEchangeXML.lire(exportManager.getExportParIdLigne(ligne.getId())));
-//            }
-//            write(lecturesEchanges, "aot", zipOutputStream, GEOPORTAIL);
-//            write(lecturesEchanges, "chouette_metadata", zipOutputStream, GEOPORTAIL);
-//            write(lecturesEchanges, "pictos", zipOutputStream, GEOPORTAIL);
-//            write(lecturesEchanges, "tc_points", zipOutputStream, GEOPORTAIL);
-//            /*******************************************************************************************/
-//            Set<String> regs = new HashSet<String>();
-//            for (ILectureEchange lectureEchange : lecturesEchanges)
-//            {
-//               Reseau reseau = lectureEchange.getReseau();
-//               if (reseau == null)
-//               {
-//                  continue;
-//               }
-//               String reg = reseau.getRegistrationNumber();
-//               if (!regs.add(reg))
-//               {
-//                  continue;
-//               }
-//               String _tempName = System.getProperty("export.geoportail.readme." + reg);
-//               File _temp = null;
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Readme.txt"));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.noreadme") + " " + reseau.getName());
-//               }
-//               _tempName = System.getProperty("export.geoportail.logoFile." + reg);
-//               _temp = null;
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Logos" + File.separator + _temp.getName()));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.nologo") + " " + reseau.getName());
-//               }
-//               _tempName = System.getProperty("export.geoportail.pictos.pointaccess." + reg);
-//               _temp = null;
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.noptaccess") + " " + reseau.getName());
-//               }
-//               _tempName = System.getProperty("export.geoportail.pictos.pointembarquement." + reg);
-//               _temp = null;
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.noboarding") + " " + reseau.getName());
-//               }
-//               _temp = null;
-//               _tempName = System.getProperty("export.geoportail.pictos.poleechange." + reg);
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.noplace") + " " + reseau.getName());
-//               }
-//               _temp = null;
-//               _tempName = System.getProperty("export.geoportail.pictos.quai." + reg);
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.noquay") + " " + reseau.getName());
-//               }
-//               _temp = null;
-//               _tempName = System.getProperty("export.geoportail.pictos.zonecommerciale." + reg);
-//               if (_tempName != null)
-//               {
-//                  _temp = new File(_tempName);
-//                  if (_temp.exists())
-//                  {
-//                     zipOutputStream.putNextEntry(new ZipEntry("Pictos" + File.separator + _temp.getName()));
-//                     byte[] bytes = new byte[(int) _temp.length()];
-//                     FileInputStream fis = new FileInputStream(_temp);
-//                     fis.read(bytes);
-//                     zipOutputStream.write(bytes);
-//                     zipOutputStream.flush();
-//                  }
-//               }
-//               else
-//               {
-//                  addActionError(getText("reseau.export.geoportail.nocommercial") + " " + reseau.getName());
-//               }
-//            }
-            addActionMessage(getText("reseau.export.geoportail.ok"));
-            /*******************************************************************************************/
-         }
-         else if ("GTFS".equals(exportModeStr))
-         {
-            List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-            SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
-            parameters.add(outputFile);
-            
-            ReportHolder report = new ReportHolder();
-            outputFile.setFilepathValue(temp.getAbsolutePath());
-            lineManager.doExport(user  , lignes, exportMode, parameters, report );
-            if (! report.getReport().getStatus().equals(Report.STATE.OK))
-            {
-               if (temp.exists() )temp.delete();
-               nomFichier = "C_INVALIDE_" + exportMode + "_" + id ;
-               temp = File.createTempFile(nomFichier, ".txt");
-               PrintStream stream = new PrintStream(temp);
-               Report.print(stream,report.getReport(),true);
 
-            }
-            
             addActionMessage(getText("reseau.export.gtfs.ok"));
          }
          else
          {
-          ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
-          zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
+            ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));
+            zipOutputStream.setLevel(ZipOutputStream.DEFLATED);
             List<ParameterValue> parameters = new ArrayList<ParameterValue>();
             SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
             parameters.add(outputFile);
@@ -452,7 +259,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
                String _nomFichier = "C_" + exportMode + "_" + id + "_" + ligne.getId();
                File _temp = File.createTempFile(_nomFichier, ".xml");
                outputFile.setFilepathValue(_temp.getAbsolutePath());
-               
+
                lineManager.doExport(user  , beans, exportMode, parameters, report );
                if (! report.getReport().getStatus().equals(Report.STATE.OK))
                {
@@ -481,6 +288,224 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
          return REDIRECTLIST;
       }
       return EXPORT;
+   }
+
+   /**
+    * @param id
+    * @throws ChouetteException
+    * @throws IOException
+    * @throws FileNotFoundException
+    */
+   private String  exportGeoportail() throws ChouetteException, IOException, FileNotFoundException
+   {
+      List<FormatDescription> formats = lineManager.getExportFormats(user);
+      boolean found = false;
+      for (FormatDescription formatDescription : formats)
+      {
+         if (formatDescription.getName().equals(exportMode))
+         {
+            found = true;
+            break;
+         }
+      }
+      if (!found)
+      {
+         // unknown format; send error
+         return REDIRECTLIST;
+      }
+      PTNetwork network = networkManager.getById(idReseau);
+      if (network.getLines() == null || network.getLines().isEmpty())
+      {
+         addActionMessage(getText("export.network.noline") + " " + network.getName());
+         return REDIRECTLIST;
+      }
+
+      String id = "reseau_" + idReseau;
+      temp = File.createTempFile("exportGEOPORTAIL",".zip");
+      temp.deleteOnExit();
+      nomFichier = "C_GEOPORTAIL_" + id + ".zip";
+      String propertyValue = null;
+
+
+
+      List<PTNetwork> networks = new ArrayList<PTNetwork>();
+      networks.add(network);
+      String reg = network.getRegistrationNumber();
+      if (reg == null)
+      {
+         addActionError(getText("reseau.export.geoportail.noreg"));
+         return REDIRECTLIST;
+      }
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
+      parameters.add(outputFile);
+      boolean error = false;
+      // logo file
+      error |= addFilePathParameter(network, reg, parameters,"logoFile","logoFile");
+      // aotURL 
+      error |= addStringParameter(network, reg, parameters, "aotURL", "url");
+      //      legalInformation (optionnel)
+      addStringParameter(network, reg, parameters, "legalInformation", "legal_information");
+      //      legalInformationURL (optionnel)
+      addStringParameter(network, reg, parameters, "legalInformationURL", "url_legal_information");
+      //      aotAddress 
+      error |= addStringParameter(network, reg, parameters, "aotAddress", "address");
+      //      aotEmail 
+      error |= addStringParameter(network, reg, parameters, "aotEmail", "email");
+      //      aotPhone 
+      error |= addStringParameter(network, reg, parameters, "aotPhone", "telephone");
+      //      readMe
+      propertyValue = System.getProperty("export.geoportail.readme." + reg);
+      if (propertyValue == null)
+      {
+         error = true;
+         addActionError(getText("reseau.export.geoportail.noreadme") + " " + network.getName());
+      }
+      {
+         SimpleParameterValue parameter = new SimpleParameterValue("readMe");
+         parameters.add(parameter);
+         try
+         {
+            parameter.setFilepathValue(FileUtils.readFileToString(new File(propertyValue)));
+         }
+         catch (IOException e)
+         {
+            log.error("cannot read "+propertyValue,e);
+            addActionError(getText("reseau.export.geoportail.errreadme") + " " + network.getName());
+            error = true;
+         }
+      }
+      //      stopNote 
+      error |= addStringParameter(network, reg, parameters, "stopNote", "usernote1");
+      //      accessNote 
+      error |= addStringParameter(network, reg, parameters, "accessNote", "usernote2");
+      //      quayPicto
+      error |= addFilePathParameter(network, reg, parameters, "quayPicto", "pictos.quai");
+      //      quayPictoMinScale 
+      error |= addIntegerParameter(network, reg, parameters, "quayPictoMinScale", "minscale1");
+      //      quayPictoMaxScale 
+      error |= addIntegerParameter(network, reg, parameters, "quayPictoMaxScale", "maxscale");
+      //      boardingPositionPicto
+      error |= addFilePathParameter(network, reg, parameters, "boardingPositionPicto", "pictos.pointembarquement");
+      //      boardingPositionPictoMinScale 
+      error |= addIntegerParameter(network, reg, parameters, "boardingPositionPictoMinScale", "minscale2");
+      //      boardingPositionPictoMaxScale "export.geoportail.maxscale2."+reg
+      error |= addIntegerParameter(network, reg, parameters, "boardingPositionPictoMaxScale", "maxscale2");
+      //      commercialStopPointPicto
+      error |= addFilePathParameter(network, reg, parameters, "commercialStopPointPicto", "pictos.zonecommerciale");
+      //      commercialStopPointPictoMinScale "export.geoportail.minscale3."+reg
+      error |= addIntegerParameter(network, reg, parameters, "commercialStopPointPictoMinScale", "minscale3");
+      //      commercialStopPointPictoMaxScale "export.geoportail.maxscale3."+reg
+      error |= addIntegerParameter(network, reg, parameters, "commercialStopPointPictoMaxScale", "maxscale3");
+      //      stopPlacePicto
+      error |= addFilePathParameter(network, reg, parameters, "stopPlacePicto", "pictos.poleechange");
+      //      stopPlacePictoMinScale "export.geoportail.minscale4."+reg
+      error |= addIntegerParameter(network, reg, parameters, "stopPlacePictoMinScale", "minscale4");
+      //      stopPlacePictoMaxScale "export.geoportail.maxscale4."+reg
+      error |= addIntegerParameter(network, reg, parameters, "stopPlacePictoMaxScale", "maxscale4");
+      //      accessPointPicto
+      error |= addFilePathParameter(network, reg, parameters, "accessPointPicto", "pictos.pointaccess");
+      //      accessPointPictoMinScale "export.geoportail.minscale5."+reg
+      error |= addIntegerParameter(network, reg, parameters, "accessPointPictoMinScale", "minscale5");
+      //      accessPointPictoMaxScale "export.geoportail.maxscale5."+reg
+      error |= addIntegerParameter(network, reg, parameters, "accessPointPictoMaxScale", "maxscale5");
+
+      if (error) 
+      {
+         addActionError(getText("reseau.export.geoportail.ko"));
+         return REDIRECTLIST;
+      }
+
+      ReportHolder report = new ReportHolder();
+      outputFile.setFilepathValue(temp.getAbsolutePath());
+      networkManager.doExport(user  , networks, exportMode, parameters, report );
+      if (! report.getReport().getStatus().equals(Report.STATE.OK))
+      {
+         if (temp.exists() )temp.delete();
+         nomFichier = "C_INVALIDE_" + exportMode + "_" + id ;
+         temp = File.createTempFile(nomFichier, ".txt");
+         PrintStream stream = new PrintStream(temp);
+         Report.print(stream,report.getReport(),true);
+         addActionError(getText("reseau.export.geoportail.ko"));
+         return REDIRECTLIST;
+      }
+      else
+      {
+         addActionMessage(getText("reseau.export.geoportail.ok"));
+      }
+      return EXPORT;
+      /*******************************************************************************************/
+   }
+
+   /**
+    * @param network
+    * @param reg
+    * @param parameters
+    */
+   private boolean addFilePathParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName)
+   {
+      String propertyValue;
+      boolean error = false;
+      {
+         SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
+         parameters.add(parameter);
+         propertyValue = System.getProperty("export.geoportail."+propertyName+"." + reg);
+         if (propertyValue == null)
+         {
+            error = true;
+            addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
+         }
+         parameter.setFilepathValue(propertyValue);
+      }
+      return error;
+   }
+
+   /**
+    * @param network
+    * @param reg
+    * @param parameters
+    */
+   private boolean addStringParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName)
+   {
+      String propertyValue;
+      boolean error = false;
+      {
+         propertyValue = System.getProperty("export.geoportail."+propertyName+"." + reg);
+         if (propertyValue == null)
+         {
+            error = true;
+            addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
+         }
+         else
+         {
+            SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
+            parameters.add(parameter);
+            parameter.setStringValue(propertyValue);
+         }
+      }
+      return error;
+   }
+   /**
+    * @param network
+    * @param reg
+    * @param parameters
+    */
+   private boolean addIntegerParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName)
+   {
+      String propertyValue;
+      boolean error = false;
+      {
+         SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
+         parameters.add(parameter);
+         propertyValue = System.getProperty("export.geoportail."+propertyName+"." + reg);
+         if (propertyValue == null)
+         {
+            error = true;
+            addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
+         }
+         parameter.setIntegerValue(Long.parseLong(propertyValue));
+      }
+      return error;
    }
 
 

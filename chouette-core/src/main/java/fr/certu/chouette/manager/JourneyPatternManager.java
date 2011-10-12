@@ -113,33 +113,7 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	@Override
 	public void completeObject(User user, JourneyPattern journeyPattern) throws ChouetteException 
 	{
-		Route route = journeyPattern.getRoute();
-		if(route != null)
-		{
-			Line line = route.getLine();
-			if(line != null)
-				journeyPattern.setLineIdShortcut(line.getObjectId());
-		}
-		List<StopPoint> stopPoints = journeyPattern.getStopPoints();
-		List<VehicleJourney> vjs = journeyPattern.getVehicleJourneys();
-		if (vjs != null && !vjs.isEmpty())
-		{
-			// complete StopPoints
-			if (stopPoints == null || stopPoints.isEmpty())
-			{
-				VehicleJourney vj = vjs.get(0);
-				for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) 
-				{
-					journeyPattern.addStopPoint(vjas.getStopPoint());
-				}
-			}
-			// complete VJ
-			INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
-			for (VehicleJourney vehicleJourney : vjs) 
-			{
-				vjManager.completeObject(user, vehicleJourney);
-			}
-		}
+		journeyPattern.complete();
 
 	}
 	@Transactional

@@ -45,6 +45,6 @@ Chouette.Map.barycentreStopPlaceMarker = function(){
     Chouette.Map.updateLatLonFieldsCoordsFromXY();
     Chouette.Map.updateEditMarker();
   }
-}
+};
 
 window.onload = Chouette.Map.init;

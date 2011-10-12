@@ -520,4 +520,49 @@ public class Route extends NeptuneIdentifiedObject
 		}
 		return true;
 	}
+	
+	
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
+   @Override
+   public void complete()
+   {
+      if (isCompleted()) return;
+      super.complete();
+	     List<StopPoint> stopPoints = getStopPoints();
+	      if (stopPoints != null && !stopPoints.isEmpty())
+	      {
+	         // generate PtLinks
+	         List<PTLink> ptLinks = getPtLinks();
+	         if (ptLinks == null || ptLinks.isEmpty())
+	         {
+	            rebuildPTLinks();
+	         }
+	         for (StopPoint stopPoint : stopPoints) 
+	         {
+	            stopPoint.complete();
+	         }
+	      }
+
+	      List<PTLink> ptLinks = getPtLinks();
+	      if (ptLinks != null)
+	      {
+	         for (PTLink ptLink : ptLinks) 
+	         {
+	            
+	            addPTLinkId(ptLink.getObjectId());
+	         }
+	      }
+
+	      List<JourneyPattern> jps = getJourneyPatterns();
+	      if (jps != null && !jps.isEmpty())
+	      {
+	         for (JourneyPattern journeyPattern : jps) 
+	         {
+	            journeyPattern.complete();
+	         }
+	      }
+
+	}
 }

@@ -7,4 +7,15 @@
 
     <import resource="GtfsExportContext.xml"/>
 
+	<bean id="GtfsLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createLinePluginInjector">
+		<property name="manager" ref="lineManager" />
+		<property name="exportPlugins">
+			<list>
+				<ref bean="GtfsLineExport" />
+			</list>
+		</property>
+
+	</bean>
+
 </beans>
