@@ -6,6 +6,7 @@
    default-init-method="init">
 
     <import resource="CsvImportContext.xml"/>
+    <import resource="CsvExportContext.xml"/>
 
 	<bean id="CsvLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createLinePluginInjector">
@@ -13,6 +14,11 @@
 		<property name="importPlugins">
 			<list>
 				<ref bean="CSVLineImport" />
+			</list>
+		</property>
+		<property name="exportPlugins">
+			<list>
+				<ref bean="CSVLineExport" />
 			</list>
 		</property>
 

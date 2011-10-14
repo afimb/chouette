@@ -298,7 +298,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
     */
    private String  exportGeoportail() throws ChouetteException, IOException, FileNotFoundException
    {
-      List<FormatDescription> formats = lineManager.getExportFormats(user);
+      List<FormatDescription> formats = networkManager.getExportFormats(user);
       boolean found = false;
       for (FormatDescription formatDescription : formats)
       {
@@ -336,37 +336,31 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
          addActionError(getText("reseau.export.geoportail.noreg"));
          return REDIRECTLIST;
       }
+      reg = reg.trim().replace(' ', '_');
       List<ParameterValue> parameters = new ArrayList<ParameterValue>();
       SimpleParameterValue outputFile = new SimpleParameterValue("outputFile");
       parameters.add(outputFile);
       boolean error = false;
-      // logo file
-      error |= addFilePathParameter(network, reg, parameters,"logoFile","logoFile");
-      // aotURL 
-      error |= addStringParameter(network, reg, parameters, "aotURL", "url");
-      //      legalInformation (optionnel)
-      addStringParameter(network, reg, parameters, "legalInformation", "legal_information");
-      //      legalInformationURL (optionnel)
-      addStringParameter(network, reg, parameters, "legalInformationURL", "url_legal_information");
-      //      aotAddress 
-      error |= addStringParameter(network, reg, parameters, "aotAddress", "address");
-      //      aotEmail 
-      error |= addStringParameter(network, reg, parameters, "aotEmail", "email");
-      //      aotPhone 
-      error |= addStringParameter(network, reg, parameters, "aotPhone", "telephone");
-      //      readMe
+      error |= addFilePathParameter(network, reg, parameters,"logoFile","logoFile",true);
+      error |= addStringParameter(network, reg, parameters, "aotURL", "url",true);
+      addStringParameter(network, reg, parameters, "legalInformation", "legal_information",false);
+      addStringParameter(network, reg, parameters, "legalInformationURL", "url_legal_information",false);
+      error |= addStringParameter(network, reg, parameters, "aotAddress", "address",true);
+      error |= addStringParameter(network, reg, parameters, "aotEmail", "email",true);
+      error |= addStringParameter(network, reg, parameters, "aotPhone", "telephone",true);
       propertyValue = System.getProperty("export.geoportail.readme." + reg);
       if (propertyValue == null)
       {
          error = true;
-         addActionError(getText("reseau.export.geoportail.noreadme") + " " + network.getName());
+         addActionError(getText("reseau.export.geoportail.noreadme") + " " + network.getName()+"("+reg+")");
       }
+      else
       {
          SimpleParameterValue parameter = new SimpleParameterValue("readMe");
          parameters.add(parameter);
          try
          {
-            parameter.setFilepathValue(FileUtils.readFileToString(new File(propertyValue)));
+            parameter.setStringValue(FileUtils.readFileToString(new File(propertyValue)));
          }
          catch (IOException e)
          {
@@ -375,40 +369,23 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
             error = true;
          }
       }
-      //      stopNote 
-      error |= addStringParameter(network, reg, parameters, "stopNote", "usernote1");
-      //      accessNote 
-      error |= addStringParameter(network, reg, parameters, "accessNote", "usernote2");
-      //      quayPicto
-      error |= addFilePathParameter(network, reg, parameters, "quayPicto", "pictos.quai");
-      //      quayPictoMinScale 
-      error |= addIntegerParameter(network, reg, parameters, "quayPictoMinScale", "minscale1");
-      //      quayPictoMaxScale 
-      error |= addIntegerParameter(network, reg, parameters, "quayPictoMaxScale", "maxscale");
-      //      boardingPositionPicto
-      error |= addFilePathParameter(network, reg, parameters, "boardingPositionPicto", "pictos.pointembarquement");
-      //      boardingPositionPictoMinScale 
-      error |= addIntegerParameter(network, reg, parameters, "boardingPositionPictoMinScale", "minscale2");
-      //      boardingPositionPictoMaxScale "export.geoportail.maxscale2."+reg
-      error |= addIntegerParameter(network, reg, parameters, "boardingPositionPictoMaxScale", "maxscale2");
-      //      commercialStopPointPicto
-      error |= addFilePathParameter(network, reg, parameters, "commercialStopPointPicto", "pictos.zonecommerciale");
-      //      commercialStopPointPictoMinScale "export.geoportail.minscale3."+reg
-      error |= addIntegerParameter(network, reg, parameters, "commercialStopPointPictoMinScale", "minscale3");
-      //      commercialStopPointPictoMaxScale "export.geoportail.maxscale3."+reg
-      error |= addIntegerParameter(network, reg, parameters, "commercialStopPointPictoMaxScale", "maxscale3");
-      //      stopPlacePicto
-      error |= addFilePathParameter(network, reg, parameters, "stopPlacePicto", "pictos.poleechange");
-      //      stopPlacePictoMinScale "export.geoportail.minscale4."+reg
-      error |= addIntegerParameter(network, reg, parameters, "stopPlacePictoMinScale", "minscale4");
-      //      stopPlacePictoMaxScale "export.geoportail.maxscale4."+reg
-      error |= addIntegerParameter(network, reg, parameters, "stopPlacePictoMaxScale", "maxscale4");
-      //      accessPointPicto
-      error |= addFilePathParameter(network, reg, parameters, "accessPointPicto", "pictos.pointaccess");
-      //      accessPointPictoMinScale "export.geoportail.minscale5."+reg
-      error |= addIntegerParameter(network, reg, parameters, "accessPointPictoMinScale", "minscale5");
-      //      accessPointPictoMaxScale "export.geoportail.maxscale5."+reg
-      error |= addIntegerParameter(network, reg, parameters, "accessPointPictoMaxScale", "maxscale5");
+      error |= addStringParameter(network, reg, parameters, "stopNote", "usernote1",true);
+      error |= addStringParameter(network, reg, parameters, "accessNote", "usernote2",true);
+      addFilePathParameter(network, reg, parameters, "quayPicto", "pictos.quai",false);
+      addIntegerParameter(network, reg, parameters, "quayPictoMinScale", "minscale1",false);
+      addIntegerParameter(network, reg, parameters, "quayPictoMaxScale", "maxscale",false);
+      addFilePathParameter(network, reg, parameters, "boardingPositionPicto", "pictos.pointembarquement",false);
+      addIntegerParameter(network, reg, parameters, "boardingPositionPictoMinScale", "minscale2",false);
+      addIntegerParameter(network, reg, parameters, "boardingPositionPictoMaxScale", "maxscale2",false);
+      addFilePathParameter(network, reg, parameters, "commercialStopPointPicto", "pictos.zonecommerciale",false);
+      addIntegerParameter(network, reg, parameters, "commercialStopPointPictoMinScale", "minscale3",false);
+      addIntegerParameter(network, reg, parameters, "commercialStopPointPictoMaxScale", "maxscale3",false);
+      addFilePathParameter(network, reg, parameters, "stopPlacePicto", "pictos.poleechange",false);
+      addIntegerParameter(network, reg, parameters, "stopPlacePictoMinScale", "minscale4",false);
+      addIntegerParameter(network, reg, parameters, "stopPlacePictoMaxScale", "maxscale4",false);
+      addFilePathParameter(network, reg, parameters, "accessPointPicto", "pictos.pointaccess",false);
+      addIntegerParameter(network, reg, parameters, "accessPointPictoMinScale", "minscale5",false);
+      addIntegerParameter(network, reg, parameters, "accessPointPictoMaxScale", "maxscale5",false);
 
       if (error) 
       {
@@ -434,7 +411,6 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
          addActionMessage(getText("reseau.export.geoportail.ok"));
       }
       return EXPORT;
-      /*******************************************************************************************/
    }
 
    /**
@@ -442,20 +418,24 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
     * @param reg
     * @param parameters
     */
-   private boolean addFilePathParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName)
+   private boolean addFilePathParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName,boolean mandatory)
    {
       String propertyValue;
       boolean error = false;
       {
-         SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
-         parameters.add(parameter);
          propertyValue = System.getProperty("export.geoportail."+propertyName+"." + reg);
          if (propertyValue == null)
          {
             error = true;
-            addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
+            if (mandatory)
+               addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
          }
-         parameter.setFilepathValue(propertyValue);
+         else
+         {
+            SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
+            parameters.add(parameter);
+            parameter.setFilepathValue(propertyValue);
+         }
       }
       return error;
    }
@@ -465,7 +445,7 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
     * @param reg
     * @param parameters
     */
-   private boolean addStringParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName)
+   private boolean addStringParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName,boolean mandatory)
    {
       String propertyValue;
       boolean error = false;
@@ -474,7 +454,8 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
          if (propertyValue == null)
          {
             error = true;
-            addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
+            if (mandatory)
+               addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
          }
          else
          {
@@ -490,20 +471,24 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
     * @param reg
     * @param parameters
     */
-   private boolean addIntegerParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName)
+   private boolean addIntegerParameter(PTNetwork network, String reg, List<ParameterValue> parameters,String parameterName,String propertyName,boolean mandatory)
    {
       String propertyValue;
       boolean error = false;
       {
-         SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
-         parameters.add(parameter);
          propertyValue = System.getProperty("export.geoportail."+propertyName+"." + reg);
          if (propertyValue == null)
          {
             error = true;
-            addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
+            if (mandatory)
+               addActionError(getText("reseau.export.geoportail.no"+propertyName) + " " + network.getName());
          }
-         parameter.setIntegerValue(Long.parseLong(propertyValue));
+         else
+         {
+            SimpleParameterValue parameter = new SimpleParameterValue(parameterName);
+            parameters.add(parameter);
+            parameter.setIntegerValue(Long.parseLong(propertyValue));
+         }
       }
       return error;
    }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
@@ -29,19 +30,19 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
 {
    @Override
-   public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects)
+   public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects,GtfsReport report)
    {
       List<GtfsTrip> objects = new ArrayList<GtfsTrip>();
       for (VehicleJourney object : neptuneObjects)
       {
-         objects.addAll(produceAll(object));
+         objects.addAll(produceAll(object,report));
       }
       return objects;
    }
 
    
    @Override
-   public List<GtfsTrip> produceAll(VehicleJourney vj)
+   public List<GtfsTrip> produceAll(VehicleJourney vj,GtfsReport report)
    {
       List<GtfsTrip> trips = new ArrayList<GtfsTrip>();
       List<GtfsStopTime> times = produceTimes(vj);
@@ -130,7 +131,7 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
 
 
    @Override
-   public GtfsTrip produce(VehicleJourney neptuneObject)
+   public GtfsTrip produce(VehicleJourney neptuneObject,GtfsReport report)
    {
       throw new UnsupportedOperationException("not yet implemented");
    }

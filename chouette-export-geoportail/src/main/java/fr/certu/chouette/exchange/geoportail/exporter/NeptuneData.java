@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Getter;
+import fr.certu.chouette.exchange.geoportail.exporter.report.GeoportailReport;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Line;
@@ -31,7 +32,7 @@ public class NeptuneData
    @Getter Set<StopArea> stopAreas = new HashSet<StopArea>();
    @Getter Set<AccessPoint> accessPoints = new HashSet<AccessPoint>();
 
-   public void populate(PTNetwork ptnetwork)
+   public void populate(PTNetwork ptnetwork, GeoportailReport report)
    {
       source = ptnetwork.getObjectId().split(":")[0];
       List<Line> lines = ptnetwork.getLines();

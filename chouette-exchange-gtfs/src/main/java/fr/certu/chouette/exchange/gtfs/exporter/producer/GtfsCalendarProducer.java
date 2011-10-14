@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 
+import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import fr.certu.chouette.model.neptune.Period;
@@ -37,7 +38,7 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
    private static final long HALD_DAY=3600000*12;
 
    @Override
-   public GtfsCalendar produce(Timetable timetable)
+   public GtfsCalendar produce(Timetable timetable,GtfsReport report)
    {
       GtfsCalendar calendar = new GtfsCalendar();
 
@@ -223,7 +224,7 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
    }
 
    @Override
-   public List<GtfsCalendar> produceAll(Timetable neptuneObject)
+   public List<GtfsCalendar> produceAll(Timetable neptuneObject,GtfsReport report)
    {
       throw new UnsupportedOperationException("not yet implemented");
    }

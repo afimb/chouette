@@ -16,6 +16,8 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
+import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
@@ -31,6 +33,8 @@ import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
@@ -72,7 +76,8 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
                true);
          params.add(param);
       }
-      // possible filter : send only trips for a period, manage colors
+      // possible filter in future extension : 
+      // send only trips for a period, manage colors
       // {
       // ParameterDescription param = new ParameterDescription("startDate",
       // ParameterDescription.TYPE.DATE, false, false);
@@ -83,6 +88,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       // ParameterDescription.TYPE.FILEPATH, false, false);
       // params.add(param);
       // }
+      // manage lines colors : perhaps in Neptune Model
       // {
       // ParameterDescription param = new ParameterDescription("lineColor",
       // ParameterDescription.TYPE.STRING, false, false);
@@ -116,9 +122,12 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
     * java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
     */
    @Override
-   public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder report)
-         throws ChouetteException
+   public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder reportHolder)
+   throws ChouetteException
    {
+      GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
+      report .setStatus(Report.STATE.OK);
+      reportHolder.setReport(report);
       String fileName = null;
       TimeZone timeZone = null;
       // Date startDate = null; // today ??
@@ -128,9 +137,13 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 
       if (beans == null)
       {
-         throw new IllegalArgumentException("no beans to export");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.NO_LINE, Report.STATE.ERROR);
+         report.addItem(item);
+         return;
       }
 
+      
+      boolean error = false;
       for (ParameterValue value : parameters)
       {
          if (value instanceof SimpleParameterValue)
@@ -146,51 +159,93 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
             }
             else
             {
-               throw new IllegalArgumentException("unknown parameter "+svalue.getName());
+               GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.UNKNOWN_PARAMETER, Report.STATE.ERROR,svalue.getName());
+               report.addItem(item);
+               error = true;
             }
 
          }
       }
       if (fileName == null)
       {
-         throw new IllegalArgumentException("outputFile required");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_PARAMETER, Report.STATE.ERROR,"outputFile");
+         report.addItem(item);
+         error = true;
       }
       if (timeZone == null)
       {
-         throw new IllegalArgumentException("timeZone required");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_PARAMETER, Report.STATE.ERROR,"timeZone");
+         report.addItem(item);
+         error = true;
+      }
+
+      // stop process if argument error
+      if (error) return;
+
+      ZipOutputStream out = null;
+      try
+      {
+         // Create the ZIP file
+         out = new ZipOutputStream(new FileOutputStream(fileName));
+      }
+      catch (IOException e) 
+      {
+         logger.error("cannot create zip file", e);
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
+         report.addItem(item);
+         return;
+      }
+
+      // complete data for export if necessary
+//      for (Line line : beans)
+//      {
+//         line.complete();
+//      }
+
+      NeptuneData neptuneData = new NeptuneData();
+      neptuneData.populate(beans);
+
+      GtfsData gtfsData = null;
+      try
+      {
+         gtfsData = gtfsDataProducer.produce(neptuneData, timeZone,report);
+      }
+      catch (GtfsExportException e)
+      {
+         logger.error("incomplete data");
+         return;
       }
 
       try
       {
-         // Create the ZIP file
-         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileName));
-
-         NeptuneData neptuneData = new NeptuneData();
-         neptuneData.populate(beans);
-
-         GtfsData gtfsData = gtfsDataProducer.produce(neptuneData, timeZone);
-
-         writeFile(out, gtfsData.getAgencies(), "agency.txt", GtfsAgency.header);
-         writeFile(out, gtfsData.getStops(), "stops.txt", GtfsStop.header);
-         writeFile(out, gtfsData.getRoutes(), "routes.txt", GtfsRoute.header);
-         writeFile(out, gtfsData.getTrip(), "trips.txt", GtfsTrip.header);
-         writeFile(out, gtfsData.getStoptimes(), "stop_times.txt", GtfsStopTime.header);
-         writeFile(out, gtfsData.getCalendars(), "calendar.txt", GtfsCalendar.header);
-         writeFile(out, gtfsData.getCalendardates(), "calendar_dates.txt", GtfsCalendarDate.header);
-         writeFile(out, gtfsData.getFrequencies(), "frequencies.txt", GtfsFrequency.header);
+         writeFile(out, gtfsData.getAgencies(), "agency.txt", GtfsAgency.header,report);
+         writeFile(out, gtfsData.getStops(), "stops.txt", GtfsStop.header,report);
+         writeFile(out, gtfsData.getRoutes(), "routes.txt", GtfsRoute.header,report);
+         writeFile(out, gtfsData.getTrip(), "trips.txt", GtfsTrip.header,report);
+         writeFile(out, gtfsData.getStoptimes(), "stop_times.txt", GtfsStopTime.header,report);
+         writeFile(out, gtfsData.getCalendars(), "calendar.txt", GtfsCalendar.header,report);
+         writeFile(out, gtfsData.getCalendardates(), "calendar_dates.txt", GtfsCalendarDate.header,report);
+         writeFile(out, gtfsData.getFrequencies(), "frequencies.txt", GtfsFrequency.header,report);
          // fare_rules.txt
          // fare_attributes.txt
          // shapes.txt
          // transfers.txt
+      }
+      catch (GtfsExportException e)
+      {
+         logger.error("zipEntry failure "+e.getMessage());
+      }
 
+      try
+      {
          // Complete the ZIP file
          out.close();
       }
       catch (IOException e)
       {
          logger.error("cannot create zip file", e);
-         // throw new
-         // ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE, e);
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
+         report.addItem(item);
       }
    }
 
@@ -206,7 +261,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
     * @param header
     *           GTFS File header
     */
-   private void writeFile(ZipOutputStream out, List<? extends GtfsBean> gtfsBeans, String entryName, String header)
+   private void writeFile(ZipOutputStream out, List<? extends GtfsBean> gtfsBeans, String entryName, String header,GtfsReport report) throws GtfsExportException
    {
       if (gtfsBeans.isEmpty())
       {
@@ -237,6 +292,9 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       catch (IOException e)
       {
          logger.error(entryName + " failure "+e.getMessage(),e);
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, entryName);
+         report.addItem(item);
+         throw new GtfsExportException(GtfsExportExceptionCode.ERROR, entryName);
       }
 
    }

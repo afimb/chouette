@@ -24,6 +24,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.geoportail.exporter.report.GeoportailReport;
+import fr.certu.chouette.exchange.geoportail.exporter.report.GeoportailReportItem;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.StopArea;
@@ -32,6 +34,7 @@ import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
@@ -232,54 +235,89 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
     * java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
     */
    @Override
-   public void doExport(List<PTNetwork> beans, List<ParameterValue> parameters, ReportHolder report)
+   public void doExport(List<PTNetwork> beans, List<ParameterValue> parameters, ReportHolder reportHolder)
    throws ChouetteException
    {
-
+      GeoportailReport report = new GeoportailReport(GeoportailReport.KEY.EXPORT);
+      reportHolder.setReport(report);
+      report.setStatus(STATE.OK);
       if (beans == null || beans.isEmpty())
       {
-         throw new IllegalArgumentException("no beans to export");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.NO_NETWORK, STATE.ERROR);
+         report.addItem(item);
+         return;
       }
 
       if (beans.size() > 1)
       {
-         throw new IllegalArgumentException("only one PtNetwork can be exported at a time");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.TOO_MANY_NETWORKS, STATE.ERROR);
+         report.addItem(item);
+         return;
       }
 
-      AOTData aotData = checkParameters(parameters);
+      AOTData aotData = null;
+      try
+      {
+         aotData = checkParameters(parameters,report);
+      }
+      catch (GeoportailExportException e)
+      {
+         logger.error("wrong parameters");
+         return;
+      }
 
+      ZipOutputStream out = null;
       try
       {
          // Create the ZIP file
-         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(aotData.fileName));
+         out = new ZipOutputStream(new FileOutputStream(aotData.fileName));
+      }
+      catch (IOException e)
+      {
+         logger.error("cannot create zip file", e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, aotData.fileName);
+         report.addItem(item);
+         return;
+      }
 
+      try
+      {
          NeptuneData neptuneData = new NeptuneData();
-         neptuneData.populate(beans.get(0));
+         neptuneData.populate(beans.get(0),report);
          aotData.source=neptuneData.getSource();
-         writeTcPointsFile(out,aotData,neptuneData);
-         writeAOTFile(out,aotData,neptuneData);
-         writeMetatdataFile(out,aotData,neptuneData);
-         writePictosFile(out,aotData);
-         writeReadMeFile(out,aotData);
-         writeLogo(out,aotData);
-         writePictos(out,aotData);
+         writeTcPointsFile(out,aotData,neptuneData,report);
+         writeAOTFile(out,aotData,neptuneData,report);
+         writeMetatdataFile(out,aotData,neptuneData,report);
+         writePictosFile(out,aotData,report);
+         writeReadMeFile(out,aotData,report);
+         writeLogo(out,aotData,report);
+         writePictos(out,aotData,report);
+      }
+      catch (GeoportailExportException e)
+      {
+         logger.error("cannot create zip file", e);
+      }
 
-         // Complete the ZIP file
+      // Complete the ZIP file
+      try
+      {
          out.close();
       }
       catch (IOException e)
       {
          logger.error("cannot create zip file", e);
-         // throw new
-         // ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE, e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, aotData.fileName);
+         report.addItem(item);
       }
    }
 
    /**
     * @param parameters
-    * @param aotData
+    * @param report
+    * @return
+    * @throws GeoportailExportException
     */
-   private AOTData checkParameters(List<ParameterValue> parameters)
+   private AOTData checkParameters(List<ParameterValue> parameters,GeoportailReport report) throws GeoportailExportException
    {
       AOTData aotData = new AOTData();
       String logoFileName = null;
@@ -288,6 +326,7 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       String commercialStopPointFileName = null;
       String stopPlaceFileName = null;
       String accessFileName = null;
+      boolean error = false;
       for (ParameterValue value : parameters)
       {
          if (value instanceof SimpleParameterValue)
@@ -403,34 +442,46 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
             }
             else 
             {
-               throw new IllegalArgumentException("unknown parameter "+svalue.getName());
+               GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.UNKNOWN_PARAMETER, STATE.ERROR, svalue.getName());
+               report.addItem(item);
+               error = true;
             }
 
          }
       }
       if (aotData.fileName == null)
       {
-         throw new IllegalArgumentException("outputFile required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "outputFile");
+         report.addItem(item);
+         error = true;
       }
       if (logoFileName == null)
       {
-         throw new IllegalArgumentException("logoFile required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "logoFile");
+         report.addItem(item);
+         error = true;
       }
       File logoFile = new File(logoFileName);
       if (!logoFile.exists())
       {
-         throw new IllegalArgumentException("logoFile : file does not exists");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "logoFile");
+         report.addItem(item);
+         error = true;
       }
 
       String ext = FilenameUtils.getExtension(logoFileName).toLowerCase();
       if (!outputFileExtensions.contains(ext))
       {
-         throw new IllegalArgumentException("logoFile : unallowed extension ");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.INVALID_EXTENSION, STATE.ERROR, "logoFile",ext);
+         report.addItem(item);
+         error = true;
       }
 
       if (ext.equals("tmp") && aotData.logoFileName == null)
       {
-         throw new IllegalArgumentException("logoFileName required for uploaded logoFile");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "logoFileName");
+         report.addItem(item);
+         error = true;
       }
       else
       {
@@ -443,27 +494,45 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       }
       catch (IOException e)
       {
-         throw new IllegalArgumentException("logoFile : cannot read file");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "logoFileName");
+         report.addItem(item);
+         error = true;
       }
       if (aotData.url == null)
       {
-         throw new IllegalArgumentException("aotURL required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "aotURL");
+         report.addItem(item);
+         error = true;
       }
       if (aotData.address == null)
       {
-         throw new IllegalArgumentException("aotAddress required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "aotAddress");
+         report.addItem(item);
+         error = true;
       }
       if (aotData.email == null)
       {
-         throw new IllegalArgumentException("aotEmail required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "aotEmail");
+         report.addItem(item);
+         error = true;
       }
       if (aotData.phone == null)
       {
-         throw new IllegalArgumentException("aotPhone required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "aotPhone");
+         report.addItem(item);
+         error = true;
+      }
+      if (aotData.readMe == null)
+      {
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "readMe");
+         report.addItem(item);
+         error = true;
       }
       if (aotData.stopNote == null)
       {
-         throw new IllegalArgumentException("stopNote required");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.MISSING_PARAMETER, STATE.ERROR, "stopNote");
+         report.addItem(item);
+         error = true;
       }
       if (aotData.accessNote == null)
       {
@@ -474,10 +543,13 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
          try
          {
             aotData.quayFile = FileUtils.readFileToByteArray(new File(quayFileName));
+            error |= checkImageType(aotData.quayFile,"PNG","quayPicto",report);
          }
          catch (IOException e)
          {
-            throw new IllegalArgumentException("quayPicto : fail to read");
+            GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "quayPicto");
+            report.addItem(item);
+            error = true;
          }
       }
       else
@@ -489,10 +561,13 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
          try
          {
             aotData.boardingPositionFile = FileUtils.readFileToByteArray(new File(boardingPositionFileName));
+            error |= checkImageType(aotData.boardingPositionFile,"PNG","boardingPositionPicto",report);
          }
          catch (IOException e)
          {
-            throw new IllegalArgumentException("boardingPositionPicto : file does not exists");
+            GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "boardingPositionPicto");
+            report.addItem(item);
+            error = true;
          }
       }
       else
@@ -503,11 +578,14 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       {
          try
          {
-         aotData.commercialStopPointFile = FileUtils.readFileToByteArray(new File(commercialStopPointFileName));
+            aotData.commercialStopPointFile = FileUtils.readFileToByteArray(new File(commercialStopPointFileName));
+            error |= checkImageType(aotData.commercialStopPointFile,"PNG","commercialStopPointPicto",report);
          }
          catch (IOException e)
-            {
-            throw new IllegalArgumentException("commercialStopPointPicto : file does not exists");
+         {
+            GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "commercialStopPointPicto");
+            report.addItem(item);
+            error = true;
          }
       }
       else
@@ -518,11 +596,14 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       {
          try
          {
-         aotData.stopPlaceFile = FileUtils.readFileToByteArray(new File(stopPlaceFileName));
+            aotData.stopPlaceFile = FileUtils.readFileToByteArray(new File(stopPlaceFileName));
+            error |= checkImageType(aotData.stopPlaceFile,"PNG","stopPlacePicto",report);
          }
          catch (IOException e)
-            {
-            throw new IllegalArgumentException("stopPlacePicto : file does not exists");
+         {
+            GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "stopPlacePicto");
+            report.addItem(item);
+            error = true;
          }
       }
       else
@@ -533,20 +614,50 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       {
          try
          {
-         aotData.accessFile = FileUtils.readFileToByteArray(new File(accessFileName));
+            aotData.accessFile = FileUtils.readFileToByteArray(new File(accessFileName));
+            error |= checkImageType(aotData.accessFile,"PNG","accessPointPicto",report);
          }
          catch (IOException e)
-            {
-            throw new IllegalArgumentException("accessPointPicto : file does not exists");
+         {
+            GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR, "accessPointPicto");
+            report.addItem(item);
+            error = true;
          }
       }
       else
       {
          aotData.accessFile = getFile(ACCESSPOINT_PICTONAME);
       }
+      if (error)
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR);
       return aotData;
    }
 
+   /**
+    * @param buffer
+    * @param type
+    * @param data
+    * @param report
+    * @return
+    */
+   private boolean checkImageType(byte[] buffer, String type, String data, GeoportailReport report)
+   {
+      boolean error = false;
+      byte[] model = type.getBytes();
+      if (buffer.length < 4 || buffer[1] != model[0]  || buffer[2] != model[1]  || buffer[3] != model[2] )
+      {
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.INVALID_EXTENSION, STATE.ERROR, data,type);
+         report.addItem(item);
+         error = true;
+      }
+      return error;
+
+   }
+
+   /**
+    * @param fileName
+    * @return
+    */
    private byte[] getFile(String fileName)
    {
       PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
@@ -586,13 +697,27 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       throw new RuntimeException("missing file "+fileName+" in jar");
    }
 
-   private void writeTcPointsFile(ZipOutputStream out, AOTData aotData, NeptuneData neptuneData)
+   /**
+    * @param out
+    * @param aotData
+    * @param neptuneData
+    * @param report
+    * @throws GeoportailExportException
+    */
+   private void writeTcPointsFile(ZipOutputStream out, AOTData aotData, NeptuneData neptuneData, GeoportailReport report) throws GeoportailExportException
    {
       if (neptuneData.getStopAreas().isEmpty())
       {
-         // TODO error
-         logger.info("Stoparea is empty, not produced");
-         return;
+         logger.error("Stoparea is empty, not produced");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.NO_STOPAREAS, STATE.ERROR);
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,"No StopArea");
+      }
+      if (neptuneData.getAccessPoints().isEmpty())
+      {
+         logger.info("AccessPoint is empty");
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.NO_ACCESSPOINTS, STATE.OK);
+         report.addItem(item);
       }
       try
       {
@@ -624,9 +749,17 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       catch (IOException e)
       {
          logger.error("tc_points.csv failure "+e.getMessage(),e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR,"tc_points.csv");
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,"tc_points.csv");
       }
    }
 
+   /**
+    * @param access
+    * @param aotData
+    * @return
+    */
    private String toCSV(AccessPoint access, AOTData aotData)
    {
       aotData.insertCoords(access.getLongitude(),access.getLatitude());
@@ -697,6 +830,11 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       return builder.toString();
    }
 
+   /**
+    * @param area
+    * @param aotData
+    * @return
+    */
    private String toCSV(StopArea area, AOTData aotData)
    {
       aotData.insertCoords(area.getAreaCentroid().getLongitude(),area.getAreaCentroid().getLatitude());
@@ -769,6 +907,10 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       return builder.toString();
    }
 
+   /**
+    * @param obj
+    * @return
+    */
    private String quoted(Object obj)
    {
       if (obj == null) return "\"\"";
@@ -782,7 +924,14 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       return ret;
    }
 
-   private void writeAOTFile(ZipOutputStream out, AOTData aotData, NeptuneData neptuneData)
+   /**
+    * @param out
+    * @param aotData
+    * @param neptuneData
+    * @param report
+    * @throws GeoportailExportException
+    */
+   private void writeAOTFile(ZipOutputStream out, AOTData aotData, NeptuneData neptuneData, GeoportailReport report) throws GeoportailExportException
    {
       try
       {
@@ -813,12 +962,22 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       catch (IOException e)
       {
          logger.error("aot.csv failure "+e.getMessage(),e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR,"aot.csv");
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,"aot.csv");
       }
 
 
    }
 
-   private void writeMetatdataFile(ZipOutputStream out, AOTData aotData, NeptuneData neptuneData)
+   /**
+    * @param out
+    * @param aotData
+    * @param neptuneData
+    * @param report
+    * @throws GeoportailExportException
+    */
+   private void writeMetatdataFile(ZipOutputStream out, AOTData aotData, NeptuneData neptuneData, GeoportailReport report) throws GeoportailExportException
    {
       try
       {
@@ -848,10 +1007,22 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       catch (IOException e)
       {
          logger.error("chouette_metadata.csv failure "+e.getMessage(),e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR,"chouette_metadata.csv");
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,"chouette_metadata.csv");
       }
 
    }
 
+   /**
+    * @param writer
+    * @param aotData
+    * @param layer
+    * @param creationTime
+    * @param updateTime
+    * @param note
+    * @throws IOException
+    */
    private void writeMetaData(OutputStreamWriter writer, AOTData aotData, String layer, Date creationTime, Date updateTime, String note) throws IOException
    {
       writer.write(quoted(layer));
@@ -881,7 +1052,13 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
 
    }
 
-   private void writePictosFile(ZipOutputStream out, AOTData aotData)
+   /**
+    * @param out
+    * @param aotData
+    * @param report
+    * @throws GeoportailExportException
+    */
+   private void writePictosFile(ZipOutputStream out, AOTData aotData, GeoportailReport report) throws GeoportailExportException
    {
       // pointtype,picto,minscale,maxscale
       try
@@ -908,11 +1085,22 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       }
       catch (IOException e)
       {
-         logger.error("tc_points.csv failure "+e.getMessage(),e);
+         logger.error("pictos.csv failure "+e.getMessage(),e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR,"pictos.csv");
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,"pictos.csv");
       }
 
    }
 
+   /**
+    * @param writer
+    * @param pictoType
+    * @param pictoName
+    * @param minScale
+    * @param maxScale
+    * @throws IOException
+    */
    private void writePictoInfo(OutputStreamWriter writer, String pictoType,String pictoName,Long minScale, Long maxScale) throws IOException
    {
       writer.write(quoted(pictoType));
@@ -926,7 +1114,13 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
 
    }
 
-   private void writeReadMeFile(ZipOutputStream out, AOTData aotData)
+   /**
+    * @param out
+    * @param aotData
+    * @param report
+    * @throws GeoportailExportException
+    */
+   private void writeReadMeFile(ZipOutputStream out, AOTData aotData, GeoportailReport report) throws GeoportailExportException
    {
       try
       {
@@ -947,6 +1141,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       catch (IOException e)
       {
          logger.error("Readme.txt failure "+e.getMessage(),e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR,"Readme.txt");
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,"Readme.txt");
       }
 
    }
@@ -955,19 +1152,22 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
    /**
     * @param out
     * @param aotData
+    * @param report 
+    * @throws GeoportailExportException 
     */
-   private void writeLogo(ZipOutputStream out, AOTData aotData)
+   private void writeLogo(ZipOutputStream out, AOTData aotData, GeoportailReport report) throws GeoportailExportException
    {
       String filename = "Logos"+File.separator+aotData.logoFileName;
-      writeFile(out, aotData.logoFile, filename);
+      writeFile(out, aotData.logoFile, filename,report);
    }
 
    /**
     * @param out
     * @param file
     * @param filename
+    * @throws GeoportailExportException 
     */
-   private void writeFile(ZipOutputStream out, byte[] fileContent, String filename)
+   private void writeFile(ZipOutputStream out, byte[] fileContent, String filename, GeoportailReport report) throws GeoportailExportException
    {
       try
       {
@@ -983,19 +1183,31 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       catch (IOException e)
       {
          logger.error(filename+" failure "+e.getMessage(),e);
+         GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.FILE_ACCESS, STATE.ERROR,filename);
+         report.addItem(item);
+         throw new GeoportailExportException(GeoportailExportExceptionCode.ERROR,filename);
       }
    }
 
-   private void writePictos(ZipOutputStream out,AOTData aotData)
+   /**
+    * @param out
+    * @param aotData
+    * @param report
+    * @throws GeoportailExportException
+    */
+   private void writePictos(ZipOutputStream out,AOTData aotData, GeoportailReport report) throws GeoportailExportException
    {
-      writeFile(out,aotData.quayFile,"Pictos"+File.separator+QUAY_PICTONAME);
-      writeFile(out,aotData.boardingPositionFile,"Pictos"+File.separator+BOARDINGPOSITION_PICTONAME);
-      writeFile(out,aotData.commercialStopPointFile,"Pictos"+File.separator+COMMERCIALSTOP_PICTONAME);
-      writeFile(out,aotData.stopPlaceFile,"Pictos"+File.separator+STOPPLACE_PICTONAME);
-      writeFile(out,aotData.accessFile,"Pictos"+File.separator+ACCESSPOINT_PICTONAME);
+      writeFile(out,aotData.quayFile,"Pictos"+File.separator+QUAY_PICTONAME,report);
+      writeFile(out,aotData.boardingPositionFile,"Pictos"+File.separator+BOARDINGPOSITION_PICTONAME,report);
+      writeFile(out,aotData.commercialStopPointFile,"Pictos"+File.separator+COMMERCIALSTOP_PICTONAME,report);
+      writeFile(out,aotData.stopPlaceFile,"Pictos"+File.separator+STOPPLACE_PICTONAME,report);
+      writeFile(out,aotData.accessFile,"Pictos"+File.separator+ACCESSPOINT_PICTONAME,report);
    }
 
 
+   /**
+    *
+    */
    public class AOTData
    {
       String source = null;
@@ -1033,6 +1245,10 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       Long accessMinScale = Long.valueOf(1000);
       Long accessMaxScale = Long.valueOf(2000);
 
+      /**
+       * @param longitude
+       * @param latitude
+       */
       public void insertCoords(BigDecimal longitude, BigDecimal latitude)
       {
          if (minLatitude == null)
@@ -1050,6 +1266,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
             if (longitude.compareTo(maxLongitude) > 0) maxLongitude = longitude;
          }
       }
+      /**
+       * @param creationTime
+       */
       public void updateAccessCreationTime(Date creationTime)
       {
          if (stopAreaCreationTime == null || stopAreaCreationTime.after(creationTime))
@@ -1057,6 +1276,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
             stopAreaCreationTime = creationTime;
          }
       }
+      /**
+       * @param creationTime
+       */
       public void updateStopAreaCreationTime(Date creationTime)
       {
          if (accessCreationTime == null || accessCreationTime.after(creationTime))

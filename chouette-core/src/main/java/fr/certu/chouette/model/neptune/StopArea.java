@@ -776,9 +776,7 @@ public class StopArea extends NeptuneIdentifiedObject
          AreaCentroid centroid = getAreaCentroid();
          if (centroid.getObjectId() == null)
          {
-            String[] ids = getObjectId().split(":");
-            centroid.setObjectId(ids[0]+":"+NeptuneIdentifiedObject.AREACENTROID_KEY+":"+ids[2]);
-
+            centroid.setObjectId(getObjectId().replace(STOPAREA_KEY, AREACENTROID_KEY));
          }
          centroid.setCreationTime(getCreationTime());
          centroid.setObjectVersion(getObjectVersion());
