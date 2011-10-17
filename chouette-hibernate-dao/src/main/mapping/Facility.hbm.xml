@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="Facility"
 		table="Facility">
+		<comment>Facility</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -31,45 +33,119 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-		<property name="comment" type="string" />
-
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
 		<many-to-one name="stopArea" class="StopArea" lazy="no-proxy"
-			outer-join="auto" column="stopareaid" foreign-key="faci_area_fkey"/>
+			outer-join="auto" foreign-key="faci_area_fkey">
+			<column name="stopAreaId">
+				<comment>StopArea reference</comment>
+			</column>
+		</many-to-one>
 		<many-to-one name="line" class="Line" lazy="no-proxy"
-			outer-join="auto" column="lineid" foreign-key="faci_line_fkey"/>
+			outer-join="auto" foreign-key="faci_line_fkey">
+			<column name="lineid">
+				<comment>Line reference</comment>
+			</column>
+		</many-to-one>
 		<many-to-one name="connectionLink" class="ConnectionLink"
-			lazy="no-proxy" outer-join="auto" column="connectionLinkid" foreign-key="faci_colk_fkey"/>
+			lazy="no-proxy" outer-join="auto" foreign-key="faci_colk_fkey">
+			<column name="connectionLinkid">
+				<comment>ConnectionLink reference</comment>
+			</column>
+		</many-to-one>
 		<many-to-one name="stopPoint" class="StopPoint" lazy="no-proxy"
-			outer-join="auto" column="stopPointid" foreign-key="faci_stpt_fkey"/>
-		<property name="description" type="string" />
-		<property name="freeAccess" type="boolean" />
+			outer-join="auto" foreign-key="faci_stpt_fkey">
+			<column name="stopPointid">
+				<comment>StopPoint reference</comment>
+			</column>
+		</many-to-one>
+		<property name="description" type="string">
+			<column name="description">
+				<comment>Facility description</comment>
+			</column>
+		</property>
+		<property name="freeAccess" type="boolean">
+			<column name="freeAccess">
+				<comment>Indicate if facility is on free (true) or restricted(false)
+					access</comment>
+			</column>
+		</property>
 		<component name="facilityLocation"
 			class="fr.certu.chouette.model.neptune.type.FacilityLocation">
 			<property name="longitude" precision="19" scale="16"
-				type="java.math.BigDecimal" />
+				type="java.math.BigDecimal">
+				<column name="longitude">
+					<comment>Longitude</comment>
+				</column>
+			</property>
 			<property name="latitude" precision="19" scale="16"
-				type="java.math.BigDecimal" />
+				type="java.math.BigDecimal">
+				<column name="latitude">
+					<comment>Latitude</comment>
+				</column>
+			</property>
 			<property name="longLatType"
-				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType" />
-			<component name="address"
-				class="fr.certu.chouette.model.neptune.type.Address">
-				<property name="countryCode" type="string" />
-				<property name="streetName" type="string" />
+				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
+				<column name="longlattype">
+					<comment>Model used for Longitude and Latitude (Standard, WGS84 or
+						WGS92)</comment>
+				</column>
+			</property>
+			<component class="fr.certu.chouette.model.neptune.type.ProjectedPoint"
+				name="projectedPoint">
+				<property name="x" type="java.math.BigDecimal">
+					<column name="x">
+						<comment>X coordinate</comment>
+					</column>
+				</property>
+				<property name="y" type="java.math.BigDecimal">
+					<column name="y">
+						<comment>Y coordinate</comment>
+					</column>
+				</property>
+				<property name="projectionType" type="string">
+					<column name="projectiontype">
+						<comment>Projection used for coordinates</comment>
+					</column>
+				</property>
 			</component>
-			<component name="projectedPoint"
-				class="fr.certu.chouette.model.neptune.type.ProjectedPoint">
-				<property name="x" type="java.math.BigDecimal" />
-				<property name="y" type="java.math.BigDecimal" />
-				<property name="projectionType" type="string" />
+			<component class="fr.certu.chouette.model.neptune.type.Address"
+				name="address">
+				<property name="countryCode" type="string">
+					<column name="countrycode">
+						<comment>Zip code</comment>
+					</column>
+				</property>
+				<property name="streetName" type="string">
+					<column name="streetname">
+						<comment>Address</comment>
+					</column>
+				</property>
 			</component>
-			<property name="containedIn" type="string" />
+			<property name="containedIn" type="string" /> <!-- a supprimer -->
 		</component>
 		<bag cascade="all" lazy="false" name="facilityFeatures" table="facilityFeature">
-			<key column="facilityId" foreign-key="facility_feature_fkey"/>
+			<comment>Facility Features secondary table</comment>
+			<key foreign-key="facility_feature_fkey">
+				<column name="facilityId" index="idx_facility_id">
+					<comment>Facility reference</comment>
+				</column>
+			</key>
 			<composite-element
 				class="fr.certu.chouette.model.neptune.type.facility.FacilityFeature">
-				<property name="choiceCode" type="int" />
+				<property name="choiceCode" type="int">
+					<column name="choiceCode">
+						<comment>encoded value for facility</comment>
+					</column>
+				</property>
 			</composite-element>
 		</bag>
 	</class>

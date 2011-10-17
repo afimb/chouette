@@ -371,6 +371,7 @@ public class ModelAssembler
             {
                line.addRoutingConstraint(area);
                area.addRoutingConstraintLine(line);
+               area.addRoutingConstraintLineId(restriction.getLineId());
             }
             else
             {

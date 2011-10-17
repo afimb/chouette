@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="JourneyPattern" table="JourneyPattern">
 		<comment>Journey pattern</comment>
@@ -12,7 +13,7 @@
 			<generator class="identity" />
 		</id>
 		<property name="objectId" type="string" unique="true">
-			<column name="objectId"  not-null="true">
+			<column name="objectId" not-null="true">
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
@@ -53,26 +54,30 @@
 			</column>
 		</property>
 
-		<bag inverse="true" lazy="true" name="stopPoints" table="journeyPattern_stopPoint" cascade="all">
+		<bag inverse="true" lazy="true" name="stopPoints" table="journeyPattern_stopPoint"
+			cascade="all">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
-			<key foreign-key="jpsp_jp_fkey"> 
-				<column name="journeyPatternId">
+			<key foreign-key="jpsp_jp_fkey">
+				<column name="journeyPatternId" index="idx_jpsp_jpid">
 					<comment>JourneyPattern Reference</comment>
 				</column>
 			</key>
-			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey" order-by="position">
-				<column name="stopPointId"  >
+			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey"
+				order-by="position">
+				<column name="stopPointId">
 					<comment>StopPoint Reference</comment>
 				</column>
 			</many-to-many>
 		</bag>
-		<many-to-one class="Route" lazy="no-proxy" name="route" foreign-key="jp_route_fkey">
+		<many-to-one class="Route" lazy="no-proxy" name="route"
+			foreign-key="jp_route_fkey">
 			<column name="routeId">
 				<comment>Route Reference</comment>
 			</column>
 		</many-to-one>
 		<bag inverse="true" lazy="true" name="vehicleJourneys" cascade="all">
-			<key column="journeyPatternId" foreign-key="vj_jp_fkey"  on-delete="cascade"/>
+			<key column="journeyPatternId" foreign-key="vj_jp_fkey"
+				on-delete="cascade" />
 			<one-to-many class="VehicleJourney" />
 		</bag>
 	</class>

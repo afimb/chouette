@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="AccessLink"
 		table="AccessLink">
@@ -32,31 +33,89 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-		<property name="comment" type="string" />
-		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" />
-		<property column="liftAvailability" name="liftAvailable"
-			type="boolean" />
-		<property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitable"
-			type="boolean" />
-		<property column="stairsAvailability" name="stairsAvailable"
-			type="boolean" />
-		<property column="defaultDuration" name="defaultDuration"
-			type="time" />
-		<property column="frequentTravellerDuration" name="frequentTravellerDuration"
-			type="time" />
-		<property column="occasionalTravellerDuration" name="occasionalTravellerDuration"
-			type="time" />
-		<property column="mobilityRestrictedTravellerDuration" name="mobilityRestrictedTravellerDuration"
-			type="time" />
-		<property column="linkType" name="linkType"
-			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType" />
-		<property name="intUserNeeds" />
-		<property column="linkOrientation" name="linkOrientation"
-			type="fr.certu.chouette.dao.hibernate.usertype.LinkOrientationUserType" />
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<property name="linkDistance" type="java.math.BigDecimal">
+			<column name="linkDistance">
+				<comment>Distance between AccesPoint and StopArea</comment>
+			</column>
+		</property>
+		<property name="liftAvailable" type="boolean">
+			<column name="liftAvailability">
+				<comment>Indicate if a lift is available</comment>
+			</column>
+		</property>
+		<property name="mobilityRestrictedSuitable" type="boolean">
+			<column name="mobilityRestrictedSuitability">
+				<comment>Indicate if the link is suitable for mobility restricted
+					persons </comment>
+			</column>
+		</property>
+		<property name="stairsAvailable" type="boolean">
+			<column name="stairsAvailability">
+				<comment>Indicate if stairs are available</comment>
+			</column>
+		</property>
+		<property name="defaultDuration" type="time">
+			<column name="defaultDuration">
+				<comment>Default duration to cross this link</comment>
+			</column>
+		</property>
+		<property name="frequentTravellerDuration"
+			type="time">
+			<column name="frequentTravellerDuration">
+				<comment>Duration of travel for frequent travellers</comment>
+			</column>
+		</property>
+		<property name="occasionalTravellerDuration"
+			type="time">
+			<column name="occasionalTravellerDuration">
+				<comment>Duration of travel for occasional travellers</comment>
+			</column>
+		</property>
+		<property name="mobilityRestrictedTravellerDuration"
+			type="time">
+			<column name="mobilityRestrictedTravellerDuration">
+				<comment>Duration of travel for mobility restricted travellers</comment>
+			</column>
+		</property>
+		<property name="linkType"
+			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType">
+			<column name="linkType">
+				<comment>Link type : Underground, Overground or Mixed</comment>
+			</column>
+		</property>
+		<property name="intUserNeeds">
+			<column name="intUserNeeds">
+				<comment>binary mapping of userNeed list</comment>
+			</column>
+		</property>
+		<property name="linkOrientation"
+			type="fr.certu.chouette.dao.hibernate.usertype.LinkOrientationUserType">
+			<column name="linkOrientation">
+				<comment>Link orientation : accesspoint_to_stoparea or
+					stoparea_to_accesspoint</comment>
+			</column>
+		</property>
 		<many-to-one name="accessPoint" class="AccessPoint"
-			cascade="none" lazy="no-proxy" outer-join="auto" column="accessPointId" foreign-key="aclk_acpt_fkey"/>
+			cascade="none" lazy="no-proxy" outer-join="auto" foreign-key="aclk_acpt_fkey">
+			<column name="accessPointId">
+				<comment>AccessPoint reference</comment>
+			</column>
+		</many-to-one>
 		<many-to-one name="stopArea" class="StopArea" lazy="no-proxy"
-			outer-join="auto" column="stopAreaId" foreign-key="aclk_area_fkey"/>
+			outer-join="auto" foreign-key="aclk_area_fkey">
+			<column name="stopAreaId">
+				<comment>StopArea reference</comment>
+			</column>
+		</many-to-one>
 	</class>
 </hibernate-mapping>

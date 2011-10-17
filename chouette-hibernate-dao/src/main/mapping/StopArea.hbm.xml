@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="StopArea" table="StopArea">
-	<comment>StopArea</comment>
+		<comment>StopArea</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -74,6 +75,7 @@
 			name="areaCentroid" update="true">
 			<property column="objectId" insert="false" name="containedInStopAreaId"
 				type="string" update="false" />
+
 			<property name="longitude" precision="19" scale="16"
 				type="java.math.BigDecimal">
 				<column name="longitude">
@@ -125,26 +127,23 @@
 				</property>
 			</component>
 		</component>
-		<!-- <many-to-one class="StopArea" column="parentId" lazy="no-proxy" name="parentStopArea" 
-			foreign-key="area_parent_fkey" /> -->
-		<!-- <bag name="containedStopAreas" lazy="true" inverse="true"> <key column="parentId" 
-			foreign-key="area_parent_fkey" /> <one-to-many class="StopArea" /> </bag> -->
 
 		<bag name="parents" table="stopareastoparea" lazy="true">
 			<comment>StopArea hierarchical graph</comment>
 			<key foreign-key="stoparea_child_fkey">
-				<column name="childId">
+				<column name="childId" index="idx_stoparea_child">
 					<comment>Child reference in hierarchy</comment>
 				</column>
 			</key>
 			<many-to-many class="StopArea" foreign-key="stoparea_parent_fkey">
-				<column name="parentId">
+				<column name="parentId"  index="idx_stoparea_child">
 					<comment>Parent reference in hierarchy</comment>
 				</column>
 			</many-to-many>
 		</bag>
 
-		<bag name="routingConstraintLines" table="routingconstraints_lines" lazy="true">
+		<bag name="routingConstraintLines" table="routingconstraints_lines"
+			lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
 			<key foreign-key="routingconstraint_stoparea_fkey">
 				<column name="stopareaid">
@@ -158,17 +157,20 @@
 			</many-to-many>
 		</bag>
 
+		<!-- comment above -->
 		<bag name="containedStopAreas" table="stopareastoparea" lazy="true">
 			<key column="parentId" foreign-key="stoparea_parent_fkey" />
 			<many-to-many column="childId" class="StopArea"
 				foreign-key="stoparea_child_fkey" />
 		</bag>
 
+		<!-- comment on StopPoint definition -->
 		<bag name="containedStopPoints" lazy="false" inverse="true">
 			<key column="stopareaid" foreign-key="stoppoint_area_fkey" />
 			<one-to-many class="StopPoint" />
 		</bag>
 
+		<!-- comment on AccessLink definition -->
 		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
 			<key column="stopAreaId" foreign-key="aclk_area_fkey" />
 			<one-to-many class="AccessLink" />

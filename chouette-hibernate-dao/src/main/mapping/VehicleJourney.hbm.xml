@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="VehicleJourney" table="VehicleJourney">
 		<comment>Vehicle journey</comment>
@@ -11,7 +12,7 @@
 			</column>
 			<generator class="identity" />
 		</id>
-		<property name="objectId" type="string" unique="true">
+		<property name="objectId" type="string" unique="true" >
 			<column name="objectId" not-null="true">
 				<comment>Neptune identification</comment>
 			</column>

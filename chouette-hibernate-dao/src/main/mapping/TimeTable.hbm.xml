@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Timetable" table="Timetable">
 		<comment>Timetables</comment>
@@ -93,8 +94,16 @@
 		<!-- comments for this bag are sets in VehicleJourney.hbm.xml -->
 		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="true"
 			inverse="true">
-			<key column="timetableId" />
-			<many-to-many column="vehiclejourneyId" class="VehicleJourney" />
+			<key>
+				<column name="timetableId">
+					<comment>Timetable foreign key</comment>
+				</column>
+			</key>
+			<many-to-many class="VehicleJourney" >
+				<column name="vehiclejourneyId">
+					<comment>VehicleJourney foreign key</comment>
+				</column>
+			</many-to-many>
 		</bag>
 	</class>
 </hibernate-mapping>

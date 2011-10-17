@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class dynamic-insert="false" dynamic-update="false"
-		name="ConnectionLink" table="ConnectionLink">
+	<class dynamic-insert="false" dynamic-update="false" name="ConnectionLink"
+		table="ConnectionLink">
 		<comment>Connection link between 2 stopareas</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -37,80 +38,74 @@
 				<comment>Name</comment>
 			</column>
 		</property>
-		<property name="comment" type="string" >
+		<property name="comment" type="string">
 			<column name="comment">
 				<comment>Comment</comment>
 			</column>
 		</property>
-		<property name="linkDistance" type="java.math.BigDecimal" >
+		<property name="linkDistance" type="java.math.BigDecimal">
 			<column name="linkDistance">
-				<comment>Length in meter</comment>
+				<comment>Distance between StopAreas</comment>
 			</column>
 		</property>
-		<many-to-one name="startOfLink" class="StopArea" 
-			lazy="no-proxy" foreign-key="colk_startarea_fkey">
+		<many-to-one name="startOfLink" class="StopArea" lazy="no-proxy"
+			foreign-key="colk_startarea_fkey">
 			<column name="departureid">
 				<comment>Start stoparea internal id</comment>
 			</column>
 		</many-to-one>
-		<many-to-one name="endOfLink" class="StopArea"
-			lazy="no-proxy" foreign-key="colk_endarea_fkey">
+		<many-to-one name="endOfLink" class="StopArea" lazy="no-proxy"
+			foreign-key="colk_endarea_fkey">
 			<column name="arrivalid">
 				<comment>End stoparea internal id</comment>
 			</column>
 		</many-to-one>
-		<property name="liftAvailable"
-			type="boolean" >
+		<property name="liftAvailable" type="boolean">
 			<column name="liftAvailability">
-				<comment>link has lift</comment>
+				<comment>Indicate if a lift is available</comment>
 			</column>
 		</property>
-		<property name="mobilityRestrictedSuitable"
-			type="boolean" >
+		<property name="mobilityRestrictedSuitable" type="boolean">
 			<column name="mobilityRestrictedSuitability">
-				<comment>Length in meter</comment>
+				<comment>Indicate if the link is suitable for mobility restricted
+					persons </comment>
 			</column>
 		</property>
-		<property name="stairsAvailable"
-			type="boolean" >
+		<property name="stairsAvailable" type="boolean">
 			<column name="stairsAvailability">
-				<comment>link has stairs</comment>
+				<comment>Indicate if stairs are available</comment>
 			</column>
 		</property>
-		<property name="defaultDuration"
-			type="time" >
+		<property name="defaultDuration" type="time">
 			<column name="defaultDuration">
 				<comment>average duration of travel</comment>
 			</column>
 		</property>
-		<property name="frequentTravellerDuration"
-			type="time" >
+		<property name="frequentTravellerDuration" type="time">
 			<column name="frequentTravellerDuration">
 				<comment>duration of travel for frequent traveller</comment>
 			</column>
 		</property>
-		<property name="occasionalTravellerDuration"
-			type="time" >
+		<property name="occasionalTravellerDuration" type="time">
 			<column name="occasionalTravellerDuration">
 				<comment>duration of travel for occasional traveler</comment>
 			</column>
 		</property>
-		<property name="mobilityRestrictedTravellerDuration"
-			type="time" >
+		<property name="mobilityRestrictedTravellerDuration" type="time">
 			<column name="mobilityRestrictedTravellerDuration">
 				<comment>duration of travel for mobiliy restricted traveller</comment>
 			</column>
 		</property>
 		<property name="linkType"
-			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType" >
+			type="fr.certu.chouette.dao.hibernate.usertype.ConnectionLinkTypeUserType">
 			<column name="linkType">
 				<comment>Type (Underground,Overground or Mixed)</comment>
 			</column>
 		</property>
-		<property name="intUserNeeds" >
+		<property name="intUserNeeds">
 			<column name="intUserNeeds">
 				<comment>binary mapping of userNeed list</comment>
 			</column>
-		</property>	
+		</property>
 	</class>
 </hibernate-mapping>

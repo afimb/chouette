@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="GroupOfLine" table="GroupOfLine" dynamic-insert="false"
 		dynamic-update="false">
+		<comment>group of lines</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -31,14 +33,21 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-
-		<property name="comment" />
-		 
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<!-- comment in Line definition -->
 		<bag name="lines" lazy="true" inverse="true">
-			<key column="groupOfLineId" foreign-key="line_glines_fkey"/>
-			<one-to-many class="Line"/>
+			<key column="groupOfLineId" foreign-key="line_glines_fkey" />
+			<one-to-many class="Line" />
 		</bag>
-		 
+
 	</class>
 </hibernate-mapping>

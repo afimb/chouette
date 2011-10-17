@@ -6,7 +6,7 @@
    default-init-method="init">
 
 
-	<bean id="CSVLineEXportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.LineProducer" />
+	<bean id="CSVLineExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.LineProducer" />
 	<bean id="CSVCompanyExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.CompanyProducer" />
 	<bean id="CSVNetworkExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.PTNetworkProducer" />
 	<bean id="CSVTimetableExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.TimetableProducer" />

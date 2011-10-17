@@ -232,17 +232,19 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
 
             ReportHolder report = new ReportHolder();
             lineManager.doExport(user  , lignes, exportMode, parameters, report );
-            if (! report.getReport().getStatus().equals(Report.STATE.OK))
+            if (report.getReport().getStatus().equals(Report.STATE.ERROR))
             {
                if (temp.exists() )temp.delete();
                nomFichier = "C_INVALIDE_" + exportMode + "_" + id ;
                temp = File.createTempFile(nomFichier, ".txt");
                PrintStream stream = new PrintStream(temp);
                Report.print(stream,report.getReport(),true);
-
+               addActionError(getText("reseau.export.gtfs.ko"));
             }
-
+            else
+            {
             addActionMessage(getText("reseau.export.gtfs.ok"));
+            }
          }
          else
          {

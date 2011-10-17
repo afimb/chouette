@@ -1,28 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
- @@LICENCE@@ Société DRYADE
-
- Projet chouette : paramétrage Objet - Base
-
- DStopPointBean.hbm.xml : paramétrage DStopPointBean - StopPoint
-
- Historique des modifications :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
- =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
- =============+================+==============================================
- 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
- =============+================+==============================================
-
- Version : $Revision: 1.6 $
--->
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class dynamic-insert="false" name="StopPoint"
-		table="StopPoint">
+	<class dynamic-insert="false" name="StopPoint" table="StopPoint">
+		<comment>stop point on route</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -50,9 +32,23 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="position" type="int" />
-		<many-to-one name="containedInStopArea" class="StopArea" cascade="none" lazy="no-proxy"
-			outer-join="auto" column="stopareaid" foreign-key="stoppoint_area_fkey"/>	
-		<many-to-one name="route" lazy="no-proxy" class="Route" column="routeId" insert="true" update="true" />
+		<property name="position" type="int">
+			<column name="position">
+				<comment>Rank of stop point in route</comment>
+			</column>
+		</property>
+		<many-to-one name="containedInStopArea" class="StopArea"
+			cascade="none" lazy="no-proxy" outer-join="auto" foreign-key="stoppoint_area_fkey">
+			<column name="stopareaid">
+				<comment>StopArea reference</comment>
+			</column>
+		</many-to-one>
+
+		<many-to-one name="route" lazy="no-proxy" class="Route"
+			insert="true" update="true">
+			<column name="routeId">
+				<comment>Route reference</comment>
+			</column>
+		</many-to-one>
 	</class>
 </hibernate-mapping>

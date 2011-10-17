@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
- @@LICENCE@@ Société DRYADE
-
- Projet chouette : paramétrage Objet - Base
-
- Route.hbm.xml : paramétrage Route
-
- Historique des modifications :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 2 nov. 2004  |Marc FLORISSON  | Création
- =============+================+==============================================
- 16 nov. 2004 |Chao ZHANG	   | Ajout des propritétés complémentaires
- =============+================+==============================================
- 19 av. 2011  |Mamadou KEIRA   | Refactoring, creating foreign keys
- =============+================+==============================================
-
- Version : $Revision: 1.6 $
--->
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Route" table="Route" dynamic-insert="false"
 		dynamic-update="false">
+		<comment>Route</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -49,31 +33,66 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name"/>
-		<property name="oppositeRouteId" type="long" />
-		<property name="publishedName" />
-		<property name="number" />
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<property name="oppositeRouteId" type="long" >
+			<column name="oppositeRouteId">
+				<comment>Opposite route reference</comment>
+			</column>
+		</property>
+		<property name="publishedName" >
+			<column name="publishedName">
+				<comment>Published name</comment>
+			</column>
+		</property>
+		<property name="number" >
+			<column name="number">
+				<comment>Number</comment>
+			</column>
+		</property>
 		<property name="direction"
-			type="fr.certu.chouette.dao.hibernate.usertype.PTDirectionUserType" />
-		<property name="comment" />
-		<property name="wayBack" />
-		<!-- relations --> 
-		<bag name="journeyPatterns" lazy="true" inverse="true" cascade="all-delete-orphan">
-			<key column="routeId" foreign-key="jp_route_fkey" on-delete="cascade"/>
+			type="fr.certu.chouette.dao.hibernate.usertype.PTDirectionUserType" >
+			<column name="direction">
+				<comment>Direction : North, East, ...</comment>
+			</column>
+		</property>
+		<property name="wayBack" >
+			<column name="wayBack">
+				<comment>Orientation : A or R </comment>
+			</column>
+		</property>
+		<!-- relations -->
+		<bag name="journeyPatterns" lazy="true" inverse="true"
+			cascade="all-delete-orphan">
+			<key column="routeId" foreign-key="jp_route_fkey" on-delete="cascade" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
 		<bag name="ptLinks" lazy="true" inverse="true" cascade="all-delete-orphan">
-			<key column="routeId" foreign-key="ptlink_route_fkey" on-delete="cascade"/>
+			<key column="routeId" foreign-key="ptlink_route_fkey" on-delete="cascade" />
 			<one-to-many class="PTLink" />
 		</bag>
-		<bag name="stopPoints" lazy="true" inverse="true" cascade="all-delete-orphan" order-by="position">
-			<key column="routeId" foreign-key="stoppoint_route_fkey" on-delete="cascade"/>
+		<bag name="stopPoints" lazy="true" inverse="true" cascade="all-delete-orphan"
+			order-by="position">
+			<key column="routeId" foreign-key="stoppoint_route_fkey"
+				on-delete="cascade" />
 			<!-- <list-index column="position" base="0"/> -->
 			<one-to-many class="StopPoint" />
 		</bag>
-		<many-to-one name="line" insert="true" update="true" foreign-key="route_line_fkey"
-			class="Line" lazy="no-proxy" outer-join="auto" column="lineId">
-			 </many-to-one>
+		<many-to-one name="line" insert="true" update="true"
+			foreign-key="route_line_fkey" class="Line" lazy="no-proxy"
+			outer-join="auto" >
+			<column name="lineId">
+				<comment>Line reference</comment>
+			</column>
+		</many-to-one>
 
 	</class>
 </hibernate-mapping>

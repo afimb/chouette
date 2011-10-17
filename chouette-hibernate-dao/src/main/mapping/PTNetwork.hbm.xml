@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-  <class name="PTNetwork" table="PtNetwork" dynamic-insert="false" dynamic-update="false">
+	<class name="PTNetwork" table="PtNetwork" dynamic-insert="false"
+		dynamic-update="false">
+		<comment>Public Transport Network</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -30,17 +33,47 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-    <property name="versionDate" type="date"/>
-    <property name="description"/>
-    <property name="name"/>
-    <property name="registrationNumber" unique="true"/>
-    <property name="sourceName"/>
-    <property name="sourceIdentifier"/>
-    <property name="comment"/>
-    		<bag name="lines" lazy="true" inverse="true" >
-			<key column="PTNetworkId" foreign-key="line_ptnetwork_fkey" update="false" on-delete="noaction"/>
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<property name="versionDate" type="date">
+			<column name="versionDate">
+				<comment>PTNetwork version date</comment>
+			</column>
+		</property>
+		<property name="description">
+			<column name="description">
+				<comment>description</comment>
+			</column>
+		</property>
+		<property name="registrationNumber" unique="true">
+			<column name="registrationNumber">
+				<comment>Registration unique number</comment>
+			</column>
+		</property>
+		<property name="sourceName">
+			<column name="sourceName">
+				<comment>data producer name</comment>
+			</column>
+		</property>
+		<property name="sourceIdentifier">
+			<column name="sourceIdentifier">
+				<comment>data producer identifier</comment>
+			</column>
+		</property>
+		<!-- comment on Line definition -->
+		<bag name="lines" lazy="true" inverse="true">
+			<key column="PTNetworkId" foreign-key="line_ptnetwork_fkey"
+				update="false" on-delete="noaction" />
 			<one-to-many class="Line" />
 		</bag>
-    
-  </class>
+
+	</class>
 </hibernate-mapping>

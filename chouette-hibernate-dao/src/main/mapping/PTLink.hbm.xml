@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="PTLink" table="PTLink">
+		<comment>Link between two successive stop points on a same route</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -31,14 +33,37 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-		<property name="comment" type="string" />
-		<property column="linkDistance" name="linkDistance" type="java.math.BigDecimal" />
-		<many-to-one class="StopPoint" column="startOfLinkId" 
-			insert="true" update="true" lazy="no-proxy" name="startOfLink" foreign-key="ptlk_startstpt_fkey"/>
-		<many-to-one class="StopPoint" column="endOfLinkId"
-			insert="true" update="true" lazy="no-proxy" name="endOfLink" foreign-key="ptlk_endstpt_fkey"/>
-		<many-to-one class="Route" column="routeId" lazy="no-proxy"
-			name="route" />
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
+		<property name="linkDistance" type="java.math.BigDecimal">
+			<column name="linkDistance">
+				<comment>Distance between AccesPoint and StopArea</comment>
+			</column>
+		</property>
+		<many-to-one class="StopPoint" insert="true" update="true"
+			lazy="no-proxy" name="startOfLink" foreign-key="ptlk_startstpt_fkey">
+			<column name="startOfLinkId">
+				<comment>Start StopPoint reference</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="StopPoint" insert="true" update="true"
+			lazy="no-proxy" name="endOfLink" foreign-key="ptlk_endstpt_fkey">
+			<column name="endOfLinkId">
+				<comment>End StopPoint reference</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="Route" lazy="no-proxy" name="route">
+			<column name="routeId">
+				<comment>Route reference</comment>
+			</column>
+		</many-to-one>
 	</class>
 </hibernate-mapping>

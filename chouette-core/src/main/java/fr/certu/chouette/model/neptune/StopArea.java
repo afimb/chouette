@@ -266,6 +266,16 @@ public class StopArea extends NeptuneIdentifiedObject
    private List<Line>           routingConstraintLines;
 
    /**
+    * line ids affected by this RoutingConstraint (for exchange purpose)
+    * <p>
+    * only for {@link ChouetteAreaEnum.ITL} StopAreas
+    * <br/><i>readable/writable</i>
+    */
+   @Getter
+   @Setter
+   private List<String>           routingConstraintLineIds;
+
+   /**
     * parentId for database v1.6 and less compatibility
     * 
     * @deprecated
@@ -659,6 +669,45 @@ public class StopArea extends NeptuneIdentifiedObject
          routingConstraintLines.remove(line);
    }
 
+   /**
+    * add a line if not already present
+    * <p>
+    * stop
+    * 
+    * @param line
+    */
+   public void addRoutingConstraintLineId(String lineId)
+   {
+      if (!areaType.equals(ChouetteAreaEnum.ITL))
+      {
+         // only routing constraints can contains lines
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
+               "routingConstraintLineIds");
+      }
+      if (routingConstraintLineIds == null)
+         routingConstraintLineIds = new ArrayList<String>();
+      if (!routingConstraintLineIds.contains(lineId))
+         routingConstraintLineIds.add(lineId);
+   }
+
+   /**
+    * remove a line
+    * 
+    * @param line
+    */
+   public void removeRoutingConstraintLineId(String lineId)
+   {
+      if (!areaType.equals(ChouetteAreaEnum.ITL))
+      {
+         // only routing constraints can contains lines
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
+               "routingConstraintLineIds");
+      }
+      if (routingConstraintLineIds == null)
+         routingConstraintLineIds = new ArrayList<String>();
+      if (routingConstraintLineIds.contains(lineId))
+         routingConstraintLineIds.remove(lineId);
+   }
 
    /*
     * (non-Javadoc)
@@ -786,6 +835,13 @@ public class StopArea extends NeptuneIdentifiedObject
          setAreaCentroidId(getAreaCentroid().getObjectId());
       }
       
+      if (getRoutingConstraintLines() != null)
+      {
+         for (Line line : getRoutingConstraintLines())
+         {
+            addRoutingConstraintLineId(line.getObjectId());
+         }
+      }
       // TODO connectionlinks and accesslinks ? 
    }
 }

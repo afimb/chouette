@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!--
- @@LICENCE@@ Société DRYADE
-
- Chouette project  : paramétrage Objet - Base
-
- Change history :
- Date         | Auteur         | Libéllé
- =============+================+==============================================
- 19 av. 2011 |Mamadou KEIRA    | init
- =============+================+==============================================
-
- Version : $Revision: 1.0 $
--->
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="TimeSlot" table="TimeSlot">
+	<comment>time slot</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -43,10 +33,30 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-		<property name="beginningSlotTime" type="java.util.Date" />
-		<property name="endSlotTime" type="java.util.Date" />
-		<property name="firstDepartureTimeInSlot" type="java.util.Date" />
-		<property name="lastDepartureTimeInSlot" type="java.util.Date" />
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="beginningSlotTime" type="java.util.Date" >
+			<column name="beginningSlotTime">
+				<comment>Beginning slot time</comment>
+			</column>
+		</property>
+		<property name="endSlotTime" type="java.util.Date" >
+			<column name="endSlotTime">
+				<comment>End slot time</comment>
+			</column>
+		</property>
+		<property name="firstDepartureTimeInSlot" type="java.util.Date" >
+			<column name="firstDepartureTimeInSlot">
+				<comment>First departure time in slot</comment>
+			</column>
+		</property>
+		<property name="lastDepartureTimeInSlot" type="java.util.Date" >
+			<column name="lastDepartureTimeInSlot">
+				<comment>Last departure time in slot</comment>
+			</column>
+		</property>
 	</class>
 </hibernate-mapping>

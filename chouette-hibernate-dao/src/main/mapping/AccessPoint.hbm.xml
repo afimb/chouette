@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="AccessPoint"
 		table="AccessPoint">
+		<comment>Access point</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -31,42 +33,111 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-		<property name="name" type="string" />
-		<property name="comment" type="string" />
+		<property name="name" type="string">
+			<column name="name">
+				<comment>Name</comment>
+			</column>
+		</property>
+		<property name="comment" type="string">
+			<column name="comment">
+				<comment>Comment</comment>
+			</column>
+		</property>
 
-		<component name="address"
-			class="fr.certu.chouette.model.neptune.type.Address">
-			<property name="countryCode" type="string" />
-			<property name="streetName" type="string" />
-		</component>
 		<property name="longitude" precision="19" scale="16"
-			type="java.math.BigDecimal" />
+			type="java.math.BigDecimal">
+			<column name="longitude">
+				<comment>Longitude</comment>
+			</column>
+		</property>
 		<property name="latitude" precision="19" scale="16"
-			type="java.math.BigDecimal" />
+			type="java.math.BigDecimal">
+			<column name="latitude">
+				<comment>Latitude</comment>
+			</column>
+		</property>
 		<property name="longLatType"
-			type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType" />
-		<component name="projectedPoint"
-			class="fr.certu.chouette.model.neptune.type.ProjectedPoint">
-			<property name="x" type="java.math.BigDecimal" />
-			<property name="y" type="java.math.BigDecimal" />
-			<property name="projectionType" type="string" />
+			type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
+			<column name="longlattype">
+				<comment>Model used for Longitude and Latitude (Standard, WGS84 or
+					WGS92)</comment>
+			</column>
+		</property>
+		<component class="fr.certu.chouette.model.neptune.type.ProjectedPoint"
+			name="projectedPoint">
+			<property name="x" type="java.math.BigDecimal">
+				<column name="x">
+					<comment>X coordinate</comment>
+				</column>
+			</property>
+			<property name="y" type="java.math.BigDecimal">
+				<column name="y">
+					<comment>Y coordinate</comment>
+				</column>
+			</property>
+			<property name="projectionType" type="string">
+				<column name="projectiontype">
+					<comment>Projection used for coordinates</comment>
+				</column>
+			</property>
 		</component>
-		<property name="containedIn" column="containedIn" />
-		
-		<bag name="accessLinks" table="accesslink" lazy="true"
-			cascade="all">
+		<component class="fr.certu.chouette.model.neptune.type.Address"
+			name="address">
+			<property name="countryCode" type="string">
+				<column name="countrycode">
+					<comment>Zip code</comment>
+				</column>
+			</property>
+			<property name="streetName" type="string">
+				<column name="streetname">
+					<comment>Address</comment>
+				</column>
+			</property>
+		</component>
+
+		<property name="containedIn" >
+			<column name="containedIn">
+				<comment>Unused data</comment>
+			</column>
+		</property>
+
+		<property name="openningTime" type="java.util.Date">
+			<column name="openningTime">
+				<comment>Opening time</comment>
+			</column>
+		</property>
+		<property name="closingTime" type="java.util.Date">
+			<column name="closingTime">
+				<comment>Closing time</comment>
+			</column>
+		</property>
+
+		<property name="type" type="string">
+			<column name="type">
+				<comment>Access Point Type : free description</comment>
+			</column>
+		</property>
+		<property name="liftAvailable" type="boolean">
+			<column name="liftAvailability">
+				<comment>Indicate if a lift is available</comment>
+			</column>
+		</property>
+		<property name="mobilityRestrictedSuitable" type="boolean">
+			<column name="mobilityRestrictedSuitability">
+				<comment>Indicate if the link is suitable for mobility restricted
+					persons </comment>
+			</column>
+		</property>
+		<property name="stairsAvailable" type="boolean">
+			<column name="stairsAvailability">
+				<comment>Indicate if stairs are available</comment>
+			</column>
+		</property>
+
+		<!-- comment on AccessLink definition -->
+		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
 			<key column="accessPointId" foreign-key="aclk_acpt_fkey" />
 			<one-to-many class="AccessLink" />
 		</bag>
-		 
-		<property name="openningTime" type="java.util.Date" />
-		<property name="closingTime" type="java.util.Date" />
-		<property name="type" type="string" />
-		<property column="liftAvailability" name="liftAvailable"
-			type="boolean" />
-		<property column="mobilityRestrictedSuitability" name="mobilityRestrictedSuitable"
-			type="boolean" />
-		<property column="stairsAvailability" name="stairsAvailable"
-			type="boolean" />
 	</class>
 </hibernate-mapping>

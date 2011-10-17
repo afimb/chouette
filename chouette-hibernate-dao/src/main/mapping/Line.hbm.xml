@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
+	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Line" table="Line" dynamic-insert="false"
 		dynamic-update="false">
@@ -102,12 +104,12 @@
 			lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
 			<key foreign-key="routingconstraint_line_fkey">
-				<column name="lineId">
+				<column name="lineId" index="idx_rcli_li">
 					<comment>Line reference</comment>
 				</column>
 			</key>
 			<many-to-many class="StopArea" foreign-key="routingconstraint_stoparea_fkey">
-				<column name="stopareaid">
+				<column name="stopareaid"  index="idx_rcli_st">
 					<comment>Routing constraint reference</comment>
 				</column>
 			</many-to-many>

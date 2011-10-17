@@ -55,7 +55,7 @@ public class CleanService implements ICleanService
       purgeReport.setStatus(CleanReport.STATE.OK);
       purgeReport.addItem(new CleanReportItem("Header", CleanReport.STATE.OK, sdftime.format(Calendar.getInstance()
             .getTime()), sdf.format(boundaryDate)));
-
+      logger.info("purge asked"+ (before?" before ":" after ")+sdf.format(boundaryDate) );
       try
       {
          // count vehicleJourney before purge
@@ -83,7 +83,14 @@ public class CleanService implements ICleanService
             for (Iterator<Date> iterator = dates.iterator(); iterator.hasNext();)
             {
                Date date = iterator.next();
-               if (checkDate(date, boundaryDate, before))
+               if (date == null)
+               {
+                  logger.error("null date for "+timetable.getObjectId());
+                  numberOfDates++;
+                  iterator.remove();
+                  update = true;
+               }
+               else if (checkDate(date, boundaryDate, before))
                {
                   numberOfDates++;
                   iterator.remove();
@@ -163,9 +170,9 @@ public class CleanService implements ICleanService
          purgeReport.addItem(new CleanReportItem("PhysicalStopCount", Long
                .toString(numberOfPhysicalStopPointBeforePurge), Long.toString(numberOfPhysicalStopPointAfterPurge)));
          purgeReport
-               .addItem(new CleanReportItem("CommercialStopCount", Long
-                     .toString(numberOfCommercialStopPointBeforePurge), Long
-                     .toString(numberOfCommercialStopPointAfterPurge)));
+         .addItem(new CleanReportItem("CommercialStopCount", Long
+               .toString(numberOfCommercialStopPointBeforePurge), Long
+               .toString(numberOfCommercialStopPointAfterPurge)));
          purgeReport.addItem(new CleanReportItem("ConnectionLinkCount", Long
                .toString(numberOfConnectionLinkBeforePurge), Long.toString(numberOfConnectionLinkAfterPurge)));
 
