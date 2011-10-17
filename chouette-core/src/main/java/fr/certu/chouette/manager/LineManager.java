@@ -8,9 +8,7 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,7 +96,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				accessLinks.addAll(item.getAccessLinks());
 				accessPoints.addAll(item.getAccessPoints());
 				facilities.addAll(item.getFacilities());
-				groupOfLines.addAll(item.getGroupOfLines());
+				groupOfLines.add(item.getGroupOfLine());
 
 			}
 		} else {

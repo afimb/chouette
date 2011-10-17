@@ -14,10 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.exchange.xml.neptune.model.NeptuneRoutingConstraint;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
@@ -48,7 +49,7 @@ import fr.certu.chouette.model.neptune.type.ImportedItems;
 public class ModelAssembler
 {
    private static final Logger                                                                           logger                    = Logger
-                                                                                                                                         .getLogger(ModelAssembler.class);
+   .getLogger(ModelAssembler.class);
    /**
     * extracted line
     */
@@ -138,7 +139,7 @@ public class ModelAssembler
     */
    @Getter
    @Setter
-   private List<GroupOfLine>                                                                             groupOfLines;
+   private GroupOfLine                                                                             groupOfLine;
    /**
     * extracted facilities
     */
@@ -215,10 +216,6 @@ public class ModelAssembler
     */
    private Map<String, AccessPoint>                                                                      accessPointsDictionary    = new HashMap<String, AccessPoint>();
    /**
-    * dictionary (map) of grouopOfLine object ids
-    */
-   private Map<String, GroupOfLine>                                                                      groupOfLinesDictionary    = new HashMap<String, GroupOfLine>();
-   /**
     * dictionary (map) of facility object ids
     */
    private Map<String, Facility>                                                                         facilitiesDictionary      = new HashMap<String, Facility>();
@@ -248,7 +245,7 @@ public class ModelAssembler
       connectRoutingConstraints();
       connectTimetables();
       connectAccessLinks();
-      connectGroupOfLines();
+      connectGroupOfLine();
    }
 
    /**
@@ -272,7 +269,6 @@ public class ModelAssembler
       populateDictionnary(timetables, timetablesDictionary);
       populateDictionnary(accessLinks, accessLinksDictionary);
       populateDictionnary(accessPoints, accessPointsDictionary);
-      populateDictionnary(groupOfLines, groupOfLinesDictionary);
       populateDictionnary(facilities, facilitiesDictionary);
       populateDictionnary(timeSlots, timeSlotDictionary);
    }
@@ -329,7 +325,7 @@ public class ModelAssembler
       item.setCompanies(companies);
       item.setConnectionLinks(connectionLinks);
       item.setFacilities(facilities);
-      item.setGroupOfLines(groupOfLines);
+      item.setGroupOfLine(groupOfLine);
       item.setJourneyPatterns(journeyPatterns);
       item.setPtLinks(ptLinks);
       item.setPtNetwork(ptNetwork);
@@ -341,9 +337,7 @@ public class ModelAssembler
       item.setTimeSlots(timeSlots);
 
       line.setImportedItems(item);
-      if (!groupOfLines.isEmpty())
-         line.setGroupOfLine(groupOfLines.get(0));
-      line.setGroupOfLines(groupOfLines);
+      line.setGroupOfLine(groupOfLine);
 
       for (Facility facility : facilities)
       {
@@ -648,32 +642,31 @@ public class ModelAssembler
       {
          StopArea stopArea = (getObjectFromId(accessLink.getStartOfLinkId(), StopArea.class) != null) ? getObjectFromId(
                accessLink.getStartOfLinkId(), StopArea.class) : getObjectFromId(accessLink.getEndOfLinkId(),
-               StopArea.class);
-         if (stopArea != null)
-         {
-            accessLink.setStopArea(stopArea);
-            stopArea.addAccessLink(accessLink);
-         }
-         AccessPoint accessPoint = (getObjectFromId(accessLink.getStartOfLinkId(), AccessPoint.class) != null) ? getObjectFromId(
-               accessLink.getStartOfLinkId(), AccessPoint.class) : getObjectFromId(accessLink.getEndOfLinkId(),
-               AccessPoint.class);
-         if (accessPoint != null)
-         {
-            accessLink.setAccessPoint(accessPoint);
-            accessPoint.addAccessLink(accessLink);
-         }
+                     StopArea.class);
+               if (stopArea != null)
+               {
+                  accessLink.setStopArea(stopArea);
+                  stopArea.addAccessLink(accessLink);
+               }
+               AccessPoint accessPoint = (getObjectFromId(accessLink.getStartOfLinkId(), AccessPoint.class) != null) ? getObjectFromId(
+                     accessLink.getStartOfLinkId(), AccessPoint.class) : getObjectFromId(accessLink.getEndOfLinkId(),
+                           AccessPoint.class);
+                     if (accessPoint != null)
+                     {
+                        accessLink.setAccessPoint(accessPoint);
+                        accessPoint.addAccessLink(accessLink);
+                     }
       }
    }
 
    /**
     * connect direct relation between GroupOfLines and other objects
     */
-   private void connectGroupOfLines()
+   private void connectGroupOfLine()
    {
-      for (GroupOfLine groupOfLine : groupOfLines)
-      {
+      if (groupOfLine != null)
          groupOfLine.setLines(getObjectsFromIds(groupOfLine.getLineIds(), Line.class));
-      }
+
    }
 
    /**

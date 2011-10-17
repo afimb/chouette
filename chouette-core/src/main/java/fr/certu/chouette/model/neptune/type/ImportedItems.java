@@ -39,7 +39,7 @@ public class ImportedItems implements Serializable{
 	@Getter @Setter private List<AreaCentroid> areaCentroids;
 	@Getter @Setter private List<ConnectionLink> connectionLinks;
 	@Getter @Setter private List<Facility> facilities;
-	@Getter @Setter private List<GroupOfLine> groupOfLines;
+	@Getter @Setter private GroupOfLine groupOfLine;
 	@Getter @Setter private List<PTLink> ptLinks;
 	@Getter @Setter private List<StopArea> stopAreas;
 	@Getter @Setter private List<StopPoint> stopPoints;

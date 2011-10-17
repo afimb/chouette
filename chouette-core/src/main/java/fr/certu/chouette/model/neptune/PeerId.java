@@ -5,17 +5,50 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-public class PeerId implements Serializable{
+/**
+ * PeerId : couple of database Id and ObjectId
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
+ */
 
-	private static final long serialVersionUID = -8800619354993403437L;
-	
-	@Getter @Setter private Long id;
-	@Getter @Setter private String objectid;
+public class PeerId implements Serializable
+{
 
-	public PeerId() {}
-	public PeerId(Long id, String objecid)
-	{
-		this.id=id;
-		this.objectid=objecid;
-	}
+   private static final long serialVersionUID = -8800619354993403437L;
+
+   /**
+    * id <br/>
+    * <i>readable/writable</i>
+    */
+   @Getter
+   @Setter
+   private Long              id;
+   /**
+    * object id <br/>
+    * <i>readable/writable</i>
+    */
+   @Getter
+   @Setter
+   private String            objectid;
+
+   /**
+    * default constructor
+    */
+   public PeerId()
+   {
+   }
+
+   /**
+    * complete constructor
+    * 
+    * @param id
+    * @param objecid
+    */
+   public PeerId(Long id, String objecid)
+   {
+      this.id = id;
+      this.objectid = objecid;
+   }
 }
