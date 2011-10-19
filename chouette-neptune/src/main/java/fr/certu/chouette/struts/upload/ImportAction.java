@@ -85,8 +85,11 @@ public class ImportAction extends GeneriqueAction {
          SimpleParameterValue inputFile = new SimpleParameterValue("inputFile");
          inputFile.setFilepathValue(canonicalPath);
          parameters.add(inputFile);
-         SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("fileFormat");
-         simpleParameterValue3.setStringValue(FilenameUtils.getExtension(fichierFileName));
+         SimpleParameterValue simpleParameterValue2 = new SimpleParameterValue("fileFormat");
+         simpleParameterValue2.setStringValue(FilenameUtils.getExtension(fichierFileName));
+         parameters.add(simpleParameterValue2);
+         SimpleParameterValue simpleParameterValue3 = new SimpleParameterValue("objectIdPrefix");
+         simpleParameterValue3.setStringValue(objectIdPrefix);
          parameters.add(simpleParameterValue3);
          ReportHolder reportHolder = new ReportHolder();
          List<Line> lines = lineManager.doImport(user, "CSV", parameters, reportHolder);
@@ -118,7 +121,7 @@ public class ImportAction extends GeneriqueAction {
    private void addActionMessage(Report report)
    {
       addActionMessage(report.getLocalizedMessage());
-      addActionMessage("&nbsp;&nbsp;&nbsp;",report.getItems());
+      addActionMessage("   ",report.getItems());
 
    }
 
@@ -129,7 +132,7 @@ public class ImportAction extends GeneriqueAction {
       for (ReportItem item : items) 
       {
          addActionMessage(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-         addActionMessage(indent+"&nbsp;&nbsp;&nbsp;",item.getItems());
+         addActionMessage(indent+"   ",item.getItems());
       }
 
    }
@@ -137,7 +140,7 @@ public class ImportAction extends GeneriqueAction {
    private void addActionError(Report report)
    {
       addActionError(report.getLocalizedMessage());
-      addActionError("&nbsp;&nbsp;&nbsp;",report.getItems());
+      addActionError("   ",report.getItems());
 
    }
 
@@ -150,7 +153,7 @@ public class ImportAction extends GeneriqueAction {
          if (!item.getStatus().equals(Report.STATE.OK))
          {
             addActionError(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-            addActionError(indent+"&nbsp;&nbsp;&nbsp;",item.getItems());
+            addActionError(indent+"   ",item.getItems());
          }
       }
 

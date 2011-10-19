@@ -25,6 +25,12 @@ import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 public class FacilityJdbcDao extends AbstractJdbcDao<Facility> 
 {
 	private static final Logger logger = Logger.getLogger(FacilityJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, Facility facility)
 	throws SQLException {

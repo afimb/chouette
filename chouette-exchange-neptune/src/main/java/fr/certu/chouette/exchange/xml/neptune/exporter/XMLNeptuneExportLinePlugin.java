@@ -94,7 +94,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       description = new FormatDescription(this.getClass().getName());
       description.setName("NEPTUNE");
       List<ParameterDescription> params = new ArrayList<ParameterDescription>();
-      ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILENAME, false,
+      ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false,
             true);
       param1.setAllowedExtensions(Arrays.asList(new String[] { "xml", "zip" }));
       params.add(param1);
@@ -125,7 +125,12 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             SimpleParameterValue svalue = (SimpleParameterValue) value;
             if (svalue.getName().equals("outputFile"))
             {
-               fileName = svalue.getFilenameValue();
+               fileName = svalue.getFilepathValue();
+               if (fileName == null) 
+               {
+                  logger.warn("outputFile changed as FILEPATH type");
+                  fileName = svalue.getFilenameValue();
+               }
             }
 
          }

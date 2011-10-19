@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.Route;
@@ -20,6 +21,13 @@ import fr.certu.chouette.model.neptune.Route;
 @SuppressWarnings("unchecked")
 public class RouteJdbcDao extends AbstractJdbcDao<Route> 
 {
+   private static final Logger logger = Logger.getLogger(RouteJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	public List<Route> getAll() 
 	{

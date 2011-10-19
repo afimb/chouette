@@ -30,6 +30,12 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 {
    private static final Logger logger = Logger.getLogger(StopAreaJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
    /**
     * first SQL purge request : remove every physical stops without StopPoint
     */

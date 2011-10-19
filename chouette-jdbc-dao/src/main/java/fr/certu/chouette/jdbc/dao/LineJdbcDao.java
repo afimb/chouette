@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.GroupOfLine;
@@ -21,6 +22,13 @@ import fr.certu.chouette.model.neptune.Line;
 @SuppressWarnings("unchecked")
 public class LineJdbcDao extends AbstractJdbcDao<Line> 
 {
+   private static final Logger logger = Logger.getLogger(LineJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
    @Override
    public List<Line> getAll() 
    {

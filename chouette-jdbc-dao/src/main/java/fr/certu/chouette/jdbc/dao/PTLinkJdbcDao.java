@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.PTLink;
 
 /**
@@ -14,6 +16,13 @@ import fr.certu.chouette.model.neptune.PTLink;
 
 public class PTLinkJdbcDao extends AbstractJdbcDao<PTLink> 
 {
+   private static final Logger logger = Logger.getLogger(PTLinkJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, PTLink ptLink)
 	throws SQLException {

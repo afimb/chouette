@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.GroupOfLine;
@@ -18,6 +19,13 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
 @SuppressWarnings("unchecked")
 public class GroupOfLineJdbcDao extends AbstractJdbcDao<GroupOfLine> 
 {
+   private static final Logger logger = Logger.getLogger(GroupOfLineJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	public List<GroupOfLine> getAll() 
 	{

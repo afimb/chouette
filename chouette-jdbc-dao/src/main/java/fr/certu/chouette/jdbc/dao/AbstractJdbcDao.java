@@ -12,6 +12,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -43,6 +44,7 @@ extends JdbcDaoSupport implements IDaoTemplate<T>
 	@Getter @Setter protected Map<String, Map<String,String>> collectionAttributes;
 	@Getter @Setter protected String sqlPurge;
 
+	protected abstract Logger getLogger();
 	/**
 	 * Transform an array to sql IN clause
 	 * @param myArray
@@ -119,7 +121,7 @@ extends JdbcDaoSupport implements IDaoTemplate<T>
 	{			
 		if (objects.isEmpty()) 
 		{
-			logger.debug("no object to save");
+		   getLogger().debug("no object to save");
 			return;
 		}
 		final List<T> insertables = new ArrayList<T>();
@@ -445,7 +447,7 @@ extends JdbcDaoSupport implements IDaoTemplate<T>
 			ps.setNull(pos,Types.BIGINT);
 		else if (object.getId() == null)
 		{
-			logger.error("refer object has not id set "+object.toString("", 0));
+		   getLogger().error("refer object has not id set "+object.toString("", 0));
 			throw new NullPointerException("refer object has not id set");
 		}
 		else 

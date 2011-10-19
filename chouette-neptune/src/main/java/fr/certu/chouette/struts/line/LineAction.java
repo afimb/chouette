@@ -265,7 +265,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
          // Nom du fichier de sortie
          nomFichier = "C_" + exportMode + "_" + lineModel.getRegistrationNumber() + ".xml";
          SimpleParameterValue simpleParameterValue = new SimpleParameterValue("outputFile");
-         simpleParameterValue.setFilenameValue(temp.getAbsolutePath());
+         simpleParameterValue.setFilepathValue(temp.getAbsolutePath());
          parameters.add(simpleParameterValue);
 
          lineManager.doExport(user, lines, formatDescriptor, parameters, reportHolder);

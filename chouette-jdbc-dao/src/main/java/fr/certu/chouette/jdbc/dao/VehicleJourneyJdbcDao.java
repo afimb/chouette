@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
@@ -19,6 +21,13 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
 public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney> 
 {
+   private static final Logger logger = Logger.getLogger(VehicleJourneyJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, VehicleJourney vehicleJourney)
 	throws SQLException {

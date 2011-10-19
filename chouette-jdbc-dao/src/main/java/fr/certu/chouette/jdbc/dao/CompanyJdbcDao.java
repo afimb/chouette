@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.Company;
 
 /**
@@ -14,6 +16,13 @@ import fr.certu.chouette.model.neptune.Company;
 
 public class CompanyJdbcDao extends AbstractJdbcDao<Company> 
 {
+   private static final Logger logger = Logger.getLogger(CompanyJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, Company company) throws SQLException 
 	{

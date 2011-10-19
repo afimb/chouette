@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AccessPoint;
@@ -21,6 +22,13 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 @SuppressWarnings("unchecked")
 public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint> 
 {
+   private static final Logger logger = Logger.getLogger(AccessPointJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	public List<AccessPoint> getAll() 
 	{

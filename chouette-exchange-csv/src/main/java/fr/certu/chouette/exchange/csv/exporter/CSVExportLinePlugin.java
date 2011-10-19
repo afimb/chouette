@@ -20,6 +20,7 @@ import fr.certu.chouette.exchange.csv.exporter.producer.CompanyProducer;
 import fr.certu.chouette.exchange.csv.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.csv.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.csv.exporter.producer.TimetableProducer;
+import fr.certu.chouette.exchange.csv.exporter.report.CSVReport;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
@@ -30,6 +31,7 @@ import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 public class CSVExportLinePlugin implements IExportPlugin<Line> {
@@ -60,8 +62,11 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 
 	@Override
 	public void doExport(List<Line> beans, List<ParameterValue> parameters,
-			ReportHolder report) throws ChouetteException {
+			ReportHolder reportContainer) throws ChouetteException {
 		String fileName = null;
+      CSVReport report = new CSVReport(CSVReport.KEY.EXPORT);
+      report.setStatus(Report.STATE.OK);
+      reportContainer.setReport(report);
 
 		if(beans == null){
 			throw new IllegalArgumentException("no beans to export");
@@ -89,10 +94,11 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 		}
 		
 		Line line = beans.get(0);
+		
 		List<Timetable> timetables = getLineTimetables(line);		
 		
 		try {
-			CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), ';');
+			CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), ';',CSVWriter.NO_QUOTE_CHARACTER);
 			for(Timetable timetable : timetables){
 				csvWriter.writeAll(timetableProducer.produce(timetable));
 				csvWriter.writeNext(new String[0]);

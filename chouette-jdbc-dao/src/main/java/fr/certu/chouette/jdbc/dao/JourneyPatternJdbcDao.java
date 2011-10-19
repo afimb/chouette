@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
 
@@ -17,6 +19,13 @@ import fr.certu.chouette.model.neptune.StopPoint;
  */
 public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern> 
 {
+   private static final Logger logger = Logger.getLogger(JourneyPatternJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, JourneyPattern journeyPattern)
 	throws SQLException {

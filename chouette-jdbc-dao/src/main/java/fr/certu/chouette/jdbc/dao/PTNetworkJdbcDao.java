@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.PTNetwork;
 
 /**
@@ -15,6 +17,13 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 
 public class PTNetworkJdbcDao extends AbstractJdbcDao<PTNetwork> 
 {
+   private static final Logger logger = Logger.getLogger(PTNetworkJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, PTNetwork network)
 	throws SQLException {

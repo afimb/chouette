@@ -60,10 +60,10 @@ public class LineProducer extends AbstractModelProducer<Line>
    }
 
    private String                   projectedPointType        = "epsg:27582";
-   
-   private int stopPointIdCounter = 1;
-   private int stopAreaIdCounter = 1;
-   
+
+   private int                      stopPointIdCounter        = 1;
+   private int                      stopAreaIdCounter         = 1;
+
    @Override
    public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report)
    {
@@ -71,11 +71,13 @@ public class LineProducer extends AbstractModelProducer<Line>
       if (firstLine[TITLE_COLUMN].equals(LINE_NAME_TITLE))
       {
          line.setName(firstLine[TITLE_COLUMN + 1]);
+         logger.debug("line " + line.getName() + " created");
       }
       else
       {
          logger.debug("no linename on " + firstLine[TITLE_COLUMN]);
-         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR,firstLine[TITLE_COLUMN]+"<>" + LINE_NAME_TITLE );
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.MANDATORY_TAG, Report.STATE.ERROR,
+               firstLine[TITLE_COLUMN] + "<>" + LINE_NAME_TITLE);
          report.addItem(reportItem);
          return null;
       }
@@ -87,21 +89,23 @@ public class LineProducer extends AbstractModelProducer<Line>
          line.setTransportModeName(TransportModeNameEnum.valueOf(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE)));
          line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getNumber()));
 
-         loadRoutes(line, csvReader, objectIdPrefix,report);
+         loadRoutes(line, csvReader, objectIdPrefix, report);
       }
       catch (ExchangeException e)
       {
-          logger.error("invalid line",e);
-          CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.INVALID_LINE, Report.STATE.ERROR, e.getLocalizedMessage());
-          report.addItem(reportItem);
-          return null;
+         logger.error("invalid line", e);
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.INVALID_LINE, Report.STATE.ERROR,
+               e.getLocalizedMessage());
+         report.addItem(reportItem);
+         return null;
       }
       CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_LINE, Report.STATE.OK, line.getName());
       report.addItem(reportItem);
       return line;
    }
 
-   private void loadRoutes(Line line, CSVReader csvReader, String objectIdPrefix, Report report) throws ExchangeException
+   private void loadRoutes(Line line, CSVReader csvReader, String objectIdPrefix, Report report)
+         throws ExchangeException
    {
       try
       {
@@ -114,7 +118,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          boolean hole = false;
          int waybackRouteColumn = TITLE_COLUMN + 1;
          int lastVehicleJourneyRank = directions.length; // last VehicleJourney
-                                                         // rank (excluded)
+         // rank (excluded)
          for (int i = TITLE_COLUMN + 1; i < directions.length; i++)
          {
             String value = getValue(i, directions);
@@ -207,7 +211,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             route.setLine(line);
             line.addRoute(route);
             route.setName(directions[routeColumn]);
-
+            // logger.debug("route "+route.getName()+" created");
             PTDirectionEnum direction = PTDirectionEnum.fromValue(directions[routeColumn].substring(0, 1));
             route.setDirection(direction);
             route.setWayBack(direction.toString());
@@ -218,12 +222,13 @@ public class LineProducer extends AbstractModelProducer<Line>
             int rank = 1;
             String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getNumber()) + "_"
                   + route.getWayBack() + "_";
-            if ("00:00".equals(getValue(routeColumn, arrets.get(0)))) journeyColumn++;
+            if ("00:00".equals(getValue(routeColumn, arrets.get(0))))
+               journeyColumn++;
             for (String[] a : arrets)
             {
-               wayBackRouteRank++;
                if (getValue(routeColumn, a) == null)
                   break;
+               wayBackRouteRank++;
                StopPoint pt = new StopPoint();
                pt.setObjectId(baseId + rank);
                pt.setRoute(route);
@@ -239,10 +244,12 @@ public class LineProducer extends AbstractModelProducer<Line>
                }
                pt.setContainedInStopArea(physical);
                physical.addContainedStopPoint(pt);
+               // logger.debug("add "+physical.getName()+" to route");
             }
             route.rebuildPTLinks();
             buildJourneys(route, arrets, timetables, specific, 0, wayBackRouteRank, journeyColumn, waybackRouteColumn);
          }
+         // build second route
          if (waybackRouteColumn != routeColumn)
          {
             journeyColumn = waybackRouteColumn;
@@ -251,16 +258,20 @@ public class LineProducer extends AbstractModelProducer<Line>
             line.addRoute(wayback);
             wayback.setObjectId(objectIdPrefix);
             wayback.setName(directions[waybackRouteColumn]);
+            // logger.debug("route "+wayback.getName()+" created");
 
             PTDirectionEnum direction = PTDirectionEnum.fromValue(directions[waybackRouteColumn].substring(0, 1));
             wayback.setDirection(direction);
             wayback.setWayBack(direction.toString());
+            wayback.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getNumber()) + "_"
+                  + wayback.getWayBack());
 
             // build stopPoint on route and stopArea (BP or Q)
             int rank = 1;
             String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getNumber()) + "_"
                   + wayback.getWayBack() + "_";
-            if ("00:00".equals(getValue(waybackRouteColumn, arrets.get(wayBackRouteRank)))) journeyColumn++;
+            if ("00:00".equals(getValue(waybackRouteColumn, arrets.get(wayBackRouteRank))))
+               journeyColumn++;
             for (int i = wayBackRouteRank; i < arrets.size(); i++)
             {
                String[] a = arrets.get(i);
@@ -278,11 +289,12 @@ public class LineProducer extends AbstractModelProducer<Line>
                   physicals.put(physical.getName(), physical);
                }
                pt.setContainedInStopArea(physical);
+               // logger.debug("add "+physical.getName()+" to wayback route");
                physical.addContainedStopPoint(pt);
             }
             wayback.rebuildPTLinks();
-            buildJourneys(wayback, arrets, timetables, specific, wayBackRouteRank, arrets.size(),
-                  journeyColumn, lastVehicleJourneyRank);
+            buildJourneys(wayback, arrets, timetables, specific, wayBackRouteRank, arrets.size(), journeyColumn,
+                  lastVehicleJourneyRank);
          }
 
       }
@@ -308,16 +320,21 @@ public class LineProducer extends AbstractModelProducer<Line>
       int rank = 1;
       int journeyRank = 1;
       List<StopPoint> stopPoints = route.getStopPoints();
+      // logger.debug("creating vehicleJourneys for "+route.getName());
+      // logger.debug("   column range = "+startColumn+" "+endColumn);
+      // logger.debug("   row    range = "+startRow+" "+endRow);
       for (int col = startColumn; col < endColumn; col++)
       {
          VehicleJourney vj = new VehicleJourney();
          vj.setComment(timetables[col]);
+         // logger.debug("creating vehicleJourney with "+timetables[col]+" for timetable");
          String specific = getValue(col, specifics);
          if (specific != null)
          {
             if (VALID_SPECIFICS.contains(specific))
             {
                vj.setVehicleTypeIdentifier(specific);
+               // logger.debug(" specific found : "+specific);
             }
          }
          vj.setObjectId(route.getObjectId().replace(Route.ROUTE_KEY, VehicleJourney.VEHICLEJOURNEY_KEY) + "_" + rank);
@@ -329,10 +346,11 @@ public class LineProducer extends AbstractModelProducer<Line>
             {
                VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
                vjas.setVehicleJourney(vj);
-               vjas.setStopPoint(stopPoints.get(row-startRow));
+               vjas.setStopPoint(stopPoints.get(row - startRow));
                vjas.setDepartureTime(departureTime);
                vjas.setArrivalTime(departureTime);
                vj.addVehicleJourneyAtStop(vjas);
+               // logger.debug(" passing time for : "+vjas.getStopPoint().getContainedInStopArea().getName());
             }
          }
          if (vj.getVehicleJourneyAtStops().size() > 0)
@@ -351,6 +369,10 @@ public class LineProducer extends AbstractModelProducer<Line>
                   journey.setRoute(route);
                }
             }
+         }
+         else
+         {
+            logger.debug(" nopassing time for vehicleJourney , ignored");
          }
       }
    }
@@ -374,10 +396,12 @@ public class LineProducer extends AbstractModelProducer<Line>
       physical.setAreaCentroid(centroid);
       centroid.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
       centroid.setLongitude(getBigDecimalValue(LONGITUDE_COLUMN, stopData));
-      if(centroid.getLatitude() == null || centroid.getLongitude() == null){
-    	  logger.warn("stop without coordinates : " + physical.getName());
-          CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.STOP_WITHOUT_COORDS, Report.STATE.WARNING, physical.getName());
-          report.addItem(reportItem);
+      if (centroid.getLatitude() == null || centroid.getLongitude() == null)
+      {
+         logger.warn("stop without coordinates : " + physical.getName());
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.STOP_WITHOUT_COORDS, Report.STATE.WARNING,
+               physical.getName());
+         report.addItem(reportItem);
       }
       if (getValue(X_COLUMN, stopData) != null)
       {
@@ -410,13 +434,14 @@ public class LineProducer extends AbstractModelProducer<Line>
    private String getNextStopPointId()
    {
       int ret = stopPointIdCounter++;
-      
+
       return Integer.toString(ret);
    }
+
    private String getNextStopAreaId()
    {
       int ret = stopAreaIdCounter++;
-      
+
       return Integer.toString(ret);
    }
 
@@ -445,7 +470,6 @@ public class LineProducer extends AbstractModelProducer<Line>
       }
       return commercial;
    }
-
 
    protected String loadStringParam(CSVReader csvReader, String title) throws ExchangeException
    {

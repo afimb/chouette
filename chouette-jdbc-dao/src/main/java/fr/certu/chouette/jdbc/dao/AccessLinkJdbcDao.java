@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -19,6 +20,13 @@ import fr.certu.chouette.model.neptune.AccessLink;
 @SuppressWarnings("unchecked")
 public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink> 
 {
+   private static final Logger logger = Logger.getLogger(AccessLinkJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+   
 	@Override
 	public List<AccessLink> getAll() 
 	{

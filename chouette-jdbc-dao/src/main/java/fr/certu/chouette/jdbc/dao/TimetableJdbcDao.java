@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.Period;
@@ -20,6 +22,12 @@ import fr.certu.chouette.model.neptune.Timetable;
 
 public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 {
+   private static final Logger logger = Logger.getLogger(TimetableJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
 
    /**
     * first SQL purge request : remove all timetable without vehiclejourney

@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.TimeSlot;
 
 /**
@@ -15,6 +17,13 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 
 public class TimeSlotJdbcDao extends AbstractJdbcDao<TimeSlot> 
 {
+   private static final Logger logger = Logger.getLogger(TimeSlotJdbcDao.class);
+   
+   public Logger getLogger()
+   {
+      return logger;
+   }
+
 	@Override
 	protected void populateStatement(PreparedStatement ps, TimeSlot timeSlot)
 	throws SQLException 
