@@ -33,11 +33,10 @@
 				transportmodename,
 				registrationnumber,
 				COMMENT,
-				groupoflineid,
 				mobilityrestrictedsuitable,
 				userneeds)
 				VALUES(?, ?, ?, ?, ?, ?, ?,
-				?, ?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -69,7 +68,6 @@
 				transportmodename = ?,
 				registrationnumber = ?,
 				COMMENT = ?,
-				groupoflineid = ?,
 				mobilityrestrictedsuitable = ?
 				WHERE objectid = ?
 			</value>
@@ -80,6 +78,38 @@
 				IN
 				(_OBJECTIDS_)
 		</value>
+		</property>
+		<property name="collectionAttributes">
+			<map>
+				<description>one entry for each attribute</description>
+				<entry key="groupOfLines">
+					<map>
+						<description>one entry for select, insert, delete</description>
+						<entry key="sqlSelectById">
+							<value>
+								SELECT * FROM ${database.schema}.groupofline_line WHERE
+								lineid = ? 
+								</value>
+						</entry>
+						<entry key="sqlInsert">
+							<value>
+								INSERT INTO ${database.schema}.groupofline_line
+								(
+								lineid,
+								groupoflineid
+								)
+								VALUES(?, ?)
+								</value>
+						</entry>
+						<entry key="sqlDelete">
+							<value>
+								DELETE FROM ${database.schema}.groupofline_line WHERE
+								lineId IN (_IDS_)
+								 </value>
+						</entry>
+					</map>
+				</entry>
+			</map>
 		</property>
 	</bean>
 </beans>	

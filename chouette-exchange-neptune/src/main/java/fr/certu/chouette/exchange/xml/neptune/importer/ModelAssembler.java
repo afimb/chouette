@@ -139,7 +139,7 @@ public class ModelAssembler
     */
    @Getter
    @Setter
-   private GroupOfLine                                                                             groupOfLine;
+   private List<GroupOfLine>                                                                             groupOfLines;
    /**
     * extracted facilities
     */
@@ -216,6 +216,10 @@ public class ModelAssembler
     */
    private Map<String, AccessPoint>                                                                      accessPointsDictionary    = new HashMap<String, AccessPoint>();
    /**
+    * dictionary (map) of grouopOfLine object ids
+    */
+   private Map<String, GroupOfLine>                                                                      groupOfLinesDictionary    = new HashMap<String, GroupOfLine>();
+   /**
     * dictionary (map) of facility object ids
     */
    private Map<String, Facility>                                                                         facilitiesDictionary      = new HashMap<String, Facility>();
@@ -245,7 +249,7 @@ public class ModelAssembler
       connectRoutingConstraints();
       connectTimetables();
       connectAccessLinks();
-      connectGroupOfLine();
+      connectGroupOfLines();
    }
 
    /**
@@ -269,6 +273,7 @@ public class ModelAssembler
       populateDictionnary(timetables, timetablesDictionary);
       populateDictionnary(accessLinks, accessLinksDictionary);
       populateDictionnary(accessPoints, accessPointsDictionary);
+      populateDictionnary(groupOfLines, groupOfLinesDictionary);
       populateDictionnary(facilities, facilitiesDictionary);
       populateDictionnary(timeSlots, timeSlotDictionary);
    }
@@ -325,7 +330,7 @@ public class ModelAssembler
       item.setCompanies(companies);
       item.setConnectionLinks(connectionLinks);
       item.setFacilities(facilities);
-      item.setGroupOfLine(groupOfLine);
+      item.setGroupOfLines(groupOfLines);
       item.setJourneyPatterns(journeyPatterns);
       item.setPtLinks(ptLinks);
       item.setPtNetwork(ptNetwork);
@@ -337,7 +342,13 @@ public class ModelAssembler
       item.setTimeSlots(timeSlots);
 
       line.setImportedItems(item);
-      line.setGroupOfLine(groupOfLine);
+      if (!groupOfLines.isEmpty())
+      {
+         for (GroupOfLine groupOfLine : groupOfLines)
+         {
+            line.addGroupOfLine(groupOfLine);
+         }
+      }
 
       for (Facility facility : facilities)
       {
@@ -662,10 +673,16 @@ public class ModelAssembler
    /**
     * connect direct relation between GroupOfLines and other objects
     */
-   private void connectGroupOfLine()
+   private void connectGroupOfLines()
    {
-      if (groupOfLine != null)
-         groupOfLine.setLines(getObjectsFromIds(groupOfLine.getLineIds(), Line.class));
+      if (groupOfLines != null)
+      {
+         for (GroupOfLine groupOfLine : groupOfLines)
+         {
+            groupOfLine.setLines(getObjectsFromIds(groupOfLine.getLineIds(), Line.class));
+         }
+      }
+         
 
    }
 

@@ -88,7 +88,7 @@ public class Line extends NeptuneIdentifiedObject
     * name of groupOfLine attribute for {@link Filter} attributeName
     * construction
     */
-   public static final String    GROUPOFLINE                = "groupOfLine";
+   public static final String    GROUPOFLINE                = "groupOfLines";
    /**
     * Number of the line (characters) <br/>
     * <i>readable/writable</i>
@@ -203,7 +203,7 @@ public class Line extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private GroupOfLine           groupOfLine;
+   private List<GroupOfLine>           groupOfLines;
 
    /**
     * The GroupOfLinesId of the line <br/>
@@ -212,7 +212,7 @@ public class Line extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Long                  groupOfLineId;
+   private List<String>            groupOfLineIds;
 
    /**
     * The optional RoutingConstraints of the line
@@ -251,12 +251,58 @@ public class Line extends NeptuneIdentifiedObject
    @Setter
    private List<Facility>        facilities;
 
+   /**
+    * @param groupOfLine
+    */
+   public void addGroupOfLine(GroupOfLine groupOfLine)
+   {
+      if (groupOfLines == null)
+         groupOfLines = new ArrayList<GroupOfLine>();
+      if (!groupOfLines.contains(groupOfLine))
+         groupOfLines.add(groupOfLine);
+   }
+   
+   /**
+    * @param groupOfLine
+    */
+   public void removeGroupOfLine(GroupOfLine groupOfLine)
+   {
+      if (groupOfLines == null)
+         groupOfLines = new ArrayList<GroupOfLine>();
+      if (groupOfLines.contains(groupOfLine))
+         groupOfLines.remove(groupOfLine);
+   }
+   /**
+    * @param facility
+    */
+   public void addGroupOfLineId(String groupOfLineId)
+   {
+      if (groupOfLineIds == null)
+         groupOfLineIds = new ArrayList<String>();
+      if (!groupOfLineIds.contains(groupOfLineId))
+         groupOfLineIds.add(groupOfLineId);
+   }
+   
+   /**
+    * @param facility
+    */
    public void addFacility(Facility facility)
    {
       if (facilities == null)
          facilities = new ArrayList<Facility>();
       if (!facilities.contains(facility))
          facilities.add(facility);
+   }
+   
+   /**
+    * @param facility
+    */
+   public void removeFacility(Facility facility)
+   {
+      if (facilities == null)
+         facilities = new ArrayList<Facility>();
+      if (facilities.contains(facility))
+         facilities.remove(facility);
    }
 
    /**
@@ -687,9 +733,14 @@ public class Line extends NeptuneIdentifiedObject
       }
 
       // groupOfLine
-      if (getGroupOfLine() != null)
+      if (getGroupOfLines() != null)
       {
-         getGroupOfLine().addLineId(getObjectId());
+         for (GroupOfLine groupOfLine : getGroupOfLines())
+         {
+            addGroupOfLineId(groupOfLine.getObjectId());
+            groupOfLine.addLineId(getObjectId());
+         }
+         
       }
 
       // lineEndIds

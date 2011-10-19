@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
 
+import fr.certu.chouette.filter.Filter;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,13 @@ import lombok.Setter;
 public class Period implements Serializable
 {
    private static final long serialVersionUID = -1964071056103739954L;
+
+   // TODO constant for persistence fields
+   /**
+    * name of startDate attribute for {@link Filter} attributeName construction
+    */
+   public static final String    START_DATE                    = "startDate";
+
    /**
     * start of period <br/>
     * <i>readable/writable</i>

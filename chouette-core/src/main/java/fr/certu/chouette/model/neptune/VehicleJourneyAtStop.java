@@ -7,6 +7,7 @@ import java.util.Date;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 
 /**
@@ -18,6 +19,14 @@ import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 public class VehicleJourneyAtStop extends NeptuneObject 
 {
 	private static final long serialVersionUID = 194243517715939830L;
+	
+   // TODO constant for persistence fields
+   /**
+    * name of stopPoint attribute for {@link Filter} attributeName construction
+    */
+   public static final String STOPPOINT="stopPoint";
+	
+	
 	/**
 	 * Trident Id of associated StopPoint 
 	 */

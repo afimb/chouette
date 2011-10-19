@@ -622,13 +622,12 @@ public class NeptuneConverter
     *           error report
     * @return GroupOfLines produced from GroupOfLine
     */
-   public GroupOfLine extractGroupOfLine(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<GroupOfLine> extractGroupOfLines(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
    {
       List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
 
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "GroupOfLine");
       chouette.schema.GroupOfLine[] xmlGroupOfLines = rootObject.getGroupOfLine();
-      // TODO error in xsd definition, cardinality must be on zero/one : reject more of them by xsd error
       for (chouette.schema.GroupOfLine xmlGroupOfLine : xmlGroupOfLines)
       {
          GroupOfLine groupOfLine = groupOfLineProducer.produce(xmlGroupOfLine, report);
@@ -641,8 +640,7 @@ public class NeptuneConverter
             Integer.toString(count));
       report.addItem(countItem);
       parentReport.addItem(report);
-      if (count == 0) return null;
-      return groupOfLines.get(0);
+      return groupOfLines;
    }
 
    /**

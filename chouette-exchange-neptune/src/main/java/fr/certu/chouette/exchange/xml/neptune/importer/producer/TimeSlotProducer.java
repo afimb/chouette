@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.util.Date;
-
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.plugin.report.ReportItem;
 /**
@@ -17,13 +15,13 @@ public class TimeSlotProducer extends AbstractModelProducer<TimeSlot, chouette.s
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(timeSlot, xmlTimeSlot, report);
 		//beginningSlotTime mandatory
-		timeSlot.setBeginningSlotTime(new Date(xmlTimeSlot.getBeginningSlotTime().toLong()));
+		timeSlot.setBeginningSlotTime(getTime(xmlTimeSlot.getBeginningSlotTime()));
 		//endSlotTime mandatory
-		timeSlot.setEndSlotTime(new Date(xmlTimeSlot.getEndSlotTime().toLong()));
+		timeSlot.setEndSlotTime(getTime(xmlTimeSlot.getEndSlotTime()));
 		//firstDepartureTimeInSlot mandatory
-		timeSlot.setFirstDepartureTimeInSlot(new Date(xmlTimeSlot.getFirstDepartureTimeInSlot().toLong()));
+		timeSlot.setFirstDepartureTimeInSlot(getTime(xmlTimeSlot.getFirstDepartureTimeInSlot()));
 		//lastDepartureTimeInSlot mandatory
-		timeSlot.setLastDepartureTimeInSlot(new Date(xmlTimeSlot.getLastDepartureTimeInSlot().toLong()));
+		timeSlot.setLastDepartureTimeInSlot(getTime(xmlTimeSlot.getLastDepartureTimeInSlot()));
 		
 		return timeSlot;
 	}

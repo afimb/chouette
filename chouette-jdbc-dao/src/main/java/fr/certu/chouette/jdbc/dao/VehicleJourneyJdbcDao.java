@@ -80,19 +80,19 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 			headwayfrequency = null;
 
 			if(vAtStop.getArrivalTime() != null)
-				arrivaltime = new Time(vAtStop.getArrivalTime().getTime());
+				arrivaltime = vAtStop.getArrivalTime();
 
 			if(vAtStop.getDepartureTime() != null)
-				departuretime = new Time(vAtStop.getDepartureTime().getTime());
+				departuretime = vAtStop.getDepartureTime();
 
 			if(vAtStop.getWaitingTime() != null)
-				waitingtime = new Time(vAtStop.getWaitingTime().getTime());
+				waitingtime = vAtStop.getWaitingTime();
 
 			if(vAtStop.getElapseDuration() != null)
-				elapseduration = new Time(vAtStop.getElapseDuration().getTime());
+				elapseduration = vAtStop.getElapseDuration();
 
 			if(vAtStop.getHeadwayFrequency() != null)
-				headwayfrequency = new Time(vAtStop.getHeadwayFrequency().getTime());
+				headwayfrequency = vAtStop.getHeadwayFrequency();
 
 			ps.setTime(5, arrivaltime);
 			ps.setTime(6, departuretime);

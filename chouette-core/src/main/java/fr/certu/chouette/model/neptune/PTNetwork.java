@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 
 /**
@@ -28,6 +29,11 @@ import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 @NoArgsConstructor
 public class PTNetwork extends NeptuneIdentifiedObject
 {
+   // TODO constant for persistence fields
+   /**
+    * name of comment attribute for {@link Filter} attributeName construction
+    */
+   public static final String    COMMENT                    = "comment";
    /**
     * Date when the network and it's dependencies has been referenced <br/>
     * <i>readable/writable</i>

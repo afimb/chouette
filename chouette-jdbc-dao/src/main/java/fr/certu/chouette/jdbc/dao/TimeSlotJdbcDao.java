@@ -2,6 +2,7 @@ package fr.certu.chouette.jdbc.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 import fr.certu.chouette.model.neptune.TimeSlot;
@@ -26,26 +27,26 @@ public class TimeSlotJdbcDao extends AbstractJdbcDao<TimeSlot>
 		ps.setTimestamp(3, timestamp);
 		ps.setString(4, timeSlot.getCreatorId());
 		ps.setString(5, timeSlot.getName());
-		Timestamp beginningslottime = null,
+		Time beginningslottime = null,
 				  endslottime = null, 
 				  firstdeparturetimeinslot = null, 
 				  lastdeparturetimeinslot = null;
 		
 		if(timeSlot.getBeginningSlotTime() != null)
-			beginningslottime = new Timestamp(timeSlot.getBeginningSlotTime().getTime());
+			beginningslottime = timeSlot.getBeginningSlotTime();
 		
 		if(timeSlot.getEndSlotTime() != null)
-			endslottime = new Timestamp(timeSlot.getEndSlotTime().getTime());
+			endslottime = timeSlot.getEndSlotTime();
 		
 		if(timeSlot.getFirstDepartureTimeInSlot() != null)
-			firstdeparturetimeinslot = new Timestamp(timeSlot.getFirstDepartureTimeInSlot().getTime());
+			firstdeparturetimeinslot = timeSlot.getFirstDepartureTimeInSlot();
 		
 		if(timeSlot.getLastDepartureTimeInSlot() != null)
-			lastdeparturetimeinslot = new Timestamp(timeSlot.getLastDepartureTimeInSlot().getTime());
+			lastdeparturetimeinslot = timeSlot.getLastDepartureTimeInSlot();
 		
-		ps.setTimestamp(6, beginningslottime);
-		ps.setTimestamp(7, endslottime);
-		ps.setTimestamp(8, firstdeparturetimeinslot);
-		ps.setTimestamp(9, lastdeparturetimeinslot);
+		ps.setTime(6, beginningslottime);
+		ps.setTime(7, endslottime);
+		ps.setTime(8, firstdeparturetimeinslot);
+		ps.setTime(9, lastdeparturetimeinslot);
 	}
 }

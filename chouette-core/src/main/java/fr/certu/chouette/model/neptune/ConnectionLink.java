@@ -10,6 +10,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
@@ -23,6 +24,12 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 public class ConnectionLink extends NeptuneIdentifiedObject
 {
    private static final long      serialVersionUID = 8490105295077539089L;
+   // TODO constant for persistence fields
+   /**
+    * name of comment attribute for {@link Filter} attributeName construction
+    */
+   public static final String    COMMENT                    = "comment";
+
    /**
     * Comment <br/>
     * <i>readable/writable</i>

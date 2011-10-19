@@ -23,7 +23,7 @@
 				<comment>Version of this object</comment>
 			</column>
 		</property>
-		<property name="creationTime" type="java.util.Date">
+		<property name="creationTime" type="java.sql.Date">
 			<column name="creationTime">
 				<comment>Creation date and time</comment>
 			</column>
@@ -38,22 +38,22 @@
 				<comment>Name</comment>
 			</column>
 		</property>
-		<property name="beginningSlotTime" type="java.util.Date" >
+		<property name="beginningSlotTime" type="time" >
 			<column name="beginningSlotTime">
 				<comment>Beginning slot time</comment>
 			</column>
 		</property>
-		<property name="endSlotTime" type="java.util.Date" >
+		<property name="endSlotTime" type="time" >
 			<column name="endSlotTime">
 				<comment>End slot time</comment>
 			</column>
 		</property>
-		<property name="firstDepartureTimeInSlot" type="java.util.Date" >
+		<property name="firstDepartureTimeInSlot" type="time" >
 			<column name="firstDepartureTimeInSlot">
 				<comment>First departure time in slot</comment>
 			</column>
 		</property>
-		<property name="lastDepartureTimeInSlot" type="java.util.Date" >
+		<property name="lastDepartureTimeInSlot" type="time" >
 			<column name="lastDepartureTimeInSlot">
 				<comment>Last departure time in slot</comment>
 			</column>

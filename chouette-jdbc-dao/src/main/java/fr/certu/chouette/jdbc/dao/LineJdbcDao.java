@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.StopArea;
 
 /**
  * 
@@ -49,13 +49,63 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
       ps.setString(10, line.getTransportModeName().toString());
       ps.setString(11, line.getRegistrationNumber());
       ps.setString(12, line.getComment());
-      setId(ps,13,line.getGroupOfLine());
       Boolean mobilityRS = false;
       if(line.getMobilityRestrictedSuitable() != null)
          mobilityRS = true;		
-      ps.setBoolean(14, mobilityRS);
-      ps.setLong(15, line.getUserNeedsAsLong());
+      ps.setBoolean(13, mobilityRS);
+      ps.setLong(14, line.getUserNeedsAsLong());
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement(java.lang.String, java.sql.PreparedStatement, java.lang.Object)
+    */
+   @Override
+   protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) throws SQLException 
+   {
+
+      if (attributeKey.equals("groupOfLines"))
+      {
+         JdbcLineGroupOfLine group = (JdbcLineGroupOfLine) attribute;
+         ps.setLong(1,group.lineId);
+         ps.setLong(2,group.groupOfLineId);
+
+         return;
+      }
+
+      super.populateAttributeStatement(attributeKey, ps, attribute);
+
+   }
+
+
+   @Override
+   protected Collection<? extends Object> getAttributeValues(String attributeKey, Line item) 
+   {
+
+      if (attributeKey.equals("groupOfLines"))
+      {
+         Collection<JdbcLineGroupOfLine> groups = new ArrayList<JdbcLineGroupOfLine>();
+         if (item.getGroupOfLines() != null)
+         {
+            for (GroupOfLine group : item.getGroupOfLines())
+            {
+               JdbcLineGroupOfLine object = new JdbcLineGroupOfLine();
+               object.groupOfLineId = group.getId();
+               object.lineId = item.getId(); 
+               groups.add(object);
+
+            }
+         }
+         return groups;
+      }
+
+      return super.getAttributeValues(attributeKey, item);
+   }
+
+
+   class JdbcLineGroupOfLine 
+   {
+      Long lineId,
+      groupOfLineId;
+   }
 
 }

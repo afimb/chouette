@@ -86,9 +86,9 @@ public class ValidationLine implements IValidationPlugin<Line> {
          List<String> lineEnds = line.getLineEnds();
          List<String> stopPointIds = Line.extractObjectIds(line.getStopPointList());
          List<String> routeIds = Line.extractObjectIds(line.getRoutes());
-         GroupOfLine groupOfLine = line.getGroupOfLine();
          List<Route> routes = line.getRoutes();
          ImportedItems importedItems = line.getImportedItems();
+         List<GroupOfLine> groupOfLines = importedItems.getGroupOfLines();
          List<PTLink> ptLinks = importedItems.getPtLinks();
          List<StopPoint> stopPoints = importedItems.getStopPoints();
          List<JourneyPattern> journeyPatterns = importedItems.getJourneyPatterns();
@@ -137,22 +137,18 @@ public class ValidationLine implements IValidationPlugin<Line> {
          }
 
          //Test 2.2.1
-         if (groupOfLine != null)
-         {
+         for (GroupOfLine groupOfLine : groupOfLines) {
             List<String> lineIds = groupOfLine.getLineIds();
-            if (lineIds != null && lineIds.contains(line.getObjectId())) {
+            if (lineIds == null || lineIds.isEmpty()) {
+               report2_2_1.updateStatus(Report.STATE.UNCHECK);
+            } else if (lineIds.contains(line.getObjectId())) {
                report2_2_1.updateStatus(Report.STATE.OK);
             } else {
                ReportItem detailReportItem = new DetailReportItem("Test2_Sheet2_Step1_error", Report.STATE.ERROR);
                report2_2_1.addItem(detailReportItem);
             }
          }
-         else
-         {
-            report2_2_1.updateStatus(Report.STATE.UNCHECK);
-         }
-
-
+         //Test 2.6
          if (lineEnds == null || lineEnds.isEmpty()) {
             report2_6_1.updateStatus(Report.STATE.UNCHECK);
             report2_6_2.updateStatus(Report.STATE.UNCHECK);

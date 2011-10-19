@@ -43,10 +43,19 @@
 				<comment>Comment</comment>
 			</column>
 		</property>
-		<!-- comment in Line definition -->
-		<bag name="lines" lazy="true" inverse="true">
-			<key column="groupOfLineId" foreign-key="line_glines_fkey" />
-			<one-to-many class="Line" />
+		
+		<bag name="lines" table="groupofline_line" lazy="true">
+			<comment>Lines affected to groupOfLines</comment>
+			<key foreign-key="groupofline_group_fkey ">
+				<column name="groupOfLineId" index="idx_grli_gr">
+					<comment>GroupOfLine reference</comment>
+				</column>
+			</key>
+			<many-to-many class="Line" foreign-key="groupofline_line_fkey">
+				<column name="lineId" index="idx_grli_li">
+					<comment>Line reference</comment>
+				</column>
+			</many-to-many>
 		</bag>
 
 	</class>

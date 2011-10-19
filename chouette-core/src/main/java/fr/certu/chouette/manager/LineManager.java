@@ -96,7 +96,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				accessLinks.addAll(item.getAccessLinks());
 				accessPoints.addAll(item.getAccessPoints());
 				facilities.addAll(item.getFacilities());
-				groupOfLines.add(item.getGroupOfLine());
+				groupOfLines.addAll(item.getGroupOfLines());
 
 			}
 		} else {
@@ -323,7 +323,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			for (Line line : lines) 
 			{
 				addIfMissingInCollection(companies,line.getCompany());
-				addIfMissingInCollection(groupOfLines,line.getGroupOfLine());
+				mergeCollection(groupOfLines,line.getGroupOfLines());
 				addIfMissingInCollection(networks, line.getPtNetwork());
 				mergeCollection(routes,line.getRoutes());	
 				mergeCollection(facilities,line.getFacilities());

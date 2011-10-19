@@ -2,6 +2,8 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
+import fr.certu.chouette.filter.Filter;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,11 @@ import lombok.Setter;
 public class PTLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -3089442100133439163L;
+   // TODO constant for persistence fields
+   /**
+    * name of comment attribute for {@link Filter} attributeName construction
+    */
+   public static final String    COMMENT                    = "comment";
    /**
     * Comment <br/>
     * <i>readable/writable</i>

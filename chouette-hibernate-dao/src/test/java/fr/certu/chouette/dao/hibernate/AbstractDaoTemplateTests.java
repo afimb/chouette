@@ -10,7 +10,6 @@ package fr.certu.chouette.dao.hibernate;
 
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -380,7 +379,13 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		TimeSlot timeSlot = new TimeSlot();
 		timeSlot.setObjectId("TimeSlot:"+getNextObjectId());
 		timeSlot.setCreatorId("TESTNG");
-		timeSlot.setBeginningSlotTime(new Date());
+		long begin = 8*3600000; // 08:00
+		timeSlot.setBeginningSlotTime(new java.sql.Time(begin));
+		
+      timeSlot.setFirstDepartureTimeInSlot(new java.sql.Time(begin));
+      begin += 3600000; // 09:00
+      timeSlot.setEndSlotTime(new java.sql.Time(begin));
+      timeSlot.setLastDepartureTimeInSlot(new java.sql.Time(begin));
 
 		return timeSlot;
 	}

@@ -130,14 +130,14 @@
 				<value>stoparea_child_fkey</value>
 				<value>routingconstraint_line_fkey</value>
 				<value>routingconstraint_stoparea_fkey</value>
+				<value>groupofline_line_fkey</value>
+				<value>groupofline_group_fkey</value>
 			</list>
 		</property>
 		<property name="setNullDeleteFkeys">
 			<list>
 				<value>line_company_fkey</value>
-				<value>line_glines_fkey</value>
 				<value>line_ptnetwork_fkey</value>
-				<!-- <value>area_parent_fkey</value> -->
 				<value>vj_company_fkey</value>
 				<value>vj_timeslot_fkey</value>
 			</list>
@@ -172,6 +172,11 @@
 					<property name="key" value="timetablevehiclejourney_pkey" />
 					<property name="table" value="timetablevehiclejourney" />
 					<property name="columns" value="timetableid,vehiclejourneyid" />
+				</bean>
+				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
+					<property name="key" value="groupofline_line_pkey" />
+					<property name="table" value="groupofline_line" />
+					<property name="columns" value="groupoflineid,lineid" />
 				</bean>
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
 					<property name="key" value="vehiclejourneyatstop_pkey" />

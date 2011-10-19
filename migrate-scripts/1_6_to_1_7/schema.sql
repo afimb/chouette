@@ -186,6 +186,20 @@ CREATE SEQUENCE timeslot_id_seq
 ALTER TABLE timeslot ALTER COLUMN id SET DEFAULT nextval('timeslot_id_seq'::regclass);
 SELECT SETVAL('timeslot_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM timeslot),false);
 
+-- TimeSlot is redefined
+ALTER TABLE timeslot DROP COLUMN beginningslottime;
+ALTER TABLE timeslot DROP COLUMN firstdeparturetimeinslot;
+ALTER TABLE timeslot DROP COLUMN endslottime;
+ALTER TABLE timeslot DROP COLUMN lastdeparturetimeinslot;
+ALTER TABLE timeslot ADD COLUMN beginningslottime time without time zone;
+ALTER TABLE timeslot ADD COLUMN endslottime time without time zone;
+ALTER TABLE timeslot ADD COLUMN firstdeparturetimeinslot time without time zone;
+ALTER TABLE timeslot ADD COLUMN lastdeparturetimeinslot time without time zone;
+ALTER TABLE timeslot ALTER COLUMN beginningslottime SET STORAGE PLAIN;
+ALTER TABLE timeslot ALTER COLUMN endslottime SET STORAGE PLAIN;
+ALTER TABLE timeslot ALTER COLUMN firstdeparturetimeinslot SET STORAGE PLAIN;
+ALTER TABLE timeslot ALTER COLUMN lastdeparturetimeinslot SET STORAGE PLAIN;
+
 -- timetable   
 DROP SEQUENCE IF EXISTS timetable_id_seq ; 
 CREATE SEQUENCE timetable_id_seq

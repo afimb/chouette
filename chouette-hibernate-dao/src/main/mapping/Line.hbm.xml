@@ -93,12 +93,27 @@
 			<key column="lineId" foreign-key="route_line_fkey" on-delete="cascade" />
 			<one-to-many class="Route" />
 		</bag>
-		<many-to-one name="groupOfLine" class="GroupOfLine" lazy="no-proxy"
+		<bag name="groupOfLines" table="groupofline_line"
+			lazy="true">
+			<comment>Lines affected to groupOfLines</comment>
+			<key foreign-key="groupofline_line_fkey">
+				<column name="lineId" index="idx_grli_li">
+					<comment>Line reference</comment>
+				</column>
+			</key>
+			<many-to-many class="GroupOfLine" foreign-key="groupofline_group_fkey">
+				<column name="groupOfLineId" index="idx_grli_gr">
+					<comment>GroupOfLine reference</comment>
+				</column>
+			</many-to-many>
+		</bag>
+
+		<!-- <many-to-one name="groupOfLine" class="GroupOfLine" lazy="no-proxy"
 			outer-join="auto" foreign-key="line_glines_fkey">
 			<column name="groupOfLineId">
 				<comment>GroupOfLine reference</comment>
 			</column>
-		</many-to-one>
+		</many-to-one> -->
 
 		<bag name="routingConstraints" table="routingconstraints_lines"
 			lazy="true">
@@ -109,7 +124,7 @@
 				</column>
 			</key>
 			<many-to-many class="StopArea" foreign-key="routingconstraint_stoparea_fkey">
-				<column name="stopareaid"  index="idx_rcli_st">
+				<column name="stopareaid" index="idx_rcli_st">
 					<comment>Routing constraint reference</comment>
 				</column>
 			</many-to-many>
