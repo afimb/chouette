@@ -16,4 +16,11 @@ public abstract class AbstractCSVNeptuneProducer<T extends NeptuneIdentifiedObje
 		csvLine[TITLE_COLUMN+1] = value;
 		return csvLine;
 	}
+	
+	protected String asString(Object object){
+		if(object != null){
+			return object.toString();
+		}
+		return null;
+	}
 }

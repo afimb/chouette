@@ -1,7 +1,10 @@
 package fr.certu.chouette.exchange.csv.exporter;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -44,7 +47,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 		description = new FormatDescription(this.getClass().getName());
 		description.setName("CSV");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
-		ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILENAME, false, true);
+		ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false, true);
 		param1.setAllowedExtensions(Arrays.asList(new String[]{"csv"}));
 		params.add(param1);
 		description.setParameterDescriptions(params);
@@ -71,7 +74,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 				SimpleParameterValue svalue = (SimpleParameterValue) value;
 				if (svalue.getName().equals("outputFile"))
 				{
-					fileName = svalue.getFilenameValue();
+					fileName = svalue.getFilepathValue();
 				}
 
 			}
@@ -86,10 +89,10 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 		}
 		
 		Line line = beans.get(0);
-		List<Timetable> timetables = getLineTimetables(line);
+		List<Timetable> timetables = getLineTimetables(line);		
 		
 		try {
-			CSVWriter csvWriter = new CSVWriter(new FileWriter(fileName));
+			CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), ';');
 			for(Timetable timetable : timetables){
 				csvWriter.writeAll(timetableProducer.produce(timetable));
 				csvWriter.writeNext(new String[0]);
@@ -104,6 +107,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 			csvWriter.writeAll(lineProducer.produce(line));
 			csvWriter.writeNext(new String[0]);
 			
+			csvWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

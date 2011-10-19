@@ -6,16 +6,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 
@@ -40,7 +44,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 	   private static final int         AERAZONE_COLUMN           = 6;
 	   private static final int         STOPNAME_COLUMN           = 7;
 	   
-	   private static final String mfHoraireHMS = "{0,number,00}:{1,number,00}:{2,number,00}";
+	   private static final String mfHoraireHM = "{0,number,00}:{1,number,00}";
 	   
 	@Override
 	public List<String[]> produce(Line line) {
@@ -49,7 +53,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 		csvLinesList.add(createCSVLine(PUBLISHED_LINE_NAME_TITLE, line.getPublishedName()));
 		csvLinesList.add(createCSVLine(NUMBER_TITLE, line.getNumber()));
 		csvLinesList.add(createCSVLine(COMMENT_TITLE, line.getComment()));
-		csvLinesList.add(createCSVLine(TRANSPORT_MODE_NAME_TITLE, line.getTransportModeName().value()));
+		csvLinesList.add(createCSVLine(TRANSPORT_MODE_NAME_TITLE, line.getTransportModeName().toString().toUpperCase()));
 		
 		List<Route> routes = line.getRoutes();
 		if(routes.size() > 2)
@@ -64,10 +68,21 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 		}
 		
 		// TODO : add titles lines 
+		String[] vehicleJourneyDirectionCSVLine = new String[TITLE_COLUMN + 1 + vehicleJourneysCount];
+		vehicleJourneyDirectionCSVLine[TITLE_COLUMN] = DIRECTION_TITLE;
+		csvLinesList.add(vehicleJourneyDirectionCSVLine);
 		
+		String[] vehicleJourneyTimetableCSVLine = new String[TITLE_COLUMN + 1 + vehicleJourneysCount];
+		vehicleJourneyTimetableCSVLine[TITLE_COLUMN] = TIMETABLE_TITLE;
+		csvLinesList.add(vehicleJourneyTimetableCSVLine);
+				
+		String[] vehicleJourneySpecificCSVLine = new String[TITLE_COLUMN + 1 + vehicleJourneysCount];
+		vehicleJourneySpecificCSVLine[TITLE_COLUMN] = SPECIFIC_TITLE;
+		csvLinesList.add(vehicleJourneySpecificCSVLine);
+
+		csvLinesList.add(BOARDING_POSITION_LINE_TITLES);
 
 		HashMap<StopPoint, String[]> csvLinesByStopPoint = new HashMap<StopPoint, String[]>();
-		int vehicleJourneyColumn = TITLE_COLUMN + 1;
 		for(Route route : routes){
 			for(StopPoint stopPointOnRoute : route.getStopPoints()){
 				StopArea boardingPosition = stopPointOnRoute.getContainedInStopArea();
@@ -80,11 +95,22 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 				vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
 			}
 			
+			int vehicleJourneyColumn = TITLE_COLUMN + 1;
 			for(VehicleJourney vehicleJourney : vehicleJourneys){
+				vehicleJourneyDirectionCSVLine[vehicleJourneyColumn] = vehicleJourney.getRoute().getWayBack();
+				List<Timetable> timetables = vehicleJourney.getTimetables();
+				if(timetables != null && timetables.size() > 0){
+					vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = timetables.get(0).getComment();
+				}
+				else{
+					//TODO add report item
+				}
+				vehicleJourneySpecificCSVLine[vehicleJourneyColumn] = vehicleJourney.getVehicleTypeIdentifier();
+				
 				for(VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()){
 					csvLinesByStopPoint.get(vehicleJourneyAtStop.getStopPoint())[vehicleJourneyColumn] = convertTimeToString(vehicleJourneyAtStop.getDepartureTime());
-					vehicleJourneyColumn++;
 				}
+				vehicleJourneyColumn++;
 			}
 		}
 		
@@ -93,14 +119,23 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 
 	private String[] createBoardingPositionCsvLine(StopArea boardingPosition, int vehicleJourneysCount){
 		String[] csvLine = new String[TITLE_COLUMN + 1 + vehicleJourneysCount];
-		csvLine[X_COLUMN] = boardingPosition.getAreaCentroid().getProjectedPoint().getX().toString();
-		csvLine[Y_COLUMN] = boardingPosition.getAreaCentroid().getProjectedPoint().getY().toString();
-		csvLine[LATITUDE_COLUMN] = boardingPosition.getAreaCentroid().getLatitude().toString();
-		csvLine[LONGITUDE_COLUMN] = boardingPosition.getAreaCentroid().getLongitude().toString();
-		csvLine[ADDRESS_COLUMN] = boardingPosition.getAreaCentroid().getAddress().getStreetName();
-		csvLine[ZIPCODE_COLUMN] = boardingPosition.getAreaCentroid().getAddress().getCountryCode();
+		AreaCentroid areaCentroid = boardingPosition.getAreaCentroid();
+		if(areaCentroid != null){
+			ProjectedPoint projectedPoint = areaCentroid.getProjectedPoint();
+			if(projectedPoint != null){
+				csvLine[X_COLUMN] = asString(projectedPoint.getX());
+				csvLine[Y_COLUMN] = asString(projectedPoint.getY());
+			}
+			csvLine[LATITUDE_COLUMN] = asString(areaCentroid.getLatitude());
+			csvLine[LONGITUDE_COLUMN] = asString(areaCentroid.getLongitude());
+			Address address = areaCentroid.getAddress();
+			if(address != null){
+				csvLine[ADDRESS_COLUMN] = address.getStreetName();
+				csvLine[ZIPCODE_COLUMN] = address.getCountryCode();
+			}
+		}
 		csvLine[AERAZONE_COLUMN] = getParentStopArea(boardingPosition.getParents()).getName();
-		csvLine[ADDRESS_COLUMN] = boardingPosition.getName();		
+		csvLine[STOPNAME_COLUMN] = boardingPosition.getName();		
 
 		return csvLine;
 	}
@@ -120,6 +155,6 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line> {
 		h=h/60;
 		long m = h % 60;
 		h=h/60;
-		return MessageFormat.format(mfHoraireHMS,h,m,s);
+		return MessageFormat.format(mfHoraireHM,h,m);
 	}
 }

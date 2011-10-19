@@ -60,12 +60,15 @@ public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 	
 	List<String[]> getPeriodsCSVLines(List<Period> timetablePeriods){
 		List<String[]> periodsCSVLines = new ArrayList<String[]>();
-		String[] startDates = new String[timetablePeriods.size()];
+		String[] startDates = new String[TITLE_COLUMN+1+timetablePeriods.size()];
 		periodsCSVLines.add(startDates);
-		String[] endDates = new String[timetablePeriods.size()];
+		String[] endDates = new String[TITLE_COLUMN+1+timetablePeriods.size()];
 		periodsCSVLines.add(endDates);
 		
-		int i = 0;
+		startDates[TITLE_COLUMN] = START_DATE_TITLE;
+		endDates[TITLE_COLUMN] = END_DATE_TITLE;
+		
+		int i = TITLE_COLUMN+1;
 		for(Period timetablePeriod : timetablePeriods){
 			startDates[i] = sdf.format(timetablePeriod.getStartDate());
 			endDates[i] = sdf.format(timetablePeriod.getEndDate());
@@ -76,9 +79,11 @@ public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 	}
 	
 	String[] getCalendarDaysCSVLines(List<Date> timetableCalendarDays){
-		String[] calendarDaysCSVLine = new String[timetableCalendarDays.size()];
+		String[] calendarDaysCSVLine = new String[TITLE_COLUMN+1+timetableCalendarDays.size()];
 		
-		int i = 0;
+		calendarDaysCSVLine[TITLE_COLUMN] = CALENDAR_DAY_TITLE;
+		
+		int i = TITLE_COLUMN+1;
 		for(Date timetableCalendarDay : timetableCalendarDays){
 			calendarDaysCSVLine[i] = sdf.format(timetableCalendarDay);
 			i++;
