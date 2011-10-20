@@ -70,7 +70,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
       // sort routes (A before R)
       Collections.sort(routes, new WaybackRouteComparator());
 
-      int vehicleJourneysCount = 0;
+      int vehicleJourneysCount = routes.size();//add one dummy vehicle journey for each route
       for (Route route : routes)
       {
          List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
@@ -80,7 +80,6 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
          }
       }
 
-      // TODO : add titles lines
       String[] vehicleJourneyDirectionCSVLine = new String[TITLE_COLUMN + 1 + vehicleJourneysCount];
       vehicleJourneyDirectionCSVLine[TITLE_COLUMN] = DIRECTION_TITLE;
       csvLinesList.add(vehicleJourneyDirectionCSVLine);
@@ -103,6 +102,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
          {
             StopArea boardingPosition = stopPointOnRoute.getContainedInStopArea();
             String[] csvLine = createBoardingPositionCsvLine(boardingPosition, vehicleJourneysCount);
+            csvLine[vehicleJourneyColumn] = "00:00";
             csvLinesByStopPoint.put(stopPointOnRoute, csvLine);
             csvLinesList.add(csvLine);
          }
@@ -112,7 +112,20 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
             vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
          }
 
-         // TODO : insert a pseudo vehicle journey column with all times to 00:00
+         //dummy vehicleJourney global informations are filled with the ones of the first vehicleJourney of the route
+         VehicleJourney dummyVJ = vehicleJourneys.get(0);
+         vehicleJourneyDirectionCSVLine[vehicleJourneyColumn] = ("R".equals(dummyVJ.getRoute().getWayBack()) ? "RETOUR"
+                 : "ALLER");
+         List<Timetable> dummyVJTimetables = dummyVJ.getTimetables();
+         if (dummyVJTimetables != null && dummyVJTimetables.size() > 0){
+            vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = dummyVJTimetables.get(0).getComment();
+         }
+         else{
+            // TODO add report item
+         }
+         vehicleJourneySpecificCSVLine[vehicleJourneyColumn] = dummyVJ.getVehicleTypeIdentifier();
+         
+         vehicleJourneyColumn++;
          
          for (VehicleJourney vehicleJourney : vehicleJourneys)
          {
