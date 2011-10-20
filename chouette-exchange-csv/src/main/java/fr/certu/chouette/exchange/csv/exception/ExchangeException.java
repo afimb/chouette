@@ -12,7 +12,7 @@ import fr.certu.chouette.common.ChouetteException;
 @SuppressWarnings("serial")
 public class ExchangeException extends ChouetteException 
 {
-	private static final String PREFIX = "NPT";
+	private static final String PREFIX = "CSV";
 	
 	private ExchangeExceptionCode code;
 

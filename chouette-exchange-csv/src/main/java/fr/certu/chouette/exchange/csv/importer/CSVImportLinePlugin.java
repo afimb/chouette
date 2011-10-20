@@ -214,6 +214,15 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       try
       {
          currentLine = csvReader.readNext();
+         // check if firstLine is correct (detect oldfashion format)
+         if ((currentLine.length < TimetableProducer.TITLE_COLUMN+2) 
+               || currentLine[TimetableProducer.TITLE_COLUMN].isEmpty() 
+               ||currentLine[TimetableProducer.TITLE_COLUMN+1].isEmpty())
+         {
+            CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.FILE_FORMAT, Report.STATE.ERROR);
+            report.addItem(reportItem);
+            return null;
+         }
       }
       catch (IOException e)
       {
@@ -235,11 +244,11 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       }
       timetableCountReport.addMessageArgs(Integer.toString(timetableMap.size()));
       report.addItem(timetableCountReport);
-      
+
       if (currentLine == null) return null;
       ptNetwork = ptNetworkProducer.produce(csvReader, currentLine, objectIdPrefix, report);
       if (ptNetwork == null)return null;
-         
+
       logger.debug("network \n" + ptNetwork);
       currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
       if (currentLine == null) return null;
@@ -255,17 +264,20 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       {
          logger.debug("lines");
          Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, lineCountReport);
-         line.setCompany(company);
-         line.setPtNetwork(ptNetwork);
-         assemble(line, timetableMap,report);
-         logger.debug("line \n" + line.toString());
-         if (line.getRoutes().isEmpty())
+         if (line != null)
          {
-            logger.error("empty line removed :" + line.getNumber());
-         }
-         else
-         {
-            lines.add(line);
+            line.setCompany(company);
+            line.setPtNetwork(ptNetwork);
+            assemble(line, timetableMap,report);
+            logger.debug("line \n" + line.toString());
+            if (line.getRoutes().isEmpty())
+            {
+               logger.error("empty line removed :" + line.getNumber());
+            }
+            else
+            {
+               lines.add(line);
+            }
          }
          try
          {
@@ -335,6 +347,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
                return null;
             }
          }
+         
          return currentLine;
       }
       catch (IOException e)
@@ -359,20 +372,24 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             for (Iterator<VehicleJourney> iterator3 = journey.getVehicleJourneys().iterator(); iterator3.hasNext();)
             {
                VehicleJourney vj = iterator3.next();
-               String key = vj.getComment();
+               String keys = vj.getComment();
                vj.setComment(null);
-               Timetable t = timetableMap.get(key);
-               if (t == null)
+               String[] ttid = keys.split(",");
+               for (String key : ttid)
                {
-                  logger.error("missing timetable " + key + " vehicleJourney removed :" + vj.getObjectId());
-                  CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.VJ_MISSING_TIMETABLE, Report.STATE.WARNING, vj.getName());
-                  report.addItem(reportItem);
-                  iterator3.remove();
-               }
-               else
-               {
-                  vj.addTimetable(t);
-                  t.addVehicleJourney(vj);
+                  Timetable t = timetableMap.get(key);
+                  if (t == null)
+                  {
+                     logger.error("missing timetable " + key + " vehicleJourney removed :" + vj.getObjectId());
+                     CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.VJ_MISSING_TIMETABLE, Report.STATE.WARNING, vj.getName());
+                     report.addItem(reportItem);
+                     iterator3.remove();
+                  }
+                  else
+                  {
+                     vj.addTimetable(t);
+                     t.addVehicleJourney(vj);
+                  }
                }
             }
             if (journey.getVehicleJourneys().isEmpty())

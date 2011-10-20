@@ -51,7 +51,7 @@ public class LineProducer extends AbstractModelProducer<Line>
    private static final int         LONGITUDE_COLUMN          = 3;
    private static final int         ADDRESS_COLUMN            = 4;
    private static final int         ZIPCODE_COLUMN            = 5;
-   private static final int         AERAZONE_COLUMN           = 6;
+   private static final int         AREAZONE_COLUMN           = 6;
    private static final int         STOPNAME_COLUMN           = 7;
    private static final Set<String> VALID_SPECIFICS           = new HashSet<String>();
    static
@@ -205,9 +205,9 @@ public class LineProducer extends AbstractModelProducer<Line>
          // build first route (column TITLE_COLUMN+1)
          int routeColumn = TITLE_COLUMN + 1;
          int journeyColumn = routeColumn;
+         Route route = new Route();
          int wayBackRouteRank = 0;
          {
-            Route route = new Route();
             route.setLine(line);
             line.addRoute(route);
             route.setName(directions[routeColumn]);
@@ -256,7 +256,6 @@ public class LineProducer extends AbstractModelProducer<Line>
             Route wayback = new Route();
             wayback.setLine(line);
             line.addRoute(wayback);
-            wayback.setObjectId(objectIdPrefix);
             wayback.setName(directions[waybackRouteColumn]);
             // logger.debug("route "+wayback.getName()+" created");
 
@@ -265,6 +264,10 @@ public class LineProducer extends AbstractModelProducer<Line>
             wayback.setWayBack(direction.toString());
             wayback.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getNumber()) + "_"
                   + wayback.getWayBack());
+            
+            // connect route couple
+            route.setWayBackRouteId(wayback.getObjectId());
+            wayback.setWayBackRouteId(route.getObjectId());
 
             // build stopPoint on route and stopArea (BP or Q)
             int rank = 1;
@@ -420,7 +423,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             physical.setObjectId(physical.getObjectId() + "_" + address.getCountryCode());
          centroid.setAddress(address);
       }
-      StopArea commercial = commercials.get(getValue(AERAZONE_COLUMN, stopData));
+      StopArea commercial = commercials.get(getValue(AREAZONE_COLUMN, stopData));
       if (commercial == null)
       {
          commercial = buildCommercial(stopData, objectIdPrefix);
@@ -455,7 +458,7 @@ public class LineProducer extends AbstractModelProducer<Line>
       StopArea commercial;
       commercial = new StopArea();
       commercial.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
-      commercial.setName(getValue(AERAZONE_COLUMN, stopData));
+      commercial.setName(getValue(AREAZONE_COLUMN, stopData));
       commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + getNextStopAreaId());
       if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
       {
