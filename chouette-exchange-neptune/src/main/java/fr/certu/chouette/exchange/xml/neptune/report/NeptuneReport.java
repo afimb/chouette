@@ -17,7 +17,7 @@ import fr.certu.chouette.plugin.report.Report;
 public class NeptuneReport extends Report 
 {
 	// declare message report
-    public enum KEY {IMPORT};
+    public enum KEY {IMPORT,EXPORT};
     
 
     public NeptuneReport(KEY key)

@@ -37,6 +37,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopAreaProducer
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
+import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -54,6 +55,7 @@ import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
@@ -108,9 +110,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
    }
 
    @Override
-   public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder report)
+   public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder reportContainer)
          throws ChouetteException
    {
+      NeptuneReport report = new NeptuneReport(NeptuneReport.KEY.EXPORT);
+      report.setStatus(Report.STATE.OK);
+      reportContainer.setReport(report);
+      
       String fileName = null;
 
       if (beans == null)

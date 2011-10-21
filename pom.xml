@@ -15,7 +15,7 @@
 	</properties>
 
 	<modules>
-		<module>chouette-maven-plugin</module>
+		<!-- <module>chouette-maven-plugin</module> -->
 		<!-- <module>chouette-attic</module> -->
 		<!-- <module>chouette-webapp</module> -->
 		<!-- <module>chouette-castor-altibus</module> -->
@@ -189,11 +189,11 @@
 				<artifactId>chouette-services</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>fr.certu.chouette.maven</groupId>
 				<artifactId>chouette-maven-plugin</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 
 			<!-- FRAMEWORKS DEPENDENCIES WITH VERSION -->
 			<!-- NO VERSION ALLOWED IN MODULES -->

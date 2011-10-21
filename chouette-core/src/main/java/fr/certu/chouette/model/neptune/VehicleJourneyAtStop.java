@@ -11,10 +11,11 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 
 /**
- * model for VehicleJourneyAtStop Neptune Object
- * 
- * @author michel
- *
+ * Neptune VehicleJourneyAtStop : 
+ * <p/>
+ * Note for fields comment : <br/>
+ * when readable is added to comment, a implicit getter is available <br/>
+ * when writable is added to comment, a implicit setter is available
  */
 public class VehicleJourneyAtStop extends NeptuneObject 
 {

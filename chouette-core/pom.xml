@@ -17,11 +17,6 @@
 		</dependency> </dependencies> </profile> </profiles> -->
 	<dependencies>
 		<dependency>
-			<groupId>fr.certu.chouette.maven</groupId>
-			<artifactId>chouette-maven-plugin</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>

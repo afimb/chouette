@@ -23,12 +23,73 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  */
 public class ConnectionLink extends NeptuneIdentifiedObject
 {
-   private static final long      serialVersionUID = 8490105295077539089L;
+   private static final long      serialVersionUID    = 8490105295077539089L;
    // TODO constant for persistence fields
    /**
     * name of comment attribute for {@link Filter} attributeName construction
     */
-   public static final String    COMMENT                    = "comment";
+   public static final String     COMMENT             = "comment";
+   /**
+    * name of linkDistance attribute for {@link Filter} attributeName
+    * construction
+    */
+   public static final String     DISTANCE            = "linkDistance";
+   /**
+    * name of startOfLink attribute for {@link Filter} attributeName
+    * construction
+    */
+   public static final String     START               = "startOfLink";
+   /**
+    * name of endOfLink attribute for {@link Filter} attributeName construction
+    */
+   public static final String     END                 = "endOfLink";
+   /**
+    * name of liftAvailable attribute for {@link Filter} attributeName
+    * construction
+    */
+   public static final String     LIFT                = "liftAvailable";
+   /**
+    * name of mobilityRestrictedSuitable attribute for {@link Filter}
+    * attributeName construction
+    */
+   public static final String     MOBILITY_RESTRICTED = "mobilityRestrictedSuitable";
+   /**
+    * name of UserNeeds attribute for {@link Filter} attributeName construction
+    */
+   public static final String     USERNEEDS_MASK      = "intUserNeeds";
+   /**
+    * name of stairsAvailable attribute for {@link Filter} attributeName
+    * construction
+    */
+   public static final String     STAIRS              = "stairsAvailable";
+   /**
+    * name of defaultDuration attribute for {@link Filter} attributeName
+    * construction
+    */
+   public static final String     DEFAULT_DURATION    = "defaultDuration";
+   /**
+    * name of frequentTravellerDuration attribute for {@link Filter}
+    * attributeName construction
+    */
+   public static final String     FREQUENT_DURATION   = "frequentTravellerDuration";
+   /**
+    * name of occasionalTravellerDuration attribute for {@link Filter}
+    * attributeName construction
+    */
+   public static final String     OCCASIONAL_DURATION = "occasionalTravellerDuration";
+   /**
+    * name of mobilityRestrictedTravellerDuration attribute for {@link Filter}
+    * attributeName construction
+    */
+   public static final String     MOBILITY_DURATION   = "mobilityRestrictedTravellerDuration";
+   /**
+    * name of linkType attribute for {@link Filter} attributeName construction
+    */
+   public static final String     TYPE                = "linkType";
+   /**
+    * name of facilities attribute for {@link Filter} attributeName construction
+    */
+   public static final String     FACILITIES          = "facilities";
 
    /**
     * Comment <br/>
@@ -99,15 +160,15 @@ public class ConnectionLink extends NeptuneIdentifiedObject
     * give a list of specific User needs available <br/>
     * <i>readable/writable</i>
     */
-   private List<UserNeedEnum>     userNeeds;                              // Never
-                                                                           // be
-                                                                           // persisted
+   private List<UserNeedEnum>     userNeeds;                                                  // Never
+   // be
+   // persisted
    /**
-	 * 
-	 */
+    * 
+    */
    @Getter
    @Setter
-   private Integer                intUserNeeds;                           // BD
+   private Integer                intUserNeeds;                                               // BD
    /**
     * Duration of link <br/>
     * <i>readable/writable</i>
@@ -148,6 +209,9 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    @Setter
    private List<Facility>         facilities;
 
+   /**
+    * @param facility
+    */
    public void addFacility(Facility facility)
    {
       if (facilities == null)
@@ -156,6 +220,19 @@ public class ConnectionLink extends NeptuneIdentifiedObject
          facilities.add(facility);
    }
 
+   /**
+    * @param facility
+    */
+   public void removeFacility(Facility facility)
+   {
+      if (facilities == null)
+         facilities = new ArrayList<Facility>();
+      if (facilities.contains(facility))
+         facilities.remove(facility);
+   }
+   /**
+    * @param userNeed
+    */
    public void addUserNeed(UserNeedEnum userNeed)
    {
       if (userNeeds == null)
@@ -167,6 +244,9 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       }
    }
 
+   /**
+    * @param userNeed
+    */
    public void removeUserNeed(UserNeedEnum userNeed)
    {
       if (userNeeds == null)
@@ -175,6 +255,9 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       synchronizeUserNeeds();
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
@@ -223,6 +306,10 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       return sb.toString();
    }
 
+   /**
+    * @param date
+    * @return
+    */
    private String formatDate(Date date)
    {
       DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -236,11 +323,14 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       }
    }
 
+   /**
+    * @return
+    */
    public List<UserNeedEnum> getUserNeeds()
    {
       if (intUserNeeds == null)
          return userNeeds;
-      // CASTOREVO
+      
       UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
       for (UserNeedEnum userNeedEnum : userNeedEnums)
       {
@@ -253,13 +343,19 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       return userNeeds;
    }
 
+   /**
+    * @param userNeedEnums
+    */
    public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
    {
       userNeeds = userNeedEnums;
-      // CASTOREVO
+      
       synchronizeUserNeeds();
    }
 
+   /**
+    * 
+    */
    private void synchronizeUserNeeds()
    {
       intUserNeeds = 0;
