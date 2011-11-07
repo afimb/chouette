@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -8,12 +9,14 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class TimetableProducer extends AbstractModelProducer<Timetable, chouette.schema.Timetable> {
 
 	@Override
-	public Timetable produce(chouette.schema.Timetable xmlTimetable,ReportItem report) 
+	public Timetable produce(chouette.schema.Timetable xmlTimetable,ReportItem report,SharedImportedData sharedData) 
 	{
 		Timetable timetable= new Timetable();
 		
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(timetable, xmlTimetable, report);
+		Timetable sharedBean = sharedData.get(timetable);
+      if (sharedBean != null) return sharedBean;
 
 		timetable.setComment(getNonEmptyTrimedString(xmlTimetable.getComment()));
 

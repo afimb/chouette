@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -9,7 +10,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,chouette.schema.AreaCentroid>
 {
 	@Override
-	public AreaCentroid produce(chouette.schema.AreaCentroid xmlAreaCentroid,ReportItem report)
+	public AreaCentroid produce(chouette.schema.AreaCentroid xmlAreaCentroid,ReportItem report,SharedImportedData sharedData)
 	{
 		AreaCentroid areaCentroid = new AreaCentroid();
 		// objectId, objectVersion, creatorId, creationTime

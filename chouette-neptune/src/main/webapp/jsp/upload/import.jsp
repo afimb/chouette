@@ -81,4 +81,41 @@
 		<br>
 		<br>
 	</s:if>
+		<br>
+	<s:if test="useHastus == 'true'">
+		<FIELDSET align="center" style="width: 500px;">
+			<LEGEND>
+				<b><s:text name="fieldset.legend.import.hastus" />
+				</b>
+			</LEGEND>
+			<s:form id="uploadHastusForm" action="importHastus"
+				namespace="/upload" enctype="multipart/form-data" method="POST">
+				<s:file name="fichier" label="%{getText('action.browse')}" />
+				<s:hidden name="fichierContentType" value="text/xml; charset=UTF-8" />
+				<s:textfield key="objectIdPrefix"  required="true"/>
+				<s:submit value="%{getText('submit.import.hastus')}"
+					formId="uploadHastusForm" />
+			</s:form>
+		</FIELDSET>
+<!-- 		<br>
+		<br>
+		<legend><b><s:text name="fieldset.legend.import.incr.hastus"/></b></legend>
+		<s:form id="uploadHastusForm2" enctype="multipart/form-data" method="POST" namespace="/">
+		   <s:file name="fichier" label="%{getText('action.browse')}" />
+		   <s:hidden name="fichierContentType" value="text/xml; charset=UTF-8"/>
+		   <s:hidden name="incremental" value="true" />
+		   <s:submit value="%{getText('submit.import.incr.hastus')}" formId="uploadHastusForm2" action="importHastusZip" namespace="/upload"/>
+		</s:form>
+                <br>
+                <ul>
+                    <s:url id="fileUrl" namespace="/" action="downloadFile">
+                        <s:param name="fileName" value="%{importHastusLogFileName}"/>
+                        <s:param name="previousAction" value="%{'ImportAction'}"/>
+                    </s:url>
+                        <li>Rapport d'import Hastus : <s:a  href="%{fileUrl}"><s:property value="%{importHastusLogFileName}"/></s:a></li>
+                </ul> -->
+        </FIELDSET>
+                <br><br>
+	</s:if>
+	
 </div>

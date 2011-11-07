@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
@@ -9,13 +10,15 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette.schema.PTNetwork> {
 
 	@Override
-	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork,ReportItem report) 
+	public PTNetwork produce(chouette.schema.PTNetwork xmlPTNetwork,ReportItem report,SharedImportedData sharedData) 
 	{
 		if (xmlPTNetwork == null) return null;
 		PTNetwork ptNetwork = new PTNetwork();
 		
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(ptNetwork, xmlPTNetwork,report);
+		PTNetwork sharedBean = sharedData.get(ptNetwork);
+		if (sharedBean != null) return sharedBean;
 		
 		// VersionDate mandatory
 		ptNetwork.setVersionDate(getDate(xmlPTNetwork.getVersionDate()));

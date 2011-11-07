@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.StopAreaExtension;
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -10,13 +11,15 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.schema.StopArea>
 {
 	@Override
-	public StopArea produce(chouette.schema.StopArea xmlStopArea,ReportItem report) 
+	public StopArea produce(chouette.schema.StopArea xmlStopArea,ReportItem report,SharedImportedData sharedData) 
 	{
 		StopArea stopArea = new StopArea();
 		
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(stopArea, xmlStopArea, report);
-		
+		StopArea sharedBean = sharedData.get(stopArea);
+      if (sharedBean != null) return sharedBean;
+      
 		// AreaCentroid optional
 		stopArea.setAreaCentroidId(getNonEmptyTrimedString(xmlStopArea.getCentroidOfArea()));
 		
@@ -26,10 +29,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 		// Comment optional
 		stopArea.setComment(getNonEmptyTrimedString(xmlStopArea.getComment()));
 		
-		// BoundaryPoints [0..w]
-		for(String boundaryPoint : xmlStopArea.getBoundaryPoint()){
-			stopArea.addBoundaryPoint(getNonEmptyTrimedString(boundaryPoint));
-		}
+		// BoundaryPoints [0..w] : out of Neptune scope
 		
 		// ContainedStopIds [1..w]
 		for(String containedStopId : xmlStopArea.getContains()){

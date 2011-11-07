@@ -128,6 +128,9 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
          Logger.getLogger(ChouettePropertyPlaceholderConfigurer.class).error("IO Exception while reading "+fileName);
          return;
       }
+      	if (resourceBundle == null)
+	    return;
+
       Enumeration<String> keys = resourceBundle.getKeys();
       while (keys.hasMoreElements()) {
          String key = keys.nextElement();

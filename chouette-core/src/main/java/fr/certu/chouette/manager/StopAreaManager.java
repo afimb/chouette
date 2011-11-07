@@ -23,10 +23,8 @@ import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
@@ -93,25 +91,10 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
    @Override
    public void remove(User user,StopArea stopArea,boolean propagate) throws ChouetteException
    {
-      INeptuneManager<ConnectionLink> clinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-      INeptuneManager<StopPoint> spManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-      INeptuneManager<AccessLink> alManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
-      INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-      List<StopPoint> stopPoints = spManager.getAll(user, Filter.getNewEqualsFilter("containedInStopArea.id", stopArea.getId()));
+      List<StopPoint> stopPoints = stopArea.getContainedStopPoints();
       if(stopPoints != null && !stopPoints.isEmpty())
          throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"can't be deleted because it has a stopPoints");
 
-      List<ConnectionLink> cLinks = clinkManager.getAll(user, Filter.getNewOrFilter(
-            Filter.getNewEqualsFilter("startOfLink.id",stopArea.getId()), 
-            Filter.getNewEqualsFilter("endOfLink.id", stopArea.getId()))); 
-      if(cLinks != null && !cLinks.isEmpty())
-         clinkManager.removeAll(user, cLinks,propagate);
-      AccessLink accessLink = alManager.get(user, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()));
-      if(accessLink != null)
-         alManager.remove(null, accessLink,propagate);
-      Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopArea.id", stopArea.getId()));
-      if(facility != null)
-         facilityManager.remove(user, facility,propagate);
       super.remove(user, stopArea,propagate);		
    }
 

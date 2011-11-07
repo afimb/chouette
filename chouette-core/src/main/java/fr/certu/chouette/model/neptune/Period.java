@@ -21,11 +21,15 @@ public class Period implements Serializable
 {
    private static final long serialVersionUID = -1964071056103739954L;
 
-   // TODO constant for persistence fields
+   // constant for persistence fields
    /**
     * name of startDate attribute for {@link Filter} attributeName construction
     */
    public static final String    START_DATE                    = "startDate";
+   /**
+    * name of endDate attribute for {@link Filter} attributeName construction
+    */
+   public static final String    END_DATE                    = "endDate";
 
    /**
     * start of period <br/>

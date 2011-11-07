@@ -186,7 +186,7 @@ public class NeptuneConverter
       ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
       chouette.schema.Line xmlLine = lineDescription.getLine();
 
-      Line line = lineProducer.produce(xmlLine, report);
+      Line line = lineProducer.produce(xmlLine, report,null);
 
       int count = (line == null ? 0 : 1);
       ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,
@@ -215,7 +215,7 @@ public class NeptuneConverter
 
       for (chouette.schema.ChouetteRoute xmlRoute : xmlRoutes)
       {
-         Route route = routeProducer.produce(xmlRoute, report);
+         Route route = routeProducer.produce(xmlRoute, report,null);
          routes.add(route);
       }
 
@@ -262,7 +262,7 @@ public class NeptuneConverter
     *           error report
     * @return companies produced from Company
     */
-   public List<Company> extractCompanies(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<Company> extractCompanies(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "Company");
       chouette.schema.Company[] xmlCompanies = rootObject.getCompany();
@@ -271,7 +271,7 @@ public class NeptuneConverter
 
       for (chouette.schema.Company xmlCompany : xmlCompanies)
       {
-         Company company = companyProducer.produce(xmlCompany, report);
+         Company company = companyProducer.produce(xmlCompany, report,sharedData);
          companies.add(company);
       }
 
@@ -292,12 +292,12 @@ public class NeptuneConverter
     *           error report
     * @return network produced from PTNetwork
     */
-   public PTNetwork extractPTNetwork(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public PTNetwork extractPTNetwork(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "PTNetwork");
       chouette.schema.PTNetwork xmlPTNetwork = rootObject.getPTNetwork();
 
-      PTNetwork ptNetwork = networkProducer.produce(xmlPTNetwork, report);
+      PTNetwork ptNetwork = networkProducer.produce(xmlPTNetwork, report,sharedData);
 
       int count = (ptNetwork == null ? 0 : 1);
       ReportItem countItem = new NeptuneReportItem(NeptuneReportItem.KEY.OBJECT_COUNT, Report.STATE.OK,
@@ -327,7 +327,7 @@ public class NeptuneConverter
 
       for (chouette.schema.JourneyPattern xmlJourneyPattern : xmlJourneyPatterns)
       {
-         JourneyPattern journeyPattern = journeyPatternProducer.produce(xmlJourneyPattern, report);
+         JourneyPattern journeyPattern = journeyPatternProducer.produce(xmlJourneyPattern, report,null);
          journeyPatterns.add(journeyPattern);
       }
 
@@ -358,7 +358,7 @@ public class NeptuneConverter
 
       for (chouette.schema.PtLink xmlPTLink : xmlPTLinks)
       {
-         PTLink ptLink = ptLinkProducer.produce(xmlPTLink, report);
+         PTLink ptLink = ptLinkProducer.produce(xmlPTLink, report,null);
          ptLinks.add(ptLink);
       }
 
@@ -390,7 +390,7 @@ public class NeptuneConverter
 
       for (chouette.schema.VehicleJourney xmlVehicleJourney : xmlVehicleJourneys)
       {
-         VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(xmlVehicleJourney, report);
+         VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(xmlVehicleJourney, report, null);
          vehicleJourneys.add(vehicleJourney);
       }
 
@@ -421,7 +421,7 @@ public class NeptuneConverter
 
       for (chouette.schema.StopPoint xmlStopPoint : xmlStopPoints)
       {
-         StopPoint stopPoint = stopPointProducer.produce(xmlStopPoint, report);
+         StopPoint stopPoint = stopPointProducer.produce(xmlStopPoint, report,null);
          stopPoints.add(stopPoint);
       }
 
@@ -442,7 +442,7 @@ public class NeptuneConverter
     *           error report
     * @return StopAreas produced from ChouetteArea.StopArea
     */
-   public List<StopArea> extractStopAreas(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<StopArea> extractStopAreas(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "StopArea");
       chouette.schema.StopArea[] xmlStopAreas = rootObject.getChouetteArea().getStopArea();
@@ -451,7 +451,7 @@ public class NeptuneConverter
 
       for (chouette.schema.StopArea xmlStopArea : xmlStopAreas)
       {
-         StopArea stopArea = stopAreaProducer.produce(xmlStopArea, report);
+         StopArea stopArea = stopAreaProducer.produce(xmlStopArea, report,sharedData);
          stopAreas.add(stopArea);
       }
 
@@ -472,7 +472,7 @@ public class NeptuneConverter
     *           error report
     * @return AreaCentroids produced from ChouetteArea.AreaCentroid
     */
-   public List<AreaCentroid> extractAreaCentroids(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<AreaCentroid> extractAreaCentroids(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "AreaCentroid");
       chouette.schema.AreaCentroid[] xmlAreaCentroids = rootObject.getChouetteArea().getAreaCentroid();
@@ -481,7 +481,7 @@ public class NeptuneConverter
 
       for (chouette.schema.AreaCentroid xmlAreaCentroid : xmlAreaCentroids)
       {
-         AreaCentroid areaCentroid = areaCentroidProducer.produce(xmlAreaCentroid, report);
+         AreaCentroid areaCentroid = areaCentroidProducer.produce(xmlAreaCentroid, report,sharedData);
          areaCentroids.add(areaCentroid);
       }
 
@@ -502,7 +502,7 @@ public class NeptuneConverter
     *           error report
     * @return ConnectionLinks produced from ConnectionLink
     */
-   public List<ConnectionLink> extractConnectionLinks(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<ConnectionLink> extractConnectionLinks(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "ConnectionLink");
       chouette.schema.ConnectionLink[] xmlConnectionLinks = rootObject.getConnectionLink();
@@ -511,7 +511,7 @@ public class NeptuneConverter
 
       for (chouette.schema.ConnectionLink xmlConnectionLink : xmlConnectionLinks)
       {
-         ConnectionLink connectionLink = connectionLinkProducer.produce(xmlConnectionLink, report);
+         ConnectionLink connectionLink = connectionLinkProducer.produce(xmlConnectionLink, report,sharedData);
          connectionLinks.add(connectionLink);
       }
 
@@ -532,7 +532,7 @@ public class NeptuneConverter
     *           error report
     * @return Timetables produced from Timetable
     */
-   public List<Timetable> extractTimetables(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<Timetable> extractTimetables(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "Timetable");
       chouette.schema.Timetable[] xmlTimetables = rootObject.getTimetable();
@@ -541,7 +541,7 @@ public class NeptuneConverter
 
       for (chouette.schema.Timetable xmlTimetable : xmlTimetables)
       {
-         Timetable timetable = timetableProducer.produce(xmlTimetable, report);
+         Timetable timetable = timetableProducer.produce(xmlTimetable, report,sharedData);
          timetables.add(timetable);
       }
 
@@ -562,7 +562,7 @@ public class NeptuneConverter
     *           error report
     * @return AccessLinks produced from AccessLink
     */
-   public List<AccessLink> extractAccessLinks(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<AccessLink> extractAccessLinks(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "AccessLink");
       chouette.schema.AccessLink[] xmlAccessLinks = rootObject.getAccessLink();
@@ -571,7 +571,7 @@ public class NeptuneConverter
 
       for (chouette.schema.AccessLink xmlAccessLink : xmlAccessLinks)
       {
-         AccessLink accessLink = accessLinkProducer.produce(xmlAccessLink, report);
+         AccessLink accessLink = accessLinkProducer.produce(xmlAccessLink, report,sharedData);
          accessLinks.add(accessLink);
       }
 
@@ -592,7 +592,7 @@ public class NeptuneConverter
     *           error report
     * @return AccessPoints produced from AccessPoint
     */
-   public List<AccessPoint> extractAccessPoints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<AccessPoint> extractAccessPoints(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "AccessLink");
       chouette.schema.AccessPoint[] xmlAccessPoints = rootObject.getAccessPoint();
@@ -601,7 +601,7 @@ public class NeptuneConverter
 
       for (chouette.schema.AccessPoint xmlAccessPoint : xmlAccessPoints)
       {
-         AccessPoint accessPoint = accessPointProducer.produce(xmlAccessPoint, report);
+         AccessPoint accessPoint = accessPointProducer.produce(xmlAccessPoint, report,sharedData);
          accessPoints.add(accessPoint);
       }
 
@@ -622,7 +622,7 @@ public class NeptuneConverter
     *           error report
     * @return GroupOfLines produced from GroupOfLine
     */
-   public List<GroupOfLine> extractGroupOfLines(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<GroupOfLine> extractGroupOfLines(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
 
@@ -630,7 +630,7 @@ public class NeptuneConverter
       chouette.schema.GroupOfLine[] xmlGroupOfLines = rootObject.getGroupOfLine();
       for (chouette.schema.GroupOfLine xmlGroupOfLine : xmlGroupOfLines)
       {
-         GroupOfLine groupOfLine = groupOfLineProducer.produce(xmlGroupOfLine, report);
+         GroupOfLine groupOfLine = groupOfLineProducer.produce(xmlGroupOfLine, report,sharedData);
          groupOfLines.add(groupOfLine);
       }
 
@@ -652,14 +652,14 @@ public class NeptuneConverter
     *           error report
     * @return Facilities produced from Facility
     */
-   public List<Facility> extractFacilities(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<Facility> extractFacilities(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       List<Facility> facilities = new ArrayList<Facility>();
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "Facility");
       chouette.schema.Facility[] xmlFacilities = rootObject.getFacility();
       for (chouette.schema.Facility xmlFacility : xmlFacilities)
       {
-         Facility facility = facilityProducer.produce(xmlFacility, report);
+         Facility facility = facilityProducer.produce(xmlFacility, report, sharedData);
          facilities.add(facility);
       }
       int count = (facilities == null ? 0 : facilities.size());
@@ -679,14 +679,14 @@ public class NeptuneConverter
     *           error report
     * @return TimeSlots produced from TimeSlot
     */
-   public List<TimeSlot> extractTimeSlots(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<TimeSlot> extractTimeSlots(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,SharedImportedData sharedData)
    {
       List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "TimeSlot");
       chouette.schema.TimeSlot[] xmlTimeSlots = rootObject.getTimeSlot();
       for (chouette.schema.TimeSlot xmlTimeSlot : xmlTimeSlots)
       {
-         TimeSlot timeSlot = timeSlotProducer.produce(xmlTimeSlot, report);
+         TimeSlot timeSlot = timeSlotProducer.produce(xmlTimeSlot, report,sharedData);
          timeSlots.add(timeSlot);
       }
       int count = (timeSlots == null ? 0 : timeSlots.size());

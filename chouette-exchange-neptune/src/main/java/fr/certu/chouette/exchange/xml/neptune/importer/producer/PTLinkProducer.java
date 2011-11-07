@@ -1,12 +1,13 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class PTLinkProducer extends AbstractModelProducer<PTLink, chouette.schema.PtLink> {
 
 	@Override
-	public PTLink produce(chouette.schema.PtLink xmlPTLink,ReportItem report) 
+	public PTLink produce(chouette.schema.PtLink xmlPTLink,ReportItem report,SharedImportedData sharedData) 
 	{
 		PTLink ptLink= new PTLink();
 		

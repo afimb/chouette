@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -9,7 +10,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.schema.StopPoint>
 {
 	@Override
-	public StopPoint produce(chouette.schema.StopPoint xmlStopPoint,ReportItem report) 
+	public StopPoint produce(chouette.schema.StopPoint xmlStopPoint,ReportItem report,SharedImportedData sharedData) 
 	{
 		StopPoint stopPoint = new StopPoint();
 		// objectId, objectVersion, creatorId, creationTime

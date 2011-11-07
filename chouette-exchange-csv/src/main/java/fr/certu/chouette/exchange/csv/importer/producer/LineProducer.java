@@ -82,9 +82,10 @@ public class LineProducer extends AbstractModelProducer<Line>
          return null;
       }
       try
-      {
+      { 
          line.setPublishedName(loadStringParam(csvReader, PUBLISHED_LINE_NAME_TITLE));
          line.setNumber(loadStringParam(csvReader, NUMBER_TITLE));
+         line.setRegistrationNumber(loadStringParam(csvReader, NUMBER_TITLE));
          line.setComment(loadStringParam(csvReader, COMMENT_TITLE));
          line.setTransportModeName(TransportModeNameEnum.valueOf(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE)));
          line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getNumber()));
@@ -249,7 +250,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             route.rebuildPTLinks();
             buildJourneys(route, arrets, timetables, specific, 0, wayBackRouteRank, journeyColumn, waybackRouteColumn);
          }
-         // build second route
+         // build second route 
          if (waybackRouteColumn != routeColumn)
          {
             journeyColumn = waybackRouteColumn;
@@ -318,7 +319,7 @@ public class LineProducer extends AbstractModelProducer<Line>
     * @param endColumn
     */
    private void buildJourneys(Route route, List<String[]> arrets, String[] timetables, String[] specifics,
-         int startRow, int endRow, int startColumn, int endColumn)
+         int startRow, int endRow, int startColumn, int endColumn) throws ExchangeException
    {
       int rank = 1;
       int journeyRank = 1;
@@ -375,7 +376,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          }
          else
          {
-            logger.debug(" nopassing time for vehicleJourney , ignored");
+            logger.debug("no passing time for vehicleJourney , ignored");
          }
       }
    }

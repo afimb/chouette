@@ -20,7 +20,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.common.ChouetteRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -40,7 +39,7 @@ import fr.certu.chouette.struts.enumeration.EnumerationApplication;
 public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopArea>, Preparable
 {
 
-   private static final Log           log                  = LogFactory.getLog(StopAreaAction.class);
+   private static final Log           logger                  = LogFactory.getLog(StopAreaAction.class);
    @Getter
    @Setter
    private INeptuneManager<PTNetwork> networkManager;
@@ -150,7 +149,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 
    public void prepare() throws Exception
    {
-      log.debug("Prepare with id : " + getIdPositionGeographique());
+      logger.debug("Prepare with id : " + getIdPositionGeographique());
       if (getIdPositionGeographique() == null)
       {
          model = new StopArea();
@@ -261,7 +260,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       // Récupération du namespace pour basculer sur des arrèts physiques ou
       // zones
       String namespace = ActionContext.getContext().getActionInvocation().getProxy().getNamespace();
-      log.debug("namespace :  " + namespace);
+      logger.debug("namespace :  " + namespace);
       List<ChouetteAreaEnum> areaTypes = new ArrayList<ChouetteAreaEnum>();
 
       if (ARRETPHYSIQUE.equals(namespace))
@@ -356,7 +355,7 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          }
       }
       request.put("positionGeographiques", positionGeographiques);
-      log.debug("List of stopArea");
+      logger.debug("List of stopArea");
       if (actionMsg != null)
       {
          addActionMessage(actionMsg);
@@ -467,18 +466,18 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
       {
          actionMsg = getText("arretPhysique.create.ok");
-         log.debug("Create boardingPosition with id : " + model.getId());
+         logger.debug("Create boardingPosition with id : " + model.getId());
       }
       else if (getTypePositionGeographique().equals(ZONE))
       {
          actionMsg = getText("zone.create.ok");
-         log.debug("Create stopPlace with id : " + model.getId());
+         logger.debug("Create stopPlace with id : " + model.getId());
       }
       else
       // ITL
       {
          actionMsg = getText("routingConstraint.create.ok");
-         log.debug("Create routingConstraint with id : " + model.getId());
+         logger.debug("Create routingConstraint with id : " + model.getId());
       }
 
       setIdPositionGeographique(model.getId());
@@ -530,18 +529,18 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
       {
          actionMsg = getText("arretPhysique.update.ok");
-         log.debug("Update boardingPosition with id : " + model.getId());
+         logger.debug("Update boardingPosition with id : " + model.getId());
       }
       else if (getTypePositionGeographique().equals(ZONE))
       {
          actionMsg = getText("zone.update.ok");
-         log.debug("Update stopPlace with id : " + model.getId());
+         logger.debug("Update stopPlace with id : " + model.getId());
       }
       else
       // ITL
       {
          actionMsg = getText("routingConstraint.update.ok");
-         log.debug("Update routingConstraint with id : " + model.getId());
+         logger.debug("Update routingConstraint with id : " + model.getId());
       }
 
       setMappedRequest(UPDATE);
@@ -554,26 +553,27 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       {
          stopAreaManager.remove(null, model, false);
       }
-      catch (ChouetteRuntimeException e)
+      catch (ChouetteException e)
       {
          actionErr = getText("arretPhysique.used");
+         logger.error("actionErr",e);
          return REDIRECTLIST;
       }
       if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
       {
          actionMsg = getText("arretPhysique.delete.ok");
-         log.debug("Delete boardingPosition with id : " + model.getId());
+         logger.debug("Delete boardingPosition with id : " + model.getId());
       }
       else if (getTypePositionGeographique().equals(ZONE))
       {
          actionMsg = getText("zone.delete.ok");
-         log.debug("Delete stopPlace with id : " + model.getId());
+         logger.debug("Delete stopPlace with id : " + model.getId());
       }
       else
       // ITL
       {
          actionMsg = getText("routingConstraint.delete.ok");
-         log.debug("Delete routingConstraint with id : " + model.getId());
+         logger.debug("Delete routingConstraint with id : " + model.getId());
       }
 
       return REDIRECTLIST;
@@ -734,13 +734,12 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 
          if (address != null)
          {
-            filter3 = Filter.getNewLikeFilter(StopArea.AREACENTROID + "." + AreaCentroid.ADDRESS + "."
+            filter3 = Filter.getNewIgnoreCaseLikeFilter(StopArea.AREACENTROID + "." + AreaCentroid.ADDRESS + "."
                   + Address.COUNTRY_CODE, address.getCountryCode());
          }
       }
       Filter filter = Filter.getNewAndFilter(filter1, filter2, filter3);
       positionGeographiquesResultat = stopAreaManager.getAll(null, filter);
-
       request.put("positionGeographiquesResultat", positionGeographiquesResultat);
       return SEARCH;
    }

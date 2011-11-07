@@ -127,9 +127,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       sheet1_1 = new SheetReportItem("Test1_Sheet1", 1);
       report1_1 = new SheetReportItem("Test1_Sheet1_Step1", 1);
       report1_2 = new SheetReportItem("Test1_Sheet1_Step2", 2);
-      sheet1_1.addItem(report1_1);
-      sheet1_1.addItem(report1_2);
-      category1.addItem(sheet1_1);
       reportContainer.setReport(category1);
 
       String filePath = null;
@@ -199,6 +196,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          lines = processZipImport(filePath, validate, category1);
       }
       logger.info("import terminated");
+      sheet1_1.addItem(report1_1);
+      sheet1_1.addItem(report1_2);
+      category1.addItem(sheet1_1);
       return lines;
    }
 
@@ -232,6 +232,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       boolean ofType1 = false;
       boolean ofType2 = false;
       boolean someOk = false;
+      SharedImportedData sharedData = new SharedImportedData();
       for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
       {
          ZipEntry entry = entries.nextElement();
@@ -306,7 +307,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          }
          try
          {
-            Line line = processImport(rootObject, validate, report, entryName);
+            Line line = processImport(rootObject, validate, report, entryName,sharedData);
 
             if (line != null)
             {
@@ -411,7 +412,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          logger.error(e.getLocalizedMessage());
          return null;
       }
-      Line line = processImport(rootObject, validate, report, filePath);
+      Line line = processImport(rootObject, validate, report, filePath,new SharedImportedData());
       if (line == null)
       {
          logger.error("import failed (build model)");
@@ -439,7 +440,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     * @return builded line
     * @throws ExchangeException
     */
-   private Line processImport(ChouettePTNetworkTypeType rootObject, boolean validate, Report report, String entryName)
+   private Line processImport(ChouettePTNetworkTypeType rootObject, boolean validate, Report report, String entryName,SharedImportedData sharedData)
          throws ExchangeException
    {
       if (validate)
@@ -476,21 +477,21 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       Line line = converter.extractLine(rootObject, item);
       modelAssembler.setLine(line);
       modelAssembler.setRoutes(converter.extractRoutes(rootObject, item));
-      modelAssembler.setCompanies(converter.extractCompanies(rootObject, item));
-      modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject, item));
+      modelAssembler.setCompanies(converter.extractCompanies(rootObject, item,sharedData));
+      modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject, item,sharedData));
       modelAssembler.setJourneyPatterns(converter.extractJourneyPatterns(rootObject, item));
       modelAssembler.setPtLinks(converter.extractPTLinks(rootObject, item));
       modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(rootObject, item));
       modelAssembler.setStopPoints(converter.extractStopPoints(rootObject, item));
-      modelAssembler.setStopAreas(converter.extractStopAreas(rootObject, item));
-      modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject, item));
-      modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject, item));
-      modelAssembler.setTimetables(converter.extractTimetables(rootObject, item));
-      modelAssembler.setAccessLinks(converter.extractAccessLinks(rootObject, item));
-      modelAssembler.setAccessPoints(converter.extractAccessPoints(rootObject, item));
-      modelAssembler.setGroupOfLines(converter.extractGroupOfLines(rootObject, item));
-      modelAssembler.setFacilities(converter.extractFacilities(rootObject, item));
-      modelAssembler.setTimeSlots(converter.extractTimeSlots(rootObject, item));
+      modelAssembler.setStopAreas(converter.extractStopAreas(rootObject, item,sharedData));
+      modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject, item,sharedData));
+      modelAssembler.setConnectionLinks(converter.extractConnectionLinks(rootObject, item,sharedData));
+      modelAssembler.setTimetables(converter.extractTimetables(rootObject, item,sharedData));
+      modelAssembler.setAccessLinks(converter.extractAccessLinks(rootObject, item,sharedData));
+      modelAssembler.setAccessPoints(converter.extractAccessPoints(rootObject, item,sharedData));
+      modelAssembler.setGroupOfLines(converter.extractGroupOfLines(rootObject, item,sharedData));
+      modelAssembler.setFacilities(converter.extractFacilities(rootObject, item,sharedData));
+      modelAssembler.setTimeSlots(converter.extractTimeSlots(rootObject, item,sharedData));
       modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(rootObject, item));
       modelAssembler.connect();
 

@@ -1,12 +1,13 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern, chouette.schema.JourneyPattern> {
 
 	@Override
-	public JourneyPattern produce(chouette.schema.JourneyPattern xmlJourneyPattern,ReportItem report) 
+	public JourneyPattern produce(chouette.schema.JourneyPattern xmlJourneyPattern,ReportItem report,SharedImportedData sharedData) 
 	{
 		JourneyPattern journeyPattern = new JourneyPattern();
 		

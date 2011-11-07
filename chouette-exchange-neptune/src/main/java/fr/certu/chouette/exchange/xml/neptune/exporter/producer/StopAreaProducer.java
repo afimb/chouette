@@ -20,10 +20,7 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 
 		castorStopArea.setComment(getNotEmptyString(stopArea.getComment()));
 		castorStopArea.setName(stopArea.getName());
-		if(stopArea.getBoundaryPoints() != null)
-		{
-			castorStopArea.setBoundaryPoint(stopArea.getBoundaryPoints());
-		}
+		
 		castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
 		Set<String> containsList = new HashSet<String>();

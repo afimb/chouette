@@ -30,7 +30,7 @@ public final class TransportModeNameEnumConverter extends StrutsTypeConverter
 			logger.error("unknown value "+value[0]);
 			throw new TypeConversionException();
 		}
-		logger.error("convert value "+value[0]);
+		// logger.debug("convert value "+value[0]);
 		return TransportModeNameEnum.fromValue(value[0]);
 	}
 
@@ -42,7 +42,7 @@ public final class TransportModeNameEnumConverter extends StrutsTypeConverter
 			logger.error("unknown type "+arg1.getClass().getName());
 			throw new TypeConversionException();
 		}
-		logger.error("convert value "+arg1.toString());
+		// logger.debug("convert value "+arg1.toString());
 		return ((TransportModeNameEnum)arg1).toString();
 	}
 }

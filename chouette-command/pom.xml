@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.7.0-SNAPSHOT</version>
+		<version>1.7.0</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-command</artifactId>
@@ -97,7 +97,7 @@
 			</properties>
 		</profile>
 	</profiles>
-	<version>1.7.0-SNAPSHOT</version>
+	<version>1.7.0</version>
 	<build>
 		<!-- <filters> <filter>src/main/filters/${profile.filter}.properties</filter> 
 			</filters> -->

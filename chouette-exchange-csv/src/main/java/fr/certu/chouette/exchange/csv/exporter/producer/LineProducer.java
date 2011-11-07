@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.csv.exporter.producer;
 
 import java.sql.Time;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +28,10 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 {
 
    public static final String    LINE_NAME_TITLE               = "Nom de la ligne";
+   
+   private static final SimpleDateFormat  dfHM = new SimpleDateFormat("HH:mm") ;
+   private static final SimpleDateFormat dfHMS = new SimpleDateFormat("HH:mm:ss") ;
+
    private static final String   PUBLISHED_LINE_NAME_TITLE     = "Nom public";
    private static final String   NUMBER_TITLE                  = "Numero de la ligne";
    private static final String   COMMENT_TITLE                 = "Commentaire de la ligne";
@@ -48,7 +53,6 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
    private static final int      AREAZONE_COLUMN               = 6;
    private static final int      STOPNAME_COLUMN               = 7;
 
-   private static final String   mfHoraireHM                   = "{0,number,00}:{1,number,00}";
 
    @Override
    public List<String[]> produce(Line line)
@@ -199,12 +203,16 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 
    public String convertTimeToString(Time time)
    {
-      long h = time.getTime() / 1000;
-      long s = h % 60;
-      h = h / 60;
-      long m = h % 60;
-      h = h / 60;
-      return MessageFormat.format(mfHoraireHM, h, m);
+      long h = time.getTime()/1000;
+      long s = h%60;
+      if (s > 0)
+      {
+         return dfHMS.format(time);
+      }
+      else
+      {
+         return dfHM.format(time);
+      }
    }
 
    private class WaybackRouteComparator implements Comparator<Route>

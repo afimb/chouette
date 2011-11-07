@@ -42,7 +42,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       Timetable timetable = new Timetable();
       if (firstLine[TITLE_COLUMN].equals(TIMETABLE_LABEL_TITLE))
       {
-         timetable.setName(firstLine[TITLE_COLUMN + 1]);
+         timetable.setComment(firstLine[TITLE_COLUMN + 1]);
       }
       else
       {
@@ -52,8 +52,8 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       }
       try
       {
-         timetable.setComment(loadStringParam(csvReader, ALIAS_TITLE));
-         timetable.setObjectId(objectIdPrefix+":"+Timetable.TIMETABLE_KEY+":"+timetable.getComment());
+         timetable.setName(loadStringParam(csvReader, ALIAS_TITLE));
+         timetable.setObjectId(objectIdPrefix+":"+Timetable.TIMETABLE_KEY+":"+timetable.getName());
          if (loadStringParam(csvReader, MONDAY_TITLE).equals(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.MONDAY);

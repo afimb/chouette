@@ -1,47 +1,3 @@
-COMMENT ON TABLE chouette.accesslink IS 'Access Link';
-COMMENT ON COLUMN chouette.accesslink.id IS 'Internal identification';
-COMMENT ON COLUMN chouette.accesslink.objectid IS 'Neptune identification';
-COMMENT ON COLUMN chouette.accesslink.objectversion IS 'Version of this object';
-COMMENT ON COLUMN chouette.accesslink.creationtime IS 'Creation date and time';
-COMMENT ON COLUMN chouette.accesslink.creatorid IS 'Creator identification';
-COMMENT ON COLUMN chouette.accesslink."name" IS 'Name';
-COMMENT ON COLUMN chouette.accesslink."comment" IS 'Comment';
-COMMENT ON COLUMN chouette.accesslink.linkdistance IS 'Distance between AccesPoint and StopArea';
-COMMENT ON COLUMN chouette.accesslink.liftavailability IS 'Indicate if a lift is available';
-COMMENT ON COLUMN chouette.accesslink.mobilityrestrictedsuitability IS 'Indicate if the link is suitable for mobility restricted persons';
-COMMENT ON COLUMN chouette.accesslink.stairsavailability IS 'Indicate if stairs are available';
-COMMENT ON COLUMN chouette.accesslink.defaultduration IS 'Default duration to cross this link';
-COMMENT ON COLUMN chouette.accesslink.frequenttravellerduration IS 'Duration of travel for frequent travellers';
-COMMENT ON COLUMN chouette.accesslink.occasionaltravellerduration IS 'Duration of travel for occasional travellers';
-COMMENT ON COLUMN chouette.accesslink.mobilityrestrictedtravellerduration IS 'Duration of travel for mobility restricted travellers';
-COMMENT ON COLUMN chouette.accesslink.linktype IS 'Link type : Underground, Overground or Mixed';
-COMMENT ON COLUMN chouette.accesslink.intuserneeds IS 'binary mapping of userNeed list';
-COMMENT ON COLUMN chouette.accesslink.linkorientation IS 'Link orientation : accesspoint_to_stoparea or stoparea_to_accesspoint';
-COMMENT ON COLUMN chouette.accesslink.accesspointid IS 'AccessPoint reference';
-COMMENT ON COLUMN chouette.accesslink.stopareaid IS 'StopArea reference';
-
-COMMENT ON TABLE chouette.accesspoint IS 'Access point';
-COMMENT ON COLUMN chouette.accesspoint.id IS 'Internal identification';
-COMMENT ON COLUMN chouette.accesspoint.objectid IS 'Neptune identification';
-COMMENT ON COLUMN chouette.accesspoint.objectversion IS 'Version of this object';
-COMMENT ON COLUMN chouette.accesspoint.creationtime IS 'Creation date and time';
-COMMENT ON COLUMN chouette.accesspoint.creatorid IS 'Creator identification';
-COMMENT ON COLUMN chouette.accesspoint."name" IS 'Name';
-COMMENT ON COLUMN chouette.accesspoint."comment" IS 'Comment';
-COMMENT ON COLUMN chouette.accesspoint.longitude IS 'Longitude';
-COMMENT ON COLUMN chouette.accesspoint.latitude IS 'Latitude';
-COMMENT ON COLUMN chouette.accesspoint.longlattype IS 'Model used for Longitude and Latitude (Standard, WGS84 or WGS92)';
-COMMENT ON COLUMN chouette.accesspoint.x IS 'X coordinate';
-COMMENT ON COLUMN chouette.accesspoint.y IS 'Y coordinate';
-COMMENT ON COLUMN chouette.accesspoint.projectiontype IS 'Projection used for coordinates';
-COMMENT ON COLUMN chouette.accesspoint.countrycode IS 'Zip code';
-COMMENT ON COLUMN chouette.accesspoint.streetname IS 'Address';
-COMMENT ON COLUMN chouette.accesspoint.openningtime IS 'Opening time';
-COMMENT ON COLUMN chouette.accesspoint.closingtime IS 'Closing time';
-COMMENT ON COLUMN chouette.accesspoint."type" IS 'Access Point Type : free description';
-COMMENT ON COLUMN chouette.accesspoint.liftavailability IS 'Indicate if a lift is available';
-COMMENT ON COLUMN chouette.accesspoint.mobilityrestrictedsuitability IS 'Indicate if the link is suitable for mobility restricted persons';
-COMMENT ON COLUMN chouette.accesspoint.stairsavailability IS 'Indicate if stairs are available';
 
 COMMENT ON TABLE chouette.company IS 'company operating a public transport service';
 COMMENT ON COLUMN chouette.company.id IS 'Internal identification';
@@ -79,33 +35,6 @@ COMMENT ON COLUMN chouette.connectionlink.occasionaltravellerduration IS 'durati
 COMMENT ON COLUMN chouette.connectionlink.mobilityrestrictedtravellerduration IS 'duration of travel for mobiliy restricted traveller';
 COMMENT ON COLUMN chouette.connectionlink.linktype IS 'Type (Underground,Overground or Mixed)';
 COMMENT ON COLUMN chouette.connectionlink.intuserneeds IS 'binary mapping of userNeed list';
-
-COMMENT ON TABLE chouette.facility IS 'Facility';
-COMMENT ON COLUMN chouette.facility.id IS 'Internal identification';
-COMMENT ON COLUMN chouette.facility.objectid IS 'Neptune identification';
-COMMENT ON COLUMN chouette.facility.objectversion IS 'Version of this object';
-COMMENT ON COLUMN chouette.facility.creationtime IS 'Creation date and time';
-COMMENT ON COLUMN chouette.facility.creatorid IS 'Creator identification';
-COMMENT ON COLUMN chouette.facility."name" IS 'Name';
-COMMENT ON COLUMN chouette.facility."comment" IS 'Comment';
-COMMENT ON COLUMN chouette.facility.stopareaid IS 'StopArea reference';
-COMMENT ON COLUMN chouette.facility.lineid IS 'Line reference';
-COMMENT ON COLUMN chouette.facility.connectionlinkid IS 'ConnectionLink reference';
-COMMENT ON COLUMN chouette.facility.stoppointid IS 'StopPoint reference';
-COMMENT ON COLUMN chouette.facility.description IS 'Facility description';
-COMMENT ON COLUMN chouette.facility.freeaccess IS 'Indicate if facility is on free (true) or restricted(false) access';
-COMMENT ON COLUMN chouette.facility.longitude IS 'Longitude';
-COMMENT ON COLUMN chouette.facility.latitude IS 'Latitude';
-COMMENT ON COLUMN chouette.facility.longlattype IS 'Model used for Longitude and Latitude (Standard, WGS84 or WGS92)';
-COMMENT ON COLUMN chouette.facility.x IS 'X coordinate';
-COMMENT ON COLUMN chouette.facility.y IS 'Y coordinate';
-COMMENT ON COLUMN chouette.facility.projectiontype IS 'Projection used for coordinates';
-COMMENT ON COLUMN chouette.facility.countrycode IS 'Zip code';
-COMMENT ON COLUMN chouette.facility.streetname IS 'Address';
-
-COMMENT ON TABLE chouette.facilityfeature IS 'Facility Features secondary table';
-COMMENT ON COLUMN chouette.facilityfeature.facilityid IS 'Facility reference';
-COMMENT ON COLUMN chouette.facilityfeature.choicecode IS 'encoded value for facility';
 
 COMMENT ON TABLE chouette.groupofline IS 'group of lines';
 COMMENT ON COLUMN chouette.groupofline.id IS 'Internal identification';
@@ -149,19 +78,6 @@ COMMENT ON COLUMN chouette.line.userneeds IS 'bit encoded list of userneeds enum
 COMMENT ON COLUMN chouette.line.ptnetworkid IS 'PTNetwork reference';
 COMMENT ON COLUMN chouette.line.companyid IS 'Company reference';
 COMMENT ON COLUMN chouette.line.groupoflineid IS 'GroupOfLine reference';
-
-COMMENT ON TABLE chouette.ptlink IS 'Link between two successive stop points on a same route';
-COMMENT ON COLUMN chouette.ptlink.id IS 'Internal identification';
-COMMENT ON COLUMN chouette.ptlink.objectid IS 'Neptune identification';
-COMMENT ON COLUMN chouette.ptlink.objectversion IS 'Version of this object';
-COMMENT ON COLUMN chouette.ptlink.creationtime IS 'Creation date and time';
-COMMENT ON COLUMN chouette.ptlink.creatorid IS 'Creator identification';
-COMMENT ON COLUMN chouette.ptlink."name" IS 'Name';
-COMMENT ON COLUMN chouette.ptlink."comment" IS 'Comment';
-COMMENT ON COLUMN chouette.ptlink.linkdistance IS 'Distance between AccesPoint and StopArea';
-COMMENT ON COLUMN chouette.ptlink.startoflinkid IS 'Start StopPoint reference';
-COMMENT ON COLUMN chouette.ptlink.endoflinkid IS 'End StopPoint reference';
-COMMENT ON COLUMN chouette.ptlink.routeid IS 'Route reference';
 
 COMMENT ON TABLE chouette.ptnetwork IS 'Public Transport Network';
 COMMENT ON COLUMN chouette.ptnetwork.id IS 'Internal identification';
@@ -231,18 +147,6 @@ COMMENT ON COLUMN chouette.stoppoint.creatorid IS 'Creator identification';
 COMMENT ON COLUMN chouette.stoppoint."position" IS 'Rank of stop point in route';
 COMMENT ON COLUMN chouette.stoppoint.stopareaid IS 'StopArea reference';
 COMMENT ON COLUMN chouette.stoppoint.routeid IS 'Route reference';
-
-COMMENT ON TABLE chouette.timeslot IS 'time slot';
-COMMENT ON COLUMN chouette.timeslot.id IS 'Internal identification';
-COMMENT ON COLUMN chouette.timeslot.objectid IS 'Neptune identification';
-COMMENT ON COLUMN chouette.timeslot.objectversion IS 'Version of this object';
-COMMENT ON COLUMN chouette.timeslot.creationtime IS 'Creation date and time';
-COMMENT ON COLUMN chouette.timeslot.creatorid IS 'Creator identification';
-COMMENT ON COLUMN chouette.timeslot."name" IS 'Name';
-COMMENT ON COLUMN chouette.timeslot.beginningslottime IS 'Beginning slot time';
-COMMENT ON COLUMN chouette.timeslot.endslottime IS 'End slot time';
-COMMENT ON COLUMN chouette.timeslot.firstdeparturetimeinslot IS 'First departure time in slot';
-COMMENT ON COLUMN chouette.timeslot.lastdeparturetimeinslot IS 'Last departure time in slot';
 
 COMMENT ON TABLE chouette.timetable IS 'Timetables';
 COMMENT ON COLUMN chouette.timetable.id IS 'Internal identification';

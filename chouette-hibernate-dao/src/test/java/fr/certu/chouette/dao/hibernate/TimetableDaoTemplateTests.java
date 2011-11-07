@@ -14,13 +14,13 @@ import java.util.List;
 import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Timetable;
 
 /**
  * @author michel
  *
  */
-public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
+public class TimetableDaoTemplateTests extends AbstractDaoTemplateTests<Timetable> {
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
@@ -29,23 +29,21 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
 	@BeforeMethod (alwaysRun=true)
 	public void createDaoTemplate() 
 	{
-		initDaoTemplate("Line", "lineDao");
+		initDaoTemplate("Timetable", "timetableDao");
 	}
-
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
+	 */
 	@Override
 	public void refreshBean() 
 	{
-		bean = createLine();
+		bean = createTimetable();
 	}
-
+	
 	@Override
 	protected Filter getSelectFilter() 
 	{
-		return Filter.getNewEqualsFilter("ptNetwork.name", "TestNG Network");
-//		return Filter.getNewAndFilter(
-//				Filter.getNewEqualsFilter("ptNetwork.id", null),
-//				Filter.getNewEqualsFilter("company.id", null),
-//				Filter.getNewLikeFilter("name", "nom ligne -53808172"));
+		return  Filter.getNewEqualsFilter("comment", bean.getComment());
 	}
 
    /* (non-Javadoc)
@@ -55,7 +53,8 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
    protected List<Object> getHqlValues()
    {
       List<Object> values = new ArrayList<Object>();
-      values.add("A");
+      values.add("rennes");
+      values.add(toDate("31/08/2011"));
       return values;
    }
 
@@ -65,8 +64,8 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
    @Override
    protected String getHQLFilter()
    {
-      return "select distinct b from "+beanName+" b left join b.routes r where r.wayBack = ?";
+      return "select distinct b from "+beanName+" as b left join b.vehicleJourneys as v left join b.periods as p where v.journeyPattern.route.line.ptNetwork.name = ? and p.endDate > ?";
+      // return "select distinct b from "+beanName+" b left join b.vehicleJourneys v where v.journeyPattern.route.line.ptNetwork.name = ?";
    }
-	
-	
+
 }

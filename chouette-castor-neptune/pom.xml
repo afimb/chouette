@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.0-SNAPSHOT</version>
+		<version>1.7.0</version>
 	</parent>
 	<groupId>fr.certu.chouette.schema</groupId>
 	<artifactId>chouette-castor-neptune</artifactId>
@@ -49,7 +49,7 @@
 			<artifactId>jakarta-oro</artifactId>
 		</dependency>
  -->	</dependencies>
-	<version>1.7.0-SNAPSHOT</version>
+	<version>1.7.0</version>
 	<build>
 		<resources>
 			<resource>

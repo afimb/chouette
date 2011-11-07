@@ -115,13 +115,6 @@ public class StopArea extends NeptuneIdentifiedObject
          ChouetteAreaEnum.BOARDINGPOSITION, ChouetteAreaEnum.QUAY });
 
    /**
-    * 
-    * <br/><i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private List<String>         boundaryPoints;
-   /**
     * AreaCentroid ObjectId for import/export purpose
     * <br/><i>readable/writable</i>
     */
@@ -313,32 +306,6 @@ public class StopArea extends NeptuneIdentifiedObject
          facilities = new ArrayList<Facility>();
       if (facilities.contains(facility))
          facilities.remove(facility);
-   }
-
-   /**
-    * add a boundary point if not already present
-    * 
-    * @param boundaryPoint
-    */
-   public void addBoundaryPoint(String boundaryPoint)
-   {
-      if (boundaryPoints == null)
-         boundaryPoints = new ArrayList<String>();
-      if (!boundaryPoints.contains(boundaryPoint))
-         boundaryPoints.add(boundaryPoint);
-   }
-
-   /**
-    * remove a boundary point
-    * 
-    * @param boundaryPoint
-    */
-   public void removeBoundaryPoint(String boundaryPoint)
-   {
-      if (boundaryPoints == null)
-         boundaryPoints = new ArrayList<String>();
-      if (boundaryPoints.contains(boundaryPoint))
-         boundaryPoints.remove(boundaryPoint);
    }
 
    /**
@@ -744,14 +711,6 @@ public class StopArea extends NeptuneIdentifiedObject
          }
       }
 
-      if (boundaryPoints != null)
-      {
-         sb.append("\n").append(indent).append(CHILD_ARROW).append("boundaryPoints");
-         for (String boundaryPoint : getBoundaryPoints())
-         {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(boundaryPoint);
-         }
-      }
 
       if (containedStopIds != null)
       {

@@ -9,6 +9,7 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.TridentObjectTypeType;
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -18,5 +19,5 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public interface IModelProducer <T extends NeptuneIdentifiedObject, U extends TridentObjectTypeType> 
 {
-    T produce(U o,ReportItem report);
+    T produce(U o,ReportItem report,SharedImportedData sharedData);
 }

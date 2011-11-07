@@ -29,9 +29,8 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.struts.exception.ServiceException;
 import fr.certu.chouette.struts.GeneriqueAction;
+import fr.certu.chouette.struts.exception.ServiceException;
 
 @SuppressWarnings("unchecked")
 public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Preparable
@@ -144,8 +143,10 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
    public String list() throws ChouetteException
    {
       // log.debug("List of lines");
-      Filter filter = Filter.getNewAndFilter(Filter.getNewEqualsFilter("ptNetwork.id", filterNetworkId),
-            Filter.getNewEqualsFilter("company.id", filterCompanyId), Filter.getNewLikeFilter("name", filterLineName));
+      Filter filter = Filter.getNewAndFilter(
+            Filter.getNewEqualsFilter(Line.PTNETWORK+"."+PTNetwork.ID, filterNetworkId),
+            Filter.getNewEqualsFilter(Line.COMPANY+"."+Company.ID, filterCompanyId), 
+            Filter.getNewIgnoreCaseLikeFilter(Line.NAME, filterLineName));
       List<Line> lines = lineManager.getAll(user, filter);
       request.put("lignes", lines);
       return LIST;
@@ -165,7 +166,10 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
       {
          return INPUT;
       }
-      if (!lineManager.exists(null, line))
+      Filter filter = Filter.getNewOrFilter(
+            Filter.getNewEqualsFilter(Line.NAME, line.getName()),
+            Filter.getNewEqualsFilter(Line.REGISTRATIONNUMBER, line.getRegistrationNumber()));
+      if (!lineManager.getAll(null, filter).isEmpty())
       {
          addActionMessage(getText("ligne.homonyme"));
       }
@@ -208,14 +212,22 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
       {
          return INPUT;
       }
-      if (!lineManager.exists(user, line))
+      Filter filter = Filter.getNewOrFilter(
+            Filter.getNewEqualsFilter(Line.NAME, line.getName()),
+            Filter.getNewEqualsFilter(Line.REGISTRATIONNUMBER, line.getRegistrationNumber()));
+      List<Line> others = lineManager.getAll(null, filter);
+      for (Line otherLine : others)
       {
-         addActionMessage(getText("ligne.homonyme"));
+         if (!otherLine.getId().equals(line.getId()))
+         {
+            addActionMessage(getText("ligne.homonyme"));
+            break;
+         }
       }
       lineManager.update(null, line);
       setMappedRequest(UPDATE);
       addActionMessage(getText("ligne.update.ok"));
-      // log.debug("Update network with id : " + getModel().getId());
+      // log.debug("Update line with id : " + getModel().getId());
 
       return REDIRECTLIST;
    }
@@ -246,7 +258,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
    @SkipValidation
    public String exportChouette() throws Exception
    {
-      log.debug("Export Chouette");
+      log.debug("Export NEPTUNE");
       try
       {
          // Creation d'un fichier temporaire
@@ -256,9 +268,8 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
 
          List<ParameterValue> parameters = new ArrayList<ParameterValue>();
 
-         List<FormatDescription> formats = lineManager.getExportFormats(null);
          ReportHolder reportHolder = new ReportHolder();
-         String formatDescriptor = formats.get(0).getName();
+         
          List<Line> lines = new ArrayList<Line>();
          lineManager.completeObject(user, lineModel);
          lines.add(lineModel);
@@ -268,7 +279,7 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
          simpleParameterValue.setFilepathValue(temp.getAbsolutePath());
          parameters.add(simpleParameterValue);
 
-         lineManager.doExport(user, lines, formatDescriptor, parameters, reportHolder);
+         lineManager.doExport(user, lines, exportMode, parameters, reportHolder);
          if (reportHolder.getReport() != null)
          {
             if (!reportHolder.getReport().getStatus().equals(Report.STATE.OK))
@@ -425,15 +436,4 @@ public class LineAction extends GeneriqueAction implements ModelDriven<Line>, Pr
       }
    }
 
-   private void logItems(String indent, List<ReportItem> items, Level level)
-   {
-      if (items == null)
-         return;
-      for (ReportItem item : items)
-      {
-         log.log(level, indent + item.getStatus().name() + " : " + item.getLocalizedMessage());
-         logItems(indent + "   ", item.getItems(), level);
-      }
-
-   }
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.FacilityLocation;
@@ -55,7 +56,7 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 	}
 
 	@Override
-	public Facility produce(chouette.schema.Facility xmlFacility, ReportItem report) {
+	public Facility produce(chouette.schema.Facility xmlFacility, ReportItem report,SharedImportedData sharedData) {
 		Facility facility = new Facility();
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(facility, xmlFacility,report);

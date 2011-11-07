@@ -18,9 +18,12 @@
 package fr.certu.chouette.struts.converter;
 
 import java.sql.Time;
-import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.util.StrutsTypeConverter;
 
 import fr.certu.chouette.struts.exception.CodeDetailIncident;
@@ -32,42 +35,63 @@ import fr.certu.chouette.struts.exception.ServiceException;
  */
 public class TimeSqlConverter extends StrutsTypeConverter
 {
-	
-	private static final String mfHoraireHM = "{0,number,00}:{1,number,00}";
-   private static final String mfHoraireHMS = "{0,number,00}:{1,number,00}:{2,number,00}";
+   private static final Logger logger = Logger.getLogger(TimeSqlConverter.class);
 
-	@SuppressWarnings("rawtypes")
+   private static final SimpleDateFormat  dfHoraireHM = new SimpleDateFormat("HH:mm") ;
+   private static final SimpleDateFormat dfHoraireHMS = new SimpleDateFormat("HH:mm:ss") ;
+
+
+   @SuppressWarnings("rawtypes")
    public Object convertFromString(Map context, String[] values, Class toClass)
-	{
-		if (values != null && values.length > 0 && values[0] != null && !values[0].isEmpty())
-		{
-			 String dateString = values[0].toString();
-			   String token[] = dateString.split(":");
-			   if (token.length < 2 || token.length > 3) throw new ServiceException(CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.DATETIME_TYPE, dateString );
-		      long h = Long.parseLong(token[0]);
-		      long m = Long.parseLong(token[1]);
-		      long s = token.length > 2 ? Long.parseLong(token[2]):0;
+   {
+      if (values != null && values.length > 0 && values[0] != null && !values[0].isEmpty())
+      {
+         String dateString = values[0].toString();
+         String token[] = dateString.split(":");
+         if (token.length < 2 || token.length > 3) throw new ServiceException(CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.DATETIME_TYPE, dateString );
+         try
+         {
+            Date d =  null;
+            if (token.length == 2)
+            {
 
-		      long t = (h*3600+m*60+s)*1000;
-		      Time time = new Time(t);
-				return time;
-		}
-		return null;
-	}
+               d = dfHoraireHM.parse(dateString);
 
-	@SuppressWarnings("rawtypes")
+            }
+            else
+            {
+               d = dfHoraireHMS.parse(dateString);
+            }
+            Time time = new Time(d.getTime());
+            logger.debug(dateString+" = "+(time.getTime()/1000)) ;
+            return time;
+         }
+         catch (ParseException e)
+         {
+            throw new ServiceException(CodeIncident.DONNEE_INVALIDE,CodeDetailIncident.DATETIME_TYPE, dateString );
+         }
+         
+      }
+      return null;
+   }
+
+   @SuppressWarnings("rawtypes")
    public String convertToString(Map context, Object o)
-	{
-		if (o instanceof Time)
-		{
-		   long h = ((Time) o).getTime()/1000;
-			long s = h%60;
-			h=h/60;
-			long m = h % 60;
-			h=h/60;
-			if (s > 0) return MessageFormat.format(mfHoraireHMS,h,m,s);
-			return MessageFormat.format(mfHoraireHM,h,m);
-		}
-		return "";
-	}
+   {
+      if (o instanceof Time)
+      {
+         
+         long h = ((Time) o).getTime()/1000;
+         long s = h%60;
+         if (s > 0)
+         {
+            return dfHoraireHMS.format((Time)o);
+         }
+         else
+         {
+            return dfHoraireHM.format((Time)o);
+         }
+      }
+      return "";
+   }
 }

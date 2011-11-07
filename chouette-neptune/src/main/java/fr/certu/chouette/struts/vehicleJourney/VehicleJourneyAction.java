@@ -22,8 +22,10 @@ import com.opensymphony.xwork2.Preparable;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
@@ -53,6 +55,9 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
    @Getter
    @Setter
    private INeptuneManager<Route>          routeManager;
+   @Getter
+   @Setter
+   private INeptuneManager<JourneyPattern>          journeyPatternManager;
    @Getter
    @Setter
    private INeptuneManager<Timetable>      timetableManager;
@@ -193,6 +198,22 @@ public class VehicleJourneyAction extends GeneriqueAction implements ModelDriven
             Route route;
             route = routeManager.getById(idItineraire);
             model.setRoute(route);
+            if (route.getJourneyPatterns().isEmpty())
+            {
+               JourneyPattern journeyPattern = new JourneyPattern();
+               journeyPattern.setObjectId(model.getRoute().getObjectId().split(":")[0]);
+               journeyPattern.setRoute(route);
+               for (StopPoint stop : route.getStopPoints())       
+               {
+                  journeyPattern.addStopPoint(stop);
+                  journeyPatternManager.save(user, journeyPattern, false);
+               }
+               model.setJourneyPattern(journeyPattern);
+            }
+            else
+            {
+               model.setJourneyPattern(route.getJourneyPatterns().get(0));
+            }
          }
 
          // remplissage du champ vehicleTypeIdentifier avec les particularites

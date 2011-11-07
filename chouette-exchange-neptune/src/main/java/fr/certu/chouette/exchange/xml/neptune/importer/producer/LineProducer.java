@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.LineExtension;
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -12,7 +13,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Line>
 {
 	@Override
-	public Line produce(chouette.schema.Line xmlLine,ReportItem report)
+	public Line produce(chouette.schema.Line xmlLine,ReportItem report,SharedImportedData sharedData)
 	{
 		Line line = new Line();
 		// objectId, objectVersion, creatorId, creationTime

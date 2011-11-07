@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.util.Date;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -15,7 +16,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chouette.schema.AccessPoint>{
 
 	@Override
-	public AccessPoint produce(chouette.schema.AccessPoint xmlAccessPoint, ReportItem report) {
+	public AccessPoint produce(chouette.schema.AccessPoint xmlAccessPoint, ReportItem report,SharedImportedData sharedData) {
 		AccessPoint accessPoint = new AccessPoint();
 		
 		// objectId, objectVersion, creatorId, creationTime

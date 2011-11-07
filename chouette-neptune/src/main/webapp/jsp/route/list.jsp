@@ -51,7 +51,7 @@
     <TBODY>
       <s:iterator value="#request.itineraires" var="itineraire" status="rangItineraire">
         <TR class="<s:if test="#rangItineraire.odd == true ">odd</s:if><s:else>even</s:else>">
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+          <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:url id="editUrl" action="edit"  namespace="/route">
               <s:param name="idItineraire" value="id" />
               <s:param name="idLigne" value="idLigne" />
@@ -68,13 +68,13 @@
               <img border="0" alt="Delete" src="<s:url value='/images/supprimer.png'/>" title="<s:text name="tooltip.delete"/>">
             </s:a>
           </TD>
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+          <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:property value="name"/>
           </TD>
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+          <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:property value="publishedName"/>
           </TD>
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+          <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:if test="#itineraire.direction != null">
               <s:text name="%{#itineraire.direction}"/>
             </s:if>
@@ -82,7 +82,7 @@
               <s:text name="no.direction"/>
             </s:else>
           </TD>
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+          <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:if test="!isArretsVide(id)">
               <s:url id="horairesDePassage" action="list" namespace="/vehicleJourneyAtStop">
                 <s:param name="idItineraire" value="id" />
@@ -92,14 +92,14 @@
               <s:a href="%{horairesDePassage}"><s:text name="title.vehicleJourneyAtStop"/></s:a>
             </s:if>
           </TD>
-          <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+          <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:url id="arretSurItineraire" action="list" namespace="/stoppointOnRoute">
               <s:param name="idItineraire" value="%{id}" />
               <s:param name="idLigne" value="idLigne" />
             </s:url>
             <s:a href="%{arretSurItineraire}"><s:text name="title.stoppointOnRoute"/></s:a>
           </TD>
-<%--           <TD class="<s:if test='(wayBack == "R") || (idRetour == null)'>itineraire</s:if>">
+<%--           <TD class="<s:if test='(wayBack == "R") || (oppositeRouteId == null)'>itineraire</s:if>">
             <s:url id="exportHorairesItineraire" action="exportHorairesItineraire" namespace="/export">
               <s:param name="idItineraire" value="id"/>
               <s:param name="idLigne" value="idLigne" />

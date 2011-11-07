@@ -89,28 +89,28 @@
         <display:column titleKey="route.title.name" sortable="true" headerClass="sortable">
           <s:url id="arretSurItineraire" action="list" namespace="/stoppointOnRoute" includeParams="none">
             <s:param name="idItineraire">%{#attr.itineraire.id}</s:param>
-            <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
+            <s:param name="idLigne">%{#attr.itineraire.line.id}</s:param>
           </s:url>
           <s:a href="%{arretSurItineraire}"><s:property value="%{#attr.itineraire.name}"/></s:a>
         </display:column>
         <display:column titleKey="route.title.passingtime" sortable="true" headerClass="sortable">
           <s:url id="horairesDePassage" action="list" namespace="/vehicleJourneyAtStop" includeParams="none">
             <s:param name="idItineraire">%{#attr.itineraire.id}</s:param>
-            <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
+            <s:param name="idLigne">%{#attr.itineraire.line.id}</s:param>
           </s:url>
           <s:a href="%{horairesDePassage}"><s:text name="text.vehicleJourneyAtStop"/></s:a>
         </display:column>
         <display:column titleKey="route.title.linename"sortable="true" headerClass="sortable">
           <s:url id="editLigne" action="edit" namespace="/line" includeParams="none">
-            <s:param name="idLigne">%{#attr.itineraire.idLigne}</s:param>
+            <s:param name="idLigne">%{#attr.itineraire.line.id}</s:param>
           </s:url>
           <s:a href="%{editLigne}"><s:property value="%{getLigne(#attr.itineraire.id).name}" /></s:a>
         </display:column>
         <display:column titleKey="route.title.networkname" sortable="true" headerClass="sortable">
           <s:url id="editReseau" action="edit" namespace="/network" includeParams="none">
-            <s:param name="idReseau">%{#attr.itineraire.idReseau}</s:param>
+            <s:param name="idReseau">%{#attr.itineraire.line.ptNetwork.id}</s:param>
           </s:url>
-          <s:a href="%{editReseau}"><s:property value="%{getReseau(#attr.itineraire.idLigne).name}" /></s:a>
+          <s:a href="%{editReseau}"><s:property value="%{getReseau(#attr.itineraire.line.id).name}" /></s:a>
         </display:column>
       </display:table>
     </div>

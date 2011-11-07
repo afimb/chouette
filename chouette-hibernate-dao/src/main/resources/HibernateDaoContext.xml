@@ -102,52 +102,52 @@
 				ON UPDATE {6} ON DELETE {7}</value>
 		</property>
 		<property name="cascadeDeleteFkeys">
-			<list>
-				<value>aclk_acpt_fkey</value>
-				<value>aclk_area_fkey</value>
-				<value>colk_endarea_fkey</value>
-				<value>colk_startarea_fkey</value>
-				<value>faci_colk_fkey</value>
-				<value>faci_line_fkey</value>
-				<value>faci_area_fkey</value>
-				<value>faci_stpt_fkey</value>
-				<value>facility_feature_fkey</value>
-				<value>jp_route_fkey</value>
-				<value>jpsp_jp_fkey</value>
-				<value>jpsp_stoppoint_fkey</value>
-				<value>ptlink_route_fkey</value>
-				<value>route_line_fkey</value>
-				<value>stoppoint_route_fkey</value>
-				<value>tm_date_fkey</value>
-				<value>tm_period_fkey</value>
-				<value>vjtm_tm_fkey</value>
-				<value>vjtm_vj_fkey</value>
-				<value>vj_jp_fkey</value>
-				<value>vj_route_fkey</value>
-				<value>vjas_sp_fkey</value>
-				<value>vjas_vj_fkey</value>
-				<value>stoparea_parent_fkey</value> 
-				<value>stoparea_child_fkey</value>
-				<value>routingconstraint_line_fkey</value>
-				<value>routingconstraint_stoparea_fkey</value>
-				<value>groupofline_line_fkey</value>
-				<value>groupofline_group_fkey</value>
-			</list>
+			<map>
+				<entry key="aclk_acpt_fkey" value="accesslink;accesspointid;accesspoint;id"/>
+				<entry key="aclk_area_fkey" value="accesslink;stopareaid;stoparea;id"/>
+				<entry key="colk_endarea_fkey" value="connectionlink;arrivalid;stoparea;id"/>
+				<entry key="colk_startarea_fkey" value="connectionlink;departureid;stoparea;id"/>
+				<entry key="faci_colk_fkey" value="facility;connectionlinkid;connectionlink;id"/>
+				<entry key="faci_line_fkey" value="facility;lineid;line;id"/>
+				<entry key="faci_area_fkey" value="facility;stopareaid;stoparea;id"/>
+				<entry key="faci_stpt_fkey" value="facility;stoppointid;stoppoint;id"/>
+				<entry key="facility_feature_fkey" value="facilityfeature;facilityid;facility;id"/>
+				<entry key="groupofline_group_fkey" value="groupofline_line;groupoflineid;groupofline;id"/>
+				<entry key="groupofline_line_fkey" value="groupofline_line;lineid;line;id"/>
+				<entry key="jp_route_fkey" value="journeypattern;routeid;route;id"/>
+				<entry key="jpsp_jp_fkey" value="journeypattern_stoppoint;journeypatternid;journeypattern;id"/>
+				<entry key="jpsp_stoppoint_fkey" value="journeypattern_stoppoint;stoppointid;stoppoint;id"/>
+				<entry key="ptlink_route_fkey" value="ptlink;routeid;route;id"/>
+				<entry key="route_line_fkey" value="route;lineid;line;id"/>
+				<entry key="routingconstraint_line_fkey" value="routingconstraints_lines;lineid;line;id"/>
+				<entry key="routingconstraint_stoparea_fkey" value="routingconstraints_lines;stopareaid;stoparea;id"/>
+				<entry key="stoparea_child_fkey" value="stopareastoparea;childid;stoparea;id"/>
+				<entry key="stoparea_parent_fkey" value="stopareastoparea;parentid;stoparea;id"/> 
+				<entry key="stoppoint_route_fkey" value="stoppoint;routeid;route;id"/>
+				<entry key="tm_date_fkey" value="timetable_date;timetableid;timetable;id"/>
+				<entry key="tm_period_fkey" value="timetable_period;timetableid;timetable;id"/>
+				<entry key="vjtm_tm_fkey" value="timetablevehiclejourney;timetableid;timetable;id"/>
+				<entry key="vjtm_vj_fkey" value="timetablevehiclejourney;vehiclejourneyid;vehiclejourney;id"/>
+				<entry key="vj_jp_fkey" value="vehiclejourney;journeypatternid;journeypattern;id"/>
+				<entry key="vj_route_fkey" value="vehiclejourney;routeid;route;id"/>
+				<entry key="vjas_sp_fkey" value="vehiclejourneyatstop;stoppointid;stoppoint;id"/>
+				<entry key="vjas_vj_fkey" value="vehiclejourneyatstop;vehiclejourneyid;vehiclejourney;id"/>
+			</map>
 		</property>
 		<property name="setNullDeleteFkeys">
-			<list>
-				<value>line_company_fkey</value>
-				<value>line_ptnetwork_fkey</value>
-				<value>vj_company_fkey</value>
-				<value>vj_timeslot_fkey</value>
-			</list>
+			<map>
+				<entry key="line_company_fkey" value="line;companyid;company;id"/>
+				<entry key="line_ptnetwork_fkey" value="line;ptnetworkid;ptnetwork;id"/>
+				<entry key="vj_company_fkey" value="vehiclejourney;companyid;company;id"/>
+				<entry key="vj_timeslot_fkey" value="vehiclejourney;timeslotid;timeslot;id"/>
+			</map>
 		</property>
 		<property name="noActionDeleteFkeys">
-			<list>
-				<value>ptlk_endstpt_fkey</value>
-				<value>ptlk_startstpt_fkey</value>
-				<value>stoppoint_area_fkey</value>
-			</list>
+			<map>
+				<entry key="ptlk_endstpt_fkey" value="ptlink;endoflinkid;stoppoint;id"/>
+				<entry key="ptlk_startstpt_fkey" value="ptlink;startoflinkid;stoppoint;id"/>
+				<entry key="stoppoint_area_fkey" value="stoppoint;stopareaid;stoparea;id"/>
+			</map>
 		</property>
 		<property name="getPrimaryKeysSql">
 			<value>select i.constraint_name, i.table_name, u.column_name

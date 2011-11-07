@@ -103,6 +103,7 @@
 			</map>
 		</property>
 		<property name="validationParameters" ref="Validation" />
+		<property name="migrationTool" ref="migrate" />
 	</bean>
 	
 	
@@ -118,7 +119,8 @@
 	<bean id="migrate" class="fr.certu.chouette.command.MigrateSchema" lazy-init="true" >
 	   <property name="dataSource" ref="commandDataSource" />
 	   <property name="currentVersion" value="1.7" />
-	   
+	   <property name="routeManager" ref="routeManager"/>
+	   	   <property name="linkManager" ref="PTLinkManager"/>
 	</bean>
 	
 	

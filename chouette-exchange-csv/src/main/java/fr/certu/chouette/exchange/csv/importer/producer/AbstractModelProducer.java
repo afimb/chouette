@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
-
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -18,6 +17,10 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> implements IModelProducer<T>
 {
    public static final int TITLE_COLUMN = 7;
+   
+   private static final SimpleDateFormat  dfHM = new SimpleDateFormat("HH:mm") ;
+   private static final SimpleDateFormat dfHMS = new SimpleDateFormat("HH:mm:ss") ;
+
 
    /**
     * load simple value in CSV row
@@ -160,22 +163,34 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
     *           to log errors
     * @return extracted value (null if not found or invalid format)
     */
-   protected final Time getTimeValue(int column, String[] csvLine)
+   protected final Time getTimeValue(int column, String[] csvLine) throws ExchangeException
    {
       if (csvLine[column].trim().isEmpty())
          return null;
-      String[] timestr = csvLine[column].trim().split(":");
-      long h = Long.parseLong(timestr[0]);
-      long m = 0;
-      long s = 0;
-      if (timestr.length > 1)
-         m = Long.parseLong(timestr[1]);
-      if (timestr.length > 2)
-         s = Long.parseLong(timestr[2]);
+      String dateString = csvLine[column].trim();
+      String token[] = dateString.split(":");
+      if (token.length < 2 || token.length > 3) throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, "Invalid Time format : "+dateString);
+      try
+      {
+         java.util.Date d =  null;
+         if (token.length == 2)
+         {
 
-      long time = h * 3600000 + m * 60000 + s * 1000;
+            d = dfHM.parse(dateString);
 
-      return new Time(time);
+         }
+         else
+         {
+            d = dfHMS.parse(dateString);
+         }
+         Time time = new Time(d.getTime());
+         
+         return time;
+      }
+      catch (ParseException e)
+      {
+         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, "Invalid Time format : "+dateString);
+      }
 
    }
 

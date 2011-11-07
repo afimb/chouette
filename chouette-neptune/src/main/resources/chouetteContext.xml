@@ -82,6 +82,7 @@
 		<property name="vehicleJourneyManager" ref="vehicleJourneyManager" />
 		<property name="timetableManager" ref="timetableManager" />
 		<property name="lineManager" ref="lineManager" />
+		<property name="journeyPatternManager" ref="journeyPatternManager" />
 	</bean>
 
 	<!-- ME: migrating ended -->

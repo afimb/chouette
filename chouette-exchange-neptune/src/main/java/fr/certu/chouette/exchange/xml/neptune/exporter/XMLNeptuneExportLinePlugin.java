@@ -111,12 +111,12 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
    @Override
    public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder reportContainer)
-         throws ChouetteException
+   throws ChouetteException
    {
       NeptuneReport report = new NeptuneReport(NeptuneReport.KEY.EXPORT);
       report.setStatus(Report.STATE.OK);
       reportContainer.setReport(report);
-      
+
       String fileName = null;
 
       if (beans == null)
@@ -154,9 +154,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       }
 
       NeptuneFileWriter neptuneFileWriter = new NeptuneFileWriter();
+      File outputFile = new File(fileName);
+      if (!outputFile.getParentFile().exists())
+      {
+         outputFile.getParentFile().mkdirs();
+      }
       if (fileExtension.equals("xml"))
       {
-         File outputFile = new File(fileName);
+
          ChouettePTNetworkTypeType rootObject = exportLine(beans.get(0));
 
          neptuneFileWriter.write(rootObject, outputFile);
@@ -170,11 +175,16 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileName));
 
             // Compress the files
-            for (int i = 0; i < beans.size(); i++)
+            for (Iterator<Line> iterator = beans.iterator(); iterator.hasNext();)
             {
-               ChouettePTNetworkTypeType rootObject = exportLine(beans.get(i));
+               Line line = iterator.next();
+               iterator.remove();
 
-               String name = beans.get(i).getName();
+               ChouettePTNetworkTypeType rootObject = exportLine(line);
+
+               logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
+               
+               String name = line.getObjectId().split(":")[2];
 
                ByteArrayOutputStream stream = new ByteArrayOutputStream();
                neptuneFileWriter.write(rootObject, stream);
@@ -187,6 +197,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
                // Complete the entry
                out.closeEntry();
+               System.gc();
 
             }
 
@@ -207,6 +218,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
       if (line != null)
       {
+         line.complete();
          if (line.getPtNetwork() != null)
          {
             rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork()));
@@ -274,8 +286,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          HashSet<StopArea> stopAreas = new HashSet<StopArea>();
          HashSet<String> stopRefs = new HashSet<String>(); // for cleaning
-                                                           // stoparea contains
-                                                           // refs
+         // stoparea contains
+         // refs
          for (StopPoint stopPoint : stopPoints)
          {
             stopRefs.add(stopPoint.getObjectId());
@@ -341,18 +353,21 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          {
             rootObject.addTimetable(timetableProducer.produce(timetable));
          }
-         
+
          // routing Constraints 
-         for (StopArea routingConstraint : line.getRoutingConstraints())
+         if (line.getRoutingConstraints() != null)
          {
-            if (stopRefs.contains(routingConstraint.getObjectId()))
+            for (StopArea routingConstraint : line.getRoutingConstraints())
             {
-               ITL castorITL = routingConstraintProducer.produceITL(line, routingConstraint);
-               chouetteLineDescription.addITL(castorITL);
-            }
-            else
-            {
-               // TODO ? routing constraint without stop on line
+               if (stopRefs.contains(routingConstraint.getObjectId()))
+               {
+                  ITL castorITL = routingConstraintProducer.produceITL(line, routingConstraint);
+                  chouetteLineDescription.addITL(castorITL);
+               }
+               else
+               {
+                  // TODO ? routing constraint without stop on line
+               }
             }
          }
 
@@ -402,7 +417,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             if (!validRestrictionConstraint)
                return stopAreas;
          }
-         logger.info("add StopArea " + stopArea.getObjectId());
+         // logger.debug("add StopArea " + stopArea.getObjectId());
          stopAreas.add(stopArea);
          if (stopArea.getParents() != null)
          {

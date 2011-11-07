@@ -1,5 +1,17 @@
                         CHOUETTE RELEASE NOTES
                         ======================
+* Version 1.7.0 (07/11/11)
+  - Adaptation du schéma de la base aux objets Neptune 
+   (le manuel d'installation précise les incompatibilités possible entre les schémas)
+  - Suppression de l'ancienne architecture et des développements spécifiques non généralisables (HASTUS, Pégase)
+  - Redéfinition du modèle et des écrans des ITL pour mise en conformité à la XSD Neptune
+
+
+* Version 1.6.3 (3/10/11)
+  - Correction de bugs typos
+  - Fusion des boutons d'ajout d'arrêts aux séquences d'arrêts
+  - Lors de la conversion de coordonnées Lambert en WGS84, bien spécifier la catégorie "Lambert"
+  - Mise à jour documentaire
 
 * Version 1.6.2
   publiée en aout 2011, cette version de Chouette ajoute les
@@ -8,7 +20,7 @@
     des données aux format XML Neptune).
   - Export Géopportail : Export des données associées aux arrêts en vue
     de leurs publications sur le Géoprtail.
-  - Chouette Commande : Un moyen d'exécuter les différentes donctionnalités de
+  - Chouette Commande : Un moyen d'exécuter les différentes fonctionnalités de
     Chouette en ligne de commande (sans utilisation d'interface WEB).
 
 * Version 1.5

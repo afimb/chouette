@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.PrincipalAware;
 import org.apache.struts2.interceptor.PrincipalProxy;
@@ -27,6 +28,8 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.struts.enumeration.ObjetEnumere;
 import fr.certu.chouette.struts.outil.filAriane.FilAriane;
 
@@ -614,4 +617,37 @@ public class GeneriqueAction extends ActionSupport implements RequestAware, Sess
       Locale.setDefault(defaultLocale);
       return message;
    }
+   
+   /**
+    * @param report
+    * @param level
+    */
+   public void logReport(Report report, Level level)
+   {
+      logger.log(level,report.getLocalizedMessage());
+      logItems("",report.getItems(),level);
+
+   }
+
+   /**
+    * log report details from import plugins
+    * 
+    * @param indent text indentation for sub levels
+    * @param items report items to log
+    * @param level log level 
+    */
+   public void logItems(String indent, List<ReportItem> items, Level level) 
+   {
+      if (items == null) return;
+      for (ReportItem item : items) 
+      {
+         logger.log(level,indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+         logItems(indent+"   ",item.getItems(),level);
+      }
+
+   }
+
+   
+
+   
 }

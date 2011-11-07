@@ -22,11 +22,28 @@ public class Timetable extends NeptuneIdentifiedObject
 {
    private static final long    serialVersionUID = -1598554061982685113L;
 
-   // TODO constant for persistence fields
+   // constant for persistence fields
    /**
     * name of comment attribute for {@link Filter} attributeName construction
     */
    public static final String   COMMENT          = "comment";
+   /**
+    * name of version attribute for {@link Filter} attributeName construction
+    */
+   public static final String   VERSION          = "version";
+   /**
+    * name of dayTypes attribute for {@link Filter} attributeName construction
+    */
+   public static final String   DAYTYPES_MASK    = "intDayTypes";
+   /**
+    * name of calendarDays attribute for {@link Filter} attributeName
+    * construction
+    */
+   public static final String   CALENDARDAYS     = "calendarDays";
+   /**
+    * name of periods attribute for {@link Filter} attributeName construction
+    */
+   public static final String   PERIODS          = "periods";
 
    /**
     * comment <br/>
@@ -43,9 +60,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * List of dayTypes <br/>
     * this list is synchronized with intDayTypes at each update <br/>
     */
-   private List<DayTypeEnum>    dayTypes;                                  // Never
-                                                                            // be
-                                                                            // persisted
+   private List<DayTypeEnum>    dayTypes;
    /**
     * intDayTypes <br/>
     * restricted to DAO usage
@@ -318,7 +333,7 @@ public class Timetable extends NeptuneIdentifiedObject
    }
 
    /**
-    * get the adfected dayTypes
+    * get the affected dayTypes
     * 
     * @return
     */
@@ -333,14 +348,15 @@ public class Timetable extends NeptuneIdentifiedObject
          dayTypes.clear();
       }
       if (intDayTypes == null)
+      {
          intDayTypes = 0;
-      ;
+      }
 
       DayTypeEnum[] dayTypeEnum = DayTypeEnum.values();
       for (DayTypeEnum dayType : dayTypeEnum)
       {
-         int filtreJourType = (int) Math.pow(2, dayType.ordinal());
-         if (filtreJourType == (intDayTypes.intValue() & filtreJourType))
+         int filterDayType = buildDayTypeMask(dayType);
+         if (filterDayType == (intDayTypes.intValue() & filterDayType))
          {
             dayTypes.add(dayType);
          }
@@ -360,17 +376,43 @@ public class Timetable extends NeptuneIdentifiedObject
    }
 
    /**
-    * synchronise intDayTypes with dayTypes list
+    * synchronize intDayTypes with dayTypes list
     */
    private void refreshIntDaytypes()
    {
-      intDayTypes = 0;
       if (this.dayTypes == null)
          this.dayTypes = new ArrayList<DayTypeEnum>();
+      intDayTypes = buildDayTypeMask(this.dayTypes);
+   }
 
-      for (DayTypeEnum dayType : this.dayTypes)
+   /**
+    * build a bitwise dayType mask for filtering
+    * 
+    * @param dayTypes
+    *           a list of included day types
+    * @return
+    */
+   public static int buildDayTypeMask(List<DayTypeEnum> dayTypes)
+   {
+      int value = 0;
+      if (dayTypes == null)
+         return value;
+      for (DayTypeEnum dayType : dayTypes)
       {
-         intDayTypes += (int) Math.pow(2, dayType.ordinal());
+         value += buildDayTypeMask(dayType);
       }
+      return value;
+   }
+
+   /**
+    * build a bitwise dayType mask for filtering
+    * 
+    * @param dayType
+    *           the dayType to filter
+    * @return
+    */
+   public static int buildDayTypeMask(DayTypeEnum dayType)
+   {
+      return (int) Math.pow(2, dayType.ordinal());
    }
 }

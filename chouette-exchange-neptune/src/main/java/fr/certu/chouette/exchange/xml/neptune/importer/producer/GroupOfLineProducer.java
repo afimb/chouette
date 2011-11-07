@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.plugin.report.ReportItem;
 /**
@@ -10,7 +11,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class GroupOfLineProducer extends AbstractModelProducer<GroupOfLine, chouette.schema.GroupOfLine>{
 
 	@Override
-	public GroupOfLine produce(chouette.schema.GroupOfLine xmlGroupOfLine, ReportItem report) {
+	public GroupOfLine produce(chouette.schema.GroupOfLine xmlGroupOfLine, ReportItem report,SharedImportedData sharedData) {
 		GroupOfLine groupOfLine = new GroupOfLine();
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(groupOfLine, xmlGroupOfLine,report);

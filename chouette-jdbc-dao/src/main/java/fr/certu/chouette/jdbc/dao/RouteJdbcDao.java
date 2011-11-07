@@ -49,7 +49,7 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		ps.setTimestamp(3, timestamp);
 		ps.setString(4, route.getCreatorId());
 		ps.setString(5, route.getName());
-		Long oppositeRouteId = new Long(0);
+		Long oppositeRouteId = null;
 		if(route.getOppositeRouteId() != null)
 			oppositeRouteId = route.getOppositeRouteId();
 		ps.setObject(6, oppositeRouteId);

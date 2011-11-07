@@ -164,8 +164,6 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	@Override
 	public T addNew(User user, T bean) throws ChouetteException 
 	{
-		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		// TODO : check user access
 		save(user,bean,false);
 		return bean;
 	}
@@ -183,7 +181,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		{
 			return getDao().exists(bean.getId());
 		}
-		if (bean.getObjectId() != null)
+		if (bean.getObjectId() != null && !bean.getObjectId().isEmpty())
 		{
 			return getDao().exists(bean.getObjectId());
 		}
@@ -372,11 +370,11 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 					object.setObjectId(null);
 				}
 			}
-			if (object.getObjectId() == null) 
+			if (object.getObjectId() == null || object.getObjectId().isEmpty()) 
 				object.setObjectId("::pending_Id::"+random.nextLong()); // mandatory in database
 			getDao().save(object);
 		}
-		if (object.getObjectId() == null || object.getObjectId().startsWith("::pending_Id::")) 
+		if (object.getObjectId() == null || object.getObjectId().isEmpty() || object.getObjectId().startsWith("::pending_Id::")) 
 			setObjectId(user, object, prefix);
 		getLogger().debug("saving object :"+object.getObjectId());
 		if (object.getCreationTime() == null) object.setCreationTime(new Date());

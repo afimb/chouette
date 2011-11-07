@@ -1,19 +1,21 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class CompanyProducer extends AbstractModelProducer<Company, chouette.schema.Company> {
 
 	@Override
-	public Company produce(chouette.schema.Company xmlCompany,ReportItem report) 
+	public Company produce(chouette.schema.Company xmlCompany,ReportItem report,SharedImportedData sharedData) 
 	{
 
 		Company company = new Company();
 		
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(company, xmlCompany, report);
-		
+		Company sharedBean = sharedData.get(company);
+      if (sharedBean != null) return sharedBean;
 		// Name mandatory
 		company.setName(getNonEmptyTrimedString(xmlCompany.getName()));
 		

@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.ConnectionLinkExtension;
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -14,7 +15,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouette.schema.AccessLink>{
 
 	@Override
-	public AccessLink produce(chouette.schema.AccessLink xmlAccessLink, ReportItem report) {
+	public AccessLink produce(chouette.schema.AccessLink xmlAccessLink, ReportItem report,SharedImportedData sharedData) {
 		AccessLink accessLink = new AccessLink();
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(accessLink, xmlAccessLink,report);

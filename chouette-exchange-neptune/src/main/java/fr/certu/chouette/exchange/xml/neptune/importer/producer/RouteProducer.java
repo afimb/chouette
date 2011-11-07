@@ -1,11 +1,12 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.ChouetteRoute> {
-	public Route produce(chouette.schema.ChouetteRoute xmlRoute,ReportItem report) 
+	public Route produce(chouette.schema.ChouetteRoute xmlRoute,ReportItem report,SharedImportedData sharedData) 
 	{
 		Route route = new Route();
 		

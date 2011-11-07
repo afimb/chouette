@@ -139,7 +139,9 @@ public class FilterToHibernateClauseTranslator {
 	 */
 	private String getILikeOrLikeRestrictionValue(Object value) 
 	{
-		return "%" + value + "%";
+	   String ret = value.toString();
+	   if (!ret.contains("%")) ret = "%" + ret + "%";
+		return ret;
 	}
 
 

@@ -10,7 +10,6 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.user.User;
 
 /**

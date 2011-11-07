@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import java.sql.Time;
 
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;
+import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
@@ -14,7 +15,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 {
 
 	@Override
-	public VehicleJourney produce(chouette.schema.VehicleJourney xmlVehicleJourney,ReportItem report) 
+	public VehicleJourney produce(chouette.schema.VehicleJourney xmlVehicleJourney,ReportItem report,SharedImportedData sharedData) 
 	{
 		VehicleJourney vehicleJourney = new VehicleJourney();
 

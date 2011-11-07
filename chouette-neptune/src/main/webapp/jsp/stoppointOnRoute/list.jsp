@@ -38,8 +38,7 @@
     </div>
     <div>
       <s:reset value="%{getText('action.cancel')}" onclick="annulerCreationArret();" />
-      <s:submit formId="insererArretForm" action="insererArret" value="%{getText('stoppointOnRoute.insert.new')}" />
-      <s:submit formId="insererArretForm" action="insererArret" value="%{getText('stoppointOnRoute.insert.existing')}" />
+      <s:submit formId="insererArretForm" action="insererArret" value="%{getText('stoppointOnRoute.insert')}" />
     </div>
 
   </s:form>
