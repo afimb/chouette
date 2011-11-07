@@ -18,10 +18,19 @@ DROP VIEW IF EXISTS public.vehiclejourney;
 DROP VIEW IF EXISTS public.vehiclejourneyatstop;
 
 -- TimetableVehicleJourney
+-- remove potentialy duplicate
+DROP TABLE IF EXISTS temp_duplicate;
+
+CREATE TABLE AS select timetableid,vehiclejourneyid as cnt from timetablevehiclejourney group by timetableid,vehiclejourneyid having count(*) > 1;
 
 ALTER TABLE timetablevehiclejourney DROP CONSTRAINT timetablevehiclejourney_pkey;
 
 ALTER TABLE timetablevehiclejourney DROP COLUMN id;
+
+DELETE FROM timetablevehiclejourney WHERE timetableid = temp_duplicate.timetableid AND vehiclejourneyid = temp_duplicate.vehiclejourneyid;
+INSERT INTO timetablevehiclejourney (timetableid,vehiclejourneyid) SELECT timetableid,vehiclejourneyid FROM temp_duplicate;
+
+DROP TABLE temp_duplicate;
 
 ALTER TABLE timetablevehiclejourney
   ADD CONSTRAINT timetablevehiclejourney_pkey PRIMARY KEY(timetableid, vehiclejourneyid);
