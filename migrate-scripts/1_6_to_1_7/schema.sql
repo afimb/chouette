@@ -21,13 +21,13 @@ DROP VIEW IF EXISTS public.vehiclejourneyatstop;
 -- remove potentialy duplicate
 DROP TABLE IF EXISTS temp_duplicate;
 
-CREATE TABLE AS select timetableid,vehiclejourneyid as cnt from timetablevehiclejourney group by timetableid,vehiclejourneyid having count(*) > 1;
+CREATE TABLE temp_duplicate AS select timetableid,vehiclejourneyid from timetablevehiclejourney group by timetableid,vehiclejourneyid having count(*) > 1;
 
 ALTER TABLE timetablevehiclejourney DROP CONSTRAINT timetablevehiclejourney_pkey;
 
 ALTER TABLE timetablevehiclejourney DROP COLUMN id;
 
-DELETE FROM timetablevehiclejourney WHERE timetableid = temp_duplicate.timetableid AND vehiclejourneyid = temp_duplicate.vehiclejourneyid;
+DELETE FROM timetablevehiclejourney tv USING temp_duplicate WHERE tv.timetableid = temp_duplicate.timetableid AND tv.vehiclejourneyid = temp_duplicate.vehiclejourneyid;
 INSERT INTO timetablevehiclejourney (timetableid,vehiclejourneyid) SELECT timetableid,vehiclejourneyid FROM temp_duplicate;
 
 DROP TABLE temp_duplicate;
@@ -47,7 +47,7 @@ ALTER TABLE vehiclejourneyatstop
 -- id sequences 
 
 -- company   
-DROP SEQUENCE IF EXISTS company_id_seq ;
+DROP SEQUENCE IF EXISTS company_id_seq CASCADE  ;
 CREATE SEQUENCE company_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -59,7 +59,7 @@ ALTER TABLE company ALTER COLUMN id SET DEFAULT nextval('company_id_seq'::regcla
 SELECT SETVAL('company_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM company),false);
 
 -- connectionlink   
-DROP SEQUENCE IF EXISTS connectionlink_id_seq ;
+DROP SEQUENCE IF EXISTS connectionlink_id_seq CASCADE  ;
 CREATE SEQUENCE  connectionlink_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -72,7 +72,7 @@ SELECT SETVAL('connectionlink_id_seq'::regclass,(SELECT case when count(*)=0 the
 
 
 -- journeypattern   
-DROP SEQUENCE IF EXISTS journeypattern_id_seq ;
+DROP SEQUENCE IF EXISTS journeypattern_id_seq CASCADE  ;
 CREATE SEQUENCE journeypattern_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -84,7 +84,7 @@ ALTER TABLE journeypattern ALTER COLUMN id SET DEFAULT nextval('journeypattern_i
 SELECT SETVAL('journeypattern_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM journeypattern),false);
 
 -- line  
-DROP SEQUENCE IF EXISTS line_id_seq ; 
+DROP SEQUENCE IF EXISTS line_id_seq CASCADE  ; 
 CREATE SEQUENCE line_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -97,7 +97,7 @@ SELECT SETVAL('line_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE m
 
 
 -- PTNetwork   
-DROP SEQUENCE IF EXISTS ptnetwork_id_seq ; 
+DROP SEQUENCE IF EXISTS ptnetwork_id_seq CASCADE  ; 
 CREATE SEQUENCE ptnetwork_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -109,7 +109,7 @@ ALTER TABLE ptnetwork ALTER COLUMN id SET DEFAULT nextval('ptnetwork_id_seq'::re
 SELECT SETVAL('ptnetwork_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM ptnetwork),false);
 
 -- route   
-DROP SEQUENCE IF EXISTS route_id_seq ; 
+DROP SEQUENCE IF EXISTS route_id_seq CASCADE  ; 
 CREATE SEQUENCE route_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -121,7 +121,7 @@ ALTER TABLE route ALTER COLUMN id SET DEFAULT nextval('route_id_seq'::regclass);
 SELECT SETVAL('route_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM route),false);
 
 -- stoparea   
-DROP SEQUENCE IF EXISTS stoparea_id_seq ; 
+DROP SEQUENCE IF EXISTS stoparea_id_seq CASCADE  ; 
 CREATE SEQUENCE stoparea_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -133,7 +133,7 @@ ALTER TABLE stoparea ALTER COLUMN id SET DEFAULT nextval('stoparea_id_seq'::regc
 SELECT SETVAL('stoparea_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM stoparea),false);
 
 -- stoppoint   
-DROP SEQUENCE IF EXISTS stoppoint_id_seq ; 
+DROP SEQUENCE IF EXISTS stoppoint_id_seq CASCADE  ; 
 CREATE SEQUENCE stoppoint_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -146,7 +146,7 @@ SELECT SETVAL('stoppoint_id_seq'::regclass,(SELECT case when count(*)=0 then 1 E
 
 
 -- timetable   
-DROP SEQUENCE IF EXISTS timetable_id_seq ; 
+DROP SEQUENCE IF EXISTS timetable_id_seq CASCADE  ; 
 CREATE SEQUENCE timetable_id_seq
   INCREMENT 1
   MINVALUE 1
@@ -158,7 +158,7 @@ ALTER TABLE timetable ALTER COLUMN id SET DEFAULT nextval('timetable_id_seq'::re
 SELECT SETVAL('timetable_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM timetable),false);
 
 -- vehiclejourney   
-DROP SEQUENCE IF EXISTS vehiclejourney_id_seq ; 
+DROP SEQUENCE IF EXISTS vehiclejourney_id_seq CASCADE  ; 
 CREATE SEQUENCE vehiclejourney_id_seq
   INCREMENT 1
   MINVALUE 1

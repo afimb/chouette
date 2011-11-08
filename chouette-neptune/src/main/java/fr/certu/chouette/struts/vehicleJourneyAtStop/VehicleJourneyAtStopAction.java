@@ -3,6 +3,7 @@ package fr.certu.chouette.struts.vehicleJourneyAtStop;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -332,7 +333,9 @@ public class VehicleJourneyAtStopAction extends GeneriqueAction implements Model
 	public String ajoutCourseAvecDecalageTemps() throws ChouetteException
 	{
 		log.debug("appel ajoutCourseAvecDecalageTemps");
-		long tempsDecalageMillis = model.getTempsDecalage().getTime();
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(model.getTempsDecalage());
+      long tempsDecalageMillis = cal.get(Calendar.HOUR_OF_DAY) * 3600000 + cal.get(Calendar.MINUTE) * 60000;
 		Long idCourseADecaler = model.getIdCourseADecaler();
 		Integer nbreCourseDecalage = model.getNbreCourseDecalage();
 		if (idCourseADecaler == null) {
