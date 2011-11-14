@@ -12,6 +12,7 @@ import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -54,6 +55,12 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       {
          timetable.setName(loadStringParam(csvReader, ALIAS_TITLE));
          timetable.setObjectId(objectIdPrefix+":"+Timetable.TIMETABLE_KEY+":"+timetable.getName());
+         if (!NeptuneIdentifiedObject.checkObjectId(timetable.getObjectId()))
+         {
+            CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, timetable.getComment(), timetable.getObjectId());
+            report.addItem(reportItem);
+            return null;
+         }
          if (loadStringParam(csvReader, MONDAY_TITLE).equals(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.MONDAY);

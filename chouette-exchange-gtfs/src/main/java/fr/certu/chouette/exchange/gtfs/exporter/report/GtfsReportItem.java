@@ -22,7 +22,7 @@ public class GtfsReportItem extends ReportItem
 {
 	public enum KEY {OK,NO_LINE,UNKNOWN_PARAMETER,MISSING_PARAMETER,FILE_ACCESS,EMPTY_TIMETABLE,MISSING_DATA,EMPTY_DATA, INVALID_DATA} ;
 
-	public GtfsReportItem(KEY key,Report.STATE status, String... args)
+	public GtfsReportItem(KEY key,Report.STATE status, Object... args)
 	{
 		setStatus(status);
         setMessageKey(key.name());

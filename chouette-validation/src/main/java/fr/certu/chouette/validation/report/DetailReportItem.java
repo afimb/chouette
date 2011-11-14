@@ -22,7 +22,7 @@ public class DetailReportItem extends ReportItem
 
 	}
 	
-	public DetailReportItem(String key, STATE state, String...args){
+	public DetailReportItem(String key, STATE state, Object...args){
 		setMessageKey(key);
 		setStatus(state);
 		if(!args.equals(""))

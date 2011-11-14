@@ -21,9 +21,9 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class CSVReportItem extends ReportItem 
 {
 	public enum KEY {OK_LINE,OK_TIMETABLE,OK_PTNETWORK,OK_COMPANY,
-	   MANDATORY_TAG,TIMETABLE_COUNT,LINE_COUNT,END_OF_FILE,BAD_TIMETABLE_PERIODS,INVALID_LINE, STOP_WITHOUT_COORDS, VJ_MISSING_TIMETABLE, FILE_FORMAT} ;
+	   MANDATORY_TAG,TIMETABLE_COUNT,LINE_COUNT,END_OF_FILE,BAD_TIMETABLE_PERIODS,INVALID_LINE, STOP_WITHOUT_COORDS, VJ_MISSING_TIMETABLE, FILE_FORMAT, BAD_ID} ;
 
-	public CSVReportItem(KEY key,Report.STATE status, String... args)
+	public CSVReportItem(KEY key,Report.STATE status, Object... args)
 	{
 		setStatus(status);
         setMessageKey(key.name());

@@ -23,7 +23,7 @@ public class GeoportailReportItem extends ReportItem
 	public enum KEY {OK,NO_NETWORK,TOO_MANY_NETWORKS,MISSING_PARAMETER,
 	   UNKNOWN_PARAMETER,INVALID_EXTENSION,FILE_ACCESS,NO_STOPAREAS,NO_ACCESSPOINTS,MISSING_RESSOURCE} ;
 
-	public GeoportailReportItem(KEY key,Report.STATE status, String... args)
+	public GeoportailReportItem(KEY key,Report.STATE status, Object... args)
 	{
 		setStatus(status);
         setMessageKey(key.name());

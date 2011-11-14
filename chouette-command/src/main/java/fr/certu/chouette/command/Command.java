@@ -20,9 +20,11 @@ import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +86,9 @@ public class Command
    @Setter private ValidationParameters validationParameters;
 
    @Setter private MigrateSchema migrationTool;
+   
+   @Setter private CheckObjectId checkObjectId;
+
 
    private Map<String,List<String>> globals = new HashMap<String, List<String>>();;
 
@@ -396,6 +401,14 @@ public class Command
          }
          return beans;
       }
+      
+      if (name.equals("checkObjectId"))
+      {
+         String fileName = getSimpleString(parameters, "sqlfile", "invalid.sql");
+         boolean checkType = getBoolean(parameters, "checktype");
+         checkObjectId.checkObjectId(fileName,checkType);
+         return beans;
+      }
 
       INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
       long tdeb = System.currentTimeMillis();
@@ -641,6 +654,7 @@ public class Command
                   case FILENAME : val.setFilenameValue(simpleval); break;
                   case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
                   case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+                  case DATE : val.setDateValue(toCalendar(simpleval));break;
                   }
                   values.add(val);
                }
@@ -670,6 +684,29 @@ public class Command
          throw new RuntimeException("export failed, see details in log");
       }
    }
+   /**
+    * convert date string to calendar
+    * @param simpleval
+    * @return
+    */
+   private Calendar toCalendar(String simpleval)
+   {
+      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+      try
+      {
+         Date d = sdf.parse(simpleval);
+         Calendar c = Calendar.getInstance();
+         c.setTime(d);
+         return c;
+      }
+      catch (ParseException e)
+      {
+         logger.error("invalid date format : "+ simpleval+" dd/MM/yyyy expected");
+         throw new RuntimeException("invalid date format : "+ simpleval+" dd/MM/yyyy expected");
+      }
+      
+   }
+
    /**
     * @param beans
     * @param manager
@@ -906,6 +943,7 @@ public class Command
                   case FILENAME : val.setFilenameValue(simpleval); break;
                   case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
                   case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+                  case DATE : val.setDateValue(toCalendar(simpleval));break;
                   }
                   values.add(val);
                }
@@ -921,7 +959,7 @@ public class Command
             printItems(System.out,"",r.getItems());
 
          }
-         if (beans == null )
+         if (beans == null || beans.isEmpty())
          {
             System.out.println("import failed");
          }

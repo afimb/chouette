@@ -140,40 +140,48 @@ public class MigrateSchema
                }
                result.close();
 
-               remains = true;
-               int order = 1;
-               for (Long stopId : orderedStopIds)
+               if (orderedStopIds.size() == 0)
                {
-
-                  batchStmt.addBatch("UPDATE "+dataSource.getDatabaseSchema()+".vehicleJourneyAtStop set position="+order+" where vehiclejourneyid = "+vjId+" and stoppointid ="+stopId);
-                  order++;
+                  logger.error("vehicleJourney has no vehicleJourneyAtStop "+vjId);
+                  System.out.println("vehicleJourney has no vehicleJourneyAtStop "+vjId);
                }
+               else
                {
-                  Long stopId = orderedStopIds.get(orderedStopIds.size()-1);
-                  batchStmt.addBatch("UPDATE "+dataSource.getDatabaseSchema()+".vehicleJourneyAtStop set isArrival='true' where vehiclejourneyid = "+vjId+" and stoppointid ="+stopId);
-               }
-               // add jp stop relationship
-               Long jpId = journeyPatternMap.get(vjId);
-               if (jpId != null && !jpSet.contains(jpId)) 
-               {
+                  remains = true;
+                  int order = 1;
                   for (Long stopId : orderedStopIds)
                   {
-                     batchStmt.addBatch("INSERT INTO "+dataSource.getDatabaseSchema()+".journeypattern_stoppoint (journeypatternid,stoppointid) values("+jpId+","+stopId+")");
+
+                     batchStmt.addBatch("UPDATE "+dataSource.getDatabaseSchema()+".vehicleJourneyAtStop set position="+order+" where vehiclejourneyid = "+vjId+" and stoppointid ="+stopId);
+                     order++;
                   }
-               }
-               if (count % 250 == 0)
-               {
-                  batchStmt.executeBatch();
-                  batchStmt.clearBatch();
-                  connection.commit();
-                  remains = false;
-                  System.out.println(" "+count+" vehicleJourneys proceeded");
+                  {
+                     Long stopId = orderedStopIds.get(orderedStopIds.size()-1);
+                     batchStmt.addBatch("UPDATE "+dataSource.getDatabaseSchema()+".vehicleJourneyAtStop set isArrival='true' where vehiclejourneyid = "+vjId+" and stoppointid ="+stopId);
+                  }
+                  // add jp stop relationship
+                  Long jpId = journeyPatternMap.get(vjId);
+                  if (jpId != null && !jpSet.contains(jpId)) 
+                  {
+                     for (Long stopId : orderedStopIds)
+                     {
+                        batchStmt.addBatch("INSERT INTO "+dataSource.getDatabaseSchema()+".journeypattern_stoppoint (journeypatternid,stoppointid) values("+jpId+","+stopId+")");
+                     }
+                  }
+                  if (count % 250 == 0)
+                  {
+                     batchStmt.executeBatch();
+                     batchStmt.clearBatch();
+                     connection.commit();
+                     remains = false;
+                     System.out.println(" "+count+" vehicleJourneys proceeded");
+                  }
                }
 
             }
             catch (SQLException e) 
             {
-               logger.error("fail to update vehicleJourney ",e);
+               logger.error("fail to update vehicleJourney "+vjId,e);
                failure = true;
                break;
             }

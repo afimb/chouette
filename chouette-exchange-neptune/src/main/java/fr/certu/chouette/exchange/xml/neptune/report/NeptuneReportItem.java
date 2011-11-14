@@ -27,7 +27,7 @@ public class NeptuneReportItem extends ReportItem
        addMessageArgs(args);
 	}
 	*/
-	public NeptuneReportItem(KEY key,Report.STATE status, String... args)
+	public NeptuneReportItem(KEY key,Report.STATE status, Object... args)
 	{
 		setStatus(status);
         setMessageKey(key.name());

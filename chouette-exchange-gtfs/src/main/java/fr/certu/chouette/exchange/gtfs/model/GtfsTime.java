@@ -10,7 +10,6 @@ package fr.certu.chouette.exchange.gtfs.model;
 
 import java.sql.Time;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 
 import lombok.Getter;
 import lombok.Setter;

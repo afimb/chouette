@@ -26,11 +26,11 @@ import lombok.Setter;
 public abstract  class ReportItem extends Report implements Comparable<ReportItem>
 {
 	@Getter @Setter private String messageKey;
-	@Getter @Setter private List<String> messageArgs = new ArrayList<String>();
+	@Getter @Setter private List<Object> messageArgs = new ArrayList<Object>();
 	@Getter @Setter private int order;
-	public void addMessageArgs(String... args)
+	public void addMessageArgs(Object... args)
 	{
-		for (String arg : args) 
+		for (Object arg : args) 
 		{
 			messageArgs.add(arg);
 		}

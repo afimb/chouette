@@ -7,5 +7,10 @@
       </package>
    </packages>
   </test>
-  
+  <test name="Model" >
+    <packages>
+      <package name="fr.certu.chouette.model" >
+      </package>
+   </packages>
+  </test>
 </suite>

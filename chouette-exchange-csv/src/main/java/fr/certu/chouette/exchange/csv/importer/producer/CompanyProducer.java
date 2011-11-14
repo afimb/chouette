@@ -6,6 +6,7 @@ import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.report.Report;
 
 public class CompanyProducer extends AbstractModelProducer<Company>
@@ -47,7 +48,12 @@ public class CompanyProducer extends AbstractModelProducer<Company>
          company.setFax(loadStringParam(csvReader, FAX_TITLE));
          company.setEmail(loadStringParam(csvReader, EMAIL_TITLE));
          company.setObjectId(objectIdPrefix + ":" + Company.COMPANY_KEY + ":" + toIdString(company.getShortName()));
-
+         if (!NeptuneIdentifiedObject.checkObjectId(company.getObjectId()))
+         {
+            CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, company.getName(), company.getObjectId());
+            report.addItem(reportItem);
+            return null;
+         }
       }
       catch (ExchangeException e)
       {

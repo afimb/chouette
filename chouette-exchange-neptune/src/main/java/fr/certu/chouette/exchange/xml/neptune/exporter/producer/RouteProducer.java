@@ -32,7 +32,7 @@ public class RouteProducer extends AbstractCastorNeptuneProducer<chouette.schema
 		castorRoute.setJourneyPatternId(NeptuneIdentifiedObject.extractObjectIds(route.getJourneyPatterns()));
 		castorRoute.setPtLinkId(NeptuneIdentifiedObject.extractObjectIds(route.getPtLinks()));
 		
-		//castorRoute.setWayBackRouteId(route.getOppositeRouteId()); ??
+		castorRoute.setWayBackRouteId(route.getWayBackRouteId());
 		
 		RouteExtension castorRouteExtension = new RouteExtension();
 		castorRouteExtension.setWayBack(route.getWayBack());

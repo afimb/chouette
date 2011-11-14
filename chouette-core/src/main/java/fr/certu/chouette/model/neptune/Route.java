@@ -145,10 +145,10 @@ public class Route extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private List<JourneyPattern> journeyPatterns;                         // FK
-                                                                          // inverse
-                                                                          // manquante
-                                                                          // à
-                                                                          // ajouter
+   // inverse
+   // manquante
+   // à
+   // ajouter
    /**
     * Neptune identification referring to the PTLinks of the route<br/>
     * Meaningless after database read (see ptLinks) <br/>
@@ -166,9 +166,9 @@ public class Route extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private List<PTLink>         ptLinks;                                 // Table
-                                                                          // +
-                                                                          // FK
-                                                                          // inverse
+   // +
+   // FK
+   // inverse
    /**
     * The route's stopPoints objects <br/>
     * <br/>
@@ -230,7 +230,7 @@ public class Route extends NeptuneIdentifiedObject
             for (JourneyPattern journeyPattern : journeyPatterns)
             {
                sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(journeyPattern.toString(childIndent, childLevel));
+               .append(journeyPattern.toString(childIndent, childLevel));
             }
          }
          if (ptLinks != null)
@@ -248,7 +248,7 @@ public class Route extends NeptuneIdentifiedObject
             {
                if (stopPoint != null)
                   sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                        .append(stopPoint.toString(childIndent, childLevel));
+                  .append(stopPoint.toString(childIndent, childLevel));
                else
                   sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append("null stopPoint !!");
 
@@ -658,6 +658,22 @@ public class Route extends NeptuneIdentifiedObject
       if (isCompleted())
          return;
       super.complete();
+      if (getId() != null)
+      {
+         wayBackRouteId=null;
+         if (oppositeRouteId != null)
+         {
+            for (Route waybackRoute : line.getRoutes())
+            {
+               if (waybackRoute.getId().equals(oppositeRouteId))
+               {
+                  wayBackRouteId=waybackRoute.getObjectId();
+                  break;
+               }
+            }
+         }
+      }
+
       List<StopPoint> stopPoints = getStopPoints();
       if (stopPoints != null && !stopPoints.isEmpty())
       {

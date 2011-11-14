@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.plugin.report.Report;
 
@@ -38,6 +39,12 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
          ptNetwork.setDescription(loadStringParam(csvReader, DESCRIPTION_TITLE));
          ptNetwork.setVersionDate(Calendar.getInstance().getTime());
          ptNetwork.setObjectId(objectIdPrefix + ":" + PTNetwork.PTNETWORK_KEY + ":" + ptNetwork.getName());
+         if (!NeptuneIdentifiedObject.checkObjectId(ptNetwork.getObjectId()))
+         {
+            CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, ptNetwork.getName(), ptNetwork.getObjectId());
+            report.addItem(reportItem);
+            return null;
+         }
       }
       catch (ExchangeException e)
       {

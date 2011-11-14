@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +30,7 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
+   private static final Logger logger = Logger.getLogger(NeptuneIdentifiedObject.class); 
 	// constant for persistence fields
 	public static final String OBJECT_ID = "objectId"; 
 	public static final String OBJECT_VERSION = "objectVersion"; 
@@ -215,4 +219,16 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	}
 	
 
+	/**
+	 * check if an objectId is conform to Trident 
+	 * @param oid objectId to check
+	 * @return true if valid, false othewise
+	 */
+	public static boolean checkObjectId(String oid)
+	{
+	   if (oid == null) return false;
+	   
+	   Pattern p = Pattern.compile("(\\w|_)+:\\w+:([0-9A-Za-z]|_|-)+");
+	   return p.matcher(oid).matches();
+	}
 }

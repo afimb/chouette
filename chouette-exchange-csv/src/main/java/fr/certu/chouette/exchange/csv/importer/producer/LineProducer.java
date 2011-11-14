@@ -19,6 +19,7 @@ import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -89,6 +90,12 @@ public class LineProducer extends AbstractModelProducer<Line>
          line.setComment(loadStringParam(csvReader, COMMENT_TITLE));
          line.setTransportModeName(TransportModeNameEnum.valueOf(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE)));
          line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getNumber()));
+         if (!NeptuneIdentifiedObject.checkObjectId(line.getObjectId()))
+         {
+            CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, line.getName(), line.getObjectId());
+            report.addItem(reportItem);
+            return null;
+         }
 
          loadRoutes(line, csvReader, objectIdPrefix, report);
       }
@@ -218,7 +225,11 @@ public class LineProducer extends AbstractModelProducer<Line>
             route.setWayBack(direction.toString());
             route.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getNumber()) + "_"
                   + route.getWayBack());
-
+            if (!NeptuneIdentifiedObject.checkObjectId(route.getObjectId()))
+            {
+               CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, route.getName(), route.getObjectId());
+               report.addItem(reportItem);
+            }
             // build stopPoint on route and stopArea (BP or Q)
             int rank = 1;
             String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getNumber()) + "_"
@@ -265,6 +276,11 @@ public class LineProducer extends AbstractModelProducer<Line>
             wayback.setWayBack(direction.toString());
             wayback.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getNumber()) + "_"
                   + wayback.getWayBack());
+            if (!NeptuneIdentifiedObject.checkObjectId(wayback.getObjectId()))
+            {
+               CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, wayback.getName(), wayback.getObjectId());
+               report.addItem(reportItem);
+            }
             
             // connect route couple
             route.setWayBackRouteId(wayback.getObjectId());
@@ -427,10 +443,15 @@ public class LineProducer extends AbstractModelProducer<Line>
       StopArea commercial = commercials.get(getValue(AREAZONE_COLUMN, stopData));
       if (commercial == null)
       {
-         commercial = buildCommercial(stopData, objectIdPrefix);
+         commercial = buildCommercial(stopData, objectIdPrefix,report);
          commercials.put(commercial.getName(), commercial);
       }
       commercial.addContainedStopArea(physical);
+      if (!NeptuneIdentifiedObject.checkObjectId(physical.getObjectId()))
+      {
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, physical.getName(), physical.getObjectId());
+         report.addItem(reportItem);
+      }
       physical.addParent(commercial);
       return physical;
    }
@@ -454,7 +475,7 @@ public class LineProducer extends AbstractModelProducer<Line>
     * @param objectIdPrefix
     * @return
     */
-   private StopArea buildCommercial(String[] stopData, String objectIdPrefix)
+   private StopArea buildCommercial(String[] stopData, String objectIdPrefix,Report report)
    {
       StopArea commercial;
       commercial = new StopArea();
@@ -471,6 +492,11 @@ public class LineProducer extends AbstractModelProducer<Line>
          if (address.getCountryCode() != null)
             commercial.setObjectId(commercial.getObjectId() + "_" + address.getCountryCode());
          centroid2.setAddress(address);
+      }
+      if (!NeptuneIdentifiedObject.checkObjectId(commercial.getObjectId()))
+      {
+         CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, commercial.getName(), commercial.getObjectId());
+         report.addItem(reportItem);
       }
       return commercial;
    }
