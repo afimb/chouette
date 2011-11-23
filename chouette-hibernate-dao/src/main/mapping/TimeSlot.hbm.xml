@@ -23,7 +23,7 @@
 				<comment>Version of this object</comment>
 			</column>
 		</property>
-		<property name="creationTime" type="java.sql.Date">
+		<property name="creationTime" type="java.util.Date">
 			<column name="creationTime">
 				<comment>Creation date and time</comment>
 			</column>

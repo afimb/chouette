@@ -406,7 +406,8 @@ public class Command
       {
          String fileName = getSimpleString(parameters, "sqlfile", "invalid.sql");
          boolean checkType = getBoolean(parameters, "checktype");
-         checkObjectId.checkObjectId(fileName,checkType);
+         String prefix = getSimpleString(parameters, "objectidprefix", null);
+         checkObjectId.checkObjectId(fileName,checkType,prefix);
          return beans;
       }
 

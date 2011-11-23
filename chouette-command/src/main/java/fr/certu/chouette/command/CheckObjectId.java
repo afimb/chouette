@@ -21,7 +21,7 @@ public class CheckObjectId
    @Setter private ChouetteDriverManagerDataSource dataSource; 
    private Connection connection;
 
-   public void checkObjectId(String resultFile,boolean checkType)
+   public void checkObjectId(String resultFile,boolean checkType,String prefix)
    {
       File f = new File(resultFile);
 
@@ -35,16 +35,16 @@ public class CheckObjectId
          PrintWriter w = new PrintWriter(f);
 
          connection = dataSource.getConnection();
-         check("ptnetwork", w, NeptuneIdentifiedObject.PTNETWORK_KEY,checkType);
-         check("company", w, NeptuneIdentifiedObject.COMPANY_KEY,checkType);
-         check("stoparea", w, NeptuneIdentifiedObject.STOPAREA_KEY,checkType);
-         check("connectionlink", w, NeptuneIdentifiedObject.CONNECTIONLINK_KEY,checkType);
-         check("timetable", w, NeptuneIdentifiedObject.TIMETABLE_KEY,checkType);
-         check("line", w, NeptuneIdentifiedObject.LINE_KEY,checkType);
-         check("route", w, NeptuneIdentifiedObject.ROUTE_KEY,checkType);
-         check("stoppoint", w, NeptuneIdentifiedObject.STOPPOINT_KEY,checkType);
-         check("journeypattern", w, NeptuneIdentifiedObject.JOURNEYPATTERN_KEY,checkType);
-         check("vehiclejourney", w, NeptuneIdentifiedObject.VEHICLEJOURNEY_KEY,checkType);
+         check("ptnetwork", w, NeptuneIdentifiedObject.PTNETWORK_KEY,checkType,prefix);
+         check("company", w, NeptuneIdentifiedObject.COMPANY_KEY,checkType,prefix);
+         check("stoparea", w, NeptuneIdentifiedObject.STOPAREA_KEY,checkType,prefix);
+         check("connectionlink", w, NeptuneIdentifiedObject.CONNECTIONLINK_KEY,checkType,prefix);
+         check("timetable", w, NeptuneIdentifiedObject.TIMETABLE_KEY,checkType,prefix);
+         check("line", w, NeptuneIdentifiedObject.LINE_KEY,checkType,prefix);
+         check("route", w, NeptuneIdentifiedObject.ROUTE_KEY,checkType,prefix);
+         check("stoppoint", w, NeptuneIdentifiedObject.STOPPOINT_KEY,checkType,prefix);
+         check("journeypattern", w, NeptuneIdentifiedObject.JOURNEYPATTERN_KEY,checkType,prefix);
+         check("vehiclejourney", w, NeptuneIdentifiedObject.VEHICLEJOURNEY_KEY,checkType,prefix);
 
          w.close();
       }
@@ -61,7 +61,7 @@ public class CheckObjectId
 
    }
 
-   private void check(String tableName,PrintWriter w,String expectedType,boolean checkType) throws SQLException
+   private void check(String tableName,PrintWriter w,String expectedType,boolean checkType,String checkprefix) throws SQLException
    {
       Statement stmt = connection.createStatement();
       w.println("-- ------------------------");
@@ -76,16 +76,19 @@ public class CheckObjectId
          Long id = result.getLong("id");
          String objectId = result.getString("objectId");
 
+         String[] tokens = objectId.split(":");
+         String prefix = tokens[0];
+         String type = tokens[1];
+         String oid = tokens[2];
          if (NeptuneIdentifiedObject.checkObjectId(objectId))
          {
-            String[] tokens = objectId.split(":");
-            String type = tokens[1];
-            if (!type.equals(expectedType))
+            if ((checkprefix != null && !prefix.equals(checkprefix)) || !type.equals(expectedType))
             {
                invalidType++;
-               w.print("-- unexpected type in objectid = "+objectId);
+               if (checkprefix != null) prefix = checkprefix;
+               w.print("-- unexpected prefix or type in objectid = "+objectId);
                if (!checkType) w.print(" : uncomment line to correct it");
-               objectId = tokens[0]+":"+expectedType+":"+tokens[2];
+               objectId = prefix+":"+expectedType+":"+oid;
                w.println("");
                if (!checkType) w.print("-- ");
                w.println("UPDATE "+dataSource.getDatabaseSchema()+"."+tableName+" SET objectid = '"+objectId+"' WHERE ID = "+id+";");
@@ -95,6 +98,13 @@ public class CheckObjectId
          {
             invalidSyntax++;
             w.println("-- invalid syntax for objectid = "+objectId+" : please change it and execute script");
+            oid = toObjectId(oid);
+            if (checkType)
+            {
+               if (checkprefix != null) prefix = checkprefix;
+               type = expectedType;
+            }
+            objectId = prefix+":"+expectedType+":"+oid;
             w.println("UPDATE "+dataSource.getDatabaseSchema()+"."+tableName+" SET objectid = '"+objectId+"' WHERE ID = "+id+";");
          }
       }
@@ -104,6 +114,11 @@ public class CheckObjectId
 
       System.out.println("table "+tableName+" : "+invalidSyntax+" invalid objectIds , "+invalidType+" wrong typed objectIds");
 
+   }
+
+   private String toObjectId(String name)
+   {
+      return name.replaceAll("[^0-9A-Za-z_\\-]", "_");
    }
 
 }

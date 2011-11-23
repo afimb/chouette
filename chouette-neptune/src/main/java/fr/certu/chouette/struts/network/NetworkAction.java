@@ -33,6 +33,7 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.struts.exception.ServiceException;
 
@@ -266,19 +267,26 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
                if (! report.getReport().getStatus().equals(Report.STATE.OK))
                {
                   if (_temp.exists() )_temp.delete();
-                  _nomFichier = "C_INVALIDE_" + exportMode + "_" + id + "_" + ligne.getId();
-                  _temp = File.createTempFile(_nomFichier, ".xml");
-                  PrintStream stream = new PrintStream(_temp);
-                  Report.print(stream,report.getReport(),true);
+                  
+//                  _nomFichier = "C_INVALIDE_" + exportMode + "_" + id + "_" + ligne.getId();
+//                  _temp = File.createTempFile(_nomFichier, ".xml");
+//                  PrintStream stream = new PrintStream(_temp);
+//                  Report.print(stream,report.getReport(),true);
+                    addActionError(report.getReport());
+               }
+               else
+               {
+                  zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
+                  byte[] bytes = new byte[(int) _temp.length()];
+                  FileInputStream fis = new FileInputStream(_temp);
+                  fis.read(bytes);
+                  zipOutputStream.write(bytes);
+                  zipOutputStream.flush();
+                  fis.close();
+                  _temp.delete();
+                  addActionMessage(report.getReport());
 
                }
-               zipOutputStream.putNextEntry(new ZipEntry(_nomFichier + ".xml"));
-               byte[] bytes = new byte[(int) _temp.length()];
-               FileInputStream fis = new FileInputStream(_temp);
-               fis.read(bytes);
-               zipOutputStream.write(bytes);
-               zipOutputStream.flush();
-               _temp.delete();
             }
             zipOutputStream.close();
          }
@@ -521,4 +529,46 @@ public class NetworkAction extends GeneriqueAction implements ModelDriven<PTNetw
       return new FileInputStream(temp.getPath());
    }
 
+   private void addActionMessage(Report report)
+   {
+      addActionMessage(report.getLocalizedMessage());
+      addActionMessage("   ", report.getItems());
+
+   }
+
+   private void addActionMessage(String indent, List<ReportItem> items)
+   {
+      if (items == null)
+         return;
+      for (ReportItem item : items)
+      {
+         addActionMessage(indent + item.getStatus().name() + " : " + item.getLocalizedMessage());
+         addActionMessage(indent + "   ", item.getItems());
+      }
+
+   }
+
+   private void addActionError(Report report)
+   {
+      addActionError(report.getLocalizedMessage());
+      addActionError("   ", report.getItems());
+
+   }
+
+   private void addActionError(String indent, List<ReportItem> items)
+   {
+      if (items == null)
+         return;
+      for (ReportItem item : items)
+      {
+         if (!item.getStatus().equals(Report.STATE.OK))
+         {
+            addActionError(indent + item.getStatus().name() + " : " + item.getLocalizedMessage());
+            addActionError(indent + "   ", item.getItems());
+         }
+      }
+
+   }
+
+   
 }

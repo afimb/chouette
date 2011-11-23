@@ -4,9 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Set;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,11 +19,13 @@ import java.util.zip.ZipOutputStream;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
+import fr.certu.chouette.plugin.report.Report;
 
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
+import chouette.schema.ChouetteRoute;
 import chouette.schema.ITL;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
@@ -40,6 +44,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
+import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -207,14 +212,16 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate);
          if (rootObject != null)
          {    
-            // TODO report
             logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
             neptuneFileWriter.write(rootObject, outputFile);
+            NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
+            report.addItem(item);
          }
          else
          {
-            // TODO report
             logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
+            NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR , line.getName(), line.getObjectId());
+            report.addItem(item);
          }
       }
       else
@@ -234,7 +241,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate);
                if (rootObject != null)
                {    
-                  // TODO report
                   logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
 
                   String name = line.getObjectId().split(":")[2];
@@ -250,11 +256,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
                   // Complete the entry
                   out.closeEntry();
+                  NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
+                  report.addItem(item);
                }
                else
                {
-                  // TODO report
                   logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
+                  NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING , line.getName(), line.getObjectId());
+                  report.addItem(item);
                }
                System.gc();
 
@@ -297,9 +306,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             companies.add(line.getCompany());
          }
 
-         ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
-         chouette.schema.Line castorLine = lineProducer.produce(line);
-         chouetteLineDescription.setLine(castorLine);
 
          HashSet<JourneyPattern> journeyPatterns = new HashSet<JourneyPattern>();
          for (Route route : line.getRoutes())
@@ -319,10 +325,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             }
          }
 
-         HashSet<Timetable> timetables = new HashSet<Timetable>();
-         HashSet<VehicleJourney> validVehicleJourneys = new HashSet<VehicleJourney>();
-         HashSet<JourneyPattern> validJourneyPatterns = new HashSet<JourneyPattern>();
-         HashSet<Route> validRoutes = new HashSet<Route>();
+         Set<String> validObjectIds = new HashSet<String>();
+         Set<Timetable> timetables = new HashSet<Timetable>();
+         Set<VehicleJourney> validVehicleJourneys = new HashSet<VehicleJourney>();
+         Set<JourneyPattern> validJourneyPatterns = new HashSet<JourneyPattern>();
+         Set<Route> validRoutes = new HashSet<Route>();
 
          for (VehicleJourney vehicleJourney : vehicleJourneys)
          {
@@ -347,9 +354,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   }
                   else
                   {
-                     if (startDate != null) timetable = reduceTimetable(timetable, startDate, true);
-                     if (timetable != null && endDate != null) timetable = reduceTimetable(timetable, endDate, false);
-                     if (timetable != null) 
+                     Timetable validTimetable = timetable;
+                     if (startDate != null) validTimetable = reduceTimetable(timetable, startDate, true);
+                     if (validTimetable != null && endDate != null) validTimetable = reduceTimetable(validTimetable, endDate, false);
+                     if (validTimetable != null) 
                      {
                         timetables.add(timetable);
                         isValid = true;
@@ -368,11 +376,17 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          // if line has no valid vehiclejourneys remove line ! 
          if (validVehicleJourneys.isEmpty()) return null;
 
+         ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
+         chouette.schema.Line castorLine = lineProducer.produce(line);
+         chouetteLineDescription.setLine(castorLine);
+
          // insert routes, journeyPatterns and stoppoints
          HashSet<StopPoint> stopPoints = new HashSet<StopPoint>();
          for (JourneyPattern journeyPattern : validJourneyPatterns)
          {
-            chouetteLineDescription.addJourneyPattern(journeyPatternProducer.produce(journeyPattern));
+            chouette.schema.JourneyPattern castorObj = journeyPatternProducer.produce(journeyPattern);
+            validObjectIds.add(castorObj.getObjectId());
+            chouetteLineDescription.addJourneyPattern(castorObj);
             if (journeyPattern.getStopPoints() != null)
             {
                stopPoints.addAll(journeyPattern.getStopPoints());
@@ -380,9 +394,24 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
 
          HashSet<PTLink> ptLinks = new HashSet<PTLink>();
-         for (Route route : line.getRoutes())
+         for (Route route : validRoutes)
          {
-            chouetteLineDescription.addChouetteRoute(routeProducer.produce(route));
+            ChouetteRoute castorObj = routeProducer.produce(route);
+            // remove unreferenced Routes
+            {
+               List<String> cjps = castorObj.getJourneyPatternIdAsReference();
+               List<String> ids = new ArrayList<String>();
+               ids.addAll(cjps);
+               for (String id : ids)
+               {
+                  if (!validObjectIds.contains(id))
+                  {
+                     castorObj.removeJourneyPatternId(id);
+                  }
+               }
+            }
+            validObjectIds.add(castorObj.getObjectId());
+            chouetteLineDescription.addChouetteRoute(castorObj);
             if (route.getPtLinks() != null)
             {
                ptLinks.addAll(route.getPtLinks());
@@ -472,6 +501,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (Timetable timetable : timetables)
          {
+            if (startDate != null || endDate != null)
+            {
+               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+               String oid = timetable.getObjectId()+"_red";
+               if (startDate != null) oid+="_from_"+sdf.format(startDate);
+               if (endDate != null) oid+="_to_"+sdf.format(endDate);               
+            }
             rootObject.addTimetable(timetableProducer.produce(timetable));
          }
 
@@ -496,7 +532,21 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          // cleaning a little
          rootObject.getPTNetwork().removeAllLineId();
-         rootObject.getPTNetwork().addLineId(chouetteLineDescription.getLine().getObjectId());
+         rootObject.getPTNetwork().addLineId(castorLine.getObjectId());
+
+         // remove unreferenced Routes
+         {
+            List<String> crs = castorLine.getRouteIdAsReference();
+            List<String> ids = new ArrayList<String>();
+            ids.addAll(crs);
+            for (String id : ids)
+            {
+               if (!validObjectIds.contains(id))
+               {
+                  castorLine.removeRouteId(id);
+               }
+            }
+         }
 
          // remove unreferenced vj from timetables
          for (chouette.schema.Timetable timetable : rootObject.getTimetable())
@@ -512,6 +562,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                }
             }
          }
+
 
 
       }
@@ -573,8 +624,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       reduced.setDayTypes(new ArrayList<DayTypeEnum>(timetable.getDayTypes()));
       reduced.setObjectId(timetable.getObjectId());
       reduced.setObjectVersion(timetable.getObjectVersion());
+      reduced.setCreationTime(timetable.getCreationTime());
       reduced.setComment(timetable.getComment());
       reduced.setVehicleJourneyIds(timetable.getVehicleJourneyIds());
+      reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
       List<Date> dates = new ArrayList<Date>(timetable.getCalendarDays());
       for (Iterator<Date> iterator = dates.iterator(); iterator.hasNext();)

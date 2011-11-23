@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.7.0</version>
+		<version>1.7.1</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-validation</artifactId>
@@ -50,7 +50,7 @@
 		</dependency>
 
 	</dependencies>
-	<version>1.7.0</version>
+	<version>1.7.1</version>
 	<build>
 		<resources>
 			<resource>

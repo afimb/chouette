@@ -3,7 +3,7 @@
 /****************************************************************/
 BODY
 {
-  BACKGROUND-COLOR: #316A33; 
+  BACKGROUND-COLOR: #440011; 
   TEXT-ALIGN: center;
   FONT-FAMILY: Arial, Verdana, Helvetica, sans-serif;
   COLOR: black; /* #1A408B; */
@@ -125,7 +125,7 @@ A:hover
 
 .logo
 {
-  background-color: #316A33;
+  background-color: #440011;
   color: #FFFFFF;
   font-weight: bold;
 }

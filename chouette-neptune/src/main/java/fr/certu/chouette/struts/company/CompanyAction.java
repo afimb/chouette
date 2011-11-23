@@ -233,6 +233,7 @@ public class CompanyAction extends GeneriqueAction implements ModelDriven<Compan
             fis.read(bytes);
             zipOutputStream.write(bytes);
             zipOutputStream.flush();
+            fis.close();
             _temp.delete();
          }
          zipOutputStream.close();

@@ -156,7 +156,7 @@ public class RouteAction extends GeneriqueAction implements ModelDriven<Route>, 
             idsRetour.add(itineraire.getOppositeRouteId());
 
             //	Ajout de l'itinéraire aller et retour en début de liste
-            if (itineraire.getWayBack().equals("A"))
+            if (itineraire.getWayBack() == null || itineraire.getWayBack().equals("A"))
             {
                //	Si l'itinéraire retour se trouve dans la liste on l'ajoute
                if (itineraireParIdItineraire.get(itineraire.getOppositeRouteId()) != null)
