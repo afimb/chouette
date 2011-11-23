@@ -33,6 +33,15 @@
 		<module>chouette-command</module>
 		<module>chouette-neptune</module>
 	</modules>
+	
+    <distributionManagement>
+        <repository>
+            <id>chouette-repository</id>
+            <name>Chouette Repository</name>
+            <url>file:///var/lib/hudson/releases</url>
+        </repository>
+    </distributionManagement>
+	
 
 	<repositories>
 		<!-- add JBOSS repository for easy access to Hibernate libraries -->
