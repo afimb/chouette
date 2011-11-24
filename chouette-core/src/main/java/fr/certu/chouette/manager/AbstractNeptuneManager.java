@@ -408,6 +408,10 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 		{
 			if(getJdbcDao() == null)
 				throw new CoreException(CoreExceptionCode.NO_JDBC_DAO_AVAILABLE, "unavailable resource");
+         if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+			// maybe resave fast allready connected object
+         getDao().detach(beans);
+         // save
 			getJdbcDao().saveOrUpdateAll(beans);	
 		}
 		else

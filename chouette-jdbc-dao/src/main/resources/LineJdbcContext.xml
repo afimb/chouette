@@ -51,13 +51,12 @@
 				IN (_OBJECTIDS_)
 			</value>
 		</property>
-		<!-- <property name="sqlUpdate">
+		<property name="sqlUpdate">
 			<value>
 				UPDATE ${database.schema}.LINE
 				SET
 				ptnetworkid = ?,
-				companyid =
-				?,
+				companyid = ?,
 				objectid = ?,
 				objectversion = ?,
 				creationtime = ?,
@@ -68,10 +67,11 @@
 				transportmodename = ?,
 				registrationnumber = ?,
 				COMMENT = ?,
-				mobilityrestrictedsuitable = ?
+				mobilityrestrictedsuitable = ?,
+				userneeds = ?
 				WHERE objectid = ?
 			</value>
-		</property> -->
+		</property>
 		<property name="sqlDelete">
 			<value>
 				DELETE FROM ${database.schema}.LINE WHERE objectid

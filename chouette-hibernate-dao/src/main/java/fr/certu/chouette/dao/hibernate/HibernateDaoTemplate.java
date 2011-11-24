@@ -89,10 +89,6 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
    {
       return new HibernateDaoTemplate<PTNetwork>( PTNetwork.class);
    }
-   //	public static HibernateDaoTemplate<RestrictionConstraint> createRestrictionConstraintDao()
-   //	{
-   //		return new HibernateDaoTemplate<RestrictionConstraint>( RestrictionConstraint.class);
-   //	}
    public static HibernateDaoTemplate<Route> createRouteDao()
    {
       return new HibernateDaoTemplate<Route>( Route.class);
@@ -390,6 +386,18 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       getHibernateTemplate().flush();
    }
 
+   @Override
+   public void detach(List<T> beans)
+   {
+      for (T bean : beans)
+      {
+         if (getSession().contains(bean))
+            getSession().evict(bean);
+      }
+     
+   }
+   
+   
    @Override
    public int purge() 
    {

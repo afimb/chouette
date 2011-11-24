@@ -42,6 +42,29 @@
 				?,?,?,?,?)
 			</value>
 		</property>
+		<property name="sqlUpdate">
+			<value>
+				UPDATE ${database.schema}.VehicleJourney
+				SET
+				objectid = ?,
+				objectversion = ?,
+				creationtime = ?,
+				creatorid = ?,
+				COMMENT = ?,
+				statusvalue = ?,
+				transportmode = ?,
+				publishedjourneyname = ?,
+				publishedjourneyidentifier = ?,
+				facility = ?,
+				vehicletypeidentifier = ?,
+				NUMBER = ?,
+				routeid = ?,
+				journeypatternid = ?,
+				timeslotid = ?,
+				companyid = ?
+				WHERE objectid = ?
+			</value>
+		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
 				SELECT * FROM ${database.schema}.VehicleJourney WHERE objectid

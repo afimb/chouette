@@ -60,6 +60,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 		setId(ps,14,vehicleJourney.getJourneyPattern());
 		setId(ps,15,vehicleJourney.getTimeSlot());
 		setId(ps,16,vehicleJourney.getCompany());
+		
 
 	}
 
@@ -72,9 +73,9 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 	{
 		if (attributeKey.equals("vjAtStop"))
 		{
-			VehicleJourneyAtStop vAtStop = (VehicleJourneyAtStop) attribute;
-
-			setId(ps,1,vAtStop.getVehicleJourney());
+			JdbcVehicleJourneyAtStop jvAtStop = (JdbcVehicleJourneyAtStop) attribute;
+			VehicleJourneyAtStop vAtStop = jvAtStop.vjas;
+			ps.setLong(1,jvAtStop.vehicleJourneyId);
 			setId(ps,2,vAtStop.getStopPoint());
 			ps.setString(3, vAtStop.getConnectingServiceId());
 
@@ -135,7 +136,16 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 	{
 		if (attributeKey.equals("vjAtStop"))
 		{
-			return item.getVehicleJourneyAtStops();
+         Collection<JdbcVehicleJourneyAtStop> vjass = new ArrayList<JdbcVehicleJourneyAtStop>();
+         // prepare vjas if vehiclejourneyref missing
+         for (VehicleJourneyAtStop vjas : item.getVehicleJourneyAtStops())
+         {
+            JdbcVehicleJourneyAtStop jvjas = new JdbcVehicleJourneyAtStop();
+            jvjas.vehicleJourneyId = item.getId();
+            jvjas.vjas = vjas;
+            vjass.add(jvjas);
+         }
+			return vjass;
 		}
 
 		if (attributeKey.equals("timetableVj"))
@@ -158,5 +168,11 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 	class JdbcTimetableVehicleJourney {
 		Long timetableid,
 		vehiclejourneyid;
+	}
+	
+	class JdbcVehicleJourneyAtStop
+	{
+	   Long vehicleJourneyId;
+	   VehicleJourneyAtStop vjas;
 	}
 }

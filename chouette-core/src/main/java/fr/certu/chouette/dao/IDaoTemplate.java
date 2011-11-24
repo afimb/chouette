@@ -99,4 +99,10 @@ public interface IDaoTemplate <T extends NeptuneObject>
 	 */
 	long count(Filter clause);
 	
+	/**
+	 * detach objects from dao cache
+	 * @param beans
+	 */
+	void detach(List<T> beans);
+	
 }

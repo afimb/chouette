@@ -36,6 +36,22 @@
 				, ?, ?)
 			</value>
 		</property>
+		<property name="sqlUpdate">
+			<value>
+				UPDATE ${database.schema}.JourneyPattern
+				SET
+				objectid = ?,
+				objectversion = ?,
+				creationtime = ?,
+				creatorid = ?,
+				name = ?,
+				COMMENT = ?,
+				registrationnumber = ?,
+				publishedname = ?,
+				routeid = ?
+				WHERE objectid = ?
+			</value>
+		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
 				SELECT * FROM ${database.schema}.JourneyPattern WHERE objectid = ?
