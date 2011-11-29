@@ -1,5 +1,15 @@
                         CHOUETTE RELEASE NOTES
                         ======================
+
+* Version 1.7.1 (29/11/11)
+  - optimisation des imports
+  - suppression des doublons dans la table TimetableVehicleJourney dans la procédure de migration
+  - correction des bugs de la version 1.7.0 :
+		+ création de nouveaux horaires
+		+ validation des formulaires
+		
+
+
 * Version 1.7.0 (07/11/11)
   - Adaptation du schéma de la base aux objets Neptune 
    (le manuel d'installation précise les incompatibilités possible entre les schémas)
