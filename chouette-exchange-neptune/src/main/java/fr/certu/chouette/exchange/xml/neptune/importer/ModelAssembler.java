@@ -488,7 +488,11 @@ public class ModelAssembler
    {
       for (JourneyPattern journeyPattern : journeyPatterns)
       {
-         journeyPattern.setRoute(getObjectFromId(journeyPattern.getRouteId(), Route.class));
+         Route route = getObjectFromId(journeyPattern.getRouteId(), Route.class);
+         journeyPattern.setRoute(route);
+         // Neptune norm said Route must have JourneyPatternId but XSD accepts if missing
+         // in this case, let add journeyPattern here
+         if (route != null) route.addJourneyPattern(journeyPattern);
          journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
       }
    }
