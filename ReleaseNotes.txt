@@ -3,10 +3,15 @@
 
 * Version 1.7.1 (29/11/11)
   - optimisation des imports
+  - pour la migration des bases v1.6 et en deça : ajout d'une commande à chouette-command qui 
+    analyse les identifiants dans la base et produit un fichier SQL 
+    pour corriger ceux qui ne respectent pas le format TRIDENT/NEPTUNE 
+    ce fichier est ensuite à corriger à la main et à passer par psql pour appliquer les corrections
   - suppression des doublons dans la table TimetableVehicleJourney dans la procédure de migration
   - correction des bugs de la version 1.7.0 :
 		+ création de nouveaux horaires
 		+ validation des formulaires
+		+ export Neptune ne contient pas les références waybackRouteId dans les Route
 		
 
 
