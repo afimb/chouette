@@ -81,12 +81,13 @@ public class ExportAction extends GeneriqueAction
   {
     log.debug("Export Chouette : toutes les lignes du reseau : " + idReseau);
     List<Ligne> lignes = reseauManager.getLignesReseau(idReseau);
+
     if ((lignes == null) || (lignes.size() == 0))
     {
       addActionMessage(getText("export.network.noline"));
       return INPUT;
     }
-    return exportLignes(lignes, "reseau_" + idReseau);
+    return exportLignes(lignes, "reseau_XXX_" + idReseau);
   }
 
   public String exportChouetteCompany() throws Exception
@@ -103,6 +104,7 @@ public class ExportAction extends GeneriqueAction
 
   private String exportLignes(List<Ligne> lignes, String id) throws Exception
   {
+    log.error("EXPORT OF "+lignes.size()+ "LINES.");
     temp = File.createTempFile("exportChouette", ".zip");
     temp.deleteOnExit();
     ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(temp));

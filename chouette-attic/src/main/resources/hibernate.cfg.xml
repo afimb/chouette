@@ -2,17 +2,21 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <!--
-        -->
+    <!-- Le nom du driver utilisée pour l'accès aux bases de données à travers Hibernate.
+	 En principe à ne pas changer lors du déploiement. -->
     <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <!-- Le mot de passe d'accès à la base de données -->
     <property name="hibernate.connection.password">${hibernate.password}</property>
+    <!-- Le shéma de la base pour stocker les données -->
     <property name="hibernate.default_schema">${database.schema}</property>
+    <!-- URL d'accès à la base : "nom du driver"://"nom de l'hôte":"numéro de port"/"nom de la base" -->
     <property name="hibernate.connection.url">jdbc:postgresql://${database.hostname}:${database.port}/${database.name}</property>
+    <!-- L'identifiant d'accès à la base -->
     <property name="hibernate.connection.username">${hibernate.username}</property>
-    <!--
-    <property name="hibernate.dialect">org.hibernatespatial.postgis.PostgisDialect</property>
-    -->
+    <!-- Dialect de dialogue utilisée par Hibernate.
+	 En principe à ne pas changer lors du déploiement. -->
     <property name="hibernate.dialect">org.hibernate.dialect.ProgressDialect</property>
+    <!-- Paramètres de codage des chaines de caractères dans la base de données Chouette -->
     <property name="connection.useUnicode">true</property>
     <property name="connection.characterEncoding">UTF-8</property>
   </session-factory>
