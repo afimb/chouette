@@ -21,7 +21,6 @@
 		<property name="ignoreResourceNotFound" value="true"/>
 
 	</bean>
-	
-	<import resource="GtfsExportContext.xml"/>
+
 	
 </beans>

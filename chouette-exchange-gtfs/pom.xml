@@ -48,6 +48,11 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-exchange-neptune</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -74,6 +79,9 @@
 			</testResource>
 			<testResource>
 				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>../config/test</directory>
 			</testResource>
 		</testResources>
 		<plugins>

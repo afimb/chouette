@@ -62,6 +62,7 @@ public class GtfsDataProducer
 
          }
       }
+            
       // add trips
       gtfsData.getTrip().addAll(tripProducer.produceAll(neptuneData.getVehicleJourneys(),report));
 
@@ -91,35 +92,35 @@ public class GtfsDataProducer
       if (gtfsData.getAgencies().isEmpty()) 
       {
          logger.error("no company for agencies.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, "Company");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Company");
          report.addItem(item);
          error= true;
       }
       if (gtfsData.getCalendars().isEmpty() && gtfsData.getCalendardates().isEmpty()) 
       {
          logger.error("no timetable for calendars.txt or calendar_dates.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, "Timetable");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Timetable");
          report.addItem(item);
          error= true;
       }
       if (gtfsData.getRoutes().isEmpty()) 
       {
          logger.error("no route for routes.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, "Route");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Route");
          report.addItem(item);
          error= true;
       }
       if (gtfsData.getTrip().isEmpty() || gtfsData.getStoptimes().isEmpty()) 
       {
          logger.error("no vehicleJourney for trips.txt or stoptimes.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, "VehicleJourney");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "VehicleJourney");
          report.addItem(item);
          error= true;
       }
       if (gtfsData.getStops().isEmpty()) 
       {
          logger.error("no stopArea for stops.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, "StopArea");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "StopArea");
          report.addItem(item);
          error= true;
       }

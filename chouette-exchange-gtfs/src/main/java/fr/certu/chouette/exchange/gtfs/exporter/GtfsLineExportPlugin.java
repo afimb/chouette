@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.exporter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -185,6 +186,13 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       ZipOutputStream out = null;
       try
       {
+         // create directory if exists 
+         File fic = new File(fileName);
+         File dir = fic.getParentFile();
+         if (dir != null) 
+         {
+            if (!dir.exists()) dir.mkdirs();
+         }
          // Create the ZIP file
          out = new ZipOutputStream(new FileOutputStream(fileName));
       }
