@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.1</version>
+		<version>1.7.2</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-hibernate-dao</artifactId>
@@ -37,7 +37,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.8</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>org.hibernatespatial</groupId> <artifactId>hibernate-spatial-postgis</artifactId> 
@@ -47,41 +46,34 @@
 		<dependency>
 			<groupId>org.postgis</groupId>
 			<artifactId>postgis-jdbc</artifactId>
-			<version>1.1.6</version>
 		</dependency>
 		<!-- Librairie jta pour hibernate chargée seule car il faut accepter la 
 			licence de sun -->
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
-			<version>1.0.1B</version>
 		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>2.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>2.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>2.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>2.5.6</version>
 		</dependency>
 		<!-- AspectJ reference cglib-2.1_3.jar -->
 		<dependency>
 			<groupId>aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.5.2</version>
 			<!-- <scope>compile</scope> -->
 		</dependency>
 		<dependency>
@@ -95,19 +87,17 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>2.5.6</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Postgres -->
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>8.3-603.jdbc4</version>
 			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
-	<version>1.7.1</version>
+	<version>1.7.2</version>
 	<build>
 		<resources>
 			<resource>

@@ -6,7 +6,7 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
 	<packaging>pom</packaging>
-	<version>1.7.1</version>
+	<version>1.7.2</version>
 
 	<properties>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
@@ -33,15 +33,15 @@
 		<module>chouette-command</module>
 		<module>chouette-neptune</module>
 	</modules>
-	
-    <distributionManagement>
-        <repository>
-            <id>chouette-repository</id>
-            <name>Chouette Repository</name>
-            <url>file:///var/lib/hudson/releases</url>
-        </repository>
-    </distributionManagement>
-	
+
+	<distributionManagement>
+		<repository>
+			<id>chouette-repository</id>
+			<name>Chouette Repository</name>
+			<url>file:///var/lib/jenkins/releases</url>
+		</repository>
+	</distributionManagement>
+
 
 	<repositories>
 		<!-- add JBOSS repository for easy access to Hibernate libraries -->
@@ -198,11 +198,8 @@
 				<artifactId>chouette-services</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!-- <dependency>
-				<groupId>fr.certu.chouette.maven</groupId>
-				<artifactId>chouette-maven-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency> -->
+			<!-- <dependency> <groupId>fr.certu.chouette.maven</groupId> <artifactId>chouette-maven-plugin</artifactId> 
+				<version>${project.version}</version> </dependency> -->
 
 			<!-- FRAMEWORKS DEPENDENCIES WITH VERSION -->
 			<!-- NO VERSION ALLOWED IN MODULES -->
@@ -288,43 +285,43 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aop</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-orm</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
-				<version>2.5.6</version>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
 			<!-- Display Tag for Struts 2 -->
 			<dependency>
@@ -338,6 +335,13 @@
 				<artifactId>opencsv</artifactId>
 				<version>1.7</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.5.8</version>
+			</dependency>
+
 			<!-- Hibernate -->
 			<!-- old version -->
 			<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate</artifactId> 
@@ -586,11 +590,8 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>1.0-beta-2</version> <!-- latest version = 2.0-beta-2 ? -->
 			</plugin>
-			<!-- <plugin>
-				<groupId>fr.certu.chouette.maven</groupId>
-				<artifactId>chouette-maven-plugin</artifactId>
-				<version>1.7.0</version>
-			</plugin> -->
+			<!-- <plugin> <groupId>fr.certu.chouette.maven</groupId> <artifactId>chouette-maven-plugin</artifactId> 
+				<version>1.7.0</version> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
