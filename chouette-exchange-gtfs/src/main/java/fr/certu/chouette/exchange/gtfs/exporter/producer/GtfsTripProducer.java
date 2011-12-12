@@ -40,20 +40,30 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
       return objects;
    }
 
-   
+
    @Override
    public List<GtfsTrip> produceAll(VehicleJourney vj,GtfsReport report)
    {
       List<GtfsTrip> trips = new ArrayList<GtfsTrip>();
+      if (vj.getTimetables().isEmpty()) return trips;
+
       List<GtfsStopTime> times = produceTimes(vj);
-      for (Timetable timetable : vj.getTimetables())
+      if (vj.getTimetables().size() == 1)
       {
-         trips.add(produce(vj,timetable.getObjectId(),times));
+         Timetable timetable = vj.getTimetables().get(0);
+         trips.add(produce(vj,timetable.getObjectId(),times,false));
+      }
+      else
+      {
+         for (Timetable timetable : vj.getTimetables())
+         {
+            trips.add(produce(vj,timetable.getObjectId(),times,true));
+         }
       }
       return trips;
-      
+
    }
-   
+
    private List<GtfsStopTime> produceTimes(VehicleJourney vj)
    {
       List<GtfsStopTime> times = new ArrayList<GtfsStopTime>();
@@ -64,7 +74,7 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
       for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops())
       {
          GtfsStopTime time = new GtfsStopTime();
-         time.setStopId(vjas.getStopPoint().getContainedInStopArea().getObjectId());
+         time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId()));
          Time arrival = vjas.getArrivalTime();
          if (arrival == null) arrival = vjas.getDepartureTime();
          if (! tomorrowArrival && previousArrival != null && previousArrival.after(arrival))
@@ -85,36 +95,39 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
       }
       return times;
    }
-   
-   private GtfsTrip produce(VehicleJourney vj,String timetableId, List<GtfsStopTime> times)
+
+   private GtfsTrip produce(VehicleJourney vj,String timetableId, List<GtfsStopTime> times,boolean multipleTimetable)
    {
-      
+
       GtfsTrip trip = new GtfsTrip();
 
-      String tripId = vj.getObjectId();
+      String tripId = toGtfsId(vj.getObjectId());
+      if (multipleTimetable)
+         tripId+="_"+timetableId.split(":")[2];
+
       trip.setTripId(tripId);
-      
+
       // route = un aller-retour !  
       Route route = vj.getRoute();
       if ("R".equals(route.getWayBack().equals("R")))
       {
-         trip.setRouteId(route.getWayBackRouteId());
+         trip.setRouteId(toGtfsId(route.getWayBackRouteId()));
          trip.setDirectionId(GtfsTrip.INBOUND);
       }
       else
       {
-         trip.setRouteId(route.getObjectId());
+         trip.setRouteId(toGtfsId(route.getObjectId()));
          trip.setDirectionId(GtfsTrip.OUTBOUND);
       }
-      
-      trip.setServiceId(timetableId);
-      trip.setTripId(vj.getObjectId()+":"+timetableId);
+
+      trip.setServiceId(toGtfsId(timetableId));
+
       //trip.setTripHeadsign(...);
       String name = vj.getPublishedJourneyName();
       if (name == null)
-          name = ""+vj.getNumber();
+         name = ""+vj.getNumber();
       if (name.trim().length() == 0)
-          name = vj.getComment();
+         name = vj.getComment();
       trip.setTripShortName(name);
       //trip.setShapeId(...);
 
@@ -125,7 +138,7 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
          copy.setTripId(tripId);
          trip.addStopTime(copy);
       }
-      
+
       return trip;
    }
 

@@ -202,7 +202,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
       NeptuneFileWriter neptuneFileWriter = new NeptuneFileWriter();
       File outputFile = new File(fileName);
-      if (!outputFile.getParentFile().exists())
+      if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
       {
          outputFile.getParentFile().mkdirs();
       }

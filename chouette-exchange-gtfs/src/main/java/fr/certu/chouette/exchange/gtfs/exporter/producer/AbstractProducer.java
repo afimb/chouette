@@ -27,5 +27,9 @@ implements IGtfsProducer<T, N>
       return objects;
    }
 
-
+   protected String toGtfsId(String neptuneId)
+   {
+      return neptuneId.replaceAll(":", "_");
+   }
+   
 }

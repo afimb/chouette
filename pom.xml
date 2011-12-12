@@ -351,7 +351,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>3.5.6-Final</version>
+				<version>3.6.8.Final</version>
 				<exclusions>
 					<exclusion>
 						<groupId>javax.transaction</groupId>
@@ -362,23 +362,23 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>3.5.6-Final</version>
+				<version>3.6.8.Final</version>
 			</dependency>
 
 			<!-- Hibernate uses slf4j for logging, for our purposes here use the simple 
 				backend -->
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>1.6.0</version>
-			</dependency>
+				<version>1.5.8</version>
+			</dependency> -->
 
 			<!-- Hibernate gives you a choice of bytecode providers between cglib 
 				and javassist -->
 			<dependency>
 				<groupId>javassist</groupId>
 				<artifactId>javassist</artifactId>
-				<version>3.5.0.GA</version>
+				<version>3.12.1.GA</version>
 			</dependency>
 			<!-- Unused, waiting form version 1.1 to work with hibernate 3.5 <dependency> 
 				<groupId>org.hibernatespatial</groupId> <artifactId>hibernate-spatial-postgis</artifactId> 

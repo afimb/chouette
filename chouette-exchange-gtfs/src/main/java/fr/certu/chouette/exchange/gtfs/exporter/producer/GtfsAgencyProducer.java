@@ -41,7 +41,7 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
    public GtfsAgency produce(Company neptuneObject,GtfsReport report)
    {
       GtfsAgency agency = new GtfsAgency();
-      agency.setAgencyId(neptuneObject.getObjectId());
+      agency.setAgencyId(toGtfsId(neptuneObject.getObjectId()));
 
       String name = neptuneObject.getName();
       if (neptuneObject.getShortName() != null)

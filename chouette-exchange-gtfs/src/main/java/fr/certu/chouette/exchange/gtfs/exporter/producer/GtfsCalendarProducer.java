@@ -42,7 +42,7 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
    {
       GtfsCalendar calendar = new GtfsCalendar();
 
-      String serviceId = timetable.getObjectId();
+      String serviceId = toGtfsId(timetable.getObjectId());
       calendar.setServiceId(serviceId);
       
       if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty())
