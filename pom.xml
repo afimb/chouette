@@ -367,11 +367,11 @@
 
 			<!-- Hibernate uses slf4j for logging, for our purposes here use the simple 
 				backend -->
-			<!-- <dependency>
+			<dependency>
 				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
+				<artifactId>slf4j-api</artifactId>
 				<version>1.5.8</version>
-			</dependency> -->
+			</dependency>
 
 			<!-- Hibernate gives you a choice of bytecode providers between cglib 
 				and javassist -->

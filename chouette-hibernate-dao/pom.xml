@@ -34,10 +34,10 @@
 			<artifactId>hibernate-annotations</artifactId>
 		</dependency>
 		-->
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<!-- <dependency> <groupId>org.hibernatespatial</groupId> <artifactId>hibernate-spatial-postgis</artifactId> 
 			<version>1.0</version> </dependency> -->
