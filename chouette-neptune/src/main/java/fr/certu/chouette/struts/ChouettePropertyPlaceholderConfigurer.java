@@ -67,11 +67,14 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
       if (contextName != null) {
          String chouetteConfigRootPath =  System.getProperty("CHOUETTE_CONFIG_ROOT_DIR");
          if (chouetteConfigRootPath == null)
-            if ("linux".equalsIgnoreCase(System.getProperty("os.name")))
+         {
+            String osName = System.getProperty("os.name").toLowerCase();
+            if (osName.equals("linux"))
                chouetteConfigRootPath = servletContext.getInitParameter("chouetteLinuxConfigRootPath");
-            else if ("windows".equalsIgnoreCase(System.getProperty("os.name")))
+            else if (osName.contains("windows"))
                chouetteConfigRootPath = servletContext.getInitParameter("chouetteWindowsConfigRootPath");
-         if (chouetteConfigRootPath != null) {
+         }
+            if (chouetteConfigRootPath != null) {
             if (!chouetteConfigRootPath.endsWith(File.separator))
                chouetteConfigRootPath += File.separator;
             String chouetteConfig = chouetteConfigRootPath + contextName + File.separator + "chouette.properties";
