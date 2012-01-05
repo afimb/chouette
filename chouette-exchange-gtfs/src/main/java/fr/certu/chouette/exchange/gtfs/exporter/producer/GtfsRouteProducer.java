@@ -39,9 +39,9 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
    public GtfsRoute produce(Route neptuneObject,GtfsReport report)
    {
       GtfsRoute route = new GtfsRoute();
-      route.setRouteId(neptuneObject.getObjectId());
+      route.setRouteId(toGtfsId(neptuneObject.getObjectId()));
       Line line = neptuneObject.getLine();
-      route.setAgencyId(line.getCompany().getObjectId());
+      route.setAgencyId(toGtfsId(line.getCompany().getObjectId()));
       route.setRouteShortName(line.getNumber());
       if (line.getNumber() == null)
       {

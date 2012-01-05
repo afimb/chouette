@@ -3,11 +3,11 @@
   <parent>
     <artifactId>chouette</artifactId>
     <groupId>fr.certu.chouette</groupId>
-    <version>1.7.1</version>
+    <version>1.7.2</version>
   </parent>
   <groupId>fr.certu.chouette</groupId>
   <artifactId>chouette-services</artifactId>
-  <version>1.7.1</version>
+  <version>1.7.2</version>
   <name>Chouette Services</name>
   <description>business services for complex actions on neptune data</description>
   
@@ -20,6 +20,22 @@
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-referencing</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-jts-wrapper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-hsql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.media</groupId>
+			<artifactId>jai-core</artifactId>
 		</dependency>
 		<!-- Spring -->
 		<dependency>

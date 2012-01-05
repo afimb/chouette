@@ -42,9 +42,14 @@ public class CheckObjectId
          check("timetable", w, NeptuneIdentifiedObject.TIMETABLE_KEY,checkType,prefix);
          check("line", w, NeptuneIdentifiedObject.LINE_KEY,checkType,prefix);
          check("route", w, NeptuneIdentifiedObject.ROUTE_KEY,checkType,prefix);
+         check("ptlink", w, NeptuneIdentifiedObject.PTLINK_KEY,checkType,prefix);
          check("stoppoint", w, NeptuneIdentifiedObject.STOPPOINT_KEY,checkType,prefix);
          check("journeypattern", w, NeptuneIdentifiedObject.JOURNEYPATTERN_KEY,checkType,prefix);
          check("vehiclejourney", w, NeptuneIdentifiedObject.VEHICLEJOURNEY_KEY,checkType,prefix);
+         check("accesspoint", w, NeptuneIdentifiedObject.ACCESSPOINT_KEY,checkType,prefix);
+         check("accesslink", w, NeptuneIdentifiedObject.ACCESSLINK_KEY,checkType,prefix);
+         check("facility", w, NeptuneIdentifiedObject.FACILITY_KEY,checkType,prefix);
+         check("groupofline", w, NeptuneIdentifiedObject.GROUPOFLINE_KEY,checkType,prefix);
 
          w.close();
       }

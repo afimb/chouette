@@ -47,7 +47,7 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
          stop.setLocationType(GtfsStop.STATION);
       else
          return null ; // ITL type not available
-      stop.setStopId(neptuneObject.getObjectId());
+      stop.setStopId(toGtfsId(neptuneObject.getObjectId()));
       if (neptuneObject.getName() == null)
       {
          GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getObjectId(),"Name");
@@ -68,8 +68,8 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
          report.addItem(item);
          return null;
       }
-      stop.setStopLat(neptuneObject.getAreaCentroid().getLongitude());
-      if (neptuneObject.getAreaCentroid().getLatitude() == null)
+      stop.setStopLat(neptuneObject.getAreaCentroid().getLatitude());
+      if (neptuneObject.getAreaCentroid().getLongitude() == null)
       {
          GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Longitude");
          report.addItem(item);

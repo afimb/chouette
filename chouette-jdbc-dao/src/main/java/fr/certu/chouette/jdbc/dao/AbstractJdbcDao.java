@@ -31,7 +31,6 @@ import fr.certu.chouette.model.neptune.PeerId;
  * 
  * @param <T>
  */
-@SuppressWarnings("unchecked")
 public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends JdbcDaoSupport implements
       IDaoTemplate<T>
 {
@@ -118,7 +117,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
 
       List<PeerId> peerIds = new ArrayList<PeerId>();
 
-      List<Map> rows = getJdbcTemplate().queryForList(sql);
+      List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql);
       for (Map row : rows)
       {
          PeerId peerId = new PeerId();

@@ -38,7 +38,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork>
          ptNetwork.setRegistrationNumber(loadStringParam(csvReader, CODE_TITLE));
          ptNetwork.setDescription(loadStringParam(csvReader, DESCRIPTION_TITLE));
          ptNetwork.setVersionDate(Calendar.getInstance().getTime());
-         ptNetwork.setObjectId(objectIdPrefix + ":" + PTNetwork.PTNETWORK_KEY + ":" + ptNetwork.getName());
+         ptNetwork.setObjectId(objectIdPrefix + ":" + PTNetwork.PTNETWORK_KEY + ":" + ptNetwork.getRegistrationNumber());
          if (!NeptuneIdentifiedObject.checkObjectId(ptNetwork.getObjectId()))
          {
             CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, ptNetwork.getName(), ptNetwork.getObjectId());
