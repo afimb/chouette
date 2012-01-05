@@ -100,7 +100,7 @@
 			<id>projectlombok.org</id>
 			<url>http://projectlombok.org/mavenrepo</url>
 		</repository>
-		<!-- geotools -->
+		<!-- geotools and JAI -->
 		<repository>
 			<id>OSGEO GeoTools repo</id>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
