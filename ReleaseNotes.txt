@@ -1,9 +1,10 @@
                         CHOUETTE RELEASE NOTES
                         ======================
 
-* Version 1.7.2 (05/01/12)
+* Version 1.7.2 (06/01/12)
   - correction export GTFS : latitude = longitude et autres coquilles
   - correction import CSV : nom du réseau pour créer l'objectId (remplacé par le code réseau)
+  - correction formats des latitudes/longitudes dans creation de la base
   - upgrade de la version d'Hibernate = 3.6.8.Final
   - upgrade de la version de spring = 3.0.5.RELEASE
   

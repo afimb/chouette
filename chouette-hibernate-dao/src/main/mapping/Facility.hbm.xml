@@ -81,15 +81,15 @@
 		</property>
 		<component name="facilityLocation"
 			class="fr.certu.chouette.model.neptune.type.FacilityLocation">
-			<property name="longitude" precision="19" scale="16"
+			<property name="longitude" 
 				type="java.math.BigDecimal">
-				<column name="longitude">
+				<column name="longitude" precision="19" scale="6">
 					<comment>Longitude</comment>
 				</column>
 			</property>
-			<property name="latitude" precision="19" scale="16"
+			<property name="latitude"
 				type="java.math.BigDecimal">
-				<column name="latitude">
+				<column name="latitude" precision="19" scale="6">
 					<comment>Latitude</comment>
 				</column>
 			</property>
