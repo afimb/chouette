@@ -47,13 +47,13 @@
 
 		<property name="longitude"
 			type="java.math.BigDecimal">
-			<column name="longitude"  precision="19" scale="6">
+			<column name="longitude"  precision="19" scale="16">
 				<comment>Longitude</comment>
 			</column>
 		</property>
 		<property name="latitude"
 			type="java.math.BigDecimal">
-			<column name="latitude"  precision="19" scale="6">
+			<column name="latitude"  precision="19" scale="16">
 				<comment>Latitude</comment>
 			</column>
 		</property>
