@@ -6,11 +6,12 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.2</version>
+		<version>1.7.3</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-neptune</artifactId>
 	<packaging>war</packaging>
+	<version>1.7.3</version>
 	<dependencies>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
@@ -131,7 +132,6 @@
 			<url>http://www.mvnrepository.com</url>
 		</pluginRepository>
 	</pluginRepositories>
-	<version>1.7.2</version>
 	<build>
 		<finalName>chouette</finalName>
 		<extensions>

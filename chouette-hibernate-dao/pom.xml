@@ -5,11 +5,13 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.2</version>
+		<version>1.7.3</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-hibernate-dao</artifactId>
 	<name>Chouette Hibernate Dao</name>
+	<version>1.7.3</version>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -28,12 +30,8 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-		<!--  
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-annotations</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -97,7 +95,6 @@
 		</dependency>
 
 	</dependencies>
-	<version>1.7.2</version>
 	<build>
 		<resources>
 			<resource>
@@ -142,10 +139,9 @@
 		</plugins>
 
 		<!--plugins> <plugin> <groupId>org.hibernate</groupId> <artifactId>hibernate-maven-plugin</artifactId> 
-			 <executions> <execution> <phase>resources</phase> 
-			</execution> </executions> <configuration> <components> <component> <name>hbm2ddl</name> 
-			<implementation>configuration</implementation> </component> </components> 
-			<componentProperties> <drop>false</drop> <outputfilename>schema.sql</outputfilename> 
+			<executions> <execution> <phase>resources</phase> </execution> </executions> 
+			<configuration> <components> <component> <name>hbm2ddl</name> <implementation>configuration</implementation> 
+			</component> </components> <componentProperties> <drop>false</drop> <outputfilename>schema.sql</outputfilename> 
 			<configurationfile>target/classes/hibernate.cfg.xml</configurationfile> </componentProperties> 
 			</configuration> </plugin> </plugins -->
 	</build>

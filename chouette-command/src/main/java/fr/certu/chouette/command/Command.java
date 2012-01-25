@@ -86,7 +86,7 @@ public class Command
    @Setter private ValidationParameters validationParameters;
 
    @Setter private MigrateSchema migrationTool;
-   
+
    @Setter private CheckObjectId checkObjectId;
 
 
@@ -401,7 +401,7 @@ public class Command
          }
          return beans;
       }
-      
+
       if (name.equals("checkObjectId"))
       {
          String fileName = getSimpleString(parameters, "sqlfile", "invalid.sql");
@@ -705,7 +705,7 @@ public class Command
          logger.error("invalid date format : "+ simpleval+" dd/MM/yyyy expected");
          throw new RuntimeException("invalid date format : "+ simpleval+" dd/MM/yyyy expected");
       }
-      
+
    }
 
    /**
@@ -882,7 +882,21 @@ public class Command
     */
    private List<NeptuneIdentifiedObject> executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
    {
+      String fileName = getSimpleString(parameters, "file", "");
+      boolean append = getBoolean(parameters, "append");
       String format = getSimpleString(parameters,"format");
+      PrintStream stream = System.out;
+      if (!fileName.isEmpty())
+      {
+         try 
+         {
+            stream = new PrintStream(new FileOutputStream(new File(fileName), append));
+         } catch (FileNotFoundException e) 
+         {
+            System.err.println("cannot open file :"+fileName);
+            fileName = "";
+         }
+      }
       try
       {
          List<FormatDescription> formats = manager.getImportFormats(null);
@@ -956,8 +970,8 @@ public class Command
          if (holder.getReport() != null)
          {
             Report r = holder.getReport();
-            System.out.println(r.getLocalizedMessage());
-            printItems(System.out,"",r.getItems());
+            stream.println(r.getLocalizedMessage());
+            printItems(stream,"",r.getItems());
 
          }
          if (beans == null || beans.isEmpty())
@@ -985,7 +999,13 @@ public class Command
          }
          throw new RuntimeException("import failed , see log for details");
       }
-
+      finally
+      {
+         if (!fileName.isEmpty())
+         {
+            stream.close();
+         }
+      }
 
    }
 

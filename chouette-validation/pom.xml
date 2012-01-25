@@ -4,12 +4,12 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.7.2</version>
+		<version>1.7.3</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-validation</artifactId>
 	<name>Chouette Validation</name>
-
+	<version>1.7.3</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -50,7 +50,6 @@
 		</dependency>
 
 	</dependencies>
-	<version>1.7.2</version>
 	<build>
 		<resources>
 			<resource>

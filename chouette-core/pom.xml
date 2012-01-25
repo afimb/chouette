@@ -4,11 +4,12 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.7.2</version>
+		<version>1.7.3</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-core</artifactId>
 	<name>Chouette Core</name>
+	<version>1.7.3</version>
 	<!-- added for delombok in javadoc -->
 	<!-- <profiles> <profile> <id>default-javac.jar</id> <activation> <property> 
 		<name>java.vendor</name> <value>Sun Microsystems Inc.</value> </property> 
@@ -59,7 +60,6 @@
 			<artifactId>jts</artifactId>
 		</dependency>
 	</dependencies>
-	<version>1.7.2</version>
 	<build>
 		<resources>
 			<resource>

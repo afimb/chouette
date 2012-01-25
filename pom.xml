@@ -6,7 +6,7 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
 	<packaging>pom</packaging>
-	<version>1.7.2</version>
+	<version>1.7.3</version>
 
 	<properties>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
@@ -15,11 +15,6 @@
 	</properties>
 
 	<modules>
-		<!-- <module>chouette-maven-plugin</module> -->
-		<!-- <module>chouette-attic</module> -->
-		<!-- <module>chouette-webapp</module> -->
-		<!-- <module>chouette-castor-altibus</module> -->
-		<!-- <module>chouette-castor-amivif</module> -->
 		<module>chouette-core</module>
 		<module>chouette-hibernate-dao</module>
 		<module>chouette-jdbc-dao</module>
