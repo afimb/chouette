@@ -1,5 +1,8 @@
 // === INIT MAP PROJECTIONS ===
 Chouette.Map.baseLayerProjection = new OpenLayers.Projection("IGNF:GEOPORTALFXX");
+Chouette.Map.wgsProjection = new OpenLayers.Projection("EPSG:4326");
+
+Chouette.Map.mapBounds = new OpenLayers.Bounds(-6, 41.3, 10, 51.6).transform(Chouette.Map.wgsProjection,Chouette.Map.baseLayerProjection, true);
 
 OpenLayers.Util.extend(OpenLayers.Lang.en,{
   'geoportal.maps':"Geoportal Maps",
