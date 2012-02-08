@@ -53,7 +53,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       }
       try
       {
-         timetable.setName(loadStringParam(csvReader, ALIAS_TITLE));
+         timetable.setVersion(loadStringParam(csvReader, ALIAS_TITLE));
          timetable.setObjectId(objectIdPrefix+":"+Timetable.TIMETABLE_KEY+":"+timetable.getName());
          if (!NeptuneIdentifiedObject.checkObjectId(timetable.getObjectId()))
          {

@@ -1,8 +1,15 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import chouette.schema.PtLink;
 import chouette.schema.RouteExtension;
 import chouette.schema.types.PTDirectionType;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
@@ -30,7 +37,8 @@ public class RouteProducer extends AbstractCastorNeptuneProducer<chouette.schema
 		}
 		
 		castorRoute.setJourneyPatternId(NeptuneIdentifiedObject.extractObjectIds(route.getJourneyPatterns()));
-		castorRoute.setPtLinkId(NeptuneIdentifiedObject.extractObjectIds(route.getPtLinks()));
+		
+		castorRoute.setPtLinkId(NeptuneIdentifiedObject.extractObjectIds(sort(route.getPtLinks())));
 		
 		castorRoute.setWayBackRouteId(route.getWayBackRouteId());
 		
@@ -40,5 +48,26 @@ public class RouteProducer extends AbstractCastorNeptuneProducer<chouette.schema
 		
 		return castorRoute;
 	}
+	
+	private List<PTLink> sort(List<PTLink> links)
+	{
+	   List<PTLink> sorted = new ArrayList<PTLink>();
+	   
+	   sorted.addAll(links);
+	   
+	   Collections.sort(sorted,new PtLinkSorter());
+	   
+	   return sorted;
+	}
 
+	private class PtLinkSorter implements Comparator<PTLink>
+   {
+      @Override
+      public int compare(PTLink o1, PTLink o2)
+      {
+         return o1.getStartOfLink().getPosition() - o2.getStartOfLink().getPosition();
+      }
+	   
+	}
+	
 }

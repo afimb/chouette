@@ -1,3 +1,5 @@
+-- usage : psql -U chouette -W -f schema.sql -v SCH=chouette -v PREFIX=citura -d chouette_v17
+
 SET search_path TO :SCH ;
 
 -- cleaning views

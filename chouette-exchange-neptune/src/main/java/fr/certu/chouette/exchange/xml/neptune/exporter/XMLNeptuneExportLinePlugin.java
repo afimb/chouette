@@ -185,7 +185,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                if (c != null)
                   endDate = new Date(c.getTime().getTime());
             }
-
          }
       }
       if (fileName == null)
@@ -387,16 +386,19 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             chouette.schema.JourneyPattern castorObj = journeyPatternProducer.produce(journeyPattern);
             validObjectIds.add(castorObj.getObjectId());
             chouetteLineDescription.addJourneyPattern(castorObj);
-            if (journeyPattern.getStopPoints() != null)
-            {
-               stopPoints.addAll(journeyPattern.getStopPoints());
-            }
          }
 
          HashSet<PTLink> ptLinks = new HashSet<PTLink>();
          for (Route route : validRoutes)
          {
             ChouetteRoute castorObj = routeProducer.produce(route);
+            
+            // add all stoppoints of route
+            if (route.getStopPoints() != null)
+            {
+               stopPoints.addAll(route.getStopPoints());
+            }
+
             // remove unreferenced Routes
             {
                List<String> cjps = castorObj.getJourneyPatternIdAsReference();

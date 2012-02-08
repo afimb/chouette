@@ -87,27 +87,27 @@ public class StopArea extends NeptuneIdentifiedObject
     * predefined filter to limit get on StopPlaces
     */
    public static final Filter   stopPlaceFilter             = Filter.getNewEqualsFilter(AREA_TYPE,
-                                                                  ChouetteAreaEnum.STOPPLACE);
+         ChouetteAreaEnum.STOPPLACE);
    /**
     * predefined filter to limit get on CommercialStopPoints
     */
    public static final Filter   commercialStopPointFilter   = Filter.getNewEqualsFilter(AREA_TYPE,
-                                                                  ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+         ChouetteAreaEnum.COMMERCIALSTOPPOINT);
    /**
     * predefined filter to limit get on RestrictionConstraints
     */
    public static final Filter   restrictionConstraintFilter = Filter
-                                                                  .getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.ITL);
+   .getNewEqualsFilter(AREA_TYPE, ChouetteAreaEnum.ITL);
    /**
     * predefined filter to limit get on BoardingPositions
     */
    public static final Filter   boardingPositionFilter      = Filter.getNewEqualsFilter(AREA_TYPE,
-                                                                  ChouetteAreaEnum.BOARDINGPOSITION);
+         ChouetteAreaEnum.BOARDINGPOSITION);
    /**
     * predefined filter to limit get on Quays
     */
    public static final Filter   quayFilter                  = Filter.getNewEqualsFilter(AREA_TYPE,
-                                                                  ChouetteAreaEnum.QUAY);
+         ChouetteAreaEnum.QUAY);
    /**
     * predefined filter to limit get on PhysicalStops
     */
@@ -230,6 +230,25 @@ public class StopArea extends NeptuneIdentifiedObject
    @Setter
    private List<ConnectionLink> connectionLinks;
 
+   /**
+    * list of connection links where area is start (for hibernate purpose)
+    * <p>
+    * links to others StopAreas (may be same one) 
+    * <br/><i>readable/writable</i>
+    */
+   @Getter
+   @Setter
+   private List<ConnectionLink> connectionStartLinks;
+
+   /**
+    * list of connection links where area is end (for hibernate purpose)
+    * <p>
+    * links to others StopAreas (may be same one)
+    * <br/><i>readable/writable</i>
+    */
+   @Getter
+   @Setter
+   private List<ConnectionLink> connectionEndLinks;
    /**
     * list of access links
     * <p>
@@ -434,7 +453,7 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          // boarding positions or quays can't contains stop areas
          throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
-               "containedStopAreas");
+         "containedStopAreas");
       }
       if (areaType.equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
       {
@@ -495,7 +514,7 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          // only boarding positions and quays can contains stop points
          throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPPOINT_KEY,
-               "containedStopPoints");
+         "containedStopPoints");
       }
       if (!containedStopPoints.contains(containedStopPoint))
          containedStopPoints.add(containedStopPoint);
@@ -595,7 +614,7 @@ public class StopArea extends NeptuneIdentifiedObject
       if (accessLinks.contains(accessLink))
          accessLinks.remove(accessLink);
    }
-   
+
    /**
     * add a line if not already present
     * <p>
@@ -609,7 +628,7 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          // only routing constraints can contains lines
          throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
-               "routingConstraintLines");
+         "routingConstraintLines");
       }
       if (routingConstraintLines == null)
          routingConstraintLines = new ArrayList<Line>();
@@ -628,7 +647,7 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          // only routing constraints can contains lines
          throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
-               "routingConstraintLines");
+         "routingConstraintLines");
       }
       if (routingConstraintLines == null)
          routingConstraintLines = new ArrayList<Line>();
@@ -649,7 +668,7 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          // only routing constraints can contains lines
          throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
-               "routingConstraintLineIds");
+         "routingConstraintLineIds");
       }
       if (routingConstraintLineIds == null)
          routingConstraintLineIds = new ArrayList<String>();
@@ -668,7 +687,7 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          // only routing constraints can contains lines
          throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
-               "routingConstraintLineIds");
+         "routingConstraintLineIds");
       }
       if (routingConstraintLineIds == null)
          routingConstraintLineIds = new ArrayList<String>();
@@ -746,7 +765,7 @@ public class StopArea extends NeptuneIdentifiedObject
 
       return sb.toString();
    }
-   
+
    /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
     */
@@ -777,7 +796,7 @@ public class StopArea extends NeptuneIdentifiedObject
          {
             parent.complete();
          }
-         
+
       }
       if (getAreaCentroid() != null)
       {
@@ -793,14 +812,32 @@ public class StopArea extends NeptuneIdentifiedObject
          centroid.setName(getName());
          setAreaCentroidId(getAreaCentroid().getObjectId());
       }
-      
-      if (getRoutingConstraintLines() != null)
+
+      if (getRoutingConstraintLines() != null) 
       {
          for (Line line : getRoutingConstraintLines())
          {
             addRoutingConstraintLineId(line.getObjectId());
          }
       }
-      // TODO connectionlinks and accesslinks ? 
+
+      // connectionlinks are not mapped by hibernate ; must fill with 2 collections
+      if (getConnectionLinks() == null)
+      {
+         connectionLinks = new ArrayList<ConnectionLink>();
+         if (getConnectionStartLinks() != null)
+         {
+            connectionLinks.addAll(getConnectionStartLinks());
+         }
+         if (getConnectionEndLinks() != null)
+         {
+            // dont add link where start = end
+            for (ConnectionLink link : getConnectionEndLinks())
+            {
+               if (!connectionLinks.contains(link))
+                  connectionLinks.add(link);
+            }
+         }
+      }
    }
 }

@@ -38,6 +38,7 @@ public class LineProducer extends AbstractModelProducer<Line>
    public static final String       LINE_NAME_TITLE           = "Nom de la ligne";
    private static final String      PUBLISHED_LINE_NAME_TITLE = "Nom public";
    private static final String      NUMBER_TITLE              = "Numero de la ligne";
+   private static final String      CODE_TITLE                = "Code de la ligne";
    private static final String      COMMENT_TITLE             = "Commentaire de la ligne";
    private static final String      TRANSPORT_MODE_NAME_TITLE = "Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";
 
@@ -62,9 +63,6 @@ public class LineProducer extends AbstractModelProducer<Line>
 
    private String                   projectedPointType        = "epsg:27582";
 
-   private int                      stopPointIdCounter        = 1;
-   private int                      stopAreaIdCounter         = 1;
-
    @Override
    public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report)
    {
@@ -86,10 +84,41 @@ public class LineProducer extends AbstractModelProducer<Line>
       { 
          line.setPublishedName(loadStringParam(csvReader, PUBLISHED_LINE_NAME_TITLE));
          line.setNumber(loadStringParam(csvReader, NUMBER_TITLE));
-         line.setRegistrationNumber(loadStringParam(csvReader, NUMBER_TITLE));
-         line.setComment(loadStringParam(csvReader, COMMENT_TITLE));
+         if (line.getNumber().isEmpty())
+         {
+            throw new ExchangeException(ExchangeExceptionCode.MANDATORY_VALUE, NUMBER_TITLE, "ligne");
+         }
+         {
+            // CODE_TITLE Optional ; use number if missing
+            try
+            {
+               String[] currentLine = csvReader.readNext();
+               if (currentLine[TITLE_COLUMN].equals(CODE_TITLE))
+               {
+                  line.setRegistrationNumber(currentLine[TITLE_COLUMN + 1]);
+                  if (line.getRegistrationNumber().isEmpty())
+                  {
+                     throw new ExchangeException(ExchangeExceptionCode.MANDATORY_VALUE, CODE_TITLE, "ligne");
+                  }
+                  line.setComment(loadStringParam(csvReader, COMMENT_TITLE));
+               }
+               else if (currentLine[TITLE_COLUMN].equals(COMMENT_TITLE))
+               {
+                  line.setRegistrationNumber(line.getNumber());
+                  line.setComment(currentLine[TITLE_COLUMN + 1]);
+               }
+               else
+               {
+                  throw new ExchangeException(ExchangeExceptionCode.MISSING_TAG, COMMENT_TITLE, "ligne");
+               }
+            }
+            catch (IOException e)
+            {
+               throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e);
+            }
+         }
          line.setTransportModeName(TransportModeNameEnum.valueOf(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE)));
-         line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getNumber()));
+         line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getRegistrationNumber()));
          if (!NeptuneIdentifiedObject.checkObjectId(line.getObjectId()))
          {
             CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, line.getName(), line.getObjectId());
@@ -113,7 +142,7 @@ public class LineProducer extends AbstractModelProducer<Line>
    }
 
    private void loadRoutes(Line line, CSVReader csvReader, String objectIdPrefix, Report report)
-         throws ExchangeException
+   throws ExchangeException
    {
       try
       {
@@ -223,7 +252,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             PTDirectionEnum direction = PTDirectionEnum.fromValue(directions[routeColumn].substring(0, 1));
             route.setDirection(direction);
             route.setWayBack(direction.toString());
-            route.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getNumber()) + "_"
+            route.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
                   + route.getWayBack());
             if (!NeptuneIdentifiedObject.checkObjectId(route.getObjectId()))
             {
@@ -232,8 +261,8 @@ public class LineProducer extends AbstractModelProducer<Line>
             }
             // build stopPoint on route and stopArea (BP or Q)
             int rank = 1;
-            String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getNumber()) + "_"
-                  + route.getWayBack() + "_";
+            String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
+            + route.getWayBack() + "_";
             if ("00:00".equals(getValue(routeColumn, arrets.get(0))))
                journeyColumn++;
             for (String[] a : arrets)
@@ -274,22 +303,22 @@ public class LineProducer extends AbstractModelProducer<Line>
             PTDirectionEnum direction = PTDirectionEnum.fromValue(directions[waybackRouteColumn].substring(0, 1));
             wayback.setDirection(direction);
             wayback.setWayBack(direction.toString());
-            wayback.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getNumber()) + "_"
+            wayback.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
                   + wayback.getWayBack());
             if (!NeptuneIdentifiedObject.checkObjectId(wayback.getObjectId()))
             {
                CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, wayback.getName(), wayback.getObjectId());
                report.addItem(reportItem);
             }
-            
+
             // connect route couple
             route.setWayBackRouteId(wayback.getObjectId());
             wayback.setWayBackRouteId(route.getObjectId());
 
             // build stopPoint on route and stopArea (BP or Q)
             int rank = 1;
-            String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getNumber()) + "_"
-                  + wayback.getWayBack() + "_";
+            String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
+            + wayback.getWayBack() + "_";
             if ("00:00".equals(getValue(waybackRouteColumn, arrets.get(wayBackRouteRank))))
                journeyColumn++;
             for (int i = wayBackRouteRank; i < arrets.size(); i++)
@@ -336,7 +365,7 @@ public class LineProducer extends AbstractModelProducer<Line>
     */
    private void buildJourneys(Route route, List<String[]> arrets, String[] timetables, String[] specifics,
          int startRow, int endRow, int startColumn, int endColumn) throws ExchangeException
-   {
+         {
       int rank = 1;
       int journeyRank = 1;
       List<StopPoint> stopPoints = route.getStopPoints();
@@ -395,7 +424,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             logger.debug("no passing time for vehicleJourney , ignored");
          }
       }
-   }
+         }
 
    /**
     * @param stopData
@@ -411,7 +440,7 @@ public class LineProducer extends AbstractModelProducer<Line>
       physical = new StopArea();
       physical.setAreaType(areaType);
       physical.setName(getValue(STOPNAME_COLUMN, stopData));
-      physical.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":BP_" + getNextStopPointId());
+      physical.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":BP_" + toIdString(physical.getName()));
       AreaCentroid centroid = new AreaCentroid();
       physical.setAreaCentroid(centroid);
       centroid.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
@@ -437,7 +466,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          address.setStreetName(getValue(ADDRESS_COLUMN, stopData));
          address.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
          if (address.getCountryCode() != null)
-            physical.setObjectId(physical.getObjectId() + "_" + address.getCountryCode());
+            physical.setObjectId(physical.getObjectId() + "_" + toIdString(address.getCountryCode()));
          centroid.setAddress(address);
       }
       StopArea commercial = commercials.get(getValue(AREAZONE_COLUMN, stopData));
@@ -456,20 +485,6 @@ public class LineProducer extends AbstractModelProducer<Line>
       return physical;
    }
 
-   private String getNextStopPointId()
-   {
-      int ret = stopPointIdCounter++;
-
-      return Integer.toString(ret);
-   }
-
-   private String getNextStopAreaId()
-   {
-      int ret = stopAreaIdCounter++;
-
-      return Integer.toString(ret);
-   }
-
    /**
     * @param stopData
     * @param objectIdPrefix
@@ -481,7 +496,7 @@ public class LineProducer extends AbstractModelProducer<Line>
       commercial = new StopArea();
       commercial.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
       commercial.setName(getValue(AREAZONE_COLUMN, stopData));
-      commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + getNextStopAreaId());
+      commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + toIdString(commercial.getName()));
       if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
       {
          AreaCentroid centroid2 = new AreaCentroid();
@@ -490,7 +505,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          address.setStreetName(getValue(ADDRESS_COLUMN, stopData));
          address.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
          if (address.getCountryCode() != null)
-            commercial.setObjectId(commercial.getObjectId() + "_" + address.getCountryCode());
+            commercial.setObjectId(commercial.getObjectId() + "_" + toIdString(address.getCountryCode()));
          centroid2.setAddress(address);
       }
       if (!NeptuneIdentifiedObject.checkObjectId(commercial.getObjectId()))
@@ -503,22 +518,22 @@ public class LineProducer extends AbstractModelProducer<Line>
 
    protected String loadStringParam(CSVReader csvReader, String title) throws ExchangeException
    {
-      String[] currentLine = null;
+
       try
       {
-         currentLine = csvReader.readNext();
+         String[] currentLine = csvReader.readNext();
+         if (currentLine[TITLE_COLUMN].equals(title))
+         {
+            return currentLine[TITLE_COLUMN + 1];
+         }
+         else
+         {
+            throw new ExchangeException(ExchangeExceptionCode.MISSING_TAG, title, "ligne");
+         }
       }
       catch (IOException e)
       {
          throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e);
-      }
-      if (currentLine[TITLE_COLUMN].equals(title))
-      {
-         return currentLine[TITLE_COLUMN + 1];
-      }
-      else
-      {
-         throw new ExchangeException(ExchangeExceptionCode.MISSING_TAG, title, "ligne");
       }
    }
 }

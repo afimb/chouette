@@ -77,7 +77,7 @@ public class Command
 {
 
    private static final Logger logger = Logger.getLogger(Command.class);
-   private static ClassPathXmlApplicationContext applicationContext;
+   public static ClassPathXmlApplicationContext applicationContext;
 
    private static enum ATTR_CMD {SET_VALUE, ADD_VALUE, REMOVE_VALUE,SET_REF,ADD_REF,REMOVE_REF};
 
@@ -90,15 +90,15 @@ public class Command
    @Setter private CheckObjectId checkObjectId;
 
 
-   private Map<String,List<String>> globals = new HashMap<String, List<String>>();;
+   public Map<String,List<String>> globals = new HashMap<String, List<String>>();;
 
-   private static Map<String,String> shortCuts ;
+   public static Map<String,String> shortCuts ;
 
-   private boolean verbose = false;
+   public boolean verbose = false;
 
-   private static boolean dao = true;
+   public static boolean dao = true;
 
-   private static Locale locale = Locale.getDefault();
+   public static Locale locale = Locale.getDefault();
 
    static
    {
@@ -170,7 +170,7 @@ public class Command
    /**
     * @param factory
     */
-   private static void closeDao() {
+   public static void closeDao() {
       if (dao)
       {
          ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
@@ -183,7 +183,7 @@ public class Command
    /**
     * @param factory
     */
-   private static void initDao() {
+   public static void initDao() {
       if (dao)
       {
          ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
@@ -193,7 +193,7 @@ public class Command
       }
    }
 
-   private static void flushDao()
+   public static void flushDao()
    {
       closeDao();
       initDao();
@@ -201,7 +201,7 @@ public class Command
    /**
     * @param args
     */
-   private void execute(String[] args)
+   public void execute(String[] args)
    {
 
 
@@ -348,18 +348,14 @@ public class Command
     * @throws ChouetteException
     * @throws Exception
     */
-   private List<NeptuneIdentifiedObject> executeCommand(
+   public List<NeptuneIdentifiedObject> executeCommand(
          List<NeptuneIdentifiedObject> beans, int commandNumber,
          CommandArgument command) throws ChouetteException, Exception {
       String name = command.getName();
       Map<String, List<String>> parameters = command.getParameters();
       if (verbose)
       {
-         System.out.println("Command "+commandNumber+" : "+name);
-         for (String key : parameters.keySet())
-         {
-            System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
-         }
+         traceCommand(commandNumber, name, parameters);
       }
       logger.info("Command "+commandNumber+" : "+name);
       for (String key : parameters.keySet())
@@ -527,6 +523,20 @@ public class Command
          System.out.println("command "+command.getName()+" executed in "+getTimeAsString(tfin-tdeb));
       }
       return beans;
+   }
+
+   /**
+    * @param commandNumber
+    * @param name
+    * @param parameters
+    */
+   public void traceCommand(int commandNumber, String name, Map<String, List<String>> parameters)
+   {
+      System.out.println("Command "+commandNumber+" : "+name);
+      for (String key : parameters.keySet())
+      {
+         System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
+      }
    }
 
 
@@ -832,7 +842,7 @@ public class Command
     * @param parameters
     * @return
     */
-   private INeptuneManager<NeptuneIdentifiedObject> getManager(Map<String, List<String>> parameters) 
+   public INeptuneManager<NeptuneIdentifiedObject> getManager(Map<String, List<String>> parameters) 
    {
       String object = null;
       try
@@ -2020,7 +2030,7 @@ public class Command
    /**
     *
     */
-   private static void printHelp()
+   public static void printHelp()
    {
       ResourceBundle bundle = null;
       try
@@ -2181,7 +2191,7 @@ public class Command
     * @param string
     * @return
     */
-   private String getSimpleString(Map<String, List<String>> parameters,String key)
+   public String getSimpleString(Map<String, List<String>> parameters,String key)
    {
       List<String> values = parameters.get(key);
       if (values == null) throw new IllegalArgumentException("parameter -"+key+" of String type is required");
@@ -2193,7 +2203,7 @@ public class Command
     * @param string
     * @return
     */
-   private String getSimpleString(Map<String, List<String>> parameters,String key,String defaultValue)
+   public String getSimpleString(Map<String, List<String>> parameters,String key,String defaultValue)
    {
       List<String> values = parameters.get(key);
       if (values == null) return defaultValue;
@@ -2205,7 +2215,7 @@ public class Command
     * @param string
     * @return
     */
-   private boolean getBoolean(Map<String, List<String>> parameters,String key)
+   public boolean getBoolean(Map<String, List<String>> parameters,String key)
    {
       List<String> values = parameters.get(key);
       if (values == null) return false;

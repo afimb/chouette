@@ -40,8 +40,8 @@ public class GeographicService implements IGeographicService
 
 	@Setter private INeptuneManager<StopArea> stopAreaManager;
 
-	private int epsgLambert = 27572;  // Lambert2e
-	private int epsgWGS84 = 4326;  // WGS84
+	@Setter private int epsgLambert = 27572;  // Lambert2e
+	@Setter private int epsgWGS84 = 4326;  // WGS84
 
 	private MathTransform transformWGS84;
 	private MathTransform transformLambert2e;
@@ -132,7 +132,7 @@ public class GeographicService implements IGeographicService
 					AreaCentroid centroid = commercial.getAreaCentroid();
 					centroid.setLatitude(new BigDecimal(sumLatitude/count));
 					centroid.setLongitude(new BigDecimal(sumLongitude/count));
-					centroid.setLongLatType(longLatType);
+					centroid.setLongLatType(LongLatTypeEnum.WGS84);
 					toBeSaved.add(commercial);
 				}
 				else
@@ -195,7 +195,7 @@ public class GeographicService implements IGeographicService
 						AreaCentroid centroid = place.getAreaCentroid();
 						centroid.setLatitude(new BigDecimal(sumLatitude/count));
 						centroid.setLongitude(new BigDecimal(sumLongitude/count));
-						centroid.setLongLatType(longLatType);
+						centroid.setLongLatType(LongLatTypeEnum.WGS84);
 						toBeSaved.add(place);
 					}
 					else

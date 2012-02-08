@@ -196,7 +196,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
 
    protected String toIdString(String input)
    {
-      String output = input.replaceAll(" ", "_");
+      String output = input.replaceAll("[^0-9A-Za-z_\\-]", "_");
       return output;
    }
    

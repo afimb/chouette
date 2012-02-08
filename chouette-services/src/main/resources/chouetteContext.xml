@@ -12,6 +12,8 @@
     <!--  tools -->
     <bean id="geographicService" class="fr.certu.chouette.service.geographic.GeographicService">
     	<property name="stopAreaManager" ref="stopAreaManager"/>
+    	<property name="epsgLambert" value="${Lambert.SRID}" />
+    	<property name="epsgWGS84" value="${WGS84.SRID}" />
     </bean>
     
     <bean id="cleanService" class="fr.certu.chouette.service.cleaning.CleanService">

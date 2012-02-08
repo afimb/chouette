@@ -47,7 +47,7 @@ public class CompanyProducer extends AbstractModelProducer<Company>
          company.setPhone(loadStringParam(csvReader, PHONE_TITLE));
          company.setFax(loadStringParam(csvReader, FAX_TITLE));
          company.setEmail(loadStringParam(csvReader, EMAIL_TITLE));
-         company.setObjectId(objectIdPrefix + ":" + Company.COMPANY_KEY + ":" + toIdString(company.getShortName()));
+         company.setObjectId(objectIdPrefix + ":" + Company.COMPANY_KEY + ":" + toIdString(company.getRegistrationNumber()));
          if (!NeptuneIdentifiedObject.checkObjectId(company.getObjectId()))
          {
             CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, company.getName(), company.getObjectId());

@@ -176,5 +176,17 @@
 			<one-to-many class="AccessLink" />
 		</bag>
 
+		<!-- comment on ConnectionLink definition -->
+		<bag name="connectionStartLinks" table="connectionlink" lazy="true" cascade="all">
+			<key column="departureId" foreign-key="colk_startarea_fkey" />
+			<one-to-many class="ConnectionLink" />
+		</bag>
+
+		<!-- comment on ConnectionLink definition -->
+		<bag name="connectionEndLinks" table="connectionlink" lazy="true" cascade="all">
+			<key column="arrivalId" foreign-key="colk_endarea_fkey" />
+			<one-to-many class="AccessLink" />
+		</bag>
+
 	</class>
 </hibernate-mapping>

@@ -31,6 +31,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 
    private static final String   PUBLISHED_LINE_NAME_TITLE     = "Nom public";
    private static final String   NUMBER_TITLE                  = "Numero de la ligne";
+   private static final String   CODE_TITLE                    = "Code de la ligne";
    private static final String   COMMENT_TITLE                 = "Commentaire de la ligne";
    private static final String   TRANSPORT_MODE_NAME_TITLE     = "Mode de Transport (BUS,METRO,RER,TRAIN ou TRAMWAY)";
 
@@ -58,6 +59,14 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
       csvLinesList.add(createCSVLine(LINE_NAME_TITLE, line.getName()));
       csvLinesList.add(createCSVLine(PUBLISHED_LINE_NAME_TITLE, line.getPublishedName()));
       csvLinesList.add(createCSVLine(NUMBER_TITLE, line.getNumber()));
+      // ajout code ligne si différent de numero ligne
+      if (line.getRegistrationNumber() != null && !line.getRegistrationNumber().isEmpty())
+      {
+         if (!line.getRegistrationNumber().equals(line.getNumber()))
+         {
+            csvLinesList.add(createCSVLine(CODE_TITLE, line.getRegistrationNumber()));
+         }
+      }
       csvLinesList.add(createCSVLine(COMMENT_TITLE, line.getComment()));
       csvLinesList.add(createCSVLine(TRANSPORT_MODE_NAME_TITLE, line.getTransportModeName().toString().toUpperCase()));
 

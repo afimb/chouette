@@ -32,7 +32,7 @@ import fr.certu.chouette.model.neptune.PeerId;
  * @param <T>
  */
 public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends JdbcDaoSupport implements
-      IDaoTemplate<T>
+IDaoTemplate<T>
 {
    @Getter
    @Setter
@@ -110,7 +110,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       if (sqlSelectByObjectIdWithInClause == null)
          throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                "implements sqlSelectByObjectIdWithInClause request statement in xml file :"
-                     + objectids.get(0).split(":")[1] + "JdbcDaoConext.xml");
+               + objectids.get(0).split(":")[1] + "JdbcDaoConext.xml");
 
       String[] myArray = objectids.toArray(new String[objectids.size()]);
       String sql = sqlSelectByObjectIdWithInClause.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));
@@ -140,7 +140,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    protected abstract void populateStatement(PreparedStatement ps, T type) throws SQLException;
 
    @Override
-   public void saveOrUpdateAll(final List<T> objects)
+   public final void saveOrUpdateAll(final List<T> objects)
    {
       if (objects.isEmpty())
       {
@@ -152,22 +152,53 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
 
       dispatchObjects(objects, insertables, updatables);
       if (!insertables.isEmpty())
-         toBatchInsert(sqlInsert, insertables);
+      {
+         int index = 0;
+         int rest = insertables.size();
+
+         while (rest > 0)
+         {
+            int lastIndex = index + Math.min(500, rest) ;
+            toBatchInsert(sqlInsert, insertables.subList(index, lastIndex));
+            index += 500;
+            rest -= 500;
+         }
+
+      }
       if (!updatables.isEmpty())
       {
          if (sqlUpdate != null)
-            toBatchUpdate(sqlUpdate, updatables);
+         {
+            int index = 0;
+            int rest = updatables.size();
 
+            while (rest > 0)
+            {
+               int lastIndex = index + Math.min(500, rest);
+               toBatchUpdate(sqlUpdate, updatables.subList(index, lastIndex));
+               index += 500;
+               rest -= 500;
+            }
+         }
          else if (sqlDelete != null)
          {
             toBatchDelete(sqlDelete, updatables);
-            toBatchInsert(sqlInsert, updatables);
+            int index = 0;
+            int rest = updatables.size();
+
+            while (rest > 0)
+            {
+               int lastIndex = index + Math.min(500, rest);
+               toBatchInsert(sqlInsert, updatables.subList(index, lastIndex));
+               index += 500;
+               rest -= 500;
+            }
          }
          else
          {
             throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                   "implements sqlUpdate AND/OR sqlDelete request statement in xml file :"
-                        + objects.get(0).getClass().getName() + "JdbcDaoConext.xml");
+                  + objects.get(0).getClass().getName() + "JdbcDaoConext.xml");
          }
 
       }
@@ -232,7 +263,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       if (sql == null)
          throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                "implements sqlUpdate request statement in xml file :" + list.get(0).getClass().getName()
-                     + "JdbcDaoConext.xml");
+               + "JdbcDaoConext.xml");
 
       int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter()
       {
@@ -289,7 +320,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       if (sql == null)
          throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE,
                "implements sqlDelete request statement for " + attributeKey + " in xml file :"
-                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
+               + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
 
       List<Long> ids = T.extractIds(list);
       Long[] myArray = ids.toArray(new Long[ids.size()]);
@@ -315,7 +346,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       if (sql == null)
          throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                "implements sqlInsert request statement in xml file :" + list.get(0).getClass().getName()
-                     + "JdbcDaoConext.xml");
+               + "JdbcDaoConext.xml");
 
       int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter()
       {
@@ -386,7 +417,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       if (sql == null)
          throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE,
                "implements sqlInsert request statement for " + attributeKey + " in xml file :"
-                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
+               + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
 
       final List<Object> attributes = new ArrayList<Object>();
       for (T item : list)
@@ -436,7 +467,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @throws SQLException
     */
    protected void populateAttributeStatement(String attributeKey, PreparedStatement ps, Object attribute)
-         throws SQLException
+   throws SQLException
    {
       throw new SQLException("populateAttributeStatement is not implemented for " + this.getClass().getName());
    }
@@ -454,7 +485,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       if (sql == null)
          throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                "implements sqlDelete request statement in xml file :" + list.get(0).getClass().getName()
-                     + "JdbcDaoConext.xml");
+               + "JdbcDaoConext.xml");
 
       List<String> objectids = T.extractObjectIds(list);
       String[] myArray = objectids.toArray(new String[objectids.size()]);
