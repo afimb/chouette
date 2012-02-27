@@ -195,7 +195,8 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 			}
 			//Test 3.5.1 & Test 3.6.1 a (redundant ???) 
 
-			if (!pj.trim().equals(stopPoint.getLongLatType().toString()) )
+			
+			if (stopPoint.getLongLatType() == null || !pj.trim().equals(stopPoint.getLongLatType().toString()) )
 			{
 				ReportItem detailReportItem = new DetailReportItem("Test3_Sheet5_Step1_warning", Report.STATE.WARNING,
 						stopPoint.getName() + "(" + stopPoint.getObjectId() + ")");

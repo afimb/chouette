@@ -122,6 +122,8 @@
 		<property name="currentVersion" value="1.7" />
 		<property name="routeManager" ref="routeManager" />
 		<property name="linkManager" ref="PTLinkManager" />
+		<property name="timetableManager" ref="timetableManager" />
+		
 	</bean>
 
 	<bean id="checkObjectId" class="fr.certu.chouette.command.CheckObjectId"

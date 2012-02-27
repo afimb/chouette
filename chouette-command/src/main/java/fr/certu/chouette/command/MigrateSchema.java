@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,19 +13,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Setter;
+
 import org.apache.log4j.Logger;
 
-import lombok.Setter;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.ChouetteDriverManagerDataSource;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTLink;
+import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.model.neptune.Timetable;
 
 public class MigrateSchema 
 {
@@ -35,7 +34,7 @@ public class MigrateSchema
    @Setter private String currentVersion;
    @Setter private INeptuneManager<Route> routeManager;
    @Setter private INeptuneManager<PTLink> linkManager;
-
+   @Setter private INeptuneManager<Timetable> timetableManager;
 
    private Connection connection;
 
@@ -44,9 +43,15 @@ public class MigrateSchema
       try 
       {
          connection = dataSource.getConnection();
-      } catch (SQLException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      } 
+      catch (SQLException e) 
+      {
+         logger.error("fail to connect to database",e);
+         while ((e=e.getNextException()) != null)
+         {
+            logger.error("caused by :",e);
+         }
+         throw new RuntimeException("connect to database failed");
       }
 
       String version = checkVersion();
@@ -57,6 +62,7 @@ public class MigrateSchema
       }
       processVehicleJourneys();
       processRoutes();
+      processTimetables();
       processDefaultValues();
       updateVersion();
    }
@@ -91,6 +97,9 @@ public class MigrateSchema
    }
 
 
+   /**
+    * 
+    */
    private void processVehicleJourneys() 
    {
       boolean failure = false;
@@ -206,9 +215,49 @@ public class MigrateSchema
          throw new RuntimeException("processVehicleJourneys failed");
       }
 
-
    }
 
+   /**
+    * @throws ChouetteException
+    */
+   private void processTimetables() throws ChouetteException 
+   {
+      List<Timetable> timetables = timetableManager.getAll(null);
+      System.out.println("found "+timetables.size()+" timetables to check");
+
+      for (Timetable timetable : timetables)
+      {
+         boolean toBeSaved = false;
+         // remove null entries (caused by first position equals 1)
+         if (timetable.getCalendarDays() != null)
+         {
+            for (Iterator<java.sql.Date> iterator = timetable.getCalendarDays().iterator(); iterator.hasNext();)
+            {
+               if (iterator.next() == null)
+               {
+                  toBeSaved = true;
+                  iterator.remove();
+               }
+            }
+         }
+         if (timetable.getPeriods() != null)
+         {
+            for (Iterator<Period> iterator = timetable.getPeriods().iterator(); iterator.hasNext();)
+            {
+               if (iterator.next() == null)
+               {
+                  toBeSaved = true;
+                  iterator.remove();
+               }
+            }
+         }
+         if (toBeSaved) timetableManager.save(null, timetable, false);
+      }
+   }
+
+   /**
+    * @throws ChouetteException
+    */
    private void processRoutes() throws ChouetteException 
    {
 
@@ -252,6 +301,9 @@ public class MigrateSchema
 
    }
 
+   /**
+    * @return
+    */
    private String checkVersion() 
    {
       String version = "1.6";
