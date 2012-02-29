@@ -698,13 +698,29 @@ public class ModelAssembler
       for (Facility facility : facilities)
       {
          if (facility.getStopAreaId() != null)
-            facility.setStopArea(getObjectFromId(facility.getStopAreaId(), StopArea.class));
+         {
+            StopArea bean = getObjectFromId(facility.getStopAreaId(), StopArea.class);
+            facility.setStopArea(bean);
+            bean.addFacility(facility);
+         }
          if (facility.getStopPointId() != null)
-            facility.setStopPoint(getObjectFromId(facility.getStopPointId(), StopPoint.class));
+         {
+            StopPoint bean = getObjectFromId(facility.getStopPointId(), StopPoint.class);
+            facility.setStopPoint(bean);
+            bean.addFacility(facility);
+         }
          if (facility.getConnectionLinkId() != null)
-            facility.setConnectionLink(getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class));
+         {
+            ConnectionLink bean = getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class);
+            facility.setConnectionLink(bean);
+            bean.addFacility(facility);
+         }
          if (facility.getLineId() != null)
-            facility.setLine(getObjectFromId(facility.getLineId(), Line.class));
+         {
+            Line bean = getObjectFromId(facility.getLineId(), Line.class);
+            facility.setLine(bean);
+            bean.addFacility(facility);
+         }
       }
    }
 

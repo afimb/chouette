@@ -24,7 +24,8 @@ public class PTNetworkProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		castorPTNetwork.setSourceIdentifier(getNotEmptyString(ptNetwork.getSourceIdentifier()));
 		castorPTNetwork.setSourceName(getNotEmptyString(ptNetwork.getSourceName()));
 		castorPTNetwork.setComment(getNotEmptyString(ptNetwork.getComment()));
-		castorPTNetwork.setLineId(NeptuneIdentifiedObject.extractObjectIds(ptNetwork.getLines()));
+		// populated after with only one line
+		// castorPTNetwork.setLineId(NeptuneIdentifiedObject.extractObjectIds(ptNetwork.getLines()));
 		if(ptNetwork.getVersionDate() != null){
 			castorPTNetwork.setVersionDate(new Date(ptNetwork.getVersionDate()));
 		}

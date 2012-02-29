@@ -25,16 +25,16 @@ public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouet
 		castorConnectionLink.setLiftAvailability(connectionLink.isLiftAvailable());
 		castorConnectionLink.setStairsAvailability(connectionLink.isStairsAvailable());
 		if(connectionLink.getDefaultDuration() != null){
-			castorConnectionLink.setDefaultDuration(new Duration(connectionLink.getDefaultDuration().getTime()));
+			castorConnectionLink.setDefaultDuration(toDuration(connectionLink.getDefaultDuration()));
 		}
 		if(connectionLink.getFrequentTravellerDuration() != null){
-			castorConnectionLink.setFrequentTravellerDuration(new Duration(connectionLink.getFrequentTravellerDuration().getTime()));
+			castorConnectionLink.setFrequentTravellerDuration(toDuration(connectionLink.getFrequentTravellerDuration()));
 		}
 		if(connectionLink.getOccasionalTravellerDuration() != null){
-			castorConnectionLink.setOccasionalTravellerDuration(new Duration(connectionLink.getOccasionalTravellerDuration().getTime()));
+			castorConnectionLink.setOccasionalTravellerDuration(toDuration(connectionLink.getOccasionalTravellerDuration()));
 		}
 		if(connectionLink.getMobilityRestrictedTravellerDuration() != null){
-			castorConnectionLink.setMobilityRestrictedTravellerDuration(new Duration(connectionLink.getMobilityRestrictedTravellerDuration().getTime()));
+			castorConnectionLink.setMobilityRestrictedTravellerDuration(toDuration(connectionLink.getMobilityRestrictedTravellerDuration()));
 		}
 		
 		try {

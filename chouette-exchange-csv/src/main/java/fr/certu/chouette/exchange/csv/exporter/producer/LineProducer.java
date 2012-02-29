@@ -74,8 +74,10 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
       List<Route> routes = new ArrayList<Route>(line.getRoutes());
       if (routes.size() > 2)
       {
+            throw new IllegalArgumentException("cannot export lines with more than 2 routes");
+
          // TODO report problem
-         return null;
+         //return null;
       }
       // sort routes (A before R)
       Collections.sort(routes, new WaybackRouteComparator());

@@ -23,5 +23,6 @@
 	</bean>
 	
 	<import resource="NeptuneImportContext.xml"/>
+	<import resource="NeptuneExportContext.xml"/>
 	
 </beans>

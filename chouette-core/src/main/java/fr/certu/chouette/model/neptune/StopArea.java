@@ -839,5 +839,14 @@ public class StopArea extends NeptuneIdentifiedObject
             }
          }
       }
+      
+      if (getAccessLinks() != null)
+      {
+         for (AccessLink accessLink : getAccessLinks())
+         {
+            accessLink.complete();
+            accessLink.getAccessPoint().complete();
+         }
+      }
    }
 }

@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.util.Date;
-
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.Address;
@@ -59,11 +57,11 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chou
 		}
 		// OpenningTime optional
 		if(xmlAccessPoint.getOpeningTime() != null)
-			accessPoint.setOpenningTime(new Date(xmlAccessPoint.getOpeningTime().toLong()));	
+			accessPoint.setOpenningTime(getTime(xmlAccessPoint.getOpeningTime()));	
 		// ClosingTime optional
 		if(xmlAccessPoint.getClosingTime() != null)
-			accessPoint.setClosingTime(new Date(xmlAccessPoint.getClosingTime().toLong()));
-		//Type optinal
+			accessPoint.setClosingTime(getTime(xmlAccessPoint.getClosingTime()));
+		//Type optional
 		if(xmlAccessPoint.getType() != null)
 			accessPoint.setType(xmlAccessPoint.getType().value());
 		accessPoint.setLiftAvailable(xmlAccessPoint.getLiftAvailability());

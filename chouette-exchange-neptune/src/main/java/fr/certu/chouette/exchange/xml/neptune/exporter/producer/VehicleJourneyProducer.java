@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import org.exolab.castor.types.Duration;
-
 import chouette.schema.VehicleJourneyAtStopTypeChoice;
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence2;
@@ -66,7 +64,7 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 					}
 					castorVehicleJourneyAtStop.setConnectingServiceId(vehicleJourneyAtStop.getConnectingServiceId());
 					if(vehicleJourneyAtStop.getHeadwayFrequency() != null){
-						castorVehicleJourneyAtStop.setHeadwayFrequency(new Duration(vehicleJourneyAtStop.getHeadwayFrequency().getTime()));
+						castorVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourneyAtStop.getHeadwayFrequency()));
 					}
 					castorVehicleJourneyAtStop.setOrder(vehicleJourneyAtStop.getOrder());
 					castorVehicleJourneyAtStop.setStopPointId(getNonEmptyObjectId(vehicleJourneyAtStop.getStopPoint()));
@@ -86,7 +84,7 @@ public class VehicleJourneyProducer extends AbstractCastorNeptuneProducer<chouet
 					
 					VehicleJourneyAtStopTypeChoiceSequence2 castorVehicleJourneyAtStopTypeChoiceSequence2 = new VehicleJourneyAtStopTypeChoiceSequence2();
 					if(vehicleJourneyAtStop.getElapseDuration() != null){
-						castorVehicleJourneyAtStopTypeChoiceSequence2.setElapseDuration(new Duration(vehicleJourneyAtStop.getElapseDuration().getTime()));
+						castorVehicleJourneyAtStopTypeChoiceSequence2.setElapseDuration(toDuration(vehicleJourneyAtStop.getElapseDuration()));
 					}
 					
 					castorVehicleJourneyAtStopTypeChoice.setVehicleJourneyAtStopTypeChoiceSequence(castorVehicleJourneyAtStopTypeChoiceSequence);

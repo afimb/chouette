@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,26 +33,29 @@ import fr.certu.chouette.plugin.report.ReportItem;
  *
  */
 public class FacilityProducer extends AbstractModelProducer<Facility, chouette.schema.Facility>{
-	private Map<Class<?>,Class<?>> facilityEnumMap;
-	public void init(){
-		facilityEnumMap = new HashMap<Class<?>, Class<?>>();
-		facilityEnumMap.put(chouette.schema.types.AccessFacilityEnumeration.class,AccessFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.AccommodationFacilityEnumeration.class, AccommodationFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.AssistanceFacilityEnumeration.class,AssistanceFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.FareClassFacilityEnumeration.class,FareClassFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.HireFacilityEnumeration.class, HireFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.LuggageFacilityEnumeration.class, LuggageFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.MobilityFacilityEnumeration.class, MobilityFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.NuisanceFacilityEnumeration.class, NuisanceFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.ParkingFacilityEnumeration.class, ParkingFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.PassengerCommsFacilityEnumeration.class, PassengerCommsFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.PassengerInformationFacilityEnumeration.class,PassengerInformationFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.RefreshmentFacilityEnumeration.class, RefreshmentFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.ReservedSpaceFacilityEnumeration.class, ReservedSpaceFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.RetailFacilityEnumeration.class, RetailFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.SanitaryFacilityEnumeration.class, SanitaryFacilityEnumeration.class);
-		facilityEnumMap.put(chouette.schema.types.TicketingFacilityEnumeration.class, TicketingFacilityEnumeration.class);
-	}
+   private Map<Class<?>,Integer> facilityEnumMap;
+
+   public void init()
+   {
+      facilityEnumMap = new HashMap<Class<?>, Integer>();
+      facilityEnumMap.put(chouette.schema.types.AccessFacilityEnumeration.class,Integer.valueOf(0));
+      facilityEnumMap.put(chouette.schema.types.AccommodationFacilityEnumeration.class,Integer.valueOf(1));
+      facilityEnumMap.put(chouette.schema.types.AssistanceFacilityEnumeration.class,Integer.valueOf(2));
+      facilityEnumMap.put(chouette.schema.types.FareClassFacilityEnumeration.class,Integer.valueOf(3));
+      facilityEnumMap.put(chouette.schema.types.HireFacilityEnumeration.class, Integer.valueOf(4));
+      facilityEnumMap.put(chouette.schema.types.LuggageFacilityEnumeration.class, Integer.valueOf(5));
+      facilityEnumMap.put(chouette.schema.types.MobilityFacilityEnumeration.class,Integer.valueOf(6));
+      facilityEnumMap.put(chouette.schema.types.NuisanceFacilityEnumeration.class, Integer.valueOf(7));
+      facilityEnumMap.put(chouette.schema.types.ParkingFacilityEnumeration.class, Integer.valueOf(8));
+      facilityEnumMap.put(chouette.schema.types.PassengerCommsFacilityEnumeration.class, Integer.valueOf(9));
+      facilityEnumMap.put(chouette.schema.types.PassengerInformationFacilityEnumeration.class,Integer.valueOf(10));
+      facilityEnumMap.put(chouette.schema.types.RefreshmentFacilityEnumeration.class, Integer.valueOf(11));
+      facilityEnumMap.put(chouette.schema.types.ReservedSpaceFacilityEnumeration.class, Integer.valueOf(12));
+      facilityEnumMap.put(chouette.schema.types.RetailFacilityEnumeration.class, Integer.valueOf(13));
+      facilityEnumMap.put(chouette.schema.types.SanitaryFacilityEnumeration.class, Integer.valueOf(14));
+      facilityEnumMap.put(chouette.schema.types.TicketingFacilityEnumeration.class, Integer.valueOf(15));
+   }
+	
 
 	@Override
 	public Facility produce(chouette.schema.Facility xmlFacility, ReportItem report,SharedImportedData sharedData) {
@@ -118,15 +120,58 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 		for (chouette.schema.FacilityFeature xmlFeature : features) {
 			FacilityFeature facilityFeature = new FacilityFeature();
 
-			Class<?> neptuneEnum = facilityEnumMap.get(xmlFeature.getChoiceValue().getClass());
-			try {
-				Method fromValueMethod = neptuneEnum.getMethod("fromValue", String.class);
-				Object value =  fromValueMethod.invoke(null, xmlFeature.getChoiceValue().toString());
-				facilityFeature.setChoiceValue(value);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
+         int type = facilityEnumMap.get(xmlFeature.getChoiceValue().getClass()).intValue();
+         switch (type)
+         {
+         case 0 :  
+            facilityFeature.setAccessFacility(AccessFacilityEnumeration.fromValue(xmlFeature.getAccessFacility().toString()));
+            break;
+         case 1 :  
+            facilityFeature.setAccommodationFacility(AccommodationFacilityEnumeration.fromValue(xmlFeature.getAccommodationFacility().toString()));
+            break;
+         case 2 :  
+            facilityFeature.setAssistanceFacility(AssistanceFacilityEnumeration.fromValue(xmlFeature.getAssistanceFacility().toString()));
+            break;
+         case 3 :  
+            facilityFeature.setFareClassFacility(FareClassFacilityEnumeration.fromValue(xmlFeature.getFareClassFacility().toString()));
+            break;
+         case 4 :  
+            facilityFeature.setHireFacility(HireFacilityEnumeration.fromValue(xmlFeature.getHireFacility().toString()));
+            break;
+         case 5 :  
+            facilityFeature.setLuggageFacility(LuggageFacilityEnumeration.fromValue(xmlFeature.getLuggageFacility().toString()));
+            break;
+         case 6 :  
+            facilityFeature.setMobilityFacility(MobilityFacilityEnumeration.fromValue(xmlFeature.getMobilityFacility().toString()));
+            break;
+         case 7 :  
+            facilityFeature.setNuisanceFacility(NuisanceFacilityEnumeration.fromValue(xmlFeature.getNuisanceFacility().toString()));
+            break;
+         case 8 :  
+            facilityFeature.setParkingFacility(ParkingFacilityEnumeration.fromValue(xmlFeature.getParkingFacility().toString()));
+            break;
+         case 9 :  
+            facilityFeature.setPassengerCommsFacility(PassengerCommsFacilityEnumeration.fromValue(xmlFeature.getPassengerCommsFacility().toString()));
+            break;
+         case 10 :  
+            facilityFeature.setPassengerInformationFacility(PassengerInformationFacilityEnumeration.fromValue(xmlFeature.getPassengerInformationFacility().toString()));
+            break;
+         case 11 :  
+            facilityFeature.setRefreshmentFacility(RefreshmentFacilityEnumeration.fromValue(xmlFeature.getRefreshmentFacility().toString()));
+            break;
+         case 12 :  
+            facilityFeature.setReservedSpaceFacility(ReservedSpaceFacilityEnumeration.fromValue(xmlFeature.getReservedSpaceFacility().toString()));
+            break;
+         case 13 :  
+            facilityFeature.setRetailFacility(RetailFacilityEnumeration.fromValue(xmlFeature.getRetailFacility().toString()));
+            break;
+         case 14 :  
+            facilityFeature.setSanitaryFacility(SanitaryFacilityEnumeration.fromValue(xmlFeature.getSanitaryFacility().toString()));
+            break;
+         case 15 :  
+            facilityFeature.setTicketingFacility(TicketingFacilityEnumeration.fromValue(xmlFeature.getTicketingFacility().toString()));
+            break;
+         }
 			facility.addFacilityFeature(facilityFeature);
 		}	
 		

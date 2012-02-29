@@ -66,7 +66,8 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
       report.setStatus(Report.STATE.OK);
       reportContainer.setReport(report);
 
-		if(beans == null){
+		if(beans == null || beans.size() ==0) 
+		{
 			throw new IllegalArgumentException("no beans to export");
 		}
 

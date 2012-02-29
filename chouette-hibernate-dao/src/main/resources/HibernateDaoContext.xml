@@ -183,6 +183,11 @@
 					<property name="table" value="vehiclejourneyatstop" />
 					<property name="columns" value="vehiclejourneyid,stoppointid" />
 				</bean>
+				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
+					<property name="key" value="journeypatternstoppoint_pkey" />
+					<property name="table" value="journeypattern_stoppoint" />
+					<property name="columns" value="journeypatternid,stoppointid" />
+				</bean>
 			</list>
 		</property>
 

@@ -124,13 +124,13 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 				if(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2() != null 
 						&& xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2().getElapseDuration() != null)
 				{
-					vehicleJourneyAtStop.setElapseDuration(new Time(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2().getElapseDuration().toLong()));
+					vehicleJourneyAtStop.setElapseDuration(getTime(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2().getElapseDuration()));
 				}
 			}
 
 			// HeadwayFrequency optional
 			if(xmlVehicleJourneyAtStop.getHeadwayFrequency() != null){
-				vehicleJourneyAtStop.setHeadwayFrequency(new Time(xmlVehicleJourneyAtStop.getHeadwayFrequency().toLong()));
+				vehicleJourneyAtStop.setHeadwayFrequency(getTime(xmlVehicleJourneyAtStop.getHeadwayFrequency()));
 			}
 
 			vehicleJourney.addVehicleJourneyAtStop(vehicleJourneyAtStop);

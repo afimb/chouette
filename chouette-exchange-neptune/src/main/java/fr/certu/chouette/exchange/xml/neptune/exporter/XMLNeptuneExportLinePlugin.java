@@ -4,22 +4,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Set;
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
-import fr.certu.chouette.plugin.report.Report;
 
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
@@ -30,9 +29,13 @@ import chouette.schema.ITL;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AccessLinkProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AccessPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AreaCentroidProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.CompanyProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.ConnectionLinkProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.FacilityProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.GroupOfLineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.JourneyPatternProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.PTLinkProducer;
@@ -41,13 +44,18 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RouteProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.RoutingConstraintProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProducer;
+import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimeSlotProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
 import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTLink;
@@ -55,6 +63,7 @@ import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
@@ -102,6 +111,17 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
    private TimetableProducer         timetableProducer;
    @Setter
    private RoutingConstraintProducer routingConstraintProducer;
+   @Setter 
+   private GroupOfLineProducer       groupOfLineProducer;
+   @Setter 
+   private AccessPointProducer       accessPointProducer;
+   @Setter 
+   private AccessLinkProducer        accessLinkProducer;
+   @Setter 
+   private FacilityProducer        facilityProducer;
+   @Setter 
+   private TimeSlotProducer        timeSlotProducer;
+
 
    /**
     * Export lines in Neptune XML format
@@ -294,9 +314,28 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       if (line != null)
       {
          line.complete();
+
          if (line.getPtNetwork() != null)
          {
             rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork()));
+         }
+
+         if (line.getGroupOfLines() != null)
+         {
+            for (GroupOfLine group : line.getGroupOfLines())
+            {
+               chouette.schema.GroupOfLine castorGroup = groupOfLineProducer.produce(group);
+               castorGroup.removeAllLineId();
+               castorGroup.addLineId(line.getObjectId());
+               rootObject.addGroupOfLine(castorGroup);
+            }
+
+         }
+
+         HashSet<Facility> facilities = new HashSet<Facility>();
+         if (line.getFacilities() != null)
+         {
+            facilities.addAll(line.getFacilities());
          }
 
          HashSet<Company> companies = new HashSet<Company>();
@@ -329,6 +368,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          Set<VehicleJourney> validVehicleJourneys = new HashSet<VehicleJourney>();
          Set<JourneyPattern> validJourneyPatterns = new HashSet<JourneyPattern>();
          Set<Route> validRoutes = new HashSet<Route>();
+         Set<TimeSlot> validTimeSlots = new HashSet<TimeSlot>();
 
          for (VehicleJourney vehicleJourney : vehicleJourneys)
          {
@@ -368,6 +408,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   validVehicleJourneys.add(vehicleJourney);
                   validJourneyPatterns.add(vehicleJourney.getJourneyPattern());
                   validRoutes.add(vehicleJourney.getRoute());
+                  if (vehicleJourney.getTimeSlot() != null)
+                  {
+                     validTimeSlots.add(vehicleJourney.getTimeSlot());
+                  }
                }
             }
          }
@@ -392,7 +436,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          for (Route route : validRoutes)
          {
             ChouetteRoute castorObj = routeProducer.produce(route);
-            
+
             // add all stoppoints of route
             if (route.getStopPoints() != null)
             {
@@ -437,6 +481,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
 
          HashSet<StopArea> stopAreas = new HashSet<StopArea>();
+
          HashSet<String> stopRefs = new HashSet<String>(); // for cleaning
          // stoparea contains
          // refs
@@ -445,6 +490,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             stopRefs.add(stopPoint.getObjectId());
             chouetteLineDescription.addStopPoint(stopPointProducer.produce(stopPoint));
             stopAreas.addAll(extractStopAreaHierarchy(stopPoint.getContainedInStopArea(), line));
+            if (stopPoint.getFacilities() != null)
+            {
+               facilities.addAll(stopPoint.getFacilities());
+            }
          }
 
          for (PTLink ptLink : ptLinks)
@@ -460,9 +509,16 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          ChouetteArea chouetteArea = new ChouetteArea();
          HashSet<AreaCentroid> areaCentroids = new HashSet<AreaCentroid>();
          HashSet<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
+         HashSet<AccessLink> accessLinks = new HashSet<AccessLink>();
+         HashSet<AccessPoint> accessPoints = new HashSet<AccessPoint>();
+
          for (StopArea stopArea : stopAreas)
          {
             stopRefs.add(stopArea.getObjectId());
+            if (stopArea.getFacilities() != null)
+            {
+               facilities.addAll(stopArea.getFacilities());
+            }
          }
          for (StopArea stopArea : stopAreas)
          {
@@ -487,6 +543,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             {
                connectionLinks.addAll(stopArea.getConnectionLinks());
             }
+            if (stopArea.getAccessLinks() != null)
+            {
+               accessLinks.addAll(stopArea.getAccessLinks());
+            }
          }
 
          for (AreaCentroid areaCentroid : areaCentroids)
@@ -499,6 +559,31 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          for (ConnectionLink connectionLink : connectionLinks)
          {
             rootObject.addConnectionLink(connectionLinkProducer.produce(connectionLink));
+            if (connectionLink.getFacilities() != null)
+            {
+               facilities.addAll(connectionLink.getFacilities());
+            }
+         }
+         
+         for (TimeSlot timeSlot : validTimeSlots)
+         {
+            rootObject.addTimeSlot(timeSlotProducer.produce(timeSlot));
+         }
+
+         for (Facility facility : facilities)
+         {
+            rootObject.addFacility(facilityProducer.produce(facility));
+         } 
+
+         for (AccessLink accessLink : accessLinks)
+         {
+            rootObject.addAccessLink(accessLinkProducer.produce(accessLink));
+            accessPoints.add(accessLink.getAccessPoint());
+         }
+
+         for (AccessPoint accessPoint : accessPoints)
+         {
+            rootObject.addAccessPoint(accessPointProducer.produce(accessPoint));
          }
 
          for (Timetable timetable : timetables)
@@ -535,6 +620,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          // cleaning a little
          rootObject.getPTNetwork().removeAllLineId();
          rootObject.getPTNetwork().addLineId(castorLine.getObjectId());
+
+
 
          // remove unreferenced Routes
          {
