@@ -686,7 +686,7 @@ public class ModelAssembler
             groupOfLine.setLines(getObjectsFromIds(groupOfLine.getLineIds(), Line.class));
          }
       }
-         
+
 
    }
 
@@ -700,26 +700,38 @@ public class ModelAssembler
          if (facility.getStopAreaId() != null)
          {
             StopArea bean = getObjectFromId(facility.getStopAreaId(), StopArea.class);
-            facility.setStopArea(bean);
-            bean.addFacility(facility);
+            if (bean != null)
+            {
+               facility.setStopArea(bean);
+               bean.addFacility(facility);
+            }
          }
          if (facility.getStopPointId() != null)
          {
             StopPoint bean = getObjectFromId(facility.getStopPointId(), StopPoint.class);
-            facility.setStopPoint(bean);
-            bean.addFacility(facility);
+            if (bean != null)
+            {
+               facility.setStopPoint(bean);
+               bean.addFacility(facility);
+            }
          }
          if (facility.getConnectionLinkId() != null)
          {
             ConnectionLink bean = getObjectFromId(facility.getConnectionLinkId(), ConnectionLink.class);
-            facility.setConnectionLink(bean);
-            bean.addFacility(facility);
+            if (bean != null)
+            {
+               facility.setConnectionLink(bean);
+               bean.addFacility(facility);
+            }
          }
          if (facility.getLineId() != null)
          {
             Line bean = getObjectFromId(facility.getLineId(), Line.class);
-            facility.setLine(bean);
-            bean.addFacility(facility);
+            if (bean != null)
+            {
+               facility.setLine(bean);
+               bean.addFacility(facility);
+            }
          }
       }
    }
