@@ -1,14 +1,20 @@
                         CHOUETTE RELEASE NOTES
                         ======================
 
+* Version 1.7.3 (01/03/12)
+  - ajout des liens sur les définitions des tests de validation sur la page de lancement des tests
+  - correction import/export Neptune : durée de correspondances
+  - procédure demigration : renumérotation des périodes et dates des calendriers
+  - ajout des correspondances en export GTFS
+  - correction de l'afficage GEOPORTAIL
+  - ajout de la clé primaire sur la table journeypattern_stoppoint
+  
 * Version 1.7.2 (06/01/12)
   - correction export GTFS : latitude = longitude et autres coquilles
   - correction import CSV : nom du réseau pour créer l'objectId (remplacé par le code réseau)
   - correction formats des latitudes/longitudes dans creation de la base
   - upgrade de la version d'Hibernate = 3.6.8.Final
   - upgrade de la version de spring = 3.0.5.RELEASE
-  
-  
 
 * Version 1.7.1 (29/11/11)
   - optimisation des imports
