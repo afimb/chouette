@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="
-   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
-	default-init-method="init">
-	 -->
-	<beans 	xmlns="http://www.springframework.org/schema/beans"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-			xmlns:tx="http://www.springframework.org/schema/tx"
-			xsi:schemaLocation="http://www.springframework.org/schema/beans 
+<!-- <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" 
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd" 
+	default-init-method="init"> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 								http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        							http://www.springframework.org/schema/aop 
        							http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
        							http://www.springframework.org/schema/tx 
        							http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
-       							default-init-method="init">
+	default-init-method="init">
 
 	<bean id="chouetteDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource">
 		<property name="driverClassName" value="${jdbc.driver}" />
@@ -57,8 +52,8 @@
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
-<!-- 				<value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml
-				</value> -->
+				<!-- <value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml 
+					</value> -->
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
@@ -85,68 +80,78 @@
 				information_schema.key_column_usage k,
 				information_schema.constraint_column_usage u,
 				information_schema.referential_constraints r
-				where i.constraint_schema = '${database.schema}' 
+				where
+				i.constraint_schema = '${database.schema}'
 				and i.constraint_type = 'FOREIGN KEY'
-				and u.constraint_schema = i.constraint_schema 
+				and u.constraint_schema =
+				i.constraint_schema
 				and u.constraint_name = i.constraint_name
-				and k.constraint_schema = i.constraint_schema 
-				and k.constraint_name =	i.constraint_name
-				and r.constraint_schema = i.constraint_schema 
+				and k.constraint_schema =
+				i.constraint_schema
+				and k.constraint_name = i.constraint_name
+				and r.constraint_schema =
+				i.constraint_schema
 				and r.constraint_name = i.constraint_name
-				order by i.table_name, k.column_name </value>
+				order by i.table_name,
+				k.column_name </value>
 		</property>
 		<property name="addForeignKeySql">
 			<value>ALTER TABLE ${database.schema}.{0}
-				ADD CONSTRAINT {1} FOREIGN KEY ({2})
+				ADD CONSTRAINT {1} FOREIGN
+				KEY ({2})
 				REFERENCES ${database.schema}.{3} ({4})
-				ON UPDATE {6} ON DELETE {7}</value>
+				ON UPDATE {6} ON
+				DELETE {7}</value>
 		</property>
 		<property name="cascadeDeleteFkeys">
 			<map>
-				<entry key="aclk_acpt_fkey" value="accesslink;accesspointid;accesspoint;id"/>
-				<entry key="aclk_area_fkey" value="accesslink;stopareaid;stoparea;id"/>
-				<entry key="colk_endarea_fkey" value="connectionlink;arrivalid;stoparea;id"/>
-				<entry key="colk_startarea_fkey" value="connectionlink;departureid;stoparea;id"/>
-				<entry key="faci_colk_fkey" value="facility;connectionlinkid;connectionlink;id"/>
-				<entry key="faci_line_fkey" value="facility;lineid;line;id"/>
-				<entry key="faci_area_fkey" value="facility;stopareaid;stoparea;id"/>
-				<entry key="faci_stpt_fkey" value="facility;stoppointid;stoppoint;id"/>
-				<entry key="facility_feature_fkey" value="facilityfeature;facilityid;facility;id"/>
-				<entry key="groupofline_group_fkey" value="groupofline_line;groupoflineid;groupofline;id"/>
-				<entry key="groupofline_line_fkey" value="groupofline_line;lineid;line;id"/>
-				<entry key="jp_route_fkey" value="journeypattern;routeid;route;id"/>
-				<entry key="jpsp_jp_fkey" value="journeypattern_stoppoint;journeypatternid;journeypattern;id"/>
-				<entry key="jpsp_stoppoint_fkey" value="journeypattern_stoppoint;stoppointid;stoppoint;id"/>
-				<entry key="ptlink_route_fkey" value="ptlink;routeid;route;id"/>
-				<entry key="route_line_fkey" value="route;lineid;line;id"/>
-				<entry key="routingconstraint_line_fkey" value="routingconstraints_lines;lineid;line;id"/>
-				<entry key="routingconstraint_stoparea_fkey" value="routingconstraints_lines;stopareaid;stoparea;id"/>
-				<entry key="stoparea_child_fkey" value="stopareastoparea;childid;stoparea;id"/>
-				<entry key="stoparea_parent_fkey" value="stopareastoparea;parentid;stoparea;id"/> 
-				<entry key="stoppoint_route_fkey" value="stoppoint;routeid;route;id"/>
-				<entry key="tm_date_fkey" value="timetable_date;timetableid;timetable;id"/>
-				<entry key="tm_period_fkey" value="timetable_period;timetableid;timetable;id"/>
-				<entry key="vjtm_tm_fkey" value="timetablevehiclejourney;timetableid;timetable;id"/>
-				<entry key="vjtm_vj_fkey" value="timetablevehiclejourney;vehiclejourneyid;vehiclejourney;id"/>
-				<entry key="vj_jp_fkey" value="vehiclejourney;journeypatternid;journeypattern;id"/>
-				<entry key="vj_route_fkey" value="vehiclejourney;routeid;route;id"/>
-				<entry key="vjas_sp_fkey" value="vehiclejourneyatstop;stoppointid;stoppoint;id"/>
-				<entry key="vjas_vj_fkey" value="vehiclejourneyatstop;vehiclejourneyid;vehiclejourney;id"/>
+				<entry key="aclk_acpt_fkey" value="accesslink;accesspointid;accesspoint;id" />
+				<entry key="aclk_area_fkey" value="accesslink;stopareaid;stoparea;id" />
+				<entry key="colk_endarea_fkey" value="connectionlink;arrivalid;stoparea;id" />
+				<entry key="colk_startarea_fkey" value="connectionlink;departureid;stoparea;id" />
+				<entry key="faci_colk_fkey" value="facility;connectionlinkid;connectionlink;id" />
+				<entry key="faci_line_fkey" value="facility;lineid;line;id" />
+				<entry key="faci_area_fkey" value="facility;stopareaid;stoparea;id" />
+				<entry key="faci_stpt_fkey" value="facility;stoppointid;stoppoint;id" />
+				<entry key="facility_feature_fkey" value="facilityfeature;facilityid;facility;id" />
+				<entry key="groupofline_group_fkey" value="groupofline_line;groupoflineid;groupofline;id" />
+				<entry key="groupofline_line_fkey" value="groupofline_line;lineid;line;id" />
+				<entry key="jp_route_fkey" value="journeypattern;routeid;route;id" />
+				<entry key="jpsp_jp_fkey"
+					value="journeypattern_stoppoint;journeypatternid;journeypattern;id" />
+				<entry key="jpsp_stoppoint_fkey" value="journeypattern_stoppoint;stoppointid;stoppoint;id" />
+				<entry key="ptlink_route_fkey" value="ptlink;routeid;route;id" />
+				<entry key="route_line_fkey" value="route;lineid;line;id" />
+				<entry key="routingconstraint_line_fkey" value="routingconstraints_lines;lineid;line;id" />
+				<entry key="routingconstraint_stoparea_fkey" value="routingconstraints_lines;stopareaid;stoparea;id" />
+				<entry key="stoparea_child_fkey" value="stopareastoparea;childid;stoparea;id" />
+				<entry key="stoparea_parent_fkey" value="stopareastoparea;parentid;stoparea;id" />
+				<entry key="stoppoint_route_fkey" value="stoppoint;routeid;route;id" />
+				<entry key="tm_date_fkey" value="timetable_date;timetableid;timetable;id" />
+				<entry key="tm_period_fkey" value="timetable_period;timetableid;timetable;id" />
+				<entry key="vjtm_tm_fkey" value="timetablevehiclejourney;timetableid;timetable;id" />
+				<entry key="vjtm_vj_fkey"
+					value="timetablevehiclejourney;vehiclejourneyid;vehiclejourney;id" />
+				<entry key="vj_jp_fkey" value="vehiclejourney;journeypatternid;journeypattern;id" />
+				<entry key="vj_route_fkey" value="vehiclejourney;routeid;route;id" />
+				<entry key="vjas_sp_fkey" value="vehiclejourneyatstop;stoppointid;stoppoint;id" />
+				<entry key="vjas_vj_fkey"
+					value="vehiclejourneyatstop;vehiclejourneyid;vehiclejourney;id" />
 			</map>
 		</property>
 		<property name="setNullDeleteFkeys">
 			<map>
-				<entry key="line_company_fkey" value="line;companyid;company;id"/>
-				<entry key="line_ptnetwork_fkey" value="line;ptnetworkid;ptnetwork;id"/>
-				<entry key="vj_company_fkey" value="vehiclejourney;companyid;company;id"/>
-				<entry key="vj_timeslot_fkey" value="vehiclejourney;timeslotid;timeslot;id"/>
+				<entry key="line_company_fkey" value="line;companyid;company;id" />
+				<entry key="line_ptnetwork_fkey" value="line;ptnetworkid;ptnetwork;id" />
+				<entry key="vj_company_fkey" value="vehiclejourney;companyid;company;id" />
+				<entry key="vj_timeslot_fkey" value="vehiclejourney;timeslotid;timeslot;id" />
 			</map>
 		</property>
 		<property name="noActionDeleteFkeys">
 			<map>
-				<entry key="ptlk_endstpt_fkey" value="ptlink;endoflinkid;stoppoint;id"/>
-				<entry key="ptlk_startstpt_fkey" value="ptlink;startoflinkid;stoppoint;id"/>
-				<entry key="stoppoint_area_fkey" value="stoppoint;stopareaid;stoparea;id"/>
+				<entry key="ptlk_endstpt_fkey" value="ptlink;endoflinkid;stoppoint;id" />
+				<entry key="ptlk_startstpt_fkey" value="ptlink;startoflinkid;stoppoint;id" />
+				<entry key="stoppoint_area_fkey" value="stoppoint;stopareaid;stoparea;id" />
 			</map>
 		</property>
 		<property name="getPrimaryKeysSql">
@@ -156,16 +161,36 @@
 				information_schema.constraint_column_usage u
 				where
 				i.constraint_schema = '${database.schema}'
-				and constraint_type = 'PRIMARY KEY'
+				and constraint_type =
+				'PRIMARY KEY'
 				and i.constraint_schema = u.constraint_schema
-				and i.constraint_name = u.constraint_name
-				order by i.table_name,i.constraint_name</value>
+				and
+				i.constraint_name = u.constraint_name
+				order by
+				i.table_name,i.constraint_name</value>
 		</property>
 		<property name="addPrimaryKeySql">
 			<value>ALTER TABLE ${database.schema}.{0}
-				ADD CONSTRAINT {1} PRIMARY KEY ({2})
+				ADD CONSTRAINT {1} PRIMARY
+				KEY ({2})
 				</value>
 		</property>
+		<property name="cleanBeforePrimaryKeySql">
+			<list>
+				<value>DROP TABLE IF EXISTS ${database.schema}.temp_duplicate
+				</value>
+				<value>CREATE TABLE ${database.schema}.temp_duplicate AS select {2}
+					from ${database.schema}.{0} group by {2} having count(*) > 1
+				</value>
+				<value>DELETE FROM ${database.schema}.{0} tv USING
+					${database.schema}.temp_duplicate td WHERE tv.{3} = td.{3} AND
+					tv.{4} = td.{4}</value>
+				<value>INSERT INTO ${database.schema}.{0} ({2}) SELECT {2} FROM
+					${database.schema}.temp_duplicate</value>
+				<value>DROP TABLE ${database.schema}.temp_duplicate</value>
+			</list>
+		</property>
+
 		<property name="primaryKeys">
 			<list>
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
@@ -252,10 +277,9 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-<!-- 	<bean id="restrictionConstraintDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createRestrictionConstraintDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean> -->
+	<!-- <bean id="restrictionConstraintDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate" 
+		factory-method="createRestrictionConstraintDao"> <property name="sessionFactory" 
+		ref="sessionFactory" /> </bean> -->
 
 	<bean id="routeDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createRouteDao">

@@ -255,7 +255,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       network.setCreatorId("TESTNG");
       network.setName("TestNG Network");
       network.setObjectVersion(1);
-      network.setPTNetworkSourceType(PTNetworkSourceTypeEnum.PUBLICTRANSPORT);
+      network.setSourceType(PTNetworkSourceTypeEnum.PUBLICTRANSPORT);
       network.setRegistrationNumber("TESTNG_"+objectId);
       network.setDescription("Fake Network for Test purpose");
       HibernateDaoTemplate<PTNetwork> networkTemplate = (HibernateDaoTemplate<PTNetwork>) applicationContext.getBean("networkDao");

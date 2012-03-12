@@ -166,7 +166,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
       Assert.assertEquals(description.getName(), "NEPTUNE");
       Assert.assertNotNull(params,"params should not be null");
-      Assert.assertEquals(params.size(), 3," params size must equal 3");
+      Assert.assertEquals(params.size(), 4," params size must equal 4");
       logger.info("Description \n "+description.toString());
       Reporter.log("Description \n "+description.toString());
 
@@ -187,7 +187,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
       List<Line> lines = importLine.doImport(parameters, report);
 
       printReport(report.getReport());    
-      
+
       Assert.assertNotNull(lines,"lines can't be null");
       Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
       for (Line line : lines)
@@ -218,7 +218,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
                   Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
                   bps.add(point.getContainedInStopArea());
-                  
+
                   Assert.assertNotNull(point.getContainedInStopArea().getParents(),"StopAreas must have parents : "+point.getContainedInStopArea().getObjectId());
                   comms.addAll(point.getContainedInStopArea().getParents());
                }
@@ -235,7 +235,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
             if (bp.getFacilities() != null)
                facilities.addAll(bp.getFacilities());
          }
-         
+
          for (StopArea comm : comms)
          {
             if (comm.getFacilities() != null)
@@ -256,7 +256,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
          {
             if (connectionLink.getFacilities() != null)
                facilities.addAll(connectionLink.getFacilities());
-            
+
             c.setTimeInMillis(connectionLink.getDefaultDuration().getTime());
             int minutes = c.get(Calendar.MINUTE) ; 
             int hours = c.get(Calendar.HOUR_OF_DAY) ; 
@@ -267,7 +267,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
          }
          Assert.assertEquals(alinks.size(),1,"line must have 1 access link");
-         
+
          Set<AccessPoint> apoints = new HashSet<AccessPoint>();
 
          for (AccessLink accessLink : alinks)
@@ -292,9 +292,9 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
             Assert.assertEquals(seconds,6*3600,"line must have opening time of 6 hours");
             c.setTimeInMillis(accessPoint.getClosingTime().getTime());
-             minutes = c.get(Calendar.MINUTE) ; 
-             hours = c.get(Calendar.HOUR_OF_DAY) ; 
-             seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
+            minutes = c.get(Calendar.MINUTE) ; 
+            hours = c.get(Calendar.HOUR_OF_DAY) ; 
+            seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
             Assert.assertEquals(seconds,23*3600,"line must have opening time of 23 hours");
 
@@ -314,7 +314,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
          Reporter.log(line.toString("\t",1));
       }
-      
+
    }
 
 
@@ -383,6 +383,35 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
       SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
       simpleParameterValue.setFilepathValue(path+"/"+neptuneZip);
       parameters.add(simpleParameterValue);
+
+      ReportHolder report = new ReportHolder();
+
+      List<Line> lines = importLine.doImport(parameters, report);
+
+      Assert.assertNotNull(lines,"lines can't be null");
+      Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
+      for (Line line : lines)
+      {
+         Reporter.log(line.toString("\t",0));
+      }
+      printReport(report.getReport());
+
+   }
+   @Test (groups = {"ImportZipLines"}, description = "Import Plugin should import zip file",dependsOnMethods={"getBean"})
+   public void verifyImportZipLinesOptim() throws ChouetteException
+   {
+
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      {
+         SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+         simpleParameterValue.setFilepathValue(path+"/"+neptuneZip);
+         parameters.add(simpleParameterValue);
+      }
+      {
+         SimpleParameterValue simpleParameterValue = new SimpleParameterValue("optimizeMemory");
+         simpleParameterValue.setBooleanValue(true);
+         parameters.add(simpleParameterValue);
+      }
 
       ReportHolder report = new ReportHolder();
 

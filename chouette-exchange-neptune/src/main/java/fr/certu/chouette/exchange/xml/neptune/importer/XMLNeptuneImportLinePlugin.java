@@ -99,6 +99,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       ParameterDescription param3 = new ParameterDescription("validate", ParameterDescription.TYPE.BOOLEAN, false,
             "false");
       params.add(param3);
+      {
+         ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "false");
+         params.add(param);
+      }
       description.setParameterDescriptions(params);
    }
 
@@ -132,6 +136,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       String filePath = null;
       boolean validate = false;
       String extension = "file extension";
+      boolean optimizeMemory = false;
+
       for (ParameterValue value : parameters)
       {
          if (value instanceof SimpleParameterValue)
@@ -148,6 +154,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             else if (svalue.getName().equals("validate"))
             {
                validate = svalue.getBooleanValue().booleanValue();
+            }
+            else if (svalue.getName().equalsIgnoreCase("optimizeMemory")) 
+            {
+               optimizeMemory = svalue.getBooleanValue().booleanValue();
             }
             else
             {
@@ -182,7 +192,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       {
          // simple file processing
          logger.info("start import simple file " + filePath);
-         Line line = processFileImport(filePath, validate, category1);
+         Line line = processFileImport(filePath, validate, category1,optimizeMemory);
          if (line != null)
          {
             lines = new ArrayList<Line>();
@@ -193,7 +203,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       {
          // zip file processing
          logger.info("start import zip file " + filePath);
-         lines = processZipImport(filePath, validate, category1);
+         lines = processZipImport(filePath, validate, category1,optimizeMemory);
       }
       logger.info("import terminated");
       sheet1_1.addItem(report1_1);
@@ -211,9 +221,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     *           process XML and XSD format validation
     * @param report
     *           report to fill
+    * @param optimizeMemory 
     * @return list of loaded lines
     */
-   private List<Line> processZipImport(String filePath, boolean validate, Report report)
+   private List<Line> processZipImport(String filePath, boolean validate, Report report, boolean optimizeMemory)
    {
       NeptuneFileReader reader = new NeptuneFileReader();
       ZipFile zip = null;
@@ -307,7 +318,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          }
          try
          {
-            Line line = processImport(rootObject, validate, report, entryName,sharedData);
+            Line line = processImport(rootObject, validate, report, entryName,sharedData,optimizeMemory);
 
             if (line != null)
             {
@@ -360,10 +371,11 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     *           process XML and XSD format validation
     * @param report
     *           report to fill
+    * @param optimizeMemory 
     * @return loaded line
     * @throws ExchangeException
     */
-   private Line processFileImport(String filePath, boolean validate, Report report) throws ExchangeException
+   private Line processFileImport(String filePath, boolean validate, Report report, boolean optimizeMemory) throws ExchangeException
    {
       ChouettePTNetworkTypeType rootObject = null;
       NeptuneFileReader reader = new NeptuneFileReader();
@@ -412,7 +424,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          logger.error(e.getLocalizedMessage());
          return null;
       }
-      Line line = processImport(rootObject, validate, report, filePath,new SharedImportedData());
+      Line line = processImport(rootObject, validate, report, filePath,new SharedImportedData(),optimizeMemory);
       if (line == null)
       {
          logger.error("import failed (build model)");
@@ -440,7 +452,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     * @return builded line
     * @throws ExchangeException
     */
-   private Line processImport(ChouettePTNetworkTypeType rootObject, boolean validate, Report report, String entryName,SharedImportedData sharedData)
+   private Line processImport(ChouettePTNetworkTypeType rootObject, boolean validate, Report report, String entryName,SharedImportedData sharedData,boolean optimizeMemory)
          throws ExchangeException
    {
       if (validate)
@@ -481,7 +493,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       modelAssembler.setPtNetwork(converter.extractPTNetwork(rootObject, item,sharedData));
       modelAssembler.setJourneyPatterns(converter.extractJourneyPatterns(rootObject, item));
       modelAssembler.setPtLinks(converter.extractPTLinks(rootObject, item));
-      modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(rootObject, item));
+      modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(rootObject, item,optimizeMemory));
       modelAssembler.setStopPoints(converter.extractStopPoints(rootObject, item));
       modelAssembler.setStopAreas(converter.extractStopAreas(rootObject, item,sharedData));
       modelAssembler.setAreaCentroids(converter.extractAreaCentroids(rootObject, item,sharedData));

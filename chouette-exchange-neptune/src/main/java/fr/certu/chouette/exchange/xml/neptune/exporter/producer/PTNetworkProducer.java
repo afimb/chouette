@@ -1,10 +1,10 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import java.util.Calendar;
+
 import org.exolab.castor.types.Date;
 
 import chouette.schema.types.SourceTypeType;
-
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 
@@ -29,9 +29,13 @@ public class PTNetworkProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		if(ptNetwork.getVersionDate() != null){
 			castorPTNetwork.setVersionDate(new Date(ptNetwork.getVersionDate()));
 		}
+		else
+		{
+		   castorPTNetwork.setVersionDate(new Date(Calendar.getInstance().getTime()));
+		}
 
 		try {
-			PTNetworkSourceTypeEnum ptNetworkSourceType = ptNetwork.getPTNetworkSourceType();
+			PTNetworkSourceTypeEnum ptNetworkSourceType = ptNetwork.getSourceType();
 			if(ptNetworkSourceType != null){
 				castorPTNetwork.setSourceType(SourceTypeType.fromValue(ptNetworkSourceType.value()));
 			}

@@ -76,20 +76,22 @@ public class GeographicService implements IGeographicService
 	@Override
 	public void propagateBarycentre() 
 	{
-		Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
-		Filter lonFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE);
-		Filter coordFilter = Filter.getNewOrFilter(latFilter,lonFilter);
+		// Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
+		// Filter lonFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE);
+		// Filter coordFilter = Filter.getNewOrFilter(latFilter,lonFilter);
 		Filter comtypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.COMMERCIALSTOPPOINT.toString());
-		Filter comFilter = Filter.getNewAndFilter(comtypeFilter,coordFilter);
+		// Filter comFilter = Filter.getNewAndFilter(comtypeFilter,coordFilter);
 		Filter placetypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.STOPPLACE.toString());
-		Filter placeFilter = Filter.getNewAndFilter(placetypeFilter,coordFilter);
+		// Filter placeFilter = Filter.getNewAndFilter(placetypeFilter,coordFilter);
 		List<StopArea> commercials;
 		List<StopArea> stopPlaces;
 		// TODO ITL
 		try 
 		{
-			commercials = stopAreaManager.getAll(null,comFilter);
-			stopPlaces = stopAreaManager.getAll(null,placeFilter);
+//			commercials = stopAreaManager.getAll(null,comFilter);
+//			stopPlaces = stopAreaManager.getAll(null,placeFilter);
+         commercials = stopAreaManager.getAll(null,comtypeFilter);
+         stopPlaces = stopAreaManager.getAll(null,placetypeFilter);
 		} 
 		catch (ChouetteException e) 
 		{

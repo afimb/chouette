@@ -309,8 +309,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 						//Test 3.7 && Test 3.9
 						if(vehicleJourneyAtStops.size() >1){
 							for (VehicleJourneyAtStop vJAtStop : vehicleJourneyAtStops) {
-								String stopPointId = vJAtStop.getStopPointId();
-								StopPoint stopPoint = vJAtStop.getStopPointByObjectId(stopPointId);
+								StopPoint stopPoint = vJAtStop.getStopPoint();
 								if(stopPoint != null){
 									double y1 = (stopPoint.getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
 									double x1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
@@ -321,6 +320,9 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 									//									Point point1 = factory1.createPoint(coordinate);
 
 									for (VehicleJourneyAtStop vJAtStop2 : vehicleJourneyAtStops) {
+									   StopPoint stopPoint2 = vJAtStop2.getStopPoint();
+		                        if (stopPoint2 == null) break;
+
 										long diff = vJAtStop2.getOrder()-vJAtStop.getOrder();
 										if(diff == 1){
 											VehicleJourneyAtStop[] vJAtStops = new VehicleJourneyAtStop[2];
@@ -337,8 +339,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 											list.add(duration);
 
 											//Test 3.7.1
-											String stopPointId2 = vJAtStop2.getStopPointId();
-											StopPoint stopPoint2 = vJAtStop2.getStopPointByObjectId(stopPointId2);
+											
 											if(stopPoint2 != null)
 											{
 												double y2 = (stopPoint2.getLatitude()!=null) ? stopPoint2.getLatitude().doubleValue():0;
@@ -377,7 +378,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 //														logger.info("speed between "+stopPointId+" and "+stopPointId2+" is "+speed+", distance = "+distance);
 //														logger.info("   departure Time = "+departureTime*3600+", arrivalTime = "+arrivalTime*3600);
 													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet9_Step1_warning", Report.STATE.WARNING,
-															stopPointId,stopPointId2,String.valueOf(min3_9),String.valueOf(max3_9));
+															stopPoint.getObjectId(),stopPoint2.getObjectId(),String.valueOf(min3_9),String.valueOf(max3_9));
 													report3_9.addItem(detailReportItem);	
 												}else
 													report3_9.updateStatus(Report.STATE.OK);

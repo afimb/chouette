@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -789,6 +790,11 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          {
             parent.removeContainedStopArea(child);
             child.removeParent(parent);
+            if (!parent.getAreaType().equals(ITL))
+            {
+               child.setParentId(null);
+               stopAreaManager.update(null, child);
+            }
             stopAreaManager.update(null, parent);
          }
       }
@@ -805,6 +811,18 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          if (child != null)
          {
             parent.addContainedStopArea(child);
+            if (!parent.getAreaType().equals(ITL))
+            {
+               child.setParentId(parent.getId());
+               for (Iterator<StopArea> iterator = child.getParents().iterator(); iterator.hasNext();)
+               {
+                  StopArea oldParent = iterator.next();
+                  if (oldParent.getAreaType().equals(ITL)) continue;
+                  iterator.remove();
+               }
+               child.addParent(parent);
+               stopAreaManager.update(null, child);
+            }
             stopAreaManager.update(null, parent);
          }
 
@@ -840,7 +858,14 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          StopArea father = stopAreaManager.getById(idFather);
          if (stopArea != null)
          {
+            for (Iterator<StopArea> iterator = stopArea.getParents().iterator(); iterator.hasNext();)
+            {
+               StopArea parent = iterator.next();
+               if (parent.getAreaType().equals(ITL)) continue;
+               iterator.remove();
+            }
             stopArea.addParent(father);
+            stopArea.setParentId(father.getId());
             stopAreaManager.update(null, stopArea);
          }
       }

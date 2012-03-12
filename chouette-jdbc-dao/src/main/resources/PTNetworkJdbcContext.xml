@@ -31,9 +31,10 @@
 				registrationnumber,
 				sourcename,
 				sourceidentifier,
-				COMMENT)
+				comment,
+				sourcetype)
 				VALUES(?, ?,
-				?, ?, ?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			 </value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -60,7 +61,8 @@
 				registrationnumber = ?,
 				sourcename = ?,
 				sourceidentifier = ?,
-				COMMENT = ?
+				comment = ?,
+				sourceType = ?
 				WHERE objectid = ?
 		</value>
 		</property>

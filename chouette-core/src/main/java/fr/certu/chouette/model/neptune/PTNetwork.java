@@ -83,7 +83,7 @@ public class PTNetwork extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private PTNetworkSourceTypeEnum pTNetworkSourceType;
+   private PTNetworkSourceTypeEnum sourceType;
    /**
     * List of the network lines Neptune Ids<br/>
     * After import, may content only lines imported<br/>

@@ -120,6 +120,7 @@ public class Command
       // pattern partially work
       String[] context = {"classpath*:/chouetteContext.xml"};
 
+      
       if (args.length >= 1) 
       {
          if (args[0].equalsIgnoreCase("-help") ||  args[0].equalsIgnoreCase("-h") )
@@ -160,6 +161,9 @@ public class Command
          command.execute(args);
 
          closeDao();
+         
+         System.runFinalization();
+         
       }
       else
       {
@@ -167,6 +171,8 @@ public class Command
       }
    }
 
+   
+   
    /**
     * @param factory
     */
@@ -700,7 +706,7 @@ public class Command
     * @param simpleval
     * @return
     */
-   private Calendar toCalendar(String simpleval)
+   protected Calendar toCalendar(String simpleval)
    {
       SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
       try
@@ -1081,7 +1087,7 @@ public class Command
       }
    }
 
-   private void printItems(PrintStream stream, String indent,List<ReportItem> items) 
+   protected void printItems(PrintStream stream, String indent,List<ReportItem> items) 
    {
       if (items == null) return;
       for (ReportItem item : items) 
@@ -1957,7 +1963,7 @@ public class Command
    }
 
 
-   private Object toObject(Class<?> type, String value) throws Exception 
+   protected Object toObject(Class<?> type, String value) throws Exception 
    {
       if (value == null) return null;
       String name = type.getSimpleName();
@@ -2009,7 +2015,7 @@ public class Command
       throw new Exception("unable to convert String to "+type.getCanonicalName());
    }
 
-   private Object toPrimitive(Class<?> type, String value) throws Exception 
+   protected Object toPrimitive(Class<?> type, String value) throws Exception 
    {
       if (value == null) throw new Exception("primitive type "+type.getName()+" cannot be set to null");
       String name = type.getName();
@@ -2021,7 +2027,7 @@ public class Command
       throw new Exception("unable to convert String to "+type.getName());
    }
 
-   private Object toEnum(Class<?> type, String value) throws Exception 
+   protected Object toEnum(Class<?> type, String value) throws Exception 
    {
       Method m = type.getMethod("fromValue", String.class);
       return m.invoke(null, value);

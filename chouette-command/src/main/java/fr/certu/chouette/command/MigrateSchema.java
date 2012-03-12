@@ -176,6 +176,7 @@ public class MigrateSchema
                      {
                         batchStmt.addBatch("INSERT INTO "+dataSource.getDatabaseSchema()+".journeypattern_stoppoint (journeypatternid,stoppointid) values("+jpId+","+stopId+")");
                      }
+                     jpSet.add(jpId);
                   }
                   if (count % 250 == 0)
                   {

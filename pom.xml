@@ -532,6 +532,13 @@
 				<artifactId>jai-core</artifactId>
 				<version>1.1.3</version>
 			</dependency>
+			<!-- for import mass data, use temporary database with sqlite -->	
+			<dependency>
+				<groupId>org.xerial</groupId>
+				<artifactId>sqlite-jdbc</artifactId>
+				<version>3.7.2</version>
+			</dependency>
+			
 			<!-- Property annotation (only for compile use) -->
 			<dependency>
 				<groupId>org.projectlombok</groupId>

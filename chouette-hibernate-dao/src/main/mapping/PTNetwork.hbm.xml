@@ -58,6 +58,12 @@
 				<comment>Registration unique number</comment>
 			</column>
 		</property>
+		<property name="sourceType"
+			type="fr.certu.chouette.dao.hibernate.usertype.PTNetworkSourceUserType">
+			<column name="sourceType">
+				<comment>data producer type</comment>
+			</column>
+		</property>
 		<property name="sourceName">
 			<column name="sourceName">
 				<comment>data producer name</comment>

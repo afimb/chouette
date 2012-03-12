@@ -61,6 +61,9 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
 
    @Setter
    private List<PrimaryKeyDef> primaryKeys;
+   
+   @Setter 
+   private List<String>        cleanBeforePrimaryKeySql;
 
    @Override
    protected void afterSessionFactoryCreation() throws Exception
@@ -328,6 +331,13 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
                   continue;
                }
             }
+            // delete potentiality multiple occurrences
+            for (String request : cleanBeforePrimaryKeySql)
+            {
+               String sql = MessageFormat.format(request, keyDef.toArray());
+               stmt.executeUpdate(sql);
+            }
+            // create PK
             String sql = MessageFormat.format(addPrimaryKeySql, keyDef.toArray());
             stmt.executeUpdate(sql);
             logger.debug("creating primary key definition " + keyDef.getKey() + " on " + keyDef.getTable());

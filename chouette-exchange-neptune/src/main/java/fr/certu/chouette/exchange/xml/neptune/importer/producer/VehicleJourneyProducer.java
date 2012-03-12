@@ -1,7 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import java.sql.Time;
-
+import lombok.Setter;
 import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -9,15 +8,21 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, chouette.schema.VehicleJourney> 
 {
-
+   @Setter private DbVehicleJourneyFactory factory;
+   
 	@Override
 	public VehicleJourney produce(chouette.schema.VehicleJourney xmlVehicleJourney,ReportItem report,SharedImportedData sharedData) 
 	{
-		VehicleJourney vehicleJourney = new VehicleJourney();
+	   VehicleJourney vehicleJourney = null;
+	   if (factory == null)
+		   vehicleJourney = new VehicleJourney();
+	   else
+	      vehicleJourney = factory.getNewVehicleJourney();
 
 		// objectId, objectVersion, creatorId, creationTime
 		populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney, report);

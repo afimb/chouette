@@ -52,6 +52,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -380,8 +381,10 @@ public class NeptuneConverter
     * @return VehicleJourneys produced from
     *         ChouetteLineDescription.VehicleJourney
     */
-   public List<VehicleJourney> extractVehicleJourneys(ChouettePTNetworkTypeType rootObject, ReportItem parentReport)
+   public List<VehicleJourney> extractVehicleJourneys(ChouettePTNetworkTypeType rootObject, ReportItem parentReport,boolean optimizeMemory)
    {
+      DbVehicleJourneyFactory vjFactory = new DbVehicleJourneyFactory("Neptune",optimizeMemory);
+      vehicleJourneyProducer.setFactory(vjFactory);
       ReportItem report = new NeptuneReportItem(NeptuneReportItem.KEY.PARSE_OBJECT, Report.STATE.OK, "VehicleJourney");
       ChouetteLineDescription lineDescription = rootObject.getChouetteLineDescription();
       chouette.schema.VehicleJourney[] xmlVehicleJourneys = lineDescription.getVehicleJourney();

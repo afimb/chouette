@@ -1,5 +1,9 @@
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,11 +32,13 @@ public class PrimaryKeyDef
 	}
 	public Object[] toArray()
 	{
+		List<Object> items = new ArrayList<Object>();
+		items.add(table);
+		items.add(key);
+		items.add(columns);
+		items.addAll(Arrays.asList(getColumnNames()));
 		
-		return new Object[]{
-				table,
-				key,
-				columns};
+		return items.toArray();
 	}
 }
 
