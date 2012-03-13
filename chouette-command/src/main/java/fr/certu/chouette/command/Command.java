@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -81,7 +82,7 @@ public class Command
 
    private static enum ATTR_CMD {SET_VALUE, ADD_VALUE, REMOVE_VALUE,SET_REF,ADD_REF,REMOVE_REF};
 
-   @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
+   @Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
    @Setter private ValidationParameters validationParameters;
 

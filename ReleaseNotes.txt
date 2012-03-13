@@ -10,6 +10,7 @@
   - ajout de la clé primaire sur la table journeypattern_stoppoint
   - ajout du champs sourcetype dans la table ptnetwork
   - ajout dans l'import Neptune de l'option optimizeMemory permettant d'importer des lignes volumineuses
+  - correction de l'affichage sous IE
   
 * Version 1.7.2 (06/01/12)
   - correction export GTFS : latitude = longitude et autres coquilles
