@@ -109,7 +109,7 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
 
       // route = un aller-retour !  
       Route route = vj.getRoute();
-      if ("R".equals(route.getWayBack().equals("R")))
+      if ("R".equals(route.getWayBack().equals("R")) && route.getWayBackRouteId() != null)
       {
          trip.setRouteId(toGtfsId(route.getWayBackRouteId()));
          trip.setDirectionId(GtfsTrip.INBOUND);

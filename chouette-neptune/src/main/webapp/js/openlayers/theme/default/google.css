@@ -5,13 +5,13 @@
 }
 .olLayerGoogleV3.olLayerGoogleCopyright {
     bottom: 0px;
-    right: 0px !important;
+    right: 0px; /* !important;*/
 }
 .olLayerGooglePoweredBy {
     left: 2px;
     bottom: 2px;   
 }
 .olLayerGoogleV3.olLayerGooglePoweredBy {
-    bottom: 0px !important;
+    bottom: 0px; /*!important;*/
 }
 

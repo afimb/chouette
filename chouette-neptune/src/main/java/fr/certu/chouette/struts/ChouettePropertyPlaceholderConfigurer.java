@@ -25,6 +25,7 @@ import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer;
@@ -64,6 +65,7 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
             else if (realPath.endsWith("WEB-INF\\"))
                chouette_env = realPath+"classes\\geoportail\\";
          }
+      boolean externalContext = false;
       if (contextName != null) {
          String chouetteConfigRootPath =  System.getProperty("CHOUETTE_CONFIG_ROOT_DIR");
          if (chouetteConfigRootPath == null)
@@ -78,9 +80,19 @@ public class ChouettePropertyPlaceholderConfigurer extends ServletContextPropert
             if (!chouetteConfigRootPath.endsWith(File.separator))
                chouetteConfigRootPath += File.separator;
             String chouetteConfig = chouetteConfigRootPath + contextName + File.separator + "chouette.properties";
-            if ((new File(chouetteConfig)).exists())
-               addLocation(new FileSystemResource(File.separator+chouetteConfig));
+
+            File fic = new File(chouetteConfig);
+            if (fic.exists())
+            {
+               addLocation(new FileSystemResource(fic));
+               externalContext = true;
+            }
+            
          }
+      }
+      if (!externalContext)
+      {
+         addLocation(new ClassPathResource("chouette.properties"));
       }
       super.loadProperties(props);
       Logger rootLogger = Logger.getRootLogger();

@@ -16,7 +16,6 @@
 		<property name="locations">
 			<list>
 				<value>classpath:spring.properties</value>
-				<value>classpath:chouette.properties</value>
 			</list>
 		</property>
 	</bean>

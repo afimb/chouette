@@ -52,11 +52,29 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
       }
 
       String routeLongName = "";
-      if (line.getPublishedName() != null)
-         routeLongName = line.getPublishedName();
-      else
-         routeLongName = line.getName();
-      
+      String nameExtent = "";
+      if (neptuneObject.getWayBackRouteId() == null)
+      {
+         if (neptuneObject.getPublishedName() != null)
+         {
+            routeLongName = neptuneObject.getPublishedName();
+         }
+         else if (neptuneObject.getName() != null)
+         {
+            routeLongName = neptuneObject.getName();
+         }
+         else
+         {
+            nameExtent = ("A".equals(neptuneObject.getWayBack())?" - Aller":" - Retour");
+         }
+      }
+      if (routeLongName.isEmpty())
+      {
+         if (line.getPublishedName() != null)
+            routeLongName = line.getPublishedName()+nameExtent;
+         else
+            routeLongName = line.getName()+nameExtent;
+      }
       if (line.getNumber() == null)
       {
          logger.error("no name for "+neptuneObject.getLine().getObjectId());

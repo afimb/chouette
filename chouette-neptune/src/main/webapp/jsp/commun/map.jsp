@@ -24,7 +24,7 @@
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/map/baseLayer/osmMap.js' includeParams='none'/>" ></script>
 </s:elseif>
 <s:elseif test="baseLayerSource == 'google'">
-  <script language="JavaScript" type="text/javascript" src="<s:url value='http://maps.google.com/maps/api/js?sensor=false' includeParams='none'/>" ></script>
+  <script language="JavaScript" type="text/javascript" src="<s:url value='http://maps.google.com/maps/api/js?v=3.6&sensor=false' includeParams='none'/>" ></script>
   <script language="JavaScript" type="text/javascript" src="<s:url value='/js/map/baseLayer/googleMap.js' includeParams='none'/>" ></script>
 </s:elseif>
 

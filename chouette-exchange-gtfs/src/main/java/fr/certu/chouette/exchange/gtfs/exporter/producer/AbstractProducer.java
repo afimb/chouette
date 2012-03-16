@@ -29,7 +29,8 @@ implements IGtfsProducer<T, N>
 
    protected String toGtfsId(String neptuneId)
    {
-      return neptuneId.replaceAll(":", "_");
+      String[] tokens = neptuneId.split(":");
+      return tokens[2];
    }
    
 }

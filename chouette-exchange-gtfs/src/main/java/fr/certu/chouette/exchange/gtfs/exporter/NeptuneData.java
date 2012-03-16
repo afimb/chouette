@@ -53,7 +53,7 @@ public class NeptuneData
          {
             for (Route route : line.getRoutes())
             {
-               if (!"R".equals(route.getWayBack()))
+               if (!"R".equals(route.getWayBack()) || route.getWayBackRouteId() == null)
                   routes.add(route);
                for (StopPoint point : route.getStopPoints())
                {

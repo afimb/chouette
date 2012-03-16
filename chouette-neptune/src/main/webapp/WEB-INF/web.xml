@@ -17,7 +17,7 @@ timetables of public transport networks, in accordance with a standard exchange 
  <!-- encodage utf-8 -->
  <context-param>
   <param-name>chouetteWindowsConfigRootPath</param-name>
-  <param-value>C:\\chouette</param-value>
+  <param-value>C:\chouette</param-value>
  </context-param>
  <!--context-param> <param-name>chouetteConfig</param-name> <param-value>//home/zbouziane/ChouetteWorkspace/chouette/chouette-attic/src/main/filters/filterTUR.properties</param-value> 
 		</context-param -->
