@@ -190,7 +190,7 @@ WITH (OIDS=FALSE);
 insert into stopareastoparea (parentId,childId) select parentId,id as childId from StopArea where parentId NOTNULL; 
 
 -- init routing constraint links (preserve routing constraint id is possible because pervious versions had a shared sequence)
-insert into stoparea (id, objectid,areatype,name,creationtime) select id, :PREFIX||':StopArea:'||id as objectId,'ITL' as areatype,name,now() as creationtime from routingconstraint;
+insert into stoparea (id, objectid,objectversion,areatype,name,creationtime) select id, :PREFIX||':StopArea:'||id as objectId,1 as objectversion,'ITL' as areatype,name,now() as creationtime from routingconstraint;
 
 -- refresh next value for stoparea sequence
 SELECT SETVAL('stoparea_id_seq'::regclass,(SELECT case when count(*)=0 then 1 ELSE max(id) + 1 END FROM stoparea),false);
