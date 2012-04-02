@@ -136,8 +136,8 @@ public class LineProducer extends AbstractModelProducer<Line>
          report.addItem(reportItem);
          return null;
       }
-      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_LINE, Report.STATE.OK, line.getName());
-      report.addItem(reportItem);
+//      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_LINE, Report.STATE.OK, line.getName());
+//      report.addItem(reportItem);
       return line;
    }
 
@@ -263,7 +263,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             int rank = 1;
             String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
             + route.getWayBack() + "_";
-            if ("00:00".equals(getValue(routeColumn, arrets.get(0))))
+            if ("00:00".equals(getValue(routeColumn, arrets.get(0))) ||  "00:00:00".equals(getValue(routeColumn, arrets.get(0))))
                journeyColumn++;
             for (String[] a : arrets)
             {
@@ -319,7 +319,7 @@ public class LineProducer extends AbstractModelProducer<Line>
             int rank = 1;
             String baseId = objectIdPrefix + ":" + StopPoint.STOPPOINT_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
             + wayback.getWayBack() + "_";
-            if ("00:00".equals(getValue(waybackRouteColumn, arrets.get(wayBackRouteRank))))
+            if ("00:00".equals(getValue(waybackRouteColumn, arrets.get(wayBackRouteRank))) || "00:00:00".equals(getValue(waybackRouteColumn, arrets.get(wayBackRouteRank))))
                journeyColumn++;
             for (int i = wayBackRouteRank; i < arrets.size(); i++)
             {

@@ -234,28 +234,36 @@ public class ImportAction extends GeneriqueAction
          parameters.add(simpleParameterValue3);
          ReportHolder reportHolder = new ReportHolder();
          List<Line> lines = lineManager.doImport(user, "CSV", parameters, reportHolder);
-         if (reportHolder.getReport() != null && !reportHolder.getReport().getStatus().equals(Report.STATE.OK))
-         {
-            logReport(reportHolder.getReport(), Level.ERROR);
-            addActionError(reportHolder.getReport());
-         }
-         else
+         if (lines != null && !lines.isEmpty())
          {
             if (reportHolder.getReport() != null)
             {
                logReport(reportHolder.getReport(), Level.INFO);
             }
-            lineManager.saveAll(user, lines, true, true);
+            for (Line line : lines)
+            {
+               List<Line> bid = new ArrayList<Line>();
+               bid.add(line);
+               lineManager.saveAll(null, bid, true, true);
+               String[] args = new String[1];
+               args[0] = line.getName();
+               addActionMessage(getText("message.import.csv.success", args));
+            }
+            return SUCCESS;
          }
+         addActionError(getText("message.import.csv.failure"));
+         if (reportHolder.getReport() != null)
+         {
+            logReport(reportHolder.getReport(), Level.ERROR);
+            addActionError(reportHolder.getReport());
+         }
+         return INPUT;
       }
       catch (ChouetteException e)
       {
          addActionError(e.getLocalizedMessage());
          return INPUT;
       }
-
-      addActionMessage(getText("message.import.csv.success"));
-      return SUCCESS;
    }
 
    /**

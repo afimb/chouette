@@ -104,37 +104,6 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 
 		return globalReport;
 	}
-	@Transactional
-	@Override
-	public void remove(User user,Route route,boolean propagate) throws ChouetteException
-	{
-		logger.debug("deleting Route = "+route.getObjectId());
-		INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
-		INeptuneManager<PTLink> ptLinkManager = (INeptuneManager<PTLink>)getManager(PTLink.class);
-		INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>)getManager(StopPoint.class);
-		Filter filter = Filter.getNewEqualsFilter("route.id", route.getId());
-		List<JourneyPattern> jps = jpManager.getAll(user, filter);
-		if(jps != null && !jps.isEmpty())
-			jpManager.removeAll(user, jps,propagate);
-		List<PTLink> ptLinks = ptLinkManager.getAll(user, filter);
-		if(ptLinks != null && !ptLinks.isEmpty())
-			ptLinkManager.removeAll(user, ptLinks,propagate);
-		List<StopPoint> stopPoints = stopPointManager.getAll(user, filter);
-		if(stopPoints != null && !stopPoints.isEmpty())
-		{
-			Collections.sort(stopPoints,new Comparator<StopPoint>() 
-					{
-				@Override
-				public int compare(StopPoint o1, StopPoint o2) 
-				{
-					return o2.getPosition() - o1.getPosition();
-				}
-
-					});
-			stopPointManager.removeAll(user, stopPoints,propagate);
-		}
-		super.remove(user, route,propagate);			
-	}
 
 	@Override
 	protected Logger getLogger() 
@@ -185,17 +154,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 	public int removeAll(User user, Filter filter) throws ChouetteException 
 	{
 		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		if (filter.getType().equals(Filter.Type.EQUALS))
-		{
-			INeptuneManager<PTLink> ptlinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
-			INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
-			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-	        Filter dependentFilter = Filter.getNewEqualsFilter("route."+filter.getAttribute(), filter.getFirstValue());
-	        ptlinkManager.removeAll(user, dependentFilter);
-	        jpManager.removeAll(user, dependentFilter);
-	        stopPointManager.removeAll(user, dependentFilter);
-		}
-		else
+		if (!filter.getType().equals(Filter.Type.EQUALS))
 		{
 			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"unvalid filter");
 		}

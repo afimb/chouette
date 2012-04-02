@@ -121,16 +121,33 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
          List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
          for (JourneyPattern journeyPattern : route.getJourneyPatterns())
          {
-            vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
+            List<VehicleJourney> vjByJourney = new ArrayList<VehicleJourney>();
+            vjByJourney.addAll(journeyPattern.getVehicleJourneys());
+            Collections.sort(vjByJourney, new VjComparator());
+            vehicleJourneys.addAll(vjByJourney);
          }
 
+         
          //dummy vehicleJourney global informations are filled with the ones of the first vehicleJourney of the route
          VehicleJourney dummyVJ = vehicleJourneys.get(0);
          vehicleJourneyDirectionCSVLine[vehicleJourneyColumn] = ("R".equals(dummyVJ.getRoute().getWayBack()) ? "RETOUR"
                  : "ALLER");
          List<Timetable> dummyVJTimetables = dummyVJ.getTimetables();
-         if (dummyVJTimetables != null && dummyVJTimetables.size() > 0){
-            vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = dummyVJTimetables.get(0).getComment();
+         if (dummyVJTimetables != null && dummyVJTimetables.size() > 0)
+         {
+            {
+            String tmCode = dummyVJTimetables.get(0).getVersion();
+            if (tmCode == null || tmCode.isEmpty())
+               tmCode = dummyVJTimetables.get(0).getComment();
+            vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = tmCode;
+            }
+            for (int i = 1; i < dummyVJTimetables.size(); i++)
+            {
+               String tmCode = dummyVJTimetables.get(i).getVersion();
+               if (tmCode == null || tmCode.isEmpty())
+                  tmCode = dummyVJTimetables.get(i).getComment();
+               vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] += ","+tmCode;
+            }
          }
          else{
             // TODO add report item
@@ -146,7 +163,19 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
             List<Timetable> timetables = vehicleJourney.getTimetables();
             if (timetables != null && timetables.size() > 0)
             {
-               vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = timetables.get(0).getComment();
+               {
+                  String tmCode = timetables.get(0).getVersion();
+                  if (tmCode == null || tmCode.isEmpty())
+                     tmCode = timetables.get(0).getComment();
+                  vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = tmCode;
+                  }
+                  for (int i = 1; i < timetables.size(); i++)
+                  {
+                     String tmCode = timetables.get(i).getVersion();
+                     if (tmCode == null || tmCode.isEmpty())
+                        tmCode = timetables.get(i).getComment();
+                     vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] += ","+tmCode;
+                  }
             }
             else
             {
@@ -232,5 +261,16 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
          return o1.getWayBack().compareTo(o2.getWayBack());
       }
 
+   }
+   
+   private class VjComparator implements Comparator<VehicleJourney>
+   {
+
+      @Override
+      public int compare(VehicleJourney o1, VehicleJourney o2)
+      {
+         return o1.getVehicleJourneyAtStops().get(0).getDepartureTime().compareTo(o2.getVehicleJourneyAtStops().get(0).getDepartureTime());
+      }
+      
    }
 }

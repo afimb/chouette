@@ -32,6 +32,7 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.struts.GeneriqueAction;
 import fr.certu.chouette.struts.enumeration.EnumerationApplication;
@@ -526,6 +527,17 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
 
    public String update() throws ChouetteException
    {
+      if (model.getAreaCentroid() != null)
+      {
+         AreaCentroid centroid = model.getAreaCentroid();
+         if (centroid.getLongLatType() == null)
+         {
+            if (centroid.getLongitude() != null)
+            {
+               centroid.setLongLatType(LongLatTypeEnum.WGS84);
+            }
+         }
+      }
       stopAreaManager.update(null, model);
       if (getTypePositionGeographique().equals(ARRETPHYSIQUE))
       {

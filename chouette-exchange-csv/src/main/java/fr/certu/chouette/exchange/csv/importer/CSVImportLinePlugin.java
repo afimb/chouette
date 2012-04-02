@@ -242,8 +242,6 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
          currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
          if (currentLine == null) break;
       }
-      timetableCountReport.addMessageArgs(Integer.toString(timetableMap.size()));
-      report.addItem(timetableCountReport);
 
       if (currentLine == null) return null;
       ptNetwork = ptNetworkProducer.produce(csvReader, currentLine, objectIdPrefix, report);
@@ -273,9 +271,13 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             if (line.getRoutes().isEmpty())
             {
                logger.error("empty line removed :" + line.getNumber());
+               CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.INVALID_LINE, Report.STATE.ERROR, line.getName());
+               report.addItem(reportItem);
             }
             else
             {
+               CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_LINE, Report.STATE.OK, line.getName());
+               report.addItem(reportItem);
                lines.add(line);
             }
          }
@@ -290,6 +292,20 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
          }
       }
+      // warns unused Timetables
+      int tmCount = timetableMap.size();
+      for (Timetable tm : timetableMap.values())
+      {
+         if (tm.getVehicleJourneys() == null || tm.getVehicleJourneys().isEmpty())
+         {
+            CSVReportItem unused = new CSVReportItem(CSVReportItem.KEY.UNUSED_TIMETABLE,Report.STATE.WARNING,tm.getComment(),tm.getObjectId());
+            timetableCountReport.addItem(unused);
+            tmCount--;
+         }
+      }
+      timetableCountReport.addMessageArgs(Integer.toString(tmCount));
+      report.addItem(timetableCountReport);
+
       lineCountReport.addMessageArgs(Integer.toString(lines.size()));
       report.addItem(lineCountReport);
 
@@ -347,7 +363,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
                return null;
             }
          }
-         
+
          return currentLine;
       }
       catch (IOException e)

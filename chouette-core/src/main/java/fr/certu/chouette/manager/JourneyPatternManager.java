@@ -90,16 +90,6 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 
 		return globalReport;
 	}
-	@Transactional
-	@Override
-	public void remove(User user,JourneyPattern journeyPattern,boolean propagate) throws ChouetteException{
-		INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
-		Filter filter = Filter.getNewEqualsFilter("journeyPattern.id", journeyPattern.getId());
-		List<VehicleJourney> vehicleJourneys = vjManager.getAll(user, filter);
-		if(vehicleJourneys != null && !vehicleJourneys.isEmpty())
-			vjManager.removeAll(user, vehicleJourneys,propagate);
-		super.remove(user, journeyPattern,propagate);
-	}
 
 	@Override
 	protected Logger getLogger() 

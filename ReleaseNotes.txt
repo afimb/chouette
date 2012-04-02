@@ -1,5 +1,8 @@
                         CHOUETTE RELEASE NOTES
                         ======================
+* Version 1.7.4 (xx/xx/12)
+  - procédure de migration des ITL : il manque l'init de objectVersion
+  - import/export CSV : quelques corrections de bugs et de désynchronisation entre les 2 sens
 
 * Version 1.7.3 (12/03/12)
   - ajout des liens sur les définitions des tests de validation sur la page de lancement des tests

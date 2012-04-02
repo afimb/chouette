@@ -54,38 +54,38 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
       try
       {
          timetable.setVersion(loadStringParam(csvReader, ALIAS_TITLE));
-         timetable.setObjectId(objectIdPrefix+":"+Timetable.TIMETABLE_KEY+":"+timetable.getName());
+         timetable.setObjectId(objectIdPrefix+":"+Timetable.TIMETABLE_KEY+":"+timetable.getVersion());
          if (!NeptuneIdentifiedObject.checkObjectId(timetable.getObjectId()))
          {
             CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, timetable.getComment(), timetable.getObjectId());
             report.addItem(reportItem);
             return null;
          }
-         if (loadStringParam(csvReader, MONDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, MONDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.MONDAY);
          }
-         if (loadStringParam(csvReader, TUESDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, TUESDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.TUESDAY);
          }
-         if (loadStringParam(csvReader, WEDNESDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, WEDNESDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.WEDNESDAY);
          }
-         if (loadStringParam(csvReader, THURSDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, THURSDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.THURSDAY);
          }
-         if (loadStringParam(csvReader, FRIDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, FRIDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.FRIDAY);
          }
-         if (loadStringParam(csvReader, SATURDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, SATURDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.SATURDAY);
          }
-         if (loadStringParam(csvReader, SUNDAY_TITLE).equals(YES_OPTION))
+         if (loadStringParam(csvReader, SUNDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
             timetable.addDayType(DayTypeEnum.SUNDAY);
          }
@@ -117,7 +117,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
          report.addItem(reportItem);
          return null;
       }
-      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_TIMETABLE, Report.STATE.OK, timetable.getName(),timetable.getComment());
+      CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.OK_TIMETABLE, Report.STATE.OK, timetable.getVersion(),timetable.getComment());
       report.addItem(reportItem);
       return timetable;
    }

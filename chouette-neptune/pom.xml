@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.3</version>
+		<version>1.7.4.1</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-neptune</artifactId>
 	<packaging>war</packaging>
-	<version>1.7.3</version>
+	<version>1.7.4.1</version>
 	<dependencies>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
