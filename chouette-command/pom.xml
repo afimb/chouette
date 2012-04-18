@@ -4,12 +4,12 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>1.7.4.1</version>
+		<version>1.7.4.2</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-command</artifactId>
 	<name>Chouette Command</name>
-	<version>1.7.4.1</version>
+	<version>1.7.4.2</version>
 
 	<dependencies>
 		<dependency>

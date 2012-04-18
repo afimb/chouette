@@ -3,11 +3,11 @@
   <parent>
     <artifactId>chouette</artifactId>
     <groupId>fr.certu.chouette</groupId>
-    <version>1.7.4.1</version>
+    <version>1.7.4.2</version>
   </parent>
   <groupId>fr.certu.chouette</groupId>
   <artifactId>chouette-export-geoportail</artifactId>
-  <version>1.7.4.1</version>
+  <version>1.7.4.2</version>
   <name>chouette export geoportail</name>
   <description>export data for geoportail IGN project</description>
 	<dependencies>

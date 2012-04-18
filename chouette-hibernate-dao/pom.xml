@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.4.1</version>
+		<version>1.7.4.2</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-hibernate-dao</artifactId>
 	<name>Chouette Hibernate Dao</name>
-	<version>1.7.4.1</version>
+	<version>1.7.4.2</version>
 
 	<dependencies>
 		<dependency>
