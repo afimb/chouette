@@ -162,6 +162,35 @@ public abstract class Report
       return message;
    }
 
+   public String toJSON()
+   {
+      StringBuilder builder = new StringBuilder();
+      
+      builder.append("{\n");
+      builder.append("  \"key\":\"");
+      builder.append(getOriginKey());
+      builder.append("\",\n  \"message\":");
+      builder.append(getLocalizedMessage());
+      builder.append("\",\n  \"status\":");
+      builder.append(getStatus());
+      builder.append("\"");
+      if (items != null && !items.isEmpty())
+      {
+         builder.append(",\n  \"items\":[\n");
+         for (int i = 0; i < items.size(); i++)
+         {
+             
+            builder.append(items.get(i).toJSON("    ",i == items.size()-1));
+         }
+         builder.append("  ]\n");
+      }
+      
+      builder.append("\n}\n");
+
+      return builder.toString();
+   }
+   
+   
    /**
     * pretty print a report in a stream
     * 
@@ -188,7 +217,7 @@ public abstract class Report
     *           target stream
     * @param indent
     *           indentation
-    * @param items
+    * @param item
     *           items to print
     */
    private static void printItems(PrintStream stream, String indent, List<ReportItem> items)

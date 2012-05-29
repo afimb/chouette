@@ -84,17 +84,16 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
     * PreparedStatement,
     * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
     */
-   @SuppressWarnings("deprecation")
    @Override
    protected void populateStatement(PreparedStatement ps, StopArea stopArea) throws SQLException
    {
-      if (stopArea.getParentId() == null)
+      if (stopArea.getParent() == null)
       {
          ps.setNull(1, Types.BIGINT);
       }
       else
       {
-         ps.setLong(1, stopArea.getParentId());
+         ps.setLong(1, stopArea.getParent().getId());
       }
       ps.setString(2, stopArea.getObjectId());
       ps.setInt(3, stopArea.getObjectVersion());
@@ -188,7 +187,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 
       if (attributeKey.equals("stopAreaStopArea"))
       {
-         JdbcParentChild child = (JdbcParentChild) attribute;
+         JdbcRoutingConstraintChild child = (JdbcRoutingConstraintChild) attribute;
          logger.debug("save relation parentId = " + child.parentId + ", childId = " + child.childId);
          ps.setLong(1, child.parentId);
          ps.setLong(2, child.childId);
@@ -197,7 +196,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
       }
       if (attributeKey.equals("routingconstraints"))
       {
-         JdbcRoutingConstraint routing = (JdbcRoutingConstraint) attribute;
+         JdbcRoutingConstraintLine routing = (JdbcRoutingConstraintLine) attribute;
          logger.debug("save relation line = " + routing.lineId + ", stopArea = " + routing.stopAreaId);
          ps.setLong(1, routing.lineId);
          ps.setLong(2, routing.stopAreaId);
@@ -221,29 +220,29 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
    {
       if (attributeKey.equals("stopAreaStopArea"))
       {
-         Collection<JdbcParentChild> parentChilds = new ArrayList<JdbcParentChild>();
-         if (item.getParents() != null)
+         Collection<JdbcRoutingConstraintChild> routingChilds = new ArrayList<JdbcRoutingConstraintChild>();
+         if (item.getRoutingConstraintAreas() != null)
          {
-            for (StopArea parent : item.getParents())
+            for (StopArea parent : item.getRoutingConstraintAreas())
             {
-               JdbcParentChild object = new JdbcParentChild();
+               JdbcRoutingConstraintChild object = new JdbcRoutingConstraintChild();
                object.parentId = parent.getId();
                object.childId = item.getId();
                logger.debug("prepare relation parentId = " + object.parentId + ", childId = " + object.childId);
-               parentChilds.add(object);
+               routingChilds.add(object);
 
             }
          }
-         return parentChilds;
+         return routingChilds;
       }
       if (attributeKey.equals("routingconstraints"))
       {
-         Collection<JdbcRoutingConstraint> routingConstraints = new ArrayList<JdbcRoutingConstraint>();
+         Collection<JdbcRoutingConstraintLine> routingConstraints = new ArrayList<JdbcRoutingConstraintLine>();
          if (item.getRoutingConstraintLines() != null)
          {
             for (Line routing : item.getRoutingConstraintLines())
             {
-               JdbcRoutingConstraint object = new JdbcRoutingConstraint();
+               JdbcRoutingConstraintLine object = new JdbcRoutingConstraintLine();
                object.lineId = routing.getId();
                object.stopAreaId = item.getId();
                logger.debug("prepare relation line = " + object.lineId + ", stopArea = " + object.stopAreaId);
@@ -257,13 +256,13 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
       return super.getAttributeValues(attributeKey, item);
    }
 
-   class JdbcParentChild
+   class JdbcRoutingConstraintChild
    {
       Long parentId;
       Long childId;
    }
 
-   class JdbcRoutingConstraint
+   class JdbcRoutingConstraintLine
    {
       Long lineId;
       Long stopAreaId;

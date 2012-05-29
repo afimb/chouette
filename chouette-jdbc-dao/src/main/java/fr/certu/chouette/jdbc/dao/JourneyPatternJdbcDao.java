@@ -41,6 +41,8 @@ public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern>
 		ps.setString(7, journeyPattern.getRegistrationNumber());
 		ps.setString(8, journeyPattern.getPublishedName());
 		setId(ps,9,journeyPattern.getRoute());
+		setId(ps,10,journeyPattern.getDepartureStopPoint());
+	   setId(ps,11,journeyPattern.getArrivalStopPoint());
 	}
 
 	@Override

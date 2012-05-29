@@ -23,6 +23,7 @@ public class FormatDescription
 {
 	private String bundleName = null;
 	@Getter @Setter private String name;
+	@Getter @Setter private boolean unzipAllowed = false;
 	@Getter private List<ParameterDescription> parameterDescriptions;
 
 	public FormatDescription(String bundleName)
@@ -108,6 +109,10 @@ public class FormatDescription
 	public String toString(Locale locale) 
 	{
 		String s = "FormatDescription : name = "+name+" , description = "+getDescription(locale);
+		if (unzipAllowed) 
+		{
+		   s+= "\n archive contains collection of same objects" ;
+		}
 		for (ParameterDescription param : parameterDescriptions) 
 		{
 			s+= "\n   "+param.toString(locale);

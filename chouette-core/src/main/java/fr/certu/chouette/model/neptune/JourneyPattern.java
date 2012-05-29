@@ -99,6 +99,18 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private List<VehicleJourney> vehicleJourneys;
+   
+   /**
+    * first StopPoint
+    */
+   @Getter @Setter 
+   private StopPoint departureStopPoint;
+   
+   /**
+    * last StopPoint
+    */
+   @Getter @Setter 
+   private StopPoint arrivalStopPoint;
 
    /*
     * (non-Javadoc)

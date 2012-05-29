@@ -219,8 +219,8 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
                   Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
                   bps.add(point.getContainedInStopArea());
 
-                  Assert.assertNotNull(point.getContainedInStopArea().getParents(),"StopAreas must have parents : "+point.getContainedInStopArea().getObjectId());
-                  comms.addAll(point.getContainedInStopArea().getParents());
+                  Assert.assertNotNull(point.getContainedInStopArea().getParent(),"StopAreas must have parent : "+point.getContainedInStopArea().getObjectId());
+                  comms.add(point.getContainedInStopArea().getParent());
                }
             }
          }
@@ -343,9 +343,10 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
          Assert.assertEquals(line.getRoutingConstraints().size(), 1,"line must have 1 routing constraint");
          StopArea area = line.getRoutingConstraints().get(0);
          Assert.assertEquals(area.getAreaType(), ChouetteAreaEnum.ITL,"routing constraint area must be of "+ChouetteAreaEnum.ITL+" type");
-         Assert.assertNotNull(area.getContainedStopAreas(), "routing constraint area must have stopArea children");
-         Assert.assertNull(area.getParents(), "routing constraint area must not have stopArea parent");
-         Assert.assertTrue(area.getContainedStopAreas().size() > 0, "routing constraint area must have stopArea children");
+         Assert.assertNotNull(area.getRoutingConstraintAreas(), "routing constraint area must have stopArea children as routing constraints");
+         Assert.assertNull(area.getContainedStopAreas(), "routing constraint area must not have stopArea children");
+         Assert.assertNull(area.getParent(), "routing constraint area must not have stopArea parent");
+         Assert.assertTrue(area.getRoutingConstraintAreas().size() > 0, "routing constraint area must have stopArea children as routing constraints");
       }
       printReport(report.getReport());    
    }

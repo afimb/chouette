@@ -37,13 +37,12 @@ public class JSONLineAction extends GeneriqueAction
       {
          for (StopPoint stopPoint : route.getStopPoints()) 
          {
-            for (StopArea stopPlace : stopPoint.getContainedInStopArea().getParents())
+            StopArea stopPlace = stopPoint.getContainedInStopArea().getParent();
+            if (stopPlace != null)
             {
-               if (stopPlace != null)
-               {
-                  stopPlaces.add(new JSONStopArea(stopPlace));
-               }
+               stopPlaces.add(new JSONStopArea(stopPlace));
             }
+
          }
       }
       log.debug("getStopPlaces returns "+stopPlaces.size()+" places");

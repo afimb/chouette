@@ -483,6 +483,16 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          for (VehicleJourneyAtStop vjas : vehicleJourneyAtStops)
          {
             journeyPattern.addStopPoint(vjas.getStopPoint());
+            if (journeyPattern.getDepartureStopPoint() == null || 
+                  journeyPattern.getDepartureStopPoint().after(vjas.getStopPoint()))
+            {
+               journeyPattern.setDepartureStopPoint(vjas.getStopPoint());
+            }
+            if (journeyPattern.getArrivalStopPoint() == null || 
+                  journeyPattern.getArrivalStopPoint().before(vjas.getStopPoint()))
+            {
+               journeyPattern.setArrivalStopPoint(vjas.getStopPoint());
+            }
          }
       }
 

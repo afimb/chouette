@@ -494,6 +494,17 @@ public class ModelAssembler
          // in this case, let add journeyPattern here
          if (route != null) route.addJourneyPattern(journeyPattern);
          journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
+         for (StopPoint point : journeyPattern.getStopPoints())
+         {
+            if (journeyPattern.getArrivalStopPoint() == null || journeyPattern.getArrivalStopPoint().before(point))
+            {
+               journeyPattern.setArrivalStopPoint(point);
+            }
+            if (journeyPattern.getDepartureStopPoint() == null || journeyPattern.getDepartureStopPoint().after(point))
+            {
+               journeyPattern.setDepartureStopPoint(point);
+            }
+         }
       }
    }
 
@@ -572,14 +583,25 @@ public class ModelAssembler
       for (StopArea stopArea : stopAreas)
       {
          stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
-         stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
-         if (stopArea.getContainedStopAreas() != null)
+         if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
          {
-            for (StopArea childStopArea : stopArea.getContainedStopAreas())
+            stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
+            stopArea.setRoutingConstraintAreas(null);
+
+            if (stopArea.getContainedStopAreas() != null)
             {
-               childStopArea.addParent(stopArea);
+               for (StopArea childStopArea : stopArea.getContainedStopAreas())
+               {
+                  childStopArea.setParent(stopArea);
+               }
             }
          }
+         else if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
+         {
+            stopArea.setRoutingConstraintAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
+            stopArea.setContainedStopAreas(null);
+         }
+
          stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
 
          for (Facility facility : facilities)

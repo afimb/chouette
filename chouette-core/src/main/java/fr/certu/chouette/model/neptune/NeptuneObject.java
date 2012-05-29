@@ -98,11 +98,6 @@ public abstract class NeptuneObject implements Serializable
 	@Override
 	public final String toString()
 	{
-
-		//		return ToStringBuilder.reflectionToString(this,
-		//				ToStringStyle.MULTI_LINE_STYLE);
-		//
-		//
 		return toString("",0);
 	}
 

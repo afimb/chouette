@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -176,19 +175,19 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       }
 
       // Création des zones filles et parentes
-      children = model.getContainedStopAreas();
+      if (model.getAreaType().equals(ITL))
+      {
+         children = model.getRoutingConstraintAreas();
+      }
+      else
+      {
+         children = model.getContainedStopAreas();
+      }
 
       father = null;
-      if (model.getParents() != null)
+      if (model.getParent() != null)
       {
-         for (StopArea parent : model.getParents())
-         {
-            if (!parent.getAreaType().equals(ChouetteAreaEnum.ITL))
-            {
-               father = parent;
-               break;
-            }
-         }
+         father = model.getParent();
       }
 
       // lignes si ITL
@@ -801,10 +800,8 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
          if (child != null)
          {
             parent.removeContainedStopArea(child);
-            child.removeParent(parent);
             if (!parent.getAreaType().equals(ITL))
             {
-               child.setParentId(null);
                stopAreaManager.update(null, child);
             }
             stopAreaManager.update(null, parent);
@@ -825,14 +822,6 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
             parent.addContainedStopArea(child);
             if (!parent.getAreaType().equals(ITL))
             {
-               child.setParentId(parent.getId());
-               for (Iterator<StopArea> iterator = child.getParents().iterator(); iterator.hasNext();)
-               {
-                  StopArea oldParent = iterator.next();
-                  if (oldParent.getAreaType().equals(ITL)) continue;
-                  iterator.remove();
-               }
-               child.addParent(parent);
                stopAreaManager.update(null, child);
             }
             stopAreaManager.update(null, parent);
@@ -868,16 +857,9 @@ public class StopAreaAction extends GeneriqueAction implements ModelDriven<StopA
       {
          StopArea stopArea = stopAreaManager.getById(idPositionGeographique);
          StopArea father = stopAreaManager.getById(idFather);
-         if (stopArea != null)
+         if (stopArea != null && father != null)
          {
-            for (Iterator<StopArea> iterator = stopArea.getParents().iterator(); iterator.hasNext();)
-            {
-               StopArea parent = iterator.next();
-               if (parent.getAreaType().equals(ITL)) continue;
-               iterator.remove();
-            }
-            stopArea.addParent(father);
-            stopArea.setParentId(father.getId());
+            stopArea.setParent(father);
             stopAreaManager.update(null, stopArea);
          }
       }

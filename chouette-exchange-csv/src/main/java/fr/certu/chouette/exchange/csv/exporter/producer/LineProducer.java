@@ -18,7 +18,6 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 public class LineProducer extends AbstractCSVNeptuneProducer<Line>
@@ -216,26 +215,14 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
             csvLine[ZIPCODE_COLUMN] = address.getCountryCode();
          }
       }
-      StopArea parent = getParentStopArea(boardingPosition.getParents());
+      StopArea parent = boardingPosition.getParent();
       if (parent != null)
       {
-         csvLine[AREAZONE_COLUMN] = getParentStopArea(boardingPosition.getParents()).getName();
+         csvLine[AREAZONE_COLUMN] = parent.getName();
       }
       csvLine[STOPNAME_COLUMN] = boardingPosition.getName();
 
       return csvLine;
-   }
-
-   private StopArea getParentStopArea(List<StopArea> parents)
-   {
-      for (StopArea parent : parents)
-      {
-         if (!parent.getAreaType().equals(ChouetteAreaEnum.ITL))
-         {
-            return parent;
-         }
-      }
-      return null;
    }
 
    public String convertTimeToString(Time time)

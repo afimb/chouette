@@ -75,6 +75,18 @@
 				<comment>Route Reference</comment>
 			</column>
 		</many-to-one>
+		<many-to-one class="StopPoint" lazy="no-proxy" name="departureStopPoint"
+			foreign-key="departure_point_fkey">
+			<column name="departureStopPointId">
+				<comment>Departure StopPoint Reference</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="StopPoint" lazy="no-proxy" name="arrivalStopPoint"
+			foreign-key="arrival_point_fkey">
+			<column name="arrivalStopPointId">
+				<comment>Arrival StopPoint Reference</comment>
+			</column>
+		</many-to-one>
 		<bag inverse="true" lazy="true" name="vehicleJourneys" cascade="all">
 			<key column="journeyPatternId" foreign-key="vj_jp_fkey"
 				on-delete="cascade" />

@@ -112,74 +112,14 @@
 			</many-to-many>
 		</bag>
 
-		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan"
-			table="vehicleJourneyAtStop" order-by="position">
+		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan" order-by="position">
 			<comment>Vehicle Journey at Stop</comment>
 			<key foreign-key="vjas_vj_fkey">
 				<column name="vehicleJourneyId">
 					<comment>VehicleJourney foreign key (1st part of primary key)</comment>
 				</column>
 			</key>
-
-			<composite-element class="VehicleJourneyAtStop">
-				<many-to-one class="StopPoint" lazy="no-proxy" name="stopPoint"
-					cascade="none" foreign-key="vjas_sp_fkey">
-					<column name="stopPointId">
-						<comment>StopPoint foreign key (2nd part of primary key)</comment>
-					</column>
-				</many-to-one>
-				<property name="connectingServiceId">
-					<column name="connectingServiceId">
-						<comment>connectingServiceId</comment>
-					</column>
-				</property>
-				<property name="boardingAlightingPossibility"
-					type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType">
-					<column name="boardingAlightingPossibility">
-						<comment>boardingAlightingPossibility</comment>
-					</column>
-				</property>
-				<property name="order" type="long">
-					<column name="position">
-						<comment>order in JourneyPattern</comment>
-					</column>
-				</property>
-				<property name="arrivalTime" type="time">
-					<column name="arrivalTime">
-						<comment>Arrival time</comment>
-					</column>
-				</property>
-				<property name="departureTime" type="time">
-					<column name="departureTime">
-						<comment>Departure time</comment>
-					</column>
-				</property>
-				<property name="waitingTime" type="time">
-					<column name="waitingTime">
-						<comment>Waiting time</comment>
-					</column>
-				</property>
-				<property name="elapseDuration" type="time">
-					<column name="elapseDuration">
-						<comment>elapse duration</comment>
-					</column>
-				</property>
-				<property name="headwayFrequency" type="time">
-					<column name="headwayFrequency">
-						<comment>headway frequency</comment>
-					</column>
-				</property>
-				<property name="departure" type="boolean">
-					<column name="isDeparture" default="false">
-						<comment>First stop of the vehicle journey</comment>
-					</column>
-				</property>
-				<property name="arrival" type="boolean">
-					<column name="isArrival" default="false">
-						<comment>Last stop of the vehicle journey</comment>
-					</column>
-				</property>
-			</composite-element>
+			<one-to-many class="VehicleJourneyAtStop" />
 		</bag>
 	</class>
 </hibernate-mapping>

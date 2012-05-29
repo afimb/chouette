@@ -225,6 +225,16 @@ public class StopPoint extends NeptuneIdentifiedObject
       return sb.toString();
    }
 
+   public boolean before(StopPoint another)
+   {
+      return position < another.getPosition();
+   }
+   
+   public boolean after(StopPoint another)
+   {
+      return position > another.getPosition();
+   }
+
    /*
     * (non-Javadoc)
     * 

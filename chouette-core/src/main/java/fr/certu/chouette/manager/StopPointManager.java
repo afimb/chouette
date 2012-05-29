@@ -82,12 +82,9 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
       if (area == null) return;
       if (areas.contains(area)) return;
       areas.add(area);
-      if (area.getParents() != null)
+      if (area.getParent() != null)
       {
-         for (StopArea parent : area.getParents())
-         {
-            addParentHierarchy(areas,parent);
-         }
+         addParentHierarchy(areas,area.getParent());  
       }
 
       if (area.getConnectionLinks() != null)

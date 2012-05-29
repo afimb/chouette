@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>1.7.4.2</version>
+		<version>2.0.0</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-neptune</artifactId>
 	<packaging>war</packaging>
-	<version>1.7.4.2</version>
+	<version>2.0.0</version>
 	<dependencies>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
@@ -183,7 +183,7 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<finalName>chouette_${BUILD_TAG}</finalName>
+					<finalName>chouette_${project.version}</finalName>
 					<descriptors>
 						<descriptor>src/main/resources/assemblies/cbc.xml</descriptor>
 					</descriptors>
@@ -220,7 +220,7 @@
 						<manifestEntries>
 							<Specification-Title>${project.name}</Specification-Title>
 							<Specification-Version>${project.version}</Specification-Version>
-							<Implementation-Version>${BUILD_TAG}</Implementation-Version>
+							<Implementation-Version>${project.version}</Implementation-Version>
 						</manifestEntries>
 					</archive>
 				</configuration>

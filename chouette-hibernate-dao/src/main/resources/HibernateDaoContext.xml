@@ -59,8 +59,8 @@
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml
-				</value>
+				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
 			</list>
 		</property>
 		<!-- chouette specific parameters to complete hibernate update schema action -->
@@ -152,6 +152,8 @@
 				<entry key="ptlk_endstpt_fkey" value="ptlink;endoflinkid;stoppoint;id" />
 				<entry key="ptlk_startstpt_fkey" value="ptlink;startoflinkid;stoppoint;id" />
 				<entry key="stoppoint_area_fkey" value="stoppoint;stopareaid;stoparea;id" />
+				<entry key="departure_point_fkey" value="journeypattern;departurestoppointid;stoppoint;id" />
+				<entry key="arrival_point_fkey" value="journeypattern;arrivalstoppointid;stoppoint;id" />
 			</map>
 		</property>
 		<property name="getPrimaryKeysSql">
@@ -203,11 +205,13 @@
 					<property name="table" value="groupofline_line" />
 					<property name="columns" value="groupoflineid,lineid" />
 				</bean>
+				<!-- 
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
 					<property name="key" value="vehiclejourneyatstop_pkey" />
 					<property name="table" value="vehiclejourneyatstop" />
 					<property name="columns" value="vehiclejourneyid,stoppointid" />
 				</bean>
+				 -->
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
 					<property name="key" value="journeypatternstoppoint_pkey" />
 					<property name="table" value="journeypattern_stoppoint" />

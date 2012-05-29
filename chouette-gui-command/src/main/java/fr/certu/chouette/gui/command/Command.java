@@ -5,19 +5,16 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.command;
+package fr.certu.chouette.gui.command;
 
-import java.io.BufferedReader;
+// import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+// import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.sql.Time;
@@ -45,8 +42,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+// import org.springframework.core.io.Resource;
+// import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -56,7 +53,6 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.ListParameterValue;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -82,15 +78,9 @@ public class Command
    private static final Logger logger = Logger.getLogger(Command.class);
    public static ClassPathXmlApplicationContext applicationContext;
 
-   private static enum ATTR_CMD {SET_VALUE, ADD_VALUE, REMOVE_VALUE,SET_REF,ADD_REF,REMOVE_REF};
-
    @Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
    @Setter private ValidationParameters validationParameters;
-
-   @Setter private MigrateSchema migrationTool;
-
-   @Setter private CheckObjectId checkObjectId;
 
 
    public Map<String,List<String>> globals = new HashMap<String, List<String>>();;
@@ -123,7 +113,6 @@ public class Command
       // pattern partially work
       String[] context = {"classpath*:/chouetteContext.xml"};
 
-      
       if (args.length >= 1) 
       {
          if (args[0].equalsIgnoreCase("-help") ||  args[0].equalsIgnoreCase("-h") )
@@ -132,29 +121,29 @@ public class Command
             System.exit(0);
          }
 
-         if (args[0].equalsIgnoreCase("-noDao"))
-         {
-            List<String> newContext = new ArrayList<String>();
-            PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
-            try
-            {
-               Resource[] re = test.getResources("classpath*:/chouetteContext.xml");
-               for (Resource resource : re)
-               {
-                  if (! resource.getURL().toString().contains("dao"))
-                  {
-                     newContext.add(resource.getURL().toString());
-                  }
-               }
-               context = newContext.toArray(new String[0]);
-               dao = false;
-            } 
-            catch (Exception e) 
-            {
-
-               System.err.println("cannot remove dao : "+e.getLocalizedMessage());
-            }
-         }
+//         if (args[0].equalsIgnoreCase("-noDao"))
+//         {
+//            List<String> newContext = new ArrayList<String>();
+//            PathMatchingResourcePatternResolver test = new PathMatchingResourcePatternResolver();
+//            try
+//            {
+//               Resource[] re = test.getResources("classpath*:/chouetteContext.xml");
+//               for (Resource resource : re)
+//               {
+//                  if (! resource.getURL().toString().contains("dao"))
+//                  {
+//                     newContext.add(resource.getURL().toString());
+//                  }
+//               }
+//               context = newContext.toArray(new String[0]);
+//               dao = false;
+//            } 
+//            catch (Exception e) 
+//            {
+//
+//               System.err.println("cannot remove dao : "+e.getLocalizedMessage());
+//            }
+//         }
          applicationContext = new ClassPathXmlApplicationContext(context);
          ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
          Command command = (Command) factory.getBean("Command");
@@ -192,7 +181,8 @@ public class Command
    /**
     * @param factory
     */
-   public static void initDao() {
+   public static void initDao() 
+   {
       if (dao)
       {
          ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
@@ -238,19 +228,6 @@ public class Command
          printHelp();
          return;
       }
-      if (getBoolean(globals,"migrate_schema"))
-      {
-         try
-         {
-            migrationTool.migrate();
-         }
-         catch (ChouetteException e)
-         {
-            logger.error("migration failure",e);
-            System.err.println("migration failed");
-         }
-         return;
-      }
 
       if (getBoolean(globals,"verbose"))
       {
@@ -267,62 +244,62 @@ public class Command
 
       List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
       int commandNumber = 0;
-      if (getBoolean(globals, "interactive"))
-      {
-         String line = "";
-         verbose = true;
-         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-         String activeObject = getActiveObject(globals);
-         while (true)
-         {
-            try 
-            {
-               System.out.print(activeObject+" ("+beans.size()+") >");
-               line = in.readLine();
-               if (line == null) return;
-               line = line.trim();
-            } 
-            catch (Exception e) 
-            {
-               System.err.println("cannot read input");
-               logger.error("cannot read stdin",e);
-               return;
-            }
-            if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")  || line.equalsIgnoreCase("q")) break;
-            if (!line.startsWith("#")) 
-            {
-               try 
-               {
-                  CommandArgument command = parseLine(++commandNumber, line);
-                  if (command.getName().equalsIgnoreCase("exec"))
-                  {
-                     String file = getSimpleString(command.getParameters(), "file");
-                     List<CommandArgument> cmds = parseFile(file);
-                     int cmdNum = 1;
-                     for (CommandArgument cmd : cmds) 
-                     {
-                        commandNumber++;
-                        beans = executeCommand(beans, cmdNum++, cmd);
-                     }
-
-                  }
-                  else
-                  {	
-                     beans = executeCommand(beans, commandNumber, command);
-                  }
-                  activeObject = getActiveObject(command.getParameters());
-               } 
-               catch (Exception e) 
-               {
-                  logger.error(e.getMessage(),e);
-                  System.out.println(e.getMessage());
-               }
-            }
-
-         }
-
-      }
-      else
+//      if (getBoolean(globals, "interactive"))
+//      {
+//         String line = "";
+//         verbose = true;
+//         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//         String activeObject = getActiveObject(globals);
+//         while (true)
+//         {
+//            try 
+//            {
+//               System.out.print(activeObject+" ("+beans.size()+") >");
+//               line = in.readLine();
+//               if (line == null) return;
+//               line = line.trim();
+//            } 
+//            catch (Exception e) 
+//            {
+//               System.err.println("cannot read input");
+//               logger.error("cannot read stdin",e);
+//               return;
+//            }
+//            if (line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")  || line.equalsIgnoreCase("q")) break;
+//            if (!line.startsWith("#")) 
+//            {
+//               try 
+//               {
+//                  CommandArgument command = parseLine(++commandNumber, line);
+//                  if (command.getName().equalsIgnoreCase("exec"))
+//                  {
+//                     String file = getSimpleString(command.getParameters(), "file");
+//                     List<CommandArgument> cmds = parseFile(file);
+//                     int cmdNum = 1;
+//                     for (CommandArgument cmd : cmds) 
+//                     {
+//                        commandNumber++;
+//                        beans = executeCommand(beans, cmdNum++, cmd);
+//                     }
+//
+//                  }
+//                  else
+//                  {	
+//                     beans = executeCommand(beans, commandNumber, command);
+//                  }
+//                  activeObject = getActiveObject(command.getParameters());
+//               } 
+//               catch (Exception e) 
+//               {
+//                  logger.error(e.getMessage(),e);
+//                  System.out.println(e.getMessage());
+//               }
+//            }
+//
+//         }
+//
+//      }
+//      else
       {
          try
          {
@@ -407,15 +384,6 @@ public class Command
          return beans;
       }
 
-      if (name.equals("checkObjectId"))
-      {
-         String fileName = getSimpleString(parameters, "sqlfile", "invalid.sql");
-         boolean checkType = getBoolean(parameters, "checktype");
-         String prefix = getSimpleString(parameters, "objectidprefix", null);
-         checkObjectId.checkObjectId(fileName,checkType,prefix);
-         return beans;
-      }
-
       INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
       long tdeb = System.currentTimeMillis();
 
@@ -423,51 +391,10 @@ public class Command
       {
          beans = executeGet(manager,parameters);
       }
-      else if (name.equals("new"))
-      {
-         beans = executeNew(manager,parameters);
-      }
-      else if (name.equals("set"))
-      {
-         if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
-         executeSet(beans, parameters);
-      }
-      else if (name.equals("add"))
-      {
-         if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
-         executeAdd(beans, parameters);
-      }
-      else if (name.equals("remove"))
-      {
-         if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : setAttribute must follow a reading command");
-         executeRemove(beans, parameters);
-      }
       else if (name.equals("save"))
       {
          if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : save must follow a reading command");
          executeSave(beans, manager,parameters);
-      }
-      else if (name.equals("delete"))
-      {
-         if (beans == null || beans.isEmpty()) 
-         {
-            System.out.println("Command "+commandNumber+": nothing to delete");
-         }
-         else
-         {
-            executeDelete(beans, manager,parameters);
-         }
-      }
-      else if (name.equals("complete"))
-      {
-         if (beans == null || beans.isEmpty()) 
-         {
-            System.out.println("Command "+commandNumber+": nothing to complete");
-         }
-         else
-         {
-            executeComplete(beans, manager, parameters);
-         }
       }
       else if (name.equals("getImportFormats"))
       {
@@ -478,11 +405,6 @@ public class Command
          beans = executeImport(manager,parameters);
       }
 
-      else if (name.equals("print"))
-      {
-         if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : print must follow a reading command");
-         executePrint(beans,parameters);
-      }
       else if (name.equals("validate"))
       {
          if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : validate must follow a reading command");
@@ -505,22 +427,6 @@ public class Command
       {
          if (beans == null || beans.isEmpty()) throw new Exception("Command "+commandNumber+": Invalid command sequence : export must follow a reading command");
          executeExportDeletion(beans,manager,parameters);
-      }
-      else if (name.equals("info"))
-      {
-         executeInfo(manager);
-      }
-      else if (name.equals("setValidationParameters"))
-      {
-         executeSetValidationParameters(parameters);
-      }
-      else if (name.equals("showValidationParameters"))
-      {
-         executeShowValidationParameters();
-      }
-      else if (name.equals("infoValidationParameters"))
-      {
-         executeInfoValidationParameters();
       }
       else
       {
@@ -549,60 +455,6 @@ public class Command
    }
 
 
-   private void executeShowValidationParameters() 
-   {
-      if (validationParameters == null)
-      {
-         System.out.println("no validationParameters defined ; use setValidationParameters to initialize it");
-      }
-      else
-      {
-         System.out.println(validationParameters);
-      }
-
-   }
-
-   private void executeSetValidationParameters(Map<String, List<String>> parameters) 
-   {
-      for (String key : parameters.keySet()) 
-      {
-         String value = getSimpleString(parameters,key);
-         if (validationParameters == null) validationParameters = new ValidationParameters();
-         try 
-         {
-            setAttribute(validationParameters, key, value);
-         } 
-         catch (Exception e) 
-         {
-            logger.error(e.getMessage());
-            System.err.println("unknown or unvalid parameter " + key);
-         }	
-      }
-   }
-
-   private void executeInfoValidationParameters() throws Exception
-   {
-      try
-      {
-         Class<?> c = validationParameters.getClass();
-         Field[] fields =  c.getDeclaredFields();
-         for (Field field : fields) 
-         {
-            if (field.getName().equals("test3_2_Polygon")) continue;
-            int m = field.getModifiers();
-            if (Modifier.isPrivate(m) && !Modifier.isStatic(m) )
-            {
-               printField(c,field,"");
-            }
-         }
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
-         throw e;
-      }
-
-   }
    /**
     * @param beans
     * @param manager
@@ -872,27 +724,28 @@ public class Command
       }
       return manager;
    }
+
    /**
     * @param parameters
     * @return
     */
-   private String getActiveObject(Map<String, List<String>> parameters) 
-   {
-      String object = null;
-      try
-      {
-         object = getSimpleString(parameters,"object").toLowerCase();
-      }
-      catch (IllegalArgumentException e)
-      {
-         object = getSimpleString(globals,"object","xxx").toLowerCase();
-      }
-      if (!managers.containsKey(object))
-      {
-         return "unknown object";
-      }
-      return object;
-   }
+//   private String getActiveObject(Map<String, List<String>> parameters) 
+//   {
+//      String object = null;
+//      try
+//      {
+//         object = getSimpleString(parameters,"object").toLowerCase();
+//      }
+//      catch (IllegalArgumentException e)
+//      {
+//         object = getSimpleString(globals,"object","xxx").toLowerCase();
+//      }
+//      if (!managers.containsKey(object))
+//      {
+//         return "unknown object";
+//      }
+//      return object;
+//   }
 
    /**
     * @param manager
@@ -1271,19 +1124,6 @@ public class Command
       return beans;
    }
 
-   /**
-    * @param beans
-    * @param parameters 
-    */
-   private void executePrint(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) 
-   {
-      String slevel = getSimpleString(parameters, "level", "0");
-      int level = Integer.parseInt(slevel);
-      for (NeptuneObject bean : beans)
-      {
-         System.out.println(bean.toString("", level));
-      }
-   }
 
    /**
     * @param beans
@@ -1310,672 +1150,7 @@ public class Command
       //		manager.saveAll(null, beans, propagate, !slow);
    }
 
-   /**
-    * @param beans
-    * @param manager
-    * @param parameters 
-    * @throws ChouetteException
-    */
-   private void executeDelete(List<NeptuneIdentifiedObject> beans,
-         INeptuneManager<NeptuneIdentifiedObject> manager, 
-         Map<String, List<String>> parameters)
-   throws ChouetteException 
-   {
-      boolean propagate = getBoolean(parameters, "propagate");
-      /*
-		for (NeptuneIdentifiedObject bean : beans) 
-		{
-			Filter filter = Filter.getNewEqualsFilter("id", bean.getId());
-			manager.removeAll(null, filter);
-		}
-       */
 
-      manager.removeAll(null, beans,propagate);
-      beans.clear();
-   }
-
-   /**
-    * @param beans
-    * @param manager
-    * @param parameters 
-    * @throws ChouetteException
-    */
-   private void executeComplete(List<NeptuneIdentifiedObject> beans,
-         INeptuneManager<NeptuneIdentifiedObject> manager, 
-         Map<String, List<String>> parameters)
-   throws ChouetteException 
-   {
-      for (NeptuneIdentifiedObject bean : beans) 
-      {
-         manager.completeObject(null, bean);
-      }
-
-   }
-
-   /**
-    * @param beans
-    * @param manager
-    * @param parameters 
-    * @throws ChouetteException
-    */
-   private List<NeptuneIdentifiedObject> executeNew(
-         INeptuneManager<NeptuneIdentifiedObject> manager, 
-         Map<String, List<String>> parameters)
-         throws ChouetteException 
-         {
-
-      NeptuneIdentifiedObject bean = 	manager.getNewInstance(null);
-      List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
-      beans.add(bean);
-      return beans;
-
-         }
-
-
-
-   /**
-    * @param beans
-    * @param parameters 
-    * @throws Exception 
-    */
-   private void executeSet(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
-   {
-      updateAttribute("SET", beans, parameters);
-   }
-
-   /**
-    * @param beans
-    * @param parameters 
-    * @throws Exception 
-    */
-   private void executeAdd(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
-   {
-      updateAttribute("ADD", beans, parameters);
-   }
-   /**
-    * @param beans
-    * @param parameters 
-    * @throws Exception 
-    */
-   private void executeRemove(List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
-   {
-      updateAttribute("REMOVE", beans, parameters);
-   }
-
-
-   /**
-    * @param cmd
-    * @param beans
-    * @param parameters
-    * @throws Exception
-    */
-   private void updateAttribute(String cmd,List<NeptuneIdentifiedObject> beans, Map<String, List<String>> parameters) throws Exception 
-   {
-      if (beans.size() == 0)
-      {
-         throw new Exception("no bean to update, process stopped ");
-      }
-      if (beans.size() > 1)
-      {
-         throw new Exception("multiple beans to update, process stopped ");
-      }
-      NeptuneIdentifiedObject bean = beans.get(0);
-      List<String> args = parameters.get("attr");
-      if (args != null)
-      {
-         if (args.isEmpty())
-         {
-            throw new Exception ("command set -attr : missing arguments : name value");
-         }
-         String attrname = args.get(0);
-         String value = null;
-         if (args.size() > 1)
-         {
-            value = args.get(1);
-         }
-         ATTR_CMD c = ATTR_CMD.valueOf(cmd+"_VALUE");
-         followAttribute(c, bean,attrname, value);
-      }
-      else
-      {
-         args = parameters.get("ref");
-         if (args == null)
-         {
-            throw new Exception ("command set must have -attr or -ref argument");
-         }
-         if (args.isEmpty())
-         {
-            throw new Exception ("command set -ref : missing arguments : ref objectId");
-         }
-         String attrname = args.get(0);
-         String value = null;
-         if (args.size() > 1)
-         {
-            value = args.get(1);
-         }
-         ATTR_CMD c = ATTR_CMD.valueOf(cmd+"_REF");
-         followAttribute(c, bean,attrname, value);
-      }
-
-   }
-   /**
-    * @param beans
-    * @param parameters 
-    * @throws Exception 
-    */
-   private void executeInfo(INeptuneManager<NeptuneIdentifiedObject> manager) throws Exception 
-   {
-      Object object = manager.getNewInstance(null);
-      printFields(object,"");
-
-
-   }
-
-   /**
-    * @param object
-    * @throws Exception
-    */
-   private void printFields(Object object,String indent) throws Exception 
-   {
-      try
-      {
-         Class<?> c = object.getClass();
-         Field[] fields = c.getSuperclass().getDeclaredFields();
-         for (Field field : fields) 
-         {
-            int m = field.getModifiers();
-            if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
-            {
-               printField(c,field,indent);
-            }
-
-
-         }
-
-         fields = c.getDeclaredFields();
-         for (Field field : fields) 
-         {
-            int m = field.getModifiers();
-            if (Modifier.isPrivate(m) && !Modifier.isStatic(m))
-            {
-               printField(c,field,indent);
-            }
-
-
-         }
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
-         throw e;
-      }
-   }
-
-   /**
-    * @param objectType
-    * @param field
-    * @param indent
-    * @throws Exception
-    */
-   private void printField(Class<?> objectType, Field field,String indent) throws Exception
-   {
-      String fieldName = field.getName().toLowerCase();
-      if (fieldName.equals("importeditems")) return;
-      if (fieldName.endsWith("id") || fieldName.endsWith("ids"))
-      {
-         if (!fieldName.equals("objectid") && !fieldName.equals("creatorid") && !fieldName.equals("areacentroid"))
-            return;
-      }
-      if (findAccessor(objectType, field.getName(), "get", false) == null 
-            && findAccessor(objectType, field.getName(), "is", false) == null )	
-      {
-         return;
-      }
-      Class<?> type = field.getType();
-
-      if (type.isPrimitive())
-      {
-         System.out.print(indent+"- "+field.getName());
-         System.out.print(" : type "+type.getName());
-         if (findAccessor(objectType, field.getName(), "set", false) == null)	
-         {
-            System.out.print(" (readonly)");
-         }
-      }
-      else
-      {
-         if (type.getSimpleName().equals("List"))
-         {
-            String name = field.getName();
-            name = name.substring(0,name.length()-1);
-            ParameterizedType ptype = (ParameterizedType) field.getGenericType();
-            Class<?> itemType = (Class<?>) ptype.getActualTypeArguments()[0];
-            System.out.print(indent+"- "+name);
-            System.out.print(" : collection of type "+itemType.getSimpleName());
-            if (findAccessor(objectType, name, "add", false) != null)	
-            {
-               System.out.print(" (add allowed)");
-            }
-            if (findAccessor(objectType, name, "remove", false) != null)	
-            {
-               System.out.print(" (remove allowed)");
-            }
-            type = itemType;
-         }
-         else
-         {
-            System.out.print(indent+"- "+field.getName());
-            System.out.print(" : type "+type.getSimpleName());
-            if (findAccessor(objectType, field.getName(), "set", false) == null)	
-            {
-               System.out.print(" (readonly)");
-            }
-         }
-      }
-      System.out.println("");
-      if (!type.isPrimitive())
-         printFieldDetails(type, indent);
-   }
-
-   /**
-    * @param itemType
-    * @param indent
-    * @throws Exception
-    */
-   private void printFieldDetails(Class<?> itemType, String indent)
-   throws Exception 
-   {
-      String itemName = itemType.getName();
-      if (itemName.startsWith("fr.certu.chouette.model.neptune.type."))
-      {
-         if (itemName.endsWith("Enum"))
-         {
-            Field[] fields = itemType.getDeclaredFields();
-            System.out.print(indent+"     ");
-
-            String text = "";
-            for (Field field : fields) 
-            {
-               int m = field.getModifiers();
-               if (Modifier.isPublic(m) && Modifier.isStatic(m) && Modifier.isFinal(m))
-               {
-                  Object instance = field.get(null);
-                  String name = instance.toString();
-                  if (text.length() + name.length() > 79)
-                  {
-                     System.out.print(text+"\n"+indent+"     ");
-                     text = "";
-                  }
-                  text += name+" ";
-               }
-            }
-            System.out.println(text);
-         }
-         else
-         {
-            Object instance = itemType.newInstance();
-            printFields(instance, indent+"     ");
-         }
-      }
-      else if (itemName.startsWith("fr.certu.chouette.model.neptune."))
-      {
-         Object instance = itemType.newInstance();
-         if (instance instanceof NeptuneIdentifiedObject)
-         {
-            String simpleName = itemType.getSimpleName();
-            if (simpleName.equals("AreaCentroid"))
-            {
-               printFields(instance, indent+"     ");
-            }
-         }
-         else
-         {
-            printFields(instance, indent+"     ");
-         }
-
-
-      }
-   }
-
-
-   /**
-    * 
-    * @param object
-    * @param bean 
-    * @param attrname
-    * @param value
-    * @throws Exception
-    */
-   private void followAttribute(ATTR_CMD cmd, Object object, String attrname,
-         String value) 
-   throws Exception
-   {
-      if (attrname.contains("."))
-      {
-         Class<?> type = object.getClass();
-         String basename = attrname.substring(0,attrname.indexOf("."));
-         Object target = null;
-         if (basename.endsWith("]"))
-         {
-            String srank = basename.substring(basename.indexOf("[")+1, basename.indexOf("]"));
-            basename = basename.substring(0, basename.indexOf("["));
-            if (srank.equalsIgnoreCase("new"))
-            {
-               Method add = findAdder(type, basename);
-               target = add.getParameterTypes()[0].newInstance();
-               add.invoke(object, target);
-            }
-            else 
-            {
-               Method getter= findGetter(type, basename+"s");
-               List<?> collection = (List<?>) getter.invoke(object);
-               if (collection == null || collection.isEmpty()) 
-               {
-                  throw new Exception("empty collection "+basename);
-               }
-               if (srank.equalsIgnoreCase("last"))
-               {
-                  target = collection.get(collection.size()-1);
-               }
-               else
-               {
-                  int rank = Integer.parseInt(srank);
-                  if (rank < 0 || rank >= collection.size())
-                  {
-                     throw new Exception("index "+rank+" out of collection bounds "+collection.size());
-                  }
-                  target = collection.get(rank);
-               }
-            }
-         }
-         else
-         {
-            Method getter = findGetter(type, basename);
-            target = getter.invoke(object);
-            if (target == null)
-            {
-               Class<?> targetType = getter.getReturnType();
-               target = targetType.newInstance();
-               Method setter = findSetter(type, basename);
-               setter.invoke(object, target);
-            }
-         }
-         attrname = attrname.substring(attrname.indexOf(".")+1);
-         followAttribute(cmd, target, attrname, value);
-      }
-      else
-      {
-         switch (cmd)
-         {
-         case SET_VALUE : setAttribute(object, attrname, value); break;
-         case ADD_VALUE : addAttribute(object, attrname, value); break;
-         case REMOVE_VALUE : removeAttribute(object, attrname, value); break;
-         case SET_REF : setReference(object, attrname, value); break;
-         case ADD_REF : addReference(object, attrname, value); break;
-         case REMOVE_REF : removeReference(object, attrname, value); break;
-         }
-
-      }
-
-   }
-
-   private void removeAttribute(Object object, String attrname, String value) throws Exception 
-   {
-      Class<?> beanClass = object.getClass();
-      Method adder = findAdder(beanClass,attrname);
-      Class<?> type = adder.getParameterTypes()[0];
-      if (type.getName().startsWith("fr.certu.chouette.model.neptune") &&
-            !type.getName().startsWith("Enum"))
-      {
-         type = Integer.TYPE;
-      }
-      else
-      {
-
-      }
-      Method remover = findRemover(beanClass, attrname,type);
-      Object arg = null;
-      if (type.isEnum())
-      {
-         arg = toEnum(type,value);
-      }
-      else if (type.isPrimitive())
-      {
-         arg = toPrimitive(type,value);
-      }
-      else
-      {
-         arg = toObject(type,value);
-      }
-      remover.invoke(object, arg);
-
-   }
-
-   private void addAttribute(Object object, String attrname, String value) throws Exception 
-   {
-      Class<?> beanClass = object.getClass();
-      Method adder = findAdder(beanClass, attrname);
-      Class<?> type = adder.getParameterTypes()[0];
-      Object arg = null;
-      if (type.isEnum())
-      {
-         arg = toEnum(type,value);
-      }
-      else if (type.isPrimitive())
-      {
-         arg = toPrimitive(type,value);
-      }
-      else
-      {
-         arg = toObject(type,value);
-      }
-      adder.invoke(object, arg);
-
-   }
-
-
-   /**
-    * @param object
-    * @param attrname
-    * @param value
-    * @throws Exception
-    */
-   private void setAttribute(Object object, String attrname, String value) throws Exception 
-   {
-      String name = attrname.toLowerCase();
-      if (name.equals("id")) 
-      {
-         throw new Exception("non writable attribute id for any object , process stopped ");
-      }
-      if (!name.equals("objectid") && !name.equals("creatorid") && !name.equals("areacentroid")&& name.endsWith("id")) 
-      {
-         throw new Exception("non writable attribute "+attrname+" use setReference instand , process stopped ");
-      }
-      Class<?> beanClass = object.getClass();
-      Method setter = findSetter(beanClass, attrname);
-      Class<?> type = setter.getParameterTypes()[0];
-      if (type.isArray() || type.getSimpleName().equals("List"))
-      {
-         throw new Exception("list attribute "+attrname+" for object "+beanClass.getName()+" must be update with (add/remove)Attribute, process stopped ");
-      }
-      Object arg = null;
-      if (type.isEnum())
-      {
-         arg = toEnum(type,value);
-      }
-      else if (type.isPrimitive())
-      {
-         arg = toPrimitive(type,value);
-      }
-      else
-      {
-         arg = toObject(type,value);
-      }
-      setter.invoke(object, arg);
-   }
-
-   /**
-    * @param object
-    * @param refName
-    * @param objectId
-    * @throws Exception
-    */
-   private void setReference(Object object,String refName, String objectId) throws Exception 
-   {
-      Class<?> beanClass = object.getClass();
-      Method method = findSetter(beanClass, refName);
-      updateReference(object, objectId, method);
-   }
-
-   /**
-    * @param object
-    * @param refName
-    * @param objectId
-    * @throws Exception
-    */
-   private void addReference(Object object,String refName, String objectId) throws Exception 
-   {
-      Class<?> beanClass = object.getClass();
-      Method method = findAdder(beanClass, refName);
-      updateReference(object, objectId, method);
-   }
-
-   /**
-    * @param object
-    * @param refName
-    * @param objectId
-    * @throws Exception
-    */
-   private void removeReference(Object object,String refName, String objectId) throws Exception 
-   {
-      Class<?> beanClass = object.getClass();
-      Method method = findRemover(beanClass, refName,String.class);
-      updateReference(object, objectId, method);
-   }
-
-   /**
-    * @param object
-    * @param objectId
-    * @param setter
-    * @throws Exception
-    */
-   private void updateReference(Object object, String objectId, Method method)
-   throws Exception {
-      Class<?> type = method.getParameterTypes()[0];
-
-      String typeName = type.getSimpleName().toLowerCase();
-      INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(typeName);
-      if (manager == null)
-      {
-         throw new Exception("unknown object "+typeName+ ", only "+Arrays.toString(managers.keySet().toArray())+" are managed");
-      }
-      Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
-      NeptuneIdentifiedObject reference = manager.get(null, filter);
-      if (reference != null) 
-      {
-         method.invoke(object, reference);
-      }
-      else
-      {
-         throw new Exception(typeName+" with ObjectId = "+objectId+" does not exists");
-      }
-   }
-
-
-
-   /**
-    * @param beanClass
-    * @param attribute
-    * @return
-    * @throws Exception
-    */
-   private Method findSetter(
-         Class<?> beanClass, String attribute)
-   throws Exception {
-      return findAccessor(beanClass, attribute, "set",true);
-   }
-   /**
-    * @param beanClass
-    * @param attribute
-    * @return
-    * @throws Exception
-    */
-   private Method findAccessor(
-         Class<?> beanClass, String attribute, String prefix, boolean ex)
-   throws Exception {
-      String methodName = prefix+attribute;
-      Method[] methods = beanClass.getMethods();
-      Method accessor = null;
-      for (Method method : methods) 
-      {
-         if (method.getName().equalsIgnoreCase(methodName))
-         {
-            accessor = method;
-            break;
-         }
-      }
-      if (ex && accessor == null)
-      {
-         throw new Exception("unknown accessor "+prefix+" for attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
-      }
-      return accessor;
-   }
-   /**
-    * @param beanClass
-    * @param attribute
-    * @return
-    * @throws Exception
-    */
-   private Method findGetter(
-         Class<?> beanClass, String attribute)
-   throws Exception 
-   {
-      return findAccessor(beanClass, attribute, "get",true);
-   }
-
-   /**
-    * @param beanClass
-    * @param attribute
-    * @return
-    * @throws Exception
-    */
-   private Method findAdder(
-         Class<?> beanClass, String attribute)
-   throws Exception {
-      return findAccessor(beanClass, attribute, "add",true);
-   }
-
-   /**
-    * @param beanClass
-    * @param attribute
-    * @return
-    * @throws Exception
-    */
-   private Method findRemover(
-         Class<?> beanClass, String attribute, Class<?> argType)
-   throws Exception 
-   {
-      String methodName = "remove"+attribute;
-      Method[] methods = beanClass.getMethods();
-      Method accessor = null;
-      for (Method method : methods) 
-      {
-         if (method.getName().equalsIgnoreCase(methodName))
-         {
-            Class<?> parmType = method.getParameterTypes()[0];
-            if (argType.equals(parmType))
-            {
-               accessor = method;
-               break;
-            }
-         }
-      }
-      if (accessor == null)
-      {
-         throw new Exception("unknown accessor remove for attribute "+attribute+" for object "+beanClass.getName()+" with argument type = "+argType.getSimpleName()+", process stopped ");
-      }
-      return accessor;
-   }
 
 
    protected Object toObject(Class<?> type, String value) throws Exception 

@@ -30,10 +30,12 @@
 				COMMENT,
 				registrationnumber,
 				publishedname,
-				routeid
+				routeid,
+				departurestoppointid,
+				arrivalstoppointid
 				)
 				VALUES(?, ?, ?, ?, ?, ? ,?
-				, ?, ?)
+				, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlUpdate">
@@ -48,7 +50,9 @@
 				COMMENT = ?,
 				registrationnumber = ?,
 				publishedname = ?,
-				routeid = ?
+				routeid = ?,
+				departurestoppointid = ?,
+				arrivalstoppointid = ?
 				WHERE objectid = ?
 			</value>
 		</property>

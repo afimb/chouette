@@ -450,7 +450,7 @@ public class ValidationAction extends GeneriqueAction
             String[] args = new String[2];
             for (StopArea stopArea: areas) 
             {
-               if (stopArea.getParents() == null || stopArea.getParents().isEmpty())
+               if (stopArea.getParent() == null )
                {
                   withErrors = true;
                   if (stopArea.getName() == null)

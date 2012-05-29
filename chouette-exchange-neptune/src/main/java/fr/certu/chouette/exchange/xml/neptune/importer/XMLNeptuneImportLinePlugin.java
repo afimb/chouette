@@ -104,6 +104,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          params.add(param);
       }
       description.setParameterDescriptions(params);
+      
    }
 
    /*

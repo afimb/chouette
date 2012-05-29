@@ -687,12 +687,9 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
          // logger.debug("add StopArea " + stopArea.getObjectId());
          stopAreas.add(stopArea);
-         if (stopArea.getParents() != null)
+         if (stopArea.getParent() != null)
          {
-            for (StopArea parent : stopArea.getParents())
-            {
-               stopAreas.addAll(extractStopAreaHierarchy(parent, line));
-            }
+               stopAreas.addAll(extractStopAreaHierarchy(stopArea.getParent(), line));      
          }
       }
 

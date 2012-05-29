@@ -65,12 +65,6 @@
 				<comment>Fare code</comment>
 			</column>
 		</property>
-		<property name="parentId" type="long">
-			<column name="parentid">
-				<comment>(deprecated) Main parent StopArea internal id for v1.6
-					compatibility</comment>
-			</column>
-		</property>
 		<component class="fr.certu.chouette.model.neptune.AreaCentroid"
 			name="areaCentroid" update="true">
 			<property column="objectId" insert="false" name="containedInStopAreaId"
@@ -128,20 +122,13 @@
 			</component>
 		</component>
 
-		<bag name="parents" table="stopareastoparea" lazy="true">
-			<comment>StopArea hierarchical graph</comment>
-			<key foreign-key="stoparea_child_fkey">
-				<column name="childId" index="idx_stoparea_child">
-					<comment>Child reference in hierarchy</comment>
-				</column>
-			</key>
-			<many-to-many class="StopArea" foreign-key="stoparea_parent_fkey">
-				<column name="parentId"  index="idx_stoparea_child">
-					<comment>Parent reference in hierarchy</comment>
-				</column>
-			</many-to-many>
-		</bag>
-
+		<many-to-one name="parent" cascade="none" class="StopArea"
+			lazy="no-proxy" outer-join="auto" foreign-key="area_parent_fkey">
+			<column name="parentId">
+				<comment>parent reference</comment>
+			</column>
+		</many-to-one>
+        
 		<bag name="routingConstraintLines" table="routingconstraints_lines"
 			lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
@@ -158,14 +145,19 @@
 		</bag>
 
 		<!-- comment above -->
-		<bag name="containedStopAreas" table="stopareastoparea" lazy="true">
+		<bag name="routingConstraintAreas" table="stopareastoparea" lazy="true">
 			<key column="parentId" foreign-key="stoparea_parent_fkey" />
 			<many-to-many column="childId" class="StopArea"
 				foreign-key="stoparea_child_fkey" />
 		</bag>
 
+		<bag name="containedStopAreas" lazy="true" inverse="true">
+			<key column="parentId" foreign-key="area_parent_fkey" on-delete="noaction" />
+			<one-to-many class="StopArea" />
+		</bag>
+
 		<!-- comment on StopPoint definition -->
-		<bag name="containedStopPoints" lazy="false" inverse="true">
+		<bag name="containedStopPoints" lazy="true" inverse="true">
 			<key column="stopareaid" foreign-key="stoppoint_area_fkey" />
 			<one-to-many class="StopPoint" />
 		</bag>

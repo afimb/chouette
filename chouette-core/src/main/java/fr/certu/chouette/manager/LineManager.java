@@ -313,12 +313,14 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
 			INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+         INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
 
 			List<PTNetwork> networks = new ArrayList<PTNetwork>();
 			List<Company> companies = new ArrayList<Company>();
 			List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
 			List<Route> routes = new ArrayList<Route>();
 			List<Facility> facilities = new ArrayList<Facility>();
+			List<StopArea> routingConstraints = new ArrayList<StopArea>();
 
 			for (Line line : lines) 
 			{
@@ -327,6 +329,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				addIfMissingInCollection(networks, line.getPtNetwork());
 				mergeCollection(routes,line.getRoutes());	
 				mergeCollection(facilities,line.getFacilities());
+				mergeCollection(routingConstraints, line.getRoutingConstraints());
 			}
 			if(!companies.isEmpty())
 				companyManager.saveAll(user,companies,propagate,fast);
@@ -341,6 +344,8 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				routeManager.saveAll(user, routes,propagate,fast);
 			if(!facilities.isEmpty())
 				facilityManager.saveAll(user, facilities, propagate,fast);
+         if(!routingConstraints.isEmpty())
+            stopAreaManager.saveAll(user, routingConstraints, propagate,fast);
 		}
 		else 
 		{

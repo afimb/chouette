@@ -481,7 +481,7 @@ public class LineProducer extends AbstractModelProducer<Line>
          CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.BAD_ID, Report.STATE.ERROR, physical.getName(), physical.getObjectId());
          report.addItem(reportItem);
       }
-      physical.addParent(commercial);
+      physical.setParent(commercial);
       return physical;
    }
 

@@ -50,7 +50,7 @@ public class NeptuneData
                   if (stop.getObjectId().startsWith(source))
                   {
                      stopAreas.add(stop);
-                     addParents(stop);
+                     addParent(stop);
                      addAccessPoints(stop);
                   }
                }
@@ -75,21 +75,20 @@ public class NeptuneData
 
    }
 
-   private void addParents(StopArea stop)
+   private void addParent(StopArea stop)
    {
-      if (stop.getParents() != null && !stop.getParents().isEmpty())
+      if (stop.getParent() != null )
       {
-         for (StopArea parent : stop.getParents())
+         StopArea parent = stop.getParent();
+
+         if (stopAreas.contains(parent)) return;
+         if (parent.getObjectId().startsWith(source))
          {
-            if (parent.getAreaType().equals(ChouetteAreaEnum.ITL)) continue;
-            if (stopAreas.contains(parent)) continue;
-            if (parent.getObjectId().startsWith(source))
-            {
-               stopAreas.add(parent);
-               addParents(parent);
-               addAccessPoints(parent);
-            }
+            stopAreas.add(parent);
+            addParent(parent);
+            addAccessPoints(parent);
          }
+
       }
 
    }

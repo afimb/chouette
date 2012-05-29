@@ -23,13 +23,10 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
-import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
-import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
@@ -228,8 +225,8 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
                   Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
                   bps.add(point.getContainedInStopArea());
                   
-                  Assert.assertNotNull(point.getContainedInStopArea().getParents(),"StopAreas must have parents : "+point.getContainedInStopArea().getObjectId());
-                  comms.addAll(point.getContainedInStopArea().getParents());
+                  Assert.assertNotNull(point.getContainedInStopArea().getParent(),"StopAreas must have parent : "+point.getContainedInStopArea().getObjectId());
+                  comms.add(point.getContainedInStopArea().getParent());
                }
             }
          }

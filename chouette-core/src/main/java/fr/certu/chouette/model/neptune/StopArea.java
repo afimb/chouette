@@ -71,7 +71,7 @@ public class StopArea extends NeptuneIdentifiedObject
     * name of parentStopArea attribute for {@link Filter} attributeName
     * construction
     */
-   public static final String   PARENTSTOPAREA              = "parentStopArea";
+   public static final String   PARENTSTOPAREA              = "parent";
    /**
     * name of containedStopAreas attribute for {@link Filter} attributeName
     * construction
@@ -157,13 +157,6 @@ public class StopArea extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private List<StopPoint>      containedStopPoints;
-   /**
-    * List of parents
-    * <br/><i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private List<StopArea>       parents;
    /**
     * stopArea type
     * <br/><i>readable/writable</i>
@@ -288,18 +281,22 @@ public class StopArea extends NeptuneIdentifiedObject
    private List<String>           routingConstraintLineIds;
 
    /**
-    * parentId for database v1.6 and less compatibility
-    * 
-    * @deprecated
+    * stopareas affected by this RoutingConstraint
+    * <p>
+    * only for {@link ChouetteAreaEnum.ITL} StopAreas
+    * <br/><i>readable/writable</i>
     */
+   @Getter
    @Setter
-   private Long                 parentId;
+   private List<StopArea>           routingConstraintAreas;
+
+
    /**
-    * main parent StopArea
+    * non ITL parent StopArea
     * 
-    * @deprecated
     */
-   private StopArea             parentStopArea;
+   @Getter @Setter
+   private StopArea             parent;
 
    /**
     * add a facility if not already present
@@ -353,92 +350,6 @@ public class StopArea extends NeptuneIdentifiedObject
          containedStopIds.remove(containedStopId);
    }
 
-   /**
-    * add a parent StopArea if not already present
-    * 
-    * @param parent
-    */
-   public void addParent(StopArea parent)
-   {
-      if (parents == null)
-         parents = new ArrayList<StopArea>();
-      // TODO check area type compatibility
-
-      if (!parents.contains(parent))
-      {
-         parents.add(parent);
-         if (parentId == null)
-            updateParentId();
-      }
-   }
-
-   /**
-    * remove a parent StopArea
-    * 
-    * @param parent
-    */
-   public void removeParent(StopArea parent)
-   {
-      if (parents == null)
-         parents = new ArrayList<StopArea>();
-      if (parents.contains(parent))
-      {
-         parents.remove(parent);
-         if (parentId == parent.getId())
-            updateParentId();
-      }
-   }
-
-   /**
-    * set parentId on first non-RestrictionConstraint parent id
-    */
-   private void updateParentId()
-   {
-      parentId = null;
-      parentStopArea = null;
-      if (parents != null)
-      {
-         for (StopArea parent : parents)
-         {
-            if (!parent.getAreaType().equals(ChouetteAreaEnum.ITL))
-            {
-               parentId = parent.getId();
-               parentStopArea = parent;
-               break;
-            }
-         }
-      }
-   }
-
-   /**
-    * get main parent stoparea id
-    * <p>
-    * maintained for backward compatibility with v1.6 database model
-    * 
-    * @deprecated see {@link getParents()}
-    * @return
-    */
-   public Long getParentId()
-   {
-      if (parentId == null)
-         updateParentId();
-      return parentId;
-   }
-
-   /**
-    * get main parent stoparea
-    * <p>
-    * maintained for backward compatibility with v1.6 database model
-    * 
-    * @deprecated see {@link getParents()}
-    * @return
-    */
-   public StopArea getParentStopArea()
-   {
-      if (parentStopArea == null)
-         updateParentId();
-      return parentStopArea;
-   }
 
    /**
     * add a child StopArea if not already present
@@ -483,9 +394,16 @@ public class StopArea extends NeptuneIdentifiedObject
             throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), containedStopArea
                   .getAreaType().toString(), "containedStopAreas");
          }
+         // ITL relationship are stored in routingConstraintAreas
+         if (!routingConstraintAreas.contains(containedStopArea))
+            routingConstraintAreas.add(containedStopArea);
+         return;
       }
       if (!containedStopAreas.contains(containedStopArea))
+      {
          containedStopAreas.add(containedStopArea);
+         containedStopArea.setParent(this);
+      }
    }
 
    /**
@@ -495,10 +413,24 @@ public class StopArea extends NeptuneIdentifiedObject
     */
    public void removeContainedStopArea(StopArea containedStopArea)
    {
-      if (containedStopAreas == null)
-         containedStopAreas = new ArrayList<StopArea>();
-      if (containedStopAreas.contains(containedStopArea))
-         containedStopAreas.remove(containedStopArea);
+      if (areaType.equals(ChouetteAreaEnum.ITL))
+      {
+         if (routingConstraintAreas == null)
+            routingConstraintAreas = new ArrayList<StopArea>();
+         if (routingConstraintAreas.contains(containedStopArea))
+            routingConstraintAreas.remove(containedStopArea);
+
+      }
+      else
+      {
+         if (containedStopAreas == null)
+            containedStopAreas = new ArrayList<StopArea>();
+         if (containedStopAreas.contains(containedStopArea))
+         {
+            containedStopAreas.remove(containedStopArea);
+            containedStopArea.setParent(null);
+         }
+      }
    }
 
    /**
@@ -744,12 +676,9 @@ public class StopArea extends NeptuneIdentifiedObject
       {
          int childLevel = level - 1;
          String childIndent = indent + CHILD_INDENT;
-         if (parents != null)
+         if (parent != null)
          {
-            for (StopArea parent : parents)
-            {
-               sb.append("\n").append(indent).append(CHILD_ARROW).append(parent.toString(childIndent, childLevel));
-            }
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(parent.toString(childIndent, childLevel));
          }
 
          childIndent = indent + CHILD_LIST_INDENT;
@@ -790,14 +719,11 @@ public class StopArea extends NeptuneIdentifiedObject
             addContainedStopId(child.getObjectId());
          }
       }
-      if (getParents() != null)
+      if (getParent() != null)
       {
-         for (StopArea parent : getParents())
-         {
-            parent.complete();
-         }
-
+         parent.complete();
       }
+      // TODO ITL ? 
       if (getAreaCentroid() != null)
       {
          AreaCentroid centroid = getAreaCentroid();
@@ -839,7 +765,7 @@ public class StopArea extends NeptuneIdentifiedObject
             }
          }
       }
-      
+
       if (getAccessLinks() != null)
       {
          for (AccessLink accessLink : getAccessLinks())
