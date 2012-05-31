@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -39,17 +39,17 @@
 			</column>
 		</property>
 		<property name="shortName">
-			<column name="shortName">
+			<column name="short_name">
 				<comment>Short name</comment>
 			</column>
 		</property>
 		<property name="organisationalUnit">
-			<column name="organizationalUnit">
+			<column name="organizational_unit">
 				<comment>Organizational Unit</comment>
 			</column>
 		</property>
 		<property name="operatingDepartmentName">
-			<column name="operatingDepartmentName">
+			<column name="operating_department_name">
 				<comment>Operating department</comment>
 			</column>
 		</property>
@@ -74,7 +74,7 @@
 			</column>
 		</property>
 		<property name="registrationNumber" unique="true">
-			<column name="registrationNumber">
+			<column name="registration_number">
 				<comment>Registration number</comment>
 			</column>
 		</property>

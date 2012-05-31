@@ -17,24 +17,24 @@
 				INSERT INTO ${database.schema}.AccessLink
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
-				COMMENT,
-				linkdistance,
-				liftavailability,
-				mobilityrestrictedsuitability,
-				stairsavailability,
-				defaultduration,
-				frequenttravellerduration,
-				occasionaltravellerduration,
-				mobilityrestrictedtravellerduration,
-				linktype,
-				intuserneeds,
-				linkorientation,
-				accesspointid,
-				stopareaid
+				comment,
+				link_distance,
+				lift_availability,
+				mobility_restricted_suitability,
+				stairs_availability,
+				default_duration,
+				frequent_traveller_duration,
+				occasional_traveller_duration,
+				mobility_restricted_traveller_duration,
+				link_type,
+				int_user_needs,
+				link_orientation,
+				access_point_id,
+				stop_area_id
 				)
 				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?)
 			</value>
@@ -56,27 +56,24 @@
 				UPDATE ${database.schema}.AccessLink
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
-				COMMENT =?,
-				linkdistance = ?,
-				liftavailability =
-				?,
-				mobilityrestrictedsuitability = ?,
-				stairsavailability = ?,
-				defaultduration = ?,
-				frequenttravellerduration = ?,
-				occasionaltravellerduration = ?,
-				mobilityrestrictedtravellerduration
-				= ?,
-				linktype = ?,
-				intuserneeds = ?,
-				linkorientation = ?,
-				accesspointid
-				= ?,
-				stopareaid = ?
+				comment =?,
+				link_distance = ?,
+				lift_availability = ?,
+				mobility_restricted_suitability = ?,
+				stairs_availability = ?,
+				default_duration = ?,
+				frequent_traveller_duration = ?,
+				occasional_traveller_duration = ?,
+				mobility_restricted_traveller_duration = ?,
+				link_type = ?,
+				int_user_needs = ?,
+				link_orientation = ?,
+				access_point_id = ?,
+				stop_area_id = ?
 				WHERE objectid = ?
 		</value>
 		</property>

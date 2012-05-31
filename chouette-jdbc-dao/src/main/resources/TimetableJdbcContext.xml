@@ -18,12 +18,12 @@
 				INSERT INTO ${database.schema}.Timetable
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				COMMENT,
 				version,
-				intdaytypes
+				int_day_types
 				)
 				VALUES(?, ?, ?, ?, ?, ?, ?)
 			</value>
@@ -44,12 +44,12 @@
 				UPDATE ${database.schema}.Timetable
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				COMMENT = ?,
 				version = ?,
-				intdaytypes = ?
+				int_day_types = ?
 				WHERE
 				objectid = ?
 			</value>
@@ -70,16 +70,16 @@
 						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.Timetable_Period WHERE
-								timetableid = ?
+								time_table_id = ?
 							</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
 								INSERT INTO ${database.schema}.Timetable_Period
 								(
-								timetableid,
-								periodstart,
-								periodend,
+								time_table_id,
+								period_start,
+								period_end,
 								position
 								)
 								VALUES(?, ?, ?, ?)
@@ -88,7 +88,7 @@
 						<entry key="sqlDelete">
 							<value>
 								DELETE FROM ${database.schema}.Timetable_Period WHERE
-								timetableid IN
+								time_table_id IN
 								(_IDS_)
 								 </value>
 						</entry>
@@ -100,14 +100,14 @@
 						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.Timetable_Date WHERE
-								timetableid = ?
+								time_table_id = ?
 							</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
 								INSERT INTO ${database.schema}.Timetable_Date
 								(
-								timetableid,
+								time_table_id,
 								date,
 								position
 								)
@@ -116,7 +116,7 @@
 						<entry key="sqlDelete">
 							<value>
 								DELETE FROM ${database.schema}.Timetable_Date WHERE
-								timetableid IN
+								time_table_id IN
 								(_IDS_) 
 								</value>
 						</entry>
@@ -127,15 +127,15 @@
 		<property name="sqlPurge1">
 			<value>
                  DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
-                    (SELECT DISTINCT (timetableid) FROM ${database.schema}.TimetableVehicleJourney) 
+                    (SELECT DISTINCT (time_table_id) FROM ${database.schema}.TimetableVehicleJourney) 
 			</value>
 		</property>
 		<property name="sqlPurge2">
 			<value>
                  DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
-                    (SELECT DISTINCT (timetableid) FROM ${database.schema}.Timetable_Date 
+                    (SELECT DISTINCT (time_table_id) FROM ${database.schema}.Timetable_Date 
                     UNION 
-                     SELECT DISTINCT (timetableid) FROM ${database.schema}.Timetable_Period) 
+                     SELECT DISTINCT (time_table_id) FROM ${database.schema}.Timetable_Period) 
 			</value>
 		</property>
 	</bean>

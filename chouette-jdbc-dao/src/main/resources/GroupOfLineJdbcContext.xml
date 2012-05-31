@@ -17,9 +17,9 @@
 				INSERT INTO ${database.schema}.GroupOfLine
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
 				COMMENT
 				)
@@ -42,9 +42,9 @@
 				UPDATE ${database.schema}.GroupOfLine
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
 				COMMENT = ?
 				WHERE objectid = ?

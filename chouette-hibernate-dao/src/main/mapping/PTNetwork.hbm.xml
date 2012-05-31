@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -44,7 +44,7 @@
 			</column>
 		</property>
 		<property name="versionDate" type="date">
-			<column name="versionDate">
+			<column name="version_date">
 				<comment>PTNetwork version date</comment>
 			</column>
 		</property>
@@ -54,29 +54,29 @@
 			</column>
 		</property>
 		<property name="registrationNumber" unique="true">
-			<column name="registrationNumber">
+			<column name="registration_number">
 				<comment>Registration unique number</comment>
 			</column>
 		</property>
 		<property name="sourceType"
 			type="fr.certu.chouette.dao.hibernate.usertype.PTNetworkSourceUserType">
-			<column name="sourceType">
+			<column name="source_type">
 				<comment>data producer type</comment>
 			</column>
 		</property>
 		<property name="sourceName">
-			<column name="sourceName">
+			<column name="source_name">
 				<comment>data producer name</comment>
 			</column>
 		</property>
 		<property name="sourceIdentifier">
-			<column name="sourceIdentifier">
+			<column name="source_identifier">
 				<comment>data producer identifier</comment>
 			</column>
 		</property>
 		<!-- comment on Line definition -->
 		<bag name="lines" lazy="true" inverse="true">
-			<key column="PTNetworkId" foreign-key="line_ptnetwork_fkey"
+			<key column="ptnetwork_id" foreign-key="line_ptnetwork_fkey"
 				update="false" on-delete="noaction" />
 			<one-to-many class="Line" />
 		</bag>

@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -39,22 +39,22 @@
 			</column>
 		</property>
 		<property name="beginningSlotTime" type="time" >
-			<column name="beginningSlotTime">
+			<column name="beginning_slot_time">
 				<comment>Beginning slot time</comment>
 			</column>
 		</property>
 		<property name="endSlotTime" type="time" >
-			<column name="endSlotTime">
+			<column name="end_slot_time">
 				<comment>End slot time</comment>
 			</column>
 		</property>
 		<property name="firstDepartureTimeInSlot" type="time" >
-			<column name="firstDepartureTimeInSlot">
+			<column name="first_departure_time_in_slot">
 				<comment>First departure time in slot</comment>
 			</column>
 		</property>
 		<property name="lastDepartureTimeInSlot" type="time" >
-			<column name="lastDepartureTimeInSlot">
+			<column name="last_departure_time_in_slot">
 				<comment>Last departure time in slot</comment>
 			</column>
 		</property>

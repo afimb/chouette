@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -45,23 +45,23 @@
 		</property>
 		<property name="areaType"
 			type="fr.certu.chouette.dao.hibernate.usertype.ChouettteAreaTypeUserType">
-			<column name="areatype">
+			<column name="area_type">
 				<comment>Type of Area : BoardingPosition, Quay, CommercialStopPoint,
 					StopPlace or ITL)</comment>
 			</column>
 		</property>
 		<property name="registrationNumber">
-			<column name="registrationnumber">
+			<column name="registration_number">
 				<comment>Registration number</comment>
 			</column>
 		</property>
 		<property name="nearestTopicName" type="string">
-			<column name="nearesttopicname">
+			<column name="nearest_topic_name">
 				<comment>Nearest topic name</comment>
 			</column>
 		</property>
 		<property name="fareCode" type="int">
-			<column name="farecode">
+			<column name="fare_code">
 				<comment>Fare code</comment>
 			</column>
 		</property>
@@ -84,7 +84,7 @@
 			</property>
 			<property name="longLatType"
 				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
-				<column name="longlattype">
+				<column name="long_lat_type">
 					<comment>Model used for Longitude and Latitude (Standard, WGS84 or
 						WGS92)</comment>
 				</column>
@@ -102,7 +102,7 @@
 					</column>
 				</property>
 				<property name="projectionType" type="string">
-					<column name="projectiontype">
+					<column name="projection_type">
 						<comment>Projection used for coordinates</comment>
 					</column>
 				</property>
@@ -110,12 +110,12 @@
 			<component class="fr.certu.chouette.model.neptune.type.Address"
 				name="address">
 				<property name="countryCode" type="string">
-					<column name="countrycode">
+					<column name="country_code">
 						<comment>Zip code</comment>
 					</column>
 				</property>
 				<property name="streetName" type="string">
-					<column name="streetname">
+					<column name="street_name">
 						<comment>Address</comment>
 					</column>
 				</property>
@@ -124,7 +124,7 @@
 
 		<many-to-one name="parent" cascade="none" class="StopArea"
 			lazy="no-proxy" outer-join="auto" foreign-key="area_parent_fkey">
-			<column name="parentId">
+			<column name="parent_id">
 				<comment>parent reference</comment>
 			</column>
 		</many-to-one>
@@ -133,12 +133,12 @@
 			lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
 			<key foreign-key="routingconstraint_stoparea_fkey">
-				<column name="stopareaid">
+				<column name="stop_area_id">
 					<comment>Routing constraint reference</comment>
 				</column>
 			</key>
 			<many-to-many class="Line" foreign-key="routingconstraint_line_fkey">
-				<column name="lineId">
+				<column name="line_id">
 					<comment>Line reference</comment>
 				</column>
 			</many-to-many>
@@ -146,38 +146,38 @@
 
 		<!-- comment above -->
 		<bag name="routingConstraintAreas" table="stopareastoparea" lazy="true">
-			<key column="parentId" foreign-key="stoparea_parent_fkey" />
-			<many-to-many column="childId" class="StopArea"
+			<key column="parent_id" foreign-key="stoparea_parent_fkey" />
+			<many-to-many column="child_id" class="StopArea"
 				foreign-key="stoparea_child_fkey" />
 		</bag>
 
-		<bag name="containedStopAreas" lazy="true" inverse="true">
-			<key column="parentId" foreign-key="area_parent_fkey" on-delete="noaction" />
+ 		<bag name="containedStopAreas" lazy="true" inverse="true">
+			<key column="parent_id" foreign-key="area_parent_fkey" on-delete="noaction" />
 			<one-to-many class="StopArea" />
 		</bag>
 
 		<!-- comment on StopPoint definition -->
 		<bag name="containedStopPoints" lazy="true" inverse="true">
-			<key column="stopareaid" foreign-key="stoppoint_area_fkey" />
+			<key column="stop_area_id" foreign-key="stoppoint_area_fkey" />
 			<one-to-many class="StopPoint" />
 		</bag>
 
 		<!-- comment on AccessLink definition -->
 		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
-			<key column="stopAreaId" foreign-key="aclk_area_fkey" />
+			<key column="stop_area_id" foreign-key="aclk_area_fkey" />
 			<one-to-many class="AccessLink" />
 		</bag>
 
 		<!-- comment on ConnectionLink definition -->
 		<bag name="connectionStartLinks" table="connectionlink" lazy="true" cascade="all">
-			<key column="departureId" foreign-key="colk_startarea_fkey" />
+			<key column="departure_id" foreign-key="colk_startarea_fkey" />
 			<one-to-many class="ConnectionLink" />
 		</bag>
 
 		<!-- comment on ConnectionLink definition -->
 		<bag name="connectionEndLinks" table="connectionlink" lazy="true" cascade="all">
-			<key column="arrivalId" foreign-key="colk_endarea_fkey" />
-			<one-to-many class="AccessLink" />
+			<key column="arrival_id" foreign-key="colk_endarea_fkey" />
+			<one-to-many class="ConnectionLink" />
 		</bag>
 
 	</class>

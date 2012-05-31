@@ -14,7 +14,7 @@
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.PTNETWORK WHERE id NOT IN (SELECT distinct ptnetworkid FROM ${database.schema}.line)
+				DELETE FROM ${database.schema}.PTNETWORK WHERE id NOT IN (SELECT distinct ptnetwork_id FROM ${database.schema}.line)
 			</value>
 		</property>
 		<property name="sqlInsert">
@@ -22,17 +22,17 @@
 				INSERT INTO ${database.schema}.PTNETWORK
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
-				versiondate,
+				object_version,
+				creation_time,
+				creator_id,
+				version_date,
 				description,
 				name,
-				registrationnumber,
-				sourcename,
-				sourceidentifier,
+				registration_number,
+				source_name,
+				source_identifier,
 				comment,
-				sourcetype)
+				source_type)
 				VALUES(?, ?,
 				?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			 </value>
@@ -52,17 +52,17 @@
 				UPDATE ${database.schema}.PTNETWORK
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				versiondate = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
+				version_date = ?,
 				description = ?,
 				name = ?,
-				registrationnumber = ?,
-				sourcename = ?,
-				sourceidentifier = ?,
+				registration_number = ?,
+				source_name = ?,
+				source_identifier = ?,
 				comment = ?,
-				sourceType = ?
+				source_type = ?
 				WHERE objectid = ?
 		</value>
 		</property>

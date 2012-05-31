@@ -14,7 +14,7 @@
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.COMPANY WHERE id NOT IN (SELECT distinct companyId FROM ${database.schema}.line union SELECT distinct companyId FROM ${database.schema}.vehicleJourney)
+				DELETE FROM ${database.schema}.COMPANY WHERE id NOT IN (SELECT distinct company_id FROM ${database.schema}.line union SELECT distinct company_id FROM ${database.schema}.vehicleJourney)
 			</value>
 		</property>
 		<property name="sqlInsert">
@@ -22,18 +22,18 @@
 				INSERT INTO ${database.schema}.COMPANY
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
-				shortname,
-				organizationalunit,
-				operatingdepartmentname,
+				short_name,
+				organizational_unit,
+				operating_department_name,
 				code,
 				phone,
 				fax,
 				email,
-				registrationnumber)
+				registration_number)
 				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
@@ -52,18 +52,18 @@
 				UPDATE ${database.schema}.COMPANY
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
-				shortname = ?,
-				organizationalunit = ?,
-				operatingdepartmentname = ?,
+				short_name = ?,
+				organizational_unit = ?,
+				operating_department_name = ?,
 				code = ?,
 				phone =?,
 				fax = ?,
 				email = ?,
-				registrationnumber = ?
+				registration_number = ?
 				WHERE objectid = ?
 		</value>
 		</property>

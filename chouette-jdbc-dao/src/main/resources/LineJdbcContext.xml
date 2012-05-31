@@ -14,27 +14,27 @@
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.line WHERE id NOT IN (SELECT distinct lineId FROM ${database.schema}.route)
+				DELETE FROM ${database.schema}.line WHERE id NOT IN (SELECT distinct line_id FROM ${database.schema}.route)
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
 				INSERT INTO ${database.schema}.LINE
 				(
-				ptnetworkid,
-				companyid,
+				ptnetwork_id,
+				company_id,
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
 				NUMBER,
-				publishedname,
-				transportmodename,
-				registrationnumber,
+				published_name,
+				transport_mode_name,
+				registration_number,
 				COMMENT,
-				mobilityrestrictedsuitable,
-				userneeds)
+				mobility_restricted_suitability,
+				int_user_needs)
 				VALUES(?, ?, ?, ?, ?, ?, ?,
 				?, ?, ?, ?, ?, ?, ?)
 			</value>
@@ -55,20 +55,20 @@
 			<value>
 				UPDATE ${database.schema}.LINE
 				SET
-				ptnetworkid = ?,
-				companyid = ?,
+				ptnetwork_id = ?,
+				company_id = ?,
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
 				NUMBER = ?,
-				publishedname = ?,
-				transportmodename = ?,
-				registrationnumber = ?,
+				published_name = ?,
+				transport_mode_name = ?,
+				registration_number = ?,
 				COMMENT = ?,
-				mobilityrestrictedsuitable = ?,
-				userneeds = ?
+				mobility_restricted_suitable = ?,
+				int_user_needs = ?
 				WHERE objectid = ?
 			</value>
 		</property>
@@ -88,15 +88,15 @@
 						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.groupofline_line WHERE
-								lineid = ? 
+								line_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
 								INSERT INTO ${database.schema}.groupofline_line
 								(
-								lineid,
-								groupoflineid
+								line_id,
+								group_of_line_id
 								)
 								VALUES(?, ?)
 								</value>
@@ -104,7 +104,7 @@
 						<entry key="sqlDelete">
 							<value>
 								DELETE FROM ${database.schema}.groupofline_line WHERE
-								lineId IN (_IDS_)
+								line_Id IN (_IDS_)
 								 </value>
 						</entry>
 					</map>

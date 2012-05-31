@@ -20,17 +20,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -48,12 +48,12 @@
 		<bag name="lines" table="groupofline_line" lazy="true">
 			<comment>Lines affected to groupOfLines</comment>
 			<key foreign-key="groupofline_group_fkey ">
-				<column name="groupOfLineId" index="idx_grli_gr">
+				<column name="group_of_line_id" index="idx_grli_gr">
 					<comment>GroupOfLine reference</comment>
 				</column>
 			</key>
 			<many-to-many class="Line" foreign-key="groupofline_line_fkey">
-				<column name="lineId" index="idx_grli_li">
+				<column name="line_id" index="idx_grli_li">
 					<comment>Line reference</comment>
 				</column>
 			</many-to-many>

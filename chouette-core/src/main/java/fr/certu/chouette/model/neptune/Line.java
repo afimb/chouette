@@ -9,6 +9,7 @@ package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -193,9 +194,14 @@ public class Line extends NeptuneIdentifiedObject
     * List of the specific user needs available <br/>
     * <i>readable/writable</i>
     */
+   private List<UserNeedEnum>    userNeeds;
+   
+   /**
+    * encoded form of userNeeds for database purpose
+    */
    @Getter
    @Setter
-   private List<UserNeedEnum>    userNeeds;
+   private Integer                intUserNeeds;                           // BD
 
    /**
     * The optional GroupOfLine of the line <br/>
@@ -306,18 +312,51 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
-    * add a user needs enumeration value to the line<br/>
-    * do nothing if user need is already present
+    * add a userNeed value in userNeeds collection if not already present <br/>
+    * intUserNeeds will be automatically synchronized <br/>
+    * <i>readable/writable</i>
     * 
     * @param userNeed
+    *           the userNeed to add
     */
    public void addUserNeed(UserNeedEnum userNeed)
    {
       if (userNeeds == null)
          userNeeds = new ArrayList<UserNeedEnum>();
       if (!userNeeds.contains(userNeed))
+      {
          userNeeds.add(userNeed);
+         synchronizeUserNeeds();
+      }
    }
+
+   /**
+    * add a collection of userNeed values in userNeeds collection if not already
+    * present <br/>
+    * intUserNeeds will be automatically synchronized
+    * 
+    * @param userNeedCollection
+    *           the userNeeds to add
+    */
+   public void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
+   {
+      if (userNeeds == null)
+         userNeeds = new ArrayList<UserNeedEnum>();
+      boolean added = false;
+      for (UserNeedEnum userNeed : userNeedCollection)
+      {
+         if (!userNeeds.contains(userNeed))
+         {
+            userNeeds.add(userNeed);
+            added = true;
+         }
+      }
+      if (added)
+      {
+         synchronizeUserNeeds();
+      }
+   }
+
 
    /*
     * (non-Javadoc)
@@ -666,51 +705,53 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
-    * convert userNeeds as a long value for database storage
+    * get UserNeeds list
     * 
-    * @return
+    * @return userNeeds
     */
-   public long getUserNeedsAsLong()
+   public List<UserNeedEnum> getUserNeeds()
    {
-      long code = 0;
-      if (userNeeds == null)
+      if (intUserNeeds == null)
+         return userNeeds;
+
+      UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
+      for (UserNeedEnum userNeedEnum : userNeedEnums)
       {
-         userNeeds = new ArrayList<UserNeedEnum>();
+         int filtre = (int) Math.pow(2, userNeedEnum.ordinal());
+         if (filtre == (intUserNeeds.intValue() & filtre))
+         {
+            addUserNeed(userNeedEnum);
+         }
       }
-      for (UserNeedEnum need : userNeeds)
-      {
-         code += (int) Math.pow(2, need.ordinal());
-      }
-      return code;
+      return userNeeds;
    }
 
    /**
-    * convert userNeeds from long value for database storage
+    * set the userNeeds list <br/>
+    * intUserNeeds will be automatically synchronized
     * 
-    * @param code
+    * @param userNeedEnums
+    *           list of UserNeeds to set
     */
-   public void setUserNeedsAsLong(long code)
+   public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
    {
-      if (userNeeds == null)
-      {
-         userNeeds = new ArrayList<UserNeedEnum>();
-      }
-      else
-      {
-         userNeeds.clear();
-      }
+      userNeeds = userNeedEnums;
 
-      if (code != 0)
+      synchronizeUserNeeds();
+   }
+
+   /**
+    * synchronize intUserNeeds with userNeeds List content
+    */
+   private void synchronizeUserNeeds()
+   {
+      intUserNeeds = 0;
+      if (userNeeds == null)
+         return;
+
+      for (UserNeedEnum userNeedEnum : userNeeds)
       {
-         UserNeedEnum[] values = UserNeedEnum.values();
-         for (UserNeedEnum value : values)
-         {
-            int codeBit = (int) Math.pow(2, value.ordinal());
-            if (codeBit == (code & codeBit))
-            {
-               userNeeds.add(value);
-            }
-         }
+         intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
       }
    }
 

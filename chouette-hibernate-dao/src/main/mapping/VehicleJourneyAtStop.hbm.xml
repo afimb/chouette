@@ -15,25 +15,25 @@
 		<properties name="vjas_ukey" unique="true">
 			<many-to-one class="VehicleJourney" lazy="no-proxy" name="vehicleJourney"
 				cascade="none" foreign-key="vjas_vj_fkey">
-				<column name="vehicleJourneyId">
+				<column name="vehicle_journey_id">
 					<comment>vehicleJourney foreign key </comment>
 				</column>
 			</many-to-one>
 			<many-to-one class="StopPoint" lazy="no-proxy" name="stopPoint"
 				cascade="none" foreign-key="vjas_sp_fkey">
-				<column name="stopPointId">
+				<column name="stop_point_id">
 					<comment>StopPoint foreign key </comment>
 				</column>
 			</many-to-one>
 		</properties>
 		<property name="connectingServiceId">
-			<column name="connectingServiceId">
+			<column name="connecting_service_id">
 				<comment>connectingServiceId</comment>
 			</column>
 		</property>
 		<property name="boardingAlightingPossibility"
 			type="fr.certu.chouette.dao.hibernate.usertype.BoardingAlightingPossibilityUserType">
-			<column name="boardingAlightingPossibility">
+			<column name="boarding_alighting_possibility">
 				<comment>boardingAlightingPossibility</comment>
 			</column>
 		</property>
@@ -43,38 +43,38 @@
 			</column>
 		</property>
 		<property name="arrivalTime" type="time">
-			<column name="arrivalTime">
+			<column name="arrival_time">
 				<comment>Arrival time</comment>
 			</column>
 		</property>
 		<property name="departureTime" type="time">
-			<column name="departureTime">
+			<column name="departure_time">
 				<comment>Departure time</comment>
 			</column>
 		</property>
 		<property name="waitingTime" type="time">
-			<column name="waitingTime">
+			<column name="waiting_time">
 				<comment>Waiting time</comment>
 			</column>
 		</property>
 		<property name="elapseDuration" type="time">
-			<column name="elapseDuration">
+			<column name="elapse_duration">
 				<comment>elapse duration</comment>
 			</column>
 		</property>
 		<property name="headwayFrequency" type="time">
-			<column name="headwayFrequency">
+			<column name="headway_frequency">
 				<comment>headway frequency</comment>
 			</column>
 		</property>
 		<property name="departure" type="boolean">
-			<column name="isDeparture" default="false">
+			<column name="is_departure" default="false">
 				<comment>First stop of the vehicle journey (deprecated : see
 					JourneyPattern)</comment>
 			</column>
 		</property>
 		<property name="arrival" type="boolean">
-			<column name="isArrival" default="false">
+			<column name="is_arrival" default="false">
 				<comment>Last stop of the vehicle journey (deprecated : see
 					JourneyPattern)</comment>
 			</column>

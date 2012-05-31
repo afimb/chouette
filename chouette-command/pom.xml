@@ -73,33 +73,7 @@
 		</dependency>
 
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>development</id>
-			<activation>
-				<property>
-					<name>!site</name>
-				</property>
-			</activation>
-			<properties>
-				<profile.filter>filter</profile.filter>
-			</properties>
-		</profile>
-		<profile>
-			<id>production</id>
-			<activation>
-				<property>
-					<name>site</name>
-				</property>
-			</activation>
-			<properties>
-				<profile.filter>filter${site}</profile.filter>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
-		<!-- <filters> <filter>src/main/filters/${profile.filter}.properties</filter> 
-			</filters> -->
 		<resources>
 			<resource>
 				<directory>src/main/java/</directory>

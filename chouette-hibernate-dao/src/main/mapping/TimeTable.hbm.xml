@@ -18,17 +18,17 @@
 			</column>
 		</property>
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -44,14 +44,14 @@
 			</column>
 		</property>
 		<property name="intDayTypes">
-			<column name="intDayTypes">
+			<column name="int_day_types">
 				<comment>coded DayTypeEnum list (Monday,Tuesday, ...)</comment>
 			</column>
 		</property>
 		<list lazy="false" name="calendarDays" table="timetable_date">
 			<comment>Applicable Calendar days for Timetable</comment>
 			<key foreign-key="tm_date_fkey">
-				<column name="timetableId">
+				<column name="time_table_id">
 					<comment>timetable foreign key</comment>
 				</column>
 			</key>
@@ -69,7 +69,7 @@
 		<list lazy="false" name="periods" table="timetable_period">
 			<comment>Applicable Periods for Timetable</comment>
 			<key foreign-key="tm_period_fkey">
-				<column name="timetableId">
+				<column name="time_table_id">
 					<comment>timetable foreign key</comment>
 				</column>
 			</key>
@@ -80,12 +80,12 @@
 			</list-index>
 			<composite-element class="Period">
 				<property name="startDate" type="date">
-					<column name="periodstart">
+					<column name="period_start">
 						<comment>start date of period</comment>
 					</column>
 				</property>
 				<property name="endDate" type="date">
-					<column name="periodend">
+					<column name="period_end">
 						<comment>end date of period</comment>
 					</column>
 				</property>
@@ -95,12 +95,12 @@
 		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="true"
 			inverse="true">
 			<key>
-				<column name="timetableId">
+				<column name="time_table_id">
 					<comment>Timetable foreign key</comment>
 				</column>
 			</key>
 			<many-to-many class="VehicleJourney" >
-				<column name="vehiclejourneyId">
+				<column name="vehicle_journey_id">
 					<comment>VehicleJourney foreign key</comment>
 				</column>
 			</many-to-many>

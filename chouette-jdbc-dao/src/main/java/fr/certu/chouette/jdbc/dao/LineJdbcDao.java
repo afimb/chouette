@@ -61,7 +61,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
       if(line.getMobilityRestrictedSuitable() != null)
          mobilityRS = true;		
       ps.setBoolean(13, mobilityRS);
-      ps.setLong(14, line.getUserNeedsAsLong());
+      ps.setObject(14, (Integer)line.getIntUserNeeds());
    }
 
    /* (non-Javadoc)

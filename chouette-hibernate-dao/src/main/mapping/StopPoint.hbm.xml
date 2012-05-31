@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -40,14 +40,14 @@
 		</property>
 		<many-to-one name="containedInStopArea" class="StopArea"
 			cascade="none" lazy="no-proxy" outer-join="auto" foreign-key="stoppoint_area_fkey">
-			<column name="stopareaid">
+			<column name="stop_area_id">
 				<comment>StopArea reference</comment>
 			</column>
 		</many-to-one>
 
 		<many-to-one name="route" lazy="no-proxy" class="Route"
 			insert="true" update="true">
-			<column name="routeId">
+			<column name="route_id">
 				<comment>Route reference</comment>
 			</column>
 		</many-to-one>

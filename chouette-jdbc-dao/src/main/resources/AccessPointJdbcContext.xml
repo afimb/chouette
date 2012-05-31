@@ -17,26 +17,26 @@
 				INSERT INTO ${database.schema}.AccessPoint
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
-				COMMENT,
-				countrycode,
-				streetname,
+				comment,
+				country_code,
+				street_name,
 				longitude,
 				latitude,
-				longlattype,
+				long_lat_type,
 				x,
 				y,
-				projectiontype,
-				containedin,
-				openningtime,
-				closingtime,
+				projection_type,
+				contained_in,
+				openning_time,
+				closing_time,
 				type,
-				liftavailability,
-				mobilityrestrictedsuitability,
-				stairsavailability
+				lift_availability,
+				mobility_restricted_suitability,
+				stairs_availability
 				)
 				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?)
 			</value>
@@ -58,26 +58,26 @@
 				UPDATE ${database.schema}.AccessPoint
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
-				COMMENT = ?,
-				countrycode = ?,
-				streetname = ?,
+				comment = ?,
+				country_code = ?,
+				street_name = ?,
 				longitude = ?,
 				latitude = ?,
-				longlattype = ?,
+				long_lat_type = ?,
 				x = ?,
 				y = ?,
-				projectiontype = ?,
-				containedin = ?,
-				openningtime = ?,
-				closingtime = ?,
+				projection_type = ?,
+				contained_in = ?,
+				openning_time = ?,
+				closing_time = ?,
 				type = ?,
-				liftavailability = ?,
-				mobilityrestrictedsuitability = ? ,
-				stairsavailability =?
+				lift_availability = ?,
+				mobility_restricted_suitability = ? ,
+				stairs_availability =?
 				WHERE objectid = ?
 		</value>
 		</property>

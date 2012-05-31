@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -44,12 +44,12 @@
 			</column>
 		</property>
 		<property name="oppositeRouteId" type="long" >
-			<column name="oppositeRouteId">
+			<column name="opposite_route_id">
 				<comment>Opposite route reference</comment>
 			</column>
 		</property>
 		<property name="publishedName" >
-			<column name="publishedName">
+			<column name="published_name">
 				<comment>Published name</comment>
 			</column>
 		</property>
@@ -72,16 +72,16 @@
 		<!-- relations -->
 		<bag name="journeyPatterns" lazy="true" inverse="true"
 			cascade="all-delete-orphan">
-			<key column="routeId" foreign-key="jp_route_fkey" on-delete="cascade" />
+			<key column="route_id" foreign-key="jp_route_fkey" on-delete="cascade" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
 		<bag name="ptLinks" lazy="true" inverse="true" cascade="all-delete-orphan">
-			<key column="routeId" foreign-key="ptlink_route_fkey" on-delete="cascade" />
+			<key column="route_id" foreign-key="ptlink_route_fkey" on-delete="cascade" />
 			<one-to-many class="PTLink" />
 		</bag>
 		<bag name="stopPoints" lazy="true" inverse="true" cascade="all-delete-orphan"
 			order-by="position">
-			<key column="routeId" foreign-key="stoppoint_route_fkey"
+			<key column="route_id" foreign-key="stoppoint_route_fkey"
 				on-delete="cascade" />
 			<!-- <list-index column="position" base="0"/> -->
 			<one-to-many class="StopPoint" />
@@ -89,7 +89,7 @@
 		<many-to-one name="line" insert="true" update="true"
 			foreign-key="route_line_fkey" class="Line" lazy="no-proxy"
 			outer-join="auto" >
-			<column name="lineId">
+			<column name="line_id">
 				<comment>Line reference</comment>
 			</column>
 		</many-to-one>

@@ -17,12 +17,12 @@
 				INSERT INTO ${database.schema}.StopPoint
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
-				stopareaid,
+				object_version,
+				creation_time,
+				creator_id,
+				stop_area_id,
 				position,
-				routeid
+				route_id
 				)
 				VALUES(?, ?, ?, ?, ?, ?, ?)
 			</value>
@@ -43,12 +43,12 @@
 				UPDATE ${database.schema}.StopPoint
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				stopareaid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
+				stop_area_id = ?,
 				position = ?,
-				routeid = ?
+				route_id = ?
 				WHERE objectid = ?
 		</value>
 		</property>

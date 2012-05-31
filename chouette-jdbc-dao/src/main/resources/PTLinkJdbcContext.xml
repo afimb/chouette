@@ -17,15 +17,15 @@
 				INSERT INTO ${database.schema}.PTLink
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
 				COMMENT,
-				linkdistance,
-				startoflinkid,
-				endoflinkid,
-				routeid
+				link_distance,
+				start_of_link_id,
+				end_of_link_id,
+				route_id
 				)
 				VALUES(?, ?, ?, ?, ?, ? ,?, ?, ?, ?)
 			</value>
@@ -46,16 +46,16 @@
 				UPDATE ${database.schema}.PTLink
 				SET
 				objectid = ?,
-				objectversion
+				object_version
 				= ?,
-				creationtime = ?,
-				creatorid = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
 				COMMENT = ?,
-				linkdistance = ?,
-				startoflinkid = ?,
-				endoflinkid = ?,
-				routeid = ?
+				link_distance = ?,
+				start_of_link_id = ?,
+				end_of_link_id = ?,
+				route_id = ?
 				WHERE
 				objectid = ?
 		</value>

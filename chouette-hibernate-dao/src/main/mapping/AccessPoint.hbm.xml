@@ -20,17 +20,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -59,7 +59,7 @@
 		</property>
 		<property name="longLatType"
 			type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
-			<column name="longlattype">
+			<column name="long_lat_type">
 				<comment>Model used for Longitude and Latitude (Standard, WGS84 or
 					WGS92)</comment>
 			</column>
@@ -77,7 +77,7 @@
 				</column>
 			</property>
 			<property name="projectionType" type="string">
-				<column name="projectiontype">
+				<column name="projection_type">
 					<comment>Projection used for coordinates</comment>
 				</column>
 			</property>
@@ -85,30 +85,30 @@
 		<component class="fr.certu.chouette.model.neptune.type.Address"
 			name="address">
 			<property name="countryCode" type="string">
-				<column name="countrycode">
+				<column name="country_code">
 					<comment>Zip code</comment>
 				</column>
 			</property>
 			<property name="streetName" type="string">
-				<column name="streetname">
+				<column name="street_name">
 					<comment>Address</comment>
 				</column>
 			</property>
 		</component>
 
 		<property name="containedIn" >
-			<column name="containedIn">
+			<column name="contained_in">
 				<comment>Unused data</comment>
 			</column>
 		</property>
 
 		<property name="openningTime" type="java.util.Date">
-			<column name="openningTime">
+			<column name="openning_time">
 				<comment>Opening time</comment>
 			</column>
 		</property>
 		<property name="closingTime" type="java.util.Date">
-			<column name="closingTime">
+			<column name="closing_time">
 				<comment>Closing time</comment>
 			</column>
 		</property>
@@ -119,25 +119,25 @@
 			</column>
 		</property>
 		<property name="liftAvailable" type="boolean">
-			<column name="liftAvailability">
+			<column name="lift_availability">
 				<comment>Indicate if a lift is available</comment>
 			</column>
 		</property>
 		<property name="mobilityRestrictedSuitable" type="boolean">
-			<column name="mobilityRestrictedSuitability">
+			<column name="mobility_restricted_suitability">
 				<comment>Indicate if the link is suitable for mobility restricted
 					persons </comment>
 			</column>
 		</property>
 		<property name="stairsAvailable" type="boolean">
-			<column name="stairsAvailability">
+			<column name="stairs_availability">
 				<comment>Indicate if stairs are available</comment>
 			</column>
 		</property>
 
 		<!-- comment on AccessLink definition -->
 		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
-			<key column="accessPointId" foreign-key="aclk_acpt_fkey" />
+			<key column="access_point_id" foreign-key="aclk_acpt_fkey" />
 			<one-to-many class="AccessLink" />
 		</bag>
 	</class>

@@ -14,7 +14,7 @@
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.route WHERE id NOT IN (SELECT distinct routeId FROM ${database.schema}.vehiclejourney)
+				DELETE FROM ${database.schema}.route WHERE id NOT IN (SELECT distinct route_Id FROM ${database.schema}.vehiclejourney)
 			</value>
 		</property>
 		<property name="sqlInsert">
@@ -22,13 +22,13 @@
 				INSERT INTO ${database.schema}.Route
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
-				oppositerouteid,
-				lineid,
-				publishedname,
+				opposite_route_id,
+				line_id,
+				published_name,
 				NUMBER,
 				direction,
 				COMMENT,
@@ -54,14 +54,13 @@
 				UPDATE ${database.schema}.Route
 				SET
 				objectid = ?,
-				objectversion =
-				?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
-				oppositerouteid = ?,
-				lineid = ?,
-				publishedname = ?,
+				opposite_route_id = ?,
+				line_id = ?,
+				published_name = ?,
 				NUMBER = ?,
 				direction = ?,
 				COMMENT = ?,

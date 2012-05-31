@@ -18,17 +18,17 @@
 			</column>
 		</property>
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -49,29 +49,30 @@
 		</property>
 
 		<property name="publishedName" type="string">
-			<column name="publishedName">
+			<column name="published_name">
 				<comment>Public name for travelers</comment>
 			</column>
 		</property>
 		<property name="registrationNumber" unique="true" type="string">
-			<column name="registrationNumber">
+			<column name="registration_number">
 				<comment>Registration number</comment>
 			</column>
 		</property>
 		<property name="transportModeName"
 			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType">
-			<column name="transportModeName">
+			<column name="transport_mode_name">
 				<comment>Transport Mode (Bus, Train, ...)</comment>
 			</column>
 		</property>
 		<property name="mobilityRestrictedSuitable" type="boolean">
-			<column name="mobilityRestrictedSuitable">
+			<column name="mobility_restricted_suitability">
 				<comment>Indicate whenever the line is suitable for mobility
 					restricted persons</comment>
 			</column>
 		</property>
-		<property name="userNeedsAsLong" type="long">
-			<column name="userNeeds">
+		<!--  TODO : passage en int comme les autres -->
+		<property name="intUserNeeds">
+			<column name="int_user_needs">
 				<comment>bit encoded list of userneeds enum value</comment>
 			</column>
 		</property>
@@ -79,52 +80,45 @@
 		<!-- relations -->
 		<many-to-one name="ptNetwork" cascade="none" class="PTNetwork"
 			lazy="no-proxy" outer-join="auto" foreign-key="line_ptnetwork_fkey">
-			<column name="PTNetworkId">
+			<column name="ptnetwork_id">
 				<comment>PTNetwork reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one name="company" cascade="none" class="Company"
 			lazy="no-proxy" outer-join="auto" foreign-key="line_company_fkey">
-			<column name="companyId">
+			<column name="company_id">
 				<comment>Company reference</comment>
 			</column>
 		</many-to-one>
 		<bag name="routes" lazy="true" inverse="true">
-			<key column="lineId" foreign-key="route_line_fkey" on-delete="cascade" />
+			<key column="line_id" foreign-key="route_line_fkey" on-delete="cascade" />
 			<one-to-many class="Route" />
 		</bag>
 		<bag name="groupOfLines" table="groupofline_line"
 			lazy="true">
 			<comment>Lines affected to groupOfLines</comment>
 			<key foreign-key="groupofline_line_fkey">
-				<column name="lineId" index="idx_grli_li">
+				<column name="line_id" index="idx_grli_li">
 					<comment>Line reference</comment>
 				</column>
 			</key>
 			<many-to-many class="GroupOfLine" foreign-key="groupofline_group_fkey">
-				<column name="groupOfLineId" index="idx_grli_gr">
+				<column name="group_of_line_id" index="idx_grli_gr">
 					<comment>GroupOfLine reference</comment>
 				</column>
 			</many-to-many>
 		</bag>
 
-		<!-- <many-to-one name="groupOfLine" class="GroupOfLine" lazy="no-proxy"
-			outer-join="auto" foreign-key="line_glines_fkey">
-			<column name="groupOfLineId">
-				<comment>GroupOfLine reference</comment>
-			</column>
-		</many-to-one> -->
-
 		<bag name="routingConstraints" table="routingconstraints_lines"
 			lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
 			<key foreign-key="routingconstraint_line_fkey">
-				<column name="lineId" index="idx_rcli_li">
+				<column name="line_id" index="idx_rcli_li">
 					<comment>Line reference</comment>
 				</column>
 			</key>
 			<many-to-many class="StopArea" foreign-key="routingconstraint_stoparea_fkey">
-				<column name="stopareaid" index="idx_rcli_st">
+				<column name="stop_area_id" index="idx_rcli_st">
 					<comment>Routing constraint reference</comment>
 				</column>
 			</many-to-many>

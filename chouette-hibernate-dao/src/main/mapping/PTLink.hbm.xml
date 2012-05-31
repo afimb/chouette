@@ -19,17 +19,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -44,24 +44,24 @@
 			</column>
 		</property>
 		<property name="linkDistance" type="java.math.BigDecimal">
-			<column name="linkDistance">
+			<column name="link_distance">
 				<comment>Distance between AccesPoint and StopArea</comment>
 			</column>
 		</property>
 		<many-to-one class="StopPoint" insert="true" update="true"
 			lazy="no-proxy" name="startOfLink" foreign-key="ptlk_startstpt_fkey">
-			<column name="startOfLinkId">
+			<column name="start_of_link_id">
 				<comment>Start StopPoint reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="StopPoint" insert="true" update="true"
 			lazy="no-proxy" name="endOfLink" foreign-key="ptlk_endstpt_fkey">
-			<column name="endOfLinkId">
+			<column name="end_of_link_id">
 				<comment>End StopPoint reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="Route" lazy="no-proxy" name="route">
-			<column name="routeId">
+			<column name="route_id">
 				<comment>Route reference</comment>
 			</column>
 		</many-to-one>

@@ -17,23 +17,23 @@
 				INSERT INTO ${database.schema}.ConnectionLink
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
 				COMMENT,
-				linkdistance,
-				departureid,
-				arrivalid,
-				liftavailability,
-				mobilityrestrictedsuitability,
-				stairsavailability,
-				defaultduration,
-				frequenttravellerduration,
-				occasionaltravellerduration,
-				mobilityrestrictedtravellerduration,
-				linktype,
-				intuserneeds
+				link_distance,
+				departure_id,
+				arrival_id,
+				lift_availability,
+				mobility_restricted_suitability,
+				stairs_availability,
+				default_duration,
+				frequent_traveller_duration,
+				occasional_traveller_duration,
+				mobility_restricted_traveller_duration,
+				link_type,
+				int_user_needs
 				)
 				VALUES(?,
 				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)
@@ -56,23 +56,23 @@
 				UPDATE ${database.schema}.ConnectionLink
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
 				name = ?,
 				COMMENT = ?,
-				linkdistance = ?,
-				departureid = ?,
-				arrivalid = ?,
-				liftavailability = ?,
-				mobilityrestrictedsuitability = ?,
-				stairsavailability = ?,
-				defaultduration = ?,
-				frequenttravellerduration = ?,
-				occasionaltravellerduration = ?,
-				mobilityrestrictedtravellerduration = ?,
-				linktype = ?,
-				intuserneeds = ?
+				link_distance = ?,
+				departure_id = ?,
+				arrival_id = ?,
+				lift_availability = ?,
+				mobility_restricted_suitability = ?,
+				stairs_availability = ?,
+				default_duration = ?,
+				frequent_traveller_duration = ?,
+				occasional_traveller_duration = ?,
+				mobility_restricted_traveller_duration = ?,
+				link_type = ?,
+				int_user_needs = ?
 				WHERE objectid = ?
 		</value>
 		</property>

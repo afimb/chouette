@@ -18,26 +18,26 @@
 				INSERT INTO ${database.schema}.Facility
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
 				COMMENT,
-				stopareaid,
-				lineid,
-				connectionlinkid,
-				stoppointid,
+				stop_area_id,
+				line_id,
+				connection_link_id,
+				stop_point_id,
 				description,
-				freeaccess,
+				free_access,
 				longitude,
 				latitude,
-				longlattype,
-				countrycode,
-				streetname,
+				long_lat_type,
+				country_code,
+				street_name,
 				x,
 				y,
-				projectiontype,
-				containedin
+				projection_type,
+				contained_in
 				)
 				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?)
 			</value>
@@ -69,15 +69,15 @@
 						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.facilityfeature
-								WHERE facilityid = ?
+								WHERE facility_id = ?
 							</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
 								INSERT INTO ${database.schema}.facilityfeature
 								(
-								facilityid,
-								choicecode
+								facility_id,
+								choice_code
 								)
 								VALUES(?, ?)
 								</value>
@@ -85,7 +85,7 @@
 						<entry key="sqlDelete">
 							<value>
 								DELETE FROM ${database.schema}.facilityfeature
-								WHERE facilityid IN
+								WHERE facility_id IN
 								(_IDS_) 
 								</value>
 						</entry>

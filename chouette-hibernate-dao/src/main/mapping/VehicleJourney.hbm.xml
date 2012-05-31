@@ -18,17 +18,17 @@
 			</column>
 		</property>
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -39,23 +39,23 @@
 		</property>
 		<property name="serviceStatusValue"
 			type="fr.certu.chouette.dao.hibernate.usertype.ServiceStatusValueUserType">
-			<column name="statusValue">
+			<column name="status_value">
 				<comment>Service Status</comment>
 			</column>
 		</property>
 		<property name="transportMode"
 			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType">
-			<column name="transportMode">
+			<column name="transport_mode_name">
 				<comment>Transport mode</comment>
 			</column>
 		</property>
 		<property name="publishedJourneyName">
-			<column name="publishedJourneyName">
+			<column name="published_journey_name">
 				<comment>Name for travelers</comment>
 			</column>
 		</property>
 		<property name="publishedJourneyIdentifier">
-			<column name="publishedJourneyIdentifier">
+			<column name="published_journey_identifier">
 				<comment>Identifier for travelers</comment>
 			</column>
 		</property>
@@ -65,7 +65,7 @@
 			</column>
 		</property>
 		<property name="vehicleTypeIdentifier" type="string">
-			<column name="vehicleTypeIdentifier">
+			<column name="vehicle_type_identifier">
 				<comment>Vehicle type</comment>
 			</column>
 		</property>
@@ -76,37 +76,37 @@
 		</property>
 		<many-to-one class="Route" lazy="no-proxy" name="route"
 			foreign-key="vj_route_fkey">
-			<column name="routeId">
+			<column name="route_id">
 				<comment>Route foreign key</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="JourneyPattern" lazy="no-proxy" name="journeyPattern"
 			foreign-key="vj_jp_fkey">
-			<column name="journeyPatternId">
+			<column name="journey_pattern_id">
 				<comment>JourneyPattern foreign key</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="TimeSlot" lazy="no-proxy" name="timeSlot"
 			foreign-key="vj_timeslot_fkey">
-			<column name="timeSlotId">
+			<column name="time_slot_id">
 				<comment>TimeSlot foreign key</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="Company" lazy="no-proxy" name="company"
 			foreign-key="vj_company_fkey">
-			<column name="companyId">
+			<column name="company_id">
 				<comment>Company foreign key</comment>
 			</column>
 		</many-to-one>
 		<bag name="timetables" table="timetablevehiclejourney" lazy="true">
 			<comment>Timetable on Vehicle journeys cross reference</comment>
 			<key foreign-key="vjtm_vj_fkey">
-				<column name="vehiclejourneyId">
+				<column name="vehicle_journey_id">
 					<comment>VehicleJourney foreign key</comment>
 				</column>
 			</key>
 			<many-to-many class="Timetable" foreign-key="vjtm_tm_fkey">
-				<column name="timetableId">
+				<column name="time_table_id">
 					<comment>Timetable foreign key</comment>
 				</column>
 			</many-to-many>
@@ -115,7 +115,7 @@
 		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan" order-by="position">
 			<comment>Vehicle Journey at Stop</comment>
 			<key foreign-key="vjas_vj_fkey">
-				<column name="vehicleJourneyId">
+				<column name="vehicle_journey_id">
 					<comment>VehicleJourney foreign key (1st part of primary key)</comment>
 				</column>
 			</key>

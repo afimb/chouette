@@ -14,7 +14,7 @@
 		</property>
 		<property name="sqlPurge">
 			<value>
-                 DELETE FROM ${database.schema}.vehiclejourney WHERE id NOT IN (SELECT distinct vehicleJourneyId FROM ${database.schema}.timetablevehiclejourney) 
+                 DELETE FROM ${database.schema}.vehiclejourney WHERE id NOT IN (SELECT distinct vehicle_Journey_Id FROM ${database.schema}.timetablevehiclejourney) 
 			</value>
 		</property>
 		<property name="sqlInsert">
@@ -22,21 +22,21 @@
 				INSERT INTO ${database.schema}.VehicleJourney
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
-				COMMENT,
-				statusvalue,
-				transportmode,
-				publishedjourneyname,
-				publishedjourneyidentifier,
+				object_version,
+				creation_time,
+				creator_id,
+				comment,
+				status_value,
+				transport_mode_name,
+				published_journey_name,
+				published_journey_identifier,
 				facility,
-				vehicletypeidentifier,
-				NUMBER,
-				routeid,
-				journeypatternid,
-				timeslotid,
-				companyid
+				vehicle_type_identifier,
+				number,
+				route_id,
+				journey_pattern_id,
+				time_slot_id,
+				company_id
 				)
 				VALUES(?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?,
 				?,?,?,?,?)
@@ -47,21 +47,21 @@
 				UPDATE ${database.schema}.VehicleJourney
 				SET
 				objectid = ?,
-				objectversion = ?,
-				creationtime = ?,
-				creatorid = ?,
-				COMMENT = ?,
-				statusvalue = ?,
-				transportmode = ?,
-				publishedjourneyname = ?,
-				publishedjourneyidentifier = ?,
+				object_version = ?,
+				creation_time = ?,
+				creator_id = ?,
+				comment = ?,
+				status_value = ?,
+				transport_mode_name = ?,
+				published_journey_name = ?,
+				published_journey_identifier = ?,
 				facility = ?,
-				vehicletypeidentifier = ?,
-				NUMBER = ?,
-				routeid = ?,
-				journeypatternid = ?,
-				timeslotid = ?,
-				companyid = ?
+				vehicle_type_identifier = ?,
+				number = ?,
+				route_id = ?,
+				journey_pattern_id = ?,
+				time_slot_id = ?,
+				company_id = ?
 				WHERE objectid = ?
 			</value>
 		</property>
@@ -95,24 +95,24 @@
 							<value>
 								SELECT * FROM ${database.schema}.VehicleJourneyAtStop
 								WHERE
-								vehiclejourneyid = ? 
+								vehicle_journey_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
 								INSERT INTO ${database.schema}.VehicleJourneyAtStop
 								(
-								vehiclejourneyid,
-								stoppointid,
-								connectingserviceid,
-								boardingalightingpossibility,
-								arrivaltime,
-								departuretime,
-								waitingtime,
-								elapseduration,
-								headwayfrequency,
-								isdeparture,
-								isarrival,
+								vehicle_journey_id,
+								stop_point_id,
+								connecting_service_id,
+								boarding_alighting_possibility,
+								arrival_time,
+								departure_time,
+								waiting_time,
+								elapse_duration,
+								headway_frequency,
+								is_departure,
+								is_arrival,
 								position
 								)
 								VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,
@@ -122,7 +122,7 @@
 						<entry key="sqlDelete">
 							<value>
 								DELETE FROM ${database.schema}.VehicleJourneyAtStop WHERE
-								vehiclejourneyid IN (_IDS_) 
+								vehicle_journey_id IN (_IDS_) 
 								</value>
 						</entry>
 					</map>
@@ -134,15 +134,15 @@
 						<entry key="sqlSelectById">
 							<value>
 								SELECT * FROM ${database.schema}.TimetableVehicleJourney WHERE
-								vehiclejourneyid = ? 
+								vehicle_journey_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
 								INSERT INTO ${database.schema}.TimetableVehicleJourney
 								(
-								timetableid,
-								vehiclejourneyid
+								time_table_id,
+								vehicle_journey_id
 								)
 								VALUES(?, ?)
 								</value>
@@ -150,7 +150,7 @@
 						<entry key="sqlDelete">
 							<value>
 								DELETE FROM ${database.schema}.TimetableVehicleJourney WHERE
-								vehiclejourneyid IN (_IDS_)
+								vehicle_journey_id IN (_IDS_)
 								 </value>
 						</entry>
 					</map>

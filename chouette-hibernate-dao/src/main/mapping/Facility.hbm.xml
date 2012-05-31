@@ -20,17 +20,17 @@
 		</property>
 
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -46,25 +46,25 @@
 		</property>
 		<many-to-one name="stopArea" class="StopArea" lazy="no-proxy"
 			outer-join="auto" foreign-key="faci_area_fkey">
-			<column name="stopAreaId">
+			<column name="stop_area_id">
 				<comment>StopArea reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one name="line" class="Line" lazy="no-proxy"
 			outer-join="auto" foreign-key="faci_line_fkey">
-			<column name="lineid">
+			<column name="line_id">
 				<comment>Line reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one name="connectionLink" class="ConnectionLink"
 			lazy="no-proxy" outer-join="auto" foreign-key="faci_colk_fkey">
-			<column name="connectionLinkid">
+			<column name="connection_link_id">
 				<comment>ConnectionLink reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one name="stopPoint" class="StopPoint" lazy="no-proxy"
 			outer-join="auto" foreign-key="faci_stpt_fkey">
-			<column name="stopPointid">
+			<column name="stop_point_id">
 				<comment>StopPoint reference</comment>
 			</column>
 		</many-to-one>
@@ -74,28 +74,26 @@
 			</column>
 		</property>
 		<property name="freeAccess" type="boolean">
-			<column name="freeAccess">
+			<column name="free_access">
 				<comment>Indicate if facility is on free (true) or restricted(false)
 					access</comment>
 			</column>
 		</property>
 		<component name="facilityLocation"
 			class="fr.certu.chouette.model.neptune.type.FacilityLocation">
-			<property name="longitude" 
-				type="java.math.BigDecimal">
+			<property name="longitude" type="java.math.BigDecimal">
 				<column name="longitude" precision="19" scale="16">
 					<comment>Longitude</comment>
 				</column>
 			</property>
-			<property name="latitude"
-				type="java.math.BigDecimal">
+			<property name="latitude" type="java.math.BigDecimal">
 				<column name="latitude" precision="19" scale="16">
 					<comment>Latitude</comment>
 				</column>
 			</property>
 			<property name="longLatType"
 				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
-				<column name="longlattype">
+				<column name="long_lat_type">
 					<comment>Model used for Longitude and Latitude (Standard, WGS84 or
 						WGS92)</comment>
 				</column>
@@ -113,7 +111,7 @@
 					</column>
 				</property>
 				<property name="projectionType" type="string">
-					<column name="projectiontype">
+					<column name="projection_type">
 						<comment>Projection used for coordinates</comment>
 					</column>
 				</property>
@@ -121,29 +119,33 @@
 			<component class="fr.certu.chouette.model.neptune.type.Address"
 				name="address">
 				<property name="countryCode" type="string">
-					<column name="countrycode">
+					<column name="country_code">
 						<comment>Zip code</comment>
 					</column>
 				</property>
 				<property name="streetName" type="string">
-					<column name="streetname">
+					<column name="street_name">
 						<comment>Address</comment>
 					</column>
 				</property>
 			</component>
-			<property name="containedIn" type="string" /> <!-- a supprimer -->
+			<property name="containedIn">
+				<column name="contained_in">
+					<comment>Unused data</comment>
+				</column>
+			</property>
 		</component>
 		<bag cascade="all" lazy="false" name="facilityFeatures" table="facilityFeature">
 			<comment>Facility Features secondary table</comment>
 			<key foreign-key="facility_feature_fkey">
-				<column name="facilityId" index="idx_facility_id">
+				<column name="facility_id" index="idx_facility_id">
 					<comment>Facility reference</comment>
 				</column>
 			</key>
 			<composite-element
 				class="fr.certu.chouette.model.neptune.type.facility.FacilityFeature">
 				<property name="choiceCode" type="int">
-					<column name="choiceCode">
+					<column name="choice_code">
 						<comment>encoded value for facility</comment>
 					</column>
 				</property>

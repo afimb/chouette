@@ -17,14 +17,14 @@
 				INSERT INTO ${database.schema}.TimeSlot
 				(
 				objectid,
-				objectversion,
-				creationtime,
-				creatorid,
+				object_version,
+				creation_time,
+				creator_id,
 				name,
-				beginningslottime,
-				endslottime,
-				firstdeparturetimeinslot,
-				lastdeparturetimeinslot
+				beginning_slot_time,
+				end_slot_time,
+				first_departure_time_in_slot,
+				last_departure_time_in_slot
 				)
 				VALUES(?, ?, ?, ?, ?, ?, ? , ?, ?)
 			</value>

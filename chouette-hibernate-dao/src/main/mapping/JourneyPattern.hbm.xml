@@ -18,17 +18,17 @@
 			</column>
 		</property>
 		<property name="objectVersion" type="int">
-			<column name="objectVersion" default="1">
+			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
 			</column>
 		</property>
 		<property name="creationTime" type="java.util.Date">
-			<column name="creationTime">
+			<column name="creation_time">
 				<comment>Creation date and time</comment>
 			</column>
 		</property>
 		<property name="creatorId" type="string">
-			<column name="creatorId">
+			<column name="creator_id">
 				<comment>Creator identification</comment>
 			</column>
 		</property>
@@ -44,12 +44,12 @@
 			</column>
 		</property>
 		<property name="registrationNumber" type="string">
-			<column name="registrationNumber">
+			<column name="registration_number">
 				<comment>Registration number</comment>
 			</column>
 		</property>
 		<property name="publishedName" type="string">
-			<column name="publishedName">
+			<column name="published_name">
 				<comment>Public name for travelers</comment>
 			</column>
 		</property>
@@ -58,37 +58,37 @@
 			cascade="all">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
 			<key foreign-key="jpsp_jp_fkey">
-				<column name="journeyPatternId" index="idx_jpsp_jpid">
+				<column name="journey_pattern_id" index="idx_jpsp_jpid">
 					<comment>JourneyPattern Reference</comment>
 				</column>
 			</key>
 			<many-to-many class="StopPoint" foreign-key="jpsp_stoppoint_fkey"
 				order-by="position">
-				<column name="stopPointId">
+				<column name="stop_point_id">
 					<comment>StopPoint Reference</comment>
 				</column>
 			</many-to-many>
 		</bag>
 		<many-to-one class="Route" lazy="no-proxy" name="route"
 			foreign-key="jp_route_fkey">
-			<column name="routeId">
+			<column name="route_id">
 				<comment>Route Reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="StopPoint" lazy="no-proxy" name="departureStopPoint"
 			foreign-key="departure_point_fkey">
-			<column name="departureStopPointId">
+			<column name="departure_stop_point_id">
 				<comment>Departure StopPoint Reference</comment>
 			</column>
 		</many-to-one>
 		<many-to-one class="StopPoint" lazy="no-proxy" name="arrivalStopPoint"
 			foreign-key="arrival_point_fkey">
-			<column name="arrivalStopPointId">
+			<column name="arrival_stop_point_id">
 				<comment>Arrival StopPoint Reference</comment>
 			</column>
 		</many-to-one>
 		<bag inverse="true" lazy="true" name="vehicleJourneys" cascade="all">
-			<key column="journeyPatternId" foreign-key="vj_jp_fkey"
+			<key column="journey_pattern_id" foreign-key="vj_jp_fkey"
 				on-delete="cascade" />
 			<one-to-many class="VehicleJourney" />
 		</bag>
