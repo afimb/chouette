@@ -119,7 +119,7 @@
 				<entry key="jp_route_fkey" value="journey_patterns;route_id;routes;id" />
 				<entry key="jpsp_jp_fkey"
 					value="journey_patterns_stop_points;journey_pattern_id;journey_patterns;id" />
-				<entry key="jpsp_stoppoint_fkey" value="journey_patterns_stop_points;stoppoint_id;stop_points;id" />
+				<entry key="jpsp_stoppoint_fkey" value="journey_patterns_stop_points;stop_point_id;stop_points;id" />
 				<entry key="ptlink_route_fkey" value="pt_links;route_id;routes;id" />
 				<entry key="route_line_fkey" value="routes;line_id;lines;id" />
 				<entry key="routingconstraint_line_fkey" value="routing_constraints_lines;line_id;lines;id" />
