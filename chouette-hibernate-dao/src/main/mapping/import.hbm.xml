@@ -22,7 +22,7 @@
 				<comment>message key</comment>
 			</column>
 		</property>
-		<property name="arguments" type="string">
+		<property name="arguments" type="string" length="1000">
 			<column name="arguments">
 				<comment>message arguments</comment>
 			</column>

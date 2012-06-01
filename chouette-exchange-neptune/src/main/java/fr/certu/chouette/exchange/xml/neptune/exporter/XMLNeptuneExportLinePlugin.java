@@ -184,7 +184,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          if (value instanceof SimpleParameterValue)
          {
             SimpleParameterValue svalue = (SimpleParameterValue) value;
-            if (svalue.getName().equals("outputFile"))
+            if (svalue.getName().equalsIgnoreCase("outputFile"))
             {
                fileName = svalue.getFilepathValue();
                if (fileName == null) 
@@ -193,13 +193,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   fileName = svalue.getFilenameValue();
                }
             }
-            else if (svalue.getName().equals("startDate"))
+            else if (svalue.getName().equalsIgnoreCase("startDate"))
             {
                Calendar c = svalue.getDateValue();
                if (c != null)
                   startDate = new Date(c.getTime().getTime());
             }
-            else if (svalue.getName().equals("endDate"))
+            else if (svalue.getName().equalsIgnoreCase("endDate"))
             {
                Calendar c = svalue.getDateValue();
                if (c != null)

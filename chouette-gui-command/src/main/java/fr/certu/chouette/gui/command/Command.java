@@ -577,7 +577,7 @@ public class Command
          {
             Report r = holder.getReport();
             stream.println(r.getLocalizedMessage());
-            printItems(stream,"",r.getItems());
+            //printItems(stream,"",r.getItems());
          }
       }
       catch (ChouetteException e)
@@ -682,7 +682,7 @@ public class Command
          {
             Report r = holder.getReport();
             System.out.println(r.getLocalizedMessage());
-            printItems(System.out,"",r.getItems());
+            // printItems(System.out,"",r.getItems());
          }
       }
       catch (ChouetteException e)
@@ -880,16 +880,17 @@ public class Command
                break;
             }
          }
-         List<ParameterValue> values = populateParameters(description,parameters,"inputfile","fileformat");
+         List<ParameterValue> values = populateParameters(description,parameters,"inputFile","fileFormat");
          if (zipped && description.isUnzipAllowed())
          {
-            SimpleParameterValue inputFileParam = new SimpleParameterValue("inputfile");
+            SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
             values.add(inputFileParam);
             // unzip files , import and save contents 
             ZipInputStream zipInputStream;
             File temp = null;
             File tempRep = new File(FileUtils.getTempDirectory(),"massImport"+importId);
             if (!tempRep.exists()) tempRep.mkdirs();
+            Report importReport = null;
             try
             {
                zipInputStream = new ZipInputStream(new FileInputStream(inputFile));
@@ -923,7 +924,18 @@ public class Command
                   ReportHolder holder = new ReportHolder();
                   List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
                   if (holder.getReport() != null)
-                     reports.add(holder.getReport());
+                  {
+                     if (importReport == null) 
+                     {
+                        importReport = holder.getReport();
+                        reports.add(importReport);
+                     }
+                     else
+                     {
+                        importReport.addAll(holder.getReport().getItems());
+                     }
+                     
+                  }
                   // save
                   if (beans != null && !beans.isEmpty())
                   {
@@ -984,12 +996,12 @@ public class Command
          }
          else
          {
-            SimpleParameterValue inputFileParam = new SimpleParameterValue("inputfile");
+            SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
             inputFileParam.setFilepathValue(inputFile);
             values.add(inputFileParam);
             if (!fileFormat.isEmpty())
             {
-               SimpleParameterValue fileFormatParam = new SimpleParameterValue("fileformat");
+               SimpleParameterValue fileFormatParam = new SimpleParameterValue("fileFormat");
                fileFormatParam.setStringValue(fileFormat);
                values.add(fileFormatParam);
             }
@@ -1068,7 +1080,7 @@ public class Command
       }
 
       stream.println(valReport.getLocalizedMessage());
-      printItems(stream,"",valReport.getItems());
+      // printItems(stream,"",valReport.getItems());
       int nbUNCHECK = 0;
       int nbOK = 0;
       int nbWARN = 0;
@@ -1342,43 +1354,32 @@ public class Command
    }
 
 
-
-   protected void printItems(PrintStream stream, String indent,List<ReportItem> items) 
-   {
-      if (items == null) return;
-      for (ReportItem item : items) 
-      {
-         stream.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-         printItems(stream,indent+"   ",item.getItems());
-      }
-
-   }
-
    private int saveImportReport(int importId, Report report,int position)
    {
       String prefix = report.getOriginKey();
-      ImportLogMessage message = new ImportLogMessage(report,position++);
+      if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
+      ImportLogMessage message = new ImportLogMessage(importId,report,position++);
       importLogMessageDao.save(message);
       if (report.getItems() != null)
       {
          for (ReportItem item : report.getItems())
          {
-            position = saveImportReportItem(item,prefix,position);
+            position = saveImportReportItem(importId,item,prefix,position);
          }
       }
       return position;
    }
 
-   private int  saveImportReportItem(ReportItem item, String prefix, int position)
+   private int  saveImportReportItem(int importId, ReportItem item, String prefix, int position)
    {
-      ImportLogMessage message = new ImportLogMessage(item,prefix,position++);
+      ImportLogMessage message = new ImportLogMessage(importId,item,prefix,position++);
       importLogMessageDao.save(message);
       if (item.getItems() != null)
       {
          String subPrefix = prefix+"|"+item.getMessageKey();
          for (ReportItem child : item.getItems())
          {
-            position = saveImportReportItem(child,subPrefix,position++);
+            position = saveImportReportItem(importId,child,subPrefix,position++);
          }
       }
       return position;

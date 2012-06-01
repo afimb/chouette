@@ -88,6 +88,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
    {
       description = new FormatDescription(this.getClass().getName());
       description.setName("NEPTUNE");
+      description.setUnzipAllowed(true);
       List<ParameterDescription> params = new ArrayList<ParameterDescription>();
       ParameterDescription param1 = new ParameterDescription("inputFile", ParameterDescription.TYPE.FILEPATH, false, true);
       param1.setAllowedExtensions(Arrays.asList(new String[] { "xml", "zip" }));
@@ -144,15 +145,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          if (value instanceof SimpleParameterValue)
          {
             SimpleParameterValue svalue = (SimpleParameterValue) value;
-            if (svalue.getName().equals("inputFile"))
+            if (svalue.getName().equalsIgnoreCase("inputFile"))
             {
                filePath = svalue.getFilepathValue();
             }
-            else if (svalue.getName().equals("fileFormat"))
+            else if (svalue.getName().equalsIgnoreCase("fileFormat"))
             {
                extension = svalue.getStringValue().toLowerCase();
             }
-            else if (svalue.getName().equals("validate"))
+            else if (svalue.getName().equalsIgnoreCase("validate"))
             {
                validate = svalue.getBooleanValue().booleanValue();
             }

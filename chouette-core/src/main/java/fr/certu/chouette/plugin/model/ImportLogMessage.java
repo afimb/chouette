@@ -41,24 +41,42 @@ public class ImportLogMessage extends NeptuneObject
       updatedAt = createdAt;
    }
 
-   public ImportLogMessage(Report report,int position)
+   public ImportLogMessage(long importId,Report report,int position)
    {
       this();
-      this.key = report.getOriginKey();
-      this.position = position;
-      this.severity = report.getStatus().name();
+      this.importId = importId;
+      if (report instanceof ReportItem)
+      {
+         ReportItem item = (ReportItem) report;
+         init(item,null,position);
+      }
+      else
+      {
+         this.key = report.getOriginKey();
+         this.position = position;
+         this.severity = report.getStatus().name();
+      }
    }
 
-   public ImportLogMessage(ReportItem item, String prefix, int position)
+   public ImportLogMessage(long importId,ReportItem item, String prefix, int position)
    {
       this();
-      this.key = prefix+"|"+item.getMessageKey();
+      this.importId = importId;
+      init(item,prefix,position);
+   }
+
+   private void init(ReportItem item, String prefix, int position)
+   {
+      if (prefix != null)
+         this.key = prefix+"|"+item.getMessageKey();
+      else
+         this.key = item.getMessageKey();
       if (! item.getMessageArgs().isEmpty() )
       {
          int size = item.getMessageArgs().size();
+         StringBuilder b = new StringBuilder("{");
          for (int i = 0; i < size ;i++)
          {
-            StringBuilder b = new StringBuilder("{");
             b.append("\"");
             b.append(i);
             b.append("\" => \"");
@@ -73,6 +91,7 @@ public class ImportLogMessage extends NeptuneObject
                b.append(","); 
             }
          }
+         this.arguments = b.toString();
       }
       this.position = position;
       this.severity = item.getStatus().name();

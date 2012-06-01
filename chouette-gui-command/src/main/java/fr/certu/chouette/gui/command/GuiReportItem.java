@@ -32,5 +32,21 @@ public class GuiReportItem extends ReportItem
       setStatus(status);
       if (args != null) setMessageArgs(Arrays.asList(args));
    }
+   
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.plugin.report.Report#addItem(fr.certu.chouette.plugin.report.ReportItem)
+    */
+   @Override
+   public void addItem(ReportItem item)
+   {
+      if (getItems() == null) 
+      {
+         super.addItem(item);
+      }
+      else
+      {
+         getItems().add(item);
+      }
+   }
 
 }
