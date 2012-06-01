@@ -49,7 +49,7 @@
 		<property name="projection_reference" value="${projection_reference}" />
 	</bean>
 
-	<bean id="Command" class="fr.certu.chouette.command.Command">
+	<bean id="Command" class="fr.certu.chouette.gui.command.Command">
 		<property name="managers">
 			<map>
 				<entry key="accesslink">
