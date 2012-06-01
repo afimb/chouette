@@ -3,9 +3,9 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.plugin.model" schema="public">
-	<class name="ImportLogMessage" table="import_log_messages" dynamic-insert="false"
+	<class name="ExportLogMessage" table="export_log_messages" dynamic-insert="false"
 		dynamic-update="false">
-		<comment>Import Log messages</comment>
+		<comment>Export Log messages</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>
@@ -13,8 +13,8 @@
 			<generator class="identity" />
 		</id>
 		<property name="parentId" type="long" unique="true">
-			<column name="import_id" not-null="true">
-				<comment>Import identification</comment>
+			<column name="export_id" not-null="true">
+				<comment>Export identification</comment>
 			</column>
 		</property>
 		<property name="key" type="string">

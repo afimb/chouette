@@ -274,9 +274,9 @@ ALTER TABLE Timetable RENAME to time_tables ;
 ALTER SEQUENCE Timetable_id_seq RENAME to time_tables_id_seq;
 ALTER TABLE time_tables ALTER COLUMN id SET DEFAULT nextval('time_tables_id_seq'::regclass);
 
-ALTER TABLE timetable_date RENAME to time_tables_dates ;
+ALTER TABLE timetable_date RENAME to time_table_dates ;
 
-ALTER TABLE timetable_period RENAME to time_tables_periods ;
+ALTER TABLE timetable_period RENAME to time_table_periods ;
 
 ALTER TABLE timetablevehiclejourney RENAME to time_tables_vehicle_journeys ;
 

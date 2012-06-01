@@ -55,6 +55,7 @@ import fr.certu.chouette.plugin.exchange.ListParameterValue;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.Report.STATE;
@@ -247,7 +248,7 @@ public class Command
 
    @Setter private IDaoTemplate<ImportLogMessage> importLogMessageDao;
 
-
+   @Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
 
    public Map<String,List<String>> globals = new HashMap<String, List<String>>();
 
@@ -520,6 +521,11 @@ public class Command
          Map<String, List<String>> parameters) 
    {
       String format = getSimpleString(parameters,"format");
+      int exportId = Integer.parseInt(getSimpleString(parameters,"exportid"));
+
+      List<Report> reports = new ArrayList<Report>();
+      // GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
+
       List<String> ids = parameters.get("id");
       try
       {
@@ -566,32 +572,25 @@ public class Command
 
          }
 
-
          List<ParameterValue> values = populateParameters(description, parameters);
 
          ReportHolder holder = new ReportHolder();
          List<NeptuneIdentifiedObject> beans = executeGet(manager, parameters);
          manager.doExport(null, beans, format, values, holder );
-         PrintStream stream = System.out;
          if (holder.getReport() != null)
          {
             Report r = holder.getReport();
-            stream.println(r.getLocalizedMessage());
-            //printItems(stream,"",r.getItems());
+            reports.add(r);
          }
       }
-      catch (ChouetteException e)
+      catch (Exception e)
       {
-         logger.error(e.getMessage());
-
-         Throwable caused = e.getCause();
-         while (caused != null)
-         {
-            logger.error("caused by "+ caused.getMessage());
-            caused = caused.getCause();
-         }
-         throw new RuntimeException("export failed, see details in log");
+         System.out.println("export failed "+e.getMessage());
+         logger.error("export failed "+e.getMessage(),e);
+         saveExportReports(exportId,reports);
+         return 1;
       }
+      saveExportReports(exportId,reports);
       return 0;
    }
 
@@ -1046,8 +1045,6 @@ public class Command
 
    }
 
-
-
    /**
     * @param beans
     * @param manager
@@ -1353,6 +1350,46 @@ public class Command
       return values;      
    }
 
+   private int saveExportReport(int exportId, Report report,int position)
+   {
+      String prefix = report.getOriginKey();
+      if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
+      ExportLogMessage message = new ExportLogMessage(exportId,report,position++);
+      exportLogMessageDao.save(message);
+      if (report.getItems() != null)
+      {
+         for (ReportItem item : report.getItems())
+         {
+            position = saveExportReportItem(exportId,item,prefix,position);
+         }
+      }
+      return position;
+   }
+
+   private int saveExportReportItem(int exportId, ReportItem item, String prefix, int position)
+   {
+      ExportLogMessage message = new ExportLogMessage(exportId,item,prefix,position++);
+      exportLogMessageDao.save(message);
+      if (item.getItems() != null)
+      {
+         String subPrefix = prefix+"|"+item.getMessageKey();
+         for (ReportItem child : item.getItems())
+         {
+            position = saveExportReportItem(exportId,child,subPrefix,position++);
+         }
+      }
+      return position;
+   }
+
+   private void saveExportReports(int exportId, List<Report> reports)
+   {
+      int position = 0;
+      for (Report report : reports)
+      {
+         position = saveExportReport(exportId,report,position);
+      }
+
+   }
 
    private int saveImportReport(int importId, Report report,int position)
    {
@@ -1370,7 +1407,7 @@ public class Command
       return position;
    }
 
-   private int  saveImportReportItem(int importId, ReportItem item, String prefix, int position)
+   private int saveImportReportItem(int importId, ReportItem item, String prefix, int position)
    {
       ImportLogMessage message = new ImportLogMessage(importId,item,prefix,position++);
       importLogMessageDao.save(message);

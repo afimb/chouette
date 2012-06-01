@@ -103,6 +103,7 @@
 			</map>
 		</property>
 		<property name="importLogMessageDao" ref="importLogMessageDao" />
+		<property name="exportLogMessageDao" ref="exportLogMessageDao" />
 		<property name="validationParameters" ref="Validation" />
 	</bean>
 

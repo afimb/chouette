@@ -61,6 +61,7 @@
 				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
                 <!-- external objects : log messages -->
 				<value>fr/certu/chouette/model/neptune/import.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/export.hbm.xml</value>
 			</list>
 		</property>
 		<!-- chouette specific parameters to complete hibernate update schema action -->
@@ -306,6 +307,11 @@
 
 	<bean id="importLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
 		factory-method="createImportLogMessageDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="exportLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createExportLogMessageDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 </beans>
