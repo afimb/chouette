@@ -3,7 +3,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="PTNetwork" table="PtNetwork" dynamic-insert="false"
+	<class name="PTNetwork" table="networks" dynamic-insert="false"
 		dynamic-update="false">
 		<comment>Public Transport Network</comment>
 		<id name="id" type="long">

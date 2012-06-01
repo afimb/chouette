@@ -10,11 +10,11 @@
 
 	<bean id="accessPointJdbcDao" class="fr.certu.chouette.jdbc.dao.AccessPointJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.AccessPoint</value>
+			<value>SELECT * FROM ${database.schema}.access_points</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.AccessPoint
+				INSERT INTO ${database.schema}.access_points
 				(
 				objectid,
 				object_version,
@@ -43,19 +43,19 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.AccessPoint WHERE objectid =
+				SELECT * FROM ${database.schema}.access_points WHERE objectid =
 				?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.AccessPoint WHERE
+				SELECT id,objectid FROM ${database.schema}.access_points WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.AccessPoint
+				UPDATE ${database.schema}.access_points
 				SET
 				objectid = ?,
 				object_version = ?,

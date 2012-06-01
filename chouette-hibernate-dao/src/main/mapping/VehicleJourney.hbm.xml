@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="VehicleJourney" table="VehicleJourney">
+	<class name="VehicleJourney" table="vehicle_journeys">
 		<comment>Vehicle journey</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -75,7 +75,7 @@
 			</column>
 		</property>
 		<many-to-one class="Route" lazy="no-proxy" name="route"
-			foreign-key="vj_route_fkey">
+			foreign-key="vj_route_fkey" index="index_vehicle_journeys_on_route_id">
 			<column name="route_id">
 				<comment>Route foreign key</comment>
 			</column>
@@ -98,15 +98,15 @@
 				<comment>Company foreign key</comment>
 			</column>
 		</many-to-one>
-		<bag name="timetables" table="timetablevehiclejourney" lazy="true">
+		<bag name="timetables" table="time_tables_vehicle_journeys" lazy="true">
 			<comment>Timetable on Vehicle journeys cross reference</comment>
 			<key foreign-key="vjtm_vj_fkey">
-				<column name="vehicle_journey_id">
+				<column name="vehicle_journey_id" index="index_time_tables_vehicle_journeys_on_vehicle_journey_id">
 					<comment>VehicleJourney foreign key</comment>
 				</column>
 			</key>
 			<many-to-many class="Timetable" foreign-key="vjtm_tm_fkey">
-				<column name="time_table_id">
+				<column name="time_table_id" index="index_time_tables_vehicle_journeys_on_time_table_id">
 					<comment>Timetable foreign key</comment>
 				</column>
 			</many-to-many>

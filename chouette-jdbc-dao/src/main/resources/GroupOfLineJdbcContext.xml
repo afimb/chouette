@@ -10,11 +10,11 @@
 
 	<bean id="groupOfLineJdbcDao" class="fr.certu.chouette.jdbc.dao.GroupOfLineJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.GroupOfLine</value>
+			<value>SELECT * FROM ${database.schema}.group_of_lines</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.GroupOfLine
+				INSERT INTO ${database.schema}.group_of_lines
 				(
 				objectid,
 				object_version,
@@ -28,18 +28,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.GroupOfLine WHERE objectid = ?
+				SELECT * FROM ${database.schema}.group_of_lines WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.GroupOfLine WHERE
+				SELECT id,objectid FROM ${database.schema}.group_of_lines WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.GroupOfLine
+				UPDATE ${database.schema}.group_of_lines
 				SET
 				objectid = ?,
 				object_version = ?,

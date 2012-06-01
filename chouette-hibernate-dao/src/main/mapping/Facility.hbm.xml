@@ -5,7 +5,7 @@
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="Facility"
-		table="Facility">
+		table="facilities">
 		<comment>Facility</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -135,7 +135,7 @@
 				</column>
 			</property>
 		</component>
-		<bag cascade="all" lazy="false" name="facilityFeatures" table="facilityFeature">
+		<bag cascade="all" lazy="false" name="facilityFeatures" table="facilities_features">
 			<comment>Facility Features secondary table</comment>
 			<key foreign-key="facility_feature_fkey">
 				<column name="facility_id" index="idx_facility_id">

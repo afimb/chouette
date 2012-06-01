@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="Timetable" table="Timetable">
+	<class name="Timetable" table="time_tables">
 		<comment>Timetables</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -48,10 +48,10 @@
 				<comment>coded DayTypeEnum list (Monday,Tuesday, ...)</comment>
 			</column>
 		</property>
-		<list lazy="false" name="calendarDays" table="timetable_date">
+		<list lazy="false" name="calendarDays" table="time_table_dates">
 			<comment>Applicable Calendar days for Timetable</comment>
 			<key foreign-key="tm_date_fkey">
-				<column name="time_table_id">
+				<column name="time_table_id" index="index_time_table_dates_on_time_table_id">
 					<comment>timetable foreign key</comment>
 				</column>
 			</key>
@@ -66,10 +66,10 @@
 				</column>
 			</element>
 		</list>
-		<list lazy="false" name="periods" table="timetable_period">
+		<list lazy="false" name="periods" table="time_table_periods">
 			<comment>Applicable Periods for Timetable</comment>
 			<key foreign-key="tm_period_fkey">
-				<column name="time_table_id">
+				<column name="time_table_id" index="index_time_table_periods_on_time_table_id">
 					<comment>timetable foreign key</comment>
 				</column>
 			</key>
@@ -92,7 +92,7 @@
 			</composite-element>
 		</list>
 		<!-- comments for this bag are sets in VehicleJourney.hbm.xml -->
-		<bag name="vehicleJourneys" table="timetablevehiclejourney" lazy="true"
+		<bag name="vehicleJourneys" table="time_tables_vehicle_journeys" lazy="true"
 			inverse="true">
 			<key>
 				<column name="time_table_id">

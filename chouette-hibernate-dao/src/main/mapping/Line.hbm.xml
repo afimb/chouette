@@ -3,7 +3,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="Line" table="Line" dynamic-insert="false"
+	<class name="Line" table="lines" dynamic-insert="false"
 		dynamic-update="false">
 		<comment>Public Transport Line</comment>
 		<id name="id" type="long">
@@ -80,7 +80,7 @@
 		<!-- relations -->
 		<many-to-one name="ptNetwork" cascade="none" class="PTNetwork"
 			lazy="no-proxy" outer-join="auto" foreign-key="line_ptnetwork_fkey">
-			<column name="ptnetwork_id">
+			<column name="network_id">
 				<comment>PTNetwork reference</comment>
 			</column>
 		</many-to-one>
@@ -94,7 +94,7 @@
 			<key column="line_id" foreign-key="route_line_fkey" on-delete="cascade" />
 			<one-to-many class="Route" />
 		</bag>
-		<bag name="groupOfLines" table="groupofline_line"
+		<bag name="groupOfLines" table="group_of_lines_lines"
 			lazy="true">
 			<comment>Lines affected to groupOfLines</comment>
 			<key foreign-key="groupofline_line_fkey">
@@ -109,7 +109,7 @@
 			</many-to-many>
 		</bag>
 
-		<bag name="routingConstraints" table="routingconstraints_lines"
+		<bag name="routingConstraints" table="routing_constraints_lines"
 			lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
 			<key foreign-key="routingconstraint_line_fkey">

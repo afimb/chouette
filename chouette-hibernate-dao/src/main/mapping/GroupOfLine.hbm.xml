@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="GroupOfLine" table="GroupOfLine" dynamic-insert="false"
+	<class name="GroupOfLine" table="group_of_lines" dynamic-insert="false"
 		dynamic-update="false">
 		<comment>group of lines</comment>
 		<id name="id" type="long">
@@ -45,7 +45,7 @@
 			</column>
 		</property>
 		
-		<bag name="lines" table="groupofline_line" lazy="true">
+		<bag name="lines" table="group_of_lines_lines" lazy="true">
 			<comment>Lines affected to groupOfLines</comment>
 			<key foreign-key="groupofline_group_fkey ">
 				<column name="group_of_line_id" index="idx_grli_gr">

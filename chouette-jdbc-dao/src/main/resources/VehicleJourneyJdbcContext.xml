@@ -10,16 +10,16 @@
 
 	<bean id="vehicleJourneyJdbcDao" class="fr.certu.chouette.jdbc.dao.VehicleJourneyJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.VehicleJourney</value>
+			<value>SELECT * FROM ${database.schema}.vehicle_journeys</value>
 		</property>
 		<property name="sqlPurge">
 			<value>
-                 DELETE FROM ${database.schema}.vehiclejourney WHERE id NOT IN (SELECT distinct vehicle_Journey_Id FROM ${database.schema}.timetablevehiclejourney) 
+                 DELETE FROM ${database.schema}.vehicle_journeys WHERE id NOT IN (SELECT distinct vehicle_Journey_Id FROM ${database.schema}.time_tables_vehicle_journeys) 
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.VehicleJourney
+				INSERT INTO ${database.schema}.vehicle_journeys
 				(
 				objectid,
 				object_version,
@@ -44,7 +44,7 @@
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.VehicleJourney
+				UPDATE ${database.schema}.vehicle_journeys
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -67,20 +67,20 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.VehicleJourney WHERE objectid
+				SELECT * FROM ${database.schema}.vehicle_journeys WHERE objectid
 				= ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.VehicleJourney
+				SELECT id,objectid FROM ${database.schema}.vehicle_journeys
 				WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.VehicleJourney WHERE objectid
+				DELETE FROM ${database.schema}.vehicle_journeys WHERE objectid
 				IN (_OBJECTIDS_)
 			</value>
 		</property>
@@ -93,14 +93,14 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.VehicleJourneyAtStop
+								SELECT * FROM ${database.schema}.vehicle_journey_at_stops
 								WHERE
 								vehicle_journey_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.VehicleJourneyAtStop
+								INSERT INTO ${database.schema}.vehicle_journey_at_stops
 								(
 								vehicle_journey_id,
 								stop_point_id,
@@ -121,7 +121,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.VehicleJourneyAtStop WHERE
+								DELETE FROM ${database.schema}.vehicle_journey_at_stops WHERE
 								vehicle_journey_id IN (_IDS_) 
 								</value>
 						</entry>
@@ -133,13 +133,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.TimetableVehicleJourney WHERE
+								SELECT * FROM ${database.schema}.time_tables_vehicle_journeys WHERE
 								vehicle_journey_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.TimetableVehicleJourney
+								INSERT INTO ${database.schema}.time_tables_vehicle_journeys
 								(
 								time_table_id,
 								vehicle_journey_id
@@ -149,7 +149,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.TimetableVehicleJourney WHERE
+								DELETE FROM ${database.schema}.time_tables_vehicle_journeys WHERE
 								vehicle_journey_id IN (_IDS_)
 								 </value>
 						</entry>

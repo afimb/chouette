@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="VehicleJourneyAtStop" table="VehicleJourneyAtStop">
+	<class name="VehicleJourneyAtStop" table="vehicle_journey_at_stops">
 		<comment>Vehicle journey At Stop</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -14,13 +14,13 @@
 		</id>
 		<properties name="vjas_ukey" unique="true">
 			<many-to-one class="VehicleJourney" lazy="no-proxy" name="vehicleJourney"
-				cascade="none" foreign-key="vjas_vj_fkey">
+				cascade="none" foreign-key="vjas_vj_fkey" index="index_vehicle_journey_at_stops_on_vehicle_journey_id">
 				<column name="vehicle_journey_id">
 					<comment>vehicleJourney foreign key </comment>
 				</column>
 			</many-to-one>
 			<many-to-one class="StopPoint" lazy="no-proxy" name="stopPoint"
-				cascade="none" foreign-key="vjas_sp_fkey">
+				cascade="none" foreign-key="vjas_sp_fkey" index="index_vehicle_journey_at_stops_on_stop_point_id" >
 				<column name="stop_point_id">
 					<comment>StopPoint foreign key </comment>
 				</column>

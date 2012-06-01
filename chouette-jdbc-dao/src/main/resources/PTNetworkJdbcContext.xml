@@ -10,16 +10,16 @@
 
 	<bean id="networkJdbcDao" class="fr.certu.chouette.jdbc.dao.PTNetworkJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.PTNETWORK</value>
+			<value>SELECT * FROM ${database.schema}.networks</value>
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.PTNETWORK WHERE id NOT IN (SELECT distinct ptnetwork_id FROM ${database.schema}.line)
+				DELETE FROM ${database.schema}.networks WHERE id NOT IN (SELECT distinct network_id FROM ${database.schema}.lines)
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.PTNETWORK
+				INSERT INTO ${database.schema}.networks
 				(
 				objectid,
 				object_version,
@@ -38,18 +38,18 @@
 			 </value>
 		</property>
 		<property name="sqlSelectByObjectId">
-			<value>SELECT * FROM ${database.schema}.PTNETWORK WHERE objectid = ?
+			<value>SELECT * FROM ${database.schema}.networks WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.PTNETWORK WHERE
+				SELECT id,objectid FROM ${database.schema}.networks WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.PTNETWORK
+				UPDATE ${database.schema}.networks
 				SET
 				objectid = ?,
 				object_version = ?,

@@ -10,16 +10,16 @@
 
 	<bean id="routeJdbcDao" class="fr.certu.chouette.jdbc.dao.RouteJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.Route</value>
+			<value>SELECT * FROM ${database.schema}.routes</value>
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.route WHERE id NOT IN (SELECT distinct route_Id FROM ${database.schema}.vehiclejourney)
+				DELETE FROM ${database.schema}.routes WHERE id NOT IN (SELECT distinct route_Id FROM ${database.schema}.vehicle_journeys)
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.Route
+				INSERT INTO ${database.schema}.routes
 				(
 				objectid,
 				object_version,
@@ -40,18 +40,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.Route WHERE objectid = ?
+				SELECT * FROM ${database.schema}.routes WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.Route WHERE
+				SELECT id,objectid FROM ${database.schema}.routes WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.Route
+				UPDATE ${database.schema}.routes
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -70,7 +70,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.Route WHERE objectid
+				DELETE FROM ${database.schema}.routes WHERE objectid
 				IN (_OBJECTIDS_)
 			</value>
 		</property>

@@ -11,16 +11,16 @@
 	<bean id="journeyPatternJdbcDao" class="fr.certu.chouette.jdbc.dao.JourneyPatternJdbcDao"
 		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.JourneyPattern</value>
+			<value>SELECT * FROM ${database.schema}.journey_patterns</value>
 		</property>
 		<property name="sqlPurge">
 			<value>
-                 DELETE FROM ${database.schema}.journeypattern WHERE id NOT IN (SELECT journey_pattern_id FROM ${database.schema}.vehiclejourney) 
+                 DELETE FROM ${database.schema}.journey_patterns WHERE id NOT IN (SELECT journey_pattern_id FROM ${database.schema}.vehicle_journeys) 
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.JourneyPattern
+				INSERT INTO ${database.schema}.journey_patterns
 				(
 				objectid,
 				object_version,
@@ -40,7 +40,7 @@
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.JourneyPattern
+				UPDATE ${database.schema}.journey_patterns
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -58,19 +58,19 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.JourneyPattern WHERE objectid = ?
+				SELECT * FROM ${database.schema}.journey_patterns WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.JourneyPattern
+				SELECT id,objectid FROM ${database.schema}.journey_patterns
 				WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.JourneyPattern WHERE objectid
+				DELETE FROM ${database.schema}.journey_patterns WHERE objectid
 				IN
 				(_OBJECTIDS_)
 			</value>
@@ -82,11 +82,11 @@
 					<map>
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
-							<value>SELECT * FROM ${database.schema}.journeypattern_stoppoint
+							<value>SELECT * FROM ${database.schema}.journey_patterns_stop_points
 								WHERE journey_pattern_id = ? </value>
 						</entry>
 						<entry key="sqlInsert">
-							<value>INSERT INTO ${database.schema}.journeypattern_stoppoint
+							<value>INSERT INTO ${database.schema}.journey_patterns_stop_points
 								(
 								journey_pattern_id,
 								stop_point_id
@@ -94,7 +94,7 @@
 								VALUES(?, ?)</value>
 						</entry>
 						<entry key="sqlDelete">
-							<value>DELETE FROM ${database.schema}.journeypattern_stoppoint
+							<value>DELETE FROM ${database.schema}.journey_patterns_stop_points
 								WHERE journey_pattern_id IN (_IDS_) </value>
 						</entry>
 					</map>

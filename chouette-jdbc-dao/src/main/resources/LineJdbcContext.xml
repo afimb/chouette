@@ -10,18 +10,18 @@
 
 	<bean id="lineJdbcDao" class="fr.certu.chouette.jdbc.dao.LineJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.LINE</value>
+			<value>SELECT * FROM ${database.schema}.lines</value>
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.line WHERE id NOT IN (SELECT distinct line_id FROM ${database.schema}.route)
+				DELETE FROM ${database.schema}.lines WHERE id NOT IN (SELECT distinct line_id FROM ${database.schema}.routes)
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.LINE
+				INSERT INTO ${database.schema}.lines
 				(
-				ptnetwork_id,
+				network_id,
 				company_id,
 				objectid,
 				object_version,
@@ -41,21 +41,21 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.LINE WHERE objectid = ?
+				SELECT * FROM ${database.schema}.lines WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.LINE WHERE
+				SELECT id,objectid FROM ${database.schema}.lines WHERE
 				objectid
 				IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.LINE
+				UPDATE ${database.schema}.lines
 				SET
-				ptnetwork_id = ?,
+				network_id = ?,
 				company_id = ?,
 				objectid = ?,
 				object_version = ?,
@@ -74,7 +74,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.LINE WHERE objectid
+				DELETE FROM ${database.schema}.lines WHERE objectid
 				IN
 				(_OBJECTIDS_)
 		</value>
@@ -87,13 +87,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.groupofline_line WHERE
+								SELECT * FROM ${database.schema}.group_of_lines_lines WHERE
 								line_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.groupofline_line
+								INSERT INTO ${database.schema}.group_of_lines_lines
 								(
 								line_id,
 								group_of_line_id
@@ -103,8 +103,8 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.groupofline_line WHERE
-								line_Id IN (_IDS_)
+								DELETE FROM ${database.schema}.group_of_lines_lines WHERE
+								line_id IN (_IDS_)
 								 </value>
 						</entry>
 					</map>

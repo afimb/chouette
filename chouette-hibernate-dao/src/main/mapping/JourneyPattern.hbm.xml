@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="JourneyPattern" table="JourneyPattern">
+	<class name="JourneyPattern" table="journey_patterns">
 		<comment>Journey pattern</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -54,7 +54,7 @@
 			</column>
 		</property>
 
-		<bag inverse="true" lazy="true" name="stopPoints" table="journeyPattern_stopPoint"
+		<bag inverse="true" lazy="true" name="stopPoints" table="journey_patterns_stop_points"
 			cascade="all">
 			<comment>StopPoint on JourneyPattern cross reference</comment>
 			<key foreign-key="jpsp_jp_fkey">

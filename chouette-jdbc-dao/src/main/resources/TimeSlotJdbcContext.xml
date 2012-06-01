@@ -10,11 +10,11 @@
 
 	<bean id="timeSlotJdbcDao" class="fr.certu.chouette.jdbc.dao.TimeSlotJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.TimeSlot</value>
+			<value>SELECT * FROM ${database.schema}.time_slots</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.TimeSlot
+				INSERT INTO ${database.schema}.time_slots
 				(
 				objectid,
 				object_version,
@@ -31,18 +31,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.TimeSlot WHERE objectid = ?
+				SELECT * FROM ${database.schema}.time_slots WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.TimeSlot WHERE
+				SELECT id,objectid FROM ${database.schema}.time_slots WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.TimeSlot WHERE objectid
+				DELETE FROM ${database.schema}.time_slots WHERE objectid
 				IN
 				(_OBJECTIDS_)
 		</value>

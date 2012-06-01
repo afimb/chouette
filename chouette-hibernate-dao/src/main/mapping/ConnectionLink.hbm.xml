@@ -5,7 +5,7 @@
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="ConnectionLink"
-		table="ConnectionLink">
+		table="connection_links">
 		<comment>Connection link between 2 stopareas</comment>
 		<id name="id" type="long">
 			<column name="id">

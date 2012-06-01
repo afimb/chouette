@@ -8,9 +8,7 @@ import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateSystemException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -20,100 +18,24 @@ import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
-import fr.certu.chouette.model.neptune.AccessLink;
-import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.GroupOfLine;
-import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.PTLink;
-import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.TimeSlot;
-import fr.certu.chouette.model.neptune.Timetable;
-import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.plugin.model.ImportLogMessage;
 
-public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends HibernateDaoSupport implements IDaoTemplate<T>
+public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoSupport implements IDaoTemplate<T>
 {
-   private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
+   private static final Logger logger = Logger.getLogger(NeptuneObjectHibernateDaoTemplate.class);
 
    private Class<T> type;
 
-   private HibernateDaoTemplate(Class<T> type) 
+   private NeptuneObjectHibernateDaoTemplate(Class<T> type) 
    {
       this.type = type;
    }
 
-   public static HibernateDaoTemplate<AccessLink> createAccessLinkDao()
+   public static NeptuneObjectHibernateDaoTemplate<ImportLogMessage> createImportLogMessageDao()
    {
-      return new HibernateDaoTemplate<AccessLink>( AccessLink.class);
+      return new NeptuneObjectHibernateDaoTemplate<ImportLogMessage>( ImportLogMessage.class);
    }
-   public static HibernateDaoTemplate<AccessPoint> createAccessPointDao()
-   {
-      return new HibernateDaoTemplate<AccessPoint>( AccessPoint.class);
-   }
-   public static HibernateDaoTemplate<Company> createCompanyDao()
-   {
-      return new HibernateDaoTemplate<Company>( Company.class);
-   }
-   public static HibernateDaoTemplate<ConnectionLink> createConnectionLinkDao()
-   {
-      return new HibernateDaoTemplate<ConnectionLink>( ConnectionLink.class);
-   }
-   public static HibernateDaoTemplate<Facility> createFacilityDao()
-   {
-      return new HibernateDaoTemplate<Facility>( Facility.class);
-   }
-   public static HibernateDaoTemplate<GroupOfLine> createGroupOfLineDao()
-   {
-      return new HibernateDaoTemplate<GroupOfLine>( GroupOfLine.class);
-   }
-   public static HibernateDaoTemplate<JourneyPattern> createJourneyPatternDao()
-   {
-      return new HibernateDaoTemplate<JourneyPattern>( JourneyPattern.class);
-   }
-   public static HibernateDaoTemplate<Line> createLineDao()
-   {
-      return new HibernateDaoTemplate<Line>( Line.class);
-   }
-   public static HibernateDaoTemplate<PTLink> createPTLinkDao()
-   {
-      return new HibernateDaoTemplate<PTLink>( PTLink.class);
-   }
-   public static HibernateDaoTemplate<PTNetwork> createPTNetworkDao()
-   {
-      return new HibernateDaoTemplate<PTNetwork>( PTNetwork.class);
-   }
-   public static HibernateDaoTemplate<Route> createRouteDao()
-   {
-      return new HibernateDaoTemplate<Route>( Route.class);
-   }
-   public static HibernateDaoTemplate<StopArea> createStopAreaDao()
-   {
-      return new HibernateDaoTemplate<StopArea>( StopArea.class);
-   }
-   public static HibernateDaoTemplate<StopPoint> createStopPointDao()
-   {
-      return new HibernateDaoTemplate<StopPoint>( StopPoint.class);
-   }
-   public static HibernateDaoTemplate<Timetable> createTimetableDao()
-   {
-      return new HibernateDaoTemplate<Timetable>( Timetable.class);
-   }
-   public static HibernateDaoTemplate<TimeSlot> createTimeSlotDao()
-   {
-      return new HibernateDaoTemplate<TimeSlot>( TimeSlot.class);
-   }
-   public static HibernateDaoTemplate<VehicleJourney> createVehicleJourneyDao()
-   {
-      return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
-   }
-
 
    /* (non-Javadoc)
     * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
@@ -122,12 +44,10 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
    public T get(Long id)
    {
       logger.debug("invoke get on "+type.getSimpleName());
-      if (id == null) return null;
       T object = ( T)getHibernateTemplate().get( type, id);
       if ( object==null)
       {
-         return null;
-         // throw new ObjectRetrievalFailureException( type, id);
+         throw new ObjectRetrievalFailureException( type, id);
       }
       return object;
    }
@@ -210,33 +130,6 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       }
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.dao.IDaoTemplate#getByObjectId(java.lang.String)
-    */
-   @SuppressWarnings("unchecked")
-   public T getByObjectId( final String objectId)
-   {
-      logger.debug("invoke getByObjectId on "+type.getSimpleName());
-      if ( objectId==null || objectId.isEmpty()) return null;
-
-      DetachedCriteria criteria = DetachedCriteria.forClass(type);
-      criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-      criteria.add(Restrictions.eq("objectId", objectId));
-      final List<T> list = getHibernateTemplate().findByCriteria(criteria);
-      final int total = list.size();
-
-      if ( total==0)
-      {
-         return null;
-         // throw new ObjectRetrievalFailureException( type, objectId);
-      }
-      else if ( total>1)
-      {
-         throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "+type.getName()+" id =" + objectId);
-      }
-
-      return list.get( 0);
-   }	
 
    /* (non-Javadoc)
     * @see fr.certu.chouette.dao.IDaoTemplate#getAll()
@@ -372,16 +265,16 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       logger.debug("invoke saveOrUpdateAll on "+type.getSimpleName());
       for (T object : objects) 
       {
-         T existing = getByObjectId(object.getObjectId());
+         T existing = get(object.getId());
          if (existing != null)
          {
-            logger.debug("update object :"+object.getObjectId());
+            logger.debug("update object :"+object.getId());
             getHibernateTemplate().evict(existing);
             object.setId(existing.getId());
          }
          else
          {
-            logger.debug("save object :"+object.getObjectId());
+            logger.debug("save object :"+object.getId());
          }
       }
       getHibernateTemplate().saveOrUpdateAll(objects);
@@ -426,5 +319,12 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
          }
          return ((Long) query.uniqueResult()).longValue();
       }
+   }
+
+   @Override
+   public T getByObjectId(String objectId)
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 }

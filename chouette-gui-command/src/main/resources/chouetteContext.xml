@@ -102,9 +102,8 @@
 				</entry>
 			</map>
 		</property>
+		<property name="importLogMessageDao" ref="importLogMessageDao" />
 		<property name="validationParameters" ref="Validation" />
-		<property name="migrationTool" ref="migrate" />
-		<property name="checkObjectId" ref="checkObjectId"/>
 	</bean>
 
 	<bean id="commandDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource"
@@ -116,19 +115,5 @@
 		<property name="databaseSchema" value="${database.schema}" />
 	</bean>
 
-	<bean id="migrate" class="fr.certu.chouette.command.MigrateSchema"
-		lazy-init="true">
-		<property name="dataSource" ref="commandDataSource" />
-		<property name="currentVersion" value="1.7" />
-		<property name="routeManager" ref="routeManager" />
-		<property name="linkManager" ref="PTLinkManager" />
-		<property name="timetableManager" ref="timetableManager" />
-		
-	</bean>
-
-	<bean id="checkObjectId" class="fr.certu.chouette.command.CheckObjectId"
-		lazy-init="true">
-		<property name="dataSource" ref="commandDataSource" />
-	</bean>
 
 </beans>

@@ -1,7 +1,8 @@
 -- usage : psql -U chouette -W -f schema.sql -v SCH=chouette -d chouette_v17
 
 SET search_path TO :SCH ;
--- add underscore on each fields to separate names (exclude objectid)
+
+-- add underscore on each fields to separate names (exclude objectid) (database naming conventions)
 ALTER TABLE AccessLink RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE AccessLink RENAME COLUMN creationTime TO creation_time;
 ALTER TABLE AccessLink RENAME COLUMN creatorId TO creator_id;
@@ -78,8 +79,8 @@ ALTER TABLE GroupOfLine RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE GroupOfLine RENAME COLUMN creationTime TO creation_time;
 ALTER TABLE GroupOfLine RENAME COLUMN creatorId TO creator_id;
 
-ALTER TABLE groupofline_line RENAME COLUMN group_of_line_id TO zzzz;
-ALTER TABLE groupofline_line RENAME COLUMN line_id TO zzzz;
+ALTER TABLE groupofline_line RENAME COLUMN groupoflineid TO group_of_line_id;
+ALTER TABLE groupofline_line RENAME COLUMN lineid TO line_id;
 
 ALTER TABLE JourneyPattern RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE JourneyPattern RENAME COLUMN creationTime TO creation_time;
@@ -101,7 +102,7 @@ ALTER TABLE Line RENAME COLUMN mobilityRestrictedSuitable TO mobility_restricted
 
 ALTER TABLE Line DROP COLUMN userNeeds ; -- will be recreated by 
 
-ALTER TABLE Line RENAME COLUMN PTNetworkId TO ptnetwork_id;
+ALTER TABLE Line RENAME COLUMN PTNetworkId TO network_id;
 ALTER TABLE Line RENAME COLUMN companyId TO company_id;
 
 
@@ -128,7 +129,6 @@ ALTER TABLE PTNetwork RENAME COLUMN sourceIdentifier TO source_identifier;
 ALTER TABLE Route RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE Route RENAME COLUMN creationTime TO creation_time;
 ALTER TABLE Route RENAME COLUMN creatorId TO creator_id;
-ALTER TABLE Route RENAME COLUMN registrationNumber TO registration_number;
 ALTER TABLE Route RENAME COLUMN oppositeRouteId TO opposite_route_id;
 ALTER TABLE Route RENAME COLUMN publishedName TO published_name;
 ALTER TABLE Route RENAME COLUMN lineId TO line_id;
@@ -142,9 +142,6 @@ ALTER TABLE StopArea RENAME COLUMN projectiontype TO projection_type;
 ALTER TABLE StopArea RENAME COLUMN countrycode TO country_code;
 ALTER TABLE StopArea RENAME COLUMN streetname TO street_name;
 ALTER TABLE StopArea RENAME COLUMN parentId TO parent_id;
-ALTER TABLE StopArea RENAME COLUMN liftAvailability TO lift_availability;
-ALTER TABLE StopArea RENAME COLUMN mobilityrestrictedsuitability TO mobility_restricted_suitability;
-ALTER TABLE StopArea RENAME COLUMN stairsAvailability TO stairs_availability;
 ALTER TABLE StopArea RENAME COLUMN areatype TO area_type;
 ALTER TABLE StopArea RENAME COLUMN nearesttopicname TO nearest_topic_name;
 ALTER TABLE StopArea RENAME COLUMN fareCode TO fare_code;
@@ -155,7 +152,6 @@ ALTER TABLE stopareastoparea RENAME COLUMN childId TO child_id;
 ALTER TABLE StopPoint RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE StopPoint RENAME COLUMN creationTime TO creation_time;
 ALTER TABLE StopPoint RENAME COLUMN creatorId TO creator_id;
-ALTER TABLE StopPoint RENAME COLUMN registrationNumber TO registration_number;
 ALTER TABLE StopPoint RENAME COLUMN stopareaid TO stop_area_id;
 ALTER TABLE StopPoint RENAME COLUMN routeId TO route_id;
 
@@ -184,7 +180,6 @@ ALTER TABLE timetablevehiclejourney RENAME COLUMN vehiclejourneyId TO vehicle_jo
 ALTER TABLE VehicleJourney RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE VehicleJourney RENAME COLUMN creationTime TO creation_time;
 ALTER TABLE VehicleJourney RENAME COLUMN creatorId TO creator_id;
-ALTER TABLE VehicleJourney RENAME COLUMN registrationNumber TO registration_number;
 ALTER TABLE VehicleJourney RENAME COLUMN statusValue TO status_value;
 ALTER TABLE VehicleJourney RENAME COLUMN transportMode TO transport_mode_name;
 ALTER TABLE VehicleJourney RENAME COLUMN publishedJourneyName TO published_journey_name;
@@ -208,42 +203,126 @@ ALTER TABLE VehicleJourneyAtStop RENAME COLUMN isDeparture TO is_departure;
 ALTER TABLE VehicleJourneyAtStop RENAME COLUMN isArrival TO is_arrival;
 
 
+-- rename all tables with underscore and pluralize (database naming conventions)
+ALTER TABLE AccessLink RENAME to access_links;
+ALTER SEQUENCE accesslink_id_seq RENAME to access_links_id_seq;
+ALTER TABLE access_links ALTER COLUMN id SET DEFAULT nextval('access_links_id_seq'::regclass);
+
+ALTER TABLE AccessPoint RENAME to access_points;
+ALTER SEQUENCE accesspoint_id_seq RENAME to access_points_id_seq;
+ALTER TABLE access_points ALTER COLUMN id SET DEFAULT nextval('access_points_id_seq'::regclass);
+
+ALTER TABLE Company RENAME to companies ;   
+ALTER SEQUENCE company_id_seq RENAME to companies_id_seq;
+ALTER TABLE companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq'::regclass);
+
+ALTER TABLE ConnectionLink RENAME to connection_links ;   
+ALTER SEQUENCE ConnectionLink_id_seq RENAME to connection_links_id_seq;
+ALTER TABLE connection_links ALTER COLUMN id SET DEFAULT nextval('connection_links_id_seq'::regclass);
+
+ALTER TABLE Facility RENAME to facilities ;   
+ALTER SEQUENCE Facility_id_seq RENAME to facilities_id_seq;
+ALTER TABLE facilities ALTER COLUMN id SET DEFAULT nextval('facilities_id_seq'::regclass);
+
+ALTER TABLE facilityFeature RENAME to facilities_features ;   
+
+ALTER TABLE GroupOfLine RENAME to group_of_lines ;   
+ALTER SEQUENCE GroupOfLine_id_seq RENAME to group_of_lines_id_seq;
+ALTER TABLE group_of_lines ALTER COLUMN id SET DEFAULT nextval('group_of_lines_id_seq'::regclass);
+
+ALTER TABLE groupofline_line RENAME to group_of_lines_lines ;   
+
+ALTER TABLE JourneyPattern RENAME to journey_patterns ;   
+ALTER SEQUENCE JourneyPattern_id_seq RENAME to journey_patterns_id_seq;
+ALTER TABLE journey_patterns ALTER COLUMN id SET DEFAULT nextval('journey_patterns_id_seq'::regclass);
+
+ALTER TABLE journeyPattern_stopPoint RENAME to journey_patterns_stop_points ;   
+
+ALTER TABLE Line RENAME to lines ;   
+ALTER SEQUENCE Line_id_seq RENAME to lines_id_seq;
+ALTER TABLE lines ALTER COLUMN id SET DEFAULT nextval('lines_id_seq'::regclass);
+
+ALTER TABLE routingconstraints_lines RENAME to routing_constraints_lines ;   
+
+ALTER TABLE PTLink RENAME to pt_links;
+ALTER SEQUENCE PTLink_id_seq RENAME to pt_links_id_seq;
+ALTER TABLE pt_links ALTER COLUMN id SET DEFAULT nextval('pt_links_id_seq'::regclass);
+
+ALTER TABLE PTNetwork RENAME to networks ;   
+ALTER SEQUENCE ptnetwork_id_seq RENAME to networks_id_seq;
+ALTER TABLE networks ALTER COLUMN id SET DEFAULT nextval('networks_id_seq'::regclass);
+
+ALTER TABLE Route RENAME to routes ;   
+ALTER SEQUENCE Route_id_seq RENAME to routes_id_seq;
+ALTER TABLE routes ALTER COLUMN id SET DEFAULT nextval('routes_id_seq'::regclass);
+
+ALTER TABLE StopArea RENAME to stop_areas ;   
+ALTER SEQUENCE StopArea_id_seq RENAME to stop_areas_id_seq;
+ALTER TABLE stop_areas ALTER COLUMN id SET DEFAULT nextval('stop_areas_id_seq'::regclass);
+
+ALTER TABLE stopareastoparea RENAME to stop_areas_stop_areas ;   
+
+ALTER TABLE StopPoint RENAME to stop_points ;   
+ALTER SEQUENCE StopPoint_id_seq RENAME to stop_points_id_seq;
+ALTER TABLE stop_points ALTER COLUMN id SET DEFAULT nextval('stop_points_id_seq'::regclass);
+
+ALTER TABLE TimeSlot RENAME to time_slots ;
+ALTER SEQUENCE TimeSlot_id_seq RENAME to time_slots_id_seq;
+ALTER TABLE time_slots ALTER COLUMN id SET DEFAULT nextval('time_slots_id_seq'::regclass);
+
+ALTER TABLE Timetable RENAME to time_tables ;
+ALTER SEQUENCE Timetable_id_seq RENAME to time_tables_id_seq;
+ALTER TABLE time_tables ALTER COLUMN id SET DEFAULT nextval('time_tables_id_seq'::regclass);
+
+ALTER TABLE timetable_date RENAME to time_tables_dates ;
+
+ALTER TABLE timetable_period RENAME to time_tables_periods ;
+
+ALTER TABLE timetablevehiclejourney RENAME to time_tables_vehicle_journeys ;
+
+ALTER TABLE VehicleJourney RENAME to vehicle_journeys ;
+ALTER SEQUENCE VehicleJourney_id_seq RENAME to vehicle_journeys_id_seq;
+ALTER TABLE vehicle_journeys ALTER COLUMN id SET DEFAULT nextval('vehicle_journeys_id_seq'::regclass);
+
+ALTER TABLE VehicleJourneyAtStop RENAME to vehicle_journey_at_stops ;
+
+
 -- vehiclejourneyatstop primary key changes
-ALTER TABLE vehiclejourneyatstop DROP CONSTRAINT vehiclejourneyatstop_pkey;
-ALTER TABLE vehiclejourneyatstop ADD COLUMN id bigserial;
-ALTER TABLE vehiclejourneyatstop ADD CONSTRAINT vehiclejourneyatstop_pkey  PRIMARY KEY (id);
+ALTER TABLE vehicle_journey_at_stops DROP CONSTRAINT vehiclejourneyatstop_pkey;
+ALTER TABLE vehicle_journey_at_stops ADD COLUMN id bigserial;
+ALTER TABLE vehicle_journey_at_stops ADD CONSTRAINT vehicle_journey_at_stop_pkey PRIMARY KEY (id);
 
 -- purge bad relationship in stopareastoparea
-DELETE FROM stopareastoparea WHERE parent_id NOT IN (SELECT id FROM stoparea WHERE area_type = 'itl');
+DELETE FROM stop_areas_stop_areas WHERE parent_id NOT IN (SELECT id FROM stop_areas WHERE area_type = 'itl');
 
 -- add journeypattern first and last stoppoint
-ALTER TABLE journeypattern ADD COLUMN departure_stop_point_id bigint;
-ALTER TABLE journeypattern ALTER COLUMN departure_stop_point_id SET STORAGE PLAIN;
-COMMENT ON COLUMN journeypattern.departure_stop_point_id IS 'Departure StopPoint Reference';
+ALTER TABLE journey_patterns ADD COLUMN departure_stop_point_id bigint;
+ALTER TABLE journey_patterns ALTER COLUMN departure_stop_point_id SET STORAGE PLAIN;
+COMMENT ON COLUMN journey_patterns.departure_stop_point_id IS 'Departure StopPoint Reference';
 
-ALTER TABLE journeypattern ADD COLUMN arrival_stop_point_id bigint;
-ALTER TABLE journeypattern ALTER COLUMN arrival_stop_point_id SET STORAGE PLAIN;
-COMMENT ON COLUMN journeypattern.arrival_stop_point_id IS 'Arrival StopPoint Reference';
+ALTER TABLE journey_patterns ADD COLUMN arrival_stop_point_id bigint;
+ALTER TABLE journey_patterns ALTER COLUMN arrival_stop_point_id SET STORAGE PLAIN;
+COMMENT ON COLUMN journey_patterns.arrival_stop_point_id IS 'Arrival StopPoint Reference';
 
-ALTER TABLE journeypattern
+ALTER TABLE journey_patterns
   ADD CONSTRAINT arrival_point_fkey FOREIGN KEY (arrival_stop_point_id)
-      REFERENCES stoppoint (id) MATCH SIMPLE
+      REFERENCES stop_points (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
       
-ALTER TABLE journeypattern
+ALTER TABLE journey_patterns
   ADD CONSTRAINT departure_point_fkey FOREIGN KEY (departure_stop_point_id)
-      REFERENCES stoppoint (id) MATCH SIMPLE
+      REFERENCES stop_points (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION;
 
-UPDATE journeypattern j SET departure_stop_point_id = (SELECT h.stop_point_id 
-                                                    FROM vehiclejourneyatstop h, vehiclejourney v 
+UPDATE journey_patterns j SET departure_stop_point_id = (SELECT h.stop_point_id 
+                                                    FROM vehicle_journey_at_stops h, vehicle_journeys v 
                                                     WHERE h.is_departure = true 
                                                       AND h.vehicle_journey_id = v.id 
                                                       AND v.journey_pattern_id = j.id 
                                                       LIMIT 1); 
                                                       
-UPDATE journeypattern j SET arrival_stop_point_id = (SELECT h.stop_point_id 
-                                                    FROM vehiclejourneyatstop h, vehiclejourney v 
+UPDATE journey_patterns j SET arrival_stop_point_id = (SELECT h.stop_point_id 
+                                                    FROM vehicle_journey_at_stops h, vehicle_journeys v 
                                                     WHERE h.is_arrival = true 
                                                       AND h.vehicle_journey_id = v.id 
                                                       AND v.journey_pattern_id = j.id 

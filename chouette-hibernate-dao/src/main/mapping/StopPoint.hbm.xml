@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class dynamic-insert="false" name="StopPoint" table="StopPoint">
+	<class dynamic-insert="false" name="StopPoint" table="stop_points">
 		<comment>stop point on route</comment>
 		<id name="id" type="long">
 			<column name="id">

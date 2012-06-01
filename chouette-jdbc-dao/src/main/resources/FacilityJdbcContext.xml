@@ -11,11 +11,11 @@
 	<bean id="facilityJdbcDao" class="fr.certu.chouette.jdbc.dao.FacilityJdbcDao"
 		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.Facility</value>
+			<value>SELECT * FROM ${database.schema}.facilities</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.Facility
+				INSERT INTO ${database.schema}.facilities
 				(
 				objectid,
 				object_version,
@@ -44,18 +44,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.Facility WHERE objectid = ?
+				SELECT * FROM ${database.schema}.facilities WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.Facility WHERE
+				SELECT id,objectid FROM ${database.schema}.facilities WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.Facility WHERE objectid
+				DELETE FROM ${database.schema}.facilities WHERE objectid
 				IN
 				(_OBJECTIDS_)
 		</value>
@@ -68,13 +68,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.facilityfeature
+								SELECT * FROM ${database.schema}.facilities_features
 								WHERE facility_id = ?
 							</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.facilityfeature
+								INSERT INTO ${database.schema}.facilities_features
 								(
 								facility_id,
 								choice_code
@@ -84,7 +84,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.facilityfeature
+								DELETE FROM ${database.schema}.facilities_features
 								WHERE facility_id IN
 								(_IDS_) 
 								</value>

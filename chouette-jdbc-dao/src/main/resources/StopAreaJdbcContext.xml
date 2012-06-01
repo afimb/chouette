@@ -11,39 +11,39 @@
 	<bean id="stopAreaJdbcDao" class="fr.certu.chouette.jdbc.dao.StopAreaJdbcDao"
 		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.StopArea</value>
+			<value>SELECT * FROM ${database.schema}.stop_areas</value>
 		</property>
 		<property name="sqlPurge1">
 			<value>
-				DELETE FROM ${database.schema}.StopArea WHERE area_type IN
+				DELETE FROM ${database.schema}.stop_areas WHERE area_type IN
 				('BoardingPosition','Quay') AND (id NOT IN (SELECT distinct
-				stop_area_id FROM ${database.schema}.StopPoint))
+				stop_area_id FROM ${database.schema}.stop_points))
 			</value>
 		</property>
 		<property name="sqlPurge2">
 			<value>
-				DELETE FROM ${database.schema}.StopArea s WHERE s.area_type =
+				DELETE FROM ${database.schema}.stop_areas s WHERE s.area_type =
 				'CommercialStopPoint' AND NOT (EXISTS (SELECT p.parent_id FROM
-				${database.schema}.StopArea p WHERE p.parent_id = s.id))
+				${database.schema}.stop_areas p WHERE p.parent_id = s.id))
 			</value>
 		</property>
 		<property name="sqlPurge3">
 			<value>
-				DELETE FROM ${database.schema}.StopArea s WHERE s.area_type =
+				DELETE FROM ${database.schema}.stop_areas s WHERE s.area_type =
 				'StopPlace' AND NOT (EXISTS (SELECT p.parent_id FROM
-				${database.schema}.StopArea p WHERE p.parent_id = s.id))
+				${database.schema}.stop_areas p WHERE p.parent_id = s.id))
 			</value>
 		</property>
 		<property name="sqlPurge4">
 			<value>
-				DELETE FROM ${database.schema}.StopArea s WHERE s.area_type =
+				DELETE FROM ${database.schema}.stop_areas s WHERE s.area_type =
 				'ITL' AND NOT (EXISTS (SELECT p.parent_id FROM
-				${database.schema}.StopArea p WHERE p.parent_id = s.id))
+				${database.schema}.stop_areas p WHERE p.parent_id = s.id))
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.StopArea
+				INSERT INTO ${database.schema}.stop_areas
 				(
 				parent_id,
 				objectid,
@@ -71,18 +71,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.StopArea WHERE objectid = ?
+				SELECT * FROM ${database.schema}.stop_areas WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.StopArea WHERE
+				SELECT id,objectid FROM ${database.schema}.stop_areas WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.StopArea
+				UPDATE ${database.schema}.stop_areas
 				SET
 				parent_id = ?,
 				objectid = ?,
@@ -114,13 +114,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.stopareastoparea WHERE
+								SELECT * FROM ${database.schema}.stop_areas_stop_areas WHERE
 								child_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.stopareastoparea
+								INSERT INTO ${database.schema}.stop_areas_stop_areas
 								(
 								parent_id,
 								child_id
@@ -130,7 +130,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.stopareastoparea WHERE
+								DELETE FROM ${database.schema}.stop_areas_stop_areas WHERE
 								child_id IN (_IDS_)
 								 </value>
 						</entry>
@@ -141,13 +141,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.routingconstraints_lines WHERE
+								SELECT * FROM ${database.schema}.routing_constraints_lines WHERE
 								stop_area_id = ? 
 								</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.routingconstraints_lines
+								INSERT INTO ${database.schema}.routing_constraints_lines
 								(
 								line_id,
 								stop_area_id
@@ -157,7 +157,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.routingconstraints_lines WHERE
+								DELETE FROM ${database.schema}.routing_constraints_lines WHERE
 								stop_area_id IN (_IDS_)
 								 </value>
 						</entry>

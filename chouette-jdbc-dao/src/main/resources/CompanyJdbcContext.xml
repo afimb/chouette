@@ -10,16 +10,16 @@
 
 	<bean id="companyJdbcDao" class="fr.certu.chouette.jdbc.dao.CompanyJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.COMPANY</value>
+			<value>SELECT * FROM ${database.schema}.companies</value>
 		</property>
 		<property name="sqlPurge">
 			<value>
-				DELETE FROM ${database.schema}.COMPANY WHERE id NOT IN (SELECT distinct company_id FROM ${database.schema}.line union SELECT distinct company_id FROM ${database.schema}.vehicleJourney)
+				DELETE FROM ${database.schema}.companies WHERE id NOT IN (SELECT distinct company_id FROM ${database.schema}.lines union SELECT distinct company_id FROM ${database.schema}.vehicle_journeys)
 			</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.COMPANY
+				INSERT INTO ${database.schema}.companies
 				(
 				objectid,
 				object_version,
@@ -38,18 +38,18 @@
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
-			<value>SELECT * FROM ${database.schema}.COMPANY WHERE objectid = ?
+			<value>SELECT * FROM ${database.schema}.companies WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.COMPANY WHERE
+				SELECT id,objectid FROM ${database.schema}.companies WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.COMPANY
+				UPDATE ${database.schema}.companies
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -69,7 +69,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.COMPANY WHERE objectid IN
+				DELETE FROM ${database.schema}.companies WHERE objectid IN
 				(_OBJECTIDS_)
 		</value>
 		</property>

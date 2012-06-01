@@ -10,11 +10,11 @@
 
 	<bean id="connectionLinkJdbcDao" class="fr.certu.chouette.jdbc.dao.ConnectionLinkJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.ConnectionLink</value>
+			<value>SELECT * FROM ${database.schema}.connection_links</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.ConnectionLink
+				INSERT INTO ${database.schema}.connection_links
 				(
 				objectid,
 				object_version,
@@ -40,20 +40,20 @@
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
-			<value>SELECT * FROM ${database.schema}.ConnectionLink WHERE objectid
+			<value>SELECT * FROM ${database.schema}.connection_links WHERE objectid
 				= ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.ConnectionLink
+				SELECT id,objectid FROM ${database.schema}.connection_links
 				WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.ConnectionLink
+				UPDATE ${database.schema}.connection_links
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -78,7 +78,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.ConnectionLink WHERE objectid
+				DELETE FROM ${database.schema}.connection_links WHERE objectid
 				IN
 				(_OBJECTIDS_)
 		</value>

@@ -11,11 +11,11 @@
 	<bean id="timetableJdbcDao" class="fr.certu.chouette.jdbc.dao.TimetableJdbcDao"
 		parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.Timetable</value>
+			<value>SELECT * FROM ${database.schema}.time_tables</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.Timetable
+				INSERT INTO ${database.schema}.time_tables
 				(
 				objectid,
 				object_version,
@@ -30,18 +30,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.Timetable WHERE objectid = ?
+				SELECT * FROM ${database.schema}.time_tables WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.Timetable WHERE
+				SELECT id,objectid FROM ${database.schema}.time_tables WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.Timetable
+				UPDATE ${database.schema}.time_tables
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -56,7 +56,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.Timetable WHERE objectid
+				DELETE FROM ${database.schema}.time_tables WHERE objectid
 				IN
 				(_OBJECTIDS_)
 		</value>
@@ -69,13 +69,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.Timetable_Period WHERE
+								SELECT * FROM ${database.schema}.time_table_periods WHERE
 								time_table_id = ?
 							</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.Timetable_Period
+								INSERT INTO ${database.schema}.time_table_periods
 								(
 								time_table_id,
 								period_start,
@@ -87,7 +87,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.Timetable_Period WHERE
+								DELETE FROM ${database.schema}.time_table_periods WHERE
 								time_table_id IN
 								(_IDS_)
 								 </value>
@@ -99,13 +99,13 @@
 						<description>one entry for select, insert, delete</description>
 						<entry key="sqlSelectById">
 							<value>
-								SELECT * FROM ${database.schema}.Timetable_Date WHERE
+								SELECT * FROM ${database.schema}.time_table_dates WHERE
 								time_table_id = ?
 							</value>
 						</entry>
 						<entry key="sqlInsert">
 							<value>
-								INSERT INTO ${database.schema}.Timetable_Date
+								INSERT INTO ${database.schema}.time_table_dates
 								(
 								time_table_id,
 								date,
@@ -115,7 +115,7 @@
 						</entry>
 						<entry key="sqlDelete">
 							<value>
-								DELETE FROM ${database.schema}.Timetable_Date WHERE
+								DELETE FROM ${database.schema}.time_table_dates WHERE
 								time_table_id IN
 								(_IDS_) 
 								</value>
@@ -126,16 +126,16 @@
 		</property>
 		<property name="sqlPurge1">
 			<value>
-                 DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
-                    (SELECT DISTINCT (time_table_id) FROM ${database.schema}.TimetableVehicleJourney) 
+                 DELETE FROM ${database.schema}.time_tables WHERE id NOT IN 
+                    (SELECT DISTINCT (time_table_id) FROM ${database.schema}.time_tables_vehicle_journeys) 
 			</value>
 		</property>
 		<property name="sqlPurge2">
 			<value>
-                 DELETE FROM ${database.schema}.Timetable WHERE id NOT IN 
-                    (SELECT DISTINCT (time_table_id) FROM ${database.schema}.Timetable_Date 
+                 DELETE FROM ${database.schema}.time_tables WHERE id NOT IN 
+                    (SELECT DISTINCT (time_table_id) FROM ${database.schema}.time_table_dates 
                     UNION 
-                     SELECT DISTINCT (time_table_id) FROM ${database.schema}.Timetable_Period) 
+                     SELECT DISTINCT (time_table_id) FROM ${database.schema}.time_table_periods) 
 			</value>
 		</property>
 	</bean>

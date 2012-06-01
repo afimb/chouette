@@ -52,8 +52,6 @@
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
-				<!-- <value>fr/certu/chouette/model/neptune/RestrictionConstraint.hbm.xml 
-					</value> -->
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
@@ -61,6 +59,8 @@
 				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
+                <!-- external objects : log messages -->
+				<value>fr/certu/chouette/model/neptune/import.hbm.xml</value>
 			</list>
 		</property>
 		<!-- chouette specific parameters to complete hibernate update schema action -->
@@ -105,55 +105,55 @@
 		</property>
 		<property name="cascadeDeleteFkeys">
 			<map>
-				<entry key="aclk_acpt_fkey" value="accesslink;access_point_id;accesspoint;id" />
-				<entry key="aclk_area_fkey" value="accesslink;stop_area_id;stoparea;id" />
-				<entry key="colk_endarea_fkey" value="connectionlink;arrival_id;stoparea;id" />
-				<entry key="colk_startarea_fkey" value="connectionlink;departure_id;stoparea;id" />
-				<entry key="faci_colk_fkey" value="facility;connection_link_id;connectionlink;id" />
-				<entry key="faci_line_fkey" value="facility;line_id;line;id" />
-				<entry key="faci_area_fkey" value="facility;stop_area_id;stoparea;id" />
-				<entry key="faci_stpt_fkey" value="facility;stop_point_id;stoppoint;id" />
-				<entry key="facility_feature_fkey" value="facilityfeature;facility_id;facility;id" />
-				<entry key="groupofline_group_fkey" value="groupofline_line;group_of_line_id;groupofline;id" />
-				<entry key="groupofline_line_fkey" value="groupofline_line;line_id;line;id" />
-				<entry key="jp_route_fkey" value="journeypattern;route_id;route;id" />
+				<entry key="aclk_acpt_fkey" value="access_links;access_point_id;access_points;id" />
+				<entry key="aclk_area_fkey" value="access_links;stop_area_id;stop_areas;id" />
+				<entry key="colk_endarea_fkey" value="connection_links;arrival_id;stop_areas;id" />
+				<entry key="colk_startarea_fkey" value="connection_links;departure_id;stop_areas;id" />
+				<entry key="faci_colk_fkey" value="facilities;connection_link_id;connection_links;id" />
+				<entry key="faci_line_fkey" value="facilities;line_id;lines;id" />
+				<entry key="faci_area_fkey" value="facilities;stop_area_id;stop_areas;id" />
+				<entry key="faci_stpt_fkey" value="facilities;stop_point_id;stop_points;id" />
+				<entry key="facility_feature_fkey" value="facilities_features;facility_id;facilities;id" />
+				<entry key="groupofline_group_fkey" value="group_of_lines_lines;group_of_line_id;group_of_lines;id" />
+				<entry key="groupofline_line_fkey" value="group_of_lines_lines;line_id;lines;id" />
+				<entry key="jp_route_fkey" value="journey_patterns;route_id;routes;id" />
 				<entry key="jpsp_jp_fkey"
-					value="journeypattern_stoppoint;journey_pattern_id;journeypattern;id" />
-				<entry key="jpsp_stoppoint_fkey" value="journeypattern_stoppoint;stoppoint_id;stoppoint;id" />
-				<entry key="ptlink_route_fkey" value="ptlink;route_id;route;id" />
-				<entry key="route_line_fkey" value="route;line_id;line;id" />
-				<entry key="routingconstraint_line_fkey" value="routingconstraints_lines;line_id;line;id" />
-				<entry key="routingconstraint_stoparea_fkey" value="routingconstraints_lines;stop_area_id;stoparea;id" />
-				<entry key="stoparea_child_fkey" value="stopareastoparea;child_id;stoparea;id" />
-				<entry key="stoparea_parent_fkey" value="stopareastoparea;parent_id;stoparea;id" />
-				<entry key="stoppoint_route_fkey" value="stoppoint;route_id;route;id" />
-				<entry key="tm_date_fkey" value="timetable_date;time_table_id;timetable;id" />
-				<entry key="tm_period_fkey" value="timetable_period;time_table_id;timetable;id" />
-				<entry key="vjtm_tm_fkey" value="timetablevehiclejourney;time_table_id;timetable;id" />
+					value="journey_patterns_stop_points;journey_pattern_id;journey_patterns;id" />
+				<entry key="jpsp_stoppoint_fkey" value="journey_patterns_stop_points;stoppoint_id;stop_points;id" />
+				<entry key="ptlink_route_fkey" value="pt_links;route_id;routes;id" />
+				<entry key="route_line_fkey" value="routes;line_id;lines;id" />
+				<entry key="routingconstraint_line_fkey" value="routing_constraints_lines;line_id;lines;id" />
+				<entry key="routingconstraint_stoparea_fkey" value="routing_constraints_lines;stop_area_id;stop_areas;id" />
+				<entry key="stoparea_child_fkey" value="stop_areas_stop_areas;child_id;stop_areas;id" />
+				<entry key="stoparea_parent_fkey" value="stop_areas_stop_areas;parent_id;stop_areas;id" />
+				<entry key="stoppoint_route_fkey" value="stop_points;route_id;routes;id" />
+				<entry key="tm_date_fkey" value="time_table_dates;time_table_id;time_tables;id" />
+				<entry key="tm_period_fkey" value="time_table_periods;time_table_id;time_tables;id" />
+				<entry key="vjtm_tm_fkey" value="time_tables_vehicle_journeys;time_table_id;time_tables;id" />
 				<entry key="vjtm_vj_fkey"
-					value="timetablevehiclejourney;vehicle_journey_id;vehiclejourney;id" />
-				<entry key="vj_jp_fkey" value="vehiclejourney;journey_pattern_id;journeypattern;id" />
-				<entry key="vj_route_fkey" value="vehiclejourney;route_id;route;id" />
-				<entry key="vjas_sp_fkey" value="vehiclejourneyatstop;stop_point_id;stoppoint;id" />
+					value="time_tables_vehicle_journeys;vehicle_journey_id;vehicle_journeys;id" />
+				<entry key="vj_jp_fkey" value="vehicle_journeys;journey_pattern_id;journey_patterns;id" />
+				<entry key="vj_route_fkey" value="vehicle_journeys;route_id;routes;id" />
+				<entry key="vjas_sp_fkey" value="vehicle_journey_at_stops;stop_point_id;stop_points;id" />
 				<entry key="vjas_vj_fkey"
-					value="vehiclejourneyatstop;vehicle_journey_id;vehiclejourney;id" />
+					value="vehicle_journey_at_stops;vehicle_journey_id;vehicle_journeys;id" />
 			</map>
 		</property>
 		<property name="setNullDeleteFkeys">
 			<map>
-				<entry key="line_company_fkey" value="line;company_id;company;id" />
-				<entry key="line_ptnetwork_fkey" value="line;ptnetwork_id;ptnetwork;id" />
-				<entry key="vj_company_fkey" value="vehiclejourney;company_id;company;id" />
-				<entry key="vj_timeslot_fkey" value="vehiclejourney;time_slot_id;timeslot;id" />
+				<entry key="line_company_fkey" value="lines;company_id;companies;id" />
+				<entry key="line_ptnetwork_fkey" value="lines;network_id;networks;id" />
+				<entry key="vj_company_fkey" value="vehicle_journeys;company_id;companies;id" />
+				<entry key="vj_timeslot_fkey" value="vehicle_journeys;time_slot_id;time_slots;id" />
 			</map>
 		</property>
 		<property name="noActionDeleteFkeys">
 			<map>
-				<entry key="ptlk_endstpt_fkey" value="ptlink;end_of_link_id;stoppoint;id" />
-				<entry key="ptlk_startstpt_fkey" value="ptlink;start_of_link_id;stoppoint;id" />
-				<entry key="stoppoint_area_fkey" value="stoppoint;stop_area_id;stoparea;id" />
-				<entry key="departure_point_fkey" value="journeypattern;departure_stop_point_id;stoppoint;id" />
-				<entry key="arrival_point_fkey" value="journeypattern;arrival_stop_point_id;stoppoint;id" />
+				<entry key="ptlk_endstpt_fkey" value="pt_links;end_of_link_id;stop_points;id" />
+				<entry key="ptlk_startstpt_fkey" value="pt_links;start_of_link_id;stop_points;id" />
+				<entry key="stoppoint_area_fkey" value="stop_points;stop_area_id;stop_areas;id" />
+				<entry key="departure_point_fkey" value="journey_patterns;departure_stop_point_id;stop_points;id" />
+				<entry key="arrival_point_fkey" value="journey_patterns;arrival_stop_point_id;stop_points;id" />
 			</map>
 		</property>
 		<property name="getPrimaryKeysSql">
@@ -197,17 +197,17 @@
 			<list>
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
 					<property name="key" value="timetablevehiclejourney_pkey" />
-					<property name="table" value="timetablevehiclejourney" />
+					<property name="table" value="time_tables_vehicle_journeys" />
 					<property name="columns" value="time_table_id,vehicle_journey_id" />
 				</bean>
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
 					<property name="key" value="groupofline_line_pkey" />
-					<property name="table" value="groupofline_line" />
+					<property name="table" value="group_of_lines_lines" />
 					<property name="columns" value="group_of_line_id,line_id" />
 				</bean>
 				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
 					<property name="key" value="journeypatternstoppoint_pkey" />
-					<property name="table" value="journeypattern_stoppoint" />
+					<property name="table" value="journey_patterns_stop_points" />
 					<property name="columns" value="journey_pattern_id,stop_point_id" />
 				</bean>
 			</list>
@@ -304,4 +304,8 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	<bean id="importLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createImportLogMessageDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 </beans>

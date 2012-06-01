@@ -10,11 +10,11 @@
 
 	<bean id="stopPointJdbcDao" class="fr.certu.chouette.jdbc.dao.StopPointJdbcDao" parent="abstractJdbcDao">
 		<property name="sqlSelectAll">
-			<value>SELECT * FROM ${database.schema}.StopPoint</value>
+			<value>SELECT * FROM ${database.schema}.stop_points</value>
 		</property>
 		<property name="sqlInsert">
 			<value>
-				INSERT INTO ${database.schema}.StopPoint
+				INSERT INTO ${database.schema}.stop_points
 				(
 				objectid,
 				object_version,
@@ -29,18 +29,18 @@
 		</property>
 		<property name="sqlSelectByObjectId">
 			<value>
-				SELECT * FROM ${database.schema}.StopPoint WHERE objectid = ?
+				SELECT * FROM ${database.schema}.stop_points WHERE objectid = ?
 			</value>
 		</property>
 		<property name="sqlSelectByObjectIdWithInClause">
 			<value>
-				SELECT id,objectid FROM ${database.schema}.StopPoint WHERE
+				SELECT id,objectid FROM ${database.schema}.stop_points WHERE
 				objectid IN (_OBJECTIDS_)
 			</value>
 		</property>
 		<property name="sqlUpdate">
 			<value>
-				UPDATE ${database.schema}.StopPoint
+				UPDATE ${database.schema}.stop_points
 				SET
 				objectid = ?,
 				object_version = ?,
@@ -54,7 +54,7 @@
 		</property>
 		<property name="sqlDelete">
 			<value>
-				DELETE FROM ${database.schema}.StopPoint WHERE objectid
+				DELETE FROM ${database.schema}.stop_points WHERE objectid
 				IN
 				(_OBJECTIDS_)
 			</value>

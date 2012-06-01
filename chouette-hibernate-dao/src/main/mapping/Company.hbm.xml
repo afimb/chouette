@@ -4,7 +4,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
-	<class name="Company" table="Company">
+	<class name="Company" table="companies">
 		<comment>company operating a public transport service</comment>
 		<id name="id" type="long">
 			<column name="id">
