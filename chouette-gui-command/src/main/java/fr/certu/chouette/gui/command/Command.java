@@ -1383,7 +1383,7 @@ public class Command
 
    private void saveExportReports(int exportId, List<Report> reports)
    {
-      int position = 0;
+      int position = 2; // gui has added a first log at position 1 
       for (Report report : reports)
       {
          position = saveExportReport(exportId,report,position);
@@ -1424,7 +1424,7 @@ public class Command
 
    private void saveImportReports(int importId, List<Report> reports)
    {
-      int position = 0;
+      int position = 2; // gui has added a first log at position 1 
       for (Report report : reports)
       {
          position = saveImportReport(importId,report,position);
