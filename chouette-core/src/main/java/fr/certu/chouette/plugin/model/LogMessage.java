@@ -54,7 +54,7 @@ public abstract class LogMessage extends NeptuneObject
       {
          this.key = report.getOriginKey();
          this.position = position;
-         this.severity = report.getStatus().name();
+         this.severity = report.getStatus().name().toLowerCase();
       }
    }
 
@@ -79,7 +79,7 @@ public abstract class LogMessage extends NeptuneObject
          {
             b.append("\"");
             b.append(i);
-            b.append("\" => \"");
+            b.append("\" : \"");
             b.append(item.getMessageArgs().get(i));
             b.append("\"");
             if (i == size -1) 
