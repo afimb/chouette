@@ -22,14 +22,14 @@ public class ExportLogMessage extends LogMessage
     */
    private static final long serialVersionUID = -4945073186691401029L;
 
-   public ExportLogMessage(long exportId,Report report,int position)
+   public ExportLogMessage(long exportId,String format,Report report,int position)
    {
-      super(exportId,report,position);
+      super(exportId,format,report,position);
    }
 
-   public ExportLogMessage(long exportId,ReportItem item, String prefix, int position)
+   public ExportLogMessage(long exportId,String format,ReportItem item, String prefix, int position)
    {
-      super(exportId,item,prefix,position);
+      super(exportId,format,item,prefix,position);
    }
 
 }

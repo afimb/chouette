@@ -559,7 +559,7 @@ public class Command
             }
             else
             {
-               throw new IllegalArgumentException("format "+format+" unavailable, check command getExportFormats for list ");
+               throw new IllegalArgumentException("format "+format+" unavailable");
             }
             if (ids != null)
             {
@@ -587,10 +587,14 @@ public class Command
       {
          System.out.println("export failed "+e.getMessage());
          logger.error("export failed "+e.getMessage(),e);
-         saveExportReports(exportId,reports);
+         GuiReport errorReport = new GuiReport("IMPORT_ERROR",Report.STATE.ERROR);
+         GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
+         errorReport.addItem(item);
+         reports.add(errorReport);
+         saveExportReports(exportId,format,reports);
          return 1;
       }
-      saveExportReports(exportId,reports);
+      saveExportReports(exportId,format,reports);
       return 0;
    }
 
@@ -977,7 +981,7 @@ public class Command
                reports.add(saveReport);
                System.out.println("import failed "+e.getMessage());
                logger.error("import failed "+e.getMessage(),e);
-               saveImportReports(importId,reports);
+               saveImportReports(importId,fileFormat,reports);
                return 1;
             }
             finally
@@ -1032,15 +1036,21 @@ public class Command
       catch (Exception e)
       {
          // fill report with error
-         reports.add(saveReport);
+         if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
+            reports.add(saveReport);
          System.out.println("import failed "+e.getMessage());
          logger.error("import failed "+e.getMessage(),e);
-         saveImportReports(importId,reports);
+         GuiReport errorReport = new GuiReport("IMPORT_ERROR",Report.STATE.ERROR);
+         GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
+         errorReport.addItem(item);
+         reports.add(errorReport);
+         saveImportReports(importId,fileFormat,reports);
 
          return 1;
       }
-      reports.add(saveReport);
-      saveImportReports(importId,reports);
+      if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
+         reports.add(saveReport);
+      saveImportReports(importId,fileFormat,reports);
       return 0;
 
    }
@@ -1309,7 +1319,7 @@ public class Command
          {
             if (desc.isMandatory())
             {
-               throw new IllegalArgumentException("parameter -"+name+" is required, check command getImportFormats for list ");
+               throw new IllegalArgumentException("parameter -"+name+" is required");
             }
          }
          else
@@ -1329,7 +1339,7 @@ public class Command
             {
                if (vals.size() != 1)
                {
-                  throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getImportFormats for list ");
+                  throw new IllegalArgumentException("parameter -"+name+" must be unique");
                }
                String simpleval = vals.get(0);
 
@@ -1350,84 +1360,91 @@ public class Command
       return values;      
    }
 
-   private int saveExportReport(int exportId, Report report,int position)
+   private int saveExportReport(int exportId, String format,Report report,int position)
    {
       String prefix = report.getOriginKey();
-      if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
-      ExportLogMessage message = new ExportLogMessage(exportId,report,position++);
+      if (prefix == null && report instanceof ReportItem) prefix = format+((ReportItem) report).getMessageKey();
+      ExportLogMessage message = new ExportLogMessage(exportId,format,report,position++);
       exportLogMessageDao.save(message);
       if (report.getItems() != null)
       {
          for (ReportItem item : report.getItems())
          {
-            position = saveExportReportItem(exportId,item,prefix,position);
+            position = saveExportReportItem(exportId,format,item,prefix,position);
          }
       }
       return position;
    }
 
-   private int saveExportReportItem(int exportId, ReportItem item, String prefix, int position)
+   private int saveExportReportItem(int exportId, String format,ReportItem item, String prefix, int position)
    {
-      ExportLogMessage message = new ExportLogMessage(exportId,item,prefix,position++);
+      ExportLogMessage message = new ExportLogMessage(exportId,format,item,prefix,position++);
       exportLogMessageDao.save(message);
       if (item.getItems() != null)
       {
-         String subPrefix = prefix+"|"+item.getMessageKey();
+         String subPrefix = prefix+"|"+format+item.getMessageKey();
          for (ReportItem child : item.getItems())
          {
-            position = saveExportReportItem(exportId,child,subPrefix,position++);
+            position = saveExportReportItem(exportId,format,child,subPrefix,position++);
          }
       }
       return position;
    }
 
-   private void saveExportReports(int exportId, List<Report> reports)
+   private void saveExportReports(int exportId, String format,List<Report> reports)
    {
       int position = 2; // gui has added a first log at position 1 
       for (Report report : reports)
       {
-         position = saveExportReport(exportId,report,position);
+         if (report instanceof GuiReport) 
+            position = saveExportReport(exportId,"",report,position);
+         else
+            position = saveExportReport(exportId,format+"_",report,position);
       }
 
    }
 
-   private int saveImportReport(int importId, Report report,int position)
+   private int saveImportReport(int importId, String format,Report report,int position)
    {
       String prefix = report.getOriginKey();
-      if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
-      ImportLogMessage message = new ImportLogMessage(importId,report,position++);
+      if (prefix == null && report instanceof ReportItem) prefix = format+((ReportItem) report).getMessageKey();
+      ImportLogMessage message = new ImportLogMessage(importId,format,report,position++);
       importLogMessageDao.save(message);
       if (report.getItems() != null)
       {
          for (ReportItem item : report.getItems())
          {
-            position = saveImportReportItem(importId,item,prefix,position);
+            position = saveImportReportItem(importId,format,item,prefix,position);
          }
       }
       return position;
    }
 
-   private int saveImportReportItem(int importId, ReportItem item, String prefix, int position)
+   private int saveImportReportItem(int importId, String format,ReportItem item, String prefix, int position)
    {
-      ImportLogMessage message = new ImportLogMessage(importId,item,prefix,position++);
+      ImportLogMessage message = new ImportLogMessage(importId,format,item,prefix,position++);
       importLogMessageDao.save(message);
       if (item.getItems() != null)
       {
-         String subPrefix = prefix+"|"+item.getMessageKey();
+         String subPrefix = prefix+"|"+format+item.getMessageKey();
          for (ReportItem child : item.getItems())
          {
-            position = saveImportReportItem(importId,child,subPrefix,position++);
+            position = saveImportReportItem(importId,format,child,subPrefix,position++);
          }
       }
       return position;
    }
 
-   private void saveImportReports(int importId, List<Report> reports)
+   private void saveImportReports(int importId, String format, List<Report> reports)
    {
       int position = 2; // gui has added a first log at position 1 
       for (Report report : reports)
       {
-         position = saveImportReport(importId,report,position);
+         if (report instanceof GuiReport) 
+            position = saveImportReport(importId,"", report,position);
+         else
+            position = saveImportReport(importId,format+"_", report,position);
+
       }
 
    }

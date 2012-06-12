@@ -41,34 +41,34 @@ public abstract class LogMessage extends NeptuneObject
       updatedAt = createdAt;
    }
 
-   public LogMessage(long parentId,Report report,int position)
+   public LogMessage(long parentId,String format,Report report,int position)
    {
       this();
       this.parentId = parentId;
       if (report instanceof ReportItem)
       {
          ReportItem item = (ReportItem) report;
-         init(item,null,position);
+         init(format, item,null,position);
       }
       else
       {
-         this.key = report.getOriginKey();
+         this.key = format+"_"+report.getOriginKey();
          this.position = position;
          this.severity = report.getStatus().name().toLowerCase();
       }
    }
 
-   public LogMessage(long parentId,ReportItem item, String prefix, int position)
+   public LogMessage(long parentId,String format,ReportItem item, String prefix, int position)
    {
       this();
       this.parentId = parentId;
-      init(item,prefix,position);
+      init(format,item,prefix,position);
    }
 
-   private void init(ReportItem item, String prefix, int position)
+   private void init(String format, ReportItem item, String prefix, int position)
    {
       if (prefix != null)
-         this.key = prefix+"|"+item.getMessageKey();
+         this.key = prefix+"|"+format+item.getMessageKey();
       else
          this.key = item.getMessageKey();
       if (! item.getMessageArgs().isEmpty() )
@@ -94,7 +94,7 @@ public abstract class LogMessage extends NeptuneObject
          this.arguments = b.toString();
       }
       this.position = position;
-      this.severity = item.getStatus().name();
+      this.severity = item.getStatus().name().toLowerCase();
    }
 
 }

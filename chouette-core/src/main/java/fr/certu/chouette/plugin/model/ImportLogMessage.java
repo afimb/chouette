@@ -21,14 +21,14 @@ public class ImportLogMessage extends LogMessage
     */
    private static final long serialVersionUID = -7919264304117782400L;
 
-   public ImportLogMessage(long importId,Report report,int position)
+   public ImportLogMessage(long importId,String format,Report report,int position)
    {
-      super(importId,report,position);
+      super(importId,format,report,position);
    }
 
-   public ImportLogMessage(long importId,ReportItem item, String prefix, int position)
+   public ImportLogMessage(long importId,String format,ReportItem item, String prefix, int position)
    {
-      super(importId,item,prefix,position);
+      super(importId,format,item,prefix,position);
    }
 
 }
