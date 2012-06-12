@@ -80,7 +80,7 @@ public abstract class LogMessage extends NeptuneObject
             b.append("\"");
             b.append(i);
             b.append("\" : \"");
-            b.append(item.getMessageArgs().get(i));
+            b.append(item.getMessageArgs().get(i).toString().replaceAll("\"", "\\\""));
             b.append("\"");
             if (i == size -1) 
             {

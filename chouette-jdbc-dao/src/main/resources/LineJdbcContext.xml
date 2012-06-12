@@ -67,7 +67,7 @@
 				transport_mode_name = ?,
 				registration_number = ?,
 				COMMENT = ?,
-				mobility_restricted_suitable = ?,
+				mobility_restricted_suitability = ?,
 				int_user_needs = ?
 				WHERE objectid = ?
 			</value>

@@ -852,6 +852,7 @@ public class Command
       String inputFile = getSimpleString(parameters,"inputfile");
       String fileFormat = getSimpleString(parameters,"fileformat","");
       int importId = Integer.parseInt(getSimpleString(parameters,"importid"));
+      int beanCount = 0;
 
       boolean zipped = (inputFile.endsWith(".zip") || fileFormat.equals("zip"));
 
@@ -960,6 +961,7 @@ public class Command
                         {
                            GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
                            saveReport.addItem(item);
+                           beanCount++;
                         }
                      }
                      catch (Exception e) 
@@ -1024,6 +1026,7 @@ public class Command
                   manager.saveAll(null, beans, true, true);
                   GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
                   saveReport.addItem(item);
+                  beanCount++;
                }
                catch (Exception e) 
                {
@@ -1051,7 +1054,7 @@ public class Command
       if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
          reports.add(saveReport);
       saveImportReports(importId,fileFormat,reports);
-      return 0;
+      return (beanCount == 0?1:0);
 
    }
 

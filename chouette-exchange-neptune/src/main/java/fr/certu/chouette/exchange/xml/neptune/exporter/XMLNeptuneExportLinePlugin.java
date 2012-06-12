@@ -458,10 +458,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             }
             validObjectIds.add(castorObj.getObjectId());
             chouetteLineDescription.addChouetteRoute(castorObj);
-            if (route.getPtLinks() != null)
+            if (route.getPtLinks() == null || route.getPtLinks().isEmpty())
             {
-               ptLinks.addAll(route.getPtLinks());
+               route.rebuildPTLinks();
             }
+            ptLinks.addAll(route.getPtLinks());
          }
 
          HashSet<String> vehicleJourneyObjectIds = new HashSet<String>();
