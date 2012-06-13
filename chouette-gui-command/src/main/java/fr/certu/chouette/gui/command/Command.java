@@ -983,7 +983,7 @@ public class Command
                reports.add(saveReport);
                System.out.println("import failed "+e.getMessage());
                logger.error("import failed "+e.getMessage(),e);
-               saveImportReports(importId,fileFormat,reports);
+               saveImportReports(importId,format,reports);
                return 1;
             }
             finally
@@ -1047,13 +1047,13 @@ public class Command
          GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
          errorReport.addItem(item);
          reports.add(errorReport);
-         saveImportReports(importId,fileFormat,reports);
+         saveImportReports(importId,format,reports);
 
          return 1;
       }
       if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
          reports.add(saveReport);
-      saveImportReports(importId,fileFormat,reports);
+      saveImportReports(importId,format,reports);
       return (beanCount == 0?1:0);
 
    }
