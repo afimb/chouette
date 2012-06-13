@@ -22,6 +22,10 @@
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
+			<source>${project.build.directory}/chouette</source>
+			<outputDirectory>/</outputDirectory>
+		</file>
+		<file>
 			<source>${project.build.directory}/chouette.bat</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
@@ -36,7 +40,6 @@
 		<file>
 			<source>../config/dev/spring.properties</source>
 			<outputDirectory>/</outputDirectory>
-			<destName>chouette.properties</destName>
 		</file>
 		<file>
 			<source>../LICENCE.txt</source>

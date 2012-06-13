@@ -521,7 +521,7 @@ public class Command
          Map<String, List<String>> parameters) 
    {
       String format = getSimpleString(parameters,"format");
-      int exportId = Integer.parseInt(getSimpleString(parameters,"exportid"));
+      long exportId = Long.parseLong(getSimpleString(parameters,"exportid"));
 
       List<Report> reports = new ArrayList<Report>();
       // GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
@@ -851,7 +851,7 @@ public class Command
       String format = getSimpleString(parameters,"format");
       String inputFile = getSimpleString(parameters,"inputfile");
       String fileFormat = getSimpleString(parameters,"fileformat","");
-      int importId = Integer.parseInt(getSimpleString(parameters,"importid"));
+      long importId = Long.parseLong(getSimpleString(parameters,"importid"));
       int beanCount = 0;
 
       boolean zipped = (inputFile.endsWith(".zip") || fileFormat.equals("zip"));
@@ -884,7 +884,7 @@ public class Command
                break;
             }
          }
-         List<ParameterValue> values = populateParameters(description,parameters,"inputFile","fileFormat");
+         List<ParameterValue> values = populateParameters(description,parameters,"inputfile","fileformat");
          if (zipped && description.isUnzipAllowed())
          {
             SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
@@ -1363,7 +1363,7 @@ public class Command
       return values;      
    }
 
-   private int saveExportReport(int exportId, String format,Report report,int position)
+   private int saveExportReport(long exportId, String format,Report report,int position)
    {
       String prefix = report.getOriginKey();
       if (prefix == null && report instanceof ReportItem) prefix = format+((ReportItem) report).getMessageKey();
@@ -1379,7 +1379,7 @@ public class Command
       return position;
    }
 
-   private int saveExportReportItem(int exportId, String format,ReportItem item, String prefix, int position)
+   private int saveExportReportItem(long exportId, String format,ReportItem item, String prefix, int position)
    {
       ExportLogMessage message = new ExportLogMessage(exportId,format,item,prefix,position++);
       exportLogMessageDao.save(message);
@@ -1394,7 +1394,7 @@ public class Command
       return position;
    }
 
-   private void saveExportReports(int exportId, String format,List<Report> reports)
+   private void saveExportReports(long exportId, String format,List<Report> reports)
    {
       int position = 2; // gui has added a first log at position 1 
       for (Report report : reports)
@@ -1407,7 +1407,7 @@ public class Command
 
    }
 
-   private int saveImportReport(int importId, String format,Report report,int position)
+   private int saveImportReport(long importId, String format,Report report,int position)
    {
       String prefix = report.getOriginKey();
       if (prefix == null && report instanceof ReportItem) prefix = format+((ReportItem) report).getMessageKey();
@@ -1423,7 +1423,7 @@ public class Command
       return position;
    }
 
-   private int saveImportReportItem(int importId, String format,ReportItem item, String prefix, int position)
+   private int saveImportReportItem(long importId, String format,ReportItem item, String prefix, int position)
    {
       ImportLogMessage message = new ImportLogMessage(importId,format,item,prefix,position++);
       importLogMessageDao.save(message);
@@ -1438,9 +1438,19 @@ public class Command
       return position;
    }
 
-   private void saveImportReports(int importId, String format, List<Report> reports)
+   private void saveImportReports(long importId, String format, List<Report> reports)
    {
-      int position = 2; // gui has added a first log at position 1 
+      int position = 1;
+      Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(importId));
+      List<ImportLogMessage> messages = importLogMessageDao.select(filter);
+      if (messages != null)
+      {
+         for (ImportLogMessage message : messages)
+         {
+            if (message.getPosition() >= position)
+               position = message.getPosition() + 1;
+         }
+      }
       for (Report report : reports)
       {
          if (report instanceof GuiReport) 
