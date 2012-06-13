@@ -70,7 +70,7 @@ public abstract class LogMessage extends NeptuneObject
       if (prefix != null)
          this.key = prefix+"|"+format+item.getMessageKey();
       else
-         this.key = item.getMessageKey();
+         this.key = format+item.getMessageKey();
       if (! item.getMessageArgs().isEmpty() )
       {
          int size = item.getMessageArgs().size();
