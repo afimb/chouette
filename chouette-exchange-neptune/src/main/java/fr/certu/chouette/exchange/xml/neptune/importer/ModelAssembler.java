@@ -41,6 +41,7 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
+import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourney;
 
 /**
  * Assemble every extracted object to object referring it with its objectId
@@ -660,6 +661,18 @@ public class ModelAssembler
       for (Timetable timetable : timetables)
       {
          timetable.setVehicleJourneys(getObjectsFromIds(timetable.getVehicleJourneyIds(), VehicleJourney.class));
+         if (timetable.getVehicleJourneys() == null || timetable.getVehicleJourneys().isEmpty() )
+         {
+            List<DbVehicleJourney> journeys = getObjectsFromIds(timetable.getVehicleJourneyIds(), DbVehicleJourney.class);
+            if (journeys != null)
+            {
+               for (VehicleJourney dbVehicleJourney : journeys)
+               {
+                  timetable.addVehicleJourney(dbVehicleJourney);
+               }
+            }
+         }
+
          if (timetable.getVehicleJourneys() != null && !timetable.getVehicleJourneys().isEmpty() )
          {
             for (VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
