@@ -9,6 +9,7 @@
 package fr.certu.chouette.dao.hibernate;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,6 +27,7 @@ import org.hibernate.classic.Session;
 import org.hibernate.jdbc.Work;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 
+import fr.certu.chouette.dao.ChouetteDriverManagerDataSource;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 
@@ -68,16 +70,54 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
    @Override
    protected void afterSessionFactoryCreation() throws Exception
    {
+      logger.info("check schema before Hibernate processing");
+      Session session = getSessionFactory().openSession();   
+      Work work = new CheckSchemaExistance();
+      session.doWork(work);
+      session.close();
+
       super.afterSessionFactoryCreation();
+      
       logger.info("check schema after Hibernate processing");
-      Session session = getSessionFactory().openSession();
-      Work work = new CheckForeignKeysWork();
+      session = getSessionFactory().openSession();
+      work = new CheckForeignKeysWork();
       session.doWork(work);
       work = new CheckPrimaryKeysWork();
       session.doWork(work);
       session.close();
    }
 
+   private class CheckSchemaExistance implements Work
+   {
+
+      private static final String request = "select count(*) from information_schema.schemata where schema_name = ?";
+
+      @Override
+      public void execute(Connection connection) throws SQLException
+      {
+         String schema = ((ChouetteDriverManagerDataSource) getDataSource()).getDatabaseSchema().toLowerCase();
+         PreparedStatement stmt = connection.prepareStatement(request);
+         stmt.setString(1, schema);
+         ResultSet rst = stmt.executeQuery();
+         if (rst.next())
+         {
+            int count = rst.getInt(1);
+            if (count == 0)
+            {
+               // create schema
+               logger.info("creating schema "+schema);
+               Statement stcr = connection.createStatement();
+               stcr.execute("CREATE SCHEMA "+schema);
+               stcr.close();
+            }
+         }
+         rst.close();
+         stmt.close();
+      }
+      
+   }
+   
+   
    private class CheckForeignKeysWork implements Work
    {
 

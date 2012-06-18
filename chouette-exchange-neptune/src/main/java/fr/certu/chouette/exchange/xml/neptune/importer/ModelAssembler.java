@@ -660,12 +660,16 @@ public class ModelAssembler
       for (Timetable timetable : timetables)
       {
          timetable.setVehicleJourneys(getObjectsFromIds(timetable.getVehicleJourneyIds(), VehicleJourney.class));
-         if (timetable.getVehicleJourneys() != null)
+         if (timetable.getVehicleJourneys() != null && !timetable.getVehicleJourneys().isEmpty() )
          {
             for (VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
             {
                vehicleJourney.addTimetable(timetable);
             }
+         }
+         else 
+         {
+            logger.warn("timetable "+timetable.getComment()+" ("+timetable.getObjectId()+" ) has no VehicleJourney");
          }
       }
    }

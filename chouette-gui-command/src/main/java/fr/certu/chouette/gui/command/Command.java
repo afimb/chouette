@@ -1396,7 +1396,17 @@ public class Command
 
    private void saveExportReports(long exportId, String format,List<Report> reports)
    {
-      int position = 2; // gui has added a first log at position 1 
+      int position = 1;
+      Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(exportId));
+      List<ExportLogMessage> messages = exportLogMessageDao.select(filter);
+      if (messages != null)
+      {
+         for (ExportLogMessage message : messages)
+         {
+            if (message.getPosition() >= position)
+               position = message.getPosition() + 1;
+         }
+      }
       for (Report report : reports)
       {
          if (report instanceof GuiReport) 
