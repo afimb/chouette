@@ -80,17 +80,17 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 		SheetReportItem report3_10_3 = new SheetReportItem("Test3_Sheet10_Step3", 3);
 
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
-		float param = parameters.getTest3_1_MinimalDistance();
-		float param2 = parameters.getTest3_2_MinimalDistance();
-		List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
-		double distanceMin3_10 = parameters.getTest3_10_MinimalDistance();
+		float param = parameters.getTest31MinimalDistance();
+		float param2 = parameters.getTest32MinimalDistance();
+		List<Coordinate> listCoordinates = parameters.getTest32Polygon();
+		double distanceMin3_10 = parameters.getTest310MinimalDistance();
 		Coordinate first = listCoordinates.get(0);
 		Coordinate last = listCoordinates.get(listCoordinates.size() - 1);
 		if (!first.equals(last)) {
 			listCoordinates.add(first);
 		}
 		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
-		String pj = parameters.getProjection_reference();
+		String pj = parameters.getProjectionReference();
 		final int TEST = 99999;
 		Map<String, Set<StopPoint>> stopPointsFromPTLinkMap = new HashMap<String, Set<StopPoint>>();
 		int size = stopPoints.size();

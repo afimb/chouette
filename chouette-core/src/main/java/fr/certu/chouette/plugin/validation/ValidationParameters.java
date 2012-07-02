@@ -23,46 +23,46 @@ import lombok.Setter;
  */
 public class ValidationParameters 
 {
-	@Getter @Setter private float test3_1_MinimalDistance ;
-	@Getter @Setter private float test3_2_MinimalDistance;
-	@Getter @Setter private List<Coordinate> test3_2_Polygon;
-	@Getter private String test3_2_PolygonPoints;
-	@Getter @Setter private float test3_7_MinimalDistance;
-	@Getter @Setter private float test3_7_MaximalDistance;
-	@Getter @Setter private float test3_8a_MinimalSpeed;
-	@Getter @Setter private float test3_8a_MaximalSpeed;
-	@Getter @Setter private float test3_8b_MinimalSpeed;
-	@Getter @Setter private float test3_8b_MaximalSpeed;
-	@Getter @Setter private float test3_8c_MinimalSpeed;
-	@Getter @Setter private float test3_8c_MaximalSpeed;
-	@Getter @Setter private float test3_8d_MinimalSpeed;
-	@Getter @Setter private float test3_8d_MaximalSpeed;
-	@Getter @Setter private float test3_9_MinimalSpeed;
-	@Getter @Setter private float test3_9_MaximalSpeed;
-	@Getter @Setter private float test3_10_MinimalDistance;
-	@Getter @Setter private long test3_15_MinimalTime;
-	@Getter @Setter private long test3_16_1_MaximalTime;
-	@Getter @Setter private long test3_16_3a_MaximalTime;
-	@Getter @Setter private long test3_16_3b_MaximalTime;
-	@Getter @Setter private float test3_21a_MinimalSpeed;
-	@Getter @Setter private float test3_21a_MaximalSpeed;
-	@Getter @Setter private float test3_21b_MinimalSpeed;
-	@Getter @Setter private float test3_21b_MaximalSpeed;
-	@Getter @Setter private float test3_21c_MinimalSpeed;
-	@Getter @Setter private float test3_21c_MaximalSpeed;
-	@Getter @Setter private float test3_21d_MinimalSpeed;
-	@Getter @Setter private float test3_21d_MaximalSpeed;
-	@Getter @Setter private String projection_reference;
+	@Getter @Setter private float test31MinimalDistance ;
+	@Getter @Setter private float test32MinimalDistance;
+	@Getter @Setter private List<Coordinate> test32Polygon;
+	@Getter private String test32PolygonPoints;
+	@Getter @Setter private float test37MinimalDistance;
+	@Getter @Setter private float test37MaximalDistance;
+	@Getter @Setter private float test38aMinimalSpeed;
+	@Getter @Setter private float test38aMaximalSpeed;
+	@Getter @Setter private float test38bMinimalSpeed;
+	@Getter @Setter private float test38bMaximalSpeed;
+	@Getter @Setter private float test38cMinimalSpeed;
+	@Getter @Setter private float test38cMaximalSpeed;
+	@Getter @Setter private float test38dMinimalSpeed;
+	@Getter @Setter private float test38dMaximalSpeed;
+	@Getter @Setter private float test39MinimalSpeed;
+	@Getter @Setter private float test39MaximalSpeed;
+	@Getter @Setter private float test310MinimalDistance;
+	@Getter @Setter private long test315MinimalTime;
+	@Getter @Setter private long test3161MaximalTime;
+	@Getter @Setter private long test3163aMaximalTime;
+	@Getter @Setter private long test3163bMaximalTime;
+	@Getter @Setter private float test321aMinimalSpeed;
+	@Getter @Setter private float test321aMaximalSpeed;
+	@Getter @Setter private float test321bMinimalSpeed;
+	@Getter @Setter private float test321bMaximalSpeed;
+	@Getter @Setter private float test321cMinimalSpeed;
+	@Getter @Setter private float test321cMaximalSpeed;
+	@Getter @Setter private float test321dMinimalSpeed;
+	@Getter @Setter private float test321dMaximalSpeed;
+	@Getter @Setter private String projectionReference;
 
-	public void addTest3_2_PolygonPoint(Coordinate coordinate)
+	public void addTest32PolygonPoint(Coordinate coordinate)
 	{
-		if (test3_2_Polygon == null) test3_2_Polygon = new ArrayList<Coordinate>();
-		test3_2_Polygon.add(coordinate);
+		if (test32Polygon == null) test32Polygon = new ArrayList<Coordinate>();
+		test32Polygon.add(coordinate);
 	}
 
-	public void setTest3_2_PolygonPoints(String pointAsString) throws PatternSyntaxException
+	public void setTest32PolygonPoints(String pointAsString) throws PatternSyntaxException
 	{
-		test3_2_PolygonPoints = pointAsString;
+		test32PolygonPoints = pointAsString;
 		String[] points = pointAsString.split(" ");
 		for (String point : points) 
 		{
@@ -71,7 +71,7 @@ public class ValidationParameters
 			{
 				double x = Double.parseDouble(coord[0]);
 				double y = Double.parseDouble(coord[1]);
-				addTest3_2_PolygonPoint(new Coordinate(x,y));
+				addTest32PolygonPoint(new Coordinate(x,y));
 			}
 		}
 	}
@@ -81,35 +81,35 @@ public class ValidationParameters
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ValidationParameter : ");
-		buffer.append("\n   test3_1_MinimalDistance  = ").append(test3_1_MinimalDistance).append(" m ");
-		buffer.append("\n   test3_2_MinimalDistance  = ").append(test3_2_MinimalDistance).append(" m ");
-		buffer.append("\n   test3_2_PolygonPoints    = ").append(test3_2_PolygonPoints).append(" °longitude,°latitude ... ");
-		buffer.append("\n   test3_7_MinimalDistance  = ").append(test3_7_MinimalDistance).append(" m ");
-		buffer.append("\n   test3_7_MaximalDistance  = ").append(test3_7_MaximalDistance).append(" m ");
-		buffer.append("\n   test3_8a_MinimalSpeed    = ").append(test3_8a_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8a_MaximalSpeed    = ").append(test3_8a_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8b_MinimalSpeed    = ").append(test3_8b_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8b_MaximalSpeed    = ").append(test3_8b_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8c_MinimalSpeed    = ").append(test3_8c_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8c_MaximalSpeed    = ").append(test3_8c_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8d_MinimalSpeed    = ").append(test3_8d_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_8d_MaximalSpeed    = ").append(test3_8d_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_9_MinimalSpeed     = ").append(test3_9_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_9_MaximalSpeed     = ").append(test3_9_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_10_MinimalDistance = ").append(test3_10_MinimalDistance).append(" m ");
-		buffer.append("\n   test3_15_MinimalTime     = ").append(test3_15_MinimalTime).append(" s ");
-		buffer.append("\n   test3_16_1_MaximalTime   = ").append(test3_16_1_MaximalTime).append(" s ");
-		buffer.append("\n   test3_16_3a_MaximalTime  = ").append(test3_16_3a_MaximalTime).append(" s ");
-		buffer.append("\n   test3_16_3b_MaximalTime  = ").append(test3_16_3b_MaximalTime).append(" s ");
-		buffer.append("\n   test3_21a_MinimalSpeed   = ").append(test3_21a_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21a_MaximalSpeed   = ").append(test3_21a_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21b_MinimalSpeed   = ").append(test3_21b_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21b_MaximalSpeed   = ").append(test3_21b_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21c_MinimalSpeed   = ").append(test3_21c_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21c_MaximalSpeed   = ").append(test3_21c_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21d_MinimalSpeed   = ").append(test3_21d_MinimalSpeed).append(" km/h ");
-		buffer.append("\n   test3_21d_MaximalSpeed   = ").append(test3_21d_MaximalSpeed).append(" km/h ");
-		buffer.append("\n   projection_reference     = ").append(projection_reference);
+		buffer.append("\n   test31MinimalDistance  = ").append(test31MinimalDistance).append(" m ");
+		buffer.append("\n   test32MinimalDistance  = ").append(test32MinimalDistance).append(" m ");
+		buffer.append("\n   test32PolygonPoints    = ").append(test32PolygonPoints).append(" °longitude,°latitude ... ");
+		buffer.append("\n   test37MinimalDistance  = ").append(test37MinimalDistance).append(" m ");
+		buffer.append("\n   test37MaximalDistance  = ").append(test37MaximalDistance).append(" m ");
+		buffer.append("\n   test38aMinimalSpeed    = ").append(test38aMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test38aMaximalSpeed    = ").append(test38aMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test38bMinimalSpeed    = ").append(test38bMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test38bMaximalSpeed    = ").append(test38bMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test38cMinimalSpeed    = ").append(test38cMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test38cMaximalSpeed    = ").append(test38cMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test38dMinimalSpeed    = ").append(test38dMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test38dMaximalSpeed    = ").append(test38dMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test39MinimalSpeed     = ").append(test39MinimalSpeed).append(" km/h ");
+		buffer.append("\n   test39MaximalSpeed     = ").append(test39MaximalSpeed).append(" km/h ");
+		buffer.append("\n   test310MinimalDistance = ").append(test310MinimalDistance).append(" m ");
+		buffer.append("\n   test315MinimalTime     = ").append(test315MinimalTime).append(" s ");
+		buffer.append("\n   test3161MaximalTime   = ").append(test3161MaximalTime).append(" s ");
+		buffer.append("\n   test3163aMaximalTime  = ").append(test3163aMaximalTime).append(" s ");
+		buffer.append("\n   test3163bMaximalTime  = ").append(test3163bMaximalTime).append(" s ");
+		buffer.append("\n   test321aMinimalSpeed   = ").append(test321aMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test321aMaximalSpeed   = ").append(test321aMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test321bMinimalSpeed   = ").append(test321bMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test321bMaximalSpeed   = ").append(test321bMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test321cMinimalSpeed   = ").append(test321cMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test321cMaximalSpeed   = ").append(test321cMaximalSpeed).append(" km/h ");
+		buffer.append("\n   test321dMinimalSpeed   = ").append(test321dMinimalSpeed).append(" km/h ");
+		buffer.append("\n   test321dMaximalSpeed   = ").append(test321dMaximalSpeed).append(" km/h ");
+		buffer.append("\n   projectionReference     = ").append(projectionReference);
 		
 		return buffer.toString();
 	}

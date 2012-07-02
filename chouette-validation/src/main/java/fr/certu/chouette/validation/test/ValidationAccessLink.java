@@ -50,14 +50,14 @@ public class ValidationAccessLink extends AbstractValidation implements IValidat
 		SheetReportItem report2_25 = new SheetReportItem("Test2_Sheet25_Step1", 1);
 		SheetReportItem report3_21 = new SheetReportItem("Test3_Sheet21_Step1", 1);
 
-		double minA = parameters.getTest3_21a_MinimalSpeed();
-		double maxA = parameters.getTest3_21a_MaximalSpeed();
-		double minB = parameters.getTest3_21b_MinimalSpeed();
-		double maxB = parameters.getTest3_21b_MaximalSpeed();
-		double minC = parameters.getTest3_21c_MinimalSpeed();
-		double maxC = parameters.getTest3_21c_MaximalSpeed();
-		double minD = parameters.getTest3_21d_MinimalSpeed();
-		double maxD = parameters.getTest3_21d_MaximalSpeed();
+		double minA = parameters.getTest321aMinimalSpeed();
+		double maxA = parameters.getTest321aMaximalSpeed();
+		double minB = parameters.getTest321bMinimalSpeed();
+		double maxB = parameters.getTest321bMaximalSpeed();
+		double minC = parameters.getTest321cMinimalSpeed();
+		double maxC = parameters.getTest321cMaximalSpeed();
+		double minD = parameters.getTest321dMinimalSpeed();
+		double maxD = parameters.getTest321dMaximalSpeed();
 		
 		for (AccessLink accessLink : accessLinks) {
 			//Test 2.25.1

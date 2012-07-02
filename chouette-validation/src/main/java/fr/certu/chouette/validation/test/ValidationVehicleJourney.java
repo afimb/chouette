@@ -107,14 +107,14 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		Map<String, Set<VehicleJourney>> map = new TreeMap<String, Set<VehicleJourney>>();
 		// Set<VehicleJourney> set = new HashSet<VehicleJourney>();
 
-		double param3_15 = parameters.getTest3_15_MinimalTime();
-		double min3_7 = parameters.getTest3_7_MinimalDistance();
-		double max3_7 = parameters.getTest3_7_MaximalDistance();
-		double min3_9 = parameters.getTest3_9_MinimalSpeed();
-		double max3_9 = parameters.getTest3_9_MaximalSpeed();
-		long param3_16_1 = parameters.getTest3_16_1_MaximalTime();
-		long param3_16_3a = parameters.getTest3_16_3a_MaximalTime();
-		long param3_16_3b = parameters.getTest3_16_3b_MaximalTime();
+		double param3_15 = parameters.getTest315MinimalTime();
+		double min3_7 = parameters.getTest37MinimalDistance();
+		double max3_7 = parameters.getTest37MaximalDistance();
+		double min3_9 = parameters.getTest39MinimalSpeed();
+		double max3_9 = parameters.getTest39MaximalSpeed();
+		long param3_16_1 = parameters.getTest3161MaximalTime();
+		long param3_16_3a = parameters.getTest3163aMaximalTime();
+		long param3_16_3b = parameters.getTest3163bMaximalTime();
 
 		if(vehicleJourneys != null)
 		{

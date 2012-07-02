@@ -10,10 +10,12 @@ package fr.certu.chouette.gui.command;
 // import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,9 +58,9 @@ import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
+import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
 import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
@@ -76,6 +78,13 @@ import fr.certu.chouette.plugin.validation.ValidationParameters;
  * dependency criteria : sample for all lines of one network
  * -c export -o network -format XXX -outputFile YYYY -exportId ZZZ -id list_of_network_id_separated_by_commas
  * 
+ * validate command : 
+ * from neptune file :
+ * -c validate -o line -inputFile YYYY  [-fileFormat TTT] -validationId ZZZ 
+ * 
+ * from database : 
+ * -c validate -o line|network|company -validationId ZZZ [-id list_of_ids_separated_by_commas]
+ * 
  */
 @NoArgsConstructor
 public class Command
@@ -83,6 +92,55 @@ public class Command
 
    private static final Logger logger = Logger.getLogger(Command.class);
    public static ClassPathXmlApplicationContext applicationContext;
+
+   /**
+    *
+    */
+   public static void printHelp()
+   {
+      ResourceBundle bundle = null;
+      try
+      {
+         bundle = ResourceBundle.getBundle(Command.class.getName(),locale);
+      }
+      catch (MissingResourceException e1)
+      {
+         try
+         {
+            bundle = ResourceBundle.getBundle(Command.class.getName());
+         }
+         catch (MissingResourceException e2)
+         {
+            System.out.println("missing help resource");
+            return;
+         }
+      }
+
+      printBloc(bundle,"Header","");
+
+      printBloc(bundle,"Option","   ");
+
+      System.out.println("");
+
+      String[] commands = getHelpString(bundle,"Commands").split(" ");
+      for (String command : commands) 
+      {
+         printCommandDetail(bundle,command,"   ");
+         System.out.println("");
+      }
+
+      printBloc(bundle,"Footer","");
+   }
+
+   @Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
+
+   @Setter private ValidationParameters validationParameters;
+
+   @Setter private IDaoTemplate<ImportLogMessage> importLogMessageDao;;
+
+   @Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
+
+   @Setter private IDaoTemplate<FileValidationLogMessage> fileValidationLogMessageDao;
 
    private static String getHelpString(ResourceBundle bundle,String key)
    {
@@ -158,7 +216,7 @@ public class Command
       printCommandDetail(bundle,lowerCommand,"   ");
 
 
-   };
+   }
 
    /**
     * 
@@ -203,52 +261,6 @@ public class Command
 
    }
 
-   /**
-    *
-    */
-   public static void printHelp()
-   {
-      ResourceBundle bundle = null;
-      try
-      {
-         bundle = ResourceBundle.getBundle(Command.class.getName(),locale);
-      }
-      catch (MissingResourceException e1)
-      {
-         try
-         {
-            bundle = ResourceBundle.getBundle(Command.class.getName());
-         }
-         catch (MissingResourceException e2)
-         {
-            System.out.println("missing help resource");
-            return;
-         }
-      }
-
-      printBloc(bundle,"Header","");
-
-      printBloc(bundle,"Option","   ");
-
-      System.out.println("");
-
-      String[] commands = getHelpString(bundle,"Commands").split(" ");
-      for (String command : commands) 
-      {
-         printCommandDetail(bundle,command,"   ");
-         System.out.println("");
-      }
-
-      printBloc(bundle,"Footer","");
-   }
-
-   @Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
-
-   @Setter private ValidationParameters validationParameters;
-
-   @Setter private IDaoTemplate<ImportLogMessage> importLogMessageDao;
-
-   @Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
 
    public Map<String,List<String>> globals = new HashMap<String, List<String>>();
 
@@ -847,6 +859,9 @@ public class Command
     */
    private int executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
    {
+      GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
+
+      List<Report> reports = new ArrayList<Report>();
       // check if import exists and accept unzip before call
       String format = getSimpleString(parameters,"format");
       String inputFile = getSimpleString(parameters,"inputfile");
@@ -856,8 +871,6 @@ public class Command
 
       boolean zipped = (inputFile.endsWith(".zip") || fileFormat.equals("zip"));
 
-      List<Report> reports = new ArrayList<Report>();
-      GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
       try
       {
          List<FormatDescription> formats = manager.getImportFormats(null);
@@ -938,7 +951,7 @@ public class Command
                      {
                         importReport.addAll(holder.getReport().getItems());
                      }
-                     
+
                   }
                   // save
                   if (beans != null && !beans.isEmpty())
@@ -1059,7 +1072,49 @@ public class Command
    }
 
    /**
-    * @param beans
+    * @param parameters
+    */
+   private void executeSetValidationParameters(Map<String, List<String>> parameters) 
+   {
+      for (String key : parameters.keySet()) 
+      {
+         if (key.toLowerCase().startsWith("test") || key.toLowerCase().startsWith("projection"))
+         {
+            String value = "";
+            try
+            { 
+               value = getSimpleString(parameters,key);
+            }
+            catch (Exception ex)
+            {
+               List<String> values = parameters.get(key);
+               for (String item : values)
+               {
+                  value += item+" ";
+               }
+            }
+            if (validationParameters == null) validationParameters = new ValidationParameters();
+            try 
+            {
+               setAttribute(validationParameters, key, value);
+            } 
+            catch (Exception e) 
+            {
+               logger.error(e.getMessage());
+               System.err.println("unknown or unvalid parameter " + key);
+            }  
+         }
+      }
+   }
+
+   /**
+    * validate command : 
+    * from neptune file :
+    * -c validate -o line -inputFile YYYY  [-fileFormat TTT] -validateId ZZZ 
+    * 
+    * from database : 
+    * -c validate -o line|network|company -validateId ZZZ [-id list_of_ids_separated_by_commas]
+    *
     * @param manager
     * @param parameters 
     * @return 
@@ -1070,57 +1125,38 @@ public class Command
          Map<String, List<String>> parameters)
    throws ChouetteException 
    {
+      long validationId = Long.parseLong(getSimpleString(parameters,"validationid"));
+
       List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
 
-      String fileName = getSimpleString(parameters, "file", "");
-      boolean append = getBoolean(parameters, "append");
+      String inputFile = getSimpleString(parameters,"inputfile","");
+      ReportHolder holder = new ReportHolder();
+      if (!inputFile.isEmpty())
+      {
+         beans = neptuneImport(manager,parameters,holder);
+      }
+      else
+      {
+         beans = executeGet(manager,parameters);
+      }
 
+      executeSetValidationParameters(parameters);
+      
       Report valReport = manager.validate(null, beans, validationParameters);
-      PrintStream stream = System.out;
-      if (!fileName.isEmpty())
+
+      // merge reports
+      if (holder.getReport() != null)
       {
-         try 
-         {
-            stream = new PrintStream(new FileOutputStream(new File(fileName), append));
-         } catch (FileNotFoundException e) 
-         {
-            System.err.println("cannot open file :"+fileName);
-            fileName = "";
-         }
+         Report importReport = holder.getReport();
+         saveFileValidationReport(validationId,importReport);
       }
 
-      stream.println(valReport.getLocalizedMessage());
-      // printItems(stream,"",valReport.getItems());
-      int nbUNCHECK = 0;
-      int nbOK = 0;
-      int nbWARN = 0;
-      int nbERROR = 0;
-      int nbFATAL = 0;
-      for (ReportItem item1  : valReport.getItems()) // Categorie
+      // save report
+      for (ReportItem item : valReport.getItems())
       {
-         for (ReportItem item2 : item1.getItems()) // fiche
-         {
-            for (ReportItem item3 : item2.getItems()) //test
-            {
-               STATE status = item3.getStatus();
-               switch (status)
-               {
-               case UNCHECK : nbUNCHECK++; break;
-               case OK : nbOK++; break;
-               case WARNING : nbWARN++; break;
-               case ERROR : nbERROR++; break;
-               case FATAL : nbFATAL++; break;
-               }
-
-            }
-
-         }
+         saveFileValidationReport(validationId,item);
       }
-      stream.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
-      if (!fileName.isEmpty())
-      {
-         stream.close();
-      }
+
       return 0;
    }
 
@@ -1159,7 +1195,6 @@ public class Command
       return Boolean.parseBoolean(values.get(0));
    }
 
-
    /**
     * @param parameters
     * @return
@@ -1186,7 +1221,6 @@ public class Command
       return manager;
    }
 
-
    /**
     * @param string
     * @return
@@ -1210,6 +1244,7 @@ public class Command
       if (values.size() > 1) throw new IllegalArgumentException("parameter -"+key+" of String type must be unique");
       return values.get(0);
    }
+
 
    /**
     * convert a duration in millisecond to literal
@@ -1244,6 +1279,31 @@ public class Command
       res += milli + " ms" ;
       return res;
    }
+
+
+   private List<NeptuneIdentifiedObject> neptuneImport(INeptuneManager<NeptuneIdentifiedObject> manager,
+         Map<String, List<String>> parameters, ReportHolder holder) throws ChouetteException
+         {
+      String format = "NEPTUNE";
+      List<FormatDescription> formats = manager.getImportFormats(null);
+      FormatDescription description = null;
+
+      for (FormatDescription formatDescription : formats)
+      {
+         if (formatDescription.getName().equalsIgnoreCase(format))
+         {
+            description=formatDescription;
+            break;
+         }
+      }
+      if (description == null)
+      {
+         throw new IllegalArgumentException("format "+format+" unavailable");
+      }
+      List<ParameterValue> values = populateParameters(description,parameters);
+      List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
+      return beans;
+         }
 
    private List<CommandArgument> parseArgs(String[] args) throws Exception
    {
@@ -1366,7 +1426,8 @@ public class Command
    private int saveExportReport(long exportId, String format,Report report,int position)
    {
       String prefix = report.getOriginKey();
-      if (prefix == null && report instanceof ReportItem) prefix = format+((ReportItem) report).getMessageKey();
+      if (prefix == null || report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
+      prefix = format+prefix;
       ExportLogMessage message = new ExportLogMessage(exportId,format,report,position++);
       exportLogMessageDao.save(message);
       if (report.getItems() != null)
@@ -1388,7 +1449,7 @@ public class Command
          String subPrefix = prefix+"|"+format+item.getMessageKey();
          for (ReportItem child : item.getItems())
          {
-            position = saveExportReportItem(exportId,format,child,subPrefix,position++);
+            position = saveExportReportItem(exportId,format,child,subPrefix,position);
          }
       }
       return position;
@@ -1417,10 +1478,56 @@ public class Command
 
    }
 
+   private void saveFileValidationReport(long validationId, Report report)
+   {
+      int position = 1;
+      Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(validationId));
+      List<FileValidationLogMessage> messages = fileValidationLogMessageDao.select(filter);
+      if (messages != null)
+      {
+         for (FileValidationLogMessage message : messages)
+         {
+            if (message.getPosition() >= position)
+               position = message.getPosition() + 1;
+         }
+      }
+      FileValidationLogMessage message = new FileValidationLogMessage(validationId,"",report,position++);
+      fileValidationLogMessageDao.save(message);
+      if (report.getItems() != null)
+      {
+         //         String prefix = report.getOriginKey();
+         //         if (prefix == null || prefix.isEmpty())
+         //         {
+         //            prefix = ((ReportItem) report).getMessageKey();
+         //         }
+         for (ReportItem item : report.getItems())
+         {
+            position = saveFileValidationReportItem(validationId,item,"",position);
+         }
+      }
+
+   }
+
+   private int saveFileValidationReportItem(long validationId, ReportItem item, String prefix, int position)
+   {
+      FileValidationLogMessage message = new FileValidationLogMessage(validationId,"",item,"",position++);
+      fileValidationLogMessageDao.save(message);
+      if (item.getItems() != null)
+      {
+         //         String subPrefix = prefix+"|"+item.getMessageKey();
+         for (ReportItem child : item.getItems())
+         {
+            position = saveFileValidationReportItem(validationId,child,"",position);
+         }
+      }
+      return position;
+   }
+
    private int saveImportReport(long importId, String format,Report report,int position)
    {
       String prefix = report.getOriginKey();
-      if (prefix == null && report instanceof ReportItem) prefix = format+((ReportItem) report).getMessageKey();
+      if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
+      prefix = format+prefix;
       ImportLogMessage message = new ImportLogMessage(importId,format,report,position++);
       importLogMessageDao.save(message);
       if (report.getItems() != null)
@@ -1442,7 +1549,7 @@ public class Command
          String subPrefix = prefix+"|"+format+item.getMessageKey();
          for (ReportItem child : item.getItems())
          {
-            position = saveImportReportItem(importId,format,child,subPrefix,position++);
+            position = saveImportReportItem(importId,format,child,subPrefix,position);
          }
       }
       return position;
@@ -1509,6 +1616,152 @@ public class Command
       {
          System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
       }
+   }
+   /**
+    * @param object
+    * @param attrname
+    * @param value
+    * @throws Exception
+    */
+   private void setAttribute(Object object, String attrname, String value) throws Exception 
+   {
+      String name = attrname.toLowerCase();
+      if (name.equals("id")) 
+      {
+         throw new Exception("non writable attribute id for any object , process stopped ");
+      }
+      if (!name.equals("objectid") && !name.equals("creatorid") && !name.equals("areacentroid")&& name.endsWith("id")) 
+      {
+         throw new Exception("non writable attribute "+attrname+" use setReference instand , process stopped ");
+      }
+      Class<?> beanClass = object.getClass();
+      Method setter = findSetter(beanClass, attrname);
+      Class<?> type = setter.getParameterTypes()[0];
+      if (type.isArray() || type.getSimpleName().equals("List"))
+      {
+         throw new Exception("list attribute "+attrname+" for object "+beanClass.getName()+" must be update with (add/remove)Attribute, process stopped ");
+      }
+      Object arg = null;
+      if (type.isEnum())
+      {
+         arg = toEnum(type,value);
+      }
+      else if (type.isPrimitive())
+      {
+         arg = toPrimitive(type,value);
+      }
+      else
+      {
+         arg = toObject(type,value);
+      }
+      setter.invoke(object, arg);
+   }
+
+   /**
+    * @param beanClass
+    * @param attribute
+    * @return
+    * @throws Exception
+    */
+   private Method findSetter(
+         Class<?> beanClass, String attribute)
+   throws Exception {
+      return findAccessor(beanClass, attribute, "set",true);
+   }
+   /**
+    * @param beanClass
+    * @param attribute
+    * @return
+    * @throws Exception
+    */
+   private Method findAccessor(
+         Class<?> beanClass, String attribute, String prefix, boolean ex)
+   throws Exception {
+      String methodName = prefix+attribute;
+      Method[] methods = beanClass.getMethods();
+      Method accessor = null;
+      for (Method method : methods) 
+      {
+         if (method.getName().equalsIgnoreCase(methodName))
+         {
+            accessor = method;
+            break;
+         }
+      }
+      if (ex && accessor == null)
+      {
+         throw new Exception("unknown accessor "+prefix+" for attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
+      }
+      return accessor;
+   }
+   protected Object toObject(Class<?> type, String value) throws Exception 
+   {
+      if (value == null) return null;
+      String name = type.getSimpleName();
+      if (name.equals("String")) return value;
+      if (name.equals("Long")) return Long.valueOf(value);
+      if (name.equals("Boolean")) return Boolean.valueOf(value);
+      if (name.equals("Integer")) return Integer.valueOf(value);
+      if (name.equals("Float")) return Float.valueOf(value);
+      if (name.equals("Double")) return Double.valueOf(value);
+      if (name.equals("BigDecimal")) return BigDecimal.valueOf(Double.parseDouble(value));
+      if (name.equals("Date")) 
+      {
+         DateFormat dateFormat = null;
+         if (value.contains("-") && value.contains(":"))
+         {
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+         }
+         else if (value.contains("-") )
+         {
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+         }
+         else if ( value.contains(":"))
+         {
+            dateFormat = new SimpleDateFormat("HH:mm:ss");
+         }
+         else
+         {
+            throw new Exception("unable to convert "+value+" to Date");
+         }
+         Date date = dateFormat.parse(value);
+         return date;
+      }
+      if (name.equals("Time")) 
+      {
+         DateFormat dateFormat = null;
+         if ( value.contains(":"))
+         {
+            dateFormat = new SimpleDateFormat("H:m:s");
+         }
+         else
+         {
+            throw new Exception("unable to convert "+value+" to Time");
+         }
+         Date date = dateFormat.parse(value);
+         Time time = new Time(date.getTime());
+         return time;
+      }
+
+      throw new Exception("unable to convert String to "+type.getCanonicalName());
+   }
+
+   protected Object toPrimitive(Class<?> type, String value) throws Exception 
+   {
+      if (value == null) throw new Exception("primitive type "+type.getName()+" cannot be set to null");
+      String name = type.getName();
+      if (name.equals("long")) return Long.valueOf(value);
+      if (name.equals("boolean")) return Boolean.valueOf(value);
+      if (name.equals("int")) return Integer.valueOf(value);
+      if (name.equals("float")) return Float.valueOf(value);
+      if (name.equals("double")) return Double.valueOf(value);
+      throw new Exception("unable to convert String to "+type.getName());
+   }
+
+   protected Object toEnum(Class<?> type, String value) throws Exception 
+   {
+      Method m = type.getMethod("fromValue", String.class);
+      return m.invoke(null, value);
    }
 
 

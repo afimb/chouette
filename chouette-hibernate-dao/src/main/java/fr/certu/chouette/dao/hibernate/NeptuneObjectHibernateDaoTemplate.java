@@ -20,6 +20,7 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
+import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
 
 public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoSupport implements IDaoTemplate<T>
@@ -41,6 +42,11 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    public static NeptuneObjectHibernateDaoTemplate<ExportLogMessage> createExportLogMessageDao()
    {
       return new NeptuneObjectHibernateDaoTemplate<ExportLogMessage>( ExportLogMessage.class);
+   }
+   
+   public static NeptuneObjectHibernateDaoTemplate<FileValidationLogMessage> createFileValidationLogMessageDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<FileValidationLogMessage>( FileValidationLogMessage.class);
    }
 
    /* (non-Javadoc)

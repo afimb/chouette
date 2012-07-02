@@ -61,14 +61,14 @@ public class ValidationConnectionLink extends AbstractValidation implements IVal
 		SheetReportItem report2_4 = new SheetReportItem("Test2_Sheet4_Step1", 1);
 		SheetReportItem report3_8 = new SheetReportItem("Test3_Sheet8_Step1", 1);
 
-		double minA = parameters.getTest3_8a_MinimalSpeed();
-		double maxA = parameters.getTest3_8a_MaximalSpeed();
-		double minB = parameters.getTest3_8b_MinimalSpeed();
-		double maxB = parameters.getTest3_8b_MaximalSpeed();
-		double minC = parameters.getTest3_8c_MinimalSpeed();
-		double maxC = parameters.getTest3_8c_MaximalSpeed();
-		double minD = parameters.getTest3_8d_MinimalSpeed();
-		double maxD = parameters.getTest3_8d_MaximalSpeed();
+		double minA = parameters.getTest38aMinimalSpeed();
+		double maxA = parameters.getTest38aMaximalSpeed();
+		double minB = parameters.getTest38bMinimalSpeed();
+		double maxB = parameters.getTest38bMaximalSpeed();
+		double minC = parameters.getTest38cMinimalSpeed();
+		double maxC = parameters.getTest38cMaximalSpeed();
+		double minD = parameters.getTest38dMinimalSpeed();
+		double maxD = parameters.getTest38dMaximalSpeed();
 
 		for (ConnectionLink connectionLink : connectionLinks) 
 		{

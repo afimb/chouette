@@ -45,7 +45,7 @@
 		</property>
 		<property name="transportMode"
 			type="fr.certu.chouette.dao.hibernate.usertype.TransportModeNameUserType">
-			<column name="transport_mode_name">
+			<column name="transport_mode">
 				<comment>Transport mode</comment>
 			</column>
 		</property>

@@ -67,7 +67,7 @@ public abstract class LogMessage extends NeptuneObject
 
    private void init(String format, ReportItem item, String prefix, int position)
    {
-      if (prefix != null)
+      if (prefix != null && !prefix .isEmpty())
          this.key = prefix+"|"+format+item.getMessageKey();
       else
          this.key = format+item.getMessageKey();

@@ -47,14 +47,14 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 		ReportItem sheet3_20 = new SheetReportItem("Test3_Sheet20", 20);
 		SheetReportItem report3_19_1 = new SheetReportItem("Test3_Sheet19_Step1",1);
 		SheetReportItem report3_20_1 = new SheetReportItem("Test3_Sheet20_Step1",1);
-		List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+		List<Coordinate> listCoordinates = parameters.getTest32Polygon();
 		Coordinate first = listCoordinates.get(0);
 		Coordinate last = listCoordinates.get(listCoordinates.size()-1);
 		if(!first.equals(last))
 			listCoordinates.add(first);
 		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
 
-		String param = parameters.getProjection_reference().trim();
+		String param = parameters.getProjectionReference().trim();
 		for (Facility facility : facilities) {
 			int SRIDparam = (LongLatTypeEnum.fromValue(param) != null) ? LongLatTypeEnum.fromValue(param).epsgCode():0;
 			FacilityLocation facilityLocation = facility.getFacilityLocation();

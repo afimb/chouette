@@ -53,13 +53,13 @@ public class ValidationAccessPoint implements IValidationPlugin<AccessPoint>{
 		
 		SheetReportItem report3_17 = new SheetReportItem("Test3_Sheet17_Step1", 1);
 		SheetReportItem report3_18 = new SheetReportItem("Test3_Sheet18_Step1", 1);
-		List<Coordinate> listCoordinates = parameters.getTest3_2_Polygon();
+		List<Coordinate> listCoordinates = parameters.getTest32Polygon();
 		Coordinate first = listCoordinates.get(0);
 		Coordinate last = listCoordinates.get(listCoordinates.size()-1);
 		if(!first.equals(last))
 			listCoordinates.add(first);
 		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
-		String param = parameters.getProjection_reference();
+		String param = parameters.getProjectionReference();
 		int SRIDparam = (LongLatTypeEnum.fromValue(param) != null) ? LongLatTypeEnum.fromValue(param).epsgCode():0;
 		
 		for (AccessPoint accessPoint : accessPoints) {			
