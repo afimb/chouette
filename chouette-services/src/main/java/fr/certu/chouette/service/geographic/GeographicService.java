@@ -320,11 +320,14 @@ public class GeographicService implements IGeographicService
 		
 	}
 	
-	private boolean convertToWGS84(StopArea area)
+	public boolean convertToWGS84(StopArea area)
 	{
 		if (sourceCRS == null ) return false;
 		AreaCentroid centroid = area.getAreaCentroid();
 		if (centroid == null) return false;
+		if (centroid.getProjectedPoint() == null) return false;
+      if (centroid.getProjectedPoint().getX() == null) return false;
+      if (centroid.getProjectedPoint().getY() == null) return false;
 
 		Point point = factoryLambert2e.createPoint(new Coordinate(centroid.getProjectedPoint().getX().doubleValue(),
 				centroid.getProjectedPoint().getY().doubleValue()));
@@ -349,7 +352,7 @@ public class GeographicService implements IGeographicService
 	}
 
 
-	private boolean convertToLambert2e(StopArea area)
+	public boolean convertToLambert2e(StopArea area)
 	{
 		if (targetCRS == null ) return false;
 		AreaCentroid centroid = area.getAreaCentroid();
@@ -377,4 +380,20 @@ public class GeographicService implements IGeographicService
 		return true;
 
 	}
+	
+	 public void switchProjection(String srid)
+	 {
+	    epsgLambert = Integer.parseInt(srid);
+	      try {
+	         sourceCRS = CRS.decode("epsg:"+epsgLambert);
+	         transformLambert2e = CRS.findMathTransform(targetCRS, sourceCRS);
+	      } 
+	      catch (FactoryException e) 
+	      {
+	         // TODO Auto-generated catch block
+	         logger.error("fail to initialize Geographic Tool :" +e.getMessage());
+	      }
+	      factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
+	 }
+
 }

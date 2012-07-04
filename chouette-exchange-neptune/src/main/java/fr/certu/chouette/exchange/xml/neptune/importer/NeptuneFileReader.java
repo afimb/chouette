@@ -72,7 +72,6 @@ public class NeptuneFileReader
 			LoggingManager.log(logger, msg, Level.ERROR);
 			throw new ExchangeRuntimeException(ExchangeExceptionCode.FILE_NOT_FOUND, e, fileName);
 		}
-		
 		ChouettePTNetworkTypeType chouettePTNetworkType = parseXML(fileName,content, validation, false);
 		return chouettePTNetworkType;
 	}
@@ -128,6 +127,15 @@ public class NeptuneFileReader
 	private ChouettePTNetworkTypeType parseXML(String contentName, String content, boolean validation, boolean isZipEntry) 
 	{
 		ChouettePTNetworkTypeType chouettePTNetworkType = null;
+      int length = 200;
+      if (length > content.length()) length = content.length();
+      String subContent = content.substring(0,length).toLowerCase();
+      if (!subContent.contains("iso-8859-1"))
+      {
+         LoggingManager.log(logger, "invalid encoding for "+contentName, Level.ERROR);
+         throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE, contentName);
+      }
+      
 		try 
 		{
 			logger.debug("UNMARSHALING content of "+contentName);

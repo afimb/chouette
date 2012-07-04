@@ -51,7 +51,12 @@ import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.AreaCentroid;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.ListParameterValue;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -64,6 +69,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * 
@@ -141,6 +147,8 @@ public class Command
    @Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
 
    @Setter private IDaoTemplate<FileValidationLogMessage> fileValidationLogMessageDao;
+
+   @Setter private IGeographicService geographicService;
 
    private static String getHelpString(ResourceBundle bundle,String key)
    {
@@ -866,6 +874,12 @@ public class Command
       String format = getSimpleString(parameters,"format");
       String inputFile = getSimpleString(parameters,"inputfile");
       String fileFormat = getSimpleString(parameters,"fileformat","");
+      String srid = getSimpleString(parameters,"srid","");
+      if (!srid.isEmpty())
+      {
+         geographicService.switchProjection(srid);
+      }
+
       long importId = Long.parseLong(getSimpleString(parameters,"importid"));
       int beanCount = 0;
 
@@ -964,6 +978,13 @@ public class Command
                            System.out.println("save "+bean.getName()+" ("+bean.getObjectId()+")");
                         }
                         logger.info("save "+bean.getName()+" ("+bean.getObjectId()+")");
+                        // check all stopareas
+                        if (bean instanceof Line)
+                        {
+                           Line line = (Line) bean;
+                           checkProjection(line);
+                        }
+
 
                      }
 
@@ -1031,12 +1052,16 @@ public class Command
 
             for (NeptuneIdentifiedObject bean : beans) 
             {
+               if (bean instanceof Line)
+               {
+                  Line line = (Line) bean;
+                  checkProjection(line);
+               }
                List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
                oneBean.add(bean);
-               manager.saveAll(null, oneBean, true, true);
                try
                {
-                  manager.saveAll(null, beans, true, true);
+                  manager.saveAll(null, oneBean, true, true);
                   GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
                   saveReport.addItem(item);
                   beanCount++;
@@ -1068,6 +1093,33 @@ public class Command
          reports.add(saveReport);
       saveImportReports(importId,format,reports);
       return (beanCount == 0?1:0);
+
+   }
+
+   private void checkProjection(Line line)
+   {
+      for (Route route : line.getRoutes())
+      {
+         for (StopPoint point : route.getStopPoints())
+         {
+            checkProjection(point.getContainedInStopArea());
+         }
+      }
+
+   }
+
+   private void checkProjection(StopArea area)
+   {
+      if (area == null) return;
+      if (area.getAreaCentroid() != null)
+      {
+         AreaCentroid centroid = area.getAreaCentroid();
+         if (centroid.getLongLatType() == null)
+         {
+            geographicService.convertToWGS84(area);
+         }
+      }
+      checkProjection(area.getParent());
 
    }
 
@@ -1141,7 +1193,7 @@ public class Command
       }
 
       executeSetValidationParameters(parameters);
-      
+
       Report valReport = manager.validate(null, beans, validationParameters);
 
       // merge reports

@@ -1,5 +1,7 @@
 package fr.certu.chouette.service.geographic;
 
+import fr.certu.chouette.model.neptune.StopArea;
+
 
 public interface IGeographicService 
 {
@@ -21,5 +23,15 @@ public interface IGeographicService
 	 * convert WGS84 coordinates in  projectedPoint Lambert2e ones for every empty projected points 
 	 */
 	void convertToLambert2e(); 
+	
+	/**
+	 * convert projectedPoint SRID coordinates in WGS84 ones for given object
+	 * 
+	 * @param area
+	 */
+	boolean convertToWGS84(StopArea area);
 
+	boolean convertToLambert2e(StopArea area);
+	
+	void switchProjection(String srid);
 }

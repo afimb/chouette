@@ -45,9 +45,10 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
    private String neptuneFile = null;
    private String neptuneRCFile = null;
    private String neptuneZip = null;
+   private String neptuneFileUtf8 = null;
    private String path="src/test/resources/";
 
-   @Test(groups={"ImportLine","ImportRCLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
+   @Test(groups={"ImportLine","neptuneFileUtf8","ImportRCLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
    public void getBean()
    {
       importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
@@ -58,6 +59,13 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
    public void getNeptuneFile(String neptuneFile)
    {
       this.neptuneFile = neptuneFile;
+   }
+
+   @Parameters({"neptuneFileUtf8"})
+   @Test (groups = {"ImportUtf8Line"}, description = "Import Plugin should detect wrong encoding",dependsOnMethods={"getBean"})
+   public void getNeptuneFileUtf8(String neptuneFileUtf8)
+   {
+      this.neptuneFileUtf8 = neptuneFileUtf8;
    }
 
    @Parameters({"neptuneRCFile"})
@@ -172,6 +180,23 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
    }
 
+   @Test (groups = {"ImportLineUtf8"}, description = "Import Plugin should detect file encoding",dependsOnMethods={"getBean"})
+   public void verifyCheckEncoding() throws ChouetteException
+   {
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+      simpleParameterValue.setFilepathValue(path+"/"+neptuneFileUtf8);
+      parameters.add(simpleParameterValue);
+      simpleParameterValue = new SimpleParameterValue("fileFormat");
+      simpleParameterValue.setStringValue("xml");
+      parameters.add(simpleParameterValue);
+      ReportHolder report = new ReportHolder();
+
+      List<Line> lines = importLine.doImport(parameters, report);
+      Assert.assertNull(lines,"lines must be null");
+      printReport(report.getReport());
+      Assert.assertEquals(report.getReport().getStatus(), Report.STATE.ERROR,"report status must be ERROR");
+   }
 
    @Test (groups = {"ImportLine"}, description = "Import Plugin should import file",dependsOnMethods={"getBean"})
    public void verifyImportLine() throws ChouetteException

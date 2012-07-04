@@ -3,6 +3,7 @@
 <suite name="Factory" verbose="5" >
   <test name="ImportNeptune" >
   <parameter name="neptuneFile"  value="C_NEPTUNE_1.xml"/>
+  <parameter name="neptuneFileUtf8"  value="C_NEPTUNE_1_utf8.xml"/>
   <parameter name="neptuneRCFile"  value="C_CHOUETTE_52.xml"/>
   <parameter name="neptuneZip"  value="lignes_neptune.zip"/>
     <packages>

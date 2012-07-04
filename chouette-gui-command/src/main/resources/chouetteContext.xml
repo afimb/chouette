@@ -106,6 +106,7 @@
 		<property name="exportLogMessageDao" ref="exportLogMessageDao" />
 		<property name="fileValidationLogMessageDao" ref="fileValidationLogMessageDao" />
 		<property name="validationParameters" ref="Validation" />
+		<property name="geographicService" ref="geographicService" />
 	</bean>
 
 	<bean id="commandDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource"
