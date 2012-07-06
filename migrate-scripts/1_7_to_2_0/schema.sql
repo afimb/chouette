@@ -1,4 +1,4 @@
--- usage : psql -U chouette -W -f schema.sql -v SCH=chouette -d chouette_v17
+-- usage : psql -U chouette -W -f schema.sql -v SCH=chouette -v PREFIX=ninoxe -d chouette_v17
 
 SET search_path TO :SCH ;
 
@@ -145,9 +145,15 @@ ALTER TABLE StopArea RENAME COLUMN parentId TO parent_id;
 ALTER TABLE StopArea RENAME COLUMN areatype TO area_type;
 ALTER TABLE StopArea RENAME COLUMN nearesttopicname TO nearest_topic_name;
 ALTER TABLE StopArea RENAME COLUMN fareCode TO fare_code;
+COMMENT ON COLUMN stoparea.parent_id IS 'parent StopArea';
+
 
 ALTER TABLE stopareastoparea RENAME COLUMN parentId TO parent_id;
 ALTER TABLE stopareastoparea RENAME COLUMN childId TO child_id;
+COMMENT ON TABLE stopareastoparea
+  IS 'Routing constraint applicable on stop areas';
+COMMENT ON COLUMN stopareastoparea.parent_id IS 'routing constraint reference';
+COMMENT ON COLUMN stopareastoparea.child_id IS 'stoparea reference';
 
 ALTER TABLE StopPoint RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE StopPoint RENAME COLUMN creationTime TO creation_time;
@@ -181,7 +187,7 @@ ALTER TABLE VehicleJourney RENAME COLUMN objectVersion TO object_version;
 ALTER TABLE VehicleJourney RENAME COLUMN creationTime TO creation_time;
 ALTER TABLE VehicleJourney RENAME COLUMN creatorId TO creator_id;
 ALTER TABLE VehicleJourney RENAME COLUMN statusValue TO status_value;
-ALTER TABLE VehicleJourney RENAME COLUMN transportMode TO transport_mode_name;
+ALTER TABLE VehicleJourney RENAME COLUMN transportMode TO transport_mode;
 ALTER TABLE VehicleJourney RENAME COLUMN publishedJourneyName TO published_journey_name;
 ALTER TABLE VehicleJourney RENAME COLUMN publishedJourneyIdentifier TO published_journey_identifier;
 ALTER TABLE VehicleJourney RENAME COLUMN vehicleTypeIdentifier TO vehicle_type_identifier;
@@ -327,4 +333,92 @@ UPDATE journey_patterns j SET arrival_stop_point_id = (SELECT h.stop_point_id
                                                       AND h.vehicle_journey_id = v.id 
                                                       AND v.journey_pattern_id = j.id 
                                                       LIMIT 1); 
-                                                      
+
+
+-- create tables for rails migrations
+CREATE TABLE schema_migrations
+(
+  version character varying(255) NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE schema_migrations
+  OWNER TO chouette;
+
+-- insert into schema_migrations values ('20120126110946'); -- _create_referentials.rb
+insert into schema_migrations values ('20120213131553'); -- _create_chouette_line.rb
+insert into schema_migrations values ('20120214101458'); -- _create_chouette_company.rb
+insert into schema_migrations values ('20120214101645'); -- _create_chouette_ptnetwork.rb
+-- insert into schema_migrations values ('20120413142837'); -- _devise_create_users.rb
+insert into schema_migrations values ('20120416095045'); -- _create_chouette_stop_area.rb
+insert into schema_migrations values ('20120416095046'); -- _create_time_table.rb
+insert into schema_migrations values ('20120425080337'); -- _create_chouette_route.rb
+insert into schema_migrations values ('20120425125542'); -- _create_chouette_stop_point.rb
+insert into schema_migrations values ('20120426141032'); -- _create_chouette_connection_link.rb
+-- insert into schema_migrations values ('20120515134710'); -- _create_imports.rb
+-- insert into schema_migrations values ('20120516172252'); -- _create_delayed_jobs.rb
+-- insert into schema_migrations values ('20120523123806'); -- _add_fields_to_referentials.rb
+insert into schema_migrations values ('20120525092203'); -- _create_chouette_journey_pattern.rb
+insert into schema_migrations values ('20120525092204'); -- _create_chouette_journey_pattern_stop_point.rb
+insert into schema_migrations values ('20120525092205'); -- _create_chouette_time_slot.rb
+insert into schema_migrations values ('20120525092206'); -- _create_chouette_vehicle_journey.rb
+insert into schema_migrations values ('20120525092207'); -- _create_chouette_vehicle_journey_at_stop.rb
+insert into schema_migrations values ('20120525092208'); -- _create_chouette_time_table_vehicle_journey.rb
+insert into schema_migrations values ('20120525092209'); -- _create_chouette_access_point.rb
+insert into schema_migrations values ('20120525092210'); -- _create_chouette_access_link.rb
+insert into schema_migrations values ('20120525092211'); -- _create_chouette_facility.rb
+insert into schema_migrations values ('20120525092212'); -- _create_chouette_facility_feature.rb
+insert into schema_migrations values ('20120525092213'); -- _create_chouette_group_of_line.rb
+insert into schema_migrations values ('20120525092214'); -- _create_chouette_group_of_line_line.rb
+insert into schema_migrations values ('20120525092215'); -- _create_chouette_routing_constrains_line.rb
+insert into schema_migrations values ('20120525092216'); -- _create_chouette_stoparea_stoparea.rb
+-- insert into schema_migrations values ('20120529154848'); -- _create_import_log_messages.rb
+-- insert into schema_migrations values ('20120531070108'); -- _add_type_and_options_to_import.rb
+insert into schema_migrations values ('20120531091529'); -- _create_chouette_pt_link.rb
+-- insert into schema_migrations values ('20120607064150'); -- _create_exports.rb
+-- insert into schema_migrations values ('20120607064625'); -- _create_export_log_messages.rb
+-- insert into schema_migrations values ('20120611090254'); -- _resize_argument_to_import_log_messages.rb
+-- insert into schema_migrations values ('20120611090325'); -- _resize_argument_to_export_log_messages.rb
+-- insert into schema_migrations values ('20120612071936'); -- _add_file_type_to_import.rb
+-- insert into schema_migrations values ('20120620064014'); -- _add_references_to_export.rb
+-- insert into schema_migrations values ('20120620081726'); -- _create_file_validations.rb
+-- insert into schema_migrations values ('20120620081755'); -- _create_file_validation_log_messages.rb
+
+SET search_path TO public ;
+-- create tables for rails migrations
+CREATE TABLE schema_migrations
+(
+  version character varying(255) NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE schema_migrations
+  OWNER TO chouette;
+insert into schema_migrations values ('20120126110946'); -- _create_referentials.rb
+insert into schema_migrations values ('20120523123806'); -- _add_fields_to_referentials.rb
+
+CREATE TABLE referentials
+(
+  id serial NOT NULL,
+  name character varying(255),
+  slug character varying(255),
+  created_at timestamp without time zone,
+  updated_at timestamp without time zone,
+  prefix character varying(255),
+  projection_type character varying(255),
+  time_zone character varying(255),
+  CONSTRAINT referentials_pkey PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE referentials
+  OWNER TO chouette;
+
+\set var_sch '\'':SCH'\''
+\set var_prefix '\'':PREFIX'\''
+
+insert into referentials (name,slug,created_at,updated_at,prefix,projection_type,time_zone) 
+  values (var_sch,var_sch,localtimestamp,localtimestamp,var_prefix,null,'Paris');
