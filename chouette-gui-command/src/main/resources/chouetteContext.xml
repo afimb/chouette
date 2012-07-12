@@ -79,7 +79,7 @@
 				<entry key="ptlink">
 					<ref bean="PTLinkManager" />
 				</entry>
-				<entry key="ptnetwork">
+				<entry key="network">
 					<ref bean="networkManager" />
 				</entry>
 				<entry key="route">

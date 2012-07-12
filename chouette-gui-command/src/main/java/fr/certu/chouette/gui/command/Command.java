@@ -569,17 +569,17 @@ public class Command
             manager = getManager(parameters);
             parameters.remove("id");
             List<String> filter = new ArrayList<String>();
-            if (objectName == "ptnetwork")
+            if (objectName.equals("network"))
             {
                filter.add("ptnetwork.id");
             }
-            else if (objectName == "company")
+            else if (objectName.equals("company"))
             {
                filter.add("company.id");
             }
             else
             {
-               throw new IllegalArgumentException("format "+format+" unavailable");
+               throw new IllegalArgumentException("format "+format+" unavailable for "+objectName);
             }
             if (ids != null)
             {
@@ -607,7 +607,7 @@ public class Command
       {
          System.out.println("export failed "+e.getMessage());
          logger.error("export failed "+e.getMessage(),e);
-         GuiReport errorReport = new GuiReport("IMPORT_ERROR",Report.STATE.ERROR);
+         GuiReport errorReport = new GuiReport("EXPORT_ERROR",Report.STATE.ERROR);
          GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
          errorReport.addItem(item);
          reports.add(errorReport);
@@ -780,6 +780,11 @@ public class Command
             else if (filterOp.equalsIgnoreCase("like"))
             {
                filter = Filter.getNewLikeFilter(filterKey, value);
+            }
+            else if (filterOp.equalsIgnoreCase("in"))
+            {
+               List<String> values = filterArgs.subList(2, filterArgs.size());
+               filter = Filter.getNewInFilter(filterKey, values );
             }
             else 
             {
