@@ -341,6 +341,14 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          }
          logger.info("zip entry imported");
       }
+      try
+      {
+         zip.close();
+      }
+      catch (IOException e)
+      {
+         logger.info("cannot close zip file");
+      }
       if (!ofType1 && ofType2)
       {
          report1_1.updateStatus(Report.STATE.OK);

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,6 +31,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import lombok.Getter;
@@ -65,6 +68,7 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
+import fr.certu.chouette.plugin.report.DetailReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -922,40 +926,46 @@ public class Command
             SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
             values.add(inputFileParam);
             // unzip files , import and save contents 
-            ZipInputStream zipInputStream;
+            ZipFile zip = null;
             File temp = null;
             File tempRep = new File(FileUtils.getTempDirectory(),"massImport"+importId);
             if (!tempRep.exists()) tempRep.mkdirs();
             Report importReport = null;
             try
             {
-               zipInputStream = new ZipInputStream(new FileInputStream(inputFile));
-               ZipEntry zipEntry = zipInputStream.getNextEntry();
-               if (zipEntry == null)
+               
+               zip = new ZipFile(inputFile);
+               for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
                {
-                  System.out.println("cannot open zip file "+inputFile);
-                  logger.error("cannot open zip file "+inputFile);
-                  return 1;
-               }
-               while (zipEntry != null)
-               {
-                  if (!FilenameUtils.isExtension(zipEntry.getName(),suffixes))
+                  ZipEntry entry = entries.nextElement();
+               
+                  if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),suffixes))
                   {
-                     System.out.println("entry "+zipEntry.getName()+" ignored, unknown extension");
+                     System.out.println("entry "+entry.getName()+" ignored, unknown extension");
+                     continue;
+                  }
+                  InputStream stream = null;
+                  try
+                  {
+                     stream = zip.getInputStream(entry);
+                  }
+                  catch (IOException e)
+                  {
+                     System.out.println("entry "+entry.getName()+" cannot read");
                      continue;
                   }
                   byte[] bytes = new byte[4096];
-                  int len = zipInputStream.read(bytes);
-                  temp = new File(tempRep, zipEntry.getName());
+                  int len = stream.read(bytes);
+                  temp = new File(tempRep, entry.getName());
                   FileOutputStream fos = new FileOutputStream(temp);
                   while (len > 0)
                   {
                      fos.write(bytes, 0, len);
-                     len = zipInputStream.read(bytes);
+                     len = stream.read(bytes);
                   }
                   // import
-                  if (verbose) System.out.println("import file "+zipEntry.getName());
-                  logger.info("import file "+zipEntry.getName());
+                  if (verbose) System.out.println("import file "+entry.getName());
+                  logger.info("import file "+entry.getName());
                   inputFileParam.setFilepathValue(temp.getAbsolutePath());
                   ReportHolder holder = new ReportHolder();
                   List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
@@ -989,10 +999,7 @@ public class Command
                            Line line = (Line) bean;
                            checkProjection(line);
                         }
-
-
                      }
-
                      try
                      {
                         manager.saveAll(null, beans, true, true);
@@ -1013,9 +1020,15 @@ public class Command
                      }
                   }
                   temp.delete();
-                  zipEntry = zipInputStream.getNextEntry();
                }        
-               zipInputStream.close();
+               try
+               {
+                  zip.close();
+               }
+               catch (IOException e)
+               {
+                  logger.info("cannot close zip file");
+               }
             }
             catch (IOException e)
             {
