@@ -1,12 +1,16 @@
 package fr.certu.chouette.exchange.csv.exporter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import lombok.Setter;
 
@@ -19,6 +23,7 @@ import fr.certu.chouette.exchange.csv.exporter.producer.LineProducer;
 import fr.certu.chouette.exchange.csv.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.csv.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.csv.exporter.report.CSVReport;
+import fr.certu.chouette.exchange.csv.exporter.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
@@ -48,7 +53,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 		description.setName("CSV");
 		List<ParameterDescription> params = new ArrayList<ParameterDescription>();
 		ParameterDescription param1 = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false, true);
-		param1.setAllowedExtensions(Arrays.asList(new String[]{"csv"}));
+		param1.setAllowedExtensions(Arrays.asList(new String[]{"csv","zip"}));
 		params.add(param1);
 		description.setParameterDescriptions(params);
 	}
@@ -88,17 +93,74 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 			throw new IllegalArgumentException("outputFile required");
 		}
 
-		if(beans.size() > 1){
-			throw new IllegalArgumentException("cannot export multiple lines");
+		if(beans.size() > 1)
+		{
+			if (fileName.toLowerCase().endsWith(".csv"))
+			throw new IllegalArgumentException("cannot export multiple lines in simple csv file");
 		}
-		
-		Line line = beans.get(0);
-		
+		if (fileName.toLowerCase().endsWith(".zip"))
+		{
+			// Create the ZIP file
+            try 
+            {
+				ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileName));
+                for (Line line : beans) 
+                {
+                	if (line.getRoutes().isEmpty()) continue;
+                	if (line.getRoutes().size() > 2) 
+                	{
+                		CSVReportItem item = new CSVReportItem(CSVReportItem.KEY.TOO_MUCH_ROUTES,Report.STATE.WARNING,line.getName());
+        				report.addItem(item);
+                		logger.error("cannot export "+line.getName()+" too much routes (> 2)");
+                		continue;
+                	}
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    				try {
+						exportLine(new OutputStreamWriter(stream, "UTF-8"), line);
+
+	                    // Add ZIP entry to output stream.
+	                    ZipEntry entry = new ZipEntry(line.getName()+"_"+line.getId()+".csv");
+	                    out.putNextEntry(entry);
+	
+	                    out.write(stream.toByteArray());
+                		CSVReportItem item = new CSVReportItem(CSVReportItem.KEY.OK_LINE,Report.STATE.OK,line.getName());
+        				report.addItem(item);
+	
+	                    // Complete the entry
+	                    out.closeEntry();
+					} catch (IOException e) {
+						logger.error("export failed ",e);
+					}
+				}
+                out.close();
+            } 
+            catch (IOException e) 
+            {
+				logger.error("export failed ",e);
+			}
+
+		}
+		else
+		{
+			Line line = beans.get(0);
+			try 
+			{
+				exportLine(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), line);
+			} 
+			catch (IOException e) 
+			{
+				logger.error("export failed ",e);
+			}
+		}
+	}
+
+	private void exportLine(Writer writer, Line line) {
 		List<Timetable> timetables = getLineTimetables(line);		
 		
 		try {
-			CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), ';',CSVWriter.NO_QUOTE_CHARACTER);
-			for(Timetable timetable : timetables){
+			CSVWriter csvWriter = new CSVWriter(writer, ';',CSVWriter.NO_QUOTE_CHARACTER);
+			for(Timetable timetable : timetables)
+			{
 				csvWriter.writeAll(timetableProducer.produce(timetable));
 				csvWriter.writeNext(new String[0]);
 			}
@@ -114,8 +176,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 			
 			csvWriter.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("export failed ",e);
 		}
 	}
 

@@ -20,7 +20,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class CSVReportItem extends ReportItem 
 {
-	public enum KEY {OK_LINE,OK_TIMETABLE,OK_PTNETWORK,OK_COMPANY,
+	public enum KEY {OK_LINE,TOO_MUCH_ROUTES,OK_TIMETABLE,OK_PTNETWORK,OK_COMPANY,
 	   MANDATORY_TAG,TIMETABLE_COUNT,LINE_COUNT,END_OF_FILE,BAD_TIMETABLE_PERIODS,INVALID_LINE, STOP_WITHOUT_COORDS, VJ_MISSING_TIMETABLE} ;
 
 	public CSVReportItem(KEY key,Report.STATE status, Object... args)

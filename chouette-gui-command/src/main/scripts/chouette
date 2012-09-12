@@ -2,10 +2,12 @@
 
 if [ "$1" == "-classpath" ]; then
     OPTIONS="-Xbootclasspath/p:$2"
+    cp `dirname $0`/log4j.properties $2/.
+    cp $2/chouette.properties `dirname $0`/.
     shift 2
 fi
 
 cd `dirname $0`
 # Use the highest version 
 jar_name=`/bin/ls -r chouette-gui-command-* 2> /dev/null | head -1`
-java $OPTIONS -Xmx800M -jar $jar_name $*
+java $OPTIONS -Duser.timezone=UTC -Xmx1200M -jar $jar_name $*

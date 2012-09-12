@@ -575,7 +575,7 @@ public class Command
             List<String> filter = new ArrayList<String>();
             if (objectName.equals("network"))
             {
-               filter.add("ptnetwork.id");
+               filter.add("ptNetwork.id");
             }
             else if (objectName.equals("company"))
             {
@@ -740,7 +740,7 @@ public class Command
       Filter filter = null;
       if (parameters.containsKey("id"))
       {
-         List<String> sids = parameters.get("id");
+         String[] sids = getSimpleString(parameters,"id").split(",");
          List<Long> ids = new ArrayList<Long>();
 
          for (String id : sids)
@@ -787,8 +787,22 @@ public class Command
             }
             else if (filterOp.equalsIgnoreCase("in"))
             {
-               List<String> values = filterArgs.subList(2, filterArgs.size());
-               filter = Filter.getNewInFilter(filterKey, values );
+            	if (filterKey.endsWith("id"))
+            	{
+	               List<String> values = filterArgs.subList(2, filterArgs.size());
+	               List<Long> ids = new ArrayList<Long>();
+	
+	               for (String id : values)
+	               {
+	                  ids.add(Long.valueOf(id));
+	               }
+	               filter = Filter.getNewInFilter(filterKey, ids );
+            	}
+            	else
+            	{
+                    List<String> values = filterArgs.subList(2, filterArgs.size());
+                    filter = Filter.getNewInFilter(filterKey, values );
+            	}
             }
             else 
             {
@@ -939,9 +953,15 @@ public class Command
                {
                   ZipEntry entry = entries.nextElement();
                
+                  if (entry.isDirectory())
+                  {
+                	  File dir = new File(tempRep, entry.getName());
+                	  dir.mkdirs();
+                	  continue;
+                  }
                   if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),suffixes))
                   {
-                     System.out.println("entry "+entry.getName()+" ignored, unknown extension");
+                	 logger.error("entry "+entry.getName()+" ignored, unknown extension");
                      continue;
                   }
                   InputStream stream = null;
@@ -951,7 +971,7 @@ public class Command
                   }
                   catch (IOException e)
                   {
-                     System.out.println("entry "+entry.getName()+" cannot read");
+                	 logger.error("entry "+entry.getName()+" cannot read");
                      continue;
                   }
                   byte[] bytes = new byte[4096];
@@ -1014,7 +1034,8 @@ public class Command
                      {
                         for (NeptuneIdentifiedObject bean : beans)
                         {
-                           GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
+                           GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),filter_chars
+                        		   (e.getMessage()));
                            saveReport.addItem(item);
                         }
                      }
@@ -1114,6 +1135,11 @@ public class Command
 
    }
 
+   private Object filter_chars(String message) 
+   {
+	return message.replaceAll("\t", "").replaceAll("\"", "'");
+   }
+
    private void checkProjection(Line line)
    {
       for (Route route : line.getRoutes())
@@ -1210,9 +1236,12 @@ public class Command
          beans = executeGet(manager,parameters);
       }
 
-      executeSetValidationParameters(parameters);
-
-      Report valReport = manager.validate(null, beans, validationParameters);
+      Report valReport = null;
+      if (beans != null && !beans.isEmpty())
+      {
+	      executeSetValidationParameters(parameters);
+	      valReport = manager.validate(null, beans, validationParameters);
+      }
 
       // merge reports
       if (holder.getReport() != null)
@@ -1222,9 +1251,12 @@ public class Command
       }
 
       // save report
-      for (ReportItem item : valReport.getItems())
+      if (valReport != null)
       {
-         saveFileValidationReport(validationId,item);
+	      for (ReportItem item : valReport.getItems())
+	      {
+	         saveFileValidationReport(validationId,item);
+	      }
       }
 
       return 0;
