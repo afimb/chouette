@@ -295,15 +295,20 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
                report1_1.computeDetailItemCount();
                ofType1 = true;
             }
-
-            if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
+            else if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
             {
                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,
                      entryName);
                report1_2.addItem(detailReportItem);
                ofType2 = true;
             }
-            if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
+            else if (e.getCode().equals(ExchangeExceptionCode.INVALID_ENCODING.name()))
+            {
+               ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_encoding", Report.STATE.ERROR, entryName);
+               report1_2.addItem(detailReportItem);
+               report1_1.updateStatus(Report.STATE.OK);
+            }
+            else if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
             {
                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
                      entryName);
@@ -405,14 +410,21 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             report1_1.computeDetailItemCount();
             report1_2.updateStatus(Report.STATE.UNCHECK);
          }
-         if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
+         else if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
          {
             logger.error("INVALID_NEPTUNE_FILE " + filePath);
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR, filePath);
             report1_2.addItem(detailReportItem);
             report1_1.updateStatus(Report.STATE.OK);
          }
-         if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
+         else if (e.getCode().equals(ExchangeExceptionCode.INVALID_ENCODING.name()))
+         {
+            logger.error("INVALID_NEPTUNE_FILE " + filePath);
+            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_encoding", Report.STATE.ERROR, filePath);
+            report1_2.addItem(detailReportItem);
+            report1_1.updateStatus(Report.STATE.OK);
+         }
+         else if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
          {
             logger.error("FILE_NOT_FOUND " + filePath);
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, filePath);

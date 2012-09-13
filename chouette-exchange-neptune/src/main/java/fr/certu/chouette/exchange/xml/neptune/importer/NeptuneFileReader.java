@@ -133,7 +133,7 @@ public class NeptuneFileReader
       if (!subContent.contains("iso-8859-1"))
       {
          LoggingManager.log(logger, "invalid encoding for "+contentName, Level.ERROR);
-         throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NEPTUNE_FILE, contentName);
+         throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_ENCODING, contentName);
       }
       
 		try 
