@@ -26,6 +26,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
@@ -140,9 +141,8 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 			String[] token = mandatoryTest.split("\\.");
 			int cat = Integer.parseInt(token[0]);
 			int fic = Integer.parseInt(token[1]);
-			for (ReportItem classItem : importReport.getItems()) 
 			{
-
+				ReportItem classItem = (ValidationClassReportItem)importReport;
 				if (classItem.getOrder() == cat)
 				{
 					for (ReportItem ficItem : classItem.getItems())
@@ -158,7 +158,6 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 						}
 					}
 				}
-				if (found) break;
 			}
 			if (!found && valReport != null)
 			{

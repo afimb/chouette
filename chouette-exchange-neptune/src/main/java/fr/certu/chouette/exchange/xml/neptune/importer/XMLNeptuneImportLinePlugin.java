@@ -71,15 +71,19 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
    /**
     * warning and error reporting container
     */
-   private ReportItem          sheet1_1;
+   private SheetReportItem          sheet1_1;
+   /**
+    * warning and error reporting container
+    */
+   private SheetReportItem          sheet1_2;
    /**
     * file format reporting
     */
-   private SheetReportItem     report1_1;
+   private SheetReportItem     report1_1_1;
    /**
     * data format reporting
     */
-   private SheetReportItem     report1_2;
+   private SheetReportItem     report1_2_1;
 
    /**
     * Constructor
@@ -131,8 +135,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
    {
       ValidationClassReportItem category1 = new ValidationClassReportItem(ValidationClassReportItem.CLASS.ONE);
       sheet1_1 = new SheetReportItem("Test1_Sheet1", 1);
-      report1_1 = new SheetReportItem("Test1_Sheet1_Step1", 1);
-      report1_2 = new SheetReportItem("Test1_Sheet1_Step2", 2);
+      sheet1_2 = new SheetReportItem("Test1_Sheet2", 2);
+      report1_1_1 = new SheetReportItem("Test1_Sheet1_Step1", 1);
+      report1_2_1 = new SheetReportItem("Test1_Sheet2_Step1", 1);
       reportContainer.setReport(category1);
 
       String filePath = null;
@@ -208,9 +213,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          lines = processZipImport(filePath, validate, category1,optimizeMemory);
       }
       logger.info("import terminated");
-      sheet1_1.addItem(report1_1);
-      sheet1_1.addItem(report1_2);
+      sheet1_1.addItem(report1_1_1);
+      sheet1_2.addItem(report1_2_1);
       category1.addItem(sheet1_1);
+      category1.addItem(sheet1_2);
       return lines;
    }
 
@@ -237,7 +243,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       catch (IOException e)
       {
          ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_fatal", Report.STATE.FATAL, filePath);
-         report1_1.addItem(detailReportItem);
+         report1_1_1.addItem(detailReportItem);
          logger.error("zip import failed (cannot open zip)" + e.getLocalizedMessage());
          return null;
       }
@@ -259,7 +265,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          {
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_warning", Report.STATE.WARNING,
                   entryName);
-            report1_1.addItem(detailReportItem);
+            report1_1_1.addItem(detailReportItem);
             logger.info("zip entry " + entryName + " bypassed ; not a XML file");
             continue;
          }
@@ -273,7 +279,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          {
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,
                   entryName);
-            report1_2.addItem(detailReportItem);
+            report1_1_1.addItem(detailReportItem);
             logger.error("zip entry " + entryName + " import failed (get entry)" + e.getLocalizedMessage());
             continue;
          }
@@ -282,8 +288,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          {
             rootObject = reader.read(stream, entryName, validate);
             someOk = true;
-            report1_1.updateStatus(Report.STATE.OK);
-            report1_2.updateStatus(Report.STATE.OK);
+            report1_1_1.updateStatus(Report.STATE.OK);
+            report1_2_1.updateStatus(Report.STATE.OK);
          }
          catch (ExchangeRuntimeException e)
          {
@@ -291,28 +297,29 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             {
                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
                      entryName);
-               report1_1.addItem(detailReportItem);
-               report1_1.computeDetailItemCount();
+               report1_1_1.addItem(detailReportItem);
+               report1_1_1.computeDetailItemCount();
                ofType1 = true;
             }
             else if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
             {
-               ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,
+               ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_error", Report.STATE.ERROR,
                      entryName);
-               report1_2.addItem(detailReportItem);
+               report1_2_1.addItem(detailReportItem);
+               report1_1_1.updateStatus(Report.STATE.OK);
                ofType2 = true;
             }
             else if (e.getCode().equals(ExchangeExceptionCode.INVALID_ENCODING.name()))
             {
-               ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_encoding", Report.STATE.ERROR, entryName);
-               report1_2.addItem(detailReportItem);
-               report1_1.updateStatus(Report.STATE.OK);
+               ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_encoding", Report.STATE.ERROR, entryName);
+               report1_2_1.addItem(detailReportItem);
+               report1_1_1.updateStatus(Report.STATE.OK);
             }
             else if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
             {
                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
                      entryName);
-               report1_1.addItem(detailReportItem);
+               report1_1_1.addItem(detailReportItem);
                ofType1 = true;
             }
             logger.error("zip entry " + entryName + " import failed (read XML)" + e.getLocalizedMessage());
@@ -330,7 +337,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             if (line != null)
             {
                lines.add(line);
-               report1_1.updateStatus(Report.STATE.OK);
+               report1_1_1.updateStatus(Report.STATE.OK);
+               report1_2_1.updateStatus(Report.STATE.OK);
             }
             else
             {
@@ -340,7 +348,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          }
          catch (ExchangeException e)
          {
-            report1_1.updateStatus(Report.STATE.ERROR);
+            report1_1_1.updateStatus(Report.STATE.ERROR);
             logger.error("zip entry " + entryName + " import failed (convert to model)" + e.getLocalizedMessage());
             continue;
          }
@@ -356,15 +364,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       }
       if (!ofType1 && ofType2)
       {
-         report1_1.updateStatus(Report.STATE.OK);
+         report1_1_1.updateStatus(Report.STATE.OK);
       }
       else if (ofType1 && !ofType2 && !someOk)
       {
-         report1_2.updateStatus(Report.STATE.UNCHECK);
+         report1_2_1.updateStatus(Report.STATE.UNCHECK);
       }
 
-      report1_1.computeDetailItemCount();
-      report1_2.computeDetailItemCount();
+      report1_1_1.computeDetailItemCount();
+      report1_2_1.computeDetailItemCount();
       if (lines.size() == 0)
       {
          logger.error("zip import failed (no valid entry)");
@@ -372,7 +380,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       }
       else
       {
-         report1_1.updateStatus(Report.STATE.OK);
+         report1_1_1.updateStatus(Report.STATE.OK);
       }
       return lines;
    }
@@ -397,8 +405,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       try
       {
          rootObject = reader.read(filePath, validate);
-         report1_1.updateStatus(Report.STATE.OK);
-         report1_2.updateStatus(Report.STATE.OK);
+         report1_1_1.updateStatus(Report.STATE.OK);
+         report1_2_1.updateStatus(Report.STATE.OK);
       }
       catch (ExchangeRuntimeException e)
       {
@@ -406,30 +414,30 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          {
             logger.error("INVALID_XML_FILE " + filePath);
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, filePath);
-            report1_1.addItem(detailReportItem);
-            report1_1.computeDetailItemCount();
-            report1_2.updateStatus(Report.STATE.UNCHECK);
+            report1_1_1.addItem(detailReportItem);
+            report1_1_1.computeDetailItemCount();
+            report1_2_1.updateStatus(Report.STATE.UNCHECK);
          }
          else if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
          {
             logger.error("INVALID_NEPTUNE_FILE " + filePath);
-            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR, filePath);
-            report1_2.addItem(detailReportItem);
-            report1_1.updateStatus(Report.STATE.OK);
+            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_error", Report.STATE.ERROR, filePath);
+            report1_2_1.addItem(detailReportItem);
+            report1_1_1.updateStatus(Report.STATE.OK);
          }
          else if (e.getCode().equals(ExchangeExceptionCode.INVALID_ENCODING.name()))
          {
             logger.error("INVALID_NEPTUNE_FILE " + filePath);
-            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_encoding", Report.STATE.ERROR, filePath);
-            report1_2.addItem(detailReportItem);
-            report1_1.updateStatus(Report.STATE.OK);
+            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_encoding", Report.STATE.ERROR, filePath);
+            report1_2_1.addItem(detailReportItem);
+            report1_1_1.updateStatus(Report.STATE.OK);
          }
          else if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
          {
             logger.error("FILE_NOT_FOUND " + filePath);
             ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR, filePath);
-            report1_1.addItem(detailReportItem);
-            report1_2.updateStatus(Report.STATE.UNCHECK);
+            report1_1_1.addItem(detailReportItem);
+            report1_2_1.updateStatus(Report.STATE.UNCHECK);
          }
          logger.error("File " + filePath + " import failed (read XML) [" + e.getLocalizedMessage() + "]");
          return null;
@@ -455,7 +463,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       }
       else
       {
-         report1_1.updateStatus(Report.STATE.OK);
+         report1_1_1.updateStatus(Report.STATE.OK);
       }
       return line;
    }
@@ -486,9 +494,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          catch (ValidationException e)
          {
             logger.error("import failed for " + entryName + " : Castor validation");
-            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,
+            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
                   entryName);
-            report1_2.addItem(detailReportItem);
+            report1_2_1.addItem(detailReportItem);
             Throwable t = e;
             while (t != null)
             {
@@ -502,9 +510,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             return null;
          }
       }
-      report1_2.computeDetailItemCount();
+      report1_2_1.computeDetailItemCount();
       ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.OK_LINE, Report.STATE.OK, entryName, "");
-      report1_2.updateStatus(Report.STATE.OK);
+      report1_2_1.updateStatus(Report.STATE.OK);
 
       ModelAssembler modelAssembler = new ModelAssembler();
 
