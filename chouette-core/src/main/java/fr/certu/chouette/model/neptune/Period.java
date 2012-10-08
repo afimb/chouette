@@ -100,4 +100,19 @@ public class Period implements Serializable
          return null;
       }
    }
+   
+   /**
+    * check if a date is included in period
+    * 
+    * @param aDay
+    * @return
+    */
+   public boolean contains(Date aDay)
+   {
+      if (startDate == null || endDate == null) return false;
+      if (aDay.equals(startDate)) return true;
+      if (aDay.equals(endDate)) return true;
+      return aDay.after(startDate) && aDay.before(endDate);
+   }
+
 }

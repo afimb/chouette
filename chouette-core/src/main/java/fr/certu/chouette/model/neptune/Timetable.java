@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import lombok.Getter;
@@ -45,6 +46,16 @@ public class Timetable extends NeptuneIdentifiedObject
     */
    public static final String   PERIODS          = "periods";
 
+   /**
+    * mapping day type with enumerations
+    */
+   private static final DayTypeEnum[] dayTypeByInt= {DayTypeEnum.SUNDAY,
+       DayTypeEnum.MONDAY,
+       DayTypeEnum.TUESDAY,
+       DayTypeEnum.WEDNESDAY,
+       DayTypeEnum.THURSDAY,
+       DayTypeEnum.FRIDAY,
+       DayTypeEnum.SATURDAY};
    /**
     * comment <br/>
     * (import/export usage) <br/>
@@ -415,4 +426,37 @@ public class Timetable extends NeptuneIdentifiedObject
    {
       return (int) Math.pow(2, dayType.ordinal());
    }
+   
+   /**
+    * check if a Timetable is active on a given date
+    * 
+    * @param aDay
+    * @return
+    */
+   public boolean isActiveOn(Date aDay)
+   {
+      if (calendarDays != null)
+      {
+          if (calendarDays.contains(aDay)) return true;
+      }
+      if (intDayTypes.intValue() != 0 && periods != null)
+      {
+         Calendar c = Calendar.getInstance();
+         c.setTime(aDay);
+         
+         int aDayOfWeek = c.get(Calendar.DAY_OF_WEEK) - 1; // zero on sunday
+         int aDayOfWeekFlag = buildDayTypeMask(dayTypeByInt[aDayOfWeek]);
+         if ((intDayTypes & aDayOfWeekFlag) == aDayOfWeekFlag)
+         {
+            // check if day is in a period
+            for (Period period : periods)
+            {
+               if (period.contains(aDay)) return true;
+            }
+         }
+         
+      }
+      return false;
+   }
+
 }
