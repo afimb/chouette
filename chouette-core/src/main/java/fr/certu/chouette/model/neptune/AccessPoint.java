@@ -1,7 +1,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,14 +67,14 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * Time for opening the AccessPoint
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Date openningTime;
+	@Getter @Setter private Time openningTime;
 	/**
 	 * Time for closing the AccessPoint
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Date closingTime;
+	@Getter @Setter private Time closingTime;
 	/**
-	 * access type
+	 * access type (In,Out,InOut)
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private String type;

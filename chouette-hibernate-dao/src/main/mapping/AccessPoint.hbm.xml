@@ -102,19 +102,19 @@
 			</column>
 		</property>
 
-		<property name="openningTime" type="java.util.Date">
+		<property name="openningTime" type="java.sql.Time">
 			<column name="openning_time">
 				<comment>Opening time</comment>
 			</column>
 		</property>
-		<property name="closingTime" type="java.util.Date">
+		<property name="closingTime" type="java.sql.Time">
 			<column name="closing_time">
 				<comment>Closing time</comment>
 			</column>
 		</property>
 
 		<property name="type" type="string">
-			<column name="type">
+			<column name="access_type">
 				<comment>Access Point Type : free description</comment>
 			</column>
 		</property>

@@ -296,7 +296,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 							final long CONSTANT = 9999;
 							long arrivalTime = (vehicleJourneyAtStop.getArrivalTime() != null) ? vehicleJourneyAtStop.getArrivalTime().getTime() : CONSTANT;
 							long departureTime = vehicleJourneyAtStop.getDepartureTime().getTime();
-							long diff = Math.abs(arrivalTime - departureTime);	
+							long diff = Math.abs(arrivalTime - departureTime) / 1000;	
 							if(arrivalTime != CONSTANT){
 								if(diff > param3_15){
 									ReportItem detailReportItem = new DetailReportItem("Test3_Sheet15_Step1_error", Report.STATE.ERROR,

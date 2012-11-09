@@ -28,19 +28,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
 import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 
 
 
 //----------------------------------------------------------------------------
 /**
- * Type de donne bas sur l'numration ServiceStatusValue
+ * Type de donnee base sur l'enumration ServiceStatusValue
  * 
- * La structure implmente l'interface des dfinitions de type UserType.
+ * La structure implemente l'interface des definitions de type UserType.
  *  
- * @author : Chao ZHANG
- * 
- * @version : $Revision: 1.3 $
  */
 public class LinkOrientationUserType implements UserType 
 {
@@ -76,7 +72,7 @@ public class LinkOrientationUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : ServiceStatusValueEnum.fromValue(name);	
+		return resultSet.wasNull() ? null : LinkOrientationEnum.fromValue(name);	
 	}
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

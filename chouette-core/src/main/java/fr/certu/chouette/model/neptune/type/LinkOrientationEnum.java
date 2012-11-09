@@ -2,8 +2,8 @@ package fr.certu.chouette.model.neptune.type;
 
 public enum LinkOrientationEnum {
 
-	ACCESSPOINT_TO_STOPAREA("accesspoint_to_stoparea"),
-	STOPAREA_TO_ACCESSPOINT("stoparea_to_accesspoint");
+	ACCESSPOINT_TO_STOPAREA("AccessPointToStopArea"),
+	STOPAREA_TO_ACCESSPOINT("StopAreaToAccessPoint");
 
 	private final String value;
 

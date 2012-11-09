@@ -3,6 +3,7 @@ package fr.certu.chouette.jdbc.dao;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -82,13 +83,13 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setBigDecimal(13, y);
 		ps.setString(14, projectionType);
 		ps.setString(15, accessPoint.getContainedIn());
-		Timestamp openningTime = null , closingTime = null;
+		Time openningTime = null , closingTime = null;
 		if(accessPoint.getOpenningTime() != null)
-			openningTime = new Timestamp(accessPoint.getOpenningTime().getTime());
-		ps.setTimestamp(16, openningTime);
+			openningTime = accessPoint.getOpenningTime();
+		ps.setTime(16, openningTime);
 		if(accessPoint.getClosingTime() != null)
-			closingTime = new Timestamp(accessPoint.getClosingTime().getTime());
-		ps.setTimestamp(17, closingTime);
+			closingTime = accessPoint.getClosingTime();
+		ps.setTime(17, closingTime);
 		ps.setString(18, accessPoint.getType());
 		ps.setBoolean(19, accessPoint.isLiftAvailable());
 		ps.setBoolean(20,accessPoint.isMobilityRestrictedSuitable());

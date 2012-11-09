@@ -33,7 +33,7 @@
 				contained_in,
 				openning_time,
 				closing_time,
-				type,
+				access_type,
 				lift_availability,
 				mobility_restricted_suitability,
 				stairs_availability
@@ -74,7 +74,7 @@
 				contained_in = ?,
 				openning_time = ?,
 				closing_time = ?,
-				type = ?,
+				access_type = ?,
 				lift_availability = ?,
 				mobility_restricted_suitability = ? ,
 				stairs_availability =?

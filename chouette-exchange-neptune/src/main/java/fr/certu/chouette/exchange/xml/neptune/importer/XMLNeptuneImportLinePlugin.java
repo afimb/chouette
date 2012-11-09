@@ -270,10 +270,11 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             continue;
          }
          logger.info("start import zip entry " + entryName);
-         InputStream stream = null;
+         
          try
          {
-            stream = zip.getInputStream(entry);
+        	InputStream stream =  zip.getInputStream(entry);
+            stream.close();
          }
          catch (IOException e)
          {
@@ -286,7 +287,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          ChouettePTNetworkTypeType rootObject = null;
          try
          {
-            rootObject = reader.read(stream, entryName, validate);
+            rootObject = reader.read(zip, entry, validate);
             someOk = true;
             report1_1_1.updateStatus(Report.STATE.OK);
             report1_2_1.updateStatus(Report.STATE.OK);
