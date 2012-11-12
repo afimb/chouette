@@ -57,7 +57,12 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * ObjectId of container
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private String containedIn;
+	@Getter @Setter private String containedInStopArea;
+	/**
+	 * Container
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private StopArea containedIn;
 	/**
 	 * List of linked StopArea informations
 	 * <br/><i>readable/writable</i>
@@ -133,6 +138,23 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
 		if (accessLinks.contains(accessLink)) accessLinks.remove(accessLink);
 	}
+	
+	@Override
+	public void complete() 
+	{
+	    if (isCompleted()) return;
+		super.complete();
+		if (getContainedIn() != null)
+		{
+			containedInStopArea = getContainedIn().getObjectId();
+		}
+		else
+		{
+			containedInStopArea = "NEPTUNE:StopArea:UnusedField";
+		}
+	}
+	
+	
 	
 	
 	

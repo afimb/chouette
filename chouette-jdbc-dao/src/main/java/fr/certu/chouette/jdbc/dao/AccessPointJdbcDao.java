@@ -82,17 +82,18 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setBigDecimal(12, x);
 		ps.setBigDecimal(13, y);
 		ps.setString(14, projectionType);
-		ps.setString(15, accessPoint.getContainedIn());
+		ps.setString(15, accessPoint.getContainedInStopArea());
+		setId(ps,16,accessPoint.getContainedIn());
 		Time openningTime = null , closingTime = null;
 		if(accessPoint.getOpenningTime() != null)
 			openningTime = accessPoint.getOpenningTime();
-		ps.setTime(16, openningTime);
+		ps.setTime(17, openningTime);
 		if(accessPoint.getClosingTime() != null)
 			closingTime = accessPoint.getClosingTime();
-		ps.setTime(17, closingTime);
-		ps.setString(18, accessPoint.getType());
-		ps.setBoolean(19, accessPoint.isLiftAvailable());
-		ps.setBoolean(20,accessPoint.isMobilityRestrictedSuitable());
-		ps.setBoolean(21,accessPoint.isStairsAvailable());
+		ps.setTime(18, closingTime);
+		ps.setString(19, accessPoint.getType());
+		ps.setBoolean(20, accessPoint.isLiftAvailable());
+		ps.setBoolean(21,accessPoint.isMobilityRestrictedSuitable());
+		ps.setBoolean(22,accessPoint.isStairsAvailable());
 	}
 }

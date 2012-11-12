@@ -393,8 +393,7 @@ public class Filter
 	 * internal use for OR and AND filters
      * 
 	 * @param type filter type
-	 * @param first first sub filter
-	 * @param second second sub filter
+	 * @param filters array of criteria to combine
 	 */
 	private Filter(Type type,Filter... filters)
 	{
@@ -446,8 +445,7 @@ public class Filter
 	/**
 	 * create a combined filter for a 'and' where clause
 	 *
-	 * @param first the left side criteria
-	 * @param second the right side criteria
+	 * @param filters array of criteria to combine
 	 * @return an And filter
 	 */
 	public static Filter getNewAndFilter(Filter...filters)
@@ -457,8 +455,7 @@ public class Filter
 	/**
 	 * create a combined filter for a 'OR' where clause
 	 *
-	 * @param first the left side criteria
-	 * @param second the right side criteria
+	 * @param filters array of criteria to combine
 	 * @return an Or filter
 	 */
 	public static Filter getNewOrFilter(Filter...filters)

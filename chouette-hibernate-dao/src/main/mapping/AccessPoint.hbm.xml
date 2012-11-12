@@ -96,7 +96,7 @@
 			</property>
 		</component>
 
-		<property name="containedIn" >
+		<property name="containedInStopArea" >
 			<column name="contained_in">
 				<comment>Unused data</comment>
 			</column>
@@ -135,6 +135,13 @@
 			</column>
 		</property>
 
+		<many-to-one name="containedIn" class="StopArea" lazy="no-proxy"
+			outer-join="auto" foreign-key="access_area_fkey">
+			<column name="stop_area_id">
+				<comment>Containded In StopArea reference</comment>
+			</column>
+		</many-to-one>
+		
 		<!-- comment on AccessLink definition -->
 		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
 			<key column="access_point_id" foreign-key="aclk_acpt_fkey" />

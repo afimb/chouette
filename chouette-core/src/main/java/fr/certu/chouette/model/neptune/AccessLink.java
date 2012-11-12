@@ -339,6 +339,7 @@ public class AccessLink extends NeptuneIdentifiedObject
       if (isCompleted())
          return;
       super.complete();
+      if (getAccessPoint() != null) getAccessPoint().complete();
       if (getLinkOrientation() != null)
       {
          if (getLinkOrientation().equals(LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA))

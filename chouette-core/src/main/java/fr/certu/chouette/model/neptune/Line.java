@@ -223,7 +223,7 @@ public class Line extends NeptuneIdentifiedObject
    /**
     * The optional RoutingConstraints of the line
     * <p>
-    * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum.ITL}
+    * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum}.ITL
     * areaType <br/>
     * <i>readable/writable</i>
     */
@@ -234,7 +234,7 @@ public class Line extends NeptuneIdentifiedObject
    /**
     * The optional RoutingConstraint objectIds of the line
     * <p>
-    * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum.ITL}
+    * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum}.ITL
     * areaType <br/>
     * <i>readable/writable</i>
     */
@@ -812,7 +812,7 @@ public class Line extends NeptuneIdentifiedObject
                         addLineEnd(start.getObjectId());
                      }
                   }
-                  StopPoint end = link.getStartOfLink();
+                  StopPoint end = link.getEndOfLink();
                   if (end != null)
                   {
                      if (!startStopPoints.contains(end.getObjectId()))

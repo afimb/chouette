@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import chouette.schema.PtLink;
 import chouette.schema.RouteExtension;
 import chouette.schema.types.PTDirectionType;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;

@@ -263,7 +263,7 @@ public class StopArea extends NeptuneIdentifiedObject
    /**
     * lines affected by this RoutingConstraint
     * <p>
-    * only for {@link ChouetteAreaEnum.ITL} StopAreas
+    * only for {@link ChouetteAreaEnum}.ITL StopAreas
     * <br/><i>readable/writable</i>
     */
    @Getter
@@ -273,7 +273,7 @@ public class StopArea extends NeptuneIdentifiedObject
    /**
     * line ids affected by this RoutingConstraint (for exchange purpose)
     * <p>
-    * only for {@link ChouetteAreaEnum.ITL} StopAreas
+    * only for {@link ChouetteAreaEnum}.ITL StopAreas
     * <br/><i>readable/writable</i>
     */
    @Getter
@@ -283,7 +283,7 @@ public class StopArea extends NeptuneIdentifiedObject
    /**
     * stopareas affected by this RoutingConstraint
     * <p>
-    * only for {@link ChouetteAreaEnum.ITL} StopAreas
+    * only for {@link ChouetteAreaEnum}.ITL StopAreas
     * <br/><i>readable/writable</i>
     */
    @Getter
@@ -764,6 +764,10 @@ public class StopArea extends NeptuneIdentifiedObject
                   connectionLinks.add(link);
             }
          }
+	      for (ConnectionLink link : connectionLinks)
+	      {
+	    	  link.complete();
+	      }
       }
 
       if (getAccessLinks() != null)
@@ -771,7 +775,6 @@ public class StopArea extends NeptuneIdentifiedObject
          for (AccessLink accessLink : getAccessLinks())
          {
             accessLink.complete();
-            accessLink.getAccessPoint().complete();
          }
       }
    }

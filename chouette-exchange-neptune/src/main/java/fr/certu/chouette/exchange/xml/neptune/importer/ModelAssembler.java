@@ -250,6 +250,7 @@ public class ModelAssembler
       connectRoutingConstraints();
       connectTimetables();
       connectAccessLinks();
+      connectAccessPoints();
       connectGroupOfLines();
    }
 
@@ -711,6 +712,46 @@ public class ModelAssembler
                         accessPoint.addAccessLink(accessLink);
                      }
       }
+   }
+   
+   /**
+    * connect direct relation between AccessPoints and other objects
+    */
+   private void connectAccessPoints()
+   {
+	  boolean missingContainer = false;
+      for (AccessPoint accessPoint : accessPoints)
+      {
+         StopArea stopArea = getObjectFromId(accessPoint.getContainedInStopArea(), StopArea.class);
+         if (stopArea != null)
+         {
+            accessPoint.setContainedIn(stopArea);
+         }
+         else
+         {
+        	 accessPoint.setContainedInStopArea(null);
+        	 missingContainer = true;
+         }
+      }
+      if (missingContainer)
+      {
+    	  for (AccessLink link : accessLinks) 
+    	  {
+			 if (link.getAccessPoint().getContainedIn() == null)
+			 {
+				 StopArea area = link.getStopArea();
+				 if (area != null)
+				 {
+					 if (area.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION) || area.getAreaType().equals(ChouetteAreaEnum.QUAY))
+					 {
+						 if (area.getParent() != null) area = area.getParent();
+						 link.getAccessPoint().setContainedIn(area);
+ 					 }
+				 }
+			 }
+		  } 
+      }
+      
    }
 
    /**

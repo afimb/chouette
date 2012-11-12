@@ -367,4 +367,22 @@ public class ConnectionLink extends NeptuneIdentifiedObject
          intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
       }
    }
+   
+	@Override
+	public void complete() 
+	{
+	    if (isCompleted()) return;
+		super.complete();
+		
+		if (getStartOfLink() != null) 
+		{
+			setStartOfLinkId(getStartOfLink().getObjectId());
+		}
+		if (getEndOfLink() != null) 
+		{
+			setEndOfLinkId(getEndOfLink().getObjectId());
+		}
+	}
+   
+   
 }

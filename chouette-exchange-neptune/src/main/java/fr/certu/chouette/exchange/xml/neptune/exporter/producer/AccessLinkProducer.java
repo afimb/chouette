@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import chouette.schema.AccessibilitySuitabilityDetails;
 import chouette.schema.ConnectionLinkExtension;
 import chouette.schema.types.ConnectionLinkTypeType;
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -13,8 +14,8 @@ public class AccessLinkProducer extends AbstractCastorNeptuneProducer<chouette.s
 		
 		//
 		populateFromModel(castorAccessLink, accessLink);
-		
-		castorAccessLink.setComment(accessLink.getComment());
+		 
+		castorAccessLink.setComment(getNotEmptyString(accessLink.getComment()));
 		castorAccessLink.setName(accessLink.getName());
 		castorAccessLink.setStartOfLink(accessLink.getStartOfLinkId());
 		castorAccessLink.setEndOfLink(accessLink.getEndOfLinkId());
@@ -45,8 +46,12 @@ public class AccessLinkProducer extends AbstractCastorNeptuneProducer<chouette.s
 		}
 		
 		ConnectionLinkExtension connectionLinkExtension = new ConnectionLinkExtension();
-		connectionLinkExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(accessLink.getUserNeeds()));
-		castorAccessLink.setConnectionLinkExtension(connectionLinkExtension);
+		AccessibilitySuitabilityDetails details = extractAccessibilitySuitabilityDetails(accessLink.getUserNeeds());
+		if (details != null)
+		{
+			connectionLinkExtension.setAccessibilitySuitabilityDetails(details);
+			castorAccessLink.setConnectionLinkExtension(connectionLinkExtension);
+		}
 		
 		return castorAccessLink;
 	}

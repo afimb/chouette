@@ -34,7 +34,7 @@ public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.
          castorAccessPoint.setAddress(castorAddress);
       }
       
-      castorAccessPoint.setContainedIn("NEPTUNE:StopArea:UnusedField");
+      castorAccessPoint.setContainedIn(accessPoint.getContainedInStopArea());
       castorAccessPoint.setLatitude(accessPoint.getLatitude());
       castorAccessPoint.setLongitude(accessPoint.getLongitude());
       

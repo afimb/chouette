@@ -24,7 +24,7 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chou
 		// Comment optional
 		accessPoint.setComment(getNonEmptyTrimedString(xmlAccessPoint.getComment()));
 		// ContainedIn
-		accessPoint.setContainedIn(getNonEmptyTrimedString(xmlAccessPoint.getContainedIn()));
+		accessPoint.setContainedInStopArea(getNonEmptyTrimedString(xmlAccessPoint.getContainedIn()));
 		// Address optional
 		chouette.schema.Address xmlAddress = xmlAccessPoint.getAddress();		
 		if(xmlAddress != null){
