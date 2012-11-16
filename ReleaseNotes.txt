@@ -1,9 +1,16 @@
                         CHOUETTE RELEASE NOTES
                         ======================
-* Version 1.7.4 (xx/xx/12)
-  - procédure de migration des ITL : il manque l'init de objectVersion
+
+* Version 2.0.1 (17/12/12)
+  - Import Neptune : accepter les principaux types d'encodage
+  - Import/Export Neptune : quelques corrections sur les imports/exports des groupes de lignes et des accès
+
+* Version 2.0.0 (10/09/12)
+  - reprise du modèle de la base de données conformément aux "best practices" de la majorité des ORM
+  - ajout d'un mode commande dédié à l'IHM RAILS
   - import/export CSV : quelques corrections de bugs et de désynchronisation entre les 2 sens
   - import GTFS : optimisation des traitements et ajout d'un mode incrémental
+  - import/export CSV : quelques corrections de bugs et de désynchronisation entre les 2 sens
 
 * Version 1.7.3 (12/03/12)
   - ajout des liens sur les définitions des tests de validation sur la page de lancement des tests
