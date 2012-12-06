@@ -21,7 +21,6 @@
 		<module>chouette-castor-neptune</module>
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>
-		<module>chouette-import-gtfs</module>
 		<module>chouette-exchange-csv</module>
 		<module>chouette-export-geoportail</module>
 		<module>chouette-validation</module>
@@ -141,11 +140,6 @@
 			<dependency>
 				<groupId>fr.certu.chouette</groupId>
 				<artifactId>chouette-exchange-gtfs</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>fr.certu.chouette</groupId>
-				<artifactId>chouette-import-gtfs</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
