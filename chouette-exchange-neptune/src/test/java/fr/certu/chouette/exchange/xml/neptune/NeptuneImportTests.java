@@ -46,10 +46,11 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
    private String neptuneRCFile = null;
    private String neptuneZip = null;
    private String neptuneFileUtf8 = null;
+   private String neptuneFileUtf8Bom = null;
    private String neptuneFileBadEnc = null;
    private String path="src/test/resources/";
 
-   @Test(groups={"ImportLine","ImportUtf8Line","ImportBadEncLine","ImportRCLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
+   @Test(groups={"ImportLine","ImportUtf8Line","ImportUtf8BomLine","ImportBadEncLine","ImportRCLine","ImportZipLines","CheckParameters"}, description="Get a bean from context")
    public void getBean()
    {
       importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
@@ -69,9 +70,16 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
       this.neptuneFileUtf8 = neptuneFileUtf8;
    }
 
+   @Parameters({"neptuneFileUtf8Bom"})
+   @Test (groups = {"ImportUtf8BomLine"}, description = "Import Plugin should accept utf8 with bom encoding",dependsOnMethods={"getBean"})
+   public void getNeptuneFileUtf8Bom(String neptuneFileUtf8Bom)
+   {
+      this.neptuneFileUtf8Bom = neptuneFileUtf8Bom;
+   }
+
    @Parameters({"neptuneFileBadEnc"})
    @Test (groups = {"ImportBadEncLine"}, description = "Import Plugin should detect wrong encoding",dependsOnMethods={"getBean"})
-   public void getNeptuneFileBadEnc(String neptuneFileUtf8)
+   public void getNeptuneFileBadEnc(String neptuneFileBadEnc)
    {
       this.neptuneFileBadEnc = neptuneFileBadEnc;
    }
@@ -201,9 +209,30 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
       List<Line> lines = importLine.doImport(parameters, report);
       Assert.assertNotNull(lines,"lines must not be null");
+      Line line = lines.get(0);
+      Assert.assertTrue(line.getName().endsWith("é"));
       printReport(report.getReport());
    }
-   
+
+   @Test (groups = {"ImportLineUtf8Bom"}, description = "Import Plugin should detect bom in file encoding",dependsOnMethods={"getBean"})
+   public void verifyCheckGoodEncodingWithBom() throws ChouetteException
+   {
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+      simpleParameterValue.setFilepathValue(path+"/"+neptuneFileUtf8Bom);
+      parameters.add(simpleParameterValue);
+      simpleParameterValue = new SimpleParameterValue("fileFormat");
+      simpleParameterValue.setStringValue("xml");
+      parameters.add(simpleParameterValue);
+      ReportHolder report = new ReportHolder();
+
+      List<Line> lines = importLine.doImport(parameters, report);
+      Assert.assertNotNull(lines,"lines must not be null");
+      Line line = lines.get(0);
+      Assert.assertTrue(line.getName().endsWith("é"));
+      printReport(report.getReport());
+   }
+
    @Test (groups = {"ImportLineBadEnc"}, description = "Import Plugin should detect file encoding",dependsOnMethods={"getBean"})
    public void verifyCheckBadEncoding() throws ChouetteException
    {
