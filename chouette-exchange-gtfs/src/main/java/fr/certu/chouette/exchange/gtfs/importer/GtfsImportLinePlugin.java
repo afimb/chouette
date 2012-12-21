@@ -13,6 +13,7 @@ import java.util.zip.ZipFile;
 
 import lombok.Setter;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -32,6 +33,8 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 
 	@Setter private NeptuneConverter converter; 
 
+	private List<String>        allowedExtensions = Arrays.asList(new String[] { "zip" });
+
 	public GtfsImportLinePlugin()
 	{
 		description = new FormatDescription(this.getClass().getName());
@@ -43,17 +46,23 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			params.add(param);
 		}
 		{
+			ParameterDescription param = new ParameterDescription("fileFormat", ParameterDescription.TYPE.STRING, false,
+					"file extension");
+			param.setAllowedExtensions(Arrays.asList(new String[] { "zip" }));
+			params.add(param);
+		}
+		{
 			ParameterDescription param = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false, true);
 			params.add(param);
 		}
-      {
-         ParameterDescription param = new ParameterDescription("incremental", ParameterDescription.TYPE.STRING,false , false);
-         params.add(param);
-      }
-      {
-         ParameterDescription param = new ParameterDescription("mergeRouteByShortName", ParameterDescription.TYPE.BOOLEAN,false , "false");
-         params.add(param);
-      }
+		{
+			ParameterDescription param = new ParameterDescription("incremental", ParameterDescription.TYPE.STRING,false , false);
+			params.add(param);
+		}
+		{
+			ParameterDescription param = new ParameterDescription("mergeRouteByShortName", ParameterDescription.TYPE.BOOLEAN,false , "false");
+			params.add(param);
+		}
 		{
 			ParameterDescription param = new ParameterDescription("maxDistanceForCommercial", ParameterDescription.TYPE.INTEGER,false , "10");
 			params.add(param);
@@ -74,11 +83,11 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			ParameterDescription param = new ParameterDescription("colorFile", ParameterDescription.TYPE.FILEPATH,false , false);
 			params.add(param);
 		}
-      {
-         ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "false");
-         params.add(param);
-      }
-		
+		{
+			ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "false");
+			params.add(param);
+		}
+
 
 
 		description.setParameterDescriptions(params);
@@ -91,8 +100,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 	}
 
 	@Override
-	public List<Line> doImport(List<ParameterValue> parameters, ReportHolder report) 
-	throws ChouetteException 
+	public List<Line> doImport(List<ParameterValue> parameters, ReportHolder report) throws ChouetteException 
 	{
 		String filePath = null;
 		String colorPath = null;
@@ -104,6 +112,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		boolean mergeRouteByShortName = false;
 		boolean optimizeMemory = false;
 		String incrementalPrefix = "";
+		String extension = "file extension";
 		for (ParameterValue value : parameters) 
 		{
 			if (value instanceof SimpleParameterValue) 
@@ -113,18 +122,22 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				{
 					filePath = svalue.getFilepathValue();
 				} 
+				else if (svalue.getName().equals("fileFormat"))
+				{
+					extension = svalue.getStringValue().toLowerCase();
+				}
 				else if (svalue.getName().equalsIgnoreCase("objectIdPrefix")) 
 				{
 					objectIdPrefix = svalue.getStringValue().toLowerCase();
 				} 
-            else if (svalue.getName().equalsIgnoreCase("incremental")) 
-            {
-               incrementalPrefix = svalue.getStringValue();
-            } 
-            else if (svalue.getName().equalsIgnoreCase("mergeRouteByShortName")) 
-            {
-               mergeRouteByShortName =  svalue.getBooleanValue();
-            } 
+				else if (svalue.getName().equalsIgnoreCase("incremental")) 
+				{
+					incrementalPrefix = svalue.getStringValue();
+				} 
+				else if (svalue.getName().equalsIgnoreCase("mergeRouteByShortName")) 
+				{
+					mergeRouteByShortName =  svalue.getBooleanValue();
+				} 
 				else if (svalue.getName().equalsIgnoreCase("maxDistanceForCommercial")) 
 				{
 					maxDistanceForCommercialStop = (double) svalue.getIntegerValue().doubleValue();
@@ -133,10 +146,10 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				{
 					ignoreLastWord = svalue.getBooleanValue().booleanValue();
 				}
-            else if (svalue.getName().equalsIgnoreCase("optimizeMemory")) 
-            {
-               optimizeMemory = svalue.getBooleanValue().booleanValue();
-            }
+				else if (svalue.getName().equalsIgnoreCase("optimizeMemory")) 
+				{
+					optimizeMemory = svalue.getBooleanValue().booleanValue();
+				}
 				else if (svalue.getName().equalsIgnoreCase("ignoreEndChars")) 
 				{
 					ignoreEndCharacters = svalue.getIntegerValue().intValue();
@@ -171,6 +184,17 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			throw new IllegalArgumentException("objectIdPrefix required");
 		}
 
+		if (extension.equals("file extension"))
+		{
+			extension = FilenameUtils.getExtension(filePath).toLowerCase();
+		}
+		if (!allowedExtensions.contains(extension))
+		{
+			logger.error("invalid argument inputFile " + filePath + ", allowed format : "
+					+ Arrays.toString(allowedExtensions.toArray()));
+			throw new IllegalArgumentException("invalid file type : " + extension);
+		}
+
 		ZipFile zip = null;
 		try 
 		{
@@ -184,155 +208,167 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			logger.error("zip import failed (cannot open zip)" + e.getLocalizedMessage());
 			return null;
 		}
-		GtfsData data = new GtfsData(objectIdPrefix,optimizeMemory);
-		data.loadNetwork(objectIdPrefix);
-		boolean ok = true;
-		for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements() && ok;) 
+		try
 		{
-			ZipEntry entry = entries.nextElement();
-			
-			// ignore directory
-			if (entry.isDirectory()) continue;
-			
-			String entryName = entry.getName();
+			GtfsData data = new GtfsData(objectIdPrefix,optimizeMemory);
+			data.loadNetwork(objectIdPrefix);
+			boolean ok = true;
+			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements() && ok;) 
+			{
+				ZipEntry entry = entries.nextElement();
 
-			logger.info("analyzing "+entryName) ;
-			if (entryName.endsWith("agency.txt"))
-			{
-				try 
+				// ignore directory
+				if (entry.isDirectory()) continue;
+
+				String entryName = entry.getName();
+
+				logger.info("analyzing "+entryName) ;
+				if (entryName.endsWith("agency.txt"))
 				{
-					data.loadAgencies(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
+					try 
+					{
+						data.loadAgencies(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read agency.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("calendar.txt"))
 				{
-					logger.error("zip import failed (cannot read agency.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
+					try 
+					{
+						data.loadCalendars(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read calendar.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("calendar_dates.txt"))
+				{
+					try 
+					{
+						data.loadCalendarDates(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read calendar_dates.txt )" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("frequencies.txt"))
+				{
+					try 
+					{
+						data.loadFrequencies(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read frequencies.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("routes.txt"))
+				{
+					try 
+					{
+						data.loadRoutes(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read routes.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("stops.txt"))
+				{
+					try 
+					{
+						data.loadStops(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("stop_times.txt"))
+				{
+					try 
+					{
+						data.loadStopTimes(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read stop_times.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("trips.txt"))
+				{
+					try 
+					{
+						data.loadTrips(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read trips.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("shapes.txt"))
+				{
+					try 
+					{
+						data.loadShapes(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read shapes.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else if (entryName.endsWith("transfers.txt"))
+				{
+					try 
+					{
+						data.loadTransfers(zip.getInputStream(entry));
+					} 
+					catch (Exception e) 
+					{
+						logger.error("zip import failed (cannot read transfers.txt)" + e.getLocalizedMessage(),e);
+						ok = false;
+					}
+				}
+				else
+				{
+					logger.info("entry "+entryName+" unused");
 				}
 			}
-			else if (entryName.endsWith("calendar.txt"))
+			if (ok && data.connect())
 			{
-				try 
-				{
-					data.loadCalendars(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read calendar.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
+				System.gc();
+				ModelAssembler assembler = converter.convert(optimizeMemory, objectIdPrefix, incrementalPrefix, data, maxDistanceForCommercialStop,  ignoreLastWord,  ignoreEndCharacters, maxDistanceForConnectionLink, mergeRouteByShortName);
+				assembler.connect();
+				if (colorPath != null) produceColorFile(colorPath,data,assembler);
+				return assembler.getLines();
 			}
-			else if (entryName.endsWith("calendar_dates.txt"))
+			else
 			{
-				try 
-				{
-					data.loadCalendarDates(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read calendar_dates.txt )" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
+				return new ArrayList<Line>();
 			}
-			else if (entryName.endsWith("frequencies.txt"))
-			{
-				try 
-				{
-					data.loadFrequencies(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read frequencies.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
-			}
-			else if (entryName.endsWith("routes.txt"))
-			{
-				try 
-				{
-					data.loadRoutes(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read routes.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
-			}
-			else if (entryName.endsWith("stops.txt"))
-			{
-				try 
-				{
-					data.loadStops(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
-			}
-			else if (entryName.endsWith("stop_times.txt"))
-			{
-				try 
-				{
-					data.loadStopTimes(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read stop_times.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
-			}
-			else if (entryName.endsWith("trips.txt"))
-			{
-				try 
-				{
-					data.loadTrips(zip.getInputStream(entry));
-				} 
-				catch (Exception e) 
-				{
-					logger.error("zip import failed (cannot read trips.txt)" + e.getLocalizedMessage(),e);
-					ok = false;
-				}
-			}
-         else if (entryName.endsWith("shapes.txt"))
-         {
-            try 
-            {
-               data.loadShapes(zip.getInputStream(entry));
-            } 
-            catch (Exception e) 
-            {
-               logger.error("zip import failed (cannot read shapes.txt)" + e.getLocalizedMessage(),e);
-               ok = false;
-            }
-         }
-         else if (entryName.endsWith("transfers.txt"))
-         {
-            try 
-            {
-               data.loadTransfers(zip.getInputStream(entry));
-            } 
-            catch (Exception e) 
-            {
-               logger.error("zip import failed (cannot read transfers.txt)" + e.getLocalizedMessage(),e);
-               ok = false;
-            }
-         }
-         else
-         {
-            logger.info("entry "+entryName+" unused");
-         }
 		}
-		if (ok && data.connect())
+		finally
 		{
-	      System.gc();
-			ModelAssembler assembler = converter.convert(optimizeMemory, objectIdPrefix, incrementalPrefix, data, maxDistanceForCommercialStop,  ignoreLastWord,  ignoreEndCharacters, maxDistanceForConnectionLink, mergeRouteByShortName);
-			assembler.connect();
-			if (colorPath != null) produceColorFile(colorPath,data,assembler);
-			return assembler.getLines();
-		}
-		else
-		{
-			return new ArrayList<Line>();
+			try {
+				zip.close();
+			} catch (IOException e) {
+				logger.warn("cannot close zip file");
+			}
+
 		}
 
 	}
@@ -360,13 +396,13 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				}
 				if (c != null)
 				{
-                    fw.print(objectId);
-                    fw.print("=");
-                    fw.println(toColorString(c));
+					fw.print(objectId);
+					fw.print("=");
+					fw.println(toColorString(c));
 				}
 			}
 			fw.close();
-			
+
 
 		}
 		catch (Exception e) 
@@ -375,12 +411,12 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 
 	}
-	
+
 	private String toColorString(Color c) 
 	{
 		String str = Integer.toHexString(c.getRGB()).substring(2);
 		while (str.length() < 8) str = "0"+str;
-		 str = "ff"+str.substring(2);
+		str = "ff"+str.substring(2);
 		return str;
 	}
 
