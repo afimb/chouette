@@ -1032,6 +1032,7 @@ public class Command
                      }
                      catch (Exception e) 
                      {
+                    	 logger.error("fail to save data :"+e.getMessage(),e);
                         for (NeptuneIdentifiedObject bean : beans)
                         {
                            GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),filter_chars
@@ -1137,7 +1138,8 @@ public class Command
 
    private Object filter_chars(String message) 
    {
-	return message.replaceAll("\t", "").replaceAll("\"", "'");
+	   if (message == null) return "";
+	   return message.replaceAll("\t", "").replaceAll("\"", "'");
    }
 
    private void checkProjection(Line line)
