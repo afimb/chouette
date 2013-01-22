@@ -9,7 +9,6 @@ package fr.certu.chouette.gui.command;
 
 // import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,7 +66,6 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
-import fr.certu.chouette.plugin.report.DetailReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -789,7 +786,7 @@ public class Command
             {
             	if (filterKey.endsWith("id"))
             	{
-	               List<String> values = filterArgs.subList(2, filterArgs.size());
+                   String[] values = getSimpleString(parameters,"id").split(",");
 	               List<Long> ids = new ArrayList<Long>();
 	
 	               for (String id : values)
