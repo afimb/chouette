@@ -547,7 +547,9 @@ public class Command
       List<Report> reports = new ArrayList<Report>();
       // GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
 
-      String[] ids = getSimpleString(parameters,"id").split(",");
+      String[] ids = new String[0];
+      if (parameters.containsKey("id"))
+          ids = getSimpleString(parameters,"id").split(",");
       try
       {
          List<FormatDescription> formats = manager.getExportFormats(null);
