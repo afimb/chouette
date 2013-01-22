@@ -547,7 +547,7 @@ public class Command
       List<Report> reports = new ArrayList<Report>();
       // GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
 
-      List<String> ids = parameters.get("id");
+      String[] ids = getSimpleString(parameters,"id").split(",");
       try
       {
          List<FormatDescription> formats = manager.getExportFormats(null);
@@ -585,7 +585,7 @@ public class Command
             if (ids != null)
             {
                filter.add("in");
-               filter.addAll(ids);
+               filter.addAll(Arrays.asList(ids));
                parameters.put("filter", filter);
             }
 
@@ -784,9 +784,9 @@ public class Command
             }
             else if (filterOp.equalsIgnoreCase("in"))
             {
-            	if (filterKey.endsWith("id"))
+            	if (filterKey.endsWith(".id"))
             	{
-                   String[] values = getSimpleString(parameters,"id").split(",");
+            	   List<String> values = filterArgs.subList(2, filterArgs.size());
 	               List<Long> ids = new ArrayList<Long>();
 	
 	               for (String id : values)
