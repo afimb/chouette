@@ -37,11 +37,11 @@
 				<comment>boardingAlightingPossibility</comment>
 			</column>
 		</property>
-		<property name="order" type="long">
+		<!-- <property name="order" type="long">
 			<column name="position">
 				<comment>order in JourneyPattern (deprecated : see StopPoint)</comment>
 			</column>
-		</property>
+	</property> -->
 		<property name="arrivalTime" type="time">
 			<column name="arrival_time">
 				<comment>Arrival time</comment>

@@ -45,17 +45,17 @@
 				<value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml
 				</value>
-				<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value>
+				<!--<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value> -->
 				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml
 				</value>
 				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value>
+				<!-- <value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value> -->
 				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value>
+				<!-- value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value -->
 				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
@@ -111,18 +111,18 @@
 				<entry key="aclk_area_fkey" value="access_links;stop_area_id;stop_areas;id" />
 				<entry key="colk_endarea_fkey" value="connection_links;arrival_id;stop_areas;id" />
 				<entry key="colk_startarea_fkey" value="connection_links;departure_id;stop_areas;id" />
-				<entry key="faci_colk_fkey" value="facilities;connection_link_id;connection_links;id" />
+				<!-- <entry key="faci_colk_fkey" value="facilities;connection_link_id;connection_links;id" />
 				<entry key="faci_line_fkey" value="facilities;line_id;lines;id" />
 				<entry key="faci_area_fkey" value="facilities;stop_area_id;stop_areas;id" />
-				<entry key="faci_stpt_fkey" value="facilities;stop_point_id;stop_points;id" />
-				<entry key="facility_feature_fkey" value="facilities_features;facility_id;facilities;id" />
+				<entry key="faci_stpt_fkey" value="facilities;stop_point_id;stop_points;id" /> 
+				<entry key="facility_feature_fkey" value="facilities_features;facility_id;facilities;id" /> -->
 				<entry key="groupofline_group_fkey" value="group_of_lines_lines;group_of_line_id;group_of_lines;id" />
 				<entry key="groupofline_line_fkey" value="group_of_lines_lines;line_id;lines;id" />
 				<entry key="jp_route_fkey" value="journey_patterns;route_id;routes;id" />
 				<entry key="jpsp_jp_fkey"
 					value="journey_patterns_stop_points;journey_pattern_id;journey_patterns;id" />
 				<entry key="jpsp_stoppoint_fkey" value="journey_patterns_stop_points;stop_point_id;stop_points;id" />
-				<entry key="ptlink_route_fkey" value="pt_links;route_id;routes;id" />
+				<!-- <entry key="ptlink_route_fkey" value="pt_links;route_id;routes;id" /> -->
 				<entry key="route_line_fkey" value="routes;line_id;lines;id" />
 				<entry key="routingconstraint_line_fkey" value="routing_constraints_lines;line_id;lines;id" />
 				<entry key="routingconstraint_stoparea_fkey" value="routing_constraints_lines;stop_area_id;stop_areas;id" />
@@ -146,13 +146,13 @@
 				<entry key="line_company_fkey" value="lines;company_id;companies;id" />
 				<entry key="line_ptnetwork_fkey" value="lines;network_id;networks;id" />
 				<entry key="vj_company_fkey" value="vehicle_journeys;company_id;companies;id" />
-				<entry key="vj_timeslot_fkey" value="vehicle_journeys;time_slot_id;time_slots;id" />
+				<!-- <entry key="vj_timeslot_fkey" value="vehicle_journeys;time_slot_id;time_slots;id" /> -->
 			</map>
 		</property>
 		<property name="noActionDeleteFkeys">
 			<map>
-				<entry key="ptlk_endstpt_fkey" value="pt_links;end_of_link_id;stop_points;id" />
-				<entry key="ptlk_startstpt_fkey" value="pt_links;start_of_link_id;stop_points;id" />
+				<!-- <entry key="ptlk_endstpt_fkey" value="pt_links;end_of_link_id;stop_points;id" />
+				<entry key="ptlk_startstpt_fkey" value="pt_links;start_of_link_id;stop_points;id" /> -->
 				<entry key="stoppoint_area_fkey" value="stop_points;stop_area_id;stop_areas;id" />
 				<entry key="departure_point_fkey" value="journey_patterns;departure_stop_point_id;stop_points;id" />
 				<entry key="arrival_point_fkey" value="journey_patterns;arrival_stop_point_id;stop_points;id" />
@@ -246,10 +246,10 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="facilityDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+	<!-- <bean id="facilityDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createFacilityDao">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	</bean> -->
 
 	<bean id="groupOfLineDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createGroupOfLineDao">
@@ -266,10 +266,10 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="ptLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+	<!-- <bean id="ptLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createPTLinkDao">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	</bean> -->
 
 	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createPTNetworkDao">
@@ -291,10 +291,10 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="timeSlotDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
+	<!-- <bean id="timeSlotDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createTimeSlotDao">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	</bean> -->
 
 	<bean id="timetableDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createTimetableDao">
@@ -315,6 +315,7 @@
 		factory-method="createExportLogMessageDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
 	<bean id="fileValidationLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
 		factory-method="createFileValidationLogMessageDao">
 		<property name="sessionFactory" ref="sessionFactory" />

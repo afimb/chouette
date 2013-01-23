@@ -35,10 +35,9 @@
 				number,
 				route_id,
 				journey_pattern_id,
-				time_slot_id,
 				company_id
 				)
-				VALUES(?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?,
+				VALUES(?, ?, ?, ?, ?, ?,?, ?, ?, ?,
 				?,?,?,?,?)
 			</value>
 		</property>
@@ -60,7 +59,6 @@
 				number = ?,
 				route_id = ?,
 				journey_pattern_id = ?,
-				time_slot_id = ?,
 				company_id = ?
 				WHERE objectid = ?
 			</value>
@@ -112,11 +110,10 @@
 								elapse_duration,
 								headway_frequency,
 								is_departure,
-								is_arrival,
-								position
+								is_arrival
 								)
 								VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,
-								?, ?, ?)
+								?, ?)
 								</value>
 						</entry>
 						<entry key="sqlDelete">

@@ -58,8 +58,8 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 
 		setId(ps,13,vehicleJourney.getRoute());
 		setId(ps,14,vehicleJourney.getJourneyPattern());
-		setId(ps,15,vehicleJourney.getTimeSlot());
-		setId(ps,16,vehicleJourney.getCompany());
+		setId(ps,15,vehicleJourney.getCompany());
+		// setId(ps,16,vehicleJourney.getTimeSlot());
 		
 
 	}
@@ -111,7 +111,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 			ps.setTime(9, headwayfrequency);
 			ps.setBoolean(10, vAtStop.isDeparture());
 			ps.setBoolean(11, vAtStop.isArrival());
-			ps.setLong(12, vAtStop.getOrder());
+			// ps.setLong(12, vAtStop.getOrder());
 
 			return;
 

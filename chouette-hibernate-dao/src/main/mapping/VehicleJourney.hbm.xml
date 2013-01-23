@@ -86,12 +86,12 @@
 				<comment>JourneyPattern foreign key</comment>
 			</column>
 		</many-to-one>
-		<many-to-one class="TimeSlot" lazy="no-proxy" name="timeSlot"
+		<!-- <many-to-one class="TimeSlot" lazy="no-proxy" name="timeSlot"
 			foreign-key="vj_timeslot_fkey">
 			<column name="time_slot_id">
 				<comment>TimeSlot foreign key</comment>
 			</column>
-		</many-to-one>
+	    </many-to-one> -->
 		<many-to-one class="Company" lazy="no-proxy" name="company"
 			foreign-key="vj_company_fkey">
 			<column name="company_id">
@@ -112,7 +112,7 @@
 			</many-to-many>
 		</bag>
 
-		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan" order-by="position">
+		<bag lazy="false" name="vehicleJourneyAtStops" cascade="all-delete-orphan">
 			<comment>Vehicle Journey at Stop</comment>
 			<key foreign-key="vjas_vj_fkey">
 				<column name="vehicle_journey_id">

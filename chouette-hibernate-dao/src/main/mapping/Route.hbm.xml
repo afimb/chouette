@@ -75,10 +75,11 @@
 			<key column="route_id" foreign-key="jp_route_fkey" on-delete="cascade" />
 			<one-to-many class="JourneyPattern" />
 		</bag>
-		<bag name="ptLinks" lazy="true" inverse="true" cascade="all-delete-orphan">
+		<!-- <bag name="ptLinks" lazy="true" inverse="true" cascade="all-delete-orphan">
 			<key column="route_id" foreign-key="ptlink_route_fkey" on-delete="cascade" />
 			<one-to-many class="PTLink" />
 		</bag>
+	   -->
 		<bag name="stopPoints" lazy="true" inverse="true" cascade="all-delete-orphan"
 			order-by="position">
 			<key column="route_id" foreign-key="stoppoint_route_fkey"

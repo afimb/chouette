@@ -254,7 +254,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     */
    @Getter
-   @Setter
    private List<VehicleJourneyAtStop> vehicleJourneyAtStops        = new ArrayList<VehicleJourneyAtStop>();
    /**
     * timetables <br/>
@@ -591,6 +590,15 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       return sb.toString();
    }
 
+   public void setVehicleJourneyAtStops(
+		List<VehicleJourneyAtStop> vehicleJourneyAtStops) 
+   {
+	    this.vehicleJourneyAtStops = vehicleJourneyAtStops;
+	    sortVehicleJourneyAtStops();
+	    
+   }
+
+   
    /*
     * (non-Javadoc)
     * 
@@ -606,6 +614,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       if (line != null)
          setLineIdShortcut(line.getObjectId());
 
+      sortVehicleJourneyAtStops();
       List<VehicleJourneyAtStop> vjass = getVehicleJourneyAtStops();
       for (int i = 0; i < vjass.size(); i++)
       {

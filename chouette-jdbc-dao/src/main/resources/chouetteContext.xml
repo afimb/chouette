@@ -34,11 +34,11 @@
 		<property name="jdbcDao" ref="connectionLinkJdbcDao" />
 	</bean>
  
-	<bean id="facilityJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<!-- bean id="facilityJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createFacilityDaoInjector">
 		<property name="manager" ref="facilityManager" />
 		<property name="jdbcDao" ref="facilityJdbcDao" />
-	</bean>
+	</bean  -->
 	
 	<bean id="groupOfLineJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createGroupOfLineDaoInjector">
@@ -55,11 +55,11 @@
 		<property name="manager" ref="lineManager" />
 		<property name="jdbcDao" ref="lineJdbcDao" />
 	</bean>
-	<bean id="ptLinkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<!-- bean id="ptLinkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createPTLinkDaoInjector">
 		<property name="manager" ref="PTLinkManager" />
 		<property name="jdbcDao" ref="ptLinkJdbcDao" />
-	</bean>
+	</bean -->
 	<bean id="networkJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createPTNetworkDaoInjector">
 		<property name="manager" ref="networkManager" />
@@ -83,11 +83,11 @@
 		<property name="jdbcDao" ref="stopPointJdbcDao" />
 	</bean>
 	
-	<bean id="timeSlotJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<!-- bean id="timeSlotJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimeSlotDaoInjector">
 		<property name="manager" ref="timeSlotManager" />
 		<property name="jdbcDao" ref="timeSlotJdbcDao" />
-	</bean>
+	</bean -->
 	
 	<bean id="timetableJdbcDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimetableDaoInjector">

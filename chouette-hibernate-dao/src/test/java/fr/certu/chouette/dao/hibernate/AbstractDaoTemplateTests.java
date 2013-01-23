@@ -424,25 +424,25 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       return ptLink;
    }
 
-   protected TimeSlot createTimeSlot() 
-   {
-      TimeSlot timeSlot = new TimeSlot();
-      timeSlot.setObjectId("TimeSlot:"+getNextObjectId());
-      timeSlot.setCreatorId("TESTNG");
-      long begin = 8*3600000; // 08:00
-      timeSlot.setBeginningSlotTime(new java.sql.Time(begin));
-
-      timeSlot.setFirstDepartureTimeInSlot(new java.sql.Time(begin));
-      begin += 3600000; // 09:00
-      timeSlot.setEndSlotTime(new java.sql.Time(begin));
-      timeSlot.setLastDepartureTimeInSlot(new java.sql.Time(begin));
-
-      return timeSlot;
-   }
+//   protected TimeSlot createTimeSlot() 
+//   {
+//      TimeSlot timeSlot = new TimeSlot();
+//      timeSlot.setObjectId("TimeSlot:"+getNextObjectId());
+//      timeSlot.setCreatorId("TESTNG");
+//      long begin = 8*3600000; // 08:00
+//      timeSlot.setBeginningSlotTime(new java.sql.Time(begin));
+//
+//      timeSlot.setFirstDepartureTimeInSlot(new java.sql.Time(begin));
+//      begin += 3600000; // 09:00
+//      timeSlot.setEndSlotTime(new java.sql.Time(begin));
+//      timeSlot.setLastDepartureTimeInSlot(new java.sql.Time(begin));
+//
+//      return timeSlot;
+//   }
 
    protected VehicleJourney createVehicleJourney() 
    {
-      HibernateDaoTemplate<TimeSlot> timeSlotTemplate = (HibernateDaoTemplate<TimeSlot>) applicationContext.getBean("timeSlotDao");
+//      HibernateDaoTemplate<TimeSlot> timeSlotTemplate = (HibernateDaoTemplate<TimeSlot>) applicationContext.getBean("timeSlotDao");
       HibernateDaoTemplate<JourneyPattern> journeyPatternTemplate = (HibernateDaoTemplate<JourneyPattern>) applicationContext.getBean("journeyPatternDao");
       HibernateDaoTemplate<Line> lineTemplate = (HibernateDaoTemplate<Line>) applicationContext.getBean("lineDao");
       HibernateDaoTemplate<Route> routeTemplate = (HibernateDaoTemplate<Route>) applicationContext.getBean("routeDao");
@@ -462,9 +462,9 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       lineTemplate.save(line);
       vehicleJourney.setLine(line);
 
-      TimeSlot timeSlot = createTimeSlot();
-      timeSlotTemplate.save(timeSlot);
-      vehicleJourney.setTimeSlot(timeSlot);
+//      TimeSlot timeSlot = createTimeSlot();
+//      timeSlotTemplate.save(timeSlot);
+//      vehicleJourney.setTimeSlot(timeSlot);
 
       return vehicleJourney;
    }

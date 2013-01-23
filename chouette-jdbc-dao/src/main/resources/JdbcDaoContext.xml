@@ -22,10 +22,10 @@
 	<import resource="RouteJdbcContext.xml" />
 	<import resource="AccessLinkJdbcContext.xml" />
 	<import resource="StopPointJdbcContext.xml" />
-	<import resource="TimeSlotJdbcContext.xml" />
+	<!-- import resource="TimeSlotJdbcContext.xml" / -->
 	<import resource="JourneyPatternJdbcContext.xml" />
-	<import resource="PTLinkJdbcContext.xml" />
-	<import resource="FacilityJdbcContext.xml" />
+	<!-- import resource="PTLinkJdbcContext.xml" / -->
+	<!-- import resource="FacilityJdbcContext.xml" / -->
 	<import resource="VehicleJourneyJdbcContext.xml" />
 	<import resource="TimetableJdbcContext.xml" />
 

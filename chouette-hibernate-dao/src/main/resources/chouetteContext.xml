@@ -32,11 +32,11 @@
 		<property name="manager" ref="connectionLinkManager" />
 		<property name="dao" ref="connectionLinkDao" />
 	</bean>
-	<bean id="facilityDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<!-- bean id="facilityDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createFacilityDaoInjector">
 		<property name="manager" ref="facilityManager" />
 		<property name="dao" ref="facilityDao" />
-	</bean>
+	</bean -->
 	<bean id="groupOfLineDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createGroupOfLineDaoInjector">
 		<property name="manager" ref="groupOfLineManager" />
@@ -52,21 +52,16 @@
 		<property name="manager" ref="lineManager" />
 		<property name="dao" ref="lineDao" />
 	</bean>
-	<bean id="ptLinkDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<!-- bean id="ptLinkDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createPTLinkDaoInjector">
 		<property name="manager" ref="PTLinkManager" />
 		<property name="dao" ref="ptLinkDao" />
-	</bean>
+	</bean -->
 	<bean id="networkDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createPTNetworkDaoInjector">
 		<property name="manager" ref="networkManager" />
 		<property name="dao" ref="networkDao" />
 	</bean>
-<!-- 	<bean id="restrictionConstraintDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
-		factory-method="createRestrictionConstraintDaoInjector">
-		<property name="manager" ref="restrictionConstraintManager" />
-		<property name="dao" ref="restrictionConstraintDao" />
-	</bean> -->
 	<bean id="routeDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createRouteDaoInjector">
 		<property name="manager" ref="routeManager" />
@@ -82,11 +77,11 @@
 		<property name="manager" ref="stopPointManager" />
 		<property name="dao" ref="stopPointDao" />
 	</bean>
-	<bean id="timeSlotDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
+	<!-- bean id="timeSlotDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimeSlotDaoInjector">
 		<property name="manager" ref="timeSlotManager" />
 		<property name="dao" ref="timeSlotDao" />
-	</bean>
+	</bean -->
 	<bean id="timetableDaoInjector" class="fr.certu.chouette.dao.DaoInjector"
 		factory-method="createTimetableDaoInjector">
 		<property name="manager" ref="timetableManager" />

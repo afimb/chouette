@@ -305,17 +305,17 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
             Assert.assertEquals(seconds,23*3600,"line must have opening time of 23 hours");
 
          }
-         Assert.assertEquals(facilities.size(),1,"line must have 1 facility");
-         for (Facility facility : facilities)
-         {
-            Assert.assertNotNull(facility.getFacilityFeatures(),"Facility must have features : "+facility.getObjectId());
-            Assert.assertEquals(facility.getFacilityFeatures().size(),1,"Facility must have 1 feature : "+facility.getObjectId());
-            for (FacilityFeature feature : facility.getFacilityFeatures())
-            {
-               Assert.assertNotNull(feature.getChoiceValue(),"feature must have choice");
-               Assert.assertEquals(feature.getAccessFacility(), AccessFacilityEnumeration.BARRIER,"feature must be BARRIER");
-            } 
-         }
+//         Assert.assertEquals(facilities.size(),1,"line must have 1 facility");
+//         for (Facility facility : facilities)
+//         {
+//            Assert.assertNotNull(facility.getFacilityFeatures(),"Facility must have features : "+facility.getObjectId());
+//            Assert.assertEquals(facility.getFacilityFeatures().size(),1,"Facility must have 1 feature : "+facility.getObjectId());
+//            for (FacilityFeature feature : facility.getFacilityFeatures())
+//            {
+//               Assert.assertNotNull(feature.getChoiceValue(),"feature must have choice");
+//               Assert.assertEquals(feature.getAccessFacility(), AccessFacilityEnumeration.BARRIER,"feature must be BARRIER");
+//            } 
+//         }
 
       }
    }
