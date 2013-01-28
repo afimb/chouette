@@ -1,6 +1,11 @@
                         CHOUETTE RELEASE NOTES
                         ======================
 
+* Version 2.0.2 (28/01/13)
+  - Import GTFS 
+  - Import CSV : ajout des nouveaux champs V2
+  - Mise en cohérence des modèles DB java et Rails
+
 * Version 2.0.1 (17/12/12)
   - Import Neptune : accepter les principaux types d'encodage
   - Import/Export Neptune : quelques corrections sur les imports/exports des groupes de lignes et des accès
