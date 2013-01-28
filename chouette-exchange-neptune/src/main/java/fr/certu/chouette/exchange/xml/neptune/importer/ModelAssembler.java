@@ -303,6 +303,7 @@ public class ModelAssembler
 		if (list.size() > 0)
 		{
 			populatedDictionaries.put(list.get(0).getClass(), dictionnary);
+			logger.debug(list.get(0).getClass().getName()+" count = "+dictionnary.size());
 		}
 	}
 
@@ -593,7 +594,16 @@ public class ModelAssembler
 			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
 			if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 			{
-				stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
+				if (stopArea.getAreaType().equals(ChouetteAreaEnum.QUAY) || stopArea.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION))
+				{
+					stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
+					stopArea.setContainedStopAreas(null);
+				}
+				else
+				{
+				    stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
+					stopArea.setContainedStopPoints(null);
+				}
 				stopArea.setRoutingConstraintAreas(null);
 
 				if (stopArea.getContainedStopAreas() != null)
@@ -608,9 +618,9 @@ public class ModelAssembler
 			{
 				stopArea.setRoutingConstraintAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
 				stopArea.setContainedStopAreas(null);
+				stopArea.setContainedStopPoints(null);
 			}
 
-			stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
 
 			for (Facility facility : facilities)
 			{
@@ -841,6 +851,7 @@ public class ModelAssembler
 
 		if (dictionary != null && ids != null)
 		{
+			logger.debug(dictionaryClass.getName()+" count = "+dictionary.size());
 			for (String id : ids)
 			{
 				T object = (T) dictionary.get(id);

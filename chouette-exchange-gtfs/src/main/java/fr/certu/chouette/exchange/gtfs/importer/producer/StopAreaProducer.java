@@ -45,7 +45,8 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 		stopArea.setAreaType(ChouetteAreaEnum.BOARDINGPOSITION);
 
 		// RegistrationNumber optional
-		stopArea.setRegistrationNumber(gtfsStop.getStopCode());
+		String[] token = stopArea.getObjectId().split(":");
+		stopArea.setRegistrationNumber(token[2]);
 
 		return stopArea;
 	}

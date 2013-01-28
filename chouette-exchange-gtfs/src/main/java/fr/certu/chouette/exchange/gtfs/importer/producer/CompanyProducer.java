@@ -27,7 +27,8 @@ public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
 		company.setPhone(getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
 				
 		//RegistrationNumber optional
-		company.setRegistrationNumber(gtfsAgency.getAgencyId());
+		String[] token = company.getObjectId().split(":");
+		company.setRegistrationNumber(token[2]);
 		
 		return company;
 	}

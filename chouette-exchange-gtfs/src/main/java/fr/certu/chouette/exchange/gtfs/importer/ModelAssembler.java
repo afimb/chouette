@@ -140,6 +140,21 @@ public class ModelAssembler
 
 	private void connectJourneyPatterns() 
 	{
+		for (JourneyPattern journeyPattern : journeyPatterns) 
+		{
+			for (StopPoint point : journeyPattern.getStopPoints())
+			{
+				if (journeyPattern.getArrivalStopPoint() == null || journeyPattern.getArrivalStopPoint().before(point))
+				{
+					journeyPattern.setArrivalStopPoint(point);
+				}
+				if (journeyPattern.getDepartureStopPoint() == null || journeyPattern.getDepartureStopPoint().after(point))
+				{
+					journeyPattern.setDepartureStopPoint(point);
+				}
+			}			
+		}
+
 	}
 
 

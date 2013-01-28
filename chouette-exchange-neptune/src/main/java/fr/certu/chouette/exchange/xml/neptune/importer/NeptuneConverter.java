@@ -10,6 +10,8 @@ package fr.certu.chouette.exchange.xml.neptune.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import lombok.Setter;
 import chouette.schema.ChouetteLineDescription;
@@ -62,7 +64,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class NeptuneConverter
 {
-
+   private static final Logger logger = Logger.getLogger(NeptuneConverter.class);
    /**
     * line producer
     */
@@ -433,6 +435,7 @@ public class NeptuneConverter
             Integer.toString(count));
       report.addItem(countItem);
       parentReport.addItem(report);
+      logger.debug("StopPoint count = "+count);
       return stopPoints;
    }
 

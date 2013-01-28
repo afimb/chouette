@@ -970,6 +970,8 @@ public class Command
 							fos.write(bytes, 0, len);
 							len = stream.read(bytes);
 						}
+						fos.close();
+						
 						// import
 						if (verbose) System.out.println("import file "+entry.getName());
 						logger.info("import file "+entry.getName());
@@ -1106,10 +1108,12 @@ public class Command
 			// fill report with error
 			if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
 				reports.add(saveReport);
-			System.out.println("import failed "+e.getMessage());
-			logger.error("import failed "+e.getMessage(),e);
+			String msg = e.getMessage();
+			if (msg == null) msg = e.getClass().getName();
+			System.out.println("import failed "+msg);
+			logger.error("import failed "+msg,e);
 			GuiReport errorReport = new GuiReport("IMPORT_ERROR",Report.STATE.ERROR);
-			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
+			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,msg);
 			errorReport.addItem(item);
 			reports.add(errorReport);
 			saveImportReports(importId,format,reports);

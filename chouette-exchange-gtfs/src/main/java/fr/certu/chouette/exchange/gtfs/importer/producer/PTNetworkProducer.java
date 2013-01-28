@@ -29,7 +29,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, GtfsNetw
 		ptNetwork.setName(gtfsNetwork.getName());
 		
 		// Registration optional
-		ptNetwork.setRegistrationNumber(gtfsNetwork.getName());
+		ptNetwork.setRegistrationNumber(getPrefix());
 		
 		// SourceName optional
 		ptNetwork.setSourceName("GTFS");

@@ -43,7 +43,8 @@ public class LineProducer extends AbstractModelProducer<Line,GtfsRoute>
 		}
 
 		// Registration optional
-		line.setRegistrationNumber(gtfsLine.getRouteShortName());
+		String[] token = line.getObjectId().split(":");
+		line.setRegistrationNumber(token[2]);
 
 		// Comment optional : refers to company
 		line.setComment(getNonEmptyTrimedString(composeObjectId( Company.COMPANY_KEY,gtfsLine.getAgencyId(),logger)));
