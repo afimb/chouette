@@ -15,7 +15,6 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -109,30 +108,11 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
    @Override
    public void remove(User user,StopPoint stopPoint,boolean propagate) throws ChouetteException
    {
-      INeptuneManager<PTLink> ptLinkManager  = (INeptuneManager<PTLink>) getManager(PTLink.class);
+	   // @TODO manage arrival and departure on journeypatterns
+	   
       INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
       INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
-      StopPoint next = get(user, Filter.getNewEqualsFilter("position", stopPoint.getPosition() +1));
-      List<PTLink> ptLinks = ptLinkManager.getAll(user, Filter.getNewOrFilter(
-            Filter.getNewEqualsFilter("startOfLink.id", stopPoint.getId()),
-            Filter.getNewEqualsFilter("endOfLink.id", stopPoint.getId()))); 
-      if(ptLinks != null && !ptLinks.isEmpty())
-      {
-         int size = ptLinks.size(); 
-         if(size > 1){
-            for (PTLink ptLink : ptLinks) 
-            {
-               if(ptLink.getEndOfLink().getId().equals(stopPoint.getId())){
-                  ptLink.setEndOfLink(next);
-                  ptLinkManager.update(user, ptLink);
-               }
-               else
-                  ptLinkManager.remove(user, ptLink,propagate);
-            }
-         }else if(size == 1)
-            ptLinkManager.remove(user, ptLinks.get(0),propagate);
-      }
       Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()));
       if(facility != null)
          facilityManager.remove(user, facility,propagate);
@@ -147,11 +127,6 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
             VehicleJourneyAtStop vAtStop = vAtStops.get(i);
             if(vAtStop.getStopPoint().equals(stopPoint)) 
             {
-               if(vAtStop.isDeparture())
-               {
-                  VehicleJourneyAtStop nextAStop =  i< vAtStops.size() ? vAtStops.get(i +1) : vAtStop;
-                  nextAStop.setDeparture(true);
-               }
                vAtStops.remove(vAtStop);
             }
          }
@@ -195,7 +170,7 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
          for (StopPoint stopPoint : stopPoints) 
          {
             addIfMissingInCollection(stopAreas, stopPoint.getContainedInStopArea());
-            mergeCollection(facilities,stopPoint.getFacilities());
+            // mergeCollection(facilities,stopPoint.getFacilities());
          }
 
          if(!stopAreas.isEmpty())

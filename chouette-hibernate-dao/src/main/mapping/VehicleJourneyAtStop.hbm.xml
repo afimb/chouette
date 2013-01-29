@@ -67,7 +67,7 @@
 				<comment>headway frequency</comment>
 			</column>
 		</property>
-		<property name="departure" type="boolean">
+		<!-- <property name="departure" type="boolean">
 			<column name="is_departure" default="false">
 				<comment>First stop of the vehicle journey (deprecated : see
 					JourneyPattern)</comment>
@@ -78,6 +78,6 @@
 				<comment>Last stop of the vehicle journey (deprecated : see
 					JourneyPattern)</comment>
 			</column>
-		</property>
+		</property> -->
 	</class>
 </hibernate-mapping>

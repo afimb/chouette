@@ -121,7 +121,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
          {
             mergeCollection(accessLinks, stopArea.getAccessLinks());
             mergeCollection(connectionLinks, stopArea.getConnectionLinks());
-            mergeCollection(facilities, stopArea.getFacilities());
+            // mergeCollection(facilities, stopArea.getFacilities());
          }
 
          // add targetConnectionLink if not present

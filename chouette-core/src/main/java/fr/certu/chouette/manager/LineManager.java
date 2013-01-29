@@ -328,7 +328,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				mergeCollection(groupOfLines,line.getGroupOfLines());
 				addIfMissingInCollection(networks, line.getPtNetwork());
 				mergeCollection(routes,line.getRoutes());	
-				mergeCollection(facilities,line.getFacilities());
+				// mergeCollection(facilities,line.getFacilities());
 				mergeCollection(routingConstraints, line.getRoutingConstraints());
 			}
 			if(!companies.isEmpty())

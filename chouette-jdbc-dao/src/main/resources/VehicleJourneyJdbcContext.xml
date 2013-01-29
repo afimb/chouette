@@ -108,12 +108,9 @@
 								departure_time,
 								waiting_time,
 								elapse_duration,
-								headway_frequency,
-								is_departure,
-								is_arrival
+								headway_frequency
 								)
-								VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,
-								?, ?)
+								VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
 								</value>
 						</entry>
 						<entry key="sqlDelete">

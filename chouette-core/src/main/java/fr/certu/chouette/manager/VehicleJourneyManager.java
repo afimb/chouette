@@ -66,7 +66,7 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 			for (VehicleJourney vehicleJourney : vehicleJourneys) 
 			{
 				mergeCollection(timetables,vehicleJourney.getTimetables());
-				addIfMissingInCollection(timeSlots,vehicleJourney.getTimeSlot());
+				// addIfMissingInCollection(timeSlots,vehicleJourney.getTimeSlot());
 				addIfMissingInCollection(companies,vehicleJourney.getCompany());
 			}
 			if(!timetables.isEmpty())

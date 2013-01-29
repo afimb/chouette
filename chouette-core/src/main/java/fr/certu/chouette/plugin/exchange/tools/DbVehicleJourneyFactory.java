@@ -25,11 +25,11 @@ public class DbVehicleJourneyFactory
 
    private Connection conn = null;
    private final String dropSql = "drop table if exists vjas;";
-   private final String createSql = "create table vjas (vjid,stid,arrivaltime,departuretime,isdeparture,position,isarrival );";
+   private final String createSql = "create table vjas (vjid,stid,arrivaltime,departuretime,position );";
    private final String createIndexSql = "create index vjas_vjid_idx on vjas (vjid)" ; 
 
-   private final String insertSql = "insert into vjas (vjid,stid,arrivaltime,departuretime,isdeparture,position,isarrival) values (?, ?, ?, ?, ?, ?, ?)";
-   private final String selectSql = "select vjid,stid,arrivaltime,departuretime,isdeparture,position,isarrival from vjas where vjid = ? order by position";
+   private final String insertSql = "insert into vjas (vjid,stid,arrivaltime,departuretime,position) values (?, ?, ?, ?, ?)";
+   private final String selectSql = "select vjid,stid,arrivaltime,departuretime,position from vjas where vjid = ? order by position";
    private final String deleteSql = "delete from vjas where vjid = ?";
 
    private PreparedStatement prep = null;
@@ -132,9 +132,7 @@ public class DbVehicleJourneyFactory
             prep.setString(2, bean.getStopPoint().getObjectId());
             prep.setString(3, toString(bean.getArrivalTime()));
             prep.setString(4, toString(bean.getDepartureTime()));
-            prep.setString(5, toString(bean.isDeparture()));
-            prep.setString(6, toString(bean.getOrder()));
-            prep.setString(7, toString(bean.isArrival()));
+            prep.setString(5, toString(bean.getOrder()));
             prep.addBatch();
             batchSize++;
          }
@@ -171,9 +169,7 @@ public class DbVehicleJourneyFactory
             VehicleJourneyAtStop bean = new VehicleJourneyAtStop();
             bean.setArrivalTime(toTime(rst.getString("arrivaltime")));
             bean.setDepartureTime(toTime(rst.getString("departuretime")));
-            bean.setDeparture(toBoolean(rst.getString("isdeparture")));
             bean.setOrder(toLong(rst.getString("position")));
-            bean.setArrival(toBoolean(rst.getString("isarrival")));
             bean.setStopPoint(points.get((int)bean.getOrder()-1));
             beans.add(bean);
          }
