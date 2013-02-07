@@ -146,6 +146,7 @@
 				<entry key="line_company_fkey" value="lines;company_id;companies;id" />
 				<entry key="line_ptnetwork_fkey" value="lines;network_id;networks;id" />
 				<entry key="vj_company_fkey" value="vehicle_journeys;company_id;companies;id" />
+				<entry key="area_parent_fkey" value="stop_areas;parent_id;stop_areas;id" />
 				<!-- <entry key="vj_timeslot_fkey" value="vehicle_journeys;time_slot_id;time_slots;id" /> -->
 			</map>
 		</property>

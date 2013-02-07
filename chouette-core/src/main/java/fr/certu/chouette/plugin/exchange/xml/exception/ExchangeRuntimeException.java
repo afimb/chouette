@@ -4,24 +4,22 @@
  * ce projet est sous license libre
  * voir LICENSE.txt pour plus de details
  *
- */
-package fr.certu.chouette.exchange.xml.neptune.exception;
+ */package fr.certu.chouette.plugin.exchange.xml.exception;
 
-import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.common.ChouetteRuntimeException;
 
 @SuppressWarnings("serial")
-public class ExchangeException extends ChouetteException 
+public class ExchangeRuntimeException extends ChouetteRuntimeException 
 {
 	private static final String PREFIX = "NPT";
-	
 	private ExchangeExceptionCode code;
 
-	public ExchangeException(ExchangeExceptionCode code, String... args) 
+	public ExchangeRuntimeException(ExchangeExceptionCode code, String... args) 
 	{
 		super( args);
 		this.code = code;
 	}
-	public ExchangeException(ExchangeExceptionCode code, Throwable cause, String... args) 
+	public ExchangeRuntimeException(ExchangeExceptionCode code, Throwable cause, String... args) 
 	{
 		super( cause, args);
 		this.code = code;

@@ -5,7 +5,7 @@
  * voir LICENSE.txt pour plus de details
  *
  */
-package fr.certu.chouette.exchange.xml.neptune.exception;
+package fr.certu.chouette.plugin.exchange.xml.exception;
 
 public enum ExchangeExceptionCode 
 {

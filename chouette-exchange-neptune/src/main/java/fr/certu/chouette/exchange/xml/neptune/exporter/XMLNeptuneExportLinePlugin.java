@@ -27,8 +27,6 @@ import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRoute;
 import chouette.schema.ITL;
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AccessLinkProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AccessPointProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AreaCentroidProducer;
@@ -73,6 +71,8 @@ import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 

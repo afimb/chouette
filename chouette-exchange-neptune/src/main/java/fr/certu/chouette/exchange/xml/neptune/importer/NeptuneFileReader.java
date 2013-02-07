@@ -33,8 +33,8 @@ import org.xml.sax.SAXParseException;
 import chouette.schema.ChouettePTNetwork;
 import chouette.schema.ChouettePTNetworkTypeType;
 import fr.certu.chouette.exchange.LoggingManager;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 
 /**
  * Reader tool to extract XML Neptune Schema Objects (Castor) from a file or a stream 

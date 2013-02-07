@@ -12,8 +12,8 @@ import org.exolab.castor.xml.Marshaller;
 
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ChouetteRemoveLineTypeType;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeExceptionCode;
-import fr.certu.chouette.exchange.xml.neptune.exception.ExchangeRuntimeException;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 
 public class NeptuneFileWriter 
 {
