@@ -1,8 +1,0 @@
-import fr.certu.chouette.model.neptune.Line;
-
-@Blueprint(Line.class)
-public class ChouetteLineBlueprint {
-
-    @Default
-    String make = "car make";
-}
