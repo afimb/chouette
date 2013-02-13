@@ -1,0 +1,43 @@
+<!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
+<ServiceFrame version="any">
+        <!-- NEPTUNE PTNetwork Mappling =========================================== -->
+        <Network version="$network.objectVersion" changed="$dateFormat.format( $network.versionDate )" id="$network.objectId">											
+                <Name>$network.name</Name>
+                <Description>$network.description</Description>
+                <PrivateCode>$network.registrationNumber</PrivateCode>
+        </Network>
+        <!-- NEPTUNE Route Mapping (part 1 : directions ) =========================================== -->
+        <directions>
+              #foreach( $route in $line.routes )   
+                <Direction version="any" id="$route.objectId:Direction">
+                        <Name>$route.publishedName</Name>
+                        #if ($route.wayBack == "A")
+                        <DirectionType>outbound</DirectionType>
+                        #elseif( $route.wayBack == "R" )
+                        <DirectionType>inbound</DirectionType>
+                        #end
+                </Direction>
+              #end                  
+        </directions>
+        <!-- NEPTUNE StopPoint (RoutePoint)  mapping=========================================== -->
+        <routePoints>
+                <!-- NEPTUNE [mapping:variable] : RoutePoint.version mapped to NEPTUNE StopPoint->ObjectVersion -->
+                <RoutePoint version="1" id="RATP_PIVI:RoutePoint:317452A0A5246063">
+                        <!-- NEPTUNE [mapping:variable] : RoutePoint->Id mapped to NEPTUNE StopPoint->ObjectId  -->
+                        <!-- NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
+                        <Name>Pré-Saint-Gervais</Name>
+                        <Location>
+                                <!-- NEPTUNE [mapping:variable] : RoutePoint->Location->Longitude & Latitude mapped to NEPTUNE StopPoint->longitude & latitude  -->
+                                <Longitude>2.3985600000000000</Longitude>
+                                <Latitude>48.8803670000000000</Latitude>
+                        </Location>
+                        <!-- NEPTUNE [mapping:variable] : RoutePoint->projections->PointProjection->ProjectedPointRef mapped to NEPTUNE StopPoint->containedIn  -->
+                        <!-- In NEPTUNE the StopAreas referenced by this containedIn are of type Quay or BorbingPosition (not StopPlace or CommercialStop)-->
+                        <projections>
+                                <PointProjection version="any" id="RATP_PIVI:PointProjection:317452A0A5246063">
+                                        <ProjectedPointRef version="1" ref="RATP_PIVI:StopPoint:5246063"/>
+                                </PointProjection>
+                        </projections>
+                </RoutePoint>
+        </routePoints>        
+</ServiceFrame>
