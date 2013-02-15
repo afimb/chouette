@@ -9,12 +9,14 @@ import fr.certu.chouette.model.neptune.Line;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -35,23 +37,19 @@ public class NetexFileWriter {
         model.put("dateFormat", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"));
         
         FileWriter fw = null;
+        StringWriter output = new StringWriter();
+        VelocityEngineUtils.mergeTemplate(velocityEngine, "templates/line.vm", "UTF-8", model, output);
+
+        File f = new File(filename);
         try {
-            fw = new FileWriter(filename);
-            
-            // le BufferedWriter output auquel on donne comme argument le FileWriter fw cree juste au dessus
-            BufferedWriter output = new BufferedWriter(fw);        
-            
-            VelocityEngineUtils.mergeTemplate(velocityEngine, "templates/line.vm", "UTF-8", model, output);
-            
-            output.flush();
-            //ensuite flush envoie dans le fichier, ne pas oublier cette methode pour le BufferedWriter
-            
-            output.close();
-            //et on le ferme
-            System.out.println("fichier créé");
+            FileUtils.write(f, output.toString(), "UTF-8");
         } catch (IOException ex) {
             logger.error(ex);
-        }        
+        }
+
+
+        //et on le ferme
+        System.out.println("fichier créé");
     }
 
     public void write(List<Line> lines, OutputStream fileOutputStream) {
