@@ -3,12 +3,12 @@ package fr.certu.chouette.exchange.netex.blueprint;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
+import com.tobedevoured.modelcitizen.annotation.MappedList;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
-import java.math.BigDecimal;
+import java.util.List;
 
-@Blueprint(StopPoint.class)
-public class StopPointBlueprint {
+@Blueprint(StopArea.class)
+public class StopAreaBlueprint {
     
     @Default
     int objectVersion = 1;
@@ -20,14 +20,9 @@ public class StopPointBlueprint {
     String name = "A";
 
     @Mapped   
-    StopArea containedInStopArea;
+    StopArea parent;   
     
-//    @Default
-//    BigDecimal longitude = 2.120000000000000000000;
-//    
-//    @Default
-//    BigDecimal latitude = 1.1200000000000000000000;
+    @MappedList(target = StopArea.class, size = 2)
+    List<StopArea> containedStopAreas;
     
-    @Default
-    int position = 1;
 }

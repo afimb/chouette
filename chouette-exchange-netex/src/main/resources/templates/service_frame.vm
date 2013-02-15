@@ -48,27 +48,13 @@
 			<DirectionRef version="any" ref="$route.objectId:Direction"/>
 			<!-- NeTEx (Transmodel) defines ROUTE POINT and POINT ON ROUTE;  POINT ON ROUTE are not available in NEPTUNE, so to be consistent with NeTEx model, the POINT ON ROUTE (refering ROUTE POINT) is defined below -->
 			<pointsInSequence>
-				<PointOnRoute version="any" id="RATP_PIVI:Route:317452-01" order="1">
+$route.stopPoints  
+                                #foreach( $stopPoint in $route.stopPoints )
+                                $foreach.count 
+				<PointOnRoute version="any" id="$route.objectId-1" order="1">
 					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A0A5246063"/>
 				</PointOnRoute>
-				<PointOnRoute version="any" id="RATP_PIVI:PointOnRoute:317452-02" order="2">
-					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A1A5246062"/>
-				</PointOnRoute>
-				<PointOnRoute version="any" id="RATP_PIVI:PointOnRoute:317452-03" order="3">
-					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A2A5246067"/>
-				</PointOnRoute>
-				<PointOnRoute version="any" id="RATP_PIVI:PointOnRoute:317452-04" order="4">
-					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A3A5246068"/>
-				</PointOnRoute>
-				<PointOnRoute version="any" id="RATP_PIVI:PointOnRoute:317452-05" order="5">
-					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A4A5246069"/>
-				</PointOnRoute>
-				<PointOnRoute version="any" id="RATP_PIVI:PointOnRoute:317452-06" order="6">
-					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A5A5246066"/>
-				</PointOnRoute>
-				<PointOnRoute version="any" id="RATP_PIVI:PointOnRoute:317452-07" order="7">
-					<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A6A5246065"/>
-				</PointOnRoute>
+                                #end
 			</pointsInSequence>
 		</Route>
     #end

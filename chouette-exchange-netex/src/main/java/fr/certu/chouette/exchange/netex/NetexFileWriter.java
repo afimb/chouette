@@ -28,8 +28,7 @@ public class NetexFileWriter {
     }
 
     public void write(List<Line> lines, String filename) {                
-        Map model = new HashMap();
-        logger.error(lines.get(0));
+        Map model = new HashMap();        
         model.put("line", lines.get(0));
         model.put("network", lines.get(0).getPtNetwork());
         model.put("company", lines.get(0).getCompany());

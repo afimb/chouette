@@ -33,11 +33,12 @@ public class NetexFileWriterTests extends AbstractTestNGSpringContextTests
    private NetexFileWriter netexFileWriter;  
    private ModelFactory modelFactory;
    private List<Line> lines = new ArrayList<Line>();
-   private XPath xpath = XPathFactory.newInstance().newXPath();
-   private DocumentBuilder builder;
+   private String fileName = "/tmp/test.xml";
+   private XPath xPath = XPathFactory.newInstance().newXPath();
+   private Document xmlDocument;
 
    @Test(groups={"NetexFileWriter"}, description="Get a bean from context")
-   public void getBean() throws ParserConfigurationException
+   public void getBean() throws ParserConfigurationException, SAXException, IOException
    {    
       netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter") ;
       modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");  
@@ -50,37 +51,85 @@ public class NetexFileWriterTests extends AbstractTestNGSpringContextTests
       }       
       lines.add(line);
       
+      netexFileWriter.write(lines, fileName);
+      
       DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
       domFactory.setNamespaceAware(true); 
-      builder = domFactory.newDocumentBuilder();      
+      DocumentBuilder builder = domFactory.newDocumentBuilder();  
+      xmlDocument = builder.parse(fileName);
    }
    
-   @Test (groups = {"NetexFileWriter"}, description = "Export Plugin should have a network")
-   public void verifyNetexNetwork()
-   {       
-       netexFileWriter.write(lines, "/tmp/test.xml");         
-        try {           
-            Document xmlDocument = builder.parse("/tmp/test2.xml");                       
-            XPathFactory factory = javax.xml.xpath.XPathFactory.newInstance();
-            XPath xPath = factory.newXPath();
-            XPathExpression xPathExpression = xPath.compile("//Direction/*/text()");
+   @Test (groups = {"NetexFileWriter"}, description = "Export Plugin should have one network")
+   public void verifyNetwork()
+   {                              
+        try {                                              
+            XPathExpression xPathExpression = xPath.compile("//Network/Name/node()");            
+            NodeList nodes =  (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);                      
             
-            NodeList nodes =  (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-                       
-            logger.error(nodes.getLength());
-            
-            for (int i = 0; i < nodes.getLength(); i++) {
-                logger.error(nodes.item(i).getNodeValue()); 
-            }
+            assert nodes.getLength() == 1;
+            //assert nodes.item(0).getNodeValue().equals("METRO");
             
         } catch (XPathExpressionException ex) {
             logger.error(ex);
-        } catch (SAXException ex) {
-            logger.error(ex);
-        } catch (IOException ex) {
+        }
+   }
+   
+   @Test (groups = {"NetexFileWriter"}, description = "Export Plugin should have one company")
+   public void verifyCompany()
+   {                              
+        try {                                              
+            XPathExpression xPathExpression = xPath.compile("//Operator/Name/node()");            
+            NodeList nodes =  (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);                      
+            
+            assert nodes.getLength() == 1;
+            assert nodes.item(0).getNodeValue().equals("RATP");
+            
+        } catch (XPathExpressionException ex) {
             logger.error(ex);
         }
-
+   }
+   
+//   @Test (groups = {"NetexFileWriter"}, description = "Export Plugin should have one line")
+//   public void verifyLine()
+//   {                              
+//        try {                                              
+//            XPathExpression xPathExpression = xPath.compile("//Line/Name/node()");            
+//            NodeList nodes =  (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);                      
+//            
+//            //assert nodes.getLength() == 1;
+//            //assert nodes.item(0).getNodeValue().equals("7");
+//            
+//        } catch (XPathExpressionException ex) {
+//            logger.error(ex);
+//        }
+//   }   
+//   
+   @Test (groups = {"NetexFileWriter"}, description = "Export Plugin should have 4 routes")
+   public void verifyRoutes()
+   {                              
+        try {                                              
+            XPathExpression xPathExpression = xPath.compile("//Route/Name/node()");            
+            NodeList nodes =  (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);                      
+            
+            assert nodes.getLength() == 2;
+            
+        } catch (XPathExpressionException ex) {
+            logger.error(ex);
+        }
+   }   
+   
+   @Test (groups = {"NetexFileWriter"}, description = "Export Plugin should have 6 PointOnRoute")
+   public void verifyPointOnRoutes()
+   {                              
+        try {                                              
+            XPathExpression xPathExpression = xPath.compile("//Route/PointOnRoute/node()");            
+            NodeList nodes =  (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);                      
+            
+            assert nodes.getLength() == 6;
+            
+        } catch (XPathExpressionException ex) {
+            logger.error(ex);
+        }
    }
 
 }
