@@ -36,148 +36,151 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 
 -->
 <PublicationDelivery version="1.0" xmlns="http://www.netex.org.uk/netex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri"  >
-	<PublicationTimestamp>2001-12-17T09:30:47.0Z</PublicationTimestamp>
-	<ParticipantRef>SYS001</ParticipantRef>
-	<!--- ======WHAT WAS REQUESTED ========== -->
-	<PublicationRequest version="1.0">
-		<RequestTimestamp>2009-08-01T09:30:00Z</RequestTimestamp>
-		<ParticipantRef>RATP110</ParticipantRef>
-		<filters>
-			<FrameRequestFilter>
-				<Topics>
-					<!-- NEPTUNE [local agreement:fixed] : Only the current data set is requested  -->
-					<Current/>
-					<!-- NEPTUNE [local agreement:variable] : a NEPTUNE Frame is named "operator":Neptune:ServiceAndTimetableFrame:"line Id"  -->
-					<CompositeFrameRef ref="RATP_PIVI:Neptune:ServiceAndTimetableFrame:100110107"/>
-				</Topics>
-				<Policies>
-					<!-- NEPTUNE [local agreement:fixed] : a NEPTUNE Frame is without Geometry -->
-					<RequestDetail>NoGeometry</RequestDetail>
-				</Policies>
-			</FrameRequestFilter>
-		</filters>
-	</PublicationRequest>
-	<Description>RATP Line 7b NeTEx example - based on reall 2009 data</Description>
-	<!--   -->
-	<!--- =============== RESULTS =========== -->
-	<dataObjects>
-		<!-- =========================================== -->
-		<!-- NEPTUNE [mapping:variable] : CompositeFrame.created mapped to NEPTUNE PTNetwork->versionDate -->
-		<CompositeFrame version="1" created="2009-12-02T00:00:00Z" id="RATP:Neptune:CompositeFrame:100110107">
-			<Name>NEPTUNE Mapping Frame</Name>
-			<!-- NEPTUNE [mapping:fixed] : This is a NEPTUNE to NeTEx mapping frame -->
-			<TypeOfFrameRef version="01" ref="Neptune:TypeOfFrame:CompositeFrame"/>
-			<codespaces>
-				<Codespace id="RATP_PIVI">
-					<Xmlns>RATP_PIVI</Xmlns>
-					<XmlnsUrl>http://www.ratp.fr/ratp</XmlnsUrl>
-					<Description>RATP datas</Description>
-				</Codespace>
-			</codespaces>
-			<FrameDefaults>
-				<DefaultCodespaceRef ref="ratp_pivi"/>
-				<!-- NEPTUNE [mapping:fixed] : NEPTUNE is in French ! -->
-				<DefaultLocale>
-					<TimeZoneOffset>-1</TimeZoneOffset>
-					<SummerTimeZoneOffset>-2</SummerTimeZoneOffset>
-					<DefaultLanguage>fr</DefaultLanguage>
-				</DefaultLocale>
-				<!-- NEPTUNE [mapping:fixed] : EPSG:4326 is WGS84 which is the only mandatory location system for NEPTUNE -->
-				<DefaultLocationSystem>EPSG:4326</DefaultLocationSystem>
-			</FrameDefaults>
-			<frames>
-				<!-- =========================================== -->
-				<!-- Resourceframe to map the Company NEPTUNE Object -->
-				<ResourceFrame version="any" id="Neptune:ResourceFrame:FrameProfile01">
-					<Name>RATP--Neptune-Line Profile </Name>
-					<codespaces>
-						<Codespace id="Neptune">
-							<Xmlns>Neptune</Xmlns>
-							<XmlnsUrl>http://www.Neptune.fr/Neptune</XmlnsUrl>
-							<Description>Neptune data </Description>
-						</Codespace>
-					</codespaces>
-					<FrameDefaults>
-						<DefaultCodespaceRef ref="Neptune"/>
-					</FrameDefaults>
-					<typesOfValue>
-						<TypeOfValidity version="01" id="Neptune:TypeOfValidity:WeeklyPlanned">
-							<Name>Weekley export of Neptune  Planned data</Name>
-							<Periodicity>P7D</Periodicity>
-							<Nature>planned</Nature>
-						</TypeOfValidity>
-						<TypeOfFrame version="01" id="Neptune:TypeOfFrame:CompositeFrame">
-							<Name>Neptune Profile:  Composite Frame </Name>
-							<Description>RATP--Neptune-Line-xxxxxx  frames will be composite frame containing Service, Timetable (and Service Calendar) and Resource frames with all the usual NEPTUNE attributes filled in, for a given line xxxxx.</Description>
-							<TypeOfValidityRef version="01" ref="Neptune:TypeOfValidity:WeeklyPlanned"/>
-							<FrameClassRef nameOfClass="CompositeFrame"/>
-							<classes>
-								<ClassInContextRef nameOfClass="AvailabilityCondition" classRefType="memberReferences"/>
-							</classes>
-							<typesOfFrame>
-								<TypeOfFrame version="01" id="Neptune:TypeOfFrame:TimeTableFrame">
-									<Name>Neptune Profile:ServiceCalendar  Frame </Name>
-									<FrameClassRef nameOfClass="TimeTableFrame"/>
-									<classes>
-										<ClassInContextRef classRefType="members" nameOfClass="TimeTableFrame"/>
-										<ClassInContextRef classRefType="members" nameOfClass="ServiceJourney"/>
-										<ClassInContextRef classRefType="members" nameOfClass="JourneyPart"/>
-										<ClassInContextRef classRefType="members" nameOfClass="JourneyPart"/>
-									</classes>
-								</TypeOfFrame>
-								<TypeOfFrame version="01" id="Neptune:TypeOfFrame:ServiceFrame">
-									<Name>Neptune Profile:  Service  Frame </Name>
-									<FrameClassRef nameOfClass="ServiceFrame"/>
-									<classes>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="ScheduledStopPoint"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="ServicePattern"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="Network"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="RoutePoint"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="RouteLink"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="Line"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="Route"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="Direction"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="TariffZone"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="PassengerStopAssignment"/>
-									</classes>
-								</TypeOfFrame>
-								<TypeOfFrame version="01" id="Neptune:TypeOfFrame:SiteFrame">
-									<Name>Neptune Profile:  Site  Frame </Name>
-									<FrameClassRef nameOfClass="SiteFrame"/>
-									<classes>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="StopPlace"/>
-									</classes>
-								</TypeOfFrame>
-								<TypeOfFrame version="01" id="Neptune:TypeOfFrame:ServiceCalendarFrame">
-									<Name>Neptune Profile:ServceCalendar  Frame </Name>
-									<FrameClassRef nameOfClass="ServiceCalendarFrame"/>
-									<classes>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="ServiceCalendar"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="DayType"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="DayTypeAssignment"/>
-									</classes>
-								</TypeOfFrame>
-								<TypeOfFrame version="01" id="Neptune:TypeOfFrame:ResourceFrame">
-									<Name>Neptune Profile:  Resource Frame </Name>
-									<FrameClassRef nameOfClass="ResourceFrame"/>
-									<classes>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="TypeOfFrame"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="Operator"/>
-										<ClassInContextRef classRefType="memberReferences" nameOfClass="Authority"/>
-									</classes>
-								</TypeOfFrame>
-							</typesOfFrame>
-						</TypeOfFrame>
-					</typesOfValue>
-					<organisations>
-						<Operator version="$company.objectVersion" id="$company.objectId">
-							<CompanyNumber>$company.registrationNumber</CompanyNumber>
-							<Name>$company.name</Name>
-						</Operator>
-					</organisations>
-				</ResourceFrame>				
-				#parse( "templates/service_frame.vm" )
+  <PublicationTimestamp>2001-12-17T09:30:47.0Z</PublicationTimestamp>
+  <ParticipantRef>SYS001</ParticipantRef>
+  <!--- ======WHAT WAS REQUESTED ========== -->
+  <PublicationRequest version="1.0">
+    <RequestTimestamp>2009-08-01T09:30:00Z</RequestTimestamp>
+    <ParticipantRef>RATP110</ParticipantRef>
+    <filters>
+      <FrameRequestFilter>
+        <Topics>
+          <!-- NEPTUNE [local agreement:fixed] : Only the current data set is requested  -->
+          <Current/>
+          <!-- NEPTUNE [local agreement:variable] : a NEPTUNE Frame is named "operator":Neptune:ServiceAndTimetableFrame:"line Id"  -->
+          <CompositeFrameRef ref="RATP_PIVI:Neptune:ServiceAndTimetableFrame:100110107"/>
+        </Topics>
+        <Policies>
+          <!-- NEPTUNE [local agreement:fixed] : a NEPTUNE Frame is without Geometry -->
+          <RequestDetail>NoGeometry</RequestDetail>
+        </Policies>
+      </FrameRequestFilter>
+    </filters>
+  </PublicationRequest>
+  <Description>RATP Line 7b NeTEx example - based on reall 2009 data</Description>
+  <!--   -->
+  <!--- =============== RESULTS =========== -->
+  <dataObjects>
+    <!-- =========================================== -->
+    <!-- NEPTUNE [mapping:variable] : CompositeFrame.created mapped to NEPTUNE PTNetwork->versionDate -->
+    <CompositeFrame version="1" created="2009-12-02T00:00:00Z" id="RATP:Neptune:CompositeFrame:100110107">
+      <Name>NEPTUNE Mapping Frame</Name>
+      <!-- NEPTUNE [mapping:fixed] : This is a NEPTUNE to NeTEx mapping frame -->
+      <TypeOfFrameRef version="01" ref="Neptune:TypeOfFrame:CompositeFrame"/>
+      <codespaces>
+        <Codespace id="RATP_PIVI">
+          <Xmlns>RATP_PIVI</Xmlns>
+          <XmlnsUrl>http://www.ratp.fr/ratp</XmlnsUrl>
+          <Description>RATP datas</Description>
+        </Codespace>
+      </codespaces>
+      <FrameDefaults>
+        <DefaultCodespaceRef ref="ratp_pivi"/>
+        <!-- NEPTUNE [mapping:fixed] : NEPTUNE is in French ! -->
+        <DefaultLocale>
+          <TimeZoneOffset>-1</TimeZoneOffset>
+          <SummerTimeZoneOffset>-2</SummerTimeZoneOffset>
+          <DefaultLanguage>fr</DefaultLanguage>
+        </DefaultLocale>
+        <!-- NEPTUNE [mapping:fixed] : EPSG:4326 is WGS84 which is the only mandatory location system for NEPTUNE -->
+        <DefaultLocationSystem>EPSG:4326</DefaultLocationSystem>
+      </FrameDefaults>
+      <frames>
+        <!-- =========================================== -->
+        <!-- Resourceframe to map the Company NEPTUNE Object -->
+        <ResourceFrame version="any" id="Neptune:ResourceFrame:FrameProfile01">
+          <Name>RATP--Neptune-Line Profile </Name>
+          <codespaces>
+            <Codespace id="Neptune">
+              <Xmlns>Neptune</Xmlns>
+              <XmlnsUrl>http://www.Neptune.fr/Neptune</XmlnsUrl>
+              <Description>Neptune data </Description>
+            </Codespace>
+          </codespaces>
+          <FrameDefaults>
+            <DefaultCodespaceRef ref="Neptune"/>
+          </FrameDefaults>
+          <typesOfValue>
+            <TypeOfValidity version="01" id="Neptune:TypeOfValidity:WeeklyPlanned">
+              <Name>Weekly export of Neptune  Planned data</Name>
+              <Periodicity>P7D</Periodicity>
+              <Nature>planned</Nature>
+            </TypeOfValidity>
+            <TypeOfFrame version="01" id="Neptune:TypeOfFrame:CompositeFrame">
+              <Name>Neptune Profile:  Composite Frame </Name>
+              <Description>RATP--Neptune-Line-xxxxxx  frames will be composite frame containing Service, Timetable (and Service Calendar) and Resource frames with all the usual NEPTUNE attributes filled in, for a given line xxxxx.</Description>
+              <TypeOfValidityRef version="01" ref="Neptune:TypeOfValidity:WeeklyPlanned"/>
+              <FrameClassRef nameOfClass="CompositeFrame"/>
+              <classes>
+                <ClassInContextRef nameOfClass="AvailabilityCondition" classRefType="memberReferences"/>
+              </classes>
+              <typesOfFrame>
+                <TypeOfFrame version="01" id="Neptune:TypeOfFrame:TimeTableFrame">
+                  <Name>Neptune Profile:ServiceCalendar  Frame </Name>
+                  <FrameClassRef nameOfClass="TimeTableFrame"/>
+                  <classes>
+                    <ClassInContextRef classRefType="members" nameOfClass="TimeTableFrame"/>
+                    <ClassInContextRef classRefType="members" nameOfClass="ServiceJourney"/>
+                    <ClassInContextRef classRefType="members" nameOfClass="JourneyPart"/>
+                    <ClassInContextRef classRefType="members" nameOfClass="JourneyPart"/>
+                  </classes>
+                </TypeOfFrame>
+                <TypeOfFrame version="01" id="Neptune:TypeOfFrame:ServiceFrame">
+                  <Name>Neptune Profile:  Service  Frame </Name>
+                  <FrameClassRef nameOfClass="ServiceFrame"/>
+                  <classes>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="ScheduledStopPoint"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="ServicePattern"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="Network"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="RoutePoint"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="RouteLink"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="Line"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="Route"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="Direction"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="TariffZone"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="PassengerStopAssignment"/>
+                  </classes>
+                </TypeOfFrame>
+                <TypeOfFrame version="01" id="Neptune:TypeOfFrame:SiteFrame">
+                  <Name>Neptune Profile:  Site  Frame </Name>
+                  <FrameClassRef nameOfClass="SiteFrame"/>
+                  <classes>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="StopPlace"/>
+                  </classes>
+                </TypeOfFrame>
+                <TypeOfFrame version="01" id="Neptune:TypeOfFrame:ServiceCalendarFrame">
+                  <Name>Neptune Profile:ServceCalendar  Frame </Name>
+                  <FrameClassRef nameOfClass="ServiceCalendarFrame"/>
+                  <classes>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="ServiceCalendar"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="DayType"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="DayTypeAssignment"/>
+                  </classes>
+                </TypeOfFrame>
+                <TypeOfFrame version="01" id="Neptune:TypeOfFrame:ResourceFrame">
+                  <Name>Neptune Profile:  Resource Frame </Name>
+                  <FrameClassRef nameOfClass="ResourceFrame"/>
+                  <classes>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="TypeOfFrame"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="Operator"/>
+                    <ClassInContextRef classRefType="memberReferences" nameOfClass="Authority"/>
+                  </classes>
+                </TypeOfFrame>
+              </typesOfFrame>
+            </TypeOfFrame>
+          </typesOfValue>
+          <organisations>
+            <Operator version="$company.objectVersion" id="$company.objectId">
+              <CompanyNumber>$company.registrationNumber</CompanyNumber>
+              <Name>$company.name</Name>
+            </Operator>
+          </organisations>
+        </ResourceFrame>				
+        #parse( "templates/service_frame.vm" )
+        #parse( "templates/site_frame.vm" )
+        #parse( "templates/service_calendar_frame.vm" )
+        #parse( "templates/time_table_frame.vm" )
       </frames>
-		</CompositeFrame>
-	</dataObjects>
+    </CompositeFrame>
+  </dataObjects>
 </PublicationDelivery>

@@ -5,6 +5,7 @@ import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import java.math.BigDecimal;
 
 @Blueprint(StopPoint.class)
@@ -20,13 +21,13 @@ public class StopPointBlueprint {
     String name = "A";
 
     @Mapped   
-    StopArea containedInStopArea;
+    StopArea containedInStopArea;    
     
-//    @Default
-//    BigDecimal longitude = 2.120000000000000000000;
-//    
-//    @Default
-//    BigDecimal latitude = 1.1200000000000000000000;
+    @Default
+    BigDecimal longitude = new BigDecimal("1.27");
+    
+    @Default
+    BigDecimal latitude = new BigDecimal("2.27");
     
     @Default
     int position = 1;
