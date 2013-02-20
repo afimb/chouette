@@ -35,7 +35,7 @@ When compressed the NeTEx file is 8 Ko and NEPTUNE 4 Ko
 So the NeTEx File will probably be something like 50% bigger with the same level of comment.
 
 -->
-<PublicationDelivery version="1.0" xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns="http://www.netex.org.uk/netex" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ratp_pivi="http://www.ratp.fr/ratp">
+<PublicationDelivery version="1.0" xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns="http://www.netex.org.uk/netex" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  >
 	<PublicationTimestamp>2001-12-17T09:30:47.0Z</PublicationTimestamp>
 	<ParticipantRef>SYS001</ParticipantRef>
 	<!--- ======WHAT WAS REQUESTED ========== -->
@@ -48,7 +48,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 					<!-- NEPTUNE [local agreement:fixed] : Only the current data set is requested  -->
 					<Current/>
 					<!-- NEPTUNE [local agreement:variable] : a NEPTUNE Frame is named "operator":Neptune:ServiceAndTimetableFrame:"line Id"  -->
-					<CompositeFrameRef ref="RATP:Neptune:ServiceAndTimetableFrame:100110107"/>
+					<CompositeFrameRef ref="RATP_PIVI:Neptune:ServiceAndTimetableFrame:100110107"/>
 				</Topics>
 				<Policies>
 					<!-- NEPTUNE [local agreement:fixed] : a NEPTUNE Frame is without Geometry -->
@@ -67,8 +67,16 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 			<Name>NEPTUNE Mapping Frame</Name>
 			<!-- NEPTUNE [mapping:fixed] : This is a NEPTUNE to NeTEx mapping frame -->
 			<TypeOfFrameRef version="01" ref="Neptune:TypeOfFrame:CompositeFrame"/>
-			<!-- NEPTUNE [mapping:fixed] : NEPTUNE is in French ! -->
+			<codespaces>
+				<Codespace id="RATP_PIVI">
+					<Xmlns>RATP_PIVI</Xmlns>
+					<XmlnsUrl>http://www.ratp.fr/ratp</XmlnsUrl>
+					<Description>RATP datas</Description>
+				</Codespace>
+			</codespaces>
 			<FrameDefaults>
+				<DefaultCodespaceRef ref="ratp_pivi"/>
+				<!-- NEPTUNE [mapping:fixed] : NEPTUNE is in French ! -->
 				<DefaultLocale>
 					<TimeZoneOffset>-1</TimeZoneOffset>
 					<SummerTimeZoneOffset>-2</SummerTimeZoneOffset>
@@ -82,6 +90,16 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 				<!-- Resourceframe to map the Company NEPTUNE Object -->
 				<ResourceFrame version="any" id="Neptune:ResourceFrame:FrameProfile01">
 					<Name>RATP--Neptune-Line Profile </Name>
+					<codespaces>
+						<Codespace id="Neptune">
+							<Xmlns>Neptune</Xmlns>
+							<XmlnsUrl>http://www.Neptune.fr/Neptune</XmlnsUrl>
+							<Description>Neptune data </Description>
+						</Codespace>
+					</codespaces>
+					<FrameDefaults>
+						<DefaultCodespaceRef ref="Neptune"/>
+					</FrameDefaults>
 					<typesOfValue>
 						<TypeOfValidity version="01" id="Neptune:TypeOfValidity:WeeklyPlanned">
 							<Name>Weekley export of Neptune  Planned data</Name>
@@ -165,7 +183,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 				<!--   -->
 				<!-- =========================================== -->
 				<!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
-				<ServiceFrame version="any">
+				<ServiceFrame version="any"   id="RATP_PIVI:ServiceFrame:100110107">
 					<!-- NEPTUNE PTNetwork Mappling =========================================== -->
 					<!-- NEPTUNE [mapping:variable] : Network.version mapped to NEPTUNE PTNetwork->ObjectVersion -->
 					<!-- NEPTUNE [mapping:variable] : Network.changed mapped to NEPTUNE PTNetwork->VersionDate -->
@@ -536,64 +554,64 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							<!-- NEPTUNE [mapping:variable] : ScheduledStopPoint-Name to NEPTUNE StopArea[type Quay]->name -->
 							<Name>Bolivar</Name>
 							<!-- NEPTUNE makes no difference between Timing Points a Stop Points ... So the best way to map it is to say thay each ScheduledStopPoint is also a TimingPoint -->
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<!-- NEPTUNE same thing for all the others.... -->
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:317453A1A5246073">
 							<Name>MISSING POINT.</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246072">
 							<Name>Botzaris</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246067">
 							<Name>Botzaris</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246070">
 							<Name>MISSING</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246071">
 							<Name>Buttes-Chaumont</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246068">
 							<Name>Buttes-Chaumont</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246062">
 							<Name>Danube</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246066">
 							<Name>Jaurès</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246073">
 							<Name>Jaurès</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246074">
 							<Name>Louis Blanc</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246065">
 							<Name>Louis Blanc</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246064">
 							<Name>Place des Fêtes</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246075">
 							<Name>Pré-Saint-Gervais</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 						<ScheduledStopPoint version="1" id="RATP_PIVI:StopPoint:5246063">
 							<Name>Pré-Saint-Gervais</Name>
-							<TimingPointType>timingPoint</TimingPointType>
+							<TimingPointStatus>timingPoint</TimingPointStatus>
 						</ScheduledStopPoint>
 					</scheduledStopPoints>
 					<!--   -->
