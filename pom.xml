@@ -316,7 +316,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.5.8</version>
+				<version>1.6.1</version>
 			</dependency>
 
 			<!-- Hibernate -->
@@ -344,11 +344,11 @@
 
 			<!-- Hibernate uses slf4j for logging, for our purposes here use the simple 
 				backend -->
-			<dependency>
+			<!--dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.5.8</version>
-			</dependency>
+				<version>1.6.1</version>
+			</dependency--> 
 
 			<!-- Hibernate gives you a choice of bytecode providers between cglib 
 				and javassist -->
