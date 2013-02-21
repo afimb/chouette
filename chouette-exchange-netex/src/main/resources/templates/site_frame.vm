@@ -1,0 +1,42 @@
+<!-- =========================================== -->
+<!-- NEPTUNE StopPlaces (StopArea of type StopPlace) are mapped to NeTEx StopPlace -->
+<SiteFrame version="any" id="RATP_PIVI:SiteFrame:SF01"> 
+  <stopPlaces>
+    #foreach( $stop_place in $stop_places )
+    <StopPlace version="$stop_place.objectVersion" id="$stop_place.objectId">
+      <TopographicPlaceView>
+        <Name>$stop_place.name</Name>
+      </TopographicPlaceView>
+      <tariffZones>
+        <TariffZoneRef version="any" ref="RATP_PIVI:TariffZone:1"/>
+      </tariffZones>
+      <quays>
+        #foreach( $quay in $stop_place.containedStopAreas )
+        <Quay version="$quay.objectVersion" id="$quay.objectId">
+          <Centroid>
+            <Location id="$quay.areaCentroid.objectId">
+              <Longitude>$quay.areaCentroid.longitude</Longitude>
+              <Latitude>$quay.areaCentroid.latitude</Latitude>
+              <gml:pos srsName="$quay.areaCentroid.longLatType">
+                $quay.areaCentroid.projectedPoint.y $quay.areaCentroid.projectedPoint.x 
+              </gml:pos>
+            </Location>
+          </Centroid>
+          <PostalAddress version="any" id="$quay.areaCentroid.adress.objectId">
+            <CountryRef ref="fr"/><!-- TODO : Why ref?? -->
+            <AddressLine1>$quay.areaCentroid.adress.streetName</AddressLine1>
+            <PostCode>$quay.areaCentroid.adress.countryCode</PostCode>
+          </PostalAddress>
+          <TransportMode>metro</TransportMode><!-- TODO : Where network? -->
+          <tariffZones>
+            <TariffZoneRef version="any" ref="RATP_PIVI:TariffZone:$quay.fareCode"/>
+          </tariffZones>
+          <Label>Botzaris</Label><!-- TODO : Where? -->
+          <QuayType>metroPlatform</QuayType><!-- TODO : Where? -->
+        </Quay>	
+        #end	
+      </quays>
+    </StopPlace>
+    #end				
+  </stopPlaces>
+</SiteFrame>

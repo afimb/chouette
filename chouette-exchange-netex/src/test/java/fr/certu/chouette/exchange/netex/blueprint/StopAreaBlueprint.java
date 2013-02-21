@@ -18,11 +18,12 @@ public class StopAreaBlueprint {
     
     @Default
     String name = "A";
-
-    @Mapped   
-    StopArea parent;   
     
-    @MappedList(target = StopArea.class, size = 2)
-    List<StopArea> containedStopAreas;
+//
+//    @Mapped   
+//    StopArea parent;   
+
+//    @MappedList(target = StopArea.class, size = 2)
+//    List<StopArea> containedStopAreas;
     
 }

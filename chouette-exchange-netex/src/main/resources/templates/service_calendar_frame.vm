@@ -1,0 +1,45 @@
+<!--   -->
+<!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE Timetable -->
+<!-- Each NEPTUNE Timetable is mapped to a separate ServiceCalendarFrame  -->
+#foreach( $timeTable in $timeTables )
+<ServiceCalendarFrame version="any" id="$timeTable.objectId">
+  <ServiceCalendar version="any" id="RATP_PIVI:ServiceCalendar:SFC01"><!-- ObjectId?? -->
+    <!-- NEPTUNE [mapping:variable] : ServiceCalendarFrame  FromDate & ToDate are computed from all NEPTUNE Timetable->startOfPeriod & endOfPeriod -->
+    <FromDate>$timeTable.startOfPeriod</FromDate><!-- N'existe pas -->
+    <ToDate>$timeTable.endOfPeriod</ToDate><!-- N'existe pas -->
+  </ServiceCalendar>
+  <!--- === Day Types ==== -->
+  #foreach( $period in $timeTable.getDayTypes() ) <!-- TODO A eclaircir avec Christophe -->
+  <dayTypes>
+    <DayType version="$timeTable.objectVersion" id="$timeTable.objectId">
+      <Name>$timeTable.name</Name>
+      <ShortName>$timeTable.comment</ShortName>
+      <properties>
+        <PropertyOfDay>
+          <DaysOfWeek></DaysOfWeek>
+          <HollidayTypes></HollidayTypes>
+        <PropertyOfDay>
+      </properties>
+    </DayType>
+  </dayTypes>
+  #end
+  <!--- === Period assignments ==== -->
+  <periods>
+    #foreach( $period in $timeTable.periods )
+    <OperatingPeriod version="any">
+      <FromDate>$period.startDate.toString()</FromDate>
+      <ToDate>$period.endDate.toString()</ToDate>
+    </OperatingPeriod>
+    #end		
+  </periods>  
+  <!--- === Day assignments ==== -->
+  <dayTypeAssignments>
+    #foreach( $day in $timeTable.calendarDays )
+    <DayTypeAssignment version="any">
+      <Date>$day.toString()</Date>
+      <DayTypeRef version="$timeTable.objectVersion" ref="$timeTable.objectId"/>
+    </DayTypeAssignment>
+    #end		
+  </dayTypeAssignments>  
+</ServiceCalendarFrame>
+#end
