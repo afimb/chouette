@@ -21,442 +21,490 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
  */
 public class Timetable extends NeptuneIdentifiedObject
 {
-   private static final long    serialVersionUID = -1598554061982685113L;
+	private static final long    serialVersionUID = -1598554061982685113L;
 
-   // constant for persistence fields
-   /**
-    * name of comment attribute for {@link Filter} attributeName construction
-    */
-   public static final String   COMMENT          = "comment";
-   /**
-    * name of version attribute for {@link Filter} attributeName construction
-    */
-   public static final String   VERSION          = "version";
-   /**
-    * name of dayTypes attribute for {@link Filter} attributeName construction
-    */
-   public static final String   DAYTYPES_MASK    = "intDayTypes";
-   /**
-    * name of calendarDays attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String   CALENDARDAYS     = "calendarDays";
-   /**
-    * name of periods attribute for {@link Filter} attributeName construction
-    */
-   public static final String   PERIODS          = "periods";
+	// constant for persistence fields
+	/**
+	 * name of comment attribute for {@link Filter} attributeName construction
+	 */
+	public static final String   COMMENT          = "comment";
+	/**
+	 * name of version attribute for {@link Filter} attributeName construction
+	 */
+	public static final String   VERSION          = "version";
+	/**
+	 * name of dayTypes attribute for {@link Filter} attributeName construction
+	 */
+	public static final String   DAYTYPES_MASK    = "intDayTypes";
+	/**
+	 * name of calendarDays attribute for {@link Filter} attributeName
+	 * construction
+	 */
+	public static final String   CALENDARDAYS     = "calendarDays";
+	/**
+	 * name of periods attribute for {@link Filter} attributeName construction
+	 */
+	public static final String   PERIODS          = "periods";
 
-   /**
-    * mapping day type with enumerations
-    */
-   private static final DayTypeEnum[] dayTypeByInt= {DayTypeEnum.SUNDAY,
-       DayTypeEnum.MONDAY,
-       DayTypeEnum.TUESDAY,
-       DayTypeEnum.WEDNESDAY,
-       DayTypeEnum.THURSDAY,
-       DayTypeEnum.FRIDAY,
-       DayTypeEnum.SATURDAY};
-   /**
-    * comment <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private String               comment;
-   @Getter
-   @Setter
-   private String               version;
-   /**
-    * List of dayTypes <br/>
-    * this list is synchronized with intDayTypes at each update <br/>
-    */
-   private List<DayTypeEnum>    dayTypes;
-   /**
-    * intDayTypes <br/>
-    * restricted to DAO usage
-    */
-   @Getter
-   @Setter
-   private Integer              intDayTypes;
-   /**
-    * individual calendar days affected to timetable <br/>
-    * these days are not affected by dayType restrictions
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private List<Date>           calendarDays     = new ArrayList<Date>();
-   /**
-    * period of calendar affected to timetable<br/>
-    * dayType restrictions affect every period <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private List<Period>         periods          = new ArrayList<Period>();
+	/**
+	 * mapping day type with enumerations
+	 */
+	private static final DayTypeEnum[] dayTypeByInt= {DayTypeEnum.SUNDAY,
+		DayTypeEnum.MONDAY,
+		DayTypeEnum.TUESDAY,
+		DayTypeEnum.WEDNESDAY,
+		DayTypeEnum.THURSDAY,
+		DayTypeEnum.FRIDAY,
+		DayTypeEnum.SATURDAY};
+	/**
+	 * comment <br/>
+	 * (import/export usage) <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	@Setter
+	private String               comment;
+	@Getter
+	@Setter
+	private String               version;
+	/**
+	 * List of dayTypes <br/>
+	 * this list is synchronized with intDayTypes at each update <br/>
+	 */
+	private List<DayTypeEnum>    dayTypes;
+	/**
+	 * intDayTypes <br/>
+	 * restricted to DAO usage
+	 */
+	@Getter
+	@Setter
+	private Integer              intDayTypes;
+	/**
+	 * individual calendar days affected to timetable <br/>
+	 * these days are not affected by dayType restrictions
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	@Setter
+	private List<Date>           calendarDays     = new ArrayList<Date>();
+	/**
+	 * period of calendar affected to timetable<br/>
+	 * dayType restrictions affect every period <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	@Setter
+	private List<Period>         periods          = new ArrayList<Period>();
 
-   /**
-    * Neptune ObjectId of vehicleJourneys attached to this timetable <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private List<String>         vehicleJourneyIds;
-   /**
-    * VehicleJourneys attached to this timetable <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private List<VehicleJourney> vehicleJourneys;
+	/**
+	 * Neptune ObjectId of vehicleJourneys attached to this timetable <br/>
+	 * (import/export usage) <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	@Setter
+	private List<String>         vehicleJourneyIds;
+	/**
+	 * VehicleJourneys attached to this timetable <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	@Setter
+	private List<VehicleJourney> vehicleJourneys;
+	
+	@Getter private Date startOfPeriod;
+	@Getter private Date endOfPeriod;
 
-   /**
-    * add a dayType if not already present
-    * 
-    * @param dayType
-    */
-   public void addDayType(DayTypeEnum dayType)
-   {
-      if (dayTypes == null)
-         dayTypes = getDayTypes();
-      if (dayType != null && !dayTypes.contains(dayType))
-      {
-         dayTypes.add(dayType);
-         refreshIntDaytypes();
-      }
-   }
 
-   /**
-    * remove a daytype
-    * 
-    * @param dayType
-    */
-   public void removeDayType(DayTypeEnum dayType)
-   {
-      if (dayTypes == null)
-         dayTypes = getDayTypes();
-      if (dayType != null)
-      {
-         if (dayTypes.remove(dayType))
-            refreshIntDaytypes();
-      }
-   }
+	/**
+	 * add a dayType if not already present
+	 * 
+	 * @param dayType
+	 */
+	public void addDayType(DayTypeEnum dayType)
+	{
+		if (dayTypes == null)
+			dayTypes = getDayTypes();
+		if (dayType != null && !dayTypes.contains(dayType))
+		{
+			dayTypes.add(dayType);
+			refreshIntDaytypes();
+		}
+	}
 
-   /**
-    * add a day if not already present
-    * 
-    * @param calendarDay
-    */
-   public void addCalendarDay(Date calendarDay)
-   {
-      if (calendarDays == null)
-         calendarDays = new ArrayList<Date>();
-      if (calendarDay != null && !calendarDays.contains(calendarDay))
-      {
-         calendarDays.add(calendarDay);
-      }
-   }
+	/**
+	 * remove a daytype
+	 * 
+	 * @param dayType
+	 */
+	public void removeDayType(DayTypeEnum dayType)
+	{
+		if (dayTypes == null)
+			dayTypes = getDayTypes();
+		if (dayType != null)
+		{
+			if (dayTypes.remove(dayType))
+				refreshIntDaytypes();
+		}
+	}
 
-   /**
-    * remove a day
-    * 
-    * @param calendarDay
-    */
-   public void removeCalendarDay(Date calendarDay)
-   {
-      if (calendarDays == null)
-         calendarDays = new ArrayList<Date>();
-      if (calendarDay != null)
-      {
-         calendarDays.remove(calendarDay);
-      }
-   }
+	/**
+	 * add a day if not already present
+	 * 
+	 * @param calendarDay
+	 */
+	public void addCalendarDay(Date calendarDay)
+	{
+		if (calendarDays == null)
+			calendarDays = new ArrayList<Date>();
+		if (calendarDay != null && !calendarDays.contains(calendarDay))
+		{
+			calendarDays.add(calendarDay);
+		}
+	}
 
-   /**
-    * add a period if not already present
-    * 
-    * @param period
-    */
-   public void addPeriod(Period period)
-   {
-      if (periods == null)
-         periods = new ArrayList<Period>();
-      if (period != null && !periods.contains(period))
-         periods.add(period);
+	/**
+	 * remove a day
+	 * 
+	 * @param calendarDay
+	 */
+	public void removeCalendarDay(Date calendarDay)
+	{
+		if (calendarDays == null)
+			calendarDays = new ArrayList<Date>();
+		if (calendarDay != null)
+		{
+			calendarDays.remove(calendarDay);
+		}
+	}
 
-   }
+	/**
+	 * add a period if not already present
+	 * 
+	 * @param period
+	 */
+	public void addPeriod(Period period)
+	{
+		if (periods == null)
+			periods = new ArrayList<Period>();
+		if (period != null && !periods.contains(period))
+			periods.add(period);
 
-   /**
-    * remove a period
-    * 
-    * @param period
-    */
-   public void removePeriod(Period period)
-   {
-      if (periods == null)
-         periods = new ArrayList<Period>();
-      if (period != null)
-      {
-         periods.remove(period);
-      }
-   }
+	}
 
-   /**
-    * remove a period at a specific rank
-    * 
-    * @param rank
-    */
-   public void removePeriod(int rank)
-   {
-      if (periods == null)
-         periods = new ArrayList<Period>();
-      if (rank >= 0 && rank < periods.size())
-      {
-         periods.remove(rank);
-      }
-   }
+	/**
+	 * remove a period
+	 * 
+	 * @param period
+	 */
+	public void removePeriod(Period period)
+	{
+		if (periods == null)
+			periods = new ArrayList<Period>();
+		if (period != null)
+		{
+			periods.remove(period);
+		}
+	}
 
-   /**
-    * add a vehiclejourney Id
-    * 
-    * @param vehicleJourneyId
-    */
-   public void addVehicleJourneyId(String vehicleJourneyId)
-   {
-      if (vehicleJourneyIds == null)
-         vehicleJourneyIds = new ArrayList<String>();
-      vehicleJourneyIds.add(vehicleJourneyId);
-   }
+	/**
+	 * remove a period at a specific rank
+	 * 
+	 * @param rank
+	 */
+	public void removePeriod(int rank)
+	{
+		if (periods == null)
+			periods = new ArrayList<Period>();
+		if (rank >= 0 && rank < periods.size())
+		{
+			periods.remove(rank);
+		}
+	}
 
-   /**
-    * add a vehicle journey if not already present
-    * 
-    * @param vehicleJourney
-    */
-   public void addVehicleJourney(VehicleJourney vehicleJourney)
-   {
-      if (vehicleJourneys == null)
-         vehicleJourneys = new ArrayList<VehicleJourney>();
-      if (vehicleJourney != null && !vehicleJourneys.contains(vehicleJourney))
-      {
-         vehicleJourneys.add(vehicleJourney);
-      }
-   }
+	/**
+	 * add a vehiclejourney Id
+	 * 
+	 * @param vehicleJourneyId
+	 */
+	public void addVehicleJourneyId(String vehicleJourneyId)
+	{
+		if (vehicleJourneyIds == null)
+			vehicleJourneyIds = new ArrayList<String>();
+		vehicleJourneyIds.add(vehicleJourneyId);
+	}
 
-   /**
-    * remove a vehicle journey
-    * 
-    * @param vehicleJourney
-    */
-   public void removeVehicleJourney(VehicleJourney vehicleJourney)
-   {
-      if (vehicleJourneys == null)
-         vehicleJourneys = new ArrayList<VehicleJourney>();
-      if (vehicleJourney != null && vehicleJourneys.contains(vehicleJourney))
-      {
-         vehicleJourneys.remove(vehicleJourney);
-      }
-   }
+	/**
+	 * add a vehicle journey if not already present
+	 * 
+	 * @param vehicleJourney
+	 */
+	public void addVehicleJourney(VehicleJourney vehicleJourney)
+	{
+		if (vehicleJourneys == null)
+			vehicleJourneys = new ArrayList<VehicleJourney>();
+		if (vehicleJourney != null && !vehicleJourneys.contains(vehicleJourney))
+		{
+			vehicleJourneys.add(vehicleJourney);
+		}
+	}
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
-    * lang.String, int)
-    */
-   @Override
-   public String toString(String indent, int level)
-   {
-      StringBuilder sb = new StringBuilder(super.toString(indent, level));
-      sb.append("\n").append(indent).append("  comment = ").append(comment);
-      sb.append("\n").append(indent).append("  version = ").append(version);
-      if (dayTypes != null)
-      {
-         sb.append("\n").append(indent).append(CHILD_ARROW).append("dayTypes");
-         for (DayTypeEnum dayType : getDayTypes())
-         {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(dayType);
-         }
-      }
-      if (calendarDays != null)
-      {
-         sb.append("\n").append(indent).append(CHILD_ARROW).append("calendarDays");
-         for (Date calendarDay : getCalendarDays())
-         {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(formatDate(calendarDay));
-         }
-      }
-      if (periods != null)
-      {
-         sb.append("\n").append(indent).append(CHILD_ARROW).append("periods");
-         for (Period period : getPeriods())
-         {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(period);
-         }
-      }
-      if (vehicleJourneyIds != null)
-      {
-         sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneyIds");
-         for (String vehicleJourneyId : getVehicleJourneyIds())
-         {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourneyId);
-         }
-      }
-      if (level > 0)
-      {
-         int childLevel = level - 1;
-         String childIndent = indent + CHILD_INDENT;
-         childIndent = indent + CHILD_LIST_INDENT;
-         if (vehicleJourneys != null)
-         {
-            sb.append("\n").append(indent).append(CHILD_ARROW).append("routes");
-            for (VehicleJourney vehicleJourney : getVehicleJourneys())
-            {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(vehicleJourney.toString(childIndent, childLevel));
-            }
-         }
-      }
+	/**
+	 * remove a vehicle journey
+	 * 
+	 * @param vehicleJourney
+	 */
+	public void removeVehicleJourney(VehicleJourney vehicleJourney)
+	{
+		if (vehicleJourneys == null)
+			vehicleJourneys = new ArrayList<VehicleJourney>();
+		if (vehicleJourney != null && vehicleJourneys.contains(vehicleJourney))
+		{
+			vehicleJourneys.remove(vehicleJourney);
+		}
+	}
 
-      return sb.toString();
-   }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
+	 * lang.String, int)
+	 */
+	@Override
+	public String toString(String indent, int level)
+	{
+		StringBuilder sb = new StringBuilder(super.toString(indent, level));
+		sb.append("\n").append(indent).append("  comment = ").append(comment);
+		sb.append("\n").append(indent).append("  version = ").append(version);
+		if (dayTypes != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("dayTypes");
+			for (DayTypeEnum dayType : getDayTypes())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(dayType);
+			}
+		}
+		if (calendarDays != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("calendarDays");
+			for (Date calendarDay : getCalendarDays())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(formatDate(calendarDay));
+			}
+		}
+		if (periods != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("periods");
+			for (Period period : getPeriods())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(period);
+			}
+		}
+		if (vehicleJourneyIds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneyIds");
+			for (String vehicleJourneyId : getVehicleJourneyIds())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourneyId);
+			}
+		}
+		if (level > 0)
+		{
+			int childLevel = level - 1;
+			String childIndent = indent + CHILD_INDENT;
+			childIndent = indent + CHILD_LIST_INDENT;
+			if (vehicleJourneys != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("routes");
+				for (VehicleJourney vehicleJourney : getVehicleJourneys())
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
+					.append(vehicleJourney.toString(childIndent, childLevel));
+				}
+			}
+		}
 
-   /**
-    * format a date for toString usage
-    * 
-    * @param date
-    * @return
-    */
-   private static String formatDate(Date date)
-   {
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      if (date != null)
-      {
-         return dateFormat.format(date);
-      }
-      else
-      {
-         return null;
-      }
-   }
+		return sb.toString();
+	}
 
-   /**
-    * get the affected dayTypes
-    * 
-    * @return
-    */
-   public List<DayTypeEnum> getDayTypes()
-   {
-      if (dayTypes == null)
-      {
-         dayTypes = new ArrayList<DayTypeEnum>();
-      }
-      else
-      {
-         dayTypes.clear();
-      }
-      if (intDayTypes == null)
-      {
-         intDayTypes = 0;
-      }
+	/**
+	 * format a date for toString usage
+	 * 
+	 * @param date
+	 * @return
+	 */
+	private static String formatDate(Date date)
+	{
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		if (date != null)
+		{
+			return dateFormat.format(date);
+		}
+		else
+		{
+			return null;
+		}
+	}
 
-      DayTypeEnum[] dayTypeEnum = DayTypeEnum.values();
-      for (DayTypeEnum dayType : dayTypeEnum)
-      {
-         int filterDayType = buildDayTypeMask(dayType);
-         if (filterDayType == (intDayTypes.intValue() & filterDayType))
-         {
-            dayTypes.add(dayType);
-         }
-      }
-      return this.dayTypes;
-   }
+	/**
+	 * get the affected dayTypes
+	 * 
+	 * @return
+	 */
+	public List<DayTypeEnum> getDayTypes()
+	{
+		if (dayTypes == null)
+		{
+			dayTypes = new ArrayList<DayTypeEnum>();
+		}
+		else
+		{
+			dayTypes.clear();
+		}
+		if (intDayTypes == null)
+		{
+			intDayTypes = 0;
+		}
 
-   /**
-    * set the dayTypes
-    * 
-    * @param dayTypes
-    */
-   public void setDayTypes(List<DayTypeEnum> dayTypes)
-   {
-      this.dayTypes = dayTypes;
-      refreshIntDaytypes();
-   }
+		DayTypeEnum[] dayTypeEnum = DayTypeEnum.values();
+		for (DayTypeEnum dayType : dayTypeEnum)
+		{
+			int filterDayType = buildDayTypeMask(dayType);
+			if (filterDayType == (intDayTypes.intValue() & filterDayType))
+			{
+				dayTypes.add(dayType);
+			}
+		}
+		return this.dayTypes;
+	}
 
-   /**
-    * synchronize intDayTypes with dayTypes list
-    */
-   private void refreshIntDaytypes()
-   {
-      if (this.dayTypes == null)
-         this.dayTypes = new ArrayList<DayTypeEnum>();
-      intDayTypes = buildDayTypeMask(this.dayTypes);
-   }
+	/**
+	 * set the dayTypes
+	 * 
+	 * @param dayTypes
+	 */
+	public void setDayTypes(List<DayTypeEnum> dayTypes)
+	{
+		this.dayTypes = dayTypes;
+		refreshIntDaytypes();
+	}
 
-   /**
-    * build a bitwise dayType mask for filtering
-    * 
-    * @param dayTypes
-    *           a list of included day types
-    * @return
-    */
-   public static int buildDayTypeMask(List<DayTypeEnum> dayTypes)
-   {
-      int value = 0;
-      if (dayTypes == null)
-         return value;
-      for (DayTypeEnum dayType : dayTypes)
-      {
-         value += buildDayTypeMask(dayType);
-      }
-      return value;
-   }
+	/**
+	 * synchronize intDayTypes with dayTypes list
+	 */
+	private void refreshIntDaytypes()
+	{
+		if (this.dayTypes == null)
+			this.dayTypes = new ArrayList<DayTypeEnum>();
+		intDayTypes = buildDayTypeMask(this.dayTypes);
+	}
 
-   /**
-    * build a bitwise dayType mask for filtering
-    * 
-    * @param dayType
-    *           the dayType to filter
-    * @return
-    */
-   public static int buildDayTypeMask(DayTypeEnum dayType)
-   {
-      return (int) Math.pow(2, dayType.ordinal());
-   }
-   
-   /**
-    * check if a Timetable is active on a given date
-    * 
-    * @param aDay
-    * @return
-    */
-   public boolean isActiveOn(Date aDay)
-   {
-      if (calendarDays != null)
-      {
-          if (calendarDays.contains(aDay)) return true;
-      }
-      if (intDayTypes.intValue() != 0 && periods != null)
-      {
-         Calendar c = Calendar.getInstance();
-         c.setTime(aDay);
-         
-         int aDayOfWeek = c.get(Calendar.DAY_OF_WEEK) - 1; // zero on sunday
-         int aDayOfWeekFlag = buildDayTypeMask(dayTypeByInt[aDayOfWeek]);
-         if ((intDayTypes & aDayOfWeekFlag) == aDayOfWeekFlag)
-         {
-            // check if day is in a period
-            for (Period period : periods)
-            {
-               if (period.contains(aDay)) return true;
-            }
-         }
-         
-      }
-      return false;
-   }
+	/**
+	 * build a bitwise dayType mask for filtering
+	 * 
+	 * @param dayTypes
+	 *           a list of included day types
+	 * @return
+	 */
+	public static int buildDayTypeMask(List<DayTypeEnum> dayTypes)
+	{
+		int value = 0;
+		if (dayTypes == null)
+			return value;
+		for (DayTypeEnum dayType : dayTypes)
+		{
+			value += buildDayTypeMask(dayType);
+		}
+		return value;
+	}
+
+	/**
+	 * build a bitwise dayType mask for filtering
+	 * 
+	 * @param dayType
+	 *           the dayType to filter
+	 * @return
+	 */
+	public static int buildDayTypeMask(DayTypeEnum dayType)
+	{
+		return (int) Math.pow(2, dayType.ordinal());
+	}
+
+	/**
+	 * check if a Timetable is active on a given date
+	 * 
+	 * @param aDay
+	 * @return
+	 */
+	public boolean isActiveOn(Date aDay)
+	{
+		if (calendarDays != null)
+		{
+			if (calendarDays.contains(aDay)) return true;
+		}
+		if (intDayTypes.intValue() != 0 && periods != null)
+		{
+			Calendar c = Calendar.getInstance();
+			c.setTime(aDay);
+
+			int aDayOfWeek = c.get(Calendar.DAY_OF_WEEK) - 1; // zero on sunday
+			int aDayOfWeekFlag = buildDayTypeMask(dayTypeByInt[aDayOfWeek]);
+			if ((intDayTypes & aDayOfWeekFlag) == aDayOfWeekFlag)
+			{
+				// check if day is in a period
+				for (Period period : periods)
+				{
+					if (period.contains(aDay)) return true;
+				}
+			}
+
+		}
+		return false;
+	}
+
+	@Override
+	public void complete()
+	{
+		// TODO Auto-generated method stub
+		super.complete();
+		
+		for (Period period : periods)
+		{
+			if (startOfPeriod == null || startOfPeriod.after(period.getStartDate()))
+			{
+				startOfPeriod = period.getStartDate();
+			}
+			if (endOfPeriod == null || endOfPeriod.after(period.getEndDate()))
+			{
+				endOfPeriod = period.getEndDate();
+			}
+		}
+		// check DayType
+		Calendar c = Calendar.getInstance();
+		if (startOfPeriod != null && endOfPeriod != null)
+		{
+			while (startOfPeriod.before(endOfPeriod) && !isActiveOn(startOfPeriod))
+			{
+				c.setTime(startOfPeriod);
+				c.add(Calendar.DATE, 1);
+				startOfPeriod.setTime(c.getTimeInMillis());
+			}
+			while (endOfPeriod.after(startOfPeriod) && !isActiveOn(endOfPeriod))
+			{
+				c.setTime(endOfPeriod);
+				c.add(Calendar.DATE, -1);
+				endOfPeriod.setTime(c.getTimeInMillis());
+			}
+		}
+        for (Date date : calendarDays) 
+        {
+			if (startOfPeriod == null || date.before(startOfPeriod)) startOfPeriod = date;
+			if (endOfPeriod == null || date.after(endOfPeriod)) endOfPeriod = date;
+		}
+		
+	}
+
+
 
 }
