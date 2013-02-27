@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -122,6 +121,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
    @Setter 
    private TimeSlotProducer        timeSlotProducer;
 
+   /**
+    * list of allowed file extensions
+    */
+   private List<String>        allowedExtensions = Arrays.asList(new String[] { "xml", "zip" });
 
    /**
     * Export lines in Neptune XML format
@@ -134,7 +137,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       {
          ParameterDescription param = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false,
                true);
-         param.setAllowedExtensions(Arrays.asList(new String[] { "xml", "zip" }));
+         param.setAllowedExtensions(allowedExtensions);
          params.add(param);
       }
       {
@@ -172,10 +175,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
       String fileName = null;
 
-      if (beans == null)
-      {
-         throw new IllegalArgumentException("no beans to export");
-      }
       Date startDate = null; 
       Date endDate = null; 
 
@@ -205,14 +204,37 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                if (c != null)
                   endDate = new Date(c.getTime().getTime());
             }
+            else
+            {
+               throw new IllegalArgumentException("unexpected argument " + svalue.getName());
+            }
+         }
+         else
+         {
+            throw new IllegalArgumentException("unexpected argument " + value.getName());
          }
       }
       if (fileName == null)
       {
          throw new IllegalArgumentException("outputFile required");
       }
+      if (startDate != null && endDate != null && startDate.after(endDate))
+      {
+    	  throw new IllegalArgumentException("startDate after endDate");
+      }
 
       String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+      if (!allowedExtensions.contains(fileExtension))
+      {
+         logger.error("invalid argument outputFile " + fileName + ", allowed format : "
+               + Arrays.toString(allowedExtensions.toArray()));
+         throw new IllegalArgumentException("invalid file type : " + fileExtension);
+      }
+
+      if (beans == null || beans.isEmpty())
+      {
+         throw new IllegalArgumentException("no beans to export");
+      }
 
       if (beans.size() > 1 && fileExtension.equals("xml"))
       {
@@ -345,23 +367,24 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
 
 
-         HashSet<JourneyPattern> journeyPatterns = new HashSet<JourneyPattern>();
-         for (Route route : line.getRoutes())
-         {
-            if (route.getJourneyPatterns() != null)
-            {
-               journeyPatterns.addAll(route.getJourneyPatterns());
-            }
-         }
+//         HashSet<JourneyPattern> journeyPatterns = new HashSet<JourneyPattern>();
+//         for (Route route : line.getRoutes())
+//         {
+//            if (route.getJourneyPatterns() != null)
+//            {
+//               journeyPatterns.addAll(route.getJourneyPatterns());
+//            }
+//         }
+         List<VehicleJourney> vehicleJourneys = line.getVehicleJourneys();
 
-         HashSet<VehicleJourney> vehicleJourneys = new HashSet<VehicleJourney>();
-         for (JourneyPattern journeyPattern : journeyPatterns)
-         {
-            if (journeyPattern.getVehicleJourneys() != null)
-            {
-               vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
-            }
-         }
+//         HashSet<VehicleJourney> vehicleJourneys = new HashSet<VehicleJourney>();
+//         for (JourneyPattern journeyPattern : journeyPatterns)
+//         {
+//            if (journeyPattern.getVehicleJourneys() != null)
+//            {
+//               vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
+//            }
+//         }
 
          Set<String> validObjectIds = new HashSet<String>();
          Set<Timetable> timetables = new HashSet<Timetable>();
@@ -589,13 +612,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (Timetable timetable : timetables)
          {
-            if (startDate != null || endDate != null)
-            {
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-               String oid = timetable.getObjectId()+"_red";
-               if (startDate != null) oid+="_from_"+sdf.format(startDate);
-               if (endDate != null) oid+="_to_"+sdf.format(endDate);               
-            }
+//            if (startDate != null || endDate != null)
+//            {
+//               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//               String oid = timetable.getObjectId()+"_red";
+//               if (startDate != null) oid+="_from_"+sdf.format(startDate);
+//               if (endDate != null) oid+="_to_"+sdf.format(endDate);    
+//               timetable.setObjectId(oid);
+//            }
             rootObject.addTimetable(timetableProducer.produce(timetable));
          }
 
@@ -621,8 +645,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          // cleaning a little
          rootObject.getPTNetwork().removeAllLineId();
          rootObject.getPTNetwork().addLineId(castorLine.getObjectId());
-
-
 
          // remove unreferenced Routes
          {
