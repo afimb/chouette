@@ -1,7 +1,7 @@
 <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
-<ServiceFrame version="any">
+<ServiceFrame version="any"  id="${line.objectIdPrefix()}:ServiceFrame:${line.objectIdSuffix()}">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="$network.objectVersion" id="$network.objectId"> <!-- >TODO : changed="$dateFormat.format( $network.versionDate )" -->											
+  <Network version="$network.objectVersion" id="${network.objectIdPrefix()}:PTNetwork:${network.objectIdSuffix()}"> <!-- >TODO : changed="$dateFormat.format( $network.versionDate )" -->											
     <Name>$network.name</Name>
     <Description>$network.description</Description>
     <PrivateCode>$network.registrationNumber</PrivateCode>
@@ -9,7 +9,7 @@
   <!-- NEPTUNE Route Mapping (part 1 : directions ) =========================================== -->
   <directions>
     #foreach( $route in $line.routes )   
-    <Direction version="any" id="$route.objectId:Direction">
+    <Direction version="any" id="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction">
       <Name>$route.publishedName</Name>
       #if ($route.wayBack == "A")
       <DirectionType>outbound</DirectionType>
@@ -23,15 +23,16 @@
   <routePoints>
     #foreach( $route in $line.routes ) 
       #foreach( $stopPoint in $route.stopPoints )
-    <RoutePoint version="$stopPoint.objectVersion" id="$stopPoint.objectId">
+      #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
+    <RoutePoint version="$stopPoint.objectVersion" id="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}">
       <Name>$stopPoint.name</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
       <Location>
         <Longitude>$stopPoint.longitude</Longitude>
         <Latitude>$stopPoint.latitude</Latitude>
       </Location>
       <projections>
-        <PointProjection version="any" id="$stopPoint.objectId"><!-- TODO : Vérifier sur quoi pointe l'id avec Christophe-->
-          <ProjectedPointRef version="$stopPoint.containedInStopArea.objectVersion" ref="$stopPoint.containedInStopArea.objectId"/>
+        <PointProjection version="any" id="${stopPoint.objectIdPrefix()}:PointProjection:${routePointId}">
+          <ProjectedPointRef version="$stopPoint.containedInStopArea.objectVersion" ref="${stopPoint.containedInStopArea.objectIdPrefix()}:StopPoint:${stopPoint.containedInStopArea.objectIdSuffix()}"/>
         </PointProjection>
       </projections>
     </RoutePoint>
@@ -41,14 +42,15 @@
   <!-- NEPTUNE Route Mapping (part 2 : routes ) =========================================== -->
   <routes>
     #foreach( $route in $line.routes )   
-    <Route version="$route.objectVersion" id="$route.objectId">
+    <Route version="$route.objectVersion" id="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}">
       <Name>$route.name</Name>
-      <DirectionRef version="any" ref="$route.objectId:Direction"/>
+      <DirectionRef version="any" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction"/>
       <pointsInSequence>                               
         #foreach( $stopPoint in $route.stopPoints )
-        #set ( $pointOnRouteId = $route.objectId + '-' + $stopPoint.position )
-        <PointOnRoute version="any" id="$pointOnRouteId" order="$stopPoint.position">
-          <RoutePointRef version="$route.objectVersion" ref="$route.objectId"/>
+        #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
+        #set($pointOnRouteId = ${stopPoint.objectIdSuffix()} + '-' + $stopPoint.position )
+        <PointOnRoute version="any" id="${stopPoint.objectIdPrefix()}:PointOnRoute:${pointOnRouteId}" order="$stopPoint.position">
+          <RoutePointRef version="$route.objectVersion" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
         </PointOnRoute>
         #end
       </pointsInSequence>
@@ -57,13 +59,13 @@
   </routes>
   <!-- NEPTUNE Line Mapping =========================================== -->
   <lines>
-    <Line version="$line.objectVersion" id="$line.objectId">      
+    <Line version="$line.objectVersion" id="${line.objectIdPrefix()}:Line:${line.objectIdSuffix()}">      
       <Name>$line.name</Name>
       <TransportMode>$line.transportModeName</TransportMode>
       <PublicCode>$line.registrationNumber</PublicCode>
       <routes>
         #foreach( $route in $line.routes )
-        <RouteRef version="$route.objectVersion" ref="$route.objectId"/>
+        <RouteRef version="$route.objectVersion" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>
         #end
       </routes>
     </Line>
@@ -73,27 +75,27 @@
   <scheduledStopPoints>
     #foreach( $route in $line.routes )
       #foreach( $stopPoint in $route.stopPoints )
-    <ScheduledStopPoint version="$stopPoint.objectVersion" id="RATP_PIVI:StopPoint:5246069"><!-- TODO : Probleme objectId  -->
+    <ScheduledStopPoint version="$stopPoint.objectVersion" id="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}">
       <Name>$stopPoint.name</Name>
       <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
       #end
     #end
   </scheduledStopPoints>
-  <!--   -->
   <!--  SERVICE PATTERN : Service Links are not mapped (they are not mandatory in NeTeEx), the sequence of Scheduled Stop Point is used instead -->
   <servicePatterns>
-    <!-- NEPTUNE [mapping:variable] : ServicePattern.version mapped to NEPTUNE JourneyPattern->ObjectVersion -->
     #foreach( $route in $line.routes )
       #foreach( $journeyPattern in $route.journeyPatterns )      
     <ServicePattern version="$journeyPattern.objectVersion" id="$journeyPattern.objectId">
       <Name>$journeyPattern.name</Name>
       <!-- NEPTUNE [mapping:variable] : ServicePattern->RouteRef mapped to NEPTUNE JourneyPattern->routeId -->
-      <RouteRef version="1" ref="$journeyPattern.routeId"/>
+      <RouteRef version="1" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>
       <pointsInSequence>
-        #foreach( $stopPoint in $journeyPattern.stopPoints ) 
-        <StopPointInJourneyPattern version="1" id="$journeyPattern.routeId">
-          <ScheduledStopPointRef version="$stopPoint.objectVersion" ref="$stopPoint.objectId"/>
+        #foreach( $stopPoint in $journeyPattern.stopPoints )
+          #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
+          #set($stopPointInJourneyPatternId = ${route.objectIdSuffix()} + '-' + $stopPoint.position ) 
+        <StopPointInJourneyPattern version="1" id="${stopPoint.objectIdPrefix()}:Route:${stopPointInJourneyPatternId}">
+          <ScheduledStopPointRef version="$stopPoint.objectVersion" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
         </StopPointInJourneyPattern>
         #end       
       </pointsInSequence>
@@ -105,37 +107,29 @@
   <!-- Tarif zone  : Not really available in NEPTUNE, but there is a need to map Tariff Zone 1 (which is an attribute in NEPTUNE -->
   <!-- This object needs to be created inside the mapping mechanism -->
   <tariffZones>
-    <TariffZone version="any" id="RATP_PIVI:TariffZone:1">
-      <Name>Zone 1</Name>
+    #foreach( $key in $tariffStopPoints ) 
+    <TariffZone version="any" id="RATP_PIVI:TariffZone:$tariffStopPoint.keySet()">
+      <Name>$key</Name>
       <members>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A0A5246063"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A1A5246062"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A2A5246067"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A3A5246068"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A4A5246069"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A5A5246066"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A6A5246065"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A0A5246074"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A1A5246073"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A2A5246070"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A3A5246071"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A4A5246072"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A5A5246064"/>
-        <RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317453A6A5246075"/>
+        #foreach($stopPoint in $tariffStopPoints.get($key) )
+        #set($routePointId = ${stopPoint.getRoute().objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} ) 
+        <RoutePointRef version="1" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
+        #end
       </members>
     </TariffZone>
+    #end 
   </tariffZones>
   <!--   -->
   <!-- Assignments of Schedules Stop Points to Stop Places -->
   <stopAssignments>
   #foreach( $route in $line.routes )       
     #foreach( $stopPoint in $route.stopPoints )     
-    <PassengerStopAssignment version="any" id="RATP_PIVI:PassengerStopAssignment:TODO"><!-- TODO : Construction de l'id de la nouvelle table -->
-      <ScheduledStopPointRef version="1" ref="$stopPoint.objectId"/>
+    <PassengerStopAssignment version="any" id="${stopPoint.objectIdPrefix()}:PassengerStopAssignment:${stopPoint.objectIdSuffix()}">
+      <ScheduledStopPointRef version="1" ref="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}"/>
       #if ($stopPoint.containedInStopArea) 
-      <StopPlaceRef version="1" ref="$stopPoint.containedInStopArea.parent"/>
+      <StopPlaceRef version="$stopPoint.containedInStopArea.parent.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopArea:${stopPoint.containedInStopArea.parent.objectIdSuffix()}"/>
       #end 
-      <QuayRef version="1" ref="$stopPoint.containedInStopAreaId"/>
+      <QuayRef version="$stopPoint.containedInStopAreaId.objectVersion" ref="${stopPoint.objectIdPrefix()}:Quay:${stopPoint.containedInStopAreaId.objectIdSuffix()}"/>
     </PassengerStopAssignment>    
     #end
   #end  

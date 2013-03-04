@@ -13,6 +13,10 @@
             <name>Sonatype Repository</name>
             <url>https://oss.sonatype.org/content/groups/public</url>
         </repository>
+        <repository>
+            <id>mvn-repo</id>
+            <url>https://github.com/dryade/mvn-repo/raw/master/releases</url>
+        </repository>
     </repositories>
     <groupId>fr.certu.chouette</groupId>
     <artifactId>chouette-exchange-netex</artifactId>
@@ -20,6 +24,11 @@
     <version>2.0.3</version>
     <packaging>jar</packaging>
     <dependencies>
+        <dependency>
+            <groupId>com.ximpleware</groupId>
+            <artifactId>vtd-xml</artifactId>
+            <version>2.11</version>
+        </dependency>
         <dependency>
             <groupId>com.tobedevoured</groupId>
             <artifactId>modelcitizen</artifactId>

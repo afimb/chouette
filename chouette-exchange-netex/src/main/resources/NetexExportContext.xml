@@ -6,8 +6,9 @@
    default-init-method="init">
 
 
-    <bean id="netexLineExport" class="fr.certu.chouette.exchange.netex.NetexExportPlugin"></bean>	
-    <bean id="netexFileWriter" class="fr.certu.chouette.exchange.netex.NetexFileWriter">
+    <bean id="netexLineExport" class="fr.certu.chouette.exchange.netex.exporter.NetexExportPlugin"></bean>
+    
+    <bean id="netexFileWriter" class="fr.certu.chouette.exchange.netex.exporter.NetexFileWriter">
        <property name="velocityEngine" ref="velocityEngine" />
     </bean>	
   

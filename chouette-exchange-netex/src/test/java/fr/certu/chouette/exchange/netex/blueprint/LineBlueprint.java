@@ -18,7 +18,7 @@ public class LineBlueprint {
     String name = "7B";
     
     @Default
-    String objectId = "RATP_PIVI:Line:100110107";
+    String objectId = "RATP_PIVI:Line:100110107";     
 
     @Default
     int objectVersion = 1;

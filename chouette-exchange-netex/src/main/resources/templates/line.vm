@@ -69,7 +69,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       <TypeOfFrameRef version="01" ref="Neptune:TypeOfFrame:CompositeFrame"/>
       <codespaces>
         <Codespace id="RATP_PIVI">
-          <Xmlns>RATP_PIVI</Xmlns>
+          <Xmlns>RATP_PIVI</Xmlns><!-- TODO : Définir espace de nommage -->
           <XmlnsUrl>http://www.ratp.fr/ratp</XmlnsUrl>
           <Description>RATP datas</Description>
         </Codespace>
@@ -169,7 +169,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </typesOfFrame>
             </TypeOfFrame>
           </typesOfValue>
-          <organisations>
+          <organisations> <!-- TODO : Prendre en compte plusieurs companies -->
             <Operator version="$company.objectVersion" id="$company.objectId">
               <CompanyNumber>$company.registrationNumber</CompanyNumber>
               <Name>$company.name</Name>

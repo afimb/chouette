@@ -2,42 +2,48 @@
 <!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE Timetable -->
 <!-- Each NEPTUNE Timetable is mapped to a separate ServiceCalendarFrame  -->
 #foreach( $timeTable in $timeTables )
-<ServiceCalendarFrame version="any" id="$timeTable.objectId">
-  <ServiceCalendar version="any" id="RATP_PIVI:ServiceCalendar:SFC01"><!-- ObjectId?? -->
-    <!-- NEPTUNE [mapping:variable] : ServiceCalendarFrame  FromDate & ToDate are computed from all NEPTUNE Timetable->startOfPeriod & endOfPeriod -->
-    <FromDate>$timeTable.startOfPeriod</FromDate><!-- N'existe pas -->
-    <ToDate>$timeTable.endOfPeriod</ToDate><!-- N'existe pas -->
+<ServiceCalendarFrame version="any" id="$timeTable.objectIdPrefix:ServiceCalendarFrame:$timeTable.objectIdSuffix">
+  <ServiceCalendar version="any" id="$timeTable.objectIdPrefix:ServiceCalendar:$timeTable.objectIdSuffix"><!-- ObjectId?? -->
+    <FromDate>$timeTable.startOfPeriod</FromDate>
+    <ToDate>$timeTable.endOfPeriod</ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
-  #foreach( $period in $timeTable.getDayTypes() ) <!-- TODO A eclaircir avec Christophe -->
   <dayTypes>
-    <DayType version="$timeTable.objectVersion" id="$timeTable.objectId">
+    <DayType version="$timeTable.objectVersion" id="$timeTable.objectIdPrefix:DayType:$timeTable.objectIdSuffix">
       <Name>$timeTable.name</Name>
       <ShortName>$timeTable.comment</ShortName>
       <properties>
+        #foreach( $dayType in $timeTable.getDayTypes() )
         <PropertyOfDay>
-          <DaysOfWeek></DaysOfWeek>
-          <HollidayTypes></HollidayTypes>
+          <DaysOfWeek>$dayType</DaysOfWeek>
         <PropertyOfDay>
+        #end
       </properties>
     </DayType>
   </dayTypes>
-  #end
   <!--- === Period assignments ==== -->
-  <periods>
+  <operatingPeriods>
     #foreach( $period in $timeTable.periods )
-    <OperatingPeriod version="any">
+    <OperatingPeriod version="any" id="$period.objectIdPrefix:OperatingPeriod:$period.objectIdSuffix">
       <FromDate>$period.startDate.toString()</FromDate>
       <ToDate>$period.endDate.toString()</ToDate>
     </OperatingPeriod>
     #end		
-  </periods>  
+  </operatingPeriods>  
   <!--- === Day assignments ==== -->
+  <operatingDays>
+    #foreach( $day in $timeTable.days )
+    <OperatingDay version="any">
+      <CalendarDate>$day.toString()</CalendarDate>
+    </OperatingDay>
+    #end		
+  </operatingDays>  
+  <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
-    #foreach( $day in $timeTable.calendarDays )
+    #foreach( $period in $timeTable.periods )
     <DayTypeAssignment version="any">
-      <Date>$day.toString()</Date>
-      <DayTypeRef version="$timeTable.objectVersion" ref="$timeTable.objectId"/>
+      <OperatingPeriodRef version="$timeTable.objectVersion" ref="$period.objectIdPrefix:OperatingPeriod:$period.objectIdSuffix"/>
+      <DayTypeRef version="$timeTable.objectVersion" ref="$timeTable.objectIdPrefix:DayType:$timeTable.objectIdSuffix"/>
     </DayTypeAssignment>
     #end		
   </dayTypeAssignments>  

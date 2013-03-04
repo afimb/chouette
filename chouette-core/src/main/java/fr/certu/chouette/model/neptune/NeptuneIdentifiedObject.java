@@ -82,8 +82,8 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	/**
 	 * indicated if object is completed for export purpose
 	 */
-	@Getter private boolean completed = false;
-	
+	@Getter private boolean completed = false;                             
+        
 	/**
 	 * Clean object dependencies : if children objects are not clean, they are dereferenced.
 	 * <br/>
@@ -230,5 +230,36 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	   
 	   Pattern p = Pattern.compile("(\\w|_)+:\\w+:([0-9A-Za-z]|_|-)+");
 	   return p.matcher(oid).matches();
-	}
+	}        
+        
+        private String[] objectIdArray()
+        {
+            return objectId.split(":");
+        }
+        
+        /**
+	 * return prefixe for objectId
+	 * 
+	 * @return String
+         */
+	public String objectIdPrefix()
+	{
+            if (objectIdArray().length > 2)
+                return objectIdArray()[0];  
+            else
+                return "";
+        }
+        
+        /**
+	 * return suffix for objectId
+	 * 
+	 * @return String
+         */
+	public String objectIdSuffix()
+	{
+            if (objectIdArray().length > 2)
+                return objectIdArray()[2];
+            else
+                return "";
+        }
 }

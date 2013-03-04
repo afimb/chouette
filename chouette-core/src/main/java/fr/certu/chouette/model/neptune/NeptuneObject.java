@@ -154,5 +154,5 @@ public abstract class NeptuneObject implements Serializable
 		validationProceeded = true;
 		return check;
 	}
-
+        
 }
