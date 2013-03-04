@@ -677,6 +677,8 @@ public class Command
 						case FILEPATH : val.setFilepathList(vals); break;
 						case STRING : val.setStringList(vals); break;
 						case FILENAME : val.setFilenameList(vals); break;
+						 default:
+							 throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
 						}
 						values.add(val);
 					}
@@ -696,6 +698,8 @@ public class Command
 									case FILENAME : val.setFilenameValue(simpleval); break;
 									case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
 									case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+									 default:
+										 throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
 									}
 									values.add(val);
 					}
@@ -1490,6 +1494,8 @@ public class Command
 					 case FILEPATH : val.setFilepathList(vals); break;
 					 case STRING : val.setStringList(vals); break;
 					 case FILENAME : val.setFilenameList(vals); break;
+					 default:
+						 throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
 					 }
 					 values.add(val);
 				 }
@@ -1650,7 +1656,7 @@ public class Command
 		 return position;
 	 }
 
-	 private void saveImportReports(long importId, String format, List<Report> reports)
+	 private int saveImportReports(long importId, String format, List<Report> reports)
 	 {
 		 int position = 1;
 		 Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(importId));
@@ -1663,6 +1669,12 @@ public class Command
 					 position = message.getPosition() + 1;
 			 }
 		 }
+		 return saveImportReports(importId,format,position,reports);
+	 }
+
+	 
+	 private int saveImportReports(long importId, String format, int position, List<Report> reports)
+	 {
 		 for (Report report : reports)
 		 {
 			 if (report instanceof GuiReport) 
@@ -1671,6 +1683,7 @@ public class Command
 				 position = saveImportReport(importId,format+"_", report,position);
 
 		 }
+		 return position;
 
 	 }
 

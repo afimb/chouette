@@ -81,10 +81,6 @@
 			<layout>default</layout>
 		</repository>
 		<repository>
-			<id>Hibernate Spatial repo</id>
-			<url>http://www.hibernatespatial.org/repository</url>
-		</repository>
-		<repository>
 			<id>refractions</id>
 			<name>Refractions Research Maven 2 Repository</name>
 			<url>http://lists.refractions.net/m2</url>
@@ -320,11 +316,6 @@
 			</dependency>
 
 			<!-- Hibernate -->
-			<!-- old version -->
-			<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate</artifactId> 
-				<version>3.2.0.ga</version> <scope>compile</scope> <exclusions> <exclusion> 
-				<groupId>javax.transaction</groupId> <artifactId>jta</artifactId> </exclusion> 
-				</exclusions> </dependency> -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
@@ -342,29 +333,12 @@
 				<version>3.6.8.Final</version>
 			</dependency>
 
-			<!-- Hibernate uses slf4j for logging, for our purposes here use the simple 
-				backend -->
-			<!--dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.6.1</version>
-			</dependency--> 
-
 			<!-- Hibernate gives you a choice of bytecode providers between cglib 
 				and javassist -->
 			<dependency>
 				<groupId>javassist</groupId>
 				<artifactId>javassist</artifactId>
 				<version>3.12.1.GA</version>
-			</dependency>
-			<!-- Unused, waiting form version 1.1 to work with hibernate 3.5 <dependency> 
-				<groupId>org.hibernatespatial</groupId> <artifactId>hibernate-spatial-postgis</artifactId> 
-				<version>1.0</version> </dependency> -->
-			<!-- the Postgis JDBC driver -->
-			<dependency>
-				<groupId>org.postgis</groupId>
-				<artifactId>postgis-jdbc</artifactId>
-				<version>1.1.6</version>
 			</dependency>
 			<!-- Librairie jta pour hibernate chargée seule car il faut accepter la 
 				licence de sun -->
@@ -413,71 +387,7 @@
 				<artifactId>xalan</artifactId>
 				<version>2.7.0</version>
 			</dependency>
-			<!-- <dependency> <groupId>apache-oro</groupId> <artifactId>jakarta-oro</artifactId> 
-				<version>2.0.8</version> </dependency> -->
 
-			<!-- Struts 2 -->
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-core</artifactId>
-				<version>2.1.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-sitemesh-plugin</artifactId>
-				<version>2.1.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-spring-plugin</artifactId>
-				<version>2.1.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-config-browser-plugin</artifactId>
-				<version>2.1.8.1</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-convention-plugin</artifactId>
-				<version>2.1.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-json-plugin</artifactId>
-				<version>2.1.8.1</version>
-			</dependency>
-			<dependency>
-				<groupId>oro</groupId>
-				<artifactId>oro</artifactId>
-				<version>2.0.8</version>
-			</dependency>
-			<!-- Servlet & Jsp -->
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>jsp-api</artifactId>
-				<version>2.0</version>
-				<scope>provided</scope>
-			</dependency>
-			<!-- Dwr -->
-			<dependency>
-				<groupId>uk.ltd.getahead</groupId>
-				<artifactId>dwr</artifactId>
-				<version>1.1-beta-3</version>
-			</dependency>
-			<!-- SiteMesh -->
-			<dependency>
-				<groupId>opensymphony</groupId>
-				<artifactId>sitemesh</artifactId>
-				<version>2.4.1</version>
-			</dependency>
 			<!-- Java Extensions -->
 			<dependency>
 				<groupId>javax.mail</groupId>
@@ -531,25 +441,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<profiles>
-		<profile>
-			<id>sonar</id>
-			<activation>
-				<property>
-					<name>site</name>
-				</property>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<sonar.jdbc.url>jdbc:postgresql://localhost/sonar</sonar.jdbc.url>
-				<sonar.jdbc.username>luc</sonar.jdbc.username>
-				<sonar.jdbc.password>monalisa</sonar.jdbc.password>
-				<sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
-				<profile.filter>${basedir}/src/main/filters/filter${site}.properties</profile.filter>
-				<profile.setting>${site}</profile.setting>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -570,13 +461,6 @@
 				<version>2.1</version>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>1.0-beta-2</version> <!-- latest version = 2.0-beta-2 ? -->
-			</plugin>
-			<!-- <plugin> <groupId>fr.certu.chouette.maven</groupId> <artifactId>chouette-maven-plugin</artifactId> 
-				<version>1.7.0</version> </plugin> -->
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.4.3</version> <!-- latest version = 2.5 -->
@@ -585,11 +469,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.8</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

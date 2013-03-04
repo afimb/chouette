@@ -29,7 +29,7 @@
 		lazy-init="true">
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">fr.certu.chouette.dao.hibernate.ExtendedPostgresSQLDialect
+				<prop key="hibernate.dialect">${database.hibernate.dialect}
 				</prop>
 				<prop key="hibernate.hbm2ddl.auto">${database.hbm2ddl.auto}</prop>
 				<prop key="hibernate.show_sql">${database.showsql}</prop>

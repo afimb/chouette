@@ -84,8 +84,6 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 	@Test(groups = { "model" } , description = "complete should initialize startOfPeriod and endOfPeriod")
 	public void verifyCompleteWithPeriodsAndDates()
 	{
-
-
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.YEAR,2013);
 		c.set(Calendar.MONTH,Calendar.FEBRUARY);

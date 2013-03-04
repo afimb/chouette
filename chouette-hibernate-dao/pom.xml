@@ -41,10 +41,6 @@
 			<version>1.0</version> </dependency> -->
 
 		<!-- the Postgis JDBC driver -->
-		<dependency>
-			<groupId>org.postgis</groupId>
-			<artifactId>postgis-jdbc</artifactId>
-		</dependency>
 		<!-- Librairie jta pour hibernate chargée seule car il faut accepter la 
 			licence de sun -->
 		<dependency>
