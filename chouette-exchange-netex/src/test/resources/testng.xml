@@ -1,10 +1,15 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Factory" verbose="1" >
-    <test name="Test file write" preserve-order="true">       
+    <test name="Export" preserve-order="true">       
         <packages>
-            <package name="fr.certu.chouette.exchange.netex.exporter" ></package>
-            <package name="fr.certu.chouette.exchange.netex.importer" ></package>
+            <package name="fr.certu.chouette.exchange.netex.exporter" ></package>            
+        </packages>
+    </test>
+  
+    <test name="Import" preserve-order="true">       
+        <packages>
+            <package name="fr.certu.chouette.exchange.netex.importer" ></package>            
         </packages>
     </test>
   
