@@ -40,6 +40,7 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
     @BeforeMethod
     protected void setUp() throws Exception {
         xPath.setNamespaceContext(new NetexNamespaceContext());
+        
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
         complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
@@ -50,7 +51,8 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         routes.add( complexModelFactory.nominalRoute( stopCount, journeyPatternCount));
         line.setRoutes( routes);
         
-        logger.error(line.getPtNetwork());
+        line.complete();
+        
         netexFileWriter.writeXmlFile(line, fileName);
 
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();

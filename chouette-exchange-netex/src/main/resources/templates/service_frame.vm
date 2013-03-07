@@ -109,7 +109,7 @@
   <tariffZones>
     #foreach( $key in $tariffStopPoints ) 
     <TariffZone version="any" id="RATP_PIVI:TariffZone:$tariffStopPoint.keySet()">
-      <Name>$key</Name>
+      <Name>$key.name</Name>
       <members>
         #foreach($stopPoint in $tariffStopPoints.get($key) )
         #set($routePointId = ${stopPoint.getRoute().objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} ) 

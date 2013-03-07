@@ -23,6 +23,9 @@ import fr.certu.chouette.plugin.report.ReportHolder;
 
 import fr.certu.chouette.exchange.netex.NetexReport;
 import fr.certu.chouette.exchange.netex.NetexReportItem;
+import java.util.Iterator;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *  Export lines in Netex format
@@ -31,10 +34,11 @@ public class NetexExportPlugin implements IExportPlugin<Line>
 {
 
    private static final Logger       logger = Logger.getLogger(NetexExportPlugin.class);
-   private FormatDescription         description;
-   private NetexFileWriter           netexFileWriter = new NetexFileWriter();
+   private FormatDescription         description;   
    private NetexReport               report = new NetexReport(NetexReport.KEY.EXPORT);
 
+   @Getter @Setter private NetexFileWriter           netexFileWriter;
+   
    /**
     * Export lines in Netex format
     */
@@ -115,6 +119,8 @@ public class NetexExportPlugin implements IExportPlugin<Line>
     private File createXmlFile(String filename, Line line) {
         logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
         File xmlFile = null;
+        // Complete datas for all neptune objects
+        line.complete();
         
         if (line.getVehicleJourneys() == null || line.getVehicleJourneys().isEmpty()) {
             logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
@@ -141,8 +147,12 @@ public class NetexExportPlugin implements IExportPlugin<Line>
         try {
             zipFile = new ZipOutputStream(new FileOutputStream(fileName));
             // Compress the files
-            for (int i = 0; i < lines.size(); i++) {
-                Line line = lines.get(i);           
+            for (Iterator<Line> it = lines.iterator(); it.hasNext();) {
+                Line line = it.next();
+                // Hack to remove line and free memory
+                it.remove();
+                // Complete datas for all neptune objects
+                line.complete();
                 
                 logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
 

@@ -2,14 +2,14 @@
 <!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE Timetable -->
 <!-- Each NEPTUNE Timetable is mapped to a separate ServiceCalendarFrame  -->
 #foreach( $timeTable in $timeTables )
-<ServiceCalendarFrame version="any" id="$timeTable.objectIdPrefix:ServiceCalendarFrame:$timeTable.objectIdSuffix">
-  <ServiceCalendar version="any" id="$timeTable.objectIdPrefix:ServiceCalendar:$timeTable.objectIdSuffix"><!-- ObjectId?? -->
+<ServiceCalendarFrame version="any" id="${timeTable.objectIdPrefix}:ServiceCalendarFrame:${timeTable.objectIdSuffix}">
+  <ServiceCalendar version="any" id="${timeTable.objectIdPrefix}:ServiceCalendar:${timeTable.objectIdSuffix}"><!-- ObjectId?? -->
     <FromDate>$timeTable.startOfPeriod</FromDate>
     <ToDate>$timeTable.endOfPeriod</ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
-    <DayType version="$timeTable.objectVersion" id="$timeTable.objectIdPrefix:DayType:$timeTable.objectIdSuffix">
+    <DayType version="$timeTable.objectVersion" id="${timeTable.objectIdPrefix}:DayType:${timeTable.objectIdSuffix}">
       <Name>$timeTable.name</Name>
       <ShortName>$timeTable.comment</ShortName>
       <properties>
@@ -24,7 +24,7 @@
   <!--- === Period assignments ==== -->
   <operatingPeriods>
     #foreach( $period in $timeTable.periods )
-    <OperatingPeriod version="any" id="$period.objectIdPrefix:OperatingPeriod:$period.objectIdSuffix">
+    <OperatingPeriod version="any" id="${period.objectIdPrefix}:OperatingPeriod:${period.objectIdSuffix}">
       <FromDate>$period.startDate.toString()</FromDate>
       <ToDate>$period.endDate.toString()</ToDate>
     </OperatingPeriod>
@@ -42,8 +42,8 @@
   <dayTypeAssignments>
     #foreach( $period in $timeTable.periods )
     <DayTypeAssignment version="any">
-      <OperatingPeriodRef version="$timeTable.objectVersion" ref="$period.objectIdPrefix:OperatingPeriod:$period.objectIdSuffix"/>
-      <DayTypeRef version="$timeTable.objectVersion" ref="$timeTable.objectIdPrefix:DayType:$timeTable.objectIdSuffix"/>
+      <OperatingPeriodRef version="$timeTable.objectVersion" ref="${period.objectIdPrefix}:OperatingPeriod:${period.objectIdSuffix}"/>
+      <DayTypeRef version="$timeTable.objectVersion" ref="${timeTable.objectIdPrefix}:DayType:${timeTable.objectIdSuffix}"/>
     </DayTypeAssignment>
     #end		
   </dayTypeAssignments>  

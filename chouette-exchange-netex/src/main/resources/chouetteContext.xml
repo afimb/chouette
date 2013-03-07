@@ -5,7 +5,7 @@
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
    default-init-method="init">
 
-    <!-- <import resource="NetexImportContext.xml"/> -->
+    <import resource="NetexImportContext.xml"/>
     <import resource="NetexExportContext.xml"/>
 
     <bean id="NetexPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
