@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -20,31 +21,39 @@ import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.generic.DateTool;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 public class NetexFileWriter {
 
     private static final Logger logger = Logger.getLogger(NetexFileWriter.class);
     @Getter @Setter private VelocityEngine velocityEngine; 
+    // Prepare the model for velocity
+    private Map model = new HashMap();
     
-    public NetexFileWriter() {
+    public NetexFileWriter() {        
     }
 
-    public ZipEntry writeZipEntry(Line line, String entryName, ZipOutputStream zipFile) throws IOException {       
-        // Complete datas for all neptune objects
-        line.complete();
-        
-        // Prepare the model for velocity
-        Map model = new HashMap();
+    private void prepareModel(Line line)
+    {
         model.put("line", line);
         model.put("network", line.getPtNetwork());
         model.put("company", line.getCompany());
-        model.put("dateFormat", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"));
-        // For ServiceFrame need to have for each tariff stop points associated
-        model.put("tariffStopPoints", tariffStopPoints(line));        
-        // For SiteFrame need to have stop areas type StopPlace only
-        model.put("stopPlaces", line.getStopPlaces());
         
+        // For ServiceFrame need to have for each tariff stop points associated
+        model.put("tariffStopPoints", tariffStopPoints(line));
+        // For SiteFrame need to have stop areas type StopPlace only
+        model.put("stopPlaces", line.getStopPlaces());        
+
+        model.put("date", new DateTool());
+        model.put("dateFormat", "yyyy-MM-d'T'HH:mm:ss'Z'");
+    }
+    
+    public ZipEntry writeZipEntry(Line line, String entryName, ZipOutputStream zipFile) throws IOException 
+    {              
+        // Prepare the model for velocity
+        prepareModel(line);
+                
         StringWriter output = new StringWriter();
         VelocityEngineUtils.mergeTemplate(velocityEngine, "templates/line.vm", "UTF-8", model, output);
                 
@@ -62,20 +71,10 @@ public class NetexFileWriter {
         return entry;
     }
     
-    public File writeXmlFile(Line line, String filename) throws IOException {                            
-        // Complete datas for all neptune objects
-        line.complete();
-        
+    public File writeXmlFile(Line line, String filename) throws IOException 
+    {                                    
         // Prepare the model for velocity
-        Map model = new HashMap();
-        model.put("line", line);
-        model.put("network", line.getPtNetwork());
-        model.put("company", line.getCompany());
-        model.put("dateFormat", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"));
-        // For ServiceFrame need to have for each tariff stop points associated
-        model.put("tariffStopPoints", tariffStopPoints(line));        
-        // For SiteFrame need to have stop areas type StopPlace only
-        model.put("stopPlaces", line.getStopPlaces());
+        prepareModel(line);       
         
         StringWriter output = new StringWriter();
         VelocityEngineUtils.mergeTemplate(velocityEngine, "templates/line.vm", "UTF-8", model, output);
@@ -98,6 +97,9 @@ public class NetexFileWriter {
             if( !tariffStopPoints.containsKey(stopArea.getFareCode()) )
             {
                 tariffStopPoints.put(stopArea.getFareCode(), new ArrayList<StopPoint>());
+                tariffStopPoints.get(stopArea.getFareCode()).addAll(stopArea.getContainedStopPoints());
+            }
+            else{
                 tariffStopPoints.get(stopArea.getFareCode()).addAll(stopArea.getContainedStopPoints());
             }
         }

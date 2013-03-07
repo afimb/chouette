@@ -11,7 +11,6 @@ public class NetexNamespaceContext implements NamespaceContext {
     
     @Override
     public String getNamespaceURI(String prefix) {
-        logger.error("prefix : " + prefix);
         if (prefix == null) {
             throw new IllegalArgumentException("No prefix provided!");
         } else if (prefix.equals("netex")) {

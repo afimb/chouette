@@ -36,19 +36,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 
 -->
 <PublicationDelivery version="1.0" xmlns="http://www.netex.org.uk/netex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri"  >
-  <PublicationTimestamp>2001-12-17T09:30:47.0Z</PublicationTimestamp>
+  <PublicationTimestamp>$date.get($dateFormat)</PublicationTimestamp>
   <ParticipantRef>SYS001</ParticipantRef>
   <!--- ======WHAT WAS REQUESTED ========== -->
   <PublicationRequest version="1.0">
-    <RequestTimestamp>2009-08-01T09:30:00Z</RequestTimestamp>
-    <ParticipantRef>RATP110</ParticipantRef>
+    <RequestTimestamp>$date.get($dateFormat)</RequestTimestamp>
+    <ParticipantRef>$line.company.name</ParticipantRef>
     <filters>
       <FrameRequestFilter>
         <Topics>
-          <!-- NEPTUNE [local agreement:fixed] : Only the current data set is requested  -->
           <Current/>
-          <!-- NEPTUNE [local agreement:variable] : a NEPTUNE Frame is named "operator":Neptune:ServiceAndTimetableFrame:"line Id"  -->
-          <CompositeFrameRef ref="RATP_PIVI:Neptune:ServiceAndTimetableFrame:100110107"/>
+          <CompositeFrameRef ref="${line.objectIdPrefix()}:Neptune:ServiceAndTimetableFrame:${line.objectIdSuffix()}"/>
         </Topics>
         <Policies>
           <!-- NEPTUNE [local agreement:fixed] : a NEPTUNE Frame is without Geometry -->
@@ -57,25 +55,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </FrameRequestFilter>
     </filters>
   </PublicationRequest>
-  <Description>RATP Line 7b NeTEx example - based on reall 2009 data</Description>
+  <Description>Line export in Netex Format by Chouette systeme</Description>
   <!--   -->
   <!--- =============== RESULTS =========== -->
   <dataObjects>
-    <!-- =========================================== -->
-    <!-- NEPTUNE [mapping:variable] : CompositeFrame.created mapped to NEPTUNE PTNetwork->versionDate -->
-    <CompositeFrame version="1" created="2009-12-02T00:00:00Z" id="RATP:Neptune:CompositeFrame:100110107">
+    <!-- =========================================== -->       
+    <CompositeFrame version="1" created="$date.format($dateFormat, $network.versionDate)" id="${line.objectIdPrefix()}:Neptune:CompositeFrame:${line.objectIdSuffix()}">
       <Name>NEPTUNE Mapping Frame</Name>
       <!-- NEPTUNE [mapping:fixed] : This is a NEPTUNE to NeTEx mapping frame -->
       <TypeOfFrameRef version="01" ref="Neptune:TypeOfFrame:CompositeFrame"/>
       <codespaces>
-        <Codespace id="RATP_PIVI">
-          <Xmlns>RATP_PIVI</Xmlns><!-- TODO : Définir espace de nommage -->
-          <XmlnsUrl>http://www.ratp.fr/ratp</XmlnsUrl>
-          <Description>RATP datas</Description>
+        <Codespace id="${line.objectIdPrefix()}">
+          <Xmlns>${line.objectIdPrefix}</Xmlns><!-- TODO : Définir espace de nommage -->
+          <!-- <XmlnsUrl>http://www.ratp.fr/ratp</XmlnsUrl>
+          <Description>RATP datas</Description> -->
         </Codespace>
       </codespaces>
       <FrameDefaults>
-        <DefaultCodespaceRef ref="ratp_pivi"/>
+        <DefaultCodespaceRef ref="${line.objectIdPrefix()}"/>
         <!-- NEPTUNE [mapping:fixed] : NEPTUNE is in French ! -->
         <DefaultLocale>
           <TimeZoneOffset>-1</TimeZoneOffset>
@@ -89,7 +86,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
         <!-- =========================================== -->
         <!-- Resourceframe to map the Company NEPTUNE Object -->
         <ResourceFrame version="any" id="Neptune:ResourceFrame:FrameProfile01">
-          <Name>RATP--Neptune-Line Profile </Name>
+          <Name>{line.objectIdPrefix}--Neptune-Line Profile </Name>
           <codespaces>
             <Codespace id="Neptune">
               <Xmlns>Neptune</Xmlns>
@@ -108,7 +105,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
             </TypeOfValidity>
             <TypeOfFrame version="01" id="Neptune:TypeOfFrame:CompositeFrame">
               <Name>Neptune Profile:  Composite Frame </Name>
-              <Description>RATP--Neptune-Line-xxxxxx  frames will be composite frame containing Service, Timetable (and Service Calendar) and Resource frames with all the usual NEPTUNE attributes filled in, for a given line xxxxx.</Description>
+              <Description>${line.objectIdPrefix()}--Neptune-Line-xxxxxx  frames will be composite frame containing Service, Timetable (and Service Calendar) and Resource frames with all the usual NEPTUNE attributes filled in, for a given line xxxxx.</Description>
               <TypeOfValidityRef version="01" ref="Neptune:TypeOfValidity:WeeklyPlanned"/>
               <FrameClassRef nameOfClass="CompositeFrame"/>
               <classes>
@@ -170,7 +167,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
             </TypeOfFrame>
           </typesOfValue>
           <organisations> <!-- TODO : Prendre en compte plusieurs companies -->
-            <Operator version="$company.objectVersion" id="$company.objectId">
+            <Operator version="$company.objectVersion" id="${company.objectIdPrefix()}:Company:${company.objectIdSuffix()}">
               <CompanyNumber>$company.registrationNumber</CompanyNumber>
               <Name>$company.name</Name>
             </Operator>
