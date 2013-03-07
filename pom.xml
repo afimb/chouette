@@ -19,6 +19,7 @@
 		<module>chouette-hibernate-dao</module>
 		<module>chouette-jdbc-dao</module>
 		<module>chouette-castor-neptune</module>
+                <module>chouette-exchange-netex</module>
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>
 		<module>chouette-exchange-csv</module>
@@ -131,6 +132,11 @@
 			<dependency>
 				<groupId>fr.certu.chouette</groupId>
 				<artifactId>chouette-exchange-neptune</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+                        <dependency>
+				<groupId>fr.certu.chouette</groupId>
+				<artifactId>chouette-exchange-netex</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
