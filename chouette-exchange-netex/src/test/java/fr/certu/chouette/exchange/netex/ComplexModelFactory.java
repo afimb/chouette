@@ -35,7 +35,7 @@ public class ComplexModelFactory {
                 StopArea stopArea = modelFactory.createModel(StopArea.class);
                 StopPoint stopPoint = new StopPoint();
                 stopPoint.setContainedInStopArea( stopArea);
-                stopPoint.setObjectId( "T:STOP_POINT:"+routeId+"-"+i);
+                stopPoint.setObjectId( "T:StopPoint:"+routeId+"-"+i);
                 stopPoint = modelFactory.createModel( stopPoint);
 
                 stopPoints.add( stopPoint);
@@ -51,7 +51,7 @@ public class ComplexModelFactory {
             for ( int i=0; i<size; i++) {
                 JourneyPattern journeyPattern = new JourneyPattern();
                 journeyPattern.setName( i+" modulo "+size);
-                journeyPattern.setObjectId( "T:JOURNEY_PATTERN:"+routeId+"-"+i);
+                journeyPattern.setObjectId( "T:JourneyPattern:"+routeId+"-"+i);
                 journeyPattern.setStopPoints( new ArrayList<StopPoint>());
                 journeyPattern = modelFactory.createModel( journeyPattern);
                 journeyPatterns.add( journeyPattern);
@@ -82,7 +82,7 @@ public class ComplexModelFactory {
     public Route nominalRoute( int stopCount, int journeyPatternCount, int vehicleCount, String routeId) {
         Route route = new Route();
         try {
-            route.setObjectId( "T:ROUTE:"+routeId);
+            route.setObjectId( "T:Route:"+routeId);
         
             List<StopPoint> stopPoints = stopPointList( stopCount, routeId);
             List<JourneyPattern> journeyPatterns = journeyPatternList( stopPoints, journeyPatternCount, vehicleCount, routeId);
@@ -105,7 +105,7 @@ public class ComplexModelFactory {
         
         for ( int i=0; i<count; i++) {
             VehicleJourney vehicle = vehicleJourney( calendar, journeyPattern);
-            vehicle.setObjectId( "T:VEHICLE_JOURNEY:"+journeyId+"-"+i);
+            vehicle.setObjectId( "T:VehicleJourney:"+journeyId+"-"+i);
             calendar.add( Calendar.MINUTE, 12);
 
             vehicles.add(vehicle);
