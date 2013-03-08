@@ -11,6 +11,9 @@ import java.util.List;
 public class VehicleJourneyBlueprint {
     
     @Default
+    String objectId = "RATP_PIVI:VehicleJourney:317452";
+    
+    @Default
     String publishedJourneyName = "1001101070001";           
 
 }

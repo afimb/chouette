@@ -9,8 +9,8 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import java.sql.Time;
 
 @Blueprint(VehicleJourneyAtStop.class)
-public class VehicleJourneyAtStopBlueprint {
-             
+public class VehicleJourneyAtStopBlueprint {             
+        
     @Mapped   
     VehicleJourney vehicleJourney;
         
