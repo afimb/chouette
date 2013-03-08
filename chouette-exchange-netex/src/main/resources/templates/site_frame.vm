@@ -1,23 +1,32 @@
 <!-- =========================================== -->
 <!-- NEPTUNE StopPlaces (StopArea of type StopPlace) are mapped to NeTEx StopPlace -->
 <SiteFrame version="any" id="${line.objectIdPrefix()}:SiteFrame:SF01"> 
-  <topographicStopPlaces>
+  <topographicPlaces>
     #foreach( $stopPlace in $stopPlaces ) 
-    <TopographicStopPlace version="$stopPlace.objectVersion" id="${stopPlace.objectIdPrefix()}:stopPlace:${stopPlace.objectIdSuffix()}">
-    </TopographicStopPlace>
+    <TopographicPlace version="$stopPlace.objectVersion" id="${stopPlace.objectIdPrefix()}:TopographicPlace:${stopPlace.objectIdSuffix()}">
+      <Descriptor>
+        <Name>$stopPlace.name</Name>
+      </Descriptor>
+      #if($stopPlace.parent)
+      <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="${stopPlace.parent.objectIdPrefix()}:TopographicPlace:${stopPlace.parent.objectIdSuffix()}"/>
+      #end
+    </TopographicPlace>
     #end
-  </topographicStopPlaces> 
+  </topographicPlaces> 
   <stopPlaces>
     #foreach( $commercialStopPoint in $commercialStopPoints )
-    <StopPlace version="$stopPlace.objectVersion" id="${stopPlace.objectIdPrefix()}:stopPlace:${stopPlace.objectIdSuffix()}">
+    <StopPlace version="$commercialStopPoint.objectVersion" id="${commercialStopPoint.objectIdPrefix()}:StopPlace:${commercialStopPoint.objectIdSuffix()}">
+      #if($commercialStopPoint.parent)
+      <ContainedInPlaceRef version="$commercialStopPoint.parent.objectVersion" ref="${commercialStopPoint.parent.objectIdPrefix()}:TopographicPlace:${commercialStopPoint.parent.objectIdSuffix()}"/>
+      #end
       <TopographicPlaceView>
-        <Name>$stopPlace.name</Name>
+        <Name>$commercialStopPoint.name</Name>
       </TopographicPlaceView>
       <tariffZones>
-        <TariffZoneRef version="any" ref="${stopPlace.objectIdPrefix()}:TariffZone:${stopPlace.fareCode}"/>
+        <TariffZoneRef version="any" ref="${commercialStopPoint.objectIdPrefix()}:TariffZone:${commercialStopPoint.fareCode}"/>
       </tariffZones>
       <quays>
-        #foreach( $quay in $stopPlace.containedStopAreas )
+        #foreach( $quay in $commercialStopPoint.containedStopAreas )
         <Quay version="$quay.objectVersion" id="${quay.objectIdPrefix()}:Quay:${quay.objectIdSuffix()}">
           #set( $areaCentroid = $quay.areaCentroid )
           #if($areaCentroid)
@@ -33,17 +42,14 @@
           #set( $adress = $areaCentroid.adress )
           #if($adress)
           <PostalAddress version="any" id="${adress.objectIdPrefix()}:PostalAddress:${adress.objectIdSuffix()}">
-            <CountryRef ref="fr"/><!-- TODO : Why ref?? -->
+            <CountryRef ref="fr"/>
             <AddressLine1>$adress.streetName</AddressLine1>
             <PostCode>$adress.countryCode</PostCode>
           </PostalAddress>
           #end
-          <TransportMode>metro</TransportMode><!-- TODO : Where network? -->
           <tariffZones>
             <TariffZoneRef version="any" ref="${quay.objectIdPrefix()}:TariffZone:${quay.fareCode}"/>
           </tariffZones>
-          <Label>Botzaris</Label><!-- TODO : Where? -->
-          <QuayType>metroPlatform</QuayType><!-- TODO : Where? -->
           #end
         </Quay>	
         #end	

@@ -4,6 +4,7 @@ import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
+import com.tobedevoured.modelcitizen.annotation.Nullable;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -21,6 +22,9 @@ public class StopAreaBlueprint {
     
     @Default
     String name = "A";
+    
+    @Default
+    int fareCode = 1;
 
     @Mapped   
     AreaCentroid areaCentroid;  
@@ -28,13 +32,14 @@ public class StopAreaBlueprint {
     @Default
     ChouetteAreaEnum areaType = ChouetteAreaEnum.BOARDINGPOSITION;
     
-//
-//    @Mapped   
-//    StopArea parent;   
+    @Nullable
+    @Mapped   
+    StopArea parent;   
 
-//    @MappedList(target = StopArea.class, size = 2)
-//    List<StopArea> containedStopAreas;
+    @MappedList(target = StopArea.class, size = 0)
+    List<StopArea> containedStopAreas;
     
-      @MappedList(target = StopPoint.class, size = 0)
-      List<StopPoint> containedStopPoints;
+    @MappedList(target = StopPoint.class, size = 0)
+    List<StopPoint> containedStopPoints;
+      
 }
