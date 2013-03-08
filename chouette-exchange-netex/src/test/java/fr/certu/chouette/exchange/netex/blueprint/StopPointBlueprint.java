@@ -3,6 +3,8 @@ package fr.certu.chouette.exchange.netex.blueprint;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
+import com.tobedevoured.modelcitizen.annotation.Nullable;
+import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -20,6 +22,7 @@ public class StopPointBlueprint {
     @Default
     String name = "A";
 
+    @Nullable
     @Mapped   
     StopArea containedInStopArea;    
     
@@ -31,4 +34,5 @@ public class StopPointBlueprint {
     
     @Default
     int position = 1;
+    
 }

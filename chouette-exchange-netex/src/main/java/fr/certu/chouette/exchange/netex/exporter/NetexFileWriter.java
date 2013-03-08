@@ -42,9 +42,14 @@ public class NetexFileWriter {
         
         // For ServiceFrame need to have for each tariff stop points associated
         model.put("tariffStopPoints", tariffStopPoints(line));
-        // For SiteFrame need to have stop areas type StopPlace only
+        
+        // For SiteFrame need to have stop areas type StopPlace and CommercialStopPoint only
         model.put("stopPlaces", line.getStopPlaces());        
-
+        model.put("commercialStopPoints", line.getCommercialStopPoints()); 
+        
+        // For TimeTableFrame need to have vehicle journeys
+        model.put("vehicleJourneys", line.getVehicleJourneys()); 
+        
         model.put("date", new DateTool());
         model.put("dateFormat", "yyyy-MM-d'T'HH:mm:ss'Z'");
     }

@@ -35,7 +35,7 @@ public class LineBlueprint {
     @Mapped   
     Company company;
     
-    @MappedList(target = Route.class, size = 2)
+    @MappedList(target = Route.class, size = 1)
     List<Route> routes;
 
 }
