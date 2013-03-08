@@ -5,6 +5,7 @@ import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.StopPoint;
 import java.util.List;
 
 @Blueprint(JourneyPattern.class)
@@ -22,8 +23,10 @@ public class JourneyPatternBlueprint {
     @Default
     String routeId = "RATP_PIVI:Route:317452";
     
+    @MappedList(target = StopPoint.class, size = 3)
+    List<StopPoint> stopPoints;
+    
     @MappedList(target = VehicleJourney.class, size = 2)
     List<VehicleJourney> vehicleJourneys;
-
 
 }
