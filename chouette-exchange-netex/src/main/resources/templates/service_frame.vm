@@ -32,7 +32,7 @@
       </Location>
       <projections>
         <PointProjection version="any" id="${stopPoint.objectIdPrefix()}:PointProjection:${routePointId}">
-          <ProjectedPointRef version="$stopPoint.containedInStopArea.objectVersion" ref="${stopPoint.containedInStopArea.objectIdPrefix()}:StopPoint:${stopPoint.containedInStopArea.objectIdSuffix()}"/>
+          <ProjectedPointRef version="$stopPoint.containedInStopArea.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}"/>
         </PointProjection>
       </projections>
     </RoutePoint>
