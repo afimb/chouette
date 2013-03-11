@@ -12,6 +12,9 @@ import java.util.List;
 public class TimetableBlueprint {
     
     @Default
+    String objectId = "RATP_PIVI:TimeTable:317452";
+        
+    @Default
     String publishedJourneyName = "1001101070001";   
     
     @MappedList(target = Period.class, size = 2, ignoreEmpty = false)

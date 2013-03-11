@@ -1,9 +1,10 @@
 <!--   -->
 <!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE Timetable -->
 <!-- Each NEPTUNE Timetable is mapped to a separate ServiceCalendarFrame  -->
+#set($counter = 0)
 #foreach( $timeTable in $timeTables )
-<ServiceCalendarFrame version="any" id="${timeTable.objectIdPrefix}:ServiceCalendarFrame:${timeTable.objectIdSuffix}">
-  <ServiceCalendar version="any" id="${timeTable.objectIdPrefix}:ServiceCalendar:${timeTable.objectIdSuffix}"><!-- ObjectId?? -->
+<ServiceCalendarFrame version="any" id="${timeTable.objectIdPrefix}:ServiceCalendarFrame:SFC$counter">
+  <ServiceCalendar version="any" id="${timeTable.objectIdPrefix}:ServiceCalendar:SFC$counter"><!-- ObjectId?? -->
     <FromDate>$timeTable.startOfPeriod</FromDate>
     <ToDate>$timeTable.endOfPeriod</ToDate>
   </ServiceCalendar>
@@ -48,4 +49,5 @@
     #end		
   </dayTypeAssignments>  
 </ServiceCalendarFrame>
+#set($counter = $counter + 1)
 #end

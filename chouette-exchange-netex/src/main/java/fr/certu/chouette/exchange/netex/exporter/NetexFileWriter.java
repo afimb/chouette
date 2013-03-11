@@ -50,6 +50,9 @@ public class NetexFileWriter {
         // For TimeTableFrame need to have vehicle journeys
         model.put("vehicleJourneys", line.getVehicleJourneys()); 
         
+        // For ServiceCalendarFrame need to have time tables
+        model.put("timeTables", line.getTimetables()); 
+        
         model.put("date", new DateTool());
         model.put("dateFormat", "yyyy-MM-d'T'HH:mm:ss'Z'");
     }
