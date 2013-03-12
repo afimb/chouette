@@ -86,15 +86,14 @@
   <servicePatterns>
     #foreach( $route in $line.routes )
       #foreach( $journeyPattern in $route.journeyPatterns )      
-    <ServicePattern version="$journeyPattern.objectVersion" id="$journeyPattern.objectId">
+    <ServicePattern version="$journeyPattern.objectVersion" id="${journeyPattern.objectIdPrefix()}:ServicePattern:${journeyPattern.objectIdSuffix()}">
       <Name>$journeyPattern.name</Name>
       <!-- NEPTUNE [mapping:variable] : ServicePattern->RouteRef mapped to NEPTUNE JourneyPattern->routeId -->
       <RouteRef version="1" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>
       <pointsInSequence>
         #foreach( $stopPoint in $journeyPattern.stopPoints )
           #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
-          #set($stopPointInJourneyPatternId = ${route.objectIdSuffix()} + '-' + $stopPoint.position ) 
-        <StopPointInJourneyPattern version="1" id="${stopPoint.objectIdPrefix()}:Route:${stopPointInJourneyPatternId}">
+        <StopPointInJourneyPattern version="1" id="${stopPoint.objectIdPrefix()}:StopPointInJourneyPattern:${stopPoint.objectIdSuffix()}">
           <ScheduledStopPointRef version="$stopPoint.objectVersion" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
         </StopPointInJourneyPattern>
         #end       

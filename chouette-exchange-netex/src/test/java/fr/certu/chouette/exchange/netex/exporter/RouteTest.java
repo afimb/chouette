@@ -14,7 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,17 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
         line.setRoutes(routes);
         
         line.complete();
+        // TODO: code below should be in ComplexModelFactory 
+        for( Route route : line.getRoutes()) {
+            for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
+                journeyPattern.setRoute( route);
+                for ( VehicleJourney vehicleJourney : journeyPattern.getVehicleJourneys()) {
+                    vehicleJourney.setRoute( route);
+                    vehicleJourney.setJourneyPattern( journeyPattern);
+                }
+            }
+        }
+        
         
         netexFileWriter.writeXmlFile(line, fileName);
 
@@ -82,16 +95,14 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals( Integer.parseInt( xPath.evaluate("count(//netex:ServiceFrame/netex:routes/netex:Route)", xmlDocument)), 
                              line.getRoutes().size());
         for( Route route : line.getRoutes()) {
-            Assert.assertTrue( Boolean.parseBoolean( xPath.evaluate("boolean(//netex:ServiceFrame/netex:routes/netex:Route[@id = '"+route.getObjectId()+"'])", 
-                               xmlDocument)));
+            assertXPathTrue( "boolean(//netex:ServiceFrame/netex:routes/netex:Route[@id = '"+route.getObjectId()+"'])");
         }
     }
     
     @Test(groups = {"ServiceFrame", "routes"}, description = "Validate presence of Route element with expected name")
     public void verifyRouteName() throws XPathExpressionException, ParseException {
         for( Route route : line.getRoutes()) {
-            Assert.assertTrue( Boolean.parseBoolean( 
-                xPath.evaluate("boolean(//netex:Route[@id = '"+route.getObjectId()+"']/netex:Name/text()='"+route.getName()+"')", xmlDocument)));
+            assertXPathTrue( "boolean(//netex:Route[@id = '"+route.getObjectId()+"']/netex:Name/text()='"+route.getName()+"')");
         }
     }
     
@@ -107,9 +118,7 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
                                                         "-"+
                                                         stopPoint.getPosition()+
                                                     "'])";
-                Assert.assertTrue( Boolean.parseBoolean( 
-                        xPath.evaluate( xPathExpr, 
-                                        xmlDocument)));
+                assertXPathTrue( xPathExpr);
                 
             }
         }
@@ -129,9 +138,7 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
                                                         "A"+
                                                         stopPoint.objectIdSuffix()+
                                                     "'])";
-                Assert.assertTrue( Boolean.parseBoolean( 
-                        xPath.evaluate( xPathExpr, 
-                                        xmlDocument)));
+                assertXPathTrue( xPathExpr);
                 
             }
         }
@@ -151,9 +158,7 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
                                                         "A"+
                                                         stopPoint.objectIdSuffix()+
                                                     "'])";
-                Assert.assertTrue( Boolean.parseBoolean( 
-                        xPath.evaluate( xPathExpr, 
-                                        xmlDocument)));
+                assertXPathTrue( xPathExpr);
                 
             }
         }
@@ -169,9 +174,7 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
                                                         ":StopPoint:"+
                                                         stopPoint.objectIdSuffix()+
                                                     "'])";
-                Assert.assertTrue( Boolean.parseBoolean( 
-                        xPath.evaluate( xPathExpr, 
-                                        xmlDocument)));
+                assertXPathTrue( xPathExpr);
                 
             }
         }
@@ -187,12 +190,112 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
                                                         ":StopPoint:"+
                                                         stopPoint.objectIdSuffix()+
                                                     "'])";
-                Assert.assertTrue( Boolean.parseBoolean( 
-                        xPath.evaluate( xPathExpr, 
-                                        xmlDocument)));
+                assertXPathTrue( xPathExpr);
                 
             }
         }
+    }
+    
+    @Test(groups = {"ServiceFrame", "servicePatterns"}, description = "Validate presence of RouteRef with expected ref")
+    public void verifyRouteRefRef() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( StopPoint stopPoint : route.getStopPoints()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/netex:RouteRef"+
+                                                        "[@ref = '"+
+                                                        route.objectIdPrefix()+
+                                                        ":Route:"+
+                                                        route.objectIdSuffix()+
+                                                    "'])";
+                assertXPathTrue( xPathExpr);
+                
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "servicePatterns"}, description = "Validate presence of StopPointInJourneyPattern with expected id")
+    public void verifyStopPointInJourneyPatternId() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( StopPoint stopPoint : route.getStopPoints()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/netex:pointsInSequence/netex:StopPointInJourneyPattern"+
+                                                        "[@id = '"+
+                                                        stopPoint.objectIdPrefix()+
+                                                        ":StopPointInJourneyPattern:"+
+                                                        stopPoint.objectIdSuffix()+
+                                                    "'])";
+                assertXPathTrue( xPathExpr);
+                
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "servicePatterns"}, description = "Validate presence of ScheduledStopPointRef with expected ref")
+    public void verifyScheduledStopPointRefRef() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( StopPoint stopPoint : route.getStopPoints()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/netex:pointsInSequence/netex:StopPointInJourneyPattern/netex:ScheduledStopPointRef"+
+                                                        "[@ref = '"+
+                                                        stopPoint.objectIdPrefix()+
+                                                        ":RoutePoint:"+
+                                                        route.objectIdSuffix()+
+                                                        "A"+
+                                                        stopPoint.getPosition()+
+                                                        "A"+
+                                                        stopPoint.objectIdSuffix()+
+                                                    "'])";
+                assertXPathTrue( xPathExpr);
+                
+            }
+        }
+    }
+    
+    @Test(groups = {"TimetableFrame", "vehicleJourneys"}, description = "Validate presence of RouteRef with expected ref")
+    public void verifyServicePatternRef() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            int vehicleCount = 0;
+            for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
+                vehicleCount += journeyPattern.getVehicleJourneys().size();
+            }
+            
+            String xPathExpr = "count(//netex:TimetableFrame/netex:vehicleJourneys/netex:ServiceJourney/netex:RouteRef"+
+                                                    "[@ref = '"+
+                                                    route.objectIdPrefix()+
+                                                    ":Route:"+
+                                                    route.objectIdSuffix()+
+                                                "'])";
+
+            Assert.assertEquals( Integer.parseInt( 
+                    xPath.evaluate( xPathExpr, 
+                                    xmlDocument)), vehicleCount);
+                
+        }
+    }
+    
+    @Test(groups = {"TimetableFrame", "vehicleJourneys"}, description = "Validate presence of ScheduledStopPointRef with expected ref")
+    public void verifyVehicleJourneysScheduledStopPointRefRef() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
+                for ( StopPoint stopPoint : journeyPattern.getStopPoints()) {
+                    String xPathExpr = "boolean(//netex:TimetableFrame/netex:vehicleJourneys/"+
+                                        "netex:ServiceJourney/netex:calls/"+
+                                        "netex:Call/netex:ScheduledStopPointRef"+
+                                        "[@ref = '"+
+                                            stopPoint.objectIdPrefix()+
+                                            ":StopPoint:"+
+                                            stopPoint.objectIdSuffix()+
+                                                        "'])";
+                    assertXPathTrue( xPathExpr);
+
+                }
+            }
+            
+                
+        }
+    }
+
+    private void assertXPathTrue(String xPathExpr) throws XPathExpressionException {
+        Assert.assertTrue( Boolean.parseBoolean( 
+                xPath.evaluate( xPathExpr, 
+                                xmlDocument)));
     }
     
 }

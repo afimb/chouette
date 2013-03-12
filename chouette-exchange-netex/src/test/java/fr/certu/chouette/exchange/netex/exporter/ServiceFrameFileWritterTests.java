@@ -36,6 +36,7 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
     private Document xmlDocument;
     private int stopCount = 20;
     private int journeyPatternCount = 3;
+    private int vehicleCount = 2;
 
     @BeforeMethod
     protected void setUp() throws Exception {
@@ -48,7 +49,7 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         Line line = new Line();
         line = modelFactory.createModel(Line.class);
         List<Route> routes = new ArrayList<Route>();
-        routes.add( complexModelFactory.nominalRoute( stopCount, journeyPatternCount));
+        routes.add( complexModelFactory.nominalRoute( stopCount, journeyPatternCount, vehicleCount,"1"));
         line.setRoutes( routes);
         
         line.complete();

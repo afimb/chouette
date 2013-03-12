@@ -67,13 +67,14 @@ public class ComplexModelFactory {
                     throw new RuntimeException("echec");
             }
             
-            
-            for ( int i=0; i<size; i++) {
-                JourneyPattern journeyPattern = journeyPatterns.get(i);
-                journeyPattern.setVehicleJourneys( vehicleJourneyList(vehicleCount, journeyPattern, routeId+"-"+i));
-            }
         } catch (Exception ex) {
             Logger.getLogger(ComplexModelFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for ( int i=0; i<size; i++) {
+            JourneyPattern journeyPattern = journeyPatterns.get(i);
+            journeyPattern.setVehicleJourneys( vehicleJourneyList(vehicleCount, journeyPattern, routeId+"-"+i));
+
+            assert journeyPattern.getVehicleJourneys().get(0).getJourneyPattern()!=null;
         }
         
         return journeyPatterns;
@@ -87,12 +88,14 @@ public class ComplexModelFactory {
             List<StopPoint> stopPoints = stopPointList( stopCount, routeId);
             List<JourneyPattern> journeyPatterns = journeyPatternList( stopPoints, journeyPatternCount, vehicleCount, routeId);
             
+            route = modelFactory.createModel( route);
             route.setJourneyPatterns( journeyPatterns);
             route.setStopPoints( stopPoints);
-            route = modelFactory.createModel( route);
-        } catch (CreateModelException ex) {
+            
+        } catch (Exception ex) {
             Logger.getLogger(ComplexModelFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
+            assert route.getJourneyPatterns().get(0).getVehicleJourneys().get(0).getJourneyPattern()!=null;
         
         return route;
     }
@@ -133,6 +136,7 @@ public class ComplexModelFactory {
         } catch (CreateModelException ex) {
             Logger.getLogger(ComplexModelFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
+        assert vehicle.getJourneyPattern()!=null;
         return vehicle;
     }
     

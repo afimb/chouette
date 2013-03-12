@@ -16,6 +16,7 @@ import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.util.List;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -86,8 +87,8 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
         }
     }
 
-    @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should make a stop point partition and affect each stops part to each journey")
-    public void verifyVehicleJourneyRoute() {
+    @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should make vehicleJourney referencing the journey pattern")
+    public void verifyVehicleJourneysOnJourneyPattern() {
         int stopCount = 27;
         int journeyPatternCount = 5;
         int vehicleCount = 2;
@@ -96,7 +97,9 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
                 
         for ( int i=0; i<journeyPatternCount; i++) {
             JourneyPattern jp = route.getJourneyPatterns().get(i);
-            Assert.assertEquals( jp.getVehicleJourneys().size(), vehicleCount);
+            for ( VehicleJourney vj : jp.getVehicleJourneys()) {                
+                Assert.assertEquals( vj.getJourneyPattern().getObjectId(), jp.getObjectId());
+            }
         }
     }
 
