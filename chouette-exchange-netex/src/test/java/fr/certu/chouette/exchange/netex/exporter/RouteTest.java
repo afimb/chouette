@@ -58,29 +58,12 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
+        complexModelFactory = new ComplexModelFactory();
+        complexModelFactory.init();
         
-        
-        line = modelFactory.createModel(Line.class);
-        route1 = complexModelFactory.nominalRoute(21, 7, 2, "1");
-        route2 = complexModelFactory.nominalRoute(22, 7, 2, "2");
-        route3 = complexModelFactory.nominalRoute(23, 7, 2, "3");
-        List<Route> routes = new ArrayList<Route>(3);
-        routes.add(route1);routes.add(route2);routes.add(route3);
-        line.setRoutes(routes);
-        
-        line.complete();
-        // TODO: code below should be in ComplexModelFactory 
-        for( Route route : line.getRoutes()) {
-            for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
-                journeyPattern.setRoute( route);
-                for ( VehicleJourney vehicleJourney : journeyPattern.getVehicleJourneys()) {
-                    vehicleJourney.setRoute( route);
-                    vehicleJourney.setJourneyPattern( journeyPattern);
-                }
-            }
-        }
-        
+
+        line = complexModelFactory.nominalLine( "1");
+
         
         netexFileWriter.writeXmlFile(line, fileName);
 
@@ -289,6 +272,58 @@ public class RouteTest extends AbstractTestNGSpringContextTests {
             }
             
                 
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "stopAssignments"}, description = "Validate presence of PassengerStopAssignment with expected ref")
+    public void verifyPassengerStopAssignmentId() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( StopPoint stopPoint : route.getStopPoints()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:stopAssignments/"+
+                                    "netex:PassengerStopAssignment"+
+                                    "[@id = '"+
+                                        stopPoint.objectIdPrefix()+
+                                        ":PassengerStopAssignment:"+
+                                        stopPoint.objectIdSuffix()+
+                                                    "'])";
+                assertXPathTrue( xPathExpr);
+
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "stopAssignments"}, description = "Validate presence of ScheduledStopPointRef with expected ref")
+    public void verifyPassengerStopAssignmentScheduledStopPointRefRef() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( StopPoint stopPoint : route.getStopPoints()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:stopAssignments/"+
+                                    "netex:PassengerStopAssignment/netex:ScheduledStopPointRef"+
+                                    "[@ref = '"+
+                                        stopPoint.objectIdPrefix()+
+                                        ":StopPoint:"+
+                                        stopPoint.objectIdSuffix()+
+                                                    "'])";
+                assertXPathTrue( xPathExpr);
+
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "stopAssignments"}, description = "Validate presence of QuayRef with expected ref")
+    public void verifyPassengerStopAssignmentQuayRefRef() throws XPathExpressionException, ParseException {
+        for( Route route : line.getRoutes()) {
+            for ( StopPoint stopPoint : route.getStopPoints()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:stopAssignments/"+
+                                    "netex:PassengerStopAssignment/netex:QuayRef"+
+                                    "[@ref = '"+
+                                        stopPoint.getContainedInStopArea().objectIdPrefix()+
+                                        ":Quay:"+
+                                        stopPoint.getContainedInStopArea().objectIdSuffix()+
+                                                    "'])";
+                //if (true) throw new RuntimeException( xPathExpr);
+                assertXPathTrue( xPathExpr);
+
+            }
         }
     }
 

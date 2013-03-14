@@ -57,28 +57,13 @@ public class JourneyPatternTest extends AbstractTestNGSpringContextTests {
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
+        complexModelFactory = new ComplexModelFactory();
+        complexModelFactory.init();
         
         
-        line = modelFactory.createModel(Line.class);
-        route1 = complexModelFactory.nominalRoute(21, 7, 2, "1");
-        route2 = complexModelFactory.nominalRoute(22, 7, 2, "2");
-        route3 = complexModelFactory.nominalRoute(23, 7, 2, "3");
-        List<Route> routes = new ArrayList<Route>(3);
-        routes.add(route1);routes.add(route2);routes.add(route3);
-        line.setRoutes(routes);
+        line = complexModelFactory.nominalLine( "1");
         
-        line.complete();
         // TODO: code below should be in ComplexModelFactory 
-        for( Route route : line.getRoutes()) {
-            for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
-                journeyPattern.setRoute( route);
-                for ( VehicleJourney vehicleJourney : journeyPattern.getVehicleJourneys()) {
-                    vehicleJourney.setRoute( route);
-                    vehicleJourney.setJourneyPattern( journeyPattern);
-                }
-            }
-        }
         
         netexFileWriter.writeXmlFile(line, fileName);
 

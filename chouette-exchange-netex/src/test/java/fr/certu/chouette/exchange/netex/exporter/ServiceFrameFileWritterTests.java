@@ -44,15 +44,11 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
+        complexModelFactory = new ComplexModelFactory();
+        complexModelFactory.init();
         
-        Line line = new Line();
-        line = modelFactory.createModel(Line.class);
-        List<Route> routes = new ArrayList<Route>();
-        routes.add( complexModelFactory.nominalRoute( stopCount, journeyPatternCount, vehicleCount,"1"));
-        line.setRoutes( routes);
         
-        line.complete();
+        Line line = complexModelFactory.nominalLine( "1");
         
         netexFileWriter.writeXmlFile(line, fileName);
 
@@ -83,20 +79,6 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
 
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have route points")
-    public void verifyRoutePoint() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:routePoints/netex:RoutePoint");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-        assert nodes.getLength() == stopCount;
-    }
-
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 4 routes")
-    public void verifyRoutes() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:Route/netex:Name/node()");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-
-        assert nodes.getLength() == 1;
-    }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one line")
     public void verifyLine() throws XPathExpressionException {
@@ -107,26 +89,8 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         assert nodes.item(0).getNodeValue().equals("7B");
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have Scheduled StopPoint")
-    public void verifyScheduledStopPoint() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:scheduledStopPoints/netex:ScheduledStopPoint");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-        for (int i = 0; i < nodes.getLength(); i++) {
-            logger.error(nodes.item(i).getNodeName());
-        }
-        assert nodes.getLength() == stopCount;
-    }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have service patterns")
-    public void verifyServicePattern() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:servicePatterns/netex:ServicePattern");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-        assert nodes.getLength() == journeyPatternCount;
 
-        xPathExpression = xPath.compile("//netex:pointsInSequence/netex:PointOnRoute/@id");
-        nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-        assert nodes.getLength() == stopCount;
-    }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have TariffZone")
     public void verifyTariffZone() throws XPathExpressionException {
@@ -135,10 +99,5 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         //assert nodes.getLength() == 6;
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have PassengerStopAssignment")
-    public void verifyPassengerStopAssignment() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:stopAssignments/netex:PassengerStopAssignment");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-        assert nodes.getLength() == stopCount;
-    }
+
 }

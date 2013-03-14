@@ -46,17 +46,13 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         xPath.setNamespaceContext(new NetexNamespaceContext());
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
 
-        Line line = modelFactory.createModel(Line.class);
-        Route route = modelFactory.createModel(Route.class);
-        line.addRoute(route);
-        JourneyPattern journeyPattern = modelFactory.createModel(JourneyPattern.class);
-        route.addJourneyPattern(journeyPattern);               
-        List<VehicleJourney> vehicleJourneys =  complexModelFactory.vehicleJourneyList( 2, journeyPattern, "JP0");
-        journeyPattern.setVehicleJourneys(vehicleJourneys);
+        complexModelFactory = new ComplexModelFactory();
+        complexModelFactory.init();
         
-        line.complete();        
+        
+        Line line = complexModelFactory.nominalLine( "1");
+        
         netexFileWriter.writeXmlFile(line, fileName);
 
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
