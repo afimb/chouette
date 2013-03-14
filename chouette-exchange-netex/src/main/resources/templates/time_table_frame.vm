@@ -5,19 +5,16 @@
     <ServiceJourney version="$vehicleJourney.objectVersion" id="${vehicleJourney.objectIdPrefix()}:VehicleJourney:${vehicleJourney.objectIdSuffix()}">
       <Name>$vehicleJourney.number</Name>
       <dayTypes>
-        #foreach( $timeTable in $vehicleJourney.timeTables )  
-          #foreach( $dayType in $timeTable.dayTypes )  
-        <DayTypeRef version="1" ref="${dayType.objectIdPrefix()}:DayType:${dayType.objectIdSuffix()}"/>
-          #end 
+        #foreach( $timetable in $vehicleJourney.timetables )  
+        <DayTypeRef version="$timetable.objectVersion" ref="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}"/>
         #end 
       </dayTypes>
       #if($vehicleJourney.route) 
       <RouteRef version="$vehicleJourney.route.objectVersion" ref="${vehicleJourney.route.objectIdPrefix()}:Route:${vehicleJourney.route.objectIdSuffix()}"/>
       #end
       #if($vehicleJourney.journeyPattern) 
-      <ServicePatternRef ref="${vehicleJourney.journeyPattern.objectIdPrefix()}:ServicePattern:${vehicleJourney.journeyPattern.objectIdSuffix()}">EXTERNAL</ServicePatternRef>
+      <ServiceJourneyPatternRef ref="${vehicleJourney.journeyPattern.objectIdPrefix()}:ServiceJourneyPattern:${vehicleJourney.journeyPattern.objectIdSuffix()}">EXTERNAL</ServiceJourneyPatternRef>
       #end
-      <!-- NEPTUNE [mapping:variable] : ServiceJourney->calls->Call mapped to NEPTUNE VehicleJourney->vehicleJourneyAtStop -->      
       <calls>
         #foreach( $vehicleJourneyAtStop in $vehicleJourney.vehicleJourneyAtStops ) 
         <Call>

@@ -9,8 +9,8 @@ import java.util.Date;
 @Blueprint(Period.class)
 public class PeriodBlueprint {    
     @Default
-    Date startDate = new Date();           
+    Date startDate;           
 
     @Default
-    Date endDate = new Date();   
+    Date endDate;   
 }

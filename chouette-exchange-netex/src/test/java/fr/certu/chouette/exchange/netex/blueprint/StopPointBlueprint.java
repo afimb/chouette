@@ -4,20 +4,28 @@ import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.Nullable;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Blueprint(StopPoint.class)
 public class StopPointBlueprint {
     
     @Default
-    int objectVersion = 1;
+    FieldCallback objectId = new FieldCallback() {
+        @Override
+        public String get( Object model) {
+            return "RATP_PIVI:StopPoint:" + UUID.randomUUID();
+        }
+        
+    };  
     
     @Default
-    String objectId = "RATP_PIVI:RoutePoint:317452A0A5246063";
+    int objectVersion = 1;   
     
     @Default
     String name = "A";
