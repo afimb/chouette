@@ -23,6 +23,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.w3c.dom.Document;
 
@@ -89,39 +90,39 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if 2 vehicle journeys exists")
     public void verifyVehicleJourneys() throws XPathExpressionException {
-        assert xPath.evaluate("count(//netex:ServiceJourney)", xmlDocument).equals("1");               
-        assert( xPath.evaluate("//netex:ServiceJourney[@id='" + vehicleJourney.objectIdPrefix() + ":VehicleJourney:" + vehicleJourney.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) != null );
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney)", xmlDocument), "1");               
+        Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney[@id='" + vehicleJourney.objectIdPrefix() + ":VehicleJourney:" + vehicleJourney.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if dayType exists")
     public void verifyDayTypes() throws XPathExpressionException {
-        assert xPath.evaluate("count(//netex:ServiceJourney//netex:DayTypeRef)", xmlDocument).equals("4");       
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:DayTypeRef)", xmlDocument), "4");       
         for (int i = 0; i < vehicleJourney.getTimetables().size(); i++) {
             Timetable timetable = vehicleJourney.getTimetables().get(i);                   
-            assert( xPath.evaluate("//netex:ServiceJourney//netex:DayTypeRef[@ref='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) != null );
+            Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney//netex:DayTypeRef[@ref='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
         }            
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if a route exists")
     public void verifyRoute() throws XPathExpressionException {
-        assert xPath.evaluate("count(//netex:ServiceJourney/netex:RouteRef)", xmlDocument).equals("1");
-        assert( xPath.evaluate("//netex:ServiceJourney/netex:RouteRef[@ref='" + vehicleJourney.getRoute().objectIdPrefix() + ":Route:" + vehicleJourney.getRoute().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) != null );
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney/netex:RouteRef)", xmlDocument), "1");
+        Assert.assertNotNull(  xPath.evaluate("//netex:ServiceJourney/netex:RouteRef[@ref='" + vehicleJourney.getRoute().objectIdPrefix() + ":Route:" + vehicleJourney.getRoute().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
         
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if a journey pattern exist")
     public void verifyJourneyPattern() throws XPathExpressionException {
-        assert xPath.evaluate("count(//netex:ServiceJourney/netex:ServiceJourneyPatternRef)", xmlDocument).equals("1");
-        assert( xPath.evaluate("//netex:ServiceJourney/netex:ServiceJourneyPatternRef[@ref='" + vehicleJourney.getJourneyPattern().objectIdPrefix() + ":ServiceJourneyPattern:" + vehicleJourney.getJourneyPattern().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) != null );        
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney/netex:ServiceJourneyPatternRef)", xmlDocument), "1");
+        Assert.assertNotNull(  xPath.evaluate("//netex:ServiceJourney/netex:ServiceJourneyPatternRef[@ref='" + vehicleJourney.getJourneyPattern().objectIdPrefix() + ":ServiceJourneyPattern:" + vehicleJourney.getJourneyPattern().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );        
     }
         
     @Test(groups = {"TimeTableFrame"}, description = "Check if Calls exists")
     public void verifyCalls() throws XPathExpressionException {
-        assert xPath.evaluate("count(//netex:ServiceJourney//netex:Call)", xmlDocument).equals("4");
-        assert xPath.evaluate("count(//netex:ServiceJourney//netex:ScheduledStopPointRef)", xmlDocument).equals("4");
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:Call)", xmlDocument), "4");
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:ScheduledStopPointRef)", xmlDocument), "4");
         for (int i = 0; i < vehicleJourney.getVehicleJourneyAtStops().size(); i++) {
             VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourney.getVehicleJourneyAtStops().get(i);                   
-            assert( xPath.evaluate("//netex:ServiceJourney//netex:ScheduledStopPointRef[@ref='" + vehicleJourneyAtStop.getStopPoint().objectIdPrefix() + ":StopPoint:" + vehicleJourneyAtStop.getStopPoint().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) != null );
+            Assert.assertNotNull(  xPath.evaluate("//netex:ServiceJourney//netex:ScheduledStopPointRef[@ref='" + vehicleJourneyAtStop.getStopPoint().objectIdPrefix() + ":StopPoint:" + vehicleJourneyAtStop.getStopPoint().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
         }        
     }
     
