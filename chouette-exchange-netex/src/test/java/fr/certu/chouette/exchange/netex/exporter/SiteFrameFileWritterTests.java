@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.exporter.NetexFileWriter;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
