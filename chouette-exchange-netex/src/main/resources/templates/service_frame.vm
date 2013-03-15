@@ -128,7 +128,7 @@
       #if ($stopPoint.containedInStopArea) 
       <StopPlaceRef version="$stopPoint.containedInStopArea.parent.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopArea:${stopPoint.containedInStopArea.parent.objectIdSuffix()}"/>
       #end 
-      <QuayRef version="$stopPoint.containedInStopAreaId.objectVersion" ref="${stopPoint.objectIdPrefix()}:Quay:${stopPoint.containedInStopArea.objectIdSuffix()}"/>
+      <QuayRef version="$stopPoint.containedInStopArea.objectVersion" ref="${stopPoint.objectIdPrefix()}:Quay:${stopPoint.containedInStopArea.objectIdSuffix()}"/>
     </PassengerStopAssignment>    
     #end
   #end  
