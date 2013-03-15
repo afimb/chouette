@@ -9,9 +9,7 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import java.io.File;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -47,12 +45,12 @@ public class NetexFileWriter {
         model.put("stopPlaces", line.getStopPlaces());        
         model.put("commercialStopPoints", line.getCommercialStopPoints()); 
         
-        // For TimeTableFrame need to have vehicle journeys
+        // For TimetableFrame need to have vehicle journeys
         model.put("vehicleJourneys", line.getVehicleJourneys()); 
         
         // For ServiceCalendarFrame need to have time tables
-        model.put("timeTables", line.getTimetables()); 
-        
+        model.put("timetables", line.getTimetables()); 
+
         model.put("date", new DateTool());
         model.put("dateFormat", "yyyy-MM-d'T'HH:mm:ss'Z'");
     }

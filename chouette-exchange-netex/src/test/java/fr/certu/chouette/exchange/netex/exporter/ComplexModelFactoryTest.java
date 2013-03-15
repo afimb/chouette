@@ -33,40 +33,47 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
     @BeforeMethod
     protected void setUp() throws Exception {
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
+        complexModelFactory = new ComplexModelFactory();
     }   
 
     @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should create as many journeys as requested, the same for stops")
     public void verifyRoute() {
-        int stopCount = 5;
-        int journeyPatternCount = 2;
-        int vehicleCount = 2;
+        complexModelFactory.setJourneyPatternCount( 2);
+        complexModelFactory.setVehicleCount( 2);
+        complexModelFactory.setRouteStopCount( 5);
+        complexModelFactory.setQuayCount( 5);
+        complexModelFactory.init();
         
-        Route route = complexModelFactory.nominalRoute( stopCount, journeyPatternCount, vehicleCount, "1");
-        Assert.assertEquals( route.getJourneyPatterns().size(), journeyPatternCount);
-        Assert.assertEquals( route.getStopPoints().size(), stopCount);
+        Route route = complexModelFactory.nominalLine( "1").getRoutes().get(0);
+        Assert.assertEquals( route.getJourneyPatterns().size(), complexModelFactory.getJourneyPatternCount());
+        Assert.assertEquals( route.getStopPoints().size(), complexModelFactory.getRouteStopCount());
     }
+    
+    @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should create as 2 timetable for each vehicle")
+    public void verifyTimetable() {
+        complexModelFactory.init();
+        
+        List<VehicleJourney> vehicles = complexModelFactory.nominalLine( "1").
+                getRoutes().get(0).getJourneyPatterns().get(0).
+                getVehicleJourneys();
+        for ( int i=0; i<vehicles.size(); i++) {
+            Assert.assertEquals( vehicles.get(i).getTimetables().size(), 2);
+        }
+    }
+    
 
     @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should complitable")
     public void verifyRouteCompletable() {
-        int stopCount = 5;
-        int journeyPatternCount = 2;
-        int vehicleCount = 2;
+        complexModelFactory.setJourneyPatternCount( 2);
+        complexModelFactory.setVehicleCount( 2);
+        complexModelFactory.setRouteStopCount( 5);
+        complexModelFactory.setQuayCount( 5);
+        complexModelFactory.init();
         
-        Route route = complexModelFactory.nominalRoute( stopCount, journeyPatternCount, vehicleCount, "1");
+        Route route = complexModelFactory.nominalLine( "1").getRoutes().get(0);
         System.out.println( "route.getStopPoints().size()="+route.getStopPoints().size()); 
         route.complete();
         Assert.assertTrue(true);
-    }
-
-    @Test(groups = {"ComplexModelFactory.stopPointList"}, description = "Should make a stop point array")
-    public void verifyStopPointList() {
-        List<StopPoint> sps = complexModelFactory.stopPointList( 4, "1");
-        
-        for ( int i=0; i<4; i++) {
-            System.out.println( "sp hashcode="+sps.get(i).hashCode());
-            
-        }
     }
 
     @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should make a stop point partition and affect each stops part to each journey")
@@ -75,7 +82,13 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
         int journeyPatternCount = 5;
         int vehicleCount = 2;
         
-        Route route = complexModelFactory.nominalRoute( stopCount, journeyPatternCount, vehicleCount, "1");
+        complexModelFactory.setJourneyPatternCount( journeyPatternCount);
+        complexModelFactory.setVehicleCount( vehicleCount);
+        complexModelFactory.setRouteStopCount( stopCount);
+        complexModelFactory.setQuayCount( stopCount);
+        complexModelFactory.init();
+        
+        Route route = complexModelFactory.nominalLine( "1").getRoutes().get(0);
         for ( int i=0; i<journeyPatternCount; i++) {
             JourneyPattern jp = route.getJourneyPatterns().get(i);
             int reste = stopCount % journeyPatternCount;
@@ -93,7 +106,13 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
         int journeyPatternCount = 5;
         int vehicleCount = 2;
         
-        Route route = complexModelFactory.nominalRoute( stopCount, journeyPatternCount, vehicleCount, "1");
+        complexModelFactory.setJourneyPatternCount( journeyPatternCount);
+        complexModelFactory.setVehicleCount( vehicleCount);
+        complexModelFactory.setRouteStopCount( stopCount);
+        complexModelFactory.setQuayCount( stopCount);
+        complexModelFactory.init();
+        
+        Route route = complexModelFactory.nominalLine( "1").getRoutes().get(0);
                 
         for ( int i=0; i<journeyPatternCount; i++) {
             JourneyPattern jp = route.getJourneyPatterns().get(i);
@@ -105,7 +124,9 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
 
     @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should define same blueprint attribute for wayback")
     public void verifySimpleAttribute() {
-        Route route = complexModelFactory.nominalRoute( 5, 2, 3, "1");
+        complexModelFactory.init();
+        
+        Route route = complexModelFactory.nominalLine( "1").getRoutes().get(0);
         Route defaultRoute = null;
         try {
             defaultRoute = modelFactory.createModel( Route.class);

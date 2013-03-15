@@ -26,7 +26,4 @@
         <property name="registerBlueprintsByPackage" value="fr.certu.chouette.exchange.netex.blueprint" />         
     </bean>
 	
-    <bean id="complexModelFactory" class="fr.certu.chouette.exchange.netex.ComplexModelFactory" scope="prototype">
-        <property name="modelFactory" ref="modelFactory" />         
-    </bean>
 </beans>
