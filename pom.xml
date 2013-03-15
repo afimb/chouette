@@ -19,7 +19,7 @@
 		<module>chouette-hibernate-dao</module>
 		<module>chouette-jdbc-dao</module>
 		<module>chouette-castor-neptune</module>
-                <module>chouette-exchange-netex</module>
+        <module>chouette-exchange-netex</module>
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>
 		<module>chouette-exchange-csv</module>
@@ -45,11 +45,11 @@
 			<name>JBoss Public Maven Repository Group</name>
 			<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
 		</repository>
-		<repository>
+<!-- 		<repository>
 			<id>jboss-old-repository</id>
 			<name>JBoss Public Maven Repository Group</name>
 			<url>https://repository.jboss.org/maven2/</url>
-		</repository>
+		</repository> -->
 		<repository>
 			<id>apache.snapshots</id>
 			<name>ASF Maven 2 Snapshot</name>
@@ -297,17 +297,7 @@
 				<version>3.0.5.RELEASE</version>
 				<scope>test</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>3.0.5.RELEASE</version>
-			</dependency>
 			<!-- Display Tag for Struts 2 -->
-			<dependency>
-				<groupId>displaytag</groupId>
-				<artifactId>displaytag</artifactId>
-				<version>1.2</version>
-			</dependency>
 			<!-- Opencsv -->
 			<dependency>
 				<groupId>net.sf.opencsv</groupId>
