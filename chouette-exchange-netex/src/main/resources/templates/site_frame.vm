@@ -31,7 +31,7 @@
           #set( $areaCentroid = $quay.areaCentroid )
           #if($areaCentroid)
           <Centroid>
-            <Location id="$quay.areaCentroid.objectId">
+            <Location id="${quay.areaCentroid.objectIdPrefix()}:Location:${quay.areaCentroid.objectIdSuffix()}">
               <Longitude>$areaCentroid.longitude</Longitude>
               <Latitude>$areaCentroid.latitude</Latitude>
               <gml:pos srsName="$quay.areaCentroid.longLatType">

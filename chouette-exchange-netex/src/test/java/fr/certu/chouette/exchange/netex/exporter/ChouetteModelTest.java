@@ -63,4 +63,16 @@ public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
                 xPath.evaluate( xPathExpr, 
                                 xmlDocument)));
     }
+    
+    protected void assertXPathEquals(String xPathExpr, boolean expected) throws XPathExpressionException {
+        Assert.assertEquals( Boolean.parseBoolean( 
+                xPath.evaluate( xPathExpr, 
+                                xmlDocument)), expected);
+    }
+
+    protected void assertXPathCount(String xPathExpr, int vehicleCount) throws NumberFormatException, XPathExpressionException {
+        Assert.assertEquals( Integer.parseInt( 
+                xPath.evaluate( xPathExpr, 
+                                xmlDocument)), vehicleCount);
+    }
 }
