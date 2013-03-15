@@ -5,20 +5,28 @@ import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import java.util.List;
+import java.util.UUID;
 
 @Blueprint(Line.class)
 public class LineBlueprint {
     
     @Default
-    String name = "7B";
+    FieldCallback objectId = new FieldCallback() {
+        @Override
+        public String get( Object model) {
+            return "RATP_PIVI:Line:" + UUID.randomUUID();
+        }
+        
+    };  
     
     @Default
-    String objectId = "RATP_PIVI:Line:100110107";     
+    String name = "7B";   
 
     @Default
     int objectVersion = 1;
@@ -35,7 +43,7 @@ public class LineBlueprint {
     @Mapped   
     Company company;
     
-    @MappedList(target = Route.class, size = 1)
+    @MappedList(target = Route.class, size = 0)
     List<Route> routes;
 
 }

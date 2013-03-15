@@ -2,11 +2,8 @@ package fr.certu.chouette.exchange.netex.exporter;
 
 import fr.certu.chouette.exchange.netex.exporter.NetexFileWriter;
 import com.tobedevoured.modelcitizen.CreateModelException;
-import com.tobedevoured.modelcitizen.Erector;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
@@ -22,14 +19,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
@@ -42,14 +36,15 @@ public class SiteFrameFileWritterTests extends AbstractTestNGSpringContextTests 
     private XPath xPath = XPathFactory.newInstance().newXPath();
     private Document xmlDocument;
 
-    @BeforeMethod
+    @BeforeClass
     protected void setUp() throws Exception {
         xPath.setNamespaceContext(new NetexNamespaceContext());
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
 
-        Line line = modelFactory.createModel(Line.class);        
-        Route route = line.getRoutes().get(0);                              
+        Line line = modelFactory.createModel(Line.class);    
+        Route route = modelFactory.createModel(Route.class);
+        line.addRoute(route);
         route.setStopPoints(stopPointsAndAncestors(2));        
         line.complete();
         

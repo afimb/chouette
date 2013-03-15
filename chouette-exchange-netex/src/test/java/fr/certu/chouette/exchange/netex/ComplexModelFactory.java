@@ -76,6 +76,9 @@ public class ComplexModelFactory {
                 stopArea.setAreaType( ChouetteAreaEnum.QUAY);
                 stopArea.setParent( stopAreaCommercial);
                 
+                stopAreaCommercial.setContainedStopAreas( new ArrayList<StopArea>());
+                stopAreaCommercial.addContainedStopArea(stopArea);
+                
                 quays.add(stopArea);
             }
         } catch (CreateModelException ex) {
@@ -221,6 +224,7 @@ public class ComplexModelFactory {
         for ( int i=0; i<vehicleCount; i++) {
             VehicleJourney vehicle = vehicleJourney( calendar, journeyPattern);
             vehicle.setObjectId( "T:VehicleJourney:"+journeyPattern.objectIdSuffix()+"-"+i);
+            vehicle.setTimetables( new ArrayList<Timetable>());
             vehicle.addTimetable( timetables.get(i%timetablesCount));
             vehicle.addTimetable( timetables.get((i+1)%timetablesCount));
             calendar.add( Calendar.MINUTE, 12);

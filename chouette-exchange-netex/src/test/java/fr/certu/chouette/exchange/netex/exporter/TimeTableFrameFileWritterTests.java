@@ -1,33 +1,32 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.exporter.NetexFileWriter;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
+import com.tobedevoured.modelcitizen.policy.PolicyException;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import java.util.ArrayList;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.testng.annotations.BeforeMethod;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
@@ -36,12 +35,12 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
     private NetexFileWriter netexFileWriter;
     private ModelFactory modelFactory;
     private ComplexModelFactory complexModelFactory;
-    private List<Line> lines = new ArrayList<Line>();
     private String fileName = "/tmp/test.xml";
     private XPath xPath = XPathFactory.newInstance().newXPath();
     private Document xmlDocument;
+    private Line line;
 
-    @BeforeMethod
+    @BeforeClass
     protected void setUp() throws Exception {
         xPath.setNamespaceContext(new NetexNamespaceContext());
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
@@ -51,8 +50,9 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         complexModelFactory.init();
         
         
-        Line line = complexModelFactory.nominalLine( "1");
+        line = complexModelFactory.nominalLine( "1");
         
+
         netexFileWriter.writeXmlFile(line, fileName);
 
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -61,12 +61,28 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         xmlDocument = builder.parse(fileName);
     }
     
-    @Test(groups = {"ServiceFrame"}, description = "")
+    @Test(groups = {"TimeTableFrame"}, description = "Check if 2 vehicle journeys exists")
     public void verifyVehicleJourneys() throws XPathExpressionException {
-        logger.error(xPath.evaluate("count(//netex:VehicleJourney)", xmlDocument));
-        //assert xPath.evaluate("count(//netex:VehicleJourney)", xmlDocument).equals("2");
-       
-
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney)", xmlDocument), "28");               
+        
+        List<VehicleJourney> vehicles = line.getRoutes().get(0).
+                                getJourneyPatterns().get(0).getVehicleJourneys();
+        VehicleJourney vehicle = vehicles.get( 0);
+        Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney[@id='" + vehicle.objectIdPrefix() + ":VehicleJourney:" + vehicle.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
     }
+    
+    @Test(groups = {"TimeTableFrame"}, description = "Check if dayType exists")
+    public void verifyDayTypes() throws XPathExpressionException {
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:DayTypeRef)", xmlDocument), "56"); 
+        
+        List<VehicleJourney> vehicles = line.getRoutes().get(0).
+                                getJourneyPatterns().get(0).getVehicleJourneys();
+        for (int i = 0; i < vehicles.get(0).getTimetables().size(); i++) {
+            Timetable timetable = vehicles.get(0).getTimetables().get(i);                   
+            Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney//netex:DayTypeRef[@ref='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
+        }            
+    }
+    
+
     
 }

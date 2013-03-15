@@ -18,9 +18,9 @@ public class VehicleJourneyAtStopBlueprint {
     StopPoint stopPoint;
     
     @Default
-    Time departureTime;    
+    Time departureTime = new Time(2500);    
     
     @Default
-    Time arrivalTime;
+    Time arrivalTime = new Time(2800);
 
 }

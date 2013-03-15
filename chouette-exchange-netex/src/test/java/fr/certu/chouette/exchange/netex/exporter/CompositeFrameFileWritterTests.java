@@ -14,7 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 
@@ -30,7 +30,7 @@ public class CompositeFrameFileWritterTests extends AbstractTestNGSpringContextT
     private Document xmlDocument;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss'Z'");
 
-    @BeforeMethod
+    @BeforeClass
     protected void setUp() throws Exception {
         xPath.setNamespaceContext(new NetexNamespaceContext());
 

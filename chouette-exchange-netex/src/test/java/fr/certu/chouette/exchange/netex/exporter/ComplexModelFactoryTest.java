@@ -48,6 +48,19 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
         Assert.assertEquals( route.getJourneyPatterns().size(), complexModelFactory.getJourneyPatternCount());
         Assert.assertEquals( route.getStopPoints().size(), complexModelFactory.getRouteStopCount());
     }
+    
+    @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should create as 2 timetable for each vehicle")
+    public void verifyTimetable() {
+        complexModelFactory.init();
+        
+        List<VehicleJourney> vehicles = complexModelFactory.nominalLine( "1").
+                getRoutes().get(0).getJourneyPatterns().get(0).
+                getVehicleJourneys();
+        for ( int i=0; i<vehicles.size(); i++) {
+            Assert.assertEquals( vehicles.get(i).getTimetables().size(), 2);
+        }
+    }
+    
 
     @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should complitable")
     public void verifyRouteCompletable() {
