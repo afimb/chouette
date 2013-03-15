@@ -92,8 +92,8 @@ public class StopAreaTest extends ChouetteModelTest {
                                 "']/netex:Centroid/netex:Location/"+
                                 "gml:pos"+
                                 "[@srsName = '"+
-                                quay.getAreaCentroid().getLongitude()+
-                                "']";
+                                quay.getAreaCentroid().getLongLatType()+
+                                "'])";
             assertXPathTrue( xPathExpr);
         }
     }
