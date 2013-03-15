@@ -17,6 +17,7 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -37,15 +38,21 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
     private String fileName = "/tmp/test.xml";
     private XPath xPath = XPathFactory.newInstance().newXPath();
     private Document xmlDocument;
-    private VehicleJourney vehicleJourney;
+    private Line line;
 
     @BeforeClass
     protected void setUp() throws Exception {
         xPath.setNamespaceContext(new NetexNamespaceContext());
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = (ComplexModelFactory) applicationContext.getBean("complexModelFactory");
-        Line line = prepareModel();        
+
+        complexModelFactory = new ComplexModelFactory();
+        complexModelFactory.init();
+        
+        
+        line = complexModelFactory.nominalLine( "1");
+        
+
         netexFileWriter.writeXmlFile(line, fileName);
 
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -54,76 +61,28 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         xmlDocument = builder.parse(fileName);
     }
     
-    private Line prepareModel() throws CreateModelException, PolicyException
-    {
-        Line line = modelFactory.createModel(Line.class);        
-        Route route = modelFactory.createModel(Route.class);
-        JourneyPattern journeyPattern = modelFactory.createModel(JourneyPattern.class);
-        vehicleJourney = modelFactory.createModel(VehicleJourney.class);
-        
-        line.addRoute(route);
-        route.addJourneyPattern(journeyPattern);
-        
-        vehicleJourney.setRoute(route);
-        vehicleJourney.setJourneyPattern(journeyPattern);
-        
-        for (int i = 0; i < 4; i++) {
-            Timetable timeTable = modelFactory.createModel(Timetable.class);            
-            vehicleJourney.addTimetable(timeTable);
-        }
-        
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(13, 5, 0);
-        for (int j = 0; j < 4; j++) {
-            VehicleJourneyAtStop vehicleJourneyAtStop = modelFactory.createModel(VehicleJourneyAtStop.class);
-            vehicleJourneyAtStop.setArrivalTime(new Time(calendar.getTime().getTime()));
-            vehicleJourneyAtStop.setDepartureTime(new Time(calendar.getTime().getTime()));
-            calendar.add(Calendar.MINUTE, 3);
-            vehicleJourney.addVehicleJourneyAtStop(vehicleJourneyAtStop);
-        }                 
-        
-        journeyPattern.addVehicleJourney(vehicleJourney);        
-        line.complete();
-        
-        return line;
-    }
-    
     @Test(groups = {"TimeTableFrame"}, description = "Check if 2 vehicle journeys exists")
     public void verifyVehicleJourneys() throws XPathExpressionException {
-        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney)", xmlDocument), "1");               
-        Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney[@id='" + vehicleJourney.objectIdPrefix() + ":VehicleJourney:" + vehicleJourney.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney)", xmlDocument), "28");               
+        
+        List<VehicleJourney> vehicles = line.getRoutes().get(0).
+                                getJourneyPatterns().get(0).getVehicleJourneys();
+        VehicleJourney vehicle = vehicles.get( 0);
+        Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney[@id='" + vehicle.objectIdPrefix() + ":VehicleJourney:" + vehicle.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if dayType exists")
     public void verifyDayTypes() throws XPathExpressionException {
-        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:DayTypeRef)", xmlDocument), "4");       
-        for (int i = 0; i < vehicleJourney.getTimetables().size(); i++) {
-            Timetable timetable = vehicleJourney.getTimetables().get(i);                   
+        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:DayTypeRef)", xmlDocument), "56"); 
+        
+        List<VehicleJourney> vehicles = line.getRoutes().get(0).
+                                getJourneyPatterns().get(0).getVehicleJourneys();
+        for (int i = 0; i < vehicles.get(0).getTimetables().size(); i++) {
+            Timetable timetable = vehicles.get(0).getTimetables().get(i);                   
             Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney//netex:DayTypeRef[@ref='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
         }            
     }
     
-    @Test(groups = {"TimeTableFrame"}, description = "Check if a route exists")
-    public void verifyRoute() throws XPathExpressionException {
-        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney/netex:RouteRef)", xmlDocument), "1");
-        Assert.assertNotNull(  xPath.evaluate("//netex:ServiceJourney/netex:RouteRef[@ref='" + vehicleJourney.getRoute().objectIdPrefix() + ":Route:" + vehicleJourney.getRoute().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
-        
-    }
-    
-    @Test(groups = {"TimeTableFrame"}, description = "Check if a journey pattern exist")
-    public void verifyJourneyPattern() throws XPathExpressionException {
-        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney/netex:ServiceJourneyPatternRef)", xmlDocument), "1");
-        Assert.assertNotNull(  xPath.evaluate("//netex:ServiceJourney/netex:ServiceJourneyPatternRef[@ref='" + vehicleJourney.getJourneyPattern().objectIdPrefix() + ":ServiceJourneyPattern:" + vehicleJourney.getJourneyPattern().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );        
-    }
-        
-    @Test(groups = {"TimeTableFrame"}, description = "Check if Calls exists")
-    public void verifyCalls() throws XPathExpressionException {
-        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:Call)", xmlDocument), "4");
-        Assert.assertEquals( xPath.evaluate("count(//netex:ServiceJourney//netex:ScheduledStopPointRef)", xmlDocument), "4");
-        for (int i = 0; i < vehicleJourney.getVehicleJourneyAtStops().size(); i++) {
-            VehicleJourneyAtStop vehicleJourneyAtStop = vehicleJourney.getVehicleJourneyAtStops().get(i);                   
-            Assert.assertNotNull(  xPath.evaluate("//netex:ServiceJourney//netex:ScheduledStopPointRef[@ref='" + vehicleJourneyAtStop.getStopPoint().objectIdPrefix() + ":StopPoint:" + vehicleJourneyAtStop.getStopPoint().objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
-        }        
-    }
+
     
 }

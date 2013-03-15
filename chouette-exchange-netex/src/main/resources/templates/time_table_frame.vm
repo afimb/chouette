@@ -13,7 +13,7 @@
       <RouteRef version="$vehicleJourney.route.objectVersion" ref="${vehicleJourney.route.objectIdPrefix()}:Route:${vehicleJourney.route.objectIdSuffix()}"/>
       #end
       #if($vehicleJourney.journeyPattern) 
-      <ServiceJourneyPatternRef ref="${vehicleJourney.journeyPattern.objectIdPrefix()}:ServiceJourneyPattern:${vehicleJourney.journeyPattern.objectIdSuffix()}">EXTERNAL</ServiceJourneyPatternRef>
+      <ServicePatternRef ref="${vehicleJourney.journeyPattern.objectIdPrefix()}:ServicePattern:${vehicleJourney.journeyPattern.objectIdSuffix()}">EXTERNAL</ServicePatternRef>
       #end
       <calls>
         #foreach( $vehicleJourneyAtStop in $vehicleJourney.vehicleJourneyAtStops ) 
