@@ -39,10 +39,6 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>fr.certu.chouette.schema</groupId>
-            <artifactId>chouette-castor-neptune</artifactId>
-        </dependency>
-        <dependency>
             <groupId>fr.certu.chouette</groupId>
             <artifactId>chouette-core</artifactId>
         </dependency>

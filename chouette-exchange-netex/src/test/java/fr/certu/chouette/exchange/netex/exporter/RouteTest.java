@@ -22,7 +22,7 @@ public class RouteTest extends ChouetteModelTest {
     
     @Test(groups = { "ServiceFrame", "routes"}, description = "Validate presence of Route element with expected id")
     public void verifyRouteId() throws XPathExpressionException, ParseException {
-        Assert.assertEquals( Integer.parseInt( xPath.evaluate("count(//netex:ServiceFrame/netex:routes/netex:Route)", xmlDocument)), 
+        assertXPathCount( "count(//netex:ServiceFrame/netex:routes/netex:Route)", 
                              line.getRoutes().size());
         for( Route route : line.getRoutes()) {
             assertXPathTrue( "boolean(//netex:ServiceFrame/netex:routes/netex:Route[@id = '"+route.getObjectId()+"'])");
@@ -193,12 +193,11 @@ public class RouteTest extends ChouetteModelTest {
                                                     route.objectIdSuffix()+
                                                 "'])";
 
-            Assert.assertEquals( Integer.parseInt( 
-                    xPath.evaluate( xPathExpr, 
-                                    xmlDocument)), vehicleCount);
+            assertXPathCount(  xPathExpr, vehicleCount);
                 
         }
     }
+
     
     @Test(groups = {"TimetableFrame", "vehicleJourneys"}, description = "Validate presence of ScheduledStopPointRef with expected ref")
     public void verifyVehicleJourneysScheduledStopPointRefRef() throws XPathExpressionException, ParseException {

@@ -1,6 +1,10 @@
                         CHOUETTE RELEASE NOTES
                         ======================
 
+* Version 2.0.3 (05/04/13)
+  - Import/export NeTex 
+  - Fonctionnement sous Windows
+
 * Version 2.0.2 (28/01/13)
   - Import GTFS 
   - Import CSV : ajout des nouveaux champs V2
