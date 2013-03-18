@@ -113,41 +113,5 @@ public class ServiceCalendarFrameFileWritterTests extends AbstractTestNGSpringCo
         }
     }
 
-    @Test(groups = {"ServiceCalendarFrame"}, description = "Check if periods exist")
-    public void verifyOperatingPeriods() throws XPathExpressionException {
-        for (Timetable timetable : timetables) {
-            for (Period period : timetable.getPeriods()) {
-                String idPeriod = timetable.objectIdPrefix() + ":OperatingPeriod:" + timetable.objectIdSuffix() + "S" + date.format(dateFormat, period.getStartDate()) + "E" + date.format(dateFormat, period.getEndDate());
-                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:OperatingPeriod[@id='" + idPeriod +"']", xmlDocument, XPathConstants.NODE), "Period must exists");                                
-            }
-        }
-    }
 
-    @Test(groups = {"ServiceCalendarFrame"}, description = "Check if days exist")
-    public void verifyOperatingDays() throws XPathExpressionException {
-        for (Timetable timetable : timetables) {
-            for (Date day : timetable.getCalendarDays()) {
-                String idDay = timetable.objectIdPrefix() + ":OperatingDay:" + timetable.objectIdSuffix() + "D" + date.format(dateFormat, day);
-                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:OperatingDay[@id='" + idDay +"']", xmlDocument, XPathConstants.NODE), "Day must exists");                                
-            }
-        }
-    }
-
-    @Test(groups = {"ServiceCalendarFrame"}, description = "Check if dayType assignments exist")
-    public void verifyDayTypeAssignments() throws XPathExpressionException {        
-        
-        for (Timetable timetable : timetables) {            
-            Assert.assertEquals(xPath.evaluate("count(//netex:ServiceCalendarFrame//netex:DayTypeAssignment/netex:DayTypeRef[@ref='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "'])", xmlDocument), "4", "Must find DayTypeRef");
-            
-            for (Period period : timetable.getPeriods()) {
-                String idPeriod = timetable.objectIdPrefix() + ":OperatingPeriod:" + timetable.objectIdSuffix() + "S" + date.format(dateFormat, period.getStartDate()) + "E" + date.format(dateFormat, period.getEndDate());
-                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayTypeAssignment/netex:OperatingPeriodRef[@ref='" + idPeriod +"']", xmlDocument, XPathConstants.NODE), "DayType with Period must exists");                                
-            }
-            
-            for (Date day : timetable.getCalendarDays()) {
-                String idDay = timetable.objectIdPrefix() + ":OperatingDay:" + timetable.objectIdSuffix() + "D" + date.format(dateFormat, day);
-                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayTypeAssignment/netex:OperatingDayRef[@ref='" + idDay +"']", xmlDocument, XPathConstants.NODE), "DayType with Day must exists");                                
-            }
-        }
-    }
 }
