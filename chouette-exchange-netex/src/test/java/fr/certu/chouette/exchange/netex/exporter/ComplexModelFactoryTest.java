@@ -6,8 +6,6 @@ package fr.certu.chouette.exchange.netex.exporter;
 
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -15,7 +13,6 @@ import org.testng.Assert;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.util.List;
 import org.springframework.test.context.ContextConfiguration;

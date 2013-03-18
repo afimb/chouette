@@ -52,7 +52,8 @@ public class NetexFileWriter {
         model.put("timetables", line.getTimetables()); 
 
         model.put("date", new DateTool());
-        model.put("dateFormat", "yyyy-MM-d'T'HH:mm:ss'Z'");
+        model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
+        model.put("shortDateFormat", "yyyy-MM-dd");
     }
     
     public ZipEntry writeZipEntry(Line line, String entryName, ZipOutputStream zipFile) throws IOException 
