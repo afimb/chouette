@@ -1,7 +1,7 @@
 <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
 <ServiceFrame version="any"  id="${line.objectIdPrefix()}:ServiceFrame:${line.objectIdSuffix()}">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="$network.objectVersion" id="${network.objectIdPrefix()}:PTNetwork:${network.objectIdSuffix()}"> <!-- >TODO : changed="$dateFormat.format( $network.versionDate )" -->											
+  <Network version="$network.objectVersion" id="${network.objectIdPrefix()}:PTNetwork:${network.objectIdSuffix()}">
     <Name>$network.name</Name>
     <Description>$network.description</Description>
     <PrivateCode>$network.registrationNumber</PrivateCode>
@@ -106,11 +106,11 @@
   <!-- Tarif zone  : Not really available in NEPTUNE, but there is a need to map Tariff Zone 1 (which is an attribute in NEPTUNE -->
   <!-- This object needs to be created inside the mapping mechanism -->
   <tariffZones>
-    #foreach( $key in $tariffStopPoints ) 
-    <TariffZone version="any" id="RATP_PIVI:TariffZone:$tariffStopPoint.keySet()">
-      <Name>$key.name</Name>
+    #foreach( $key in $tariffStopPoints.keySet() ) 
+    <TariffZone version="any" id="${network.objectIdPrefix()}:TariffZone:$key">
+      <Name>$key</Name>
       <members>
-        #foreach($stopPoint in $tariffStopPoints.get($key) )
+        #foreach($stopPoint in $tariffStopPoints.get($key) )         
         #set($routePointId = ${stopPoint.getRoute().objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} ) 
         <RoutePointRef version="1" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
         #end

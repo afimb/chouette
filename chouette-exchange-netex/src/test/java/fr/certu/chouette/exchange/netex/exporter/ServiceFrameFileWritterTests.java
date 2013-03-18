@@ -49,6 +49,7 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         
         
         Line line = complexModelFactory.nominalLine( "1");
+        line.complete();
         
         netexFileWriter.writeXmlFile(line, fileName);
 

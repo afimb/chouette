@@ -26,6 +26,7 @@ import fr.certu.chouette.exchange.netex.NetexReportItem;
 import java.util.Iterator;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  *  Export lines in Netex format
@@ -36,6 +37,10 @@ public class NetexExportPlugin implements IExportPlugin<Line>
    private static final Logger       logger = Logger.getLogger(NetexExportPlugin.class);
    private FormatDescription         description;   
    private NetexReport               report = new NetexReport(NetexReport.KEY.EXPORT);
+   /**
+    * list of allowed file extensions
+    */
+   private List<String>        allowedExtensions = Arrays.asList(new String[] { "xml", "zip" });
 
    @Getter @Setter private NetexFileWriter           netexFileWriter;
    
@@ -51,7 +56,7 @@ public class NetexExportPlugin implements IExportPlugin<Line>
       List<ParameterDescription> params = new ArrayList<ParameterDescription>();
       
       ParameterDescription outputFile = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false, true);
-      outputFile.setAllowedExtensions(Arrays.asList(new String[] { "xml", "zip" }));
+      outputFile.setAllowedExtensions(allowedExtensions);
       params.add(outputFile);
 
       description.setParameterDescriptions(params);
@@ -97,7 +102,7 @@ public class NetexExportPlugin implements IExportPlugin<Line>
             throw new IllegalArgumentException("outputFile required");
         }
 
-        String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+        String fileExtension =  FilenameUtils.getExtension(fileName).toLowerCase();
 
         if (lines.size() > 1 && fileExtension.equals("xml")) {
             throw new IllegalArgumentException("cannot export multiple lines in one XML file");

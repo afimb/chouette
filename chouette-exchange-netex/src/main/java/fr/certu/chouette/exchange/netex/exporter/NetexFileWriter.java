@@ -97,21 +97,40 @@ public class NetexFileWriter {
     private Map<Integer, List<StopPoint>> tariffStopPoints(Line line)
     {
         Map<Integer, List<StopPoint>> tariffStopPoints = new HashMap<Integer, List<StopPoint>>();
+        List<StopPoint> stopPoints = line.getStopPoints();        
         
-        for (int i = 0; i < line.getStopAreas().size(); i++) {
-            StopArea stopArea = line.getStopAreas().get(i);
+        for (int i = 0; i < stopPoints.size(); i++) {
+            StopPoint stopPoint = stopPoints.get(i);
+            StopArea physical = stopPoint.getContainedInStopArea();
             
-            if( !tariffStopPoints.containsKey(stopArea.getFareCode()) )
-            {
-                tariffStopPoints.put(stopArea.getFareCode(), new ArrayList<StopPoint>());
-                tariffStopPoints.get(stopArea.getFareCode()).addAll(stopArea.getContainedStopPoints());
-            }
-            else{
-                tariffStopPoints.get(stopArea.getFareCode()).addAll(stopArea.getContainedStopPoints());
-            }
+            if( physical != null)
+            {                    
+                if( physical.getFareCode() != null )
+                    addStopPointToTariffStopPoints(physical.getFareCode(), stopPoint, tariffStopPoints);
+                else 
+                {
+                    StopArea commercial = physical.getParent();
+                    if( commercial != null && commercial.getFareCode() != null )
+                        addStopPointToTariffStopPoints(commercial.getFareCode(), stopPoint, tariffStopPoints);
+                }            
+            }            
         }
-                        
+        logger.error(tariffStopPoints.toString());
         return tariffStopPoints;
+    }
+    
+    private Map<Integer, List<StopPoint>> addStopPointToTariffStopPoints(Integer fareCode, StopPoint stopPoint, Map<Integer, List<StopPoint>> tariffStopPoints)
+    {                                           
+        if( !tariffStopPoints.containsKey(fareCode) )
+        {
+            tariffStopPoints.put(fareCode, new ArrayList<StopPoint>());
+            tariffStopPoints.get(fareCode).add(stopPoint);
+        }
+        else{
+            tariffStopPoints.get(fareCode).add(stopPoint);
+        }
+        
+        return tariffStopPoints;        
     }
               
 }
