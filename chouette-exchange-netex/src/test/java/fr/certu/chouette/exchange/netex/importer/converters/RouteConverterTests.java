@@ -5,7 +5,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
-import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.Route;
 import java.io.File;
 import java.io.FileInputStream;
 import org.apache.commons.io.FileUtils;
@@ -17,9 +17,9 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
-public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
+public class RouteConverterTests extends AbstractTestNGSpringContextTests {
 
-    private PTNetworkConverter networkConverter;
+    private RouteConverter routeConverter;
 
     @BeforeClass
     protected void setUp() throws Exception {
@@ -33,15 +33,15 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
         vg.parse(true); // set namespace awareness to true
 
         VTDNav nav = vg.getNav();
-        networkConverter = new PTNetworkConverter(nav);
+        routeConverter = new RouteConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one network")
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
     public void verifyNetwork() throws XPathEvalException, NavException {
-        PTNetwork network = networkConverter.convert();
-        PTNetwork networkMock = new PTNetwork(); 
-        networkMock.setName("METRO");
-        Assert.equals(network.getName(), networkMock.getName());
+        Route route = routeConverter.convert();
+        Route routeMock = new Route(); 
+        routeMock.setName("METRO");
+        Assert.equals(route.getName(), routeMock.getName());
     }
 
 }

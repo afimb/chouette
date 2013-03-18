@@ -5,17 +5,17 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
-import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import org.apache.log4j.Logger;
 
-public class PTNetworkConverter extends GenericConverter 
+public class JourneyPatternConverter extends GenericConverter 
 {    
-    private static final Logger       logger = Logger.getLogger(PTNetworkConverter.class);
-    private PTNetwork network = new PTNetwork();    
+    private static final Logger       logger = Logger.getLogger(JourneyPatternConverter.class);
+    private JourneyPattern journeyPattern = new JourneyPattern();    
     private AutoPilot autoPilot;
     private VTDNav vTDNav;
     
-    public PTNetworkConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
+    public JourneyPatternConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
     {
         vTDNav = nav;
         autoPilot = new AutoPilot(nav);
@@ -23,17 +23,16 @@ public class PTNetworkConverter extends GenericConverter
         autoPilot.selectXPath("//netex:Network");
     }
     
-    public PTNetwork convert() throws XPathEvalException, NavException
+    public JourneyPattern convert() throws XPathEvalException, NavException
     {
         int result = -1;
         
         while( (result = autoPilot.evalXPath()) != -1 )
         {                        
-            network.setName(parseMandatoryElement(vTDNav, "Name"));
-            network.setDescription(parseMandatoryElement(vTDNav, "Description"));                                              
+            journeyPattern.setName(parseMandatoryElement(vTDNav, "Name"));                                              
         } 
         
-        return network;
+        return journeyPattern;
     }
     
 }

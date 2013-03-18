@@ -5,7 +5,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
-import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.Line;
 import java.io.File;
 import java.io.FileInputStream;
 import org.apache.commons.io.FileUtils;
@@ -17,9 +17,9 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
-public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
+public class LineConverterTests extends AbstractTestNGSpringContextTests {
 
-    private PTNetworkConverter networkConverter;
+    private LineConverter lineConverter;
 
     @BeforeClass
     protected void setUp() throws Exception {
@@ -33,15 +33,15 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
         vg.parse(true); // set namespace awareness to true
 
         VTDNav nav = vg.getNav();
-        networkConverter = new PTNetworkConverter(nav);
+        lineConverter = new LineConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one network")
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one line")
     public void verifyNetwork() throws XPathEvalException, NavException {
-        PTNetwork network = networkConverter.convert();
-        PTNetwork networkMock = new PTNetwork(); 
-        networkMock.setName("METRO");
-        Assert.equals(network.getName(), networkMock.getName());
+        Line line = lineConverter.convert();
+        Line lineMock = new Line(); 
+        lineMock.setName("METRO");
+        Assert.equals(line.getName(), lineMock.getName());
     }
 
 }
