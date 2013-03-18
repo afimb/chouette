@@ -138,6 +138,7 @@ public class ComplexModelFactory {
                 StopPoint stopPoint = new StopPoint();
                 stopPoint.setContainedInStopArea( quays.get( i%quayCount));
                 stopPoint.setObjectId( "T:StopPoint:"+route.objectIdSuffix()+"-"+i);
+                stopPoint.setRoute(route);
                 stopPoint = modelFactory.createModel( stopPoint);
 
                 stopPoints.add( stopPoint);
