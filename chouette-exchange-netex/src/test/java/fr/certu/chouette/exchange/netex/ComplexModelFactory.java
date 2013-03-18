@@ -17,6 +17,7 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class ComplexModelFactory {
                 StopArea stopAreaCommercial = modelFactory.createModel(StopArea.class);
                 stopAreaCommercial.setObjectId( "T:StopArea:CSP-"+i);
                 stopAreaCommercial.setAreaType( ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+                stopAreaCommercial.setFareCode( i%5);
                 
                 if (i%2==0) {
                     StopArea stopAreaPlace = modelFactory.createModel(StopArea.class);
@@ -97,6 +99,11 @@ public class ComplexModelFactory {
         try {
             tm = new Timetable();
             tm.setObjectId( "T:Timetable:"+index);
+            tm.setComment( "nom "+index);
+            
+            tm.addDayType(DayTypeEnum.values()[index%7]);
+            tm.addDayType(DayTypeEnum.values()[(index+1)%7]);
+            
             Calendar cal = Calendar.getInstance();
             cal.add( index, Calendar.MONTH);
 

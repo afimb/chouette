@@ -11,7 +11,7 @@
   <!--- === Day Types ==== -->
   <dayTypes>
     <DayType version="$timetable.objectVersion" id="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}">
-      <Name>$timetable.name</Name>
+      <Name>$timetable.comment</Name>
       <ShortName>$timetable.comment</ShortName>
       <properties>
         #foreach( $dayType in $timetable.getDayTypes() )
@@ -25,17 +25,17 @@
   <!--- === Period assignments ==== -->
   <operatingPeriods>
     #foreach( $period in $timetable.periods )
-    <OperatingPeriod version="any" id="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($dateFormat, $period.startDate)}E${date.format($dateFormat, $period.endDate)}">
-      <FromDate>$date.format($dateFormat, $period.startDate)</FromDate>
-      <ToDate>$date.format($dateFormat, $period.endDate)</ToDate>
+    <OperatingPeriod version="any" id="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}">
+      <FromDate>$date.format($shortDateFormat, $period.startDate)</FromDate>
+      <ToDate>$date.format($shortDateFormat, $period.endDate)</ToDate>
     </OperatingPeriod>
     #end		
   </operatingPeriods>  
   <!--- === Day assignments ==== -->
   <operatingDays>
     #foreach( $day in $timetable.calendarDays )
-    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($dateFormat, $day)}">
-      <CalendarDate>$date.format($dateFormat, $day)</CalendarDate>
+    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}">
+      <CalendarDate>$date.format($shortDateFormat, $day)</CalendarDate>
     </OperatingDay>
     #end		
   </operatingDays>  
@@ -43,13 +43,13 @@
   <dayTypeAssignments>
     #foreach( $period in $timetable.periods )
     <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($dateFormat, $period.startDate)}E${date.format($dateFormat, $period.endDate)}"/>
+      <OperatingPeriodRef ref="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}"/>
       <DayTypeRef version="$timetable.objectVersion" ref="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}"/>
     </DayTypeAssignment>
     #end		
     #foreach( $day in $timetable.calendarDays )
     <DayTypeAssignment version="any">
-      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($dateFormat, $day)}"/>
+      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}"/>
       <DayTypeRef version="$timetable.objectVersion" ref="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}"/>
     </DayTypeAssignment>
     #end

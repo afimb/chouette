@@ -22,9 +22,11 @@
       <TopographicPlaceView>
         <Name>$commercialStopPoint.name</Name>
       </TopographicPlaceView>
+      #if($commercialStopPoint.fareCode)
       <tariffZones>
         <TariffZoneRef version="any" ref="${commercialStopPoint.objectIdPrefix()}:TariffZone:${commercialStopPoint.fareCode}"/>
       </tariffZones>
+      #end
       <quays>
         #foreach( $quay in $commercialStopPoint.containedStopAreas )
         <Quay version="$quay.objectVersion" id="${quay.objectIdPrefix()}:Quay:${quay.objectIdSuffix()}">
@@ -35,7 +37,7 @@
               <Longitude>$areaCentroid.longitude</Longitude>
               <Latitude>$areaCentroid.latitude</Latitude>
               <gml:pos srsName="$quay.areaCentroid.longLatType">
-                $areaCentroid.projectedPoint.y $areaCentroid.projectedPoint.x 
+                $areaCentroid.latitude $areaCentroid.longitude 
               </gml:pos>
             </Location>
           </Centroid>
