@@ -80,7 +80,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
         <!-- =========================================== -->
         <!-- Resourceframe to map the Company NEPTUNE Object -->
         <ResourceFrame version="any" id="Neptune:ResourceFrame:FrameProfile01">
-          <Name>{line.objectIdPrefix}--Neptune-Line Profile </Name>
+          <Name>${line.objectIdPrefix()}--Neptune-Line Profile </Name>
           <codespaces>
             <Codespace id="Neptune">
               <Xmlns>Neptune</Xmlns>
