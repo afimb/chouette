@@ -20,7 +20,7 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-exchange-neptune</artifactId>
 		</dependency>
-                <dependency>
+		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-exchange-netex</artifactId>
 		</dependency>
@@ -60,6 +60,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
 		</dependency>
 		<!-- Postgres -->
 		<dependency>

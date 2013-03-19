@@ -1,15 +1,5 @@
-/**
- * Projet CHOUETTE
- *
- * ce projet est sous license libre
- * voir LICENSE.txt pour plus de details
- *
- */
-
 package fr.certu.chouette.dao.hibernate;
 
-import java.math.BigDecimal;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,36 +11,13 @@ import org.hibernate.SessionFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.AccessLink;
-import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.AreaCentroid;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.PTLink;
-import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.Period;
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
-import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
  * @author michel
@@ -59,7 +26,6 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 @ContextConfiguration(locations={"classpath:testContext.xml"})
 @TransactionConfiguration(transactionManager="transactionManager",defaultRollback=true)
 
-@SuppressWarnings("unchecked")
 public class FilterToHQLTests extends AbstractTransactionalTestNGSpringContextTests
 {
    private static final Logger logger = Logger.getLogger(FilterToHQLTests.class);
