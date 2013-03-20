@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
 import com.vividsolutions.jts.util.Assert;
+import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
@@ -23,7 +24,7 @@ public class CompanyConverterTests extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");;
+        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
@@ -33,7 +34,9 @@ public class CompanyConverterTests extends AbstractTestNGSpringContextTests {
         vg.parse(true); // set namespace awareness to true
 
         VTDNav nav = vg.getNav();
-        companyConverter = new CompanyConverter(nav);
+        AutoPilot autoPilot = new AutoPilot(nav);
+        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
+        companyConverter = new CompanyConverter(nav, autoPilot);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one company")

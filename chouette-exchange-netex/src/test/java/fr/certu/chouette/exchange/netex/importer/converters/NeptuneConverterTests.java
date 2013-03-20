@@ -1,12 +1,12 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
 import com.vividsolutions.jts.util.Assert;
-import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
-import fr.certu.chouette.model.neptune.PTNetwork;
+import com.ximpleware.XPathParseException;
+import fr.certu.chouette.model.neptune.Line;
 import java.io.File;
 import java.io.FileInputStream;
 import org.apache.commons.io.FileUtils;
@@ -18,13 +18,13 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
-public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
+public class NeptuneConverterTests extends AbstractTestNGSpringContextTests {
 
-    private PTNetworkConverter networkConverter;
+    private NeptuneConverter neptuneConverter;
 
     @BeforeClass
     protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");;
+        File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");;
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
@@ -34,17 +34,15 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
         vg.parse(true); // set namespace awareness to true
 
         VTDNav nav = vg.getNav();
-        AutoPilot autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        networkConverter = new PTNetworkConverter(nav, autoPilot);
+        neptuneConverter = new NeptuneConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one network")
-    public void verifyNetwork() throws XPathEvalException, NavException {
-        PTNetwork network = networkConverter.convert();
-        PTNetwork networkMock = new PTNetwork(); 
-        networkMock.setName("METRO");
-        Assert.equals(network.getName(), networkMock.getName());
+    @Test(groups = {"NeptuneConverter"}, description = "Must return a line object")
+    public void verifyNeptune() throws XPathEvalException, NavException, XPathParseException {
+        Line line = neptuneConverter.convert();
+        Line lineMock = new Line(); 
+        lineMock.setName("METRO");
+        Assert.equals(line.getName(), lineMock.getName());
     }
 
 }

@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
 import com.vividsolutions.jts.util.Assert;
+import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
@@ -33,7 +34,9 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
         vg.parse(true); // set namespace awareness to true
 
         VTDNav nav = vg.getNav();
-        lineConverter = new LineConverter(nav);
+        AutoPilot autoPilot = new AutoPilot(nav);
+        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
+        lineConverter = new LineConverter(nav, autoPilot);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one line")

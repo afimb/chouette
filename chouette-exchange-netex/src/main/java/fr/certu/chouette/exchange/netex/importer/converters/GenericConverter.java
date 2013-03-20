@@ -11,6 +11,11 @@ public class GenericConverter {
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
     private boolean firstChildVisited = false;
         
+    protected void returnToRootElement(VTDNav nav) throws NavException
+    {
+        nav.toElement(VTDNav.ROOT); // reset the cursor to point to the root element
+    }
+    
     protected String parseMandatoryAttribute(VTDNav nav, String attribute) throws NavException
     {
         int position = nav.getAttrVal(attribute);

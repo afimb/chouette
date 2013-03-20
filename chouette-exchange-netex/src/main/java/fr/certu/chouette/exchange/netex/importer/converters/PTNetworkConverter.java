@@ -12,14 +12,13 @@ public class PTNetworkConverter extends GenericConverter
 {    
     private static final Logger       logger = Logger.getLogger(PTNetworkConverter.class);
     private PTNetwork network = new PTNetwork();    
-    private AutoPilot autoPilot;
-    private VTDNav vTDNav;
+    private AutoPilot pilot;
+    private VTDNav nav;
     
-    public PTNetworkConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
+    public PTNetworkConverter(VTDNav vTDNav, AutoPilot autoPilot) throws XPathParseException, XPathEvalException, NavException
     {
-        vTDNav = nav;
-        autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
+        nav = vTDNav;
+        pilot = autoPilot;
         autoPilot.selectXPath("//netex:Network");
     }
     
@@ -27,12 +26,13 @@ public class PTNetworkConverter extends GenericConverter
     {
         int result = -1;
         
-        while( (result = autoPilot.evalXPath()) != -1 )
+        while( (result = pilot.evalXPath()) != -1 )
         {                        
-            network.setName(parseMandatoryElement(vTDNav, "Name"));
-            network.setDescription(parseMandatoryElement(vTDNav, "Description"));                                              
+            network.setName(parseMandatoryElement(nav, "Name"));
+            network.setDescription(parseMandatoryElement(nav, "Description"));                                              
         } 
         
+        returnToRootElement(nav);
         return network;
     }
     

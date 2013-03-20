@@ -10,6 +10,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.exchange.netex.importer.converters.LineConverter;
+import fr.certu.chouette.exchange.netex.importer.converters.NeptuneConverter;
 import fr.certu.chouette.model.neptune.Line;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,9 +37,9 @@ public class NetexFileReader {
        
         VTDNav nav = vg.getNav();
         
-        LineConverter lineConverter = new LineConverter(nav);
+        NeptuneConverter neptuneConverter = new NeptuneConverter(nav);
         
-        Line line = lineConverter.convert();                
+        Line line = neptuneConverter.convert();                
                 
         return line;
         
