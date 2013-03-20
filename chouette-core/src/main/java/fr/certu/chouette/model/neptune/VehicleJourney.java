@@ -622,6 +622,10 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          vjas.setVehicleJourney(this);
          vjas.setVehicleJourneyId(this.getObjectId());
       }
+      
+       for (Timetable timetable : timetables) {
+           timetable.complete();
+       }
    }
 
    /**

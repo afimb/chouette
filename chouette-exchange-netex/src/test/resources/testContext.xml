@@ -21,6 +21,7 @@
     </bean>
 	
     <import resource="NetexExportContext.xml"/>
+    <import resource="NetexImportContext.xml"/>
 
     <bean id="modelFactory" class="com.tobedevoured.modelcitizen.ModelFactory" scope="prototype">
         <property name="registerBlueprintsByPackage" value="fr.certu.chouette.exchange.netex.blueprint" />         

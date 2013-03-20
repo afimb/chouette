@@ -20,7 +20,7 @@ public class LineConverter extends GenericConverter
         vTDNav = nav;
         autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        autoPilot.selectXPath("//netex:Network");
+        autoPilot.selectXPath("//netex:Line");
     }
     
     public Line convert() throws XPathEvalException, NavException

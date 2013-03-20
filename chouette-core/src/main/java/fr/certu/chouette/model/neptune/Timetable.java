@@ -466,6 +466,8 @@ public class Timetable extends NeptuneIdentifiedObject
 	@Override
 	public void complete()
 	{
+            if (isCompleted())
+                return;
 		// TODO Auto-generated method stub
 		super.complete();
 		
