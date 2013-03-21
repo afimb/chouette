@@ -29,7 +29,7 @@ public class NetexFileReader {
      * @param fileName file relative or absolute path 
      * @return Neptune model
      */
-    public Line  readInputStream(InputStream inputStream) throws IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException 
+    public Line  readInputStream(InputStream inputStream) throws IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException 
     {
         byte[] b = IOUtils.toByteArray(inputStream);       
         vg.setDoc(b);

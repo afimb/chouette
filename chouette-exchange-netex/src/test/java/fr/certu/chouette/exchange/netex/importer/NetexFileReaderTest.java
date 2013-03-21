@@ -39,7 +39,7 @@ public class NetexFileReaderTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"NetexFileReader"}, description = "Netex File Reader must return a Line Object")
-    public void verifyReadInputStream() throws FileNotFoundException, IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException {        
+    public void verifyReadInputStream() throws FileNotFoundException, IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException {        
         File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");
         InputStream stream = new FileInputStream(f);
         

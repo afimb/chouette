@@ -6,6 +6,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Company;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,11 +37,11 @@ public class CompanyConverterTests extends AbstractTestNGSpringContextTests {
         VTDNav nav = vg.getNav();
         AutoPilot autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        companyConverter = new CompanyConverter(nav, autoPilot);
+        companyConverter = new CompanyConverter(nav);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one company")
-    public void verifyNetwork() throws XPathEvalException, NavException {
+    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException {
         Company company = companyConverter.convert();
         Company companyMock = new Company(); 
         companyMock.setName("METRO");

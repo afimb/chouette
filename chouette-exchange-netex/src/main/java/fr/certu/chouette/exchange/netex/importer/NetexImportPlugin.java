@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import lombok.Getter;
@@ -174,7 +175,7 @@ public class NetexImportPlugin implements IImportPlugin<Line>
       return lines;
    }
    
-   public Line readXmlFile(String filePath, NetexReport netexReport)
+   public Line readXmlFile(String filePath, NetexReport netexReport)           
    {   
        Line line = null;
        try {
@@ -183,7 +184,9 @@ public class NetexImportPlugin implements IImportPlugin<Line>
            
            line = netexFileReader.readInputStream(stream);
            stream.close();                               
-       } catch (IOException ex) {
+       } catch (java.text.ParseException ex) {
+            
+        } catch (IOException ex) {
            
        } catch (EncodingException ex) {
            

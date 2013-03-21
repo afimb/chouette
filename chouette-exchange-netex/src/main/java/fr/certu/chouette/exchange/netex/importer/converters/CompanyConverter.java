@@ -15,20 +15,29 @@ public class CompanyConverter extends GenericConverter
     private AutoPilot pilot;
     private VTDNav nav;
     
-    public CompanyConverter(VTDNav vTDNav, AutoPilot autoPilot) throws XPathParseException, XPathEvalException, NavException
+    public CompanyConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
         nav = vTDNav;
-        pilot = autoPilot;
-        pilot.selectXPath("//netex:Network");
+
+        pilot = new AutoPilot(nav);
+        pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");            
     }
     
-    public Company convert() throws XPathEvalException, NavException
+    public Company convert() throws XPathEvalException, NavException, XPathParseException
     {
         int result = -1;
+        pilot.selectXPath("//netex:Operator");
         
         while( (result = pilot.evalXPath()) != -1 )
         {                        
-            company.setName(parseMandatoryElement(nav, "Name"));                                         
+            // Mandatory
+            company.setRegistrationNumber(parseMandatoryElement(nav, "CompanyNumber"));
+            logger.error(parseMandatoryElement(nav, "CompanyNumber"));
+            company.setName(parseMandatoryElement(nav, "Name"));
+            company.setObjectId(parseMandatoryAttribute(nav, "id"));
+            
+            // Optionnal
+            company.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));                                         
         } 
                 
         returnToRootElement(nav);

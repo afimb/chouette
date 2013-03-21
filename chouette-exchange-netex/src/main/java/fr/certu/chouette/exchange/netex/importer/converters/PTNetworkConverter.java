@@ -6,6 +6,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import java.text.ParseException;
 import org.apache.log4j.Logger;
 
 public class PTNetworkConverter extends GenericConverter 
@@ -15,21 +16,29 @@ public class PTNetworkConverter extends GenericConverter
     private AutoPilot pilot;
     private VTDNav nav;
     
-    public PTNetworkConverter(VTDNav vTDNav, AutoPilot autoPilot) throws XPathParseException, XPathEvalException, NavException
+    public PTNetworkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
         nav = vTDNav;
-        pilot = autoPilot;
-        autoPilot.selectXPath("//netex:Network");
+
+        pilot = new AutoPilot(nav);
+        pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
     }
     
-    public PTNetwork convert() throws XPathEvalException, NavException
+    public PTNetwork convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         int result = -1;
+        pilot.selectXPath("//netex:Network");
         
         while( (result = pilot.evalXPath()) != -1 )
         {                        
+            
             network.setName(parseMandatoryElement(nav, "Name"));
-            network.setDescription(parseMandatoryElement(nav, "Description"));                                              
+            network.setRegistrationNumber(parseMandatoryElement(nav, "PrivateCode"));
+            network.setObjectId(parseMandatoryAttribute(nav, "id"));
+                        
+            network.setDescription(parseOptionnalElement(nav, "Description"));    
+            network.setObjectVersion( Integer.parseInt(parseOptionnalAttribute(nav, "version")) );
+            network.setVersionDate( dateFormat.parse( parseOptionnalAttribute(nav, "changed")) );                        
         } 
         
         returnToRootElement(nav);

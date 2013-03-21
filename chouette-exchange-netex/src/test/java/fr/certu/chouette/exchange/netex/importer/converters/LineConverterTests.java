@@ -6,6 +6,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Line;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,14 +37,14 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
         VTDNav nav = vg.getNav();
         AutoPilot autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        lineConverter = new LineConverter(nav, autoPilot);
+        lineConverter = new LineConverter(nav);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one line")
-    public void verifyNetwork() throws XPathEvalException, NavException {
+    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException {
         Line line = lineConverter.convert();
         Line lineMock = new Line(); 
-        lineMock.setName("METRO");
+        lineMock.setName("7B");
         Assert.equals(line.getName(), lineMock.getName());
     }
 

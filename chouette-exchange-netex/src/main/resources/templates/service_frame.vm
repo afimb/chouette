@@ -1,7 +1,7 @@
 <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
 <ServiceFrame version="any"  id="${line.objectIdPrefix()}:ServiceFrame:${line.objectIdSuffix()}">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="$network.objectVersion" id="${network.objectIdPrefix()}:PTNetwork:${network.objectIdSuffix()}">
+  <Network version="$network.objectVersion" changed="$date.format($dateFormat, $network.versionDate)" id="${network.objectIdPrefix()}:PTNetwork:${network.objectIdSuffix()}">
     <Name>$network.name</Name>
     <Description>$network.description</Description>
     <PrivateCode>$network.registrationNumber</PrivateCode>

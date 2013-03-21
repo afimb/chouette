@@ -8,6 +8,9 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 public class NeptuneConverter {
@@ -19,26 +22,26 @@ public class NeptuneConverter {
     public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
     {
         vTDNav = nav;
-        autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
     }
     
-    public Line convert() throws XPathParseException, XPathEvalException, NavException
+    public Line convert() throws XPathParseException, XPathEvalException, NavException, ParseException
     {
-        PTNetworkConverter networkConverter = new PTNetworkConverter(vTDNav, autoPilot);
+        PTNetworkConverter networkConverter = new PTNetworkConverter(vTDNav);
         PTNetwork network = networkConverter.convert();
         
-        CompanyConverter companyConverter = new CompanyConverter(vTDNav, autoPilot);
+        CompanyConverter companyConverter = new CompanyConverter(vTDNav);
         Company company = companyConverter.convert();
         
-        LineConverter lineConverter = new LineConverter(vTDNav, autoPilot);
+        LineConverter lineConverter = new LineConverter(vTDNav);
         Line line = lineConverter.convert();
         lineConverter.routeObjectIds();
         
         // Link between objects
-        line.setPtNetwork(network);
+        line.setPtNetwork(network);                
         line.setCompany(company);
-        
+                
+        //complete
+        line.complete();
         
         return line;
     }

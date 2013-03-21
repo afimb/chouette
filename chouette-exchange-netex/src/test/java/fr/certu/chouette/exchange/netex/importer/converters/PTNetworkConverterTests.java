@@ -6,9 +6,11 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -36,11 +38,11 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
         VTDNav nav = vg.getNav();
         AutoPilot autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        networkConverter = new PTNetworkConverter(nav, autoPilot);
+        networkConverter = new PTNetworkConverter(nav);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one network")
-    public void verifyNetwork() throws XPathEvalException, NavException {
+    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException, ParseException {
         PTNetwork network = networkConverter.convert();
         PTNetwork networkMock = new PTNetwork(); 
         networkMock.setName("METRO");

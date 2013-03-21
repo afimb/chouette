@@ -20,7 +20,7 @@ public class RouteConverter extends GenericConverter
         vTDNav = nav;
         autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        autoPilot.selectXPath("//netex:Network");
+        autoPilot.selectXPath("//netex:routes//netex:Route");
     }
     
     public Route convert() throws XPathEvalException, NavException
