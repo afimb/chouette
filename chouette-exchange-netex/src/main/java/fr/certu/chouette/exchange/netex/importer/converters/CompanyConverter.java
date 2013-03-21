@@ -32,7 +32,6 @@ public class CompanyConverter extends GenericConverter
         {                        
             // Mandatory
             company.setRegistrationNumber(parseMandatoryElement(nav, "CompanyNumber"));
-            logger.error(parseMandatoryElement(nav, "CompanyNumber"));
             company.setName(parseMandatoryElement(nav, "Name"));
             company.setObjectId(parseMandatoryAttribute(nav, "id"));
             

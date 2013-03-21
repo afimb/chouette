@@ -9,6 +9,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 public class LineConverter extends GenericConverter 
@@ -18,6 +19,8 @@ public class LineConverter extends GenericConverter
     private AutoPilot pilot;
     private AutoPilot pilot2;
     private VTDNav nav;
+
+    @Getter
     private List<String> routeObjectIds = new ArrayList<String>();
     
     public LineConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
@@ -51,25 +54,11 @@ public class LineConverter extends GenericConverter
             line.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));
             
             // Routes
-            
+            routeObjectIds = parseMandatoryAttributes(nav, "RouteRef", "ref");            
         }
         
         returnToRootElement(nav);        
         return line;
-    }   
-    
-    public List<String> routeObjectIds() throws XPathParseException, XPathEvalException, NavException
-    {
-        int result = -1;
-        pilot2.selectXPath("//netex:Line//netex:RouteRef");
-        
-        while( (result = pilot2.evalXPath()) != -1 )
-        {               
-            String routeObjectId = parseMandatoryAttribute(nav, "ref");
-            routeObjectIds.add(routeObjectId);
-        }
-        
-        return routeObjectIds;
-    }
+    }      
     
 }
