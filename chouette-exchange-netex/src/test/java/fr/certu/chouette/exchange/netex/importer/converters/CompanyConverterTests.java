@@ -40,7 +40,7 @@ public class CompanyConverterTests extends AbstractTestNGSpringContextTests {
         companyConverter = new CompanyConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one company")
+    @Test(groups = {"NeptuneConverter"}, description = "Must return a company")
     public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException {
         Company company = companyConverter.convert();
         Company companyMock = new Company(); 

@@ -41,8 +41,8 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
         networkConverter = new PTNetworkConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one network")
-    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException, ParseException {
+    @Test(groups = {"NeptuneConverter"}, description = "Must return a chouette PTNetwork")
+    public void verifyPTNetworkConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         PTNetwork network = networkConverter.convert();
         PTNetwork networkMock = new PTNetwork(); 
         networkMock.setName("METRO");

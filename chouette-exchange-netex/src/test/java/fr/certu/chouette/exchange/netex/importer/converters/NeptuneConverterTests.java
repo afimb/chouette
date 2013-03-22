@@ -38,7 +38,7 @@ public class NeptuneConverterTests extends AbstractTestNGSpringContextTests {
         neptuneConverter = new NeptuneConverter(nav);
     }
 
-    @Test(groups = {"NeptuneConverter"}, description = "Must return a line object")
+    @Test(groups = {"NeptuneConverter"}, description = "Must return a line")
     public void verifyNeptune() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Line line = neptuneConverter.convert();
         Assert.equals(line.getName(), "7B");        

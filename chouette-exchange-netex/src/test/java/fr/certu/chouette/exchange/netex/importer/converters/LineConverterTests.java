@@ -40,8 +40,8 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
         lineConverter = new LineConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one line")
-    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException {
+    @Test(groups = {"NeptuneConverter"}, description = "Must return a line")
+    public void verifyLineConverter() throws XPathEvalException, NavException, XPathParseException {
         Line line = lineConverter.convert();
         Line lineMock = new Line(); 
         lineMock.setName("7B");

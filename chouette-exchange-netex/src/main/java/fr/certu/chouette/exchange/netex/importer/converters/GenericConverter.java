@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 public class GenericConverter {
     
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
-    private boolean firstChildVisited = false;
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
         
     protected void returnToRootElement(VTDNav nav) throws NavException
@@ -39,7 +38,10 @@ public class GenericConverter {
     protected String parseMandatoryAttribute(VTDNav nav, String element, String attribute) throws NavException
     {
         List<String> attributes = parseMandatoryAttributes(nav, element, attribute);
-        return attributes.get(0);
+        if (attributes.isEmpty())
+            return null;
+        else
+            return attributes.get(0);
     }
     
     protected List<String> parseMandatoryAttributes(VTDNav nav, String element, String attribute) throws NavException
@@ -112,7 +114,10 @@ public class GenericConverter {
     protected String parseMandatoryElement(VTDNav nav, String element) throws NavException
     {
         List<String> elements = parseMandatoryElements(nav, element);
-        return elements.get(0);   
+        if(elements.isEmpty())     
+            return null;
+        else
+            return elements.get(0);
     }
     
     protected List<String> parseMandatoryElements(VTDNav nav, String element) throws NavException
@@ -144,7 +149,10 @@ public class GenericConverter {
     protected String parseOptionnalElement(VTDNav nav, String element) throws NavException
     {
         List<String> elements = parseOptionnalElements(nav, element);
-        return elements.get(0);      
+        if(elements.isEmpty())     
+            return null;
+        else            
+            return elements.get(0);      
     } 
     
     protected List<String> parseOptionnalElements(VTDNav nav, String element) throws NavException
@@ -161,7 +169,7 @@ public class GenericConverter {
             if (position == -1)
             {
                 logger.debug("No element " + element + " found for " + this.getClass());           
-                return null;        
+                return elements;        
             }             
             
             elements.add( nav.toNormalizedString(position) );                                      

@@ -1,22 +1,15 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
-import com.tobedevoured.modelcitizen.policy.PolicyException;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
-import fr.certu.chouette.model.neptune.JourneyPattern;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

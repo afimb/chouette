@@ -39,7 +39,7 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
-    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException {
+    public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException {
         List<Route> routes = routeConverter.convert();
         Route routeMock = new Route(); 
         routeMock.setName("1001101070001");
