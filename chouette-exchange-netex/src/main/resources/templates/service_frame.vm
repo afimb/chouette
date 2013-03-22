@@ -92,9 +92,8 @@
       <RouteRef version="1" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>
       <pointsInSequence>
         #foreach( $stopPoint in $journeyPattern.stopPoints )
-          #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
         <StopPointInJourneyPattern version="1" id="${stopPoint.objectIdPrefix()}:StopPointInJourneyPattern:${stopPoint.objectIdSuffix()}">
-          <ScheduledStopPointRef version="$stopPoint.objectVersion" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
+          <ScheduledStopPointRef version="$stopPoint.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}"/>
         </StopPointInJourneyPattern>
         #end       
       </pointsInSequence>
