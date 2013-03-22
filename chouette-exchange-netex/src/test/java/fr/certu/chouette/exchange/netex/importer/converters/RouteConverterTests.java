@@ -41,9 +41,27 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
     public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException {
         List<Route> routes = routeConverter.convert();
-        Route routeMock = new Route(); 
-        routeMock.setName("1001101070001");
-        Assert.equals(routes.get(0).getName(), routeMock.getName());
+        
+        Assert.equals( routes.size(), 2);
+        for( Route route : routes) {
+            if ( route.getObjectId()=="T:Route:1-1") {
+                Assert.equals( route.getStopPoints().size(), 21);
+
+                Assert.equals( route.getStopPoints().get(0).getObjectId(),
+                                "T:StopPoint:1-1-0");
+                Assert.equals( route.getStopPoints().get(0).getContainedInStopAreaId(),
+                                "T:Quay:0");
+            }
+        }
+
     }
+    
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
+    public void readStopPointObjectIdFromPointOnRouteId() {
+        String exemple = "T:PointOnRoute:1-2-3-25";
+        Assert.equals( routeConverter.readStopPointObjectIdFromPointOnRouteId(exemple),
+                "1-2-3");
+    }
+    
 
 }
