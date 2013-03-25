@@ -16,7 +16,11 @@
                 <ref bean="netexLineExport" />
             </list>
         </property>
-
+        <property name="importPlugins">
+            <list>
+                <ref bean="netexLineImport" />
+            </list>
+        </property>
     </bean>
 
 </beans>
