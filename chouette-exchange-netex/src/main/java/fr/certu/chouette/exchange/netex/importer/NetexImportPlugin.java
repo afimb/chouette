@@ -185,30 +185,31 @@ public class NetexImportPlugin implements IImportPlugin<Line>
            line = netexFileReader.readInputStream(stream);
            stream.close();                               
        } catch (java.text.ParseException ex) {
-            
+           logger.error(ex.getMessage());            
         } catch (IOException ex) {
-           
+           logger.error(ex.getMessage());
        } catch (EncodingException ex) {
-           
+           logger.error(ex.getMessage());
        } catch (EOFException ex) {
-           
+           logger.error(ex.getMessage());
        } catch (EntityException ex) {
-                       
+            logger.error(ex.getMessage());           
        } catch (ParseException ex) {
-           
+           logger.error(ex.getMessage());
        } catch (XPathParseException ex) {
-           
+           logger.error(ex.getMessage());
        } catch (XPathEvalException ex) {
-           
+           logger.error(ex.getMessage());
        } catch (NavException ex) {
-           
+          logger.error(ex.getMessage()); 
        }
        
        return line;
    }
       
    public List<Line> readZipFile(String filePath, NetexReport netexReport) {
-        List<Line> lines = new ArrayList<Line>();
+        List<Line> lines = new ArrayList<Line>();    
+        Line line;
         boolean ofType1 = false;
         boolean ofType2 = false;
         boolean someOk = false;
@@ -241,11 +242,14 @@ public class NetexImportPlugin implements IImportPlugin<Line>
             }
 
             logger.info("start import zip entry " + entryName);
-
+            
             try {
                 InputStream stream = zip.getInputStream(entry);
-                netexFileReader.readInputStream(stream);
+                
+                line = netexFileReader.readInputStream(stream);
                 stream.close();
+                lines.add(line);
+                
                 someOk = true;
                 report1_1_1.updateStatus(Report.STATE.OK);
                 report1_2_1.updateStatus(Report.STATE.OK);
