@@ -6,6 +6,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class JourneyPatternConverter extends GenericConverter
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
     }
     
-    public List<JourneyPattern> convert() throws XPathEvalException, NavException, XPathParseException
+    public List<JourneyPattern> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         int result = -1;
         autoPilot.selectXPath("//netex:servicePatterns//netex:ServicePattern");
@@ -40,19 +41,21 @@ public class JourneyPatternConverter extends GenericConverter
         {                        
             JourneyPattern journeyPattern = new JourneyPattern();
             // Mandatory                        
-            journeyPattern.setObjectId(parseMandatoryAttribute(nav, "id"));
+            journeyPattern.setObjectId( (String)parseMandatoryAttribute(nav, "id"));
             
             // Optionnal            
-            journeyPattern.setRegistrationNumber(parseOptionnalElement(nav, "PrivateCode"));
-            journeyPattern.setName(parseOptionnalElement(nav, "Name"));
-            journeyPattern.setPublishedName(parseOptionnalElement(nav, "ShortName"));
-            journeyPattern.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));
+            journeyPattern.setRegistrationNumber( (String)parseOptionnalElement(nav, "PrivateCode") );
+            journeyPattern.setName( (String)parseOptionnalElement(nav, "Name") );
+            journeyPattern.setPublishedName( (String)parseOptionnalElement(nav, "ShortName") );
+            
+            Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
+            journeyPattern.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
             
             // Route
-            routeObjectId = parseMandatoryAttribute(nav, "RouteRef", "ref");
+            routeObjectId = (String)parseMandatoryAttribute(nav, "RouteRef", "ref");
             
             // StopPoints
-            stopPointObjectIds = parseMandatoryAttributes(nav, "ScheduledStopPointRef", "ref");
+            stopPointObjectIds = toStringList(parseMandatoryAttributes(nav, "ScheduledStopPointRef", "ref"));
             
             journeyPatterns.add(journeyPattern);
         } 

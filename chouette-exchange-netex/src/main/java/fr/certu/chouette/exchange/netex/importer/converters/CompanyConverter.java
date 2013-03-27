@@ -6,6 +6,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Company;
+import java.text.ParseException;
 import org.apache.log4j.Logger;
 
 public class CompanyConverter extends GenericConverter 
@@ -23,7 +24,7 @@ public class CompanyConverter extends GenericConverter
         pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");            
     }
     
-    public Company convert() throws XPathEvalException, NavException, XPathParseException
+    public Company convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         int result = -1;
         pilot.selectXPath("//netex:Operator");
@@ -31,12 +32,13 @@ public class CompanyConverter extends GenericConverter
         while( (result = pilot.evalXPath()) != -1 )
         {                        
             // Mandatory
-            company.setRegistrationNumber(parseMandatoryElement(nav, "CompanyNumber"));
-            company.setName(parseMandatoryElement(nav, "Name"));
-            company.setObjectId(parseMandatoryAttribute(nav, "id"));
+            company.setRegistrationNumber( (String)parseMandatoryElement(nav, "CompanyNumber") );
+            company.setName( (String)parseMandatoryElement(nav, "Name"));
+            company.setObjectId( (String)parseMandatoryAttribute(nav, "id"));
             
             // Optionnal
-            company.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));                                         
+            Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
+            company.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );                                        
         } 
                 
         returnToRootElement(nav);

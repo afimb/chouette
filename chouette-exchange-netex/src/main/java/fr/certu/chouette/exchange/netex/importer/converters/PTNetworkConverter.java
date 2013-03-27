@@ -7,6 +7,7 @@ import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import java.text.ParseException;
+import java.util.Date;
 import org.apache.log4j.Logger;
 
 public class PTNetworkConverter extends GenericConverter 
@@ -31,14 +32,16 @@ public class PTNetworkConverter extends GenericConverter
         
         while( (result = pilot.evalXPath()) != -1 )
         {                        
-            
-            network.setName(parseMandatoryElement(nav, "Name"));
-            network.setRegistrationNumber(parseMandatoryElement(nav, "PrivateCode"));
-            network.setObjectId(parseMandatoryAttribute(nav, "id"));
+            // Mandatory
+            network.setName( (String)parseMandatoryElement(nav, "Name") );
+            network.setRegistrationNumber( (String)parseMandatoryElement(nav, "PrivateCode") );
+            network.setObjectId( (String)parseMandatoryAttribute(nav, "id") );
                         
-            network.setDescription(parseOptionnalElement(nav, "Description"));    
-            network.setObjectVersion( Integer.parseInt(parseOptionnalAttribute(nav, "version")) );
-            network.setVersionDate( dateFormat.parse( parseOptionnalAttribute(nav, "changed")) );                        
+            // Optionnal
+            network.setDescription( (String)parseOptionnalElement(nav, "Description") );  
+            Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
+            network.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
+            network.setVersionDate( (Date)parseOptionnalAttribute(nav, "changed", "Date") );                        
         } 
         
         returnToRootElement(nav);

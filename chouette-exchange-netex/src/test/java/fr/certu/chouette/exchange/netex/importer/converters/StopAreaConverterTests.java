@@ -9,6 +9,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Route;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,7 +41,7 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"SiteFrame"}, description = "Export Plugin should have one route")
-    public void verifyConvert() throws XPathEvalException, NavException, XPathParseException {
+    public void verifyConvert() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<StopArea> stopAreas = stopAreaConverter.convert();
         
         //Assert.equals( stopAreas.size(), 53);

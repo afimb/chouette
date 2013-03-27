@@ -22,7 +22,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
     private ComplexModelFactory complexModelFactory;
     private NetexImportPlugin netexImportPlugin;
     private Line netexLine;
-    private List<Line> lines = new ArrayList<Line>();
+    private List<Line> netexLines = new ArrayList<Line>();
     private ReportHolder reportContainer = new ReportHolder();    
     private List<ParameterValue> parameters = new ArrayList<ParameterValue>();
     private String xmlPath = FileUtils.getFile("src","test", "resources", "line2_test.xml").getAbsolutePath();
@@ -37,34 +37,42 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
         netexLine = complexModelFactory.nominalLine( "1");
         netexLine.complete();
         
-        lines.add(netexLine);
+        netexLines.add(netexLine);
     }
 
-    @Test(groups = {"NetexExportPlugin"}, description = "Netex Import Plugin should call readXmlFile")
-    public void verifyReadXmlFile() throws ChouetteException 
+    @Test(groups = {"NetexExportPlugin"}, description = "Netex Import Plugin should call readXmlFile or readZipFile")
+    public void verifyDoImport() throws ChouetteException 
     {
         SimpleParameterValue inputFile = new SimpleParameterValue("inputFile");        
         inputFile.setFilepathValue(xmlPath);
         parameters.add(inputFile);
         
         NetexImportPlugin netexImportPluginSpy = spy(netexImportPlugin);
+        
         when(netexImportPluginSpy.readXmlFile(xmlPath, netexImportPlugin.getReport())).thenReturn(netexLine);        
         
-        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), lines);
-    }
-    
-    
-    @Test(groups = {"NetexExportPlugin"}, description = "Netex Import Plugin should call readZipFile")
-    public void verifyReadZipFile() throws ChouetteException 
-    {
-        SimpleParameterValue inputFile = new SimpleParameterValue("inputFile");        
+        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), netexLines);
+           
+        inputFile = new SimpleParameterValue("inputFile");        
         inputFile.setFilepathValue(zipPath);
         parameters.add(inputFile);
         
-        NetexImportPlugin netexImportPluginSpy = spy(netexImportPlugin);
-        lines.add(netexLine);
-        when(netexImportPluginSpy.readZipFile(zipPath, netexImportPlugin.getReport())).thenReturn(lines);        
+        when(netexImportPluginSpy.readZipFile(zipPath, netexImportPlugin.getReport())).thenReturn(netexLines);        
         
-        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), lines);
+        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), netexLines);
+    }
+    
+    @Test(groups = {"NetexExportPlugin"}, description = "Must return a line")
+    public void verifyReadXmlFile() throws ChouetteException 
+    {
+        Line line = netexImportPlugin.readXmlFile(xmlPath, netexImportPlugin.getReport());
+        Assert.assertNotNull(line);
+    }
+    
+    @Test(groups = {"NetexExportPlugin"}, description = "Must return lines")
+    public void verifyReadZipFile() throws ChouetteException 
+    {
+       List<Line> lines = netexImportPlugin.readZipFile(zipPath, netexImportPlugin.getReport()); 
+       Assert.assertTrue(!lines.isEmpty());
     }
 }

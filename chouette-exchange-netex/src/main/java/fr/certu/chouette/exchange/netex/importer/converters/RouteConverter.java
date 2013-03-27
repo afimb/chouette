@@ -7,6 +7,8 @@ import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
+import java.lang.String;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,7 @@ public class RouteConverter extends GenericConverter
         stopPointByObjectId = new HashMap<String, StopPoint>();
     }
     
-    public List<Route> convert() throws XPathEvalException, NavException, XPathParseException
+    public List<Route> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         autoPilot.selectXPath("//netex:routes//netex:Route");
         int result = -1;
@@ -42,16 +44,15 @@ public class RouteConverter extends GenericConverter
         {  
             Route route = new Route();
             // Mandatory            
-            route.setName(parseMandatoryElement(nav, "Name"));
-            route.setObjectId(parseMandatoryAttribute(nav, "id"));
+            route.setName( (String)parseMandatoryElement(nav, "Name") );
+            route.setObjectId( (String)parseMandatoryAttribute(nav, "id") );
             
             // Optionnal
-            String a = parseOptionnalAttribute(nav, "DirectionRef", "ref");
-            route.setPublishedName(a);
-            route.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));
-            
+            route.setPublishedName( (String)parseOptionnalAttribute(nav, "DirectionRef", "ref") );
+            Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
+            route.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );                        
 
-            List<String> pointOnRouteIds = parseMandatoryAttributes(nav, "PointOnRoute", "id");
+            List<String> pointOnRouteIds = toStringList(parseMandatoryAttributes(nav, "PointOnRoute", "id"));
             
             for( String pointOnRouteId : pointOnRouteIds) {
                 StopPoint stopPoint = new StopPoint();
@@ -73,8 +74,8 @@ public class RouteConverter extends GenericConverter
         
         while( (result = autoPilot2.evalXPath()) != -1 )
         {  
-            String stopPointId = parseOptionnalAttribute(nav, "ScheduledStopPointRef", "ref");
-            String quayId = parseOptionnalAttribute(nav, "QuayRef", "ref");
+            String stopPointId = (String)parseOptionnalAttribute(nav, "ScheduledStopPointRef", "ref");
+            String quayId = (String)parseOptionnalAttribute(nav, "QuayRef", "ref");
             
             StopPoint stopPoint = stopPointByObjectId.get( stopPointId);
             stopPoint.setContainedInStopAreaId( quayId);

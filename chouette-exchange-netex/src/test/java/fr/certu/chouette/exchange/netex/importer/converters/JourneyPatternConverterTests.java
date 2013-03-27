@@ -10,6 +10,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,7 +46,7 @@ public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = {"NeptuneConverter"}, description = "Must return journey patterns")
-    public void verifyJourneyPatternConverter() throws XPathEvalException, NavException, XPathParseException {
+    public void verifyJourneyPatternConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<JourneyPattern> journeyPatterns = journeyPatternConverter.convert();
         
         int result = -1;

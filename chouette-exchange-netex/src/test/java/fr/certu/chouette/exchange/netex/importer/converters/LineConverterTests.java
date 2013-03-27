@@ -10,6 +10,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Line;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -41,7 +42,7 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"NeptuneConverter"}, description = "Must return a line")
-    public void verifyLineConverter() throws XPathEvalException, NavException, XPathParseException {
+    public void verifyLineConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Line line = lineConverter.convert();
         Line lineMock = new Line(); 
         lineMock.setName("7B");
