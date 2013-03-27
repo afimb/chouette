@@ -240,7 +240,7 @@ public class NeptuneFileReader
 
 	/**
 	 * check and return specific charset
-	 * <br> if default Neptune charset found : retunr null
+	 * <br> if default Neptune charset found : return null
 	 * <br> if unknown charset found : throw ExchangeRuntimeException
 	 * 
 	 * @param contentName name for log purpose
@@ -329,7 +329,7 @@ public class NeptuneFileReader
 			throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_ENCODING, contentName);
 		}
 		startIndex += 10;
-		int endIndex = contentXml.indexOf('"',startIndex);
+		int endIndex = contentXml.indexOf(contentXml.charAt(startIndex-1),startIndex);
 		if (endIndex <= 0)
 		{
 			LoggingManager.log(logger, "empty encoding for "+contentName, Level.ERROR);
