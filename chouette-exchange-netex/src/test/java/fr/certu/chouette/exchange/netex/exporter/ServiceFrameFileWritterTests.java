@@ -76,7 +76,7 @@ public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTes
         NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
 
         assert nodes.getLength() == 1;
-        assert nodes.item(0).getNodeValue().equals("RATP");
+        assert nodes.item(0).getNodeValue().equals("RATP nom long");
 
     }
 

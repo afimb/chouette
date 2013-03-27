@@ -18,8 +18,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.DateTool;
+import org.apache.velocity.tools.generic.EscapeTool;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 public class NetexFileWriter {
@@ -52,6 +54,7 @@ public class NetexFileWriter {
         model.put("timetables", line.getTimetables()); 
 
         model.put("date", new DateTool());
+        model.put("esc", new EscapeTool());
         model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
         model.put("shortDateFormat", "yyyy-MM-dd");
     }
@@ -62,7 +65,12 @@ public class NetexFileWriter {
         prepareModel(line);
                 
         StringWriter output = new StringWriter();
-        VelocityEngineUtils.mergeTemplate(velocityEngine, "templates/line.vm", "UTF-8", model, output);
+        //VelocityEngineUtils.mergeTemplate(velocityEngine, "templates/line.vm", "UTF-8", model, output);
+        
+        VelocityContext velocityContext = new VelocityContext(model);
+        velocityContext.put("esc", new EscapeTool());
+
+        velocityEngine.mergeTemplate( "templates/line.vm", "UTF-8", velocityContext, output);
                 
         logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
 

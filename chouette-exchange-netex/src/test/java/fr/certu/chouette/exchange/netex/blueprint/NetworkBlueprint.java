@@ -4,6 +4,7 @@ import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import java.util.Date;
 import java.util.UUID;
 
@@ -35,6 +36,16 @@ public class NetworkBlueprint {
     @Default
     String registrationNumber = "110"; 
     
+    @Default
+    String sourceName = "RATP";
     
+    @Default
+    String sourceIdentifier = "RATP-KXD";
+    
+    @Default
+    String comment = "Mon réseau";
+    
+    @Default
+    PTNetworkSourceTypeEnum sourceType = PTNetworkSourceTypeEnum.PUBLICTRANSPORT;
 
 }

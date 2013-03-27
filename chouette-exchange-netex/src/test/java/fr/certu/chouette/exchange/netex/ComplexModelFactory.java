@@ -7,6 +7,7 @@ package fr.certu.chouette.exchange.netex;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import com.tobedevoured.modelcitizen.RegisterBlueprintException;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Period;
@@ -42,6 +43,7 @@ public class ComplexModelFactory {
     @Getter @Setter int vehicleCount = 2; 
     @Getter @Setter int routeCount = 2; 
     @Getter @Setter int timetablesCount = 5; 
+    @Getter @Setter int groupOfLinesCount = 2; 
     @Getter @Setter List<Timetable> timetables;
     
     public void init() {
@@ -196,6 +198,18 @@ public class ComplexModelFactory {
         for ( int i=0; i<routeCount; i++) {
             line.getRoutes().add( nominalRoute(i, line));
         }
+        
+        line.setGroupOfLines( new ArrayList<GroupOfLine>(groupOfLinesCount));
+        for ( int i=0; i<groupOfLinesCount; i++) {
+            try {
+                line.getGroupOfLines().add( modelFactory.createModel( GroupOfLine.class));
+            } catch (CreateModelException ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
+            }
+        }
+//        if (true) {
+//            throw new RuntimeException("line.getGroupOfLines().size()="+line.getGroupOfLines().size());
+//        }
         
         line.complete();
         return line;

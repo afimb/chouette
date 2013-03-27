@@ -46,7 +46,8 @@ public class RouteConverter extends GenericConverter
             route.setObjectId(parseMandatoryAttribute(nav, "id"));
             
             // Optionnal
-            route.setPublishedName(parseOptionnalAttribute(nav, "DirectionRef", "ref"));
+            String a = parseOptionnalAttribute(nav, "DirectionRef", "ref");
+            route.setPublishedName(a);
             route.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));
             
 

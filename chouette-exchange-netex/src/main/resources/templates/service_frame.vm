@@ -2,9 +2,23 @@
 <ServiceFrame version="any"  id="${line.objectIdPrefix()}:ServiceFrame:${line.objectIdSuffix()}">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
   <Network version="$network.objectVersion" changed="$date.format($dateFormat, $network.versionDate)" id="${network.objectIdPrefix()}:PTNetwork:${network.objectIdSuffix()}">
-    <Name>$network.name</Name>
-    <Description>$network.description</Description>
-    <PrivateCode>$network.registrationNumber</PrivateCode>
+      #if ( $network.comment )
+      <keyList>
+          <KeyValue>
+              <Key>Comment</Key>
+              <Value>$!esc.xml($network.comment)</Value>
+          </KeyValue>
+      </keyList>
+      #end
+    #if ( $network.name )
+    <Name>$!esc.xml($network.name)</Name>
+    #end
+    #if ( $network.description )
+    <Description>$!esc.xml($network.description)</Description>
+    #end
+    #if ( $network.registrationNumber )
+    <PrivateCode>$!esc.xml($network.registrationNumber)</PrivateCode>
+    #end
   </Network>
   <!-- NEPTUNE Route Mapping (part 1 : directions ) =========================================== -->
   <directions>
@@ -25,11 +39,6 @@
       #foreach( $stopPoint in $route.stopPoints )
       #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
     <RoutePoint version="$stopPoint.objectVersion" id="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}">
-      <Name>$stopPoint.name</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>$stopPoint.longitude</Longitude>
-        <Latitude>$stopPoint.latitude</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="${stopPoint.objectIdPrefix()}:PointProjection:${routePointId}">
           <ProjectedPointRef version="$stopPoint.containedInStopArea.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}"/>
@@ -43,12 +52,20 @@
   <routes>
     #foreach( $route in $line.routes )   
     <Route version="$route.objectVersion" id="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}">
-      #if ( $route.comment )
+      #if ( $route.comment || $route.number )
       <keyList>
+          #if ( $route.comment )
           <KeyValue>
               <Key>Comment</Key>
               <Value>$!esc.xml($route.comment)</Value>
           </KeyValue>
+          #end
+          #if ( $route.number )
+          <KeyValue>
+              <Key>Number</Key>
+              <Value>$!esc.xml($route.number)</Value>
+          </KeyValue>
+          #end
       </keyList>
       #end
       <Name>$!esc.xml($route.name)</Name>
@@ -63,6 +80,9 @@
         </PointOnRoute>
         #end
       </pointsInSequence>
+      #if ( $route.wayBackRouteId )
+      <InverseRouteRef version="any" ref="${route.wayBackRouteId()}"/>
+      #end
     </Route>
     #end
   </routes>
@@ -79,6 +99,21 @@
       </routes>
     </Line>
   </lines>
+  #set($groupCount = ${line.groupOfLines.size()} )
+  #if ( $groupCount > 0 )
+  <groupsOfLines>
+    #foreach( $group in $line.groupOfLines )
+    <GroupOfLines version="$group.objectVersion" id="${group.objectIdPrefix()}:GroupOfLines:${group.objectIdSuffix()}">      
+      #if ( $group.name )
+      <Name>$!esc.xml($group.name)</Name>
+      #end
+      #if ( $group.comment )
+      <Description>$!esc.xml($group.comment)</Description>
+      #end
+    </GroupOfLines>
+    #end
+  </groupsOfLines>
+  #end
   !--   -->
   <!-- NEPTUNE Stop Area with "Quay" or "BoardingPosition" type  =========================================== -->
   <scheduledStopPoints>

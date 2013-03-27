@@ -7,6 +7,7 @@ import com.tobedevoured.modelcitizen.field.FieldCallback;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,13 +24,22 @@ public class RouteBlueprint {
     };  
     
     @Default
-    String name = "1001101070001";    
+    String name = "Lycée > Hopital";    
     
     @Default
     String publishedName = "7B (PRE-SAINT-GERVAIS &lt;-&gt; LOUIS BLANC)";    
     
     @Default
     String wayBack = "A";
+    
+    @Default
+    String number = "1A - par Pont Neuf";
+    
+    @Default
+    PTDirectionEnum direction = PTDirectionEnum.NORTH;
+    
+    @Default
+    String comment = "aller retour";
     
     @MappedList(target = StopPoint.class, size = 0)
     List<StopPoint> stopPoints;

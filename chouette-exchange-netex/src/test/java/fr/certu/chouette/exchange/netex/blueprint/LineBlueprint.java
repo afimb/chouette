@@ -7,6 +7,7 @@ import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -45,5 +46,8 @@ public class LineBlueprint {
     
     @MappedList(target = Route.class, size = 0)
     List<Route> routes;
+    
+    @MappedList(target = GroupOfLine.class, size = 0)
+    List<GroupOfLine> groupOfLines;
 
 }

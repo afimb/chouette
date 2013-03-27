@@ -13,6 +13,7 @@ import org.testng.Assert;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.util.List;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,20 +58,21 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
             Assert.assertEquals( vehicles.get(i).getTimetables().size(), 2);
         }
     }
-    
 
-    @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should complitable")
-    public void verifyRouteCompletable() {
-        complexModelFactory.setJourneyPatternCount( 2);
-        complexModelFactory.setVehicleCount( 2);
-        complexModelFactory.setRouteStopCount( 5);
-        complexModelFactory.setQuayCount( 5);
+    @Test(groups = {"ComplexModelFactory.nominalLine"}, description = "Should create a network for line")
+    public void verifyNetwork() {
         complexModelFactory.init();
         
-        Route route = complexModelFactory.nominalLine( "1").getRoutes().get(0);
-        System.out.println( "route.getStopPoints().size()="+route.getStopPoints().size()); 
-        route.complete();
-        Assert.assertTrue(true);
+        PTNetwork network = complexModelFactory.nominalLine( "1").getPtNetwork();
+        Assert.assertNotNull(network);
+    }
+
+    @Test(groups = {"ComplexModelFactory.nominalLine"}, description = "Should put line in many groups of lines")
+    public void verifyGroupOfLine() {
+        complexModelFactory.init();
+        
+        Assert.assertEquals( complexModelFactory.nominalLine( "1").getGroupOfLines().size(),
+                complexModelFactory.getGroupOfLinesCount());
     }
 
     @Test(groups = {"ComplexModelFactory.nominalRoute"}, description = "Should make a stop point partition and affect each stops part to each journey")

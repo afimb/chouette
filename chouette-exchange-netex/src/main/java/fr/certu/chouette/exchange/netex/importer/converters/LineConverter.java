@@ -52,6 +52,7 @@ public class LineConverter extends GenericConverter
             if (transportModeNameEnum != null)
                 line.setTransportModeName(transportModeNameEnum);
             line.setObjectVersion(Integer.parseInt(parseOptionnalAttribute(nav, "version")));
+            //line.setR
             
             // Routes
             routeObjectIds = parseMandatoryAttributes(nav, "RouteRef", "ref");            

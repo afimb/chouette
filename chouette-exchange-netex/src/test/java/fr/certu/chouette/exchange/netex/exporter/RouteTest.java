@@ -10,7 +10,6 @@ import java.text.ParseException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
 import javax.xml.xpath.XPathExpressionException;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -162,14 +161,12 @@ public class RouteTest extends ChouetteModelTest {
     public void verifyScheduledStopPointRefRef() throws XPathExpressionException, ParseException {
         for( Route route : line.getRoutes()) {
             for ( StopPoint stopPoint : route.getStopPoints()) {
-                String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/netex:pointsInSequence/netex:StopPointInJourneyPattern/netex:ScheduledStopPointRef"+
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/"+
+                                            "netex:pointsInSequence/netex:StopPointInJourneyPattern/"+
+                                            "netex:ScheduledStopPointRef"+
                                                         "[@ref = '"+
                                                         stopPoint.objectIdPrefix()+
-                                                        ":RoutePoint:"+
-                                                        route.objectIdSuffix()+
-                                                        "A"+
-                                                        stopPoint.getPosition()+
-                                                        "A"+
+                                                        ":StopPoint:"+
                                                         stopPoint.objectIdSuffix()+
                                                     "'])";
                 assertXPathTrue( xPathExpr);

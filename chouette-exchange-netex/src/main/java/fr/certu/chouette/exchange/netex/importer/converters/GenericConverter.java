@@ -83,9 +83,12 @@ public class GenericConverter {
             return nav.toNormalizedString(position);
     }
 
-    protected String parseOptionnalAttribute(VTDNav nav, String element, String attribute) throws NavException
+    protected String parseOptionnalAttribute(VTDNav nav, String element, String attribute, String... types) throws NavException
     {
         List<String> attributes = parseOptionnalAttributes(nav, element, attribute);
+        if ( attributes.isEmpty()) { 
+            return null;
+        }
         return attributes.get(0);
     }
     
