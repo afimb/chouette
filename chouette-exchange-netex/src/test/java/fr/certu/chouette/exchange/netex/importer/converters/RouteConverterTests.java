@@ -9,6 +9,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Route;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,12 +40,12 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
-    public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException {
+    public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<Route> routes = routeConverter.convert();
         
         Assert.equals( routes.size(), 2);
         for( Route route : routes) {
-            if ( route.getObjectId()=="T:Route:1-1") {
+            if ( route.getObjectId().equals("T:Route:1-1")) {
                 Assert.equals( route.getStopPoints().size(), 21);
 
                 Assert.equals( route.getStopPoints().get(0).getObjectId(),

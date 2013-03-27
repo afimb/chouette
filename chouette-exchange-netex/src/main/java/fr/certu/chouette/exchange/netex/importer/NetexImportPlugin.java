@@ -281,6 +281,7 @@ public class NetexImportPlugin implements IImportPlugin<Line>
                 logger.error("zip entry " + entryName + " import failed (read XML)" + e.getLocalizedMessage());
                 continue;
             } catch (Exception e) {
+                logger.error(e.getMessage());
                 logger.error(e.getLocalizedMessage());
                 continue;
             }

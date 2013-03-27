@@ -10,6 +10,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Company;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -41,7 +42,7 @@ public class CompanyConverterTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"NeptuneConverter"}, description = "Must return a company")
-    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException {
+    public void verifyNetwork() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Company company = companyConverter.convert();
         Company companyMock = new Company(); 
         companyMock.setName("METRO");
