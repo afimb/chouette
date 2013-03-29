@@ -1,12 +1,12 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.vividsolutions.jts.util.Assert;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
@@ -43,24 +44,69 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
     public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<Route> routes = routeConverter.convert();
         
-        Assert.equals( routes.size(), 2);
+        Assert.assertEquals( routes.size(), 2);
         for( Route route : routes) {
             if ( route.getObjectId().equals("T:Route:1-1")) {
-                Assert.equals( route.getStopPoints().size(), 21);
+                Assert.assertEquals( route.getStopPoints().size(), 21);
 
-                Assert.equals( route.getStopPoints().get(0).getObjectId(),
+                Assert.assertEquals( route.getStopPoints().get(0).getObjectId(),
                                 "T:StopPoint:1-1-0");
-                Assert.equals( route.getStopPoints().get(0).getContainedInStopAreaId(),
+                Assert.assertEquals( route.getStopPoints().get(0).getContainedInStopAreaId(),
                                 "T:Quay:0");
             }
         }
 
     }
     
+    private Route getRouteByObjectId( String objectId)  throws XPathEvalException, NavException, XPathParseException, ParseException {
+        List<Route> routes = routeConverter.convert();
+        Route selectedRoute = null;
+        for( Route route : routes) {
+            if ( route.getObjectId().equals("T:Route:1-1")) {
+                selectedRoute = route;
+                break;
+            }
+        }
+        
+        Assert.assertNotNull( selectedRoute, "can't find expected route having "+objectId+" as objectId");
+        return selectedRoute;
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Route's name attribute reading")
+    public void verifyRouteName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
+        Assert.assertEquals( selectedRoute.getName(), "1001101070001");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Route's shortName attribute reading")
+    public void verifyRoutePublishedName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
+        Assert.assertEquals( selectedRoute.getPublishedName(), "Gare vers Jean Monnet");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Route's direction attribute reading")
+    public void verifyRouteDirection() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
+        Assert.assertEquals( selectedRoute.getDirection(), PTDirectionEnum.SOUTH);
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Route's wayback attribute reading")
+    public void verifyRouteWayback() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
+        Assert.assertEquals( selectedRoute.getWayBack(), "R");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Route's comment attribute reading")
+    public void verifyRouteComment() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
+        Assert.assertEquals( selectedRoute.getComment(), "mon iti");
+    }
+    
+    
     @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
     public void readStopPointObjectIdFromPointOnRouteId() {
         String exemple = "T:PointOnRoute:1-2-3-25";
-        Assert.equals( routeConverter.readStopPointObjectIdFromPointOnRouteId(exemple),
+        Assert.assertEquals( routeConverter.readStopPointObjectIdFromPointOnRouteId(exemple),
                 "1-2-3");
     }
     

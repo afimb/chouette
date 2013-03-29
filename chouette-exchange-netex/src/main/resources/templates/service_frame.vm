@@ -24,7 +24,9 @@
   <directions>
     #foreach( $route in $line.routes )   
     <Direction version="any" id="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction">
-      <Name>$!route.direction</Name>
+      #if ( $route.direction )
+      <Name>$!esc.xml( $route.direction)</Name>
+      #end
       #if ($route.wayBack == "A")
       <DirectionType>outbound</DirectionType>
       #elseif( $route.wayBack == "R" )
@@ -68,9 +70,12 @@
           #end
       </keyList>
       #end
+      #if ( $route.name )
       <Name>$!esc.xml($route.name)</Name>
+      #end
+      #if ( $route.publishedName )
       <ShortName>$!esc.xml($route.publishedName)</ShortName>
-      <DirectionRef version="any" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction"/>
+      #end
       <pointsInSequence>                               
         #foreach( $stopPoint in $route.stopPoints )
         #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )

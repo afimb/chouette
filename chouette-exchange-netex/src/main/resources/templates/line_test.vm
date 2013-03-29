@@ -202,7 +202,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 							<!-- NEPTUNE [mapping:variable] : Direction->Id mapped to NEPTUNE Route->objectId + an additional ":Direction" -->
 							<!-- NEPTUNE [mapping:variable] : Direction->Name mapped to NEPTUNE Route->publishedName  -->
 							<!--In this Line 7B example, the right name for this direction should be "7B (PRE-SAINT-GERVAIS -> LOUIS BLANC)" -->
-							<Name>7B (PRE-SAINT-GERVAIS &lt;-&gt; LOUIS BLANC)</Name>
+							<Name>North</Name>
 							<!-- NEPTUNE [mapping:variable] : Direction->DirectionType mapped to NEPTUNE Route->RouteExtension->wayBack  -->
 							<!--							  In this field is "A" (standing for "Aller" being something like "foreward" which is obviously purely arbitrary) or "R" (standing for "Retour" being return)
 							      Therefore "A" is mapped to "outbound" and "R" is mapped to "inbound" -->
@@ -212,7 +212,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 							<!-- NEPTUNE [mapping:variable] : Direction->Id mapped to NEPTUNE Route->objectId + an additional ":Direction" -->
 							<!-- NEPTUNE [mapping:variable] : Direction->Name mapped to NEPTUNE Route->publishedName  -->
 							<!--In this Line 7B example, the right name for this direction should be "7B (LOUIS BLANC -> PRE-SAINT-GERVAIS)" -->
-							<Name>7B (PRE-SAINT-GERVAIS &lt;-&gt; LOUIS BLANC)</Name>
+							<Name>South</Name>
 							<!-- NEPTUNE [mapping:variable] : Direction->DirectionType mapped to NEPTUNE Route->RouteExtension->wayBack  -->
 							<!--							  In this field is "A" (standing for "Aller" being something like "foreward" which is obviously purely arbitrary) or "R" (standing for "Retour" being return)
 							      Therefore "A" is mapped to "outbound" and "R" is mapped to "inbound" -->

@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.netex.importer.converters;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
@@ -52,6 +53,12 @@ public class GenericConverter {
            String transportMode = firstLetterUpcase(value); // Puts the first caracter upcase            
            TransportModeNameEnum transportModeNameEnum = TransportModeNameEnum.fromValue(transportMode);
            return transportModeNameEnum;       
+        }
+        else if(type == "PTDirectionEnum")
+        {
+           String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
+           PTDirectionEnum enumVal = PTDirectionEnum.fromValue(enumValStr);
+           return enumVal;
         }
         else
             return value;

@@ -35,7 +35,7 @@ When compressed the NeTEx file is 8 Ko and NEPTUNE 4 Ko
 So the NeTEx File will probably be something like 50% bigger with the same level of comment.
 
 -->
-<PublicationDelivery version="1.0" xmlns="http://www.netex.org.uk/netex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri"  >
+<PublicationDelivery version="1.0" xmlns="http://www.netex.org.uk/netex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri">
   <PublicationTimestamp>2013-03-18T15:50:11Z</PublicationTimestamp>
   <ParticipantRef>SYS001</ParticipantRef>
   <!--- ======WHAT WAS REQUESTED ========== -->
@@ -172,9 +172,9 @@ So the NeTEx File will probably be something like 50% bigger with the same level
           </organisations>
         </ResourceFrame>				
         <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
-<ServiceFrame version="any"  id="T:ServiceFrame:1">
+<ServiceFrame version="any" id="T:ServiceFrame:1">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="1" changed="2009-12-02T00:00:00Z" id="RATP_PIVI:PTNetwork:b8903b86-c9b0-48f7-beba-cd8254915589">
+  <Network version="1" id="RATP_PIVI:PTNetwork:b8903b86-c9b0-48f7-beba-cd8254915589">
     <Name>METRO</Name>
     <Description>Réseau de métro de la RATP</Description>
     <PrivateCode>110</PrivateCode>
@@ -182,22 +182,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!-- NEPTUNE Route Mapping (part 1 : directions ) =========================================== -->
   <directions>
         <Direction version="any" id="T:Route:1-0:Direction">
-      <Name>7B (PRE-SAINT-GERVAIS &lt;-&gt; LOUIS BLANC)</Name>
+      <Name>North</Name>
             <DirectionType>outbound</DirectionType>
           </Direction>
         <Direction version="any" id="T:Route:1-1:Direction">
-      <Name>7B (PRE-SAINT-GERVAIS &lt;-&gt; LOUIS BLANC)</Name>
+      <Name>South</Name>
             <DirectionType>outbound</DirectionType>
           </Direction>
       </directions>
   <!-- NEPTUNE StopPoint (RoutePoint)  mapping=========================================== -->
   <routePoints>
               <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-0">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-0">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-0"/>
@@ -205,11 +200,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-1">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-1">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-1"/>
@@ -217,11 +207,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-2">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-2">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-2"/>
@@ -229,11 +214,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-3">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-3">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-3"/>
@@ -241,11 +221,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-4">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-4">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-4"/>
@@ -253,11 +228,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-5">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-5">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-5"/>
@@ -265,11 +235,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-6">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-6">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-6"/>
@@ -277,11 +242,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-7">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-7">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-7"/>
@@ -289,11 +249,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-8">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-8">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-8"/>
@@ -301,11 +256,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-9">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-9">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-9"/>
@@ -313,11 +263,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-10">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-10">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-10"/>
@@ -325,11 +270,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-11">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-11">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-11"/>
@@ -337,11 +277,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-12">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-12">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-12"/>
@@ -349,11 +284,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-13">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-13">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-13"/>
@@ -361,11 +291,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-14">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-14">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-14"/>
@@ -373,11 +298,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-15">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-15">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-15"/>
@@ -385,11 +305,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-16">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-16">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-16"/>
@@ -397,11 +312,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-17">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-17">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-17"/>
@@ -409,11 +319,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-18">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-18">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-18"/>
@@ -421,11 +326,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-19">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-19">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-19"/>
@@ -433,11 +333,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-0A0A1-0-20">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-0A0A1-0-20">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-0-20"/>
@@ -445,11 +340,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
                     <RoutePoint version="1" id="T:RoutePoint:1-1A0A1-1-0">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-1A0A1-1-0">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-1-0"/>
@@ -457,11 +347,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-1A0A1-1-1">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-1A0A1-1-1">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-1-1"/>
@@ -469,11 +354,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-1A0A1-1-2">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-1A0A1-1-2">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-1-2"/>
@@ -481,11 +361,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-1A0A1-1-3">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-1A0A1-1-3">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-1-3"/>
@@ -493,11 +368,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-1A0A1-1-4">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-1A0A1-1-4">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-1-4"/>
@@ -505,11 +375,6 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </projections>
     </RoutePoint>
           <RoutePoint version="1" id="T:RoutePoint:1-1A0A1-1-5">
-      <Name>A</Name><!-- TODO : NEPTUNE [mapping:variable] : RoutePoint->Name mapped to NEPTUNE StopPoint->publishedName  -->
-      <Location>
-        <Longitude>1</Longitude>
-        <Latitude>1</Latitude>
-      </Location>
       <projections>
         <PointProjection version="any" id="T:PointProjection:1-1A0A1-1-5">
           <ProjectedPointRef version="1" ref="T:StopPoint:1-1-5"/>
@@ -769,7 +634,18 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </pointsInSequence>
     </Route>
         <Route version="1" id="T:Route:1-1">
+      <keyList>
+          <KeyValue>
+              <Key>Comment</Key>
+              <Value>mon iti</Value>
+          </KeyValue>
+          <KeyValue>
+              <Key>Number</Key>
+              <Value>1A</Value>
+          </KeyValue>
+      </keyList>
       <Name>1001101070001</Name>
+      <ShortName>Gare vers Jean Monnet</ShortName>
       <DirectionRef version="any" ref="T:Route:1-1:Direction"/>
       <pointsInSequence>                               
                 <PointOnRoute version="any" id="T:PointOnRoute:1-1-0-0" order="0">

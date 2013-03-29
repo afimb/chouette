@@ -28,7 +28,7 @@ public class PTNetworkConverter extends GenericConverter
     public PTNetwork convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         int result = -1;
-        pilot.selectXPath("//netex:Network");
+        pilot.selectXPath("//netex:ServiceFrame/netex:Network");
         
         while( (result = pilot.evalXPath()) != -1 )
         {                        
