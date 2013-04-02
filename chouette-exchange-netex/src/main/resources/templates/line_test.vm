@@ -103,7 +103,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                                           <dataSources>
                                               <DataSource id="RATP-001" >
                                                 <Name>RATP-METRO</Name>
-                                                <Description>Reseau metro</Description>
+                                                <Description>PublicTransport</Description>
                                               </DataSource>
                                           </dataSources>
 					<typesOfValue>

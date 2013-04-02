@@ -25,6 +25,12 @@ public class GenericConverter {
         nav.toElement(VTDNav.ROOT); // reset the cursor to point to the root element
     }
     
+    protected AutoPilot createAutoPilot( VTDNav nav) {
+        AutoPilot ap = new AutoPilot(nav);
+        ap.declareXPathNameSpace("netex","http://www.netex.org.uk/netex"); 
+        return ap;
+    }
+    
     protected List<String> toStringList(List<Object> objects) {
         List<String> strings = new ArrayList<String>(objects.size());
         for (Object object : objects) {
@@ -236,6 +242,15 @@ public class GenericConverter {
         nav.pop();
         return elements;         
     } 
+    
+    public Object parseOptionnalElement(VTDNav nav, AutoPilot pilot, String element) throws NavException, ParseException {
+        pilot.selectElement( element);
+        while ( pilot.iterate()) {
+            int myPos = nav.getText();
+            return nav.toNormalizedString(myPos);
+        }
+        return null;
+    }
     
     public String firstLetterUpcase(String word)
     {

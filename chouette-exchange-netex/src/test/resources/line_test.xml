@@ -178,11 +178,40 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 					<organisations>
 						<!-- NEPTUNE [mapping:variable] : Operator.version mapped to NEPTUNE Company->ObjectVersion -->
 						<Operator version="1" id="RATP_PIVI:Company:100">
+                                                      <PublicCode>RATP-CMP</PublicCode>
 							<!-- NEPTUNE [mapping:variable] : Operator->id mapped to NEPTUNE Company->ObjectId -->
 							<!-- NEPTUNE [mapping:variable] : Operator->name mapped to NEPTUNE Company->RegistrationNumber -->
 							<CompanyNumber>100</CompanyNumber>
 							<!-- NEPTUNE [mapping:variable] : Operator->name mapped to NEPTUNE Company->name -->
-							<Name>RATP</Name>
+							<Name>R.A.T.P.</Name>
+                                                      <ShortName>RATP</ShortName>
+                                                      <ContactDetails>
+                                                          <EmailAddress>support@ratp.fr</EmailAddress>
+                                                          <ContactTelephoneNumber>01.02.03.04.05</ContactTelephoneNumber>
+                                                          <ContactFaxNumber>01.02.03.04.06</ContactFaxNumber>
+                                                      </ContactDetails>
+                                                      <parts>
+                                                          <OrganisationPart>
+                                                              <Name>SIT</Name>
+                                                              <KeyList>
+                                                                  <KeyValue>
+                                                                      <Key>K1</Key>
+                                                                      <Value>V1</Value>
+                                                                  </KeyValue>
+                                                                  <KeyValue>
+                                                                      <Key>K2</Key>
+                                                                      <Value>V2</Value>
+                                                                  </KeyValue>
+                                                              </KeyList>
+                                                              <tata>tatav</tata>
+                                                          </OrganisationPart>
+                                                      </parts>
+                                                      <departments>
+                                                          <Department>
+                                                              <Name>CML</Name>
+                                                              <toto>totov</toto>
+                                                          </Department>
+                                                      </departments>
 						</Operator>
 					</organisations>
 				</ResourceFrame>
