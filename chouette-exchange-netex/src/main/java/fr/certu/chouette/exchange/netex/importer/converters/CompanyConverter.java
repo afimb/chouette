@@ -40,7 +40,8 @@ public class CompanyConverter extends GenericConverter
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             company.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );                                        
         } 
-                
+              
+        pilot.resetXPath();
         returnToRootElement(nav);
         return company;
     }

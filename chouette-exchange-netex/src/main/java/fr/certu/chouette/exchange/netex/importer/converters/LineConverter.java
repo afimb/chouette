@@ -30,9 +30,6 @@ public class LineConverter extends GenericConverter
         
         pilot = new AutoPilot(nav);
         pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        
-        pilot2 = new AutoPilot(nav);
-        pilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
     }
     
     public Line convert() throws XPathEvalException, NavException, XPathParseException, ParseException
@@ -55,6 +52,7 @@ public class LineConverter extends GenericConverter
             // Routes
             routeObjectIds = toStringList(parseMandatoryAttributes(nav, "RouteRef", "ref"));            
         }
+        pilot.resetXPath();
         
         returnToRootElement(nav);        
         return line;

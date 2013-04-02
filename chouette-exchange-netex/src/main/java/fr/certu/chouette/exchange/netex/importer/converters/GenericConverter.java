@@ -4,6 +4,7 @@ import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
@@ -44,9 +45,9 @@ public class GenericConverter {
     {
         String value = nav.toNormalizedString(position);
         
-        if(type == "Date")
-            return dateFormat.parse(value);
-        else if(type == "Integer")
+        if(type.toString().equals( "Date")) {
+            return dateFormat.parse(value); }
+        else if(type.toString().equals( "Integer"))
             return nav.parseInt(position);
         else if(type == "TransportModeNameEnum")
         {
@@ -58,6 +59,12 @@ public class GenericConverter {
         {
            String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
            PTDirectionEnum enumVal = PTDirectionEnum.fromValue(enumValStr);
+           return enumVal;
+        }
+        else if(type == "PTNetworkSourceTypeEnum")
+        {
+           String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
+           PTNetworkSourceTypeEnum enumVal = PTNetworkSourceTypeEnum.fromValue(enumValStr);
            return enumVal;
         }
         else
@@ -123,14 +130,13 @@ public class GenericConverter {
         
         if(position == -1 || nav.toNormalizedString(position) == null)
         {
-            logger.debug("No attribute " + attribute + " found for " + this.getClass());          
             return null;
         }
         else
             return parseData(nav, type, position);
     }
 
-    protected Object parseOptionnalAttribute(VTDNav nav, String element, String attribute, Object... params) throws NavException, ParseException
+    protected Object parseOptionnalCAttribute(VTDNav nav, String element, String attribute, Object... params) throws NavException, ParseException
     {
         List<Object> attributes = parseOptionnalAttributes(nav, element, attribute, params);
         if (attributes.isEmpty())

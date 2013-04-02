@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.vividsolutions.jts.util.Assert;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
@@ -8,12 +7,16 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -41,12 +44,41 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
         networkConverter = new PTNetworkConverter(nav);
     }
 
-    @Test(groups = {"NeptuneConverter"}, description = "Must return a chouette PTNetwork")
-    public void verifyPTNetworkConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
+    @Test(groups = {"ServiceFrame"}, description = "PTNetwork's id attribute reading")
+    public void verifyId() throws XPathEvalException, NavException, XPathParseException, ParseException {
         PTNetwork network = networkConverter.convert();
-        PTNetwork networkMock = new PTNetwork(); 
-        networkMock.setName("METRO");
-        Assert.equals(network.getName(), networkMock.getName());
+        Assert.assertEquals(network.getObjectId(), "RATP_PIVI:PTNetwork:110");
+    }
+    @Test(groups = {"ServiceFrame"}, description = "PTNetwork's name attribute reading")
+    public void verifyName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        Assert.assertEquals(network.getName(), "METRO");
+    }
+    @Test(groups = {"ServiceFrame"}, description = "PTNetwork's registration attribute reading")
+    public void verifyRegistrationNumber() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        Assert.assertEquals(network.getRegistrationNumber(), "110");
+    }
+    @Test(groups = {"ServiceFrame"}, description = "PTNetwork's VersionDate attribute reading")
+    public void verifyVersionDate() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
+        Assert.assertEquals(network.getVersionDate(), dateFormat.parse("2009-12-02T00:00:00Z"));
+    }
+    @Test(groups = {"ResourceFrame"}, description = "PTNetwork's sourceIdentifier attribute reading")
+    public void verifySourceIdentifier() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        Assert.assertEquals( network.getSourceIdentifier(), "RATP-001");
+    }
+    @Test(groups = {"ResourceFrame"}, description = "PTNetwork's sourceName attribute reading")
+    public void verifySourceName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        Assert.assertEquals( network.getSourceName(), "RATP-METRO");
+    }
+    @Test(groups = {"ResourceFrame"}, description = "PTNetwork's sourceType attribute reading")
+    public void verifySourceType() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        Assert.assertEquals( network.getSourceType(), PTNetworkSourceTypeEnum.PUBLICTRANSPORT);
     }
 
 }

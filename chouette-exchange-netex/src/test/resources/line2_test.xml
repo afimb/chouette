@@ -95,6 +95,12 @@ So the NeTEx File will probably be something like 50% bigger with the same level
           <FrameDefaults>
             <DefaultCodespaceRef ref="Neptune"/>
           </FrameDefaults>
+          <dataSources>
+              <DataSource id="RATP-001" >
+                <Name>RATP-METRO</Name>
+                <Description>PublicTransport</Description>
+              </DataSource>
+          </dataSources>
           <typesOfValue>
             <TypeOfValidity version="01" id="Neptune:TypeOfValidity:WeeklyPlanned">
               <Name>Weekly export of Neptune  Planned data</Name>
@@ -174,7 +180,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
         <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
 <ServiceFrame version="any" id="T:ServiceFrame:1">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="1" id="RATP_PIVI:PTNetwork:b8903b86-c9b0-48f7-beba-cd8254915589">
+  <Network version="1" id="RATP_PIVI:PTNetwork:110">
     <Name>METRO</Name>
     <Description>Réseau de métro de la RATP</Description>
     <PrivateCode>110</PrivateCode>
