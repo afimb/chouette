@@ -40,7 +40,7 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
         stopAreaConverter = new StopAreaConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 8 stopAreas")
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 8+2*7 stopAreas")
     public void verifyStopAreaConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<StopArea> stopAreas = stopAreaConverter.convert();
         
