@@ -7,9 +7,10 @@ import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
-import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.Time;
 import java.text.ParseException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -21,15 +22,15 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
-public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTests {
+public class VehicleJourneyAtStopConverterTest extends AbstractTestNGSpringContextTests {
 
-    private JourneyPatternConverter journeyPatternConverter;
+    private VehicleJourneyAtStopConverter vehicleJourneyAtStopConverter;
     private AutoPilot autoPilot;
     private VTDNav nav;
 
     @BeforeClass
     protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");;
+        File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
@@ -42,25 +43,17 @@ public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTes
         autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
         
-        journeyPatternConverter = new JourneyPatternConverter(nav);
+        vehicleJourneyAtStopConverter = new VehicleJourneyAtStopConverter(nav);
     }
 
-    @Test(groups = {"NeptuneConverter"}, description = "Must return journey patterns")
-    public void verifyJourneyPatternConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        List<JourneyPattern> journeyPatterns = journeyPatternConverter.convert();
+    @Test(groups = {"NeptuneConverter"}, description = "Must return vehicle journey at stop")
+    public void verifyVehicleJourneyAtStopConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourneyAtStopConverter.convert();
         
-        int result = -1;
-        autoPilot.selectXPath("//netex:ServicePattern//netex:Name");
-        int counter = 0;
-        
-        while( (result = autoPilot.evalXPath()) != -1 )
-        {       
-             int position = nav.getText();                    
-             Assert.equals(nav.toNormalizedString(position), journeyPatterns.get(counter).getName());
-             counter++;
-        }
-        
-        
+        Assert.equals(Time.valueOf("13:05:00"), vehicleJourneyAtStops.get(0).getDepartureTime());
+        Assert.equals(Time.valueOf("13:05:00"), vehicleJourneyAtStops.get(0).getArrivalTime());
+        Assert.equals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops.get(0).getVehicleJourneyId());
+        Assert.equals("T:StopPoint:1-0-0", vehicleJourneyAtStops.get(0).getStopPointId());        
     }
 
 }

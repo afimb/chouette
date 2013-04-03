@@ -7,6 +7,7 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +19,7 @@ public class GenericConverter {
     
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
+
         
     protected void returnToRootElement(VTDNav nav) throws NavException
     {
@@ -44,6 +46,8 @@ public class GenericConverter {
     {
         String value = nav.toNormalizedString(position);
         
+        if(type == "Time")
+            return Time.valueOf(value);
         if(type == "Date")
             return dateFormat.parse(value);
         else if(type == "Integer")
@@ -63,6 +67,25 @@ public class GenericConverter {
         else
             return value;
     }
+    
+    protected Object parseParentAttribute(VTDNav nav, String attribute, Object... params) throws NavException, ParseException
+    {
+        assert params.length <= 1;        
+        
+        Object type = params.length > 0 ? params[0].toString() : "String";           
+        nav.toElement(VTDNav.PARENT);       
+        nav.toElement(VTDNav.PARENT);
+        int position = nav.getAttrVal(attribute);
+        
+        if(position == -1 || nav.toNormalizedString(position) == null)             
+        {    
+            String log = "No attribute " + attribute + " found for " + this.getClass();
+            logger.error(log);
+            throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NETEX_FILE, log); 
+        }
+            
+        return parseData(nav, type, position);
+    }           
     
     protected Object parseMandatoryAttribute(VTDNav nav, String attribute, Object... params) throws NavException, ParseException
     {
@@ -196,7 +219,45 @@ public class GenericConverter {
         return elements;
     }
     
+    protected Object parseMandatorySubElement(VTDNav nav, String element, String subElement, Object... params) throws NavException, ParseException
+    {
+        List<Object> elements = parseMandatorySubElements(nav, element, subElement, params);
+        if(elements.isEmpty())     
+            return null;
+        else
+            return elements.get(0);
+    }
     
+    protected List<Object> parseMandatorySubElements(VTDNav nav, String element, String subElement, Object... params) throws NavException, ParseException
+    {
+        Object type = params.length > 0 ? params[0].toString() : "String";
+        List<Object> elements = new ArrayList<Object>();
+        nav.push();
+        AutoPilot pilot = new AutoPilot(nav);
+        pilot.selectElement(element);
+        
+        while( pilot.iterate() ) // iterate will iterate thru all elements
+        {                   
+            pilot.selectElement(subElement);
+            while( pilot.iterate() ) // iterate will iterate thru all elements
+            {                                        
+                int position = nav.getText();
+                
+                if (position == -1 || nav.toNormalizedString(position) == null)
+                {
+                    String log = "No element " + element + " found for " + this.getClass();
+                    logger.error(log);
+                    throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NETEX_FILE, log);           
+                }
+                
+                elements.add( parseData(nav, type, position) );   
+            }
+        }   
+        
+        nav.pop();
+        return elements;
+    }
+        
     protected Object parseOptionnalElement(VTDNav nav, String element, Object... params) throws NavException, ParseException
     {
         List<Object> elements = parseOptionnalElements(nav, element, params);
