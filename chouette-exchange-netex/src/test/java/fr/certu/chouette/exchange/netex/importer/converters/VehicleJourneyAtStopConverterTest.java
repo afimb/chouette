@@ -53,7 +53,12 @@ public class VehicleJourneyAtStopConverterTest extends AbstractTestNGSpringConte
         Assert.equals(Time.valueOf("13:05:00"), vehicleJourneyAtStops.get(0).getDepartureTime());
         Assert.equals(Time.valueOf("13:05:00"), vehicleJourneyAtStops.get(0).getArrivalTime());
         Assert.equals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops.get(0).getVehicleJourneyId());
-        Assert.equals("T:StopPoint:1-0-0", vehicleJourneyAtStops.get(0).getStopPointId());        
+        Assert.equals("T:StopPoint:1-0-0", vehicleJourneyAtStops.get(0).getStopPointId());     
+        
+        Assert.equals(Time.valueOf("13:08:00"), vehicleJourneyAtStops.get(1).getDepartureTime());
+        Assert.equals(Time.valueOf("13:08:00"), vehicleJourneyAtStops.get(1).getArrivalTime());
+        Assert.equals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops.get(1).getVehicleJourneyId());
+        Assert.equals("T:StopPoint:1-0-7", vehicleJourneyAtStops.get(1).getStopPointId());             
     }
 
 }

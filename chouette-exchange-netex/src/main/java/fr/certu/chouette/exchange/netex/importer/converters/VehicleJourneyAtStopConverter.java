@@ -36,7 +36,7 @@ public class VehicleJourneyAtStopConverter extends GenericConverter
     public List<VehicleJourneyAtStop> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         int result = -1;
-        autoPilot.selectXPath("//netex:calls//netex:Call");
+        autoPilot.selectXPath("//netex:calls/netex:Call");
         
         while( (result = autoPilot.evalXPath()) != -1 )
         {                      
