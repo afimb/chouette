@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.vividsolutions.jts.util.Assert;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
@@ -17,6 +16,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import fr.certu.chouette.model.neptune.StopArea;
+import org.testng.Assert;
 
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
@@ -27,7 +27,7 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "gr_netex", "1.xml");;
+        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");;
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
@@ -40,28 +40,31 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
         stopAreaConverter = new StopAreaConverter(nav);
     }
 
-    @Test(groups = {"SiteFrame"}, description = "Export Plugin should have one route")
-    public void verifyConvert() throws XPathEvalException, NavException, XPathParseException, ParseException {
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 8 stopAreas")
+    public void verifyStopAreaConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<StopArea> stopAreas = stopAreaConverter.convert();
         
-        //Assert.equals( stopAreas.size(), 53);
+        Assert.assertEquals( stopAreas.size(), 8+2*7);
+    }
+    
+    private StopArea getStopAreaByObjectId( String objectId)  throws XPathEvalException, NavException, XPathParseException, ParseException {
+        List<StopArea> stopAreas = stopAreaConverter.convert();
+        StopArea selectedStopArea = null;
         for( StopArea stopArea : stopAreas) {
-            System.out.println( 
-                "stopArea id="+stopArea.getObjectId());
-            if ( stopArea.getName()!=null) {
-                System.out.print( 
-                    ", name="+stopArea.getName());
+            if ( stopArea.getObjectId().equals( objectId)) {
+                selectedStopArea = stopArea;
+                break;
             }
-            if ( stopArea.getAreaCentroid()!=null) {
-                System.out.print( 
-                    ", lat="+stopArea.getAreaCentroid().getLatitude()+
-                    ", lng="+stopArea.getAreaCentroid().getLongitude());
-                
-            }
-            System.out.println( 
-                "type="+stopArea.getAreaType());
         }
+        
+        Assert.assertNotNull( selectedStopArea, "can't find expected route having "+objectId+" as objectId");
+        return selectedStopArea;
+    }
 
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's name attribute reading")
+    public void verifyStopAreaName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:430399");
+        Assert.assertEquals( selectedStopArea.getName(), "Botzaris");
     }
     
 

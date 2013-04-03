@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 public class RouteConverter extends GenericConverter 
 {    
     private static final Logger       logger = Logger.getLogger(RouteConverter.class);
-    private List<Route> routes = new ArrayList<Route>();    
+    private List<Route> routes = new ArrayList<Route>();
     private AutoPilot autoPilot;
     private Map<String,StopPoint> stopPointByObjectId;
     private Map<String,PTDirectionEnum> directionByRef;

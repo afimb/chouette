@@ -17,6 +17,11 @@ import org.testng.annotations.Test;
  */
 @Test(groups = {"StopArea"}, description = "Validate StopArea export in NeTEx format")
 public class StopAreaTest extends ChouetteModelTest {
+    private String quayObjectId(StopArea quay) {
+        return quay.objectIdPrefix()+
+                ":Quay:"+
+                quay.objectIdSuffix();
+    }
     
     @Test(groups = {"SiteFrame", "topographicPlaces"}, description = "Validate presence of TopographicPlace with expected id")
     public void verifyTopographicPlaceId() throws XPathExpressionException, ParseException {
@@ -102,10 +107,104 @@ public class StopAreaTest extends ChouetteModelTest {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
                                 "[@id = '"+
-                                quay.objectIdPrefix()+
-                                ":Quay:"+
-                                quay.objectIdSuffix()+
+                                quayObjectId(quay)+
                                 "'])";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected comment")
+    public void verifyQuayComment() throws XPathExpressionException, ParseException {
+        List<StopArea> quays = line.getQuays();
+        quays.addAll( line.getBoardingPositions());
+        
+        for( StopArea quay : quays) {
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace/netex:quays/netex:Quay"+
+                                "[@id = '"+
+                                quayObjectId(quay)+
+                                "']/netex:Description/text() = '"+
+                                quay.getComment()+"')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected name")
+    public void verifyQuayName() throws XPathExpressionException, ParseException {
+        List<StopArea> quays = line.getQuays();
+        quays.addAll( line.getBoardingPositions());
+        
+        for( StopArea quay : quays) {
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace/netex:quays/netex:Quay"+
+                                "[@id = '"+
+                                quayObjectId(quay)+
+                                "']/netex:Name/text() = '"+
+                                quay.getName()+"')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected nearestTopicName")
+    public void verifyQuayNearestTopicName() throws XPathExpressionException, ParseException {
+        List<StopArea> quays = line.getQuays();
+        quays.addAll( line.getBoardingPositions());
+        
+        for( StopArea quay : quays) {
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace/netex:quays/netex:Quay"+
+                                "[@id = '"+
+                                quayObjectId(quay)+
+                                "']/netex:LandMark/text() = '"+
+                                quay.getNearestTopicName()+"')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected streetName")
+    public void verifyQuayStreetName() throws XPathExpressionException, ParseException {
+        List<StopArea> quays = line.getQuays();
+        quays.addAll( line.getBoardingPositions());
+        
+        for( StopArea quay : quays) {
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace/netex:quays/netex:Quay"+
+                                "[@id = '"+
+                                quayObjectId(quay)+
+                                "']//netex:AddressLine1/text() = '"+
+                                quay.getAreaCentroid().getAddress().getStreetName()+"')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected countryCode")
+    public void verifyQuayPostCode() throws XPathExpressionException, ParseException {
+        List<StopArea> quays = line.getQuays();
+        quays.addAll( line.getBoardingPositions());
+        
+        for( StopArea quay : quays) {
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace/netex:quays/netex:Quay"+
+                                "[@id = '"+
+                                quayObjectId(quay)+
+                                "']//netex:PostCode/text() = '"+
+                                quay.getAreaCentroid().getAddress().getCountryCode()+"')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected registrationNumber")
+    public void verifyQuayRegistrationNumber() throws XPathExpressionException, ParseException {
+        List<StopArea> quays = line.getQuays();
+        quays.addAll( line.getBoardingPositions());
+        
+        for( StopArea quay : quays) {
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace/netex:quays/netex:Quay"+
+                                "[@id = '"+
+                                quayObjectId(quay)+
+                                "']/netex:PrivateCode/text() = '"+
+                                quay.getRegistrationNumber()+"')";
             assertXPathTrue( xPathExpr);
         }
     }
@@ -119,9 +218,7 @@ public class StopAreaTest extends ChouetteModelTest {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
                                 "[@id = '"+
-                                quay.objectIdPrefix()+
-                                ":Quay:"+
-                                quay.objectIdSuffix()+
+                                quayObjectId(quay)+
                                 "']/netex:Centroid/netex:Location"+
                                 "[@id = '"+
                                 quay.getAreaCentroid().objectIdPrefix()+
@@ -175,7 +272,7 @@ public class StopAreaTest extends ChouetteModelTest {
     }
     
     @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of Quay with expected longlattype")
-    public void verifyQuayLongLatType() throws XPathExpressionException, ParseException {
+    public void verifyQuayProjectionType() throws XPathExpressionException, ParseException {
         List<StopArea> quays = line.getQuays();
         quays.addAll( line.getBoardingPositions());
         
@@ -189,7 +286,7 @@ public class StopAreaTest extends ChouetteModelTest {
                                 "']/netex:Centroid/netex:Location/"+
                                 "gml:pos"+
                                 "[@srsName = '"+
-                                quay.getAreaCentroid().getLongLatType()+
+                                quay.getAreaCentroid().getProjectedPoint().getProjectionType()+
                                 "'])";
             assertXPathTrue( xPathExpr);
         }

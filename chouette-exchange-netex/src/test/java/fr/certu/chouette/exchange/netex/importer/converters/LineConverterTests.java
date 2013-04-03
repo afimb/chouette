@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.vividsolutions.jts.util.Assert;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
@@ -16,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
@@ -41,12 +41,34 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
         lineConverter = new LineConverter(nav);
     }
 
-    @Test(groups = {"NeptuneConverter"}, description = "Must return a line")
-    public void verifyLineConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
+    @Test(groups = {"ServiceFrame"}, description = "Line's name attribute reading")
+    public void verifyName() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Line line = lineConverter.convert();
-        Line lineMock = new Line(); 
-        lineMock.setName("7B");
-        Assert.equals(line.getName(), lineMock.getName());
+        Assert.assertEquals(line.getName(), "7B");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Line's publishedName attribute reading")
+    public void verifyPublishedName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Line line = lineConverter.convert();
+        Assert.assertEquals(line.getPublishedName(), "Mairie d Issy porte d Orleans");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Line's registrationNumber attribute reading")
+    public void verifyRegistrationNumber() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Line line = lineConverter.convert();
+        Assert.assertEquals(line.getRegistrationNumber(), "100110107");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Line's number attribute reading")
+    public void verifyNumber() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Line line = lineConverter.convert();
+        Assert.assertEquals(line.getNumber(), "7Bis");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Line's comment attribute reading")
+    public void verifyComment() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Line line = lineConverter.convert();
+        Assert.assertEquals(line.getComment(), "Extension à partir de juin");
     }
 
 }

@@ -18,7 +18,6 @@ public class LineConverter extends GenericConverter
     private static final Logger       logger = Logger.getLogger(LineConverter.class);
     private Line line = new Line();    
     private AutoPilot pilot;
-    private AutoPilot pilot2;
     private VTDNav nav;
 
     @Getter
@@ -40,12 +39,18 @@ public class LineConverter extends GenericConverter
         while( (result = pilot.evalXPath()) != -1 )
         {
             // Mandatory
-            line.setRegistrationNumber( (String)parseMandatoryElement(nav, "PublicCode") );
-            line.setName( (String)parseMandatoryElement(nav, "Name") );
             line.setObjectId( (String)parseMandatoryAttribute(nav, "id"));
+            
+            // Optionnal
+            line.setName( (String)parseOptionnalElement(nav, "Name") );
+            line.setPublishedName( (String)parseOptionnalElement(nav, "ShortName") );
+            line.setRegistrationNumber( (String)parseOptionnalElement(nav, "PublicCode") );
+            line.setNumber( (String)parseOptionnalElement(nav, "PrivateCode") );
+            line.setComment( (String)parseOptionnalElement(nav, "Description") );
             
             // Optionnal            
             line.setTransportModeName( (TransportModeNameEnum)parseOptionnalElement(nav, "TransportMode", "TransportModeNameEnum") );
+            
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             line.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
             

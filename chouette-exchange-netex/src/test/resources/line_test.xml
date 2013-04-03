@@ -568,10 +568,13 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							<!-- NEPTUNE [mapping:variable] : Line->Id to NEPTUNE ChouetteLineDescription->Line->ObjectId -->
 							<!-- NEPTUNE [mapping:variable] : Line->Name to NEPTUNE ChouetteLineDescription->Line->name -->
 							<Name>7B</Name>
+							<ShortName>Mairie d Issy porte d Orleans</ShortName>
+							<Description>Extension &#224; partir de juin</Description>
 							<!-- NEPTUNE [mapping:variable] : Line->TransportMode to NEPTUNE ChouetteLineDescription->Line->transportModeName -->
 							<TransportMode>metro</TransportMode>
 							<!-- NEPTUNE [mapping:variable] : Line->PublicCode to NEPTUNE ChouetteLineDescription->Line->registration->registrationNumber -->
 							<PublicCode>100110107</PublicCode>
+							<PrivateCode>7Bis</PrivateCode>
 							<!-- NEPTUNE [mapping:variable] : Line->routeRefs->RouteRef to NEPTUNE ChouetteLineDescription->Line->routeId -->
 							<routes>
 								<RouteRef version="1" ref="RATP_PIVI:Route:317452"/>
@@ -579,6 +582,16 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							</routes>
 						</Line>
 					</lines>
+                                          <groupsOfLines>
+                                            <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:1234">      
+                                              <Name>Noctilien</Name>
+                                              <Description>Bus de nuit</Description>
+                                            </GroupOfLines>
+                                            <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:4321">      
+                                              <Name>Jourtilien</Name>
+                                              <Description>Bus de jour</Description>
+                                            </GroupOfLines>
+                                          </groupsOfLines>
 					<!--   -->
 					<!-- NEPTUNE Stop Area with "Quay" type  =========================================== -->
 					<!-- NEPTUNE Quays (or Bording position) are mapped to ScheduledStopPoint in order to keep the NEPTUNE JOURNEY PATTERN consistency -->
