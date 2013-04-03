@@ -7,7 +7,7 @@ import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
-import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
@@ -21,9 +21,9 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
-public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTests {
+public class VehicleJourneyConverterTest extends AbstractTestNGSpringContextTests {
 
-    private JourneyPatternConverter journeyPatternConverter;
+    private VehicleJourneyConverter vehicleJourneyConverter;
     private AutoPilot autoPilot;
     private VTDNav nav;
 
@@ -42,21 +42,21 @@ public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTes
         autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
         
-        journeyPatternConverter = new JourneyPatternConverter(nav);
+        vehicleJourneyConverter = new VehicleJourneyConverter(nav);
     }
 
-    @Test(groups = {"NeptuneConverter"}, description = "Must return journey patterns")
-    public void verifyJourneyPatternConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        List<JourneyPattern> journeyPatterns = journeyPatternConverter.convert();
+    @Test(groups = {"NeptuneConverter"}, description = "Must return vehicle journey")
+    public void verifyVehicleJourneyConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        List<VehicleJourney> vehicleJourneys = vehicleJourneyConverter.convert();
         
         int result = -1;
-        autoPilot.selectXPath("//netex:ServicePattern//netex:Name");
+        autoPilot.selectXPath("//netex:ServiceJourney//netex:Name");
         int counter = 0;
         
         while( (result = autoPilot.evalXPath()) != -1 )
         {       
              int position = nav.getText();                    
-             Assert.equals(nav.toNormalizedString(position), journeyPatterns.get(counter).getName());
+             Assert.equals(nav.toNormalizedString(position), vehicleJourneys.get(counter).getName());
              counter++;
         }
         

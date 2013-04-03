@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 public class RouteConverter extends GenericConverter 
@@ -23,6 +24,7 @@ public class RouteConverter extends GenericConverter
     private static final Logger       logger = Logger.getLogger(RouteConverter.class);
     private List<Route> routes = new ArrayList<Route>();
     private AutoPilot autoPilot;
+    @Getter
     private Map<String,StopPoint> stopPointByObjectId;
     private Map<String,PTDirectionEnum> directionByRef;
     private Map<String,String> waybackByRef;
