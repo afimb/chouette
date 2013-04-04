@@ -54,7 +54,7 @@ public class VehicleJourneyConverter extends GenericConverter
             vehicleJourney.setJourneyPatternId( (String)parseMandatoryAttribute(nav, "ServicePatternRef", "ref") );
             
             // TimeTables
-            //vehicleJourney.setTimetables(null);            
+            //vehicleJourney.setnull);            
             
             // Link with journeyPattern            
             String journeyPatternObjectId = vehicleJourney.getJourneyPatternId();

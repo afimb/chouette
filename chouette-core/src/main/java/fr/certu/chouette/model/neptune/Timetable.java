@@ -112,8 +112,13 @@ public class Timetable extends NeptuneIdentifiedObject
 	@Setter
 	private List<VehicleJourney> vehicleJourneys;
 	
-	@Getter private Date startOfPeriod;
-	@Getter private Date endOfPeriod;
+	@Getter
+        @Setter
+        private Date startOfPeriod;
+        
+	@Getter 
+        @Setter
+        private Date endOfPeriod;
 
 
 	/**

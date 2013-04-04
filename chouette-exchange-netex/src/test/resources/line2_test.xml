@@ -1981,8 +1981,8 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 <!-- Each NEPTUNE timetable is mapped to a separate ServiceCalendarFrame  -->
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC0">
   <ServiceCalendar version="any" id="T:ServiceCalendar:SFC0"><!-- ObjectId?? -->
-    <FromDate>$timetable.startOfPeriod</FromDate>
-    <ToDate>$timetable.endOfPeriod</ToDate>
+    <FromDate></FromDate>
+    <ToDate></ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
@@ -2086,8 +2086,8 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 </ServiceCalendarFrame>
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC1">
   <ServiceCalendar version="any" id="T:ServiceCalendar:SFC1"><!-- ObjectId?? -->
-    <FromDate>$timetable.startOfPeriod</FromDate>
-    <ToDate>$timetable.endOfPeriod</ToDate>
+    <FromDate></FromDate>
+    <ToDate></ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
@@ -2191,8 +2191,8 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 </ServiceCalendarFrame>
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC2">
   <ServiceCalendar version="any" id="T:ServiceCalendar:SFC2"><!-- ObjectId?? -->
-    <FromDate>$timetable.startOfPeriod</FromDate>
-    <ToDate>$timetable.endOfPeriod</ToDate>
+    <FromDate></FromDate>
+    <ToDate></ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>

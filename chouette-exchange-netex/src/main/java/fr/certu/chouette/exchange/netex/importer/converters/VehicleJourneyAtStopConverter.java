@@ -47,7 +47,7 @@ public class VehicleJourneyAtStopConverter extends GenericConverter
             vehicleJourneyAtStop.setStopPointId( (String)parseMandatoryAttribute(nav, "ScheduledStopPointRef", "ref") );
             vehicleJourneyAtStop.setVehicleJourneyId( (String)parseParentAttribute(nav, "id") );
             
-                // Link with journeyPattern            
+            // Link with vehicle journey            
             String vehicleJourneyObjectId = vehicleJourneyAtStop.getVehicleJourneyId();
             if(vehicleJourneyAtStopsByVJObjectId.containsKey(vehicleJourneyObjectId))
             {
