@@ -29,7 +29,16 @@ public class StopAreaBlueprint {
     int objectVersion = 1;
     
     @Default
-    String name = "A";
+    String name = "A"+UUID.randomUUID();
+    
+    @Default
+    String comment = "mon arret "+UUID.randomUUID();
+    
+    @Default
+    String registrationNumber = "C-"+UUID.randomUUID();
+    
+    @Default
+    String nearestTopicName = "POI-"+UUID.randomUUID();
     
     @Default
     int fareCode = 1;

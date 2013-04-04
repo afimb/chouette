@@ -16,12 +16,52 @@
   <stopPlaces>
     #foreach( $commercialStopPoint in $commercialStopPoints )
     <StopPlace version="$commercialStopPoint.objectVersion" id="${commercialStopPoint.objectIdPrefix()}:StopPlace:${commercialStopPoint.objectIdSuffix()}">
-      #if($commercialStopPoint.parent)
-      <ContainedInPlaceRef version="$commercialStopPoint.parent.objectVersion" ref="${commercialStopPoint.parent.objectIdPrefix()}:TopographicPlace:${commercialStopPoint.parent.objectIdSuffix()}"/>
+     #if( $commercialStopPoint.name )
+     <Name>$!esc.xml( $commercialStopPoint.name)</Name>
+     #end
+
+     #if( $commercialStopPoint.comment )
+     <Description>$!esc.xml( $commercialStopPoint.comment)</Description>
+     #end
+
+     #if( $commercialStopPoint.registrationNumber )
+     <PrivateCode>$!esc.xml( $commercialStopPoint.registrationNumber)</PrivateCode>
+     #end
+
+     #if( $commercialStopPoint.areaCentroid.latitude && $commercialStopPoint.areaCentroid.longitude)
+      <Centroid>
+        #set( $areaCentroid = $commercialStopPoint.areaCentroid )
+        #set( $projectedPoint = $areaCentroid.projectedPoint )
+        <Location id="${areaCentroid.objectIdPrefix()}:Location:${areaCentroid.objectIdSuffix()}">
+          #if ( $areaCentroid.longitude && $areaCentroid.latitude )
+          <Longitude>$areaCentroid.longitude</Longitude>
+          <Latitude>$areaCentroid.latitude</Latitude>
+          #end
+          #if ( $projectedPoint.x && $projectedPoint.y )
+          <gml:pos srsName="$projectedPoint.projectionType">
+            $projectedPoint.x $projectedPoint.y
+          </gml:pos>
+          #end
+        </Location>
+      </Centroid>
+     #end
+
+     #if( $commercialStopPoint.parent )
+     <ParentZoneRef version="$commercialStopPoint.parent.objectVersion" ref="${commercialStopPoint.parent.objectIdPrefix()}:StopPlace:${commercialStopPoint.parent.objectIdSuffix()}" />
+     #end
+      
+      #if( $commercialStopPoint.nearestTopicName )
+      <LandMark>$!esc.xml( $commercialStopPoint.nearestTopicName)</LandMark>
       #end
+
       <TopographicPlaceView>
         <Name>$commercialStopPoint.name</Name>
       </TopographicPlaceView>
+      
+      #if($commercialStopPoint.parent)
+      <ContainedInPlaceRef version="$commercialStopPoint.parent.objectVersion" ref="${commercialStopPoint.parent.objectIdPrefix()}:TopographicPlace:${commercialStopPoint.parent.objectIdSuffix()}"/>
+      #end
+
       #if($commercialStopPoint.fareCode)
       <tariffZones>
         <TariffZoneRef version="any" ref="${commercialStopPoint.objectIdPrefix()}:TariffZone:${commercialStopPoint.fareCode}"/>
@@ -30,25 +70,53 @@
       <quays>
         #foreach( $quay in $commercialStopPoint.containedStopAreas )
         <Quay version="$quay.objectVersion" id="${quay.objectIdPrefix()}:Quay:${quay.objectIdSuffix()}">
-          #set( $areaCentroid = $quay.areaCentroid )
-          #if($areaCentroid)
+         #if( $quay.name )
+         <Name>$!esc.xml( $quay.name)</Name>
+         #end
+
+         #if( $quay.comment )
+         <Description>$!esc.xml( $quay.comment)</Description>
+         #end
+
+         #if( $quay.registrationNumber )
+         <PrivateCode>$!esc.xml( $quay.registrationNumber)</PrivateCode>
+         #end
+
+         #if( $quay.nearestTopicName )
+         <LandMark>$!esc.xml( $quay.nearestTopicName)</LandMark>
+         #end
+
+      #set( $areaCentroid = $quay.areaCentroid )
+      #if($areaCentroid)
           <Centroid>
-            <Location id="${quay.areaCentroid.objectIdPrefix()}:Location:${quay.areaCentroid.objectIdSuffix()}">
+            #set( $areaCentroid = $quay.areaCentroid )
+            #set( $projectedPoint = $areaCentroid.projectedPoint )
+            <Location id="${areaCentroid.objectIdPrefix()}:Location:${areaCentroid.objectIdSuffix()}">
+              #if ( $areaCentroid.longitude && $areaCentroid.latitude )
               <Longitude>$areaCentroid.longitude</Longitude>
               <Latitude>$areaCentroid.latitude</Latitude>
-              <gml:pos srsName="$quay.areaCentroid.longLatType">
-                $areaCentroid.latitude $areaCentroid.longitude 
+              #end
+              #if ( $projectedPoint.x && $projectedPoint.y )
+              <gml:pos srsName="$projectedPoint.projectionType">
+                $projectedPoint.x $projectedPoint.y
               </gml:pos>
+              #end
             </Location>
           </Centroid>
-          #set( $adress = $areaCentroid.adress )
-          #if($adress)
-          <PostalAddress version="any" id="${adress.objectIdPrefix()}:PostalAddress:${adress.objectIdSuffix()}">
+          #set( $address = $areaCentroid.address )
+          #if($address)
+          <PostalAddress version="any" id="${areaCentroid.objectIdPrefix()}:PostalAddress:${areaCentroid.objectIdSuffix()}">
             <CountryRef ref="fr"/>
-            <AddressLine1>$adress.streetName</AddressLine1>
-            <PostCode>$adress.countryCode</PostCode>
+            #if ( $address.streetName )
+            <AddressLine1>$!esc.xml( $address.streetName)</AddressLine1>
+            #end
+            #if ( $address.countryCode )
+            <PostCode>$!esc.xml( $address.countryCode)</PostCode>
+            #end
           </PostalAddress>
           #end
+      #end
+          #if($quay.fareCode)
           <tariffZones>
             <TariffZoneRef version="any" ref="${quay.objectIdPrefix()}:TariffZone:${quay.fareCode}"/>
           </tariffZones>

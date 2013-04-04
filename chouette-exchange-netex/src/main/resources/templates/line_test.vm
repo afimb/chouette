@@ -100,6 +100,12 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 					<FrameDefaults>
 						<DefaultCodespaceRef ref="Neptune"/>
 					</FrameDefaults>
+                                          <dataSources>
+                                              <DataSource id="RATP-001" >
+                                                <Name>RATP-METRO</Name>
+                                                <Description>PublicTransport</Description>
+                                              </DataSource>
+                                          </dataSources>
 					<typesOfValue>
 						<TypeOfValidity version="01" id="Neptune:TypeOfValidity:WeeklyPlanned">
 							<Name>Weekley export of Neptune  Planned data</Name>

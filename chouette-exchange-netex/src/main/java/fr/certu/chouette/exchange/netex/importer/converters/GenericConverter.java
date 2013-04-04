@@ -4,6 +4,7 @@ import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
@@ -26,6 +27,12 @@ public class GenericConverter {
         nav.toElement(VTDNav.ROOT); // reset the cursor to point to the root element
     }
     
+    protected AutoPilot createAutoPilot( VTDNav nav) {
+        AutoPilot ap = new AutoPilot(nav);
+        ap.declareXPathNameSpace("netex","http://www.netex.org.uk/netex"); 
+        return ap;
+    }
+    
     protected List<String> toStringList(List<Object> objects) {
         List<String> strings = new ArrayList<String>(objects.size());
         for (Object object : objects) {
@@ -46,11 +53,11 @@ public class GenericConverter {
     {
         String value = nav.toNormalizedString(position);
         
-        if(type == "Time")
+        if(type.toString().equals( "Date")) 
+            return dateFormat.parse(value); 
+        else if(type.toString().equals( "Time"))
             return Time.valueOf(value);
-        if(type == "Date")
-            return dateFormat.parse(value);
-        else if(type == "Integer")
+        else if(type.toString().equals( "Integer"))
             return nav.parseInt(position);
         else if(type == "TransportModeNameEnum")
         {
@@ -62,6 +69,12 @@ public class GenericConverter {
         {
            String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
            PTDirectionEnum enumVal = PTDirectionEnum.fromValue(enumValStr);
+           return enumVal;
+        }
+        else if(type == "PTNetworkSourceTypeEnum")
+        {
+           String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
+           PTNetworkSourceTypeEnum enumVal = PTNetworkSourceTypeEnum.fromValue(enumValStr);
            return enumVal;
         }
         else
@@ -146,14 +159,13 @@ public class GenericConverter {
         
         if(position == -1 || nav.toNormalizedString(position) == null)
         {
-            logger.debug("No attribute " + attribute + " found for " + this.getClass());          
             return null;
         }
         else
             return parseData(nav, type, position);
     }
 
-    protected Object parseOptionnalAttribute(VTDNav nav, String element, String attribute, Object... params) throws NavException, ParseException
+    protected Object parseOptionnalCAttribute(VTDNav nav, String element, String attribute, Object... params) throws NavException, ParseException
     {
         List<Object> attributes = parseOptionnalAttributes(nav, element, attribute, params);
         if (attributes.isEmpty())
@@ -291,6 +303,15 @@ public class GenericConverter {
         nav.pop();
         return elements;         
     } 
+    
+    public Object parseOptionnalElement(VTDNav nav, AutoPilot pilot, String element) throws NavException, ParseException {
+        pilot.selectElement( element);
+        while ( pilot.iterate()) {
+            int myPos = nav.getText();
+            return nav.toNormalizedString(myPos);
+        }
+        return null;
+    }
     
     public String firstLetterUpcase(String word)
     {

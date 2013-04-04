@@ -94,9 +94,24 @@
   <!-- NEPTUNE Line Mapping =========================================== -->
   <lines>
     <Line version="$line.objectVersion" id="${line.objectIdPrefix()}:Line:${line.objectIdSuffix()}">      
-      <Name>$line.name</Name>
+      #if ( $line.name )
+      <Name>$!esc.xml($line.name)</Name>
+      #end
+      #if ( $line.publishedName )
+      <ShortName>$!esc.xml($line.publishedName)</ShortName>
+      #end
+      #if ( $line.comment )
+      <Description>$!esc.xml($line.comment)</Description>
+      #end
+      #if ( $line.transportModeName )
       <TransportMode>$line.transportModeName</TransportMode>
-      <PublicCode>$line.registrationNumber</PublicCode>
+      #end
+      #if ( $line.number )
+      <PublicCode>$!esc.xml($line.number)</PublicCode>
+      #end
+      #if ( $line.registrationNumber )
+      <PrivateCode>$!esc.xml($line.registrationNumber)</PrivateCode>
+      #end
       <routes>
         #foreach( $route in $line.routes )
         <RouteRef version="$route.objectVersion" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>

@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
+import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,9 +81,14 @@ public class StopAreaConverter extends GenericConverter
             StopArea stopArea = new StopArea();
             
             // Mandatory            
-            stopArea.setName((String)parseMandatoryElement(nav, "Name"));
             stopArea.setObjectId((String)parseMandatoryAttribute(nav, "id"));
             stopArea.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+            stopArea.setName((String)parseMandatoryElement(nav, "Name"));
+            
+            // Optionnal
+            stopArea.setRegistrationNumber((String)parseOptionnalAttribute(nav, "PrivateCode"));
+            stopArea.setNearestTopicName((String)parseOptionnalAttribute(nav, "LandMark"));
+            stopArea.setComment((String)parseOptionnalAttribute(nav, "Description"));
             
             String topographicRef = (String)parseOptionnalAttribute(nav, "ContainedInPlaceRef", "ref");
             if ( topographicRef!= null) {
@@ -98,8 +104,8 @@ public class StopAreaConverter extends GenericConverter
     }
     public void convertQuays( StopArea stopPlace) throws XPathEvalException, NavException, XPathParseException, ParseException
     {
-        AutoPilot autoPilot2 = new AutoPilot(nav);
-        autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
+        AutoPilot autoPilot2 = createAutoPilot(nav);
+        autoPilot2.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
         autoPilot2.selectXPath("//netex:SiteFrame/netex:stopPlaces/"+
                 "netex:StopPlace"+
                 "[@id='"+stopPlace.getObjectId()+"']/netex:quays/netex:Quay");
@@ -112,15 +118,31 @@ public class StopAreaConverter extends GenericConverter
             
             // Mandatory            
             stopArea.setObjectId((String)parseMandatoryAttribute(nav, "id"));
+            stopArea.setAreaType( ChouetteAreaEnum.QUAY);
+            stopArea.setParent( stopPlace);
+            
+            // Optionnal
+            stopArea.setName((String)parseOptionnalAttribute(nav, "Name"));
+            stopArea.setRegistrationNumber((String)parseOptionnalAttribute(nav, "PrivateCode"));
+            stopArea.setNearestTopicName((String)parseOptionnalAttribute(nav, "LandMark"));
+            stopArea.setComment((String)parseOptionnalAttribute(nav, "Description"));
             
             AreaCentroid centroid = new AreaCentroid();
-            centroid.setLongitude(BigDecimal.valueOf( (Double)parseMandatoryElement(nav, "Longitude", "Double")));
-            centroid.setLatitude(BigDecimal.valueOf( (Double)parseMandatoryElement(nav, "Latitude", "Double")));
+            Object longitude = parseOptionnalAttribute(nav, "Longitude", "Double");
+            if ( longitude!=null) {
+                centroid.setLongitude(BigDecimal.valueOf( (Double)longitude));
+            }
+            Object latitude = parseOptionnalAttribute(nav, "Latitude", "Double");
+            if ( latitude!=null) {
+                centroid.setLatitude(BigDecimal.valueOf( (Double)latitude));
+            }
             centroid.setLongLatType(LongLatTypeEnum.WGS84);
 
             stopArea.setAreaCentroid( centroid);
-            stopArea.setAreaType( ChouetteAreaEnum.QUAY);
-            stopArea.setParent( stopPlace);
+            
+            ProjectedPoint projectedPoint = new ProjectedPoint();
+            projectedPoint.setProjectionType( (String)parseOptionnalCAttribute(nav, "pos", "srsName"));
+            centroid.setProjectedPoint(projectedPoint);
             
             stopareas.add(stopArea);
             stopAreaByObjectId.put( stopArea.getObjectId(), stopArea);

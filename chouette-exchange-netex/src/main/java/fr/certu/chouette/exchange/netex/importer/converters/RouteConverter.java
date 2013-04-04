@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 public class RouteConverter extends GenericConverter 
 {    
     private static final Logger       logger = Logger.getLogger(RouteConverter.class);
-    private List<Route> routes = new ArrayList<Route>();    
+    private List<Route> routes = new ArrayList<Route>();
     private AutoPilot autoPilot;
     @Getter
     private Map<String,StopPoint> stopPointByObjectId;
@@ -36,8 +36,7 @@ public class RouteConverter extends GenericConverter
     {
         nav = vTDNav;
         
-        autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
+        autoPilot = createAutoPilot(nav);
         
         stopPointByObjectId = new HashMap<String, StopPoint>();
         directionByRef = new HashMap<String, PTDirectionEnum>();
@@ -45,54 +44,6 @@ public class RouteConverter extends GenericConverter
         commentByObjectId = new HashMap<String, String>();
         numberByObjectId = new HashMap<String, String>();
     }
-    
-    public void convertDirections() throws XPathEvalException, NavException, XPathParseException, ParseException
-    {
-        AutoPilot autoPilot2 = new AutoPilot(nav);
-        autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
-        autoPilot2.selectXPath("//netex:ServiceFrame/netex:directions/"+
-                "netex:Direction");
-        int result = -1;
-        
-        while( (result = autoPilot2.evalXPath()) != -1 )
-        {  
-            //List<Object> params = new ArrayList<Object>();
-            //params.add("PTDirectionEnum");
-            PTDirectionEnum direction = (PTDirectionEnum)parseOptionnalElement(nav, "Name", "PTDirectionEnum");
-            String ref = (String)parseOptionnalAttribute(nav, "id");
-            directionByRef.put(ref, direction);
-            
-            String wayback = (String)parseOptionnalElement(nav, "DirectionType");
-            waybackByRef.put(ref, (wayback=="inbound") ? "A": "R");
-        }
-    }
-    public void convertKeyValues( String routeObjectId) throws XPathEvalException, NavException, XPathParseException, ParseException
-    {
-        nav.push();
-        AutoPilot autoPilot2 = new AutoPilot(nav);
-        autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
-        autoPilot2.selectXPath("//netex:ServiceFrame/netex:routes/"+
-                "netex:Route[@id = '"+routeObjectId+"']/netex:keyList/"+
-                "netex:KeyValue");
-        int result = -1;
-        
-        while( (result = autoPilot2.evalXPath()) != -1 )
-        {  
-            List<String> keys = toStringList( parseMandatoryElements(nav, "Key"));
-            List<String> values = toStringList( parseMandatoryElements(nav, "Value"));
-            
-            for(int i=0; i<keys.size(); i++) {
-                if ( keys.get(i).equals( "Comment")) {
-                    commentByObjectId.put(routeObjectId, values.get(i));
-                } else if ( keys.get(i).equals( "Number")) {
-                    numberByObjectId.put(routeObjectId, values.get(i));
-                }
-            }
-        }
-        nav.pop();
-    }
-    
-    
     
     public List<Route> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
@@ -103,44 +54,28 @@ public class RouteConverter extends GenericConverter
         numberByObjectId.clear();
         routes.clear();
         
-        convertDirections();
-        
-        autoPilot.selectXPath("//netex:ServiceFrame/netex:routes//netex:Route");
+        autoPilot.selectXPath("//netex:ServiceFrame/netex:routes/netex:Route");
         int result = -1;
         
         while( (result = autoPilot.evalXPath()) != -1 )
         {  
             Route route = new Route();
+            
             // Mandatory            
-            route.setName( (String)parseMandatoryElement(nav, "Name") );
             route.setObjectId( (String)parseMandatoryAttribute(nav, "id") );
             
+            route.setName( (String)parseMandatoryElement(nav, "Name") );
             route.setPublishedName( (String)parseOptionnalElement(nav, "ShortName") );
             
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             route.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );                        
 
-            String directionRef = (String)parseOptionnalAttribute(nav, "DirectionRef", "ref");
-            if ( directionRef!=null && directionByRef.containsKey( directionRef)) {
-                route.setDirection( directionByRef.get( directionRef));
+            // Optionnal Direction and WayBack
+            String directionRef = (String)parseOptionnalCAttribute(nav, "DirectionRef", "ref");
+            if ( directionRef!=null ) {
+                convertDirectionProperties( route, directionRef);
             }
-            if ( directionRef!=null && waybackByRef.containsKey( directionRef)) {
-                route.setWayBack( waybackByRef.get( directionRef));
-            }
-            
-            String inverseRouteRef = (String)parseOptionnalAttribute(nav, "InverseRouteRef", "ref");
-            if ( inverseRouteRef!=null) {
-                route.setWayBackRouteId(inverseRouteRef);
-            }
-            
-            // Optionnal
-            convertKeyValues( route.getObjectId());
-            if ( commentByObjectId.containsKey( route.getObjectId())) {
-                route.setComment( commentByObjectId.get( route.getObjectId()));
-            }
-            if ( numberByObjectId.containsKey( route.getObjectId())) {
-                route.setNumber( numberByObjectId.get( route.getObjectId()));
-            }
+            route.setWayBackRouteId( (String)parseOptionnalAttribute(nav, "InverseRouteRef", "ref"));
             
             List<String> pointOnRouteIds = toStringList(parseMandatoryAttributes(nav, "PointOnRoute", "id"));
             
@@ -153,26 +88,97 @@ public class RouteConverter extends GenericConverter
                 route.addStopPoint( stopPoint);
             }
             
+            // Optionnal Comment, Number
+            convertKeyListProperties(route);
+            
             routes.add(route);
-        } 
+        }
+
+        convertStopPoints();
+        
+        return routes;
+    }
+    private void convertDirectionProperties( Route route, String directionObjectId)  throws XPathParseException, NavException, ParseException, XPathEvalException {
+        int result = -1;
         
         // lecture des PassengerStopAssignment
-        AutoPilot autoPilot2 = new AutoPilot(nav);
-        autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");   
-        autoPilot2.selectXPath("//netex:ServiceFrame/netex:stopAssignments/"+
-                "netex:PassengerStopAssignment");
+        AutoPilot autoPilot2 = createAutoPilot(nav);
+        String xPath = "//netex:ServiceFrame/netex:directions/";
+        xPath += "netex:Direction[@id='"+directionObjectId+"']";
+        autoPilot2.selectXPath(xPath);
         
+        nav.push();
         while( (result = autoPilot2.evalXPath()) != -1 )
         {  
-            String stopPointId = (String)parseOptionnalAttribute(nav, "ScheduledStopPointRef", "ref");
-            String quayId = (String)parseOptionnalAttribute(nav, "QuayRef", "ref");
+            AutoPilot autoPilot3 = createAutoPilot(nav);
+            autoPilot3.selectXPath("netex:Name");
+            String directionName = autoPilot3.evalXPathToString();
+            autoPilot3.resetXPath();
+
+            if ( directionName!=null) {
+                route.setDirection( PTDirectionEnum.fromValue( directionName));
+            }
+            
+            AutoPilot autoPilot4 = createAutoPilot(nav);
+            autoPilot4.selectXPath("netex:DirectionType");
+            String inboundVal = autoPilot4.evalXPathToString();
+            autoPilot4.resetXPath();
+            
+            route.setWayBack( (inboundVal=="inbound") ? "A": "R");
+        }
+        nav.pop();
+        autoPilot2.resetXPath();
+    }
+    private void convertKeyListProperties( Route route)  throws XPathParseException, NavException, ParseException, XPathEvalException {
+        int result = -1;
+        
+        // lecture des PassengerStopAssignment
+        AutoPilot autoPilot2 = createAutoPilot(nav);
+        String xPath = "../netex:Route[@id='"+route.getObjectId()+"']/netex:keyList";
+        autoPilot2.selectXPath(xPath);
+        
+        nav.push();
+        while( (result = autoPilot2.evalXPath()) != -1 )
+        {  
+            AutoPilot autoPilot3 = createAutoPilot(nav);
+            autoPilot3.selectXPath("netex:KeyValue/netex:Key[text()='Comment']/../netex:Value");
+            route.setComment( autoPilot3.evalXPathToString());
+            autoPilot3.resetXPath();
+
+            AutoPilot autoPilot4 = createAutoPilot(nav);
+            autoPilot4.selectXPath("netex:KeyValue/netex:Key[text()='Number']/../netex:Value");
+            route.setNumber( autoPilot4.evalXPathToString());
+            autoPilot4.resetXPath();
+        }
+        nav.pop();
+        autoPilot2.resetXPath();
+    }
+    
+    private void convertStopPoints() throws NavException, XPathParseException, XPathEvalException, ParseException {
+        int result = -1;
+        
+        // lecture des PassengerStopAssignment
+        AutoPilot autoPilot2 = createAutoPilot(nav);
+        autoPilot2.selectXPath("//netex:ServiceFrame/netex:stopAssignments/"+
+                "netex:PassengerStopAssignment");
+        nav.push();
+        while( (result = autoPilot2.evalXPath()) != -1 )
+        {  
+            AutoPilot autoPilot3 = createAutoPilot(nav);
+            autoPilot3.selectXPath("netex:ScheduledStopPointRef/@ref");
+            String stopPointId = autoPilot3.evalXPathToString();
+            autoPilot3.resetXPath();
+            
+            AutoPilot autoPilot4 = createAutoPilot(nav);
+            autoPilot4.selectXPath("netex:QuayRef/@ref");
+            String quayId = autoPilot4.evalXPathToString();
+            autoPilot4.resetXPath();
             
             StopPoint stopPoint = stopPointByObjectId.get( stopPointId);
             stopPoint.setContainedInStopAreaId( quayId);
         }
-        
-        
-        return routes;
+        nav.pop();
+        autoPilot2.resetXPath();
     }
     
     public String readStopPointObjectIdFromPointOnRouteId( String pointOnRouteId) {
@@ -182,6 +188,7 @@ public class RouteConverter extends GenericConverter
         }
         return m.group(1);
     }
+    
     public String stopPointObjectId(Route route, String pointOnRouteId) {
         return route.objectIdPrefix()+":StopPoint:"+
                 readStopPointObjectIdFromPointOnRouteId(pointOnRouteId);

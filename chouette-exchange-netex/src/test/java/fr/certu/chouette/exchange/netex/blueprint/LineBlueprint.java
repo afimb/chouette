@@ -28,6 +28,15 @@ public class LineBlueprint {
     
     @Default
     String name = "7B";   
+    
+    @Default
+    String number = "7Bis";   
+    
+    @Default
+    String publishedName = "Mairie d Issy porte d Orleans";   
+    
+    @Default
+    String comment = "Extension à partir de juin";   
 
     @Default
     int objectVersion = 1;

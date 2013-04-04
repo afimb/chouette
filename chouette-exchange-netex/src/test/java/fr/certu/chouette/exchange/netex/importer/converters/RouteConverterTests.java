@@ -40,7 +40,7 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
         routeConverter = new RouteConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one route")
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 2 routes")
     public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<Route> routes = routeConverter.convert();
         
@@ -62,7 +62,7 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
         List<Route> routes = routeConverter.convert();
         Route selectedRoute = null;
         for( Route route : routes) {
-            if ( route.getObjectId().equals("T:Route:1-1")) {
+            if ( route.getObjectId().equals( objectId)) {
                 selectedRoute = route;
                 break;
             }
