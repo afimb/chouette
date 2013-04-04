@@ -19,7 +19,9 @@ public class VehicleJourneyConverter extends GenericConverter
     private static final Logger       logger = Logger.getLogger(VehicleJourneyConverter.class);
     private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();         
     private AutoPilot autoPilot;
-    private VTDNav nav;    
+    private VTDNav nav;
+    @Getter
+    private Map<String, List<String>> timetablesByVehicleJourneyObjectId = new HashMap<String, List<String>>(); 
     
     @Getter
     private Map<String, List<VehicleJourney>> vehicleJourneysByJPObjectId = new HashMap<String, List<VehicleJourney>>();  
@@ -53,8 +55,11 @@ public class VehicleJourneyConverter extends GenericConverter
             // JourneyPattern
             vehicleJourney.setJourneyPatternId( (String)parseMandatoryAttribute(nav, "ServicePatternRef", "ref") );
             
-            // TimeTables
-            //vehicleJourney.setnull);            
+            // TimeTables   
+            List<String> timetablesObjectId =  toStringList( parseMandatoryAttributes(nav, "DayTypeRef", "ref") );
+            String vehicleJourneyObjectId = vehicleJourney.getObjectId();
+            timetablesByVehicleJourneyObjectId.put(vehicleJourneyObjectId, timetablesObjectId);
+                     
             
             // Link with journeyPattern            
             String journeyPatternObjectId = vehicleJourney.getJourneyPatternId();

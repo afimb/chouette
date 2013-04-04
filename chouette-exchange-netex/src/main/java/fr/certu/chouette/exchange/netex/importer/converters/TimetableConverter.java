@@ -18,7 +18,7 @@ public class TimetableConverter extends GenericConverter
     private static final Logger       logger = Logger.getLogger(TimetableConverter.class);
     private List<Timetable> timetables = new ArrayList<Timetable>();    
     private AutoPilot autoPilot;
-    private VTDNav nav;   
+    private VTDNav nav;        
     
     public TimetableConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {

@@ -124,6 +124,7 @@ public class GenericConverter {
     protected Object parseParentAttribute(VTDNav nav, String attribute, Object... params) throws NavException, ParseException
     {
         assert params.length <= 1;        
+        nav.push();
         
         Object type = params.length > 0 ? params[0].toString() : "String";           
         nav.toElement(VTDNav.PARENT);       
@@ -137,7 +138,9 @@ public class GenericConverter {
             throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NETEX_FILE, log); 
         }
             
-        return parseData(nav, type, position);
+        Object parentAttribute = parseData(nav, type, position);
+        nav.pop();
+        return parentAttribute;
     }           
     
     protected Object parseMandatoryAttribute(VTDNav nav, String attribute, Object... params) throws NavException, ParseException
