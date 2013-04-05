@@ -36,6 +36,10 @@ public class VehicleJourneyConverter extends GenericConverter
     
     public List<VehicleJourney> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
+        vehicleJourneys.clear();
+        timetablesByVehicleJourneyObjectId.clear();
+        vehicleJourneysByJPObjectId.clear();
+        
         int result = -1;
         autoPilot.selectXPath("//netex:vehicleJourneys//netex:ServiceJourney");
         

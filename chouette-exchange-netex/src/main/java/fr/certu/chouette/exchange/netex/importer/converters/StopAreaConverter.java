@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
 /**
  *
@@ -29,10 +30,12 @@ import java.util.Map;
 public class StopAreaConverter extends GenericConverter 
 {
     private static final Logger logger = Logger.getLogger(StopAreaConverter.class);
-    private List<StopArea> stopareas = new ArrayList<StopArea> ();    
-    private Map<String,StopArea> stopAreaByObjectId;
+    private List<StopArea> stopareas = new ArrayList<StopArea> ();        
     private AutoPilot autoPilot;
     private VTDNav nav;
+    
+    @Getter
+    private Map<String,StopArea> stopAreaByObjectId;
     
     public StopAreaConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -46,6 +49,9 @@ public class StopAreaConverter extends GenericConverter
     
     public List<StopArea> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
+        stopareas.clear();
+        stopAreaByObjectId.clear();
+        
         autoPilot.selectXPath("//netex:SiteFrame/netex:topographicPlaces/"+
                 "netex:TopographicPlace");
         int result = -1;

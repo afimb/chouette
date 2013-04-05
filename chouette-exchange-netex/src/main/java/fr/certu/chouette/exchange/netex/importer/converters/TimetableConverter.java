@@ -10,15 +10,21 @@ import fr.certu.chouette.model.neptune.Timetable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 public class TimetableConverter extends GenericConverter 
 {    
     private static final Logger       logger = Logger.getLogger(TimetableConverter.class);
-    private List<Timetable> timetables = new ArrayList<Timetable>();    
+    private List<Timetable> timetables = new ArrayList<Timetable>();        
     private AutoPilot autoPilot;
     private VTDNav nav;        
+    
+    @Getter
+    private Map<String, Timetable> timetablesByObjectId = new HashMap<String, Timetable>();
     
     public TimetableConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -30,6 +36,9 @@ public class TimetableConverter extends GenericConverter
     
     public List<Timetable> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
+        timetables.clear();
+        timetablesByObjectId.clear();
+        
         int result = -1;
         autoPilot.selectXPath("//netex:ServiceCalendarFrame");        
         
@@ -69,6 +78,7 @@ public class TimetableConverter extends GenericConverter
             }           
             nav.pop();
             
+            timetablesByObjectId.put(timetable.getObjectId(), timetable);
             timetables.add(timetable);
         } 
         
