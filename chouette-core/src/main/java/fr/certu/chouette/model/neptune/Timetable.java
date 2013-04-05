@@ -111,14 +111,22 @@ public class Timetable extends NeptuneIdentifiedObject
 	@Getter
 	@Setter
 	private List<VehicleJourney> vehicleJourneys;
-	
+
+	/**
+	 * Start of period = minimum of timetables periods and date; may be null <br/>
+	 * <i>readable only; populated by complete()</i>
+	 */
 	@Getter
-        @Setter
-        private Date startOfPeriod;
-        
+	@Setter
+	private Date startOfPeriod;
+
+	/**
+	 * End of period = maximum of timetables periods and date; may be null <br/>
+	 * <i>readable only; populated by complete()</i>
+	 */
 	@Getter 
-        @Setter
-        private Date endOfPeriod;
+	@Setter
+	private Date endOfPeriod;
 
 
 	/**
@@ -471,11 +479,11 @@ public class Timetable extends NeptuneIdentifiedObject
 	@Override
 	public void complete()
 	{
-            if (isCompleted())
-                return;
+		if (isCompleted())
+			return;
 		// TODO Auto-generated method stub
 		super.complete();
-		
+
 		for (Period period : periods)
 		{
 			if (startOfPeriod == null || startOfPeriod.after(period.getStartDate()))
@@ -504,12 +512,12 @@ public class Timetable extends NeptuneIdentifiedObject
 				endOfPeriod.setTime(c.getTimeInMillis());
 			}
 		}
-        for (Date date : calendarDays) 
-        {
+		for (Date date : calendarDays) 
+		{
 			if (startOfPeriod == null || date.before(startOfPeriod)) startOfPeriod = date;
 			if (endOfPeriod == null || date.after(endOfPeriod)) endOfPeriod = date;
 		}
-		
+
 	}
 
 
