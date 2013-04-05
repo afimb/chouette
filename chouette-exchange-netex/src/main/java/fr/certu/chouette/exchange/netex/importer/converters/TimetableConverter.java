@@ -50,9 +50,7 @@ public class TimetableConverter extends GenericConverter
             timetable.setObjectId( (String)parseMandatoryAttribute(nav, "DayType", "id"));
             
             // Optionnal            
-            timetable.setName( (String)parseOptionnalElement(nav, "Name") );
-            timetable.setStartOfPeriod( (java.sql.Date)parseOptionnalSubElement(nav, "ServiceCalendar", "FromDate", "ShortDate") );
-            timetable.setEndOfPeriod( (java.sql.Date)parseOptionnalSubElement(nav, "ServiceCalendar", "ToDate", "ShortDate") );
+            timetable.setName( (String)parseOptionnalElement(nav, "Name") );            
             Object objectVersion =  parseOptionnalAttribute(nav, "DayType", "version", "Integer");
             timetable.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
             timetable.setName( (String)parseOptionnalSubElement(nav, "DayType", "Name") );
