@@ -86,7 +86,7 @@
         #end
       </pointsInSequence>
       #if ( $route.wayBackRouteId )
-      <InverseRouteRef version="any" ref="${route.wayBackRouteId()}"/>
+      <InverseRouteRef version="any" ref="$route.wayBackRouteId"/>
       #end
     </Route>
     #end
@@ -140,7 +140,9 @@
     #foreach( $route in $line.routes )
       #foreach( $stopPoint in $route.stopPoints )
     <ScheduledStopPoint version="$stopPoint.objectVersion" id="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}">
-      <Name>$stopPoint.name</Name>
+      #if ( $stopPoint.name )
+      <Name>$!esc.xml($stopPoint.name)</Name>
+      #end
       <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
       #end
@@ -151,7 +153,9 @@
     #foreach( $route in $line.routes )
       #foreach( $journeyPattern in $route.journeyPatterns )      
     <ServicePattern version="$journeyPattern.objectVersion" id="${journeyPattern.objectIdPrefix()}:ServicePattern:${journeyPattern.objectIdSuffix()}">
-      <Name>$journeyPattern.name</Name>
+      #if ( $journeyPattern.name )
+      <Name>$!esc.xml($journeyPattern.name)</Name>
+      #end
       <!-- NEPTUNE [mapping:variable] : ServicePattern->RouteRef mapped to NEPTUNE JourneyPattern->routeId -->
       <RouteRef version="1" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>
       <pointsInSequence>
@@ -172,12 +176,6 @@
     #foreach( $key in $tariffStopPoints.keySet() ) 
     <TariffZone version="any" id="${network.objectIdPrefix()}:TariffZone:$key">
       <Name>$key</Name>
-      <members>
-        #foreach($stopPoint in $tariffStopPoints.get($key) )         
-        #set($routePointId = ${stopPoint.getRoute().objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} ) 
-        <RoutePointRef version="1" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
-        #end
-      </members>
     </TariffZone>
     #end 
   </tariffZones>
