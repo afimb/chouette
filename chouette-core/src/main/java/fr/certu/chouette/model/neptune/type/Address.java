@@ -1,6 +1,8 @@
 package fr.certu.chouette.model.neptune.type;
 
+import fr.certu.chouette.model.neptune.StopArea;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -9,11 +11,10 @@ import lombok.Setter;
  * @author michel
  *
  */
+@NoArgsConstructor
 public class Address 
 {
 	// constant for persistence fields
-	public static final String COUNTRY_CODE="countryCode"; 
-	public static final String STREET_NAME="streetName"; 
 
 	/**
 	 * address street name 
@@ -24,6 +25,17 @@ public class Address
 	 */
 	@Getter @Setter private String countryCode;
 	
+	public Address(StopArea area) 
+	{
+		this.streetName = area.getStreetName();
+		this.countryCode = area.getCountryCode();
+	}
+
+	public void populateStoparea(StopArea area)
+	{
+		area.setStreetName(streetName);
+		area.setCountryCode(countryCode);
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

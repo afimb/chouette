@@ -144,12 +144,13 @@ public class StopAreaConverter extends GenericConverter
             }
             centroid.setLongLatType(LongLatTypeEnum.WGS84);
 
-            stopArea.setAreaCentroid( centroid);
             
             ProjectedPoint projectedPoint = new ProjectedPoint();
             projectedPoint.setProjectionType( (String)parseOptionnalCAttribute(nav, "pos", "srsName"));
             centroid.setProjectedPoint(projectedPoint);
             
+            stopArea.setAreaCentroid( centroid);
+
             stopareas.add(stopArea);
             stopAreaByObjectId.put( stopArea.getObjectId(), stopArea);
         } 
