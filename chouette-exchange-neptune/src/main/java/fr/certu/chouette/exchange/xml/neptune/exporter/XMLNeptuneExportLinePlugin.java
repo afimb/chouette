@@ -74,6 +74,7 @@ import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  *  Export lines in Neptune XML format
@@ -250,19 +251,19 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       if (fileExtension.equals("xml"))
       {
          Line line = beans.get(0);
-         ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate);
+         ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
+         report.addItem(item);
+         ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate,item);
          if (rootObject != null)
          {    
             logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
             neptuneFileWriter.write(rootObject, outputFile);
-            ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
-            report.addItem(item);
          }
          else
          {
             logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-            ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR , line.getName(), line.getObjectId());
-            report.addItem(item);
+            ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR );
+            item.addItem(errorItem);
          }
       }
       else
@@ -278,8 +279,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             {
                Line line = iterator.next();
                iterator.remove();
+               ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
+               report.addItem(item);
 
-               ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate);
+               ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate,item);
                if (rootObject != null)
                {    
                   logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
@@ -297,14 +300,12 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
                   // Complete the entry
                   out.closeEntry();
-                  ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
-                  report.addItem(item);
                }
                else
                {
                   logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-                  ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING , line.getName(), line.getObjectId());
-                  report.addItem(item);
+                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING );
+                  item.addItem(errorItem);
                }
                System.gc();
 
@@ -327,9 +328,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     * @param line line to export
     * @param startDate optional calendar start filter
     * @param endDate optional calendar end filter
+    * @param report 
     * @return chouetteLine or null if line has no valid vehicleJourneys
     */
-   private ChouettePTNetworkTypeType exportLine(Line line, Date startDate, Date endDate)
+   private ChouettePTNetworkTypeType exportLine(Line line, Date startDate, Date endDate, ReportItem report)
    {
       ChouettePTNetwork rootObject = new ChouettePTNetwork();
 
