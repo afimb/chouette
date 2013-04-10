@@ -20,6 +20,7 @@ public class ExchangeReportItem extends ReportItem
 {
 	public enum KEY {
 		ZIP_FILE,
+		ZIP_ERROR,
 		FILE,
 		FILE_ERROR,
 		FILE_IGNORED,
@@ -39,7 +40,11 @@ public class ExchangeReportItem extends ReportItem
 		EMPTY_TAG,
 		BAD_REFERENCE,
 		EXPORTED_LINE, 
-		EMPTY_LINE
+		EMPTY_LINE,
+		EMPTY_ROUTE,
+		EMPTY_JOURNEY_PATTERN,
+		EMPTY_VEHICLE_JOURNEY,
+		EMPTY_TIMETABLE
 	} ;
 
 	

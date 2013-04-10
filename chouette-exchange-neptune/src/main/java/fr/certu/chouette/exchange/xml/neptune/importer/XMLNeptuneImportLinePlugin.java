@@ -280,7 +280,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_fatal", Report.STATE.FATAL, filePath);
 			report1_1_1.addItem(detailReportItem);
 			// report for save
-			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
+			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
             report.addItem(fileErrorItem);
 			// log
 			logger.error("zip import failed (cannot open zip)" + e.getLocalizedMessage());
@@ -602,7 +602,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		report.addItem(item);
 		
 		// process Line
-		ModelAssembler modelAssembler = new ModelAssembler();
+		ModelAssembler modelAssembler = new ModelAssembler(item);
 
 		Line line = converter.extractLine(rootObject, item);
 		// should be made in converter.extractLine

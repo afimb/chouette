@@ -3,6 +3,8 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.ChouetteRoute> {
@@ -21,7 +23,8 @@ public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.
 			try {
 				route.setDirection(PTDirectionEnum.fromValue(xmlRoute.getDirection().value()));
 			} catch (IllegalArgumentException e) {
-				// TODO: traiter le cas de non correspondance
+				// TODO: traiter le cas de non correspondance 
+				
 			}
 		}
 		
@@ -29,8 +32,10 @@ public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.
 		String[] castorJourneyPatternIds = xmlRoute.getJourneyPatternId();
 		for(String castorJourneyPatternId : castorJourneyPatternIds){
 			String journeyPatternId = getNonEmptyTrimedString(castorJourneyPatternId);
-			if(journeyPatternId == null){
-				//TODO : tracer
+			if(journeyPatternId == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_ROUTE,Report.STATE.WARNING,route.getObjectId());
+				report.addItem(item);
 			}
 			else{
 				route.addJourneyPatternId(journeyPatternId);
@@ -44,8 +49,10 @@ public class RouteProducer extends AbstractModelProducer<Route, chouette.schema.
 		String[] castorPTLinkIds = xmlRoute.getPtLinkId();
 		for(String castorPTLinkId : castorPTLinkIds){
 			String ptLinkId = getNonEmptyTrimedString(castorPTLinkId);
-			if(ptLinkId == null){
-				//TODO : tracer
+			if(ptLinkId == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_ROUTE,Report.STATE.WARNING,route.getObjectId());
+				report.addItem(item);
 			}
 			else{
 				route.addPTLinkId(ptLinkId);

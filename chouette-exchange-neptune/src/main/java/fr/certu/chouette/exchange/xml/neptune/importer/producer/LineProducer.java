@@ -72,6 +72,11 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 				line.addRouteId(realRouteId);
 			}
 		}
+		if (line.getRouteIds() == null )
+		{
+			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getObjectId());
+			report.addItem(item);
+		}
 
 		// Registration optional
 		line.setRegistrationNumber(getRegistrationNumber(xmlLine.getRegistration(),report));
