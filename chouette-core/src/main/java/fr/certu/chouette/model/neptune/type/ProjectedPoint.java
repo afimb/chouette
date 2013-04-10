@@ -3,7 +3,10 @@ package fr.certu.chouette.model.neptune.type;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import fr.certu.chouette.model.neptune.StopArea;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,14 +15,12 @@ import lombok.Setter;
  * @author michel
  *
  */
+@NoArgsConstructor
 public class ProjectedPoint implements Serializable
 {
 	private static final long serialVersionUID = -2981993156157564399L;
 
 	// constant for persistence fields
-	public static final String X="x"; 
-	public static final String Y="y"; 
-	public static final String PROJECTION_TYPE="projectionType"; 
 
 	/**
 	 * x coordinate
@@ -33,6 +34,21 @@ public class ProjectedPoint implements Serializable
 	 * projection system name (f.e. : epgs:27578)
 	 */
 	@Getter @Setter private String projectionType;
+	
+	public ProjectedPoint(StopArea area) 
+	{
+		x = area.getX();
+		y = area.getY();
+		projectionType = area.getProjectionType();
+				
+	}
+	
+	public void populateStopArea(StopArea area)
+	{
+		area.setX(x);
+		area.setY(y);
+		area.setProjectionType(projectionType);
+	}
 	
 	@Override
 	public String toString() 

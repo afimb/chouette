@@ -41,7 +41,10 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourney;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  * Assemble every extracted object to object referring it with its objectId
@@ -229,6 +232,13 @@ public class ModelAssembler
 	 */
 	private Map<String, TimeSlot>                                                                         timeSlotDictionary        = new HashMap<String, TimeSlot>();
 
+	private ReportItem report;
+
+	public ModelAssembler(ReportItem report)
+	{
+		this.report = report;
+	}
+
 	/**
 	 * connect all objects
 	 */
@@ -371,6 +381,8 @@ public class ModelAssembler
 			if (restriction.getLineId() == null || !restriction.getLineId().equals(line.getObjectId()))
 			{
 				logger.warn("ITL with lineId = " + restriction.getLineId() + ": rejected");
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,restriction.getObjectId(),restriction.getLineId());
+				report.addItem(item);
 			}
 			for (String areaId : restriction.getRoutingConstraintIds())
 			{
@@ -384,6 +396,8 @@ public class ModelAssembler
 				else
 				{
 					logger.warn("ITL with stopAreaId = " + areaId + ": rejected");
+					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,restriction.getObjectId(),areaId);
+					report.addItem(item);
 				}
 			}
 		}
@@ -494,8 +508,10 @@ public class ModelAssembler
 			journeyPattern.setStopPoints(getObjectsFromIds(journeyPattern.getStopPointIds(), StopPoint.class));
 			if (journeyPattern.getStopPoints() == null)
 			{
-               logger.error("journeyPattern has no stoppoints , rejected "+journeyPattern.getObjectId());
-               continue;
+				logger.error("journeyPattern has no stoppoints , rejected "+journeyPattern.getObjectId());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_JOURNEY_PATTERN,Report.STATE.WARNING,journeyPattern.getObjectId());
+				report.addItem(item);
+				continue;
 			}
 			for (StopPoint point : journeyPattern.getStopPoints())
 			{
@@ -513,7 +529,14 @@ public class ModelAssembler
 			journeyPattern.setRoute(route);
 			// Neptune norm said Route must have JourneyPatternId but XSD accepts if missing
 			// in this case, let add journeyPattern here
-			if (route != null) route.addJourneyPattern(journeyPattern);
+			if (route != null) 
+				route.addJourneyPattern(journeyPattern);
+			else
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,journeyPattern.getObjectId(),journeyPattern.getRouteId());
+				report.addItem(item);
+			}
+
 		}
 	}
 
@@ -541,11 +564,28 @@ public class ModelAssembler
 			JourneyPattern journeyPattern = getObjectFromId(vehicleJourney.getJourneyPatternId(), JourneyPattern.class);
 			vehicleJourney.setJourneyPattern(journeyPattern);
 			if (journeyPattern != null)
+			{
 				journeyPattern.addVehicleJourney(vehicleJourney);
+			}
+			else
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,vehicleJourney.getObjectId(),vehicleJourney.getJourneyPatternId());
+				report.addItem(item);
+			}
 			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
+			if (vehicleJourney.getRoute() == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
+				report.addItem(item);
+			}
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops())
 			{
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
+				if (vehicleJourneyAtStop.getStopPoint() == null)
+				{
+					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,vehicleJourney.getObjectId(),vehicleJourneyAtStop.getStopPointId());
+					report.addItem(item);
+				}
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			}
 			vehicleJourney.setTimeSlot(getObjectFromId(vehicleJourney.getTimeSlotId(), TimeSlot.class));
@@ -561,6 +601,11 @@ public class ModelAssembler
 		for (StopPoint stopPoint : stopPoints)
 		{
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
+			if (stopPoint.getContainedInStopArea() == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,stopPoint.getObjectId(),stopPoint.getContainedInStopAreaId());
+				report.addItem(item);
+			}
 			// stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(),
 			// Line.class));
 			stopPoint.setLine(line);
@@ -601,7 +646,7 @@ public class ModelAssembler
 				}
 				else
 				{
-				    stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
+					stopArea.setContainedStopAreas(getObjectsFromIds(stopArea.getContainedStopIds(), StopArea.class));
 					stopArea.setContainedStopPoints(null);
 				}
 				stopArea.setRoutingConstraintAreas(null);

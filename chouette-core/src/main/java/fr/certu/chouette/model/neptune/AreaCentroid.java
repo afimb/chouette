@@ -2,10 +2,13 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
+import javax.crypto.AEADBadTagException;
+
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -15,16 +18,11 @@ import lombok.Setter;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@NoArgsConstructor
 public class AreaCentroid extends NeptuneIdentifiedObject 
 {
 	private static final long serialVersionUID = -5908896146442329392L;
 	
-	// constant for persistence fields
-	public static final String LONGITUDE ="longitude"; 
-	public static final String LATITUDE ="latitude"; 
-	public static final String LONGLAT_TYPE="longLatType"; 
-	public static final String PROJECTED_POINT="projectedPoint"; 
-	public static final String ADDRESS="address"; 
 	/**
 	 * postal Address 
 	 * <br/><i>readable/writable</i>
@@ -68,6 +66,17 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter private StopArea containedInStopArea;
 	
+	public AreaCentroid(StopArea area)
+	{
+		this.containedInStopArea = area;
+		this.address = new Address(area);
+		this.longLatType = area.getLongLatType();
+		this.latitude = area.getLatitude();
+		this.longitude = area.getLongitude();
+		if (area.getProjectionType() != null)
+		   this.projectedPoint = new ProjectedPoint(area);
+	}
+	
 	@Override
 	public String toString(String indent,int level)
 	{
@@ -103,6 +112,17 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 			if (ids.length == 3)
 		       setObjectId(ids[0]+":"+AREACENTROID_KEY+":"+ids[2]);
 		}
+	}
+	
+	public void populateStopArea(StopArea area) 
+	{
+		if (address != null) 
+			address.populateStoparea(area);
+		area.setLongLatType(longLatType);
+		area.setLatitude(latitude);
+		area.setLongitude(longitude);
+		if (projectedPoint != null)
+		   projectedPoint.populateStopArea(area);
 	}
 	
 }

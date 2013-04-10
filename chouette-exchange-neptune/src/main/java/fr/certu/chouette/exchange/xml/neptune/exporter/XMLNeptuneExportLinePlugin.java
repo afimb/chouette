@@ -44,8 +44,6 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.StopPointProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimeSlotProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
-import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReport;
-import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;
@@ -70,10 +68,13 @@ import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  *  Export lines in Neptune XML format
@@ -169,7 +170,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
    public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder reportContainer)
    throws ChouetteException
    {
-      NeptuneReport report = new NeptuneReport(NeptuneReport.KEY.EXPORT);
+      ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.EXPORT,description.getName());
       report.setStatus(Report.STATE.OK);
       reportContainer.setReport(report);
 
@@ -250,19 +251,19 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       if (fileExtension.equals("xml"))
       {
          Line line = beans.get(0);
-         ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate);
+         ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
+         report.addItem(item);
+         ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate,item);
          if (rootObject != null)
          {    
             logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
             neptuneFileWriter.write(rootObject, outputFile);
-            NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
-            report.addItem(item);
          }
          else
          {
             logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-            NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR , line.getName(), line.getObjectId());
-            report.addItem(item);
+            ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR );
+            item.addItem(errorItem);
          }
       }
       else
@@ -278,8 +279,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             {
                Line line = iterator.next();
                iterator.remove();
+               ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
+               report.addItem(item);
 
-               ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate);
+               ChouettePTNetworkTypeType rootObject = exportLine(line,startDate,endDate,item);
                if (rootObject != null)
                {    
                   logger.info("exporting "+line.getName()+" ("+line.getObjectId()+")");
@@ -297,14 +300,12 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
                   // Complete the entry
                   out.closeEntry();
-                  NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EXPORTED_LINE,Report.STATE.OK , line.getName(), line.getObjectId());
-                  report.addItem(item);
                }
                else
                {
                   logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-                  NeptuneReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING , line.getName(), line.getObjectId());
-                  report.addItem(item);
+                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING );
+                  item.addItem(errorItem);
                }
                System.gc();
 
@@ -327,9 +328,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     * @param line line to export
     * @param startDate optional calendar start filter
     * @param endDate optional calendar end filter
+    * @param report 
     * @return chouetteLine or null if line has no valid vehicleJourneys
     */
-   private ChouettePTNetworkTypeType exportLine(Line line, Date startDate, Date endDate)
+   private ChouettePTNetworkTypeType exportLine(Line line, Date startDate, Date endDate, ReportItem report)
    {
       ChouettePTNetwork rootObject = new ChouettePTNetwork();
 

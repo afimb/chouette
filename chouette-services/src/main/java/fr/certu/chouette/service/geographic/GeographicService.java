@@ -26,7 +26,6 @@ import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
  * Some tools for geographic manipulations
@@ -237,10 +236,10 @@ public class GeographicService implements IGeographicService
 	public void convertToWGS84() 
 	{
 		// build filter on projected point x and y not nulls and lattitude or longitude nulls
-		Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
-		Filter lonFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE);
-		Filter xFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.X));
-		Filter yFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.Y));
+		Filter latFilter = Filter.getNewIsNullFilter(StopArea.LATITUDE);
+		Filter lonFilter = Filter.getNewIsNullFilter(StopArea.LONGITUDE);
+		Filter xFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.X));
+		Filter yFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.Y));
 		Filter coordFilter = Filter.getNewAndFilter(xFilter,yFilter,Filter.getNewOrFilter(latFilter,lonFilter));
 		List<StopArea> areas;
 		List<StopArea> toBeSaved = new ArrayList<StopArea>();
@@ -280,10 +279,10 @@ public class GeographicService implements IGeographicService
 	public void convertToLambert2e() 
 	{
 		// build filter on projected point x or y nulls and lattitude and longitude not nulls
-		Filter xFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.X);
-		Filter yFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.PROJECTED_POINT+"."+ProjectedPoint.Y);
-		Filter latFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE));
-		Filter lonFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE));
+		Filter xFilter = Filter.getNewIsNullFilter(StopArea.X);
+		Filter yFilter = Filter.getNewIsNullFilter(StopArea.Y);
+		Filter latFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.LATITUDE));
+		Filter lonFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.LONGITUDE));
 		Filter coordFilter = Filter.getNewAndFilter(latFilter,lonFilter,Filter.getNewOrFilter(xFilter,yFilter));
 		List<StopArea> areas;
 		List<StopArea> toBeSaved = new ArrayList<StopArea>();
@@ -323,22 +322,20 @@ public class GeographicService implements IGeographicService
 	public boolean convertToWGS84(StopArea area)
 	{
 		if (sourceCRS == null ) return false;
-		AreaCentroid centroid = area.getAreaCentroid();
-		if (centroid == null) return false;
-		if (centroid.getProjectedPoint() == null) return false;
-      if (centroid.getProjectedPoint().getX() == null) return false;
-      if (centroid.getProjectedPoint().getY() == null) return false;
+		if (area.getProjectionType() == null) return false;
+      if (area.getX() == null) return false;
+      if (area.getY() == null) return false;
 
-		Point point = factoryLambert2e.createPoint(new Coordinate(centroid.getProjectedPoint().getX().doubleValue(),
-				centroid.getProjectedPoint().getY().doubleValue()));
+		Point point = factoryLambert2e.createPoint(new Coordinate(area.getX().doubleValue(),
+				area.getY().doubleValue()));
 
 		try 
 		{
 			Geometry wgs84 = JTS.transform( point, transformWGS84);
 			Coordinate coord = wgs84.getCoordinate();
-			centroid.setLongitude(BigDecimal.valueOf(coord.y));
-			centroid.setLatitude(BigDecimal.valueOf(coord.x));
-			centroid.setLongLatType(LongLatTypeEnum.WGS84);
+			area.setLongitude(BigDecimal.valueOf(coord.y));
+			area.setLatitude(BigDecimal.valueOf(coord.x));
+			area.setLongLatType(LongLatTypeEnum.WGS84);
 
 		} 
 		catch (Exception e) 
@@ -355,20 +352,16 @@ public class GeographicService implements IGeographicService
 	public boolean convertToLambert2e(StopArea area)
 	{
 		if (targetCRS == null ) return false;
-		AreaCentroid centroid = area.getAreaCentroid();
-		if (centroid == null) return false;
-		Point point = factoryWGS84.createPoint(new Coordinate(centroid.getLatitude().doubleValue(),
-				centroid.getLongitude().doubleValue()));
+		Point point = factoryWGS84.createPoint(new Coordinate(area.getLatitude().doubleValue(),
+				area.getLongitude().doubleValue()));
 
 		try 
 		{
 			Geometry lambert2 = JTS.transform( point, transformLambert2e);
 			Coordinate coord = lambert2.getCoordinate();
-			ProjectedPoint p = new ProjectedPoint();
-			centroid.setProjectedPoint(p);
-			p.setX(BigDecimal.valueOf(coord.x));
-			p.setY(BigDecimal.valueOf(coord.y));
-			p.setProjectionType("epsg:"+epsgLambert);
+			area.setX(BigDecimal.valueOf(coord.x));
+			area.setY(BigDecimal.valueOf(coord.y));
+			area.setProjectionType("epsg:"+epsgLambert);
 
 		} 
 		catch (Exception e) 
