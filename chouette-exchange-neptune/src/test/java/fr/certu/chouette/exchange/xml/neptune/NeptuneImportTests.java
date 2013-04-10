@@ -189,7 +189,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 
       Assert.assertEquals(description.getName(), "NEPTUNE");
       Assert.assertNotNull(params,"params should not be null");
-      Assert.assertEquals(params.size(), 4," params size must equal 4");
+      Assert.assertEquals(params.size(), 5," params size must equal 5");
       logger.info("Description \n "+description.toString());
       Reporter.log("Description \n "+description.toString());
 

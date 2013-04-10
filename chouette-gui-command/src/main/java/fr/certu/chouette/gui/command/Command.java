@@ -63,6 +63,7 @@ import fr.certu.chouette.plugin.exchange.ListParameterValue;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
@@ -546,7 +547,7 @@ public class Command
 
 		List<Report> reports = new ArrayList<Report>();
 		// GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
-
+		
 		String[] ids = new String[0];
 		if (parameters.containsKey("id"))
 			ids = getSimpleString(parameters,"id").split(",");
@@ -881,7 +882,10 @@ public class Command
 	 */
 	private int executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	{
+		parameters.put("reportforsave", Arrays.asList(new String[] {"true"} ));
+		
 		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
+		Report importReport = null;
 
 		List<Report> reports = new ArrayList<Report>();
 		// check if import exists and accept unzip before call
@@ -935,7 +939,6 @@ public class Command
 				File temp = null;
 				File tempRep = new File(FileUtils.getTempDirectory(),"massImport"+importId);
 				if (!tempRep.exists()) tempRep.mkdirs();
-				Report importReport = null;
 				try
 				{
 
@@ -1019,7 +1022,7 @@ public class Command
 								for (NeptuneIdentifiedObject bean : beans)
 								{
 									GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
-									saveReport.addItem(item);
+									importReport.addItem(item);
 									beanCount++;
 								}
 							}
@@ -1030,7 +1033,7 @@ public class Command
 								{
 									GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),filter_chars
 											(e.getMessage()));
-									saveReport.addItem(item);
+									importReport.addItem(item);
 								}
 							}
 						}
@@ -1047,7 +1050,7 @@ public class Command
 				}
 				catch (IOException e)
 				{
-					reports.add(saveReport);
+					//reports.add(saveReport);
 					System.out.println("import failed "+e.getMessage());
 					logger.error("import failed "+e.getMessage(),e);
 					saveImportReports(importId,format,reports);
@@ -1081,7 +1084,10 @@ public class Command
 				ReportHolder holder = new ReportHolder();
 				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
 				if (holder.getReport() != null)
+				{
+					importReport = holder.getReport();
 					reports.add(holder.getReport());
+				}
 
 				for (NeptuneIdentifiedObject bean : beans) 
 				{
@@ -1096,13 +1102,13 @@ public class Command
 					{
 						manager.saveAll(null, oneBean, true, true);
 						GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
-						saveReport.addItem(item);
+						importReport.addItem(item);
 						beanCount++;
 					}
 					catch (Exception e) 
 					{
 						GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
-						saveReport.addItem(item);
+						importReport.addItem(item);
 					}
 				}
 			}
@@ -1498,6 +1504,7 @@ public class Command
 						 throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
 					 }
 					 values.add(val);
+					 logger.debug("prepare list parameter "+name);
 				 }
 				 else
 				 {
@@ -1518,6 +1525,8 @@ public class Command
 					 case DATE : val.setDateValue(toCalendar(simpleval));break;
 					 }
 					 values.add(val);
+					 logger.debug("prepare simple parameter "+name);
+
 				 }
 			 }
 		 }
@@ -1677,7 +1686,7 @@ public class Command
 	 {
 		 for (Report report : reports)
 		 {
-			 if (report instanceof GuiReport) 
+			 if (report instanceof GuiReport || report instanceof ExchangeReport) 
 				 position = saveImportReport(importId,"", report,position);
 			 else
 				 position = saveImportReport(importId,format+"_", report,position);
