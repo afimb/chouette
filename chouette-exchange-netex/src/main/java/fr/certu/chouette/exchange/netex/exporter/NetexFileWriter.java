@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.exchange.netex.EnumTranslator;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class NetexFileWriter {
 
     private void prepareModel(Line line)
     {
+        model.put("enumTranslator", new EnumTranslator());
         model.put("line", line);
         model.put("network", line.getPtNetwork());
         model.put("company", line.getCompany());
@@ -47,8 +49,10 @@ public class NetexFileWriter {
         model.put("tariffStopPoints", tariffStopPoints(line));        
         
         // For SiteFrame need to have stop areas type StopPlace and CommercialStopPoint only
-        model.put("stopPlaces", line.getStopPlaces());        
-        model.put("commercialStopPoints", line.getCommercialStopPoints()); 
+        List<StopArea> stopAreaWithoutQuays = new ArrayList<StopArea>();
+        stopAreaWithoutQuays.addAll( line.getStopPlaces());
+        stopAreaWithoutQuays.addAll( line.getCommercialStopPoints());
+        model.put("stopPlaces", stopAreaWithoutQuays);
         
         // For TimetableFrame need to have vehicle journeys
         model.put("vehicleJourneys", line.getVehicleJourneys()); 

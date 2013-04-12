@@ -46,7 +46,8 @@ public class PTNetworkConverter extends GenericConverter
             network.setVersionDate( (Date)parseOptionnalAttribute(nav, "changed", "Date") );                        
         }
         pilot.resetXPath();
-        //convertResourceFrame();
+        
+        convertResourceFrame();
         
         returnToRootElement(nav);
         return network;
@@ -70,11 +71,12 @@ public class PTNetworkConverter extends GenericConverter
             if ( sourceName!=null) {
                 network.setSourceName(sourceName);
             }
-            PTNetworkSourceTypeEnum sourceType = (PTNetworkSourceTypeEnum)parseOptionnalElement(nav, "Description", "PTNetworkSourceTypeEnum");
-            if ( sourceType!=null) {
-                network.setSourceType(sourceType);
-            }
-
+            PTNetworkSourceTypeEnum sourceType = null;
+            try { 
+                sourceType = (PTNetworkSourceTypeEnum)parseOptionnalElement(nav, 
+                        "Description", "PTNetworkSourceTypeEnum");
+            } catch (Exception e){};
+            network.setSourceType(sourceType);
         }
         autoPilot2.resetXPath();
         nav.pop();
