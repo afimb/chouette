@@ -6,6 +6,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
@@ -28,6 +29,7 @@ public class NeptuneConverter {
     private PTNetworkConverter networkConverter;
     private CompanyConverter companyConverter;
     private LineConverter lineConverter;
+    private GroupOfLinesConverter groupOfLinesConverter;
     private RouteConverter routeConverter;
     private JourneyPatternConverter journeyPatternConverter;
     private VehicleJourneyConverter vehicleJourneyConverter;
@@ -41,6 +43,7 @@ public class NeptuneConverter {
         networkConverter = new PTNetworkConverter(vTDNav);
         companyConverter = new CompanyConverter(vTDNav);
         lineConverter = new LineConverter(vTDNav);
+        groupOfLinesConverter = new GroupOfLinesConverter(vTDNav);
         routeConverter = new RouteConverter(vTDNav);
         journeyPatternConverter = new JourneyPatternConverter(vTDNav);
         vehicleJourneyConverter = new VehicleJourneyConverter(vTDNav);
@@ -52,8 +55,9 @@ public class NeptuneConverter {
     public Line convert() throws XPathParseException, XPathEvalException, NavException, ParseException
     {
         PTNetwork network = networkConverter.convert();        
-        Company company = companyConverter.convert();                
-        Line line = lineConverter.convert();       
+        Company company = companyConverter.convert();        
+        Line line = lineConverter.convert();
+        List<GroupOfLine> groupOfLines = groupOfLinesConverter.convert();
         List<Route> routes = routeConverter.convert();
         List<JourneyPattern> journeyPatterns = journeyPatternConverter.convert();
         List<VehicleJourney> vehicleJourneys = vehicleJourneyConverter.convert();
@@ -66,7 +70,10 @@ public class NeptuneConverter {
         
         // Link line with network and company
         line.setPtNetwork(network);                
-        line.setCompany(company);                
+        line.setCompany(company);             
+        for (GroupOfLine groupOfLine : groupOfLines) {
+            line.addGroupOfLine(groupOfLine);
+        }
         
         // Link route with journey patterns        
         for (Route route : routes) {

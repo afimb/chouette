@@ -7,6 +7,7 @@ package fr.certu.chouette.exchange.netex;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import com.tobedevoured.modelcitizen.RegisterBlueprintException;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -34,6 +35,7 @@ import lombok.Setter;
  * @author marc
  */
 public class ComplexModelFactory {
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ComplexModelFactory.class);
     @Getter @Setter private ModelFactory modelFactory;
     
     @Getter @Setter private List<StopArea> quays;
@@ -58,6 +60,8 @@ public class ComplexModelFactory {
         
         timetables = new ArrayList<Timetable>( timetablesCount);
         createTimetables();
+        
+        createConnectionLinks();
     }
 
     private void createStopAreas() throws RuntimeException {
@@ -84,6 +88,28 @@ public class ComplexModelFactory {
                 stopAreaCommercial.addContainedStopArea(stopArea);
                 
                 quays.add(stopArea);
+            }
+        } catch (CreateModelException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+    
+    private void createConnectionLinks() throws RuntimeException {
+        try {
+            if (quays.size() > 2)
+            {
+                StopArea startOfLink = quays.get(0);
+                StopArea endOfLink = quays.get(1);
+
+                ConnectionLink connectionLink = modelFactory.createModel(ConnectionLink.class);
+                connectionLink.setStartOfLink(startOfLink);
+                connectionLink.setStartOfLinkId(startOfLink.getObjectId());
+                connectionLink.setEndOfLink(endOfLink);
+                connectionLink.setEndOfLinkId(endOfLink.getObjectId());
+                
+
+                startOfLink.addConnectionLink(connectionLink);
+                endOfLink.addConnectionLink(connectionLink);
             }
         } catch (CreateModelException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
@@ -279,6 +305,6 @@ public class ComplexModelFactory {
         }
         assert vehicle.getJourneyPattern()!=null;
         return vehicle;
-    }
+    }  
     
 }

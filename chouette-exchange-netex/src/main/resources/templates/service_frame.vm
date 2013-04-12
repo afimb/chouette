@@ -171,7 +171,7 @@
   <tariffZones>
     #foreach( $key in $tariffStopPoints.keySet() ) 
     <TariffZone version="any" id="${network.objectIdPrefix()}:TariffZone:$key">
-      <Name>$key</Name>
+      <Name>$!key</Name>
       <members>
         #foreach($stopPoint in $tariffStopPoints.get($key) )         
         #set($routePointId = ${stopPoint.getRoute().objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} ) 
@@ -196,4 +196,47 @@
     #end
   #end  
   </stopAssignments>
+  <!-- Assignments of Connection Links -->
+  <connections>
+    #foreach( $connectionLink in $connectionLinks )       
+    <SiteConnection id="${connectionLink.objectIdPrefix()}:SiteConnection:${connectionLink.objectIdSuffix()}" version="$connectionLink.objectVersion">      
+      #if ( $connectionLink.name )
+      <Name>$!esc.xml($connectionLink.name)</Name>
+      #end     
+      <From>
+         <StopPlaceRef ref="$connectionLink.startOfLinkId" />
+      </From> 
+      <To>         
+         <StopPlaceRef ref="$connectionLink.endOfLinkId" />
+      </To>  
+      <Distance>$connectionLink.linkDistance</Distance>
+      #if ( $connectionLink.comment )
+      <Description>$!esc.xml($connectionLink.comment)</Description>
+      #end 
+      <navigationPaths>
+        <NavigationPath>
+          #set($linkType = $connectionLink.linkType)
+          #if ( $linkType == "Underground" ) 
+            <Covered>indoors</Covered>
+          #elseif ( $linkType == "Overground" )
+            <Covered>outdoors</Covered>
+          #elseif ( $linkType == "Mixed" )
+            <Covered>mixed</Covered>
+          #else
+            <Covered>unknown</Covered>
+          #end 
+          <TransfertDuration>
+            <DefaultDuration>$!connectionLink.defaultDuration</DefaultDuration>
+            <FrequentTravellerDuration>$!connectionLink.frequentTravellerDuration</FrequentTravellerDuration>
+            <OccasionalTravellerDuration>$!connectionLink.occasionalTravellerDuration</OccasionalTravellerDuration>
+            <MobilityRestrictedTravellerDuration>$!connectionLink.mobilityRestrictedTravellerDuration</MobilityRestrictedTravellerDuration> 
+          </TransfertDuration>
+          <AccessibilityAssesment>
+            <MobilityimpairedAccess>$!connectionLink.mobilityRestrictedSuitable</MobilityimpairedAccess>
+          </AccessibilityAssesment>
+        </NavigationPath>
+      </navigationPaths>     
+    </SiteConnection>  
+    #end
+  </connections>
 </ServiceFrame>
