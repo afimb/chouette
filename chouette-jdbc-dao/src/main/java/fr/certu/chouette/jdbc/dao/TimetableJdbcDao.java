@@ -53,6 +53,9 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
    @Override
    protected void populateStatement(PreparedStatement ps, Timetable timetable) throws SQLException
    {
+	  // security when startOfPeriod not initialized
+	  if (timetable.getStartOfPeriod() == null) timetable.computeLimitOfPeriods();
+	   
       ps.setString(1, timetable.getObjectId());
       ps.setInt(2, timetable.getObjectVersion());
       Timestamp timestamp = null;
@@ -63,6 +66,8 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
       ps.setString(5, timetable.getComment());
       ps.setString(6, timetable.getVersion());
       ps.setObject(7, (Integer) timetable.getIntDayTypes());
+      ps.setDate(8,timetable.getStartOfPeriod());
+      ps.setDate(9,timetable.getEndOfPeriod());
    }
 
    /*
