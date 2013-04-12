@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 import chouette.schema.types.LongLatTypeType;
 import chouette.schema.types.TypeType;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -19,8 +20,16 @@ public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.
       castorAccessPoint.setComment(getNotEmptyString(accessPoint.getComment()));
       castorAccessPoint.setName(accessPoint.getName());
 
-      // type (TODO should be an enum !)
-      castorAccessPoint.setType(TypeType.fromValue(accessPoint.getType()));
+      // type
+      if(accessPoint.getType() != null){
+          AccessPointTypeEnum type = accessPoint.getType();
+          try {
+             castorAccessPoint.setType(TypeType.fromValue(type.value()));
+          } catch (IllegalArgumentException e) {
+             // TODO generate report
+          }
+       }
+
       // opening/closingTime
       castorAccessPoint.setOpeningTime(toCastorTime(accessPoint.getOpenningTime()));
       castorAccessPoint.setClosingTime(toCastorTime(accessPoint.getClosingTime()));

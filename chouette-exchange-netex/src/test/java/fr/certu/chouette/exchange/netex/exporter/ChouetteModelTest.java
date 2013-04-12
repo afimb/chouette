@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
 import java.text.SimpleDateFormat;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,6 +50,7 @@ public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
         
         
         line = complexModelFactory.nominalLine( "1");
+        line.complete();
         
         netexFileWriter.writeXmlFile(line, fileName);
 
@@ -58,14 +60,14 @@ public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
         xmlDocument = builder.parse(fileName);
     }    
     
-    protected void assertXPathTrue(String xPathExpr) throws XPathExpressionException {
+    protected void assertXPathTrue(String xPathExpr) throws XPathExpressionException {       
         Assert.assertTrue( Boolean.parseBoolean( 
                 xPath.evaluate( xPathExpr, 
                                 xmlDocument)));
     }
     
-    protected void assertXPathEquals(String xPathExpr, boolean expected) throws XPathExpressionException {
-        Assert.assertEquals( Boolean.parseBoolean( 
+    protected void assertXPathEquals(String xPathExpr, boolean expected) throws XPathExpressionException {        
+        Assert.assertEquals( Boolean.parseBoolean(                 
                 xPath.evaluate( xPathExpr, 
                                 xmlDocument)), expected);
     }

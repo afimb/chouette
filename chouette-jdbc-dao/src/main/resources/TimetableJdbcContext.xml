@@ -23,9 +23,11 @@
 				creator_id,
 				COMMENT,
 				version,
-				int_day_types
+				int_day_types,
+				start_date,
+				end_date
 				)
-				VALUES(?, ?, ?, ?, ?, ?, ?)
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -49,7 +51,9 @@
 				creator_id = ?,
 				COMMENT = ?,
 				version = ?,
-				int_day_types = ?
+				int_day_types = ?,
+				start_date = ?,
+				end_date = ?
 				WHERE
 				objectid = ?
 			</value>

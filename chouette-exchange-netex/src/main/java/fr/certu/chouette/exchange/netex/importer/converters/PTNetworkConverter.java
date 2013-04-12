@@ -46,7 +46,8 @@ public class PTNetworkConverter extends GenericConverter
             network.setVersionDate( (Date)parseOptionnalAttribute(nav, "changed", "Date") );                        
         }
         pilot.resetXPath();
-        //convertResourceFrame();
+        
+        convertResourceFrame();
         
         returnToRootElement(nav);
         return network;

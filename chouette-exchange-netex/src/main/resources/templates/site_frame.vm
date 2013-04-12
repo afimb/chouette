@@ -105,7 +105,72 @@
         </Quay>	
         #end	
       </quays>
+      <entrances>
+        #foreach( $accessPoint in $accessPoints )
+        <StopPlaceEntrance version="any" ref="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
+          <Centroid>
+            <Location>
+              <Longitude>$!accessPoint.longitude</Longitude>
+              <Latitude>$!accessPoint.latitude</Latitude>
+              <srsName>$!accessPoint.longLatType</srsName>
+            </Location>
+          </Centroid> 
+          <StopPlaceEntranceRef ref="$accessPoint.containedIn"/>
+          #if ( $accessPoint.name )
+          <Name>$!esc.xml($accessPoint.name)</Name>          
+          #end
+          <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "In Out")true#{else}false#end</isEntry>
+          <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "In Out")true#{else}false#end</isExit>         
+          <TimeBand>
+            <StartTime>$!accessPoint.openingTime</StartTime>
+            <EndTime>$!accessPoint.closingTime</EndTime>
+          </TimeBand>
+          #if ( $accessPoint.comment )
+          <Description>$!esc.xml($accessPoint.comment)</Description>  
+          #end
+          ## TODO : Add enum   
+        </StopPlaceEntrance> 
+        #end
+      </entrances> 
     </StopPlace>
     #end				
   </stopPlaces>
+  <!-- Assignments of Path Links -->
+  <pathLinks>
+    #foreach( $accessLink in $accessLinks )       
+    <PathLink id="${accessLink.objectIdPrefix()}:SiteConnection:${accessLink.objectIdSuffix()}" version="$accessLink.objectVersion">  
+      #if ( $accessLink.name )
+      <Name>$!esc.xml($accessLink.name)</Name>
+      #end
+      <From>
+        <EntranceRef ref="$accessLink.startOfLinkId" />
+      </From>
+      <To> 
+        <PlaceRef ref="$accessLink.endOfLinkId" /> 
+      </To> 
+      <Distance>$!accessLink.linkDistance</Distance>
+      #set($linkType = $accessLink.linkType)
+      #if ( $linkType == "Underground" ) 
+        <Covered>indoors</Covered>
+      #elseif ( $linkType == "Overground" )
+        <Covered>outdoors</Covered>
+      #elseif ( $linkType == "Mixed" )
+        <Covered>mixed</Covered>
+      #else
+        <Covered>unknown</Covered>
+      #end 
+      <TransfertDuration>
+        <DefaultDuration>$!accessLink.defaultDuration</DefaultDuration>
+        <FrequentTravellerDuration>$!accessLink.frequentTravellerDuration</FrequentTravellerDuration>
+        <OccasionalTravellerDuration>$!accessLink.occasionalTravellerDuration</OccasionalTravellerDuration>
+        <MobilityRestrictedTravellerDuration>$!accessLink.mobilityRestrictedTravellerDuration</MobilityRestrictedTravellerDuration> 
+      </TransfertDuration>
+      <AccessibilityAssesment>
+        <MobilityimpairedAccess>$!accessLink.mobilityRestrictedSuitable</MobilityimpairedAccess>
+      </AccessibilityAssesment>
+      ## TODO : Add enum  
+    </PathLink>
+    #end
+  </pathLinks>  
+
 </SiteFrame>

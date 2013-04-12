@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -22,12 +23,20 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
  */
 public class AccessPoint extends NeptuneIdentifiedObject{
 	private static final long serialVersionUID = 7520070228185917225L;
-	
+
+	public static final String LONGITUDE ="longitude"; 
+	public static final String LATITUDE ="latitude"; 
+	public static final String LONGLAT_TYPE="longLatType"; 
+	public static final String COUNTRY_CODE="countryCode"; 
+	public static final String STREET_NAME="streetName"; 
+	public static final String X="x"; 
+	public static final String Y="y"; 
+	public static final String PROJECTION_TYPE="projectionType"; 
 	/**
 	 * Address 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Address address;
+	private Address address;
 	/**
 	 * Geographic referential for coordinates
 	 * <br/><i>readable/writable</i>
@@ -47,7 +56,34 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * Projected point
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private ProjectedPoint projectedPoint;
+	private ProjectedPoint projectedPoint;
+	/**
+	 * address street name 
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String streetName;
+	/**
+	 * address city or district code
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String countryCode;
+
+	/**
+	 * x coordinate
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private BigDecimal x;
+	/**
+	 * y coordinate
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private BigDecimal y;
+	/**
+	 * projection system name (f.e. : epgs:27578)
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter @Setter private String projectionType;
+
 	/**
 	 * Comment
 	 * <br/><i>readable/writable</i>
@@ -82,7 +118,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * access type (In,Out,InOut)
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private String type;
+	@Getter @Setter private AccessPointTypeEnum type;
 	/**
 	 * Indicate if a Lift is available 
 	 * <br/><i>readable/writable</i>
@@ -98,7 +134,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter @Setter private boolean stairsAvailable;
-	
+
 	/**
 	 * add an AccessLink to AccesPoint if not already present
 	 * <br/> no control is made on AccessLink's start and end links
@@ -110,7 +146,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
 		if (!accessLinks.contains(accessLink)) accessLinks.add(accessLink);
 	}
-	
+
 	/**
 	 * add a collection of AccessLinks to AccesPoint if not already presents
 	 * <br/> no control is made on AccessLink's start and end links
@@ -120,14 +156,14 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	public void addAccessLinks(Collection<AccessLink> accessLinkCollection)
 	{
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
-		
+
 		for (AccessLink accessLink : accessLinkCollection) 
 		{
 			if (!accessLinks.contains(accessLink)) accessLinks.add(accessLink);
 		}
-		
+
 	}
-	
+
 	/**
 	 * remove an AccessLink from AccesPoint if present
 	 * 
@@ -138,12 +174,59 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
 		if (accessLinks.contains(accessLink)) accessLinks.remove(accessLink);
 	}
+
+
+
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
+		if (address != null)
+			address.populateAccessPoint(this);
+	}
+	public ProjectedPoint getProjectedPoint() {
+		return projectedPoint;
+	}
+	public void setProjectedPoint(ProjectedPoint projectedPoint) {
+		this.projectedPoint = projectedPoint;
+		if (projectedPoint != null)
+			projectedPoint.populateAccessPoint(this);
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
+	 * lang.String, int)
+	 */
+	@Override
+	public String toString(String indent, int level)
+	{
+		StringBuilder sb = new StringBuilder(super.toString(indent, level));
+		sb.append("\n").append(indent).append("  comment = ").append(comment);
+		sb.append("\n").append(indent).append("  liftAvailable = ").append(liftAvailable);
+		sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
+		sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
+		sb.append("\n").append(indent).append("  streetName = ").append(streetName);
+		sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
+		sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
+		sb.append("\n").append(indent).append("  latitude = ").append(latitude);
+		sb.append("\n").append(indent).append("  longitude = ").append(longitude);
+		sb.append("\n").append(indent).append("  x = ").append(x);
+		sb.append("\n").append(indent).append("  y = ").append(y);
+		sb.append("\n").append(indent).append("  projection = ").append(projectionType);
+		return sb.toString();
+	}
+
 	
 	@Override
 	public void complete() 
 	{
-	    if (isCompleted()) return;
+		if (isCompleted()) return;
 		super.complete();
+		address=new Address(this);
+		projectedPoint = new ProjectedPoint(this);
 		if (getContainedIn() != null)
 		{
 			containedInStopArea = getContainedIn().getObjectId();
@@ -153,9 +236,9 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 			containedInStopArea = "NEPTUNE:StopArea:UnusedField";
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

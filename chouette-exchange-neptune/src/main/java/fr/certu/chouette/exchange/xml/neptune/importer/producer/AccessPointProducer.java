@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
@@ -63,7 +64,14 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chou
 			accessPoint.setClosingTime(getTime(xmlAccessPoint.getClosingTime()));
 		//Type optional
 		if(xmlAccessPoint.getType() != null)
-			accessPoint.setType(xmlAccessPoint.getType().value());
+		{
+			try {
+				accessPoint.setType(AccessPointTypeEnum.fromValue(xmlAccessPoint.getType().value()));
+			} catch (IllegalArgumentException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
 		accessPoint.setLiftAvailable(xmlAccessPoint.getLiftAvailability());
 		
 		// MobilityRestrictedSuitability optional
