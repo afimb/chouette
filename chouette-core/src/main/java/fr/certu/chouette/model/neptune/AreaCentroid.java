@@ -2,8 +2,6 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
-import javax.crypto.AEADBadTagException;
-
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;

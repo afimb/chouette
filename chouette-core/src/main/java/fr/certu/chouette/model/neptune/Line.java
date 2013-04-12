@@ -945,37 +945,37 @@ public class Line extends NeptuneIdentifiedObject
 		stopAreas.addAll(stopAreaSet);
 		// sort stopArea and collect connectionLinks and accessLinks+points.
 		for (StopArea area : stopAreaSet)
-		{
-           switch (area.getAreaType())
-           {
-           case BOARDINGPOSITION : 
-        	   boardingPositions.add(area);
-        	   break;
-           case QUAY : 
-        	   quays.add(area);
-        	   break;
-           case COMMERCIALSTOPPOINT : 
-        	   commercialStopPoints.add(area);
-        	   break;
-           case STOPPLACE : 
-        	   stopPlaces.add(area);
-        	   break;
-		   default:
-			   break;
-           }
-           if (area.getAccessLinks() != null)
-              accessLinks.addAll(area.getAccessLinks());
-           if (area.getConnectionLinks() != null)
-               connectionLinkSet.addAll(area.getConnectionLinks());
-		}
-		connectionLinkSet.addAll(connectionLinkSet);
-		// collect accessPoints
-		for (AccessLink al : accessLinks) 
-		{
-			accessPointSet.add(al.getAccessPoint());
-		}
-		accessPoints.addAll(accessPointSet);
-	}
+                {
+                    switch (area.getAreaType())
+                    {
+                        case BOARDINGPOSITION : 
+                            boardingPositions.add(area);
+                            break;
+                        case QUAY : 
+                            quays.add(area);
+                            break;
+                        case COMMERCIALSTOPPOINT : 
+                            commercialStopPoints.add(area);
+                            break;
+                        case STOPPLACE : 
+                            stopPlaces.add(area);
+                            break;
+                        default:
+                            break;
+                    }
+                    if (area.getAccessLinks() != null)
+                        accessLinks.addAll(area.getAccessLinks());
+                    if (area.getConnectionLinks() != null)
+                        connectionLinkSet.addAll(area.getConnectionLinks());
+                }
+                connectionLinks.addAll(connectionLinkSet);
+                // collect accessPoints
+                for (AccessLink al : accessLinks) 
+                {
+                    accessPointSet.add(al.getAccessPoint());
+                }
+                accessPoints.addAll(accessPointSet);
+        }
 
 	/**
 	 * extract parent tree for physical Stop

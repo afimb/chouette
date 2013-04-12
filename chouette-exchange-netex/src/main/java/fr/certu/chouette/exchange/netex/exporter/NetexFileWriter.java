@@ -39,9 +39,12 @@ public class NetexFileWriter {
         model.put("line", line);
         model.put("network", line.getPtNetwork());
         model.put("company", line.getCompany());
+        model.put("connectionLinks", line.getConnectionLinks());        
+        model.put("accessLinks", line.getAccessLinks());
+        model.put("accessPoints", line.getAccessPoints());
         
         // For ServiceFrame need to have for each tariff stop points associated
-        model.put("tariffStopPoints", tariffStopPoints(line));
+        model.put("tariffStopPoints", tariffStopPoints(line));        
         
         // For SiteFrame need to have stop areas type StopPlace and CommercialStopPoint only
         model.put("stopPlaces", line.getStopPlaces());        
@@ -52,6 +55,7 @@ public class NetexFileWriter {
         
         // For ServiceCalendarFrame need to have time tables
         model.put("timetables", line.getTimetables()); 
+                
 
         model.put("date", new DateTool());
         model.put("esc", new EscapeTool());
@@ -123,7 +127,6 @@ public class NetexFileWriter {
                 }            
             }            
         }
-        logger.error(tariffStopPoints.toString());
         return tariffStopPoints;
     }
     
