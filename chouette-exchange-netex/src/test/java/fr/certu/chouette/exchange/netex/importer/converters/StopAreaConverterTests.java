@@ -16,6 +16,9 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.testng.Assert;
 
 
@@ -65,6 +68,54 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
     public void verifyStopAreaName() throws XPathEvalException, NavException, XPathParseException, ParseException {
         StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:430399");
         Assert.assertEquals( selectedStopArea.getName(), "Botzaris");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's longitude attribute reading")
+    public void verifyStopAreaLongitude() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+        Assert.assertEquals( selectedStopArea.getAreaCentroid().getLongitude().toString(), "2.389129");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's longLatType attribute reading")
+    public void verifyStopAreaLongLatType() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+        Assert.assertEquals( selectedStopArea.getAreaCentroid().getLongLatType(), LongLatTypeEnum.WGS84);
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's latitude attribute reading")
+    public void verifyStopAreaLatitude() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+        Assert.assertEquals( selectedStopArea.getAreaCentroid().getLatitude().toString(), "48.879284");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's projectedPoint attribute reading")
+    public void verifyStopAreaProjectedPointType() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+        Assert.assertEquals( selectedStopArea.getAreaCentroid().getProjectedPoint().getProjectionType(), "EPSG:9801");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's X attribute reading")
+    public void verifyStopAreaX() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+        Assert.assertEquals( selectedStopArea.getAreaCentroid().getProjectedPoint().getX().toString(), "603862.0");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's Y attribute reading")
+    public void verifyStopAreaY() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+        Assert.assertEquals( selectedStopArea.getAreaCentroid().getProjectedPoint().getY().toString(), "2431221.0");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's CountryCode attribute reading")
+    public void verifyStopAreaPostalCode() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+//        Assert.assertEquals( selectedStopArea.getAreaCentroid().getAddress().getCountryCode(), "75119");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "StopArea's streetName attribute reading")
+    public void verifyStopAreaStreetName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
+//        Assert.assertEquals( selectedStopArea.getAreaCentroid().getAddress().getStreetName(), "Botzaris (80 rue)");
     }
     
 

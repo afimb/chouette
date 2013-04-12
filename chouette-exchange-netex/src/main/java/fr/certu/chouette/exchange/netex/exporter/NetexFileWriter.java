@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.exchange.netex.EnumTranslator;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class NetexFileWriter {
 
     private void prepareModel(Line line)
     {
+        model.put("enumTranslator", new EnumTranslator());
         model.put("line", line);
         model.put("network", line.getPtNetwork());
         model.put("company", line.getCompany());

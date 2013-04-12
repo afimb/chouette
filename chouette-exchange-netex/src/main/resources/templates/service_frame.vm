@@ -104,7 +104,7 @@
       <Description>$!esc.xml($line.comment)</Description>
       #end
       #if ( $line.transportModeName )
-      <TransportMode>$line.transportModeName</TransportMode>
+      <TransportMode>$enumTranslator.toTransportModeNetex( $line.transportModeName)</TransportMode>
       #end
       #if ( $line.number )
       <PublicCode>$!esc.xml($line.number)</PublicCode>
@@ -153,8 +153,22 @@
     #foreach( $route in $line.routes )
       #foreach( $journeyPattern in $route.journeyPatterns )      
     <ServicePattern version="$journeyPattern.objectVersion" id="${journeyPattern.objectIdPrefix()}:ServicePattern:${journeyPattern.objectIdSuffix()}">
+      #if ( $journeyPattern.comment )
+      <keyList>
+          <KeyValue>
+              <Key>Comment</Key>
+              <Value>$!esc.xml($journeyPattern.comment)</Value>
+          </KeyValue>
+      </keyList>
+      #end
       #if ( $journeyPattern.name )
       <Name>$!esc.xml($journeyPattern.name)</Name>
+      #end
+      #if ( $journeyPattern.publishedName )
+      <ShortName>$!esc.xml($journeyPattern.publishedName)</ShortName>
+      #end
+      #if ( $journeyPattern.registrationNumber )
+      <PrivateCode>$!esc.xml($journeyPattern.registrationNumber)</PrivateCode>
       #end
       <!-- NEPTUNE [mapping:variable] : ServicePattern->RouteRef mapped to NEPTUNE JourneyPattern->routeId -->
       <RouteRef version="1" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}"/>

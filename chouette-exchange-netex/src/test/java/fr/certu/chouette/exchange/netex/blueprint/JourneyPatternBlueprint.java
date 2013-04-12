@@ -29,6 +29,15 @@ public class JourneyPatternBlueprint {
     String name = "101";
     
     @Default
+    String publishedName = "numero: 101";
+    
+    @Default
+    String registrationNumber = "ST-101";
+    
+    @Default
+    String comment = "omnibus";
+    
+    @Default
     String routeId = "RATP_PIVI:Route:317452";
     
     @MappedList(target = StopPoint.class, size = 0)
