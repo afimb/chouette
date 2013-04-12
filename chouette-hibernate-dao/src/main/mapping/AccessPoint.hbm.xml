@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
-	plus de details -->
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour
+plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class dynamic-insert="false" dynamic-update="false" name="AccessPoint"
-		table="access_points">
+	table="access_points">
 		<comment>Access point</comment>
 		<id name="id" type="long">
 			<column name="id">
@@ -18,7 +18,6 @@
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
-
 		<property name="objectVersion" type="int">
 			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
@@ -44,64 +43,55 @@
 				<comment>Comment</comment>
 			</column>
 		</property>
-
 		<property name="longitude"
-			type="java.math.BigDecimal">
+		type="java.math.BigDecimal">
 			<column name="longitude"  precision="19" scale="16">
 				<comment>Longitude</comment>
 			</column>
 		</property>
 		<property name="latitude"
-			type="java.math.BigDecimal">
+		type="java.math.BigDecimal">
 			<column name="latitude"  precision="19" scale="16">
 				<comment>Latitude</comment>
 			</column>
 		</property>
 		<property name="longLatType"
-			type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
+		type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
 			<column name="long_lat_type">
 				<comment>Model used for Longitude and Latitude (Standard, WGS84 or
 					WGS92)</comment>
 			</column>
 		</property>
-		<component class="fr.certu.chouette.model.neptune.type.ProjectedPoint"
-			name="projectedPoint">
-			<property name="x" type="java.math.BigDecimal">
-				<column name="x">
-					<comment>X coordinate</comment>
-				</column>
-			</property>
-			<property name="y" type="java.math.BigDecimal">
-				<column name="y">
-					<comment>Y coordinate</comment>
-				</column>
-			</property>
-			<property name="projectionType" type="string">
-				<column name="projection_type">
-					<comment>Projection used for coordinates</comment>
-				</column>
-			</property>
-		</component>
-		<component class="fr.certu.chouette.model.neptune.type.Address"
-			name="address">
-			<property name="countryCode" type="string">
-				<column name="country_code">
-					<comment>Zip code</comment>
-				</column>
-			</property>
-			<property name="streetName" type="string">
-				<column name="street_name">
-					<comment>Address</comment>
-				</column>
-			</property>
-		</component>
-
+		<property name="x" type="java.math.BigDecimal">
+			<column name="x">
+				<comment>X coordinate</comment>
+			</column>
+		</property>
+		<property name="y" type="java.math.BigDecimal">
+			<column name="y">
+				<comment>Y coordinate</comment>
+			</column>
+		</property>
+		<property name="projectionType" type="string">
+			<column name="projection_type">
+				<comment>Projection used for coordinates</comment>
+			</column>
+		</property>
+		<property name="countryCode" type="string">
+			<column name="country_code">
+				<comment>Zip code</comment>
+			</column>
+		</property>
+		<property name="streetName" type="string">
+			<column name="street_name">
+				<comment>Address</comment>
+			</column>
+		</property>
 		<property name="containedInStopArea" >
 			<column name="contained_in">
 				<comment>Unused data</comment>
 			</column>
 		</property>
-
 		<property name="openningTime" type="java.sql.Time">
 			<column name="openning_time">
 				<comment>Opening time</comment>
@@ -112,7 +102,6 @@
 				<comment>Closing time</comment>
 			</column>
 		</property>
-
 		<property name="type" type="string">
 			<column name="access_type">
 				<comment>Access Point Type : free description</comment>
@@ -126,7 +115,7 @@
 		<property name="mobilityRestrictedSuitable" type="boolean">
 			<column name="mobility_restricted_suitability">
 				<comment>Indicate if the link is suitable for mobility restricted
-					persons </comment>
+					persons</comment>
 			</column>
 		</property>
 		<property name="stairsAvailable" type="boolean">
@@ -134,14 +123,13 @@
 				<comment>Indicate if stairs are available</comment>
 			</column>
 		</property>
-
 		<many-to-one name="containedIn" class="StopArea" lazy="no-proxy"
-			outer-join="auto" foreign-key="access_area_fkey">
+		outer-join="auto" foreign-key="access_area_fkey">
 			<column name="stop_area_id">
 				<comment>Containded In StopArea reference</comment>
 			</column>
 		</many-to-one>
-		
+
 		<!-- comment on AccessLink definition -->
 		<bag name="accessLinks" table="accesslink" lazy="true" cascade="all">
 			<key column="access_point_id" foreign-key="aclk_acpt_fkey" />

@@ -3,6 +3,7 @@ package fr.certu.chouette.model.neptune.type;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.StopArea;
 
 import lombok.Getter;
@@ -42,13 +43,29 @@ public class ProjectedPoint implements Serializable
 		projectionType = area.getProjectionType();
 				
 	}
-	
+
+	public ProjectedPoint(AccessPoint access) 
+	{
+		x = access.getX();
+		y = access.getY();
+		projectionType = access.getProjectionType();
+				
+	}
+
 	public void populateStopArea(StopArea area)
 	{
 		area.setX(x);
 		area.setY(y);
 		area.setProjectionType(projectionType);
 	}
+	
+	public void populateAccessPoint(AccessPoint access)
+	{
+		access.setX(x);
+		access.setY(y);
+		access.setProjectionType(projectionType);
+	}
+
 	
 	@Override
 	public String toString() 

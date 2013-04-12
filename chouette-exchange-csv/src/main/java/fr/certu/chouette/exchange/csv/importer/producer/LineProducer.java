@@ -16,7 +16,6 @@ import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -25,10 +24,8 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.report.Report;
 
@@ -457,10 +454,9 @@ public class LineProducer extends AbstractModelProducer<Line>
 		physical.setAreaType(areaType);
 		physical.setName(getValue(STOPNAME_COLUMN, stopData));
 		physical.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":BP_" + toIdString(physical.getName()));
-		AreaCentroid centroid = new AreaCentroid();
-		centroid.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
-		centroid.setLongitude(getBigDecimalValue(LONGITUDE_COLUMN, stopData));
-		if (centroid.getLatitude() == null || centroid.getLongitude() == null)
+		physical.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
+		physical.setLongitude(getBigDecimalValue(LONGITUDE_COLUMN, stopData));
+		if (physical.getLatitude() == null || physical.getLongitude() == null)
 		{
 			logger.warn("stop without coordinates : " + physical.getName());
 			CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.STOP_WITHOUT_COORDS, Report.STATE.WARNING,
@@ -469,22 +465,17 @@ public class LineProducer extends AbstractModelProducer<Line>
 		}
 		if (getValue(X_COLUMN, stopData) != null)
 		{
-			ProjectedPoint point = new ProjectedPoint();
-			point.setX(getBigDecimalValue(X_COLUMN, stopData));
-			point.setY(getBigDecimalValue(Y_COLUMN, stopData));
-			point.setProjectionType(projectedPointType);
-			centroid.setProjectedPoint(point);
+			physical.setX(getBigDecimalValue(X_COLUMN, stopData));
+			physical.setY(getBigDecimalValue(Y_COLUMN, stopData));
+			physical.setProjectionType(projectedPointType);
 		}
 		if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
 		{
-			Address address = new Address();
-			address.setStreetName(getValue(ADDRESS_COLUMN, stopData));
-			address.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
-			if (address.getCountryCode() != null)
-				physical.setObjectId(physical.getObjectId() + "_" + toIdString(address.getCountryCode()));
-			centroid.setAddress(address);
+			physical.setStreetName(getValue(ADDRESS_COLUMN, stopData));
+			physical.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
+			if (physical.getCountryCode() != null)
+				physical.setObjectId(physical.getObjectId() + "_" + toIdString(physical.getCountryCode()));
 		}
-		physical.setAreaCentroid(centroid);
 		StopArea commercial = commercials.get(getValue(AREAZONE_COLUMN, stopData));
 		if (commercial == null)
 		{
@@ -515,15 +506,10 @@ public class LineProducer extends AbstractModelProducer<Line>
 		commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + toIdString(commercial.getName()));
 		if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
 		{
-			AreaCentroid centroid2 = new AreaCentroid();
-
-			Address address = new Address();
-			address.setStreetName(getValue(ADDRESS_COLUMN, stopData));
-			address.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
-			if (address.getCountryCode() != null)
-				commercial.setObjectId(commercial.getObjectId() + "_" + toIdString(address.getCountryCode()));
-			centroid2.setAddress(address);
-			commercial.setAreaCentroid(centroid2);
+			commercial.setStreetName(getValue(ADDRESS_COLUMN, stopData));
+			commercial.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
+			if (commercial.getCountryCode() != null)
+				commercial.setObjectId(commercial.getObjectId() + "_" + toIdString(commercial.getCountryCode()));
 		}
 		if (!NeptuneIdentifiedObject.checkObjectId(commercial.getObjectId()))
 		{

@@ -1,6 +1,5 @@
 package fr.certu.chouette.jdbc.dao;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -11,8 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
  * 
@@ -23,12 +20,12 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 @SuppressWarnings("unchecked")
 public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint> 
 {
-   private static final Logger logger = Logger.getLogger(AccessPointJdbcDao.class);
-   
-   public Logger getLogger()
-   {
-      return logger;
-   }
+	private static final Logger logger = Logger.getLogger(AccessPointJdbcDao.class);
+
+	public Logger getLogger()
+	{
+		return logger;
+	}
 
 	@Override
 	public List<AccessPoint> getAll() 
@@ -42,7 +39,7 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 
 	@Override
 	protected void populateStatement(PreparedStatement ps, AccessPoint accessPoint)
-	throws SQLException {
+			throws SQLException {
 		ps.setString(1, accessPoint.getObjectId());
 		ps.setInt(2, accessPoint.getObjectVersion());
 		Timestamp timestamp = null;
@@ -52,35 +49,22 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setString(4, accessPoint.getCreatorId());
 		ps.setString(5, accessPoint.getName());
 		ps.setString(6, accessPoint.getComment());
-		String countryCode = null , 
-			   streetName = null;
-			   
-		Address address = accessPoint.getAddress(); 
-		if(address != null)
-		{
-			countryCode = address.getCountryCode();
-			streetName = address.getStreetName();
-		}
-		ps.setString(7, countryCode );
-		ps.setString(8, streetName );
+		ps.setString(7, accessPoint.getCountryCode() );
+		ps.setString(8, accessPoint.getStreetName() );
 		ps.setBigDecimal(9, accessPoint.getLongitude());
 		ps.setBigDecimal(10, accessPoint.getLatitude());
 		String projectionType = null,
-		   longLatType = null;
+				longLatType = null;
 		if(accessPoint.getLongLatType() != null)
 			longLatType = accessPoint.getLongLatType().value();
 		ps.setString(11, longLatType);
-		BigDecimal x = null, y = null;
-		
-		ProjectedPoint projectedPoint = accessPoint.getProjectedPoint();
-		if(projectedPoint != null)
+
+		if(accessPoint.getProjectionType() != null)
 		{
-			x = projectedPoint.getX();
-			y = projectedPoint.getY();
-			projectionType = projectedPoint.getProjectionType();
+			projectionType = accessPoint.getProjectionType();
 		}
-		ps.setBigDecimal(12, x);
-		ps.setBigDecimal(13, y);
+		ps.setBigDecimal(12, accessPoint.getX());
+		ps.setBigDecimal(13, accessPoint.getY());
 		ps.setString(14, projectionType);
 		ps.setString(15, accessPoint.getContainedInStopArea());
 		setId(ps,16,accessPoint.getContainedIn());

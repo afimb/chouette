@@ -2,14 +2,12 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
-import javax.crypto.AEADBadTagException;
-
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.Address;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
+import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
  * Neptune AreaCentroid : Geographic informations for a unique StopArea
