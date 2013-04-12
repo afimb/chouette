@@ -71,11 +71,12 @@ public class PTNetworkConverter extends GenericConverter
             if ( sourceName!=null) {
                 network.setSourceName(sourceName);
             }
-            PTNetworkSourceTypeEnum sourceType = (PTNetworkSourceTypeEnum)parseOptionnalElement(nav, "Description", "PTNetworkSourceTypeEnum");
-            if ( sourceType!=null) {
-                network.setSourceType(sourceType);
-            }
-
+            PTNetworkSourceTypeEnum sourceType = null;
+            try { 
+                sourceType = (PTNetworkSourceTypeEnum)parseOptionnalElement(nav, 
+                        "Description", "PTNetworkSourceTypeEnum");
+            } catch (Exception e){};
+            network.setSourceType(sourceType);
         }
         autoPilot2.resetXPath();
         nav.pop();
