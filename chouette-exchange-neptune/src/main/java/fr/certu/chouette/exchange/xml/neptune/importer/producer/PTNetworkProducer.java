@@ -1,9 +1,9 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
-import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -45,7 +45,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette
 			}
 			catch (IllegalArgumentException e) 
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"SourceType",xmlPTNetwork.getSourceType().value());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"SourceType",xmlPTNetwork.getSourceType().value());
 				report.addItem(item);
 			}
 		}

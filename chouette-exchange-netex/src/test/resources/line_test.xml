@@ -740,7 +740,7 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 					<!-- This object needs to be created inside the mapping mechanism -->
 					<tariffZones>
 						<TariffZone version="any" id="RATP_PIVI:TariffZone:1">
-							<Name>Zone 1</Name>
+							<Name>1</Name>
 							<members>
 								<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A0A5246063"/>
 								<RoutePointRef version="1" ref="RATP_PIVI:RoutePoint:317452A1A5246062"/>
@@ -842,15 +842,23 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 				<!-- Note : having addresses at Quay level may seem strange (and it is), but is is also at quay level in the original file... and so does the mapping -->
 				<SiteFrame version="any" id="RATP_PIVI:SiteFrame:SF01">
 					<stopPlaces>
+						<StopPlace version="1" id="RATP_PIVI:StopArea:1234567">
+                                                        <Name>Botzaris</Name>
+                                                        <Description>zone d arret</Description>
+						</StopPlace>
 						<StopPlace version="1" id="RATP_PIVI:StopArea:430399">
-							<TopographicPlaceView>
-								<Name>Botzaris</Name>
-							</TopographicPlaceView>
+                                                        <Name>Botzaris</Name>
+                                                         <Description>1er arret</Description>
+                                                         <PrivateCode>1234</PrivateCode>
+                                                         <ParentZoneRef ref="RATP_PIVI:StopArea:1234567" />
+                                                         <LandMark>Parc</LandMark>
 							<tariffZones>
 								<TariffZoneRef version="any" ref="RATP_PIVI:TariffZone:1"/>
 							</tariffZones>
 							<quays>
 								<Quay version="1" id="RATP_PIVI:Quay:5246072">
+                                                                    <Name>Botzaris M7</Name>
+                                                                    <LandMark>Parc</LandMark>
 									<Centroid>
 										<Location id="GML_Quay_5246072">
 											<Longitude>2.3891290000000000</Longitude>
@@ -905,6 +913,20 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							<tariffZones>
 								<TariffZoneRef version="any" ref="RATP_PIVI:TariffZone:1"/>
 							</tariffZones>
+                                                        <Centroid>
+                                                                <Location id="GML_StopPlace_430398">
+                                                                        <Longitude>2.38</Longitude>
+                                                                        <Latitude>48.87</Latitude>
+                                                                        <gml:pos srsName="EPSG:9801">
+                                                                                 600000.00 2430000.00 
+                                                                        </gml:pos>
+                                                                </Location>
+                                                        </Centroid>
+                                                        <PostalAddress version="any" id="RATP_PIVI:PostalAddress:5246072">
+                                                                <CountryRef ref="fr"/>
+                                                                <AddressLine1>Bolivar (28 rue)</AddressLine1>
+                                                                <PostCode>75119</PostCode>
+                                                        </PostalAddress>
 							<quays>
 								<Quay version="1" id="RATP_PIVI:Quay:5246069">
 									<Centroid>

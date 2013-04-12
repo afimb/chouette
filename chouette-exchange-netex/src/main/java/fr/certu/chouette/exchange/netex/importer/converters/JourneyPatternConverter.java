@@ -8,7 +8,10 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 public class JourneyPatternConverter extends GenericConverter 
@@ -17,6 +20,9 @@ public class JourneyPatternConverter extends GenericConverter
     private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();    
     private AutoPilot autoPilot;
     private VTDNav nav;   
+    
+    @Getter
+    private Map<String, List<JourneyPattern>> journeyPatternByRouteObjectId = new HashMap<String, List<JourneyPattern>>();         
     
     public JourneyPatternConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -28,6 +34,7 @@ public class JourneyPatternConverter extends GenericConverter
     
     public List<JourneyPattern> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
+        journeyPatterns.clear();
         int result = -1;
         autoPilot.selectXPath("//netex:servicePatterns//netex:ServicePattern");
         
@@ -50,6 +57,21 @@ public class JourneyPatternConverter extends GenericConverter
             
             // StopPoints
             journeyPattern.setStopPointIds( toStringList(parseMandatoryAttributes(nav, "ScheduledStopPointRef", "ref")) );
+            
+            // Link with route           
+            String routeObjectId = journeyPattern.getRouteId();
+            if(journeyPatternByRouteObjectId.containsKey(routeObjectId))
+            {
+                List<JourneyPattern> jps = journeyPatternByRouteObjectId.get(routeObjectId);
+                jps.add(journeyPattern);
+                journeyPatternByRouteObjectId.put(routeObjectId, jps);
+            }
+            else
+            {            
+                List<JourneyPattern> jps = new ArrayList<JourneyPattern>();
+                jps.add(journeyPattern);
+                journeyPatternByRouteObjectId.put(routeObjectId, jps);
+            }
             
             journeyPatterns.add(journeyPattern);
         } 

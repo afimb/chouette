@@ -3,10 +3,10 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.LineExtension;
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
-import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -37,7 +37,7 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 			}
 			catch (IllegalArgumentException e) 
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"TransportModeName",xmlLine.getTransportModeName().value());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"TransportModeName",xmlLine.getTransportModeName().value());
 				report.addItem(item);
 			}
 		}
@@ -48,7 +48,7 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 			String realLineEnd = getNonEmptyTrimedString(lineEnd);
 			if (realLineEnd == null)
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EMPTY_TAG, Report.STATE.ERROR, "LineEnd");
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_TAG, Report.STATE.ERROR, "LineEnd");
 				report.addItem(item);
 			}
 			else
@@ -64,13 +64,18 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 			String realRouteId = getNonEmptyTrimedString(routeId);
 			if (realRouteId == null)
 			{
-				ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.EMPTY_TAG, Report.STATE.ERROR, "RouteId");
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_TAG, Report.STATE.ERROR, "RouteId");
 				report.addItem(item);
 			}
 			else
 			{
 				line.addRouteId(realRouteId);
 			}
+		}
+		if (line.getRouteIds() == null )
+		{
+			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getObjectId());
+			report.addItem(item);
 		}
 
 		// Registration optional
@@ -99,7 +104,7 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 						}
 						catch (IllegalArgumentException e) 
 						{
-							ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"UserNeed",xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString());
+							ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"UserNeed",xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString());
 							report.addItem(item);
 						}
 					}

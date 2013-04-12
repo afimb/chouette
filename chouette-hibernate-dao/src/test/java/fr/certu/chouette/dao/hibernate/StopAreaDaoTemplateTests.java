@@ -61,7 +61,7 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 	@Override
 	protected Filter getSelectFilter() 
 	{
-		return Filter.getNewEqualsFilter("areaCentroid.address.countryCode", "75000");
+		return Filter.getNewEqualsFilter("countryCode", "75000");
 	}
 
 }

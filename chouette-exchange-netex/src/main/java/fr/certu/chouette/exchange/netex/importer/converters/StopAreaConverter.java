@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Getter;
 
 /**
  *
@@ -31,10 +32,14 @@ import java.util.regex.Pattern;
 public class StopAreaConverter extends GenericConverter 
 {
     private static final Logger logger = Logger.getLogger(StopAreaConverter.class);
-    private List<StopArea> stopareas = new ArrayList<StopArea> ();    
-    private Map<String,StopArea> stopAreaByObjectId;
+    private List<StopArea> stopareas = new ArrayList<StopArea> ();        
     private AutoPilot autoPilot;
     private VTDNav nav;
+    
+    @Getter
+    private Map<String,StopArea> stopAreaByObjectId;
+    private Map<String,String> tariffByTariffId;
+    
     
     public StopAreaConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -44,40 +49,62 @@ public class StopAreaConverter extends GenericConverter
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
         
         stopAreaByObjectId = new HashMap<String, StopArea>();
+        tariffByTariffId = new HashMap<String, String>();
     }
     
     public List<StopArea> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
-        autoPilot.selectXPath("//netex:SiteFrame/netex:topographicPlaces/"+
-                "netex:TopographicPlace");
+        stopareas.clear();
+        stopAreaByObjectId.clear();
+        
+//        autoPilot.selectXPath("//netex:SiteFrame/netex:topographicPlaces/"+
+//                "netex:TopographicPlace");
+//        int result = -1;
+//        
+//        nav.push();
+//        while( (result = autoPilot.evalXPath()) != -1 )
+//        {  
+//            StopArea stopArea = new StopArea();
+//            
+//            // Mandatory            
+//            stopArea.setName((String)parseMandatoryElement(nav, "Name"));
+//            stopArea.setObjectId((String)parseMandatoryAttribute(nav, "id"));
+//            stopArea.setAreaType(ChouetteAreaEnum.STOPPLACE);
+//            
+//            stopareas.add(stopArea);
+//            stopAreaByObjectId.put( stopArea.getObjectId(), stopArea);
+//            
+//        } 
+//        nav.pop();
+        
+        convertTariffs();
+        convertStopPlaces();
+                
+        return stopareas;
+    }
+    public void convertTariffs() throws XPathEvalException, NavException, XPathParseException, ParseException
+    {
+        AutoPilot autoPilot = createAutoPilot(nav);
+        autoPilot.selectXPath("//netex:ServiceFrame/netex:tariffZones/"+
+                "netex:TariffZone");
+        
         int result = -1;
         
         nav.push();
         while( (result = autoPilot.evalXPath()) != -1 )
         {  
-            StopArea stopArea = new StopArea();
-            
-            // Mandatory            
-            stopArea.setName((String)parseMandatoryElement(nav, "Name"));
-            stopArea.setObjectId((String)parseMandatoryAttribute(nav, "id"));
-            stopArea.setAreaType(ChouetteAreaEnum.STOPPLACE);
-            
-            stopareas.add(stopArea);
-            stopAreaByObjectId.put( stopArea.getObjectId(), stopArea);
-            
-        } 
+            String tariffId = subXpathSelection("@id");
+            String name = subXpathSelection("netex:Name");
+            tariffByTariffId.put(tariffId, name);
+        }
         nav.pop();
-        
-        convertStopPlaces();
-                
-        return stopareas;
     }
     public void convertStopPlaces() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
-        AutoPilot autoPilot2 = new AutoPilot(nav);
-        autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
+        AutoPilot autoPilot2 = createAutoPilot(nav);
         autoPilot2.selectXPath("//netex:SiteFrame/netex:stopPlaces/"+
                 "netex:StopPlace");
+        Map<String,String> stopPlaceParentByStopPlace = new HashMap<String, String>();;
         
         int result = -1;
         
@@ -87,18 +114,13 @@ public class StopAreaConverter extends GenericConverter
             StopArea stopArea = new StopArea();
             
             // Mandatory            
-            stopArea.setObjectId((String)parseMandatoryAttribute(nav, "id"));
             stopArea.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
-            stopArea.setName((String)parseMandatoryElement(nav, "Name"));
-            
-            // Optionnal
-            stopArea.setRegistrationNumber((String)parseOptionnalAttribute(nav, "PrivateCode"));
-            stopArea.setNearestTopicName((String)parseOptionnalAttribute(nav, "LandMark"));
-            stopArea.setComment((String)parseOptionnalAttribute(nav, "Description"));
-            
-            String topographicRef = (String)parseOptionnalAttribute(nav, "ContainedInPlaceRef", "ref");
-            if ( topographicRef!= null) {
-                stopArea.setParent( stopAreaByObjectId.get( topographicRef));
+
+            convertCommonAttributes(stopArea);
+
+            String parentRef = subXpathSelection("ParentZoneRef/@ref");
+            if ( parentRef!= null) {
+                stopPlaceParentByStopPlace.put( stopArea.getObjectId(), parentRef);
             }
             
             stopareas.add(stopArea);
@@ -107,8 +129,21 @@ public class StopAreaConverter extends GenericConverter
             convertQuays( stopArea);
         } 
         nav.pop();
+
+        for( String spObjectId : stopPlaceParentByStopPlace.keySet()) {
+            StopArea stopPlace = stopAreaByObjectId.get( spObjectId);
+            StopArea parentPlace = stopAreaByObjectId.get( stopPlaceParentByStopPlace.get( spObjectId));
+            
+            if ( parentPlace==null) {
+                // TODO RAPPORT : mettre un message d'erreur dans le rapport
+            }
+            stopPlace.setParent( parentPlace);
+            parentPlace.setAreaType(ChouetteAreaEnum.STOPPLACE);
+        }
         
     }
+    
+    
     public void convertQuays( StopArea stopPlace) throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         AutoPilot autoPilot2 = createAutoPilot(nav);
@@ -125,96 +160,99 @@ public class StopAreaConverter extends GenericConverter
             StopArea stopArea = new StopArea();
             
             // Mandatory            
-            stopArea.setObjectId((String)parseMandatoryAttribute(nav, "id"));
-            
             stopArea.setAreaType( ChouetteAreaEnum.QUAY);
             stopArea.setParent( stopPlace);
             
-            // Optionnal
-            stopArea.setName((String)parseOptionnalAttribute(nav, "Name"));
-            stopArea.setRegistrationNumber((String)parseOptionnalAttribute(nav, "PrivateCode"));
-            stopArea.setNearestTopicName((String)parseOptionnalAttribute(nav, "LandMark"));
-            stopArea.setComment((String)parseOptionnalAttribute(nav, "Description"));
-            
-            AreaCentroid centroid = new AreaCentroid();
-            centroid.setLongLatType( LongLatTypeEnum.WGS84);
-            stopArea.setAreaCentroid( centroid);
-            
-            AutoPilot autoPilot3 = createAutoPilot(nav);
-            autoPilot3.selectXPath( "netex:Centroid/netex:Location/netex:Longitude");
-            String longitudeStr = autoPilot3.evalXPathToString();
-            autoPilot3.resetXPath();
+            convertCommonAttributes(stopArea);
 
-            if ( longitudeStr!=null) {
-                centroid.setLongitude(BigDecimal.valueOf( Double.valueOf(longitudeStr)));
-            }
-
-            AutoPilot autoPilot4 = createAutoPilot(nav);
-            autoPilot4.selectXPath("netex:Centroid/netex:Location/netex:Latitude");
-            String latitudeStr = autoPilot4.evalXPathToString();
-            autoPilot4.resetXPath();
-
-            if ( longitudeStr!=null) {
-                centroid.setLatitude(BigDecimal.valueOf( Double.valueOf(latitudeStr)));
-            }
-
-            AutoPilot autoPilot5 = createAutoPilot(nav);
-            autoPilot5.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
-            autoPilot5.selectXPath("netex:Centroid/netex:Location/gml:pos/@srsName");
-            String projectedType = autoPilot5.evalXPathToString();
-            autoPilot5.resetXPath();
-
-            AutoPilot autoPilot6 = createAutoPilot(nav);
-            autoPilot6.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
-            autoPilot6.selectXPath("netex:Centroid/netex:Location/gml:pos");
-            String xy = autoPilot6.evalXPathToString();
-            autoPilot6.resetXPath();
-
-            Double x = Double.parseDouble( readX(xy));
-            Double y = Double.parseDouble( readY(xy));
-
-            if ( projectedType!=null && x!=null && y!=null) {
-                ProjectedPoint projectedPoint = new ProjectedPoint();
-
-                projectedPoint.setProjectionType(projectedType);
-                projectedPoint.setX(BigDecimal.valueOf(x));
-                projectedPoint.setY(BigDecimal.valueOf(y));
-
-                centroid.setProjectedPoint( projectedPoint);
-            }
-
-//            Object longitude = parseOptionnalAttribute(nav, "Longitude", "Double");
-//            if ( longitude!=null) {
-//                centroid.setLongitude(BigDecimal.valueOf( (Double)longitude));
-//            }
-//            Object latitude = parseOptionnalAttribute(nav, "Latitude", "Double");
-//            if ( latitude!=null) {
-//                centroid.setLatitude(BigDecimal.valueOf( (Double)latitude));
-//            }
-            
             stopareas.add(stopArea);
             stopAreaByObjectId.put( stopArea.getObjectId(), stopArea);
         } 
         nav.pop();
         
     }
-    public String readX( String xy) {
-        if (xy==null)
-            return null; 
-        Matcher m = Pattern.compile( "([\\d\\.]+) [\\d\\.]+").matcher(xy.trim());
-        if ( ! m.matches()) {
-            throw new RuntimeException( "x y incoding in "+xy.trim());
-        }
-        return m.group(1);
-    }
-    public String readY( String xy) {
-        if (xy==null)
+    private BigDecimal readNumber( String numberStr) {
+        if ( numberStr==null)
             return null;
-        Matcher m = Pattern.compile( "[\\d\\.]+ ([\\d\\.]+)").matcher(xy.trim());
-        if ( ! m.matches()) {
-            throw new RuntimeException( "x y incoding in "+xy.trim());
+        try {
+            return BigDecimal.valueOf( Double.valueOf(numberStr));
+        } catch (Exception e) {
+            return null;
         }
-        return m.group(1);
+    }
+    
+    private String subXpathSelection( String xPath) throws XPathParseException {
+        AutoPilot autoPilot = createAutoPilot(nav);
+        autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
+        autoPilot.selectXPath( xPath);
+        
+        String result = autoPilot.evalXPathToString();
+        if ( result==null || result.isEmpty())
+            result = null;
+        
+        autoPilot.resetXPath();
+        return result;
+    }
+
+    private void convertCommonAttributes(StopArea stopArea) throws XPathParseException, NavException, NumberFormatException, ParseException {
+        
+        // Optionnal
+        stopArea.setObjectId( subXpathSelection("@id"));
+
+        Object objectVersion = subXpathSelection("@version");
+        stopArea.setObjectVersion( 0);
+        try { stopArea.setObjectVersion( (Integer)objectVersion); } catch(Exception e) {}
+
+        stopArea.setName( subXpathSelection("netex:Name"));
+        stopArea.setRegistrationNumber( subXpathSelection("netex:PrivateCode"));
+        stopArea.setNearestTopicName( subXpathSelection("netex:LandMark"));
+        stopArea.setComment( subXpathSelection("netex:Description"));
+        stopArea.setCountryCode( subXpathSelection( "netex:PostalAddress/netex:PostCode"));
+        stopArea.setStreetName( subXpathSelection( "netex:PostalAddress/netex:AddressLine1"));
+        
+        String tariffName = tariffByTariffId.get( subXpathSelection( "netex:tariffZones/netex:TariffZoneRef/@ref"));
+        if ( tariffName!=null) {
+            try {
+                stopArea.setFareCode( Integer.parseInt(tariffName));            
+            } catch( Exception e){}
+        }
+        
+        BigDecimal longitude = readNumber( subXpathSelection("netex:Centroid/netex:Location/netex:Longitude"));
+        BigDecimal latitude = readNumber( subXpathSelection("netex:Centroid/netex:Location/netex:Latitude"));
+
+        if ( longitude!=null && latitude!=null) {
+            stopArea.setLatitude(latitude);
+            stopArea.setLongitude(longitude);
+            stopArea.setLongLatType( LongLatTypeEnum.WGS84);
+        }
+
+        String projectedType = subXpathSelection( "netex:Centroid/netex:Location/gml:pos/@srsName");
+        String xy = subXpathSelection( "netex:Centroid/netex:Location/gml:pos");
+
+        BigDecimal x = readX(xy);
+        BigDecimal y = readY(xy);
+
+        if ( projectedType!=null && x!=null && y!=null) {
+            stopArea.setProjectionType(projectedType);
+            stopArea.setX(x);
+            stopArea.setY(y);
+        }
+    }
+    public BigDecimal readNumberInPattern( String xy, String pattern) {
+        String numberStr = null;
+        if (xy!=null) {
+            Matcher m = Pattern.compile( pattern).matcher(xy.trim());
+            if ( m.matches()) {
+                numberStr = m.group(1);
+            }
+        }
+        return readNumber(numberStr);
+    }
+    public BigDecimal readX( String xy) {
+        return readNumberInPattern( xy, "([\\d\\.]+) [\\d\\.]+");
+    }
+    public BigDecimal readY( String xy) {
+        return readNumberInPattern( xy, "[\\d\\.]+ ([\\d\\.]+)");
     }
 
 }

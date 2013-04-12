@@ -10,7 +10,9 @@ import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import java.text.ParseException;
@@ -30,6 +32,8 @@ public class NeptuneConverter {
     private JourneyPatternConverter journeyPatternConverter;
     private VehicleJourneyConverter vehicleJourneyConverter;
     private VehicleJourneyAtStopConverter vehicleJourneyAtStopConverter;
+    private TimetableConverter timetableConverter;
+    private StopAreaConverter stopAreaConverter;
     
     public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -41,6 +45,8 @@ public class NeptuneConverter {
         journeyPatternConverter = new JourneyPatternConverter(vTDNav);
         vehicleJourneyConverter = new VehicleJourneyConverter(vTDNav);
         vehicleJourneyAtStopConverter = new VehicleJourneyAtStopConverter(vTDNav);
+        timetableConverter = new TimetableConverter(vTDNav);
+        stopAreaConverter = new StopAreaConverter(vTDNav);
     }
     
     public Line convert() throws XPathParseException, XPathEvalException, NavException, ParseException
@@ -52,6 +58,8 @@ public class NeptuneConverter {
         List<JourneyPattern> journeyPatterns = journeyPatternConverter.convert();
         List<VehicleJourney> vehicleJourneys = vehicleJourneyConverter.convert();
         List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourneyAtStopConverter.convert();
+        List<Timetable> timetables = timetableConverter.convert();
+        List<StopArea> stopAreas = stopAreaConverter.convert();        
         
         // Ids
         Map<String,StopPoint> stopPointByObjectId = routeConverter.getStopPointByObjectId();
@@ -62,17 +70,14 @@ public class NeptuneConverter {
         
         // Link route with journey patterns        
         for (Route route : routes) {
-            // Hack perhaps to do before
+            // Hack because we use only one line perhaps to do before
             line.addRoute(route);            
             
-            for (JourneyPattern journeyPattern : journeyPatterns) {
-                if(journeyPattern.getRouteId().equals(route.getObjectId()))
-                    route.addJourneyPattern(journeyPattern);
-            }
+            Map<String, List<JourneyPattern>> vehicleJourneysByJPObjectId = journeyPatternConverter.getJourneyPatternByRouteObjectId();
+            route.setJourneyPatterns(vehicleJourneysByJPObjectId.get(route.getObjectId()));
         }
         
         Map<String, List<VehicleJourney>> vehicleJourneysByJPObjectId = vehicleJourneyConverter.getVehicleJourneysByJPObjectId();
-        logger.error(vehicleJourneysByJPObjectId.toString());
         // Link journey pattern with stop points and vehicle journeys
         for (JourneyPattern journeyPattern : journeyPatterns) {
             for (String stopPointId : journeyPattern.getStopPointIds()) {
@@ -84,13 +89,24 @@ public class NeptuneConverter {
         }
                                    
         Map<String, List<VehicleJourneyAtStop>> vehicleJourneyAtStopsByVJObjectId = vehicleJourneyAtStopConverter.getVehicleJourneyAtStopsByVJObjectId();
-        // Link vehicle journeys with vehicle journey at stop
+        Map<String, List<String>> timetablesByVehicleJourneyObjectId = vehicleJourneyConverter.getTimetablesByVehicleJourneyObjectId();
+        Map<String, Timetable> timetablesByObjectId = timetableConverter.getTimetablesByObjectId();
+        // Link vehicle journeys with vehicle journey at stop and time tables
         for (VehicleJourney vehicleJourney : vehicleJourneys) {
             vehicleJourney.setVehicleJourneyAtStops( vehicleJourneyAtStopsByVJObjectId.get(vehicleJourney.getObjectId()) );
+            
+            List<String> timetablesObjectId = timetablesByVehicleJourneyObjectId.get(vehicleJourney.getObjectId());
+            for (String timetableObjectId : timetablesObjectId) {
+                vehicleJourney.addTimetable( timetablesByObjectId.get(timetableObjectId) );
+            }            
+        }        
+        
+        // Link stop point with stop area
+        Map<String,StopArea> stopAreaByObjectId = stopAreaConverter.getStopAreaByObjectId();      
+        for (StopPoint stopPoint : stopPointByObjectId.values()) {
+            StopArea stopArea = stopAreaByObjectId.get( stopPoint.getContainedInStopAreaId() );
+            stopPoint.setContainedInStopArea(stopArea);
         }
-                                
-        //complete
-        line.complete();
         
         return line;
     }

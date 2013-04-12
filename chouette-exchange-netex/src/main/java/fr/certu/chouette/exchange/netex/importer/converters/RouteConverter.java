@@ -23,14 +23,15 @@ public class RouteConverter extends GenericConverter
 {    
     private static final Logger       logger = Logger.getLogger(RouteConverter.class);
     private List<Route> routes = new ArrayList<Route>();
-    private AutoPilot autoPilot;
-    @Getter
-    private Map<String,StopPoint> stopPointByObjectId;
+    private AutoPilot autoPilot;   
     private Map<String,PTDirectionEnum> directionByRef;
     private Map<String,String> waybackByRef;
     private Map<String,String> commentByObjectId;
     private Map<String,String> numberByObjectId;
     private VTDNav nav;
+    
+    @Getter
+    private Map<String,StopPoint> stopPointByObjectId;
     
     public RouteConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {

@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.netex.importer.converters;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -13,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -20,7 +22,7 @@ public class GenericConverter {
     
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
-
+    DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");   
         
     protected void returnToRootElement(VTDNav nav) throws NavException
     {
@@ -49,9 +51,37 @@ public class GenericConverter {
         return integers;
     }
     
+    protected List<Date> toDateList(List<Object> objects) {
+        List<Date> dates = new ArrayList<Date>(objects.size());
+        for (Object object : objects) {
+            dates.add((Date) object);
+        }
+        return dates;
+    }
+    
+    protected List<java.sql.Date> toShortDateList(List<Object> objects) {
+        List<java.sql.Date> dates = new ArrayList<java.sql.Date>(objects.size());
+        for (Object object : objects) {
+            dates.add((java.sql.Date) object);
+        }
+        return dates;
+    }
+    
+    protected List<DayTypeEnum> toDayTypeEnumList(List<Object> objects) {
+        List<DayTypeEnum> dayTypeEnums = new ArrayList<DayTypeEnum>(objects.size());
+        for (Object object : objects) {
+            dayTypeEnums.add(DayTypeEnum.fromValue(object.toString()));
+        }
+        return dayTypeEnums;
+    }
+    
+    
     private Object parseData(VTDNav nav, Object type, int position) throws ParseException, NavException
     {
         String value = nav.toNormalizedString(position);
+        
+        if(value.equals("")) 
+            return null; 
         
         if(type.toString().equals( "Date")) 
             return dateFormat.parse(value); 
@@ -59,23 +89,33 @@ public class GenericConverter {
             return Time.valueOf(value);
         else if(type.toString().equals( "Integer"))
             return nav.parseInt(position);
-        else if(type == "TransportModeNameEnum")
+        else if(type.toString().equals( "Date" ))
+            return dateFormat.parse(value); 
+        else if(type.toString().equals( "ShortDate" ))
+            return new java.sql.Date(shortDateFormat.parse(value).getTime());            
+        else if(type.toString().equals( "TransportModeNameEnum" ))
         {
            String transportMode = firstLetterUpcase(value); // Puts the first caracter upcase            
            TransportModeNameEnum transportModeNameEnum = TransportModeNameEnum.fromValue(transportMode);
            return transportModeNameEnum;       
         }
-        else if(type == "PTDirectionEnum")
+        else if(type.toString().equals( "PTDirectionEnum" ))
         {
            String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
            PTDirectionEnum enumVal = PTDirectionEnum.fromValue(enumValStr);
            return enumVal;
         }
-        else if(type == "PTNetworkSourceTypeEnum")
+        else if(type.toString().equals("PTNetworkSourceTypeEnum"))
         {
            String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
            PTNetworkSourceTypeEnum enumVal = PTNetworkSourceTypeEnum.fromValue(enumValStr);
            return enumVal;
+        }
+        else if(type.toString().equals("DayTypeEnum"))
+        {
+           String dayType = firstLetterUpcase(value); // Puts the first caracter upcase            
+           DayTypeEnum dayTypeEnum = DayTypeEnum.fromValue(dayType);
+           return dayTypeEnum;       
         }
         else
             return value;
@@ -84,6 +124,7 @@ public class GenericConverter {
     protected Object parseParentAttribute(VTDNav nav, String attribute, Object... params) throws NavException, ParseException
     {
         assert params.length <= 1;        
+        nav.push();
         
         Object type = params.length > 0 ? params[0].toString() : "String";           
         nav.toElement(VTDNav.PARENT);       
@@ -97,7 +138,9 @@ public class GenericConverter {
             throw new ExchangeRuntimeException(ExchangeExceptionCode.INVALID_NETEX_FILE, log); 
         }
             
-        return parseData(nav, type, position);
+        Object parentAttribute = parseData(nav, type, position);
+        nav.pop();
+        return parentAttribute;
     }           
     
     protected Object parseMandatoryAttribute(VTDNav nav, String attribute, Object... params) throws NavException, ParseException
@@ -311,6 +354,44 @@ public class GenericConverter {
             return nav.toNormalizedString(myPos);
         }
         return null;
+    }
+    
+    protected Object parseOptionnalSubElement(VTDNav nav, String element, String subElement, Object... params) throws NavException, ParseException
+    {
+        List<Object> elements = parseOptionnalSubElements(nav, element, subElement, params);
+        if(elements.isEmpty())     
+            return null;
+        else
+            return elements.get(0);
+    }
+    
+    protected List<Object> parseOptionnalSubElements(VTDNav nav, String element, String subElement, Object... params) throws NavException, ParseException
+    {
+        Object type = params.length > 0 ? params[0].toString() : "String";
+        List<Object> elements = new ArrayList<Object>();
+        nav.push();
+        AutoPilot pilot = new AutoPilot(nav);
+        pilot.selectElement(element);
+        
+        while( pilot.iterate() ) // iterate will iterate thru all elements
+        {                   
+            pilot.selectElement(subElement);
+            while( pilot.iterate() ) // iterate will iterate thru all elements
+            {                                        
+                int position = nav.getText();
+                
+                if (position == -1 || nav.toNormalizedString(position) == null)
+                {
+                    String log = "No element " + element + " found for " + this.getClass();
+                    return elements;     
+                }
+                
+                elements.add( parseData(nav, type, position) );   
+            }
+        }   
+        
+        nav.pop();
+        return elements;
     }
     
     public String firstLetterUpcase(String word)

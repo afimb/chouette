@@ -2,8 +2,8 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import chouette.schema.Registration;
 import chouette.schema.TridentObjectTypeType;
-import fr.certu.chouette.exchange.xml.neptune.report.NeptuneReportItem;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -17,7 +17,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		target.setObjectId(getNonEmptyTrimedString(source.getObjectId()));
 		if (target.getObjectId() == null)
 		{
-			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"ObjectId") ;
+			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"ObjectId") ;
 			report.addItem(item);
 		}
 
@@ -43,7 +43,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		String number = registration.getRegistrationNumber();
 		if (number == null || number.trim().length() == 0) 
 		{
-			ReportItem item = new NeptuneReportItem(NeptuneReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"RegistrationNumber") ;
+			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"RegistrationNumber") ;
 			report.addItem(item);
 			return null;
 		}

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
-	plus de details -->
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour
+plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="StopArea" table="stop_areas">
 		<comment>StopArea</comment>
@@ -17,7 +17,6 @@
 				<comment>Neptune identification</comment>
 			</column>
 		</property>
-
 		<property name="objectVersion" type="int">
 			<column name="object_version" default="1">
 				<comment>Version of this object</comment>
@@ -44,7 +43,7 @@
 			</column>
 		</property>
 		<property name="areaType"
-			type="fr.certu.chouette.dao.hibernate.usertype.ChouettteAreaTypeUserType">
+		type="fr.certu.chouette.dao.hibernate.usertype.ChouettteAreaTypeUserType">
 			<column name="area_type">
 				<comment>Type of Area : BoardingPosition, Quay, CommercialStopPoint,
 					StopPlace or ITL)</comment>
@@ -65,72 +64,58 @@
 				<comment>Fare code</comment>
 			</column>
 		</property>
-		<component class="fr.certu.chouette.model.neptune.AreaCentroid"
-			name="areaCentroid" update="true">
-			<property column="objectId" insert="false" name="containedInStopAreaId"
-				type="string" update="false" />
-
-			<property name="longitude" 
-				type="java.math.BigDecimal">
-				<column name="longitude" precision="19" scale="16">
-					<comment>Longitude</comment>
-				</column>
-			</property>
-			<property name="latitude" 
-				type="java.math.BigDecimal">
-				<column name="latitude" precision="19" scale="16">
-					<comment>Latitude</comment>
-				</column>
-			</property>
-			<property name="longLatType"
-				type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
-				<column name="long_lat_type">
-					<comment>Model used for Longitude and Latitude (Standard, WGS84 or
-						WGS92)</comment>
-				</column>
-			</property>
-			<component class="fr.certu.chouette.model.neptune.type.ProjectedPoint"
-				name="projectedPoint">
-				<property name="x" type="java.math.BigDecimal">
-					<column name="x">
-						<comment>X coordinate</comment>
-					</column>
-				</property>
-				<property name="y" type="java.math.BigDecimal">
-					<column name="y">
-						<comment>Y coordinate</comment>
-					</column>
-				</property>
-				<property name="projectionType" type="string">
-					<column name="projection_type">
-						<comment>Projection used for coordinates</comment>
-					</column>
-				</property>
-			</component>
-			<component class="fr.certu.chouette.model.neptune.type.Address"
-				name="address">
-				<property name="countryCode" type="string">
-					<column name="country_code">
-						<comment>Zip code</comment>
-					</column>
-				</property>
-				<property name="streetName" type="string">
-					<column name="street_name">
-						<comment>Address</comment>
-					</column>
-				</property>
-			</component>
-		</component>
-
+		<property name="longitude"
+		type="java.math.BigDecimal">
+			<column name="longitude" precision="19" scale="16">
+				<comment>Longitude</comment>
+			</column>
+		</property>
+		<property name="latitude"
+		type="java.math.BigDecimal">
+			<column name="latitude" precision="19" scale="16">
+				<comment>Latitude</comment>
+			</column>
+		</property>
+		<property name="longLatType"
+		type="fr.certu.chouette.dao.hibernate.usertype.LongLatTypeUserType">
+			<column name="long_lat_type">
+				<comment>Model used for Longitude and Latitude (Standard, WGS84 or
+					WGS92)</comment>
+			</column>
+		</property>
+		<property name="x" type="java.math.BigDecimal">
+			<column name="x">
+				<comment>X coordinate</comment>
+			</column>
+		</property>
+		<property name="y" type="java.math.BigDecimal">
+			<column name="y">
+				<comment>Y coordinate</comment>
+			</column>
+		</property>
+		<property name="projectionType" type="string">
+			<column name="projection_type">
+				<comment>Projection used for coordinates</comment>
+			</column>
+		</property>
+		<property name="countryCode" type="string">
+			<column name="country_code">
+				<comment>Zip code</comment>
+			</column>
+		</property>
+		<property name="streetName" type="string">
+			<column name="street_name">
+				<comment>Address</comment>
+			</column>
+		</property>
 		<many-to-one name="parent" cascade="none" class="StopArea"
-			lazy="no-proxy" outer-join="auto" foreign-key="area_parent_fkey">
+		lazy="no-proxy" outer-join="auto" foreign-key="area_parent_fkey">
 			<column name="parent_id">
 				<comment>parent reference</comment>
 			</column>
 		</many-to-one>
-        
 		<bag name="routingConstraintLines" table="routing_constraints_lines"
-			lazy="true">
+		lazy="true">
 			<comment>Routing constraint applicable on lines</comment>
 			<key foreign-key="routingconstraint_stoparea_fkey">
 				<column name="stop_area_id">
@@ -148,10 +133,9 @@
 		<bag name="routingConstraintAreas" table="stop_areas_stop_areas" lazy="true">
 			<key column="parent_id" foreign-key="stoparea_parent_fkey" />
 			<many-to-many column="child_id" class="StopArea"
-				foreign-key="stoparea_child_fkey" />
+			foreign-key="stoparea_child_fkey" />
 		</bag>
-
- 		<bag name="containedStopAreas" lazy="true" inverse="true">
+		<bag name="containedStopAreas" lazy="true" inverse="true">
 			<key column="parent_id" foreign-key="area_parent_fkey" on-delete="noaction" />
 			<one-to-many class="StopArea" />
 		</bag>

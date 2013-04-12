@@ -46,8 +46,10 @@ public class NetexFileWriter {
         model.put("tariffStopPoints", tariffStopPoints(line));
         
         // For SiteFrame need to have stop areas type StopPlace and CommercialStopPoint only
-        model.put("stopPlaces", line.getStopPlaces());        
-        model.put("commercialStopPoints", line.getCommercialStopPoints()); 
+        List<StopArea> stopAreaWithoutQuays = new ArrayList<StopArea>();
+        stopAreaWithoutQuays.addAll( line.getStopPlaces());
+        stopAreaWithoutQuays.addAll( line.getCommercialStopPoints());
+        model.put("stopPlaces", stopAreaWithoutQuays);
         
         // For TimetableFrame need to have vehicle journeys
         model.put("vehicleJourneys", line.getVehicleJourneys()); 

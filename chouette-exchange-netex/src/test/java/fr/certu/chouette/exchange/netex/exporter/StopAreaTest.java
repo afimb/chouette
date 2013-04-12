@@ -23,31 +23,31 @@ public class StopAreaTest extends ChouetteModelTest {
                 quay.objectIdSuffix();
     }
     
-    @Test(groups = {"SiteFrame", "topographicPlaces"}, description = "Validate presence of TopographicPlace with expected id")
-    public void verifyTopographicPlaceId() throws XPathExpressionException, ParseException {
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of StopPlace with expected id")
+    public void verifyStopPlaceId() throws XPathExpressionException, ParseException {
         
         List<StopArea> topoPoints = line.getStopPlaces();
         
         for( StopArea topoPoint : topoPoints) {
-            String xPathExpr = "boolean(//netex:SiteFrame/netex:topographicPlaces/"+
-                                "netex:TopographicPlace"+
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace"+
                                 "[@id = '"+
                                 topoPoint.objectIdPrefix()+
-                                ":TopographicPlace:"+
+                                ":StopPlace:"+
                                 topoPoint.objectIdSuffix()+
                                 "'])";
             assertXPathTrue( xPathExpr);
         }
     }
     
-    @Test(groups = {"SiteFrame", "topographicPlaces"}, description = "Validate presence of TopographicPlace with expected name")
-    public void verifyTopographicPlaceName() throws XPathExpressionException, ParseException {
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of parent StopPlace with expected name")
+    public void verifyStopPlaceParentName() throws XPathExpressionException, ParseException {
         
         List<StopArea> topoPoints = line.getStopPlaces();
         
         for( StopArea topoPoint : topoPoints) {
-            String xPathExpr = "boolean(//netex:SiteFrame/netex:topographicPlaces/"+
-                                "netex:TopographicPlace/netex:Descriptor/"+
+            String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
+                                "netex:StopPlace[not(netex:quays/netex:Quay)]/"+
                                 "netex:Name/"+
                                 "text() = '"+
                                 topoPoint.getName()+
@@ -56,11 +56,11 @@ public class StopAreaTest extends ChouetteModelTest {
         }
     }
     
-    @Test(groups = {"SiteFrame", "topographicPlaces"}, description = "Validate presence of expected amount of TopographicPlace")
-    public void verifyTopographicPlaceCount() throws XPathExpressionException, ParseException {
-        String xPathExpr = "count(//netex:SiteFrame/netex:topographicPlaces/"+
-                            "netex:TopographicPlace)";
-        assertXPathCount( xPathExpr, line.getStopPlaces().size());
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of expected amount of StopPlace")
+    public void verifyStopPlaceCount() throws XPathExpressionException, ParseException {
+        String xPathExpr = "count(//netex:SiteFrame/netex:stopPlaces/"+
+                            "netex:StopPlace)";
+        assertXPathCount( xPathExpr, line.getStopPlaces().size()+line.getCommercialStopPoints().size());
     }
     
     @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of StopPlace with expected id")
@@ -80,17 +80,17 @@ public class StopAreaTest extends ChouetteModelTest {
         }
     }
     
-    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of ContainedInPlaceRef with expected ref")
-    public void verifyContainedInPlaceRef() throws XPathExpressionException, ParseException {
+    @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of ParentZoneRef with expected ref")
+    public void verifyParentZoneRef() throws XPathExpressionException, ParseException {
         List<StopArea> commercials = line.getCommercialStopPoints();
         
         for( StopArea commercial : commercials) {
             if (commercial.getParent()!=null) {
                 String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
-                                    "netex:StopPlace/netex:ContainedInPlaceRef"+
+                                    "netex:StopPlace/netex:ParentZoneRef"+
                                     "[@ref = '"+
                                     commercial.getParent().objectIdPrefix()+
-                                    ":TopographicPlace:"+
+                                    ":StopPlace:"+
                                     commercial.getParent().objectIdSuffix()+
                                     "'])";
                 assertXPathTrue( xPathExpr);

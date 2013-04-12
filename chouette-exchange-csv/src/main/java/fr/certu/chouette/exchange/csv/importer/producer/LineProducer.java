@@ -365,7 +365,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 	 */
 	private void buildJourneys(Route route, List<String[]> arrets, String[] timetables, String[] specifics,
 			int startRow, int endRow, int startColumn, int endColumn) throws ExchangeException
-					{
+			{
 		int rank = 1;
 		int journeyRank = 1;
 		List<StopPoint> stopPoints = route.getStopPoints();
@@ -440,7 +440,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 		}
 
 
-					}
+			}
 
 	/**
 	 * @param stopData
@@ -458,7 +458,6 @@ public class LineProducer extends AbstractModelProducer<Line>
 		physical.setName(getValue(STOPNAME_COLUMN, stopData));
 		physical.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":BP_" + toIdString(physical.getName()));
 		AreaCentroid centroid = new AreaCentroid();
-		physical.setAreaCentroid(centroid);
 		centroid.setLatitude(getBigDecimalValue(LATITUDE_COLUMN, stopData));
 		centroid.setLongitude(getBigDecimalValue(LONGITUDE_COLUMN, stopData));
 		if (centroid.getLatitude() == null || centroid.getLongitude() == null)
@@ -485,6 +484,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 				physical.setObjectId(physical.getObjectId() + "_" + toIdString(address.getCountryCode()));
 			centroid.setAddress(address);
 		}
+		physical.setAreaCentroid(centroid);
 		StopArea commercial = commercials.get(getValue(AREAZONE_COLUMN, stopData));
 		if (commercial == null)
 		{
@@ -516,13 +516,14 @@ public class LineProducer extends AbstractModelProducer<Line>
 		if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
 		{
 			AreaCentroid centroid2 = new AreaCentroid();
-			commercial.setAreaCentroid(centroid2);
+
 			Address address = new Address();
 			address.setStreetName(getValue(ADDRESS_COLUMN, stopData));
 			address.setCountryCode(getValue(ZIPCODE_COLUMN, stopData));
 			if (address.getCountryCode() != null)
 				commercial.setObjectId(commercial.getObjectId() + "_" + toIdString(address.getCountryCode()));
 			centroid2.setAddress(address);
+			commercial.setAreaCentroid(centroid2);
 		}
 		if (!NeptuneIdentifiedObject.checkObjectId(commercial.getObjectId()))
 		{
