@@ -56,7 +56,7 @@ public class Address
 	public String toString() 
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("streetName=").append(streetName).append(" contryCode=").append(countryCode);
+		sb.append("streetName=").append(streetName).append(" countryCode=").append(countryCode);
 		return sb.toString();
 	}
 

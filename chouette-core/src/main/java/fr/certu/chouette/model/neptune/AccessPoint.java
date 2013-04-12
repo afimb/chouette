@@ -11,6 +11,7 @@ import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
  * Neptune AccessPoint  
@@ -192,6 +193,33 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 		if (projectedPoint != null)
 			projectedPoint.populateAccessPoint(this);
 	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
+	 * lang.String, int)
+	 */
+	@Override
+	public String toString(String indent, int level)
+	{
+		StringBuilder sb = new StringBuilder(super.toString(indent, level));
+		sb.append("\n").append(indent).append("  comment = ").append(comment);
+		sb.append("\n").append(indent).append("  liftAvailable = ").append(liftAvailable);
+		sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
+		sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
+		sb.append("\n").append(indent).append("  streetName = ").append(streetName);
+		sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
+		sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
+		sb.append("\n").append(indent).append("  latitude = ").append(latitude);
+		sb.append("\n").append(indent).append("  longitude = ").append(longitude);
+		sb.append("\n").append(indent).append("  x = ").append(x);
+		sb.append("\n").append(indent).append("  y = ").append(y);
+		sb.append("\n").append(indent).append("  projection = ").append(projectionType);
+		return sb.toString();
+	}
+
+	
 	@Override
 	public void complete() 
 	{

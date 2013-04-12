@@ -721,6 +721,14 @@ public class StopArea extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  nearestTopicName = ").append(nearestTopicName);
 		sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
 		sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
+		sb.append("\n").append(indent).append("  streetName = ").append(streetName);
+		sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
+		sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
+		sb.append("\n").append(indent).append("  latitude = ").append(latitude);
+		sb.append("\n").append(indent).append("  longitude = ").append(longitude);
+		sb.append("\n").append(indent).append("  x = ").append(x);
+		sb.append("\n").append(indent).append("  y = ").append(y);
+		sb.append("\n").append(indent).append("  projection = ").append(projectionType);
 
 		if (areaCentroid != null)
 		{

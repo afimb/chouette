@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
-	plus de details -->
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour
+plus de details -->
 <hibernate-mapping package="fr.certu.chouette.model.neptune">
 	<class name="Timetable" table="time_tables">
 		<comment>Timetables</comment>
@@ -32,7 +32,6 @@
 				<comment>Creator identification</comment>
 			</column>
 		</property>
-
 		<property name="comment" type="string">
 			<column name="comment">
 				<comment>Comment</comment>
@@ -46,6 +45,16 @@
 		<property name="intDayTypes">
 			<column name="int_day_types">
 				<comment>coded DayTypeEnum list (Monday,Tuesday, ...)</comment>
+			</column>
+		</property>
+		<property name="startOfPeriod" type="date">
+			<column name="start_date">
+				<comment>start date</comment>
+			</column>
+		</property>
+		<property name="endOfPeriod" type="date">
+			<column name="end_date">
+				<comment>end date</comment>
 			</column>
 		</property>
 		<list lazy="false" name="calendarDays" table="time_table_dates">
@@ -93,7 +102,7 @@
 		</list>
 		<!-- comments for this bag are sets in VehicleJourney.hbm.xml -->
 		<bag name="vehicleJourneys" table="time_tables_vehicle_journeys" lazy="true"
-			inverse="true">
+		inverse="true">
 			<key>
 				<column name="time_table_id">
 					<comment>Timetable foreign key</comment>

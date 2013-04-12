@@ -116,14 +116,14 @@ public class Timetable extends NeptuneIdentifiedObject
 	 * Start of period = minimum of timetables periods and date; may be null <br/>
 	 * <i>readable only; populated by complete()</i>
 	 */
-	@Getter
+	@Getter @Setter
 	private Date startOfPeriod;
 
 	/**
 	 * End of period = maximum of timetables periods and date; may be null <br/>
 	 * <i>readable only; populated by complete()</i>
 	 */
-	@Getter 
+	@Getter @Setter
 	private Date endOfPeriod;
 
 	/**
@@ -287,6 +287,8 @@ public class Timetable extends NeptuneIdentifiedObject
 		StringBuilder sb = new StringBuilder(super.toString(indent, level));
 		sb.append("\n").append(indent).append("  comment = ").append(comment);
 		sb.append("\n").append(indent).append("  version = ").append(version);
+		sb.append("\n").append(indent).append("  startOfPeriod = ").append(formatDate(startOfPeriod));
+		sb.append("\n").append(indent).append("  endOfPeriod = ").append(formatDate(endOfPeriod));
 		if (dayTypes != null)
 		{
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("dayTypes");
@@ -353,7 +355,7 @@ public class Timetable extends NeptuneIdentifiedObject
 		}
 		else
 		{
-			return null;
+			return "undefined";
 		}
 	}
 
@@ -478,9 +480,17 @@ public class Timetable extends NeptuneIdentifiedObject
 	{
 		if (isCompleted())
 			return;
-		// TODO Auto-generated method stub
 		super.complete();
+		computeLimitOfPeriods();
+	}
 
+	/**
+	 * calculate startOfPeriod and endOfPeriod form dates and periods
+	 */
+	public void computeLimitOfPeriods()
+	{
+		startOfPeriod = null;
+		endOfPeriod = null;
 		for (Period period : periods)
 		{
 			if (startOfPeriod == null || startOfPeriod.after(period.getStartDate()))
@@ -516,7 +526,6 @@ public class Timetable extends NeptuneIdentifiedObject
 		}
 
 	}
-
 
 
 }
