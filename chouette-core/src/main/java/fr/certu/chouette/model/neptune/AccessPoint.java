@@ -8,10 +8,10 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
-import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
  * Neptune AccessPoint  
@@ -118,7 +118,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * access type (In,Out,InOut)
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private String type;
+	@Getter @Setter private AccessPointTypeEnum type;
 	/**
 	 * Indicate if a Lift is available 
 	 * <br/><i>readable/writable</i>

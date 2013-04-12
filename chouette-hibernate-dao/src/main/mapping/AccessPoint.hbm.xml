@@ -102,7 +102,7 @@ plus de details -->
 				<comment>Closing time</comment>
 			</column>
 		</property>
-		<property name="type" type="string">
+		<property name="type" type="fr.certu.chouette.dao.hibernate.usertype.AccessPointTypeUserType">
 			<column name="access_type">
 				<comment>Access Point Type : free description</comment>
 			</column>

@@ -54,7 +54,8 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setBigDecimal(9, accessPoint.getLongitude());
 		ps.setBigDecimal(10, accessPoint.getLatitude());
 		String projectionType = null,
-				longLatType = null;
+				longLatType = null,
+				type = null;
 		if(accessPoint.getLongLatType() != null)
 			longLatType = accessPoint.getLongLatType().value();
 		ps.setString(11, longLatType);
@@ -75,7 +76,11 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		if(accessPoint.getClosingTime() != null)
 			closingTime = accessPoint.getClosingTime();
 		ps.setTime(18, closingTime);
-		ps.setString(19, accessPoint.getType());
+		if (accessPoint.getType() != null)
+		{
+		   type = accessPoint.getType().value();
+		}
+		ps.setString(19, type);
 		ps.setBoolean(20, accessPoint.isLiftAvailable());
 		ps.setBoolean(21,accessPoint.isMobilityRestrictedSuitable());
 		ps.setBoolean(22,accessPoint.isStairsAvailable());
