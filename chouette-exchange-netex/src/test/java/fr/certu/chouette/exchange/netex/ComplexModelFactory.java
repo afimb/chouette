@@ -7,6 +7,8 @@ package fr.certu.chouette.exchange.netex;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import com.tobedevoured.modelcitizen.RegisterBlueprintException;
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -62,6 +64,7 @@ public class ComplexModelFactory {
         createTimetables();
         
         createConnectionLinks();
+        createAccessLinks();        
     }
 
     private void createStopAreas() throws RuntimeException {
@@ -110,6 +113,25 @@ public class ComplexModelFactory {
 
                 startOfLink.addConnectionLink(connectionLink);
                 endOfLink.addConnectionLink(connectionLink);
+            }
+        } catch (CreateModelException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+    
+    private void createAccessLinks() throws RuntimeException {
+        try {
+            if (quays.size() > 2)
+            {
+                StopArea stopArea = quays.get(0);
+
+                AccessLink accessLink = modelFactory.createModel(AccessLink.class);
+                AccessPoint accessPoint = modelFactory.createModel(AccessPoint.class);
+                
+                accessLink.setAccessPoint(accessPoint);
+                accessLink.setStopArea(stopArea);                                
+                
+                stopArea.addAccessLink(accessLink);
             }
         } catch (CreateModelException ex) {
             throw new RuntimeException(ex.getMessage(), ex);

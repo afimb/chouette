@@ -108,7 +108,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * Time for opening the AccessPoint
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private Time openningTime;
+	@Getter @Setter private Time openingTime;
 	/**
 	 * Time for closing the AccessPoint
 	 * <br/><i>readable/writable</i>

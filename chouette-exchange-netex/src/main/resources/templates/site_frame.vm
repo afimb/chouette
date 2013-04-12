@@ -157,15 +157,15 @@
   <!-- Assignments of Path Links -->
   <pathLinks>
     #foreach( $accessLink in $accessLinks )       
-    <PathLink id="${accessLink.objectIdPrefix()}:SiteConnection:${accessLink.objectIdSuffix()}" version="$accessLink.objectVersion">  
+    <PathLink id="${accessLink.objectIdPrefix()}:PathLink:${accessLink.objectIdSuffix()}" version="$accessLink.objectVersion">  
       #if ( $accessLink.name )
       <Name>$!esc.xml($accessLink.name)</Name>
       #end
       <From>
-        <EntranceRef ref="$accessLink.startOfLinkId" />
+        <EntranceRef ref="$accessLink.accessPoint.objectId" />
       </From>
       <To> 
-        <PlaceRef ref="$accessLink.endOfLinkId" /> 
+        <PlaceRef ref="$accessLink.stopArea.objectId" /> 
       </To> 
       <Distance>$!accessLink.linkDistance</Distance>
       #set($linkType = $accessLink.linkType)
