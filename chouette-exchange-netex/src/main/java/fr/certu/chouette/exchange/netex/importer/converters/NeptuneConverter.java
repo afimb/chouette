@@ -1,10 +1,16 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -16,15 +22,10 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import org.apache.log4j.Logger;
 
 public class NeptuneConverter {
     
     private static final Logger       logger = Logger.getLogger(LineConverter.class);
-    private AutoPilot autoPilot;
     private VTDNav vTDNav;
     private PTNetworkConverter networkConverter;
     private CompanyConverter companyConverter;
@@ -76,12 +77,17 @@ public class NeptuneConverter {
         }
         
         // Link route with journey patterns        
+        Map<String, List<JourneyPattern>> journeyPatternByRouteObjectId = journeyPatternConverter.getJourneyPatternByRouteObjectId();
         for (Route route : routes) {
             // Hack because we use only one line perhaps to do before
             line.addRoute(route);            
-            
-            Map<String, List<JourneyPattern>> vehicleJourneysByJPObjectId = journeyPatternConverter.getJourneyPatternByRouteObjectId();
-            route.setJourneyPatterns(vehicleJourneysByJPObjectId.get(route.getObjectId()));
+            List<JourneyPattern> journeyPatternsOfRoute = journeyPatternByRouteObjectId.get(route.getObjectId());
+            route.setJourneyPatterns(journeyPatternsOfRoute);
+            // setters don't set reverse link: must be set after
+            for (JourneyPattern journeyPattern : journeyPatternsOfRoute) 
+            {
+            	journeyPattern.setRoute(route);
+			}
         }
         
         Map<String, List<VehicleJourney>> vehicleJourneysByJPObjectId = vehicleJourneyConverter.getVehicleJourneysByJPObjectId();
@@ -91,8 +97,14 @@ public class NeptuneConverter {
                 if (stopPointByObjectId.get(stopPointId) != null)
                     journeyPattern.addStopPoint(stopPointByObjectId.get(stopPointId));
             }
-            
-            journeyPattern.setVehicleJourneys( vehicleJourneysByJPObjectId.get(journeyPattern.getObjectId()) );
+            List<VehicleJourney> vehicleJourneysOfJourneyPattern = vehicleJourneysByJPObjectId.get(journeyPattern.getObjectId());
+            journeyPattern.setVehicleJourneys(vehicleJourneysOfJourneyPattern);
+            // setters don't set reverse link: must be set after
+            for (VehicleJourney vehicleJourney : vehicleJourneysOfJourneyPattern) 
+            {
+            	vehicleJourney.setJourneyPattern(journeyPattern);
+            	vehicleJourney.setRoute(journeyPattern.getRoute());
+			}
         }
                                    
         Map<String, List<VehicleJourneyAtStop>> vehicleJourneyAtStopsByVJObjectId = vehicleJourneyAtStopConverter.getVehicleJourneyAtStopsByVJObjectId();
@@ -100,10 +112,19 @@ public class NeptuneConverter {
         Map<String, Timetable> timetablesByObjectId = timetableConverter.getTimetablesByObjectId();
         // Link vehicle journeys with vehicle journey at stop and time tables
         for (VehicleJourney vehicleJourney : vehicleJourneys) {
-            vehicleJourney.setVehicleJourneyAtStops( vehicleJourneyAtStopsByVJObjectId.get(vehicleJourney.getObjectId()) );
+        	List<VehicleJourneyAtStop> vjassOfVj = vehicleJourneyAtStopsByVJObjectId.get(vehicleJourney.getObjectId());
+            vehicleJourney.setVehicleJourneyAtStops( vjassOfVj );
+            // setters don't set reverse link: must be set after
+            for (VehicleJourneyAtStop vehicleJourneyAtStop : vjassOfVj) 
+            {
+            	vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
+            	StopPoint stopPoint = stopPointByObjectId.get(vehicleJourneyAtStop.getStopPointId());
+            	vehicleJourneyAtStop.setStopPoint(stopPoint);
+			}
             
             List<String> timetablesObjectId = timetablesByVehicleJourneyObjectId.get(vehicleJourney.getObjectId());
-            for (String timetableObjectId : timetablesObjectId) {
+            for (String timetableObjectId : timetablesObjectId) 
+            {
                 vehicleJourney.addTimetable( timetablesByObjectId.get(timetableObjectId) );
             }            
         }        
@@ -112,7 +133,7 @@ public class NeptuneConverter {
         Map<String,StopArea> stopAreaByObjectId = stopAreaConverter.getStopAreaByObjectId();      
         for (StopPoint stopPoint : stopPointByObjectId.values()) {
             StopArea stopArea = stopAreaByObjectId.get( stopPoint.getContainedInStopAreaId() );
-            stopPoint.setContainedInStopArea(stopArea);
+            stopArea.addContainedStopPoint(stopPoint);
         }
         
         return line;
