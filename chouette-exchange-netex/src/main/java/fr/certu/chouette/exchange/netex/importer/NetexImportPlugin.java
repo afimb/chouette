@@ -41,10 +41,7 @@ import org.apache.log4j.Logger;
 public class NetexImportPlugin implements IImportPlugin<Line> 
 {    
     private VTDGen vg = new VTDGen();  
-    private static final Logger logger = Logger.getLogger(NetexImportPlugin.class);
-    
-    @Getter
-    private NetexReport report = new NetexReport(NetexReport.KEY.IMPORT);  
+    private static final Logger logger = Logger.getLogger(NetexImportPlugin.class);         
     
    @Getter @Setter
    private NetexFileReader netexFileReader;
@@ -112,6 +109,7 @@ public class NetexImportPlugin implements IImportPlugin<Line>
    @Override
    public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
    {
+      NetexReport report = new NetexReport(NetexReport.KEY.IMPORT); 
       reportContainer.setReport(report);
 
       String filePath = null;
