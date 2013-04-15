@@ -244,8 +244,9 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
          */
 	public String objectIdPrefix()
 	{
-            if (objectIdArray().length > 2)
-                return objectIdArray()[0];  
+            if (objectIdArray().length > 2) {
+                return objectIdArray()[0].trim();  
+            }
             else
                 return "";
         }
@@ -258,7 +259,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	public String objectIdSuffix()
 	{
             if (objectIdArray().length > 2)
-                return objectIdArray()[2];
+                return objectIdArray()[2].trim();
             else
                 return "";
         }
