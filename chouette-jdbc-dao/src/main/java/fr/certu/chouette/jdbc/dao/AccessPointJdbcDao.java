@@ -70,8 +70,8 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setString(15, accessPoint.getContainedInStopArea());
 		setId(ps,16,accessPoint.getContainedIn());
 		Time openningTime = null , closingTime = null;
-		if(accessPoint.getOpenningTime() != null)
-			openningTime = accessPoint.getOpenningTime();
+		if(accessPoint.getOpeningTime() != null)
+			openningTime = accessPoint.getOpeningTime();
 		ps.setTime(17, openningTime);
 		if(accessPoint.getClosingTime() != null)
 			closingTime = accessPoint.getClosingTime();

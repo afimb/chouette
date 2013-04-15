@@ -58,7 +58,7 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chou
 		}
 		// OpenningTime optional
 		if(xmlAccessPoint.getOpeningTime() != null)
-			accessPoint.setOpenningTime(getTime(xmlAccessPoint.getOpeningTime()));	
+			accessPoint.setOpeningTime(getTime(xmlAccessPoint.getOpeningTime()));	
 		// ClosingTime optional
 		if(xmlAccessPoint.getClosingTime() != null)
 			accessPoint.setClosingTime(getTime(xmlAccessPoint.getClosingTime()));

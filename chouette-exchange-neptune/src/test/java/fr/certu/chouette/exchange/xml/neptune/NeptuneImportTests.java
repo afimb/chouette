@@ -363,7 +363,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
          Assert.assertEquals(apoints.size(),1,"line must have 1 access point");
          for (AccessPoint accessPoint : apoints)
          {
-            c.setTimeInMillis(accessPoint.getOpenningTime().getTime());
+            c.setTimeInMillis(accessPoint.getOpeningTime().getTime());
             int minutes = c.get(Calendar.MINUTE) ; 
             int hours = c.get(Calendar.HOUR_OF_DAY) ; 
             int seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 

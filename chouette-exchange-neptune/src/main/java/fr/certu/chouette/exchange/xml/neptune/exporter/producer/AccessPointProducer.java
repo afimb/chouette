@@ -31,7 +31,7 @@ public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.
        }
 
       // opening/closingTime
-      castorAccessPoint.setOpeningTime(toCastorTime(accessPoint.getOpenningTime()));
+      castorAccessPoint.setOpeningTime(toCastorTime(accessPoint.getOpeningTime()));
       castorAccessPoint.setClosingTime(toCastorTime(accessPoint.getClosingTime()));
 
       
