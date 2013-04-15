@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import lombok.Getter;
@@ -41,13 +40,13 @@ import org.apache.log4j.Logger;
 public class NetexImportPlugin implements IImportPlugin<Line> 
 {    
     private VTDGen vg = new VTDGen();  
-    private static final Logger logger = Logger.getLogger(NetexImportPlugin.class);
-    
-    @Getter
-    private NetexReport report = new NetexReport(NetexReport.KEY.IMPORT);  
+    private static final Logger logger = Logger.getLogger(NetexImportPlugin.class);         
     
    @Getter @Setter
    private NetexFileReader netexFileReader;
+   
+   @Getter
+   private NetexReport report;
    
     /**
     * API description for caller
@@ -112,6 +111,7 @@ public class NetexImportPlugin implements IImportPlugin<Line>
    @Override
    public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
    {
+      report = new NetexReport(NetexReport.KEY.IMPORT); 
       reportContainer.setReport(report);
 
       String filePath = null;
