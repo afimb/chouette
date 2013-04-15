@@ -145,12 +145,16 @@
       #if ( $accessLink.name )
       <Name>$!esc.xml($accessLink.name)</Name>
       #end
+      #if($accessLink.accessPoint) 
       <From>
         <EntranceRef ref="$accessLink.accessPoint.objectId" />
       </From>
+      #end
+      #if($accessLink.stopArea) 
       <To> 
         <PlaceRef ref="$accessLink.stopArea.objectId" /> 
       </To> 
+      #end
       <Distance>$!accessLink.linkDistance</Distance>
       #set($linkType = $accessLink.linkType)
       #if ( $linkType == "Underground" ) 
