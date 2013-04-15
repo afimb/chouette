@@ -109,6 +109,7 @@
 			<map>
 				<entry key="aclk_acpt_fkey" value="access_links;access_point_id;access_points;id" />
 				<entry key="aclk_area_fkey" value="access_links;stop_area_id;stop_areas;id" />
+				<entry key="access_area_fkey" value="access_points;stop_area_id;stop_areas;id" />
 				<entry key="colk_endarea_fkey" value="connection_links;arrival_id;stop_areas;id" />
 				<entry key="colk_startarea_fkey" value="connection_links;departure_id;stop_areas;id" />
 				<!-- <entry key="faci_colk_fkey" value="facilities;connection_link_id;connection_links;id" />
@@ -147,6 +148,8 @@
 				<entry key="line_ptnetwork_fkey" value="lines;network_id;networks;id" />
 				<entry key="vj_company_fkey" value="vehicle_journeys;company_id;companies;id" />
 				<entry key="area_parent_fkey" value="stop_areas;parent_id;stop_areas;id" />
+				<entry key="departure_point_fkey" value="journey_patterns;departure_stop_point_id;stop_points;id" />
+				<entry key="arrival_point_fkey" value="journey_patterns;arrival_stop_point_id;stop_points;id" />
 				<!-- <entry key="vj_timeslot_fkey" value="vehicle_journeys;time_slot_id;time_slots;id" /> -->
 			</map>
 		</property>
@@ -155,8 +158,6 @@
 				<!-- <entry key="ptlk_endstpt_fkey" value="pt_links;end_of_link_id;stop_points;id" />
 				<entry key="ptlk_startstpt_fkey" value="pt_links;start_of_link_id;stop_points;id" /> -->
 				<entry key="stoppoint_area_fkey" value="stop_points;stop_area_id;stop_areas;id" />
-				<entry key="departure_point_fkey" value="journey_patterns;departure_stop_point_id;stop_points;id" />
-				<entry key="arrival_point_fkey" value="journey_patterns;arrival_stop_point_id;stop_points;id" />
 			</map>
 		</property>
 		<property name="getPrimaryKeysSql">
@@ -198,21 +199,6 @@
 
 		<property name="primaryKeys">
 			<list>
-				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
-					<property name="key" value="timetablevehiclejourney_pkey" />
-					<property name="table" value="time_tables_vehicle_journeys" />
-					<property name="columns" value="time_table_id,vehicle_journey_id" />
-				</bean>
-				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
-					<property name="key" value="groupofline_line_pkey" />
-					<property name="table" value="group_of_lines_lines" />
-					<property name="columns" value="group_of_line_id,line_id" />
-				</bean>
-				<bean class="fr.certu.chouette.dao.hibernate.PrimaryKeyDef">
-					<property name="key" value="journeypatternstoppoint_pkey" />
-					<property name="table" value="journey_patterns_stop_points" />
-					<property name="columns" value="journey_pattern_id,stop_point_id" />
-				</bean>
 			</list>
 		</property>
 

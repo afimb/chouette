@@ -163,8 +163,10 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
 					}
 					else
 					{
-						throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_SCHEMA_MISSING_FOREIGN_KEY,
+						RuntimeException e =  new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_SCHEMA_MISSING_FOREIGN_KEY,
 								keyName);
+						logger.fatal(e.getLocalizedMessage());
+						throw e;
 					}
 				}
 				else
@@ -184,8 +186,10 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
 					}
 					else
 					{
-						throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_SCHEMA_MISSING_FOREIGN_KEY,
+						RuntimeException e =  new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_SCHEMA_MISSING_FOREIGN_KEY,
 								keyName);
+						logger.fatal(e.getLocalizedMessage());
+						throw e;
 					}
 				}
 				else
@@ -205,8 +209,10 @@ public class ChouetteSessionFactoryBean extends LocalSessionFactoryBean
 					}
 					else
 					{
-						throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_SCHEMA_MISSING_FOREIGN_KEY,
+						RuntimeException e =  new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_SCHEMA_MISSING_FOREIGN_KEY,
 								keyName);
+						logger.fatal(e.getLocalizedMessage());
+						throw e;
 					}
 				}
 				else
