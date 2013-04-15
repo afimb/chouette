@@ -497,7 +497,7 @@ public class Timetable extends NeptuneIdentifiedObject
 			{
 				startOfPeriod = period.getStartDate();
 			}
-			if (endOfPeriod == null || endOfPeriod.after(period.getEndDate()))
+			if (endOfPeriod == null || endOfPeriod.before(period.getEndDate()))
 			{
 				endOfPeriod = period.getEndDate();
 			}
