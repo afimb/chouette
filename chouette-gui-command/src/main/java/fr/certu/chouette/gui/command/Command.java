@@ -75,6 +75,7 @@ import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * 
+ * 
  * import command :  ( -fileFormat utilisé si l'extension du fichier n'est pas représentative du format)
  * -c import -o line -format XXX -inputFile YYYY [-fileFormat TTT] -importId ZZZ ... 
  * 
@@ -891,7 +892,7 @@ public class Command
 		// check if import exists and accept unzip before call
 		String format = getSimpleString(parameters,"format");
 		String inputFile = getSimpleString(parameters,"inputfile");
-		String fileFormat = getSimpleString(parameters,"fileformat","");
+		// String fileFormat = getSimpleString(parameters,"fileformat","");
 		String srid = getSimpleString(parameters,"srid","");
 		if (!srid.isEmpty())
 		{
@@ -901,7 +902,7 @@ public class Command
 		long importId = Long.parseLong(getSimpleString(parameters,"importid"));
 		int beanCount = 0;
 
-		boolean zipped = (inputFile.endsWith(".zip") || fileFormat.equals("zip"));
+		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
 
 		try
 		{
@@ -1074,12 +1075,12 @@ public class Command
 				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
 				inputFileParam.setFilepathValue(inputFile);
 				values.add(inputFileParam);
-				if (!fileFormat.isEmpty())
-				{
-					SimpleParameterValue fileFormatParam = new SimpleParameterValue("fileFormat");
-					fileFormatParam.setStringValue(fileFormat);
-					values.add(fileFormatParam);
-				}
+//				if (!fileFormat.isEmpty())
+//				{
+//					SimpleParameterValue fileFormatParam = new SimpleParameterValue("fileFormat");
+//					fileFormatParam.setStringValue(fileFormat);
+//					values.add(fileFormatParam);
+//				}
 				// surround with try catch 
 				ReportHolder holder = new ReportHolder();
 				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
