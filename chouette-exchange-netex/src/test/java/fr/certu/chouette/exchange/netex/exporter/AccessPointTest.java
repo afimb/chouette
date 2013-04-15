@@ -4,47 +4,52 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import java.text.ParseException;
 
 import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 import org.testng.annotations.Test;
 
-@Test(groups = {"ConnectionLink"}, description = "Validate ConnectionLink export in NeTEx format")
+@Test(groups = {"AccessPoint"}, description = "Validate AccessPoint export in NeTEx format")
 public class AccessPointTest extends ChouetteModelTest {        
     
-    public List<ConnectionLink> connectionLinks()
+    public List<AccessPoint> accessPoints()
     {
-        return line.getConnectionLinks();
+        return line.getAccessPoints();
     }
     
-    @Test(groups = { "ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected id")
-    public void verifyConnectionLink() throws XPathExpressionException, ParseException {
-        assertXPathCount( "count(//netex:ServiceFrame/netex:connections/netex:SiteConnection)", 
+    @Test(groups = { "ServiceFrame", "accessPoints"}, description = "Validate presence of AccessPoint element with expected id")
+    public void verifyAccessPoint() throws XPathExpressionException, ParseException {
+        assertXPathCount( "count(//netex:entrances/netex:StopPlaceEntrance)", 
                              1);
+        
+        for (AccessPoint accessPoint : accessPoints()) {  
+            assertXPathCount( "count(//netex:entrances/netex:StopPlaceEntrance[@id = '"+
+                    accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() + "'])", 1 );
+        }
     }        
     
-    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected name")
-    public void verifyConnectionLinkName() throws XPathExpressionException, ParseException {
-        for (ConnectionLink connectionLink : connectionLinks()) {   
-            logger.error(connectionLink.toString("  ", 2));
-            assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
-                        connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
-                        "']/netex:Name/text()='"+connectionLink.getName()+"')");
+    @Test(groups = {"ServiceFrame", "accessPoints"}, description = "Validate presence of AccessPoint element with expected name")
+    public void verifyAccessPointName() throws XPathExpressionException, ParseException {
+        for (AccessPoint accessPoint : accessPoints()) {               
+            assertXPathTrue( "boolean(//netex:entrances/netex:StopPlaceEntrance[@id = '"+
+                        accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() +
+                        "']/netex:Name/text()='"+accessPoint.getName()+"')");
         }        
     }
     
-    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected startOfLinkId and EndOfLinkId")
-    public void verifyConnectionLinkStartAndEnd() throws XPathExpressionException, ParseException {
-        for (ConnectionLink connectionLink : connectionLinks()) {            
-            assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
-                        connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
-                        "']/netex:From/netex:StopPlaceRef/@ref='"+connectionLink.getStartOfLinkId()+"')");
+    @Test(groups = {"ServiceFrame", "accessPoints"}, description = "Validate presence of AccessPoint element with expected coordinates")
+    public void verifyAccessPointCoordinates() throws XPathExpressionException, ParseException {
+        for (AccessPoint accessPoint : accessPoints()) {                  
             
-            assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
-                        connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
-                        "']/netex:To/netex:StopPlaceRef/@ref='"+connectionLink.getEndOfLinkId()+"')");
+            assertXPathTrue( "boolean(//netex:StopPlaceEntrance[@id = '"+
+                        accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() +
+                        "']/netex:Centroid/netex:Location/netex:Longitude/text()='"+accessPoint.getLongitude().toPlainString()+"')");
+            
+            assertXPathTrue( "boolean(//netex:StopPlaceEntrance[@id = '"+
+                        accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() +
+                        "']/netex:Centroid/netex:Location/netex:Latitude/text()='"+accessPoint.getLatitude().toPlainString()+"')");
         }        
         
     }
