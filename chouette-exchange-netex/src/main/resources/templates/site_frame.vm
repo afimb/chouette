@@ -165,17 +165,12 @@
         <PlaceRef ref="$accessLink.stopArea.objectId" /> 
       </To> 
       #end
+      #if ( $connectionLink.linkDistance)
       <Distance>$!accessLink.linkDistance</Distance>
-      #set($linkType = $accessLink.linkType)
-      #if ( $linkType == "Underground" ) 
-        <Covered>indoors</Covered>
-      #elseif ( $linkType == "Overground" )
-        <Covered>outdoors</Covered>
-      #elseif ( $linkType == "Mixed" )
-        <Covered>mixed</Covered>
-      #else
-        <Covered>unknown</Covered>
-      #end 
+      #end
+      #if ( $connectionLink.linkType)
+      <Covered>$enumTranslator.toLinkType($connectionLink.linkType)</Covered>
+      #end
       <TransfertDuration>
         <DefaultDuration>$!accessLink.defaultDuration</DefaultDuration>
         <FrequentTravellerDuration>$!accessLink.frequentTravellerDuration</FrequentTravellerDuration>
