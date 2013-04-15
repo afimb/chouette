@@ -117,12 +117,12 @@
               <srsName>$!accessPoint.longLatType</srsName>
             </Location>
           </Centroid> 
-          <StopPlaceEntranceRef ref="$!accessPoint.containedIn"/>
+          <StopPlaceEntranceRef ref="$!accessPoint.containedInStopArea"/>
           #if ( $accessPoint.name )
           <Name>$!esc.xml($accessPoint.name)</Name>          
           #end
-          <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "In Out")true#{else}false#end</isEntry>
-          <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "In Out")true#{else}false#end</isExit>         
+          <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "InOut")true#{else}false#end</isEntry>
+          <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "InOut")true#{else}false#end</isExit>         
           <TimeBand>
             <StartTime>$!accessPoint.openingTime</StartTime>
             <EndTime>$!accessPoint.closingTime</EndTime>
