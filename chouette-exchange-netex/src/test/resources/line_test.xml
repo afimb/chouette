@@ -834,6 +834,56 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							<QuayRef version="1" ref="RATP_PIVI:Quay:5246064"/>
 						</PassengerStopAssignment>
 					</stopAssignments>
+                                        <connections>
+                                            <SiteConnection id="RATP_PIVI:SiteConnection:1357" version="1">      
+                                                <Name>a vers b</Name>
+                                                <From>
+                                                    <StopPlaceRef ref="RATP_PIVI:Quay:5246067"/>
+                                                </From> 
+                                                <To>         
+                                                    <StopPlaceRef ref="RATP_PIVI:Quay:5246070"/>
+                                                </To>  
+                                                <Distance>200.00</Distance>
+                                                <Description>L1 - L6</Description>
+                                                <navigationPaths>
+                                                    <NavigationPath>
+                                                        <Covered>outdoors</Covered>
+                                                        <TransfertDuration>
+                                                            <DefaultDuration>00:10:00</DefaultDuration>
+                                                            <FrequentTravellerDuration>00:05:00</FrequentTravellerDuration>
+                                                            <OccasionalTravellerDuration>00:08:00</OccasionalTravellerDuration>
+                                                            <MobilityRestrictedTravellerDuration>00:15:00</MobilityRestrictedTravellerDuration> 
+                                                        </TransfertDuration>
+                                                        <AccessibilityAssesment>
+                                                            <MobilityimpairedAccess>true</MobilityimpairedAccess>
+                                                        </AccessibilityAssesment>
+                                                    </NavigationPath>
+                                                </navigationPaths>     
+                                            </SiteConnection>  
+                                            <SiteConnection id="RATP_PIVI:SiteConnection:2468" version="1">      
+                                                <Name>a vers c</Name>
+                                                <From>
+                                                    <StopPlaceRef ref="RATP_PIVI:Quay:5246067"/>
+                                                </From> 
+                                                <To>         
+                                                    <StopPlaceRef ref="RATP_PIVI:Quay:5246069"/>
+                                                </To>  
+                                                <Distance>20.00</Distance>
+                                                <Description>L1 - L4</Description>
+                                                <navigationPaths>
+                                                    <NavigationPath>
+                                                        <Covered>indoors</Covered>
+                                                        <TransfertDuration>
+                                                            <DefaultDuration>00:10:00</DefaultDuration>
+                                                            <FrequentTravellerDuration>00:05:00</FrequentTravellerDuration>
+                                                        </TransfertDuration>
+                                                        <AccessibilityAssesment>
+                                                            <MobilityimpairedAccess>true</MobilityimpairedAccess>
+                                                        </AccessibilityAssesment>
+                                                    </NavigationPath>
+                                                </navigationPaths>     
+                                            </SiteConnection>  
+                                        </connections>
 				</ServiceFrame>
 				<!-- =========================================== -->
 				<!-- IFOPT Stop Places, Bording positions and quays -->
@@ -1269,6 +1319,42 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							</quays>
 						</StopPlace>
 					</stopPlaces>
+                                      <pathLinks>
+                                        <PathLink id="RATP_PIVI:PathLink:1234" version="1">  
+                                          <Name>acces par la rue de la Chine</Name>
+                                          <From>
+                                            <EntranceRef ref="RATP_PIVI:Place:2345" />
+                                          </From>
+                                          <To> 
+                                            <PlaceRef ref="RATP_PIVI:Quay:5246066" /> 
+                                          </To> 
+                                          <Distance>155.00</Distance>
+                                        <Covered>indoors</Covered>
+                                          <TransfertDuration>
+                                            <DefaultDuration>00:03:00</DefaultDuration>
+                                            <FrequentTravellerDuration>00:02:00</FrequentTravellerDuration>
+                                            <OccasionalTravellerDuration>00:04:00</OccasionalTravellerDuration>
+                                            <MobilityRestrictedTravellerDuration>00:08:00</MobilityRestrictedTravellerDuration> 
+                                          </TransfertDuration>
+                                        </PathLink>
+                                        <PathLink id="RATP_PIVI:PathLink:2345" version="1">  
+                                          <Name>acces par la mairie du XX</Name>
+                                          <From>
+                                            <EntranceRef ref="RATP_PIVI:Place:1234" />
+                                          </From>
+                                          <To> 
+                                            <PlaceRef ref="RATP_PIVI:Quay:5246064" /> 
+                                          </To> 
+                                          <Distance>75.00</Distance>
+                                        <Covered>outdoors</Covered>
+                                          <TransfertDuration>
+                                            <DefaultDuration>00:07:00</DefaultDuration>
+                                            <FrequentTravellerDuration>00:05:00</FrequentTravellerDuration>
+                                            <OccasionalTravellerDuration>00:09:00</OccasionalTravellerDuration>
+                                            <MobilityRestrictedTravellerDuration>00:11:00</MobilityRestrictedTravellerDuration> 
+                                          </TransfertDuration>
+                                        </PathLink>
+                                      </pathLinks>  
 				</SiteFrame>
 				<!--   -->
 				<!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE Timetable -->

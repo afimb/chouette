@@ -22,6 +22,14 @@
       </properties>
     </DayType>
   </dayTypes>
+  <!--- === Day assignments ==== -->
+  <operatingDays>
+    #foreach( $day in $timetable.calendarDays )
+    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}">
+      <CalendarDate>$date.format($shortDateFormat, $day)</CalendarDate>
+    </OperatingDay>
+    #end		
+  </operatingDays>  
   <!--- === Period assignments ==== -->
   <operatingPeriods>
     #foreach( $period in $timetable.periods )
@@ -31,14 +39,6 @@
     </OperatingPeriod>
     #end		
   </operatingPeriods>  
-  <!--- === Day assignments ==== -->
-  <operatingDays>
-    #foreach( $day in $timetable.calendarDays )
-    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}">
-      <CalendarDate>$date.format($shortDateFormat, $day)</CalendarDate>
-    </OperatingDay>
-    #end		
-  </operatingDays>  
   <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
     #foreach( $period in $timetable.periods )

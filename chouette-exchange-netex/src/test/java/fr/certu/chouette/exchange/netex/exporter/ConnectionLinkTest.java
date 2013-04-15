@@ -5,6 +5,7 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import java.text.ParseException;
 
 import java.util.List;
@@ -12,32 +13,119 @@ import javax.xml.xpath.XPathExpressionException;
 import org.testng.annotations.Test;
 
 @Test(groups = {"ConnectionLink"}, description = "Validate ConnectionLink export in NeTEx format")
-public class ConnectionLinkTest extends ChouetteModelTest {        
+public class ConnectionLinkTest extends ChouetteModelTest {    
+    private String xPathRoot = "/netex:PublicationDelivery/netex:dataObjects/"+
+                "netex:CompositeFrame/netex:frames/" +
+                "/netex:ServiceFrame/netex:connections";
     
-    public List<ConnectionLink> connectionLinks()
-    {
-        return line.getConnectionLinks();
+    private String getId( ConnectionLink connectionLink) {
+        return connectionLink.objectIdPrefix() + ":SiteConnection:" + 
+                connectionLink.objectIdSuffix();
+    }
+    
+    private String getLinkType( ConnectionLink connectionLink) {
+        if ( connectionLink.getLinkType().equals(ConnectionLinkTypeEnum.OVERGROUND))
+            return "outdoors";
+        else if ( connectionLink.getLinkType().equals(ConnectionLinkTypeEnum.UNDERGROUND))
+            return "indoors";
+        else if ( connectionLink.getLinkType().equals(ConnectionLinkTypeEnum.MIXED))
+            return "mixed";
+        else 
+            return "unknown";
     }
     
     @Test(groups = { "ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected id")
     public void verifyConnectionLink() throws XPathExpressionException, ParseException {
-        assertXPathCount( "count(//netex:ServiceFrame/netex:connections/netex:SiteConnection)", 
-                             1);
+        assertXPathCount( "count("+xPathRoot+"/netex:SiteConnection)", 1);
     }        
     
-    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected name")
-    public void verifyConnectionLinkName() throws XPathExpressionException, ParseException {
-        for (ConnectionLink connectionLink : connectionLinks()) {   
-            logger.error(connectionLink.toString("  ", 2));
-            assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
-                        connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
-                        "']/netex:Name/text()='"+connectionLink.getName()+"')");
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected id")
+    public void verifyId() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                                    "[@id = '"+ getId(connectionLink) + "'])");
         }        
     }
     
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected name")
+    public void verifyName() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                    "[@id = '"+ getId(connectionLink) + "']"+
+                    "/netex:Name/text()='"+connectionLink.getName()+"')");
+        }        
+    }
+    
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected comment")
+    public void verifyComment() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                    "[@id = '"+ getId(connectionLink) + "']"+
+                    "/netex:Description/text()='"+connectionLink.getComment()+"')");
+        }        
+    }
+    
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected linkDistance")
+    public void verifyLinkDistance() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                    "[@id = '"+ getId(connectionLink) + "']"+
+                    "/netex:Distance/text()='"+connectionLink.getLinkDistance()+"')");
+        }        
+    }
+    
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected linkType")
+    public void verifyLinkType() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                    "[@id = '"+ getId(connectionLink) + "']"+
+                    "/netex:navigationPaths/netex:NavigationPath"+
+                    "/netex:Covered/text()='"+ getLinkType(connectionLink) +"')");
+        }        
+    }
+    
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected DefaultDuration")
+    public void verifyDefaultDuration() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                    "[@id = '"+ getId(connectionLink) + "']"+
+                    "/netex:navigationPaths/netex:NavigationPath"+
+                    "/netex:TransfertDuration" +
+                    "/netex:DefaultDuration/text()='"+ connectionLink.getDefaultDuration() +"')");
+        }        
+    }
+    
+    @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected FrequentTravellerDuration")
+    public void verifyFrequentTravellerDuration() throws XPathExpressionException, ParseException {
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {   
+            assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
+                    "[@id = '"+ getId(connectionLink) + "']"+
+                    "/netex:navigationPaths/netex:NavigationPath"+
+                    "/netex:TransfertDuration" +
+                    "/netex:FrequentTravellerDuration/text()='"+ connectionLink.getFrequentTravellerDuration() +"')");
+        }        
+    }
+    
+    
     @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected startOfLinkId and EndOfLinkId")
     public void verifyConnectionLinkStartAndEnd() throws XPathExpressionException, ParseException {
-        for (ConnectionLink connectionLink : connectionLinks()) {            
+        List<ConnectionLink> connectionLinks = line.getConnectionLinks();
+        
+        for (ConnectionLink connectionLink : connectionLinks) {            
             assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
                         connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
                         "']/netex:From/netex:StopPlaceRef/@ref='"+connectionLink.getStartOfLinkId()+"')");

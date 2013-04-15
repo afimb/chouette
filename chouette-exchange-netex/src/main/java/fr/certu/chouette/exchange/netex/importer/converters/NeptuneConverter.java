@@ -16,6 +16,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class NeptuneConverter {
     private VehicleJourneyAtStopConverter vehicleJourneyAtStopConverter;
     private TimetableConverter timetableConverter;
     private StopAreaConverter stopAreaConverter;
+    private ConnectionLinkConverter connectionLinkConverter;
     
     public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -50,6 +52,7 @@ public class NeptuneConverter {
         vehicleJourneyAtStopConverter = new VehicleJourneyAtStopConverter(vTDNav);
         timetableConverter = new TimetableConverter(vTDNav);
         stopAreaConverter = new StopAreaConverter(vTDNav);
+        connectionLinkConverter = new ConnectionLinkConverter(vTDNav);
     }
     
     public Line convert() throws XPathParseException, XPathEvalException, NavException, ParseException
@@ -63,7 +66,8 @@ public class NeptuneConverter {
         List<VehicleJourney> vehicleJourneys = vehicleJourneyConverter.convert();
         List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourneyAtStopConverter.convert();
         List<Timetable> timetables = timetableConverter.convert();
-        List<StopArea> stopAreas = stopAreaConverter.convert();        
+        List<StopArea> stopAreas = stopAreaConverter.convert();
+        List<ConnectionLink> connectionLinks = connectionLinkConverter.convert();
         
         // Ids
         Map<String,StopPoint> stopPointByObjectId = routeConverter.getStopPointByObjectId();
@@ -113,6 +117,13 @@ public class NeptuneConverter {
         for (StopPoint stopPoint : stopPointByObjectId.values()) {
             StopArea stopArea = stopAreaByObjectId.get( stopPoint.getContainedInStopAreaId() );
             stopPoint.setContainedInStopArea(stopArea);
+        }
+        
+        // Replace objectId references by object for all 
+        // connectionLink.startOfLink and EndOfLink
+        for ( ConnectionLink connectionLink : connectionLinks) {
+            connectionLink.setStartOfLink( stopAreaByObjectId.get( connectionLink.getStartOfLinkId()));
+            connectionLink.setEndOfLink( stopAreaByObjectId.get( connectionLink.getEndOfLinkId()));
         }
         
         return line;

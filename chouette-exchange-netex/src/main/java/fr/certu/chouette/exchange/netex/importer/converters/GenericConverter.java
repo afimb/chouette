@@ -6,9 +6,12 @@ import com.ximpleware.VTDNav;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -75,6 +78,18 @@ public class GenericConverter {
         return dayTypeEnums;
     }
     
+    private ConnectionLinkTypeEnum readLinkType( String netexLinkType) {
+        if ( netexLinkType.equals("unknown")) 
+            return null;
+        else if ( netexLinkType.equals("mixed"))
+            return ConnectionLinkTypeEnum.MIXED;
+        else if ( netexLinkType.equals("indoors"))
+            return ConnectionLinkTypeEnum.UNDERGROUND;
+        else if ( netexLinkType.equals("outdoors"))
+            return ConnectionLinkTypeEnum.OVERGROUND;
+        else 
+            return null;
+    }
     
     private Object parseData(VTDNav nav, Object type, int position) throws ParseException, NavException
     {
@@ -89,10 +104,16 @@ public class GenericConverter {
             return Time.valueOf(value);
         else if(type.toString().equals( "Integer"))
             return nav.parseInt(position);
+        else if(type.toString().equals( "BigDecimal"))
+            return new BigDecimal( value);
         else if(type.toString().equals( "Date" ))
             return dateFormat.parse(value); 
         else if(type.toString().equals( "ShortDate" ))
             return new java.sql.Date(shortDateFormat.parse(value).getTime());            
+        else if(type.toString().equals( "ConnectionLinkTypeEnum" ))
+        {
+           return readLinkType( value);
+        }
         else if(type.toString().equals( "TransportModeNameEnum" ))
         {
            String transportMode = firstLetterUpcase(value); // Puts the first caracter upcase            

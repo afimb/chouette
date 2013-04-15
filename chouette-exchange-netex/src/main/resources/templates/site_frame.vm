@@ -54,6 +54,10 @@
         <TariffZoneRef version="any" ref="${stopPlace.objectIdPrefix()}:TariffZone:${stopPlace.fareCode}"/>
       </tariffZones>
       #end
+
+      #if ( ( $stopPlace.areaType.toString() == "CommercialStopPoint") &&
+            $stopPlace.containedStopAreas &&
+            $stopPlace.containedStopAreas.size() > 0    )
       <quays>
         #foreach( $quay in $stopPlace.containedStopAreas )
         <Quay version="$quay.objectVersion" id="${quay.objectIdPrefix()}:Quay:${quay.objectIdSuffix()}">
@@ -105,6 +109,9 @@
         </Quay>	
         #end	
       </quays>
+      #end	
+
+#if ( $stopPlace.accessLinks && $stopPlace.accessLinks.size() > 0 )
       <entrances>
         #foreach( $accessPoint in $accessPoints )
         <StopPlaceEntrance version="any" ref="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
@@ -132,9 +139,11 @@
         </StopPlaceEntrance> 
         #end
       </entrances> 
+#end
     </StopPlace>
-    #end				
+    #end
   </stopPlaces>
+#if ( $accessLinks && $accessLinks.size() > 0 )
   <!-- Assignments of Path Links -->
   <pathLinks>
     #foreach( $accessLink in $accessLinks )       
@@ -172,5 +181,6 @@
     </PathLink>
     #end
   </pathLinks>  
+#end
 
 </SiteFrame>

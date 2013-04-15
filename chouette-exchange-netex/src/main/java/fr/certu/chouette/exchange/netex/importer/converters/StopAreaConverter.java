@@ -177,6 +177,7 @@ public class StopAreaConverter extends GenericConverter
         try {
             return BigDecimal.valueOf( Double.valueOf(numberStr));
         } catch (Exception e) {
+            // TODO 
             return null;
         }
     }
