@@ -92,7 +92,7 @@ plus de details -->
 				<comment>Unused data</comment>
 			</column>
 		</property>
-		<property name="openningTime" type="java.sql.Time">
+		<property name="openingTime" type="java.sql.Time">
 			<column name="openning_time">
 				<comment>Opening time</comment>
 			</column>
