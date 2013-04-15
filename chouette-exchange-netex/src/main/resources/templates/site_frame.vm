@@ -29,6 +29,11 @@
         </Location>
       </Centroid>
       #end
+
+      #if( $stopPlace.parent )
+      <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="${stopPlace.parent.objectIdPrefix()}:StopPlace:${stopPlace.parent.objectIdSuffix()}" />
+      #end
+
       #if($stopPlace.streetName || $stopPlace.countryCode)
       <PostalAddress version="any" id="${stopPlace.objectIdPrefix()}:PostalAddress:${stopPlace.objectIdSuffix()}">
         <CountryRef ref="fr"/>
@@ -40,10 +45,6 @@
         #end
       </PostalAddress>
       #end
-
-     #if( $stopPlace.parent )
-     <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="${stopPlace.parent.objectIdPrefix()}:StopPlace:${stopPlace.parent.objectIdSuffix()}" />
-     #end
       
       #if( $stopPlace.nearestTopicName )
       <LandMark>$!esc.xml( $stopPlace.nearestTopicName)</LandMark>

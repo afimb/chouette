@@ -122,7 +122,7 @@
               #end
               #if ( $company.organisationalUnit )
               <parts>
-                  <OrganisationPart>
+                  <OrganisationPart version="$company.objectVersion" id="${company.objectIdPrefix()}:OrganisationPart:${company.objectIdSuffix()}">
                       <Name>$!esc.xml($company.organisationalUnit)</Name>
                   </OrganisationPart>
               </parts>

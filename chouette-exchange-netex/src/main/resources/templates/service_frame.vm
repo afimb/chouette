@@ -80,7 +80,8 @@
         #foreach( $stopPoint in $route.stopPoints )
         #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
         #set($pointOnRouteId = ${stopPoint.objectIdSuffix()} + '-' + $stopPoint.position )
-        <PointOnRoute version="any" id="${stopPoint.objectIdPrefix()}:PointOnRoute:${pointOnRouteId}" order="$stopPoint.position">
+        #set($netex_order = 1 + $stopPoint.position)
+        <PointOnRoute version="any" id="${stopPoint.objectIdPrefix()}:PointOnRoute:${pointOnRouteId}" order="$netex_order">
           <RoutePointRef version="$route.objectVersion" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
         </PointOnRoute>
         #end
@@ -227,16 +228,9 @@
       #end 
       <navigationPaths>
         <NavigationPath>
-          #set($linkType = $connectionLink.linkType)
-          #if ( $linkType == "Underground" ) 
-            <Covered>indoors</Covered>
-          #elseif ( $linkType == "Overground" )
-            <Covered>outdoors</Covered>
-          #elseif ( $linkType == "Mixed" )
-            <Covered>mixed</Covered>
-          #else
-            <Covered>unknown</Covered>
-          #end 
+          #if ( $connectionLink.linkType)
+          <Covered>$enumTranslator.toLinkType($connectionLink.linkType)</Covered>
+          #end
           <TransfertDuration>
             <DefaultDuration>$!connectionLink.defaultDuration</DefaultDuration>
             <FrequentTravellerDuration>$!connectionLink.frequentTravellerDuration</FrequentTravellerDuration>

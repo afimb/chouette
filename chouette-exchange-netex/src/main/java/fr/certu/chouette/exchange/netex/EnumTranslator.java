@@ -4,6 +4,9 @@
  */
 package fr.certu.chouette.exchange.netex;
 
+import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 
@@ -12,6 +15,69 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
  * @author marc
  */
 public class EnumTranslator {
+    private String firstLetterUpcase(String word)
+    {
+        StringBuilder sb = new StringBuilder(word); // Puts the first caracter upcase
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));  
+        return sb.toString();
+    }
+    
+    public String toPTDirection( PTDirectionEnum ptDirection) {
+        if (ptDirection==null)
+            return null;
+        return ptDirection.toString();
+    }
+    public PTDirectionEnum readPTDirection( String netexPTDirection) {
+        if (netexPTDirection==null)
+            return null;
+        // netexSourceType is a free text
+        PTDirectionEnum ptDirection = null;
+        try { ptDirection = PTDirectionEnum.fromValue(firstLetterUpcase( netexPTDirection)); } 
+        catch ( Exception e) {}
+        return ptDirection;
+    }
+    
+    public String toPTNetworkSourceType( PTNetworkSourceTypeEnum sourceType) {
+        if (sourceType==null)
+            return null;
+        return sourceType.toString();
+    }
+    public PTNetworkSourceTypeEnum readPTNetworkSourceType( String netexSourceType) {
+        if (netexSourceType==null)
+            return null;
+        // netexSourceType is a free text
+        PTNetworkSourceTypeEnum sourceType = null;
+        try { sourceType = PTNetworkSourceTypeEnum.fromValue(firstLetterUpcase( netexSourceType)); } 
+        catch ( Exception e) {}
+        return sourceType;
+    }
+    
+    public String toLinkType( ConnectionLinkTypeEnum linkType) {
+        if (linkType==null)
+            return null;
+        switch(linkType) {
+            case UNDERGROUND:
+                return "indoors";
+            case OVERGROUND:
+                return "outdoors";
+            case MIXED:
+                return "mixed";
+             default:
+                 return "unknown";
+        }
+    }
+    public ConnectionLinkTypeEnum readLinkType( String netexLinkType) {
+        if ( netexLinkType==null)
+            return null;
+        if (netexLinkType.equals("indoors"))
+            return ConnectionLinkTypeEnum.UNDERGROUND;
+        else if (netexLinkType.equals("outdoors"))
+            return ConnectionLinkTypeEnum.OVERGROUND;
+        else if (netexLinkType.equals("mixed"))
+            return ConnectionLinkTypeEnum.MIXED;
+        else 
+            return null;
+    }
 
     // AllVehicleModesOfTransportEnumeration
 //			<xsd:enumeration value="all"/>
@@ -78,7 +144,9 @@ public class EnumTranslator {
         }
         
         public TransportModeNameEnum readTransportMode( String netexMode) {
-            if ( netexMode.equals("air")) 
+            if ( netexMode==null)
+                return null;
+            else if ( netexMode.equals("air")) 
                 return TransportModeNameEnum.AIR;
             else if ( netexMode.equals("rail")) 
                 return TransportModeNameEnum.TRAIN;

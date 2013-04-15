@@ -4,6 +4,7 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.exchange.netex.EnumTranslator;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import java.text.ParseException;
@@ -17,21 +18,11 @@ public class ConnectionLinkTest extends ChouetteModelTest {
     private String xPathRoot = "/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:ServiceFrame/netex:connections";
+    private EnumTranslator enumTranslator = new EnumTranslator();
     
     private String getId( ConnectionLink connectionLink) {
         return connectionLink.objectIdPrefix() + ":SiteConnection:" + 
                 connectionLink.objectIdSuffix();
-    }
-    
-    private String getLinkType( ConnectionLink connectionLink) {
-        if ( connectionLink.getLinkType().equals(ConnectionLinkTypeEnum.OVERGROUND))
-            return "outdoors";
-        else if ( connectionLink.getLinkType().equals(ConnectionLinkTypeEnum.UNDERGROUND))
-            return "indoors";
-        else if ( connectionLink.getLinkType().equals(ConnectionLinkTypeEnum.MIXED))
-            return "mixed";
-        else 
-            return "unknown";
     }
     
     @Test(groups = { "ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected id")
@@ -90,7 +81,7 @@ public class ConnectionLinkTest extends ChouetteModelTest {
             assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
                     "[@id = '"+ getId(connectionLink) + "']"+
                     "/netex:navigationPaths/netex:NavigationPath"+
-                    "/netex:Covered/text()='"+ getLinkType(connectionLink) +"')");
+                    "/netex:Covered/text()='"+ enumTranslator.toLinkType(connectionLink.getLinkType()) +"')");
         }        
     }
     

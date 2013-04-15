@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.netex.importer.converters;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
+import fr.certu.chouette.exchange.netex.EnumTranslator;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
@@ -25,7 +26,8 @@ public class GenericConverter {
     
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
-    DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");   
+    DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+    private EnumTranslator enumTranslator = new EnumTranslator();
         
     protected void returnToRootElement(VTDNav nav) throws NavException
     {
@@ -78,19 +80,6 @@ public class GenericConverter {
         return dayTypeEnums;
     }
     
-    private ConnectionLinkTypeEnum readLinkType( String netexLinkType) {
-        if ( netexLinkType.equals("unknown")) 
-            return null;
-        else if ( netexLinkType.equals("mixed"))
-            return ConnectionLinkTypeEnum.MIXED;
-        else if ( netexLinkType.equals("indoors"))
-            return ConnectionLinkTypeEnum.UNDERGROUND;
-        else if ( netexLinkType.equals("outdoors"))
-            return ConnectionLinkTypeEnum.OVERGROUND;
-        else 
-            return null;
-    }
-    
     private Object parseData(VTDNav nav, Object type, int position) throws ParseException, NavException
     {
         String value = nav.toNormalizedString(position);
@@ -111,33 +100,13 @@ public class GenericConverter {
         else if(type.toString().equals( "ShortDate" ))
             return new java.sql.Date(shortDateFormat.parse(value).getTime());            
         else if(type.toString().equals( "ConnectionLinkTypeEnum" ))
-        {
-           return readLinkType( value);
-        }
+           return enumTranslator.readLinkType(value);
         else if(type.toString().equals( "TransportModeNameEnum" ))
-        {
-           String transportMode = firstLetterUpcase(value); // Puts the first caracter upcase            
-           TransportModeNameEnum transportModeNameEnum = TransportModeNameEnum.fromValue(transportMode);
-           return transportModeNameEnum;       
-        }
+           return enumTranslator.readTransportMode(value);
         else if(type.toString().equals( "PTDirectionEnum" ))
-        {
-           String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
-           PTDirectionEnum enumVal = PTDirectionEnum.fromValue(enumValStr);
-           return enumVal;
-        }
+           return enumTranslator.readPTDirection(value);
         else if(type.toString().equals("PTNetworkSourceTypeEnum"))
-        {
-           String enumValStr = firstLetterUpcase(value); // Puts the first caracter upcase            
-           PTNetworkSourceTypeEnum enumVal = PTNetworkSourceTypeEnum.fromValue(enumValStr);
-           return enumVal;
-        }
-        else if(type.toString().equals("DayTypeEnum"))
-        {
-           String dayType = firstLetterUpcase(value); // Puts the first caracter upcase            
-           DayTypeEnum dayTypeEnum = DayTypeEnum.fromValue(dayType);
-           return dayTypeEnum;       
-        }
+           return enumTranslator.readPTNetworkSourceType(value);
         else
             return value;
     }
@@ -413,12 +382,5 @@ public class GenericConverter {
         
         nav.pop();
         return elements;
-    }
-    
-    public String firstLetterUpcase(String word)
-    {
-        StringBuilder sb = new StringBuilder(word); // Puts the first caracter upcase
-        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));  
-        return sb.toString();
     }
 }
