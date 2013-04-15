@@ -41,6 +41,7 @@ public class ComplexModelFactory {
     @Getter @Setter private ModelFactory modelFactory;
     
     @Getter @Setter private List<StopArea> quays;
+    @Getter @Setter private List<StopArea> stopPlaces;
     @Getter @Setter int quayCount = 21; 
     @Getter @Setter int routeStopCount = 21; 
     @Getter @Setter int journeyPatternCount = 7; 
@@ -58,11 +59,11 @@ public class ComplexModelFactory {
             throw new RuntimeException(ex.getMessage(), ex);
         }
         quays = new ArrayList<StopArea>( quayCount);
-        createStopAreas();
-        
+        stopPlaces = new ArrayList<StopArea>();
         timetables = new ArrayList<Timetable>( timetablesCount);
-        createTimetables();
         
+        createStopAreas();               
+        createTimetables();        
         createConnectionLinks();
         createAccessLinks();        
     }
@@ -79,6 +80,7 @@ public class ComplexModelFactory {
                     StopArea stopAreaPlace = modelFactory.createModel(StopArea.class);
                     stopAreaPlace.setObjectId( "T:StopArea:PLC-"+i);
                     stopAreaPlace.setAreaType( ChouetteAreaEnum.STOPPLACE);
+                    stopPlaces.add(stopAreaPlace);
                     stopAreaCommercial.setParent( stopAreaPlace);
                 }
 
@@ -121,9 +123,9 @@ public class ComplexModelFactory {
     
     private void createAccessLinks() throws RuntimeException {
         try {
-            if (quays.size() > 2)
+            if ( !stopPlaces.isEmpty() && stopPlaces.size() > 1 )
             {
-                StopArea stopArea = quays.get(0);
+                StopArea stopArea = stopPlaces.get(0);
 
                 AccessLink accessLink = modelFactory.createModel(AccessLink.class);
                 AccessPoint accessPoint = modelFactory.createModel(AccessPoint.class);

@@ -43,7 +43,6 @@ public class NetexFileWriter {
         model.put("company", line.getCompany());
         model.put("connectionLinks", line.getConnectionLinks());        
         model.put("accessLinks", line.getAccessLinks());
-        model.put("accessPoints", line.getAccessPoints());
         
         // For ServiceFrame need to have for each tariff stop points associated
         model.put("tariffStopPoints", tariffStopPoints(line));        

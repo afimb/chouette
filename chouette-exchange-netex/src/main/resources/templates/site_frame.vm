@@ -106,8 +106,10 @@
         #end	
       </quays>
       <entrances>
-        #foreach( $accessPoint in $accessPoints )
-        <StopPlaceEntrance version="any" ref="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
+        #foreach( $accessLink in $stopPlace.accessLinks )
+        #set( $accessPoint = $accessLink.accessPoint )
+        #if ( $accessPoint )      
+        <StopPlaceEntrance version="any" id="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
           <Centroid>
             <Location>
               <Longitude>$!accessPoint.longitude</Longitude>
@@ -115,7 +117,7 @@
               <srsName>$!accessPoint.longLatType</srsName>
             </Location>
           </Centroid> 
-          <StopPlaceEntranceRef ref="$accessPoint.containedIn"/>
+          <StopPlaceEntranceRef ref="$!accessPoint.containedIn"/>
           #if ( $accessPoint.name )
           <Name>$!esc.xml($accessPoint.name)</Name>          
           #end
@@ -129,7 +131,8 @@
           <Description>$!esc.xml($accessPoint.comment)</Description>  
           #end
           ## TODO : Add enum   
-        </StopPlaceEntrance> 
+        </StopPlaceEntrance>
+        #end  
         #end
       </entrances> 
     </StopPlace>
