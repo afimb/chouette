@@ -299,6 +299,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop))
 		{
 			vehicleJourneyAtStops.add(vehicleJourneyAtStop);
+			vehicleJourneyAtStop.setVehicleJourney(this);
 		}
 	}
 
@@ -322,6 +323,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 			if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop))
 			{
 				vehicleJourneyAtStops.add(vehicleJourneyAtStop);
+				vehicleJourneyAtStop.setVehicleJourney(this);
 			}
 		}
 	}
@@ -661,7 +663,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		if (date2 == null) return date1;
 		return (date1.before(date2))? date1:date2;
 	}
-	
+
 	/**
 	 * return maximum of 2 dates, even when any of them is null
 	 * @param date1 

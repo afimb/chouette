@@ -1,14 +1,5 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
-import java.lang.String;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import lombok.Getter;
+
 import org.apache.log4j.Logger;
+
+import com.ximpleware.AutoPilot;
+import com.ximpleware.NavException;
+import com.ximpleware.VTDNav;
+import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
+
+import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
 public class RouteConverter extends GenericConverter 
 {    

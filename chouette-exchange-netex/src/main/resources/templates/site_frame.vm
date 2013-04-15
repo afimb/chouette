@@ -113,8 +113,10 @@
 
 #if ( $stopPlace.accessLinks && $stopPlace.accessLinks.size() > 0 )
       <entrances>
-        #foreach( $accessPoint in $accessPoints )
-        <StopPlaceEntrance version="any" ref="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
+        #foreach( $accessLink in $stopPlace.accessLinks )
+        #set( $accessPoint = $accessLink.accessPoint )
+        #if ( $accessPoint )      
+        <StopPlaceEntrance version="any" id="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
           <Centroid>
             <Location>
               <Longitude>$!accessPoint.longitude</Longitude>
@@ -122,12 +124,12 @@
               <srsName>$!accessPoint.longLatType</srsName>
             </Location>
           </Centroid> 
-          <StopPlaceEntranceRef ref="$accessPoint.containedIn"/>
+          <StopPlaceEntranceRef ref="$!accessPoint.containedInStopArea"/>
           #if ( $accessPoint.name )
           <Name>$!esc.xml($accessPoint.name)</Name>          
           #end
-          <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "In Out")true#{else}false#end</isEntry>
-          <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "In Out")true#{else}false#end</isExit>         
+          <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "InOut")true#{else}false#end</isEntry>
+          <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "InOut")true#{else}false#end</isExit>         
           <TimeBand>
             <StartTime>$!accessPoint.openingTime</StartTime>
             <EndTime>$!accessPoint.closingTime</EndTime>
@@ -136,7 +138,8 @@
           <Description>$!esc.xml($accessPoint.comment)</Description>  
           #end
           ## TODO : Add enum   
-        </StopPlaceEntrance> 
+        </StopPlaceEntrance>
+        #end  
         #end
       </entrances> 
 #end
@@ -151,12 +154,16 @@
       #if ( $accessLink.name )
       <Name>$!esc.xml($accessLink.name)</Name>
       #end
+      #if($accessLink.accessPoint) 
       <From>
         <EntranceRef ref="$accessLink.accessPoint.objectId" />
       </From>
+      #end
+      #if($accessLink.stopArea) 
       <To> 
         <PlaceRef ref="$accessLink.stopArea.objectId" /> 
       </To> 
+      #end
       <Distance>$!accessLink.linkDistance</Distance>
       #set($linkType = $accessLink.linkType)
       #if ( $linkType == "Underground" ) 

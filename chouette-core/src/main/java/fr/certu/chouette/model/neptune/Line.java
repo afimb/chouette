@@ -510,7 +510,12 @@ public class Line extends NeptuneIdentifiedObject
 	{
 		if (routes == null)
 			routes = new ArrayList<Route>();
-		routes.add(route);
+		if (routes.contains(route)) return;
+		if (route != null)
+		{
+		   routes.add(route);
+		   route.setLine(this);
+		}
 	}
 
 	/**

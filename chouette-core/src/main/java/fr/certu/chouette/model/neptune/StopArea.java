@@ -499,8 +499,9 @@ public class StopArea extends NeptuneIdentifiedObject
 			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPPOINT_KEY,
 					"containedStopPoints");
 		}
-		if (!containedStopPoints.contains(containedStopPoint))
-			containedStopPoints.add(containedStopPoint);
+		if (containedStopPoint ==  null || containedStopPoints.contains(containedStopPoint)) return;
+		containedStopPoints.add(containedStopPoint);
+		containedStopPoint.setContainedInStopArea(this);
 	}
 
 	/**
