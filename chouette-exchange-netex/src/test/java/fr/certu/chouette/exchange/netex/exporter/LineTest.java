@@ -4,8 +4,6 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import fr.certu.chouette.model.neptune.GroupOfLine;
 import java.text.ParseException;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -14,7 +12,6 @@ import org.testng.annotations.Test;
 
 @Test(groups = {"Line"}, description = "Validate Line export in NeTEx format")
 public class LineTest extends ChouetteModelTest {
-    private ModelTranslator modelTranslator = new ModelTranslator();
     
     private String lineId() {
         return modelTranslator.netexId(line);

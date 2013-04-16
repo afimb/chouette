@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 
 @Test(groups = {"AccessLink"}, description = "Validate AccessLink export in NeTEx format")
 public class AccessLinkTest extends ChouetteModelTest {   
-    private ModelTranslator modelTranslator = new ModelTranslator();
     
     public List<AccessLink> accessLinks()
     {

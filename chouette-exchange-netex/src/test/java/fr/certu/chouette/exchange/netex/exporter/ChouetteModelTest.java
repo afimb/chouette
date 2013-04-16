@@ -7,6 +7,7 @@ package fr.certu.chouette.exchange.netex.exporter;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
@@ -29,6 +30,7 @@ import org.w3c.dom.Document;
 @ContextConfiguration(locations={"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
 public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
+    protected ModelTranslator modelTranslator = new ModelTranslator();
     protected NetexFileWriter netexFileWriter;
     protected ModelFactory modelFactory;
     protected ComplexModelFactory complexModelFactory;

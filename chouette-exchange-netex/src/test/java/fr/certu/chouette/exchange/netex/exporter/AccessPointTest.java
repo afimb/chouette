@@ -26,7 +26,7 @@ public class AccessPointTest extends ChouetteModelTest {
         
         for (AccessPoint accessPoint : accessPoints()) {  
             assertXPathCount( "count(//netex:entrances/netex:StopPlaceEntrance[@id = '"+
-                    accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() + "'])", 1 );
+                    modelTranslator.netexId( accessPoint) + "'])", 1 );
         }
     }        
     
@@ -34,7 +34,7 @@ public class AccessPointTest extends ChouetteModelTest {
     public void verifyAccessPointName() throws XPathExpressionException, ParseException {
         for (AccessPoint accessPoint : accessPoints()) {               
             assertXPathTrue( "boolean(//netex:entrances/netex:StopPlaceEntrance[@id = '"+
-                        accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() +
+                        modelTranslator.netexId( accessPoint) +
                         "']/netex:Name/text()='"+accessPoint.getName()+"')");
         }        
     }
@@ -44,11 +44,11 @@ public class AccessPointTest extends ChouetteModelTest {
         for (AccessPoint accessPoint : accessPoints()) {                  
             
             assertXPathTrue( "boolean(//netex:StopPlaceEntrance[@id = '"+
-                        accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() +
+                        modelTranslator.netexId( accessPoint) +
                         "']/netex:Centroid/netex:Location/netex:Longitude/text()='"+accessPoint.getLongitude().toPlainString()+"')");
             
             assertXPathTrue( "boolean(//netex:StopPlaceEntrance[@id = '"+
-                        accessPoint.objectIdPrefix() + ":StopPlaceEntrance:" + accessPoint.objectIdSuffix() +
+                        modelTranslator.netexId( accessPoint) +
                         "']/netex:Centroid/netex:Location/netex:Latitude/text()='"+accessPoint.getLatitude().toPlainString()+"')");
         }        
         

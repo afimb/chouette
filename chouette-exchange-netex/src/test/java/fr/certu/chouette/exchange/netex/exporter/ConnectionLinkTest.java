@@ -18,7 +18,6 @@ public class ConnectionLinkTest extends ChouetteModelTest {
     private String xPathRoot = "/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:ServiceFrame/netex:connections";
-    private ModelTranslator modelTranslator = new ModelTranslator();
     
     private String getId( ConnectionLink connectionLink) {
         return modelTranslator.netexId( connectionLink);
