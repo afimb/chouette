@@ -12,7 +12,9 @@ import java.math.BigDecimal;
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -24,7 +26,10 @@ public class AccessPointConverter extends GenericConverter
     private VTDNav nav;
 
     @Getter
-    private List<String> routeObjectIds = new ArrayList<String>();
+    private Map<String, AccessPoint> accessPointsByObjectId = new HashMap<String, AccessPoint>();
+    
+    @Getter
+    private Map<String, List<AccessPoint>> accessPointsByStopPlaceObjectId = new HashMap<String, List<AccessPoint>>();
     
     public AccessPointConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -36,6 +41,10 @@ public class AccessPointConverter extends GenericConverter
     
     public List<AccessPoint> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
+        accessPoints.clear();
+        accessPointsByStopPlaceObjectId.clear();
+        accessPointsByObjectId.clear();
+        
         int result = -1;
         pilot.selectXPath("//netex:SiteFrame//netex:stopPlaces/netex:StopPlace/netex:entrances/netex:StopPlaceEntrance");
         
@@ -73,6 +82,21 @@ public class AccessPointConverter extends GenericConverter
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             accessPoint.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );  
             
+            String stopAreaObjectId = accessPoint.getContainedInStopArea();
+            if(stopAreaObjectId!= null && 
+                    accessPointsByStopPlaceObjectId.containsKey(stopAreaObjectId))
+            {
+                List<AccessPoint> aps = accessPointsByStopPlaceObjectId.get(stopAreaObjectId);
+                aps.add(accessPoint);
+                accessPointsByStopPlaceObjectId.put(stopAreaObjectId, aps);
+            }
+            else
+            {            
+                List<AccessPoint> aps = new ArrayList<AccessPoint>();
+                aps.add(accessPoint);
+                accessPointsByStopPlaceObjectId.put(stopAreaObjectId, aps);
+            }                                            
+            accessPointsByObjectId.put(accessPoint.getObjectId(), accessPoint);
             accessPoints.add(accessPoint);
         }
         pilot.resetXPath();

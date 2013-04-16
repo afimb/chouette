@@ -17,6 +17,9 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.Getter;
 import org.apache.log4j.Logger;
 
 public class AccessLinkConverter extends GenericConverter {
@@ -25,16 +28,19 @@ public class AccessLinkConverter extends GenericConverter {
     private AutoPilot pilot;
     private VTDNav nav;
     
+    @Getter
+    private Map<String, List<AccessLink>> accessLinksByStopPlaceObjectId = new HashMap<String, List<AccessLink>>();
+    
     public AccessLinkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
         nav = vTDNav;
-
         pilot = createAutoPilot(nav);            
     }
     
     public List<AccessLink> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         links.clear();
+        accessLinksByStopPlaceObjectId.clear();
         
         int result = -1;
         pilot.selectXPath("/netex:PublicationDelivery/netex:dataObjects/"+
@@ -64,6 +70,21 @@ public class AccessLinkConverter extends GenericConverter {
             
             link.setStartOfLinkId( subXpathSelection( "netex:From/netex:EntranceRef/@ref"));
             link.setEndOfLinkId( subXpathSelection( "netex:To/netex:PlaceRef/@ref"));
+            
+            String stopAreaObjectId = link.getEndOfLinkId();
+            if(stopAreaObjectId!= null && 
+                    accessLinksByStopPlaceObjectId.containsKey(stopAreaObjectId))
+            {
+                List<AccessLink> alks = accessLinksByStopPlaceObjectId.get(stopAreaObjectId);
+                alks.add(link);
+                accessLinksByStopPlaceObjectId.put(stopAreaObjectId, alks);
+            }
+            else
+            {            
+                List<AccessLink> alks = new ArrayList<AccessLink>();
+                alks.add(link);
+                accessLinksByStopPlaceObjectId.put(stopAreaObjectId, alks);
+            }                                                       
             links.add(link);
         } 
         nav.pop();
