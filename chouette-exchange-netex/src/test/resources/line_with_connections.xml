@@ -1772,7 +1772,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
             <quays>
               </quays>
       <entrances>
-                        <StopPlaceEntrance version="any" id="RATP_PIVI:StopPlaceEntrance:760e105d-74bb-4078-b3ee-1a98cd39fc6f">
+                        <StopPlaceEntrance version="1" id="RATP_PIVI:StopPlaceEntrance:760e105d-74bb-4078-b3ee-1a98cd39fc6f">
           <Centroid>
             <Location>
               <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
