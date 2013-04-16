@@ -1,4 +1,4 @@
-h1. Chouette2 !https://travis-ci.org/dryade/chouette.png?branch=master!:https://travis-ci.org/dryade/chouette
+h1. Chouette !https://travis-ci.org/dryade/chouette.png?branch=master!:https://travis-ci.org/dryade/chouette
 
 h2. Licence
 

@@ -7,6 +7,8 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
@@ -18,7 +20,6 @@ import org.testng.annotations.Test;
 
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
-@SuppressWarnings("unchecked")
 public class NeptuneConverterTests extends AbstractTestNGSpringContextTests {
 
     private NeptuneConverter neptuneConverter;
@@ -36,11 +37,13 @@ public class NeptuneConverterTests extends AbstractTestNGSpringContextTests {
 
         VTDNav nav = vg.getNav();
         neptuneConverter = new NeptuneConverter(nav);
+        fis.close();
     }
 
     @Test(groups = {"NeptuneConverter"}, description = "Must return a line")
     public void verifyNeptune() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = neptuneConverter.convert();
+		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
+    	Line line = neptuneConverter.convert(report);
         Assert.equals(line.getName(), "7B");        
         Assert.equals(line.getPtNetwork().getName(), "METRO");
         Assert.equals(line.getCompany().getName(), "RATP");

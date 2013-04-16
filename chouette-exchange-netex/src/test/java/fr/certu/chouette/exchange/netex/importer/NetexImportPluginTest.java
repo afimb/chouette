@@ -8,6 +8,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +44,14 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
     @Test(groups = {"NetexExportPlugin"}, description = "Netex Import Plugin should call readXmlFile or readZipFile")
     public void verifyDoImport() throws ChouetteException 
     {
+		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
         SimpleParameterValue inputFile = new SimpleParameterValue("inputFile");        
         inputFile.setFilepathValue(xmlPath);
         parameters.add(inputFile);
         
         NetexImportPlugin netexImportPluginSpy = spy(netexImportPlugin);
         
-        when(netexImportPluginSpy.readXmlFile(xmlPath, netexImportPlugin.getReport())).thenReturn(netexLine);        
+        when(netexImportPluginSpy.readXmlFile(xmlPath, report)).thenReturn(netexLine);        
         
         Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), netexLines);
            
@@ -57,7 +59,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
         inputFile.setFilepathValue(zipPath);
         parameters.add(inputFile);
         
-        when(netexImportPluginSpy.readZipFile(zipPath, netexImportPlugin.getReport())).thenReturn(netexLines);        
+        when(netexImportPluginSpy.readZipFile(zipPath, report)).thenReturn(netexLines);        
         
         Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), netexLines);
     }
@@ -65,14 +67,16 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
     @Test(groups = {"NetexExportPlugin"}, description = "Must return a line")
     public void verifyReadXmlFile() throws ChouetteException 
     {
-        Line line = netexImportPlugin.readXmlFile(xmlPath, netexImportPlugin.getReport());
+		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
+        Line line = netexImportPlugin.readXmlFile(xmlPath, report);
         Assert.assertNotNull(line);
     }
     
     @Test(groups = {"NetexExportPlugin"}, description = "Must return lines")
     public void verifyReadZipFile() throws ChouetteException 
     {
-       List<Line> lines = netexImportPlugin.readZipFile(zipPath, netexImportPlugin.getReport()); 
+		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
+       List<Line> lines = netexImportPlugin.readZipFile(zipPath, report); 
        Assert.assertTrue(!lines.isEmpty());
     }
 }

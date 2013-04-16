@@ -19,6 +19,10 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
+
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +61,7 @@ public class NeptuneConverter {
         connectionLinkConverter = new ConnectionLinkConverter(vTDNav);
     }
     
-    public Line convert() throws XPathParseException, XPathEvalException, NavException, ParseException
+    public Line convert(Report report) throws XPathParseException, XPathEvalException, NavException, ParseException
     {
         PTNetwork network = networkConverter.convert();        
         Company company = companyConverter.convert();        
@@ -147,6 +151,26 @@ public class NeptuneConverter {
             connectionLink.setStartOfLink( stopAreaByObjectId.get( connectionLink.getStartOfLinkId()));
             connectionLink.setEndOfLink( stopAreaByObjectId.get( connectionLink.getEndOfLinkId()));
         }
+		// report for save
+		ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+		report.addItem(item);
+		// report objects count
+		{
+			ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,routes.size());
+            item.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,journeyPatterns.size());
+            item.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,vehicleJourneys.size());
+            item.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,stopAreas.size());
+            item.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,connectionLinks.size());
+            item.addItem(countItem);
+//			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,accessPoints.size());
+//            item.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,timetables.size());
+            item.addItem(countItem);
+		}
         
         return line;
     }
