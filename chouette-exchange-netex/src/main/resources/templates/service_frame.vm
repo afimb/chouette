@@ -242,7 +242,7 @@
     <PassengerStopAssignment version="any" id="${stopPoint.objectIdPrefix()}:PassengerStopAssignment:${stopPoint.objectIdSuffix()}">
       <ScheduledStopPointRef version="1" ref="${stopPoint.objectIdPrefix()}:StopPoint:${stopPoint.objectIdSuffix()}"/>
       #if ($stopPoint.containedInStopArea) 
-      <StopPlaceRef version="$stopPoint.containedInStopArea.parent.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopArea:${stopPoint.containedInStopArea.parent.objectIdSuffix()}"/>      
+      <StopPlaceRef version="$stopPoint.containedInStopArea.parent.objectVersion" ref="${stopPoint.objectIdPrefix()}:StopPlace:${stopPoint.containedInStopArea.parent.objectIdSuffix()}"/>      
       <QuayRef version="$stopPoint.containedInStopArea.objectVersion" ref="${stopPoint.objectIdPrefix()}:Quay:${stopPoint.containedInStopArea.objectIdSuffix()}"/>
       #end 
     </PassengerStopAssignment>    
