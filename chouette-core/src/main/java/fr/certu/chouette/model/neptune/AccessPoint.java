@@ -36,6 +36,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * Address 
 	 * <br/><i>readable/writable</i>
 	 */
+	@Getter
 	private Address address;
 	/**
 	 * Geographic referential for coordinates
@@ -56,6 +57,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	 * Projected point
 	 * <br/><i>readable/writable</i>
 	 */
+	@Getter
 	private ProjectedPoint projectedPoint;
 	/**
 	 * address street name 
@@ -144,7 +146,11 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 	public void addAccessLink(AccessLink accessLink)
 	{
 		if (accessLinks == null) accessLinks = new ArrayList<AccessLink>();
-		if (!accessLinks.contains(accessLink)) accessLinks.add(accessLink);
+		if (accessLink != null && !accessLinks.contains(accessLink)) 
+		{
+			accessLinks.add(accessLink);
+			accessLink.setAccessPoint(this);
+		}
 	}
 
 	/**
@@ -159,7 +165,11 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 
 		for (AccessLink accessLink : accessLinkCollection) 
 		{
-			if (!accessLinks.contains(accessLink)) accessLinks.add(accessLink);
+			if (accessLink != null && !accessLinks.contains(accessLink)) 
+			{
+				accessLinks.add(accessLink);
+				accessLink.setAccessPoint(this);
+			}
 		}
 
 	}
@@ -175,19 +185,12 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 		if (accessLinks.contains(accessLink)) accessLinks.remove(accessLink);
 	}
 
-
-
-	public Address getAddress() {
-		return address;
-	}
 	public void setAddress(Address address) {
 		this.address = address;
 		if (address != null)
 			address.populateAccessPoint(this);
 	}
-	public ProjectedPoint getProjectedPoint() {
-		return projectedPoint;
-	}
+
 	public void setProjectedPoint(ProjectedPoint projectedPoint) {
 		this.projectedPoint = projectedPoint;
 		if (projectedPoint != null)

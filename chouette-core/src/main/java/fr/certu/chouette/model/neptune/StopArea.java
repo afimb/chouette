@@ -582,8 +582,11 @@ public class StopArea extends NeptuneIdentifiedObject
 	{
 		if (accessLinks == null)
 			accessLinks = new ArrayList<AccessLink>();
-		if (!accessLinks.contains(accessLink))
+		if (accessLink != null && !accessLinks.contains(accessLink))
+		{
 			accessLinks.add(accessLink);
+			accessLink.setStopArea(this);
+		}
 	}
 
 	/**
