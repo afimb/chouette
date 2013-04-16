@@ -3,7 +3,7 @@ package fr.certu.chouette.exchange.netex.importer.converters;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
-import fr.certu.chouette.exchange.netex.EnumTranslator;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
@@ -27,7 +27,7 @@ public class GenericConverter {
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
     DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
-    private EnumTranslator enumTranslator = new EnumTranslator();
+    private ModelTranslator enumTranslator = new ModelTranslator();
         
     protected void returnToRootElement(VTDNav nav) throws NavException
     {

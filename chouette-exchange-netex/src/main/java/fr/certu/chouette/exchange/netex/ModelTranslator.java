@@ -4,6 +4,11 @@
  */
 package fr.certu.chouette.exchange.netex;
 
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
@@ -14,7 +19,33 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
  *
  * @author marc
  */
-public class EnumTranslator {
+public class ModelTranslator {
+    public String netexId( NeptuneIdentifiedObject model) {
+        if (model==null)
+            return null;
+        return model.objectIdPrefix() + ":" + netexModelName( model) + 
+                ":" +  model.objectIdSuffix();
+    }
+    public String netexModelName( NeptuneIdentifiedObject model) {
+        if (model==null)
+            return null;
+        if ( model instanceof StopArea) {
+            if ( ( (StopArea)model).getAreaType().equals( ChouetteAreaEnum.QUAY) ||
+                 ( (StopArea)model).getAreaType().equals( ChouetteAreaEnum.BOARDINGPOSITION))
+                return "Quay";
+            else
+                return "StopPlace";
+        } else if ( model instanceof AccessPoint) {
+            return "StopPlaceEntrance";
+        } else if ( model instanceof AccessLink) {
+            return "PathLink";
+        } else if ( model instanceof AccessLink) {
+            return "PathLink";
+        } else {
+            return null;
+        }
+    }
+    
     private String firstLetterUpcase(String word)
     {
         StringBuilder sb = new StringBuilder(word); // Puts the first caracter upcase

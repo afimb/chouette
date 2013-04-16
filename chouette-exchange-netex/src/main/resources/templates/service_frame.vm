@@ -105,7 +105,7 @@
       <Description>$!esc.xml($line.comment)</Description>
       #end
       #if ( $line.transportModeName )
-      <TransportMode>$enumTranslator.toTransportModeNetex( $line.transportModeName)</TransportMode>
+      <TransportMode>$modelTranslator.toTransportModeNetex( $line.transportModeName)</TransportMode>
       #end
       #if ( $line.number )
       <PublicCode>$!esc.xml($line.number)</PublicCode>
@@ -210,7 +210,7 @@
             <MobilityimpairedAccess>$!connectionLink.mobilityRestrictedSuitable</MobilityimpairedAccess>
           </AccessibilityAssessment>
           #if ( $connectionLink.linkType)
-          <Covered>$enumTranslator.toLinkType($connectionLink.linkType)</Covered>
+          <Covered>$modelTranslator.toLinkType($connectionLink.linkType)</Covered>
           #end
           <TransfertDuration>
             <DefaultDuration>$!connectionLink.defaultDuration</DefaultDuration>

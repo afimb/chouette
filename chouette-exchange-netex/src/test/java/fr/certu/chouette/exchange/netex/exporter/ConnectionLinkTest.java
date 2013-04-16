@@ -4,7 +4,7 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.EnumTranslator;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import java.text.ParseException;
@@ -18,7 +18,7 @@ public class ConnectionLinkTest extends ChouetteModelTest {
     private String xPathRoot = "/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:ServiceFrame/netex:connections";
-    private EnumTranslator enumTranslator = new EnumTranslator();
+    private ModelTranslator enumTranslator = new ModelTranslator();
     
     private String getId( ConnectionLink connectionLink) {
         return connectionLink.objectIdPrefix() + ":SiteConnection:" + 

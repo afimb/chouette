@@ -4,6 +4,7 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.AccessLink;
 import java.text.ParseException;
 
@@ -12,7 +13,8 @@ import javax.xml.xpath.XPathExpressionException;
 import org.testng.annotations.Test;
 
 @Test(groups = {"AccessLink"}, description = "Validate AccessLink export in NeTEx format")
-public class AccessLinkTest extends ChouetteModelTest {        
+public class AccessLinkTest extends ChouetteModelTest {   
+    private ModelTranslator modelTranslator = new ModelTranslator();
     
     public List<AccessLink> accessLinks()
     {
@@ -37,14 +39,14 @@ public class AccessLinkTest extends ChouetteModelTest {
     public void verifyaccessLinkStartAndEnd() throws XPathExpressionException, ParseException {
         for (AccessLink accessLink : accessLinks()) {          
             logger.error(accessLink.getStopArea().getObjectId());
-            assertXPathTrue( "boolean(//netex:PathLink[@id = '"+
-                        accessLink.objectIdPrefix() + ":PathLink:" + accessLink.objectIdSuffix() +
-                        "']/netex:To/netex:PlaceRef/@ref='"+accessLink.getStopArea().getObjectId()+"')");           
+            assertXPathTrue( "boolean(//netex:PathLink"+
+                "[@id = '"+ modelTranslator.netexId(accessLink) + "']" +
+                "/netex:To/netex:PlaceRef/@ref='"+modelTranslator.netexId(accessLink.getStopArea())+"')");           
             
             logger.error(accessLink.getAccessPoint().getObjectId());
-            assertXPathTrue( "boolean(//netex:PathLink[@id = '"+
-                        accessLink.objectIdPrefix() + ":PathLink:" + accessLink.objectIdSuffix() +
-                        "']/netex:From/netex:EntranceRef/@ref='"+accessLink.getAccessPoint().getObjectId()+"')");           
+            assertXPathTrue( "boolean(//netex:PathLink"+
+                "[@id = '"+ modelTranslator.netexId(accessLink) + "']" +
+                "/netex:From/netex:EntranceRef/@ref='"+modelTranslator.netexId(accessLink.getAccessPoint()) +"')");           
         }        
         
     }
