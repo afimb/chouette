@@ -18,11 +18,10 @@ public class ConnectionLinkTest extends ChouetteModelTest {
     private String xPathRoot = "/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:ServiceFrame/netex:connections";
-    private ModelTranslator enumTranslator = new ModelTranslator();
+    private ModelTranslator modelTranslator = new ModelTranslator();
     
     private String getId( ConnectionLink connectionLink) {
-        return connectionLink.objectIdPrefix() + ":SiteConnection:" + 
-                connectionLink.objectIdSuffix();
+        return modelTranslator.netexId( connectionLink);
     }
     
     @Test(groups = { "ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected id")
@@ -81,7 +80,7 @@ public class ConnectionLinkTest extends ChouetteModelTest {
             assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
                     "[@id = '"+ getId(connectionLink) + "']"+
                     "/netex:navigationPaths/netex:NavigationPath"+
-                    "/netex:Covered/text()='"+ enumTranslator.toLinkType(connectionLink.getLinkType()) +"')");
+                    "/netex:Covered/text()='"+ modelTranslator.toLinkType(connectionLink.getLinkType()) +"')");
         }        
     }
     
@@ -118,12 +117,12 @@ public class ConnectionLinkTest extends ChouetteModelTest {
         
         for (ConnectionLink connectionLink : connectionLinks) {            
             assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
-                        connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
-                        "']/netex:From/netex:StopPlaceRef/@ref='"+connectionLink.getStartOfLinkId()+"')");
+                        getId( connectionLink) +
+                        "']/netex:From/netex:StopPlaceRef/@ref='"+modelTranslator.netexId( connectionLink.getStartOfLink())+"')");
             
             assertXPathTrue( "boolean(//netex:SiteConnection[@id = '"+
-                        connectionLink.objectIdPrefix() + ":SiteConnection:" + connectionLink.objectIdSuffix() +
-                        "']/netex:To/netex:StopPlaceRef/@ref='"+connectionLink.getEndOfLinkId()+"')");
+                        getId( connectionLink) +
+                        "']/netex:To/netex:StopPlaceRef/@ref='"+modelTranslator.netexId( connectionLink.getEndOfLink())+"')");
         }        
         
     }

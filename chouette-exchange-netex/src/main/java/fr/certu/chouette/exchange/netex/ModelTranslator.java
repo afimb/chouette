@@ -6,8 +6,15 @@ package fr.certu.chouette.exchange.netex;
 
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.ConnectionLink;
+import fr.certu.chouette.model.neptune.GroupOfLine;
+import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
@@ -26,6 +33,13 @@ public class ModelTranslator {
         return model.objectIdPrefix() + ":" + netexModelName( model) + 
                 ":" +  model.objectIdSuffix();
     }
+    public String netexMockId( NeptuneIdentifiedObject model, String mock) {
+    if (model==null)
+        return null;
+    return model.objectIdPrefix() + ":" + mock + 
+            ":" +  model.objectIdSuffix();
+}
+
     public String netexModelName( NeptuneIdentifiedObject model) {
         if (model==null)
             return null;
@@ -39,8 +53,20 @@ public class ModelTranslator {
             return "StopPlaceEntrance";
         } else if ( model instanceof AccessLink) {
             return "PathLink";
-        } else if ( model instanceof AccessLink) {
-            return "PathLink";
+        } else if ( model instanceof StopPoint) {
+            return "StopPoint";
+        } else if ( model instanceof PTNetwork) {
+            return "PTNetwork";
+        } else if ( model instanceof Line) {
+            return "Line";
+        } else if ( model instanceof Route) {
+            return "Route";
+        } else if ( model instanceof GroupOfLine) {
+            return "GroupOfLines";
+        } else if ( model instanceof JourneyPattern) {
+            return "ServicePattern";
+        } else if ( model instanceof ConnectionLink) {
+            return "SiteConnection";
         } else {
             return null;
         }
