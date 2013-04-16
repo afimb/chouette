@@ -5,4 +5,4 @@ jdk:
   - openjdk6
 before_script:
   - psql -c "create user chouette with login createdb encrypted password 'chouette';" -U postgres
-  - psql -c 'create database chouette_test with owner = chouette;' -U postgres
+  - psql -c 'create database chouette_v2_test with owner = chouette;' -U postgres
