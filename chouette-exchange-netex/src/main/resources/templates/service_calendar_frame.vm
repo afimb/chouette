@@ -10,7 +10,7 @@
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
-    <DayType version="$timetable.objectVersion" id="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}">
+    <DayType version="$timetable.objectVersion" id="$modelTranslator.netexId( $timetable)">
       <Name>$timetable.comment</Name>
       <ShortName>$timetable.comment</ShortName>
       <properties>

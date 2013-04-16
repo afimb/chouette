@@ -2,23 +2,23 @@
 <TimetableFrame version="any" id="${line.objectIdPrefix()}:TimetableFrame:TF02"> 
   <vehicleJourneys>
     #foreach( $vehicleJourney in $vehicleJourneys )
-    <ServiceJourney version="$vehicleJourney.objectVersion" id="${vehicleJourney.objectIdPrefix()}:VehicleJourney:${vehicleJourney.objectIdSuffix()}">
+    <ServiceJourney version="$vehicleJourney.objectVersion" id="$modelTranslator.netexId( $vehicleJourney)">
       <Name>$vehicleJourney.number</Name>
       <dayTypes>
         #foreach( $timetable in $vehicleJourney.timetables )  
-        <DayTypeRef version="$timetable.objectVersion" ref="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}"/>
+        <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
         #end 
       </dayTypes>
       #if($vehicleJourney.route) 
-      <RouteRef version="$vehicleJourney.route.objectVersion" ref="${vehicleJourney.route.objectIdPrefix()}:Route:${vehicleJourney.route.objectIdSuffix()}"/>
+      <RouteRef version="$vehicleJourney.route.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.route)"/>
       #end
       #if($vehicleJourney.journeyPattern) 
-      <ServicePatternRef ref="${vehicleJourney.journeyPattern.objectIdPrefix()}:ServicePattern:${vehicleJourney.journeyPattern.objectIdSuffix()}">EXTERNAL</ServicePatternRef>
+      <ServicePatternRef ref="$modelTranslator.netexId( $vehicleJourney.journeyPattern)">EXTERNAL</ServicePatternRef>
       #end
       <calls>
         #foreach( $vehicleJourneyAtStop in $vehicleJourney.vehicleJourneyAtStops ) 
         <Call>
-          <ScheduledStopPointRef version="$vehicleJourneyAtStop.stopPoint.objectVersion" ref="${vehicleJourneyAtStop.stopPoint.objectIdPrefix()}:StopPoint:${vehicleJourneyAtStop.stopPoint.objectIdSuffix()}"/>
+          <ScheduledStopPointRef version="$vehicleJourneyAtStop.stopPoint.objectVersion" ref="$modelTranslator.netexId( $vehicleJourneyAtStop.stopPoint)"/>
           <Arrival>
             <Time>$vehicleJourneyAtStop.departureTime</Time>
           </Arrival>
