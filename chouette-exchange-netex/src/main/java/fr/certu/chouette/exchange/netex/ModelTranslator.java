@@ -16,6 +16,7 @@ import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
@@ -70,6 +71,8 @@ public class ModelTranslator {
             return "SiteConnection";
         } else if ( model instanceof Timetable) {
             return "DayType";
+        } else if ( model instanceof VehicleJourney) {
+            return "VehicleJourney";
         } else {
             return null;
         }

@@ -72,9 +72,7 @@ public class TimetableTest extends ChouetteModelTest {
                                 "/netex:dayTypes"+
                                 "/netex:DayType"+
                                 "[@id = '"+
-                                timetable.objectIdPrefix()+
-                                ":DayType:"+
-                                timetable.objectIdSuffix()+
+                                modelTranslator.netexId( timetable)+
                                 "'])";
             assertXPathTrue( xPathExpr);
         }
@@ -90,9 +88,7 @@ public class TimetableTest extends ChouetteModelTest {
                                 "/netex:dayTypes"+
                                 "/netex:DayType"+
                                 "[@id = '"+
-                                timetable.objectIdPrefix()+
-                                ":DayType:"+
-                                timetable.objectIdSuffix()+
+                                modelTranslator.netexId( timetable)+
                                 "']/netex:Name/text()='"+
                                 timetable.getComment()+"')";
             assertXPathTrue( xPathExpr);
@@ -109,9 +105,7 @@ public class TimetableTest extends ChouetteModelTest {
                                     "/netex:dayTypes"+
                                     "/netex:DayType"+
                                     "[@id = '"+
-                                    timetable.objectIdPrefix()+
-                                    ":DayType:"+
-                                    timetable.objectIdSuffix()+
+                                modelTranslator.netexId( timetable)+
                                     "']/netex:properties/netex:PropertyOfDay/"+
                                     "netex:DaysOfWeek/"+
                                     "text()='"+
@@ -224,9 +218,7 @@ public class TimetableTest extends ChouetteModelTest {
                                 "/netex:dayTypeAssignments"+
                                 "/netex:DayTypeAssignment/netex:DayTypeRef"+
                                 "[@ref = '"+
-                                timetable.objectIdPrefix()+
-                                ":DayType:"+
-                                timetable.objectIdSuffix()+
+                                modelTranslator.netexId( timetable)+
                                 "'])";
             assertXPathCount( xPathExpr, 
                     timetable.getCalendarDays().size()+
