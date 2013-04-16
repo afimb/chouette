@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.netex.exporter;
 import com.tobedevoured.modelcitizen.CreateModelException;
 import com.tobedevoured.modelcitizen.ModelFactory;
 import com.tobedevoured.modelcitizen.policy.PolicyException;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +42,7 @@ public class ServiceCalendarFrameFileWritterTests extends AbstractTestNGSpringCo
     private Document xmlDocument;
     DateTool date = new DateTool();
     String dateFormat = "yyyy-MM-d'T'HH:mm:ss'Z'";
+    protected ModelTranslator modelTranslator = new ModelTranslator();
     
 
     @BeforeClass
@@ -105,10 +107,10 @@ public class ServiceCalendarFrameFileWritterTests extends AbstractTestNGSpringCo
     @Test(groups = {"ServiceCalendarFrame"}, description = "Check if dayTypes exist")
     public void verifyDayTypes() throws XPathExpressionException {
         for (Timetable timetable : timetables) {
-            Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE), "Must find DayType");
+            Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" +modelTranslator.netexId(timetable) + "']", xmlDocument, XPathConstants.NODE), "Must find DayType");
 
             for (DayTypeEnum dayType : timetable.getDayTypes()) {
-                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']//netex:PropertyOfDay[netex:DaysOfWeek = '" + dayType.value() + "']", xmlDocument, XPathConstants.STRING), "daysOfWeek must exists");
+                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" + modelTranslator.netexId(timetable) + "']//netex:PropertyOfDay[netex:DaysOfWeek = '" + dayType.value() + "']", xmlDocument, XPathConstants.STRING), "daysOfWeek must exists");
             }
         }
     }
