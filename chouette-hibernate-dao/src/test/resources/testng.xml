@@ -1,7 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Factory" verbose="1">
-	<test name="HibernateDao">
+<suite name="Factory" verbose="1" >
+	<test name="InitDao" preserve-order="true">
+		<packages>
+			<package name="fr.certu.chouette.dao.init">
+			</package>
+		</packages>
+	</test>
+	<test name="HibernateDao" preserve-order="true">
 		<packages>
 			<package name="fr.certu.chouette.dao.hibernate">
 			</package>
