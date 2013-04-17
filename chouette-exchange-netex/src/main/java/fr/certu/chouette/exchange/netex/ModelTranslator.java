@@ -46,31 +46,27 @@ public class ModelTranslator {
         if (model==null)
             return null;
         if ( model instanceof StopArea) {
-            if ( ( (StopArea)model).getAreaType().equals( ChouetteAreaEnum.QUAY) ||
-                 ( (StopArea)model).getAreaType().equals( ChouetteAreaEnum.BOARDINGPOSITION))
-                return "Quay";
-            else
-                return "StopPlace";
+            return "StopArea";
         } else if ( model instanceof AccessPoint) {
-            return "StopPlaceEntrance";
+            return "AccessPoint";
         } else if ( model instanceof AccessLink) {
-            return "PathLink";
+            return "AccessLink";
         } else if ( model instanceof StopPoint) {
             return "StopPoint";
         } else if ( model instanceof PTNetwork) {
-            return "PTNetwork";
+            return "GroupOfLine";
         } else if ( model instanceof Line) {
             return "Line";
         } else if ( model instanceof Route) {
             return "Route";
         } else if ( model instanceof GroupOfLine) {
-            return "GroupOfLines";
+            return "GroupOfLine";
         } else if ( model instanceof JourneyPattern) {
-            return "ServicePattern";
+            return "JourneyPattern";
         } else if ( model instanceof ConnectionLink) {
-            return "SiteConnection";
+            return "ConnectionLink";
         } else if ( model instanceof Timetable) {
-            return "DayType";
+            return "Timetable";
         } else if ( model instanceof VehicleJourney) {
             return "VehicleJourney";
         } else {

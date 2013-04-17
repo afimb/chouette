@@ -31,7 +31,7 @@ public class AccessLinkTest extends ChouetteModelTest {
     public void verifyaccessLinkName() throws XPathExpressionException, ParseException {
         for (AccessLink accessLink : accessLinks()) {   
             assertXPathTrue( "boolean(//netex:PathLink[@id = '"+
-                        accessLink.objectIdPrefix() + ":PathLink:" + accessLink.objectIdSuffix() +
+                        modelTranslator.netexId(accessLink) +
                         "']/netex:Name/text()='"+accessLink.getName()+"')");
         }        
     }
