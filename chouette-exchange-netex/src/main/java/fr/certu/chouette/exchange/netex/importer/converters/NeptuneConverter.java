@@ -181,7 +181,7 @@ public class NeptuneConverter {
 		}
 
 		// report for save
-		ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+		ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK,line.getObjectId());
 		report.addItem(item);
 		// report objects count
 		{
