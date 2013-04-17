@@ -18,6 +18,7 @@ import java.util.zip.ZipOutputStream;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -37,7 +38,16 @@ public class NetexFileWriter {
 
     private void prepareModel(Line line)
     {
+        model.put("date", new DateTool());
+        model.put("esc", new EscapeTool());
+        model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
+        model.put("shortDateFormat", "yyyy-MM-dd");
+        model.put("dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss");
+        model.put("durationFormat", "'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
+        //model.put("durationFormat", new DurationFormatUtils());
+        
         model.put("enumTranslator", new EnumTranslator());
+        
         model.put("line", line);
         model.put("network", line.getPtNetwork());
         model.put("company", line.getCompany());
@@ -57,13 +67,7 @@ public class NetexFileWriter {
         model.put("vehicleJourneys", line.getVehicleJourneys()); 
         
         // For ServiceCalendarFrame need to have time tables
-        model.put("timetables", line.getTimetables()); 
-                
-
-        model.put("date", new DateTool());
-        model.put("esc", new EscapeTool());
-        model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
-        model.put("shortDateFormat", "yyyy-MM-dd");
+        model.put("timetables", line.getTimetables());                 
     }
     
     public ZipEntry writeZipEntry(Line line, String entryName, ZipOutputStream zipFile) throws IOException 

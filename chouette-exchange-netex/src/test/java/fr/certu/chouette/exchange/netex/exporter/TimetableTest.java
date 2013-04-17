@@ -23,7 +23,8 @@ import java.text.SimpleDateFormat;
  */
 @Test(groups = {"Timetable"}, description = "Validate Timetable export in NeTEx format")
 public class TimetableTest extends ChouetteModelTest {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     
     @Test(groups = {"ServiceCalendarFrame"}, description = "Validate presence of ServiceCalendarFrame with expected id")
     public void verifyServiceCalendarFrameId() throws XPathExpressionException, ParseException {
@@ -153,7 +154,7 @@ public class TimetableTest extends ChouetteModelTest {
                                     "/netex:operatingPeriods"+
                                     "/netex:OperatingPeriod/netex:FromDate/"+
                                     "text() = '"+
-                                    dateFormat.format( period.getStartDate())+
+                                    dateTimeFormat.format( period.getStartDate())+
                                     "')";
                 assertXPathTrue( xPathExpr);
             }
@@ -170,7 +171,7 @@ public class TimetableTest extends ChouetteModelTest {
                                     "/netex:operatingPeriods"+
                                     "/netex:OperatingPeriod/netex:ToDate/"+
                                     "text() = '"+
-                                    dateFormat.format( period.getEndDate())+
+                                    dateTimeFormat.format( period.getEndDate())+
                                     "')";
                 assertXPathTrue( xPathExpr);
             }

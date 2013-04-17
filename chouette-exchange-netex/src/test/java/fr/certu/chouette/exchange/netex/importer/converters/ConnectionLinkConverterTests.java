@@ -71,25 +71,25 @@ public class ConnectionLinkConverterTests {
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's DefaultDuration attribute reading")
     public void verifyDefaultDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         ConnectionLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:SiteConnection:1357");
-        Assert.assertEquals( selectedLink.getDefaultDuration(), Time.valueOf("00:10:00"));
+        Assert.assertEquals( selectedLink.getDefaultDuration().toString(), Time.valueOf("00:10:00").toString());
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's FrequentTravellerDuration attribute reading")
     public void verifyFrequentTravellerDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         ConnectionLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:SiteConnection:1357");
-        Assert.assertEquals( selectedLink.getFrequentTravellerDuration(), Time.valueOf("00:05:00"));
+        Assert.assertEquals( selectedLink.getFrequentTravellerDuration().toString(), Time.valueOf("00:05:00").toString());
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's OccasionalTravellerDuration attribute reading")
     public void verifyOccasionalTravellerDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         ConnectionLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:SiteConnection:1357");
-        Assert.assertEquals( selectedLink.getOccasionalTravellerDuration(), Time.valueOf("00:08:00"));
+        Assert.assertEquals( selectedLink.getOccasionalTravellerDuration().toString(), Time.valueOf("00:08:00").toString());
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's MobilityRestrictedTravellerDuration attribute reading")
     public void verifyMobilityRestrictedTravellerDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         ConnectionLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:SiteConnection:1357");
-        Assert.assertEquals( selectedLink.getMobilityRestrictedTravellerDuration(), Time.valueOf("00:15:00"));
+        Assert.assertEquals( selectedLink.getMobilityRestrictedTravellerDuration().toString(), Time.valueOf("00:15:00").toString());
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's linkDistance attribute reading")

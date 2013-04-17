@@ -32,11 +32,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 
 -->
 <PublicationDelivery version="1.0" xmlns="http://www.netex.org.uk/netex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri"  >
-  <PublicationTimestamp>2013-04-15T13:34:01Z</PublicationTimestamp>
+  <PublicationTimestamp>2013-04-17T11:05:51Z</PublicationTimestamp>
   <ParticipantRef>SYS001</ParticipantRef>
   <!--- ======WHAT WAS REQUESTED ========== -->
   <PublicationRequest version="1.0">
-    <RequestTimestamp>2013-04-15T13:34:01Z</RequestTimestamp>
+    <RequestTimestamp>2013-04-17T11:05:51Z</RequestTimestamp>
     <ParticipantRef>RATP nom long</ParticipantRef>
     <filters>
       <FrameRequestFilter>
@@ -167,7 +167,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
             </TypeOfFrame>
           </typesOfValue>
           <organisations> <!-- TODO : Prendre en compte plusieurs companies -->
-            <Operator version="1" id="RATP_PIVI:Company:25f10fb4-3973-4700-b543-8bfc796bae9c">
+            <Operator version="1" id="RATP_PIVI:Company:fc3700f9-3aad-46d0-b055-eb94f8f8e582">
                             <PublicCode>RATP-ASD</PublicCode>
                                           <CompanyNumber>100</CompanyNumber>
                                           <Name>RATP nom long</Name>
@@ -178,7 +178,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                                                       <ContactFaxNumber>01.02.03.04.05</ContactFaxNumber>
                                 </ContactDetails>
                                           <parts>
-                  <OrganisationPart>
+                  <OrganisationPart version="1" id="RATP_PIVI:OrganisationPart:fc3700f9-3aad-46d0-b055-eb94f8f8e582">
                       <Name>SIT</Name>
                   </OrganisationPart>
               </parts>
@@ -193,7 +193,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
         <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
 <ServiceFrame version="any"  id="T:ServiceFrame:1">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="1" changed="1970-01-15T07:54:39Z" id="RATP_PIVI:PTNetwork:b0c333f3-dab7-4321-bf7c-2eb47763af76">
+  <Network version="1" changed="1970-01-15T07:54:39Z" id="RATP_PIVI:PTNetwork:bbcb6ced-d734-42c2-a184-5ebfba4fc852">
             <keyList>
           <KeyValue>
               <Key>Comment</Key>
@@ -528,67 +528,67 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                   <Name>Lyc&#233;e &gt; Hopital</Name>
                   <ShortName>7B (PRE-SAINT-GERVAIS &amp;lt;-&amp;gt; LOUIS BLANC)</ShortName>
             <pointsInSequence>                               
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-0-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-0-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-0"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-1-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-1-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-1"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-2-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-2-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-2"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-3-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-3-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-3"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-4-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-4-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-4"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-5-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-5-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-5"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-6-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-6-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-6"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-7-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-7-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-7"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-8-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-8-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-8"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-9-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-9-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-9"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-10-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-10-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-10"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-11-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-11-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-11"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-12-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-12-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-12"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-13-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-13-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-13"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-14-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-14-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-14"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-15-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-15-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-15"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-16-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-16-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-16"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-17-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-17-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-17"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-18-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-18-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-18"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-19-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-19-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-19"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-0-20-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-0-20-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-0A0A1-0-20"/>
         </PointOnRoute>
               </pointsInSequence>
@@ -607,67 +607,67 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                   <Name>Lyc&#233;e &gt; Hopital</Name>
                   <ShortName>7B (PRE-SAINT-GERVAIS &amp;lt;-&amp;gt; LOUIS BLANC)</ShortName>
             <pointsInSequence>                               
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-0-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-0-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-0"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-1-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-1-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-1"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-2-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-2-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-2"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-3-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-3-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-3"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-4-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-4-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-4"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-5-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-5-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-5"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-6-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-6-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-6"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-7-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-7-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-7"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-8-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-8-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-8"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-9-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-9-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-9"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-10-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-10-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-10"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-11-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-11-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-11"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-12-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-12-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-12"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-13-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-13-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-13"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-14-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-14-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-14"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-15-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-15-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-15"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-16-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-16-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-16"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-17-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-17-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-17"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-18-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-18-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-18"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-19-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-19-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-19"/>
         </PointOnRoute>
-                <PointOnRoute version="any" id="T:PointOnRoute:1-1-20-0" order="0">
+                <PointOnRoute version="any" id="T:PointOnRoute:1-1-20-0" order="1">
           <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-20"/>
         </PointOnRoute>
               </pointsInSequence>
@@ -689,184 +689,183 @@ So the NeTEx File will probably be something like 50% bigger with the same level
     </Line>
   </lines>
       <groupsOfLines>
-        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:db87e7d0-62b1-4573-9dd8-5f7994f4c0ba">      
+        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:2c22c066-50ca-4014-acf2-40452849cc8d">      
             <Name>Noctilien</Name>
                   <Description>R&#233;seau de nuit</Description>
           </GroupOfLines>
-        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:7ca0076b-2f5b-4b0c-992d-745b866b707e">      
+        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:501ddcf7-76ba-4f0b-b3ef-15c14002e273">      
             <Name>Noctilien</Name>
                   <Description>R&#233;seau de nuit</Description>
           </GroupOfLines>
       </groupsOfLines>
-    !--   -->
-  <!-- NEPTUNE Stop Area with "Quay" or "BoardingPosition" type  =========================================== -->
+    <!-- NEPTUNE Stop Area with "Quay" or "BoardingPosition" type  =========================================== -->
   <scheduledStopPoints>
               <ScheduledStopPoint version="1" id="T:StopPoint:1-0-0">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-1">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-2">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-3">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-4">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-5">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-6">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-7">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-8">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-9">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-10">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-11">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-12">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-13">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-14">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-15">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-16">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-17">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-18">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-19">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-20">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
                     <ScheduledStopPoint version="1" id="T:StopPoint:1-1-0">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-1">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-2">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-3">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-4">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-5">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-6">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-7">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-8">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-9">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-10">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-11">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-12">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-13">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-14">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-15">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-16">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-17">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-18">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-19">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-20">
-            <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
             </scheduledStopPoints>
@@ -1209,12 +1208,41 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </pointsInSequence>
     </ServicePattern>
             </servicePatterns>
-  <!--   -->
+
+    <!-- Assignments of Connection Links -->
+  <connections>
+        <SiteConnection id="RATP_PIVI:SiteConnection:bdb89a2b-a826-4a5c-bdbf-4d27dfd4eb00" version="1">      
+            <Name>Conection Link</Name>
+                  <Description>Comment Connection Link</Description>
+                  <Distance>2</Distance>
+            <From>
+         <StopPlaceRef ref="T:StopArea:0" />
+      </From> 
+      <To>         
+         <StopPlaceRef ref="T:StopArea:1" />
+      </To>  
+      <navigationPaths>
+        <NavigationPath version="1" id="RATP_PIVI:NavigationPath:bdb89a2b-a826-4a5c-bdbf-4d27dfd4eb00N1">
+          <AccessibilityAssessment>
+            <MobilityimpairedAccess>false</MobilityimpairedAccess>
+          </AccessibilityAssessment>
+                    <Covered>mixed</Covered>
+                    <TransfertDuration>
+            <DefaultDuration>P70Y1M03DT01H08M55S</DefaultDuration>
+            <FrequentTravellerDuration>P70Y1M03DT01H08M55S</FrequentTravellerDuration>
+            <OccasionalTravellerDuration>P70Y1M03DT01H08M55S</OccasionalTravellerDuration>
+            <MobilityRestrictedTravellerDuration>P70Y1M01DT01H31M48S </MobilityRestrictedTravellerDuration> 
+          </TransfertDuration>
+        </NavigationPath>
+      </navigationPaths>     
+    </SiteConnection>  
+      </connections>
+    <!--   -->
   <!-- Tarif zone  : Not really available in NEPTUNE, but there is a need to map Tariff Zone 1 (which is an attribute in NEPTUNE -->
   <!-- This object needs to be created inside the mapping mechanism -->
   <tariffZones>
         <TariffZone version="any" id="RATP_PIVI:TariffZone:1">
-      <Name>org.apache.velocity.tools.generic.EscapeTool@30f78b7d( 1)</Name>
+      <Name>org.apache.velocity.tools.generic.EscapeTool@590eb535( 1)</Name>
     </TariffZone>
       </tariffZones>
   <!--   -->
@@ -1431,348 +1459,312 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       <QuayRef version="1" ref="T:Quay:20"/>
           </PassengerStopAssignment>    
         </stopAssignments>
-  <!-- Assignments of Connection Links -->
-  <connections>
-        <SiteConnection id="RATP_PIVI:SiteConnection:1a287c6a-d3c1-42ee-be2e-38f9daf2a78d" version="1">      
-            <Name>Conection Link</Name>
-            <From>
-         <StopPlaceRef ref="T:StopArea:0" />
-      </From> 
-      <To>         
-         <StopPlaceRef ref="T:StopArea:1" />
-      </To>  
-      <Distance>2</Distance>
-            <Description>Comment Connection Link</Description>
-            <navigationPaths>
-        <NavigationPath>
-                                <Covered>mixed</Covered>
-                    <TransfertDuration>
-            <DefaultDuration>01:08:55</DefaultDuration>
-            <FrequentTravellerDuration>01:08:55</FrequentTravellerDuration>
-            <OccasionalTravellerDuration>01:08:55</OccasionalTravellerDuration>
-            <MobilityRestrictedTravellerDuration>01:31:48</MobilityRestrictedTravellerDuration> 
-          </TransfertDuration>
-          <AccessibilityAssesment>
-            <MobilityimpairedAccess>false</MobilityimpairedAccess>
-          </AccessibilityAssesment>
-        </NavigationPath>
-      </navigationPaths>     
-    </SiteConnection>  
-      </connections>
 </ServiceFrame>
         <!-- =========================================== -->
 <!-- NEPTUNE StopPlaces (StopArea of type StopPlace) are mapped to NeTEx StopPlace -->
 <SiteFrame version="any" id="T:SiteFrame:SF01"> 
   <stopPlaces>
         <StopPlace version="1" id="T:StopPlace:PLC-20">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-20">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-20">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-20">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-18">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-18">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-18">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-18">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-16">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-16">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-16">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-16">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-10">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-10">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-10">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-10">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-14">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-14">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-14">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-14">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-12">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-12">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-12">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-12">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-8">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-8">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-8">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-8">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-4">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-4">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-4">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-4">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-6">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-6">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-6">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-6">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-0">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-0">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-0">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-0">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
+      
+      
       <entrances>
-                        <StopPlaceEntrance version="1" id="RATP_PIVI:StopPlaceEntrance:760e105d-74bb-4078-b3ee-1a98cd39fc6f">
+                        <StopPlaceEntrance version="1" id="RATP_PIVI:StopPlaceEntrance:e2b437f3-c856-462e-abbe-1383d043d9fd">
           <Centroid>
             <Location>
               <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
@@ -1780,10 +1772,10 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               <srsName>WGS84</srsName>
             </Location>
           </Centroid> 
-          <StopPlaceEntranceRef ref=""/>
+          <StopPlaceEntranceRef ref="NEPTUNE:StopArea:UnusedField"/>
                     <Name>AccessPoint</Name>          
-                    <isEntry>false</isEntry>
-          <isExit>false</isExit>         
+                    <isEntry>true</isEntry>
+          <isExit>true</isExit>         
           <TimeBand>
             <StartTime>01:08:55</StartTime>
             <EndTime>01:08:55</EndTime>
@@ -1793,1241 +1785,1262 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                       </entrances> 
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-2">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-2">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:PLC-2">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:PLC-2">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
-            <quays>
-              </quays>
-      <entrances>
-              </entrances> 
+      
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-9">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-9">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-9">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-9">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:9">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:9">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:9">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-8">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-8">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-8">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-8" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-8" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-8">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:8">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:8">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:8">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-7">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-7">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-7">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-7">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:7">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:7">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:7">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-6">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-6">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-6">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-6" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-6" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-6">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:6">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:6">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:6">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-5">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-5">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-5">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-5">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:5">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:5">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:5">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-4">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-4">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-4">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-4" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-4" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-4">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:4">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:4">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:4">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-3">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-3">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-3">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-3">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:3">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:3">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:3">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-2">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-2">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-2">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-2" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-2" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-2">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:2">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:2">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:2">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-0">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-0">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-0">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-0" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-0" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-0">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:0">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:0">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:0">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-1">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-1">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-1">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-1">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:1">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:1">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:1">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-15">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-15">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-15">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-15">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:15">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:15">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:15">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-16">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-16">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-16">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-16" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-16" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-16">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:16">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:16">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:16">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-13">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-13">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-13">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-13">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:13">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:13">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:13">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-14">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-14">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-14">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-14" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-14" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-14">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:14">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:14">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:14">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-11">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-11">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-11">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-11">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:11">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:11">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:11">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-12">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-12">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-12">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-12" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-12" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-12">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:12">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:12">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:12">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-10">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-10">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-10">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-10" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-10" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-10">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:10">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:10">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:10">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-19">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-19">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-19">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-19">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:19">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:19">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:19">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-17">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-17">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-17">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-17">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:17">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:17">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:17">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-18">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-18">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-18">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-18" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-18" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-18">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:18">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:18">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:18">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-20">
-          <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
      
-          <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
      
-          <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-20">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                   </Location>
       </Centroid>
-                  <PostalAddress version="any" id="T:PostalAddress:CSP-20">
-        <CountryRef ref="fr"/>
-                <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                        <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
-              </PostalAddress>
       
-          <ParentZoneRef version="1" ref="T:StopPlace:PLC-20" />
-           
-            <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+            <ParentZoneRef version="1" ref="T:StopPlace:PLC-20" />
+      
+            <PostalAddress version="any" id="T:PostalAddress:CSP-20">
+        <CountryRef ref="fr"/>
+                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+              </PostalAddress>
+            
+            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
       </tariffZones>
+      
             <quays>
                 <Quay version="1" id="T:Quay:20">
-                  <Name>A527b6c97-e87e-4d4e-82d7-5ec3b85d4ccb</Name>
+                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
          
-                  <Description>mon arret 84625d33-7635-44d1-af63-ef69bc458c8b</Description>
+                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
          
-                  <PrivateCode>C-79565968-142b-4b4c-b253-994c6569facd</PrivateCode>
+                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
          
-                  <LandMark>POI-e7f07f06-e11e-45e5-9788-c2271e680e59</LandMark>
+                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
          
                   <Centroid>
             <Location id="T:Location:20">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602673 2431362</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:20">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue badd9eef-d5df-4d57-82b0-8b9a89e683a6</AddressLine1>
-                                    <PostCode>ZIP 468f9a61-de35-4e0c-b0bc-94e6b81d6e5d</PostCode>
+                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
+                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
           </tariffZones>
                   </Quay>	
               </quays>
-      <entrances>
-              </entrances> 
+      
     </StopPlace>
       </stopPlaces>
   <!-- Assignments of Path Links -->
   <pathLinks>
-        <PathLink id="RATP_PIVI:PathLink:bb1a5f7c-4102-4203-8ae1-d2216f1e90b5" version="1">  
+        <PathLink id="RATP_PIVI:PathLink:84136515-3a21-40d4-94dd-eefb68979340" version="1">  
             <Name>AccessLink</Name>
-                  <From>
-        <EntranceRef ref="RATP_PIVI:AccessPoint:760e105d-74bb-4078-b3ee-1a98cd39fc6f" />
-      </From>
-                  <To> 
+                        <From>
+        <PlaceRef ref="T:StopArea:PLC-0" />  
+      </From> 
+      <To> 
         <PlaceRef ref="T:StopArea:PLC-0" /> 
-      </To> 
-            <Distance>2</Distance>
-                    <Covered>mixed</Covered>
+        <EntranceRef ref="RATP_PIVI:AccessPoint:e2b437f3-c856-462e-abbe-1383d043d9fd" />       
+      </To>
+                        <Distance>2</Distance>
+                  <Covered>mixed</Covered>
             <TransfertDuration>
-        <DefaultDuration>01:08:55</DefaultDuration>
-        <FrequentTravellerDuration>01:08:55</FrequentTravellerDuration>
-        <OccasionalTravellerDuration>01:08:55</OccasionalTravellerDuration>
-        <MobilityRestrictedTravellerDuration></MobilityRestrictedTravellerDuration> 
+        <DefaultDuration>P70Y1M03DT01H08M55S</DefaultDuration>
+        <FrequentTravellerDuration>P70Y1M03DT01H08M55S</FrequentTravellerDuration>
+        <OccasionalTravellerDuration>P70Y1M03DT01H08M55S</OccasionalTravellerDuration>
+        <MobilityRestrictedTravellerDuration> </MobilityRestrictedTravellerDuration>         
       </TransfertDuration>
       <AccessibilityAssesment>
         <MobilityimpairedAccess>false</MobilityimpairedAccess>
@@ -3041,8 +3054,8 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 <!-- Each NEPTUNE timetable is mapped to a separate ServiceCalendarFrame  -->
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC0">
   <ServiceCalendar version="any" id="T:ServiceCalendar:SFC0"><!-- ObjectId?? -->
-    <FromDate>2015-04-15</FromDate>
-    <ToDate>2040-05-14</ToDate>
+    <FromDate>2015-04-17</FromDate>
+    <ToDate>2048-10-05</ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
@@ -3059,95 +3072,95 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </properties>
     </DayType>
   </dayTypes>
-  <!--- === Period assignments ==== -->
-  <operatingPeriods>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2040-04-16E2040-05-14">
-      <FromDate>2040-04-16</FromDate>
-      <ToDate>2040-05-14</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2042-05-20E2042-06-24">
-      <FromDate>2042-05-20</FromDate>
-      <ToDate>2042-06-24</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2044-06-24E2044-07-29">
-      <FromDate>2044-06-24</FromDate>
-      <ToDate>2044-07-29</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2046-07-29E2046-09-02">
-      <FromDate>2046-07-29</FromDate>
-      <ToDate>2046-09-02</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2048-09-02E2048-10-07">
-      <FromDate>2048-09-02</FromDate>
-      <ToDate>2048-10-07</ToDate>
-    </OperatingPeriod>
-      </operatingPeriods>  
   <!--- === Day assignments ==== -->
   <operatingDays>
-        <OperatingDay version="any" id="T:OperatingDay:1D2015-04-15">
-      <CalendarDate>2015-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:1D2015-04-17">
+      <CalendarDate>2015-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:1D2020-04-15">
-      <CalendarDate>2020-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:1D2020-04-17">
+      <CalendarDate>2020-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:1D2025-04-15">
-      <CalendarDate>2025-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:1D2025-04-17">
+      <CalendarDate>2025-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:1D2030-04-15">
-      <CalendarDate>2030-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:1D2030-04-17">
+      <CalendarDate>2030-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:1D2035-04-15">
-      <CalendarDate>2035-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:1D2035-04-17">
+      <CalendarDate>2035-04-17</CalendarDate>
     </OperatingDay>
       </operatingDays>  
+  <!--- === Period assignments ==== -->
+  <operatingPeriods>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2040-04-23E2040-05-22">
+      <FromDate>2040-04-23T11:05:50</FromDate>
+      <ToDate>2040-05-22T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2042-05-22E2042-06-26">
+      <FromDate>2042-05-22T11:05:50</FromDate>
+      <ToDate>2042-06-26T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2044-06-26E2044-07-31">
+      <FromDate>2044-06-26T11:05:50</FromDate>
+      <ToDate>2044-07-31T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2046-07-31E2046-09-04">
+      <FromDate>2046-07-31T11:05:50</FromDate>
+      <ToDate>2046-09-04T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:1S2048-09-04E2048-10-05">
+      <FromDate>2048-09-04T11:05:50</FromDate>
+      <ToDate>2048-10-05T11:05:50</ToDate>
+    </OperatingPeriod>
+      </operatingPeriods>  
   <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:1S2040-04-16E2040-05-14"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:1S2040-04-23E2040-05-22"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:1S2042-05-20E2042-06-24"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:1S2042-05-22E2042-06-26"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:1S2044-06-24E2044-07-29"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:1S2044-06-26E2044-07-31"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:1S2046-07-29E2046-09-02"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:1S2046-07-31E2046-09-04"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:1S2048-09-02E2048-10-07"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:1S2048-09-04E2048-10-05"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
             <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:1D2015-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:1D2015-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:1D2020-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:1D2020-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:1D2025-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:1D2025-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:1D2030-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:1D2030-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:1D2035-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:1D2035-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:1"/>
     </DayTypeAssignment>
       </dayTypeAssignments>  
 </ServiceCalendarFrame>
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC1">
   <ServiceCalendar version="any" id="T:ServiceCalendar:SFC1"><!-- ObjectId?? -->
-    <FromDate>2013-06-15</FromDate>
-    <ToDate>2038-07-20</ToDate>
+    <FromDate>2013-06-17</FromDate>
+    <ToDate>2046-12-04</ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
@@ -3164,95 +3177,95 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </properties>
     </DayType>
   </dayTypes>
-  <!--- === Period assignments ==== -->
-  <operatingPeriods>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2038-06-15E2038-07-20">
-      <FromDate>2038-06-15</FromDate>
-      <ToDate>2038-07-20</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2040-07-20E2040-08-24">
-      <FromDate>2040-07-20</FromDate>
-      <ToDate>2040-08-24</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2042-08-24E2042-09-28">
-      <FromDate>2042-08-24</FromDate>
-      <ToDate>2042-09-28</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2044-09-28E2044-11-02">
-      <FromDate>2044-09-28</FromDate>
-      <ToDate>2044-11-02</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2046-11-02E2046-12-07">
-      <FromDate>2046-11-02</FromDate>
-      <ToDate>2046-12-07</ToDate>
-    </OperatingPeriod>
-      </operatingPeriods>  
   <!--- === Day assignments ==== -->
   <operatingDays>
-        <OperatingDay version="any" id="T:OperatingDay:2D2013-06-15">
-      <CalendarDate>2013-06-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:2D2013-06-17">
+      <CalendarDate>2013-06-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:2D2018-06-15">
-      <CalendarDate>2018-06-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:2D2018-06-17">
+      <CalendarDate>2018-06-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:2D2023-06-15">
-      <CalendarDate>2023-06-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:2D2023-06-17">
+      <CalendarDate>2023-06-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:2D2028-06-15">
-      <CalendarDate>2028-06-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:2D2028-06-17">
+      <CalendarDate>2028-06-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:2D2033-06-15">
-      <CalendarDate>2033-06-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:2D2033-06-17">
+      <CalendarDate>2033-06-17</CalendarDate>
     </OperatingDay>
       </operatingDays>  
+  <!--- === Period assignments ==== -->
+  <operatingPeriods>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2038-06-21E2038-07-22">
+      <FromDate>2038-06-21T11:05:50</FromDate>
+      <ToDate>2038-07-22T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2040-07-22E2040-08-26">
+      <FromDate>2040-07-22T11:05:50</FromDate>
+      <ToDate>2040-08-26T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2042-08-26E2042-09-30">
+      <FromDate>2042-08-26T11:05:50</FromDate>
+      <ToDate>2042-09-30T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2044-09-30E2044-11-04">
+      <FromDate>2044-09-30T11:05:50</FromDate>
+      <ToDate>2044-11-04T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:2S2046-11-04E2046-12-04">
+      <FromDate>2046-11-04T11:05:50</FromDate>
+      <ToDate>2046-12-04T11:05:50</ToDate>
+    </OperatingPeriod>
+      </operatingPeriods>  
   <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:2S2038-06-15E2038-07-20"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:2S2038-06-21E2038-07-22"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:2S2040-07-20E2040-08-24"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:2S2040-07-22E2040-08-26"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:2S2042-08-24E2042-09-28"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:2S2042-08-26E2042-09-30"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:2S2044-09-28E2044-11-02"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:2S2044-09-30E2044-11-04"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:2S2046-11-02E2046-12-07"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:2S2046-11-04E2046-12-04"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
             <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:2D2013-06-15"/>
+      <OperatingDayRef ref="T:OperatingDay:2D2013-06-17"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:2D2018-06-15"/>
+      <OperatingDayRef ref="T:OperatingDay:2D2018-06-17"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:2D2023-06-15"/>
+      <OperatingDayRef ref="T:OperatingDay:2D2023-06-17"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:2D2028-06-15"/>
+      <OperatingDayRef ref="T:OperatingDay:2D2028-06-17"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:2D2033-06-15"/>
+      <OperatingDayRef ref="T:OperatingDay:2D2033-06-17"/>
       <DayTypeRef version="1" ref="T:DayType:2"/>
     </DayTypeAssignment>
       </dayTypeAssignments>  
 </ServiceCalendarFrame>
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC2">
   <ServiceCalendar version="any" id="T:ServiceCalendar:SFC2"><!-- ObjectId?? -->
-    <FromDate>2013-04-15</FromDate>
-    <ToDate>2038-05-20</ToDate>
+    <FromDate>2013-04-17</FromDate>
+    <ToDate>2046-10-09</ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
@@ -3269,87 +3282,87 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </properties>
     </DayType>
   </dayTypes>
-  <!--- === Period assignments ==== -->
-  <operatingPeriods>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2038-05-20E2038-05-20">
-      <FromDate>2038-05-20</FromDate>
-      <ToDate>2038-05-20</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2040-05-20E2040-06-24">
-      <FromDate>2040-05-20</FromDate>
-      <ToDate>2040-06-24</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2042-06-24E2042-07-29">
-      <FromDate>2042-06-24</FromDate>
-      <ToDate>2042-07-29</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2044-07-29E2044-09-02">
-      <FromDate>2044-07-29</FromDate>
-      <ToDate>2044-09-02</ToDate>
-    </OperatingPeriod>
-        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2046-09-02E2046-10-07">
-      <FromDate>2046-09-02</FromDate>
-      <ToDate>2046-10-07</ToDate>
-    </OperatingPeriod>
-      </operatingPeriods>  
   <!--- === Day assignments ==== -->
   <operatingDays>
-        <OperatingDay version="any" id="T:OperatingDay:0D2013-04-15">
-      <CalendarDate>2013-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:0D2013-04-17">
+      <CalendarDate>2013-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:0D2018-04-15">
-      <CalendarDate>2018-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:0D2018-04-17">
+      <CalendarDate>2018-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:0D2023-04-15">
-      <CalendarDate>2023-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:0D2023-04-17">
+      <CalendarDate>2023-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:0D2028-04-15">
-      <CalendarDate>2028-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:0D2028-04-17">
+      <CalendarDate>2028-04-17</CalendarDate>
     </OperatingDay>
-        <OperatingDay version="any" id="T:OperatingDay:0D2033-04-15">
-      <CalendarDate>2033-04-15</CalendarDate>
+        <OperatingDay version="any" id="T:OperatingDay:0D2033-04-17">
+      <CalendarDate>2033-04-17</CalendarDate>
     </OperatingDay>
       </operatingDays>  
+  <!--- === Period assignments ==== -->
+  <operatingPeriods>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2046-10-09E2038-05-22">
+      <FromDate>2046-10-09T11:05:50</FromDate>
+      <ToDate>2038-05-22T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2040-05-22E2040-06-26">
+      <FromDate>2040-05-22T11:05:50</FromDate>
+      <ToDate>2040-06-26T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2042-06-26E2042-07-31">
+      <FromDate>2042-06-26T11:05:50</FromDate>
+      <ToDate>2042-07-31T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2044-07-31E2044-09-04">
+      <FromDate>2044-07-31T11:05:50</FromDate>
+      <ToDate>2044-09-04T11:05:50</ToDate>
+    </OperatingPeriod>
+        <OperatingPeriod version="any" id="T:OperatingPeriod:0S2046-09-04E2046-10-09">
+      <FromDate>2046-09-04T11:05:50</FromDate>
+      <ToDate>2046-10-09T11:05:50</ToDate>
+    </OperatingPeriod>
+      </operatingPeriods>  
   <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:0S2038-05-20E2038-05-20"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:0S2046-10-09E2038-05-22"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:0S2040-05-20E2040-06-24"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:0S2040-05-22E2040-06-26"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:0S2042-06-24E2042-07-29"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:0S2042-06-26E2042-07-31"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:0S2044-07-29E2044-09-02"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:0S2044-07-31E2044-09-04"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingPeriodRef ref="T:OperatingPeriod:0S2046-09-02E2046-10-07"/>
+      <OperatingPeriodRef ref="T:OperatingPeriod:0S2046-09-04E2046-10-09"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
             <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:0D2013-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:0D2013-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:0D2018-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:0D2018-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:0D2023-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:0D2023-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:0D2028-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:0D2028-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
         <DayTypeAssignment version="any">
-      <OperatingDayRef ref="T:OperatingDay:0D2033-04-15"/>
+      <OperatingDayRef ref="T:OperatingDay:0D2033-04-17"/>
       <DayTypeRef version="1" ref="T:DayType:0"/>
     </DayTypeAssignment>
       </dayTypeAssignments>  
