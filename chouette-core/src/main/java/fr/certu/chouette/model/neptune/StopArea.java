@@ -773,8 +773,18 @@ public class StopArea extends NeptuneIdentifiedObject
 				sb.append("\n").append(indent).append(CHILD_ARROW).append("connectionLinks");
 				for (ConnectionLink connectionLink : getConnectionLinks())
 				{
-					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(connectionLink.toString(childIndent, 0));
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(connectionLink.toString(childIndent, 1));
 				}
+			}
+			
+			if (accessLinks != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("accessLinks");
+				for (AccessLink accessLink : accessLinks)
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(accessLink.toString(childIndent, 1));
+				}
+				
 			}
 		}
 

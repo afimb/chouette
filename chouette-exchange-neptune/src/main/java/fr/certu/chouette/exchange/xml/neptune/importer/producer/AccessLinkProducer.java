@@ -4,7 +4,9 @@ import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.ConnectionLinkExtension;
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 import fr.certu.chouette.plugin.report.ReportItem;
 /**
@@ -90,6 +92,16 @@ public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouet
 			{
 				// TODO: traiter le cas de non correspondance
 			}
+		}
+		
+		// produce link orientation on startOflink type
+		if (accessLink.getStartOfLinkId() != null && accessLink.getStartOfLinkId().contains(":"+AccessPoint.ACCESSPOINT_KEY+":"))
+		{
+			accessLink.setLinkOrientation(LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA);
+		}
+		else
+		{
+			accessLink.setLinkOrientation(LinkOrientationEnum.STOPAREA_TO_ACCESSPOINT);
 		}
 		
 		return accessLink;

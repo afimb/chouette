@@ -283,6 +283,10 @@ public class AccessLink extends NeptuneIdentifiedObject
       {
          sb.append("\n").append(indent).append("  linkDistance = ").append(linkDistance.toPlainString());
       }
+      if (linkOrientation != null)
+      {
+         sb.append("\n").append(indent).append("  linkOrientation = ").append(linkOrientation.toString());
+      }
       sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  liftAvailable = ").append(liftAvailable);
       sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
@@ -302,6 +306,18 @@ public class AccessLink extends NeptuneIdentifiedObject
          for (UserNeedEnum userNeed : getUserNeeds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(userNeed);
+         }
+      }
+      if (level > 0)
+      {
+         String childIndent = indent + CHILD_INDENT;
+         if (stopArea != null)
+         {
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(stopArea.toString(childIndent, 0));
+         }
+         if (accessPoint != null)
+         {
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(accessPoint.toString(childIndent, 0));
          }
       }
 
