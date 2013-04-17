@@ -7,6 +7,8 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -44,6 +46,8 @@ public class NeptuneConverter {
     private TimetableConverter timetableConverter;
     private StopAreaConverter stopAreaConverter;
     private ConnectionLinkConverter connectionLinkConverter;
+    private AccessPointConverter accessPointConverter;
+    private AccessLinkConverter accessLinkConverter;
     
     public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -59,6 +63,8 @@ public class NeptuneConverter {
         timetableConverter = new TimetableConverter(vTDNav);
         stopAreaConverter = new StopAreaConverter(vTDNav);
         connectionLinkConverter = new ConnectionLinkConverter(vTDNav);
+        accessLinkConverter = new AccessLinkConverter(vTDNav);
+        accessPointConverter = new AccessPointConverter(vTDNav);
     }
     
     public Line convert(Report report) throws XPathParseException, XPathEvalException, NavException, ParseException
@@ -74,6 +80,8 @@ public class NeptuneConverter {
         List<Timetable> timetables = timetableConverter.convert();
         List<StopArea> stopAreas = stopAreaConverter.convert();
         List<ConnectionLink> connectionLinks = connectionLinkConverter.convert();
+        List<AccessLink> accessLinks = accessLinkConverter.convert();
+        List<AccessPoint> accessPoints = accessPointConverter.convert();
         
         // Ids
         Map<String,StopPoint> stopPointByObjectId = routeConverter.getStopPointByObjectId();
@@ -115,7 +123,8 @@ public class NeptuneConverter {
             	vehicleJourney.setRoute(journeyPattern.getRoute());
 			}
         }
-                                   
+                       
+        // Link VehicleJourney with VehicleJourneyAtStop and Timetable
         Map<String, List<VehicleJourneyAtStop>> vehicleJourneyAtStopsByVJObjectId = vehicleJourneyAtStopConverter.getVehicleJourneyAtStopsByVJObjectId();
         Map<String, List<String>> timetablesByVehicleJourneyObjectId = vehicleJourneyConverter.getTimetablesByVehicleJourneyObjectId();
         Map<String, Timetable> timetablesByObjectId = timetableConverter.getTimetablesByObjectId();
@@ -151,26 +160,42 @@ public class NeptuneConverter {
             connectionLink.setStartOfLink( stopAreaByObjectId.get( connectionLink.getStartOfLinkId()));
             connectionLink.setEndOfLink( stopAreaByObjectId.get( connectionLink.getEndOfLinkId()));
         }
-		// report for save
-		ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK, line.getObjectId());
-		report.addItem(item);
-		// report objects count
-		{
-			ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,routes.size());
+        
+        // Link between StopArea and AccessLink
+        Map<String, List<AccessLink>> accessLinksByStopPlaceObjectId = accessLinkConverter.getAccessLinksByStopPlaceObjectId();
+        Map<String, AccessPoint> accessPointsByObjectId = accessPointConverter.getAccessPointsByObjectId();
+        for (StopArea stopArea : stopAreas) {
+            for (AccessLink accessLink : accessLinksByStopPlaceObjectId.get(stopArea.getObjectId())) {
+                stopArea.addAccessLink(accessLink);
+                
+                // Link between AccesLink and AccessPoint
+                AccessPoint accessPoint = accessPointsByObjectId.get(accessLink.getStartOfLinkId());
+                if(accessPoint != null)
+                    accessPoint.addAccessLink(accessLink);
+            }
+        }
+        
+        // report for save
+        ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+        report.addItem(item);
+        // report objects count
+        {
+            ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT, Report.STATE.OK, routes.size());
             item.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,journeyPatterns.size());
+            countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT, Report.STATE.OK, journeyPatterns.size());
             item.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,vehicleJourneys.size());
+            countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT, Report.STATE.OK, vehicleJourneys.size());
             item.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,stopAreas.size());
+            countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT, Report.STATE.OK, stopAreas.size());
             item.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,connectionLinks.size());
+            countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT, Report.STATE.OK, connectionLinks.size());
             item.addItem(countItem);
-//			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,accessPoints.size());
-//            item.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,timetables.size());
+	    countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,accessPoints.size());
             item.addItem(countItem);
-		}
+            countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT, Report.STATE.OK, timetables.size());
+            item.addItem(countItem);
+        }
+
         
         return line;
     }
