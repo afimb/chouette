@@ -70,8 +70,8 @@ public class TimetableConverter extends GenericConverter
             while( pilot.iterate() ) // iterate will iterate thru all elements
             {                                   
                 Period period = new Period();
-                period.setStartDate( (Date)parseMandatoryElement(nav, "FromDate", "ShortDate") );
-                period.setEndDate( (Date)parseMandatoryElement(nav, "ToDate", "ShortDate") );
+                period.setStartDate( (Date)parseMandatoryElement(nav, "FromDate", "DateTime") );
+                period.setEndDate( (Date)parseMandatoryElement(nav, "ToDate", "DateTime") );
                 timetable.addPeriod(period);
             }           
             nav.pop();

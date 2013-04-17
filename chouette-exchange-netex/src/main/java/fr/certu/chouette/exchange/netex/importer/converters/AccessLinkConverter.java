@@ -63,16 +63,26 @@ public class AccessLinkConverter extends GenericConverter {
             link.setComment( (String)parseOptionnalElement(nav, "Description") );
             link.setLinkDistance( (BigDecimal)parseOptionnalElement(nav, "Distance", "BigDecimal") );
             link.setLinkType( (ConnectionLinkTypeEnum)parseOptionnalElement(nav, "Covered", "ConnectionLinkTypeEnum") );
-            link.setDefaultDuration( (Time)parseOptionnalElement(nav, "DefaultDuration", "Time") );
-            link.setFrequentTravellerDuration( (Time)parseOptionnalElement(nav, "FrequentTravellerDuration", "Time") );
-            link.setOccasionalTravellerDuration( (Time)parseOptionnalElement(nav, "OccasionalTravellerDuration", "Time") );
-            link.setMobilityRestrictedTravellerDuration( (Time)parseOptionnalElement(nav, "MobilityRestrictedTravellerDuration", "Time") );
+            link.setDefaultDuration( (Time)parseOptionnalElement(nav, "DefaultDuration", "Duration") );
+            link.setFrequentTravellerDuration( (Time)parseOptionnalElement(nav, "FrequentTravellerDuration", "Duration") );
+            link.setOccasionalTravellerDuration( (Time)parseOptionnalElement(nav, "OccasionalTravellerDuration", "Duration") );
+            link.setMobilityRestrictedTravellerDuration( (Time)parseOptionnalElement(nav, "MobilityRestrictedTravellerDuration", "Duration") );
             
-            link.setStartOfLinkId( subXpathSelection( "netex:From/netex:EntranceRef/@ref"));
-            link.setEndOfLinkId( subXpathSelection( "netex:To/netex:PlaceRef/@ref"));
-            
+            String fromEntrance = subXpathSelection( "netex:From/netex:EntranceRef/@ref");
+            String toEntrance = subXpathSelection( "netex:To/netex:EntranceRef/@ref");
+            if(fromEntrance != null)
+            {
+                link.setStartOfLinkId(fromEntrance);
+                link.setEndOfLinkId( subXpathSelection( "netex:To/netex:PlaceRef/@ref"));
+            }
+            else
+            {
+                link.setStartOfLinkId(toEntrance);
+                link.setEndOfLinkId( subXpathSelection( "netex:From/netex:PlaceRef/@ref"));
+            }
+                        
             String stopAreaObjectId = link.getEndOfLinkId();
-            if(stopAreaObjectId!= null && 
+            if(stopAreaObjectId != null && 
                     accessLinksByStopPlaceObjectId.containsKey(stopAreaObjectId))
             {
                 List<AccessLink> alks = accessLinksByStopPlaceObjectId.get(stopAreaObjectId);

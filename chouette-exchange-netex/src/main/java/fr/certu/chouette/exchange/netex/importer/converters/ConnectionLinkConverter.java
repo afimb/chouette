@@ -58,10 +58,10 @@ public class ConnectionLinkConverter extends GenericConverter
             link.setComment( (String)parseOptionnalElement(nav, "Description") );
             link.setLinkDistance( (BigDecimal)parseOptionnalElement(nav, "Distance", "BigDecimal") );
             link.setLinkType( (ConnectionLinkTypeEnum)parseOptionnalElement(nav, "Covered", "ConnectionLinkTypeEnum") );
-            link.setDefaultDuration( (Time)parseOptionnalElement(nav, "DefaultDuration", "Time") );
-            link.setFrequentTravellerDuration( (Time)parseOptionnalElement(nav, "FrequentTravellerDuration", "Time") );
-            link.setOccasionalTravellerDuration( (Time)parseOptionnalElement(nav, "OccasionalTravellerDuration", "Time") );
-            link.setMobilityRestrictedTravellerDuration( (Time)parseOptionnalElement(nav, "MobilityRestrictedTravellerDuration", "Time") );
+            link.setDefaultDuration( (Time)parseOptionnalElement(nav, "DefaultDuration", "Duration") );
+            link.setFrequentTravellerDuration( (Time)parseOptionnalElement(nav, "FrequentTravellerDuration", "Duration") );
+            link.setOccasionalTravellerDuration( (Time)parseOptionnalElement(nav, "OccasionalTravellerDuration", "Duration") );
+            link.setMobilityRestrictedTravellerDuration( (Time)parseOptionnalElement(nav, "MobilityRestrictedTravellerDuration", "Duration") );
             
             link.setEndOfLinkId( subXpathSelection( "netex:From/netex:StopPlaceRef/@ref"));
             link.setStartOfLinkId( subXpathSelection( "netex:To/netex:StopPlaceRef/@ref"));

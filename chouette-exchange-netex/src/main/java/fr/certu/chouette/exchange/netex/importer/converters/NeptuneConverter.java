@@ -165,13 +165,17 @@ public class NeptuneConverter {
         Map<String, List<AccessLink>> accessLinksByStopPlaceObjectId = accessLinkConverter.getAccessLinksByStopPlaceObjectId();
         Map<String, AccessPoint> accessPointsByObjectId = accessPointConverter.getAccessPointsByObjectId();
         for (StopArea stopArea : stopAreas) {
-            for (AccessLink accessLink : accessLinksByStopPlaceObjectId.get(stopArea.getObjectId())) {
-                stopArea.addAccessLink(accessLink);
-                
-                // Link between AccesLink and AccessPoint
-                AccessPoint accessPoint = accessPointsByObjectId.get(accessLink.getStartOfLinkId());
-                if(accessPoint != null)
-                    accessLink.setAccessPoint(accessPoint);
+            List<AccessLink> alks = accessLinksByStopPlaceObjectId.get(stopArea.getObjectId());
+            if(alks != null)
+            {
+                for (AccessLink accessLink : alks) {
+                    stopArea.addAccessLink(accessLink);
+                                    
+                    // Link between AccesLink and AccessPoint
+                    AccessPoint accessPoint = accessPointsByObjectId.get(accessLink.getStartOfLinkId());
+                    if(accessPoint != null)
+                        accessLink.setAccessPoint(accessPoint);
+                }
             }
         }
         

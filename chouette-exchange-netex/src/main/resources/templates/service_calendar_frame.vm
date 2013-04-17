@@ -34,8 +34,8 @@
   <operatingPeriods>
     #foreach( $period in $timetable.periods )
     <OperatingPeriod version="any" id="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}">
-      <FromDate>$date.format($shortDateFormat, $period.startDate)</FromDate>
-      <ToDate>$date.format($shortDateFormat, $period.endDate)</ToDate>
+      <FromDate>$date.format($dateTimeFormat, $period.startDate)</FromDate>
+      <ToDate>$date.format($dateTimeFormat, $period.endDate)</ToDate>
     </OperatingPeriod>
     #end		
   </operatingPeriods>  
