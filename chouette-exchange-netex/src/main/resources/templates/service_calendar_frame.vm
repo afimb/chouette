@@ -46,13 +46,13 @@
     #foreach( $period in $timetable.periods )
     <DayTypeAssignment version="any">
       <OperatingPeriodRef ref="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}"/>
-      <DayTypeRef version="$timetable.objectVersion" ref="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}"/>
+      <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
     </DayTypeAssignment>
     #end		
     #foreach( $day in $timetable.calendarDays )
     <DayTypeAssignment version="any">
       <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}"/>
-      <DayTypeRef version="$timetable.objectVersion" ref="${timetable.objectIdPrefix()}:DayType:${timetable.objectIdSuffix()}"/>
+      <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
     </DayTypeAssignment>
     #end
   </dayTypeAssignments>  

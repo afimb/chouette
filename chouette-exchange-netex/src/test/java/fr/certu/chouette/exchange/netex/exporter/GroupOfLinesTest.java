@@ -20,9 +20,7 @@ public class GroupOfLinesTest extends ChouetteModelTest {
                              line.getGroupOfLines().size());
         for( GroupOfLine groupOfLine : line.getGroupOfLines()) {
             assertXPathTrue( "boolean(//netex:ServiceFrame/netex:groupsOfLines/netex:GroupOfLines[@id = '"+
-                    groupOfLine.objectIdPrefix()+
-                    ":GroupOfLines:"+
-                    groupOfLine.objectIdSuffix()+"'])");
+                    modelTranslator.netexId(groupOfLine)+"'])");
         }
     }
     
