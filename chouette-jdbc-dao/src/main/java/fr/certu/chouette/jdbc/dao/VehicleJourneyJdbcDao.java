@@ -56,8 +56,8 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 		ps.setString(11, vehicleJourney.getVehicleTypeIdentifier());
 		ps.setLong(12, vehicleJourney.getNumber());
 
-		setId(ps,13,vehicleJourney.getRoute());
-		setId(ps,14,vehicleJourney.getJourneyPattern());
+		setId(ps,13,vehicleJourney.getRoute(),true,"route_id");
+		setId(ps,14,vehicleJourney.getJourneyPattern(),true,"journey_pattern_id");
 		setId(ps,15,vehicleJourney.getCompany());
 		// setId(ps,16,vehicleJourney.getTimeSlot());
 		
@@ -76,7 +76,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 			JdbcVehicleJourneyAtStop jvAtStop = (JdbcVehicleJourneyAtStop) attribute;
 			VehicleJourneyAtStop vAtStop = jvAtStop.vjas;
 			ps.setLong(1,jvAtStop.vehicleJourneyId);
-			setId(ps,2,vAtStop.getStopPoint());
+			setId(ps,2,vAtStop.getStopPoint(),true,"stop_point_id");
 			ps.setString(3, vAtStop.getConnectingServiceId());
 
 			String bordingPossibility = null;

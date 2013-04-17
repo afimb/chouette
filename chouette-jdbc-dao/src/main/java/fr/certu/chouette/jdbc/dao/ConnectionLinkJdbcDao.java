@@ -50,8 +50,8 @@ public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
 		ps.setString(5, connectionLink.getName());
 		ps.setString(6, connectionLink.getComment());
 		ps.setBigDecimal(7, connectionLink.getLinkDistance());
-		setId(ps,8,connectionLink.getStartOfLink());
-		setId(ps,9,connectionLink.getEndOfLink());
+		setId(ps,8,connectionLink.getStartOfLink(),true,"departure_id");
+		setId(ps,9,connectionLink.getEndOfLink(),true,"arrival_id");
 		ps.setBoolean(10, connectionLink.isLiftAvailable());
 		ps.setBoolean(11,connectionLink.isMobilityRestrictedSuitable());
 		ps.setBoolean(12,connectionLink.isStairsAvailable());

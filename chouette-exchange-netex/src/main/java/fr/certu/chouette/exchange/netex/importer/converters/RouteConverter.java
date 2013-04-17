@@ -35,7 +35,7 @@ public class RouteConverter extends GenericConverter
     
     @Getter
     private Map<String,StopPoint> stopPointByObjectId;
-    
+        
     public RouteConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
         nav = vTDNav;
@@ -80,7 +80,7 @@ public class RouteConverter extends GenericConverter
                 convertDirectionProperties( route, directionRef);
             }
             route.setWayBackRouteId( (String)parseOptionnalAttribute(nav, "InverseRouteRef", "ref"));
-            
+            logger.info("route "+route.getObjectId()+" has waybackid "+route.getWayBackRouteId());
             List<String> pointOnRouteIds = toStringList(parseMandatoryAttributes(nav, "PointOnRoute", "id"));
             
             for( String pointOnRouteId : pointOnRouteIds) {

@@ -530,10 +530,17 @@ IDaoTemplate<T>
     *           object
     * @throws SQLException
     */
-   protected void setId(PreparedStatement ps, int pos, NeptuneObject object) throws SQLException
+   protected void setId(PreparedStatement ps, int pos, NeptuneObject object,boolean mandatory,String fieldName) throws SQLException
    {
       if (object == null)
-         ps.setNull(pos, Types.BIGINT);
+      {
+    	  if (mandatory)
+    	  {
+    	         getLogger().error("mandatory reference not set for "+fieldName );
+    	         throw new NullPointerException("mandatory reference not set for "+fieldName);
+    	  }
+          ps.setNull(pos, Types.BIGINT);
+      }
       else if (object.getId() == null)
       {
          getLogger().error("refer object has not id set " + object.toString("", 0));
@@ -542,6 +549,23 @@ IDaoTemplate<T>
       else
          ps.setLong(pos, object.getId());
    }
+   
+   /**
+    * add object database id in prepared statement
+    * 
+    * @param ps
+    *           prepared statement
+    * @param pos
+    *           position in statement
+    * @param object
+    *           object
+    * @throws SQLException
+    */
+   protected void setId(PreparedStatement ps, int pos, NeptuneObject object) throws SQLException
+   {
+      setId(ps,pos,object,false,"");
+   }
+
 
    /*
     * (non-Javadoc)
