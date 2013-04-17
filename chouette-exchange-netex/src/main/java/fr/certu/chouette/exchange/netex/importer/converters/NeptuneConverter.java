@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-
-
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
@@ -30,10 +28,9 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
-
 public class NeptuneConverter {
-    
-    private static final Logger       logger = Logger.getLogger(LineConverter.class);
+
+    private static final Logger logger = Logger.getLogger(LineConverter.class);
     private VTDNav vTDNav;
     private PTNetworkConverter networkConverter;
     private CompanyConverter companyConverter;
@@ -48,9 +45,8 @@ public class NeptuneConverter {
     private ConnectionLinkConverter connectionLinkConverter;
     private AccessPointConverter accessPointConverter;
     private AccessLinkConverter accessLinkConverter;
-    
-    public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException
-    {
+
+    public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException {
         vTDNav = nav;
         networkConverter = new PTNetworkConverter(vTDNav);
         companyConverter = new CompanyConverter(vTDNav);
@@ -66,11 +62,10 @@ public class NeptuneConverter {
         accessLinkConverter = new AccessLinkConverter(vTDNav);
         accessPointConverter = new AccessPointConverter(vTDNav);
     }
-    
-    public Line convert(Report report) throws XPathParseException, XPathEvalException, NavException, ParseException
-    {
-        PTNetwork network = networkConverter.convert();        
-        Company company = companyConverter.convert();        
+
+    public Line convert(Report report) throws XPathParseException, XPathEvalException, NavException, ParseException {
+        PTNetwork network = networkConverter.convert();
+        Company company = companyConverter.convert();
         Line line = lineConverter.convert();
         List<GroupOfLine> groupOfLines = groupOfLinesConverter.convert();
         List<Route> routes = routeConverter.convert();
@@ -82,101 +77,102 @@ public class NeptuneConverter {
         List<ConnectionLink> connectionLinks = connectionLinkConverter.convert();
         List<AccessLink> accessLinks = accessLinkConverter.convert();
         List<AccessPoint> accessPoints = accessPointConverter.convert();
-        
+
         // Ids
-        Map<String,StopPoint> stopPointByObjectId = routeConverter.getStopPointByObjectId();
-        
+        Map<String, StopPoint> stopPointByObjectId = routeConverter.getStopPointByObjectId();
+
         // Link line with network and company
-        line.setPtNetwork(network);                
-        line.setCompany(company);             
+        line.setPtNetwork(network);
+        line.setCompany(company);
         for (GroupOfLine groupOfLine : groupOfLines) {
             line.addGroupOfLine(groupOfLine);
         }
-        
+
         // Link route with journey patterns        
         Map<String, List<JourneyPattern>> journeyPatternByRouteObjectId = journeyPatternConverter.getJourneyPatternByRouteObjectId();
         for (Route route : routes) {
             // Hack because we use only one line perhaps to do before
-            line.addRoute(route);            
+            line.addRoute(route);
             List<JourneyPattern> journeyPatternsOfRoute = journeyPatternByRouteObjectId.get(route.getObjectId());
             route.setJourneyPatterns(journeyPatternsOfRoute);
             // setters don't set reverse link: must be set after
-            for (JourneyPattern journeyPattern : journeyPatternsOfRoute) 
-            {
-            	journeyPattern.setRoute(route);
-			}
+            for (JourneyPattern journeyPattern : journeyPatternsOfRoute) {
+                journeyPattern.setRoute(route);
+            }
         }
-        
+
         Map<String, List<VehicleJourney>> vehicleJourneysByJPObjectId = vehicleJourneyConverter.getVehicleJourneysByJPObjectId();
         // Link journey pattern with stop points and vehicle journeys
         for (JourneyPattern journeyPattern : journeyPatterns) {
             for (String stopPointId : journeyPattern.getStopPointIds()) {
-                if (stopPointByObjectId.get(stopPointId) != null)
+                if (stopPointByObjectId.get(stopPointId) != null) {
                     journeyPattern.addStopPoint(stopPointByObjectId.get(stopPointId));
+                }
             }
             List<VehicleJourney> vehicleJourneysOfJourneyPattern = vehicleJourneysByJPObjectId.get(journeyPattern.getObjectId());
             journeyPattern.setVehicleJourneys(vehicleJourneysOfJourneyPattern);
             // setters don't set reverse link: must be set after
-            for (VehicleJourney vehicleJourney : vehicleJourneysOfJourneyPattern) 
-            {
-            	vehicleJourney.setJourneyPattern(journeyPattern);
-            	vehicleJourney.setRoute(journeyPattern.getRoute());
-			}
+            for (VehicleJourney vehicleJourney : vehicleJourneysOfJourneyPattern) {
+                vehicleJourney.setJourneyPattern(journeyPattern);
+                vehicleJourney.setRoute(journeyPattern.getRoute());
+            }
         }
-                       
+
         // Link VehicleJourney with VehicleJourneyAtStop and Timetable
         Map<String, List<VehicleJourneyAtStop>> vehicleJourneyAtStopsByVJObjectId = vehicleJourneyAtStopConverter.getVehicleJourneyAtStopsByVJObjectId();
         Map<String, List<String>> timetablesByVehicleJourneyObjectId = vehicleJourneyConverter.getTimetablesByVehicleJourneyObjectId();
         Map<String, Timetable> timetablesByObjectId = timetableConverter.getTimetablesByObjectId();
         // Link vehicle journeys with vehicle journey at stop and time tables
         for (VehicleJourney vehicleJourney : vehicleJourneys) {
-        	List<VehicleJourneyAtStop> vjassOfVj = vehicleJourneyAtStopsByVJObjectId.get(vehicleJourney.getObjectId());
-            vehicleJourney.setVehicleJourneyAtStops( vjassOfVj );
+            List<VehicleJourneyAtStop> vjassOfVj = vehicleJourneyAtStopsByVJObjectId.get(vehicleJourney.getObjectId());
+            vehicleJourney.setVehicleJourneyAtStops(vjassOfVj);
             // setters don't set reverse link: must be set after
-            for (VehicleJourneyAtStop vehicleJourneyAtStop : vjassOfVj) 
-            {
-            	vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
-            	StopPoint stopPoint = stopPointByObjectId.get(vehicleJourneyAtStop.getStopPointId());
-            	vehicleJourneyAtStop.setStopPoint(stopPoint);
-			}
-            
+            for (VehicleJourneyAtStop vehicleJourneyAtStop : vjassOfVj) {
+                vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
+                StopPoint stopPoint = stopPointByObjectId.get(vehicleJourneyAtStop.getStopPointId());
+                vehicleJourneyAtStop.setStopPoint(stopPoint);
+            }
+
             List<String> timetablesObjectId = timetablesByVehicleJourneyObjectId.get(vehicleJourney.getObjectId());
-            for (String timetableObjectId : timetablesObjectId) 
-            {
-                vehicleJourney.addTimetable( timetablesByObjectId.get(timetableObjectId) );
-            }            
-        }        
-        
+            for (String timetableObjectId : timetablesObjectId) {
+                vehicleJourney.addTimetable(timetablesByObjectId.get(timetableObjectId));
+            }
+        }
+
         // Link stop point with stop area
-        Map<String,StopArea> stopAreaByObjectId = stopAreaConverter.getStopAreaByObjectId();      
+        Map<String, StopArea> stopAreaByObjectId = stopAreaConverter.getStopAreaByObjectId();
         for (StopPoint stopPoint : stopPointByObjectId.values()) {
-            StopArea stopArea = stopAreaByObjectId.get( stopPoint.getContainedInStopAreaId() );
+            StopArea stopArea = stopAreaByObjectId.get(stopPoint.getContainedInStopAreaId());
             stopArea.addContainedStopPoint(stopPoint);
         }
-        
+
         // Replace objectId references by object for all 
         // connectionLink.startOfLink and EndOfLink
-        for ( ConnectionLink connectionLink : connectionLinks) {
-            connectionLink.setStartOfLink( stopAreaByObjectId.get( connectionLink.getStartOfLinkId()));
-            connectionLink.setEndOfLink( stopAreaByObjectId.get( connectionLink.getEndOfLinkId()));
+        for (ConnectionLink connectionLink : connectionLinks) {
+            connectionLink.setStartOfLink(stopAreaByObjectId.get(connectionLink.getStartOfLinkId()));
+            connectionLink.setEndOfLink(stopAreaByObjectId.get(connectionLink.getEndOfLinkId()));
         }
-        
+
         // Link between StopArea and AccessLink
         Map<String, List<AccessLink>> accessLinksByStopPlaceObjectId = accessLinkConverter.getAccessLinksByStopPlaceObjectId();
         Map<String, AccessPoint> accessPointsByObjectId = accessPointConverter.getAccessPointsByObjectId();
         for (StopArea stopArea : stopAreas) {
-            for (AccessLink accessLink : accessLinksByStopPlaceObjectId.get(stopArea.getObjectId())) {
-                stopArea.addAccessLink(accessLink);
-                
-                // Link between AccesLink and AccessPoint
-                AccessPoint accessPoint = accessPointsByObjectId.get(accessLink.getStartOfLinkId());
-                if(accessPoint != null)
-                    accessLink.setAccessPoint(accessPoint);
+            List<AccessLink> accessLinkForStopArea = accessLinksByStopPlaceObjectId.get(stopArea.getObjectId());
+            if (accessLinkForStopArea != null) {
+                for (AccessLink accessLink : accessLinkForStopArea) {
+                    stopArea.addAccessLink(accessLink);
+
+                    // Link between AccesLink and AccessPoint
+                    AccessPoint accessPoint = accessPointsByObjectId.get(accessLink.getStartOfLinkId());
+                    if (accessPoint != null) {
+                        accessPoint.addAccessLink(accessLink);
+                    }
+                }
             }
         }
-        
+
         // report for save
-        ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+        ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK, line.getObjectId());
         report.addItem(item);
         // report objects count
         {
@@ -190,14 +186,13 @@ public class NeptuneConverter {
             item.addItem(countItem);
             countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT, Report.STATE.OK, connectionLinks.size());
             item.addItem(countItem);
-	    countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,accessPoints.size());
+            countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT, Report.STATE.OK, accessPoints.size());
             item.addItem(countItem);
             countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT, Report.STATE.OK, timetables.size());
             item.addItem(countItem);
         }
 
-        
+
         return line;
     }
-    
 }

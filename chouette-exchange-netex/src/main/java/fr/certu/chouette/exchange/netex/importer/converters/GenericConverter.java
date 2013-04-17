@@ -27,6 +27,8 @@ public class GenericConverter {
     private static final Logger       logger = Logger.getLogger(GenericConverter.class);
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
     DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+    DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    DateFormat durationFormat = new SimpleDateFormat("'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
     private EnumTranslator enumTranslator = new EnumTranslator();
         
     protected void returnToRootElement(VTDNav nav) throws NavException
@@ -99,6 +101,10 @@ public class GenericConverter {
             return dateFormat.parse(value); 
         else if(type.toString().equals( "ShortDate" ))
             return new java.sql.Date(shortDateFormat.parse(value).getTime());            
+        else if(type.toString().equals( "DateTime" ))
+            return new java.sql.Date(dateTimeFormat.parse(value).getTime());  
+        else if(type.toString().equals( "Duration" ))
+            return new Time(durationFormat.parse(value).getTime()); 
         else if(type.toString().equals( "ConnectionLinkTypeEnum" ))
            return enumTranslator.readLinkType(value);
         else if(type.toString().equals( "TransportModeNameEnum" ))

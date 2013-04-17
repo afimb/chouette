@@ -53,7 +53,7 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
 		if(route.getOppositeRouteId() != null)
 			oppositeRouteId = route.getOppositeRouteId();
 		ps.setObject(6, oppositeRouteId);
-		setId(ps,7,route.getLine());
+		setId(ps,7,route.getLine(),true,"line_id");
 		ps.setString(8, route.getPublishedName());
 		ps.setString(9, route.getNumber());
 		

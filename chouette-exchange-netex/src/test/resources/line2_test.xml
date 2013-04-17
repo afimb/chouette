@@ -2002,24 +2002,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- === Period assignments ==== -->
                     <operatingPeriods>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2040-03-18E2040-04-22">
-                            <FromDate>2040-03-18</FromDate>
-                            <ToDate>2040-04-22</ToDate>
+                            <FromDate>2040-03-18T00:00:00</FromDate>
+                            <ToDate>2040-04-22T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2042-04-22E2042-05-27">
-                            <FromDate>2042-04-22</FromDate>
-                            <ToDate>2042-05-27</ToDate>
+                            <FromDate>2042-04-22T00:00:00</FromDate>
+                            <ToDate>2042-05-27T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2044-05-27E2044-07-01">
-                            <FromDate>2044-05-27</FromDate>
-                            <ToDate>2044-07-01</ToDate>
+                            <FromDate>2044-05-27T00:00:00</FromDate>
+                            <ToDate>2044-07-01T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2046-07-01E2046-08-05">
-                            <FromDate>2046-07-01</FromDate>
-                            <ToDate>2046-08-05</ToDate>
+                            <FromDate>2046-07-01T00:00:00</FromDate>
+                            <ToDate>2046-08-05T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2048-08-05E2048-09-09">
-                            <FromDate>2048-08-05</FromDate>
-                            <ToDate>2048-09-09</ToDate>
+                            <FromDate>2048-08-05T00:00:00</FromDate>
+                            <ToDate>2048-09-09T00:00:00</ToDate>
                         </OperatingPeriod>
                     </operatingPeriods>  
   <!--- === Day assignments ==== -->
@@ -2107,24 +2107,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- === Period assignments ==== -->
                     <operatingPeriods>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2038-05-18E2038-06-22">
-                            <FromDate>2038-05-18</FromDate>
-                            <ToDate>2038-06-22</ToDate>
+                            <FromDate>2038-05-18T00:00:00</FromDate>
+                            <ToDate>2038-06-22T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2040-06-22E2040-07-27">
-                            <FromDate>2040-06-22</FromDate>
-                            <ToDate>2040-07-27</ToDate>
+                            <FromDate>2040-06-22T00:00:00</FromDate>
+                            <ToDate>2040-07-27T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2042-07-27E2042-08-31">
-                            <FromDate>2042-07-27</FromDate>
-                            <ToDate>2042-08-31</ToDate>
+                            <FromDate>2042-07-27T00:00:00</FromDate>
+                            <ToDate>2042-08-31T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2044-08-31E2044-10-05">
-                            <FromDate>2044-08-31</FromDate>
-                            <ToDate>2044-10-05</ToDate>
+                            <FromDate>2044-08-31T00:00:00</FromDate>
+                            <ToDate>2044-10-05T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2046-10-05E2046-11-09">
-                            <FromDate>2046-10-05</FromDate>
-                            <ToDate>2046-11-09</ToDate>
+                            <FromDate>2046-10-05T00:00:00</FromDate>
+                            <ToDate>2046-11-09T00:00:00</ToDate>
                         </OperatingPeriod>
                     </operatingPeriods>  
   <!--- === Day assignments ==== -->
@@ -2212,24 +2212,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- === Period assignments ==== -->
                     <operatingPeriods>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2038-03-18E2038-04-22">
-                            <FromDate>2038-03-18</FromDate>
-                            <ToDate>2038-04-22</ToDate>
+                            <FromDate>2038-03-18T00:00:00</FromDate>
+                            <ToDate>2038-04-22T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2040-04-22E2040-05-27">
-                            <FromDate>2040-04-22</FromDate>
-                            <ToDate>2040-05-27</ToDate>
+                            <FromDate>2040-04-22T00:00:00</FromDate>
+                            <ToDate>2040-05-27T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2042-05-27E2042-07-01">
-                            <FromDate>2042-05-27</FromDate>
-                            <ToDate>2042-07-01</ToDate>
+                            <FromDate>2042-05-27T00:00:00</FromDate>
+                            <ToDate>2042-07-01T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2044-07-01E2044-08-05">
-                            <FromDate>2044-07-01</FromDate>
-                            <ToDate>2044-08-05</ToDate>
+                            <FromDate>2044-07-01T00:00:00</FromDate>
+                            <ToDate>2044-08-05T00:00:00</ToDate>
                         </OperatingPeriod>
                         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2046-08-05E2046-09-09">
-                            <FromDate>2046-08-05</FromDate>
-                            <ToDate>2046-09-09</ToDate>
+                            <FromDate>2046-08-05T00:00:00</FromDate>
+                            <ToDate>2046-09-09T00:00:00</ToDate>
                         </OperatingPeriod>
                     </operatingPeriods>  
   <!--- === Day assignments ==== -->
