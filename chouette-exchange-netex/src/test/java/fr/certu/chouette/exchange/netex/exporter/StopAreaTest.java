@@ -17,11 +17,6 @@ import org.testng.annotations.Test;
  */
 @Test(groups = {"StopArea"}, description = "Validate StopArea export in NeTEx format")
 public class StopAreaTest extends ChouetteModelTest {
-    private String quayObjectId(StopArea quay) {
-        return quay.objectIdPrefix()+
-                ":Quay:"+
-                quay.objectIdSuffix();
-    }
     
     @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of StopPlace with expected id")
     public void verifyStopPlaceId() throws XPathExpressionException, ParseException {
