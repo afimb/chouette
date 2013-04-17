@@ -6,6 +6,7 @@ import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.UUID;
@@ -36,6 +37,9 @@ public class AccessLinkBlueprint {
     
     @Default
     ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.MIXED;
+    
+    @Default
+    LinkOrientationEnum linkOrientation = LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA;
     
     @Default
     BigDecimal linkDistance = new BigDecimal(2); 

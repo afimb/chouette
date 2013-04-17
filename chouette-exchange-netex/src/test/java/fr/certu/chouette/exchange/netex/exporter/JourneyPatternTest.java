@@ -26,9 +26,7 @@ public class JourneyPatternTest extends ChouetteModelTest {
             for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern"+
                                                         "[@id = '"+
-                                                        journeyPattern.objectIdPrefix()+
-                                                        ":ServicePattern:"+
-                                                        journeyPattern.objectIdSuffix()+
+                    modelTranslator.netexId(journeyPattern) +
                                                     "'])";
                 assertXPathTrue( xPathExpr);
                 
@@ -95,9 +93,7 @@ public class JourneyPatternTest extends ChouetteModelTest {
             for ( JourneyPattern journeyPattern : route.getJourneyPatterns()) {
                 String xPathExpr = "count(//netex:TimetableFrame/netex:vehicleJourneys/netex:ServiceJourney/netex:ServicePatternRef"+
                                                         "[@ref = '"+
-                                                        journeyPattern.objectIdPrefix()+
-                                                        ":ServicePattern:"+
-                                                        journeyPattern.objectIdSuffix()+
+                    modelTranslator.netexId(journeyPattern) +
                                                     "'])";
                 Assert.assertEquals( Integer.parseInt( 
                         xPath.evaluate( xPathExpr, 

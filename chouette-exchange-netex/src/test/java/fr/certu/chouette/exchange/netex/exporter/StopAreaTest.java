@@ -17,11 +17,6 @@ import org.testng.annotations.Test;
  */
 @Test(groups = {"StopArea"}, description = "Validate StopArea export in NeTEx format")
 public class StopAreaTest extends ChouetteModelTest {
-    private String quayObjectId(StopArea quay) {
-        return quay.objectIdPrefix()+
-                ":Quay:"+
-                quay.objectIdSuffix();
-    }
     
     @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of StopPlace with expected id")
     public void verifyStopPlaceId() throws XPathExpressionException, ParseException {
@@ -31,11 +26,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea topoPoint : topoPoints) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace"+
-                                "[@id = '"+
-                                topoPoint.objectIdPrefix()+
-                                ":StopPlace:"+
-                                topoPoint.objectIdSuffix()+
-                                "'])";
+                                "[@id = '"+modelTranslator.netexId(topoPoint)+"'])";
             assertXPathTrue( xPathExpr);
         }
     }
@@ -71,11 +62,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace"+
-                                "[@id = '"+
-                                quay.getParent().objectIdPrefix()+
-                                ":StopPlace:"+
-                                quay.getParent().objectIdSuffix()+
-                                "'])";
+                                "[@id = '"+modelTranslator.netexId(quay.getParent())+"'])";
             assertXPathTrue( xPathExpr);
         }
     }
@@ -88,10 +75,7 @@ public class StopAreaTest extends ChouetteModelTest {
             if (commercial.getParent()!=null) {
                 String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                     "netex:StopPlace/netex:ParentZoneRef"+
-                                    "[@ref = '"+
-                                    commercial.getParent().objectIdPrefix()+
-                                    ":StopPlace:"+
-                                    commercial.getParent().objectIdSuffix()+
+                                    "[@ref = '"+modelTranslator.netexId(commercial.getParent())+
                                     "'])";
                 assertXPathTrue( xPathExpr);
             }
@@ -106,9 +90,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "'])";
+                                "[@id = '"+modelTranslator.netexId(quay)+"'])";
             assertXPathTrue( xPathExpr);
         }
     }
@@ -121,9 +103,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']/netex:Description/text() = '"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Description/text() = '"+
                                 quay.getComment()+"')";
             assertXPathTrue( xPathExpr);
         }
@@ -137,9 +117,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']/netex:Name/text() = '"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Name/text() = '"+
                                 quay.getName()+"')";
             assertXPathTrue( xPathExpr);
         }
@@ -153,9 +131,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']/netex:LandMark/text() = '"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:LandMark/text() = '"+
                                 quay.getNearestTopicName()+"')";
             assertXPathTrue( xPathExpr);
         }
@@ -169,10 +145,8 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']//netex:AddressLine1/text() = '"+
-                                quay.getAreaCentroid().getAddress().getStreetName()+"')";
+                                "[@id = '"+modelTranslator.netexId(quay)+"']//netex:AddressLine1/text() = '"+
+                                quay.getStreetName()+"')";
             assertXPathTrue( xPathExpr);
         }
     }
@@ -185,10 +159,8 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']//netex:PostCode/text() = '"+
-                                quay.getAreaCentroid().getAddress().getCountryCode()+"')";
+                                "[@id = '"+modelTranslator.netexId(quay)+"']//netex:PostCode/text() = '"+
+                                quay.getCountryCode()+"')";
             assertXPathTrue( xPathExpr);
         }
     }
@@ -201,9 +173,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']/netex:PrivateCode/text() = '"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:PrivateCode/text() = '"+
                                 quay.getRegistrationNumber()+"')";
             assertXPathTrue( xPathExpr);
         }
@@ -217,9 +187,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quayObjectId(quay)+
-                                "']/netex:Centroid/netex:Location"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Centroid/netex:Location"+
                                 "[@id = '"+
                                 quay.getAreaCentroid().objectIdPrefix()+
                                 ":Location:"+
@@ -237,14 +205,10 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quay.objectIdPrefix()+
-                                ":Quay:"+
-                                quay.objectIdSuffix()+
-                                "']/netex:Centroid/netex:Location/"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Centroid/netex:Location/"+
                                 "netex:Latitude/"+
                                 "text() = '"+
-                                quay.getAreaCentroid().getLatitude()+
+                                quay.getLatitude()+
                                 "')";
             assertXPathTrue( xPathExpr);
         }
@@ -258,14 +222,10 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quay.objectIdPrefix()+
-                                ":Quay:"+
-                                quay.objectIdSuffix()+
-                                "']/netex:Centroid/netex:Location/"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Centroid/netex:Location/"+
                                 "netex:Longitude/"+
                                 "text() = '"+
-                                quay.getAreaCentroid().getLongitude()+
+                                quay.getLongitude()+
                                 "')";
             assertXPathTrue( xPathExpr);
         }
@@ -279,14 +239,10 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+
-                                quay.objectIdPrefix()+
-                                ":Quay:"+
-                                quay.objectIdSuffix()+
-                                "']/netex:Centroid/netex:Location/"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Centroid/netex:Location/"+
                                 "gml:pos"+
                                 "[@srsName = '"+
-                                quay.getAreaCentroid().getProjectedPoint().getProjectionType()+
+                                quay.getProjectionType()+
                                 "'])";
             assertXPathTrue( xPathExpr);
         }

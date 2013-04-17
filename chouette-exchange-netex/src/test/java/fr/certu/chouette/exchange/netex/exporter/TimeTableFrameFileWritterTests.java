@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.netex.exporter;
 
 import com.tobedevoured.modelcitizen.ModelFactory;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -25,6 +26,7 @@ import org.w3c.dom.Document;
 @SuppressWarnings("unchecked")
 public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextTests {
 
+    protected ModelTranslator modelTranslator = new ModelTranslator();
     private NetexFileWriter netexFileWriter;
     private ModelFactory modelFactory;
     private ComplexModelFactory complexModelFactory;
@@ -61,7 +63,7 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         List<VehicleJourney> vehicles = line.getRoutes().get(0).
                                 getJourneyPatterns().get(0).getVehicleJourneys();
         VehicleJourney vehicle = vehicles.get( 0);
-        Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney[@id='" + vehicle.objectIdPrefix() + ":VehicleJourney:" + vehicle.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
+        Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney[@id='" + modelTranslator.netexId( vehicle) + "']", xmlDocument, XPathConstants.NODE) );
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if dayType exists")
@@ -72,7 +74,7 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
                                 getJourneyPatterns().get(0).getVehicleJourneys();
         for (int i = 0; i < vehicles.get(0).getTimetables().size(); i++) {
             Timetable timetable = vehicles.get(0).getTimetables().get(i);                   
-            Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney//netex:DayTypeRef[@ref='" + timetable.objectIdPrefix() + ":DayType:" + timetable.objectIdSuffix() + "']", xmlDocument, XPathConstants.NODE) );
+            Assert.assertNotNull( xPath.evaluate("//netex:ServiceJourney//netex:DayTypeRef[@ref='" + modelTranslator.netexId( timetable) + "']", xmlDocument, XPathConstants.NODE) );
         }            
     }
     

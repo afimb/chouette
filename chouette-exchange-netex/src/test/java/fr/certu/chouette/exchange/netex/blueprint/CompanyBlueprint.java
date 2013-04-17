@@ -13,7 +13,7 @@ public class CompanyBlueprint {
     FieldCallback objectId = new FieldCallback() {
         @Override
         public String get( Object model) {
-            return "RATP_PIVI:Company:" + UUID.randomUUID();
+            return "RATP_PIVI:Operator:" + UUID.randomUUID();
         }
         
     };   

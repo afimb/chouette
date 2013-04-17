@@ -3,7 +3,7 @@
 <SiteFrame version="any" id="${line.objectIdPrefix()}:SiteFrame:SF01"> 
   <stopPlaces>
     #foreach( $stopPlace in $stopPlaces )
-    <StopPlace version="$stopPlace.objectVersion" id="${stopPlace.objectIdPrefix()}:StopPlace:${stopPlace.objectIdSuffix()}">
+    <StopPlace version="$stopPlace.objectVersion" id="$modelTranslator.netexId( $stopPlace)">
      #if( $stopPlace.name )
      <Name>$!esc.xml( $stopPlace.name)</Name>
      #end
@@ -31,7 +31,7 @@
       #end
 
       #if( $stopPlace.parent )
-      <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="${stopPlace.parent.objectIdPrefix()}:StopPlace:${stopPlace.parent.objectIdSuffix()}" />
+      <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="$modelTranslator.netexId( $stopPlace.parent)" />
       #end
 
       #if($stopPlace.streetName || $stopPlace.countryCode)
@@ -61,7 +61,7 @@
             $stopPlace.containedStopAreas.size() > 0    )
       <quays>
         #foreach( $quay in $stopPlace.containedStopAreas )
-        <Quay version="$quay.objectVersion" id="${quay.objectIdPrefix()}:Quay:${quay.objectIdSuffix()}">
+        <Quay version="$quay.objectVersion" id="$modelTranslator.netexId( $quay)">
          #if( $quay.name )
          <Name>$!esc.xml( $quay.name)</Name>
          #end
@@ -116,15 +116,15 @@
       <entrances>
         #foreach( $accessLink in $stopPlace.accessLinks )
         #set( $accessPoint = $accessLink.accessPoint )
-        #if ( $accessPoint )      
-        <StopPlaceEntrance version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:StopPlaceEntrance:${accessPoint.objectIdSuffix()}">
+        #if ( $accessPoint )
+        <StopPlaceEntrance version="$accessPoint.objectVersion" id="$modelTranslator.netexId( $accessPoint)">
           <Centroid>
             <Location>
               <Longitude>$!accessPoint.longitude</Longitude>
               <Latitude>$!accessPoint.latitude</Latitude>
               <srsName>$!accessPoint.longLatType</srsName>
             </Location>
-          </Centroid> 
+          </Centroid>
           <StopPlaceEntranceRef ref="$!accessPoint.containedInStopArea"/>
           #if ( $accessPoint.name )
           <Name>$!esc.xml($accessPoint.name)</Name>          
@@ -151,34 +151,34 @@
   <!-- Assignments of Path Links -->
   <pathLinks>
     #foreach( $accessLink in $accessLinks )       
-    <PathLink id="${accessLink.objectIdPrefix()}:PathLink:${accessLink.objectIdSuffix()}" version="$accessLink.objectVersion">  
+    <PathLink id="$modelTranslator.netexId( $accessLink)" version="$accessLink.objectVersion">  
       #if ( $accessLink.name )
       <Name>$!esc.xml($accessLink.name)</Name>
       #end
-      #if($accessLink.accessPoint && $accessLink.stopArea) 
-      #if($accessLink.linkOrientation == "AccessPointToStopArea")
-      <From>
-        <PlaceRef ref="$accessLink.stopArea.objectId" />
-        <EntranceRef ref="$accessLink.accessPoint.objectId" />        
-      </From> 
-      <To> 
-        <PlaceRef ref="$accessLink.stopArea.objectId" /> 
-      </To>
-      #else
-      <From>
-        <PlaceRef ref="$accessLink.stopArea.objectId" />  
-      </From> 
-      <To> 
-        <PlaceRef ref="$accessLink.stopArea.objectId" /> 
-        <EntranceRef ref="$accessLink.accessPoint.objectId" />       
-      </To>
+      #if($accessLink.accessPoint && $accessLink.stopArea && $accessLink.linkOrientation) 
+          #if($accessLink.linkOrientation == "AccessPointToStopArea")
+          <From>
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" />
+            <EntranceRef ref="$modelTranslator.netexId( $accessLink.accessPoint)" />        
+          </From> 
+          <To> 
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" /> 
+          </To>
+          #else
+          <From>
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" />  
+          </From> 
+          <To> 
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" /> 
+            <EntranceRef ref="$modelTranslator.netexId( $accessLink.accessPoint)" />       
+          </To>
+          #end
       #end
-      #end      
       #if ( $accessLink.linkDistance)
       <Distance>$!accessLink.linkDistance</Distance>
       #end
-      #if ( $accessLink.linkType)
-      <Covered>$enumTranslator.toLinkType($accessLink.linkType)</Covered>
+      #if ( $connectionLink.linkType)
+      <Covered>$modelTranslator.toLinkType($connectionLink.linkType)</Covered>
       #end
       <TransfertDuration>
         <DefaultDuration>$!date.format($durationFormat, $!accessLink.defaultDuration)</DefaultDuration>

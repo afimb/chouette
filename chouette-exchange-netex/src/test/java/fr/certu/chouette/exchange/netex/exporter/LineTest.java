@@ -4,7 +4,6 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.model.neptune.GroupOfLine;
 import java.text.ParseException;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -15,8 +14,9 @@ import org.testng.annotations.Test;
 public class LineTest extends ChouetteModelTest {
     
     private String lineId() {
-        return line.objectIdPrefix()+ ":Line:"+ line.objectIdSuffix();
+        return modelTranslator.netexId(line);
     }
+    
     @Test(groups = { "ServiceFrame", "lines"}, description = "Validate presence of Line element with expected id")
     public void verifyLineId() throws XPathExpressionException, ParseException {
         assertXPathCount( "count(//netex:ServiceFrame/netex:lines/netex:Line)", 

@@ -4,6 +4,7 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import java.text.ParseException;
 
@@ -29,9 +30,7 @@ public class GroupOfLinesTest extends ChouetteModelTest {
     public void verifyGroupOfLinesName() throws XPathExpressionException, ParseException {
         for( GroupOfLine groupOfLine : line.getGroupOfLines()) {
             assertXPathTrue( "boolean(//netex:GroupOfLines[@id = '"+
-                    groupOfLine.objectIdPrefix()+
-                    ":GroupOfLines:"+
-                    groupOfLine.objectIdSuffix()+
+                    modelTranslator.netexId(groupOfLine) +
                     "']/netex:Name/text()='"+groupOfLine.getName()+"')");
         }
     }
@@ -40,9 +39,7 @@ public class GroupOfLinesTest extends ChouetteModelTest {
     public void verifyGroupOfLinesComment() throws XPathExpressionException, ParseException {
         for( GroupOfLine groupOfLine : line.getGroupOfLines()) {
             assertXPathTrue( "boolean(//netex:GroupOfLines[@id = '"+
-                    groupOfLine.objectIdPrefix()+
-                    ":GroupOfLines:"+
-                    groupOfLine.objectIdSuffix()+
+                    modelTranslator.netexId(groupOfLine) +
                     "']/netex:Description/text()='"+groupOfLine.getComment()+"')");
         }
     }

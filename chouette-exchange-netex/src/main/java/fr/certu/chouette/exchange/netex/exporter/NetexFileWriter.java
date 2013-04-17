@@ -1,6 +1,6 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.EnumTranslator;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,7 +18,6 @@ import java.util.zip.ZipOutputStream;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -46,8 +45,8 @@ public class NetexFileWriter {
         model.put("durationFormat", "'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
         //model.put("durationFormat", new DurationFormatUtils());
         
-        model.put("enumTranslator", new EnumTranslator());
-        
+        model.put("modelTranslator", new ModelTranslator());
+
         model.put("line", line);
         model.put("network", line.getPtNetwork());
         model.put("company", line.getCompany());

@@ -3,16 +3,11 @@ package fr.certu.chouette.exchange.netex.importer.converters;
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
-import fr.certu.chouette.exchange.netex.EnumTranslator;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
-import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
-import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,7 +24,7 @@ public class GenericConverter {
     DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
     DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     DateFormat durationFormat = new SimpleDateFormat("'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
-    private EnumTranslator enumTranslator = new EnumTranslator();
+    private ModelTranslator enumTranslator = new ModelTranslator();
         
     protected void returnToRootElement(VTDNav nav) throws NavException
     {

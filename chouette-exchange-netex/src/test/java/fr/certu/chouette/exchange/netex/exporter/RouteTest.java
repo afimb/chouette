@@ -31,7 +31,7 @@ public class RouteTest extends ChouetteModelTest {
     @Test(groups = {"ServiceFrame", "routes"}, description = "Validate presence of Route element with expected name")
     public void verifyRouteName() throws XPathExpressionException, ParseException {
         for( Route route : line.getRoutes()) {
-            assertXPathTrue( "boolean(//netex:Route[@id = '"+route.getObjectId()+"']/netex:Name/text()='"+route.getName()+"')");
+            assertXPathTrue( "boolean(//netex:Route[@id = '"+modelTranslator.netexId(route) +"']/netex:Name/text()='"+route.getName()+"')");
         }
     }
     
@@ -98,11 +98,7 @@ public class RouteTest extends ChouetteModelTest {
         for( Route route : line.getRoutes()) {
             for ( StopPoint stopPoint : route.getStopPoints()) {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:routePoints/netex:RoutePoint/netex:projections/netex:PointProjection/netex:ProjectedPointRef"+
-                                                        "[@ref = '"+
-                                                        stopPoint.objectIdPrefix()+
-                                                        ":StopPoint:"+
-                                                        stopPoint.objectIdSuffix()+
-                                                    "'])";
+                                    "[@ref = '"+modelTranslator.netexId(stopPoint)+"'])";
                 assertXPathTrue( xPathExpr);
                 
             }
@@ -114,11 +110,7 @@ public class RouteTest extends ChouetteModelTest {
         for( Route route : line.getRoutes()) {
             for ( StopPoint stopPoint : route.getStopPoints()) {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:scheduledStopPoints/netex:ScheduledStopPoint"+
-                                                        "[@id = '"+
-                                                        stopPoint.objectIdPrefix()+
-                                                        ":StopPoint:"+
-                                                        stopPoint.objectIdSuffix()+
-                                                    "'])";
+                                        "[@id = '"+modelTranslator.netexId(stopPoint)+"'])";
                 assertXPathTrue( xPathExpr);
                 
             }
@@ -130,11 +122,7 @@ public class RouteTest extends ChouetteModelTest {
         for( Route route : line.getRoutes()) {
             for ( StopPoint stopPoint : route.getStopPoints()) {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/netex:RouteRef"+
-                                                        "[@ref = '"+
-                                                        route.objectIdPrefix()+
-                                                        ":Route:"+
-                                                        route.objectIdSuffix()+
-                                                    "'])";
+                                         "[@ref = '"+ modelTranslator.netexId(route) + "'])";
                 assertXPathTrue( xPathExpr);
                 
             }
@@ -164,11 +152,7 @@ public class RouteTest extends ChouetteModelTest {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:servicePatterns/netex:ServicePattern/"+
                                             "netex:pointsInSequence/netex:StopPointInJourneyPattern/"+
                                             "netex:ScheduledStopPointRef"+
-                                                        "[@ref = '"+
-                                                        stopPoint.objectIdPrefix()+
-                                                        ":StopPoint:"+
-                                                        stopPoint.objectIdSuffix()+
-                                                    "'])";
+                                            "[@ref = '"+modelTranslator.netexId(stopPoint)+"'])";
                 assertXPathTrue( xPathExpr);
                 
             }
@@ -184,11 +168,7 @@ public class RouteTest extends ChouetteModelTest {
             }
             
             String xPathExpr = "count(//netex:TimetableFrame/netex:vehicleJourneys/netex:ServiceJourney/netex:RouteRef"+
-                                                    "[@ref = '"+
-                                                    route.objectIdPrefix()+
-                                                    ":Route:"+
-                                                    route.objectIdSuffix()+
-                                                "'])";
+                                    "[@ref = '"+modelTranslator.netexId(route)+"'])";
 
             assertXPathCount(  xPathExpr, vehicleCount);
                 
@@ -204,11 +184,7 @@ public class RouteTest extends ChouetteModelTest {
                     String xPathExpr = "boolean(//netex:TimetableFrame/netex:vehicleJourneys/"+
                                         "netex:ServiceJourney/netex:calls/"+
                                         "netex:Call/netex:ScheduledStopPointRef"+
-                                        "[@ref = '"+
-                                            stopPoint.objectIdPrefix()+
-                                            ":StopPoint:"+
-                                            stopPoint.objectIdSuffix()+
-                                                        "'])";
+                                        "[@ref = '"+modelTranslator.netexId(stopPoint)+"'])";
                     assertXPathTrue( xPathExpr);
 
                 }
@@ -241,11 +217,7 @@ public class RouteTest extends ChouetteModelTest {
             for ( StopPoint stopPoint : route.getStopPoints()) {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:stopAssignments/"+
                                     "netex:PassengerStopAssignment/netex:ScheduledStopPointRef"+
-                                    "[@ref = '"+
-                                        stopPoint.objectIdPrefix()+
-                                        ":StopPoint:"+
-                                        stopPoint.objectIdSuffix()+
-                                                    "'])";
+                                    "[@ref = '"+ modelTranslator.netexId(stopPoint)+ "'])";
                 assertXPathTrue( xPathExpr);
 
             }
@@ -258,11 +230,7 @@ public class RouteTest extends ChouetteModelTest {
             for ( StopPoint stopPoint : route.getStopPoints()) {
                 String xPathExpr = "boolean(//netex:ServiceFrame/netex:stopAssignments/"+
                                     "netex:PassengerStopAssignment/netex:QuayRef"+
-                                    "[@ref = '"+
-                                        stopPoint.getContainedInStopArea().objectIdPrefix()+
-                                        ":Quay:"+
-                                        stopPoint.getContainedInStopArea().objectIdSuffix()+
-                                                    "'])";
+                                    "[@ref = '"+ modelTranslator.netexId(stopPoint.getContainedInStopArea())+"'])";
                 //if (true) throw new RuntimeException( xPathExpr);
                 assertXPathTrue( xPathExpr);
 
