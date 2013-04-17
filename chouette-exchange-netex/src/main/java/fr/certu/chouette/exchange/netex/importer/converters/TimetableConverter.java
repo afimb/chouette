@@ -57,7 +57,7 @@ public class TimetableConverter extends GenericConverter
             timetable.setComment( (String)parseOptionnalSubElement(nav, "DayType", "ShortName") );
             
             // Day Types                        
-            timetable.setDayTypes( toDayTypeEnumList(parseOptionnalElements(nav, "DaysOfWeek")) );
+            timetable.setDayTypes( toDayTypeEnumList(parseOptionnalElements(nav, "DaysOfWeek", "DayTypeEnum")) );
             
             // Calendar Day
             timetable.setCalendarDays( toShortDateList( parseMandatoryElements(nav, "CalendarDate", "ShortDate")) );                                    

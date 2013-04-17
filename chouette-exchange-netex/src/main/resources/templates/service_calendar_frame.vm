@@ -4,9 +4,9 @@
 #set($counter = 0)
 #foreach( $timetable in $timetables )
 <ServiceCalendarFrame version="any" id="${timetable.objectIdPrefix()}:ServiceCalendarFrame:SFC$counter">
-  <ServiceCalendar version="any" id="${timetable.objectIdPrefix()}:ServiceCalendar:SFC$counter"><!-- ObjectId?? -->
-    <FromDate>$timetable.startOfPeriod</FromDate>
-    <ToDate>$timetable.endOfPeriod</ToDate>
+  <ServiceCalendar version="any" id="${timetable.objectIdPrefix()}:ServiceCalendar:SFC$counter">
+    <FromDate>$!date.format($shortDateFormat, $!timetable.startOfPeriod)</FromDate>
+    <ToDate>$!date.format($shortDateFormat, $!timetable.endOfPeriod)</ToDate>
   </ServiceCalendar>
   <!--- === Day Types ==== -->
   <dayTypes>
@@ -15,9 +15,11 @@
       <ShortName>$timetable.comment</ShortName>
       <properties>
         #foreach( $dayType in $timetable.getDayTypes() )
+        #if($dayType && $!modelTranslator.toDayTypeNetex($!dayType))      
         <PropertyOfDay>
-          <DaysOfWeek>$dayType</DaysOfWeek>
+          <DaysOfWeek>$!modelTranslator.toDayTypeNetex($!dayType)</DaysOfWeek>
         </PropertyOfDay>
+        #end
         #end
       </properties>
     </DayType>

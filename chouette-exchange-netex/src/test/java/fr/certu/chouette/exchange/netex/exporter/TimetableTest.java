@@ -4,6 +4,7 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 
@@ -24,6 +25,7 @@ import java.text.SimpleDateFormat;
 public class TimetableTest extends ChouetteModelTest {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    ModelTranslator enumTranslator = new ModelTranslator();
     
     @Test(groups = {"ServiceCalendarFrame"}, description = "Validate presence of ServiceCalendarFrame with expected id")
     public void verifyServiceCalendarFrameId() throws XPathExpressionException, ParseException {
@@ -101,16 +103,19 @@ public class TimetableTest extends ChouetteModelTest {
         
         for( Timetable timetable : timetables) {
             for ( DayTypeEnum dtenum : timetable.getDayTypes()) {
-                String xPathExpr = "boolean(//netex:ServiceCalendarFrame"+
-                                    "/netex:dayTypes"+
-                                    "/netex:DayType"+
-                                    "[@id = '"+
-                                modelTranslator.netexId( timetable)+
-                                    "']/netex:properties/netex:PropertyOfDay/"+
-                                    "netex:DaysOfWeek/"+
-                                    "text()='"+
-                                    dtenum.value()+"')";
-                assertXPathTrue( xPathExpr);
+                if( enumTranslator.toDayTypeNetex(dtenum) != null )
+                {
+                    String xPathExpr = "boolean(//netex:ServiceCalendarFrame"+
+                            "/netex:dayTypes"+
+                            "/netex:DayType"+
+                            "[@id = '"+
+                            modelTranslator.netexId( timetable)+
+                            "']/netex:properties/netex:PropertyOfDay/"+
+                            "netex:DaysOfWeek/"+
+                            "text()='"+
+                            dtenum.value()+"')";
+                    assertXPathTrue( xPathExpr);
+                }
             }
         }
     }

@@ -32,11 +32,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 
 -->
 <PublicationDelivery version="1.0" xmlns="http://www.netex.org.uk/netex" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://www.netex.org.uk/netex ../../../xsd/NeTEx_publication.xsd" xmlns:acsb="http://www.ifopt.org.uk/acsb" xmlns:ifopt="http://www.ifopt.org.uk/ifopt" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:siri="http://www.siri.org.uk/siri"  >
-  <PublicationTimestamp>2013-04-17T11:05:51Z</PublicationTimestamp>
+  <PublicationTimestamp>2013-04-17T17:05:33Z</PublicationTimestamp>
   <ParticipantRef>SYS001</ParticipantRef>
   <!--- ======WHAT WAS REQUESTED ========== -->
   <PublicationRequest version="1.0">
-    <RequestTimestamp>2013-04-17T11:05:51Z</RequestTimestamp>
+    <RequestTimestamp>2013-04-17T17:05:33Z</RequestTimestamp>
     <ParticipantRef>RATP nom long</ParticipantRef>
     <filters>
       <FrameRequestFilter>
@@ -167,7 +167,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
             </TypeOfFrame>
           </typesOfValue>
           <organisations> <!-- TODO : Prendre en compte plusieurs companies -->
-            <Operator version="1" id="RATP_PIVI:Company:fc3700f9-3aad-46d0-b055-eb94f8f8e582">
+            <Operator version="1" id="RATP_PIVI:Company:40c2750a-bcaa-43b1-9be1-e0b0f88a18be">
                             <PublicCode>RATP-ASD</PublicCode>
                                           <CompanyNumber>100</CompanyNumber>
                                           <Name>RATP nom long</Name>
@@ -178,7 +178,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                                                       <ContactFaxNumber>01.02.03.04.05</ContactFaxNumber>
                                 </ContactDetails>
                                           <parts>
-                  <OrganisationPart version="1" id="RATP_PIVI:OrganisationPart:fc3700f9-3aad-46d0-b055-eb94f8f8e582">
+                  <OrganisationPart version="1" id="RATP_PIVI:OrganisationPart:40c2750a-bcaa-43b1-9be1-e0b0f88a18be">
                       <Name>SIT</Name>
                   </OrganisationPart>
               </parts>
@@ -193,7 +193,8 @@ So the NeTEx File will probably be something like 50% bigger with the same level
         <!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
 <ServiceFrame version="any"  id="T:ServiceFrame:1">
   <!-- NEPTUNE PTNetwork Mappling =========================================== -->
-  <Network version="1" changed="1970-01-15T07:54:39Z" id="RATP_PIVI:PTNetwork:bbcb6ced-d734-42c2-a184-5ebfba4fc852">
+  <Network version="1" changed="1970-01-15T07:54:39Z" 
+           id="RATP_PIVI:PTNetwork:8559bf37-c07a-451d-9898-1dd0b892e859" >
             <keyList>
           <KeyValue>
               <Key>Comment</Key>
@@ -675,7 +676,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </routes>
   <!-- NEPTUNE Line Mapping =========================================== -->
   <lines>
-    <Line version="1" id="T:Line:1">      
+    <Line version="1" id="T:Line:1">
             <Name>7B</Name>
                   <ShortName>Mairie d Issy porte d Orleans</ShortName>
                   <Description>Extension &#224; partir de juin</Description>
@@ -689,11 +690,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
     </Line>
   </lines>
       <groupsOfLines>
-        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:2c22c066-50ca-4014-acf2-40452849cc8d">      
+        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:1a0ecbfc-8008-490d-a935-fc76033b8c54">      
             <Name>Noctilien</Name>
                   <Description>R&#233;seau de nuit</Description>
           </GroupOfLines>
-        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:501ddcf7-76ba-4f0b-b3ef-15c14002e273">      
+        <GroupOfLines version="1" id="RATP_PIVI:GroupOfLines:a337ab3a-7b48-4b8d-8ed9-83c68bb8acc9">      
             <Name>Noctilien</Name>
                   <Description>R&#233;seau de nuit</Description>
           </GroupOfLines>
@@ -701,171 +702,171 @@ So the NeTEx File will probably be something like 50% bigger with the same level
     <!-- NEPTUNE Stop Area with "Quay" or "BoardingPosition" type  =========================================== -->
   <scheduledStopPoints>
               <ScheduledStopPoint version="1" id="T:StopPoint:1-0-0">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-1">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-2">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-3">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-4">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-5">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-6">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-7">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-8">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-9">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-10">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-11">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-12">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-13">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-14">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-15">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-16">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-17">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-18">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-19">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-0-20">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
                     <ScheduledStopPoint version="1" id="T:StopPoint:1-1-0">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-1">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-2">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-3">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-4">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-5">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-6">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-7">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-8">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-9">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-10">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-11">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-12">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-13">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-14">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-15">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-16">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-17">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-18">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-19">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
           <ScheduledStopPoint version="1" id="T:StopPoint:1-1-20">
-            <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+            <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
             <TimingPointStatus>timingPoint</TimingPointStatus>
     </ScheduledStopPoint>
             </scheduledStopPoints>
@@ -1211,27 +1212,27 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 
     <!-- Assignments of Connection Links -->
   <connections>
-        <SiteConnection id="RATP_PIVI:SiteConnection:bdb89a2b-a826-4a5c-bdbf-4d27dfd4eb00" version="1">      
+        <SiteConnection id="RATP_PIVI:SiteConnection:0b2e454d-95cf-4a9c-b45f-23474ced2f4d" version="1">      
             <Name>Conection Link</Name>
                   <Description>Comment Connection Link</Description>
                   <Distance>2</Distance>
-            <From>
-         <StopPlaceRef ref="T:StopArea:0" />
+                  <From>
+         <StopPlaceRef ref="T:Quay:0" />
       </From> 
-      <To>         
-         <StopPlaceRef ref="T:StopArea:1" />
+                  <To>         
+         <StopPlaceRef ref="T:Quay:1" />
       </To>  
-      <navigationPaths>
-        <NavigationPath version="1" id="RATP_PIVI:NavigationPath:bdb89a2b-a826-4a5c-bdbf-4d27dfd4eb00N1">
+            <navigationPaths>
+        <NavigationPath version="1" id="RATP_PIVI:NavigationPath:0b2e454d-95cf-4a9c-b45f-23474ced2f4dN1">
           <AccessibilityAssessment>
             <MobilityimpairedAccess>false</MobilityimpairedAccess>
           </AccessibilityAssessment>
                     <Covered>mixed</Covered>
                     <TransfertDuration>
-            <DefaultDuration>P70Y1M03DT01H08M55S</DefaultDuration>
-            <FrequentTravellerDuration>P70Y1M03DT01H08M55S</FrequentTravellerDuration>
-            <OccasionalTravellerDuration>P70Y1M03DT01H08M55S</OccasionalTravellerDuration>
-            <MobilityRestrictedTravellerDuration>P70Y1M01DT01H31M48S </MobilityRestrictedTravellerDuration> 
+            <DefaultDuration>P70Y1M03DT01:08:55S</DefaultDuration>
+            <FrequentTravellerDuration>P70Y1M03DT01:08:55S</FrequentTravellerDuration>
+            <OccasionalTravellerDuration>P70Y1M03DT01:08:55S</OccasionalTravellerDuration>
+            <MobilityRestrictedTravellerDuration>P70Y1M01DT01:31:48S </MobilityRestrictedTravellerDuration> 
           </TransfertDuration>
         </NavigationPath>
       </navigationPaths>     
@@ -1242,7 +1243,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!-- This object needs to be created inside the mapping mechanism -->
   <tariffZones>
         <TariffZone version="any" id="RATP_PIVI:TariffZone:1">
-      <Name>org.apache.velocity.tools.generic.EscapeTool@590eb535( 1)</Name>
+      <Name>org.apache.velocity.tools.generic.EscapeTool@268dc2d( 1)</Name>
     </TariffZone>
       </tariffZones>
   <!--   -->
@@ -1250,212 +1251,212 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <stopAssignments>
           <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-0">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-0"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-0"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-0"/>      
       <QuayRef version="1" ref="T:Quay:0"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-1">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-1"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-1"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-1"/>      
       <QuayRef version="1" ref="T:Quay:1"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-2">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-2"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-2"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-2"/>      
       <QuayRef version="1" ref="T:Quay:2"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-3">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-3"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-3"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-3"/>      
       <QuayRef version="1" ref="T:Quay:3"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-4">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-4"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-4"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-4"/>      
       <QuayRef version="1" ref="T:Quay:4"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-5">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-5"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-5"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-5"/>      
       <QuayRef version="1" ref="T:Quay:5"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-6">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-6"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-6"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-6"/>      
       <QuayRef version="1" ref="T:Quay:6"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-7">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-7"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-7"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-7"/>      
       <QuayRef version="1" ref="T:Quay:7"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-8">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-8"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-8"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-8"/>      
       <QuayRef version="1" ref="T:Quay:8"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-9">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-9"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-9"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-9"/>      
       <QuayRef version="1" ref="T:Quay:9"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-10">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-10"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-10"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-10"/>      
       <QuayRef version="1" ref="T:Quay:10"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-11">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-11"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-11"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-11"/>      
       <QuayRef version="1" ref="T:Quay:11"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-12">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-12"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-12"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-12"/>      
       <QuayRef version="1" ref="T:Quay:12"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-13">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-13"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-13"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-13"/>      
       <QuayRef version="1" ref="T:Quay:13"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-14">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-14"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-14"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-14"/>      
       <QuayRef version="1" ref="T:Quay:14"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-15">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-15"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-15"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-15"/>      
       <QuayRef version="1" ref="T:Quay:15"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-16">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-16"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-16"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-16"/>      
       <QuayRef version="1" ref="T:Quay:16"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-17">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-17"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-17"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-17"/>      
       <QuayRef version="1" ref="T:Quay:17"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-18">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-18"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-18"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-18"/>      
       <QuayRef version="1" ref="T:Quay:18"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-19">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-19"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-19"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-19"/>      
       <QuayRef version="1" ref="T:Quay:19"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-0-20">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-20"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-20"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-20"/>      
       <QuayRef version="1" ref="T:Quay:20"/>
           </PassengerStopAssignment>    
               <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-0">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-0"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-0"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-0"/>      
       <QuayRef version="1" ref="T:Quay:0"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-1">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-1"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-1"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-1"/>      
       <QuayRef version="1" ref="T:Quay:1"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-2">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-2"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-2"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-2"/>      
       <QuayRef version="1" ref="T:Quay:2"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-3">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-3"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-3"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-3"/>      
       <QuayRef version="1" ref="T:Quay:3"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-4">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-4"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-4"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-4"/>      
       <QuayRef version="1" ref="T:Quay:4"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-5">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-5"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-5"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-5"/>      
       <QuayRef version="1" ref="T:Quay:5"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-6">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-6"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-6"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-6"/>      
       <QuayRef version="1" ref="T:Quay:6"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-7">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-7"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-7"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-7"/>      
       <QuayRef version="1" ref="T:Quay:7"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-8">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-8"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-8"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-8"/>      
       <QuayRef version="1" ref="T:Quay:8"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-9">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-9"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-9"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-9"/>      
       <QuayRef version="1" ref="T:Quay:9"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-10">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-10"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-10"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-10"/>      
       <QuayRef version="1" ref="T:Quay:10"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-11">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-11"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-11"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-11"/>      
       <QuayRef version="1" ref="T:Quay:11"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-12">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-12"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-12"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-12"/>      
       <QuayRef version="1" ref="T:Quay:12"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-13">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-13"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-13"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-13"/>      
       <QuayRef version="1" ref="T:Quay:13"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-14">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-14"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-14"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-14"/>      
       <QuayRef version="1" ref="T:Quay:14"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-15">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-15"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-15"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-15"/>      
       <QuayRef version="1" ref="T:Quay:15"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-16">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-16"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-16"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-16"/>      
       <QuayRef version="1" ref="T:Quay:16"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-17">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-17"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-17"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-17"/>      
       <QuayRef version="1" ref="T:Quay:17"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-18">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-18"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-18"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-18"/>      
       <QuayRef version="1" ref="T:Quay:18"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-19">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-19"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-19"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-19"/>      
       <QuayRef version="1" ref="T:Quay:19"/>
           </PassengerStopAssignment>    
         <PassengerStopAssignment version="any" id="T:PassengerStopAssignment:1-1-20">
       <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-20"/>
-            <StopPlaceRef version="1" ref="T:StopArea:CSP-20"/>      
+            <StopPlaceRef version="1" ref="T:StopPlace:CSP-20"/>      
       <QuayRef version="1" ref="T:Quay:20"/>
           </PassengerStopAssignment>    
         </stopAssignments>
@@ -1465,28 +1466,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 <SiteFrame version="any" id="T:SiteFrame:SF01"> 
   <stopPlaces>
         <StopPlace version="1" id="T:StopPlace:PLC-20">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-20">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-20">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1495,28 +1496,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-18">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-18">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-18">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1525,28 +1526,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-16">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-16">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-16">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1555,28 +1556,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-10">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-10">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-10">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1585,28 +1586,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-14">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-14">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-14">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1615,28 +1616,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-12">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-12">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-12">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1645,28 +1646,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-8">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-8">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-8">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1675,28 +1676,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-4">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-4">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-4">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1705,28 +1706,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-6">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-6">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-6">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1735,28 +1736,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-0">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-0">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-0">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1764,14 +1765,14 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
       
       <entrances>
-                        <StopPlaceEntrance version="1" id="RATP_PIVI:StopPlaceEntrance:e2b437f3-c856-462e-abbe-1383d043d9fd">
+                        <StopPlaceEntrance version="1" id="RATP_PIVI:StopPlaceEntrance:55dd8c88-d52a-48c1-94bc-6ac1cfdcf311">
           <Centroid>
             <Location>
               <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
               <srsName>WGS84</srsName>
             </Location>
-          </Centroid> 
+          </Centroid>
           <StopPlaceEntranceRef ref="NEPTUNE:StopArea:UnusedField"/>
                     <Name>AccessPoint</Name>          
                     <isEntry>true</isEntry>
@@ -1785,28 +1786,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                       </entrances> 
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:PLC-2">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:PLC-2">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:PLC-2">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1815,28 +1816,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-9">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-9">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-9">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
@@ -1844,25 +1845,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:9">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:9">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:9">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1872,17 +1873,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-8">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-8">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -1890,11 +1891,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-8">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
@@ -1902,25 +1903,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:8">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:8">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:8">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1930,28 +1931,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-7">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-7">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-7">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
@@ -1959,25 +1960,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:7">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:7">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:7">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -1987,17 +1988,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-6">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-6">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2005,11 +2006,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-6">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2017,25 +2018,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:6">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:6">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:6">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2045,28 +2046,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-5">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-5">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-5">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
@@ -2074,25 +2075,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:5">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:5">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:5">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2102,17 +2103,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-4">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-4">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2120,11 +2121,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-4">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
@@ -2132,25 +2133,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:4">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:4">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:4">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2160,28 +2161,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-3">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-3">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-3">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
@@ -2189,25 +2190,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:3">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:3">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:3">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2217,17 +2218,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-2">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-2">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2235,11 +2236,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-2">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
@@ -2247,25 +2248,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:2">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:2">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:2">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2275,17 +2276,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-0">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-0">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2293,11 +2294,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-0">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
@@ -2305,25 +2306,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:0">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:0">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:0">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2333,28 +2334,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-1">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-1">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-1">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2362,25 +2363,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:1">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:1">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:1">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2390,28 +2391,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-15">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-15">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-15">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
@@ -2419,25 +2420,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:15">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:15">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:15">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2447,17 +2448,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-16">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-16">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2465,11 +2466,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-16">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2477,25 +2478,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:16">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:16">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:16">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2505,28 +2506,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-13">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-13">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-13">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
@@ -2534,25 +2535,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:13">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:13">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:13">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2562,17 +2563,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-14">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-14">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2580,11 +2581,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-14">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
@@ -2592,25 +2593,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:14">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:14">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:14">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2620,28 +2621,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-11">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-11">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-11">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2649,25 +2650,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:11">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:11">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:11">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2677,17 +2678,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-12">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-12">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2695,11 +2696,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-12">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
@@ -2707,25 +2708,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:12">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:12">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:12">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2735,17 +2736,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-10">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-10">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2753,11 +2754,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-10">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
@@ -2765,25 +2766,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:10">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:10">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:10">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2793,28 +2794,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-19">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-19">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-19">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:4"/>
@@ -2822,25 +2823,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:19">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:19">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:19">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2850,28 +2851,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-17">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-17">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-17">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:2"/>
@@ -2879,25 +2880,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:17">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:17">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:17">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2907,17 +2908,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-18">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-18">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2925,11 +2926,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-18">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:3"/>
@@ -2937,25 +2938,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:18">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:18">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:18">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -2965,17 +2966,17 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
     </StopPlace>
         <StopPlace version="1" id="T:StopPlace:CSP-20">
-          <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+          <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
      
-          <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+          <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
      
-          <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+          <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
      
             <Centroid>
         <Location id="T:Location:CSP-20">
                     <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
           <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                              <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                              <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                   </Location>
       </Centroid>
       
@@ -2983,11 +2984,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <PostalAddress version="any" id="T:PostalAddress:CSP-20">
         <CountryRef ref="fr"/>
-                <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                        <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                        <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
               </PostalAddress>
             
-            <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+            <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
       
             <tariffZones>
         <TariffZoneRef version="any" ref="T:TariffZone:0"/>
@@ -2995,25 +2996,25 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       
             <quays>
                 <Quay version="1" id="T:Quay:20">
-                  <Name>A9d13c4c8-feee-4697-889c-aa532f49a3d2</Name>
+                  <Name>A9ca809bd-a09c-43e6-98fa-319e240f8c25</Name>
          
-                  <Description>mon arret 14a22eef-50bb-4d41-acde-89705a556c9f</Description>
+                  <Description>mon arret fe8d79c9-1286-4164-b5cb-904ea3c0ee43</Description>
          
-                  <PrivateCode>C-7772d796-3907-42bd-ae7d-7c90e59d7635</PrivateCode>
+                  <PrivateCode>C-7d55a733-ba65-4d24-b096-42a13519eb1a</PrivateCode>
          
-                  <LandMark>POI-7dd52427-f976-4fec-b6ff-520ebbfbea3d</LandMark>
+                  <LandMark>POI-30a02648-9953-4264-a0bc-d9a82e371510</LandMark>
          
                   <Centroid>
             <Location id="T:Location:20">
                             <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
               <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                          <gml:pos srsName="EPSG:9801">602688 2431379</gml:pos>
+                                          <gml:pos srsName="EPSG:9801">602715 2431338</gml:pos>
                           </Location>
           </Centroid>
                               <PostalAddress version="any" id="T:PostalAddress:20">
             <CountryRef ref="fr"/>
-                        <AddressLine1>Rue c3c54083-c22c-4bc7-8f07-ecaac2455b49</AddressLine1>
-                                    <PostCode>ZIP 7e92e927-89c5-4ae6-8728-fd99f9fccb00</PostCode>
+                        <AddressLine1>Rue 0361d17c-db86-4f48-a77c-aa1da1d7344b</AddressLine1>
+                                    <PostCode>ZIP 8dd0c5e1-1adf-47dc-b366-e1a75359c028</PostCode>
                       </PostalAddress>
                               <tariffZones>
             <TariffZoneRef version="any" ref="T:TariffZone:1"/>
@@ -3025,21 +3026,20 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </stopPlaces>
   <!-- Assignments of Path Links -->
   <pathLinks>
-        <PathLink id="RATP_PIVI:PathLink:84136515-3a21-40d4-94dd-eefb68979340" version="1">  
+        <PathLink id="RATP_PIVI:PathLink:48673f0a-a1d8-4b82-afff-28df6f5325f6" version="1">  
             <Name>AccessLink</Name>
-                        <From>
-        <PlaceRef ref="T:StopArea:PLC-0" />  
-      </From> 
-      <To> 
-        <PlaceRef ref="T:StopArea:PLC-0" /> 
-        <EntranceRef ref="RATP_PIVI:AccessPoint:e2b437f3-c856-462e-abbe-1383d043d9fd" />       
-      </To>
-                        <Distance>2</Distance>
-                  <Covered>mixed</Covered>
-            <TransfertDuration>
-        <DefaultDuration>P70Y1M03DT01H08M55S</DefaultDuration>
-        <FrequentTravellerDuration>P70Y1M03DT01H08M55S</FrequentTravellerDuration>
-        <OccasionalTravellerDuration>P70Y1M03DT01H08M55S</OccasionalTravellerDuration>
+                                <From>
+            <PlaceRef ref="T:StopPlace:PLC-0" />
+            <EntranceRef ref="RATP_PIVI:StopPlaceEntrance:55dd8c88-d52a-48c1-94bc-6ac1cfdcf311" />        
+          </From> 
+          <To> 
+            <PlaceRef ref="T:StopPlace:PLC-0" /> 
+          </To>
+                            <Distance>2</Distance>
+                  <TransfertDuration>
+        <DefaultDuration>P70Y1M03DT01:08:55S</DefaultDuration>
+        <FrequentTravellerDuration>P70Y1M03DT01:08:55S</FrequentTravellerDuration>
+        <OccasionalTravellerDuration>P70Y1M03DT01:08:55S</OccasionalTravellerDuration>
         <MobilityRestrictedTravellerDuration> </MobilityRestrictedTravellerDuration>         
       </TransfertDuration>
       <AccessibilityAssesment>
@@ -3053,7 +3053,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 <!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE timetable -->
 <!-- Each NEPTUNE timetable is mapped to a separate ServiceCalendarFrame  -->
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC0">
-  <ServiceCalendar version="any" id="T:ServiceCalendar:SFC0"><!-- ObjectId?? -->
+  <ServiceCalendar version="any" id="T:ServiceCalendar:SFC0">
     <FromDate>2015-04-17</FromDate>
     <ToDate>2048-10-05</ToDate>
   </ServiceCalendar>
@@ -3063,13 +3063,10 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       <Name>nom 1</Name>
       <ShortName>nom 1</ShortName>
       <properties>
-                <PropertyOfDay>
-          <DaysOfWeek>WeekEnd</DaysOfWeek>
-        </PropertyOfDay>
-                <PropertyOfDay>
+                                        <PropertyOfDay>
           <DaysOfWeek>Monday</DaysOfWeek>
         </PropertyOfDay>
-              </properties>
+                      </properties>
     </DayType>
   </dayTypes>
   <!--- === Day assignments ==== -->
@@ -3093,24 +3090,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- === Period assignments ==== -->
   <operatingPeriods>
         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2040-04-23E2040-05-22">
-      <FromDate>2040-04-23T11:05:50</FromDate>
-      <ToDate>2040-05-22T11:05:50</ToDate>
+      <FromDate>2040-04-23T17:05:33</FromDate>
+      <ToDate>2040-05-22T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2042-05-22E2042-06-26">
-      <FromDate>2042-05-22T11:05:50</FromDate>
-      <ToDate>2042-06-26T11:05:50</ToDate>
+      <FromDate>2042-05-22T17:05:33</FromDate>
+      <ToDate>2042-06-26T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2044-06-26E2044-07-31">
-      <FromDate>2044-06-26T11:05:50</FromDate>
-      <ToDate>2044-07-31T11:05:50</ToDate>
+      <FromDate>2044-06-26T17:05:33</FromDate>
+      <ToDate>2044-07-31T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2046-07-31E2046-09-04">
-      <FromDate>2046-07-31T11:05:50</FromDate>
-      <ToDate>2046-09-04T11:05:50</ToDate>
+      <FromDate>2046-07-31T17:05:33</FromDate>
+      <ToDate>2046-09-04T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:1S2048-09-04E2048-10-05">
-      <FromDate>2048-09-04T11:05:50</FromDate>
-      <ToDate>2048-10-05T11:05:50</ToDate>
+      <FromDate>2048-09-04T17:05:33</FromDate>
+      <ToDate>2048-10-05T17:05:33</ToDate>
     </OperatingPeriod>
       </operatingPeriods>  
   <!--- === Day Type assignments ==== -->
@@ -3158,7 +3155,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </dayTypeAssignments>  
 </ServiceCalendarFrame>
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC1">
-  <ServiceCalendar version="any" id="T:ServiceCalendar:SFC1"><!-- ObjectId?? -->
+  <ServiceCalendar version="any" id="T:ServiceCalendar:SFC1">
     <FromDate>2013-06-17</FromDate>
     <ToDate>2046-12-04</ToDate>
   </ServiceCalendar>
@@ -3168,13 +3165,13 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       <Name>nom 2</Name>
       <ShortName>nom 2</ShortName>
       <properties>
-                <PropertyOfDay>
+                        <PropertyOfDay>
           <DaysOfWeek>Monday</DaysOfWeek>
         </PropertyOfDay>
-                <PropertyOfDay>
+                                <PropertyOfDay>
           <DaysOfWeek>Tuesday</DaysOfWeek>
         </PropertyOfDay>
-              </properties>
+                      </properties>
     </DayType>
   </dayTypes>
   <!--- === Day assignments ==== -->
@@ -3198,24 +3195,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- === Period assignments ==== -->
   <operatingPeriods>
         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2038-06-21E2038-07-22">
-      <FromDate>2038-06-21T11:05:50</FromDate>
-      <ToDate>2038-07-22T11:05:50</ToDate>
+      <FromDate>2038-06-21T17:05:33</FromDate>
+      <ToDate>2038-07-22T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2040-07-22E2040-08-26">
-      <FromDate>2040-07-22T11:05:50</FromDate>
-      <ToDate>2040-08-26T11:05:50</ToDate>
+      <FromDate>2040-07-22T17:05:33</FromDate>
+      <ToDate>2040-08-26T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2042-08-26E2042-09-30">
-      <FromDate>2042-08-26T11:05:50</FromDate>
-      <ToDate>2042-09-30T11:05:50</ToDate>
+      <FromDate>2042-08-26T17:05:33</FromDate>
+      <ToDate>2042-09-30T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2044-09-30E2044-11-04">
-      <FromDate>2044-09-30T11:05:50</FromDate>
-      <ToDate>2044-11-04T11:05:50</ToDate>
+      <FromDate>2044-09-30T17:05:33</FromDate>
+      <ToDate>2044-11-04T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:2S2046-11-04E2046-12-04">
-      <FromDate>2046-11-04T11:05:50</FromDate>
-      <ToDate>2046-12-04T11:05:50</ToDate>
+      <FromDate>2046-11-04T17:05:33</FromDate>
+      <ToDate>2046-12-04T17:05:33</ToDate>
     </OperatingPeriod>
       </operatingPeriods>  
   <!--- === Day Type assignments ==== -->
@@ -3263,7 +3260,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       </dayTypeAssignments>  
 </ServiceCalendarFrame>
 <ServiceCalendarFrame version="any" id="T:ServiceCalendarFrame:SFC2">
-  <ServiceCalendar version="any" id="T:ServiceCalendar:SFC2"><!-- ObjectId?? -->
+  <ServiceCalendar version="any" id="T:ServiceCalendar:SFC2">
     <FromDate>2013-04-17</FromDate>
     <ToDate>2046-10-09</ToDate>
   </ServiceCalendar>
@@ -3273,13 +3270,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
       <Name>nom 0</Name>
       <ShortName>nom 0</ShortName>
       <properties>
-                <PropertyOfDay>
-          <DaysOfWeek>WeekDay</DaysOfWeek>
-        </PropertyOfDay>
-                <PropertyOfDay>
-          <DaysOfWeek>WeekEnd</DaysOfWeek>
-        </PropertyOfDay>
-              </properties>
+                                              </properties>
     </DayType>
   </dayTypes>
   <!--- === Day assignments ==== -->
@@ -3303,24 +3294,24 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- === Period assignments ==== -->
   <operatingPeriods>
         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2046-10-09E2038-05-22">
-      <FromDate>2046-10-09T11:05:50</FromDate>
-      <ToDate>2038-05-22T11:05:50</ToDate>
+      <FromDate>2046-10-09T17:05:33</FromDate>
+      <ToDate>2038-05-22T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2040-05-22E2040-06-26">
-      <FromDate>2040-05-22T11:05:50</FromDate>
-      <ToDate>2040-06-26T11:05:50</ToDate>
+      <FromDate>2040-05-22T17:05:33</FromDate>
+      <ToDate>2040-06-26T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2042-06-26E2042-07-31">
-      <FromDate>2042-06-26T11:05:50</FromDate>
-      <ToDate>2042-07-31T11:05:50</ToDate>
+      <FromDate>2042-06-26T17:05:33</FromDate>
+      <ToDate>2042-07-31T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2044-07-31E2044-09-04">
-      <FromDate>2044-07-31T11:05:50</FromDate>
-      <ToDate>2044-09-04T11:05:50</ToDate>
+      <FromDate>2044-07-31T17:05:33</FromDate>
+      <ToDate>2044-09-04T17:05:33</ToDate>
     </OperatingPeriod>
         <OperatingPeriod version="any" id="T:OperatingPeriod:0S2046-09-04E2046-10-09">
-      <FromDate>2046-09-04T11:05:50</FromDate>
-      <ToDate>2046-10-09T11:05:50</ToDate>
+      <FromDate>2046-09-04T17:05:33</FromDate>
+      <ToDate>2046-10-09T17:05:33</ToDate>
     </OperatingPeriod>
       </operatingPeriods>  
   <!--- === Day Type assignments ==== -->
@@ -3371,14 +3362,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 <TimetableFrame version="any" id="T:TimetableFrame:TF02"> 
   <vehicleJourneys>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-0-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-0">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:b3163031-0b43-487c-959f-37136188d286" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-0"/>
           <Arrival>
@@ -3409,14 +3414,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-0-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-0">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:f86216e7-8221-45f0-927a-2f7d24d978c1" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-0"/>
           <Arrival>
@@ -3447,14 +3466,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-1-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-1">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:e5d7dec7-9eac-4419-beab-8224e7acffd5" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-1"/>
           <Arrival>
@@ -3485,14 +3518,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-1-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-1">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:5762b5fe-b7fd-4137-a034-00a4a7161498" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-1"/>
           <Arrival>
@@ -3523,14 +3570,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-2-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-2">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:41bafbb9-8dc6-4725-8a07-c8e566ae8c11" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-2"/>
           <Arrival>
@@ -3561,14 +3622,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-2-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-2">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:110a42cd-8597-49e0-a92b-53fd8a16bbeb" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-2"/>
           <Arrival>
@@ -3599,14 +3674,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-3-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-3">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:9f63da4f-6a46-45ec-a1b3-26496db30ecd" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-3"/>
           <Arrival>
@@ -3637,14 +3726,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-3-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-3">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:2c3fb824-0181-4350-bfc9-4a818a9ec65c" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-3"/>
           <Arrival>
@@ -3675,14 +3778,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-4-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-4">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:6b233e27-ed98-467c-bea6-8c6d0130e1e1" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-4"/>
           <Arrival>
@@ -3713,14 +3830,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-4-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-4">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:9ea37d8a-ff77-45fe-8ffb-7175ddd87041" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-4"/>
           <Arrival>
@@ -3751,14 +3882,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-5-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-5">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:8d5d0094-59a7-43cd-a88b-6bfe94128330" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-5"/>
           <Arrival>
@@ -3789,14 +3934,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-5-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-5">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:9cd55518-cdff-4d29-ae82-84f34bae7784" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-5"/>
           <Arrival>
@@ -3827,14 +3986,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-6-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-6">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:14ff322d-bd99-4a29-bc10-b68f21f8cdae" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-6"/>
           <Arrival>
@@ -3865,14 +4038,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-0-6-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-0"/>
                   <ServicePatternRef ref="T:ServicePattern:1-0-6">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:dedf90cc-d709-41f5-bbdb-99c78a01e03b" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-6"/>
           <Arrival>
@@ -3903,14 +4090,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-0-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-0">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:5d3ab601-b560-4844-9c3c-b70209cf2f64" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-0"/>
           <Arrival>
@@ -3941,14 +4142,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-0-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-0">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:d44aa677-4c58-4658-b5d5-f47db57ef04f" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-0"/>
           <Arrival>
@@ -3979,14 +4194,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-1-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-1">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:d2a3e266-0603-41b3-ad74-c97d9ade0799" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-1"/>
           <Arrival>
@@ -4017,14 +4246,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-1-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-1">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:0a4fbd1a-a3dc-4095-94b5-4bdaed1010cd" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-1"/>
           <Arrival>
@@ -4055,14 +4298,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-2-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-2">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:fc902e04-90bf-4e44-b830-680345b33e3f" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-2"/>
           <Arrival>
@@ -4093,14 +4350,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-2-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-2">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:f084df68-7855-4bf8-8368-26919a8e3ac7" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-2"/>
           <Arrival>
@@ -4131,14 +4402,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-3-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-3">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:b150dc8f-5f5a-427d-bac2-417bd0eb34f0" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-3"/>
           <Arrival>
@@ -4169,14 +4454,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-3-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-3">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:2cd1489a-2ed4-4810-90c6-43b1e1eaa6d7" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-3"/>
           <Arrival>
@@ -4207,14 +4506,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-4-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-4">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:624ffc56-5386-4e38-acc5-ba7fcbc1176d" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-4"/>
           <Arrival>
@@ -4245,14 +4558,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-4-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-4">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:825005bf-8248-4d5c-b85c-2e06c91cc9be" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-4"/>
           <Arrival>
@@ -4283,14 +4610,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-5-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-5">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:d9cb6a29-27e7-47d4-9a4f-0f4175ea5716" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-5"/>
           <Arrival>
@@ -4321,14 +4662,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-5-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-5">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:93e6768f-3bbc-4a3e-8964-0447226ca070" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-5"/>
           <Arrival>
@@ -4359,14 +4714,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-6-0">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:0"/>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-6">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:0eb04f70-4e41-4cf1-aa8a-725d8a9bc229" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-6"/>
           <Arrival>
@@ -4397,14 +4766,28 @@ So the NeTEx File will probably be something like 50% bigger with the same level
               </calls>
     </ServiceJourney>
         <ServiceJourney version="1" id="T:VehicleJourney:1-1-6-1">
-      <Name>0</Name>
-      <dayTypes>
+            <Name>nom 830f5181-430e-439a-8490-e11737a90608</Name>
+                  <ShortName>nom court 440f9774-c376-4ea9-a17b-e8dc32718168</ShortName>
+                  <Description>comment ed48acc4-7542-4ec6-b454-0e867442ea0e</Description>
+            <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+            <ServiceAlteration>Normal</ServiceAlteration>
+            <dayTypes>
                 <DayTypeRef version="1" ref="T:DayType:1"/>
                 <DayTypeRef version="1" ref="T:DayType:2"/>
               </dayTypes>
             <RouteRef version="1" ref="T:Route:1-1"/>
                   <ServicePatternRef ref="T:ServicePattern:1-1-6">EXTERNAL</ServicePatternRef>
-            <calls>
+                  <OperatorRef version="1" ref="RATP_PIVI:null:548e4b35-eb04-404c-8433-d0f9a3f7e333" />
+            <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
+      <calls>
                 <Call>
           <ScheduledStopPointRef version="1" ref="T:StopPoint:1-1-6"/>
           <Arrival>

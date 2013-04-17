@@ -19,6 +19,7 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -238,4 +239,51 @@ public class ModelTranslator {
             else  
                 return TransportModeNameEnum.OTHER;
         }
+        
+        public String toDayTypeNetex( DayTypeEnum dayType) {
+            if(dayType == null)
+                return null;
+           
+            switch(dayType) {
+                case MONDAY: 
+                    return "Monday";
+                case TUESDAY: 
+                    return "Tuesday";
+                case WEDNESDAY: 
+                    return "Wednesday";                    
+                case THURSDAY: 
+                    return "Thursday";
+                case FRIDAY: 
+                    return "Friday";
+                case SATURDAY: 
+                    return "Saturday";
+                case SUNDAY: 
+                    return "Sunday";                
+                default:
+                    return null;
+            }            
+        }
+        
+        public DayTypeEnum readDayType( String dayType) {
+            if ( dayType==null)
+                return null;
+            else if ( dayType.equals("Monday")) 
+                return DayTypeEnum.MONDAY;
+            else if ( dayType.equals("Tuesday")) 
+                return DayTypeEnum.TUESDAY;
+            else if ( dayType.equals("Wednesday")) 
+                return DayTypeEnum.WEDNESDAY;
+            else if ( dayType.equals("Thursday")) 
+                return DayTypeEnum.THURSDAY;
+            else if ( dayType.equals("Friday")) 
+                return DayTypeEnum.FRIDAY;
+            else if ( dayType.equals("Saturday")) 
+                return DayTypeEnum.SATURDAY;
+            else if ( dayType.equals("Sunday")) 
+                return DayTypeEnum.SUNDAY;
+            else
+                return null;            
+        }
+        
+        
 }

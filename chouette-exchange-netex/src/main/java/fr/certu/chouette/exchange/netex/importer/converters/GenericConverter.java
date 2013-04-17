@@ -72,7 +72,8 @@ public class GenericConverter {
     protected List<DayTypeEnum> toDayTypeEnumList(List<Object> objects) {
         List<DayTypeEnum> dayTypeEnums = new ArrayList<DayTypeEnum>(objects.size());
         for (Object object : objects) {
-            dayTypeEnums.add(DayTypeEnum.fromValue(object.toString()));
+            if(object != null)
+                dayTypeEnums.add(DayTypeEnum.fromValue(object.toString()));
         }
         return dayTypeEnums;
     }
@@ -108,6 +109,8 @@ public class GenericConverter {
            return enumTranslator.readPTDirection(value);
         else if(type.toString().equals("PTNetworkSourceTypeEnum"))
            return enumTranslator.readPTNetworkSourceType(value);
+        else if(type.toString().equals("DayTypeEnum"))
+           return enumTranslator.readDayType(value);
         else
             return value;
     }
