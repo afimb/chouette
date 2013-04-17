@@ -3,7 +3,23 @@
   <vehicleJourneys>
     #foreach( $vehicleJourney in $vehicleJourneys )
     <ServiceJourney version="$vehicleJourney.objectVersion" id="$modelTranslator.netexId( $vehicleJourney)">
-      <Name>$vehicleJourney.number</Name>
+      #if ( $vehicleJourney.publishedJourneyName)
+      <Name>$!esc.xml( $vehicleJourney.publishedJourneyName)</Name>
+      #end
+      #if ( $vehicleJourney.publishedJourneyIdentifier)
+      <ShortName>$!esc.xml( $vehicleJourney.publishedJourneyIdentifier)</ShortName>
+      #end
+      #if ( $vehicleJourney.comment)
+      <Description>$!esc.xml( $vehicleJourney.comment)</Description>
+      #end
+      <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+      #if ( $vehicleJourney.serviceStatusValue)
+      <ServiceAlteration>$!esc.xml( $vehicleJourney.serviceStatusValue)</ServiceAlteration>
+      #end
       <dayTypes>
         #foreach( $timetable in $vehicleJourney.timetables )  
         <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
@@ -15,6 +31,14 @@
       #if($vehicleJourney.journeyPattern) 
       <ServicePatternRef ref="$modelTranslator.netexId( $vehicleJourney.journeyPattern)">EXTERNAL</ServicePatternRef>
       #end
+      #if ( $vehicleJourney.company)
+      <OperatorRef version="$vehicleJourney.company.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.company)" />
+      #end
+      <!--
+      <trainNumbers>
+        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+      </trainNumbers>
+      -->
       <calls>
         #foreach( $vehicleJourneyAtStop in $vehicleJourney.vehicleJourneyAtStops ) 
         <Call>

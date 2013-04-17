@@ -200,7 +200,7 @@ public class ComplexModelFactory {
         }
         return stopPoints;
     }
-    private List<JourneyPattern> journeyPatternList( List<StopPoint> stopPoints, Route route) {
+    private List<JourneyPattern> journeyPatternList( List<StopPoint> stopPoints, Route route) throws CreateModelException {
         List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(journeyPatternCount);
         try {
             for ( int i=0; i<journeyPatternCount; i++) {
@@ -286,7 +286,7 @@ public class ComplexModelFactory {
     }
     
     
-    private List<VehicleJourney> vehicleJourneyList( JourneyPattern journeyPattern) {
+    private List<VehicleJourney> vehicleJourneyList( JourneyPattern journeyPattern) throws CreateModelException {
         List<VehicleJourney> vehicles = new ArrayList<VehicleJourney>( vehicleCount);
         Calendar calendar = Calendar.getInstance();
         calendar.set( Calendar.HOUR_OF_DAY, 13);
@@ -306,8 +306,8 @@ public class ComplexModelFactory {
         
         return vehicles;
     }
-    private VehicleJourney vehicleJourney( Calendar calendar, JourneyPattern journeyPattern) {
-        VehicleJourney vehicle = new VehicleJourney();
+    private VehicleJourney vehicleJourney( Calendar calendar, JourneyPattern journeyPattern) throws CreateModelException {
+        VehicleJourney vehicle = modelFactory.createModel( VehicleJourney.class);
         vehicle.setJourneyPattern(journeyPattern);
         vehicle.setRoute(journeyPattern.getRoute());
         try {

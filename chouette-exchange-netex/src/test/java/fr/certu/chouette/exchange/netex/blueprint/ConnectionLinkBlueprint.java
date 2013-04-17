@@ -18,7 +18,7 @@ public class ConnectionLinkBlueprint {
     FieldCallback objectId = new FieldCallback() {
         @Override
         public String get( Object model) {
-            return "RATP_PIVI:ConnectionLink:" + UUID.randomUUID();
+            return "RATP_PIVI:SiteConnection:" + UUID.randomUUID();
         }
         
     };  

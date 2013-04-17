@@ -9,7 +9,6 @@ import fr.certu.chouette.model.neptune.Timetable;
 
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Date;
 import javax.xml.xpath.XPathExpressionException;
