@@ -187,7 +187,11 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		if (stopPoints == null)
 			stopPoints = new ArrayList<StopPoint>();
 		if (!stopPoints.contains(stopPoint))
+		{
 			stopPoints.add(stopPoint);
+			refreshDepartureArrivals();
+		}
+		
 	}
 
 	/**
@@ -200,7 +204,10 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		if (stopPoints == null)
 			stopPoints = new ArrayList<StopPoint>();
 		if (stopPoints.contains(stopPoint))
+		{
 			stopPoints.remove(stopPoint);
+			refreshDepartureArrivals();
+		}
 	}
 
 	/**
@@ -327,5 +334,20 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 				vehicleJourney.complete();
 			}
 		}
+	}
+	
+	public void refreshDepartureArrivals()
+	{
+		if (stopPoints == null || stopPoints.isEmpty())
+		{
+			departureStopPoint = null;
+			arrivalStopPoint = null;
+		}
+		else
+		{
+			departureStopPoint = stopPoints.get(0);
+			arrivalStopPoint = stopPoints.get(stopPoints.size() - 1);
+		}
+		
 	}
 }

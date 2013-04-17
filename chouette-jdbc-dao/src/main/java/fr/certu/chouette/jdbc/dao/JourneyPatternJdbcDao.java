@@ -40,9 +40,9 @@ public class JourneyPatternJdbcDao extends AbstractJdbcDao<JourneyPattern>
 		ps.setString(6, journeyPattern.getComment());
 		ps.setString(7, journeyPattern.getRegistrationNumber());
 		ps.setString(8, journeyPattern.getPublishedName());
-		setId(ps,9,journeyPattern.getRoute());
-		setId(ps,10,journeyPattern.getDepartureStopPoint());
-	   setId(ps,11,journeyPattern.getArrivalStopPoint());
+		setId(ps,9,journeyPattern.getRoute(),true,"route_id");
+		setId(ps,10,journeyPattern.getDepartureStopPoint(),true,"departure_stop_point_id");
+	    setId(ps,11,journeyPattern.getArrivalStopPoint(),true,"arrival_stop_point_id");
 	}
 
 	@Override

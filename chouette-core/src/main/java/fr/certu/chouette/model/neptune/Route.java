@@ -461,7 +461,7 @@ public class Route extends NeptuneIdentifiedObject
 						vehicleJourney.removeStopPoint(stopPoint);
 					}
 				}
-				jpPoints.remove(stopPoint);
+				journeyPattern.removeStopPoint(stopPoint);
 			}
 		}
 

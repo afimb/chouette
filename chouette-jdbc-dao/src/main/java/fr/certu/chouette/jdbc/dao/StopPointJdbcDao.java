@@ -48,8 +48,8 @@ public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 		ps.setTimestamp(3, timestamp);
 		ps.setString(4, stopPoint.getCreatorId());
 		
-		setId(ps,5,stopPoint.getContainedInStopArea());
+		setId(ps,5,stopPoint.getContainedInStopArea(),true,"stop_area_id");
 		ps.setInt(6, stopPoint.getPosition());
-		setId(ps,7,stopPoint.getRoute());
+		setId(ps,7,stopPoint.getRoute(),true,"route_id");
 	}
 }
