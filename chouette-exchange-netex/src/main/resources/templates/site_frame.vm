@@ -186,7 +186,7 @@
           #end
       #end
       #if ( $accessLink.mobilityRestrictedSuitable)
-      <AccessibilityAssessment>
+      <AccessibilityAssessment version="$accessLink.objectVersion" id="${accessLink.objectIdPrefix()}:AccessibilityAssessment:${accessLink.objectIdSuffix()}">
         <MobilityImpairedAccess>$accessLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
       </AccessibilityAssessment>
       #end
