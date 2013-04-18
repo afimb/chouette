@@ -262,6 +262,16 @@ public class StopArea extends NeptuneIdentifiedObject
 	private List<AccessLink>     accessLinks;
 
 	/**
+	 * list of access points
+	 * <p>
+	 * access points contained in this stop area
+	 * <br/><i>readable/writable</i>
+	 */
+	@Getter
+	@Setter
+	private List<AccessPoint>     accessPoints;
+	
+	/**
 	 * list of facilities
 	 * <br/><i>readable/writable</i>
 	 */
@@ -601,6 +611,34 @@ public class StopArea extends NeptuneIdentifiedObject
 		if (accessLinks.contains(accessLink))
 			accessLinks.remove(accessLink);
 	}
+	/**
+	 * add an accessPoint if not already present
+	 * <p>
+	 * 
+	 * @param accessPoint
+	 */
+	public void addAccessPoint(AccessPoint accessPoint)
+	{
+		if (accessPoints == null)
+			accessPoints = new ArrayList<AccessPoint>();
+		if (accessPoint != null && !accessPoints.contains(accessPoint))
+		{
+			accessPoints.add(accessPoint);
+		}
+	}
+
+	/**
+	 * remove an accessPoint
+	 * 
+	 * @param accessPoint
+	 */
+	public void removeAccessPoint(AccessPoint accessPoint)
+	{
+		if (accessPoints == null)
+			accessPoints = new ArrayList<AccessPoint>();
+		if (accessPoints.contains(accessPoint))
+			accessPoints.remove(accessPoint);
+	}
 
 	/**
 	 * add a line if not already present
@@ -696,7 +734,7 @@ public class StopArea extends NeptuneIdentifiedObject
 		return areaCentroid;
 	}
 	/**
-	 * setting areaCentroid will populate StopArea's attribute by copy from ceontroid one's  
+	 * setting areaCentroid will populate StopArea's attribute by copy from centroid one's  
 	 * @param areaCentroid
 	 */
 	public void setAreaCentroid(AreaCentroid areaCentroid) 

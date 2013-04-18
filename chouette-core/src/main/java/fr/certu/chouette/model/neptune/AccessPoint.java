@@ -233,6 +233,7 @@ public class AccessPoint extends NeptuneIdentifiedObject{
 		if (getContainedIn() != null)
 		{
 			containedInStopArea = getContainedIn().getObjectId();
+			getContainedIn().addAccessPoint(this);
 		}
 		else
 		{

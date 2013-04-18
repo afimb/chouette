@@ -131,6 +131,7 @@ public class ComplexModelFactory {
                 AccessPoint accessPoint = modelFactory.createModel(AccessPoint.class);
                 
                 accessLink.setAccessPoint(accessPoint);
+                accessPoint.setContainedIn(stopArea);
                 accessLink.setStopArea(stopArea);                                
                 
                 stopArea.addAccessLink(accessLink);
@@ -158,23 +159,23 @@ public class ComplexModelFactory {
             tm.addDayType(DayTypeEnum.values()[(index+1)%7]);
             
             Calendar cal = Calendar.getInstance();
-            cal.add( index, Calendar.MONTH);
+            cal.add(  Calendar.MONTH,index);
 
             tm.setCalendarDays( new ArrayList<Date>(5));
             for( int i = 0; i<5; i++) {
                 tm.addCalendarDay( new Date( cal.getTimeInMillis()));
-                cal.add( 1, Calendar.DAY_OF_MONTH);
+                cal.add( Calendar.DAY_OF_MONTH,1 );
             }
             tm.setPeriods( new ArrayList<Period>(5));
             for( int i = 0; i<5; i++) {
                 Period period = new Period();
                 period.setStartDate( new Date( cal.getTimeInMillis()));
-                cal.add( 4, Calendar.DAY_OF_MONTH);
+                cal.add( Calendar.DAY_OF_MONTH,4);
                 period.setEndDate( new Date( cal.getTimeInMillis()));
                 
                 tm.addPeriod( period);
 
-                cal.add( 1, Calendar.MONTH);
+                cal.add( Calendar.MONTH,1);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage(), ex);
