@@ -56,5 +56,24 @@ public class AccessPointConverterTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(accessPoints.get(0).getLongitude(), new BigDecimal("2.37300000000000022026824808563105762004852294921875"));
         Assert.assertEquals(accessPoints.get(0).getLatitude(), new BigDecimal("48.7999999999999971578290569595992565155029296875"));
     }
+    private AccessPoint getByObjectId( String objectId)  throws XPathEvalException, NavException, XPathParseException, ParseException {
+        List<AccessPoint> list = accessPointConverter.convert();
+        AccessPoint selectedAccess = null;
+        for( AccessPoint access : list) {
+            if ( access.getObjectId().equals( objectId)) {
+                selectedAccess = access;
+                break;
+            }
+        }
+        
+        Assert.assertNotNull( selectedAccess, "can't find expected accessPoint having "+objectId+" as objectId");
+        return selectedAccess;
+    }
+    
+    @Test(groups = {"SiteFrame"}, description = "AccessPoint's containedInStopArea attribute reading")
+    public void verifyContainedInStopArea() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        AccessPoint selectedAccess = getByObjectId( "RATP_PIVI:StopPlaceEntrance:55dd8c88-d52a-48c1-94bc-6ac1cfdcf311");
+        Assert.assertEquals( selectedAccess.getContainedInStopArea(), "T:StopPlace:PLC-0");
+    }
 
 }

@@ -38,7 +38,19 @@ public class AccessPointConverter extends GenericConverter
         pilot = new AutoPilot(nav);
         pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
     }
-    
+    private String subXpathSelection( String xPath) throws XPathParseException {
+        AutoPilot autoPilot = createAutoPilot(nav);
+        autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
+        autoPilot.selectXPath( xPath);
+
+        String result = autoPilot.evalXPathToString();
+        if ( result==null || result.isEmpty())
+                result = null;
+
+        autoPilot.resetXPath();
+        return result;
+}
+
     public List<AccessPoint> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         accessPoints.clear();
@@ -55,7 +67,8 @@ public class AccessPointConverter extends GenericConverter
             // Mandatory
             accessPoint.setObjectId( (String)parseMandatoryAttribute(nav, "id"));
             accessPoint.setName( (String)parseMandatoryElement(nav, "Name") );
-            accessPoint.setContainedInStopArea((String)parseMandatoryAttribute(nav, "StopPlaceEntranceRef", "ref", "id"));
+            
+            accessPoint.setContainedInStopArea( subXpathSelection( "../../@id"));
             
             // Optionnal            
             accessPoint.setLongitude( new BigDecimal((String)parseOptionnalSubElement(nav, "Location", "Longitude")) );
