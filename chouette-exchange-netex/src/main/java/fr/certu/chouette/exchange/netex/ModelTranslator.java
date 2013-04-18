@@ -4,6 +4,8 @@
  */
 package fr.certu.chouette.exchange.netex;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -30,6 +32,8 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
  * @author marc
  */
 public class ModelTranslator {
+	private static final Logger logger = Logger.getLogger(ModelTranslator.class);
+	
     public String convertToNMTOKEN( String s) {
         return s.replaceAll( " ", "-");
     }
@@ -98,7 +102,9 @@ public class ModelTranslator {
         // netexSourceType is a free text
         PTDirectionEnum ptDirection = null;
         try { ptDirection = PTDirectionEnum.fromValue(firstLetterUpcase( netexPTDirection)); } 
-        catch ( Exception e) {}
+        catch ( Exception e) {
+        	logger.error("unable to translate "+netexPTDirection+" as PTDirection");
+        }
         return ptDirection;
     }
     
@@ -113,7 +119,9 @@ public class ModelTranslator {
         // netexSourceType is a free text
         PTNetworkSourceTypeEnum sourceType = null;
         try { sourceType = PTNetworkSourceTypeEnum.fromValue(firstLetterUpcase( netexSourceType)); } 
-        catch ( Exception e) {}
+        catch ( Exception e) {
+        	logger.error("unable to translate "+netexSourceType+" as PTNetworkSourceType");
+        }
         return sourceType;
     }
     

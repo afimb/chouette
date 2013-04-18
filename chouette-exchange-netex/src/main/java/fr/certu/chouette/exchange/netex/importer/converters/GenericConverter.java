@@ -1,12 +1,5 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
-import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.text.DateFormat;
@@ -15,9 +8,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+
 import org.apache.log4j.Logger;
+
+import com.ximpleware.AutoPilot;
+import com.ximpleware.NavException;
+import com.ximpleware.VTDNav;
+
+import fr.certu.chouette.exchange.netex.ModelTranslator;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
+import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 
 public class GenericConverter {
     

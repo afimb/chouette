@@ -77,6 +77,8 @@
       #if ( $route.publishedName )
       <ShortName>$!esc.xml($route.publishedName)</ShortName>
       #end
+      <!-- NEPTUNE [mapping:variable] : Route->DirectionRef reference of Direction object mapping to NEPTUNE Route->publishedName and Route->RouteExtension->wayBack -->
+      <DirectionRef version="any" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction"/>
       <pointsInSequence>                               
         #foreach( $stopPoint in $route.stopPoints )
         #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )

@@ -169,7 +169,7 @@
       #if($accessLink.accessPoint && $accessLink.stopArea && $accessLink.linkOrientation) 
           #if($accessLink.linkOrientation == "AccessPointToStopArea")
           <From>
-            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" />
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.accessPoint.containedIn)" />
             <EntranceRef ref="$modelTranslator.netexId( $accessLink.accessPoint)" />        
           </From> 
           <To> 
@@ -180,7 +180,7 @@
             <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" />  
           </From> 
           <To> 
-            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" /> 
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.accessPoint.containedIn)" /> 
             <EntranceRef ref="$modelTranslator.netexId( $accessLink.accessPoint)" />       
           </To>
           #end

@@ -1,5 +1,13 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.apache.log4j.Logger;
+
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
@@ -8,6 +16,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
@@ -18,16 +27,9 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.apache.log4j.Logger;
 
 public class NeptuneConverter {
 
@@ -167,6 +169,9 @@ public class NeptuneConverter {
                     AccessPoint accessPoint = accessPointsByObjectId.get(accessLink.getStartOfLinkId());
                     if (accessPoint != null) {
                         accessPoint.addAccessLink(accessLink);
+                        // connect AccessPoint to StopArea container
+                        StopArea area = stopAreaByObjectId.get(accessPoint.getContainedInStopArea());
+                        accessPoint.setContainedIn(area);
                     }
                 }
             }
