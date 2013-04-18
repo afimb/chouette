@@ -25,12 +25,15 @@ import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
-
 /**
  *
  * @author marc
  */
 public class ModelTranslator {
+    public String convertToNMTOKEN( String s) {
+        return s.replaceAll( " ", "-");
+    }
+    
     public String netexId( NeptuneIdentifiedObject model) {
         if (model==null)
             return null;

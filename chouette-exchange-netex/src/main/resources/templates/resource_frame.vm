@@ -14,7 +14,7 @@
           </FrameDefaults>
           #if ( $network.sourceIdentifier || $network.sourceName || $network.sourceType )
           <dataSources>
-              <DataSource#if ( $network.sourceIdentifier ) id="$!esc.xml($network.sourceIdentifier)" #end>
+              <DataSource#if ( $network.sourceIdentifier ) id="$!esc.xml($network.sourceIdentifier)" version="1" #end>
                 #if ( $network.sourceName )
                 <Name>$!esc.xml($network.sourceName)</Name>
                 #end
@@ -129,7 +129,7 @@
               #end
               #if ( $company.operatingDepartmentName )
               <departments>
-                  <Department>
+                  <Department id="${company.objectIdPrefix()}:Department:${company.objectIdSuffix()}" version="1">
                       <Name>$!esc.xml($company.operatingDepartmentName)</Name>
                   </Department>
               </departments>

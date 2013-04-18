@@ -37,7 +37,9 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- ======WHAT WAS REQUESTED ========== -->
   <PublicationRequest version="1.0">
     <RequestTimestamp>$date.get($dateFormat)</RequestTimestamp>
-    <ParticipantRef>$line.company.name</ParticipantRef>
+    #if ( $line.company && $line.company.name)
+    <ParticipantRef>$modelTranslator.convertToNMTOKEN( $line.company.name)</ParticipantRef>
+    #end
     <filters>
       <FrameRequestFilter>
         <Topics>

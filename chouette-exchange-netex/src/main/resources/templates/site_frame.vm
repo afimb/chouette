@@ -33,6 +33,10 @@
       #if( $stopPlace.parent )
       <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="$modelTranslator.netexId( $stopPlace.parent)" />
       #end
+      
+      #if( $stopPlace.nearestTopicName )
+      <Landmark>$!esc.xml( $stopPlace.nearestTopicName)</Landmark>
+      #end
 
       #if($stopPlace.streetName || $stopPlace.countryCode)
       <PostalAddress version="any" id="${stopPlace.objectIdPrefix()}:PostalAddress:${stopPlace.objectIdSuffix()}">
@@ -44,10 +48,6 @@
         <PostCode>$!esc.xml( $stopPlace.countryCode)</PostCode>
         #end
       </PostalAddress>
-      #end
-      
-      #if( $stopPlace.nearestTopicName )
-      <LandMark>$!esc.xml( $stopPlace.nearestTopicName)</LandMark>
       #end
 
       #if($stopPlace.fareCode)
@@ -74,10 +74,6 @@
          <PrivateCode>$!esc.xml( $quay.registrationNumber)</PrivateCode>
          #end
 
-         #if( $quay.nearestTopicName )
-         <LandMark>$!esc.xml( $quay.nearestTopicName)</LandMark>
-         #end
-
          #if( ( $quay.latitude && $quay.longitude) || ($quay.x && $quay.y && $quay.projectionType))
          <Centroid>
             <Location id="${quay.objectIdPrefix()}:Location:${quay.objectIdSuffix()}">
@@ -91,6 +87,11 @@
             </Location>
           </Centroid>
           #end
+
+         #if( $quay.nearestTopicName )
+         <Landmark>$!esc.xml( $quay.nearestTopicName)</Landmark>
+         #end
+
           #if($quay.streetName || $quay.countryCode)
           <PostalAddress version="any" id="${quay.objectIdPrefix()}:PostalAddress:${quay.objectIdSuffix()}">
             <CountryRef ref="fr"/>
@@ -118,16 +119,19 @@
         #set( $accessPoint = $accessLink.accessPoint )
         #if ( $accessPoint )
         <StopPlaceEntrance version="$accessPoint.objectVersion" id="$modelTranslator.netexId( $accessPoint)">
-          <Centroid>
-            <Location>
-              <Longitude>$!accessPoint.longitude</Longitude>
-              <Latitude>$!accessPoint.latitude</Latitude>
-              <srsName>$!accessPoint.longLatType</srsName>
-            </Location>
-          </Centroid>
-          <StopPlaceEntranceRef ref="$!accessPoint.containedInStopArea"/>
           #if ( $accessPoint.name )
           <Name>$!esc.xml($accessPoint.name)</Name>          
+          #end
+          #if ( $accessPoint.comment )
+          <Description>$!esc.xml($accessPoint.comment)</Description>  
+          #end
+          #if ( $accessPoint.longitude && $accessPoint.latitude)
+          <Centroid>
+            <Location srsName="$!accessPoint.longLatType" >
+              <Longitude>$!accessPoint.longitude</Longitude>
+              <Latitude>$!accessPoint.latitude</Latitude>
+            </Location>
+          </Centroid>
           #end
           <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "InOut")true#{else}false#end</isEntry>
           <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "InOut")true#{else}false#end</isExit>         
@@ -135,9 +139,6 @@
             <StartTime>$!accessPoint.openingTime</StartTime>
             <EndTime>$!accessPoint.closingTime</EndTime>
           </TimeBand>
-          #if ( $accessPoint.comment )
-          <Description>$!esc.xml($accessPoint.comment)</Description>  
-          #end
           ## TODO : Add enum   
         </StopPlaceEntrance>
         #end  
@@ -182,15 +183,26 @@
         <MobilityImpairedAccess>$accessLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
       </AccessibilityAssessment>
       #end
-      #if ( $connectionLink.linkType)
-      <Covered>$modelTranslator.toLinkType($connectionLink.linkType)</Covered>
+      #if ( $accessLink.linkType)
+      <Covered>$modelTranslator.toLinkType($accessLink.linkType)</Covered>
       #end
-      <TransfertDuration>
+      #if ( $accessLink.defaultDuration || $accessLink.frequentTravellerDuration ||
+            $accessLink.occasionalTravellerDuration || $accessLink.mobilityRestrictedTravellerDuration)
+      <TransferDuration>
+        #if ( $accessLink.defaultDuration)
         <DefaultDuration>$!date.format($durationFormat, $!accessLink.defaultDuration)</DefaultDuration>
+        #end
+        #if ( $accessLink.frequentTravellerDuration)
         <FrequentTravellerDuration>$!date.format($durationFormat, $!accessLink.frequentTravellerDuration)</FrequentTravellerDuration>
+        #end
+        #if ( $accessLink.occasionalTravellerDuration)
         <OccasionalTravellerDuration>$!date.format($durationFormat, $!accessLink.occasionalTravellerDuration)</OccasionalTravellerDuration>
-        <MobilityRestrictedTravellerDuration>$!date.format($durationFormat, $!accessLink.mobilityRestrictedTravellerDuration) </MobilityRestrictedTravellerDuration>         
-      </TransfertDuration>
+        #end
+        #if ( $accessLink.mobilityRestrictedTravellerDuration)
+        <MobilityRestrictedTravellerDuration>$!date.format($durationFormat, $!accessLink.mobilityRestrictedTravellerDuration) </MobilityRestrictedTravellerDuration> 
+        #end
+      </TransferDuration>
+      #end
       ## TODO : Add enum  
     </PathLink>
     #end

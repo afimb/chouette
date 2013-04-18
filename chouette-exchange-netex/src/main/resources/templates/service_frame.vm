@@ -199,6 +199,23 @@
       #if ( $connectionLink.linkDistance )
       <Distance>$connectionLink.linkDistance</Distance>
       #end 
+      #if ( $connectionLink.defaultDuration || $connectionLink.frequentTravellerDuration ||
+            $connectionLink.occasionalTravellerDuration || $connectionLink.mobilityRestrictedTravellerDuration)
+      <TransferDuration>
+        #if ( $connectionLink.defaultDuration)
+        <DefaultDuration>$!date.format($durationFormat, $!connectionLink.defaultDuration)</DefaultDuration>
+        #end
+        #if ( $connectionLink.frequentTravellerDuration)
+        <FrequentTravellerDuration>$!date.format($durationFormat, $!connectionLink.frequentTravellerDuration)</FrequentTravellerDuration>
+        #end
+        #if ( $connectionLink.occasionalTravellerDuration)
+        <OccasionalTravellerDuration>$!date.format($durationFormat, $!connectionLink.occasionalTravellerDuration)</OccasionalTravellerDuration>
+        #end
+        #if ( $connectionLink.mobilityRestrictedTravellerDuration)
+        <MobilityRestrictedTravellerDuration>$!date.format($durationFormat, $!connectionLink.mobilityRestrictedTravellerDuration) </MobilityRestrictedTravellerDuration> 
+        #end
+      </TransferDuration>
+      #end
       #if ( $connectionLink.startOfLink)
       <From>
          <StopPlaceRef ref="$modelTranslator.netexId( $connectionLink.startOfLink)" />
@@ -211,18 +228,14 @@
       #end
       <navigationPaths>
         <NavigationPath version="$connectionLink.objectVersion" id="${connectionLink.objectIdPrefix()}:NavigationPath:${connectionLink.objectIdSuffix()}N1">
+          #if ( $connectionLink.mobilityRestrictedSuitable)
           <AccessibilityAssessment>
-            <MobilityimpairedAccess>$!connectionLink.mobilityRestrictedSuitable</MobilityimpairedAccess>
+            <MobilityImpairedAccess>$connectionLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
           </AccessibilityAssessment>
+          #end
           #if ( $connectionLink.linkType)
           <Covered>$modelTranslator.toLinkType($connectionLink.linkType)</Covered>
           #end
-          <TransfertDuration>
-            <DefaultDuration>$!date.format($durationFormat, $!connectionLink.defaultDuration)</DefaultDuration>
-            <FrequentTravellerDuration>$!date.format($durationFormat, $!connectionLink.frequentTravellerDuration)</FrequentTravellerDuration>
-            <OccasionalTravellerDuration>$!date.format($durationFormat, $!connectionLink.occasionalTravellerDuration)</OccasionalTravellerDuration>
-            <MobilityRestrictedTravellerDuration>$!date.format($durationFormat, $!connectionLink.mobilityRestrictedTravellerDuration) </MobilityRestrictedTravellerDuration> 
-          </TransfertDuration>
         </NavigationPath>
       </navigationPaths>     
     </SiteConnection>  
