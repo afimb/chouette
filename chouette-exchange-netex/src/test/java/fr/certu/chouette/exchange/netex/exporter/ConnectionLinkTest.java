@@ -97,8 +97,7 @@ public class ConnectionLinkTest extends ChouetteModelTest {
         for (ConnectionLink connectionLink : connectionLinks) {   
             assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
                     "[@id = '"+ getId(connectionLink) + "']"+
-                    "/netex:navigationPaths/netex:NavigationPath"+
-                    "/netex:TransfertDuration" +
+                    "/netex:TransferDuration" +
                     "/netex:DefaultDuration/text()='"+ durationFormat.format(connectionLink.getDefaultDuration()) +"')");
         }        
     }
@@ -110,8 +109,7 @@ public class ConnectionLinkTest extends ChouetteModelTest {
         for (ConnectionLink connectionLink : connectionLinks) {   
             assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
                     "[@id = '"+ getId(connectionLink) + "']"+
-                    "/netex:navigationPaths/netex:NavigationPath"+
-                    "/netex:TransfertDuration" +
+                    "/netex:TransferDuration" +
                     "/netex:FrequentTravellerDuration/text()='"+ durationFormat.format(connectionLink.getFrequentTravellerDuration()) +"')");
         }        
     }
