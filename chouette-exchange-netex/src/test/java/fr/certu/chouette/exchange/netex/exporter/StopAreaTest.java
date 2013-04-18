@@ -131,7 +131,7 @@ public class StopAreaTest extends ChouetteModelTest {
         for( StopArea quay : quays) {
             String xPathExpr = "boolean(//netex:SiteFrame/netex:stopPlaces/"+
                                 "netex:StopPlace/netex:quays/netex:Quay"+
-                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:LandMark/text() = '"+
+                                "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Landmark/text() = '"+
                                 quay.getNearestTopicName()+"')";
             assertXPathTrue( xPathExpr);
         }
