@@ -10,6 +10,7 @@ import com.ximpleware.XPathParseException;
 import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import fr.certu.chouette.model.neptune.Line;
@@ -41,7 +42,7 @@ public class NetexFileReaderTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test(groups = {"NetexFileReader"}, description = "Netex File Reader must return a Line Object")
-    public void verifyReadInputStream() throws FileNotFoundException, IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException {        
+    public void verifyReadInputStream() throws FileNotFoundException, IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException, DatatypeConfigurationException {        
 		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
         File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");
         InputStream stream = new FileInputStream(f);

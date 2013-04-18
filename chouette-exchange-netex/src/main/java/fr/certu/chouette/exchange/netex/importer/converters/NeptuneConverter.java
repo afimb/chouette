@@ -26,6 +26,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
 public class NeptuneConverter {
@@ -46,7 +47,7 @@ public class NeptuneConverter {
     private AccessPointConverter accessPointConverter;
     private AccessLinkConverter accessLinkConverter;
 
-    public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException {
+    public NeptuneConverter(VTDNav nav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException {
         vTDNav = nav;
         networkConverter = new PTNetworkConverter(vTDNav);
         companyConverter = new CompanyConverter(vTDNav);

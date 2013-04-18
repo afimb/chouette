@@ -16,6 +16,7 @@ import fr.certu.chouette.plugin.report.Report;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -31,7 +32,7 @@ public class NetexFileReader {
      * @param fileName file relative or absolute path 
      * @return Neptune model
      */
-    public Line  readInputStream(InputStream inputStream,Report report) throws IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException 
+    public Line  readInputStream(InputStream inputStream,Report report) throws IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException, DatatypeConfigurationException 
     {
         byte[] b = IOUtils.toByteArray(inputStream);       
         vg.setDoc(b);

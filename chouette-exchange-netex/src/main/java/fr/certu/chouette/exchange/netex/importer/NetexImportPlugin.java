@@ -1,15 +1,7 @@
 package fr.certu.chouette.exchange.netex.importer;
 
-import com.ximpleware.EOFException;
-import com.ximpleware.EncodingException;
-import com.ximpleware.EntityException;
-import com.ximpleware.NavException;
-import com.ximpleware.ParseException;
 import com.ximpleware.VTDGen;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.netex.NetexReport;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
@@ -18,13 +10,10 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
-import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
-import fr.certu.chouette.plugin.report.DetailReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.report.SheetReportItem;
 
 import java.io.File;
 import java.io.FileInputStream;
