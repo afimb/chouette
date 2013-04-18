@@ -18,6 +18,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
@@ -32,6 +33,7 @@ public class RouteConverter extends GenericConverter
     private Map<String,String> commentByObjectId;
     private Map<String,String> numberByObjectId;
     private VTDNav nav;
+    private ModelTranslator modelTranslator = new ModelTranslator();
     
     @Getter
     private Map<String,StopPoint> stopPointByObjectId;
@@ -61,6 +63,7 @@ public class RouteConverter extends GenericConverter
         autoPilot.selectXPath("//netex:ServiceFrame/netex:routes/netex:Route");
         int result = -1;
         
+        nav.push();
         while( (result = autoPilot.evalXPath()) != -1 )
         {  
             Route route = new Route();
@@ -74,12 +77,13 @@ public class RouteConverter extends GenericConverter
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             route.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );                        
 
+            route.setWayBackRouteId( subXpathSelection( "netex:InverseRouteRef/@ref"));
+            
             // Optionnal Direction and WayBack
             String directionRef = (String)parseOptionnalCAttribute(nav, "DirectionRef", "ref");
             if ( directionRef!=null ) {
                 convertDirectionProperties( route, directionRef);
             }
-            route.setWayBackRouteId( (String)parseOptionnalAttribute(nav, "InverseRouteRef", "ref"));
 
             List<String> pointOnRouteIds = toStringList(parseMandatoryAttributes(nav, "PointOnRoute", "id"));
             
@@ -97,11 +101,25 @@ public class RouteConverter extends GenericConverter
             
             routes.add(route);
         }
+        nav.pop();
 
         convertStopPoints();
         
         return routes;
     }
+    private String subXpathSelection( String xPath) throws XPathParseException {
+            AutoPilot autoPilot = createAutoPilot(nav);
+            autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
+            autoPilot.selectXPath( xPath);
+
+            String result = autoPilot.evalXPathToString();
+            if ( result==null || result.isEmpty())
+                    result = null;
+
+            autoPilot.resetXPath();
+            return result;
+    }
+
     private void convertDirectionProperties( Route route, String directionObjectId)  throws XPathParseException, NavException, ParseException, XPathEvalException {
         int result = -1;
         
@@ -120,7 +138,7 @@ public class RouteConverter extends GenericConverter
             autoPilot3.resetXPath();
 
             if ( directionName!=null) {
-                route.setDirection( PTDirectionEnum.fromValue( directionName));
+                route.setDirection( modelTranslator.readPTDirection( directionName));
             }
             
             AutoPilot autoPilot4 = createAutoPilot(nav);

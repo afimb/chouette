@@ -653,6 +653,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                             <Name>1001101070001</Name>
                             <ShortName>Gare vers Jean Monnet</ShortName>
                             <DirectionRef version="any" ref="T:Route:1-1:Direction"/>
+                            <InverseRouteRef version="any" ref="T:Route:1-0" />
                             <pointsInSequence>                               
                                 <PointOnRoute version="any" id="T:PointOnRoute:1-1-0-0" order="0">
                                     <RoutePointRef version="1" ref="T:RoutePoint:1-1A0A1-1-0"/>
