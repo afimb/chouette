@@ -37,8 +37,6 @@ public class SpecificTest extends AbstractTestNGSpringContextTests {
             XMLModifier xm = new XMLModifier(vn);
             int i;
             while(ap.evalXPath()!=-1){
-                System.out.println( "AAAAAAAAAAAAAAAAAAAAAAAAAA");
-                System.out.println( "suppression !!!");
                 xm.remove();
             }
 

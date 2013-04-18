@@ -80,7 +80,7 @@ public class RouteConverter extends GenericConverter
                 convertDirectionProperties( route, directionRef);
             }
             route.setWayBackRouteId( (String)parseOptionnalAttribute(nav, "InverseRouteRef", "ref"));
-            logger.info("route "+route.getObjectId()+" has waybackid "+route.getWayBackRouteId());
+
             List<String> pointOnRouteIds = toStringList(parseMandatoryAttributes(nav, "PointOnRoute", "id"));
             
             for( String pointOnRouteId : pointOnRouteIds) {

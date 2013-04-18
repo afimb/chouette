@@ -83,7 +83,7 @@ public class VehicleJourneyTest extends ChouetteModelTest {
                                 "netex:ServiceJourney"+
                                 "[@id = '"+modelTranslator.netexId(vehicleJourney)+"']/" +
                                 "netex:ServiceAlteration/"+
-                                "text() = '"+vehicleJourney.getServiceStatusValue()+"')";
+                                "text() = '"+modelTranslator.toServiceAlteration(vehicleJourney.getServiceStatusValue())+"')";
             assertXPathTrue( xPathExpr);
         }
     }

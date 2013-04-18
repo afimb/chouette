@@ -152,6 +152,7 @@ public class ComplexModelFactory {
             tm = new Timetable();
             tm.setObjectId( "T:Timetable:"+index);
             tm.setComment( "nom "+index);
+            tm.setVersion( "version "+index);
             
             tm.addDayType(DayTypeEnum.values()[index%7]);
             tm.addDayType(DayTypeEnum.values()[(index+1)%7]);

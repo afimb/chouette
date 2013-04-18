@@ -22,6 +22,7 @@ import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
+import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 
@@ -42,6 +43,7 @@ public class ModelTranslator {
     return model.objectIdPrefix() + ":" + mock + 
             ":" +  model.objectIdSuffix();
 }
+    
 
     public String netexModelName( NeptuneIdentifiedObject model) {
         if (model==null)
@@ -110,6 +112,40 @@ public class ModelTranslator {
         try { sourceType = PTNetworkSourceTypeEnum.fromValue(firstLetterUpcase( netexSourceType)); } 
         catch ( Exception e) {}
         return sourceType;
+    }
+    
+    public ServiceStatusValueEnum readServiceAlteration( String netexServiceAlteration) {
+        if ( netexServiceAlteration==null)
+            return null;
+        if (netexServiceAlteration.equals("planned"))
+            return ServiceStatusValueEnum.NORMAL;
+        else if (netexServiceAlteration.equals("cancellation"))
+            return ServiceStatusValueEnum.CANCELLED;
+        else if (netexServiceAlteration.equals("extraJourney"))
+            return ServiceStatusValueEnum.INCREASEDSERVICE;
+        else 
+            return null;
+    }
+    
+    public String toServiceAlteration( ServiceStatusValueEnum serviceStatusValue) {
+        if (serviceStatusValue==null)
+            return null;
+        switch(serviceStatusValue) {
+            case NORMAL:
+            case DELAYED:
+            case EARLY:
+                return "planned";
+            case CANCELLED:
+            case DISRUPTED:
+            case NOTSTOPPING:
+            case REROUTED:
+            case REDUCEDSERVICE:
+                return "cancellation";
+            case INCREASEDSERVICE:
+                return "extraJourney";
+             default:
+                 return null;
+        }
     }
     
     public String toLinkType( ConnectionLinkTypeEnum linkType) {

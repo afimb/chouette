@@ -5,6 +5,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class VehicleJourneyConverter extends GenericConverter
     
     @Getter
     private Map<String, List<VehicleJourney>> vehicleJourneysByJPObjectId = new HashMap<String, List<VehicleJourney>>();  
+    private ModelTranslator modelTranslator = new ModelTranslator();
     
     public VehicleJourneyConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
     {
@@ -41,8 +43,11 @@ public class VehicleJourneyConverter extends GenericConverter
         vehicleJourneysByJPObjectId.clear();
         
         int result = -1;
-        autoPilot.selectXPath("//netex:vehicleJourneys//netex:ServiceJourney");
-        
+        autoPilot.selectXPath("/netex:PublicationDelivery/netex:dataObjects/"+
+        "netex:CompositeFrame/netex:frames/" +
+        "/netex:TimetableFrame/netex:vehicleJourneys/netex:ServiceJourney");
+
+        nav.push();
         while( (result = autoPilot.evalXPath()) != -1 )
         {                        
             VehicleJourney vehicleJourney = new VehicleJourney();
@@ -50,9 +55,12 @@ public class VehicleJourneyConverter extends GenericConverter
             vehicleJourney.setObjectId( (String)parseMandatoryAttribute(nav, "id"));
             
             // Optionnal            
-            vehicleJourney.setName( (String)parseOptionnalElement(nav, "Name") );            
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             vehicleJourney.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
+            
+            vehicleJourney.setPublishedJourneyName( (String)parseOptionnalElement(nav, "Name") );          
+            vehicleJourney.setPublishedJourneyIdentifier( (String)parseOptionnalElement(nav, "ShortName") );            
+            vehicleJourney.setServiceStatusValue( modelTranslator.readServiceAlteration( (String)parseOptionnalElement(nav, "ServiceAlteration")));            
             
             // Route
             vehicleJourney.setRouteId( (String)parseMandatoryAttribute(nav, "RouteRef", "ref") );
@@ -82,7 +90,10 @@ public class VehicleJourneyConverter extends GenericConverter
                         
             vehicleJourneys.add(vehicleJourney);
         } 
-        
+        nav.pop();
+              
+        autoPilot.resetXPath();
+        returnToRootElement(nav);
         return vehicleJourneys;
     }
     

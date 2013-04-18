@@ -93,8 +93,6 @@ public class ComplexModelFactoryTest  extends AbstractTestNGSpringContextTests {
             int reste = stopCount % journeyPatternCount;
             int quotien = stopCount / journeyPatternCount;
             int jpCount = quotien + (i<reste ? 1 : 0);
-            System.out.println( "jp.getStopPoints().size()="+jp.getStopPoints().size());
-            System.out.println( "jpCount="+jpCount);
             Assert.assertEquals( jp.getStopPoints().size(), jpCount);
         }
     }

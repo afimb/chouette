@@ -7,6 +7,7 @@ import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -50,10 +51,9 @@ public class TimetableConverter extends GenericConverter
             timetable.setObjectId( (String)parseMandatoryAttribute(nav, "DayType", "id"));
             
             // Optionnal            
-            timetable.setName( (String)parseOptionnalElement(nav, "Name") );            
             Object objectVersion =  parseOptionnalAttribute(nav, "DayType", "version", "Integer");
             timetable.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
-            timetable.setName( (String)parseOptionnalSubElement(nav, "DayType", "Name") );
+            timetable.setVersion( (String)parseOptionnalSubElement(nav, "DayType", "Name") );
             timetable.setComment( (String)parseOptionnalSubElement(nav, "DayType", "ShortName") );
             
             // Day Types                        

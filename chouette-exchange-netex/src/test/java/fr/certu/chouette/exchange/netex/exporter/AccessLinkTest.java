@@ -51,7 +51,6 @@ public class AccessLinkTest extends ChouetteModelTest {
             String xPathExpr = "boolean(//netex:PathLink"+
                 "[@id = '"+ modelTranslator.netexId(accessLink) + "']" +
                 "/netex:To/netex:PlaceRef/@ref='"+modelTranslator.netexId(startLink)+"')";
-            System.out.println("xPathExpr="+xPathExpr);
             assertXPathTrue( "boolean(//netex:PathLink"+
                 "[@id = '"+ modelTranslator.netexId(accessLink) + "']" +
                 "/netex:To/netex:PlaceRef/@ref='"+modelTranslator.netexId(endLink)+"')");           

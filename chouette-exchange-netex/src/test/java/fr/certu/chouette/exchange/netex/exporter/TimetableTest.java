@@ -92,6 +92,23 @@ public class TimetableTest extends ChouetteModelTest {
                                 "[@id = '"+
                                 modelTranslator.netexId( timetable)+
                                 "']/netex:Name/text()='"+
+                                timetable.getVersion()+"')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"ServiceCalendarFrame", "dayTypes"}, description = "Validate presence of DayType with expected ShortName")
+    public void verifyDayTypeShortName() throws XPathExpressionException, ParseException {
+        
+        List<Timetable> timetables = line.getTimetables();
+        
+        for( Timetable timetable : timetables) {
+            String xPathExpr = "boolean(//netex:ServiceCalendarFrame"+
+                                "/netex:dayTypes"+
+                                "/netex:DayType"+
+                                "[@id = '"+
+                                modelTranslator.netexId( timetable)+
+                                "']/netex:ShortName/text()='"+
                                 timetable.getComment()+"')";
             assertXPathTrue( xPathExpr);
         }
