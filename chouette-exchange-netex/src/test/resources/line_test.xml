@@ -901,7 +901,7 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
                                                          <Description>1er arret</Description>
                                                          <PrivateCode>1234</PrivateCode>
                                                          <ParentZoneRef ref="RATP_PIVI:StopArea:1234567" />
-                                                         <LandMark>Parc</LandMark>
+                                                         <Landmark>Parc</Landmark>
 							<tariffZones>
 								<TariffZoneRef version="any" ref="RATP_PIVI:TariffZone:1"/>
 							</tariffZones>

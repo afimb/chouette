@@ -7,6 +7,7 @@ import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Company;
 import java.text.ParseException;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
 public class CompanyConverter extends GenericConverter 
@@ -16,7 +17,7 @@ public class CompanyConverter extends GenericConverter
     private AutoPilot pilot;
     private VTDNav nav;
     
-    public CompanyConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public CompanyConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
 

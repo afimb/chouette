@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -27,7 +28,7 @@ public class TimetableConverter extends GenericConverter
     @Getter
     private Map<String, Timetable> timetablesByObjectId = new HashMap<String, Timetable>();
     
-    public TimetableConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public TimetableConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         

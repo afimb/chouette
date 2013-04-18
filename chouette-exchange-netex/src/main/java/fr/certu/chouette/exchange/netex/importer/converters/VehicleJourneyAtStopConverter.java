@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -25,7 +26,7 @@ public class VehicleJourneyAtStopConverter extends GenericConverter
     @Getter
     private Map<String, List<VehicleJourneyAtStop>> vehicleJourneyAtStopsByVJObjectId = new HashMap<String, List<VehicleJourneyAtStop>>();  
     
-    public VehicleJourneyAtStopConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public VehicleJourneyAtStopConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         

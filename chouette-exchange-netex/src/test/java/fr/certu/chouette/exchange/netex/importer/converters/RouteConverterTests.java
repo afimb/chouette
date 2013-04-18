@@ -78,6 +78,12 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
         Assert.assertEquals( selectedRoute.getName(), "1001101070001");
     }
 
+    @Test(groups = {"ServiceFrame"}, description = "Route's wayBackRouteId attribute reading")
+    public void verifyWayBackRouteId() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
+        Assert.assertEquals( selectedRoute.getWayBackRouteId(), "T:Route:1-0");
+    }
+
     @Test(groups = {"ServiceFrame"}, description = "Route's shortName attribute reading")
     public void verifyRoutePublishedName() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Route selectedRoute = getRouteByObjectId( "T:Route:1-1");

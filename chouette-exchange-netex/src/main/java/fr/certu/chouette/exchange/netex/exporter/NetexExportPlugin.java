@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.ZipOutputStream;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.Line;
@@ -136,6 +138,10 @@ public class NetexExportPlugin implements IExportPlugin<Line>
                 xmlFile = netexFileWriter.writeXmlFile(line, filename);
                 NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
                 report.addItem(item);
+            } catch (DatatypeConfigurationException exception) {
+                logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
+                NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
+                report.addItem(item);
             } catch (IOException exception) {
                 logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
                 NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
@@ -171,6 +177,10 @@ public class NetexExportPlugin implements IExportPlugin<Line>
                         String entryName = line.objectIdSuffix() + ".xml";
                         netexFileWriter.writeZipEntry(line, entryName, zipFile);
                         NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
+                        report.addItem(item);
+                    } catch (DatatypeConfigurationException exception) {
+                        logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
+                        NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
                         report.addItem(item);
                     } catch (IOException exception) {
                         logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);

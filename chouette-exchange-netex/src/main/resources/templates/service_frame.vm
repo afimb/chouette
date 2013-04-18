@@ -229,7 +229,7 @@
       <navigationPaths>
         <NavigationPath version="$connectionLink.objectVersion" id="${connectionLink.objectIdPrefix()}:NavigationPath:${connectionLink.objectIdSuffix()}N1">
           #if ( $connectionLink.mobilityRestrictedSuitable)
-          <AccessibilityAssessment>
+          <AccessibilityAssessment version="$connectionLink.objectVersion" id="${connectionLink.objectIdPrefix()}:AccessibilityAssessment:${connectionLink.objectIdSuffix()}">
             <MobilityImpairedAccess>$connectionLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
           </AccessibilityAssessment>
           #end

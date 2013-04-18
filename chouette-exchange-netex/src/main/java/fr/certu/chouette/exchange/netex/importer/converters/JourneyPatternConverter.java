@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -24,7 +25,7 @@ public class JourneyPatternConverter extends GenericConverter
     @Getter
     private Map<String, List<JourneyPattern>> journeyPatternByRouteObjectId = new HashMap<String, List<JourneyPattern>>();         
     
-    public JourneyPatternConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public JourneyPatternConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         

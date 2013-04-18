@@ -10,6 +10,7 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -23,7 +24,7 @@ public class LineConverter extends GenericConverter
     @Getter
     private List<String> routeObjectIds = new ArrayList<String>();
     
-    public LineConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public LineConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         

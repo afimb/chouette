@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 
 /**
@@ -39,7 +40,7 @@ public class StopAreaConverter extends GenericConverter
 	private Map<String,String> tariffByTariffId;
 
 
-	public StopAreaConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+	public StopAreaConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
 	{
 		nav = vTDNav;
 
@@ -187,7 +188,7 @@ public class StopAreaConverter extends GenericConverter
 
 		stopArea.setName( subXpathSelection("netex:Name"));
 		stopArea.setRegistrationNumber( subXpathSelection("netex:PrivateCode"));
-		stopArea.setNearestTopicName( subXpathSelection("netex:LandMark"));
+		stopArea.setNearestTopicName( subXpathSelection("netex:Landmark"));
 		stopArea.setComment( subXpathSelection("netex:Description"));
 		stopArea.setCountryCode( subXpathSelection( "netex:PostalAddress/netex:PostCode"));
 		stopArea.setStreetName( subXpathSelection( "netex:PostalAddress/netex:AddressLine1"));
