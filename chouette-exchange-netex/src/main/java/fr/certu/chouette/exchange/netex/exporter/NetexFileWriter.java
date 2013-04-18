@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
@@ -35,15 +38,14 @@ public class NetexFileWriter {
     public NetexFileWriter() {        
     }
 
-    private void prepareModel(Line line)
-    {
+    private void prepareModel(Line line) throws DatatypeConfigurationException
+    {        
         model.put("date", new DateTool());
         model.put("esc", new EscapeTool());
         model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
         model.put("shortDateFormat", "yyyy-MM-dd");
         model.put("dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss");
-        model.put("durationFormat", "'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
-        //model.put("durationFormat", new DurationFormatUtils());
+        model.put("durationFactory", DatatypeFactory.newInstance());
         
         model.put("modelTranslator", new ModelTranslator());
 
@@ -69,7 +71,7 @@ public class NetexFileWriter {
         model.put("timetables", line.getTimetables());                 
     }
     
-    public ZipEntry writeZipEntry(Line line, String entryName, ZipOutputStream zipFile) throws IOException 
+    public ZipEntry writeZipEntry(Line line, String entryName, ZipOutputStream zipFile) throws IOException, DatatypeConfigurationException 
     {              
         // Prepare the model for velocity
         prepareModel(line);
@@ -96,7 +98,7 @@ public class NetexFileWriter {
         return entry;
     }
     
-    public File writeXmlFile(Line line, String filename) throws IOException 
+    public File writeXmlFile(Line line, String filename) throws IOException, DatatypeConfigurationException 
     {                                    
         // Prepare the model for velocity
         prepareModel(line);       

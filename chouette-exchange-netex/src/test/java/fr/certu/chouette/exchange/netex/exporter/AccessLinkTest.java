@@ -12,15 +12,21 @@ import java.text.ParseException;
 
 import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @Test(groups = {"AccessLink"}, description = "Validate AccessLink export in NeTEx format")
-public class AccessLinkTest extends ChouetteModelTest {   
+public class AccessLinkTest extends ChouetteModelTest {  
+    private List<AccessLink> accessLinks;
     
-    public List<AccessLink> accessLinks()
-    {
-        return line.getAccessLinks();
+    @BeforeMethod
+    protected void initialize() throws Exception {
+        accessLinks = line.getAccessLinks();
     }
+    
+    private String getId( AccessLink accessLink) {
+        return modelTranslator.netexId( accessLink);
+    }    
     
     @Test(groups = { "ServiceFrame", "accessLinks"}, description = "Validate presence of AccessLink element with expected id")
     public void verifyAccessLink() throws XPathExpressionException, ParseException {
@@ -29,7 +35,7 @@ public class AccessLinkTest extends ChouetteModelTest {
     
     @Test(groups = {"ServiceFrame", "accessLinks"}, description = "Validate presence of accessLink element with expected name")
     public void verifyaccessLinkName() throws XPathExpressionException, ParseException {
-        for (AccessLink accessLink : accessLinks()) {   
+        for (AccessLink accessLink : accessLinks) {   
             assertXPathTrue( "boolean(//netex:PathLink[@id = '"+
                         modelTranslator.netexId(accessLink) +
                         "']/netex:Name/text()='"+accessLink.getName()+"')");
@@ -38,7 +44,7 @@ public class AccessLinkTest extends ChouetteModelTest {
     
     @Test(groups = {"ServiceFrame", "accessLinks"}, description = "Validate presence of StopPlaceEntranceRef")
     public void verifyaccessLinkStartAndEnd() throws XPathExpressionException, ParseException {
-        for (AccessLink accessLink : accessLinks()) { 
+        for (AccessLink accessLink : accessLinks) { 
             NeptuneIdentifiedObject startLink = null;
             NeptuneIdentifiedObject endLink = null;
             if ( accessLink.getLinkOrientation().equals( LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA)) {
@@ -60,6 +66,24 @@ public class AccessLinkTest extends ChouetteModelTest {
                 "/netex:From/netex:EntranceRef/@ref='"+modelTranslator.netexId(startLink) +"')");           
         }        
         
+    }
+    
+    @Test(groups = {"ServiceFrame", "accessLinks"}, description = "Validate presence of AccessLink element with expected DefaultDuration")
+    public void verifyDefaultDuration() throws XPathExpressionException, ParseException {        
+        for (AccessLink accessLink : accessLinks) {              
+            assertXPathTrue( "boolean(//netex:PathLink[@id = '" + 
+                    getId(accessLink) + "']/netex:TransferDuration/netex:DefaultDuration/text()='"+
+                    durationFactory.newDuration(accessLink.getDefaultDuration().getTime()) +"')");
+        }        
+    }
+    
+    @Test(groups = {"ServiceFrame", "accessLinks"}, description = "Validate presence of AccessLink element with expected FrequentTravellerDuration")
+    public void verifyFrequentTravellerDuration() throws XPathExpressionException, ParseException {                
+        for (AccessLink accessLink : accessLinks) {   
+            assertXPathTrue( "boolean(//netex:PathLink[@id = '" + 
+                    getId(accessLink) + "']/netex:TransferDuration/netex:DefaultDuration/text()='"+ 
+                    durationFactory.newDuration(accessLink.getFrequentTravellerDuration().getTime()) +"')");
+        }        
     }
     
     

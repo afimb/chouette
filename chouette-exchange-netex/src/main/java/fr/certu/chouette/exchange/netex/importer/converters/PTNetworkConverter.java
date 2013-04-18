@@ -9,6 +9,7 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 import java.text.ParseException;
 import java.util.Date;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
 public class PTNetworkConverter extends GenericConverter 
@@ -18,7 +19,7 @@ public class PTNetworkConverter extends GenericConverter
     private AutoPilot pilot;
     private VTDNav nav;
     
-    public PTNetworkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public PTNetworkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
 

@@ -17,6 +17,7 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.util.List;
 import java.util.ArrayList;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
 public class ConnectionLinkConverter extends GenericConverter
@@ -26,7 +27,7 @@ public class ConnectionLinkConverter extends GenericConverter
     private AutoPilot pilot;
     private VTDNav nav;
     
-    public ConnectionLinkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public ConnectionLinkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
 

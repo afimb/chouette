@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import org.apache.log4j.Logger;
 
 public class GenericConverter {
@@ -23,8 +25,13 @@ public class GenericConverter {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");   
     DateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd"); 
     DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    DateFormat durationFormat = new SimpleDateFormat("'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
     private ModelTranslator enumTranslator = new ModelTranslator();
+    protected DatatypeFactory durationFactory;
+
+    public GenericConverter() throws DatatypeConfigurationException 
+    {
+        durationFactory = DatatypeFactory.newInstance();
+    }        
         
     protected void returnToRootElement(VTDNav nav) throws NavException
     {
@@ -100,7 +107,7 @@ public class GenericConverter {
         else if(type.toString().equals( "DateTime" ))
             return new java.sql.Date(dateTimeFormat.parse(value).getTime());  
         else if(type.toString().equals( "Duration" ))
-            return new Time(durationFormat.parse(value).getTime()); 
+            return new Time(durationFactory.newDuration(value).getTimeInMillis(new Date())); 
         else if(type.toString().equals( "ConnectionLinkTypeEnum" ))
            return enumTranslator.readLinkType(value);
         else if(type.toString().equals( "TransportModeNameEnum" ))

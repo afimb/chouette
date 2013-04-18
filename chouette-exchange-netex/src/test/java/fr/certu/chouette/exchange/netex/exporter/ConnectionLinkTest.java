@@ -4,28 +4,20 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import java.sql.Time;
-import java.text.DateFormat;
 import java.text.ParseException;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.testng.annotations.Test;
 
 @Test(groups = {"ConnectionLink"}, description = "Validate ConnectionLink export in NeTEx format")
-public class ConnectionLinkTest extends ChouetteModelTest {    
+public class ConnectionLinkTest extends ChouetteModelTest
+{    
     private String xPathRoot = "/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:ServiceFrame/netex:connections";
-
-    private DateFormat durationFormat = new SimpleDateFormat("'P'yy'Y'M'M'dd'DT'HH':'mm':'ss'S'");
-
-    
+   
     private String getId( ConnectionLink connectionLink) {
         return modelTranslator.netexId( connectionLink);
     }
@@ -93,12 +85,12 @@ public class ConnectionLinkTest extends ChouetteModelTest {
     @Test(groups = {"ServiceFrame", "connectionLinks"}, description = "Validate presence of ConnectionLink element with expected DefaultDuration")
     public void verifyDefaultDuration() throws XPathExpressionException, ParseException {
         List<ConnectionLink> connectionLinks = line.getConnectionLinks();
-        
+                
         for (ConnectionLink connectionLink : connectionLinks) {   
             assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
                     "[@id = '"+ getId(connectionLink) + "']"+
                     "/netex:TransferDuration" +
-                    "/netex:DefaultDuration/text()='"+ durationFormat.format(connectionLink.getDefaultDuration()) +"')");
+                    "/netex:DefaultDuration/text()='"+ durationFactory.newDuration(connectionLink.getDefaultDuration().getTime()) +"')");
         }        
     }
     
@@ -110,7 +102,7 @@ public class ConnectionLinkTest extends ChouetteModelTest {
             assertXPathTrue( "boolean("+xPathRoot+"/netex:SiteConnection"+
                     "[@id = '"+ getId(connectionLink) + "']"+
                     "/netex:TransferDuration" +
-                    "/netex:FrequentTravellerDuration/text()='"+ durationFormat.format(connectionLink.getFrequentTravellerDuration()) +"')");
+                    "/netex:FrequentTravellerDuration/text()='"+ durationFactory.newDuration(connectionLink.getFrequentTravellerDuration().getTime()) +"')");
         }        
     }
     

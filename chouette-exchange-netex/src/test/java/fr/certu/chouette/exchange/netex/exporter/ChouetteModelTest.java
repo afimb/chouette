@@ -14,6 +14,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import java.text.SimpleDateFormat;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -39,10 +40,12 @@ public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
     protected XPath xPath = XPathFactory.newInstance().newXPath();
     protected Document xmlDocument;
     protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss'Z'");
+    protected DatatypeFactory durationFactory;
 
     @BeforeMethod
     protected void setUp() throws Exception {
         xPath.setNamespaceContext(new NetexNamespaceContext());
+        durationFactory = DatatypeFactory.newInstance();
 
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         

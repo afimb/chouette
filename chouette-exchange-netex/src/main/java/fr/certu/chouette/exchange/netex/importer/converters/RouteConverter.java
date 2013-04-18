@@ -22,6 +22,7 @@ import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 public class RouteConverter extends GenericConverter 
 {    
@@ -38,7 +39,7 @@ public class RouteConverter extends GenericConverter
     @Getter
     private Map<String,StopPoint> stopPointByObjectId;
         
-    public RouteConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public RouteConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         

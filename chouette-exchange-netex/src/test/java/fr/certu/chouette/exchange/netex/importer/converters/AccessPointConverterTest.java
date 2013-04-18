@@ -10,7 +10,6 @@ import fr.certu.chouette.model.neptune.AccessPoint;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -72,8 +71,8 @@ public class AccessPointConverterTest extends AbstractTestNGSpringContextTests {
     
     @Test(groups = {"SiteFrame"}, description = "AccessPoint's containedInStopArea attribute reading")
     public void verifyContainedInStopArea() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        AccessPoint selectedAccess = getByObjectId( "RATP_PIVI:StopPlaceEntrance:55dd8c88-d52a-48c1-94bc-6ac1cfdcf311");
-        Assert.assertEquals( selectedAccess.getContainedInStopArea(), "T:StopPlace:PLC-0");
+        AccessPoint selectedAccess = getByObjectId( "RATP_PIVI:AccessPoint:725f1a64-63ff-4146-8174-fa4e4d92a152");
+        Assert.assertEquals( selectedAccess.getContainedInStopArea(), "T:StopArea:PLC-0");
     }
 
 }

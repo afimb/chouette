@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -31,7 +32,7 @@ public class AccessLinkConverter extends GenericConverter {
     @Getter
     private Map<String, List<AccessLink>> accessLinksByStopPlaceObjectId = new HashMap<String, List<AccessLink>>();
     
-    public AccessLinkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public AccessLinkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         pilot = createAutoPilot(nav);            

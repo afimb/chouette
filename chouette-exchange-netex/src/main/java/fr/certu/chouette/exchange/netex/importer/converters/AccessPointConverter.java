@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
@@ -31,7 +32,7 @@ public class AccessPointConverter extends GenericConverter
     @Getter
     private Map<String, List<AccessPoint>> accessPointsByStopPlaceObjectId = new HashMap<String, List<AccessPoint>>();
     
-    public AccessPointConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public AccessPointConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         
@@ -76,14 +77,16 @@ public class AccessPointConverter extends GenericConverter
             // Force type to WGS84
             accessPoint.setLongLatType( LongLatTypeEnum.WGS84 );
             
-            String isEntry = (String)parseMandatoryElement(nav, "isEntry", "boolean");
-            String isExit = (String)parseMandatoryElement(nav, "isExit", "boolean");        
+            String entryVal = subXpathSelection( "netex:IsEntry/text()");
+            String exitVal = subXpathSelection( "netex:IsExit/text()");
+            boolean isEntry = entryVal!=null && entryVal.equals("true");
+            boolean isExit = exitVal!=null && exitVal.equals("true");        
             
-            if (isEntry.equals("true") && isExit.equals("true"))
+            if (isEntry && isExit)
                 accessPoint.setType(AccessPointTypeEnum.INOUT);              
-            else if(isEntry.equals("false") && isExit.equals("true") )
+            else if( !isEntry && isExit)
                 accessPoint.setType(AccessPointTypeEnum.OUT);              
-            else if(isEntry.equals("true") && isExit.equals("false") )
+            else if(isEntry && !isExit)
                 accessPoint.setType(AccessPointTypeEnum.IN);
             else
                 accessPoint.setType(AccessPointTypeEnum.INOUT);

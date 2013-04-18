@@ -13,6 +13,7 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
 public class GroupOfLinesConverter extends GenericConverter {
@@ -21,7 +22,7 @@ public class GroupOfLinesConverter extends GenericConverter {
     private AutoPilot pilot;
     private VTDNav nav;
 
-    public GroupOfLinesConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException
+    public GroupOfLinesConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
     {
         nav = vTDNav;
         pilot = createAutoPilot(nav);
