@@ -1777,10 +1777,16 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                     <Name>AccessPoint</Name>          
                     <isEntry>true</isEntry>
           <isExit>true</isExit>         
-          <TimeBand>
-            <StartTime>01:08:55</StartTime>
-            <EndTime>01:08:55</EndTime>
-          </TimeBand>
+          <validityConditions>
+            <AvailabilityCondition>
+                <timeBands>
+                    <Timeband>
+                        <StartTime>01:08:55</StartTime>
+                        <EndTime>01:08:55</EndTime>
+                    </Timeband>
+                </timeBands>
+            </AvailabilityCondition>
+          </validityConditions>
                     <Description>AccessPoint Comment</Description>  
                             </StopPlaceEntrance>
                       </entrances> 

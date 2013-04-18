@@ -50,6 +50,46 @@
       </PostalAddress>
       #end
 
+      #if ( $stopPlace.accessLinks && $stopPlace.accessLinks.size() > 0 )
+      <entrances>
+        #foreach( $accessLink in $stopPlace.accessLinks )
+        #set( $accessPoint = $accessLink.accessPoint )
+        #if ( $accessPoint )
+        <StopPlaceEntrance version="$accessPoint.objectVersion" id="$modelTranslator.netexId( $accessPoint)">
+          #if ( $accessPoint.name )
+          <Name>$!esc.xml($accessPoint.name)</Name>          
+          #end
+          #if ( $accessPoint.comment )
+          <Description>$!esc.xml($accessPoint.comment)</Description>  
+          #end
+          #if ( $accessPoint.longitude && $accessPoint.latitude)
+          <Centroid>
+            <Location srsName="$!accessPoint.longLatType" >
+              <Longitude>$!accessPoint.longitude</Longitude>
+              <Latitude>$!accessPoint.latitude</Latitude>
+            </Location>
+          </Centroid>
+          #end
+          #if ( $accessPoint.openingTime && $accessPoint.closingTime)
+          <validityConditions>
+            <AvailabilityCondition version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:AvailabilityCondition:${accessPoint.objectIdSuffix()}">
+                <timeBands>
+                    <Timeband version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:Timeband:${accessPoint.objectIdSuffix()}">
+                        <StartTime>$accessPoint.openingTime</StartTime>
+                        <EndTime>$accessPoint.closingTime</EndTime>
+                    </Timeband>
+                </timeBands>
+            </AvailabilityCondition>
+          </validityConditions>
+          #end
+          <IsEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "InOut")true#{else}false#end</IsEntry>
+          <IsExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "InOut")true#{else}false#end</IsExit>         
+        </StopPlaceEntrance>
+        #end  
+        #end
+      </entrances> 
+      #end
+
       #if($stopPlace.fareCode)
       <tariffZones>
         <TariffZoneRef version="any" ref="${stopPlace.objectIdPrefix()}:TariffZone:${stopPlace.fareCode}"/>
@@ -112,43 +152,10 @@
         #end	
       </quays>
       #end	
-
-#if ( $stopPlace.accessLinks && $stopPlace.accessLinks.size() > 0 )
-      <entrances>
-        #foreach( $accessLink in $stopPlace.accessLinks )
-        #set( $accessPoint = $accessLink.accessPoint )
-        #if ( $accessPoint )
-        <StopPlaceEntrance version="$accessPoint.objectVersion" id="$modelTranslator.netexId( $accessPoint)">
-          #if ( $accessPoint.name )
-          <Name>$!esc.xml($accessPoint.name)</Name>          
-          #end
-          #if ( $accessPoint.comment )
-          <Description>$!esc.xml($accessPoint.comment)</Description>  
-          #end
-          #if ( $accessPoint.longitude && $accessPoint.latitude)
-          <Centroid>
-            <Location srsName="$!accessPoint.longLatType" >
-              <Longitude>$!accessPoint.longitude</Longitude>
-              <Latitude>$!accessPoint.latitude</Latitude>
-            </Location>
-          </Centroid>
-          #end
-          <isEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "InOut")true#{else}false#end</isEntry>
-          <isExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "InOut")true#{else}false#end</isExit>         
-          <TimeBand>
-            <StartTime>$!accessPoint.openingTime</StartTime>
-            <EndTime>$!accessPoint.closingTime</EndTime>
-          </TimeBand>
-          ## TODO : Add enum   
-        </StopPlaceEntrance>
-        #end  
-        #end
-      </entrances> 
-#end
     </StopPlace>
     #end
   </stopPlaces>
-#if ( $accessLinks && $accessLinks.size() > 0 )
+  #if ( $accessLinks && $accessLinks.size() > 0 )
   <!-- Assignments of Path Links -->
   <pathLinks>
     #foreach( $accessLink in $accessLinks )       
@@ -207,6 +214,6 @@
     </PathLink>
     #end
   </pathLinks>  
-#end
+  #end
 
 </SiteFrame>

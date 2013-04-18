@@ -73,6 +73,7 @@ public class AccessPointConverterTest extends AbstractTestNGSpringContextTests {
     @Test(groups = {"SiteFrame"}, description = "AccessPoint's containedInStopArea attribute reading")
     public void verifyContainedInStopArea() throws XPathEvalException, NavException, XPathParseException, ParseException {
         AccessPoint selectedAccess = getByObjectId( "RATP_PIVI:StopPlaceEntrance:55dd8c88-d52a-48c1-94bc-6ac1cfdcf311");
+        System.out.println( "selectedAccess.getContainedInStopArea()="+selectedAccess.getContainedInStopArea());
         Assert.assertEquals( selectedAccess.getContainedInStopArea(), "T:StopPlace:PLC-0");
     }
 

@@ -76,14 +76,16 @@ public class AccessPointConverter extends GenericConverter
             // Force type to WGS84
             accessPoint.setLongLatType( LongLatTypeEnum.WGS84 );
             
-            String isEntry = (String)parseMandatoryElement(nav, "isEntry", "boolean");
-            String isExit = (String)parseMandatoryElement(nav, "isExit", "boolean");        
+            String entryVal = subXpathSelection( "netex:IsEntry/text()");
+            String exitVal = subXpathSelection( "netex:IsExit/text()");
+            boolean isEntry = entryVal!=null && entryVal.equals("true");
+            boolean isExit = exitVal!=null && exitVal.equals("true");        
             
-            if (isEntry.equals("true") && isExit.equals("true"))
+            if (isEntry && isExit)
                 accessPoint.setType(AccessPointTypeEnum.INOUT);              
-            else if(isEntry.equals("false") && isExit.equals("true") )
+            else if( !isEntry && isExit)
                 accessPoint.setType(AccessPointTypeEnum.OUT);              
-            else if(isEntry.equals("true") && isExit.equals("false") )
+            else if(isEntry && !isExit)
                 accessPoint.setType(AccessPointTypeEnum.IN);
             else
                 accessPoint.setType(AccessPointTypeEnum.INOUT);
