@@ -190,16 +190,16 @@
             $accessLink.occasionalTravellerDuration || $accessLink.mobilityRestrictedTravellerDuration)
       <TransferDuration>
         #if ( $accessLink.defaultDuration)
-        <DefaultDuration>$!date.format($durationFormat, $!accessLink.defaultDuration)</DefaultDuration>
+        <DefaultDuration>$!durationFactory.newDuration($!accessLink.defaultDuration.time)</DefaultDuration>
         #end
         #if ( $accessLink.frequentTravellerDuration)
-        <FrequentTravellerDuration>$!date.format($durationFormat, $!accessLink.frequentTravellerDuration)</FrequentTravellerDuration>
+        <FrequentTravellerDuration>$!durationFactory.newDuration($!accessLink.frequentTravellerDuration.time)</FrequentTravellerDuration>
         #end
         #if ( $accessLink.occasionalTravellerDuration)
-        <OccasionalTravellerDuration>$!date.format($durationFormat, $!accessLink.occasionalTravellerDuration)</OccasionalTravellerDuration>
+        <OccasionalTravellerDuration>$!durationFactory.newDuration($!accessLink.occasionalTravellerDuration.time)</OccasionalTravellerDuration>
         #end
         #if ( $accessLink.mobilityRestrictedTravellerDuration)
-        <MobilityRestrictedTravellerDuration>$!date.format($durationFormat, $!accessLink.mobilityRestrictedTravellerDuration) </MobilityRestrictedTravellerDuration> 
+        <MobilityRestrictedTravellerDuration>$!durationFactory.newDuration($!accessLink.mobilityRestrictedTravellerDuration.time) </MobilityRestrictedTravellerDuration> 
         #end
       </TransferDuration>
       #end

@@ -849,10 +849,10 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
                                                     <NavigationPath>
                                                         <Covered>outdoors</Covered>
                                                         <TransfertDuration>
-                                                            <DefaultDuration>P0Y0M0DT0:10:00S</DefaultDuration>
-                                                            <FrequentTravellerDuration>P0Y0M0DT0:05:0S</FrequentTravellerDuration>
-                                                            <OccasionalTravellerDuration>P0Y0M0DT0:08:0S</OccasionalTravellerDuration>
-                                                            <MobilityRestrictedTravellerDuration>P0Y0M0DT0:015:00S</MobilityRestrictedTravellerDuration> 
+                                                            <DefaultDuration>P0Y0M0DT0H10M00S</DefaultDuration>
+                                                            <FrequentTravellerDuration>P0Y0M0DT0H05M0S</FrequentTravellerDuration>
+                                                            <OccasionalTravellerDuration>P0Y0M0DT0H08M0S</OccasionalTravellerDuration>
+                                                            <MobilityRestrictedTravellerDuration>P0Y0M0DT0H015M00S</MobilityRestrictedTravellerDuration> 
                                                         </TransfertDuration>
                                                         <AccessibilityAssesment>
                                                             <MobilityimpairedAccess>true</MobilityimpairedAccess>
@@ -874,8 +874,8 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
                                                     <NavigationPath>
                                                         <Covered>indoors</Covered>
                                                         <TransfertDuration>
-                                                            <DefaultDuration>P0Y0M0DT0:8:55S</DefaultDuration>
-                                                            <FrequentTravellerDuration>P0Y0M0DT0:8:55S</FrequentTravellerDuration>
+                                                            <DefaultDuration>P0Y0M0DT0H8M55S</DefaultDuration>
+                                                            <FrequentTravellerDuration>P0Y0M0DT0H8M55S</FrequentTravellerDuration>
                                                         </TransfertDuration>
                                                         <AccessibilityAssesment>
                                                             <MobilityimpairedAccess>true</MobilityimpairedAccess>
@@ -1331,10 +1331,10 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
                                           <Distance>155.00</Distance>
                                         <Covered>indoors</Covered>
                                           <TransfertDuration>
-                                              <DefaultDuration>P0Y0M0DT0:03:00S</DefaultDuration>
-                                              <FrequentTravellerDuration>P0Y0M0DT0:02:0S</FrequentTravellerDuration>
-                                              <OccasionalTravellerDuration>P0Y0M0DT0:04:0S</OccasionalTravellerDuration>
-                                              <MobilityRestrictedTravellerDuration>P0Y0M0DT0:08:00S</MobilityRestrictedTravellerDuration> 
+                                              <DefaultDuration>P0Y0M0DT0H03M00S</DefaultDuration>
+                                              <FrequentTravellerDuration>P0Y0M0DT0H02M0S</FrequentTravellerDuration>
+                                              <OccasionalTravellerDuration>P0Y0M0DT0H04M0S</OccasionalTravellerDuration>
+                                              <MobilityRestrictedTravellerDuration>P0Y0M0DT0H08M00S</MobilityRestrictedTravellerDuration> 
                                           </TransfertDuration>
                                         </PathLink>
                                         <PathLink id="RATP_PIVI:PathLink:2345" version="1">  
@@ -1348,10 +1348,10 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
                                           <Distance>75.00</Distance>
                                         <Covered>outdoors</Covered>
                                           <TransfertDuration>
-                                              <DefaultDuration>P0Y0M0DT0:3:00S</DefaultDuration>
-                                              <FrequentTravellerDuration>P0Y0M0DT0:02:0S</FrequentTravellerDuration>
-                                              <OccasionalTravellerDuration>P0Y0M0DT0:04:0S</OccasionalTravellerDuration>
-                                              <MobilityRestrictedTravellerDuration>P0Y0M0DT0:08:00S</MobilityRestrictedTravellerDuration> 
+                                              <DefaultDuration>P0Y0M0DT0H3M00S</DefaultDuration>
+                                              <FrequentTravellerDuration>P0Y0M0DT0H02M0S</FrequentTravellerDuration>
+                                              <OccasionalTravellerDuration>P0Y0M0DT0H04M0S</OccasionalTravellerDuration>
+                                              <MobilityRestrictedTravellerDuration>P0Y0M0DT0H08M00S</MobilityRestrictedTravellerDuration> 
                                           </TransfertDuration>
                                         </PathLink>
                                       </pathLinks>  

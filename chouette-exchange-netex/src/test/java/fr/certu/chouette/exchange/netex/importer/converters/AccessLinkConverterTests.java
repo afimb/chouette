@@ -4,7 +4,6 @@
  */
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
@@ -16,11 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeClass;
@@ -72,25 +68,25 @@ public class AccessLinkConverterTests {
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's DefaultDuration attribute reading")
     public void verifyDefaultDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {        
         AccessLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:PathLink:1234");        
-        Assert.assertEquals( selectedLink.getDefaultDuration().toString(), Time.valueOf("00:03:00").toString());
+        Assert.assertEquals( selectedLink.getDefaultDuration(), new Time(3 * 60 * 1000));
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's FrequentTravellerDuration attribute reading")
     public void verifyFrequentTravellerDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         AccessLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:PathLink:1234");
-        Assert.assertEquals( selectedLink.getFrequentTravellerDuration().toString(), Time.valueOf("00:02:00").toString());
+        Assert.assertEquals( selectedLink.getFrequentTravellerDuration(), new Time(2 * 60 * 1000));
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's OccasionalTravellerDuration attribute reading")
     public void verifyOccasionalTravellerDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         AccessLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:PathLink:1234");
-        Assert.assertEquals( selectedLink.getOccasionalTravellerDuration().toString(), Time.valueOf("00:04:00").toString());
+        Assert.assertEquals( selectedLink.getOccasionalTravellerDuration(), new Time(4 * 60 * 1000));
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's MobilityRestrictedTravellerDuration attribute reading")
     public void verifyMobilityRestrictedTravellerDuration() throws XPathEvalException, NavException, XPathParseException, ParseException {
         AccessLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:PathLink:1234");
-        Assert.assertEquals( selectedLink.getMobilityRestrictedTravellerDuration().toString(), Time.valueOf("00:08:00").toString());
+        Assert.assertEquals( selectedLink.getMobilityRestrictedTravellerDuration(), new Time(8 * 60 * 1000));
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's linkDistance attribute reading")
