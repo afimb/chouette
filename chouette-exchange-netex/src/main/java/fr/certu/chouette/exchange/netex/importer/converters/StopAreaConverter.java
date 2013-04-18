@@ -187,7 +187,7 @@ public class StopAreaConverter extends GenericConverter
 
 		stopArea.setName( subXpathSelection("netex:Name"));
 		stopArea.setRegistrationNumber( subXpathSelection("netex:PrivateCode"));
-		stopArea.setNearestTopicName( subXpathSelection("netex:LandMark"));
+		stopArea.setNearestTopicName( subXpathSelection("netex:Landmark"));
 		stopArea.setComment( subXpathSelection("netex:Description"));
 		stopArea.setCountryCode( subXpathSelection( "netex:PostalAddress/netex:PostCode"));
 		stopArea.setStreetName( subXpathSelection( "netex:PostalAddress/netex:AddressLine1"));
