@@ -18,7 +18,7 @@
       </netex:TransportSubmode>
       -->
       #if ( $vehicleJourney.serviceStatusValue)
-      <ServiceAlteration>$!esc.xml( $vehicleJourney.serviceStatusValue)</ServiceAlteration>
+      <ServiceAlteration>$!esc.xml( $modelTranslator.toServiceAlteration( $vehicleJourney.serviceStatusValue))</ServiceAlteration>
       #end
       <dayTypes>
         #foreach( $timetable in $vehicleJourney.timetables )  

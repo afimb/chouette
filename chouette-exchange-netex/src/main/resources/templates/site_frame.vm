@@ -155,6 +155,9 @@
       #if ( $accessLink.name )
       <Name>$!esc.xml($accessLink.name)</Name>
       #end
+      #if ( $accessLink.linkDistance)
+      <Distance>$!accessLink.linkDistance</Distance>
+      #end
       #if($accessLink.accessPoint && $accessLink.stopArea && $accessLink.linkOrientation) 
           #if($accessLink.linkOrientation == "AccessPointToStopArea")
           <From>
@@ -174,8 +177,10 @@
           </To>
           #end
       #end
-      #if ( $accessLink.linkDistance)
-      <Distance>$!accessLink.linkDistance</Distance>
+      #if ( $accessLink.mobilityRestrictedSuitable)
+      <AccessibilityAssessment>
+        <MobilityImpairedAccess>$accessLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
+      </AccessibilityAssessment>
       #end
       #if ( $connectionLink.linkType)
       <Covered>$modelTranslator.toLinkType($connectionLink.linkType)</Covered>
@@ -186,9 +191,6 @@
         <OccasionalTravellerDuration>$!date.format($durationFormat, $!accessLink.occasionalTravellerDuration)</OccasionalTravellerDuration>
         <MobilityRestrictedTravellerDuration>$!date.format($durationFormat, $!accessLink.mobilityRestrictedTravellerDuration) </MobilityRestrictedTravellerDuration>         
       </TransfertDuration>
-      <AccessibilityAssesment>
-        <MobilityimpairedAccess>$!accessLink.mobilityRestrictedSuitable</MobilityimpairedAccess>
-      </AccessibilityAssesment>
       ## TODO : Add enum  
     </PathLink>
     #end

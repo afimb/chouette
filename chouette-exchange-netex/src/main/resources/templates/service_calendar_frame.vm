@@ -11,20 +11,27 @@
   <!--- === Day Types ==== -->
   <dayTypes>
     <DayType version="$timetable.objectVersion" id="$modelTranslator.netexId( $timetable)">
-      <Name>$timetable.comment</Name>
-      <ShortName>$timetable.comment</ShortName>
+      #if ( $timetable.version )
+      <Name>$!esc.xml( $timetable.version)</Name>
+      #end
+      #if ( $timetable.comment )
+      <ShortName>$!esc.xml( $timetable.comment)</ShortName>
+      #end
+      #if ( $timetable.dayTypes && $timetable.dayTypes.size() > 0 )
       <properties>
         #foreach( $dayType in $timetable.getDayTypes() )
-        #if($dayType && $!modelTranslator.toDayTypeNetex($!dayType))      
+            #if($dayType && $!modelTranslator.toDayTypeNetex($!dayType))      
         <PropertyOfDay>
           <DaysOfWeek>$!modelTranslator.toDayTypeNetex($!dayType)</DaysOfWeek>
         </PropertyOfDay>
-        #end
+            #end
         #end
       </properties>
+      #end
     </DayType>
   </dayTypes>
   <!--- === Day assignments ==== -->
+  #if ( $timetable.calendarDays && $timetable.calendarDays.size() > 0 )
   <operatingDays>
     #foreach( $day in $timetable.calendarDays )
     <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}">
@@ -32,7 +39,9 @@
     </OperatingDay>
     #end		
   </operatingDays>  
+  #end		
   <!--- === Period assignments ==== -->
+  #if ( $timetable.periods && $timetable.periods.size() > 0 )
   <operatingPeriods>
     #foreach( $period in $timetable.periods )
     <OperatingPeriod version="any" id="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}">
@@ -41,6 +50,7 @@
     </OperatingPeriod>
     #end		
   </operatingPeriods>  
+  #end		
   <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
     #foreach( $period in $timetable.periods )
