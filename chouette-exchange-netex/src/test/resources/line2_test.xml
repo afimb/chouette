@@ -1988,10 +1988,10 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                     <dayTypes>
                         <DayType version="1" id="T:DayType:1">
                             <Name>nom 1</Name>
-                            <ShortName>nom 1</ShortName>
+                            <ShortName>short name 1</ShortName>
                             <properties>
                                 <PropertyOfDay>
-                                    <DaysOfWeek>WeekEnd</DaysOfWeek>
+                                    <DaysOfWeek>Wednesday</DaysOfWeek>
                                 </PropertyOfDay>
                                 <PropertyOfDay>
                                     <DaysOfWeek>Monday</DaysOfWeek>
@@ -2375,6 +2375,8 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                         </ServiceJourney>
                         <ServiceJourney version="1" id="T:VehicleJourney:1-0-1-0">
                             <Name>0</Name>
+                            <ShortName>short 0</ShortName>
+                            <ServiceAlteration>planned</ServiceAlteration>
                             <dayTypes>
                                 <DayTypeRef version="1" ref="T:DayType:0"/>
                                 <DayTypeRef version="1" ref="T:DayType:1"/>
