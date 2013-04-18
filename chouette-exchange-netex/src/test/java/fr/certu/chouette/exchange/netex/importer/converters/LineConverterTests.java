@@ -7,6 +7,7 @@ import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
@@ -51,6 +52,12 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
     public void verifyPublishedName() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Line line = lineConverter.convert();
         Assert.assertEquals(line.getPublishedName(), "Mairie d Issy porte d Orleans");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "Line's transportModeName attribute reading")
+    public void verifyTransportModeName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        Line line = lineConverter.convert();
+        Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.METRO);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Line's registrationNumber attribute reading")
