@@ -5,6 +5,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import java.text.ParseException;
@@ -20,6 +21,7 @@ public class LineConverter extends GenericConverter
     private Line line = new Line();    
     private AutoPilot pilot;
     private VTDNav nav;
+    private ModelTranslator modelTranslator = new ModelTranslator();
 
     @Getter
     private List<String> routeObjectIds = new ArrayList<String>();
@@ -50,7 +52,7 @@ public class LineConverter extends GenericConverter
             line.setComment( (String)parseOptionnalElement(nav, "Description") );
             
             // Optionnal            
-            line.setTransportModeName( (TransportModeNameEnum)parseOptionnalElement(nav, "TransportMode", "TransportModeNameEnum") );
+            line.setTransportModeName( modelTranslator.readTransportMode((String)parseOptionnalElement(nav, "TransportMode")));
             
             Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
             line.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
