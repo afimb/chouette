@@ -133,7 +133,6 @@ public class RouteConverter extends GenericConverter
         nav.push();
         while( (result = autoPilot2.evalXPath()) != -1 )
         {  
-        	logger.info("scan direction info");
             AutoPilot autoPilot3 = createAutoPilot(nav);
             autoPilot3.selectXPath("netex:Name");
             String directionName = autoPilot3.evalXPathToString();
