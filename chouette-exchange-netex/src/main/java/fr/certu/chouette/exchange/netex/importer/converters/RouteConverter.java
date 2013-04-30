@@ -133,6 +133,7 @@ public class RouteConverter extends GenericConverter
         nav.push();
         while( (result = autoPilot2.evalXPath()) != -1 )
         {  
+        	logger.info("scan direction info");
             AutoPilot autoPilot3 = createAutoPilot(nav);
             autoPilot3.selectXPath("netex:Name");
             String directionName = autoPilot3.evalXPathToString();
@@ -147,7 +148,7 @@ public class RouteConverter extends GenericConverter
             String inboundVal = autoPilot4.evalXPathToString();
             autoPilot4.resetXPath();
             
-            route.setWayBack( (inboundVal=="inbound") ? "A": "R");
+            route.setWayBack( (inboundVal=="outbound") ? "A": "R");
         }
         nav.pop();
         autoPilot2.resetXPath();

@@ -47,8 +47,8 @@ public class LineConverter extends GenericConverter
             // Optionnal
             line.setName( (String)parseOptionnalElement(nav, "Name") );
             line.setPublishedName( (String)parseOptionnalElement(nav, "ShortName") );
-            line.setRegistrationNumber( (String)parseOptionnalElement(nav, "PublicCode") );
-            line.setNumber( (String)parseOptionnalElement(nav, "PrivateCode") );
+            line.setRegistrationNumber( (String)parseOptionnalElement(nav, "PrivateCode") );
+            line.setNumber( (String)parseOptionnalElement(nav, "PublicCode") );
             line.setComment( (String)parseOptionnalElement(nav, "Description") );
             
             // Optionnal            
