@@ -8,6 +8,7 @@ import fr.certu.chouette.model.neptune.Line;
 
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public class NetexFileWriter {
         
         // For ServiceFrame need to have for each tariff stop points associated
         model.put("tariffStopPoints", tariffStopPoints(line));        
+        
+        // For TimetableFrame need to have for trainNumbers
+        model.put("vehicleNumbers", vehicleNumbers(line));        
         
         // For SiteFrame need to have stop areas type StopPlace and CommercialStopPoint only
         List<StopArea> stopAreaWithoutQuays = new ArrayList<StopArea>();
@@ -112,7 +116,19 @@ public class NetexFileWriter {
         logger.debug("File : " + filename  + "created");
         
         return file;
-    }      
+    }
+    
+    private List<Long> vehicleNumbers( Line line) {
+        List<Long> result = new ArrayList<Long>();
+        
+        List<VehicleJourney> vehicles = line.getVehicleJourneys();
+        for ( VehicleJourney vehicle : vehicles) {
+            if ( !result.contains( vehicle.getNumber())) {
+                result.add( vehicle.getNumber());
+            }
+        }
+        return result;
+    }
     
     private Map<Integer, List<StopPoint>> tariffStopPoints(Line line)
     {

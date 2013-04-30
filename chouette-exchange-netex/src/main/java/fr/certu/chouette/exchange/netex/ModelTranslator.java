@@ -45,8 +45,19 @@ public class ModelTranslator {
         return null;
     return model.objectIdPrefix() + ":" + mock + 
             ":" +  model.objectIdSuffix();
-}
-    
+    }
+    public String trainNumberId( Long number) {
+        return "Local:TrainNumber:"+number;
+    }
+    public Long readTrainNumberId( String trainNumber) {
+        try {
+            String number = trainNumber.replaceFirst( "Local:TrainNumber:", "");
+            return Long.parseLong(number);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
     public String netexModelName( NeptuneIdentifiedObject model) {
         if (model==null)

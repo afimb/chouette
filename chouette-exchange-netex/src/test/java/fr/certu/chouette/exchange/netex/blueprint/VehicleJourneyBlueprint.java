@@ -44,9 +44,10 @@ public class VehicleJourneyBlueprint {
 
     @Default
     TransportModeNameEnum transportMode = TransportModeNameEnum.COACH;
-    
-    @Default
-    Long number = UUID.randomUUID().getLeastSignificantBits();
+
+    // TODO: define here number property, but noy so simple
+    // @Default
+    // long number = 5L;
 
     @Nullable
     @Mapped

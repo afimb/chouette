@@ -2384,6 +2384,9 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                             </dayTypes>
                             <RouteRef version="1" ref="T:Route:1-0"/>
                             <ServicePatternRef ref="T:ServicePattern:1-0-1">EXTERNAL</ServicePatternRef>
+                            <trainNumbers>
+                                <TrainNumberRef ref="Local:TrainNumber:55" />
+                            </trainNumbers>
                             <calls>
                                 <Call>
                                     <ScheduledStopPointRef version="1" ref="T:StopPoint:1-0-1"/>
@@ -3365,6 +3368,11 @@ So the NeTEx File will probably be something like 50% bigger with the same level
                             </calls>
                         </ServiceJourney>
                     </vehicleJourneys>
+                    <trainNumbers>
+                        <TrainNumber id="Local:TrainNumber:55">
+                            <Description>55</Description>
+                        </TrainNumber>
+                    </trainNumbers>
                 </TimetableFrame>
             </frames>
         </CompositeFrame>

@@ -130,6 +130,34 @@ public class VehicleJourneyTest extends ChouetteModelTest {
         }
     }
     
+    @Test(groups = {"TimetableFrame", "vehicleJourneys"}, description = "Validate presence of ServiceJourney with expected trainNumber")
+    public void verifyTrainNumberRef() throws XPathExpressionException, ParseException {
+        
+        List<VehicleJourney> vehicleJourneys = line.getVehicleJourneys();
+        
+        for( VehicleJourney vehicleJourney : vehicleJourneys) {
+           String xPathExpr = "boolean(//netex:TimetableFrame/netex:vehicleJourneys/"+
+                                "netex:ServiceJourney"+
+                                "[@id = '"+modelTranslator.netexId(vehicleJourney)+"']/" +
+                                "netex:trainNumbers/" +
+                                "netex:TrainNumberRef[ @ref = '"+modelTranslator.trainNumberId(vehicleJourney.getNumber()) +"'])";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"TimetableFrame", "vehicleJourneys"}, description = "Validate presence of trainNumbers with expected trainNumber")
+    public void verifyTrainNumbers() throws XPathExpressionException, ParseException {
+        
+        List<VehicleJourney> vehicleJourneys = line.getVehicleJourneys();
+        
+        for( VehicleJourney vehicleJourney : vehicleJourneys) {
+           String xPathExpr = "boolean(//netex:TimetableFrame/"+
+                                "netex:trainNumbers/" +
+                                "netex:TrainNumber[ @id = '"+modelTranslator.trainNumberId(vehicleJourney.getNumber()) +"'])";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
     @Test(groups = {"TimetableFrame", "dayTypes"}, description = "Validate presence of ServiceJourney with expected DayTypeRef")
     public void verifyDayTypeRef() throws XPathExpressionException, ParseException {
         
