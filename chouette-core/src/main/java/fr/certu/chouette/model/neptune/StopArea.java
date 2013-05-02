@@ -318,6 +318,13 @@ public class StopArea extends NeptuneIdentifiedObject
 	private StopArea             parent;
 
 	/**
+	 * non ITL parent StopArea ObjectID
+	 * 
+	 */
+	@Getter @Setter
+	private String             parentObjectId;
+
+	/**
 	 * Spatial Referential Type (actually only WGS84 is valid)  
 	 * <br/><i>readable/writable</i>
 	 */
@@ -855,6 +862,7 @@ public class StopArea extends NeptuneIdentifiedObject
 		}
 		if (getParent() != null)
 		{
+			parentObjectId = parent.getObjectId();
 			parent.complete();
 		}
 		// TODO ITL ? 

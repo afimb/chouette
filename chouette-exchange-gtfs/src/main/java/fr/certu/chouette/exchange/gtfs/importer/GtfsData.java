@@ -271,7 +271,8 @@ public class GtfsData
             calendars.add(calendar);
             logger.info("calendar created from date "+date.getServiceId());
          }
-         // calendar.addCalendarDate(date);
+         
+         // calendar.addCalendarDate(date); // connection made by NeptuneConverter
 
       }
       calendars.flush();

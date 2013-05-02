@@ -1,6 +1,5 @@
 package fr.certu.chouette.jdbc.dao;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -15,11 +14,8 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
  * manage mass storage for StopAreas
@@ -67,6 +63,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 	 * 
 	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#getAll()
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<StopArea> getAll()
 	{
@@ -90,6 +87,12 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		if (stopArea.getParent() == null)
 		{
 			ps.setNull(1, Types.BIGINT);
+		}
+		else if (stopArea.getParent().getId() == null)
+		{
+			ps.setNull(1, Types.BIGINT);
+			logger.warn("stoparea "+stopArea.getObjectId()+" "+stopArea.getName()+" has unsaved parent ");
+			logger.warn("parent = "+stopArea.getParent().getObjectId()+" "+stopArea.getParent().getName());
 		}
 		else
 		{
@@ -231,6 +234,28 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		return super.getAttributeValues(attributeKey, item);
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#afterSaveOrUpdateAllProcessing(java.util.List)
+	 */
+//	@Override
+//	protected void afterSaveOrUpdateAllProcessing(List<StopArea> stopAreas) 
+//	{
+//		// update parentId if it wasn't set on save
+//		List<StopArea> toUpdate =  new ArrayList<StopArea>();
+//		for (StopArea stopArea : stopAreas) 
+//		{
+//			if (stopArea.getParent() != null && stopArea.getParent().getId() != null)
+//			{
+//				   toUpdate.add(stopArea);
+//			}
+//		}
+//		if (!toUpdate.isEmpty())
+//		{
+//			saveOrUpdateAll(toUpdate);
+//		}
+//	}
+
+	
 	class JdbcRoutingConstraintChild
 	{
 		Long parentId;

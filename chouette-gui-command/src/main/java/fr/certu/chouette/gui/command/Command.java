@@ -1089,6 +1089,8 @@ public class Command
 					importReport = holder.getReport();
 					reports.add(holder.getReport());
 				}
+				logger.info("imported Lines "+beans.size());
+
 
 				for (NeptuneIdentifiedObject bean : beans) 
 				{
@@ -1101,15 +1103,17 @@ public class Command
 					oneBean.add(bean);
 					try
 					{
+						logger.info("save  Line "+bean.getName());
 						manager.saveAll(null, oneBean, true, true);
 						GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
-						importReport.addItem(item);
+						saveReport.addItem(item);
 						beanCount++;
 					}
 					catch (Exception e) 
 					{
+						logger.error("save failed "+e.getMessage(),e);
 						GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
-						importReport.addItem(item);
+						saveReport.addItem(item);
 					}
 				}
 			}

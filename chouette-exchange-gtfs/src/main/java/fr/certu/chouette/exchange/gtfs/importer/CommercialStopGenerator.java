@@ -30,6 +30,7 @@ public class CommercialStopGenerator extends AbstractGenerator
 	 */
 	public List<StopArea> createCommercialStopPoints(List<StopArea> boardingPositions,double distanceMax, boolean ignoreLastWord, int ignoreEndCharacters) 
 	{
+		
 		Map<String,StopArea> areaMap = new HashMap<String, StopArea>(); 
 
 		Set<String> keys = new HashSet<String>();
@@ -55,6 +56,12 @@ public class CommercialStopGenerator extends AbstractGenerator
 		{
 
 			String mergeKey = stop.getName();
+			if (stop.getParent() != null) 
+			{
+				mergeKey = stop.getParent().getObjectId();
+			}
+			else
+			{
 			for (String key : keys) 
 			{
 			   if (mergeKey.startsWith(key)) 
@@ -63,13 +70,32 @@ public class CommercialStopGenerator extends AbstractGenerator
 				   break;
 			   }
 			}
+			}
 
 			StopArea area = areaMap.get(mergeKey);
 			if (area == null)
 			{
+				// check if stop has already a parent (from gtfs)
+				if (stop.getParent() == null)
+				{
 				area = new StopArea();
 				initArea(area,stop);
+				}
+				else
+				{
+					area = stop.getParent();
+				}
 				areaMap.put(mergeKey, area);
+			}
+			else if (stop.getParent() != null)
+			{
+				if (!area.equals(stop.getParent()))
+				{
+					logger.error("conflict between generated and setted parent");
+					logger.error("stop   = "+stop.getObjectId()+" "+stop.getName());
+					logger.error("parent = "+area.getObjectId()+" "+area.getName());
+					continue;
+				}
 			}
 			area.addContainedStopArea(stop);
 			stop.setParent(area);

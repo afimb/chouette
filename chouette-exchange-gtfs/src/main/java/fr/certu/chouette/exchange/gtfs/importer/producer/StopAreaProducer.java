@@ -36,13 +36,25 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 
 		// Comment optional
 		stopArea.setComment(getNonEmptyTrimedString(gtfsStop.getStopDesc()));
-      if (stopArea.getComment() != null && stopArea.getComment().length() > 255) 
-         stopArea.setComment(stopArea.getComment().substring(0,255));
+		if (stopArea.getComment() != null && stopArea.getComment().length() > 255) 
+			stopArea.setComment(stopArea.getComment().substring(0,255));
 
 		// farecode 
 		stopArea.setFareCode(0);
-		
-		stopArea.setAreaType(ChouetteAreaEnum.BOARDINGPOSITION);
+
+		if (gtfsStop.getLocationType() == GtfsStop.STATION)
+		{
+			stopArea.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+			if (getNonEmptyTrimedString(gtfsStop.getParentStation()) != null)
+			{
+				logger.warn("station "+stopArea.getName()+" has parent "+ getNonEmptyTrimedString(gtfsStop.getParentStation()));  
+			}
+		}
+		else
+		{
+			stopArea.setAreaType(ChouetteAreaEnum.BOARDINGPOSITION);
+			stopArea.setParentObjectId(getNonEmptyTrimedString(gtfsStop.getParentStation()));
+		}
 
 		// RegistrationNumber optional
 		String[] token = stopArea.getObjectId().split(":");

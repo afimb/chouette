@@ -19,7 +19,7 @@ public abstract class AbstractModelProducer<T extends NeptuneObject, U extends G
     		id="NULL_"+nullIdCount;
     		nullIdCount++;
     	}
-    	return prefix+":"+type+":"+id.trim().replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_").replaceAll("/", "_");
+    	return prefix+":"+type+":"+id.trim().replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_").replaceAll("/", "_").replaceAll(":", "_");
     }
 
     public String composeIncrementalObjectId(String type, String id, Logger logger)

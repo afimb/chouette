@@ -24,6 +24,8 @@ import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 public class GtfsImportLinePlugin implements IImportPlugin<Line>
@@ -100,7 +102,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 	}
 
 	@Override
-	public List<Line> doImport(List<ParameterValue> parameters, ReportHolder report) throws ChouetteException 
+	public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException 
 	{
 		String filePath = null;
 		String colorPath = null;
@@ -195,6 +197,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			throw new IllegalArgumentException("invalid file type : " + extension);
 		}
 
+		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
+		reportContainer.setReport(report);
+		
 		ZipFile zip = null;
 		try 
 		{
