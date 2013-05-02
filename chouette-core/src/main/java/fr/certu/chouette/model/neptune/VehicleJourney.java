@@ -134,7 +134,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 	 */
 	@Getter
 	@Setter
-	private long                       number;
+	private Long                       number;
 	/**
 	 * route objectId <br/>
 	 * <i>readable/writable</i>

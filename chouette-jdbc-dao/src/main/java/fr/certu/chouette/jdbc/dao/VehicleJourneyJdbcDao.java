@@ -54,7 +54,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 		ps.setString(9, vehicleJourney.getPublishedJourneyIdentifier());
 		ps.setString(10, vehicleJourney.getFacility());
 		ps.setString(11, vehicleJourney.getVehicleTypeIdentifier());
-		ps.setLong(12, vehicleJourney.getNumber());
+		setLong(ps, 12, vehicleJourney.getNumber());
 
 		setId(ps,13,vehicleJourney.getRoute(),true,"route_id");
 		setId(ps,14,vehicleJourney.getJourneyPattern(),true,"journey_pattern_id");
