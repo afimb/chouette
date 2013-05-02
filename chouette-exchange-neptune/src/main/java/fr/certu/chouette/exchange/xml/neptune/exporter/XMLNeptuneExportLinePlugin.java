@@ -521,6 +521,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                facilities.addAll(stopPoint.getFacilities());
             }
          }
+         // add RoutingConstraints
+         if (line.getRoutingConstraints() != null)
+         {
+        	 stopAreas.addAll(line.getRoutingConstraints());
+         }
 
          for (PTLink ptLink : ptLinks)
          {

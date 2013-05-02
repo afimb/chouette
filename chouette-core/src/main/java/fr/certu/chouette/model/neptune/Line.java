@@ -449,6 +449,8 @@ public class Line extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
 		sb.append("\n").append(indent).append("  comment = ").append(comment);
 		sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
+		sb.append("\n").append(indent).append("  routes count = ").append(routes == null?0:routes.size());
+		sb.append("\n").append(indent).append("  routingConstraints count= ").append(routingConstraints == null?0:routingConstraints.size());
 		if (lineEnds != null)
 		{
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("lineEnds");
@@ -474,6 +476,15 @@ public class Line extends NeptuneIdentifiedObject
 			}
 		}
 
+		if (routingConstraintIds != null)
+		{
+			sb.append("\n").append(indent).append(CHILD_ARROW).append("routingConstraintIds");
+			for (String routingConstraintId : getRoutingConstraintIds())
+			{
+				sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routingConstraintId);
+			}
+		}
+
 		if (level > 0)
 		{
 			int childLevel = level - 1;
@@ -495,6 +506,15 @@ public class Line extends NeptuneIdentifiedObject
 					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(route.toString(childIndent, childLevel));
 				}
 			}
+			if (routingConstraints != null)
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("routingConstraints");
+				for (StopArea routing : getRoutingConstraints())
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routing.toString(childIndent, childLevel));
+				}
+			}
+
 		}
 
 		return sb.toString();
@@ -513,8 +533,8 @@ public class Line extends NeptuneIdentifiedObject
 		if (routes.contains(route)) return;
 		if (route != null)
 		{
-		   routes.add(route);
-		   route.setLine(this);
+			routes.add(route);
+			route.setLine(this);
 		}
 	}
 
@@ -947,40 +967,47 @@ public class Line extends NeptuneIdentifiedObject
 		{
 			stopAreaSet.addAll(extractStopAreaHierarchy(sp.getContainedInStopArea()));
 		}
+
+		// add routing constraints
+		if (routingConstraints != null)
+		{
+			stopAreaSet.addAll(routingConstraints);
+		}
+
 		stopAreas.addAll(stopAreaSet);
 		// sort stopArea and collect connectionLinks and accessLinks+points.
 		for (StopArea area : stopAreaSet)
-                {
-                    switch (area.getAreaType())
-                    {
-                        case BOARDINGPOSITION : 
-                            boardingPositions.add(area);
-                            break;
-                        case QUAY : 
-                            quays.add(area);
-                            break;
-                        case COMMERCIALSTOPPOINT : 
-                            commercialStopPoints.add(area);
-                            break;
-                        case STOPPLACE : 
-                            stopPlaces.add(area);
-                            break;
-                        default:
-                            break;
-                    }
-                    if (area.getAccessLinks() != null)
-                        accessLinks.addAll(area.getAccessLinks());
-                    if (area.getConnectionLinks() != null)
-                        connectionLinkSet.addAll(area.getConnectionLinks());
-                }
-                connectionLinks.addAll(connectionLinkSet);
-                // collect accessPoints
-                for (AccessLink al : accessLinks) 
-                {
-                    accessPointSet.add(al.getAccessPoint());
-                }
-                accessPoints.addAll(accessPointSet);
-        }
+		{
+			switch (area.getAreaType())
+			{
+			case BOARDINGPOSITION : 
+				boardingPositions.add(area);
+				break;
+			case QUAY : 
+				quays.add(area);
+				break;
+			case COMMERCIALSTOPPOINT : 
+				commercialStopPoints.add(area);
+				break;
+			case STOPPLACE : 
+				stopPlaces.add(area);
+				break;
+			default:
+				break;
+			}
+			if (area.getAccessLinks() != null)
+				accessLinks.addAll(area.getAccessLinks());
+			if (area.getConnectionLinks() != null)
+				connectionLinkSet.addAll(area.getConnectionLinks());
+		}
+		connectionLinks.addAll(connectionLinkSet);
+		// collect accessPoints
+		for (AccessLink al : accessLinks) 
+		{
+			accessPointSet.add(al.getAccessPoint());
+		}
+		accessPoints.addAll(accessPointSet);
+	}
 
 	/**
 	 * extract parent tree for physical Stop

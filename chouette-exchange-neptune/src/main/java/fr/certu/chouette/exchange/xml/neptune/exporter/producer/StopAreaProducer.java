@@ -24,8 +24,15 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 		castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
 		Set<String> containsList = new HashSet<String>();
-		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
-		containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));
+		if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
+		{
+			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getRoutingConstraintAreas()));
+		}
+		else
+		{
+			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
+			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));			
+		}
 		castorStopArea.getContainsAsReference().addAll(containsList);
 
 		StopAreaExtension stopAreaExtension = new StopAreaExtension();

@@ -487,6 +487,7 @@ public class Command
 			int code = executeImport(manager,parameters);
 			if (code > 0)
 			{
+				logger.error("   command failed with code "+code);
 				System.exit(code);
 			}
 		}
@@ -495,6 +496,7 @@ public class Command
 			int code = executeValidate(manager,parameters);
 			if (code > 0)
 			{
+				logger.error("   command failed with code "+code);
 				System.exit(code);
 			}
 		}
@@ -503,6 +505,7 @@ public class Command
 			int code = executeExport(manager,parameters);
 			if (code > 0)
 			{
+				logger.error("   command failed with code "+code);
 				System.exit(code);
 			}
 		}
@@ -511,6 +514,7 @@ public class Command
 			int code = executeExportDeletion(manager,parameters);
 			if (code > 0)
 			{
+				logger.error("   command failed with code "+code);
 				System.exit(code);
 			}
 		}
@@ -523,6 +527,7 @@ public class Command
 		{
 			System.out.println("command "+command.getName()+" executed in "+getTimeAsString(tfin-tdeb));
 		}
+		logger.info("    command "+command.getName()+" executed in "+getTimeAsString(tfin-tdeb));
 		return;
 			}
 

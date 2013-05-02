@@ -201,11 +201,11 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 			Collection<JdbcRoutingConstraintChild> routingChilds = new ArrayList<JdbcRoutingConstraintChild>();
 			if (item.getRoutingConstraintAreas() != null)
 			{
-				for (StopArea parent : item.getRoutingConstraintAreas())
+				for (StopArea child : item.getRoutingConstraintAreas())
 				{
 					JdbcRoutingConstraintChild object = new JdbcRoutingConstraintChild();
-					object.parentId = parent.getId();
-					object.childId = item.getId();
+					object.childId = child.getId();
+					object.parentId = item.getId();
 					logger.debug("prepare relation parentId = " + object.parentId + ", childId = " + object.childId);
 					routingChilds.add(object);
 

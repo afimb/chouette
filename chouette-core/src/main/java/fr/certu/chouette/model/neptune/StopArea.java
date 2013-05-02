@@ -727,6 +727,46 @@ public class StopArea extends NeptuneIdentifiedObject
 			routingConstraintLineIds.remove(lineId);
 	}
 
+	/**
+	 * add a line if not already present
+	 * <p>
+	 * stop
+	 * 
+	 * @param line
+	 */
+	public void addRoutingConstraintLine(StopArea area)
+	{
+		if (!areaType.equals(ChouetteAreaEnum.ITL))
+		{
+			// only routing constraints can contains lines
+			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
+					"routingConstraintAreas");
+		}
+		if (routingConstraintAreas == null)
+			routingConstraintAreas = new ArrayList<StopArea>();
+		if (!routingConstraintAreas.contains(area))
+			routingConstraintAreas.add(area);
+	}
+
+	/**
+	 * remove a line
+	 * 
+	 * @param line
+	 */
+	public void removeRoutingConstraintArea(StopArea area)
+	{
+		if (!areaType.equals(ChouetteAreaEnum.ITL))
+		{
+			// only routing constraints can contains lines
+			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY,
+					"routingConstraintAreas");
+		}
+		if (routingConstraintAreas == null)
+			routingConstraintAreas = new ArrayList<StopArea>();
+		if (routingConstraintAreas.contains(area))
+			routingConstraintAreas.remove(area);
+	}
+
 
 	/**
 	 * returns areaCentroid
@@ -793,7 +833,6 @@ public class StopArea extends NeptuneIdentifiedObject
 			}
 		}
 
-
 		if (containedStopIds != null)
 		{
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("containedStopIds");
@@ -813,7 +852,7 @@ public class StopArea extends NeptuneIdentifiedObject
 			}
 
 			childIndent = indent + CHILD_LIST_INDENT;
-			if (connectionLinks != null)
+			if (connectionLinks != null && !connectionLinks.isEmpty())
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append("connectionLinks");
 				for (ConnectionLink connectionLink : getConnectionLinks())
@@ -822,12 +861,27 @@ public class StopArea extends NeptuneIdentifiedObject
 				}
 			}
 			
-			if (accessLinks != null)
+			if (accessLinks != null && !accessLinks.isEmpty())
 			{
 				sb.append("\n").append(indent).append(CHILD_ARROW).append("accessLinks");
 				for (AccessLink accessLink : accessLinks)
 				{
 					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(accessLink.toString(childIndent, 1));
+				}
+				
+			}
+			
+			if (areaType.equals(ChouetteAreaEnum.ITL))
+			{
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("routingAreas");
+				for (StopArea routingArea : routingConstraintAreas)
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routingArea.toString(childIndent, 0));
+				}
+				sb.append("\n").append(indent).append(CHILD_ARROW).append("routingLines");
+				for (Line routingLine : routingConstraintLines)
+				{
+					sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routingLine.toString(childIndent, 0));
 				}
 				
 			}
@@ -860,6 +914,7 @@ public class StopArea extends NeptuneIdentifiedObject
 				addContainedStopId(child.getObjectId());
 			}
 		}
+		
 		if (getParent() != null)
 		{
 			parentObjectId = parent.getObjectId();
