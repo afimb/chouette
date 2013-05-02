@@ -36,6 +36,18 @@ public class VehicleJourneyConverter extends GenericConverter
         autoPilot = new AutoPilot(nav);
         autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
     }
+    private String subXpathSelection( String xPath) throws XPathParseException {
+            AutoPilot autoPilot = createAutoPilot(nav);
+            autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
+            autoPilot.selectXPath( xPath);
+
+            String result = autoPilot.evalXPathToString();
+            if ( result==null || result.isEmpty())
+                    result = null;
+
+            autoPilot.resetXPath();
+            return result;
+    }
     
     public List<VehicleJourney> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
@@ -61,7 +73,11 @@ public class VehicleJourneyConverter extends GenericConverter
             
             vehicleJourney.setPublishedJourneyName( (String)parseOptionnalElement(nav, "Name") );          
             vehicleJourney.setPublishedJourneyIdentifier( (String)parseOptionnalElement(nav, "ShortName") );            
-            vehicleJourney.setServiceStatusValue( modelTranslator.readServiceAlteration( (String)parseOptionnalElement(nav, "ServiceAlteration")));            
+            vehicleJourney.setServiceStatusValue( modelTranslator.readServiceAlteration( (String)parseOptionnalElement(nav, "ServiceAlteration"))); 
+            
+            Long number = modelTranslator.readTrainNumberId( subXpathSelection( "netex:trainNumbers/netex:TrainNumberRef/@ref"));
+            if ( number!=null)
+                vehicleJourney.setNumber( number);
             
             // Route
             vehicleJourney.setRouteId( (String)parseMandatoryAttribute(nav, "RouteRef", "ref") );

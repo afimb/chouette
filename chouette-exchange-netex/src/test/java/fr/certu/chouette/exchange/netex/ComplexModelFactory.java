@@ -27,6 +27,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
@@ -310,6 +311,7 @@ public class ComplexModelFactory {
     }
     private VehicleJourney vehicleJourney( Calendar calendar, JourneyPattern journeyPattern) throws CreateModelException {
         VehicleJourney vehicle = modelFactory.createModel( VehicleJourney.class);
+        vehicle.setNumber( (new Random()).nextLong());
         vehicle.setJourneyPattern(journeyPattern);
         vehicle.setRoute(journeyPattern.getRoute());
         try {

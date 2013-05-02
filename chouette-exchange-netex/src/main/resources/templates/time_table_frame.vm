@@ -34,11 +34,11 @@
       #if ( $vehicleJourney.company)
       <OperatorRef version="$vehicleJourney.company.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.company)" />
       #end
-      <!--
+      #if ( $vehicleJourney.number) 
       <trainNumbers>
-        <TrainNumberRef>TrainNumberRef0</TrainNumberRef>
+        <TrainNumberRef ref="$modelTranslator.trainNumberId( $vehicleJourney.number)" />
       </trainNumbers>
-      -->
+      #end
       <calls>
         #foreach( $vehicleJourneyAtStop in $vehicleJourney.vehicleJourneyAtStops ) 
         <Call>
@@ -55,4 +55,13 @@
     </ServiceJourney>
     #end
   </vehicleJourneys>
+  #if ( $vehicleNumbers && $vehicleNumbers.size() > 0 )
+  <trainNumbers>
+    #foreach( $vehicleNumber in $vehicleNumbers )
+    <TrainNumber id="$modelTranslator.trainNumberId( $vehicleNumber)">
+      <Description>$vehicleNumber</Description>
+    </TrainNumber>
+    #end
+  </trainNumbers>
+  #end
 </TimetableFrame>
