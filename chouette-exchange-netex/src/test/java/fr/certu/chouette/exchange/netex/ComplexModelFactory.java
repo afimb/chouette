@@ -50,6 +50,7 @@ public class ComplexModelFactory {
     @Getter @Setter int routeCount = 2; 
     @Getter @Setter int timetablesCount = 5; 
     @Getter @Setter int groupOfLinesCount = 2; 
+    @Getter @Setter int routingConstraintCount = 2; 
     @Getter @Setter List<Timetable> timetables;
     
     public void init() {
@@ -94,6 +95,12 @@ public class ComplexModelFactory {
                 stopAreaCommercial.addContainedStopArea(stopArea);
                 
                 quays.add(stopArea);
+                
+                
+                for ( StopArea sa : quays) {
+                    if ( !sa.getAreaType().equals(ChouetteAreaEnum.QUAY))
+                        logger.info( "error: "+sa.getObjectId());
+                }
             }
         } catch (CreateModelException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
@@ -189,7 +196,6 @@ public class ComplexModelFactory {
         List<StopPoint> stopPoints = new ArrayList<StopPoint>();
         try {
             for ( int i=0; i<routeStopCount; i++) {
-                StopArea stopArea = modelFactory.createModel(StopArea.class);
                 StopPoint stopPoint = new StopPoint();
                 stopPoint.setContainedInStopArea( quays.get( i%quayCount));
                 stopPoint.setObjectId( "T:StopPoint:"+route.objectIdSuffix()+"-"+i);
@@ -238,6 +244,40 @@ public class ComplexModelFactory {
         return journeyPatterns;
     }
     
+    public StopArea createITL( List<Line> lines, List<StopArea> stopAreas) {
+        try {
+            StopArea itl = modelFactory.createModel(StopArea.class);
+            itl.setAreaType(ChouetteAreaEnum.ITL);
+            itl.setRoutingConstraintLines(lines);
+            itl.setRoutingConstraintAreas(stopAreas);
+            
+            return itl;
+        } catch (CreateModelException ex) {
+            Logger.getLogger(ComplexModelFactory.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    private StopArea createLineITL(Line line) {
+        List<Line> lines = new ArrayList<Line>();
+        lines.add(line);
+        try {
+            lines.add( modelFactory.createModel(Line.class));
+        } catch (CreateModelException ex) {
+            Logger.getLogger(ComplexModelFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List<StopArea> stop_areas = new ArrayList<StopArea>();
+        int index = (new Random()).nextInt(line.getRoutes().size());
+
+        stop_areas.add( line.getRoutes().get(index).getStopPoints().get(0).getContainedInStopArea());
+        try {
+            stop_areas.add( modelFactory.createModel(StopArea.class));
+        } catch (CreateModelException ex) {
+            Logger.getLogger(ComplexModelFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return createITL(lines, stop_areas);
+    }
+    
     public Line nominalLine( String lineId) {
         Line line = null;
         try {
@@ -251,6 +291,13 @@ public class ComplexModelFactory {
         for ( int i=0; i<routeCount; i++) {
             line.getRoutes().add( nominalRoute(i, line));
         }
+        
+        line.setRoutingConstraints( new ArrayList<StopArea>());
+        for ( int i=0; i<routingConstraintCount; i++) {
+            
+            line.getRoutingConstraints().add( createLineITL(line));
+        }
+        
         
         line.setGroupOfLines( new ArrayList<GroupOfLine>(groupOfLinesCount));
         for ( int i=0; i<groupOfLinesCount; i++) {

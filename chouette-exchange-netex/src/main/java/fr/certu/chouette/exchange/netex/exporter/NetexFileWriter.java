@@ -9,6 +9,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -57,16 +58,19 @@ public class NetexFileWriter {
         model.put("accessLinks", line.getAccessLinks());
         
         // For ServiceFrame need to have for each tariff stop points associated
-        model.put("tariffStopPoints", tariffStopPoints(line));        
+        model.put("tariffs", tariffs(line));       
         
         // For TimetableFrame need to have for trainNumbers
         model.put("vehicleNumbers", vehicleNumbers(line));        
         
-        // For SiteFrame need to have stop areas type StopPlace and CommercialStopPoint only
+        // Be careful line return attributes address
         List<StopArea> stopAreaWithoutQuays = new ArrayList<StopArea>();
         stopAreaWithoutQuays.addAll( line.getStopPlaces());
         stopAreaWithoutQuays.addAll( line.getCommercialStopPoints());
         model.put("stopPlaces", stopAreaWithoutQuays);
+        
+        // For ITL
+        model.put("routingConstraints", line.getRoutingConstraints());
         
         // For TimetableFrame need to have vehicle journeys
         model.put("vehicleJourneys", line.getVehicleJourneys()); 
@@ -130,42 +134,22 @@ public class NetexFileWriter {
         return result;
     }
     
-    private Map<Integer, List<StopPoint>> tariffStopPoints(Line line)
+    private List<Integer> tariffs(Line line)
     {
-        Map<Integer, List<StopPoint>> tariffStopPoints = new HashMap<Integer, List<StopPoint>>();
-        List<StopPoint> stopPoints = line.getStopPoints();        
+        List<Integer> tariffs = new ArrayList<Integer>();
         
-        for (int i = 0; i < stopPoints.size(); i++) {
-            StopPoint stopPoint = stopPoints.get(i);
-            StopArea physical = stopPoint.getContainedInStopArea();
-            
-            if( physical != null)
-            {                    
-                if( physical.getFareCode() != null )
-                    addStopPointToTariffStopPoints(physical.getFareCode(), stopPoint, tariffStopPoints);
-                else 
-                {
-                    StopArea commercial = physical.getParent();
-                    if( commercial != null && commercial.getFareCode() != null )
-                        addStopPointToTariffStopPoints(commercial.getFareCode(), stopPoint, tariffStopPoints);
-                }            
-            }            
+        // Be careful line return attributes address
+        List<StopArea> stopAreas = new ArrayList<StopArea>(); 
+        stopAreas.addAll( line.getCommercialStopPoints());
+        stopAreas.addAll( line.getQuays());
+        stopAreas.addAll( line.getBoardingPositions());
+        
+        for (int i = 0; i < stopAreas.size(); i++) {
+            StopArea stopArea = stopAreas.get(i);
+            if ( stopArea.getFareCode()!=null && !tariffs.contains( stopArea.getFareCode()))
+                tariffs.add( stopArea.getFareCode());
         }
-        return tariffStopPoints;
+        return tariffs;
     }
     
-    private Map<Integer, List<StopPoint>> addStopPointToTariffStopPoints(Integer fareCode, StopPoint stopPoint, Map<Integer, List<StopPoint>> tariffStopPoints)
-    {                                           
-        if( !tariffStopPoints.containsKey(fareCode) )
-        {
-            tariffStopPoints.put(fareCode, new ArrayList<StopPoint>());
-            tariffStopPoints.get(fareCode).add(stopPoint);
-        }
-        else{
-            tariffStopPoints.get(fareCode).add(stopPoint);
-        }
-        
-        return tariffStopPoints;        
-    }
-              
 }

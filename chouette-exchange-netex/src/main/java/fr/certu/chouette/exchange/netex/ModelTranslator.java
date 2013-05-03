@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -70,6 +71,8 @@ public class ModelTranslator {
             return "StopArea";
         } else if ( model instanceof AccessPoint) {
             return "AccessPoint";
+        } else if ( model instanceof Company) {
+            return "Company";
         } else if ( model instanceof AccessLink) {
             return "AccessLink";
         } else if ( model instanceof StopPoint) {
