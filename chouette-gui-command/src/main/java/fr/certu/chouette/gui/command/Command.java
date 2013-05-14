@@ -1242,6 +1242,7 @@ public class Command
 		 ReportHolder holder = new ReportHolder();
 		 if (!inputFile.isEmpty())
 		 {
+			 parameters.put("validate",Arrays.asList(new String[]{"true"}));
 			 beans = neptuneImport(manager,parameters,holder);
 		 }
 		 else

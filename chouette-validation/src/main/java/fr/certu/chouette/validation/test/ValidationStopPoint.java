@@ -271,12 +271,12 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 						report3_10_3.updateStatus(Report.STATE.OK);
 					}
 
-					List<Route> routes = importedItems.getRoutes();
-					for (Route route : routes) {
-						if (route.getPtLinkIds().contains(ptLink.getObjectId())) {
-							// existsPTLink = true;
-						}
-					}
+//					List<Route> routes = importedItems.getRoutes();
+//					for (Route route : routes) {
+//						if (route.getPtLinkIds().contains(ptLink.getObjectId())) {
+//							// existsPTLink = true;
+//						}
+//					}
 					//Test 2.14.1 b
 					//                    if (!existsPTLink) {
 						//                        ReportItem detailReportItem = new DetailReportItem("Test2_Sheet14_Step1b_error", Report.STATE.ERROR,
