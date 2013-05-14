@@ -92,7 +92,7 @@
 
       #if($stopPlace.fareCode)
       <tariffZones>
-        <TariffZoneRef version="any" ref="${stopPlace.objectIdPrefix()}:TariffZone:${stopPlace.fareCode}"/>
+        <TariffZoneRef version="any" ref="Local:TariffZone:${stopPlace.fareCode}"/>
       </tariffZones>
       #end
 
@@ -145,7 +145,7 @@
           #end
           #if($quay.fareCode)
           <tariffZones>
-            <TariffZoneRef version="any" ref="${quay.objectIdPrefix()}:TariffZone:${quay.fareCode}"/>
+            <TariffZoneRef version="any" ref="Local:TariffZone:${quay.fareCode}"/>
           </tariffZones>
           #end
         </Quay>	

@@ -247,13 +247,15 @@
   <!--   -->
   <!-- Tarif zone  : Not really available in NEPTUNE, but there is a need to map Tariff Zone 1 (which is an attribute in NEPTUNE -->
   <!-- This object needs to be created inside the mapping mechanism -->
+  #if ( $tariffs && $tariffs.size() > 0)
   <tariffZones>
-    #foreach( $key in $tariffStopPoints.keySet() ) 
-    <TariffZone version="any" id="${network.objectIdPrefix()}:TariffZone:$key">
-      <Name>$!esc( $key)</Name>
+    #foreach( $tariff in $tariffs) 
+    <TariffZone version="any" id="Local:TariffZone:$tariff">
+      <Name>$!esc.xml( $tariff)</Name>
     </TariffZone>
     #end 
   </tariffZones>
+  #end
   <!--   -->
   <!-- Assignments of Schedules Stop Points to Stop Places -->
   <stopAssignments>
@@ -269,4 +271,53 @@
     #end
   #end  
   </stopAssignments>
+  <!-- routingConstraintZone : for ITL NEPTUNE-->
+  #if ( $routingConstraints && $routingConstraints.size() > 0)
+  <routingConstraintZones>
+    #foreach( $routingConstraint in $routingConstraints )     
+    <RoutingConstraintZone version="any" id="$modelTranslator.netexId( $routingConstraint)">
+      #if ( $routingConstraint.name)
+      <Name>$!esc.xml( $routingConstraint.name)</Name> 
+      #end
+      #if ( $routingConstraint.comment)
+      <Description>$!esc.xml( $routingConstraint.comment)</Description> 
+      #end
+      #if ( $routingConstraint.registrationNumber)
+      <PrivateCode>$!esc.xml( $routingConstraint.registrationNumber)</PrivateCode> 
+      #end
+      #if( ( $routingConstraint.latitude && $routingConstraint.longitude) || ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType))
+      <Centroid>
+        <Location id="${stopPlace.objectIdPrefix()}:Location:${stopPlace.objectIdSuffix()}">
+          #if ( $routingConstraint.longitude && $routingConstraint.latitude )
+          <Longitude>$routingConstraint.longitude</Longitude>
+          <Latitude>$routingConstraint.latitude</Latitude>
+          #end
+          #if ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType)
+          <gml:pos srsName="$routingConstraint.projectionType">$routingConstraint.x $routingConstraint.y</gml:pos>
+          #end
+        </Location>
+      </Centroid>
+      #end
+      <ZoneUse>cannotBoardAndAlightInSameZone</ZoneUse>
+      #if ( $routingConstraint.routingConstraintAreas && $routingConstraint.routingConstraintAreas.size() > 0)
+      <pointsInPattern>
+          #foreach( $routingConstraintArea in $routingConstraint.routingConstraintAreas )     
+          <StopPointInJourneyPattern version="1" id="${routingConstraintArea.objectIdPrefix()}:StopPointInJourneyPattern:${routingConstraint.objectIdSuffix()}-${routingConstraintArea.objectIdSuffix()}">
+            <ScheduledStopPointRef version="1" ref="$modelTranslator.netexId( $routingConstraintArea)"/>
+          </StopPointInJourneyPattern>
+          #end
+      </pointsInPattern>
+      #end
+      #if ( $routingConstraint.routingConstraintLines && $routingConstraint.routingConstraintLines.size() > 0)
+      <lines>
+          #foreach( $routingConstraintLine in $routingConstraint.routingConstraintLines )     
+          <LineRef version="1" ref="$modelTranslator.netexId( $routingConstraintLine)"/>
+          #end
+      </lines>
+      #end
+    
+    </RoutingConstraintZone>    
+    #end
+  </routingConstraintZones>
+  #end
 </ServiceFrame>

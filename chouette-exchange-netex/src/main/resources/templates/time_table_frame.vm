@@ -58,7 +58,7 @@
   #if ( $vehicleNumbers && $vehicleNumbers.size() > 0 )
   <trainNumbers>
     #foreach( $vehicleNumber in $vehicleNumbers )
-    <TrainNumber id="$modelTranslator.trainNumberId( $vehicleNumber)">
+    <TrainNumber version="1" id="$modelTranslator.trainNumberId( $vehicleNumber)">
       <Description>$vehicleNumber</Description>
     </TrainNumber>
     #end
