@@ -1,5 +1,7 @@
 package fr.certu.chouette.service.geographic;
 
+import java.util.Collection;
+
 import fr.certu.chouette.model.neptune.StopArea;
 
 
@@ -13,6 +15,8 @@ public interface IGeographicService
 	 * 
 	 */
 	void propagateBarycentre() ;
+	
+	void computeBarycentre(Collection<StopArea> areas);
 
 	/**
 	 * convert projectedPoint Lambert2e coordinates in WGS84 ones for every empty WGS84 data 

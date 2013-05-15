@@ -889,7 +889,7 @@ public class Command
 	private int executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	{
 		parameters.put("reportforsave", Arrays.asList(new String[] {"true"} ));
-		parameters.put("validate",Arrays.asList(new String[]{"true"})); // force validation if possible
+		// parameters.put("validate",Arrays.asList(new String[]{"true"})); // force validation if possible
 		
 		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
 		Report importReport = null;

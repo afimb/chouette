@@ -2,6 +2,7 @@ package fr.certu.chouette.service.geographic;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Setter;
@@ -227,6 +228,63 @@ public class GeographicService implements IGeographicService
 				logger.error("cannot save StopAreas :" +e.getMessage());
 			}
 		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.tool.IGeographicTool#propagateBarycentre()
+	 */
+	@Override
+	public void computeBarycentre(Collection<StopArea> areas) 
+	{
+		// compute parent area coordinates
+		for (StopArea area : areas) 
+		{
+			if (!area.getContainedStopAreas().isEmpty())
+			{
+				double sumLatitude = 0.;
+				double sumLongitude = 0.;
+				int count = 0;
+				LongLatTypeEnum longLatType = null;
+				for (StopArea child : area.getContainedStopAreas()) 
+				{
+					if (child.getAreaCentroid() != null && child.getAreaCentroid().getLatitude() != null && child.getAreaCentroid().getLongitude() != null)
+					{
+						sumLatitude += child.getAreaCentroid().getLatitude().doubleValue();
+						sumLongitude += child.getAreaCentroid().getLongitude().doubleValue();
+						count ++;
+						if (longLatType == null && child.getAreaCentroid().getLongLatType() != null)
+						{
+							longLatType = child.getAreaCentroid().getLongLatType();
+						}
+					}
+					else 
+					{
+						// TODO manage a report
+						logger.warn("child Stop without coordinate : " +child.getName()+" ("+child.getObjectId()+")");
+					}
+				}
+				if (count > 0)
+				{
+					if (area.getAreaCentroid() == null) area.setAreaCentroid(new AreaCentroid());
+					AreaCentroid centroid = area.getAreaCentroid();
+					centroid.setLatitude(new BigDecimal(sumLatitude/count));
+					centroid.setLongitude(new BigDecimal(sumLongitude/count));
+					centroid.setLongLatType(LongLatTypeEnum.WGS84);
+				}
+				else
+				{
+					// TODO report
+					logger.warn("no child coordinate for : " +area.getName()+" ("+area.getObjectId()+")");
+				}
+			}
+			else
+			{
+				// TODO report
+				logger.warn("no child for : " +area.getName()+" ("+area.getObjectId()+")");
+			}
+		}
+
 
 	}
 
