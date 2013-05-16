@@ -23,7 +23,6 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -112,14 +111,14 @@ public class GeographicService implements IGeographicService
 				LongLatTypeEnum longLatType = null;
 				for (StopArea physical : commercial.getContainedStopAreas()) 
 				{
-					if (physical.getAreaCentroid() != null && physical.getAreaCentroid().getLatitude() != null && physical.getAreaCentroid().getLongitude() != null)
+					if (physical.getLatitude() != null && physical.getLongitude() != null)
 					{
-						sumLatitude += physical.getAreaCentroid().getLatitude().doubleValue();
-						sumLongitude += physical.getAreaCentroid().getLongitude().doubleValue();
+						sumLatitude += physical.getLatitude().doubleValue();
+						sumLongitude += physical.getLongitude().doubleValue();
 						count ++;
-						if (longLatType == null && physical.getAreaCentroid().getLongLatType() != null)
+						if (longLatType == null && physical.getLongLatType() != null)
 						{
-							longLatType = physical.getAreaCentroid().getLongLatType();
+							longLatType = physical.getLongLatType();
 						}
 					}
 					else 
@@ -130,11 +129,11 @@ public class GeographicService implements IGeographicService
 				}
 				if (count > 0)
 				{
-					if (commercial.getAreaCentroid() == null) commercial.setAreaCentroid(new AreaCentroid());
-					AreaCentroid centroid = commercial.getAreaCentroid();
-					centroid.setLatitude(new BigDecimal(sumLatitude/count));
-					centroid.setLongitude(new BigDecimal(sumLongitude/count));
-					centroid.setLongLatType(LongLatTypeEnum.WGS84);
+					// if (commercial.getAreaCentroid() == null) commercial.setAreaCentroid(new AreaCentroid());
+					// AreaCentroid centroid = commercial.getAreaCentroid();
+					commercial.setLatitude(new BigDecimal(sumLatitude/count));
+					commercial.setLongitude(new BigDecimal(sumLongitude/count));
+					commercial.setLongLatType(LongLatTypeEnum.WGS84);
 					toBeSaved.add(commercial);
 				}
 				else
@@ -165,14 +164,14 @@ public class GeographicService implements IGeographicService
 					LongLatTypeEnum longLatType = null;
 					for (StopArea child : place.getContainedStopAreas()) 
 					{
-						if (child.getAreaCentroid() != null && child.getAreaCentroid().getLatitude() != null && child.getAreaCentroid().getLongitude() != null)
+						if (child.getAreaCentroid() != null && child.getLatitude() != null && child.getLongitude() != null)
 						{
-							sumLatitude += child.getAreaCentroid().getLatitude().doubleValue();
-							sumLongitude += child.getAreaCentroid().getLongitude().doubleValue();
+							sumLatitude += child.getLatitude().doubleValue();
+							sumLongitude += child.getLongitude().doubleValue();
 							count ++;
-							if (longLatType == null && child.getAreaCentroid().getLongLatType() != null)
+							if (longLatType == null && child.getLongLatType() != null)
 							{
-								longLatType = child.getAreaCentroid().getLongLatType();
+								longLatType = child.getLongLatType();
 							}
 						}
 						else 
@@ -193,11 +192,11 @@ public class GeographicService implements IGeographicService
 					if (differ) continue; // 
 					if (count > 0)
 					{
-						if (place.getAreaCentroid() == null) place.setAreaCentroid(new AreaCentroid());
-						AreaCentroid centroid = place.getAreaCentroid();
-						centroid.setLatitude(new BigDecimal(sumLatitude/count));
-						centroid.setLongitude(new BigDecimal(sumLongitude/count));
-						centroid.setLongLatType(LongLatTypeEnum.WGS84);
+						// if (place.getAreaCentroid() == null) place.setAreaCentroid(new AreaCentroid());
+						// AreaCentroid centroid = place.getAreaCentroid();
+						place.setLatitude(new BigDecimal(sumLatitude/count));
+						place.setLongitude(new BigDecimal(sumLongitude/count));
+						place.setLongLatType(LongLatTypeEnum.WGS84);
 						toBeSaved.add(place);
 					}
 					else
@@ -248,14 +247,14 @@ public class GeographicService implements IGeographicService
 				LongLatTypeEnum longLatType = null;
 				for (StopArea child : area.getContainedStopAreas()) 
 				{
-					if (child.getAreaCentroid() != null && child.getAreaCentroid().getLatitude() != null && child.getAreaCentroid().getLongitude() != null)
+					if (child.getLatitude() != null && child.getLongitude() != null)
 					{
-						sumLatitude += child.getAreaCentroid().getLatitude().doubleValue();
-						sumLongitude += child.getAreaCentroid().getLongitude().doubleValue();
+						sumLatitude += child.getLatitude().doubleValue();
+						sumLongitude += child.getLongitude().doubleValue();
 						count ++;
-						if (longLatType == null && child.getAreaCentroid().getLongLatType() != null)
+						if (longLatType == null && child.getLongLatType() != null)
 						{
-							longLatType = child.getAreaCentroid().getLongLatType();
+							longLatType = child.getLongLatType();
 						}
 					}
 					else 
@@ -266,11 +265,11 @@ public class GeographicService implements IGeographicService
 				}
 				if (count > 0)
 				{
-					if (area.getAreaCentroid() == null) area.setAreaCentroid(new AreaCentroid());
-					AreaCentroid centroid = area.getAreaCentroid();
-					centroid.setLatitude(new BigDecimal(sumLatitude/count));
-					centroid.setLongitude(new BigDecimal(sumLongitude/count));
-					centroid.setLongLatType(LongLatTypeEnum.WGS84);
+					// if (area.getAreaCentroid() == null) area.setAreaCentroid(new AreaCentroid());
+					// AreaCentroid centroid = area.getAreaCentroid();
+					area.setLatitude(new BigDecimal(sumLatitude/count));
+					area.setLongitude(new BigDecimal(sumLongitude/count));
+					area.setLongLatType(LongLatTypeEnum.WGS84);
 				}
 				else
 				{
@@ -379,10 +378,16 @@ public class GeographicService implements IGeographicService
 	
 	public boolean convertToWGS84(StopArea area)
 	{
-		if (sourceCRS == null ) return false;
-		if (area.getProjectionType() == null) return false;
-      if (area.getX() == null) return false;
-      if (area.getY() == null) return false;
+		if (sourceCRS == null ) 
+		{
+			logger.error("no projection defined ");
+			return false;
+		}
+		if (area.getProjectionType() == null || area.getX() == null || area.getY() == null)
+		{
+			logger.error("no projected coordinate for "+ area.getName());
+			return false;
+		}
 
 		Point point = factoryLambert2e.createPoint(new Coordinate(area.getX().doubleValue(),
 				area.getY().doubleValue()));
