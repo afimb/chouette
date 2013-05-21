@@ -18,7 +18,7 @@ public class ChouetteDriverManagerDataSource extends DriverManagerDataSource
 	   if (databaseSchema.trim().equals(databaseSchema))
 		   this.databaseSchema = databaseSchema;
 	   else
-	      throw new IllegalArgumentException("Database schema must not ends with white spaces");
+	      throw new IllegalArgumentException("Database schema must not end with white spaces");
 	}
 
 	public String getDatabaseSchema() 
