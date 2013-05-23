@@ -41,6 +41,10 @@ public class GenericConverter {
     {
         nav.toElement(VTDNav.ROOT); // reset the cursor to point to the root element
     }
+    protected String xPathFrames() {
+        return "netex:PublicationDelivery/netex:dataObjects/"+
+        "netex:CompositeFrame/netex:frames/";
+    }
     
     protected AutoPilot createAutoPilot( VTDNav nav) {
         AutoPilot ap = new AutoPilot(nav);

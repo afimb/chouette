@@ -55,11 +55,45 @@ public class StopAreaConverter extends GenericConverter
 	{
 		stopareas.clear();
 		stopAreaByObjectId.clear();
-
+                tariffByTariffId.clear();
+                
 		convertTariffs();
 		convertStopPlaces();
+                convertRoutingConstraintZones();
 
 		return stopareas;
+	}
+	public void convertRoutingConstraintZones() throws XPathEvalException, NavException, XPathParseException, ParseException
+	{
+		AutoPilot autoPilot = createAutoPilot(nav);
+		autoPilot.selectXPath( xPathFrames()+"netex:routingConstraintZones/"+
+				"netex:RoutingConstraintZone");
+
+		int result = -1;
+
+		nav.push();
+                logger.info( "ITL reading");
+		while( (result = autoPilot.evalXPath()) != -1 )
+		{  
+                    String zoneUse = subXpathSelection("ZoneUse");
+                    
+                    if ( zoneUse.equals( "cannotBoardAndAlightInSameZone")) {
+                        StopArea stopArea = new StopArea();
+                        stopArea.setAreaType( ChouetteAreaEnum.ITL);
+
+                        stopArea.setObjectId( subXpathSelection("@id"));
+                        stopArea.setName( subXpathSelection("netex:Name"));
+                        stopArea.setComment( subXpathSelection("netex:Description"));
+                        stopArea.setRegistrationNumber( subXpathSelection("netex:PrivateCode"));
+                        
+                        List<String> lines = subXpathListSelection("netex:lines/netex:LineRef");
+                        logger.info( "ITL lines reading");
+                        for( String line : lines) {
+                            logger.info( "line "+line);
+                        }
+                    }
+		}
+		nav.pop();
 	}
 	public void convertTariffs() throws XPathEvalException, NavException, XPathParseException, ParseException
 	{
@@ -162,6 +196,26 @@ public class StopAreaConverter extends GenericConverter
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	private List<String> subXpathListSelection( String xPath) throws XPathParseException, NavException, XPathEvalException {
+		AutoPilot autoPilot = createAutoPilot(nav);
+		autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
+		autoPilot.selectXPath( xPath);
+
+                List<String> result = new ArrayList<String>();
+                int number = autoPilot.evalXPath();
+                logger.info("number="+number);
+                while ( autoPilot.iterate())
+                {
+                    String element = autoPilot.evalXPathToString();
+                    if ( element!=null && !element.isEmpty())
+                            result.add( element);
+                    
+                }
+
+		autoPilot.resetXPath();
+		return result;
 	}
 
 	private String subXpathSelection( String xPath) throws XPathParseException {

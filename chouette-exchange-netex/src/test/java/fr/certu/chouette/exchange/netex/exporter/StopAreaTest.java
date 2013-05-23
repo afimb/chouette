@@ -4,11 +4,13 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 
 import java.text.ParseException;
 import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
+import junit.framework.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -17,6 +19,97 @@ import org.testng.annotations.Test;
  */
 @Test(groups = {"StopArea"}, description = "Validate StopArea export in NeTEx format")
 public class StopAreaTest extends ChouetteModelTest {
+    
+    @Test(groups = {"ServiceFrame", "routingConstraintZones"}, description = "Validate presence of ITL StopPlace with expected id")
+    public void verifyRoutingConstraintZoneName() throws XPathExpressionException, ParseException {
+        List<StopArea> routingConstraints = line.getRoutingConstraints();
+        
+        for( StopArea routingConstraint : routingConstraints) {
+            if ( routingConstraint.getName()!=null) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:routingConstraintZones/"+
+                                    "netex:RoutingConstraintZone"+
+                                    "[@id = '"+modelTranslator.netexId(routingConstraint)+"']/"+
+                                    "netex:Name/text() = '"+routingConstraint.getName()+
+                                    "')";
+                assertXPathTrue( xPathExpr);
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "routingConstraintZones"}, description = "Validate presence of ITL StopPlace with expected description")
+    public void verifyRoutingConstraintZoneDescription() throws XPathExpressionException, ParseException {
+        List<StopArea> routingConstraints = line.getRoutingConstraints();
+        
+        for( StopArea routingConstraint : routingConstraints) {
+            if ( routingConstraint.getName()!=null) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:routingConstraintZones/"+
+                                    "netex:RoutingConstraintZone"+
+                                    "[@id = '"+modelTranslator.netexId(routingConstraint)+"']/"+
+                                    "netex:Description/text() = '"+routingConstraint.getComment()+
+                                    "')";
+                assertXPathTrue( xPathExpr);
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "routingConstraintZones"}, description = "Validate presence of ITL StopPlace with expected privetCode")
+    public void verifyRoutingConstraintZonePrivateCode() throws XPathExpressionException, ParseException {
+        List<StopArea> routingConstraints = line.getRoutingConstraints();
+        
+        for( StopArea routingConstraint : routingConstraints) {
+            if ( routingConstraint.getName()!=null) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:routingConstraintZones/"+
+                                    "netex:RoutingConstraintZone"+
+                                    "[@id = '"+modelTranslator.netexId(routingConstraint)+"']/"+
+                                    "netex:PrivateCode/text() = '"+routingConstraint.getRegistrationNumber()+
+                                    "')";
+                assertXPathTrue( xPathExpr);
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "routingConstraintZones"}, description = "Validate presence of ITL StopPlace with expected ZoneUse")
+    public void verifyRoutingConstraintZoneZoneUse() throws XPathExpressionException, ParseException {
+        List<StopArea> routingConstraints = line.getRoutingConstraints();
+        
+        for( StopArea routingConstraint : routingConstraints) {
+            String xPathExpr = "boolean(//netex:ServiceFrame/netex:routingConstraintZones/"+
+                                "netex:RoutingConstraintZone"+
+                                "[@id = '"+modelTranslator.netexId(routingConstraint)+"']/"+
+                                "netex:ZoneUse/text() = 'cannotBoardAndAlightInSameZone')";
+            assertXPathTrue( xPathExpr);
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "routingConstraintZones"}, description = "Validate presence of ITL StopPlace with expected LineRefs")
+    public void verifyRoutingConstraintZoneLineRef() throws XPathExpressionException, ParseException {
+        List<StopArea> routingConstraints = line.getRoutingConstraints();
+        
+        for( StopArea routingConstraint : routingConstraints) {
+            for( Line line : routingConstraint.getRoutingConstraintLines()) {
+                String xPathExpr = "boolean(//netex:ServiceFrame/netex:routingConstraintZones/"+
+                                    "netex:RoutingConstraintZone"+
+                                    "[@id = '"+modelTranslator.netexId(routingConstraint)+"']/"+
+                                    "netex:lines/"+
+                                    "netex:LineRef[@ref = '"+modelTranslator.netexId( line) +"'])";
+                assertXPathTrue( xPathExpr);
+            }
+        }
+    }
+    
+    @Test(groups = {"ServiceFrame", "routingConstraintZones"}, description = "Validate presence of ITL StopPlace with expected name")
+    public void verifyRoutingConstraintZoneLines() throws XPathExpressionException, ParseException {
+        
+        List<StopArea> routingConstraints = line.getRoutingConstraints();
+        Assert.assertTrue( routingConstraints.size()>0);
+        
+        for( StopArea routingConstraint : routingConstraints) {
+            String xPathExpr = "boolean(//netex:ServiceFrame/netex:routingConstraintZones/"+
+                                "netex:RoutingConstraintZone"+
+                                "[@id = '"+modelTranslator.netexId(routingConstraint)+"'])";
+            assertXPathTrue( xPathExpr);
+        }
+    }
     
     @Test(groups = {"SiteFrame", "stopPlaces"}, description = "Validate presence of StopPlace with expected id")
     public void verifyStopPlaceId() throws XPathExpressionException, ParseException {
