@@ -198,6 +198,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
+		report.setStatus(Report.STATE.OK);
 		reportContainer.setReport(report);
 		
 		ZipFile zip = null;

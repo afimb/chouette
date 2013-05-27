@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.geotools.util.MapEntry;
 
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
@@ -37,10 +35,10 @@ public class ConnectionLinkGenerator extends AbstractGenerator
          for (int j = i+1; j < commercials.size() ; j++)
          {
             StopArea target =  commercials.get(j);
-            double distance = distance(source.getAreaCentroid().getLongitude().doubleValue(),
-                  source.getAreaCentroid().getLatitude().doubleValue(),
-                  target.getAreaCentroid().getLongitude().doubleValue(),
-                  target.getAreaCentroid().getLatitude().doubleValue());
+            double distance = distance(source.getLongitude().doubleValue(),
+                  source.getLatitude().doubleValue(),
+                  target.getLongitude().doubleValue(),
+                  target.getLatitude().doubleValue());
             if (distance < distanceMax)
             {
                // eligible, check route
@@ -88,8 +86,6 @@ public class ConnectionLinkGenerator extends AbstractGenerator
                         source.addConnectionLink(link);
                         target.addConnectionLink(link);
                         logger.info("ConnectionLink "+link.getName()+" updated"); 
-
-
                      }
                      link = fixedLinkMap.get(reverseId);
                      if (link != null)

@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -150,14 +149,6 @@ public class CommercialStopGenerator extends AbstractGenerator
 		area.setObjectVersion(stop.getObjectVersion());
 		area.setCreationTime(now.getTime());
 		area.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
-		AreaCentroid areaCentroid = new AreaCentroid();
-		areaCentroid.setName(area.getName());
-		areaCentroid.setObjectId(objectId.replace(StopArea.STOPAREA_KEY, AreaCentroid.AREACENTROID_KEY));
-		areaCentroid.setObjectVersion(stop.getObjectVersion());
-		areaCentroid.setCreationTime(now.getTime());
-		area.setAreaCentroid(areaCentroid);
-		areaCentroid.setContainedInStopArea(area);
-
 	}
 
 	/**
@@ -181,7 +172,6 @@ public class CommercialStopGenerator extends AbstractGenerator
 			initArea(areaExcluded, excludedList.get(0));
 			// patch object id for non confusion
 			areaExcluded.setObjectId(baseId+"_"+rank);
-			areaExcluded.getAreaCentroid().setObjectId(areaExcluded.getObjectId().replace(StopArea.STOPAREA_KEY,AreaCentroid.AREACENTROID_KEY));
 			for (StopArea excluded : excludedList) 
 			{
 				areaExcluded.addContainedStopArea(excluded);
@@ -212,10 +202,10 @@ public class CommercialStopGenerator extends AbstractGenerator
 			for (StopArea stop : stops)
 			{
 
-				double distance = distance(area.getAreaCentroid().getLongitude().doubleValue(),
-						area.getAreaCentroid().getLatitude().doubleValue(),
-						stop.getAreaCentroid().getLongitude().doubleValue(),
-						stop.getAreaCentroid().getLatitude().doubleValue());
+				double distance = distance(area.getLongitude().doubleValue(),
+						area.getLatitude().doubleValue(),
+						stop.getLongitude().doubleValue(),
+						stop.getLatitude().doubleValue());
 				if (distance > distanceMaxInArea) 
 				{
 					distanceMaxInArea = distance;
@@ -246,14 +236,14 @@ public class CommercialStopGenerator extends AbstractGenerator
 
 		for (StopArea stop : area.getContainedStopAreas()) 
 		{
-			sigmaLong += stop.getAreaCentroid().getLongitude().doubleValue();
-			sigmaLat += stop.getAreaCentroid().getLatitude().doubleValue();
+			sigmaLong += stop.getLongitude().doubleValue();
+			sigmaLat += stop.getLatitude().doubleValue();
 		}
 		double areaLong = sigmaLong / area.getContainedStopAreas().size();
 		double areaLat = sigmaLat / area.getContainedStopAreas().size();
-		area.getAreaCentroid().setLongitude(new BigDecimal(areaLong));
-		area.getAreaCentroid().setLatitude(new BigDecimal(areaLat));
-		area.getAreaCentroid().setLongLatType(LongLatTypeEnum.WGS84);
+		area.setLongitude(new BigDecimal(areaLong));
+		area.setLatitude(new BigDecimal(areaLat));
+		area.setLongLatType(LongLatTypeEnum.WGS84);
 	}
 
 	/**
@@ -272,14 +262,14 @@ public class CommercialStopGenerator extends AbstractGenerator
 			for (int j = i+1; j < stops.size(); j++)
 			{
 				StopArea next = stops.get(j);
-				double distance = distance(first.getAreaCentroid().getLongitude().doubleValue(),
-						first.getAreaCentroid().getLatitude().doubleValue(),
-						next.getAreaCentroid().getLongitude().doubleValue(),
-						next.getAreaCentroid().getLatitude().doubleValue());
+				double distance = distance(first.getLongitude().doubleValue(),
+						first.getLatitude().doubleValue(),
+						next.getLongitude().doubleValue(),
+						next.getLatitude().doubleValue());
 				if (distance > distanceMax) 
 				{
-					// logger.debug("BP : "+first.getName()+" (pos="+first.getAreaCentroid().getLatitude()+","+first.getAreaCentroid().getLongitude());
-					// logger.debug("BP : "+next.getName()+" (pos="+next.getAreaCentroid().getLatitude()+","+next.getAreaCentroid().getLongitude());
+					// logger.debug("BP : "+first.getName()+" (pos="+first.getLatitude()+","+first.getLongitude());
+					// logger.debug("BP : "+next.getName()+" (pos="+next.getLatitude()+","+next.getLongitude());
 					// logger.debug("distance = "+distance);
 					return false;
 				}

@@ -105,6 +105,7 @@
 		<property name="validationParameters" ref="Validation" />
 		<property name="migrationTool" ref="migrate" />
 		<property name="checkObjectId" ref="checkObjectId"/>
+		<property name="geographicService" ref="geographicService"/>
 	</bean>
 
 	<bean id="commandDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource"

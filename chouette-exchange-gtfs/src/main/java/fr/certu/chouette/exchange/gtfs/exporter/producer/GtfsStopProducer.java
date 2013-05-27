@@ -56,26 +56,20 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
       }
       stop.setStopName(neptuneObject.getName());
 
-      if (neptuneObject.getAreaCentroid() == null)
-      {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Longitude");
-         report.addItem(item);
-         return null;
-      }
-      if (neptuneObject.getAreaCentroid().getLatitude() == null)
+      if (neptuneObject.getLatitude() == null)
       {
          GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Latitude");
          report.addItem(item);
          return null;
       }
-      stop.setStopLat(neptuneObject.getAreaCentroid().getLatitude());
-      if (neptuneObject.getAreaCentroid().getLongitude() == null)
+      stop.setStopLat(neptuneObject.getLatitude());
+      if (neptuneObject.getLongitude() == null)
       {
          GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Longitude");
          report.addItem(item);
          return null;
       }
-      stop.setStopLon(neptuneObject.getAreaCentroid().getLongitude());
+      stop.setStopLon(neptuneObject.getLongitude());
       stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
       return stop;

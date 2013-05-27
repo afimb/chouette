@@ -3,7 +3,6 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -20,16 +19,9 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 		// objectId, objectVersion, creatorId, creationTime
 		stopArea.setObjectId(composeObjectId( StopArea.STOPAREA_KEY, gtfsStop.getStopId(),logger));
 
-		// AreaCentroid optional
-		AreaCentroid centroid = new AreaCentroid();
-		centroid.setObjectId(composeObjectId( AreaCentroid.AREACENTROID_KEY, gtfsStop.getStopId(),logger));
-		centroid.setName(getNonEmptyTrimedString(gtfsStop.getStopName()));
-		centroid.setLatitude(gtfsStop.getStopLat());
-		centroid.setLongitude(gtfsStop.getStopLon());
-		centroid.setLongLatType(LongLatTypeEnum.WGS84);
-
-		stopArea.setAreaCentroid(centroid);
-		centroid.setContainedInStopArea(stopArea);
+		stopArea.setLatitude(gtfsStop.getStopLat());
+		stopArea.setLongitude(gtfsStop.getStopLon());
+		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
 
 		// Name optional
 		stopArea.setName(getNonEmptyTrimedString(gtfsStop.getStopName()));

@@ -6,6 +6,7 @@
   - Fonctionnement sous Windows
   - Meilleur détection du format des fichiers XML en import
   - Suppression de la mise à jour du modèle par Hibernate
+  - Amélioration de l'import GTFS
 
 * Version 2.0.2 (28/01/13)
   - Import GTFS 

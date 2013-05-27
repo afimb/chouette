@@ -67,6 +67,7 @@ import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  *
@@ -91,6 +92,8 @@ public class Command
    @Setter private MigrateSchema migrationTool;
 
    @Setter private CheckObjectId checkObjectId;
+   
+   @Setter private IGeographicService geographicService;
 
 
    public Map<String,List<String>> globals = new HashMap<String, List<String>>();;
@@ -415,6 +418,13 @@ public class Command
          checkObjectId.checkObjectId(fileName,checkType,prefix);
          return beans;
       }
+      
+      if (name.equals("propagateBarycentre"))
+      {
+         executePropagateBarycentre();
+         return beans;
+      }
+
 
       INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
       long tdeb = System.currentTimeMillis();
@@ -549,6 +559,10 @@ public class Command
    }
 
 
+   private void executePropagateBarycentre() 
+   {
+      geographicService.propagateBarycentre();
+   }
    private void executeShowValidationParameters() 
    {
       if (validationParameters == null)
@@ -2321,7 +2335,6 @@ public class Command
       return commands;
    }
 
-   @SuppressWarnings("unchecked")
    private List<CommandArgument> parseFile(String filename) throws Exception
    {
       File f = new File(filename);
