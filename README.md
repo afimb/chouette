@@ -43,8 +43,9 @@ sudo apt-get install git
 Installation
 ------------
  
-Install [Postgres](https://github.com/dryade/chouette/blob/master/doc/install/postgresql.md)
-Install [Maven]((https://github.com/dryade/chouette/blob/master/doc/install/maven.md))
+Install [Postgres](https://github.com/dryade/chouette/blob/master/doc/install/postgresql.md) 
+
+Install [Maven]((https://github.com/dryade/chouette/blob/master/doc/install/maven.md)
 
 Get git repository
 ```sh
