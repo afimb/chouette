@@ -14,6 +14,7 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 * chouette-jdbc-dao : Access to the database via jdbc (mass upload only)
 * chouette-services : Some geographic and cleaning tools
 * chouette-validation : Validate the data from import or database
+
 For more information see [Architecture Documentation](http://www.chouette.mobi/IMG/pdf/DARC_CHOUETTE_2-0.pdf) 
 
 Feel free to test and access to the demonstration web site at [http://www.chouette.mobi](http://www.chouette.mobi/chouette2/users/sign_in). Two types of access are granted : 
@@ -37,7 +38,7 @@ On Debian/Ubuntu/Kubuntu OS :
 sudo apt-get install postgresql 
 sudo apt-get install pgadmin3 
 sudo apt-get install openjdk-7-jdk 
-sudo apt-get install git 
+sudo apt-get install git
 ```
 
 Installation
@@ -46,6 +47,12 @@ Installation
 Install [Postgres](https://github.com/dryade/chouette/blob/master/doc/install/postgresql.md) 
 
 Install [Maven]((https://github.com/dryade/chouette/blob/master/doc/install/maven.md)
+
+Create test and development databases : 
+```sh
+createdb -E UTF-8 -T template1 chouette_dev
+createdb -E UTF-8 -T template1 chouette_test
+```
 
 Get git repository
 ```sh
