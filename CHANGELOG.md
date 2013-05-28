@@ -1,4 +1,4 @@
-# Version 2.0.3 (18/04/13)
+# Version 2.0.3 (27/05/13)
 * Import/export NeTex 
 * Fonctionnement sous Windows
 * Meilleur détection du format des fichiers XML en import

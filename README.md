@@ -1,20 +1,20 @@
 # Chouette [![Build Status](https://travis-ci.org/dryade/chouette.png)](http://travis-ci.org/dryade/chouette?branch=master)
 
 Chouette is a java open source project on transport offer. It's divided in differents module : 
-* chouette-castor-neptune : 
-* chouette-command : Command line tool to export and import data
-* chouette-core : Core functionnalities
-* chouette-exchange-csv : Import/Export in csv format
+* chouette-castor-neptune : Data model built from Neptune XSD
+* chouette-command : Lite command line tool to manipulate data
+* chouette-core : Core functionnalities (Internal model and managers)
+* chouette-exchange-csv : Import/Export in a chouette specific csv format
 * chouette-exchange-gtfs : Import/Export in gtfs format
 * chouette-exchange-neptune : Import/Export in neptune format
 * chouette-exchange-netex : Import/Export in netex format
-* chouette-export-geoportail : Export in geoportail format
-* chouette-gui-command : 
+* chouette-export-geoportail : Export in geoportail format (deprecated)
+* chouette-gui-command : Command Line tool used by Ruby Chouette2 GUI for Import/Export/Validation purpose
 * chouette-hibernate-dao : Access to the database via hibernate 
-* chouette-jdbc-dao : Access to the database via jdbc
-* chouette-neptune : Old Web site to edit and view transport offer
-* chouette-services : 
-* chouette-validation : Validate the data 
+* chouette-jdbc-dao : Access to the database via jdbc (mass upload only)
+* chouette-services : Some geographic and cleaning tools
+* chouette-validation : Validate the data from import or database
+For more information see [Architecture Documentation](http://www.chouette.mobi/IMG/pdf/DARC_CHOUETTE_2-0.pdf) 
 
 Feel free to test and access to the demonstration web site at [http://www.chouette.mobi](http://www.chouette.mobi/chouette2/users/sign_in). Two types of access are granted : 
 * A demo organisation with a set of data

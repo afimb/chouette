@@ -24,13 +24,10 @@
 		<file>
 			<source>${project.build.directory}/chouette</source>
 			<outputDirectory>/</outputDirectory>
+			<fileMode>0755</fileMode>
 		</file>
 		<file>
 			<source>${project.build.directory}/chouette.bat</source>
-			<outputDirectory>/</outputDirectory>
-		</file>
-		<file>
-			<source>${project.build.directory}/chouette.sh</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
@@ -42,11 +39,11 @@
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>../LICENCE.txt</source>
+			<source>../LICENSE.md</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>../ReleaseNotes.txt</source>
+			<source>../CHANGELOG.md</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 	</files>
