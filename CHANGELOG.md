@@ -1,45 +1,20 @@
-# V2.0.3 (18/04/13)
-
-* Ajout des imports/export NeTex 
-* Fonctionnement sous windows
-* Meilleur détection du format des fichiers XML en import
-* Suppression de la mise à jour du modèle par Hibernate
-
-# V2.0.2 (28/01/13)
-
-* Ajout de l'import GTFS (expérimental, ne traite pas les stations)
-
-# V2.0.1 (17/12/12)
-
-* Ajout de la gestion des groupes de lignes
-* Ajout de la gestion des accès et des relations arrêts-accès
-* L'import Neptune accepte les principaux formats d'encodage : ISO-8859-1, UTF-8, ...
-
-# V2.0.0 (10/09/12)
-
-* refonte de l'interface graphique
-* ajout d'une gestion simplifiée d'utilisateurs :
-** ajout d'une notion d'organisation
-** ajout d'une notion d'espace de données
-
-# Version 2.0.3 (05/04/13)
-
+# Version 2.0.3 (18/04/13)
 * Import/export NeTex 
 * Fonctionnement sous Windows
+* Meilleur détection du format des fichiers XML en import
+* Suppression de la mise à jour du modèle par Hibernate
+* Amélioration de l'import GTFS
 
 # Version 2.0.2 (28/01/13)
-
 * Import GTFS 
 * Import CSV : ajout des nouveaux champs V2
 * Mise en cohérence des modèles DB java et Rails
 
 # Version 2.0.1 (17/12/12)
-
 * Import Neptune : accepter les principaux types d'encodage
 * Import/Export Neptune : quelques corrections sur les imports/exports des groupes de lignes et des accès
 
 # Version 2.0.0 (10/09/12)
-
 * reprise du modèle de la base de données conformément aux "best practices" de la majorité des ORM
 * ajout d'un mode commande dédié à l'IHM RAILS
 * import/export CSV : quelques corrections de bugs et de désynchronisation entre les 2 sens
@@ -47,7 +22,6 @@
 * import/export CSV : quelques corrections de bugs et de désynchronisation entre les 2 sens
 
 # Version 1.7.3 (12/03/12)
-
 * ajout des liens sur les définitions des tests de validation sur la page de lancement des tests
 * correction import/export Neptune : durée de correspondances
 * procédure de migration : renumérotation des périodes et dates des calendriers
@@ -116,3 +90,33 @@
 * Intégration de Neptune dans les Imports / Exports
 * Migration de la base de données sur un schéma spécifique
 * Gestion des accès concurrent
+<<<<<<< HEAD:CHANGELOG.md
+=======
+
+h2. Licence
+
+
+Ce logiciel est un programme informatique servant à créer et à échanger des données de modélisation d'offres de transport en commun en respectant les préconisations de la norme NEPTUNE [ref AFNOR en cour] . 
+
+Ce logiciel est régi par la licence CeCILL-B soumise au droit français et respectant les principes de diffusion des logiciels libres. Vous pouvez utiliser, modifier et/ou redistribuer ce programme sous les conditions de la licence CeCILL-B telle que diffusée par le CEA, le CNRS et l'INRIA sur le site "http://www.cecill.info":http://www.cecill.info .
+
+En contrepartie de l'accessibilité au code source et des droits de copie, de modification et de redistribution accordés par cette licence, il n'est offert aux utilisateurs qu'une garantie limitée. Pour les mêmes raisons, seule une responsabilité restreinte pèse sur l'auteur du programme, le titulaire des droits patrimoniaux et les concédants successifs.
+
+A cet égard  l'attention de l'utilisateur est attirée sur les risques associés au chargement,  à l'utilisation,  à la modification et/ou au développement et à la reproduction du logiciel par l'utilisateur étant donné sa spécificité de logiciel libre, qui peut le rendre complexe à manipuler et qui le réserve donc à des développeurs et des professionnels avertis possédant  des  connaissances  informatiques approfondies.  Les utilisateurs sont donc invités à charger  et  tester  l'adéquation  du logiciel à leurs besoins dans des conditions permettant d'assurer la sécurité de leurs systèmes et ou de leurs données et, plus généralement, à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+
+Le fait que vous puissiez accéder à cet en-tête signifie que vous avez pris connaissance de la licence CeCILL-B, et que vous en avez accepté les termes.
+
+--------------------------------------------------------------
+
+This software is a computer program whose purpose is to to manage and disseminate public transfort offers according to the french NEPTUNE standard [AFNOR reference in progress].
+
+This software is governed by the CeCILL-B license under French law and abiding by the rules of distribution of free software.  You can  use,  modify and/ or redistribute the software under the terms of the CeCILL-B license as circulated by CEA, CNRS and INRIA at the following URL "http://www.cecill.info":http://www.cecill.info . 
+
+As a counterpart to the access to the source code and rights to copy, modify and redistribute granted by the license, users are provided only with a limited warranty  and the software's author, the holder of the economic rights, and the successive licensors have only limited liability. 
+
+In this respect, the user's attention is drawn to the risks associated with loading, using, modifying and/or developing or reproducing the software by the user in light of its specific status of free software, that may mean that it is complicated to manipulate,and that also therefore means that it is reserved for developers and experienced professionals having in-depth computer knowledge. Users are therefore encouraged to load and test the software's suitability as regards their requirements in conditions enabling the security of their systems and/or data to be ensured and, more generally, to use and operate it in the same conditions as regards security. 
+
+The fact that you are presently reading this means that you have had knowledge of the CeCILL-B license and that you accept its terms.
+
+
+>>>>>>> 778c885f25667b51a4c628ec9d984716c96feb01:README.textile

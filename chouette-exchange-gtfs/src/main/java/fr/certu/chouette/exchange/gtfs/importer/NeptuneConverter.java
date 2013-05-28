@@ -602,6 +602,7 @@ public class NeptuneConverter
 			if (link.getStartOfLink() == null || link.getEndOfLink() == null)
 			{
 				logger.error("line "+transfer.getFileLineNumber()+" invalid transfer : form or to stop unknown");
+                continue;
 			}
 			link.setStartOfLinkId(link.getStartOfLink().getObjectId());
 			link.setEndOfLinkId(link.getEndOfLink().getObjectId());
@@ -614,6 +615,8 @@ public class NeptuneConverter
 			{
 				link.setName("from "+link.getStartOfLink().getName()+" to "+link.getEndOfLink().getName());
 				links.add(link);
+				link.getStartOfLink().addConnectionLink(link);
+				link.getEndOfLink().addConnectionLink(link);
 			}
 		}
 
@@ -703,9 +706,9 @@ public class NeptuneConverter
 			area.addContainedStopPoint(spor);
 			spor.setContainedInStopArea(area);
 			spor.setName(area.getName());
-			spor.setLatitude(area.getAreaCentroid().getLatitude());
-			spor.setLongitude(area.getAreaCentroid().getLongitude());
-			spor.setLongLatType(area.getAreaCentroid().getLongLatType());
+			spor.setLatitude(area.getLatitude());
+			spor.setLongitude(area.getLongitude());
+			spor.setLongLatType(area.getLongLatType());
 			stopPoints.add(spor);
 
 		}

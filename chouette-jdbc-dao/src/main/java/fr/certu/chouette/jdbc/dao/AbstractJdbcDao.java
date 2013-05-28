@@ -34,6 +34,8 @@ import fr.certu.chouette.model.neptune.PeerId;
 public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends JdbcDaoSupport implements
 IDaoTemplate<T>
 {
+	private static final int BATCH_SIZE = 5000;
+	
 	@Getter
 	@Setter
 	protected String                           sqlSelectAll;
@@ -160,8 +162,8 @@ IDaoTemplate<T>
 			{
 				int lastIndex = index + Math.min(500, rest) ;
 				toBatchInsert(sqlInsert, insertables.subList(index, lastIndex));
-				index += 500;
-				rest -= 500;
+				index += BATCH_SIZE;
+				rest -= BATCH_SIZE;
 			}
 
 		}
@@ -176,8 +178,8 @@ IDaoTemplate<T>
 				{
 					int lastIndex = index + Math.min(500, rest);
 					toBatchUpdate(sqlUpdate, updatables.subList(index, lastIndex));
-					index += 500;
-					rest -= 500;
+					index += BATCH_SIZE;
+					rest -= BATCH_SIZE;
 				}
 			}
 			else if (sqlDelete != null)
@@ -190,8 +192,8 @@ IDaoTemplate<T>
 				{
 					int lastIndex = index + Math.min(500, rest);
 					toBatchInsert(sqlInsert, updatables.subList(index, lastIndex));
-					index += 500;
-					rest -= 500;
+					index += BATCH_SIZE;
+					rest -= BATCH_SIZE;
 				}
 			}
 			else
