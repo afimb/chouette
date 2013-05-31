@@ -7,8 +7,8 @@
 		<parameter name="testFile" value="src/test/data/3.1.1.xml" />
 		<parameter name="okCount" value="28" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="6" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="7" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="3.1" />
@@ -22,8 +22,8 @@
 		<parameter name="testFile" value="src/test/data/3.2.1.xml" />
 		<parameter name="okCount" value="28" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="6" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="7" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="3.2" />
@@ -38,8 +38,8 @@
 		<parameter name="testFile" value="src/test/data/3.3.1-bis.xml" />
 		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="5" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="6" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="3.3" />
@@ -54,8 +54,8 @@
 		<parameter name="testFile" value="src/test/data/3.4.1.zip" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.4" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -69,8 +69,8 @@
 		<parameter name="testFile" value="src/test/data/3.5.1.xml" />
 		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="3.5" />
@@ -82,10 +82,10 @@
 		<parameter name="description" value="Stoppoints are in a polygon" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/3.6.1b.xml" />
-		<parameter name="okCount" value="32" />
+		<parameter name="okCount" value="33" />
 		<parameter name="uncheckCount" value="8" />
 		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.6" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -97,10 +97,10 @@
 		<parameter name="description" value="consecutive StopPoints distance check" />
 		<parameter name="validationParameterSet" value="validation_3_7_1" />
 		<parameter name="testFile" value="src/test/data/3.7.1.xml" />
-		<parameter name="okCount" value="32" />
+		<parameter name="okCount" value="33" />
 		<parameter name="uncheckCount" value="8" />
 		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="3.7" />
@@ -115,8 +115,8 @@
 		<parameter name="testFile" value="src/test/data/3.8.1a-b-c.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.8" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -131,8 +131,8 @@
 		<parameter name="testFile" value="src/test/data/3.9.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="3.9" />
@@ -144,9 +144,9 @@
 		<parameter name="description" value="waiting time on vehicleJourneyAtStop" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/3.15.1a.xml" />
-		<parameter name="okCount" value="31" />
+		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
+		<parameter name="warningCount" value="5" />
 		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.15" />
@@ -159,9 +159,9 @@
 		<parameter name="description" value="waiting time on vehicleJourneyAtStop" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/3.15.1b.xml" />
-		<parameter name="okCount" value="31" />
+		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
+		<parameter name="warningCount" value="5" />
 		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.15" />
@@ -175,9 +175,9 @@
 			value="coherent time on successive vehicleJourneyAtStop" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/3.16.1.xml" />
-		<parameter name="okCount" value="31" />
+		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
+		<parameter name="warningCount" value="5" />
 		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.16" />
@@ -191,9 +191,9 @@
 			value="coherent time on successive vehicleJourneyAtStop" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/3.16.3a.xml" />
-		<parameter name="okCount" value="30" />
+		<parameter name="okCount" value="29" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
+		<parameter name="warningCount" value="5" />
 		<parameter name="errorCount" value="5" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="3.16" />

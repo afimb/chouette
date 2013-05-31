@@ -1435,7 +1435,7 @@ public class Command
 		 }
 		 for (int i = 0; i < args.length; i++)
 		 {
-			 if (args[i].startsWith("-"))
+			 if (isOption(args[i]))
 			 {
 				 String key = args[i].substring(1).toLowerCase();
 				 if (key.length() == 1) 
@@ -1466,13 +1466,13 @@ public class Command
 					 }
 					 List<String> list = new ArrayList<String>();
 
-					 if (i == args.length -1 || args[i+1].startsWith("-"))
+					 if (i == args.length -1 || isOption(args[i+1]))
 					 {
 						 list.add("true");
 					 }
 					 else
 					 {
-						 while ((i+1 < args.length && !args[i+1].startsWith("-")))
+						 while ((i+1) < args.length && !isOption(args[i+1]))
 						 {
 							 list.add(args[++i]);
 						 }
@@ -1485,6 +1485,12 @@ public class Command
 		 return commands;
 	 }
 
+	 private boolean isOption(String arg)
+	 {
+		 if (arg.length() < 2) return false;
+		 return arg.startsWith("-") && !Character.isDigit(arg.charAt(1));
+	 }
+	 
 	 private List<ParameterValue> populateParameters(FormatDescription description,Map<String, List<String>> parameters,String ... excluded)
 	 {
 		 List<ParameterValue> values = new ArrayList<ParameterValue>();

@@ -22,6 +22,8 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 public class DbVehicleJourneyFactory
 {
    private static final Logger logger = Logger.getLogger(DbVehicleJourneyFactory.class);
+   
+   private static final int BATCH_SIZE = 5000;
 
    private Connection conn = null;
    private final String dropSql = "drop table if exists vjas;";
@@ -48,6 +50,8 @@ public class DbVehicleJourneyFactory
       {
          SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
          dbName = "/tmp/"+prefix+"_"+df.format(Calendar.getInstance().getTime())+"_vj.db";
+         // TODO mettre un répertoire paramétrable
+         // TODO revoir la politique de batch et de commit
          try
          {
             Class.forName("org.sqlite.JDBC");
@@ -63,8 +67,14 @@ public class DbVehicleJourneyFactory
             stmt.execute(createSql);
             stmt.execute(createIndexSql);
             stmt.close();
+            conn.setAutoCommit(false);
 
             prep = conn.prepareStatement(insertSql);         
+            f = new File(dbName);
+            if (f.exists())
+            {
+               f.deleteOnExit();
+            }
          }
          catch (SQLException e) 
          {
@@ -104,9 +114,10 @@ public class DbVehicleJourneyFactory
          {
             try
             {
-               conn.setAutoCommit(false);
+               // conn.setAutoCommit(false);
                prep.executeBatch();
-               conn.setAutoCommit(true);
+               conn.commit();
+               // conn.setAutoCommit(true);
                prep.close();
                prep = conn.prepareStatement(insertSql);
                batchSize = 0;
@@ -137,11 +148,12 @@ public class DbVehicleJourneyFactory
             batchSize++;
          }
 
-         if (batchSize > 1000)
+         if (batchSize > BATCH_SIZE)
          {
-            conn.setAutoCommit(false);
+            // conn.setAutoCommit(false);
             prep.executeBatch();
-            conn.setAutoCommit(true);
+            conn.commit();
+            // conn.setAutoCommit(true);
             prep.close();
             prep = conn.prepareStatement(insertSql);
             batchSize = 0;
@@ -225,6 +237,7 @@ public class DbVehicleJourneyFactory
          PreparedStatement stmt = conn.prepareStatement(deleteSql);
          stmt.setString(1, vj.getObjectId());
          stmt.execute();
+         conn.commit();
          stmt.close();
       }
       catch (SQLException e) 
@@ -245,11 +258,6 @@ public class DbVehicleJourneyFactory
          catch (SQLException e) 
          {
             // let data on cache
-         }
-         File f = new File(dbName);
-         if (f.exists())
-         {
-            f.delete();
          }
       }
    }

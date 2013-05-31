@@ -98,7 +98,10 @@ public abstract class LogMessage extends NeptuneObject
 			b.append("\"");
 			b.append(i);
 			b.append("\" : \"");
-			b.append(args.get(i).toString().replaceAll("\"", "\\\"").replaceAll("\n"," "));
+			if (args.get(i) != null)
+				b.append(args.get(i).toString().replaceAll("\"", "\\\"").replaceAll("\n"," "));
+			else
+				b.append("???");
 			b.append("\"");
 			if (i == size -1) 
 			{
@@ -108,6 +111,35 @@ public abstract class LogMessage extends NeptuneObject
 			{
 				b.append(","); 
 			}
+		}
+		if (b.length() >= 1000)
+		{
+			// line too long
+			 b = new StringBuilder("{");
+			for (int i = 0; i < size ;i++)
+			{
+				b.append("\"");
+				b.append(i);
+				b.append("\" : \"");
+				if (args.get(i) != null)
+				{
+					String s = args.get(i).toString();
+					if (s.length() > 50) s = s.substring(0, 50);
+					b.append(s.replaceAll("\"", "\\\"").replaceAll("\n"," "));
+				}
+				else
+					b.append("???");
+				b.append("\"");
+				if (i == size -1) 
+				{
+					b.append("}"); 
+				}
+				else
+				{
+					b.append(","); 
+				}
+			}
+			
 		}
 		this.arguments = b.toString();
 	}

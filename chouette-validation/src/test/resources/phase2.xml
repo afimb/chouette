@@ -8,8 +8,8 @@
 		<parameter name="testFile" value="src/test/data/2.1.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.1" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -24,8 +24,8 @@
 		<parameter name="testFile" value="src/test/data/2.1.2.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.1" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -40,8 +40,8 @@
 		<parameter name="testFile" value="src/test/data/2.2.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.2" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -56,8 +56,8 @@
 		<parameter name="testFile" value="src/test/data/2.3.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.3" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -72,8 +72,8 @@
 		<parameter name="testFile" value="src/test/data/2.4.1a.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="none" />
 		<parameter name="mandatoryWarningTest" value="2.4" />
@@ -88,8 +88,8 @@
 		<parameter name="testFile" value="src/test/data/2.4.1b.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.4" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -104,8 +104,8 @@
 		<parameter name="testFile" value="src/test/data/2.5.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.5" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -120,8 +120,8 @@
 		<parameter name="testFile" value="src/test/data/2.5.2.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.5" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -135,8 +135,8 @@
 		<parameter name="testFile" value="src/test/data/2.6.1.xml" />
 		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.6" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -150,8 +150,8 @@
 		<parameter name="testFile" value="src/test/data/2.6.2.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.6" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -165,8 +165,8 @@
 		<parameter name="testFile" value="src/test/data/2.7.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.7" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -181,8 +181,8 @@
 		<parameter name="testFile" value="src/test/data/2.8.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.8" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -196,8 +196,8 @@
 		<parameter name="testFile" value="src/test/data/2.8.2.xml" />
 		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.8" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -212,8 +212,8 @@
 		<parameter name="testFile" value="src/test/data/2.8.3a-b.xml" />
 		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.8" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -227,8 +227,8 @@
 		<parameter name="testFile" value="src/test/data/2.8.3c.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.8" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -243,8 +243,8 @@
 		<parameter name="testFile" value="src/test/data/2.8.3d.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="3" />
-		<parameter name="errorCount" value="3" />
+		<parameter name="warningCount" value="4" />
+		<parameter name="errorCount" value="2" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.8" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -258,8 +258,8 @@
 		<parameter name="testFile" value="src/test/data/2.9.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.9" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -273,8 +273,8 @@
 		<parameter name="testFile" value="src/test/data/2.10.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="8" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.10" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -288,8 +288,8 @@
 		<parameter name="testFile" value="src/test/data/2.11.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.11" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -303,8 +303,8 @@
 		<parameter name="testFile" value="src/test/data/2.14.2.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.14" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -318,8 +318,8 @@
 		<parameter name="testFile" value="src/test/data/2.15.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.15" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -334,8 +334,8 @@
 		<parameter name="testFile" value="src/test/data/2.16.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.16" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -349,8 +349,8 @@
 		<parameter name="testFile" value="src/test/data/2.17.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.17" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -365,8 +365,8 @@
 		<parameter name="testFile" value="src/test/data/2.18.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.18" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -379,10 +379,10 @@
 			value="StopPoint is at least in one VehicleJourney" />
 		<parameter name="validationParameterSet" value="validation" />
 		<parameter name="testFile" value="src/test/data/2.18.2a-b.xml" />
-		<parameter name="okCount" value="29" />
+		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="7" />
 		<parameter name="warningCount" value="5" />
-		<parameter name="errorCount" value="6" />
+		<parameter name="errorCount" value="5" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.18" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -397,8 +397,8 @@
 		<parameter name="testFile" value="src/test/data/2.19.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.19" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -412,8 +412,8 @@
 		<parameter name="testFile" value="src/test/data/2.20.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.20" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -444,8 +444,8 @@
 		<parameter name="testFile" value="src/test/data/2.22.1.xml" />
 		<parameter name="okCount" value="31" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="5" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="4" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.22" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -460,8 +460,8 @@
 		<parameter name="testFile" value="src/test/data/2.23.1.xml" />
 		<parameter name="okCount" value="32" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="4" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="3" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.23" />
 		<parameter name="mandatoryWarningTest" value="none" />
@@ -476,8 +476,8 @@
 		<parameter name="testFile" value="src/test/data/2.24.1.xml" />
 		<parameter name="okCount" value="30" />
 		<parameter name="uncheckCount" value="7" />
-		<parameter name="warningCount" value="4" />
-		<parameter name="errorCount" value="6" />
+		<parameter name="warningCount" value="5" />
+		<parameter name="errorCount" value="5" />
 		<parameter name="fatalCount" value="0" />
 		<parameter name="mandatoryErrorTest" value="2.24" />
 		<parameter name="mandatoryWarningTest" value="none" />
