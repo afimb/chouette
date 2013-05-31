@@ -84,6 +84,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       vehicleJourney.setVehicleTypeIdentifier(getNonEmptyTrimedString(xmlVehicleJourney.getVehicleTypeIdentifier()));
 
       // VehicleJourneyAtStops [2..w]
+      int order = 0;
       for(chouette.schema.VehicleJourneyAtStop  xmlVehicleJourneyAtStop : xmlVehicleJourney.getVehicleJourneyAtStop()){
          VehicleJourneyAtStop vehicleJourneyAtStop = new VehicleJourneyAtStop();
 
@@ -108,7 +109,15 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
          vehicleJourneyAtStop.setStopPointId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop.getStopPointId()));
 
          // Order optional
-         vehicleJourneyAtStop.setOrder(xmlVehicleJourneyAtStop.getOrder());
+         if (xmlVehicleJourneyAtStop.hasOrder())
+         {
+             vehicleJourneyAtStop.setOrder(xmlVehicleJourneyAtStop.getOrder());
+         }
+         else
+         {
+        	 vehicleJourneyAtStop.setOrder(order);
+         }
+         order ++;
 
          // ([arrivalTime AND] departureTime [AND waitingTime]) XOR elapseDuration
          if(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice() != null){

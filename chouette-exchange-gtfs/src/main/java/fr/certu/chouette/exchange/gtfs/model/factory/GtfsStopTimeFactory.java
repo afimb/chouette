@@ -72,9 +72,8 @@ public class GtfsStopTimeFactory extends GtfsBeanFactory<GtfsStopTime>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

@@ -42,7 +42,7 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
-import fr.certu.chouette.exchange.gtfs.model.neptune.DbVehicleJourneyFactory;
+import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -221,6 +221,7 @@ public class NeptuneConverter
 		List<StopArea> commercials = new ArrayList<StopArea>();
 		List<StopArea> bps = new ArrayList<StopArea>();
 		Map<String, StopArea> mapStopAreasByStopId = new HashMap<String, StopArea>();
+		Set<String> stopAreaOidSet = new HashSet<String>();
 		logger.info("process stopArea :" + data.getStops().size());
 		for (GtfsStop gtfsStop : data.getStops().getAll())
 			// for (Iterator<GtfsStop> iterator = data.getStops().iterator(); iterator.hasNext();)
@@ -228,15 +229,30 @@ public class NeptuneConverter
 			// GtfsStop gtfsStop = iterator.next();
 			// iterator.remove(); 
 			StopArea area = stopAreaProducer.produce(gtfsStop, report);
-			if (area.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
+			if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
 			{
-				commercials.add(area);
+				logger.error("duplicate stop id "+gtfsStop.getStopId());
 			}
 			else
 			{
-				bps.add(area);
+				mapStopAreasByStopId.put(gtfsStop.getStopId(), area) ;
+				if (area.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
+				{
+					commercials.add(area);
+				}
+				else
+				{
+					bps.add(area);
+				}
+				if (stopAreaOidSet.contains(area.getObjectId()))
+				{
+					logger.error("duplicate stop object id "+area.getObjectId());
+				}
+				else
+				{
+					stopAreaOidSet.add(area.getObjectId());
+				}
 			}
-			mapStopAreasByStopId.put(gtfsStop.getStopId(), area);
 		}
 		data.getStops().clear();
 		// connect bps to parents
@@ -247,7 +263,7 @@ public class NeptuneConverter
 				StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
 				if (parent == null)
 				{
-					logger.warn("stop "+bp.getName()+" has mission parent station "+bp.getParentObjectId());
+					logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
 					bp.setParentObjectId(null);
 				}
 				else if (!parent.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
@@ -258,6 +274,7 @@ public class NeptuneConverter
 				else
 				{
 					bp.setParent(parent);
+					parent.addContainedStopArea(bp);
 					// logger.info("stop "+bp.getName()+" connected to "+parent.getName());					
 				}
 			}
@@ -267,16 +284,17 @@ public class NeptuneConverter
 		List<StopArea> areas = new ArrayList<StopArea>();
 		if (maxDistanceForCommercialStop > 0)
 		{
+			if (commercials.size() > 0)
+			{
+				// TODO check if all bps has csp
+				logger.warn("GTFS has already commercial stops");
+			}
 			List<StopArea> generatedCommercials = commercialStopGenerator.createCommercialStopPoints(bps,
 					maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
-			areas.addAll(bps);
-			areas.addAll(generatedCommercials);
+			commercials = generatedCommercials;
 		}
-		else
-		{
-			areas.addAll(bps);
-			areas.addAll(commercials);
-		}
+		areas.addAll(bps);
+		areas.addAll(commercials);
 		assembler.setStopAreas(areas);
 
 		// Timetables
@@ -602,7 +620,7 @@ public class NeptuneConverter
 			if (link.getStartOfLink() == null || link.getEndOfLink() == null)
 			{
 				logger.error("line "+transfer.getFileLineNumber()+" invalid transfer : form or to stop unknown");
-                continue;
+				continue;
 			}
 			link.setStartOfLinkId(link.getStartOfLink().getObjectId());
 			link.setEndOfLinkId(link.getEndOfLink().getObjectId());
@@ -622,6 +640,10 @@ public class NeptuneConverter
 
 		if (maxDistanceForConnectionLink > 0.)
 		{
+			if (links.size() > 0)
+			{
+				logger.warn("gtfs data has already transfers");
+			}
 			links.addAll(connectionLinkGenerator.createConnectionLinks(commercials,
 					maxDistanceForConnectionLink,links,excludedLinks));
 			assembler.setConnectionLinks(links);

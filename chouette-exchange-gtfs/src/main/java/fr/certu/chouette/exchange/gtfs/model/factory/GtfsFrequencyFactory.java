@@ -63,9 +63,8 @@ public class GtfsFrequencyFactory extends GtfsBeanFactory<GtfsFrequency>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

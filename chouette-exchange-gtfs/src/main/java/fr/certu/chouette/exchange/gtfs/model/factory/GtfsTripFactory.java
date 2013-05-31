@@ -73,9 +73,8 @@ public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

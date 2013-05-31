@@ -268,9 +268,9 @@ public class CommercialStopGenerator extends AbstractGenerator
 						next.getLatitude().doubleValue());
 				if (distance > distanceMax) 
 				{
-					// logger.debug("BP : "+first.getName()+" (pos="+first.getLatitude()+","+first.getLongitude());
-					// logger.debug("BP : "+next.getName()+" (pos="+next.getLatitude()+","+next.getLongitude());
-					// logger.debug("distance = "+distance);
+//					logger.debug("BP : "+first.getName()+" (pos="+first.getLatitude()+","+first.getLongitude());
+//					logger.debug("BP : "+next.getName()+" (pos="+next.getLatitude()+","+next.getLongitude());
+//					logger.debug("distance = "+distance);
 					return false;
 				}
 			}

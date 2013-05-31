@@ -103,6 +103,7 @@ public class GtfsData
          try
          {
             SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            // TODO paramétrer le répertoire
             dbName = "/tmp/"+prefix+"_"+df.format(Calendar.getInstance().getTime())+"_gtfs.db";
             File f = new File("/tmp");
             if (!f.exists())
@@ -124,6 +125,12 @@ public class GtfsData
             transferFactory.initDb(stmt);
             tripFactory.initDb(stmt);
             stmt.close(); 
+            conn.setAutoCommit(false);
+            f = new File(dbName);
+            if (f.exists())
+            {
+               f.deleteOnExit();
+            }
          }
          catch (SQLException e)
          {
@@ -305,11 +312,6 @@ public class GtfsData
          catch (SQLException e) 
          {
             // let data on cache
-         }
-         File f = new File(dbName);
-         if (f.exists())
-         {
-            f.delete();
          }
       }
    }
