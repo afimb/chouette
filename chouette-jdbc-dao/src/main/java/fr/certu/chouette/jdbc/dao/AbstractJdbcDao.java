@@ -160,7 +160,7 @@ IDaoTemplate<T>
 
 			while (rest > 0)
 			{
-				int lastIndex = index + Math.min(500, rest) ;
+				int lastIndex = index + Math.min(BATCH_SIZE, rest) ;
 				toBatchInsert(sqlInsert, insertables.subList(index, lastIndex));
 				index += BATCH_SIZE;
 				rest -= BATCH_SIZE;
@@ -176,7 +176,7 @@ IDaoTemplate<T>
 
 				while (rest > 0)
 				{
-					int lastIndex = index + Math.min(500, rest);
+					int lastIndex = index + Math.min(BATCH_SIZE, rest);
 					toBatchUpdate(sqlUpdate, updatables.subList(index, lastIndex));
 					index += BATCH_SIZE;
 					rest -= BATCH_SIZE;
@@ -190,7 +190,7 @@ IDaoTemplate<T>
 
 				while (rest > 0)
 				{
-					int lastIndex = index + Math.min(500, rest);
+					int lastIndex = index + Math.min(BATCH_SIZE, rest);
 					toBatchInsert(sqlInsert, updatables.subList(index, lastIndex));
 					index += BATCH_SIZE;
 					rest -= BATCH_SIZE;
