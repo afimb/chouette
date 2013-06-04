@@ -75,9 +75,8 @@ public class GtfsRouteFactory extends GtfsBeanFactory<GtfsRoute>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

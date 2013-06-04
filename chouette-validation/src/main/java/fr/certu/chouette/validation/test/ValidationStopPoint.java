@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -33,6 +35,7 @@ import fr.certu.chouette.validation.report.SheetReportItem;
  */
 public class ValidationStopPoint extends AbstractValidation implements IValidationPlugin<StopPoint> {
 
+	private static final Logger logger = Logger.getLogger(ValidationStopPoint.class);
 	private ValidationStepDescription validationStepDescription;
 
 	public void init() {
@@ -82,6 +85,7 @@ public class ValidationStopPoint extends AbstractValidation implements IValidati
 		List<ValidationClassReportItem> result = new ArrayList<ValidationClassReportItem>();
 		float param = parameters.getTest31MinimalDistance();
 		float param2 = parameters.getTest32MinimalDistance();
+		logger.info("polygon = "+parameters.getTest32PolygonPoints());
 		List<Coordinate> listCoordinates = parameters.getTest32Polygon();
 		double distanceMin3_10 = parameters.getTest310MinimalDistance();
 		Coordinate first = listCoordinates.get(0);

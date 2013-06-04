@@ -198,6 +198,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
+		report.setStatus(Report.STATE.OK);
 		reportContainer.setReport(report);
 		
 		ZipFile zip = null;
@@ -324,18 +325,18 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 						ok = false;
 					}
 				}
-				else if (entryName.endsWith("shapes.txt"))
-				{
-					try 
-					{
-						data.loadShapes(zip.getInputStream(entry));
-					} 
-					catch (Exception e) 
-					{
-						logger.error("zip import failed (cannot read shapes.txt)" + e.getLocalizedMessage(),e);
-						ok = false;
-					}
-				}
+//				else if (entryName.endsWith("shapes.txt"))
+//				{
+//					try 
+//					{
+//						data.loadShapes(zip.getInputStream(entry));
+//					} 
+//					catch (Exception e) 
+//					{
+//						logger.error("zip import failed (cannot read shapes.txt)" + e.getLocalizedMessage(),e);
+//						ok = false;
+//					}
+//				}
 				else if (entryName.endsWith("transfers.txt"))
 				{
 					try 

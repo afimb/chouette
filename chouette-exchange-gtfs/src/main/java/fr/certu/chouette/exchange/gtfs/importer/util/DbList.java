@@ -16,6 +16,8 @@ import fr.certu.chouette.exchange.gtfs.model.factory.GtfsBeanFactory;
 
 public class DbList<E extends GtfsBean> implements List<E>
 {
+   private static final int BATCH_SIZE = 5000;
+	
    private int size = 0;
 
    private GtfsBeanFactory<E> factory ; 
@@ -88,7 +90,7 @@ public class DbList<E extends GtfsBean> implements List<E>
       size++;
       if (optimizeMemory)
       {
-         if (buffer.size() == 1000)
+         if (buffer.size() == BATCH_SIZE)
          {
             flush();
          }

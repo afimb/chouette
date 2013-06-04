@@ -72,9 +72,8 @@ public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

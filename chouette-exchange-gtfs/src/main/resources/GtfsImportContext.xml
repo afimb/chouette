@@ -36,4 +36,9 @@
 		<property name="converter" ref="GtfsConverter" />
 	</bean>
 
+	<bean id="GtfsConnectionLinkImport" class="fr.certu.chouette.exchange.gtfs.importer.GtfsImportConnectionLinkPlugin">
+		<property name="connectionLinkProducer" ref="GtfsConnectionLinkImportProducer" />
+		<property name="stopAreaManager" ref="stopAreaManager" />
+	</bean>
+
 </beans>

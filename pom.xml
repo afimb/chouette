@@ -36,7 +36,7 @@
 		<repository>
 			<id>chouette-repository</id>
 			<name>Chouette Repository</name>
-			<url>file:///var/lib/jenkins/releases</url>
+			<url>file://${HOME}/repo/mvn-repo/releases</url>
 		</repository>
 	</distributionManagement>
 

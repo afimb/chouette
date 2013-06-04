@@ -54,6 +54,10 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-jdbc-dao</artifactId>
 		</dependency>
 		<!-- Spring -->

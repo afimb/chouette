@@ -79,9 +79,8 @@ public class GtfsAgencyFactory extends GtfsBeanFactory<GtfsAgency>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

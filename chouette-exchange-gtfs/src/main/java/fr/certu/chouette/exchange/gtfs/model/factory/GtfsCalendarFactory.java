@@ -94,9 +94,8 @@ public class GtfsCalendarFactory extends GtfsBeanFactory<GtfsCalendar>
             prep.addBatch();
          }
 
-         conn.setAutoCommit(false);
          prep.executeBatch();
-         conn.setAutoCommit(true);
+         conn.commit();
       }
       catch (SQLException e)
       {

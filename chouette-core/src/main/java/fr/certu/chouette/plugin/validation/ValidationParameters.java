@@ -63,6 +63,7 @@ public class ValidationParameters
 	public void setTest32PolygonPoints(String pointAsString) throws PatternSyntaxException
 	{
 		test32PolygonPoints = pointAsString;
+		test32Polygon=null;
 		String[] points = pointAsString.split(" ");
 		for (String point : points) 
 		{

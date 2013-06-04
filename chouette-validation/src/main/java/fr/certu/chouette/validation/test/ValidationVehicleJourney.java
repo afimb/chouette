@@ -14,6 +14,7 @@ import lombok.Getter;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -183,8 +184,11 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 					List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourney.getVehicleJourneyAtStops();
 					for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) 
 					{
-						if(stopPointObjectIds.contains(vehicleJourneyAtStop.getStopPointId()))
-							count++;
+						if (vehicleJourneyAtStop.getStopPoint() != null )
+						{
+							if(stopPointObjectIds.contains(vehicleJourneyAtStop.getStopPoint().getObjectId()))
+								count++;
+						}
 					}
 
 
@@ -244,17 +248,17 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 				}else
 					report2_24.updateStatus(Report.STATE.OK);
 				//Test 3.16.2
-//				if (vehicleJourney.getTimetables() != null)
-//				{
-//					for (Timetable timetable : vehicleJourney.getTimetables()) {
-//						if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
-//							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
-//									vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
-//							report3_16_2.addItem(detailReportItem);	
-//						}else
-//							report3_16_2.updateStatus(Report.STATE.OK);
-//					}	
-//				}
+				//				if (vehicleJourney.getTimetables() != null)
+				//				{
+				//					for (Timetable timetable : vehicleJourney.getTimetables()) {
+				//						if(!timetable.getVehicleJourneyIds().contains(vehicleJourney.getObjectId())){
+				//							ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step2_warning", Report.STATE.WARNING,
+				//									vehicleJourney.getName()+"("+vehicleJourney.getObjectId()+")");
+				//							report3_16_2.addItem(detailReportItem);	
+				//						}else
+				//							report3_16_2.updateStatus(Report.STATE.OK);
+				//					}	
+				//				}
 			}
 
 			//
@@ -308,23 +312,24 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 						}
 						//Test 3.7 && Test 3.9
 						if(vehicleJourneyAtStops.size() >1){
-							for (VehicleJourneyAtStop vJAtStop : vehicleJourneyAtStops) {
+							for (VehicleJourneyAtStop vJAtStop : vehicleJourneyAtStops) 
+							{
 								StopPoint stopPoint = vJAtStop.getStopPoint();
-								if(stopPoint != null){
-									double y1 = (stopPoint.getLatitude()!=null) ? stopPoint.getLatitude().doubleValue():0;
-									double x1 = (stopPoint.getLongitude()!=null) ? stopPoint.getLongitude().doubleValue():0;
-									//									PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
-									//									int SRID1 = (stopPoint.getLongLatType()!= null) ? stopPoint.getLongLatType().epsgCode() : 0;
-									//									GeometryFactory factory1 = new GeometryFactory(precisionModel, SRID1);
-									//									Coordinate coordinate = new Coordinate(x1, y1);
-									//									Point point1 = factory1.createPoint(coordinate);
 
-									for (VehicleJourneyAtStop vJAtStop2 : vehicleJourneyAtStops) {
-									   StopPoint stopPoint2 = vJAtStop2.getStopPoint();
-		                        if (stopPoint2 == null) break;
+								if(stopPoint != null)
+								{
+									StopArea stopArea = stopPoint.getContainedInStopArea();
+									double y1 = (stopArea.getLatitude()!=null) ? stopArea.getLatitude().doubleValue():0;
+									double x1 = (stopArea.getLongitude()!=null) ? stopArea.getLongitude().doubleValue():0;
+
+									for (VehicleJourneyAtStop vJAtStop2 : vehicleJourneyAtStops) 
+									{
+										StopPoint stopPoint2 = vJAtStop2.getStopPoint();
+										if (stopPoint2 == null) break;
 
 										long diff = vJAtStop2.getOrder()-vJAtStop.getOrder();
-										if(diff == 1){
+										if(diff == 1)
+										{
 											VehicleJourneyAtStop[] vJAtStops = new VehicleJourneyAtStop[2];
 											vJAtStops[0] = vJAtStop;
 											vJAtStops[1] = vJAtStop2;
@@ -339,11 +344,12 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 											list.add(duration);
 
 											//Test 3.7.1
-											
+
 											if(stopPoint2 != null)
 											{
-												double y2 = (stopPoint2.getLatitude()!=null) ? stopPoint2.getLatitude().doubleValue():0;
-												double x2 = (stopPoint2.getLongitude()!=null) ? stopPoint2.getLongitude().doubleValue():0;
+												StopArea stopArea2 = stopPoint.getContainedInStopArea();
+												double y2 = (stopArea2.getLatitude()!=null) ? stopArea2.getLatitude().doubleValue():0;
+												double x2 = (stopArea2.getLongitude()!=null) ? stopArea2.getLongitude().doubleValue():0;
 												//												int SRID2 = (stopPoint2.getLongLatType()!= null) ? stopPoint2.getLongLatType().epsgCode() : 0;
 												//												GeometryFactory factory2 = new GeometryFactory(precisionModel, SRID2);
 												//												Coordinate coordinate2 = new Coordinate(x2, y2);
@@ -375,8 +381,8 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 
 												if(speed < min3_9 || speed > max3_9)
 												{
-//														logger.info("speed between "+stopPointId+" and "+stopPointId2+" is "+speed+", distance = "+distance);
-//														logger.info("   departure Time = "+departureTime*3600+", arrivalTime = "+arrivalTime*3600);
+													//														logger.info("speed between "+stopPointId+" and "+stopPointId2+" is "+speed+", distance = "+distance);
+													//														logger.info("   departure Time = "+departureTime*3600+", arrivalTime = "+arrivalTime*3600);
 													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet9_Step1_warning", Report.STATE.WARNING,
 															stopPoint.getObjectId(),stopPoint2.getObjectId(),String.valueOf(min3_9),String.valueOf(max3_9));
 													report3_9.addItem(detailReportItem);	
@@ -388,7 +394,8 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 											double departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /1000 : 0;
 											double arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /1000 : ((vJAtStop2.getDepartureTime() != null) ? vJAtStop2.getDepartureTime().getTime() /1000 : 1000) ;
 											long diffTime = (long) (Math.abs(arrivalTime - departureTime));
-											if(diffTime > param3_16_3a){
+											if(diffTime > param3_16_3a)
+											{
 												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_a", Report.STATE.ERROR,
 														String.valueOf(diffTime),String.valueOf(param3_16_3a));
 												report3_16_3.addItem(detailReportItem);	
@@ -398,13 +405,15 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 											if(departureTime <= arrivalTime)
 												report3_16_3.updateStatus(Report.STATE.OK);
 											//Test 3.16.3 b (suite)
-											else if(arrivalTime > param3_16_3b) {
+											else if(arrivalTime > param3_16_3b) 
+											{
 												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_b", Report.STATE.ERROR,
-														String.valueOf(param3_16_3b));
+														String.valueOf(arrivalTime),String.valueOf(param3_16_3b));
 												report3_16_3.addItem(detailReportItem);	
-											}else
+											}
+											else
 												report3_16_3.updateStatus(Report.STATE.OK);
-											
+
 											break;
 										}
 									}

@@ -9,35 +9,25 @@ package fr.certu.chouette.exchange.gtfs.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.model.neptune.AccessLink;
-import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 
 /**
