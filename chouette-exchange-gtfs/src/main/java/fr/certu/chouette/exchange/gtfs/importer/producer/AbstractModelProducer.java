@@ -19,7 +19,7 @@ public abstract class AbstractModelProducer<T extends NeptuneObject, U extends G
     		id="NULL_"+nullIdCount;
     		nullIdCount++;
     	}
-    	return prefix+":"+type+":"+id.trim().replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_").replaceAll("/", "_").replaceAll(":", "_");
+    	return prefix+":"+type+":"+id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
     }
 
     public String composeIncrementalObjectId(String type, String id, Logger logger)
@@ -30,7 +30,7 @@ public abstract class AbstractModelProducer<T extends NeptuneObject, U extends G
          id="NULL_"+nullIdCount;
          nullIdCount++;
       }
-      return prefix+":"+type+":"+incremental+id.trim().replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_").replaceAll("/", "_");
+      return prefix+":"+type+":"+incremental+id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
     }
 
     public static void setIncrementalPrefix(String value)

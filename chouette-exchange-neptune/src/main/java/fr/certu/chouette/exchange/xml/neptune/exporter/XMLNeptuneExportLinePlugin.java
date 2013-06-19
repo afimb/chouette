@@ -262,7 +262,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          else
          {
             logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-            ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR );
+            ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR,line.getName(),line.getObjectId() );
             item.addItem(errorItem);
          }
       }
@@ -304,7 +304,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                else
                {
                   logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING );
+                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING ,line.getName(),line.getObjectId());
                   item.addItem(errorItem);
                }
                System.gc();

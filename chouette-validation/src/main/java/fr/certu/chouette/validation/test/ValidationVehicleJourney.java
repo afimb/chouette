@@ -297,16 +297,20 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 								report2_23.updateStatus(Report.STATE.OK);	
 
 							//Test 3.15
-							final long CONSTANT = 9999;
+							final long CONSTANT = -1;
 							long arrivalTime = (vehicleJourneyAtStop.getArrivalTime() != null) ? vehicleJourneyAtStop.getArrivalTime().getTime() : CONSTANT;
-							long departureTime = vehicleJourneyAtStop.getDepartureTime().getTime();
-							long diff = Math.abs(arrivalTime - departureTime) / 1000;	
-							if(arrivalTime != CONSTANT){
-								if(diff > param3_15){
+							long departureTime = (vehicleJourneyAtStop.getDepartureTime() != null) ? vehicleJourneyAtStop.getDepartureTime().getTime() : CONSTANT;
+							if(arrivalTime != CONSTANT && departureTime != CONSTANT)
+							{
+								// TODO manage problem if times are empty
+								long diff = Math.abs(arrivalTime - departureTime) / 1000;	
+								if(diff > param3_15)
+								{
 									ReportItem detailReportItem = new DetailReportItem("Test3_Sheet15_Step1_error", Report.STATE.ERROR,
 											String.valueOf(param3_15));
 									report3_15.addItem(detailReportItem);	
-								}else
+								}
+								else
 									report3_15.updateStatus(Report.STATE.OK);	
 							}
 						}
@@ -366,18 +370,17 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 													report3_7.updateStatus(Report.STATE.OK);
 												//Test 3.9.1
 
-												double arrivalTime = 0;
-												if (vJAtStop2.getArrivalTime() != null) 
-													arrivalTime =  vJAtStop2.getArrivalTime().getTime() /DIVIDER  ;
-												else if (vJAtStop2.getWaitingTime() != null)
-													arrivalTime = (vJAtStop2.getDepartureTime().getTime() - vJAtStop2.getWaitingTime().getTime() ) /DIVIDER  ;
-												else 
-													arrivalTime = vJAtStop2.getDepartureTime().getTime() /DIVIDER;
-												double departureTime = vJAtStop.getDepartureTime().getTime() /DIVIDER;
 
-												double speed = max3_9 * 10;
-												if ((arrivalTime - departureTime) > 0) 
-													speed = distance / (arrivalTime - departureTime) / 1000;
+												//												double arrivalTime = 0;
+												//												if (vJAtStop2.getArrivalTime() != null) 
+												//													arrivalTime =  vJAtStop2.getArrivalTime().getTime() /DIVIDER  ;
+												//												else if (vJAtStop2.getWaitingTime() != null)
+												//													arrivalTime = (vJAtStop2.getDepartureTime().getTime() - vJAtStop2.getWaitingTime().getTime() ) /DIVIDER  ;
+												//												else 
+												//													arrivalTime = vJAtStop2.getDepartureTime().getTime() /DIVIDER;
+												//												double departureTime = vJAtStop.getDepartureTime().getTime() /DIVIDER;
+
+												double speed = distance / duration.durationInMillis / 1000;
 
 												if(speed < min3_9 || speed > max3_9)
 												{
@@ -391,9 +394,7 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 
 											}
 											//Test 3.16.3 a
-											double departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /1000 : 0;
-											double arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /1000 : ((vJAtStop2.getDepartureTime() != null) ? vJAtStop2.getDepartureTime().getTime() /1000 : 1000) ;
-											long diffTime = (long) (Math.abs(arrivalTime - departureTime));
+											long diffTime = (long) (Math.abs(duration.durationInMillis / 1000));
 											if(diffTime > param3_16_3a)
 											{
 												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_a", Report.STATE.ERROR,
@@ -402,18 +403,22 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 											}
 
 											//Test 3.16.3 b
-											if(departureTime <= arrivalTime)
-												report3_16_3.updateStatus(Report.STATE.OK);
-											//Test 3.16.3 b (suite)
-											else if(arrivalTime > param3_16_3b) 
+											if (vJAtStop.getElapseDuration() == null)
 											{
-												ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_b", Report.STATE.ERROR,
-														String.valueOf(arrivalTime),String.valueOf(param3_16_3b));
-												report3_16_3.addItem(detailReportItem);	
+												double departureTime = (vJAtStop.getDepartureTime() != null) ? vJAtStop.getDepartureTime().getTime() /1000 : 0;
+												double arrivalTime = (vJAtStop2.getArrivalTime() != null) ? vJAtStop2.getArrivalTime().getTime() /1000 : ((vJAtStop2.getDepartureTime() != null) ? vJAtStop2.getDepartureTime().getTime() /1000 : 1000) ;
+												if(departureTime <= arrivalTime)
+													report3_16_3.updateStatus(Report.STATE.OK);
+												//Test 3.16.3 b (suite)
+												else if(arrivalTime > param3_16_3b) 
+												{
+													ReportItem detailReportItem = new DetailReportItem("Test3_Sheet16_Step3_error_b", Report.STATE.ERROR,
+															String.valueOf(arrivalTime),String.valueOf(param3_16_3b));
+													report3_16_3.addItem(detailReportItem);	
+												}
+												else
+													report3_16_3.updateStatus(Report.STATE.OK);
 											}
-											else
-												report3_16_3.updateStatus(Report.STATE.OK);
-
 											break;
 										}
 									}
@@ -533,8 +538,6 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 	class IntervalDuration 
 	{
 		@Getter String vehicleJourneyId;
-		//		@Getter String routeId;
-		//		@Getter String lineId;
 		@Getter String firstStopPointId;
 		@Getter String nextStopPointId;
 		@Getter long rank;
@@ -544,15 +547,18 @@ public class ValidationVehicleJourney extends AbstractValidation implements IVal
 		public IntervalDuration(VehicleJourneyAtStop first, VehicleJourneyAtStop next)
 		{
 			vehicleJourneyId = first.getVehicleJourney().getObjectId();
-			//			Route route = (first.getVehicleJourney().getRoute() != null)? first.getVehicleJourney().getRoute():first.getVehicleJourney().getJourneyPattern().getRoute();
-			//			if (route != null)
-			//			{
-			//				routeId = route.getObjectId();
-			//				if (route.getLine() != null)
-			//					lineId = route.getLine().getObjectId();
-			//			}
 			rank = first.getOrder();
-			durationInMillis = next.getArrivalTime().getTime() - first.getDepartureTime().getTime() ;
+			if (next.getElapseDuration() != null) 
+			{
+				durationInMillis = next.getElapseDuration().getTime();
+			}
+			else
+			{
+				if (next.getArrivalTime() != null)
+				   durationInMillis = next.getArrivalTime().getTime() - first.getDepartureTime().getTime() ;
+				else
+				   durationInMillis = next.getDepartureTime().getTime() - first.getDepartureTime().getTime() ;
+			}
 			if (durationInMillis < 0) durationInMillis += 86400000; // passage à minuit
 			firstStopPointId = first.getStopPoint().getObjectId();
 			nextStopPointId = next.getStopPoint().getObjectId();
