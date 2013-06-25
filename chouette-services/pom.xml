@@ -21,22 +21,6 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-referencing</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-jts-wrapper</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-epsg-hsql</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.media</groupId>
-			<artifactId>jai-core</artifactId>
-		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

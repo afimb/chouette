@@ -123,11 +123,8 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		if (stopArea.getLongLatType() != null)
 			longLatType = stopArea.getLongLatType().value();
 		ps.setString(14, longLatType);
-		ps.setBigDecimal(15, stopArea.getX());
-		ps.setBigDecimal(16, stopArea.getY());
-		ps.setString(17, stopArea.getProjectionType());
-		ps.setString(18, stopArea.getCountryCode());
-		ps.setString(19, stopArea.getStreetName());
+		ps.setString(15, stopArea.getCountryCode());
+		ps.setString(16, stopArea.getStreetName());
 
 	}
 

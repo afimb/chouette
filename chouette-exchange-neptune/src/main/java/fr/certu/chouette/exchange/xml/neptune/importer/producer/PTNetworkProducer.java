@@ -20,6 +20,12 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, chouette
 		PTNetwork sharedBean = sharedData.get(ptNetwork);
 		if (sharedBean != null) return sharedBean;
 		
+		if (ptNetwork.getObjectId().contains(":PTNetwork:"))
+		{
+			// correct ptnetwork id when old fashioned form
+			ptNetwork.setObjectId(ptNetwork.getObjectId().replace(":PTNetwork:", ":"+PTNetwork.PTNETWORK_KEY+":"));
+		}
+		
 		// VersionDate mandatory
 		ptNetwork.setVersionDate(getDate(xmlPTNetwork.getVersionDate()));
 		

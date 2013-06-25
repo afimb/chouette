@@ -26,12 +26,12 @@ public class FileValidationLogMessage extends LogMessage
       super();
    }
 
-   public FileValidationLogMessage(long validationId,String format,Report report,int position)
+   public FileValidationLogMessage(Long validationId,String format,Report report,int position)
    {
       super(validationId,format,report,position);
    }
 
-   public FileValidationLogMessage(long validationId,String format,ReportItem item, String prefix, int position)
+   public FileValidationLogMessage(Long validationId,String format,ReportItem item, String prefix, int position)
    {
       super(validationId,format,item,prefix,position);
    }

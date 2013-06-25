@@ -66,7 +66,12 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.FileValidationLogMessage;
+import fr.certu.chouette.plugin.model.GuiExport;
+import fr.certu.chouette.plugin.model.GuiFileValidation;
+import fr.certu.chouette.plugin.model.GuiImport;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
+import fr.certu.chouette.plugin.model.Organisation;
+import fr.certu.chouette.plugin.model.Referential;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -145,9 +150,19 @@ public class Command
 
 	@Setter private ValidationParameters validationParameters;
 
+	@Setter private IDaoTemplate<Organisation> organisationDao;;
+
+	@Setter private IDaoTemplate<Referential> referentialDao;;
+
+	@Setter private IDaoTemplate<GuiImport> importDao;;
+
 	@Setter private IDaoTemplate<ImportLogMessage> importLogMessageDao;;
 
+	@Setter private IDaoTemplate<GuiExport> exportDao;
+
 	@Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
+
+	@Setter private IDaoTemplate<GuiFileValidation> fileValidationDao;
 
 	@Setter private IDaoTemplate<FileValidationLogMessage> fileValidationLogMessageDao;
 
@@ -549,8 +564,36 @@ public class Command
 			Map<String, List<String>> parameters) 
 	{
 		String format = getSimpleString(parameters,"format");
-		long exportId = Long.parseLong(getSimpleString(parameters,"exportid"));
+		Long exportId = Long.valueOf(getSimpleString(parameters,"exportid"));
 
+		if (!exportDao.exists(exportId))
+		{
+			// error export not found
+			logger.error("export not found "+exportId);
+            return 1;
+		}
+		GuiExport guiExport = exportDao.get(exportId);
+		logger.info("Export data for export id "+exportId);
+		logger.info("  type : "+guiExport.getType());
+		logger.info("  options : "+guiExport.getOptions());
+		logger.info("  references type : "+guiExport.getReferencesType());
+		logger.info("  reference ids : "+guiExport.getReferenceIds());
+
+		Referential referential = referentialDao.get(guiExport.getReferentialId());
+		logger.info("Referential "+guiExport.getReferentialId());
+		logger.info("  name : "+referential.getName());
+		logger.info("  slug : "+referential.getSlug());
+		logger.info("  projection type : "+referential.getProjectionType());
+		
+		String projectionType = null;
+		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
+		{
+			logger.info("  projection type for export: "+referential.getProjectionType());
+			projectionType = referential.getProjectionType();
+		}
+		// set projection for export (inactive if not set)
+		geographicService.switchProjection(projectionType);
+		
 		List<Report> reports = new ArrayList<Report>();
 		// GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
 		
@@ -615,7 +658,6 @@ public class Command
 		}
 		catch (Exception e)
 		{
-			System.out.println("export failed "+e.getMessage());
 			logger.error("export failed "+e.getMessage(),e);
 			GuiReport errorReport = new GuiReport("EXPORT_ERROR",Report.STATE.ERROR);
 			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
@@ -905,7 +947,7 @@ public class Command
 			geographicService.switchProjection(srid);
 		}
 
-		long importId = Long.parseLong(getSimpleString(parameters,"importid"));
+		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
 		int beanCount = 0;
 
 		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
@@ -1235,7 +1277,7 @@ public class Command
 			 Map<String, List<String>> parameters)
 					 throws ChouetteException 
 					 {
-		 long validationId = Long.parseLong(getSimpleString(parameters,"validationid"));
+		 Long validationId = Long.valueOf(getSimpleString(parameters,"validationid"));
 
 		 List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
 
@@ -1551,7 +1593,7 @@ public class Command
 		 return values;      
 	 }
 
-	 private int saveExportReport(long exportId, String format,Report report,int position)
+	 private int saveExportReport(Long exportId, String format,Report report,int position)
 	 {
 		 String prefix = report.getOriginKey();
 		 if (prefix == null || report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
@@ -1568,7 +1610,7 @@ public class Command
 		 return position;
 	 }
 
-	 private int saveExportReportItem(long exportId, String format,ReportItem item, String prefix, int position)
+	 private int saveExportReportItem(Long exportId, String format,ReportItem item, String prefix, int position)
 	 {
 		 ExportLogMessage message = new ExportLogMessage(exportId,format,item,prefix,position++);
 		 exportLogMessageDao.save(message);
@@ -1583,10 +1625,10 @@ public class Command
 		 return position;
 	 }
 
-	 private void saveExportReports(long exportId, String format,List<Report> reports)
+	 private void saveExportReports(Long exportId, String format,List<Report> reports)
 	 {
 		 int position = 1;
-		 Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(exportId));
+		 Filter filter = Filter.getNewEqualsFilter("parentId", exportId);
 		 List<ExportLogMessage> messages = exportLogMessageDao.select(filter);
 		 if (messages != null)
 		 {
@@ -1606,10 +1648,10 @@ public class Command
 
 	 }
 
-	 private void saveFileValidationReport(long validationId, Report report)
+	 private void saveFileValidationReport(Long validationId, Report report)
 	 {
 		 int position = 1;
-		 Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(validationId));
+		 Filter filter = Filter.getNewEqualsFilter("parentId", validationId);
 		 List<FileValidationLogMessage> messages = fileValidationLogMessageDao.select(filter);
 		 if (messages != null)
 		 {
@@ -1636,7 +1678,7 @@ public class Command
 
 	 }
 
-	 private int saveFileValidationReportItem(long validationId, ReportItem item, String prefix, int position)
+	 private int saveFileValidationReportItem(Long validationId, ReportItem item, String prefix, int position)
 	 {
 		 FileValidationLogMessage message = new FileValidationLogMessage(validationId,"",item,"",position++);
 		 fileValidationLogMessageDao.save(message);
@@ -1651,7 +1693,7 @@ public class Command
 		 return position;
 	 }
 
-	 private int saveImportReport(long importId, String format,Report report,int position)
+	 private int saveImportReport(Long importId, String format,Report report,int position)
 	 {
 		 String prefix = report.getOriginKey();
 		 if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
@@ -1668,7 +1710,7 @@ public class Command
 		 return position;
 	 }
 
-	 private int saveImportReportItem(long importId, String format,ReportItem item, String prefix, int position)
+	 private int saveImportReportItem(Long importId, String format,ReportItem item, String prefix, int position)
 	 {
 		 ImportLogMessage message = new ImportLogMessage(importId,format,item,prefix,position++);
 		 importLogMessageDao.save(message);
@@ -1683,10 +1725,10 @@ public class Command
 		 return position;
 	 }
 
-	 private int saveImportReports(long importId, String format, List<Report> reports)
+	 private int saveImportReports(Long importId, String format, List<Report> reports)
 	 {
 		 int position = 1;
-		 Filter filter = Filter.getNewEqualsFilter("parentId", Long.valueOf(importId));
+		 Filter filter = Filter.getNewEqualsFilter("parentId", importId);
 		 List<ImportLogMessage> messages = importLogMessageDao.select(filter);
 		 if (messages != null)
 		 {
@@ -1700,7 +1742,7 @@ public class Command
 	 }
 
 	 
-	 private int saveImportReports(long importId, String format, int position, List<Report> reports)
+	 private int saveImportReports(Long importId, String format, int position, List<Report> reports)
 	 {
 		 for (Report report : reports)
 		 {

@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-@ContextConfiguration(locations={"classpath:chouetteContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml"})
 public class TimetableTests extends AbstractTestNGSpringContextTests
 {
 

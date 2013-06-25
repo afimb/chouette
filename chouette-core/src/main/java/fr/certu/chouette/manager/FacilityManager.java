@@ -18,6 +18,11 @@ public class FacilityManager extends AbstractNeptuneManager<Facility>
 		super(Facility.class,Facility.FACILITY_KEY);
 	}
 
+	public void init()
+	{
+		Facility.setGeographicService(getGeographicService());
+	}
+	
 	@Override
 	protected Logger getLogger() 
 	{

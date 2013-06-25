@@ -35,7 +35,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 
-@ContextConfiguration(locations={"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
 public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 {

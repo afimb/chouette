@@ -21,7 +21,12 @@ import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.FileValidationLogMessage;
+import fr.certu.chouette.plugin.model.GuiExport;
+import fr.certu.chouette.plugin.model.GuiFileValidation;
+import fr.certu.chouette.plugin.model.GuiImport;
 import fr.certu.chouette.plugin.model.ImportLogMessage;
+import fr.certu.chouette.plugin.model.Organisation;
+import fr.certu.chouette.plugin.model.Referential;
 
 public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends HibernateDaoSupport implements IDaoTemplate<T>
 {
@@ -34,9 +39,29 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
       this.type = type;
    }
 
+   public static NeptuneObjectHibernateDaoTemplate<Organisation> createOrganisationDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<Organisation>( Organisation.class);
+   }
+
+   public static NeptuneObjectHibernateDaoTemplate<Referential> createReferentialDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<Referential>( Referential.class);
+   }
+
+   public static NeptuneObjectHibernateDaoTemplate<GuiImport> createImportDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<GuiImport>( GuiImport.class);
+   }
+
    public static NeptuneObjectHibernateDaoTemplate<ImportLogMessage> createImportLogMessageDao()
    {
       return new NeptuneObjectHibernateDaoTemplate<ImportLogMessage>( ImportLogMessage.class);
+   }
+
+   public static NeptuneObjectHibernateDaoTemplate<GuiExport> createExportDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<GuiExport>( GuiExport.class);
    }
 
    public static NeptuneObjectHibernateDaoTemplate<ExportLogMessage> createExportLogMessageDao()
@@ -44,6 +69,11 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
       return new NeptuneObjectHibernateDaoTemplate<ExportLogMessage>( ExportLogMessage.class);
    }
    
+   public static NeptuneObjectHibernateDaoTemplate<GuiFileValidation> createFileValidationDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<GuiFileValidation>( GuiFileValidation.class);
+   }
+
    public static NeptuneObjectHibernateDaoTemplate<FileValidationLogMessage> createFileValidationLogMessageDao()
    {
       return new NeptuneObjectHibernateDaoTemplate<FileValidationLogMessage>( FileValidationLogMessage.class);
@@ -52,7 +82,6 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    /* (non-Javadoc)
     * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
     */
-   @SuppressWarnings("unchecked")
    public T get(Long id)
    {
       logger.debug("invoke get on "+type.getSimpleName());

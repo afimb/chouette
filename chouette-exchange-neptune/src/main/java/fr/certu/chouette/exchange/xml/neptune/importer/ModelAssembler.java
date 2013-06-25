@@ -838,6 +838,14 @@ public class ModelAssembler
 	{
 		for (Facility facility : facilities)
 		{
+			if (facility.getContainedIn() != null)
+			{
+				StopArea bean = getObjectFromId(facility.getContainedIn(), StopArea.class);
+				if (bean != null)
+				{
+					facility.setContainedInStopArea(bean);
+				}
+			}
 			if (facility.getStopAreaId() != null)
 			{
 				StopArea bean = getObjectFromId(facility.getStopAreaId(), StopArea.class);

@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-@ContextConfiguration(locations={"classpath:chouetteContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml"})
 public class NeptuneIdentifiedObjectTests extends AbstractTestNGSpringContextTests
 {
 

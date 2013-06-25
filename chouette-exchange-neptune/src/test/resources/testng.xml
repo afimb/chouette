@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Factory" verbose="5" >
-  <test name="ImportNeptune" >
+  <test name="ExchangeNeptune" >
   <parameter name="neptuneFile"  value="C_NEPTUNE_1.xml"/>
   <parameter name="neptuneFileUtf8"  value="C_NEPTUNE_1_utf8.xml"/>
   <parameter name="neptuneFileUtf8Bom"  value="C_NEPTUNE_1_utf8_bom.xml"/>

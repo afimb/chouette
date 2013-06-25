@@ -9,8 +9,15 @@
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
    default-init-method="init" default-lazy-init="false">
 	
+    <bean id="geographicService" class="fr.certu.chouette.service.geographic.GeographicService">
+    	<property name="stopAreaManager" ref="stopAreaManager"/>
+    	<property name="epsgLambert" value="${Lambert.SRID}" />
+    	<property name="epsgWGS84" value="${WGS84.SRID}" />
+    </bean>
+
 	<bean id="abstractNeptuneManager" class="fr.certu.chouette.manager.AbstractNeptuneManager" abstract="true" >
         <property name="objectIdDefaultPrefix" value="${system.code}"/>
+        <property name="geographicService" ref="geographicService" />
 	</bean>
 	
 	

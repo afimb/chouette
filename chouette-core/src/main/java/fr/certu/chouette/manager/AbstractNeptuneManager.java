@@ -41,6 +41,7 @@ import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
 import fr.certu.chouette.plugin.validation.ValidationReport;
 import fr.certu.chouette.plugin.validation.ValidationStepDescription;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * @author michel
@@ -73,8 +74,9 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 */
 	private Class<?> neptuneType ;
 
-	private @Getter String objectIdKey;
+	@Getter private String objectIdKey;
 
+	@Getter @Setter private IGeographicService geographicService;
 
 	public AbstractNeptuneManager(Class<?> neptuneType,String objectIdKey) 
 	{

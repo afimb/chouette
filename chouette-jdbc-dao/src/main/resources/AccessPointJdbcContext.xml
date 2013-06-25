@@ -27,9 +27,6 @@
 				longitude,
 				latitude,
 				long_lat_type,
-				x,
-				y,
-				projection_type,
 				contained_in,
 				stop_area_id,
 				openning_time,
@@ -39,7 +36,7 @@
 				mobility_restricted_suitability,
 				stairs_availability
 				)
-				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?)
+				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -69,9 +66,6 @@
 				longitude = ?,
 				latitude = ?,
 				long_lat_type = ?,
-				x = ?,
-				y = ?,
-				projection_type = ?,
 				contained_in = ?,
 				stop_area_id = ?,
 				openning_time = ?,

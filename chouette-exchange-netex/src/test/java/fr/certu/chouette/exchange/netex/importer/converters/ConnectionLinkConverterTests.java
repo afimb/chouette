@@ -4,30 +4,31 @@
  */
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
+import java.io.File;
+import java.io.FileInputStream;
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.text.ParseException;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.springframework.test.context.ContextConfiguration;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import java.io.File;
-import java.io.FileInputStream;
-import java.math.BigDecimal;
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.springframework.test.context.ContextConfiguration;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
-import org.apache.log4j.Logger;
 
 
-@ContextConfiguration(locations = {"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
 public class ConnectionLinkConverterTests {
 

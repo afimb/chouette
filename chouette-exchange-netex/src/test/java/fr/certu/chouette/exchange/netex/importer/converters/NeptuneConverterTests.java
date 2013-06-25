@@ -19,7 +19,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
-@ContextConfiguration(locations = {"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 public class NeptuneConverterTests extends AbstractTestNGSpringContextTests {
 
     private NeptuneConverter neptuneConverter;

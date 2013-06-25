@@ -12,6 +12,7 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * Neptune StopArea 
@@ -37,9 +38,10 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
-public class StopArea extends NeptuneIdentifiedObject
+public class StopArea extends NeptuneLocalizedObject
 {
 	private static final long    serialVersionUID            = 4548672479038099240L;
+	@Setter @Getter private static IGeographicService geographicService;
 	// constant for persistence fields
 	/**
 	 * name of comment attribute for {@link Filter} attributeName construction
@@ -85,14 +87,6 @@ public class StopArea extends NeptuneIdentifiedObject
 	 */
 	public static final String   CONTAINEDSTOPPOINTS         = "containedStopPoints";
 
-	public static final String LONGITUDE ="longitude"; 
-	public static final String LATITUDE ="latitude"; 
-	public static final String LONGLAT_TYPE="longLatType"; 
-	public static final String COUNTRY_CODE="countryCode"; 
-	public static final String STREET_NAME="streetName"; 
-	public static final String X="x"; 
-	public static final String Y="y"; 
-	public static final String PROJECTION_TYPE="projectionType"; 
 
 	/**
 	 * predefined filter to limit get on StopPlaces
@@ -323,48 +317,6 @@ public class StopArea extends NeptuneIdentifiedObject
 	 */
 	@Getter @Setter
 	private String             parentObjectId;
-
-	/**
-	 * Spatial Referential Type (actually only WGS84 is valid)  
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private LongLatTypeEnum longLatType;
-	/**
-	 * Latitude position of area 
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal latitude;
-	/**
-	 * Longitude position of area
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal longitude;
-	/**
-	 * address street name 
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private String streetName;
-	/**
-	 * address city or district code
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private String countryCode;
-
-	/**
-	 * x coordinate
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal x;
-	/**
-	 * y coordinate
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal y;
-	/**
-	 * projection system name (f.e. : epgs:27578)
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private String projectionType;
 
 	/**
 	 * add a facility if not already present
@@ -790,6 +742,8 @@ public class StopArea extends NeptuneIdentifiedObject
 		if (areaCentroid != null)
 			areaCentroid.populateStopArea(this);
 	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -810,14 +764,6 @@ public class StopArea extends NeptuneIdentifiedObject
 		sb.append("\n").append(indent).append("  nearestTopicName = ").append(nearestTopicName);
 		sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
 		sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
-		sb.append("\n").append(indent).append("  streetName = ").append(streetName);
-		sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
-		sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
-		sb.append("\n").append(indent).append("  latitude = ").append(latitude);
-		sb.append("\n").append(indent).append("  longitude = ").append(longitude);
-		sb.append("\n").append(indent).append("  x = ").append(x);
-		sb.append("\n").append(indent).append("  y = ").append(y);
-		sb.append("\n").append(indent).append("  projection = ").append(projectionType);
 
 		if (areaCentroid != null)
 		{
@@ -898,6 +844,7 @@ public class StopArea extends NeptuneIdentifiedObject
 	{
 		if (isCompleted()) return;
 		super.complete();
+		geographicService.convertToProjection(this);
 		List<StopPoint> containsPoints = getContainedStopPoints();
 		if (containsPoints != null && !containsPoints.isEmpty())
 		{

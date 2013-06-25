@@ -14,7 +14,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -22,14 +21,14 @@ import fr.certu.chouette.plugin.report.ReportItem;
 /**
  *
  */
-public abstract class LogMessage extends NeptuneObject
+public abstract class LogMessage  extends ActiveRecordObject
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2351542100574918787L;
 
-	@Getter @Setter private long parentId;
+	@Getter @Setter private Long parentId;
 	@Getter @Setter private String key;
 	@Getter @Setter private String arguments = null;
 	@Getter @Setter private String severity;
@@ -43,7 +42,7 @@ public abstract class LogMessage extends NeptuneObject
 		updatedAt = createdAt;
 	}
 
-	public LogMessage(long parentId,String format,Report report,int position)
+	public LogMessage(Long parentId,String format,Report report,int position)
 	{
 		this();
 		this.parentId = parentId;
@@ -65,7 +64,7 @@ public abstract class LogMessage extends NeptuneObject
 		}
 	}
 
-	public LogMessage(long parentId,String format,ReportItem item, String prefix, int position)
+	public LogMessage(Long parentId,String format,ReportItem item, String prefix, int position)
 	{
 		this();
 		this.parentId = parentId;

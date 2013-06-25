@@ -67,11 +67,12 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 	public AreaCentroid(StopArea area)
 	{
 		this.containedInStopArea = area;
-		this.address = new Address(area);
+		if (area.hasAddress())
+		   this.address = new Address(area);
 		this.longLatType = area.getLongLatType();
 		this.latitude = area.getLatitude();
 		this.longitude = area.getLongitude();
-		if (area.getProjectionType() != null)
+		if (area.hasProjection())
 		   this.projectedPoint = new ProjectedPoint(area);
 	}
 	

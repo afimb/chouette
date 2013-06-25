@@ -23,6 +23,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -75,22 +76,15 @@ public class GeographicService implements IGeographicService
 	@Override
 	public void propagateBarycentre() 
 	{
-		// Filter latFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LATITUDE);
-		// Filter lonFilter = Filter.getNewIsNullFilter(StopArea.AREACENTROID+"."+AreaCentroid.LONGITUDE);
-		// Filter coordFilter = Filter.getNewOrFilter(latFilter,lonFilter);
 		Filter comtypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.COMMERCIALSTOPPOINT.toString());
-		// Filter comFilter = Filter.getNewAndFilter(comtypeFilter,coordFilter);
 		Filter placetypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.STOPPLACE.toString());
-		// Filter placeFilter = Filter.getNewAndFilter(placetypeFilter,coordFilter);
 		List<StopArea> commercials;
 		List<StopArea> stopPlaces;
 		// TODO ITL
 		try 
 		{
-//			commercials = stopAreaManager.getAll(null,comFilter);
-//			stopPlaces = stopAreaManager.getAll(null,placeFilter);
-         commercials = stopAreaManager.getAll(null,comtypeFilter);
-         stopPlaces = stopAreaManager.getAll(null,placetypeFilter);
+			commercials = stopAreaManager.getAll(null,comtypeFilter);
+			stopPlaces = stopAreaManager.getAll(null,placetypeFilter);
 		} 
 		catch (ChouetteException e) 
 		{
@@ -129,8 +123,6 @@ public class GeographicService implements IGeographicService
 				}
 				if (count > 0)
 				{
-					// if (commercial.getAreaCentroid() == null) commercial.setAreaCentroid(new AreaCentroid());
-					// AreaCentroid centroid = commercial.getAreaCentroid();
 					commercial.setLatitude(new BigDecimal(sumLatitude/count));
 					commercial.setLongitude(new BigDecimal(sumLongitude/count));
 					commercial.setLongLatType(LongLatTypeEnum.WGS84);
@@ -164,7 +156,7 @@ public class GeographicService implements IGeographicService
 					LongLatTypeEnum longLatType = null;
 					for (StopArea child : place.getContainedStopAreas()) 
 					{
-						if (child.getAreaCentroid() != null && child.getLatitude() != null && child.getLongitude() != null)
+						if (child.getLatitude() != null && child.getLongitude() != null)
 						{
 							sumLatitude += child.getLatitude().doubleValue();
 							sumLongitude += child.getLongitude().doubleValue();
@@ -192,8 +184,6 @@ public class GeographicService implements IGeographicService
 					if (differ) continue; // 
 					if (count > 0)
 					{
-						// if (place.getAreaCentroid() == null) place.setAreaCentroid(new AreaCentroid());
-						// AreaCentroid centroid = place.getAreaCentroid();
 						place.setLatitude(new BigDecimal(sumLatitude/count));
 						place.setLongitude(new BigDecimal(sumLongitude/count));
 						place.setLongLatType(LongLatTypeEnum.WGS84);
@@ -265,8 +255,6 @@ public class GeographicService implements IGeographicService
 				}
 				if (count > 0)
 				{
-					// if (area.getAreaCentroid() == null) area.setAreaCentroid(new AreaCentroid());
-					// AreaCentroid centroid = area.getAreaCentroid();
 					area.setLatitude(new BigDecimal(sumLatitude/count));
 					area.setLongitude(new BigDecimal(sumLongitude/count));
 					area.setLongLatType(LongLatTypeEnum.WGS84);
@@ -329,11 +317,11 @@ public class GeographicService implements IGeographicService
 				logger.error("cannot save StopAreas :" +e.getMessage());
 			}
 		}
-		
+
 	}
 
 	@Override
-	public void convertToLambert2e() 
+	public void convertToProjection() 
 	{
 		// build filter on projected point x or y nulls and lattitude and longitude not nulls
 		Filter xFilter = Filter.getNewIsNullFilter(StopArea.X);
@@ -355,7 +343,7 @@ public class GeographicService implements IGeographicService
 		}
 		for (StopArea stopArea : areas) 
 		{
-			if (convertToLambert2e(stopArea)) 
+			if (convertToProjection(stopArea)) 
 			{
 				toBeSaved.add(stopArea);
 			}
@@ -372,15 +360,19 @@ public class GeographicService implements IGeographicService
 				logger.error("cannot save StopAreas :" +e.getMessage());
 			}
 		}
-		
-		
+
+
 	}
-	
-	public boolean convertToWGS84(StopArea area)
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.service.geographic.IGeographicService#convertToWGS84(fr.certu.chouette.model.neptune.StopArea)
+	 */
+	public boolean convertToWGS84(NeptuneLocalizedObject area)
 	{
 		if (sourceCRS == null ) 
 		{
 			logger.error("no projection defined ");
+
 			return false;
 		}
 		if (area.getProjectionType() == null || area.getX() == null || area.getY() == null)
@@ -412,9 +404,18 @@ public class GeographicService implements IGeographicService
 	}
 
 
-	public boolean convertToLambert2e(StopArea area)
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.service.geographic.IGeographicService#convertToProjection(fr.certu.chouette.model.neptune.StopArea)
+	 */
+	public boolean convertToProjection(NeptuneLocalizedObject area)
 	{
-		if (targetCRS == null ) return false;
+		if (sourceCRS == null ) 
+		{
+			area.setX(null);
+			area.setY(null);
+			area.setProjectionType(null);
+			return true;
+		}
 		Point point = factoryWGS84.createPoint(new Coordinate(area.getLatitude().doubleValue(),
 				area.getLongitude().doubleValue()));
 
@@ -436,20 +437,30 @@ public class GeographicService implements IGeographicService
 		return true;
 
 	}
-	
-	 public void switchProjection(String srid)
-	 {
-	    epsgLambert = Integer.parseInt(srid);
-	      try {
-	         sourceCRS = CRS.decode("epsg:"+epsgLambert);
-	         transformLambert2e = CRS.findMathTransform(targetCRS, sourceCRS);
-	      } 
-	      catch (FactoryException e) 
-	      {
-	         // TODO Auto-generated catch block
-	         logger.error("fail to initialize Geographic Tool :" +e.getMessage());
-	      }
-	      factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
-	 }
+
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.service.geographic.IGeographicService#switchProjection(java.lang.String)
+	 */
+	public void switchProjection(String srid)
+	{
+		if (srid == null)
+		{
+			sourceCRS = null; 
+		}
+		else
+		{
+			epsgLambert = Integer.parseInt(srid);
+			try {
+				sourceCRS = CRS.decode("epsg:"+epsgLambert);
+				transformLambert2e = CRS.findMathTransform(targetCRS, sourceCRS);
+			} 
+			catch (FactoryException e) 
+			{
+				// TODO Auto-generated catch block
+				logger.error("fail to initialize Geographic Tool :" +e.getMessage());
+			}
+			factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
+		}
+	}
 
 }

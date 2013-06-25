@@ -40,10 +40,15 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 {
    private static final Logger logger = Logger.getLogger(StopAreaManager.class);
 
-   public StopAreaManager() 
+	public StopAreaManager() 
    {
       super(StopArea.class,StopArea.STOPAREA_KEY);
    }
+	
+	public void init()
+	{
+		StopArea.setGeographicService(getGeographicService());		
+	}
 
    @Override
    protected Report propagateValidation(User user, List<StopArea> beans,

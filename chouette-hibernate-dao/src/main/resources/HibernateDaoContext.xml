@@ -60,6 +60,7 @@
 				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
                 <!-- external objects : log messages -->
+				<value>fr/certu/chouette/model/neptune/referential.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/import.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/export.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/FileValidation.hbm.xml</value>
@@ -293,13 +294,35 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	<bean id="organisationDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createOrganisationDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="referentialDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createReferentialDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="importDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createImportDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 	<bean id="importLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
 		factory-method="createImportLogMessageDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
+	<bean id="exportDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createExportDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
 	<bean id="exportLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
 		factory-method="createExportLogMessageDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="fileValidationDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createFileValidationDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	

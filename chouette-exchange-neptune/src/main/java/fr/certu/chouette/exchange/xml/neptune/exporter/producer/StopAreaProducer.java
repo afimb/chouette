@@ -21,7 +21,7 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 		castorStopArea.setComment(getNotEmptyString(stopArea.getComment()));
 		castorStopArea.setName(stopArea.getName());
 		
-		castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
+		// castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
 		Set<String> containsList = new HashSet<String>();
 		if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))

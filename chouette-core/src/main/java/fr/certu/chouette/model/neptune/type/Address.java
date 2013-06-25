@@ -1,10 +1,9 @@
 package fr.certu.chouette.model.neptune.type;
 
-import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.StopArea;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.StopArea;
 
 /**
  * Address for accesspoints or stopareas
@@ -32,23 +31,12 @@ public class Address
 		this.countryCode = area.getCountryCode();
 	}
 
-	public Address(AccessPoint access) 
-	{
-		this.streetName = access.getStreetName();
-		this.countryCode = access.getCountryCode();
-	}
-
 	public void populateStoparea(StopArea area)
 	{
 		area.setStreetName(streetName);
 		area.setCountryCode(countryCode);
 	}
 	
-	public void populateAccessPoint(AccessPoint access)
-	{
-		access.setStreetName(streetName);
-		access.setCountryCode(countryCode);
-	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
