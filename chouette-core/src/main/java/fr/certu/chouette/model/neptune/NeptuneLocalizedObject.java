@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * Abstract object used for all Localized Neptune Object
@@ -23,6 +24,8 @@ import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 @SuppressWarnings("serial")
 public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 {
+	// geographic tool for coordinate conversion
+	@Setter @Getter private static IGeographicService geographicService;
 	// constant for persistence fields
 	public static final String LONGITUDE ="longitude"; 
 	public static final String LATITUDE ="latitude"; 
@@ -118,5 +121,19 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 
 		return sb.toString();
 	}
+	
+	@Override
+	public void complete() 
+	{
+		super.complete();
+		geographicService.convertToProjection(this);
+	}
+
+    public void toLatLong()
+    {
+    	if (!hasProjection()) return;
+    	geographicService.convertToWGS84(this);
+    	
+    }
 
 }

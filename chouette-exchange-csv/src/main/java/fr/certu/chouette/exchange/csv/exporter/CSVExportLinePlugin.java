@@ -114,6 +114,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
                 		logger.error("cannot export "+line.getName()+" too much routes (> 2)");
                 		continue;
                 	}
+                	line.complete();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     				try {
 						exportLine(new OutputStreamWriter(stream, "UTF-8"), line);
@@ -145,6 +146,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 			Line line = beans.get(0);
 			try 
 			{
+				line.complete();
 				exportLine(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), line);
 			} 
 			catch (IOException e) 
@@ -155,7 +157,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 	}
 
 	private void exportLine(Writer writer, Line line) {
-		List<Timetable> timetables = getLineTimetables(line);		
+		List<Timetable> timetables = line.getTimetables();
 		
 		try {
 			CSVWriter csvWriter = new CSVWriter(writer, ';',CSVWriter.NO_QUOTE_CHARACTER);
@@ -180,23 +182,4 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 		}
 	}
 
-	private List<Timetable> getLineTimetables(Line line) {
-		List<Route> routes = line.getRoutes();
-		
-		List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();
-		for(Route route : routes){
-			journeyPatterns.addAll(route.getJourneyPatterns());
-		}
-		
-		List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
-		for(JourneyPattern journeyPattern : journeyPatterns){
-			vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
-		}
-		
-		HashSet<Timetable> timetablesHashSet = new HashSet<Timetable>();
-		for(VehicleJourney vehicleJourney : vehicleJourneys){
-			timetablesHashSet.addAll(vehicleJourney.getTimetables());
-		}
-		return Arrays.asList(timetablesHashSet.toArray(new Timetable[timetablesHashSet.size()]));
-	}
 }

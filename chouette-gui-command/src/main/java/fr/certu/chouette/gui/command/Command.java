@@ -595,7 +595,6 @@ public class Command
 		geographicService.switchProjection(projectionType);
 		
 		List<Report> reports = new ArrayList<Report>();
-		// GuiReport loadReport = new GuiReport("LOAD",Report.STATE.OK);
 		
 		String[] ids = new String[0];
 		if (parameters.containsKey("id"))
@@ -941,13 +940,34 @@ public class Command
 		String format = getSimpleString(parameters,"format");
 		String inputFile = getSimpleString(parameters,"inputfile");
 		// String fileFormat = getSimpleString(parameters,"fileformat","");
-		String srid = getSimpleString(parameters,"srid","");
-		if (!srid.isEmpty())
-		{
-			geographicService.switchProjection(srid);
-		}
-
 		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
+		if (!importDao.exists(importId))
+		{
+			// error import not found
+			logger.error("import not found "+importId);
+            return 1;
+		}
+		GuiImport guiImport = importDao.get(importId);
+		logger.info("Export data for export id "+importId);
+		logger.info("  type : "+guiImport.getType());
+		logger.info("  options : "+guiImport.getOptions());
+
+		Referential referential = referentialDao.get(guiImport.getReferentialId());
+		logger.info("Referential "+guiImport.getReferentialId());
+		logger.info("  name : "+referential.getName());
+		logger.info("  slug : "+referential.getSlug());
+		logger.info("  projection type : "+referential.getProjectionType());
+		
+		String projectionType = null;
+		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
+		{
+			logger.info("  projection type for export: "+referential.getProjectionType());
+			projectionType = referential.getProjectionType();
+			parameters.put("srid", Arrays.asList(new String[]{projectionType}));
+		}
+		// set projection for import (inactive if not set)
+		geographicService.switchProjection(projectionType);
+
 		int beanCount = 0;
 
 		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));

@@ -17,6 +17,7 @@
 		<property name="ptNetworkProducer" ref="CSVNetworkImportProducer" />
 		<property name="timetableProducer" ref="CSVTimetableImportProducer" />
 		<property name="defaultObjectIdPrefix" value="${system.code}"/>
+		<property name="geographicService" ref="geographicService" />
 	</bean>
 
 </beans>

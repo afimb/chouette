@@ -1,3 +1,11 @@
+# Version 2.1.0 (en cours)
+* Suppression des coordonnées projetées en base
+** calcul à la volée pour les exports
+** conversion à la volée pour les imports
+* Amélioration de l'import GTFS
+** consolidation de l'import
+** clarification du rapport
+
 # Version 2.0.3 (27/05/13)
 * Import/export NeTex 
 * Fonctionnement sous Windows

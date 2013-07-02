@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
-import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * Neptune Facility : specific feature on different kind of Public Transport
@@ -20,7 +19,6 @@ public class Facility extends NeptuneLocalizedObject
 {
 	private static final long     serialVersionUID = -2150117548707325330L;
 
-	@Setter @Getter private static IGeographicService geographicService;
 	/**
 	 * Attached StopArea ObjectId when Facility concern a StopArea <br/>
 	 * (Import/Export purpose) <br/>
@@ -157,7 +155,6 @@ public class Facility extends NeptuneLocalizedObject
 		if (isCompleted())
 			return;
 		super.complete();
-		geographicService.convertToProjection(this);
         
 		containedIn = (containedInStopArea != null) ? containedInStopArea.getObjectId() : null;
 

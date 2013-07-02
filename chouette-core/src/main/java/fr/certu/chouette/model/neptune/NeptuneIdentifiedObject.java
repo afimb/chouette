@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +28,6 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
-   private static final Logger logger = Logger.getLogger(NeptuneIdentifiedObject.class); 
 	// constant for persistence fields
 	public static final String OBJECT_ID = "objectId"; 
 	public static final String OBJECT_VERSION = "objectVersion"; 

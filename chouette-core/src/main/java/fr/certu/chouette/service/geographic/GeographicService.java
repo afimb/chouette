@@ -234,7 +234,6 @@ public class GeographicService implements IGeographicService
 				double sumLatitude = 0.;
 				double sumLongitude = 0.;
 				int count = 0;
-				LongLatTypeEnum longLatType = null;
 				for (StopArea child : area.getContainedStopAreas()) 
 				{
 					if (child.getLatitude() != null && child.getLongitude() != null)
@@ -242,10 +241,6 @@ public class GeographicService implements IGeographicService
 						sumLatitude += child.getLatitude().doubleValue();
 						sumLongitude += child.getLongitude().doubleValue();
 						count ++;
-						if (longLatType == null && child.getLongLatType() != null)
-						{
-							longLatType = child.getLongLatType();
-						}
 					}
 					else 
 					{
@@ -372,10 +367,10 @@ public class GeographicService implements IGeographicService
 		if (sourceCRS == null ) 
 		{
 			logger.error("no projection defined ");
-
 			return false;
 		}
-		if (area.getProjectionType() == null || area.getX() == null || area.getY() == null)
+		
+		if (!area.hasProjection())
 		{
 			logger.error("no projected coordinate for "+ area.getName());
 			return false;
@@ -395,7 +390,6 @@ public class GeographicService implements IGeographicService
 		} 
 		catch (Exception e) 
 		{
-			// TODO report or throw exception
 			logger.error("fail to convert projected point to wgs84 :" +e.getMessage());
 			return false;
 		}

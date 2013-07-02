@@ -3,6 +3,7 @@ package fr.certu.chouette.manager;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 
 /**
  * 
@@ -19,7 +20,7 @@ public class AccessPointManager extends AbstractNeptuneManager<AccessPoint>
 
 	public void init()
 	{
-		AccessPoint.setGeographicService(getGeographicService());
+		NeptuneLocalizedObject.setGeographicService(getGeographicService());
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package fr.certu.chouette.model.neptune;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +9,7 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * Neptune StopArea 
@@ -41,7 +38,6 @@ import fr.certu.chouette.service.geographic.IGeographicService;
 public class StopArea extends NeptuneLocalizedObject
 {
 	private static final long    serialVersionUID            = 4548672479038099240L;
-	@Setter @Getter private static IGeographicService geographicService;
 	// constant for persistence fields
 	/**
 	 * name of comment attribute for {@link Filter} attributeName construction
@@ -844,7 +840,7 @@ public class StopArea extends NeptuneLocalizedObject
 	{
 		if (isCompleted()) return;
 		super.complete();
-		geographicService.convertToProjection(this);
+
 		List<StopPoint> containsPoints = getContainedStopPoints();
 		if (containsPoints != null && !containsPoints.isEmpty())
 		{

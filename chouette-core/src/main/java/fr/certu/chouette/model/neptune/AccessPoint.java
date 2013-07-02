@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
-import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * Neptune AccessPoint  
@@ -21,8 +20,6 @@ import fr.certu.chouette.service.geographic.IGeographicService;
 public class AccessPoint extends NeptuneLocalizedObject{
 	private static final long serialVersionUID = 7520070228185917225L;
 	
-	@Setter @Getter private static IGeographicService geographicService;
-
 	/**
 	 * Comment
 	 * <br/><i>readable/writable</i>
@@ -146,7 +143,6 @@ public class AccessPoint extends NeptuneLocalizedObject{
 	{
 		if (isCompleted()) return;
 		super.complete();
-		geographicService.convertToProjection(this);
 		if (getContainedIn() != null)
 		{
 			containedInStopArea = getContainedIn().getObjectId();

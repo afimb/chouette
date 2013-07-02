@@ -23,7 +23,7 @@ public class CompanyProducer extends AbstractModelProducer<Company>
    public static final String  EMAIL_TITLE        = "Email";
 
    @Override
-   public Company produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report)
+   public Company produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, String srid, Report report)
          throws ExchangeException
    {
       Company company = new Company();

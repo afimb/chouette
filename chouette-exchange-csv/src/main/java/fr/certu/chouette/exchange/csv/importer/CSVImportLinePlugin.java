@@ -49,7 +49,12 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.service.geographic.IGeographicService;
 
+/**
+ * @author michel
+ *
+ */
 public class CSVImportLinePlugin implements IImportPlugin<Line>
 {
 
@@ -74,6 +79,8 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
    @Getter
    @Setter
    private String              defaultObjectIdPrefix;
+   
+   @Setter private IGeographicService geographicService;
 
    /**
     * 
@@ -94,6 +101,9 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       ParameterDescription param3 = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false,
             defaultObjectIdPrefix);
       params.add(param3);
+      ParameterDescription param4 = new ParameterDescription("srid", ParameterDescription.TYPE.STRING, false,
+              false);
+        params.add(param4);
       description.setParameterDescriptions(params);
    }
 
@@ -124,6 +134,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       String filePath = null;
       String extension = "file extension";
       String objectIdPrefix = defaultObjectIdPrefix;
+      String srid = null;
       for (ParameterValue value : parameters)
       {
          if (value instanceof SimpleParameterValue)
@@ -140,6 +151,10 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             else if (svalue.getName().equalsIgnoreCase("objectIdPrefix"))
             {
                objectIdPrefix = svalue.getStringValue();
+            }
+            else if (svalue.getName().equalsIgnoreCase("srid"))
+            {
+               srid = svalue.getStringValue();
             }
             else
             {
@@ -172,13 +187,14 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
 
       // simple file processing
       logger.info("start import simple file " + filePath);
-      lines = processImport(filePath, objectIdPrefix, report);
+      lines = processImport(filePath, objectIdPrefix, srid, report);
       logger.info("import terminated");
       return lines;
    }
 
    /**
     * @param objectIdPrefix
+    * @param srid 
     * @param report
     * @param rootObject
     * @param validate
@@ -187,7 +203,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
     * @return
     * @throws ExchangeException
     */
-   private List<Line> processImport(String filePath, String objectIdPrefix, CSVReport report) throws ExchangeException
+   private List<Line> processImport(String filePath, String objectIdPrefix, String srid, CSVReport report) throws ExchangeException
    {
       ChouetteCsvReader csvReader = null;
       Map<String, Timetable> timetableMap = new HashMap<String, Timetable>();
@@ -195,6 +211,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       Company company = null;
       List<Line> lines = new ArrayList<Line>();
 
+      lineProducer.clean();
       try
       {
          File input = new File(filePath);
@@ -232,7 +249,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       CSVReportItem timetableCountReport = new CSVReportItem(CSVReportItem.KEY.TIMETABLE_COUNT,Report.STATE.OK);
       while (currentLine[TimetableProducer.TITLE_COLUMN].equals(TimetableProducer.TIMETABLE_LABEL_TITLE))
       {
-         Timetable timetable = timetableProducer.produce(csvReader, currentLine, objectIdPrefix, timetableCountReport);
+         Timetable timetable = timetableProducer.produce(csvReader, currentLine, objectIdPrefix, srid, timetableCountReport);
          if (timetable != null)
          {
             logger.debug("timetable \n" + timetable.toString());
@@ -244,14 +261,14 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       }
 
       if (currentLine == null) return null;
-      ptNetwork = ptNetworkProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+      ptNetwork = ptNetworkProducer.produce(csvReader, currentLine, objectIdPrefix, srid, report);
       if (ptNetwork == null)return null;
 
       logger.debug("network \n" + ptNetwork);
       currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
       if (currentLine == null) return null;
 
-      company = companyProducer.produce(csvReader, currentLine, objectIdPrefix, report);
+      company = companyProducer.produce(csvReader, currentLine, objectIdPrefix, srid, report);
       if (company == null) return null;
       logger.debug("company \n" + company.toString());
       currentLine = getStartOfNextBloc(filePath, report, csvReader, true);
@@ -261,7 +278,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
       while (currentLine[LineProducer.TITLE_COLUMN].equals(LineProducer.LINE_NAME_TITLE))
       {
          logger.debug("lines");
-         Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, lineCountReport);
+         Line line = lineProducer.produce(csvReader, currentLine, objectIdPrefix, srid, lineCountReport);
          if (line != null)
          {
             line.setCompany(company);
@@ -292,6 +309,12 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
             throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, filePath);
          }
       }
+      // compute barycenters
+      if (!lineProducer.getCommercials().isEmpty())
+      {
+    	  geographicService.computeBarycentre(lineProducer.getCommercials().values());
+      }
+      
       // warns unused Timetables
       int tmCount = timetableMap.size();
       for (Timetable tm : timetableMap.values())

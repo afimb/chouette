@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Getter;
+
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -25,6 +27,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.report.Report;
@@ -58,11 +61,24 @@ public class LineProducer extends AbstractModelProducer<Line>
 		VALID_SPECIFICS.add("TAD");
 	}
 
-	private String                   projectedPointType        = "epsg:27582";
+	private String                   projectedPointType        = null;
 
+	private Map<String, StopArea> physicals = new HashMap<String, StopArea>();
+	@Getter
+	private Map<String, StopArea> commercials = new HashMap<String, StopArea>();
+
+	
 	@Override
-	public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report)
+	public Line produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, String srid, Report report)
 	{
+		if (srid != null)
+		{
+			projectedPointType="epsg:"+srid;
+		}
+		else 
+		{
+			projectedPointType=null;
+		}
 		Line line = new Line();
 		if (firstLine[TITLE_COLUMN].equals(LINE_NAME_TITLE))
 		{
@@ -226,14 +242,14 @@ public class LineProducer extends AbstractModelProducer<Line>
 			}
 
 			ChouetteAreaEnum areaType = ChouetteAreaEnum.BOARDINGPOSITION;
-			Map<String, StopArea> physicals = new HashMap<String, StopArea>();
-			Map<String, StopArea> commercials = new HashMap<String, StopArea>();
 			switch (line.getTransportModeName())
 			{
 			case METRO:
 			case TRAIN:
 			case TRAMWAY:
 				areaType = ChouetteAreaEnum.QUAY;
+				break;
+			default:
 				break;
 			}
 			// build first route (column TITLE_COLUMN+1)
@@ -277,7 +293,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 					StopArea physical = physicals.get(getValue(STOPNAME_COLUMN, a));
 					if (physical == null)
 					{
-						physical = buildPhysical(a, objectIdPrefix, areaType, commercials, report);
+						physical = buildPhysical(a, objectIdPrefix, areaType, report);
 						physicals.put(physical.getName(), physical);
 					}
 					pt.setContainedInStopArea(physical);
@@ -331,7 +347,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 					StopArea physical = physicals.get(getValue(STOPNAME_COLUMN, a));
 					if (physical == null)
 					{
-						physical = buildPhysical(a, objectIdPrefix, areaType, commercials, report);
+						physical = buildPhysical(a, objectIdPrefix, areaType, report);
 						physicals.put(physical.getName(), physical);
 					}
 					pt.setContainedInStopArea(physical);
@@ -443,11 +459,10 @@ public class LineProducer extends AbstractModelProducer<Line>
 	 * @param stopData
 	 * @param objectIdPrefix
 	 * @param areaType
-	 * @param commercials
 	 * @return
 	 */
 	private StopArea buildPhysical(String[] stopData, String objectIdPrefix, ChouetteAreaEnum areaType,
-			Map<String, StopArea> commercials, Report report)
+		 Report report)
 	{
 		StopArea physical;
 		physical = new StopArea();
@@ -458,16 +473,24 @@ public class LineProducer extends AbstractModelProducer<Line>
 		physical.setLongitude(getBigDecimalValue(LONGITUDE_COLUMN, stopData));
 		if (physical.getLatitude() == null || physical.getLongitude() == null)
 		{
-			logger.warn("stop without coordinates : " + physical.getName());
-			CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.STOP_WITHOUT_COORDS, Report.STATE.WARNING,
-					physical.getName());
-			report.addItem(reportItem);
+			if (projectedPointType != null && getValue(X_COLUMN, stopData) != null)
+			{
+				physical.setX(getBigDecimalValue(X_COLUMN, stopData));
+				physical.setY(getBigDecimalValue(Y_COLUMN, stopData));
+				physical.setProjectionType(projectedPointType);
+				physical.toLatLong();
+			}
+			if (!physical.hasCoordinates())
+			{
+				logger.warn("stop without coordinates : " + physical.getName());
+				CSVReportItem reportItem = new CSVReportItem(CSVReportItem.KEY.STOP_WITHOUT_COORDS, Report.STATE.WARNING,
+						physical.getName());
+				report.addItem(reportItem);
+			}
 		}
-		if (getValue(X_COLUMN, stopData) != null)
+		else
 		{
-			physical.setX(getBigDecimalValue(X_COLUMN, stopData));
-			physical.setY(getBigDecimalValue(Y_COLUMN, stopData));
-			physical.setProjectionType(projectedPointType);
+			physical.setLongLatType(LongLatTypeEnum.WGS84);
 		}
 		if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)
 		{
@@ -538,5 +561,11 @@ public class LineProducer extends AbstractModelProducer<Line>
 		{
 			throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e);
 		}
+	}
+
+	public void clean() 
+	{
+		physicals = new HashMap<String, StopArea>();
+		commercials = new HashMap<String, StopArea>();
 	}
 }

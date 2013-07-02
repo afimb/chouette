@@ -38,7 +38,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
    private static final String           YES_OPTION            = "O";
 
    @Override
-   public Timetable produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, Report report) throws ExchangeException
+   public Timetable produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, String srid, Report report) throws ExchangeException
    {
       Timetable timetable = new Timetable();
       if (firstLine[TITLE_COLUMN].equals(TIMETABLE_LABEL_TITLE))
