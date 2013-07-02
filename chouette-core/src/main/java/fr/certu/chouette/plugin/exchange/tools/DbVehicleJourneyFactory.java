@@ -205,17 +205,6 @@ public class DbVehicleJourneyFactory
       return Long.toString(l);
    }
 
-   private boolean toBoolean(String string)
-   {
-      return Boolean.parseBoolean(string);
-   }
-
-   private String toString(boolean b)
-   {
-      return Boolean.toString(b);
-   }
-
-
    private Time toTime(String string)
    {
       if (string.isEmpty()) return null;

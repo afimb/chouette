@@ -6,6 +6,8 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
@@ -39,6 +41,8 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 			stopArea.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
 			if (getNonEmptyTrimedString(gtfsStop.getParentStation()) != null)
 			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IGNORED_DATA,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),"parent_station",gtfsStop.getParentStation()) ;
+				report.addItem(item);
 				logger.warn("station "+stopArea.getName()+" has parent "+ getNonEmptyTrimedString(gtfsStop.getParentStation()));  
 			}
 		}

@@ -20,9 +20,10 @@ public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
 		// Name mandatory
 		company.setName(getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
 		
-		// Code optional
-		company.setCode(getNonEmptyTrimedString(gtfsAgency.getAgencyId()));
-
+		// OrganisationalUnit : URL Mandatory
+		if (gtfsAgency.getAgencyURL() != null)
+		   company.setOrganisationalUnit(getNonEmptyTrimedString(gtfsAgency.getAgencyURL().toString()));
+		
 		// Phone optional
 		company.setPhone(getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
 				
