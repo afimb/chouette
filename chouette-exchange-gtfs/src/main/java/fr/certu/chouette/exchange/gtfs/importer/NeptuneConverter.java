@@ -283,7 +283,7 @@ public class NeptuneConverter
 			}
 			List<StopArea> generatedCommercials = commercialStopGenerator.createCommercialStopPoints(bps,
 					maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
-			commercials = generatedCommercials;
+			commercials.addAll(generatedCommercials);
 		}
 		areas.addAll(bps);
 		areas.addAll(commercials);

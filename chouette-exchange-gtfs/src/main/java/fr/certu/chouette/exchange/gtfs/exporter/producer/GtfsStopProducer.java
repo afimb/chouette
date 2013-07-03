@@ -43,10 +43,10 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
          stop.setLocationType(GtfsStop.STOP);
       else if(chouetteAreaType.compareTo(ChouetteAreaEnum.COMMERCIALSTOPPOINT) == 0)
          stop.setLocationType(GtfsStop.STATION);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
-         stop.setLocationType(GtfsStop.STATION);
+//      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
+//         stop.setLocationType(GtfsStop.STATION);
       else
-         return null ; // ITL type not available
+         return null ; // StopPlaces and ITL type not available
       stop.setStopId(toGtfsId(neptuneObject.getObjectId()));
       if (neptuneObject.getName() == null)
       {
@@ -72,6 +72,13 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
       stop.setStopLon(neptuneObject.getLongitude());
       stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
+      if (stop.getLocationType() == GtfsStop.STOP)
+      {
+    	  if (neptuneObject.getParent() != null)
+    	  {
+    		  stop.setParentStation(toGtfsId(neptuneObject.getParent().getObjectId()));
+    	  }
+      }
       return stop;
    }
 

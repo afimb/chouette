@@ -18,7 +18,7 @@ import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 public class CommercialStopGenerator extends AbstractGenerator
 {
 	private static final Logger logger = Logger.getLogger(CommercialStopGenerator.class);
-	
+
 
 
 	/**
@@ -29,7 +29,7 @@ public class CommercialStopGenerator extends AbstractGenerator
 	 */
 	public List<StopArea> createCommercialStopPoints(List<StopArea> boardingPositions,double distanceMax, boolean ignoreLastWord, int ignoreEndCharacters) 
 	{
-		
+
 		Map<String,StopArea> areaMap = new HashMap<String, StopArea>(); 
 
 		Set<String> keys = new HashSet<String>();
@@ -48,7 +48,7 @@ public class CommercialStopGenerator extends AbstractGenerator
 			{
 				key = key.substring(0,key.length()-ignoreEndCharacters);
 			}
-            keys.add(key);
+			keys.add(key);
 		}
 
 		for (StopArea stop : boardingPositions) 
@@ -61,14 +61,14 @@ public class CommercialStopGenerator extends AbstractGenerator
 			}
 			else
 			{
-			for (String key : keys) 
-			{
-			   if (mergeKey.startsWith(key)) 
-			   {
-				   mergeKey = key;
-				   break;
-			   }
-			}
+				for (String key : keys) 
+				{
+					if (mergeKey.startsWith(key)) 
+					{
+						mergeKey = key;
+						break;
+					}
+				}
 			}
 
 			StopArea area = areaMap.get(mergeKey);
@@ -77,14 +77,14 @@ public class CommercialStopGenerator extends AbstractGenerator
 				// check if stop has already a parent (from gtfs)
 				if (stop.getParent() == null)
 				{
-				area = new StopArea();
-				initArea(area,stop);
+					area = new StopArea();
+					initArea(area,stop);
+					areaMap.put(mergeKey, area);
 				}
 				else
 				{
 					area = stop.getParent();
 				}
-				areaMap.put(mergeKey, area);
 			}
 			else if (stop.getParent() != null)
 			{
@@ -113,21 +113,21 @@ public class CommercialStopGenerator extends AbstractGenerator
 		areas.addAll(areaMap.values());
 		areas.addAll(dividedAreas);
 
-        for (StopArea stopArea : areas) 
-        {
-		    String basename = stopArea.getName();
-		    for (StopArea boarding : stopArea.getContainedStopAreas()) 
-		    {
-			    String name = boarding.getName();
-			    while (!name.contains(basename))
-			    {
-			    	basename = basename.substring(0, basename.length() -1);
-			    	if (basename.isEmpty()) break;
-			    }
+		for (StopArea stopArea : areas) 
+		{
+			String basename = stopArea.getName();
+			for (StopArea boarding : stopArea.getContainedStopAreas()) 
+			{
+				String name = boarding.getName();
+				while (!name.contains(basename))
+				{
+					basename = basename.substring(0, basename.length() -1);
+					if (basename.isEmpty()) break;
+				}
 			}
-		    if (!basename.isEmpty()) stopArea.setName(basename.trim());
+			if (!basename.isEmpty()) stopArea.setName(basename.trim());
 		}
-		
+
 		logger.debug(""+areas.size()+" commercial stops created");
 		return areas;
 
@@ -268,9 +268,9 @@ public class CommercialStopGenerator extends AbstractGenerator
 						next.getLatitude().doubleValue());
 				if (distance > distanceMax) 
 				{
-//					logger.debug("BP : "+first.getName()+" (pos="+first.getLatitude()+","+first.getLongitude());
-//					logger.debug("BP : "+next.getName()+" (pos="+next.getLatitude()+","+next.getLongitude());
-//					logger.debug("distance = "+distance);
+					//					logger.debug("BP : "+first.getName()+" (pos="+first.getLatitude()+","+first.getLongitude());
+					//					logger.debug("BP : "+next.getName()+" (pos="+next.getLatitude()+","+next.getLongitude());
+					//					logger.debug("distance = "+distance);
 					return false;
 				}
 			}

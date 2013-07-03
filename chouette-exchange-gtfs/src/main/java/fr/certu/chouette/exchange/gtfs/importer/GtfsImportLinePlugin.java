@@ -25,8 +25,10 @@ import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 public class GtfsImportLinePlugin implements IImportPlugin<Line>
 {
@@ -115,6 +117,12 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		boolean optimizeMemory = false;
 		String incrementalPrefix = "";
 		String extension = "file extension";
+		boolean agencyFound = false;
+		boolean stopFound = false;
+		boolean stopTimeFound = false;
+		boolean tripFound = false;
+		boolean routeFound = false;
+		boolean calendarFound = false;
 		for (ParameterValue value : parameters) 
 		{
 			if (value instanceof SimpleParameterValue) 
@@ -208,9 +216,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		} 
 		catch (IOException e) 
 		{
-			//            ReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
-			//            report.addItem(item);
-			//            report.setStatus(Report.STATE.FATAL);
+			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
+			report.addItem(item);
+			report.setStatus(Report.STATE.FATAL);
 			logger.error("zip import failed (cannot open zip)" + e.getLocalizedMessage());
 			return null;
 		}
@@ -231,36 +239,48 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				logger.info("analyzing "+entryName) ;
 				if (entryName.endsWith("agency.txt"))
 				{
+					agencyFound=true;
 					try 
 					{
 						data.loadAgencies(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"agency.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read agency.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
 				else if (entryName.endsWith("calendar.txt"))
 				{
+					calendarFound=true;
 					try 
 					{
 						data.loadCalendars(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"calendar.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read calendar.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
 				else if (entryName.endsWith("calendar_dates.txt"))
 				{
+					calendarFound=true;
 					try 
 					{
 						data.loadCalendarDates(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"calendar_dates.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read calendar_dates.txt )" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -273,54 +293,73 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"frequencies.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read frequencies.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
 				else if (entryName.endsWith("routes.txt"))
 				{
+					routeFound=true;
 					try 
 					{
 						data.loadRoutes(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"routes.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read routes.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
 				else if (entryName.endsWith("stops.txt"))
 				{
+					stopFound=true;
 					try 
 					{
 						data.loadStops(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
-						logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"stops.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
+					logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
 				else if (entryName.endsWith("stop_times.txt"))
 				{
+					stopTimeFound=true;
 					try 
 					{
 						data.loadStopTimes(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"stop_times.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read stop_times.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
 				else if (entryName.endsWith("trips.txt"))
 				{
+					tripFound=true;
 					try 
 					{
 						data.loadTrips(zip.getInputStream(entry));
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"trips.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read trips.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -345,6 +384,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					} 
 					catch (Exception e) 
 					{
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"transfers.txt",filePath,e.getLocalizedMessage());
+						report.addItem(item);
+						report.setStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read transfers.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -354,6 +396,56 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					logger.info("entry "+entryName+" unused");
 				}
 			}
+			// check mandatory entries
+			if (!agencyFound)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"agency.txt",filePath);
+				report.addItem(item);
+				report.setStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (missing entry agency.txt)");
+				ok = false;				
+			}
+			if (!routeFound)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"routes.txt",filePath);
+				report.addItem(item);
+				report.setStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (missing entry routes.txt)");
+				ok = false;				
+			}
+			if (!stopFound)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"stops.txt",filePath);
+				report.addItem(item);
+				report.setStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (missing entry stops.txt)");
+				ok = false;				
+			}
+			if (!stopTimeFound)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"stop_times.txt",filePath);
+				report.addItem(item);
+				report.setStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (missing entry stop_times.txt)");
+				ok = false;				
+			}
+			if (!calendarFound)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"calendars.txt, calendar_dates.txt",filePath);
+				report.addItem(item);
+				report.setStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (missing entry calendars.txt, calendar_dates.txt)");
+				ok = false;				
+			}
+			if (!tripFound)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"trips.txt",filePath);
+				report.addItem(item);
+				report.setStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (missing entry trips.txt)");
+				ok = false;				
+			}
+			
 			if (ok && data.connect())
 			{
 				System.gc();

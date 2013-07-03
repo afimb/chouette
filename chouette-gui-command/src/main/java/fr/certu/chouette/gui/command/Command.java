@@ -633,7 +633,7 @@ public class Command
 				{
 					throw new IllegalArgumentException("format "+format+" unavailable for "+objectName);
 				}
-				if (ids != null)
+				if (ids != null && ids.length > 0)
 				{
 					filter.add("in");
 					filter.addAll(Arrays.asList(ids));

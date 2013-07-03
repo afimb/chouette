@@ -11,28 +11,27 @@ import fr.certu.chouette.plugin.report.ReportItem;
 
 public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, GtfsTransfer> 
 {
-    private static Logger logger = Logger.getLogger(ConnectionLinkProducer.class);
+	private static Logger logger = Logger.getLogger(ConnectionLinkProducer.class);
 	@Override
 	public ConnectionLink produce(GtfsTransfer gtfsTransfer,ReportItem report) 
 	{
 
-	   ConnectionLink link = new ConnectionLink();
-		
-	   link.setObjectId(composeObjectId( ConnectionLink.CONNECTIONLINK_KEY,gtfsTransfer.getFromStopId()+"_"+gtfsTransfer.getToStopId(),logger));
-		
-		link.setStartOfLinkId(gtfsTransfer.getFromStopId());
-		
-	    link.setEndOfLinkId(gtfsTransfer.getToStopId());
+		ConnectionLink link = new ConnectionLink();
 
-       link.setCreationTime(Calendar.getInstance().getTime());
-       link.setLinkType(ConnectionLinkTypeEnum.OVERGROUND);
-       if (gtfsTransfer.getMinTransferTime() != null)
-          link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
-       if (gtfsTransfer.getTransferType().equals(GtfsTransfer.Type.FORBIDDEN))
-       {
-          link.setName("FORBIDDEN");
-       }
-       
+		link.setObjectId(composeObjectId( ConnectionLink.CONNECTIONLINK_KEY,gtfsTransfer.getFromStopId()+"_"+gtfsTransfer.getToStopId(),logger));
+
+		link.setStartOfLinkId(gtfsTransfer.getFromStopId());
+		link.setEndOfLinkId(gtfsTransfer.getToStopId());
+
+		link.setCreationTime(Calendar.getInstance().getTime());
+		link.setLinkType(ConnectionLinkTypeEnum.OVERGROUND);
+		if (gtfsTransfer.getMinTransferTime() != null)
+			link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
+		if (gtfsTransfer.getTransferType().equals(GtfsTransfer.Type.FORBIDDEN))
+		{
+			link.setName("FORBIDDEN");
+		}
+
 		return link;
 	}
 

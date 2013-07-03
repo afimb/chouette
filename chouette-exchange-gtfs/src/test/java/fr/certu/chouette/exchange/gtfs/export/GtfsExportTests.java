@@ -1,4 +1,4 @@
-package fr.certu.chouette.exchange.csv.gtfs;
+package fr.certu.chouette.exchange.gtfs.export;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class GtfsExportTests extends AbstractTestNGSpringContextTests
       lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
       List<ParameterValue> values = new ArrayList<ParameterValue>();
       SimpleParameterValue file = new SimpleParameterValue("inputFile");
-      file.setFilepathValue("src/test/data/test.zip");
+      file.setFilepathValue("src/test/data/test_neptune.zip");
       values.add(file);
       SimpleParameterValue validate = new SimpleParameterValue("validate");
       validate.setBooleanValue(Boolean.TRUE);
@@ -52,7 +52,7 @@ public class GtfsExportTests extends AbstractTestNGSpringContextTests
       ReportHolder exportReport = new ReportHolder();
       lineManager.doExport(null  , lines, "GTFS", parameters, exportReport );
 
-      printItems("",exportReport.getReport().getItems());
+      // printItems("",exportReport.getReport().getItems());
       
    }
    

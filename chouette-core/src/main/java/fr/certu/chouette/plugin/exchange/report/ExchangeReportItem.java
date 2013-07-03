@@ -21,6 +21,7 @@ public class ExchangeReportItem extends ReportItem
 	public enum KEY {
 		ZIP_FILE,
 		ZIP_ERROR,
+		ZIP_MISSING_ENTRY,
 		FILE,
 		FILE_ERROR,
 		FILE_IGNORED,

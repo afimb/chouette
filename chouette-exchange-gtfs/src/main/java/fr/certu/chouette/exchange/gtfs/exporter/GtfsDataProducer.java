@@ -23,8 +23,10 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
+import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -43,6 +45,7 @@ public class GtfsDataProducer
    @Setter private IGtfsProducer<GtfsAgency,Company> agencyProducer;
    @Setter private IGtfsProducer<GtfsStop,StopArea> stopProducer;
    @Setter private IGtfsProducer<GtfsRoute,Route> routeProducer;
+   @Setter private IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer;
 
    public GtfsData produce(NeptuneData neptuneData,TimeZone timeZone, GtfsReport report) throws GtfsExportException
    {
@@ -78,6 +81,12 @@ public class GtfsDataProducer
 
       // add stops
       gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getPhysicalStops(),report));
+
+      // add stations
+      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getCommercialStops(),report));
+
+      // add transfers
+      gtfsData.getTransfer().addAll(transferProducer.produceAll(neptuneData.getConnectionLinks(),report));
 
       // add agencies
       gtfsData.getAgencies().addAll(agencyProducer.produceAll(neptuneData.getCompanies(),report));

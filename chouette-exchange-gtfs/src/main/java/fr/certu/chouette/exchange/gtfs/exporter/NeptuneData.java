@@ -10,11 +10,15 @@ package fr.certu.chouette.exchange.gtfs.exporter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
@@ -28,51 +32,86 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
  */
 public class NeptuneData
 {
-   @Getter
-   List<Route>          routes          = new ArrayList<Route>();
-   @Getter
-   Set<Timetable>       timetables      = new HashSet<Timetable>();
-   @Getter
-   List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
-   @Getter
-   Set<StopArea>        physicalStops   = new HashSet<StopArea>();
-   @Getter
-   Set<Company>         companies       = new HashSet<Company>();
-
-   /**
-    * @param lines
-    */
-   public void populate(List<Line> lines)
-   {
-      for (Line line : lines)
-      {
-         line.complete();
-         if (line.getCompany() != null)
-            companies.add(line.getCompany());
-         if (line.getRoutes() != null)
-         {
-            for (Route route : line.getRoutes())
-            {
-               if (!"R".equals(route.getWayBack()) || route.getWayBackRouteId() == null)
-                  routes.add(route);
-               for (StopPoint point : route.getStopPoints())
-               {
-                  physicalStops.add(point.getContainedInStopArea());
-               }
-               for (JourneyPattern jp : route.getJourneyPatterns())
-               {
-                  for (VehicleJourney vj : jp.getVehicleJourneys())
-                  {
-                     vehicleJourneys.add(vj);
-                     for (Timetable timetable : vj.getTimetables())
-                     {
-                        timetables.add(timetable);
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
+	private static final Logger logger = Logger.getLogger(NeptuneData.class);
+	@Getter
+	List<Route>          routes          = new ArrayList<Route>();
+	@Getter
+	Set<Timetable>       timetables      = new HashSet<Timetable>();
+	@Getter
+	List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
+	@Getter
+	Set<StopArea>        physicalStops   = new HashSet<StopArea>();
+	@Getter
+	Set<StopArea>        commercialStops   = new HashSet<StopArea>();
+	@Getter
+	Set<Company>         companies       = new HashSet<Company>();
+	@Getter 
+	Set<ConnectionLink>  connectionLinks = new HashSet<ConnectionLink>();
+ 
+	/**
+	 * @param lines
+	 */
+	public void populate(List<Line> lines)
+	{
+		for (Line line : lines)
+		{
+			line.complete();
+			if (line.getCompany() != null)
+				companies.add(line.getCompany());
+			if (line.getConnectionLinks() != null)
+			{
+				connectionLinks.addAll(line.getConnectionLinks());
+			}
+			if (line.getRoutes() != null)
+			{
+				for (Route route : line.getRoutes())
+				{
+					if (!"R".equals(route.getWayBack()) || route.getWayBackRouteId() == null)
+					{
+						logger.info("route "+route.getObjectId()+" added");
+						routes.add(route);
+					}
+					else
+					{
+						logger.info("route "+route.getObjectId()+" bypassed, wayback is "+route.getWayBackRouteId());
+					}
+					for (StopPoint point : route.getStopPoints())
+					{
+						StopArea area = point.getContainedInStopArea();
+						physicalStops.add(area);
+						if (area.getParent() != null)
+						{
+							commercialStops.add(area.getParent());
+						}
+					}
+					for (JourneyPattern jp : route.getJourneyPatterns())
+					{
+						for (VehicleJourney vj : jp.getVehicleJourneys())
+						{
+							vehicleJourneys.add(vj);
+							for (Timetable timetable : vj.getTimetables())
+							{
+								timetables.add(timetable);
+							}
+						}
+					}
+				}
+			}
+		}
+		// remove incomplete connectionlinks
+		for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator.hasNext();) 
+		{
+			ConnectionLink link = iterator.next();
+			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink()))
+			{
+				iterator.remove();
+			}
+			else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink()))
+			{
+				iterator.remove();
+			}
+		} 
+		
+	}
 
 }

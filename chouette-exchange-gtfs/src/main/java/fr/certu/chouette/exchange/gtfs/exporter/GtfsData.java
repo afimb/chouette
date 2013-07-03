@@ -20,6 +20,7 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.exchange.gtfs.model.GtfsShape;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
+import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
 
 /**
@@ -36,5 +37,6 @@ public class GtfsData
    @Getter private List<GtfsStop> stops = new ArrayList<GtfsStop>();
    @Getter private List<GtfsStopTime> stoptimes = new ArrayList<GtfsStopTime>();
    @Getter private List<GtfsTrip> trip = new ArrayList<GtfsTrip>();
+   @Getter private List<GtfsTransfer> transfer = new ArrayList<GtfsTransfer>();
    
 }

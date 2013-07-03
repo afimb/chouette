@@ -32,10 +32,10 @@ public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer>
 {
    private static final Logger logger = Logger.getLogger(GtfsTransferFactory.class);
    @Getter private final String dropSql = "drop table if exists transfer;";
-   @Getter private final String createSql = "create table transfer (fromstopid, tostopid,transfertype,mintrasfertime);";
-   private final String insertSQL = "insert into transfer (fromstopid, tostopid,transfertype,mintrasfertime) values (?, ?, ?, ?)";
-   @Getter private final String selectSql = "select fromstopid, tostopid,transfertype,mintrasfertime from transfer ";
-   @Getter private final String[] dbHeader = new String[]{"from_stop_id","to_stop_id","transfer_type","min_transfert_time"};
+   @Getter private final String createSql = "create table transfer (fromstopid, tostopid,transfertype,mintransfertime);";
+   private final String insertSQL = "insert into transfer (fromstopid, tostopid,transfertype,mintransfertime) values (?, ?, ?, ?)";
+   @Getter private final String selectSql = "select fromstopid, tostopid,transfertype,mintransfertime from transfer ";
+   @Getter private final String[] dbHeader = new String[]{"from_stop_id","to_stop_id","transfer_type","min_transfer_time"};
 
    @Override
    public GtfsTransfer getNewGtfsBean(int lineNumber, String[] csvLine) {
@@ -53,7 +53,7 @@ public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer>
       default: bean.setTransferType(GtfsTransfer.Type.RECOMMENDED); 
 
       }
-      bean.setMinTransferTime(getTimeValue("min_transfert_time",csvLine));
+      bean.setMinTransferTime(getTimeValue("min_transfer_time",csvLine));
       return bean;
    }
    @Override

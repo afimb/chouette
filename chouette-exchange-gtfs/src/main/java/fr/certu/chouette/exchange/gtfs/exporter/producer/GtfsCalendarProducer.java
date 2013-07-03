@@ -35,7 +35,6 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
 {
    private static final Logger logger = Logger.getLogger(GtfsCalendarProducer.class);
    private static final long ONE_DAY=3600000*24;
-   private static final long HALF_DAY=3600000*12;
 
    @Override
    public GtfsCalendar produce(Timetable timetable,GtfsReport report)
@@ -90,6 +89,12 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
             Period period = timetable.getPeriods().get(0);
             calendar.setStartDate(period.getStartDate());
             calendar.setEndDate(period.getEndDate());
+            if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty())
+            {
+               Set<Date> includedDates = new HashSet<Date>();
+               includedDates.addAll(timetable.getCalendarDays()); 
+               addDates(calendar, includedDates, GtfsCalendarDate.INCLUDED);
+            }
          }
          else
          {
@@ -123,7 +128,7 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
                Date endDate = new Date(timetable.getPeriods().get(i).getStartDate().getTime());
                while (checkedDate.before(endDate))
                {
-                  if (!checkValidDay(checkedDate, calendar)) 
+                  if (checkValidDay(checkedDate, calendar)) 
                   {
                      excludedDates.add(checkedDate);
                   }
@@ -193,7 +198,8 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
       boolean valid = false;
       // to avoid timezone 
       Calendar c = Calendar.getInstance();
-      java.util.Date aDate = new java.util.Date(checkedDate.getTime()+HALF_DAY);
+      c.set(Calendar.HOUR_OF_DAY, 12);
+      java.util.Date aDate = new java.util.Date(checkedDate.getTime());
       c.setTime(aDate);
 
       switch (c.get(Calendar.DAY_OF_WEEK))

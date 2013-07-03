@@ -70,4 +70,19 @@ public class GtfsCalendar extends GtfsBean
     	}
     }
 
+    public String toString()
+    {
+    	String retVal = "";
+    	if (hasPeriod()) retVal+=getCSVLine();
+    	if (hasDates())
+    	{
+    		if (!retVal.isEmpty()) retVal += "\n";
+    		for (GtfsCalendarDate date : calendarDates)
+    		{
+				retVal+=date.getCSVLine()+"\n";
+			}
+    	}
+    		
+        return retVal;
+    }
 }

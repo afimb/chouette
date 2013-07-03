@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
@@ -23,12 +25,13 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
 /**
- * convert Timetable to Gtfs Calendar and CalendarDate
+ * produce Trips and stop_times for vehicleJourney 
  * <p>
- * optimise multiple period timetable with calendarDate inclusion or exclusion
+ * when vehicleJourney is on multiple timetables, it will be cloned for each
  */
 public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
 {
+	private static final Logger logger = Logger.getLogger(GtfsTripProducer.class);
 	@Override
 	public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects,GtfsReport report)
 	{
@@ -109,13 +112,16 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
 
 		// route = un aller-retour !  
 		Route route = vj.getRoute();
-		if ("R".equals(route.getWayBack().equals("R")) && route.getWayBackRouteId() != null)
+		if ("R".equals(route.getWayBack()) && route.getWayBackRouteId() != null)
 		{
+			logger.info("trip "+vj.getObjectId()+" as wayback of route "+route.getWayBackRouteId());
 			trip.setRouteId(toGtfsId(route.getWayBackRouteId()));
 			trip.setDirectionId(GtfsTrip.INBOUND);
 		}
 		else
 		{
+			logger.info("trip "+vj.getObjectId()+" as direct of route "+route.getWayBackRouteId());
+
 			trip.setRouteId(toGtfsId(route.getObjectId()));
 			trip.setDirectionId(GtfsTrip.OUTBOUND);
 		}

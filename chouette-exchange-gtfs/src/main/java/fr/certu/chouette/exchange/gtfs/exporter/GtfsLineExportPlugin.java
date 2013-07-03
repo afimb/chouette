@@ -27,6 +27,7 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsFrequency;
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
+import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -242,10 +243,11 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 			writeFile(out, gtfsData.getCalendars(), "calendar.txt", GtfsCalendar.header,report);
 			writeFile(out, gtfsData.getCalendardates(), "calendar_dates.txt", GtfsCalendarDate.header,report);
 			writeFile(out, gtfsData.getFrequencies(), "frequencies.txt", GtfsFrequency.header,report);
+			writeFile(out, gtfsData.getTransfer(), "transfers.txt", GtfsTransfer.header,report);
 			// fare_rules.txt
 			// fare_attributes.txt
 			// shapes.txt
-			// transfers.txt
+			// feed_info.txt
 		}
 		catch (GtfsExportException e)
 		{

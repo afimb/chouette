@@ -21,7 +21,7 @@ import lombok.Setter;
 
 public class GtfsTime implements Comparable<GtfsTime>
 {
-   private static final String mfHoraireHMS = "{0,number,00}:{1,number,00}:{2,number,00}";
+	private static final String mfHoraireHMS = "{0,number,00}:{1,number,00}:{2,number,00}";
 	@Getter @Setter private Time time;
 	@Getter @Setter private boolean tomorrow = false;
 
@@ -35,31 +35,32 @@ public class GtfsTime implements Comparable<GtfsTime>
 		if (h >=24 ) 
 		{
 			tomorrow = true;
+			h -= 24;
 		}
-		h -= 24;
+
 		long t = (h*3600+m*60+s)*1000;
 		time = new Time(t);
 	}
 
 	public GtfsTime(Time time,boolean tomorrow)
-   {
-      this.time = time;
-      this.tomorrow = tomorrow;
-   }
+	{
+		this.time = time;
+		this.tomorrow = tomorrow;
+	}
 
-   public String toString()
+	public String toString()
 	{
 
-      long h = time.getTime()/1000;
-      long s = h%60;
-      h=h/60;
-      long m = h % 60;
-      h=h/60;
-      if (tomorrow) h+= 24;
-      return MessageFormat.format(mfHoraireHMS,h,m,s);
+		long h = time.getTime()/1000;
+		long s = h%60;
+		h=h/60;
+		long m = h % 60;
+		h=h/60;
+		if (tomorrow) h+= 24;
+		return MessageFormat.format(mfHoraireHMS,h,m,s);
 
 	}
-	
+
 
 
 	@Override
@@ -72,7 +73,7 @@ public class GtfsTime implements Comparable<GtfsTime>
 		if (this.tomorrow) return 1;
 		return -1;
 	}
-	
+
 
 
 	/* (non-Javadoc)
@@ -99,7 +100,7 @@ public class GtfsTime implements Comparable<GtfsTime>
 			return false;
 		}
 		GtfsTime other = (GtfsTime) obj;
-		
-        return toString().equals(other.toString());
+
+		return toString().equals(other.toString());
 	}
 }
