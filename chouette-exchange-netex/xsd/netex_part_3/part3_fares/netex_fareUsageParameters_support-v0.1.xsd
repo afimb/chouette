@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_fareFareUsageParameters_support">
+	<xsd:include schemaLocation="netex_fareUsageParameterBooking_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_fareUsageParameterProduct_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_fareUsageParameterTravel_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_fareAccessRightParameter_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<xsd:group name="CellUsageParameterReferencesGroup">
+		<xsd:annotation>
+			<xsd:documentation>USAGE PARAMETER Elements forCELL.Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="CommercialProfileRef" type="CommercialProfileRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a COMMERCIAL PROFILE PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ExchangingRef" minOccurs="0"/>
+			<xsd:element name="FrequencyOfUseRef" type="FrequencyOfUseRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a FREQUENCY OF USE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="GroupTicketRef" type="GroupTicketRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a GROUP TICKET PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="InterchangingRef" minOccurs="0"/>
+			<xsd:element name="LuggageAllowanceRef" type="LuggageAllowanceRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a LUGGAGE ALLOWANCE PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="MinimumStayRef" minOccurs="0"/>
+			<xsd:element ref="PurchaseWindowRef" minOccurs="0"/>
+			<xsd:element ref="RefundingRef" minOccurs="0"/>
+			<xsd:element ref="ReservingRef" minOccurs="0"/>
+			<xsd:element name="RoundTripRef" type="RoundTripRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a ROUND TRIP PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="RoutingRef" minOccurs="0"/>
+			<xsd:element name="TransferabilityRef" type="TransferabilityRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a TRANSFERABILITY PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element> 
+			<xsd:element name="UsageValidityPeriodRef" type="UsageValidityPeriodRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a USAGE VALIDITY PERIOD.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UserProfileRef" type="UserProfileRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a USER PROFILE PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

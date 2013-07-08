@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_farePrice_version">
+	<xsd:include schemaLocation="../../netex_framework/netex_genericFramework/netex_grouping_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_utility/netex_units-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_fareStructure_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_calculationParameters_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===ENTIITY IN VERSION IN FRAME====Used in FARE FRAME)=================================================== -->
+	<xsd:complexType name="farePricesInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of FARE Prices.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="frameContainmentStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="PriceGroup_"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ===FARE PRICE================================================= -->
+	<xsd:complexType name="farePrices_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of FARE PRICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="FarePriceRef"/>
+					<xsd:element ref="FarePrice_"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="FarePrice_" type="VersionedChildStructure" abstract="true" substitutionGroup="VersionedChild">
+		<xsd:annotation>
+			<xsd:documentation>Dummay Abstarct price</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FarePrice" abstract="true" substitutionGroup="FarePrice_" id="FarePrice">
+		<xsd:annotation>
+			<xsd:documentation>A A set of all possible price features for an Fare element</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="FarePrice_VersionedChildStructure"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="FarePrice_VersionedChildStructure" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Type for FARE PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="FarePriceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="FarePriceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a FARE PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name of FARE STRUCTURE ELEMENT PRICE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StartDate" type="xsd:date" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Start date for PRICE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EndDate" type="xsd:date" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>End date for PRICE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Amount" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PRICE amount. in specified currency</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Currency" type="CurrencyType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Currency of Price ISO 4217</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Units" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Other units for Prici</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<xsd:element name="DiscountablePrice" abstract="true" substitutionGroup="FarePrice_">
+		<xsd:annotation>
+			<xsd:documentation>A price for which a discount can be offered.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="DiscountablePrice_VersionedChildStructure"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="DiscountablePrice_VersionedChildStructure" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Type for DISCOUNTABLE PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="FarePrice_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="DiscountablePriceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="DiscountablePriceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a DISCOUNTABLE PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DiscountAsPercentage" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Discount percentage.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DiscountValue" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Discount amount.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="DiscountablePriceCappingGroup"/>
+			<xsd:group ref="DiscountablePriceCalculationGroup"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="DiscountablePriceCappingGroup">
+		<xsd:annotation>
+			<xsd:documentation>Capping Elements for a DISCOUNTABLE PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MinimumPriceAsPercentage" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minumum price as percentage of whole price.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinimumPrice" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum price at which to cap discounted fare.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinimumPriceAsMultiple" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum price as a mnumber of single flat fares. </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumPriceAsPercentage" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maxumum price as percentage of whole price.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumPrice" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum amount at which to cap discounted fare .</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumPriceAsMultiple" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum price as a mnumber of single flat fares. </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="DiscountablePriceCalculationGroup">
+		<xsd:annotation>
+			<xsd:documentation>Calculation Elements for a DISCOUNTABLE PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="RoundingRef" minOccurs="0"/>
+			<xsd:element name="CanBeCumulative" type="xsd:boolean" default="true" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether this discount can be used cumulatively with other discounts</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Ranking" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Ranking to give this discount relatove to other applicable discounts.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<xsd:element name="LimitedPrice" abstract="true" substitutionGroup="FarePrice_">
+		<xsd:annotation>
+			<xsd:documentation>A price fwhcih cannot be sold if it is within  certain bounds</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="LimitedPrice_VersionedChildStructure"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="LimitedPrice_VersionedChildStructure" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Type for LIMITED PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DiscountablePrice_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="LimitedPriceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="LimitedPriceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a LIMITED PRICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MinimumLimitPriceAsPercentage" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum Limit as percentage of whole price.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinimumLimitPrice" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Limiting amount below which resulting fare may not be sold.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumLimitPriceAsPercentage" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maxumum Limit as percentage of whole price.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumLimitPrice" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Limiting amount above which resulting fare may not be sold.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ==PRICE GROUP============================================================ -->
+	<xsd:complexType name="compositePrices_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of FARE PRICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="FarePriceRef"/>
+					<xsd:element ref="PriceGroupRef"/>
+					<xsd:element ref="FarePrice_"/>
+					<xsd:element ref="PriceGroup_"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="priceGroups_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of FARE PRICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="PriceGroupRef"/>
+					<xsd:element ref="PriceGroup_"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="PriceGroup_" type="GroupOfEntities_VersionStructure" abstract="false" substitutionGroup="GroupOfEntities">
+		<xsd:annotation>
+			<xsd:documentation>A grouping of prices, allowing the grouping of numerous possible consumption elements into a limited number of price references, or to apply grouped increase, in value or percentage.
+</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PriceGroup" abstract="false" substitutionGroup="PriceGroup_">
+		<xsd:annotation>
+			<xsd:documentation>A grouping of prices, allowing the grouping of numerous possible consumption elements into a limited number of price references, or to apply grouped increase, in value or percentage.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="PriceGroup_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="GroupOfEntitiesGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="StartDate" type="xsd:date" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Start date for PRICE GROUP</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="EndDate" type="xsd:date" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>End date for PRICE GROUP</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element ref="RoundingRef" minOccurs="0"/>
+							<xsd:element name="members" type="farePrices_RelStructure" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>PRICEs in PRICE GROUP.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="PriceGroupIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="PriceGroup_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for PRICE GROUP.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GroupOfEntities_VersionStructure">
+				<xsd:group ref="PriceGroupGroup"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="PriceGroupGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a PRICE GROUP.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="StartDate" type="xsd:date" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Start date for PRICE GROUP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EndDate" type="xsd:date" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>End date for PRICE GROUP</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="RoundingRef" minOccurs="0"/>
+			<xsd:element name="members" type="farePrices_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PRICEs in PRICE GROUP.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

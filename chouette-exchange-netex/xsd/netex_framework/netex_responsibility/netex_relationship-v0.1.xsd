@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Nicholas Knowles (Kizoom) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:core="http://www.govtalk.gov.uk/core" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_relationship">
+	<xsd:include schemaLocation="netex_relationship_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="ModificationSetEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Classification of modification as addition, deletion, revision or delta only. Enumerated value.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:NMTOKEN">
+			<xsd:enumeration value="all">
+				<xsd:annotation>
+					<xsd:documentation>This is a definition of a new entity.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="changesOnly">
+				<xsd:annotation>
+					<xsd:documentation>This is a deletion of an existing entity.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="objectRefs_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of references to an  NeTEx Object</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="oneToManyRelationshipStructure">
+				<xsd:sequence>
+					<xsd:element ref="VersionOfObjectRef" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:element name="TypeOfValueRef" type="TypeOfValueRefStructure" abstract="true" substitutionGroup="VersionOfObjectRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a TYPE OF VALUE. Implementation of a one to one relationship by reference to  TYPE OF VALUE.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="TypeOfValueRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a TYPE OF VALUE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="VersionOfObjectRefStructure">
+				<xsd:attribute name="ref" type="TypeOfValueIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a TYPE OF VALUE.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:element name="TypeOfEntityRef" type="TypeOfValueRefStructure" abstract="true" substitutionGroup="TypeOfValueRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a TYPE OF ENTITY.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- ==== Metamodel ================================================================ -->
+	<xsd:complexType name="relationshipStructure">
+		<xsd:annotation>
+			<xsd:documentation>Abstract Type for a serialisation of a NeTEx relationship.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="oneToManyRelationshipStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for an Implementation of a one to many relationship . A one to many relationship from the source (one) to the target (many)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="relationshipStructure">
+				<xsd:attribute name="modificationSet" type="ModificationSetEnumeration" default="all">
+					<xsd:annotation>
+						<xsd:documentation>Whether this is a list of all (revise) or just changes.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="containmentAggregationStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for an Implementation of an aggregate  relationship by reference or value, where the contained element or reference  is included in the XML as  a child of the parent.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="relationshipStructure">
+				<xsd:attribute name="modificationSet" type="ModificationSetEnumeration" default="all">
+					<xsd:annotation>
+						<xsd:documentation>Whether this is a list of all (revise) or just changes.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="strictContainmentAggregationStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for an Implementation of a strict aggregate  relationship by value, where the contained element is a child of the parent. A one to many relationship from the source, the containing parent, to the child instance.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="relationshipStructure"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="frameContainmentStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for an implementation of a frame containment relationship  (ENTITY IN FRAME IN VERSION) A one to many relationship from the containing parent (one) to the contained child (many)</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="relationshipStructure"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="classRefs_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of Classes.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="oneToManyRelationshipStructure">
+				<xsd:sequence>
+					<xsd:element ref="ClassRef" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ClassInContextRefs_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of Classe Filter referencess.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="oneToManyRelationshipStructure">
+				<xsd:sequence>
+					<xsd:element ref="ClassInContextRef" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

@@ -110,13 +110,13 @@
               #if ( $company.email || $company.phone || $company.fax )
               <ContactDetails>
                   #if ( $company.email )
-                  <EmailAddress>$!esc.xml($company.email)</EmailAddress>
+                  <Email>$!esc.xml($company.email)</Email>
                   #end
                   #if ( $company.phone )
-                  <ContactTelephoneNumber>$!esc.xml($company.phone)</ContactTelephoneNumber>
+                  <Phone>$!esc.xml($company.phone)</Phone>
                   #end
                   #if ( $company.fax )
-                  <ContactFaxNumber>$!esc.xml($company.fax)</ContactFaxNumber>
+                  <Fax>$!esc.xml($company.fax)</Fax>
                   #end
               </ContactDetails>
               #end

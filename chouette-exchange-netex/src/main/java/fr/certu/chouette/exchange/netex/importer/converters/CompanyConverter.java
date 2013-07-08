@@ -88,19 +88,19 @@ public class CompanyConverter extends GenericConverter
         
         AutoPilot pilot2 = new AutoPilot(nav);
         pilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");            
-        pilot2.selectXPath("netex:ContactDetails/netex:EmailAddress");
+        pilot2.selectXPath("netex:ContactDetails/netex:Email");
         
         company.setEmail( (String)pilot2.evalXPathToString());
         
         AutoPilot pilot3 = new AutoPilot(nav);
         pilot3.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");            
-        pilot3.selectXPath("netex:ContactDetails/netex:ContactFaxNumber");
+        pilot3.selectXPath("netex:ContactDetails/netex:Fax");
         
         company.setFax( (String)pilot3.evalXPathToString());
         
         AutoPilot pilot4 = new AutoPilot(nav);
         pilot4.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");            
-        pilot4.selectXPath("netex:ContactDetails/netex:ContactTelephoneNumber");
+        pilot4.selectXPath("netex:ContactDetails/netex:Phone");
         
         company.setPhone( (String)pilot4.evalXPathToString());
         pilot2.resetXPath();

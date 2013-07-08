@@ -73,12 +73,12 @@
           #if ( $accessPoint.openingTime && $accessPoint.closingTime)
           <validityConditions>
             <AvailabilityCondition version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:AvailabilityCondition:${accessPoint.objectIdSuffix()}">
-                <timeBands>
+                <timebands>
                     <Timeband version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:Timeband:${accessPoint.objectIdSuffix()}">
                         <StartTime>$accessPoint.openingTime</StartTime>
                         <EndTime>$accessPoint.closingTime</EndTime>
                     </Timeband>
-                </timeBands>
+                </timebands>
             </AvailabilityCondition>
           </validityConditions>
           #end

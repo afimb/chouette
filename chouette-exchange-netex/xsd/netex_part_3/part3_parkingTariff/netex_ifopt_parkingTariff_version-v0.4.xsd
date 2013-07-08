@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 rel. 3 sp1 (http://www.altova.com) by Nicholas Knowles (Kizoom) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:netex="http://www.netex.org.uk/netex" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.3" id="netex_ifopt_parkingTariff_version">
+	<xsd:include schemaLocation="../../netex_part_1/part1_ifopt/netex_ifopt_parking_version-v0.4.xsd"/>
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0 CEN TC278 WG3 SG6 Editor Nicholas Knowles, Kizoom. mailto:schemer@netex.org.uk</Creator>
+				<Date>
+					<Created>2010-09-04</Created>
+				</Date>
+				<Date>
+					<Modified>2011-02-05</Modified>
+				</Date>
+				<Date>
+					<Modified>2011-12-16</Modified>
+				</Date>
+				<Description>
+					<p>NeTEx - Network Exchange. This subschema defines PARKING TARIFF elements</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/ifopt}ifopt_parking-v0.3.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom Software Ltd, 16 High Holborn, London WC1V 6BX</Publisher>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright 2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Created for the Ifopt standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and Road transport
+</Category>
+					<Project>CEN TC278 WG3 SG6</Project>
+				</Subject>
+				<Title>NeTEx Network Exchange - PARKING types </Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+		<xsd:documentation>PARKING TARIFF elements for IFOPT Fixed Objects in Public Transport.</xsd:documentation>
+	</xsd:annotation>
+	<!-- ======================================================================= -->
+	<!-- ===ENTIITY IN VERSION IN FRAME====(Used in SITEFRAME)=================================================== -->
+	<!-- ===ENTIITY IN VERSION IN FRAME====(Used in SERVICE FRAME)=================================================== -->
+	<xsd:group name="ParkingTariffInFrameGroup">
+		<xsd:annotation>
+			<xsd:documentation>Properties of PARKING TARIFFs in FRAME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="parkingTariffs" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PARKING TARIFFs in frame.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="parkingTariffsInFrame_RelStructure"/>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="parkingTariffsInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of PARKING TARIFFs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="ParkingTariff" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>A designated path between two PLACEs. May include an Ordered sequence of references to PATH LINKS.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:element name="ParkingTariff" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>A set of parking CHARGE BANDS that describe the cost if using a PARKING or PARKING AREA.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="ParkingTariff_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="ParkingTariffGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="ParkingTariffIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="ParkingTariff_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a PARKING TARIFF.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="ParkingTariffGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="ParkingTariffGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements of a PARKING TARIFF.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Description" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of PARKING TARIFF.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParkingUserType" type="ParkingUserEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of users: disabled, all etc.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParkingStayType" type="ParkingStayEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Nature of stay allowed in PARKING.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParkingVehicleType" type="ParkingVehicleEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of Vehicle for which PARKING TARIFF applies.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AdditionalTax" type="xsd:boolean" default="false" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether addi9tional tax is charged</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TaxRate" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Rate for tax.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="validityConditions" type="validityConditions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>When this band applies.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="tariffBands" type="parkingTariffChargeBands_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Charge bands for parking.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="parkingTariffChargeBands_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of PARKING TARIFF CHARGE BANDs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="ParkingTariffChargeBandRef"/>
+					<xsd:element ref="ParkingTariffChargeBand">
+						<xsd:annotation>
+							<xsd:documentation>An area within a Site. May be connected to Quays by PATH LINKs.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="ParkingTariffChargeBand" substitutionGroup="VersionedChild">
+		<xsd:annotation>
+			<xsd:documentation>Parking charges that describe the cost of using a PARKING or PARKING AREA for a given period.   
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="ParkingTariffChargeBand_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="ParkingTariffChargeBandGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="ParkingTariffChargeBandIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="ParkingTariffChargeBand_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a PARKING TARIFF CHARGE BAND.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="ParkingTariffChargeBandGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="ParkingTariffChargeBandGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements of a PARKING TARIFF CHARGE BAND.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ParkingVehicleType" type="ParkingVehicleEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of vehicle in PARKING.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Description" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of PARKING CHARGE BAND.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumStay" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum allowed Stay duration for tariff amount.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Amount" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Charge for stay for stay maximum period.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Currency" type="CurrencyType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Currency of Charge for using the PARKING.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:netex="http://www.netex.org.uk/netex" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.3" id="netex_ifopt_localService_support">
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_equipment_support-v0.1.xsd"/>
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0 CEN TC278 WG3 SG6 Editor Nicholas Knowles, Kizoom. mailto:schemer@netex.org.uk</Creator>
+				<Date>
+					<Created>2007-06-12</Created>
+				</Date>
+				<Date>
+					<Modified>2007-06-12</Modified>
+				</Date>
+				<Description>
+					<p>NeTEx - Network Exchange. This subschema defines Local Service types </p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/ifopt}ifopt_equipment-v0.3.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom Software Ltd, 16 High Holborn, London WC1V 6BX</Publisher>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright 2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the TransModel standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and Road transport
+</Category>
+					<Project>CEN TC278 WG3 SG6</Project>
+				</Subject>
+				<Title>NeTEx Network Exchange - EQUIPMENT identifier types.</Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+		<xsd:documentation>LCOAL SERVICE identifier types for IFOPT Fixed Objects in Public Transport.</xsd:documentation>
+	</xsd:annotation>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:element name="LocalServiceRef" type="LocalServiceRefStructure" substitutionGroup="EquipmentRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a LOCAL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="LocalServiceRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a LOCAL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="EquipmentRefStructure">
+				<xsd:attribute name="ref" type="LocalServiceIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a POINT.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="LocalServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a LOCAL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="EquipmentIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="HireServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a HIRE SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="MoneyIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a MONEY SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="RetailServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a RETAIL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CateringServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a CATERING SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="TicketingServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TICKETING SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="AssistanceServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an ASSISTANCE SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CustomerServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a CUSTOMER SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="LocalServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="ComplaintsServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a COMPLAINTS SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="CustomerServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="LostPropertyIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a LOST PROPERTY SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="CustomerServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="LuggageServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a LUGGAGE SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="CustomerServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="LeftLuggageServiceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a LEFT LUGGAGE SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="CustomerServiceIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="MeetingPointIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a MEETING POINT SERVICE</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="CustomerServiceIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="MoneyServiceEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for MONEY SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="cashMachine"/>
+			<xsd:enumeration value="bank"/>
+			<xsd:enumeration value="insurance"/>
+			<xsd:enumeration value="bureauDeChange"/>
+						<xsd:enumeration value="customsOffice"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="MoneyServiceListOfEnumerations">
+		<xsd:annotation>
+			<xsd:documentation>List of MONEY SERVICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:list itemType="MoneyServiceEnumeration"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="HireServiceEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for HIRE SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="cycleHire"/>
+			<xsd:enumeration value="motorcycleHire"/>
+			<xsd:enumeration value="carHire"/>
+			<xsd:enumeration value="recreationalDeviceHire"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="HireServiceListOfEnumerations">
+		<xsd:annotation>
+			<xsd:documentation>List of HIRE SERVICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:list itemType="HireServiceEnumeration"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="RetailServiceEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for RETAIL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="food"/>
+			<xsd:enumeration value="healthHygieneBeauty"/>
+			<xsd:enumeration value="newspaperTobacco"/>
+			<xsd:enumeration value="fashionAccessories"/>
+			<xsd:enumeration value="bankFinanceInsurance"/>
+			<xsd:enumeration value="tourism"/>
+			<xsd:enumeration value="photobooth"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RetailServiceListOfEnumerations">
+		<xsd:annotation>
+			<xsd:documentation>List of RETAIL SERVICES.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:list itemType="RetailServiceEnumeration"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+</xsd:schema>

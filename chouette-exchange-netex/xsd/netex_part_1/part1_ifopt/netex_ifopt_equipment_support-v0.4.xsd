@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:netex="http://www.netex.org.uk/netex" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.3" id="netex_ifopt_equipment_support">
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_equipment_support-v0.1.xsd"/>
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0 CEN TC278 WG3 SG6 Editor Nicholas Knowles, Kizoom. mailto:schemer@netex.org.uk</Creator>
+				<Date>
+					<Created>2007-06-12</Created>
+				</Date>
+				<Date>
+					<Modified>2007-06-12</Modified>
+				</Date>
+				<Description>
+					<p>NeTEx - Network Exchange. This subschema defines EQUIPMENT types for Place access.</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/ifopt}ifopt_equipment-v0.3.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom Software Ltd, 16 High Holborn, London WC1V 6BX</Publisher>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright 2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the TransModel standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and Road transport
+</Category>
+					<Project>CEN TC278 WG3 SG6</Project>
+				</Subject>
+				<Title>NeTEx Network Exchange - EQUIPMENT identifier types.</Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+		<xsd:documentation>EQUIPMENT identifier types for IFOPT Fixed Objects in Public Transport.</xsd:documentation>
+	</xsd:annotation>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="LightingEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed value for Lighting.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="wellLit"/>
+			<xsd:enumeration value="poorlyLit"/>
+			<xsd:enumeration value="unlit"/>
+			<xsd:enumeration value="unknown"/>
+			<xsd:enumeration value="other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="TicketingEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TICKETING EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="EquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TicketValidatorEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TICKETING EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="EquipmentIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="AccessEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an ACCESS EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="InstalledEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="EntranceEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an ACCESS EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="RampEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a RAMP EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="CrossingEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a CROSSING EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="LiftEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a LIFT EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="EscalatorEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an ESCALATOR EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="TravelatorEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TRAVELATOR EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="QueueingEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a QUEUEING EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="StaircaseEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a STAIRCASE EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="RoughSurfaceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a ROUGH SURFACE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PlaceLightingIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a PLACE LIGHTING.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="StairFlighttIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a STAIR FLIGHT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="ObjectIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="SanitaryFacilityIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a SANITARY FACILITY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassengerEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PassengerSafetyIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a PASSENGER SAFETY EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassengerEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="HelpPointIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a HELP POINT EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassengerEquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="RubbishDisposalIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a RUBBISH DISPOSAL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassengerEquipmentIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="SignEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of SIGN EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="EquipmentIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="PlaceSignEquipmentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of PLACE SIGN EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="AccessEquipmentIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="DirectionOfUseEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for direction of use.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="up"/>
+			<xsd:enumeration value="down"/>
+			<xsd:enumeration value="both"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SurfaceTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed value for surface.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="asphalt"/>
+			<xsd:enumeration value="bricks"/>
+			<xsd:enumeration value="cobbles"/>
+			<xsd:enumeration value="earth"/>
+			<xsd:enumeration value="grass"/>
+			<xsd:enumeration value="looseSurface"/>
+			<xsd:enumeration value="pavingStones"/>
+			<xsd:enumeration value="roughSurface"/>
+			<xsd:enumeration value="smooth"/>
+			<xsd:enumeration value="other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="HandrailEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for Sides of handrail.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="oneSide"/>
+			<xsd:enumeration value="bothSides"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="GradientEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for Gradient steepness.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="verySteep"/>
+			<xsd:enumeration value="steep"/>
+			<xsd:enumeration value="medium"/>
+			<xsd:enumeration value="gentle"/>
+			<xsd:enumeration value="level"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="EntranceAttentionEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for entrance attention device.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="doorbell"/>
+			<xsd:enumeration value="helpPoint"/>
+			<xsd:enumeration value="intercom"/>
+			<xsd:enumeration value="other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CrossingTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for CROSSING EQUIPMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="levelCrossing"/>
+			<xsd:enumeration value="barrowCrossing"/>
+			<xsd:enumeration value="roadCrossing"/>
+			<xsd:enumeration value="roadCrossingWithIsland"/>
+			<xsd:enumeration value="other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+</xsd:schema>

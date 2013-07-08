@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_monitoredCall_version">
+	<xsd:include schemaLocation="netex_monitoredPassingTimes_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_part_2/part2_journeyTimes/netex_call_version-v0.1.xsd"/>
+	<!-- ==== CALL =========================================-->
+	<!-- ====MonitoredCall=========================================-->
+	<xsd:complexType name="monitoredCalls_RelStructure" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Type for List of MONITORED CALLs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element name="MonitoredCall" type="MonitoredCall_VersionedChildStructure" minOccurs="2" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="MonitoredCall_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Monitored CALL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Call_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="MonitoredCallGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="MonitoredCallGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements describing the Monitored CALL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="TargetPassingTimeView" minOccurs="0"/>
+			<xsd:element ref="EstimatedPassingTimeView" minOccurs="0"/>
+			<xsd:element ref="ObservedPassingTimeView" minOccurs="0"/>
+			<xsd:element name="previousCalls" type="previousCalls_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Previous stops  in the SERVICE PATTERN.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="onwardCalls" type="onwardCalls_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Onwards stops  in the SERVICE PATTERN.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====onwards=========================================-->
+	<xsd:complexType name="onwardCalls_RelStructure" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Type for List of ONWARD CALLs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element name="OnwardCall" type="OnwardCall_VersionedChildStructure" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="OnwardCall_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Onward  CALL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Call_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="OnwardCallGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="OnwardCallGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements describing the Onward CALL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="TargetPassingTimeView" minOccurs="0"/>
+			<xsd:element ref="EstimatedPassingTimeView" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====previous=========================================-->
+	<xsd:complexType name="previousCalls_RelStructure" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Type for List of PREVIOUS CALLs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element name="PreviousCall" type="PreviousCall_VersionedChildStructure" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>An already completed CALL of  a VEHICLE JOURNEY that occurred earlier in the the JOURNEY PATTERN before the current stop</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="PreviousCall_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Previous  CALL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Call_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="PreviousCallGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="PreviousCallGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements describing the Previous CALL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="TargetPassingTimeView" minOccurs="0"/>
+			<xsd:element ref="EstimatedPassingTimeView" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+</xsd:schema>

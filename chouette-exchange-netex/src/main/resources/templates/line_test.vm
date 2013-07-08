@@ -792,6 +792,7 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
 							<QuayRef version="1" ref="RATP_PIVI:Quay:5246064"/>
 						</PassengerStopAssignment>
 					</stopAssignments>
+
 				</ServiceFrame>
 				<!-- =========================================== -->
 				<!-- IFOPT Stop Places, Bording positions and quays -->

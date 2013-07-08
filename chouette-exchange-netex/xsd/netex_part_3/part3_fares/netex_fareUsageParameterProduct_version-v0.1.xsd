@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_fareUsageParameterProduct_version">
+	<xsd:include schemaLocation="netex_fareUsageParameter_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_fareUsageParameterProduct_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ====USER PROFILE================================================= -->
+	<xsd:element name="UserProfile" abstract="false" substitutionGroup="UsageParameter_">
+		<xsd:annotation>
+			<xsd:documentation>The social profile of a passenger, based on age group, education, profession, social status, sex etc., often used for allowing discounts: 18-40 years old, graduates, drivers, unemployed, women etc.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="UserProfile_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="UsageParameterGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="UserProfileGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="UserProfileIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="UserProfile_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for USER PROFILE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="UsageParameter_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="UserProfileGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="UserProfileGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for USER PROFILE Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="BaseUserProfileRef" type="UserProfileRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Base Prifle on which this User profile is based. Assume all propertoes from base that are not explicitly stated on subprogile </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="TypeOfConcessionRef" minOccurs="0"/>
+			<xsd:element name="MinimumAge" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum age to be eligible for profile.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumAge" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum age to be eligible for profile.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MonthDayOnWhichAgeApplies" type="xsd:gMonthDay" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Date on which Age Applies, if fixed annually. </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DiscountBasis" type="DiscountBasisEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Nature of discount for this profile </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CompanionBasis" type="DiscountBasisEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Basis on which a companion is allowed.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="LocalResident" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether user must be Local Resident</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="GenderLimitation" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====COMMERCIAL PROFILE=================================================== -->
+	<xsd:element name="CommercialProfile" abstract="false" substitutionGroup="UsageParameter_">
+		<xsd:annotation>
+			<xsd:documentation>A category of users depending on their commercial relations with the operator (frequency of use, amount of purchase etc.), often used for allowing discounts.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="CommercialProfile_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="UsageParameterGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="CommercialProfileGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="CommercialProfileIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="CommercialProfile_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for COMMERCIAL PROFILE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="UsageParameter_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="CommercialProfileGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="CommercialProfileGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for COMMERCIAL PROFILE Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="TypeOfConcessionRef" minOccurs="0"/>
+			<xsd:element name="ConsumptionAmount" type="CurrencyAmountType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Amount of units consumed.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConsumptionUnits" type="xsd:decimal" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Amount consumed amount.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====GROUP TICKET=================================================== -->
+	<xsd:element name="GroupTicket" abstract="false" substitutionGroup="UsageParameter_">
+		<xsd:annotation>
+			<xsd:documentation>The number and characteristics of persons entitled to travel in addition to the holder of an access right.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="GroupTicket_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="UsageParameterGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="GroupTicketGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="GroupTicketIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="GroupTicket_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for GROUP TICKET.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="UsageParameter_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="GroupTicketGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="GroupTicketGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for GROUP TICKET Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="TypeOfConcessionRef" minOccurs="0"/>
+			<xsd:group ref="GroupTicketSizeGroup"/>
+			<xsd:group ref="GroupTicketCalculationGroup"/>
+			<xsd:element name="JointCheckIn" type="GroupCheckInEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether the group must check in together.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="GroupBookingFacility" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="GroupTicketSizeGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for GROUP TICKET Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MinimumNumberOfAdults" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum number of persons.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumNumberOfAdults" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum number of persons.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinimumNumberOfChildren" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum number of children allowed on ticket.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumNumberOfChildren" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum number of children allowed on ticket.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumNumberOfPersons" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum number of persons overall allowed on ticket.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinimumNumberOfCardHolders" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minium number of card holders needed on ticket, if any .</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="GroupTicketCalculationGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for GROUP TICKET Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="PricingBasis" type="PerBasisEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether tpricingis per person or for whle group</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumPersonsFree" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum number of free people allowed on ticket.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumPersonsDiscounted" type="NumberOfPassengers" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum number of discounted persons allowed on ticket.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DiscountOnlyForFirstPerson" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether there is only a discount for the first person in the group.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====LUGGAGE ALLOWANCE=================================================== -->
+	<xsd:element name="LuggageAllowance" abstract="false" substitutionGroup="UsageParameter_">
+		<xsd:annotation>
+			<xsd:documentation>The number and characteristics (weight, volume) of luggage that a holder of an access right is entitled to carry.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="LuggageAllowance_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="UsageParameterGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LuggageAllowanceGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="LuggageAllowanceIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="LuggageAllowance_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for LUGGAGE ALLOWANCE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="UsageParameter_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="LuggageAllowanceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="LuggageAllowanceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for LUGGAGE ALLOWANCE Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="BaggageType" type="BaggageTypeEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of Baggage use.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="LuggageAllowanceType" type="LuggageAllowanceTypeEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Summary of luggage allowance use.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumNumberItems" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum number of items allowed for  hand luggage.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumBagHeight" type="LengthType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum height of a bag.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumBagWidth" type="LengthType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum width of a bag.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumBagDepth" type="LengthType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum depth of a bag.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumBagWeight" type="WeightType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum weight of a bag.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

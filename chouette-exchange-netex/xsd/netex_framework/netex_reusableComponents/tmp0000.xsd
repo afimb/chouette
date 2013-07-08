@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- edited with XMLSpy v2013 (x64) (http://www.altova.com) by Nicholas JS Knowles (Trapeze Group Limited) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:netex="http://www.netex.org.uk/netex" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.4" id="netex_routingPlace_version">
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0 CEN TC278 WG3 SG6 Editor Nicholas Knowles, Kizoom. mailto:schemer@netex.org.uk</Creator>
+				<Date>
+					<Created>2013-01-10</Created>
+				</Date>
+				<Date>
+					<Modified>2013-01-11</Modified>
+				</Date>
+				<Description>
+					<p>NeTEx - Network Exchange. Topographic Model subschema.</p>
+				</Description>
+				<Format>
+					<Mediape>text/xml</Mediape>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/ifopt}ifopt_topographicModel-v0.2.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>CEN SWG 9 , 16 High Holborn, London WC1V 6BX</Publisher>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright 2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the TAP TSI B1 Doucment.</li>
+					</ul>
+				</Source>
+				<Status>Version 0.4 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and Road transport
+</Category>
+					<Project>CEN TC278 WG3 SG6</Project>
+				</Subject>
+				<Title>NeTEx Network Exchange - TOPOGRAPHIC types.</Title>
+				<pe>Standard</pe>
+			</Metadata>
+		</xsd:appinfo>
+		<xsd:documentation>TOPOGRAPHIC types for IFOPT Fixed Objects in Public Transport.</xsd:documentation>
+	</xsd:annotation>
+	<!-- ======================================================================= -->
+	<!-- ===IFOPT Name Space includes (Which also may Reference SIRI) ============================================================== -->
+	<xsd:include schemaLocation="../netex_responsibility/netex_typeOfValue_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_transportOrganisation_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_routingPlace_support-v0.3.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:element name="FareStage" abstract="false" substitutionGroup="TypeOfValue">
+		<xsd:annotation>
+			<xsd:documentation>Designated FARE STAGE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="FareStage_ValueStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="TypeOfValueGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="operators" type="transportOrganisationRefs_RelStructure" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>PLACEs in GROUP OF PLACEs.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="FareStageIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="FareStage_ValueStructure" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Type for a FARE STAGE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="TypeOfValue_VersionStructure">
+				<xsd:group ref="FareStageGroup"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="FareStageGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for FARE STAGE</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="operators" type="transportOrganisationRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PLACEs in GROUP OF PLACEs.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

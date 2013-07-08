@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" id="netex_dataObjectRequest_service">
+	<!-- ===Dependencies ======================================= -->
+	<xsd:import namespace="http://www.siri.org.uk/siri" schemaLocation="../siri/siri_requests-v2.0.xsd"/>
+	<xsd:include schemaLocation="netex_all_filters-v0.1.xsd"/>
+	<xsd:include schemaLocation="../netex_framework/netex_all_objects_framework-v0.1.xsd"/>
+	<!-- ===eGIF/GovTalk Documentation ======================================= -->
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Contributor>NeTEx Project. NeTEx XML working Group. See main package headers </Contributor>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0   NeTEx. Nick Knowles Kizoom mailto:schemer@/www.netex.org.uk/</Creator>
+				<Date>
+					<Created>2010-09-04</Created>
+					<!-- Documentation headers added -->
+				</Date>
+				<Description>
+					<p>NeTEx  is an XML representation of a Transport  model that can be used to exchange data objects between NeTEx databases and other services.</p>. 
+					<p>This subschema describes the    NeTEx  web services , which provide a SIRI based XML API to request and return data objects. It includes the following NeTEx services
+					<ul>
+							<li>Data Object Request: Request to return a collection of NeTEx data ENTTITIEs IN VERSION, as specified by one or more filters. </li>
+							<li>Data Object Subscription Request: Request to subscribe to a feed of Data objects as specified by an Object Request</li>
+							<li>Data Object Delivery: Returned value containing one or more elements</li>
+						</ul>
+					</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/netex_part1/}netex__device-v1.0.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom Software Ltd, 16 High Holborn, London WC1V 6BX </Publisher>
+				<Relation>
+					<Requires>http://www.netex.org.uk/schemas/1.0/ for svc/ for _data_object-v1.0.xsd</Requires>
+					<Requires>http://www.siri.org.uk/schemas/2.0/xsd/siri/siri_requests-v2.0.xsd</Requires> >
+				</Relation>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright  2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the NeTEx specification and SIRI standards.<ul>
+								<li>ts004.003annexdapr07.xls</li>
+								<li>ts004-004a-annexd-sep08.pdf</li>
+							</ul>
+						</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Public transport, Bus services, Coach services, Bus stops and stations,
+Business and industry, Transport, 
+Roads and road transport
+</Category>
+					<Project>NeTEx  for Xml Interface</Project>
+				</Subject>
+				<Title>NeTEx  XML schema.   Subschema describing the NeTEx SIRI data exchange services  </Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+	</xsd:annotation>
+	<!-- ======================================================================= -->
+	<xsd:group name="NetexIndexGroup">
+		<xsd:annotation>
+			<xsd:documentation>Convenience artefact to pick out main elements of the Data Object Service.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="DataObjectRequest"/>
+			<xsd:element ref="DataObjectSubscriptionRequest"/>
+			<xsd:element ref="DataObjectDelivery"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<!-- ==== Service=============================================== -->
+	<xsd:element name="DataObjectRequest" type="DataObjectRequestStructure" substitutionGroup="siri:AbstractFunctionalServiceRequest">
+		<xsd:annotation>
+			<xsd:documentation>Service Request for one or more  NeTEx Data Objects,.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="DataObjectRequestStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Service Request Type for a  one or more  NeTEx  Data Objects,</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="siri:AbstractFunctionalServiceRequestStructure">
+				<xsd:sequence>
+					<xsd:group ref="DataObjectRequestGroup"/>
+					<xsd:element ref="siri:Extensions" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="DataObjectRequestGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for NeTEx Data Object Request,</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="topics">
+				<xsd:annotation>
+					<xsd:documentation>One or more Request filters that specify tthe data to be included in output. Multiple filters are logically ANDed.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="FrameTopicFilter" type="FrameRequestTopicsStructure" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>Vaues to use select Network Objects.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Policy" type="FrameRequestPolicyStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Policies to apply when fetching data specified by Topics.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:element name="DataObjectSubscriptionRequest" type="DataObjectSubscriptionStructure" substitutionGroup="siri:AbstractFunctionalServiceSubscriptionRequest">
+		<xsd:annotation>
+			<xsd:documentation>Request for a subscription to NeTEx Data Object Service.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="DataObjectSubscriptionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Subscription Request for  NeTEx Data Object  Service.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="siri:AbstractSubscriptionStructure">
+				<xsd:sequence>
+					<xsd:element ref="DataObjectRequest"/>
+					<xsd:element name="SubscriptionPolicy" type="AbstractSubscriptionPolicyStructure" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Policy to use when processing Network Subscriptions.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="siri:Extensions" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:element name="DataObjectDelivery" type="DataObjectDeliveryStructure" substitutionGroup="siri:AbstractFunctionalServiceDelivery">
+		<xsd:annotation>
+			<xsd:documentation>Delivery for NeTEx   Service containing  one or more  NeTEx  Data Objects,.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="DeliveriesStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Deliveries for  Service.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="DataObjectDelivery" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Delivery for Stop Event service.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DataObjectDeliveryStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Delivery for  Service containing  one or more  NeTEx  Data Objects,.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="siri:AbstractServiceDeliveryStructure">
+				<xsd:sequence>
+					<xsd:element ref="DataObjectRequest" minOccurs="0"/>
+					<xsd:group ref="PayloadGroup"/>
+					<xsd:element ref="Extensions" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>
