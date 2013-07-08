@@ -5,10 +5,7 @@ import java.util.Map;
 
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.AccommodationFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.AssistanceFacilityEnumeration;
@@ -80,40 +77,40 @@ public class FacilityProducer extends AbstractModelProducer<Facility, chouette.s
 
 		chouette.schema.FacilityLocation xmlFacilityLocation = xmlFacility.getFacilityLocation();
 		if(xmlFacilityLocation != null){
-			FacilityLocation facilityLocation = new FacilityLocation();
+			// FacilityLocation facilityLocation = new FacilityLocation();
 			// Address optional
 			chouette.schema.Address xmlAddress = xmlFacilityLocation.getAddress();		
 			if(xmlAddress != null){
-				Address address = new Address();
-				address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
-				address.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
-				facilityLocation.setAddress(address);
+				// Address address = new Address();
+				facility.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
+				facility.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
+				// facilityLocation.setAddress(address);
 			}
 			// LongLatType mandatory
 			if(xmlFacilityLocation.getLongLatType() != null){
 				try {
-					facilityLocation.setLongLatType(LongLatTypeEnum.fromValue(xmlFacilityLocation.getLongLatType().value()));
+					facility.setLongLatType(LongLatTypeEnum.fromValue(xmlFacilityLocation.getLongLatType().value()));
 				} catch (IllegalArgumentException e) {
 					// TODO: handle exception
 					e.printStackTrace();
 				}
 			}
 			// Latitude mandatory
-			facilityLocation.setLatitude(xmlFacilityLocation.getLatitude());
+			facility.setLatitude(xmlFacilityLocation.getLatitude());
 			// Longitude mandatory
-			facilityLocation.setLongitude(xmlFacilityLocation.getLongitude());
+			facility.setLongitude(xmlFacilityLocation.getLongitude());
 			// ProjectedPoint optional
 			chouette.schema.ProjectedPoint xmlProjectedPoint = xmlFacilityLocation.getProjectedPoint();
 			if(xmlProjectedPoint != null){
-				ProjectedPoint projectedPoint = new ProjectedPoint();
-				projectedPoint.setX(xmlProjectedPoint.getX());
-				projectedPoint.setY(xmlProjectedPoint.getY());
-				projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
-				facilityLocation.setProjectedPoint(projectedPoint);
+				// ProjectedPoint projectedPoint = new ProjectedPoint();
+				facility.setX(xmlProjectedPoint.getX());
+				facility.setY(xmlProjectedPoint.getY());
+				facility.setProjectionType(xmlProjectedPoint.getProjectionType());
+				// facilityLocation.setProjectedPoint(projectedPoint);
 			}			
 			//ContainedIn mandatory
-			facilityLocation.setContainedIn(xmlFacilityLocation.getContainedIn());
-			facility.setFacilityLocation(facilityLocation);
+			facility.setContainedIn(xmlFacilityLocation.getContainedIn());
+			// facility.setFacilityLocation(facilityLocation);
 		}
 		//FacilityFeature[1..n] mandatory
 		chouette.schema.FacilityFeature[] features = xmlFacility.getFacilityFeature();

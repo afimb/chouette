@@ -158,11 +158,9 @@ public class NeptuneConverter
 		// Companies
 		List<Company> companies = new ArrayList<Company>();
 		for (GtfsAgency gtfsAgency : data.getAgencies().getAll())
-			// for (Iterator<GtfsAgency> iterator = data.getAgencies().iterator(); iterator.hasNext();)
 		{
 			Company company = companyProducer.produce(gtfsAgency, report);
 			companies.add(company);
-			// iterator.remove();
 		}
 		data.getAgencies().clear();
 		assembler.setCompanies(companies);
@@ -176,9 +174,7 @@ public class NeptuneConverter
 		Map<String, Integer> mapRouteExtensionByRouteId = new HashMap<String, Integer>();
 
 		for (GtfsRoute gtfsRoute : data.getRoutes().getAll())
-			// for (Iterator<GtfsRoute> iterator = data.getRoutes().iterator(); iterator.hasNext();)
 		{
-			// GtfsRoute gtfsRoute = iterator.next();
 			// must produce 2 routes : one for each direction;
 			// at end of processing, empty route will be destroyed
 			String routeName = mergeRouteByShortName?gtfsRoute.getRouteShortName():gtfsRoute.getRouteId();
@@ -208,7 +204,6 @@ public class NeptuneConverter
 			line.addRoute(route1);
 			routes.add(route1);
 			mapRouteExtensionByRouteId.put(route1.getObjectId(), Integer.valueOf(1));
-			// iterator.remove();
 		}
 		// System.gc();
 		logger.debug("free memory = "+Runtime.getRuntime().freeMemory());
@@ -224,10 +219,7 @@ public class NeptuneConverter
 		Set<String> stopAreaOidSet = new HashSet<String>();
 		logger.info("process stopArea :" + data.getStops().size());
 		for (GtfsStop gtfsStop : data.getStops().getAll())
-			// for (Iterator<GtfsStop> iterator = data.getStops().iterator(); iterator.hasNext();)
 		{
-			// GtfsStop gtfsStop = iterator.next();
-			// iterator.remove(); 
 			StopArea area = stopAreaProducer.produce(gtfsStop, report);
 			if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
 			{
@@ -303,11 +295,7 @@ public class NeptuneConverter
 
 		logger.info("process timetables :" + data.getCalendars().size());
 		for (GtfsCalendar gtfsCalendar : data.getCalendars().getAll())
-			// for (Iterator<GtfsCalendar> iterator = data.getCalendars().iterator(); iterator.hasNext();)
 		{
-			// GtfsCalendar gtfsCalendar = iterator.next();
-			// iterator.remove();
-
 			List<GtfsCalendarDate> dates = data.getCalendarDates().getAllFromParent(gtfsCalendar.getServiceId());
 			for (GtfsCalendarDate date : dates)
 			{
@@ -328,33 +316,6 @@ public class NeptuneConverter
 		// next match stoptimes sequence of each trip to a journey pattern;
 		// and identify stops to be affected to routes
 
-		//      Map<String, List<GtfsStopTime>> mapStopTimesByTrip = new HashMap<String, List<GtfsStopTime>>();
-		//      logger.info("process stopTimes :" + data.getStopTimes().size());
-		//
-		//      {
-		//         List<GtfsStopTime> stopTimesOfATrip = null;
-		//         String previousTrip = null;
-		//         int count = 0;
-		//         for (GtfsStopTime gtfsStopTime: data.getStopTimes())
-		//         {
-		//            if (!gtfsStopTime.getTripId().equals(previousTrip)) 
-		//            {
-		//               stopTimesOfATrip = mapStopTimesByTrip.get(gtfsStopTime.getTripId());
-		//               previousTrip = gtfsStopTime.getTripId();
-		//               count++;
-		//               if (count % 1000 == 0) logger.debug("stops in trips count = "+count);
-		//
-		//            }
-		//            if (stopTimesOfATrip == null)
-		//            {
-		//               stopTimesOfATrip = new ArrayList<GtfsStopTime>();
-		//               mapStopTimesByTrip.put(gtfsStopTime.getTripId(), stopTimesOfATrip);
-		//            }
-		//
-		//            stopTimesOfATrip.add(gtfsStopTime);
-		//         }
-		//      }
-		//      data.getStopTimes().clear();
 
 		List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();
 		List<StopPoint> stopPoints = new ArrayList<StopPoint>();
@@ -366,10 +327,7 @@ public class NeptuneConverter
 		logger.info("process vehicleJourneys :" + data.getTrips().size());
 		int count = 0;
 		for (GtfsTrip gtfsTrip : data.getTrips().getAll()) 
-			//for (Iterator<GtfsTrip> iterator = data.getTrips().iterator(); iterator.hasNext();)
 		{
-			// GtfsTrip gtfsTrip = iterator.next();
-			// iterator.remove();
 			count++;
 			if (count % 1000 == 0)
 			{
@@ -395,8 +353,6 @@ public class NeptuneConverter
 			Route route = mapRouteByRouteId.get(routeId);
 			mapVehicleJourneyByTripId.put(gtfsTrip.getTripId(), vehicleJourney);
 			// stopSequence
-			// List<GtfsStopTime> stopTimesOfATrip = mapStopTimesByTrip.get(gtfsTrip.getTripId());
-			// mapStopTimesByTrip.remove(gtfsTrip.getTripId());
 			List<GtfsStopTime> stopTimesOfATrip = data.getStopTimes().getAllFromParent(gtfsTrip.getTripId());
 			Collections.sort(stopTimesOfATrip);
 			String journeyKey = routeId;
@@ -543,66 +499,6 @@ public class NeptuneConverter
 			}
 		}
 
-		// clone vehicleJourneys by frequency
-		//      for (GtfsFrequency frequency : data.getFrequencies().getAll())
-		//      {
-		//         DbVehicleJourney vj = mapVehicleJourneyByTripId.get(frequency.getTripId());
-		//         if (vj != null)
-		//         {
-		//            baseVehicleJourneyToTime(vj, frequency.getStartTime().getTime().getTime());
-		//            try
-		//            {
-		//               if (!frequency.getStartTime().isTomorrow() && frequency.getEndTime().isTomorrow())
-		//               {
-		//
-		//                  copyVehicleJourney(vj, frequency.getEndTime().getTime().getTime() + 24 * 3600 * 1000,
-		//                        frequency.getHeadwaySecs() * 1000);
-		//               }
-		//               else
-		//               {
-		//                  copyVehicleJourney(vj, frequency.getEndTime().getTime().getTime(), frequency.getHeadwaySecs() * 1000);
-		//               }
-		//            }
-		//            catch (Exception e)
-		//            {
-		//               logger.error("cannot apply frequency ", e);
-		//            }
-		//         }
-		//      }
-
-		// merge identical vehicleJourneys with different timetables
-		//      vehicleJourneys.clear();
-		//      for (JourneyPattern jp : journeyPatterns)
-		//      {
-		//         List<VehicleJourney> vjs = new ArrayList<VehicleJourney>(jp.getVehicleJourneys());
-		//         for (int i = 0; i < vjs.size(); i++)
-		//         {
-		//            VehicleJourney vj1 = vjs.get(i);
-		//            if (vj1.getObjectId() == null)
-		//               continue;
-		//            for (int j = i + 1; j < vjs.size(); j++)
-		//            {
-		//               VehicleJourney vj2 = vjs.get(j);
-		//               if (vj2.getObjectId() == null)
-		//                  continue;
-		//               if (compareTimes(vj1, vj2))
-		//               {
-		//                  // merge
-		//                  String id = vj2.getObjectId().split(":")[2];
-		//                  vj1.setObjectId(vj1.getObjectId() + "_" + id);
-		//                  for (Timetable tm : vj2.getTimetables())
-		//                  {
-		//                     tm.removeVehicleJourney(vj2);
-		//                     tm.addVehicleJourney(vj1);
-		//                     vj1.addTimetable(tm);
-		//                  }
-		//                  jp.removeVehicleJourney(vj2);
-		//                  vj2.setObjectId(null); // to ignore in further iterations
-		//               }
-		//            }
-		//            vehicleJourneys.add(vj1);
-		//         }
-		//      }
 
 		assembler.setVehicleJourneys(vehicleJourneys);
 		assembler.setStopPoints(stopPoints);
@@ -718,7 +614,7 @@ public class NeptuneConverter
 
 		for (GtfsStopTime gtfsStopTime : stopTimesOfATrip)
 		{
-			String stopKey = routeId.replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a" + gtfsStopTime.getStopId();
+			String stopKey = routeId.replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a" + gtfsStopTime.getStopId().trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
 			if (stopPointKeys.contains(stopKey))
 				stopKey = stopKey + "_1";
 			stopPointKeys.add(stopKey);

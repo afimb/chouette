@@ -26,12 +26,12 @@ public class ImportLogMessage extends LogMessage
       super();
    }
 
-   public ImportLogMessage(long importId,String format,Report report,int position)
+   public ImportLogMessage(Long importId,String format,Report report,int position)
    {
       super(importId,format,report,position);
    }
 
-   public ImportLogMessage(long importId,String format,ReportItem item, String prefix, int position)
+   public ImportLogMessage(Long importId,String format,ReportItem item, String prefix, int position)
    {
       super(importId,format,item,prefix,position);
    }

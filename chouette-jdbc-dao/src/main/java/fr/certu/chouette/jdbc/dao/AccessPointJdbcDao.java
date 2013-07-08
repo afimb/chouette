@@ -53,36 +53,28 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setString(8, accessPoint.getStreetName() );
 		ps.setBigDecimal(9, accessPoint.getLongitude());
 		ps.setBigDecimal(10, accessPoint.getLatitude());
-		String projectionType = null,
-				longLatType = null,
+		String longLatType = null,
 				type = null;
 		if(accessPoint.getLongLatType() != null)
 			longLatType = accessPoint.getLongLatType().value();
 		ps.setString(11, longLatType);
 
-		if(accessPoint.getProjectionType() != null)
-		{
-			projectionType = accessPoint.getProjectionType();
-		}
-		ps.setBigDecimal(12, accessPoint.getX());
-		ps.setBigDecimal(13, accessPoint.getY());
-		ps.setString(14, projectionType);
-		ps.setString(15, accessPoint.getContainedInStopArea());
-		setId(ps,16,accessPoint.getContainedIn(),true,"stop_area_id");
+		ps.setString(12, accessPoint.getContainedInStopArea());
+		setId(ps,13,accessPoint.getContainedIn(),true,"stop_area_id");
 		Time openningTime = null , closingTime = null;
 		if(accessPoint.getOpeningTime() != null)
 			openningTime = accessPoint.getOpeningTime();
-		ps.setTime(17, openningTime);
+		ps.setTime(14, openningTime);
 		if(accessPoint.getClosingTime() != null)
 			closingTime = accessPoint.getClosingTime();
-		ps.setTime(18, closingTime);
+		ps.setTime(15, closingTime);
 		if (accessPoint.getType() != null)
 		{
 		   type = accessPoint.getType().value();
 		}
-		ps.setString(19, type);
-		ps.setBoolean(20, accessPoint.isLiftAvailable());
-		ps.setBoolean(21,accessPoint.isMobilityRestrictedSuitable());
-		ps.setBoolean(22,accessPoint.isStairsAvailable());
+		ps.setString(16, type);
+		ps.setBoolean(17, accessPoint.isLiftAvailable());
+		ps.setBoolean(18,accessPoint.isMobilityRestrictedSuitable());
+		ps.setBoolean(19,accessPoint.isStairsAvailable());
 	}
 }

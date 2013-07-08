@@ -686,6 +686,7 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
                   res = Arrays.copyOf(res, res.length+count);
                   System.arraycopy(temp, 0, res, size, count);
                }
+               bs.close();
                return res;
             }
          }
@@ -781,9 +782,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(access.getComment())); // comment
       builder.append(FIELD_SEPARATOR);
-      if (access.getAddress() != null)
+      if (access.getCountryCode() != null)
       {
-         builder.append(quoted(access.getAddress().getCountryCode())); // countrycode
+         builder.append(quoted(access.getCountryCode())); // countrycode
       }
       else
       {
@@ -800,13 +801,13 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(access.getLatitude())); // latitude
       builder.append(FIELD_SEPARATOR);
-      if (access.getProjectedPoint() != null)
+      if (access.hasProjection())
       {
-         builder.append(quoted(access.getProjectedPoint().getProjectionType())); // projectiontype
+         builder.append(quoted(access.getProjectionType())); // projectiontype
          builder.append(FIELD_SEPARATOR);
-         builder.append(quoted(access.getProjectedPoint().getX())); // x
+         builder.append(quoted(access.getX())); // x
          builder.append(FIELD_SEPARATOR);
-         builder.append(quoted(access.getProjectedPoint().getY())); // y
+         builder.append(quoted(access.getY())); // y
       }
       else
       {
@@ -819,9 +820,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(access.getObjectVersion())); // objectversion
       builder.append(FIELD_SEPARATOR);
-      if (access.getAddress() != null)
+      if (access.getStreetName() != null)
       {
-         builder.append(quoted(access.getAddress().getStreetName())); // streetname
+         builder.append(quoted(access.getStreetName())); // streetname
       }
       else
       {

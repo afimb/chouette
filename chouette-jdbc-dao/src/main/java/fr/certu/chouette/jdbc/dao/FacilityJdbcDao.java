@@ -1,6 +1,5 @@
 package fr.certu.chouette.jdbc.dao;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -11,9 +10,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.FacilityLocation;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 
 /**
@@ -25,15 +21,15 @@ import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 public class FacilityJdbcDao extends AbstractJdbcDao<Facility> 
 {
 	private static final Logger logger = Logger.getLogger(FacilityJdbcDao.class);
-   
-   public Logger getLogger()
-   {
-      return logger;
-   }
+
+	public Logger getLogger()
+	{
+		return logger;
+	}
 
 	@Override
 	protected void populateStatement(PreparedStatement ps, Facility facility)
-	throws SQLException {
+			throws SQLException {
 		logger.debug("inserting "+facility.toString("",0));
 		ps.setString(1, facility.getObjectId());
 		ps.setInt(2, facility.getObjectVersion());
@@ -54,60 +50,23 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		ps.setString(11, facility.getDescription());
 		ps.setBoolean(12, facility.getFreeAccess());
 
-		BigDecimal longitude = null,
-		latitude = null,
-		x = null,
-		y = null;
-
-		String countrycode = null,
-		streetname = null,
-		longlattype = null,
-		projectionType = null,
-		containedIn = null;
-
-		FacilityLocation facilityLocation = facility.getFacilityLocation();
-
-		if(facilityLocation != null)
-		{
-			longitude = facilityLocation.getLongitude();
-			latitude = facilityLocation.getLatitude();
-			if(facilityLocation.getLongLatType() != null)
-				longlattype = facilityLocation.getLongLatType().value();
-
-			Address address = facilityLocation.getAddress();
-
-			if(address != null)
-			{
-				countrycode = address.getCountryCode();
-				streetname = address.getStreetName();
-			}
-
-			ProjectedPoint projectedPoint = facilityLocation.getProjectedPoint();
-			if(projectedPoint != null)
-			{
-				x = projectedPoint.getX();
-				y = projectedPoint.getY();
-				projectionType = projectedPoint.getProjectionType();
-			}
-
-			containedIn = facilityLocation.getContainedIn();
-		}
-
-		ps.setBigDecimal(13, longitude);
-		ps.setBigDecimal(14, latitude);
+		String containedIn = facility.getContainedIn(); // TODO should be containedInStopArea.getId()
+		
+		ps.setBigDecimal(13, facility.getLongitude());
+		ps.setBigDecimal(14, facility.getLatitude());
+		String longlattype = null;
+		if(facility.getLongLatType() != null)
+			longlattype = facility.getLongLatType().value();
 		ps.setString(15, longlattype);
-		ps.setString(16, countrycode);
-		ps.setString(17, streetname);
-		ps.setBigDecimal(18, x);
-		ps.setBigDecimal(19, y);
-		ps.setString(20, projectionType);
-		ps.setString(21, containedIn);
+		ps.setString(16, facility.getCountryCode());
+		ps.setString(17, facility.getStreetName());
+		ps.setString(18, containedIn);
 	}
 
 
 	@Override
 	protected Collection<? extends Object> getAttributeValues(String attributeKey, Facility item) 
-	
+
 	{
 		if (attributeKey.equals("feature"))
 		{
@@ -129,8 +88,8 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 
 	@Override
 	protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) 
-	throws SQLException 
-	{
+			throws SQLException 
+			{
 		if (attributeKey.equals("feature"))
 		{
 			JdbcFeature jfeature = (JdbcFeature) attribute;
@@ -139,7 +98,7 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 			return;
 		}		
 		super.populateAttributeStatement(attributeKey, ps, attribute);
-	}
+			}
 
 	class JdbcFeature
 	{

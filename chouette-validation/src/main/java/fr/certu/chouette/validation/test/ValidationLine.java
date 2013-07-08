@@ -425,8 +425,8 @@ public class ValidationLine implements IValidationPlugin<Line> {
             //Test 2.27.1
             List<Facility> facilities = importedItems.getFacilities();
             for (Facility facility : facilities) {
-               if (facility.getFacilityLocation() != null) {
-                  String containedIn = facility.getFacilityLocation().getContainedIn();
+               if (facility.getContainedIn() != null) {
+                  String containedIn = facility.getContainedIn();
                   if (containedIn != null && stopAreaIds.contains(containedIn)) {
                      report2_27_1.updateStatus(Report.STATE.OK);
                   } else {

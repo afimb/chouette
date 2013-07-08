@@ -19,6 +19,7 @@ import lombok.Setter;
 
 import org.apache.log4j.Logger;
 
+import chouette.schema.AreaCentroid;
 import chouette.schema.ChouetteArea;
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetwork;
@@ -46,7 +47,6 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
@@ -262,7 +262,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          else
          {
             logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-            ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR );
+            ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.ERROR,line.getName(),line.getObjectId() );
             item.addItem(errorItem);
          }
       }
@@ -304,7 +304,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                else
                {
                   logger.info("no vehiclejourneys for line "+line.getName()+" ("+line.getObjectId()+"): not exported");
-                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING );
+                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE,Report.STATE.WARNING ,line.getName(),line.getObjectId());
                   item.addItem(errorItem);
                }
                System.gc();
@@ -538,7 +538,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
 
          ChouetteArea chouetteArea = new ChouetteArea();
-         HashSet<AreaCentroid> areaCentroids = new HashSet<AreaCentroid>();
+//         HashSet<AreaCentroid> areaCentroids = new HashSet<AreaCentroid>();
          HashSet<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
          HashSet<AccessLink> accessLinks = new HashSet<AccessLink>();
          HashSet<AccessPoint> accessPoints = new HashSet<AccessPoint>();
@@ -565,11 +565,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                }
 
             }
-            chouetteArea.addStopArea(chouetteStopArea);
-            if (stopArea.getAreaCentroid() != null)
+            if (stopArea.hasAddress() || stopArea.hasCoordinates() || stopArea.hasProjection())
             {
-               areaCentroids.add(stopArea.getAreaCentroid());
+            	AreaCentroid centroid = areaCentroidProducer.produce(stopArea);
+            	chouetteArea.addAreaCentroid(centroid);
+            	chouetteStopArea.setCentroidOfArea(centroid.getObjectId());
             }
+            chouetteArea.addStopArea(chouetteStopArea);
             if (stopArea.getConnectionLinks() != null)
             {
                connectionLinks.addAll(stopArea.getConnectionLinks());
@@ -580,10 +582,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             }
          }
 
-         for (AreaCentroid areaCentroid : areaCentroids)
-         {
-            chouetteArea.addAreaCentroid(areaCentroidProducer.produce(areaCentroid));
-         }
+//         for (AreaCentroid areaCentroid : areaCentroids)
+//         {
+//            chouetteArea.addAreaCentroid(areaCentroidProducer.produce(areaCentroid));
+//         }
 
          rootObject.setChouetteArea(chouetteArea);
 
@@ -619,14 +621,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (Timetable timetable : timetables)
          {
-//            if (startDate != null || endDate != null)
-//            {
-//               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//               String oid = timetable.getObjectId()+"_red";
-//               if (startDate != null) oid+="_from_"+sdf.format(startDate);
-//               if (endDate != null) oid+="_to_"+sdf.format(endDate);    
-//               timetable.setObjectId(oid);
-//            }
             rootObject.addTimetable(timetableProducer.produce(timetable));
          }
 

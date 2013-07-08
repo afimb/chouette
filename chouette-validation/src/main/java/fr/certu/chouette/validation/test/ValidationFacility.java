@@ -3,6 +3,8 @@ package fr.certu.chouette.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -10,9 +12,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-import lombok.Getter;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -57,9 +57,9 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 		String param = parameters.getProjectionReference().trim();
 		for (Facility facility : facilities) {
 			int SRIDparam = (LongLatTypeEnum.fromValue(param) != null) ? LongLatTypeEnum.fromValue(param).epsgCode():0;
-			FacilityLocation facilityLocation = facility.getFacilityLocation();
-			if(facilityLocation != null){
-				int SRID = (facilityLocation.getLongLatType() != null) ? facilityLocation.getLongLatType().epsgCode():0; 
+			if(facility.getLongLatType() != null && facility.getLongitude() != null && facility.getLatitude() != null)
+			{
+				int SRID = (facility.getLongLatType() != null) ? facility.getLongLatType().epsgCode():0; 
 				//Test 3.19.1 && Test 3.20.1.a
 				if(SRID == SRIDparam)
 					report3_19_1.updateStatus(Report.STATE.OK);
@@ -77,8 +77,8 @@ public class ValidationFacility implements IValidationPlugin<Facility> {
 				LinearRing shell = factory1.createLinearRing(coordinates);
 				LinearRing[] holes = null;
 				Polygon polygon = factory1.createPolygon(shell, holes);
-				double y = (facilityLocation.getLatitude()!=null) ? facilityLocation.getLatitude().doubleValue():0;
-				double x = (facilityLocation.getLongitude()!=null) ? facilityLocation.getLongitude().doubleValue():0;
+				double y = (facility.getLatitude()!=null) ? facility.getLatitude().doubleValue():0;
+				double x = (facility.getLongitude()!=null) ? facility.getLongitude().doubleValue():0;
 				Coordinate coordinate = new Coordinate(x, y);
 				Point point1 = factory1.createPoint(coordinate);
 				if(!polygon.contains(point1)){

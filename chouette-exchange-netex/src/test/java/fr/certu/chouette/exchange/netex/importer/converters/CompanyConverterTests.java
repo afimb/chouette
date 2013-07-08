@@ -19,7 +19,7 @@ import org.testng.Assert;
 import org.apache.log4j.Logger;
 
 
-@ContextConfiguration(locations = {"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
 public class CompanyConverterTests extends AbstractTestNGSpringContextTests {
 

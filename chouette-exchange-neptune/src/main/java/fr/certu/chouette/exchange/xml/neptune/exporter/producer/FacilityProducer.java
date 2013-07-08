@@ -7,10 +7,7 @@ import java.util.Map;
 import chouette.schema.ChouetteFacilityTypeChoice;
 import chouette.schema.types.LongLatTypeType;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.FacilityLocation;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.AccommodationFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.AssistanceFacilityEnumeration;
@@ -64,17 +61,14 @@ public class FacilityProducer extends AbstractCastorNeptuneProducer<chouette.sch
       castorFacility.setComment(getNotEmptyString(facility.getComment()));
       castorFacility.setName(facility.getName());
 
-      FacilityLocation location = facility.getFacilityLocation();
-      if (location != null)
+      if (facility.getLongLatType() != null && facility.getLatitude() != null && facility.getLongitude() != null)
       {
          chouette.schema.FacilityLocation castorLocation = new chouette.schema.FacilityLocation();
          castorFacility.setFacilityLocation(castorLocation );
-         castorLocation.setLatitude(location.getLatitude());
-         castorLocation.setLongitude(location.getLongitude());
+         castorLocation.setLatitude(facility.getLatitude());
+         castorLocation.setLongitude(facility.getLongitude());
 
-         if(location.getLongLatType() != null)
-         {
-            LongLatTypeEnum longLatType = location.getLongLatType();
+            LongLatTypeEnum longLatType = facility.getLongLatType();
             try 
             {
                castorLocation.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
@@ -83,24 +77,22 @@ public class FacilityProducer extends AbstractCastorNeptuneProducer<chouette.sch
             {
                // TODO generate report
             }
-         }
+         
 
-         Address address = location.getAddress();
-         if(address != null)
+         if(facility.getCountryCode() != null || facility.getStreetName() != null)
          {
             chouette.schema.Address castorAddress = new chouette.schema.Address();
-            castorAddress.setCountryCode(getNotEmptyString(address.getCountryCode()));
-            castorAddress.setStreetName(getNotEmptyString(address.getStreetName()));
+            castorAddress.setCountryCode(getNotEmptyString(facility.getCountryCode()));
+            castorAddress.setStreetName(getNotEmptyString(facility.getStreetName()));
             castorLocation.setAddress(castorAddress);
          }
 
-         ProjectedPoint projectedPoint = location.getProjectedPoint();
-         if(projectedPoint != null)
+         if(facility.getProjectionType() != null && facility.getX() != null && facility.getY() != null )
          {
             chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-            castorProjectedPoint.setProjectionType(projectedPoint.getProjectionType());
-            castorProjectedPoint.setX(projectedPoint.getX());
-            castorProjectedPoint.setY(projectedPoint.getY());
+            castorProjectedPoint.setProjectionType(facility.getProjectionType());
+            castorProjectedPoint.setX(facility.getX());
+            castorProjectedPoint.setY(facility.getY());
             castorLocation.setProjectedPoint(castorProjectedPoint);
          }
       }

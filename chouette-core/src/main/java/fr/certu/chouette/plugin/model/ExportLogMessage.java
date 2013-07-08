@@ -26,12 +26,12 @@ public class ExportLogMessage extends LogMessage
    {
       super();
    }
-   public ExportLogMessage(long exportId,String format,Report report,int position)
+   public ExportLogMessage(Long exportId,String format,Report report,int position)
    {
       super(exportId,format,report,position);
    }
 
-   public ExportLogMessage(long exportId,String format,ReportItem item, String prefix, int position)
+   public ExportLogMessage(Long exportId,String format,ReportItem item, String prefix, int position)
    {
       super(exportId,format,item,prefix,position);
    }

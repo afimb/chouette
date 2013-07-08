@@ -21,7 +21,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
-@ContextConfiguration(locations = {"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
 public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
 

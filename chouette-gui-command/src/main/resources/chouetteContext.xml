@@ -102,8 +102,13 @@
 				</entry>
 			</map>
 		</property>
+		<property name="organisationDao" ref="organisationDao" />
+		<property name="referentialDao" ref="referentialDao" />
+		<property name="importDao" ref="importDao" />
 		<property name="importLogMessageDao" ref="importLogMessageDao" />
+		<property name="exportDao" ref="exportDao" />
 		<property name="exportLogMessageDao" ref="exportLogMessageDao" />
+		<property name="fileValidationDao" ref="fileValidationDao" />
 		<property name="fileValidationLogMessageDao" ref="fileValidationLogMessageDao" />
 		<property name="validationParameters" ref="Validation" />
 		<property name="geographicService" ref="geographicService" />

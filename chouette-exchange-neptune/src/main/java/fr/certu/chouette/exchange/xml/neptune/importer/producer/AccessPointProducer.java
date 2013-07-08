@@ -3,9 +3,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
-import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.plugin.report.ReportItem;
 /**
  * 
@@ -29,10 +27,8 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chou
 		// Address optional
 		chouette.schema.Address xmlAddress = xmlAccessPoint.getAddress();		
 		if(xmlAddress != null){
-			Address address = new Address();
-			address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
-			address.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
-			accessPoint.setAddress(address);
+			accessPoint.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
+			accessPoint.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
 		}
 		// LongLatType mandatory
 		if(xmlAccessPoint.getLongLatType() != null){
@@ -50,11 +46,9 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, chou
 		// ProjectedPoint optional
 		chouette.schema.ProjectedPoint xmlProjectedPoint = xmlAccessPoint.getProjectedPoint();
 		if(xmlProjectedPoint != null){
-			ProjectedPoint projectedPoint = new ProjectedPoint();
-			projectedPoint.setX(xmlProjectedPoint.getX());
-			projectedPoint.setY(xmlProjectedPoint.getY());
-			projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
-			accessPoint.setProjectedPoint(projectedPoint);
+			accessPoint.setX(xmlProjectedPoint.getX());
+			accessPoint.setY(xmlProjectedPoint.getY());
+			accessPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
 		}
 		// OpenningTime optional
 		if(xmlAccessPoint.getOpeningTime() != null)

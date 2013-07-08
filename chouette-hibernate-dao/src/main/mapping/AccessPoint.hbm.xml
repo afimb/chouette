@@ -62,7 +62,7 @@ plus de details -->
 					WGS92)</comment>
 			</column>
 		</property>
-		<property name="x" type="java.math.BigDecimal">
+		<!-- <property name="x" type="java.math.BigDecimal">
 			<column name="x">
 				<comment>X coordinate</comment>
 			</column>
@@ -76,7 +76,7 @@ plus de details -->
 			<column name="projection_type">
 				<comment>Projection used for coordinates</comment>
 			</column>
-		</property>
+		</property> -->
 		<property name="countryCode" type="string">
 			<column name="country_code">
 				<comment>Zip code</comment>

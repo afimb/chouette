@@ -4,9 +4,7 @@ import chouette.schema.types.LongLatTypeType;
 import chouette.schema.types.TypeType;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
-import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.schema.AccessPoint, AccessPoint>
 {
@@ -35,33 +33,34 @@ public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.
       castorAccessPoint.setClosingTime(toCastorTime(accessPoint.getClosingTime()));
 
       
-      Address address = accessPoint.getAddress();
-      if(accessPoint.getAddress() != null){
+      if (accessPoint.hasAddress())
+      {
          chouette.schema.Address castorAddress = new chouette.schema.Address();
-         castorAddress.setCountryCode(getNotEmptyString(address.getCountryCode()));
-         castorAddress.setStreetName(getNotEmptyString(address.getStreetName()));
+         castorAddress.setCountryCode(getNotEmptyString(accessPoint.getCountryCode()));
+         castorAddress.setStreetName(getNotEmptyString(accessPoint.getStreetName()));
          castorAccessPoint.setAddress(castorAddress);
       }
       
       castorAccessPoint.setContainedIn(accessPoint.getContainedInStopArea());
-      castorAccessPoint.setLatitude(accessPoint.getLatitude());
-      castorAccessPoint.setLongitude(accessPoint.getLongitude());
       
-      if(accessPoint.getLongLatType() != null){
+      if(accessPoint.hasCoordinates())
+      {
          LongLatTypeEnum longLatType = accessPoint.getLongLatType();
          try {
             castorAccessPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+            castorAccessPoint.setLatitude(accessPoint.getLatitude());
+            castorAccessPoint.setLongitude(accessPoint.getLongitude());
          } catch (IllegalArgumentException e) {
             // TODO generate report
          }
       }
       
-      ProjectedPoint projectedPoint = accessPoint.getProjectedPoint();
-      if(projectedPoint != null){
+      if(accessPoint.hasProjection())
+      {
          chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-         castorProjectedPoint.setProjectionType(projectedPoint.getProjectionType());
-         castorProjectedPoint.setX(projectedPoint.getX());
-         castorProjectedPoint.setY(projectedPoint.getY());
+         castorProjectedPoint.setProjectionType(accessPoint.getProjectionType());
+         castorProjectedPoint.setX(accessPoint.getX());
+         castorProjectedPoint.setY(accessPoint.getY());
          castorAccessPoint.setProjectedPoint(castorProjectedPoint);
       }
                   

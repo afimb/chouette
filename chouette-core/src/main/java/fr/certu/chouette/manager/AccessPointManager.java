@@ -17,6 +17,11 @@ public class AccessPointManager extends AbstractNeptuneManager<AccessPoint>
 		super(AccessPoint.class,AccessPoint.ACCESSPOINT_KEY);
 	}
 
+	public void init()
+	{
+		AccessPoint.setGeographicService(getGeographicService());
+	}
+	
 	@Override
 	protected Logger getLogger() 
 	{

@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 
-@ContextConfiguration(locations = {"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
 public class RouteConverterTests extends AbstractTestNGSpringContextTests {
 

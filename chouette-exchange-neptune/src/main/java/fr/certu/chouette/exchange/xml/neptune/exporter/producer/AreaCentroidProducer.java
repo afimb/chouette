@@ -1,37 +1,38 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import chouette.schema.types.LongLatTypeType;
-import fr.certu.chouette.model.neptune.AreaCentroid;
-import fr.certu.chouette.model.neptune.type.Address;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
-public class AreaCentroidProducer extends AbstractCastorNeptuneProducer<chouette.schema.AreaCentroid, AreaCentroid> {
+public class AreaCentroidProducer extends AbstractCastorNeptuneProducer<chouette.schema.AreaCentroid, StopArea> {
 
 	@Override
-	public chouette.schema.AreaCentroid produce(AreaCentroid areaCentroid) {
+	public chouette.schema.AreaCentroid produce(StopArea area) 
+	{
 		chouette.schema.AreaCentroid castorAreaCentroid = new chouette.schema.AreaCentroid();
 		
 		//
-		populateFromModel(castorAreaCentroid, areaCentroid);
+		populateFromModel(castorAreaCentroid, area);
 		
-		castorAreaCentroid.setComment(getNotEmptyString(areaCentroid.getComment()));
-		castorAreaCentroid.setName(areaCentroid.getName());
+		castorAreaCentroid.setObjectId(castorAreaCentroid.getObjectId().replace(":StopArea:", ":AreaCentroid:"));
+		castorAreaCentroid.setComment(getNotEmptyString(area.getComment()));
+		castorAreaCentroid.setName(area.getName());
 		
-		Address address = areaCentroid.getAddress();
-		if(areaCentroid.getAddress() != null){
+		if(area.hasAddress())
+		{
 			chouette.schema.Address castorAddress = new chouette.schema.Address();
-			castorAddress.setCountryCode(getNotEmptyString(address.getCountryCode()));
-			castorAddress.setStreetName(getNotEmptyString(address.getStreetName()));
+			castorAddress.setCountryCode(getNotEmptyString(area.getCountryCode()));
+			castorAddress.setStreetName(getNotEmptyString(area.getStreetName()));
 			castorAreaCentroid.setAddress(castorAddress);
 		}
 		
-		castorAreaCentroid.setContainedIn(getNonEmptyObjectId(areaCentroid.getContainedInStopArea()));
-		castorAreaCentroid.setLatitude(areaCentroid.getLatitude());
-		castorAreaCentroid.setLongitude(areaCentroid.getLongitude());
+		castorAreaCentroid.setContainedIn(getNonEmptyObjectId(area));
 		
-		if(areaCentroid.getLongLatType() != null){
-			LongLatTypeEnum longLatType = areaCentroid.getLongLatType();
+		if(area.hasCoordinates())
+		{
+			LongLatTypeEnum longLatType = area.getLongLatType();
+			castorAreaCentroid.setLatitude(area.getLatitude());
+			castorAreaCentroid.setLongitude(area.getLongitude());
 			try {
 				castorAreaCentroid.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
 			} catch (IllegalArgumentException e) {
@@ -39,12 +40,12 @@ public class AreaCentroidProducer extends AbstractCastorNeptuneProducer<chouette
 			}
 		}
 		
-		ProjectedPoint projectedPoint = areaCentroid.getProjectedPoint();
-		if(projectedPoint != null){
+		if(area.hasProjection())
+		{
 			chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-			castorProjectedPoint.setProjectionType(projectedPoint.getProjectionType());
-			castorProjectedPoint.setX(projectedPoint.getX());
-			castorProjectedPoint.setY(projectedPoint.getY());
+			castorProjectedPoint.setProjectionType(area.getProjectionType());
+			castorProjectedPoint.setX(area.getX());
+			castorProjectedPoint.setY(area.getY());
 			castorAreaCentroid.setProjectedPoint(castorProjectedPoint);
 		}
 						

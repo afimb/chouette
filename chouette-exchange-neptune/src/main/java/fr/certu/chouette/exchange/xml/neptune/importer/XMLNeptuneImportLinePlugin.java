@@ -349,7 +349,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 					ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
 							entryName);
 					report1_1_1.addItem(detailReportItem);
-					report1_1_1.computeDetailItemCount();
 					ofType1 = true;
 				}
 				else if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name()))
@@ -365,6 +364,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 					ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_encoding", Report.STATE.ERROR, entryName);
 					report1_2_1.addItem(detailReportItem);
 					report1_1_1.updateStatus(Report.STATE.OK);
+					ofType2 = true;
 				}
 				else if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name()))
 				{

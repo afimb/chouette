@@ -4,16 +4,17 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.ModelTranslator;
+import java.text.ParseException;
+import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
-import java.text.ParseException;
-
-import java.util.List;
-import javax.xml.xpath.XPathExpressionException;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 @Test(groups = {"AccessLink"}, description = "Validate AccessLink export in NeTEx format")
 public class AccessLinkTest extends ChouetteModelTest {  

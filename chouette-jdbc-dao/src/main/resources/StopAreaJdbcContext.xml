@@ -59,14 +59,11 @@
 				longitude,
 				latitude,
 				long_lat_type,
-				x,
-				y,
-				projection_type,
 				country_code,
 				street_name
 				)
 				VALUES(?, ?,
-				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -98,9 +95,6 @@
 				longitude = ?,
 				latitude = ?,
 				long_lat_type = ?,
-				x = ?,
-				y = ?,
-				projection_type = ?,
 				country_code = ?,
 				street_name = ?
 				WHERE objectid = ?

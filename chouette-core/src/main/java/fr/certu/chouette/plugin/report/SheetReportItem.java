@@ -3,6 +3,8 @@
  */
 package fr.certu.chouette.plugin.report;
 
+import java.util.ArrayList;
+
 import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
@@ -31,15 +33,20 @@ public class SheetReportItem extends ReportItem
 	@Override
 	public void addItem(ReportItem item) 
 	{
+		int status = getStatus().ordinal();
+		int itemStatus = item.getStatus().ordinal();
+		if (itemStatus > status) setStatus(item.getStatus());
 		if (item instanceof DetailReportItem)
 		{
 			detailItemCount ++;
 			if (detailItemCount > MAX_DETAIL) return;
+			if (getItems() == null) setItems(new ArrayList<ReportItem>());
+			getItems().add(item);
 		}
-		super.addItem(item);
-		int status = getStatus().ordinal();
-		int itemStatus = item.getStatus().ordinal();
-		if (itemStatus > status) setStatus(item.getStatus());
+		else
+		{
+		    super.addItem(item);
+		}
 	}
 	
 	public void computeDetailItemCount()

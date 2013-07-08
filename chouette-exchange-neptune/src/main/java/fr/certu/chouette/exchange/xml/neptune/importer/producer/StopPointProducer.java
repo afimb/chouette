@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -44,8 +45,13 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 		// LineIdShortcut optional
 		stopPoint.setLineIdShortcut(getNonEmptyTrimedString(xmlStopPoint.getLineIdShortcut()));
 		
-		//PTNetworkIdShortcut optional
-		stopPoint.setPtNetworkIdShortcut(getNonEmptyTrimedString(xmlStopPoint.getPtNetworkIdShortcut()));
+		// PtNetworkShortcut optional : correct old fashioned form
+		String ptNetworkId = getNonEmptyTrimedString(xmlStopPoint.getPtNetworkIdShortcut());
+		if (ptNetworkId != null && ptNetworkId.contains(":PTNetwork:"))
+		{
+			ptNetworkId = ptNetworkId.replace(":PTNetwork:", ":"+PTNetwork.PTNETWORK_KEY+":");
+		}
+		stopPoint.setPtNetworkIdShortcut(ptNetworkId);
 		
 		// Address optional
 		chouette.schema.Address xmlAddress = xmlStopPoint.getAddress();		

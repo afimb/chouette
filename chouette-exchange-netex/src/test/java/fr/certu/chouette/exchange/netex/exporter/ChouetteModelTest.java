@@ -4,31 +4,33 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import com.tobedevoured.modelcitizen.ModelFactory;
-import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
-import fr.certu.chouette.exchange.netex.ComplexModelFactory;
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-
-import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.StopArea;
 import java.text.SimpleDateFormat;
+
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.w3c.dom.Document;
+
+import com.tobedevoured.modelcitizen.ModelFactory;
+
+import fr.certu.chouette.exchange.netex.ComplexModelFactory;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
+import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
+import fr.certu.chouette.model.neptune.Line;
 
 /**
  *
  * @author marc
  */
-@ContextConfiguration(locations={"classpath:testContext.xml"})
+@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
 public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
     protected ModelTranslator modelTranslator = new ModelTranslator();

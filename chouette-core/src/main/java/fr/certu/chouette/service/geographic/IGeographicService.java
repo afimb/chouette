@@ -2,6 +2,7 @@ package fr.certu.chouette.service.geographic;
 
 import java.util.Collection;
 
+import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 
 
@@ -26,16 +27,24 @@ public interface IGeographicService
 	/**
 	 * convert WGS84 coordinates in  projectedPoint Lambert2e ones for every empty projected points 
 	 */
-	void convertToLambert2e(); 
+	void convertToProjection(); 
 	
 	/**
 	 * convert projectedPoint SRID coordinates in WGS84 ones for given object
 	 * 
 	 * @param area
 	 */
-	boolean convertToWGS84(StopArea area);
+	boolean convertToWGS84(NeptuneLocalizedObject area);
 
-	boolean convertToLambert2e(StopArea area);
+	/**
+	 * convert wgs84 coordinate to projected ones 
+	 * 
+	 * nullify data if no projection set
+	 * 
+	 * @param area
+	 * @return
+	 */
+	boolean convertToProjection(NeptuneLocalizedObject area);
 	
 	void switchProjection(String srid);
 }

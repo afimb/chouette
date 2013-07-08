@@ -4,6 +4,7 @@ import chouette.schema.AccessibilitySuitabilityDetailsItem;
 import chouette.schema.LineExtension;
 import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
@@ -81,9 +82,14 @@ public class LineProducer extends AbstractModelProducer<Line,chouette.schema.Lin
 		// Registration optional
 		line.setRegistrationNumber(getRegistrationNumber(xmlLine.getRegistration(),report));
 
-		// PtNetworkShortcut optional
-		line.setPtNetworkIdShortcut(getNonEmptyTrimedString(xmlLine.getPtNetworkIdShortcut()));
-
+		// PtNetworkShortcut optional : correct old fashioned form
+		String ptNetworkId = getNonEmptyTrimedString(xmlLine.getPtNetworkIdShortcut());
+		if (ptNetworkId != null && ptNetworkId.contains(":PTNetwork:"))
+		{
+			ptNetworkId = ptNetworkId.replace(":PTNetwork:", ":"+PTNetwork.PTNETWORK_KEY+":");
+		}
+		line.setPtNetworkIdShortcut(ptNetworkId);
+		
 		// Comment optional
 		line.setComment(getNonEmptyTrimedString(xmlLine.getComment()));
 
