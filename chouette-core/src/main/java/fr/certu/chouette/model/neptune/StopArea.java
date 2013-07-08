@@ -1,6 +1,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
@@ -176,21 +177,21 @@ public class StopArea extends NeptuneLocalizedObject
 	 */
 	@Getter
 	@Setter
-	private Boolean              liftAvailable;
+	private boolean              liftAvailable;
 	/**
 	 * mobility restricted suitability
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter
 	@Setter
-	private Boolean              mobilityRestrictedSuitable;
+	private boolean              mobilityRestrictedSuitable;
 	/**
 	 * stairs availability
 	 * <br/><i>readable/writable</i>
 	 */
 	@Getter
 	@Setter
-	private Boolean              stairsAvailable;
+	private boolean              stairsAvailable;
 	/**
 	 * ????
 	 * <br/><i>readable/writable</i>
@@ -206,12 +207,18 @@ public class StopArea extends NeptuneLocalizedObject
 	@Setter
 	private String               registrationNumber;
 	/**
-	 * list of user needs
-	 * <br/><i>readable/writable</i>
+	 * List of the specific user needs available <br/>
+	 * <i>readable/writable</i>
+	 */
+	private List<UserNeedEnum>    userNeeds;
+
+	/**
+	 * encoded form of userNeeds for database purpose
 	 */
 	@Getter
 	@Setter
-	private List<UserNeedEnum>   userNeeds;
+	private Integer                intUserNeeds;                           // BD
+
 	/**
 	 * list of connection links
 	 * <p>
@@ -482,31 +489,6 @@ public class StopArea extends NeptuneLocalizedObject
 			containedStopPoints.remove(containedStopPoint);
 	}
 
-	/**
-	 * add a userNeed if not already present
-	 * 
-	 * @param userNeed
-	 */
-	public void addUserNeed(UserNeedEnum userNeed)
-	{
-		if (userNeeds == null)
-			userNeeds = new ArrayList<UserNeedEnum>();
-		if (!userNeeds.contains(userNeed))
-			userNeeds.add(userNeed);
-	}
-
-	/**
-	 * remove a userNeed
-	 * 
-	 * @param userNeed
-	 */
-	public void removeUserNeed(UserNeedEnum userNeed)
-	{
-		if (userNeeds == null)
-			userNeeds = new ArrayList<UserNeedEnum>();
-		if (userNeeds.contains(userNeed))
-			userNeeds.remove(userNeed);
-	}
 
 	/**
 	 * add a connectionLink if not already present
@@ -739,6 +721,110 @@ public class StopArea extends NeptuneLocalizedObject
 			areaCentroid.populateStopArea(this);
 	}
 	
+	/**
+	 * add a userNeed value in userNeeds collection if not already present <br/>
+	 * intUserNeeds will be automatically synchronized <br/>
+	 * <i>readable/writable</i>
+	 * 
+	 * @param userNeed
+	 *           the userNeed to add
+	 */
+	public synchronized void addUserNeed(UserNeedEnum userNeed)
+	{
+		if (userNeeds == null)
+			userNeeds = new ArrayList<UserNeedEnum>();
+		if (!userNeeds.contains(userNeed))
+		{
+			userNeeds.add(userNeed);
+			synchronizeUserNeeds();
+		}
+	}
+
+	/**
+	 * add a collection of userNeed values in userNeeds collection if not already
+	 * present <br/>
+	 * intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedCollection
+	 *           the userNeeds to add
+	 */
+	public synchronized void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
+	{
+		if (userNeeds == null)
+			userNeeds = new ArrayList<UserNeedEnum>();
+		boolean added = false;
+		for (UserNeedEnum userNeed : userNeedCollection)
+		{
+			if (!userNeeds.contains(userNeed))
+			{
+				userNeeds.add(userNeed);
+				added = true;
+			}
+		}
+		if (added)
+		{
+			synchronizeUserNeeds();
+		}
+	}
+
+	/**
+	 * get UserNeeds list
+	 * 
+	 * @return userNeeds
+	 */
+	public synchronized List<UserNeedEnum> getUserNeeds()
+	{
+		// synchronise userNeeds with intUserNeeds
+		if (intUserNeeds == null)
+		{
+			userNeeds = null;
+			return userNeeds;
+		}
+
+		userNeeds = new ArrayList<UserNeedEnum>();
+		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
+		for (UserNeedEnum userNeed : userNeedEnums)
+		{
+			int filtre = (int) Math.pow(2, userNeed.ordinal());
+			if (filtre == (intUserNeeds.intValue() & filtre))
+			{
+				if (!userNeeds.contains(userNeed))
+				{
+					userNeeds.add(userNeed);
+				}
+			}
+		}
+		return userNeeds;
+	}
+
+	/**
+	 * set the userNeeds list <br/>
+	 * intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedEnums
+	 *           list of UserNeeds to set
+	 */
+	public synchronized void setUserNeeds(List<UserNeedEnum> userNeedEnums)
+	{
+		userNeeds = userNeedEnums;
+
+		synchronizeUserNeeds();
+	}
+
+	/**
+	 * synchronize intUserNeeds with userNeeds List content
+	 */
+	private void synchronizeUserNeeds()
+	{
+		intUserNeeds = 0;
+		if (userNeeds == null)
+			return;
+
+		for (UserNeedEnum userNeedEnum : userNeeds)
+		{
+			intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
+		}
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -766,7 +852,7 @@ public class StopArea extends NeptuneLocalizedObject
 			sb.append("\n").append(indent).append(CHILD_ARROW).append(areaCentroid.toString(indent + CHILD_INDENT, 0));
 		}
 
-		if (userNeeds != null)
+		if (getUserNeeds() != null)
 		{
 			sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");
 			for (UserNeedEnum userNeed : getUserNeeds())

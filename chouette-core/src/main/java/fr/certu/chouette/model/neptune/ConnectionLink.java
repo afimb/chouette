@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -156,19 +157,19 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private boolean                stairsAvailable;
-   /**
-    * give a list of specific User needs available <br/>
-    * <i>readable/writable</i>
-    */
-   private List<UserNeedEnum>     userNeeds;                                                  // Never
-   // be
-   // persisted
-   /**
-    * 
-    */
-   @Getter
-   @Setter
-   private Integer                intUserNeeds;                                               // BD
+	/**
+	 * List of the specific user needs available <br/>
+	 * <i>readable/writable</i>
+	 */
+	private List<UserNeedEnum>    userNeeds;
+
+	/**
+	 * encoded form of userNeeds for database purpose
+	 */
+	@Getter
+	@Setter
+	private Integer                intUserNeeds;                           // BD
+
    /**
     * Duration of link <br/>
     * <i>readable/writable</i>
@@ -230,30 +231,110 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       if (facilities.contains(facility))
          facilities.remove(facility);
    }
-   /**
-    * @param userNeed
-    */
-   public void addUserNeed(UserNeedEnum userNeed)
-   {
-      if (userNeeds == null)
-         userNeeds = new ArrayList<UserNeedEnum>();
-      if (!userNeeds.contains(userNeed))
-      {
-         userNeeds.add(userNeed);
-         synchronizeUserNeeds();
-      }
-   }
+	/**
+	 * add a userNeed value in userNeeds collection if not already present <br/>
+	 * intUserNeeds will be automatically synchronized <br/>
+	 * <i>readable/writable</i>
+	 * 
+	 * @param userNeed
+	 *           the userNeed to add
+	 */
+	public synchronized void addUserNeed(UserNeedEnum userNeed)
+	{
+		if (userNeeds == null)
+			userNeeds = new ArrayList<UserNeedEnum>();
+		if (!userNeeds.contains(userNeed))
+		{
+			userNeeds.add(userNeed);
+			synchronizeUserNeeds();
+		}
+	}
 
-   /**
-    * @param userNeed
-    */
-   public void removeUserNeed(UserNeedEnum userNeed)
-   {
-      if (userNeeds == null)
-         userNeeds = new ArrayList<UserNeedEnum>();
-      userNeeds.remove(userNeed);
-      synchronizeUserNeeds();
-   }
+	/**
+	 * add a collection of userNeed values in userNeeds collection if not already
+	 * present <br/>
+	 * intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedCollection
+	 *           the userNeeds to add
+	 */
+	public synchronized void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
+	{
+		if (userNeeds == null)
+			userNeeds = new ArrayList<UserNeedEnum>();
+		boolean added = false;
+		for (UserNeedEnum userNeed : userNeedCollection)
+		{
+			if (!userNeeds.contains(userNeed))
+			{
+				userNeeds.add(userNeed);
+				added = true;
+			}
+		}
+		if (added)
+		{
+			synchronizeUserNeeds();
+		}
+	}
+
+	/**
+	 * get UserNeeds list
+	 * 
+	 * @return userNeeds
+	 */
+	public synchronized List<UserNeedEnum> getUserNeeds()
+	{
+		// synchronise userNeeds with intUserNeeds
+		if (intUserNeeds == null)
+		{
+			userNeeds = null;
+			return userNeeds;
+		}
+
+		userNeeds = new ArrayList<UserNeedEnum>();
+		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
+		for (UserNeedEnum userNeed : userNeedEnums)
+		{
+			int filtre = (int) Math.pow(2, userNeed.ordinal());
+			if (filtre == (intUserNeeds.intValue() & filtre))
+			{
+				if (!userNeeds.contains(userNeed))
+				{
+					userNeeds.add(userNeed);
+				}
+			}
+		}
+		return userNeeds;
+	}
+
+	/**
+	 * set the userNeeds list <br/>
+	 * intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedEnums
+	 *           list of UserNeeds to set
+	 */
+	public synchronized void setUserNeeds(List<UserNeedEnum> userNeedEnums)
+	{
+		userNeeds = userNeedEnums;
+
+		synchronizeUserNeeds();
+	}
+
+	/**
+	 * synchronize intUserNeeds with userNeeds List content
+	 */
+	private void synchronizeUserNeeds()
+	{
+		intUserNeeds = 0;
+		if (userNeeds == null)
+			return;
+
+		for (UserNeedEnum userNeedEnum : userNeeds)
+		{
+			intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
+		}
+	}
 
    /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
@@ -323,50 +404,6 @@ public class ConnectionLink extends NeptuneIdentifiedObject
       }
    }
 
-   /**
-    * @return
-    */
-   public List<UserNeedEnum> getUserNeeds()
-   {
-      if (intUserNeeds == null)
-         return userNeeds;
-      
-      UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
-      for (UserNeedEnum userNeedEnum : userNeedEnums)
-      {
-         int filtre = (int) Math.pow(2, userNeedEnum.ordinal());
-         if (filtre == (intUserNeeds.intValue() & filtre))
-         {
-            addUserNeed(userNeedEnum);
-         }
-      }
-      return userNeeds;
-   }
-
-   /**
-    * @param userNeedEnums
-    */
-   public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
-   {
-      userNeeds = userNeedEnums;
-      
-      synchronizeUserNeeds();
-   }
-
-   /**
-    * 
-    */
-   private void synchronizeUserNeeds()
-   {
-      intUserNeeds = 0;
-      if (userNeeds == null)
-         return;
-
-      for (UserNeedEnum userNeedEnum : userNeeds)
-      {
-         intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
-      }
-   }
    
 	@Override
 	public void complete() 

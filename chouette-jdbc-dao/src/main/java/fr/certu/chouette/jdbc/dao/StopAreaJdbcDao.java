@@ -125,6 +125,10 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setString(14, longLatType);
 		ps.setString(15, stopArea.getCountryCode());
 		ps.setString(16, stopArea.getStreetName());
+		ps.setBoolean(17, stopArea.isLiftAvailable());
+		ps.setBoolean(18,stopArea.isMobilityRestrictedSuitable());
+		ps.setBoolean(19,stopArea.isStairsAvailable());
+		ps.setObject(20, stopArea.getIntUserNeeds());
 
 	}
 

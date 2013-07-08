@@ -20,12 +20,12 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
 @SuppressWarnings("unchecked")
 public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink> 
 {
-   private static final Logger logger = Logger.getLogger(ConnectionLinkJdbcDao.class);
-   
-   public Logger getLogger()
-   {
-      return logger;
-   }
+	private static final Logger logger = Logger.getLogger(ConnectionLinkJdbcDao.class);
+
+	public Logger getLogger()
+	{
+		return logger;
+	}
 	@Override
 	public List<ConnectionLink> getAll() 
 	{
@@ -38,7 +38,7 @@ public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
 
 	@Override
 	protected void populateStatement(PreparedStatement ps, ConnectionLink connectionLink)
-	throws SQLException {
+			throws SQLException {
 		ps.setString(1, connectionLink.getObjectId());
 		ps.setInt(2, connectionLink.getObjectVersion());
 
@@ -56,30 +56,30 @@ public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
 		ps.setBoolean(11,connectionLink.isMobilityRestrictedSuitable());
 		ps.setBoolean(12,connectionLink.isStairsAvailable());
 		Time defaultduration = null,
-		 	 frequenttravellerduration = null,
-		 	 occasionaltravellerduration = null,
-		 	 mobilityrestrictedtravellerduration = null;
-	
-	if(connectionLink.getDefaultDuration() != null)
-		defaultduration = new Time(connectionLink.getDefaultDuration().getTime());
-	
-	if(connectionLink.getFrequentTravellerDuration() != null)
-		frequenttravellerduration = new Time(connectionLink.getFrequentTravellerDuration().getTime());
-	
-	if(connectionLink.getOccasionalTravellerDuration() != null)
-		occasionaltravellerduration = new Time(connectionLink.getOccasionalTravellerDuration().getTime());
-	
-	if(connectionLink.getMobilityRestrictedTravellerDuration() != null)
-		mobilityrestrictedtravellerduration = new Time(connectionLink.getMobilityRestrictedTravellerDuration().getTime());
-	
-	ps.setTime(13, defaultduration);
-	ps.setTime(14, frequenttravellerduration);
-	ps.setTime(15, occasionaltravellerduration);
-	ps.setTime(16, mobilityrestrictedtravellerduration);
-	String linkType = null;
-	if (connectionLink.getLinkType() != null)
-		linkType = connectionLink.getLinkType().value();
-	ps.setString(17, linkType);
-	ps.setObject(18, (Integer)connectionLink.getIntUserNeeds());
+				frequenttravellerduration = null,
+				occasionaltravellerduration = null,
+				mobilityrestrictedtravellerduration = null;
+
+		if(connectionLink.getDefaultDuration() != null)
+			defaultduration = new Time(connectionLink.getDefaultDuration().getTime());
+
+		if(connectionLink.getFrequentTravellerDuration() != null)
+			frequenttravellerduration = new Time(connectionLink.getFrequentTravellerDuration().getTime());
+
+		if(connectionLink.getOccasionalTravellerDuration() != null)
+			occasionaltravellerduration = new Time(connectionLink.getOccasionalTravellerDuration().getTime());
+
+		if(connectionLink.getMobilityRestrictedTravellerDuration() != null)
+			mobilityrestrictedtravellerduration = new Time(connectionLink.getMobilityRestrictedTravellerDuration().getTime());
+
+		ps.setTime(13, defaultduration);
+		ps.setTime(14, frequenttravellerduration);
+		ps.setTime(15, occasionaltravellerduration);
+		ps.setTime(16, mobilityrestrictedtravellerduration);
+		String linkType = null;
+		if (connectionLink.getLinkType() != null)
+			linkType = connectionLink.getLinkType().value();
+		ps.setString(17, linkType);
+		ps.setObject(18, connectionLink.getIntUserNeeds());
 	}
 }

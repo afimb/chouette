@@ -392,7 +392,7 @@ public class Line extends NeptuneIdentifiedObject
 	 * @param userNeed
 	 *           the userNeed to add
 	 */
-	public void addUserNeed(UserNeedEnum userNeed)
+	public synchronized void addUserNeed(UserNeedEnum userNeed)
 	{
 		if (userNeeds == null)
 			userNeeds = new ArrayList<UserNeedEnum>();
@@ -411,7 +411,7 @@ public class Line extends NeptuneIdentifiedObject
 	 * @param userNeedCollection
 	 *           the userNeeds to add
 	 */
-	public void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
+	public synchronized void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
 	{
 		if (userNeeds == null)
 			userNeeds = new ArrayList<UserNeedEnum>();
@@ -430,6 +430,64 @@ public class Line extends NeptuneIdentifiedObject
 		}
 	}
 
+	/**
+	 * get UserNeeds list
+	 * 
+	 * @return userNeeds
+	 */
+	public synchronized List<UserNeedEnum> getUserNeeds()
+	{
+		// synchronise userNeeds with intUserNeeds
+		if (intUserNeeds == null)
+		{
+			userNeeds = null;
+			return userNeeds;
+		}
+
+		userNeeds = new ArrayList<UserNeedEnum>();
+		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
+		for (UserNeedEnum userNeed : userNeedEnums)
+		{
+			int filtre = (int) Math.pow(2, userNeed.ordinal());
+			if (filtre == (intUserNeeds.intValue() & filtre))
+			{
+				if (!userNeeds.contains(userNeed))
+				{
+					userNeeds.add(userNeed);
+				}
+			}
+		}
+		return userNeeds;
+	}
+
+	/**
+	 * set the userNeeds list <br/>
+	 * intUserNeeds will be automatically synchronized
+	 * 
+	 * @param userNeedEnums
+	 *           list of UserNeeds to set
+	 */
+	public synchronized void setUserNeeds(List<UserNeedEnum> userNeedEnums)
+	{
+		userNeeds = userNeedEnums;
+
+		synchronizeUserNeeds();
+	}
+
+	/**
+	 * synchronize intUserNeeds with userNeeds List content
+	 */
+	private void synchronizeUserNeeds()
+	{
+		intUserNeeds = 0;
+		if (userNeeds == null)
+			return;
+
+		for (UserNeedEnum userNeedEnum : userNeeds)
+		{
+			intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -802,56 +860,6 @@ public class Line extends NeptuneIdentifiedObject
 		return true;
 	}
 
-	/**
-	 * get UserNeeds list
-	 * 
-	 * @return userNeeds
-	 */
-	public List<UserNeedEnum> getUserNeeds()
-	{
-		if (intUserNeeds == null)
-			return userNeeds;
-
-		UserNeedEnum[] userNeedEnums = UserNeedEnum.values();
-		for (UserNeedEnum userNeedEnum : userNeedEnums)
-		{
-			int filtre = (int) Math.pow(2, userNeedEnum.ordinal());
-			if (filtre == (intUserNeeds.intValue() & filtre))
-			{
-				addUserNeed(userNeedEnum);
-			}
-		}
-		return userNeeds;
-	}
-
-	/**
-	 * set the userNeeds list <br/>
-	 * intUserNeeds will be automatically synchronized
-	 * 
-	 * @param userNeedEnums
-	 *           list of UserNeeds to set
-	 */
-	public void setUserNeeds(List<UserNeedEnum> userNeedEnums)
-	{
-		userNeeds = userNeedEnums;
-
-		synchronizeUserNeeds();
-	}
-
-	/**
-	 * synchronize intUserNeeds with userNeeds List content
-	 */
-	private void synchronizeUserNeeds()
-	{
-		intUserNeeds = 0;
-		if (userNeeds == null)
-			return;
-
-		for (UserNeedEnum userNeedEnum : userNeeds)
-		{
-			intUserNeeds += (int) Math.pow(2, userNeedEnum.ordinal());
-		}
-	}
 
 	/*
 	 * (non-Javadoc)

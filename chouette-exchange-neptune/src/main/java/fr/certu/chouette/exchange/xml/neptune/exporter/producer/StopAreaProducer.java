@@ -51,16 +51,16 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 			// TODO generate report
 		}
 
-		if (stopArea.getFareCode() != null)
-			stopAreaExtension.setFareCode(stopArea.getFareCode());
-		if (stopArea.getLiftAvailable() != null)
-			stopAreaExtension.setLiftAvailability(stopArea.getLiftAvailable());
-		if (stopArea.getMobilityRestrictedSuitable() != null)
-			stopAreaExtension.setMobilityRestrictedSuitability(stopArea.getMobilityRestrictedSuitable());
 		stopAreaExtension.setNearestTopicName(getNotEmptyString(stopArea.getNearestTopicName()));
 		stopAreaExtension.setRegistration(getRegistration(stopArea.getRegistrationNumber()));
-		if (stopArea.getStairsAvailable() != null)
-			stopAreaExtension.setStairsAvailability(stopArea.getStairsAvailable());
+		if (stopArea.getFareCode() != null)
+			stopAreaExtension.setFareCode(stopArea.getFareCode());
+		if (stopArea.isLiftAvailable())
+			stopAreaExtension.setLiftAvailability(true);
+		if (stopArea.isMobilityRestrictedSuitable())
+			stopAreaExtension.setMobilityRestrictedSuitability(true);
+		if (stopArea.isStairsAvailable())
+			stopAreaExtension.setStairsAvailability(true);
 
 		castorStopArea.setStopAreaExtension(stopAreaExtension );
 

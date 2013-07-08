@@ -83,21 +83,27 @@ plus de details -->
 					WGS92)</comment>
 			</column>
 		</property>
-		<!-- <property name="x" type="java.math.BigDecimal">
-			<column name="x">
-				<comment>X coordinate</comment>
+		<property name="liftAvailable" type="boolean">
+			<column name="lift_availability">
+				<comment>Indicate if a lift is available</comment>
 			</column>
 		</property>
-		<property name="y" type="java.math.BigDecimal">
-			<column name="y">
-				<comment>Y coordinate</comment>
+		<property name="mobilityRestrictedSuitable" type="boolean">
+			<column name="mobility_restricted_suitability">
+				<comment>Indicate if the link is suitable for mobility restricted
+					persons </comment>
 			</column>
 		</property>
-		<property name="projectionType" type="string">
-			<column name="projection_type">
-				<comment>Projection used for coordinates</comment>
+		<property name="stairsAvailable" type="boolean">
+			<column name="stairs_availability">
+				<comment>Indicate if stairs are available</comment>
 			</column>
-		</property> -->
+		</property>
+		<property name="intUserNeeds">
+			<column name="int_user_needs">
+				<comment>binary mapping of userNeed list</comment>
+			</column>
+		</property>
 		<property name="countryCode" type="string">
 			<column name="country_code">
 				<comment>Zip code</comment>

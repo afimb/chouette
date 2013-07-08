@@ -60,10 +60,14 @@
 				latitude,
 				long_lat_type,
 				country_code,
-				street_name
+				street_name,
+				lift_availability,
+				mobility_restricted_suitability,
+				stairs_availability,
+				int_user_needs
 				)
 				VALUES(?, ?,
-				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -96,7 +100,11 @@
 				latitude = ?,
 				long_lat_type = ?,
 				country_code = ?,
-				street_name = ?
+				street_name = ?,
+				lift_availability = ?,
+				mobility_restricted_suitability = ?,
+				stairs_availability = ?,
+				int_user_needs = ?,
 				WHERE objectid = ?
 			</value>
 		</property>
