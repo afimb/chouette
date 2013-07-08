@@ -31,12 +31,12 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsShape;
 public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape> 
 {
 	private static final Logger logger = Logger.getLogger(GtfsShapeFactory.class);
-   @Getter private final String dropSql = "drop table if exists shape;";
-   @Getter private final String createSql = "create table shape (id, ptlat,ptlon,ptsequence,disttraveled);";
-   @Getter private final String createIndexSql = "create index shape_id_idx on shape (id)" ; 
-   private final String insertSQL = "insert into shape (id, ptlat,ptlon,ptsequence,disttraveled) values (?, ?, ?, ?, ?)";
-   @Getter private final String selectSql = "select id, ptlat,ptlon,ptsequence,disttraveled from shape ";
-   @Getter private final String[] dbHeader = new String[]{"shape_id","shape_pt_lat","shape_pt_lon","shape_pt_sequence","shape_dist_traveled"};
+	@Getter private final String dropSql = "drop table if exists shape;";
+	@Getter private final String createSql = "create table shape (num, id, ptlat,ptlon,ptsequence,disttraveled);";
+	@Getter private final String createIndexSql = "create index shape_id_idx on shape (id)" ; 
+	private final String insertSQL = "insert into shape (num, id, ptlat,ptlon,ptsequence,disttraveled) values (?, ?, ?, ?, ?, ?)";
+	@Getter private final String selectSql = "select num, id, ptlat,ptlon,ptsequence,disttraveled from shape ";
+	@Getter private final String[] dbHeader = new String[]{"num","shape_id","shape_pt_lat","shape_pt_lon","shape_pt_sequence","shape_dist_traveled"};
 	/**
 	 * map for chained shapes with same id storage
 	 */
@@ -63,7 +63,7 @@ public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape>
 		addToMap(bean);
 		return bean;
 	}
-	
+
 	/**
 	 * add a shape in shapeId chain
 	 * @param shape shape to add
@@ -79,7 +79,7 @@ public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape>
 		}
 		chain.add(shape);
 	}
-	
+
 	/**
 	 * get all shapes with same shapeId
 	 * @param id shapes id
@@ -89,51 +89,52 @@ public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape>
 	{
 		return shapeChains.get(id);
 	}
-   @Override
-   public void saveAll(Connection conn, List<GtfsShape> beans)
-   {
-      // id, ptlat,ptlon,ptsequence,disttraveled
-      try
-      {
-         PreparedStatement prep = conn.prepareStatement(insertSQL);
-         for (GtfsShape bean : beans)
-         {
-            setStringOrNull(prep,1, bean.getShapeId());
-            setStringOrNull(prep,2, Double.toString(bean.getShapePtLat()));
-            setStringOrNull(prep,3, Double.toString(bean.getShapePtLon()));
-            setStringOrNull(prep,4, Integer.toString(bean.getShapePtSequence()));
-            setStringOrNull(prep,5, Double.toString(bean.getShapeDistTraveled()));
-            prep.addBatch();
-         }
+	@Override
+	public void saveAll(Connection conn, List<GtfsShape> beans)
+	{
+		// id, ptlat,ptlon,ptsequence,disttraveled
+		try
+		{
+			PreparedStatement prep = conn.prepareStatement(insertSQL);
+			for (GtfsShape bean : beans)
+			{
+				setStringOrNull(prep,1, bean.getFileLineNumber());
+				setStringOrNull(prep,2, bean.getShapeId());
+				setStringOrNull(prep,3, Double.toString(bean.getShapePtLat()));
+				setStringOrNull(prep,4, Double.toString(bean.getShapePtLon()));
+				setStringOrNull(prep,5, Integer.toString(bean.getShapePtSequence()));
+				setStringOrNull(prep,6, Double.toString(bean.getShapeDistTraveled()));
+				prep.addBatch();
+			}
 
-         prep.executeBatch();
-         conn.commit();
-      }
-      catch (SQLException e)
-      {
-         logger.error("cannot save gtfs data",e);
-         throw new RuntimeException(e.getMessage());
-      }
+			prep.executeBatch();
+			conn.commit();
+		}
+		catch (SQLException e)
+		{
+			logger.error("cannot save gtfs data",e);
+			throw new RuntimeException(e.getMessage());
+		}
 
-   }
+	}
 
-   @Override
-   public String getId(GtfsShape bean)
-   {
-      return bean.getShapeId();
-   }
+	@Override
+	public String getId(GtfsShape bean)
+	{
+		return bean.getShapeId();
+	}
 
-   @Override
-   public String getParentId(GtfsShape bean)
-   {
-      return null;
-   }
+	@Override
+	public String getParentId(GtfsShape bean)
+	{
+		return null;
+	}
 
-   @Override
-   protected String getParentId()
-   {
-      return null;
-   }
+	@Override
+	protected String getParentId()
+	{
+		return null;
+	}
 
 
 

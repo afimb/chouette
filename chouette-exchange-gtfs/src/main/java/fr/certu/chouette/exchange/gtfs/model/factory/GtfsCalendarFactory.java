@@ -31,13 +31,13 @@ public class GtfsCalendarFactory extends GtfsBeanFactory<GtfsCalendar>
 {
 	private static final Logger logger = Logger.getLogger(GtfsCalendarFactory.class);
 
-   @Getter private final String dropSql = "drop table if exists calendar;";
-   @Getter private final String createSql = "create table calendar (id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate);";
-   @Getter private final String createIndexSql = "create index calendar_id_idx on calendar (id)" ; 
-   private final String insertSQL = "insert into calendar (id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-   @Getter private final String selectSql = "select id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate from calendar ";
-   @Getter private final String[] dbHeader = new String[]{"service_id","monday","tuesday","wednesday","thursday","friday","saturday","sunday","start_date","end_date"};
-   
+	@Getter private final String dropSql = "drop table if exists calendar;";
+	@Getter private final String createSql = "create table calendar (num, id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate);";
+	@Getter private final String createIndexSql = "create index calendar_id_idx on calendar (id)" ; 
+	private final String insertSQL = "insert into calendar (num, id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+	@Getter private final String selectSql = "select num, id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate from calendar ";
+	@Getter private final String[] dbHeader = new String[]{"num","service_id","monday","tuesday","wednesday","thursday","friday","saturday","sunday","start_date","end_date"};
+
 	@Override
 	public GtfsCalendar getNewGtfsBean(int lineNumber, String[] csvLine) {
 		GtfsCalendar bean = new GtfsCalendar();
@@ -55,73 +55,74 @@ public class GtfsCalendarFactory extends GtfsBeanFactory<GtfsCalendar>
 		return bean;
 	}
 
-    /**
-     * convert 0/1 value in boolean
-     * 
-     * @param value 0/1 value
-     * @return true if 1, false otherwise
-     */
-    private boolean asBool(String value)
-    {
-    	return "1".equals(value);
-    }
-    
-    private String toString(boolean bool)
-    {
-       if (bool) return "1";
-       return "0";
-    }
+	/**
+	 * convert 0/1 value in boolean
+	 * 
+	 * @param value 0/1 value
+	 * @return true if 1, false otherwise
+	 */
+	private boolean asBool(String value)
+	{
+		return "1".equals(value);
+	}
 
-   @Override
-   public void saveAll(Connection conn, List<GtfsCalendar> beans)
-   {
-      // id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate
-      try
-      {
-         PreparedStatement prep = conn.prepareStatement(insertSQL);
-         for (GtfsCalendar gtfsCalendar : beans)
-         {
-            setStringOrNull(prep,1, gtfsCalendar.getServiceId());
-            setStringOrNull(prep,2, toString(gtfsCalendar.isMonday()));
-            setStringOrNull(prep,3, toString(gtfsCalendar.isTuesday()));
-            setStringOrNull(prep,4, toString(gtfsCalendar.isWednesday()));
-            setStringOrNull(prep,5, toString(gtfsCalendar.isThursday()));
-            setStringOrNull(prep,6, toString(gtfsCalendar.isFriday()));
-            setStringOrNull(prep,7, toString(gtfsCalendar.isSaturday()));
-            setStringOrNull(prep,8, toString(gtfsCalendar.isSunday()));
-            setStringOrNull(prep,9, toString(gtfsCalendar.getStartDate()));
-            setStringOrNull(prep,10, toString(gtfsCalendar.getEndDate()));
-            prep.addBatch();
-         }
+	private String toString(boolean bool)
+	{
+		if (bool) return "1";
+		return "0";
+	}
 
-         prep.executeBatch();
-         conn.commit();
-      }
-      catch (SQLException e)
-      {
-         logger.error("cannot save gtfs data",e);
-         throw new RuntimeException(e.getMessage());
-      }
+	@Override
+	public void saveAll(Connection conn, List<GtfsCalendar> beans)
+	{
+		// id, monday,tuesday,wednesday,thursday,friday,saturday,sunday,startdate,enddate
+		try
+		{
+			PreparedStatement prep = conn.prepareStatement(insertSQL);
+			for (GtfsCalendar bean : beans)
+			{
+				setStringOrNull(prep,1, bean.getFileLineNumber());
+				setStringOrNull(prep,2, bean.getServiceId());
+				setStringOrNull(prep,3, toString(bean.isMonday()));
+				setStringOrNull(prep,4, toString(bean.isTuesday()));
+				setStringOrNull(prep,5, toString(bean.isWednesday()));
+				setStringOrNull(prep,6, toString(bean.isThursday()));
+				setStringOrNull(prep,7, toString(bean.isFriday()));
+				setStringOrNull(prep,8, toString(bean.isSaturday()));
+				setStringOrNull(prep,9, toString(bean.isSunday()));
+				setStringOrNull(prep,10, toString(bean.getStartDate()));
+				setStringOrNull(prep,11, toString(bean.getEndDate()));
+				prep.addBatch();
+			}
 
-   }
-   
-   @Override
-   public String getId(GtfsCalendar bean)
-   {
-      return bean.getServiceId();
-   }
+			prep.executeBatch();
+			conn.commit();
+		}
+		catch (SQLException e)
+		{
+			logger.error("cannot save gtfs data",e);
+			throw new RuntimeException(e.getMessage());
+		}
 
-   @Override
-   public String getParentId(GtfsCalendar bean)
-   {
-      return null;
-   }
+	}
 
-   @Override
-   protected String getParentId()
-   {
-      return null;
-   }
+	@Override
+	public String getId(GtfsCalendar bean)
+	{
+		return bean.getServiceId();
+	}
+
+	@Override
+	public String getParentId(GtfsCalendar bean)
+	{
+		return null;
+	}
+
+	@Override
+	protected String getParentId()
+	{
+		return null;
+	}
 
 
 

@@ -35,6 +35,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 {
 	private static final Logger logger = Logger.getLogger(GtfsImportConnectionLinkPlugin.class);
 	private FormatDescription description;
+	@Setter private String dbDirectory = "/tmp";
 
 	private List<String>        allowedExtensions = Arrays.asList(new String[] { "zip" });
 	
@@ -162,7 +163,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 		}
 		try
 		{
-			GtfsData data = new GtfsData(objectIdPrefix,optimizeMemory);
+			GtfsData data = new GtfsData(objectIdPrefix,dbDirectory,optimizeMemory);
 			data.loadNetwork(objectIdPrefix);
 			boolean ok = true;
 			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements() && ok;) 

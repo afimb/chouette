@@ -29,74 +29,75 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
 @NoArgsConstructor
 public class GtfsCalendarDateFactory extends GtfsBeanFactory<GtfsCalendarDate> 
 {
-   private static final Logger logger = Logger.getLogger(GtfsCalendarDateFactory.class);
+	private static final Logger logger = Logger.getLogger(GtfsCalendarDateFactory.class);
 
-   @Getter private final String dropSql = "drop table if exists calendardate;";
-   @Getter private final String createSql = "create table calendardate (id, date,mode);";
-   @Getter private final String createParentIndexSql = "create index calendardate_id_idx on calendardate (id)" ; 
-   private final String insertSQL = "insert into calendardate (id, date,mode) values (?, ?, ?)";
-   @Getter private final String selectSql = "select id, date,mode from calendardate ";
-   @Getter private final String[] dbHeader = new String[]{"service_id","date","exception_type"};
-
-
-   @Override
-   public GtfsCalendarDate getNewGtfsBean(int lineNumber, String[] csvLine) 
-   {
-      GtfsCalendarDate bean = new GtfsCalendarDate();
-      bean.setFileLineNumber(lineNumber);
-      bean.setServiceId(getValue("service_id", csvLine));
-      bean.setDate(getDateValue("date", csvLine,logger));
-      bean.setExceptionType(getIntValue("exception_type", csvLine,1));
-      return bean;
-   }
+	@Getter private final String dropSql = "drop table if exists calendardate;";
+	@Getter private final String createSql = "create table calendardate (num, id, date,mode);";
+	@Getter private final String createParentIndexSql = "create index calendardate_id_idx on calendardate (id)" ; 
+	private final String insertSQL = "insert into calendardate (num, id, date,mode) values (?, ?, ?, ?)";
+	@Getter private final String selectSql = "select num, id, date,mode from calendardate ";
+	@Getter private final String[] dbHeader = new String[]{"num","service_id","date","exception_type"};
 
 
-   @Override
-   protected String getId()
-   {
-      return null;
-   }
+	@Override
+	public GtfsCalendarDate getNewGtfsBean(int lineNumber, String[] csvLine) 
+	{
+		GtfsCalendarDate bean = new GtfsCalendarDate();
+		bean.setFileLineNumber(lineNumber);
+		bean.setServiceId(getValue("service_id", csvLine));
+		bean.setDate(getDateValue("date", csvLine,logger));
+		bean.setExceptionType(getIntValue("exception_type", csvLine,1));
+		return bean;
+	}
 
-   @Override
-   protected String getParentId()
-   {
-      return "id";
-   }
-   @Override
-   public void saveAll(Connection conn, List<GtfsCalendarDate> beans)
-   { 
-      // id, date,mode
-      try
-      {
-         PreparedStatement prep = conn.prepareStatement(insertSQL);
-         for (GtfsCalendarDate gtfsCalendarDate : beans)
-         {
-            setStringOrNull(prep,1, gtfsCalendarDate.getServiceId());
-            setStringOrNull(prep,2, toString(gtfsCalendarDate.getDate()));
-            setStringOrNull(prep,3, Integer.toString(gtfsCalendarDate.getExceptionType()));
-            prep.addBatch();
-         }
 
-         prep.executeBatch();
-         conn.commit();
-      }
-      catch (SQLException e)
-      {
-         logger.error("cannot save gtfs data",e);
-         throw new RuntimeException(e.getMessage());
-      }
+	@Override
+	protected String getId()
+	{
+		return null;
+	}
 
-   }
-   
-   @Override
-   public String getId(GtfsCalendarDate bean)
-   {
-      return null;
-   }
+	@Override
+	protected String getParentId()
+	{
+		return "id";
+	}
+	@Override
+	public void saveAll(Connection conn, List<GtfsCalendarDate> beans)
+	{ 
+		// id, date,mode
+		try
+		{
+			PreparedStatement prep = conn.prepareStatement(insertSQL);
+			for (GtfsCalendarDate bean : beans)
+			{
+				setStringOrNull(prep,1, bean.getFileLineNumber());
+				setStringOrNull(prep,2, bean.getServiceId());
+				setStringOrNull(prep,3, toString(bean.getDate()));
+				setStringOrNull(prep,4, Integer.toString(bean.getExceptionType()));
+				prep.addBatch();
+			}
 
-   @Override
-   public String getParentId(GtfsCalendarDate bean)
-   {
-      return bean.getServiceId();
-   }
+			prep.executeBatch();
+			conn.commit();
+		}
+		catch (SQLException e)
+		{
+			logger.error("cannot save gtfs data",e);
+			throw new RuntimeException(e.getMessage());
+		}
+
+	}
+
+	@Override
+	public String getId(GtfsCalendarDate bean)
+	{
+		return null;
+	}
+
+	@Override
+	public String getParentId(GtfsCalendarDate bean)
+	{
+		return bean.getServiceId();
+	}
 }

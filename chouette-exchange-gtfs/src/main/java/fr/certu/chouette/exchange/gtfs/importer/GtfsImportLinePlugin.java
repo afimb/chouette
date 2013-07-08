@@ -36,6 +36,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 	private FormatDescription description;
 
 	@Setter private NeptuneConverter converter; 
+	@Setter private String dbDirectory = "/tmp";
 
 	private List<String>        allowedExtensions = Arrays.asList(new String[] { "zip" });
 
@@ -224,7 +225,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 		try
 		{
-			GtfsData data = new GtfsData(objectIdPrefix,optimizeMemory);
+			GtfsData data = new GtfsData(objectIdPrefix,dbDirectory,optimizeMemory);
 			data.loadNetwork(objectIdPrefix);
 			boolean ok = true;
 			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements() && ok;) 

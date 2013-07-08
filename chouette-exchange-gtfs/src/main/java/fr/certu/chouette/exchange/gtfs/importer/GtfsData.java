@@ -84,7 +84,7 @@ public class GtfsData
 	private String dbName;
 	private boolean optimizeMemory;
 
-	public GtfsData(String prefix, boolean optimize)
+	public GtfsData(String prefix, String dbDirectory, boolean optimize)
 	{
 		optimizeMemory = optimize;
 		agencyFactory = new GtfsAgencyFactory();
@@ -104,8 +104,8 @@ public class GtfsData
 			{
 				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 				// TODO paramétrer le répertoire
-				dbName = "/tmp/"+prefix+"_"+df.format(Calendar.getInstance().getTime())+"_gtfs.db";
-				File f = new File("/tmp");
+				dbName = dbDirectory+"/"+prefix+"_"+df.format(Calendar.getInstance().getTime())+"_gtfs.db";
+				File f = new File(dbDirectory);
 				if (!f.exists())
 				{
 					f.mkdirs();

@@ -74,11 +74,13 @@ public abstract class GtfsBeanFactory<T extends GtfsBean>
    protected T populate(ResultSet rst) throws SQLException
    {
       String[] data = new String[getColumnSize()];
-      for (int i = 0; i < getColumnSize(); i++)
+      String numst = "0"+rst.getString(1);
+      int num = Integer.parseInt(numst);
+      for (int i = 1; i < getColumnSize(); i++)
       {
          data[i] = rst.getString(i+1);
       }
-      return getNewGtfsBean(0, data);
+      return getNewGtfsBean(num, data);
    }
 
    public abstract String getId(T bean);

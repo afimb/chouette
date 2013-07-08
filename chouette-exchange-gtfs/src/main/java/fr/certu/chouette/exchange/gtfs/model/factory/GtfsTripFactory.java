@@ -31,14 +31,14 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
 public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip> 
 {
 	private static final Logger logger = Logger.getLogger(GtfsTripFactory.class);
-   @Getter private final String dropSql = "drop table if exists trip;";
-   @Getter private final String createSql = "create table trip (id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid);";
-   @Getter private final String createIndexSql = "create index trip_id_idx on trip (id)" ; 
-   @Getter private final String createParentIndexSql = "create index trip_routeid_idx on trip (routeid)" ; 
-   private static final String insertSQL = "insert into trip (id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid) values (?, ?, ?, ?, ?, ?, ?, ?)";
-   @Getter private final String selectSql = "select id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid from trip ";
-   @Getter private final String[] dbHeader = new String[]{"trip_id","route_id","service_id","trip_headsign","trip_short_name","direction_id","block_id","shape_id"};
-   
+	@Getter private final String dropSql = "drop table if exists trip;";
+	@Getter private final String createSql = "create table trip (num, id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid);";
+	@Getter private final String createIndexSql = "create index trip_id_idx on trip (id)" ; 
+	@Getter private final String createParentIndexSql = "create index trip_routeid_idx on trip (routeid)" ; 
+	private static final String insertSQL = "insert into trip (num, id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	@Getter private final String selectSql = "select num, id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid from trip ";
+	@Getter private final String[] dbHeader = new String[]{"num","trip_id","route_id","service_id","trip_headsign","trip_short_name","direction_id","block_id","shape_id"};
+
 	@Override
 	public GtfsTrip getNewGtfsBean(int lineNumber, String[] csvLine) {
 		GtfsTrip bean = new GtfsTrip();
@@ -53,55 +53,56 @@ public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip>
 		bean.setShapeId(getValue("shape_id",csvLine));
 		return bean;
 	}
-   @Override
-   public void saveAll(Connection conn, List<GtfsTrip> beans)
-   {
-      // id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid
-      try
-      {
-         PreparedStatement prep = conn.prepareStatement(insertSQL);
-         for (GtfsTrip bean : beans)
-         {
-            setStringOrNull(prep,1, bean.getTripId());
-            setStringOrNull(prep,2, bean.getRouteId());
-            setStringOrNull(prep,3, bean.getServiceId());
-            setStringOrNull(prep,4, bean.getTripHeadsign());
-            setStringOrNull(prep,5, bean.getTripShortName());
-            setStringOrNull(prep,6, bean.getDirectionId());
-            setStringOrNull(prep,7, bean.getBlockId());
-            setStringOrNull(prep,8, bean.getShapeId());
-            prep.addBatch();
-         }
+	@Override
+	public void saveAll(Connection conn, List<GtfsTrip> beans)
+	{
+		// id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid
+		try
+		{
+			PreparedStatement prep = conn.prepareStatement(insertSQL);
+			for (GtfsTrip bean : beans)
+			{
+				setStringOrNull(prep,1, bean.getFileLineNumber());
+				setStringOrNull(prep,2, bean.getTripId());
+				setStringOrNull(prep,3, bean.getRouteId());
+				setStringOrNull(prep,4, bean.getServiceId());
+				setStringOrNull(prep,5, bean.getTripHeadsign());
+				setStringOrNull(prep,6, bean.getTripShortName());
+				setStringOrNull(prep,7, bean.getDirectionId());
+				setStringOrNull(prep,8, bean.getBlockId());
+				setStringOrNull(prep,9, bean.getShapeId());
+				prep.addBatch();
+			}
 
-         prep.executeBatch();
-         conn.commit();
-      }
-      catch (SQLException e)
-      {
-         logger.error("cannot save gtfs data",e);
-         throw new RuntimeException(e.getMessage());
-      }
+			prep.executeBatch();
+			conn.commit();
+		}
+		catch (SQLException e)
+		{
+			logger.error("cannot save gtfs data",e);
+			throw new RuntimeException(e.getMessage());
+		}
 
-   }
+	}
 
-   @Override
-   public String getId(GtfsTrip bean)
-   {
-      return bean.getTripId();
-   }
+	@Override
+	public String getId(GtfsTrip bean)
+	{
+		return bean.getTripId();
+	}
 
-   @Override
-   public String getParentId(GtfsTrip bean)
-   {
-      return bean.getRouteId();
-   }
-   
-   @Override
-   protected String getParentId()
-   {
-      // TODO Auto-generated method stub
-      return "routeid";
-   }
+	@Override
+	public String getParentId(GtfsTrip bean)
+	{
+		return bean.getRouteId();
+	}
+
+	@Override
+	protected String getParentId()
+	{
+		// TODO Auto-generated method stub
+		return "routeid";
+	}
 
 
 }
