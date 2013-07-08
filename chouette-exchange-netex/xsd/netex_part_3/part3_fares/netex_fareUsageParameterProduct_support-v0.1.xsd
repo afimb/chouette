@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_fareUsageParameterProduct_support">
+	<!-- ======================================================================= -->
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Contributor>Christophe Duquesne</Contributor>
+				<Contributor>Nick Knowles</Contributor>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for NeTEx version 1.0 CEN TC278 WG3 SG7 Editor Nicholas Knowles, Kizoom. mailto:schemer@netex.org.uk</Creator>
+				<Date>
+					<Created>2010-09-04</Created>
+				</Date>
+				<Date>
+					<Modified>2011-02-05</Modified>
+					<!-- Name Space changes -->
+				</Date>
+				<Description>
+					<p>NeTEx is a European prCEN standard for the exchange of Public Transport data including timetables.</p>
+					<p>This sub-schema describes the Product USAGE PARAMETER    types.</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0}netex_FILEXX-v1.0.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom, 109-123 Clifton Street, London EC4A 4LD </Publisher>
+				<Relation>
+					<Requires>http://www.netex.org.uk/schemas/1.0/xsd/netex_part_3/fares/netex_fareUsageParameterProduct_support</Requires>
+				</Relation>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright 2009-2013</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the Transmodel, VDV, TransXChange, NEPTUNE, BISON and Trident standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and Road transport
+</Category>
+					<Project>CEN TC278 WG3 SG9</Project>
+				</Subject>
+				<Title>NeTEx FARE PRoduct USAGE PARAMETER types.</Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:include schemaLocation="netex_fareUsageParameter_support-v0.1.xsd"/>
+	<!-- === PRODUCT=================================== -->
+	<xsd:group name="UsageParameterProductRefGroup">
+		<xsd:annotation>
+			<xsd:documentation>USAGE PARAMETER Elements forCELL.Group.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="CommercialProfileRef" type="CommercialProfileRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a COMMERCIAL PROFILE PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="GroupTicketRef" type="GroupTicketRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a GROUP TICKET PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="LuggageAllowanceRef" type="LuggageAllowanceRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a LUGGAGE ALLOWANCE PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UserProfileRef" type="UserProfileRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a USER PROFILE PARAMETER.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- === USER PROFILE PARAMETER======================================= -->
+	<xsd:simpleType name="UserProfileIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a USER PROFILE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="UsageParameterIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="UserProfileRef" type="UserProfileRefStructure" substitutionGroup="UsageParameterRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a USER PROFILE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="UserProfileRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Reference to a USER PROFILE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="UsageParameterRefStructure">
+				<xsd:attribute name="ref" type="UserProfileIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a USER PROFILE PARAMETER.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="DiscountBasisEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for DiscountBasis</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="free"/>
+			<xsd:enumeration value="discount"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- === COMMERCIAL PROFILE ===================================================== -->
+	<xsd:simpleType name="CommercialProfileIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a COMMERCIAL PROFILE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="UsageParameterIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="CommercialProfileRef" type="CommercialProfileRefStructure" substitutionGroup="UsageParameterRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a COMMERCIAL PROFILE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="CommercialProfileRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Reference to a COMMERCIAL PROFILE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="UsageParameterRefStructure">
+				<xsd:attribute name="ref" type="CommercialProfileIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a COMMERCIAL PROFILE PARAMETER.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="CommercialProfileTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for Commercial Profile Type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="unlimited"/>
+			<xsd:enumeration value="limited"/>
+			<xsd:enumeration value="single"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- === GROUP TICKET PARAMETER====================================================== -->
+	<xsd:simpleType name="GroupTicketIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a GROUP TICKET PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="UsageParameterIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="GroupTicketRef" type="GroupTicketRefStructure" substitutionGroup="UsageParameterRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a GROUP TICKET PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="GroupTicketRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Reference to a GROUP TICKET PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="UsageParameterRefStructure">
+				<xsd:attribute name="ref" type="GroupTicketIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a GROUP TICKET PARAMETER.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="GroupTicketTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for Group Ticket Type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="unlimited"/>
+			<xsd:enumeration value="limited"/>
+			<xsd:enumeration value="single"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="GroupCheckInEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for Group Check In</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="required"/>
+			<xsd:enumeration value="allowed"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- === LUGGAGE ALLOWANCE PARAMETER============================================== -->
+	<xsd:simpleType name="LuggageAllowanceIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a LUGGAGE ALLOWANCE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="UsageParameterIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="LuggageAllowanceRef" type="LuggageAllowanceRefStructure" substitutionGroup="UsageParameterRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a LUGGAGE ALLOWANCE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="LuggageAllowanceRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Reference to a LUGGAGE ALLOWANCE PARAMETER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="UsageParameterRefStructure">
+				<xsd:attribute name="ref" type="LuggageAllowanceIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a LUGGAGE ALLOWANCE PARAMETER.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="BaggageTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for gType.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="carryOn"/>
+			<xsd:enumeration value="checkIn"/>
+			<xsd:enumeration value="oversizeCheckIn"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="LuggageAllowanceTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for Luggage Allowance Type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="unlimited"/>
+			<xsd:enumeration value="limited"/>
+			<xsd:enumeration value="single"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

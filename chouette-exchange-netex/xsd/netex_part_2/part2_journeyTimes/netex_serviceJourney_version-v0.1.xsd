@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_ServiceJourneyBasic_Version">
+	<xsd:include schemaLocation="netex_vehicleJourney_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_flexibleService_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_serviceCalendar_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_part_1/part1_networkDescription/netex_flexibleNetwork_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_equipmentVehiclePassenger_version-v01.xsd"/>
+	<xsd:include schemaLocation="netex_call_version-v0.1.xsd"/>
+	<!-- ==CLOSELY COUPLED ===================================================== -->
+	<!-- ======================================================================= -->
+	<!-- ===ENTIITY IN VERSION IN FRAME====(Used in SERVICE FRAME)=================================================== -->
+	<xsd:group name="ServiceJourneyFrameGroup">
+		<xsd:annotation>
+			<xsd:documentation>Service related elements in frame.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="serviceJourneys" type="journeysInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SERVICE JOURNEYs in frame.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="groupsOfServices" type="groupsOfServicesInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>GROUPs of SERVICES  in frame.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="groupsOfServicesInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of  GROUP OF SERVICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="GroupOfServices" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="passengerJourneysInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of  passenger  JOURNEYs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="DatedServiceJourney"/>
+					<xsd:element ref="ServiceJourney"/>
+					<xsd:element ref="SpecialService"/>
+					<xsd:element ref="TemplateServiceJourney"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="journeysInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of  all JOURNEYs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="DatedServiceJourney"/>
+					<xsd:element ref="DeadRun"/>
+					<xsd:element ref="ServiceJourney"/>
+					<xsd:element ref="SpecialService"/>
+					<xsd:element ref="TemplateServiceJourney">
+						<xsd:annotation>
+							<xsd:documentation>A VEHICLE JOURNEY with a set of frequencies that may be used to represent a set of similar journeys differing only by their time of departure.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="VehicleJourney"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<!-- ===SERVICE JOURNEY===================================================== -->
+	<xsd:element name="ServiceJourney_" type="Journey_VersionStructure" abstract="true" substitutionGroup="VehicleJourney_">
+		<xsd:annotation>
+			<xsd:documentation>Dummy SERVICE JOURNEY Supertype.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ServiceJourney" abstract="false" substitutionGroup="VehicleJourney_">
+		<xsd:annotation>
+			<xsd:documentation>A planned VEHICLE JOURNEY taking place on a particular DAY TYPE. 
+
+The VIEW includes derived ancillary data from referenced entities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="ServiceJourney_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LinkSequenceGroup"/>
+						</xsd:sequence>
+						<xsd:group ref="JourneyGroup"/>
+						<xsd:group ref="ServiceJourneyGroup"/>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="ServiceJourneyIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="ServiceJourney_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for a planned VEHICLE JOURNEY (Production Timetable Service).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Journey_VersionStructure">
+				<xsd:group ref="ServiceJourneyGroup"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="ServiceJourneyGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a SERVICE JOURNEY, including additional derived data.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="ServiceAlterationGroup" minOccurs="0"/>
+			<xsd:group ref="ServiceTimeGroup"/>
+			<xsd:group ref="VehicleJourneyReferencesGroup"/>
+			<xsd:group ref="ServiceJourneyReferencesGroup"/>
+			<xsd:group ref="ServiceJourneyEndpointsGroup"/>
+			<xsd:group ref="ServiceJourneyAdvertisementGroup"/>
+			<xsd:group ref="VehicleJourneyTimesGroup"/>
+			<xsd:group ref="ServiceJourneyPartsGroup"/>
+			<xsd:group ref="ServiceRequirementTypeGroup"/>
+			<xsd:element ref="FlexibleServiceProperties" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="ServiceJourneyPartsGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for parts of  a SERVICE JOURNEY, i.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="parts" type="journeyParts_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>JOURNEY PARTs of a journey - for a multi-part journey only.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="noticeAssignments" type="noticeAssignments_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>NOTICEs that apply to the SERVICE JOURNEY.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="calls" type="calls_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Complete sequence of stops along the route path, in calling order.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="facilities" type="serviceFacilitySets_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>FACILITies available associated with JOURNEY.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="checkConstraints" type="checkConstraints_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>CHECK CONSTRAINTs  which apply to SERVICE JOURNEY, e.g. check in time, security time. These are advisory only and not for use in  journey planning.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="ServiceJourneyReferencesGroup">
+		<xsd:annotation>
+			<xsd:documentation>Reference elements for a SERVICE JOURNEY, including additional derived data.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:choice minOccurs="0">
+				<xsd:element ref="OperatorRef"/>
+				<xsd:element ref="OperatorView"/>
+			</xsd:choice>
+			<xsd:choice minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>LINE followed by SERVICE JOURNEY Use view to get derived values.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:element ref="LineRef"/>
+				<xsd:element ref="LineView"/>
+				<xsd:element ref="FlexibleLineView"/>
+			</xsd:choice>
+			<xsd:element ref="DirectionType" minOccurs="0"/>
+			<xsd:element ref="JourneyPatternView" minOccurs="0"/>
+			<xsd:element name="groupsOfServices" type="groupOfServicesRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Grouping of services  of a journey - for a multi-part journey only.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="timeDemandTypes" type="timeDemandTypeRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Other TIME DEMAND TYPEs used in journey.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="trainNumbers" type="trainNumberRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>TRAIN NUMBERs -= derived through JOURNEY PARTs  of a journey - for a multi-part journey only.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="ServiceJourneyAdvertisementGroup">
+		<xsd:annotation>
+			<xsd:documentation>Advertisement Elements for info about publicising SERVICE JOURNEY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Print" type="xsd:boolean" default="true" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether the journey is included in printed media. Default is true.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Dynamic" type="DynamicAdvertisementEnumeration" default="always" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>When SERVICE JOURNEY is to be publicised in dynamic media. Default is always.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="ServiceCategoryGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for Service Categorisation</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DepartureTime" type="xsd:time" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Time of departure.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Frequency" type="FrequencyStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Frequency of Journey.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="JourneyDuration" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Total length of Journey. Can be computed from individual times.  Add to Departure time to obtain JOURNEY arrival time.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="ServiceAlterationGroup">
+		<xsd:annotation>
+			<xsd:documentation>If the journey is an alteration to a timetable, indicates the original journey, and the nature of the difference.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ServiceAlteration" type="ServiceAlterationEnumeration" default="planned" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether journey is as planned, a cancellation or an extra journey.  Default is as Planned.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="ServiceJourneyEndpointsGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for  origin and destination of  JOURNEY. Can be derived from the Pattern. Must not  contradict the calls.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Origin" type="JourneyEndpointStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Origin  for JOURNEY.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Destination" type="JourneyEndpointStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Destination  for JOURNEY.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="JourneyEndpointStructure">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Planned VEHICLE JOURNEY (Production Timetable Service).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0"/>
+			<xsd:element ref="ScheduledStopPointRef" minOccurs="0"/>
+			<xsd:element ref="PlaceRef" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:element name="TemplateServiceJourney" abstract="false" substitutionGroup="ServiceJourney_">
+		<xsd:annotation>
+			<xsd:documentation>A VEHICLE JOURNEY with a set of frequencies that may be used to represent a set of similar journeys differing only by their time of departure.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="TemplateServiceJourney_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LinkSequenceGroup"/>
+						</xsd:sequence>
+						<xsd:group ref="JourneyGroup"/>
+						<xsd:group ref="ServiceJourneyGroup"/>
+						<xsd:sequence>
+							<xsd:group ref="TemplateVehicleJourneyGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="TemplateServiceJourneyIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="TemplateServiceJourney_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for TEMPLATE VEHICLE JOURNEY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ServiceJourney_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="TemplateVehicleJourneyGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ====DATED JOURNEY====================================-->
+	<xsd:element name="DatedServiceJourney" abstract="false" substitutionGroup="ServiceJourney_">
+		<xsd:annotation>
+			<xsd:documentation>A particular journey of a vehicle on a particular OPERATING DAY including all modifications possibly decided by the control staff. 
+
+The VIEW includes derived ancillary data from referenced entities.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="DatedServiceJourney_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LinkSequenceGroup"/>
+						</xsd:sequence>
+						<xsd:group ref="JourneyGroup"/>
+						<xsd:group ref="ServiceJourneyGroup"/>
+						<xsd:sequence>
+							<xsd:group ref="DatedServiceJourneyGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="DatedVehicleJourneyIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="DatedServiceJourney_VersionStructure" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Data type for Planned VEHICLE JOURNEY (Production Timetable Service).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ServiceJourney_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="DatedServiceJourneyGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="DatedServiceJourneyGroup">
+		<xsd:annotation>
+			<xsd:documentation>If the journey is an alteration to a timetable, indicates the original journey, and the nature of the difference.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:choice minOccurs="0">
+				<xsd:element ref="OperatingDayRef"/>
+				<xsd:element ref="UicOperatingPeriod"/>
+			</xsd:choice>
+			<xsd:element ref="DriverRef" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ===SPECIAL SERVICE ===================================================== -->
+	<xsd:complexType name="specialServices_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of SPECIAL SERVICE s.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="SpecialServiceRef"/>
+					<xsd:element ref="SpecialService" maxOccurs="1"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SpecialService" abstract="false" substitutionGroup="Journey_">
+		<xsd:annotation>
+			<xsd:documentation>A passenger carrying VEHICLE JOURNEY for one specified DAY TYPE. The pattern of working is in principle defined by a  SERVICE JOURNEY PATTERN.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="SpecialService_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LinkSequenceGroup"/>
+						</xsd:sequence>
+						<xsd:group ref="JourneyGroup"/>
+						<xsd:sequence>
+							<xsd:group ref="SpecialServiceGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="SpecialServiceIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SpecialService_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for SPECIAL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Journey_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="SpecialServiceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SpecialServiceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for SPECIAL SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="ServiceTimeGroup">
+				<xsd:annotation>
+					<xsd:documentation>Elements for SERVICE time.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:group>
+			<xsd:element name="Client" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Client of Special Service.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="DayTypeRef"/>
+			<xsd:element ref="JourneyPatternRef">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a JOURNEY PATTERN.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="VehicleTypeRef" minOccurs="0"/>
+			<xsd:group ref="ServiceJourneyEndpointsGroup"/>
+			<xsd:group ref="ServiceJourneyAdvertisementGroup"/>
+			<xsd:group ref="BookingArrangementsGroup"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ==Group of Services============================================================ -->
+	<xsd:element name="GroupOfServices" abstract="false" substitutionGroup="GroupOfEntities">
+		<xsd:annotation>
+			<xsd:documentation>A group of SERVICEs, often known to its users by a name or a number.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="GroupOfServices_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="GroupOfEntitiesGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="GroupOfServicesGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="GroupOfServicesIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="GroupOfServices_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a GROUP OF SERVICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GroupOfEntities_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="GroupOfServicesGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="GroupOfServicesGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a GROUP OF SERVICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="dayTypes" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>The DAY TYPEs of all the services in this group.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="DayTypeRef" type="DayTypeRefStructure" maxOccurs="unbounded">
+							<xsd:annotation>
+								<xsd:documentation>The DAY TYPE of all the services in this group.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element ref="DirectionType" minOccurs="0"/>
+			<xsd:choice minOccurs="0">
+				<xsd:element ref="DirectionRef"/>
+				<xsd:element ref="DirectionView"/>
+			</xsd:choice>
+			<xsd:element name="destinationDisplays" type="destinationDisplayRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Destinations associated with this GROUP OF SERVICEs.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="members" type="groupOfServicesMembers_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Services in GROUP.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="noticeAssignments" type="noticeAssignments_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>NOTICEs  relevant for the whole GROUP OF SERVICEs.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="groupOfServicesMembers_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of Member of GROUP OF SERVICE Member.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element name="GroupOfServicesMember" type="GroupOfServicesMemberStructure" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation> Member of GROUP OF SERVICE Garage Member.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="GroupOfServicesMemberStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a Member of GROUP OF SERVICE Member.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="AbstractGroupMember_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:element name="GroupOfServicesRef" type="GroupOfServicesRefStructure" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Parent  GROUP OF SERVICEs to which this  GROUP OF SERVICEs MEMBER assigns a JOURNEY.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element ref="JourneyRef"/>
+					<xsd:element name="noticeAssignments" type="noticeAssignmentViews_RelStructure" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>NOTICEs  Relevant for this grouping.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:element name="DeadRun" abstract="false" substitutionGroup="VehicleJourney_">
+		<xsd:annotation>
+			<xsd:documentation>A non-service VEHICLE JOURNEY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="DeadRunWithCalls_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LinkSequenceGroup"/>
+						</xsd:sequence>
+						<xsd:group ref="JourneyGroup"/>
+						<xsd:sequence>
+							<xsd:group ref="VehicleJourneyGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DeadRunGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DeadRunWithCallsGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="DeadRunIdType" use="optional"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="DeadRunWithCalls_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for  DEAD RUN.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DeadRun_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="DeadRunWithCallsGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="DeadRunWithCallsGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for  DEAD RUN.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="calls" type="deadRunCalls_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Complete sequence of stops along the route path, in calling order.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

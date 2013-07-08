@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2013 (x64) (http://www.altova.com) by Nicholas JS Knowles (Trapeze Group Limited) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:siri="http://www.siri.org.uk/siri" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_availabilityCondition_version">
+	<xsd:include schemaLocation="../netex_responsibility/netex_validityCondition_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_serviceCalendar_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_availabilityCondition_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="availabilityConditions_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>A collection of one or more AVAILABILITY CONDITIONs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="AvailabilityConditionRef"/>
+					<xsd:element ref="AvailabilityCondition"/>
+					<xsd:element ref="SimpleAvailabilityCondition"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="containedAvailabilityConditions_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>A collection of one or more AVAILABILITY CONDITIONs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="AvailabilityCondition" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:element name="AvailabilityCondition" substitutionGroup="ValidityCondition_">
+		<xsd:annotation>
+			<xsd:documentation>VALIDITY CONDITION stated in terms of DAY TYPES and  PROPERTIES OF DAYs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="AvailabilityCondition_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="ConditionGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="AvailabilityConditionGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="AvailabilityConditionIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="AvailabilityCondition_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for an AVAILABILITY CONDITION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ValidityCondition_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="AvailabilityConditionGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="AvailabilityConditionGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for an AVAILABILITY CONDITION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="FromDate" type="xsd:dateTime" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Start date of AVAILABILITY CONDITION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ToDate" type="xsd:dateTime" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>End of AVAILABILITY CONDITION. Date is INCLUSIVE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="IsAvailable" type="xsd:boolean" default="true" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether condition makes resource available or not available. Default is available.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="dayTypes" type="dayTypes_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>DAY TYPEs for AVAILABILITY CONDITION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ValidDayBits" type="xsd:normalizedString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>For UIC style encoding of day types String of bits, one for each day in period: whether valid or not valid on the day.  Normally there will be a bit for every day between start and end date.  If bit is missing, assume available.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="timebands" type="timebands_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>TIME BANDs for AVAILABILITY CONDITION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="operatingDays" type="operatingDays_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>OPERATING DAYs for AVAILABILITY CONDITION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<xsd:element name="SimpleAvailabilityCondition" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Simple version of an  AVAILABILITY CONDITION used in order to characterise a given VERSION of a VERSION FRAME.  Comprises a simple period and DAY TYPE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="SimpleAvailabilityConditionStructure">
+					<xsd:group ref="SimpleAvailabilityConditionGroup"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SimpleAvailabilityConditionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a Simple AVAILABILITY CONDITION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="SimpleValidityConditionStructure"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SimpleAvailabilityConditionGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a Simple AVAILABILITY CONDITION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element ref="DayTypeRef" minOccurs="0"/>
+			<xsd:element name="DaysOfWeek" type="DaysOfWeekListOfEnumerations" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Days of teh week</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

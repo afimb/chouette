@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_vehicleJourneyTimes_version">
+	<xsd:include schemaLocation="../../netex_part_1/part1_tacticalPlanning/netex_vehicleJourney_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_dayType_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_part_1/part1_tacticalPlanning/netex_timeDemandType_version-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:complexType name="vehicleJourneyWaitTimes_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of VEHICLE JOURNEY WAIT TIMEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="VehicleJourneyWaitTime" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="VehicleJourneyWaitTime" abstract="false" substitutionGroup="JourneyTiming">
+		<xsd:annotation>
+			<xsd:documentation>The time for a vehicle to wait at a particular TIMING POINT IN JOURNEY PATTERN on a specified VEHICLE JOURNEY. This wait time will override the JOURNEY PATTERN WAIT TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="VehicleJourneyWaitTime_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyTimingGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyWaitTimeGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VehicleJourneyWaitTimeGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="VehicleJourneyWaitTimeIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="VehicleJourneyWaitTime_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for VEHICLE JOURNEY WAIT TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="JourneyWaitTime_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="VehicleJourneyWaitTimeGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="VehicleJourneyWaitTimeGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a VEHICLE JOURNEY WAIT TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="VehicleJourneyRef" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<!-- ===VehicleJourneyRunTime===================================================== -->
+	<xsd:complexType name="vehicleJourneyRunTimes_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of VEHICLE JOURNEY RUN TIMEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="VehicleJourneyRunTime" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>VEHICLE JOURNEY RUN TIME for a specified TIME DEMAND TYPE.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="VehicleJourneyRunTime" abstract="false" substitutionGroup="JourneyTiming">
+		<xsd:annotation>
+			<xsd:documentation>The time taken to traverse a specified TIMING LINK IN JOURNEY PATTERN on a specified VEHICLE JOURNEY. This gives the most detailed control over times and overrides the DEFAULT SERVICE JOURNEY RUN TIME and JOURNEY PATTERN RUN TIME and the DEFAULT DEAD RUN RUN TIME. There may be different times for different TIME DEMAND TYPES.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="VehicleJourneyRunTime_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyTimingGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyRunTimeGroup"/>
+						</xsd:sequence>
+						<xsd:group ref="VehicleJourneyRunTimeGroup"/>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="VehicleJourneyRunTimeIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="VehicleJourneyRunTime_VersionedChildStructure" abstract="false">
+		<xsd:annotation>
+			<xsd:documentation>Type for VEHICLE JOURNEY RUN TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="JourneyRunTime_VersionedChildStructure">
+				<xsd:group ref="VehicleJourneyRunTimeGroup"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="VehicleJourneyRunTimeGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a VEHICLE JOURNEY RUN TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="VehicleJourneyRef" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ===VehicleJourneyRunTime===================================================== -->
+	<xsd:complexType name="vehicleJourneyLayovers_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of for a VEHICLE JOURNEY LAYOVERs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="VehicleJourneyLayover" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>VEHICLE JOURNEY LAYOVER for a specified TIME DEMAND TYPE.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="VehicleJourneyLayover" abstract="false" substitutionGroup="JourneyTiming">
+		<xsd:annotation>
+			<xsd:documentation>A time allowance at the end of a specified VEHICLE JOURNEY. This time supersedes any global layover or JOURNEY PATTERN LAYOVER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="VehicleJourneyLayover_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyTimingGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyLayoverGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VehicleJourneyLayoverGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="VehicleJourneyLayoverIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="VehicleJourneyLayover_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a VEHICLE JOURNEY LAYOVER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="JourneyLayoverStructure">
+				<xsd:sequence>
+					<xsd:group ref="VehicleJourneyLayoverGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="VehicleJourneyLayoverGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a VEHICLE JOURNEY LAYOVER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="VehicleJourneyRef" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

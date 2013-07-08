@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 rel. 3 sp1 (http://www.altova.com) by Nicholas Knowles (Kizoom) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_transportOrganisation_version">
+	<xsd:include schemaLocation="../netex_genericFramework/netex_organisation_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="OtherOrganisationIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an OTHER ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="OrganisationIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="OtherOrganisationRef" type="OtherOrganisationRefStructure" substitutionGroup="OrganisationRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to an OTHER ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="OtherOrganisationRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to an OTHER ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="OrganisationRefStructure">
+				<xsd:attribute name="ref" type="OtherOrganisationIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of referenced entity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="TravelAgentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TRAVEL AGENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="OtherOrganisationIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="TravelAgentRef" type="TravelAgentRefStructure" substitutionGroup="OtherOrganisationRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a TRAVEL AGENT.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="TravelAgentRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a TRAVEL AGENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="OtherOrganisationRefStructure">
+				<xsd:attribute name="ref" type="TravelAgentIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of TRAVEL AGENT entity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="ServicedOrganisationTypeEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Allowed values for SERVICED ORGANISATION type.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:normalizedString">
+			<xsd:enumeration value="school"/>
+			<xsd:enumeration value="college"/>
+			<xsd:enumeration value="university"/>
+			<xsd:enumeration value="militaryBase"/>
+			<xsd:enumeration value="works"/>
+			<xsd:enumeration value="retaiilCentre"/>
+			<xsd:enumeration value="hospital"/>
+			<xsd:enumeration value="governmentOffice"/>
+			<xsd:enumeration value="other"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="ServicedOrganisationIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a SERVICED ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="OtherOrganisationIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="ServicedOrganisationRef" type="ServicedOrganisationRefStructure" substitutionGroup="OtherOrganisationRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a SERVICED ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="ServicedOrganisationRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a SERVICED ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="OtherOrganisationRefStructure">
+				<xsd:attribute name="ref" type="ServicedOrganisationIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of SERVICED ORGANISATION entity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="ManagementAgentIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a MANAGEMENT AGENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="OtherOrganisationIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="ManagementAgentRef" type="ManagementAgentRefStructure" substitutionGroup="OtherOrganisationRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a MANAGEMENT AGENT.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="ManagementAgentRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a MANAGEMENT AGENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="OtherOrganisationRefStructure">
+				<xsd:attribute name="ref" type="ManagementAgentIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of MANAGEMENT AGENT entity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="GeneralOrganisationIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a GENERAL ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="OtherOrganisationIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="GeneralOrganisationRef" type="GeneralOrganisationRefStructure" substitutionGroup="OtherOrganisationRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a GENERAL ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="GeneralOrganisationRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a GENERAL ORGANISATION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="OtherOrganisationRefStructure">
+				<xsd:attribute name="ref" type="GeneralOrganisationIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of GENERAL ORGANISATION entity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+</xsd:schema>

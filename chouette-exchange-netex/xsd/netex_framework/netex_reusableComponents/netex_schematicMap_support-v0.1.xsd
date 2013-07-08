@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:siri="http://www.siri.org.uk/siri" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_schematicMap_support">
+	<xsd:include schemaLocation="../netex_responsibility/netex_relationship-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ====Time zone======================================================= -->
+	<xsd:simpleType name="SchematicMapIdType">
+		<xsd:annotation>
+			<xsd:documentation>Identifier of a SCHEMATIC MAP.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="ObjectIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="SchematicMapRef" type="SchematicMapRefStructure" substitutionGroup="VersionOfObjectRef">
+		<xsd:annotation>
+			<xsd:documentation> Reference to a SCHEMATIC MAP.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="SchematicMapRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a SCHEMATIC MAP.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="VersionOfObjectRefStructure">
+				<xsd:attribute name="ref" type="SchematicMapIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of a SCHEMATIC MAP.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="SchematicMapMemberIdType">
+		<xsd:annotation>
+			<xsd:documentation>Identifier of a SCHEMATIC MAP MEMBER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="ObjectIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="SchematicMapMemberRef" type="SchematicMapMemberRefStructure" substitutionGroup="VersionOfObjectRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a SCHEMATIC MAP MEMBER.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="SchematicMapMemberRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference a SCHEMATIC MAP MEMBER.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="VersionOfObjectRefStructure">
+				<xsd:attribute name="ref" type="SchematicMapMemberIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of referenced entity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!--=============================================================================-->
+	<xsd:simpleType name="GraphicsUnitsTypeType">
+		<xsd:annotation>
+			<xsd:documentation>Number of pixels from origin.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:float"/>
+	</xsd:simpleType>
+	<!--=============================================================================-->
+</xsd:schema>

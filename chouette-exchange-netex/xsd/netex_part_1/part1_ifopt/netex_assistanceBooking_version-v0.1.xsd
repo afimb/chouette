@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:netex="http://www.netex.org.uk/netex" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.3" id="netex_assistanceBooking_version">
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_transportOrganisation_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_notice_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../part1_networkDescription/netex_line_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_ifopt_localService_version-v0.4.xsd"/>
+	<xsd:include schemaLocation="netex_AssistanceBooking_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:complexType name="assistanceBookingServices_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of ASSISTANCE BOOKING SERVICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="AssistanceBookingServiceRef"/>
+					<xsd:element ref="AssistanceBookingService" maxOccurs="1"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="AssistanceBookingService" abstract="false" substitutionGroup="LocalService">
+		<xsd:annotation>
+			<xsd:documentation>Information about how to book assistance for wheelchair and disabled users.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="AssistanceBookingService_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="EquipmentGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="LocalServiceGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="AssistanceBookingServiceGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="AssistanceBookingServiceIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="AssistanceBookingService_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for ASSISTANCE BOOKING SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LocalService_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="AssistanceBookingServiceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="AssistanceBookingServiceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a ASSISTANCE BOOKING SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="AssistanceAvailability" type="AssistanceAvailabilityEnumeration">
+				<xsd:annotation>
+					<xsd:documentation>Availilability of assistance.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="WheelchairBookingRequired" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether a booking is needed to use a wheelchair.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BookingContact" type="ContactStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Contact details for  ASSISTANCE BOOKING SERVICE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BookingArrangements" type="BookingArrangementsStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Booking conditions for ASSISTANCE BOOKING SERVICE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="AssistanceBookingServiceReferencesGroup">
+				<xsd:annotation>
+					<xsd:documentation>Reference Elements for ASSISTANCE BOOKING SERVICE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:group>
+			<xsd:element name="notices" type="notices_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>NOTICEs  for ASSISTANCE BOOKING SERVICE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="AssistanceBookingServiceReferencesGroup">
+		<xsd:annotation>
+			<xsd:documentation>Refrence Elements for ASSISTANCE BOOKING SERVICE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="VehicleMode" minOccurs="0"/>
+			<xsd:element ref="TransportOrganisationRef" minOccurs="0"/>
+			<xsd:element ref="LineRef" minOccurs="0"/>
+			<xsd:element name="BookedObjectRef" type="VersionOfObjectRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Specifc object that booking relkates too, eg  SCHEDULED STOP POINT, STOP, VEHICLE JOURNEY, etc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

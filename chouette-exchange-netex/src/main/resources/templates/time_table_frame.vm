@@ -29,7 +29,7 @@
       <RouteRef version="$vehicleJourney.route.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.route)"/>
       #end
       #if($vehicleJourney.journeyPattern) 
-      <ServicePatternRef ref="$modelTranslator.netexId( $vehicleJourney.journeyPattern)">EXTERNAL</ServicePatternRef>
+      <ServicePatternRef ref="$modelTranslator.netexId( $vehicleJourney.journeyPattern)" />
       #end
       #if ( $vehicleJourney.company)
       <OperatorRef version="$vehicleJourney.company.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.company)" />

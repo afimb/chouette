@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by christophe duquesne (Dryade SARL) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:siri="http://www.siri.org.uk/siri" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_availabilityCondition_support">
+	<xsd:include schemaLocation="../netex_responsibility/netex_validityCondition_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="AvailabilityConditionIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an AVAILABILITY CONDITION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="ValidityConditionIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="AvailabilityConditionRef" type="AvailabilityConditionRefStructure" substitutionGroup="ValidityConditionRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to an AVAILABILITY CONDITION. A VALIDITY CONDITION defined in terms of temporal attributes.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="AvailabilityConditionRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to an AVAILABILITY CONDITION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:restriction base="ValidityConditionRefStructure">
+				<xsd:attribute name="ref" type="AvailabilityConditionIdType" use="required">
+					<xsd:annotation>
+						<xsd:documentation>Identifier of an AVAILABILITY CONDITION.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:restriction>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ====DAY TYPE=================================================== -->
+</xsd:schema>

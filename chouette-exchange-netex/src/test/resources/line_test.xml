@@ -186,9 +186,9 @@ So the NeTEx File will probably be something like 50% bigger with the same level
 							<Name>R.A.T.P.</Name>
                                                       <ShortName>RATP</ShortName>
                                                       <ContactDetails>
-                                                          <EmailAddress>support@ratp.fr</EmailAddress>
-                                                          <ContactTelephoneNumber>01.02.03.04.05</ContactTelephoneNumber>
-                                                          <ContactFaxNumber>01.02.03.04.06</ContactFaxNumber>
+                                                          <Email>support@ratp.fr</Email>
+                                                          <Phone>01.02.03.04.05</Phone>
+                                                          <Fax>01.02.03.04.06</Fax>
                                                       </ContactDetails>
                                                       <parts>
                                                           <OrganisationPart>

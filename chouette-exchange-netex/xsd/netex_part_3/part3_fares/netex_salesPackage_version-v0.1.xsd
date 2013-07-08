@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_salesPackage_version">
+	<xsd:include schemaLocation="netex_travelDocument_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_part_1/part1_tacticalPlanning/netex_servicePattern_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_availabilityCondition_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_salesDistribution_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_fareProduct_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_salesPackage_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===ENTIITY IN VERSION IN FRAME====Used in SERVICE FRAME)=================================================== -->
+	<xsd:group name="SalesPackageInFrameGroup">
+		<xsd:sequence>
+			<xsd:element name="distributionChannels" type="distributionChannelsInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>DISTRIBUTION CHANNELS in FRAME.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="fulfillmentMethods" type="fulfillmentMethodsInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>FULFILLMENT METHODS  in FRAME.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="salesPackages" type="salesPackagesInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES PACKAGEs in FRAME.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="groupsOfSalesPackages" type="groupsOfSalesPackagesInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>GROUPS OF SALES PACKAGEs in FRAME.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="salesPackagesInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of SALES PACKAGE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="frameContainmentStructure">
+				<xsd:sequence>
+					<xsd:element ref="SalesPackage" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="groupsOfSalesPackagesInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of GROOPs OF SALES PACKAGE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="frameContainmentStructure">
+				<xsd:sequence>
+					<xsd:element ref="GroupOfSalesPackages" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ====SALES PACKAGE=================================================== -->
+	<xsd:element name="SalesPackage" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>A package to be sold as a whole, consisting of one or several FARE PRODUCTs materialised thanks to one or several TRAVEL DOCUMENTs. The FARE PRODUCTs may be either directly attached to the TRAVEL DOCUMENTs, or may be reloadable on the TRAVEL DOCUMENTs.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="SalesPackage_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="SalesPackageGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="SalesPackageIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SalesPackage_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for SALES PACKAGE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="SalesPackageGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SalesPackageGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for SALES PACKAGE</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name of SALES PACKAGE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Description" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of SALES PACKAGE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="SalesPackageCommonGroup"/>
+			<xsd:element name="salesPackageElements" type="SalesPackageElements_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES PACKAGE ELEMENTs in SALES PACKAGe.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="salesTransactions" type="SalesTransactions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES TRANSACTIONs in SALES PACKAGe.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="salesPackageSubstitutions" type="SalesPackageSubstitutions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES TRANSACTIONs in SALES PACKAGe.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="SalesPackageCommonGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for SALES PACKAGE</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="TypeOfSalesPackageRef" minOccurs="0"/>
+			<xsd:element name="alternativeNames" type="alternativeNames_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Alternatvei Names for SALES PACKAGE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="validityConditions" type="availabilityConditions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>VALIDITY of Sales PACKAGE for use.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="availabilityForPurchase" type="availabilityConditions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Availability of SALES PACKAGE for purchase.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ConditionSummary" minOccurs="0"/>
+			<xsd:element name="groupsOfAccessRightParameterAssignments" type="groupsOfAccessRightParameterAssignments_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>NOTICS for  SALES PACKAGe.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="distributionConditions" type="distributionConditions_RelStructure" minOccurs="0"/>
+			<xsd:element name="noticeAssignments" type="noticeAssignmentRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>NOTICS for  SALES PACKAGe.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="RoundingRef" minOccurs="0"/>
+			<xsd:element name="prices" type="SalesPackagePrices_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PRICEs of SALES PACKAGE ELEMENT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====SALES PACKAGE ELEMENT.============================================= -->
+	<xsd:complexType name="SalesPackageElements_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of SALES PACKAGE ELEMENTs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="SalesPackageElementRef"/>
+					<xsd:element ref="SalesPackageElement">
+						<xsd:annotation>
+							<xsd:documentation>A sequence or set of CONTROLLABLE ELEMENTs to which rules for limitation of access rights and calculation of prices (SALES PACKAGE) are applied.
+</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SalesPackageElement" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>The assignment of a FARE PRODUCT to a TYPE OF TRAVEL DOCUMENT in order to define a SALES PACKAGE, realised as a fixed assignment (printing, magnetic storage etc.) or by the possibility for the FARE PRODUCT to be reloaded on the TYPE OF TRAVEL DOCUMENT.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="SalesPackageElement_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="SalesPackageElementGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="SalesPackageElementIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SalesPackageElement_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for SALES PACKAGE ELEMENT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="SalesPackageElementGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SalesPackageElementGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for SALES PACKAGE ELEMENT</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name of SALES PACKAGE ELEMENT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Description" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of SALES PACKAGE ELEMENT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="SalesPackageRef" minOccurs="0"/>
+			<xsd:element ref="TypeOfTravelDocumentRef" minOccurs="0"/>
+			<xsd:element ref="FareProductRef" minOccurs="0"/>
+			<xsd:element name="groupsOfAccessRightParameterAssignments" type="groupsOfAccessRightParameterAssignments_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Access Righ Assignments for SALES PACKAGE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- == SALES PACKAGE PRICE.================================ -->
+	<xsd:complexType name="SalesPackagePrices_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of SALES PACKAGE PRICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="SalesPackagePriceRef"/>
+					<xsd:element name="SalesPackagePrice" type="SalesPackagePrice_VersionedChildStructure">
+						<xsd:annotation>
+							<xsd:documentation>A set of all possible price features of a SALES PACKAGE ELEMENT: default total price, discount in value or percentage etc.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SalesPackagePrice" substitutionGroup="FarePrice_">
+		<xsd:annotation>
+			<xsd:documentation>A set of all possible price features of a SALES PACKAGE ELEMENT: default total price, discount in value or percentage etc.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="SalesPackagePrice_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="FarePriceGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DiscountablePriceGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="SalesPackagePriceGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="SalesPackagePriceIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SalesPackagePrice_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a SALES PACKAGE PRICEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DiscountablePrice_VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="SalesPackagePriceGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SalesPackagePriceGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements defining a span of time.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="SalesPackageElementRef" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====SALES PACKAGE=================================================== -->
+	<xsd:complexType name="SalesTransactions_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of SALES TRANSACTIONs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="SalesTransactionRef"/>
+					<xsd:element ref="SalesTransaction"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SalesTransaction" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>A particular tariff, described by a combination of parameters.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="SalesTransaction_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="SalesTransactionGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="SalesTransactionIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SalesTransaction_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for SALES TRANSACTION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="SalesTransactionGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SalesTransactionGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for SALES TRANSACTION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of SALES TRANSACTION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Distance" type="DistanceType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES TRANSACTION to use when advertising Train -If different from Id.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:sequence minOccurs="0">
+				<xsd:choice>
+					<xsd:element name="StartStopPointRef" type="ScheduledStopPointRefStructure">
+						<xsd:annotation>
+							<xsd:documentation>Start SCHEDULED STOP POINT for Cell of SALES TRANSACTION</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="StartTariffZoneRef" type="TariffZoneRefStructure">
+						<xsd:annotation>
+							<xsd:documentation>Start TARIFF ZONE for Cell of SALES TRANSACTION</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+				<xsd:choice>
+					<xsd:element name="EndStopPointRef" type="ScheduledStopPointRefStructure">
+						<xsd:annotation>
+							<xsd:documentation>End SCHEDULED STOP POINT for Cell of SALES TRANSACTION</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="EndTariffZoneRef" type="TariffZoneRefStructure">
+						<xsd:annotation>
+							<xsd:documentation>End TARIFF ZONE for Cell of SALES TRANSACTION</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:element ref="SalesPackageRef" minOccurs="0"/>
+			<xsd:element ref="FareProductRef" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====SALES PACKAGE SUBSTITUTIOIN================================= -->
+	<xsd:complexType name="SalesPackageSubstitutions_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of SALES PACKAGE SUBSTITUTIONs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="SalesPackageSubstitutionRef"/>
+					<xsd:element ref="SalesPackageSubstitution"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="SalesPackageSubstitution" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>A particular tariff, described by a combination of parameters.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="SalesPackageSubstitution_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="SalesPackageSubstitutionGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="SalesPackageSubstitutionIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="SalesPackageSubstitution_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for SALES PACKAGE SUBSTITUTION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="SalesPackageSubstitutionGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="SalesPackageSubstitutionGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for SALES PACKAGE SUBSTITUTION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of SALES PACKAGE SUBSTITUTION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Priority" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Relative priority for use.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="SalesPackageRef" minOccurs="0"/>
+			<xsd:element name="WithSalesPackageRef" type="SalesPackageRefStructure">
+				<xsd:annotation>
+					<xsd:documentation>SALES PACKAGE  that may be used to subsitute base SALES PACKAGE. </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====GROUP OF SALES PACKAGEs=================================================== -->
+	<xsd:element name="GroupOfSalesPackages" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>A package to be sold as a whole, consisting of one or several FARE PRODUCTs materialised thanks to one or several TRAVEL DOCUMENTs. The FARE PRODUCTs may be either directly attached to the TRAVEL DOCUMENTs, or may be reloadable on the TRAVEL DOCUMENTs.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="GroupOfSalesPackages_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="GroupOfSalesPackagesGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="GroupOfSalesPackagesIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="GroupOfSalesPackages_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for GROUP OF SALES PACKAGEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GroupOfEntities_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="GroupOfSalesPackagesGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="GroupOfSalesPackagesGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for GROUP OF SALES PACKAGEs</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="SalesPackageCommonGroup"/>
+			<xsd:element name="members" type="salesPackages_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES PACKAGEs in Group</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====TYPE OF SALES PACKAGE ======================================== -->
+	<xsd:complexType name="TypeOfSalesPackages_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of TYPE OF SALES PACKAGEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="TypeOfSalesPackageRef"/>
+					<xsd:element ref="TypeOfSalesPackage">
+						<xsd:annotation>
+							<xsd:documentation>A TYPE OF SALES PACKAGE specifying access rights for the SALES PACKAGE ELEMENTs within the range of this UNIT: 0-5 km, 4-6 zones etc.
+</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="TypeOfSalesPackage" abstract="false" substitutionGroup="TypeOfEntity">
+		<xsd:annotation>
+			<xsd:documentation>A classification of SALES PACKAGEs expressing their general functionalities and local functional characteristics specific to the operator. Types of SALES PACKAGEs like e.g. throw-away ticket, throw-away ticket unit, value card, electronic purse allowing access, public transport credit card etc. may be used to define these categories.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="TypeOfSalesPackage_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="TypeOfValueGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="TypeOfSalesPackageIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="TypeOfSalesPackage_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for TYPE OF SALES PACKAGE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="TypeOfEntity_VersionStructure"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

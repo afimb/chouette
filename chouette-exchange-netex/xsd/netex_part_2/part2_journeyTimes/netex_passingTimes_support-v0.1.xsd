@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex"  xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_passingTimes_support">
+	<xsd:include schemaLocation="../../netex_part_1/part1_tacticalPlanning/netex_journeyTiming_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ==CLOSELY COUPLED ===================================================== -->
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="PassingTimeIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="JourneyTimingIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="PassingTimeRef" type="PassingTimeRefStructure" substitutionGroup="VersionOfObjectRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="PassingTimeRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="JourneyTimingRefStructure"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="TargetPassingTimeIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TARGET PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassingTimeIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="TargetPassingTimeRef" type="TargetPassingTimeRefStructure" substitutionGroup="PassingTimeRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a TARGET PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="TargetPassingTimeRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a TARGET PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="PassingTimeRefStructure"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="ObservedPassingTimeIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an OBSERVED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassingTimeIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="ObservedPassingTimeRef" type="ObservedPassingTimeRefStructure" substitutionGroup="PassingTimeRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to an OBSERVED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="ObservedPassingTimeRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to an OBSERVED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="PassingTimeRefStructure"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="EstimatedPassingTimeIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of an ESTIMATED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassingTimeIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="EstimatedPassingTimeRef" type="EstimatedPassingTimeRefStructure" substitutionGroup="PassingTimeRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to an ESTIMATED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="EstimatedPassingTimeRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to an ESTIMATED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="PassingTimeRefStructure"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="TimetabledPassingTimeIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for identifier of a TIMETABLED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="PassingTimeIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="TimetabledPassingTimeRef" type="TimetabledPassingTimeRefStructure" substitutionGroup="PassingTimeRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a TIMETABLED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="TimetabledPassingTimeRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a reference to a TIMETABLED PASSING TIME.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="PassingTimeRefStructure"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+</xsd:schema>

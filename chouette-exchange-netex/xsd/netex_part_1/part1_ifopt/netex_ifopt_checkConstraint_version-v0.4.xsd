@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.netex.org.uk/netex" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.3" id="netex_ifopt_checkConstraint_version">
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0 CEN TC278 WG3 SG6 Editor Nicholas Knowles, Kizoom. mailto:schemer@netex.org.uk</Creator>
+				<Date>
+					<Created>2010-09-04</Created>
+				</Date>
+				<Date>
+					<Modified>2011-02-05</Modified>
+				</Date>
+				<Date>
+					<Modified>2011-12-16</Modified>
+				</Date>
+				<Description>
+					<p>NeTEx - Network Exchange. This subschema defines common Check types.</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/ifopt}ifopt_accessibility-v0.3.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom Software Ltd, 16 High Holborn, London WC1V 6BX</Publisher>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright 2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the SIRI standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and Road transport
+</Category>
+					<Project>CEN TC278 WG3 SG6</Project>
+				</Subject>
+				<Title>NeTEx Network Exchange - CHECK CONSTRAINT types.</Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+		<xsd:documentation>CHECK CONSTRAINT types for IFOPT Fixed Objects in Public Transport.</xsd:documentation>
+	</xsd:annotation>
+	<xsd:include schemaLocation="netex_ifopt_checkConstraint_support-v0.4.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_responsibility/netex_validityCondition_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_availabilityCondition_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_travelRightsValues_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_facility_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_equipment_support-v0.1.xsd"/>
+	<!-- ===ENTIITY IN VERSION IN FRAME====(Used in SITE FRAME)=================================================== -->
+	<xsd:group name="CheckConstraintInFrameGroup">
+		<xsd:annotation>
+			<xsd:documentation>CHECK CONSTRAINT elements in frame.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="checkConstraints" type="checkConstraintInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>CHECK CONSTRAINTs in frame.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="checkConstraintDelays" type="checkConstraintDelaysInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>CHECK CONSTRAINTs DELAYs in frame.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="checkConstraintInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of CHECK CONSTRAINTs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="CheckConstraint" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="checkConstraintDelaysInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of CHECK CONSTRAINT DELAYs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="CheckConstraintDelay" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--======CHECK CONSTRAINT ============================================================================-->
+	<xsd:complexType name="checkConstraints_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of CHECK CONSTRAINTs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="CheckConstraintRef"/>
+					<xsd:element ref="CheckConstraint" maxOccurs="1">
+						<xsd:annotation>
+							<xsd:documentation>Process associated with a Place, typically giving rise to a delay to the traveller.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="CheckConstraint" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>Characteristics of a SITE COMPONENT representing a process, such as check-in, security
+screening, ticket control or immigration, that may potentially incur a time penalty that should be allowed for when journey planning. Used to mark PATH LINKs to determine transit routes through interchanges.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="CheckConstraint_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="CheckConstraintGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="CheckConstraintIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="CheckConstraint_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a CHECK CONSTRAINT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="CheckConstraintGroup"/>
+				</xsd:sequence>
+				<xsd:attribute name="order" type="xsd:positiveInteger">
+					<xsd:annotation>
+						<xsd:documentation>Relative precedence over other CHECK CONSTRAINTs with overlapping validity.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="CheckConstraintGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements of a CHECK CONSTRAINT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Order" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Relative precedence over other CHECK CONSTRAINTs with overlapping validity.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name of CHECK CONSTRAINTs.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="PlaceRef" minOccurs="0"/>
+			<xsd:element name="validityConditions" type="validityConditions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>VALIDITY CONDITIONs controlling availability of element.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="CheckConstraintPropertiesGroup"/>
+			<xsd:group ref="CheckConstraintRelationGroup"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="CheckConstraintPropertiesGroup">
+		<xsd:annotation>
+			<xsd:documentation>Property Elements of a CHECK CONSTRAINT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="CheckDirection" type="CheckDirectionEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>For CHECK CONSTRAINTs associated with PATH LINKs, the direction in which the check applies. Forwards = from/to, backwards = to/from. For Check constraints associated with an external ENTRANCE, forwards is into the SITE, backwards is out of the SITE.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CheckProcess" type="CheckProcessTypeEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of process that may occur at CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CheckService" type="CheckServiceEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Nature of service that may occur at CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AccessFeatureType" type="AccessFeatureEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of physical feature that may slow use of CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Congestion" type="CongestionEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Type of crowding that may slow use of CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="CheckConstraintRelationGroup">
+		<xsd:annotation>
+			<xsd:documentation>Reference Elements of a CHECK CONSTRAINT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ClassOfUseRef" minOccurs="0"/>
+			<xsd:element ref="TypeOfEquipmentRef" minOccurs="0"/>
+			<xsd:element ref="FacilityRef" minOccurs="0"/>
+			<xsd:element ref="EquipmentRef" minOccurs="0"/>
+			<xsd:element name="delays" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Delays for CHECK CONSTRAINT .process.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="checkConstraintDelays_RelStructure"/>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="throughput" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Throughput for CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="checkConstraintThroughputs_RelStructure"/>
+					</xsd:complexContent>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!--======Point=======================================================================================-->
+	<xsd:complexType name="checkConstraintDelays_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>A collection of one or more CHECK CONSTRAINTs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="CheckConstraintDelay" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="CheckConstraintDelay" substitutionGroup="VersionedChild">
+		<xsd:annotation>
+			<xsd:documentation>Time penalty associated with a CHECK CONSTRAINT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="CheckConstraintDelay_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="CheckConstraintDelayGroup">
+								<xsd:annotation>
+									<xsd:documentation>Group of delays associated with a SITE COMPONENT.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:group>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="CheckConstraintDelayIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="CheckConstraintDelay_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a CHECK CONSTRAINT DELAY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="CheckConstraintDelayGroup">
+						<xsd:annotation>
+							<xsd:documentation>Group of delays associated with a SITE COMPONENT.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:group>
+				</xsd:sequence>
+				<xsd:attribute name="order" type="xsd:positiveInteger">
+					<xsd:annotation>
+						<xsd:documentation>Relative precedence to give to CHECK CONSTRAINT DELAY. if there are several that are valid at a given time.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="CheckConstraintDelayGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements of a CHECK CONSTRAINT DELAY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Name of DELAY.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="CheckConstraintRef" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Reference to a CHECK CONSTRAINT. Can be omitted if given by context.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ClassOfUseRef" minOccurs="0"/>
+			<xsd:element name="validityConditions" type="validityConditions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>VALIDITY CONDITIONs controlling availability of CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MinimumLikelyDelay" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Minimum duration needed to pass through CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AverageDelay" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Average duration expected to pass through Check.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumLikelyDelay" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum duration expected to pass through CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!--======Point=======================================================================================-->
+	<xsd:complexType name="checkConstraintThroughputs_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>A collection of one or more CHECK CONSTRAINTs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="strictContainmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="CheckConstraintThroughput" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="CheckConstraintThroughput" substitutionGroup="VersionedChild">
+		<xsd:annotation>
+			<xsd:documentation>Throughput of a CHECK CONSTRAINT. the number of passengers who can pass through it.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="CheckConstraintThroughput_VersionedChildStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="VersionedChildGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="CheckConstraintThroughputGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="CheckConstraintThroughPutIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="CheckConstraintThroughput_VersionedChildStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a CHECK CONSTRAINT THROUGHPUT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="VersionedChildStructure">
+				<xsd:sequence>
+					<xsd:group ref="CheckConstraintThroughputGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="CheckConstraintThroughputGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements of a CHECK CONSTRAINT THROUGHPUT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="CheckConstraintRef" minOccurs="0"/>
+			<xsd:element name="validityConditions" type="validityConditions_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>VALIDITY CONDITIONs controlling applicability of CHECK CONSTRAINT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Period" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Interval for measurement.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaximumPassengers" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum number of passengers.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AveragePassengers" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Average number of passengers.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="WheelchairPassengers" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum number of wheelchair passengers.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!--======Point=======================================================================================-->
+</xsd:schema>

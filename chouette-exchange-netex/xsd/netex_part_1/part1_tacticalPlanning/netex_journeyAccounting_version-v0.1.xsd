@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_journeyAccounting_version">
+	<xsd:include schemaLocation="netex_journeyAccounting_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_utility/netex_location_types-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_responsibility/netex_responsibility_version-v0.4.xsd"/>
+	<!-- ======================================================================= -->
+	<xsd:group name="JourneyAccountingInFrameGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a VEHICLE TYPEs in frame.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="journeyAccountings" type="journeyAccountingsInFrame_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>VEHICLE TYPEs in frame.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="journeyAccountingsInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of VEHICLE TYPEs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:sequence>
+					<xsd:element ref="JourneyAccounting" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="journeyAccountings_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>JOURNEY ACCOUNTING associated with entity.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="JourneyAccountingRef"/>
+					<xsd:element ref="JourneyAccounting"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="JourneyAccounting" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>Parameters characterizing VEHICLE JOURNEYs or SPECIAL SERVICEs used for accounting purposes in particular in contracts between ORGANISATIONs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="JourneyAccounting_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="JourneyAccountingGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="JourneyAccountingIdType" use="optional"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="JourneyAccounting_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for ACCOUNTING.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="JourneyAccountingGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="JourneyAccountingGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for a JOURNEY ACCOUNTING.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of ACCOUNTING or contract.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AccountedObjectRef" type="OrganisationRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Object for which this accounts.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OrganisationRef" type="OrganisationRefStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>ORGANISATION contracting service.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="SupplyContractRef" minOccurs="0"/>
+			<xsd:element name="AccountingCode" type="xsd:normalizedString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Accounting code to assign to Journey.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AccountingType" type="JourneyAccountingEnumeration" default="contract" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Nature of coverage contract, subsidy. Default is contract.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Partial" type="xsd:boolean" default="false" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Whether all or part of the journey is covered.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Distance" type="DistanceType" default="1" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Distance for accounting purposes. If omitted use Journey distance.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Duration" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Specifies the paid duration for this service journey. Might differ from the run time.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+</xsd:schema>

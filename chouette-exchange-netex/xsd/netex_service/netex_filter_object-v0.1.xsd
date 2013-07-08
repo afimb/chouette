@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" id="netex_filter_object">
+	<!-- ===Dependencies========================================================= -->
+	<xsd:include schemaLocation="../netex_framework/netex_utility/netex_utility_types-v0.1.xsd"/>
+	<xsd:include schemaLocation="../netex_framework/netex_utility/netex_utility_xml-v0.1.xsd"/>
+	<xsd:include schemaLocation="../netex_framework/netex_utility/netex_utility_time-v0.1.xsd"/>
+	<xsd:include schemaLocation="../netex_framework/netex_utility/netex_location_types-v0.1.xsd"/>
+	<xsd:include schemaLocation="..\netex_framework\netex_responsibility\netex_dataSource_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../netex_framework/netex_reusableComponents/netex_availabilityCondition_version-v0.1.xsd"/>
+	<!-- ===eGIF/GovTalk Documentation ======================================= -->
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Contributor>NeTEx Project.  for  XML working Group. See main package headers </Contributor>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0   NeTEx. Nick Knowles Kizoom mailto:schemer@/www.netex.org.uk/</Creator>
+				<Date>
+					<Created>2010-09-04</Created>
+					<!-- Documentation headers added -->
+				</Date>
+				<Description>
+					<p> NeTEx  Xml is an XML representation of the Transmodel Public Transport Data model that can be used to exchange data objects between  for  databases and other services.</p>. 
+					<p>This subschema describes the  common properties of abstract   filter. It can be used to specify which Instances of objects  are to be returned in concrete instances
+					<ul>
+							<li>Network Filter</li>
+							<li>Device Filter</li>
+							<li>Traffic Event Filter</li>
+							<li>Profile Filter</li>
+							<li>Prediction Filter</li>
+						</ul>
+					</p>
+					<p>Each Filter specifies selection criteria for returning objects.</p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0/ for svc/} for _filter_object-v1.0.xsd</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom Software Ltd, 16 High Holborn, London WC1V 6BX </Publisher>
+				<Relation>
+					<Requires>http://www.netex.org.uk/schemas/1.0/ for / for _device-v1.0.xsd</Requires>
+					<Requires>http://www.netex.org.uk/schemas/1.0/ for / for _utility_time-v1.0.xsd</Requires>
+				</Relation>
+				<Rights>Unclassified
+ <Copyright>CEN, Crown Copyright  2009-2011</Copyright>
+				</Rights>
+				<Source>
+					<p>Derived from the  NeTEx specification and SIRI standards.
+							<ul>
+							<li> NeTEx Data Object specification: ts004.003annexdapr07.xls</li>
+							<li> NeTEx  UML specification: ts004-004a-annexd-sep08.pdf  - </li>
+						</ul>
+					</p>
+				</Source>
+				<Status>Version 1.0 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Public transport, Bus services, Coach services, Bus stops and stations,
+Business and industry, Transport, 
+Roads and Road transport
+</Category>
+					<Project>NeTEx  for Xml Interface</Project>
+				</Subject>
+				<Title> for  XML schema.   Subschema  describing  the   for   Abstract Object Filter</Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+	</xsd:annotation>
+	<!-- ======================================================================= -->
+	<!-- ====Filter e=============================================== -->
+	<xsd:complexType name="AbstractRequestFilterStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for abstract Request filter.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Description" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of what filter does.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AbstractRequestTopicsStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a Filter Topic.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:group ref="AbstractRequestTopicGroup"/>
+	</xsd:complexType>
+	<xsd:group name="AbstractRequestTopicGroup">
+		<xsd:annotation>
+			<xsd:documentation>Parameters that specify the content to be returned. Values are ANDed with the other topic values.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="sources" type="dataSources_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Data Sources to include. If more than one source is specified it is logically ORed with the others.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:complexType name="AbstractRequestPolicyStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a Filter Policy.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="AbstractRequestPolicyGroup"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:group name="AbstractRequestPolicyGroup">
+		<xsd:annotation>
+			<xsd:documentation>Parameters that affect the request processing. Mostly act to reduce the number of stops returned.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="MaximumNumberOfElements" type="xsd:integer" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Maximum number of objects to include in response. If absent, include all instances.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="IncludeDeleted" type="xsd:boolean" default="false" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether to include  in response. elements flagged as deleted. By default this will be false.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Urgency" type="xsd:duration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Allows requestor to indicate a relative urgency of request. A longer period can be specified for non urgent requests, e.g. to get  historic data. If not specified assume best possible response desired, preferably immediate.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MustHaveBy" type="xsd:dateTime" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Allows requestor to indicate that if data cannot be supplied by a given time it will not be useful. Can be used to prioritize data on systems working at full load.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Language" type="xsd:language" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Preferred language for text elements in response.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:element name="AbstractRequestFilter" type="AbstractRequestFilterStructure" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Abstract Request Filter.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- =================================================================== -->
+	<xsd:complexType name="ObjectRequestTopicsStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a  Data Object Filter Topic.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="AbstractRequestTopicsStructure">
+				<xsd:group ref="ObjectRequestTopicGroup"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="ObjectRequestTopicGroup">
+		<xsd:annotation>
+			<xsd:documentation>Parameters that specify the content to be returned. Values are ANDed with the other topic values.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="TopicTemporalScopeGroup">
+				<xsd:annotation>
+					<xsd:documentation>Parameters that specify the temporal scope of the request.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:group>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="TopicGeographicalScopeGroup">
+		<xsd:annotation>
+			<xsd:documentation>Parameters that specify the content to be returned. Values are ANDed with the other topic values.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="BoundingBox" type="BoundingBoxStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Area containing objects to be returned.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="TopicTemporalScopeGroup">
+		<xsd:annotation>
+			<xsd:documentation>Parameters that specify the content to be returned. Values are ANDed with the other topic values.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element name="Current" type="EmptyType">
+				<xsd:annotation>
+					<xsd:documentation>Return just the latest current values from the producer at the time the response is created.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ChangedSince" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>Return  the  values that have changed since the specified point in time, including current and superseded values. Values that are no longer current will be flagged with the date they were superseded (using the various cleared / deleted /historic dates on different element types).</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CurrentAt" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>Return just the  values that were  current at the specified point in time.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HistoricBetween" type="ClosedTimestampRangeStructure">
+				<xsd:annotation>
+					<xsd:documentation>Return all values  created or updated  between the specified period, including current and historic values.  Values that are no longer current will be flagged with the date they were superseded.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="selectionValidityConditions">
+				<xsd:annotation>
+					<xsd:documentation>Validity conditions to apply when selecting data. Applies to frame.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element ref="ValidityCondition_"/>
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:group>
+	<!-- ====Subscription ============================================================ -->
+	<xsd:complexType name="ObjectFilterByValue">
+		<xsd:annotation>
+			<xsd:documentation>Type for filter by value.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:group ref="TopicGeographicalScopeGroup"/>
+			<xsd:element name="objectReferences" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Specifies object to return Use REF with specific value to identify an object.  Use REF with blank value to speci9fe all object of the object type.</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element ref="VersionOfObjectRef"/>
+						<xsd:element ref="ClassInContextRef"/>
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ====Subscription ============================================================ -->
+	<xsd:element name="AbstractSubscriptionFilter" type="AbstractSubscriptionFilterStructure" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Abstract Subscription filter.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="AbstractSubscriptionFilterStructure" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Type for abstract subscription filter.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Description" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of what filter does.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:normalizedString" use="optional" default="1.0"/>
+	</xsd:complexType>
+	<!-- ======================================================================= -->
+	<xsd:complexType name="AbstractSubscriptionPolicyStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a Subscription Filter Policy.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:group ref="AbstractSubscriptionPolicyGroup"/>
+	</xsd:complexType>
+	<xsd:group name="AbstractSubscriptionPolicyGroup">
+		<xsd:annotation>
+			<xsd:documentation>Parameters that affect the subscription publishing and notification processing of subscriptions.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="IncrementalUpdates" type="xsd:boolean" default="false" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether the producer should return the complete set of current data, with every response or only provide updates since the last delivery, i.e. additions, modifications and deletions.
+If false each subscription response will contain the full information as specified in this request.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ======================================================================= -->
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="OutputDetailListOfEnumerations">
+		<xsd:annotation>
+			<xsd:documentation>Detail Levels for Network Request.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:list itemType="OutputDetailEnumeration"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="OutputDetailEnumeration">
+		<xsd:annotation>
+			<xsd:documentation>Detail Levels for Network Request.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:NMTOKEN">
+			<xsd:enumeration value="All"/>
+			<xsd:enumeration value="Basic"/>
+			<xsd:enumeration value="NoGeometry"/>
+			<xsd:enumeration value="Xref"/>
+			<xsd:enumeration value="AllWithXref"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

@@ -263,8 +263,10 @@
     #foreach( $stopPoint in $route.stopPoints )     
     <PassengerStopAssignment version="any" id="${stopPoint.objectIdPrefix()}:PassengerStopAssignment:${stopPoint.objectIdSuffix()}">
       <ScheduledStopPointRef version="1" ref="$modelTranslator.netexId( $stopPoint)"/>
-      #if ($stopPoint.containedInStopArea) 
+      #if ($stopPoint.containedInStopArea && $stopPoint.containedInStopArea.parent) 
       <StopPlaceRef version="$stopPoint.containedInStopArea.parent.objectVersion" ref="$modelTranslator.netexId( $stopPoint.containedInStopArea.parent)"/>      
+      #end 
+      #if ($stopPoint.containedInStopArea) 
       <QuayRef version="$stopPoint.containedInStopArea.objectVersion" ref="$modelTranslator.netexId( $stopPoint.containedInStopArea)"/>
       #end 
     </PassengerStopAssignment>    
@@ -285,6 +287,13 @@
       #if ( $routingConstraint.registrationNumber)
       <PrivateCode>$!esc.xml( $routingConstraint.registrationNumber)</PrivateCode> 
       #end
+      #if ( $routingConstraint.routingConstraintAreas && $routingConstraint.routingConstraintAreas.size() > 0)
+      <members>
+          #foreach( $routingConstraintArea in $routingConstraint.routingConstraintAreas )     
+          <ScheduledStopPointRef version="1" ref="$modelTranslator.netexId( $routingConstraintArea)"/>
+          #end
+      </members>
+      #end
       #if( ( $routingConstraint.latitude && $routingConstraint.longitude) || ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType))
       <Centroid>
         <Location id="${stopPlace.objectIdPrefix()}:Location:${stopPlace.objectIdSuffix()}">
@@ -299,15 +308,6 @@
       </Centroid>
       #end
       <ZoneUse>cannotBoardAndAlightInSameZone</ZoneUse>
-      #if ( $routingConstraint.routingConstraintAreas && $routingConstraint.routingConstraintAreas.size() > 0)
-      <pointsInPattern>
-          #foreach( $routingConstraintArea in $routingConstraint.routingConstraintAreas )     
-          <StopPointInJourneyPattern version="1" id="${routingConstraintArea.objectIdPrefix()}:StopPointInJourneyPattern:${routingConstraint.objectIdSuffix()}-${routingConstraintArea.objectIdSuffix()}">
-            <ScheduledStopPointRef version="1" ref="$modelTranslator.netexId( $routingConstraintArea)"/>
-          </StopPointInJourneyPattern>
-          #end
-      </pointsInPattern>
-      #end
       #if ( $routingConstraint.routingConstraintLines && $routingConstraint.routingConstraintLines.size() > 0)
       <lines>
           #foreach( $routingConstraintLine in $routingConstraint.routingConstraintLines )     

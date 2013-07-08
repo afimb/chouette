@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_salesDistribution_version">
+	<xsd:include schemaLocation="../../netex_framework/netex_responsibility/netex_typeOfValue_version-v0.1.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_alternativeName_version-v0.4.xsd"/>
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_country_support-v0.2.xsd"/>
+	<xsd:include schemaLocation="netex_salesPackage_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_salesDistribution_support-v0.1.xsd"/>
+	<xsd:include schemaLocation="netex_travelDocument_support-v0.1.xsd"/>
+	<!-- ======================================================================= -->
+	<!-- ===ENTIITY IN VERSION IN FRAME====Used in SERVICE FRAME)=================================================== -->
+	<xsd:complexType name="distributionChannelsInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of DISTRIBUTION CHANNEL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="frameContainmentStructure">
+				<xsd:sequence>
+					<xsd:element ref="DistributionChannel" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="fulfillmentMethodsInFrame_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for containment in frame of FULFILMENT METHOD.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="frameContainmentStructure">
+				<xsd:sequence>
+					<xsd:element ref="FulfillmentMethod" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!-- ====SALES PACKAGE=================================================== -->
+	<xsd:element name="DistributionChannel" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>A type of outlet for selling a product.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="DistributionChannel_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="TypeOfValueGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DistributionChannelGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="DistributionChannelIdType" use="optional">
+						<xsd:annotation>
+							<xsd:documentation>Identifier of ENTITY.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="DistributionChannel_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for DISTRIBUTION CHANNEL.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="TypeOfValue_VersionStructure">
+				<xsd:sequence>
+					<xsd:group ref="DistributionChannelGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="DistributionChannelGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for DISTRIBUTION CHANNEL</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="alternativeNames" type="alternativeNames_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>SALES TRANSACTIONs in DISTRIBUTION CHANNEL.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="IsObligatory" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether use of the channel is obligatory.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====SALES PACKAGE ELEMENT.============================================= -->
+	<xsd:complexType name="fulfillmentMethods_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of FULFILLMENT METHODs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="FulfillmentMethodRef"/>
+					<xsd:element ref="FulfillmentMethod">
+						<xsd:annotation>
+							<xsd:documentation>A sequence or set of CONTROLLABLE ELEMENTs to which rules for limitation of access rights and calculation of prices (SALES PACKAGE) are applied.
+</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="FulfillmentMethod" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>The means by which the ticket is delivered to the Customer. e.g. online, collection, etc.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="FulfillmentMethod_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="FulfillmentMethodGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="FulfillmentMethodIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="FulfillmentMethod_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for FULFILLMENT METHOD.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="FulfillmentMethodGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="FulfillmentMethodGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for FULFILLMENT METHOD</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of FULFILLMENT METHOD.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FulfilmentMethodType" type="FulfillmentMethodTypeEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Classifcation of fulfillment menthod</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RequiresCard" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether use of of the method requires a credit or debit card.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RequiresBookingReference" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether use of of the method requires  a booking reference.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="typesOfTravelDocument" type="TypeOfTravelDocumentRefs_RelStructure" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>TYPES OF YTRAVEL DOCUMENT associated with method.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<!-- ====SALES PACKAGE=================================================== -->
+	<xsd:complexType name="distributionConditions_RelStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for a list of DISTRIBUTION CONDITIONs.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="containmentAggregationStructure">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element ref="DistributionConditionRef"/>
+					<xsd:element ref="DistributionCondition"/>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="DistributionCondition" abstract="false" substitutionGroup="DataManagedObject">
+		<xsd:annotation>
+			<xsd:documentation>An assignment  of the  COUNTRY and/or  DISTRIBUTION CHANNEL through which a product may or may not be distributed.
+
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:restriction base="DistributionCondition_VersionStructure">
+					<xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DataManagedObjectGroup"/>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:group ref="DistributionConditionGroup"/>
+						</xsd:sequence>
+					</xsd:sequence>
+					<xsd:attribute name="id" type="DistributionConditionIdType"/>
+				</xsd:restriction>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="DistributionCondition_VersionStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for DISTRIBUTION CONDITION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataManagedObjectStructure">
+				<xsd:sequence>
+					<xsd:group ref="DistributionConditionGroup"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:group name="DistributionConditionGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for DISTRIBUTION CONDITION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="MultilingualString" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Description of DISTRIBUTION CONDITION.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="SalesPackageRef" minOccurs="0"/>
+			<xsd:element ref="GroupOfSalesPackagesRef" minOccurs="0"/>
+			<xsd:element name="DistributionRights" type="DistributionRightsEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>RIghts allowed by channel</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:group ref="DistributionThroughGroup"/>
+			<xsd:group ref="DistributionByGroup">
+				<xsd:annotation>
+					<xsd:documentation>Elements for Dwho may desitibute</xsd:documentation>
+				</xsd:annotation>
+			</xsd:group>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="DistributionThroughGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for DISTRIBUTION CONDITION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="CountryRef" minOccurs="0"/>
+			<xsd:element name="AllowedInCountry" type="xsd:boolean" default="true" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether distribution is allowed or forbidden for given country</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="DistributionChannelRef" minOccurs="0"/>
+			<xsd:element name="DistributionChannelType" type="DistributionChannelTypeEnumeration" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Distrinution Channel</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AllowedInChannel" type="xsd:boolean" default="true" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whether distribution is allowed or forbidden for given channel</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:group name="DistributionByGroup">
+		<xsd:annotation>
+			<xsd:documentation>Elements for DISTRIBUTION CONDITION</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="InitialCarrier" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Wehther initial carrer has rights</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TransitCarrier" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whther intremediate transit carrier has rights.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FinalCarrier" type="xsd:boolean" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Whetehr final carrier has rights</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="OrganisationRef" minOccurs="0"/>
+			<xsd:element ref="ResponsibilitySetRef" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+</xsd:schema>

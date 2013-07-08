@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Nicholas Knowles Knowles (Kizoom Ltd) -->
+<xsd:schema xmlns="http://www.netex.org.uk/netex" xmlns:siri="http://www.siri.org.uk/siri" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.netex.org.uk/netex" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1" id="netex_networkRestriction_version">
+	<xsd:include schemaLocation="../../netex_framework/netex_reusableComponents/netex_vehicleType_version-v0.1.xsd"/>
+	<!-- ==== Restriction====================================================== -->
+	<xsd:simpleType name="NetworkRestrictionIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Identifier of a NETWORK RESTRICTION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="ObjectIdType"/>
+	</xsd:simpleType>
+	<xsd:element name="NetworkRestrictionRef" type="VersionOfObjectRefStructure" substitutionGroup="VersionOfObjectRef">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a NETWORK RESTRICTION.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NetworkRestrictionRefStructure">
+		<xsd:annotation>
+			<xsd:documentation>Type for Reference to a NETWORK RESTRICTION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:restriction base="VersionOfObjectRefStructure">
+					<xsd:attribute name="ref" type="NetworkRestrictionIdType" use="required">
+						<xsd:annotation>
+							<xsd:documentation>Identifier of a NETWORK RESTRICTION</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:restriction>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ====Point Restriction====================================================== -->
+	<xsd:simpleType name="VehicleTypeAtPointIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Identifier of a VEHICLE TYPE AT POINT.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="NetworkRestrictionIdType"/>
+	</xsd:simpleType>
+	<!-- ====Link Restrictions===================================================== -->
+	<xsd:simpleType name="InfrastructureLinkRestrictionIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Identifier of an INFRASTRUCTURE LINK RESTRICTION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="ObjectIdType"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="RestrictedManoeuvreIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Identifier of a MANOEUVRE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="InfrastructureLinkRestrictionIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="MeetingRestrictionIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Identifier of a  MEETING RESTRICTION.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="InfrastructureLinkRestrictionIdType"/>
+	</xsd:simpleType>
+	<!-- ======================================================================= -->
+	<xsd:simpleType name="OvertakingPossibilityIdType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Identifier of a  OVERTAKING POSSIBILITY.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="NetworkRestrictionIdType"/>
+	</xsd:simpleType>
+	<xsd:annotation>
+		<xsd:appinfo>
+			<Metadata xmlns="http://www.govtalk.gov.uk/CM/gms-xs">
+				<Aggregation>main schema</Aggregation>
+				<Audience>e-service developers</Audience>
+				<Contributor>Christophe Duquesne</Contributor>
+				<Contributor>Nick Knowles</Contributor>
+				<Coverage>Europe</Coverage>
+				<Creator>Drafted for version 1.0  CEN TC278 WG3 SG7 Editor Nicholas Knowles, Kizoom. mailto:schemer@siri.org.uk</Creator>
+				<Date>
+					<Created>2008-07-04</Created>
+				</Date>
+				<Date>
+					<Modified>2008-07-05</Modified>
+					<!-- Name Space changes -->
+				</Date>
+				<Description>
+					<p>NeTEx is a European  pre standard for the exchange of Public Transport Timetables, including .</p>
+					<p>This sub-schema describes the Point of Interest model, based on prCEN IFOPT  </p>
+				</Description>
+				<Format>
+					<MediaType>text/xml</MediaType>
+					<Syntax>http://www.w3.org/2001/XMLSchema</Syntax>
+					<Description>XML schema, W3C Recommendation 2001</Description>
+				</Format>
+				<Identifier>{http://www.netex.org.uk/schemas/1.0}netex_networkRestriction_version</Identifier>
+				<Language>[ISO 639-2/B] ENG</Language>
+				<Publisher>Kizoom, 109-123 Clifton Street, London EC4A 4LD </Publisher>
+				<Relation>
+					<Requires>http://www.netex.org.uk/schemas/1.0/xsd/netex_framework/netex_reusableComponents/netex_vehicleType_version-v0.1.xsd</Requires>
+				</Relation>
+				<Rights>Unclassified
+                            <Copyright>CEN, VDV, RTIG  2004,2005</Copyright>
+				</Rights>
+				<Source>
+					<ul>
+						<li>Derived from the VDV, RTIG XML and Trident standards.</li>
+					</ul>
+				</Source>
+				<Status>Version 0.1 Draft for approval</Status>
+				<Subject>
+					<Category>Arts, recreation and travel, Tourism, Travel (tourism), Transport,
+Air transport, Airports,
+Ports and maritime transport, Ferries (marine),
+Public transport, Bus services, Coach services, Bus stops and stations,
+Rail transport, Railway stations and track, Train services, Underground trains,
+Business and industry, Transport, Air transport , Ports and maritime transport, Public transport,
+Rail transport, Roads and road transport
+</Category>
+					<Project>CEN TC278 WG3 SG7</Project>
+				</Subject>
+				<Title>NeTEx Top Places.</Title>
+				<Type>Standard</Type>
+			</Metadata>
+		</xsd:appinfo>
+	</xsd:annotation>
+</xsd:schema>

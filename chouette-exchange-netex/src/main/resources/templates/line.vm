@@ -37,21 +37,7 @@ So the NeTEx File will probably be something like 50% bigger with the same level
   <!--- ======WHAT WAS REQUESTED ========== -->
   <PublicationRequest version="1.0">
     <RequestTimestamp>$date.get($dateFormat)</RequestTimestamp>
-    #if ( $line.company && $line.company.name)
-    <ParticipantRef>$modelTranslator.convertToNMTOKEN( $line.company.name)</ParticipantRef>
-    #end
-    <filters>
-      <FrameRequestFilter>
-        <Topics>
-          <Current/>
-          <CompositeFrameRef ref="${line.objectIdPrefix()}:Neptune:ServiceAndTimetableFrame:${line.objectIdSuffix()}"/>
-        </Topics>
-        <Policies>
-          <!-- NEPTUNE [local agreement:fixed] : a NEPTUNE Frame is without Geometry -->
-          <RequestDetail>NoGeometry</RequestDetail>
-        </Policies>
-      </FrameRequestFilter>
-    </filters>
+    <ParticipantRef>0</ParticipantRef>
   </PublicationRequest>
   <Description>Line export in Netex Format by Chouette systeme</Description>
   <!--   -->
