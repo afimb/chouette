@@ -5,10 +5,10 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourney;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
-import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, GtfsTrip> 
 {
@@ -17,7 +17,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
    @Setter private DbVehicleJourneyFactory factory;
 
    @Override
-   public VehicleJourney produce(GtfsTrip gtfsTrip,ReportItem report) 
+   public VehicleJourney produce(GtfsTrip gtfsTrip,Report report) 
    {
       VehicleJourney vehicleJourney = factory.getNewVehicleJourney();
 

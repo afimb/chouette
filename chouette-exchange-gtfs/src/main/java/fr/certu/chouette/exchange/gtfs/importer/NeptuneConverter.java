@@ -42,7 +42,6 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
-import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -55,7 +54,9 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * convert GTFS raw data structure to Chouette internal one
@@ -142,12 +143,11 @@ public class NeptuneConverter
 	 * @return a Chouette internal model nearly connected
 	 */
 	public ModelAssembler convert(boolean optimizeMemory, String prefix, String incrementalPrefix, GtfsData data, double maxDistanceForCommercialStop,
-			boolean ignoreLastWord, int ignoreEndCharacters, double maxDistanceForConnectionLink, boolean mergeRouteByShortName)
+			boolean ignoreLastWord, int ignoreEndCharacters, double maxDistanceForConnectionLink, boolean mergeRouteByShortName, Report report)
 	{
 		DbVehicleJourneyFactory vjFactory = new DbVehicleJourneyFactory(prefix,optimizeMemory);
 		vehicleJourneyProducer.setFactory(vjFactory);
 		ModelAssembler assembler = new ModelAssembler();
-		ReportItem report = null;
 		AbstractModelProducer.setPrefix(prefix);
 		AbstractModelProducer.setIncrementalPrefix(incrementalPrefix);
 
@@ -170,6 +170,7 @@ public class NeptuneConverter
 		List<Route> routes = new ArrayList<Route>();
 		Map<String, Line> mapLineByRouteName = new HashMap<String, Line>();
 		Map<String, Route> mapRouteByRouteId = new HashMap<String, Route>();
+
 		logger.info("process routes :" + data.getRoutes().size());
 		Map<String, Integer> mapRouteExtensionByRouteId = new HashMap<String, Integer>();
 
@@ -205,10 +206,6 @@ public class NeptuneConverter
 			routes.add(route1);
 			mapRouteExtensionByRouteId.put(route1.getObjectId(), Integer.valueOf(1));
 		}
-		// System.gc();
-		logger.debug("free memory = "+Runtime.getRuntime().freeMemory());
-		logger.debug("max memory = "+Runtime.getRuntime().maxMemory());
-		logger.debug("total memory = "+Runtime.getRuntime().totalMemory());
 		assembler.setLines(lines);
 		assembler.setRoutes(routes);
 
@@ -223,6 +220,8 @@ public class NeptuneConverter
 			StopArea area = stopAreaProducer.produce(gtfsStop, report);
 			if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
 			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"Stops.txt",gtfsStop.getFileLineNumber(),gtfsStop.getStopId());
+				report.addItem(item);
 				logger.error("duplicate stop id "+gtfsStop.getStopId());
 			}
 			else
@@ -238,6 +237,8 @@ public class NeptuneConverter
 				}
 				if (stopAreaOidSet.contains(area.getObjectId()))
 				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),area.getObjectId());
+					report.addItem(item);
 					logger.error("duplicate stop object id "+area.getObjectId());
 				}
 				else
@@ -255,11 +256,15 @@ public class NeptuneConverter
 				StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
 				if (parent == null)
 				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
+					report.addItem(item);
 					logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
 					bp.setParentObjectId(null);
 				}
 				else if (!parent.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
 				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
+					report.addItem(item);
 					logger.error("stop "+bp.getName()+" has wrong parent station type "+bp.getParentObjectId());
 					bp.setParentObjectId(null);
 				}
@@ -332,15 +337,14 @@ public class NeptuneConverter
 			if (count % 1000 == 0)
 			{
 				logger.debug("process "+count+" vehicleJourneys ...");
-				logger.debug("free memory = "+Runtime.getRuntime().freeMemory());
-				logger.debug("max memory = "+Runtime.getRuntime().maxMemory());
-				logger.debug("total memory = "+Runtime.getRuntime().totalMemory());
 			}
 
 			VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(gtfsTrip, report);
 			Timetable timetable = mapTimetableByServiceId.get(gtfsTrip.getServiceId());
 			if (timetable == null) 
 			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"trips.txt",gtfsTrip.getFileLineNumber(),"service_id",gtfsTrip.getServiceId());
+				report.addItem(item);
 				logger.warn("service "+gtfsTrip.getServiceId()+" not found for trip "+gtfsTrip.getTripId());
 			}
 			else
@@ -378,7 +382,7 @@ public class NeptuneConverter
 						+ "a" + route.getJourneyPatterns().size());
 				// compare stops
 				// logger.debug("affect journeypattern " + journeyPattern.getObjectId() + " to route " + route.getObjectId());
-				List<StopPoint> jpStopPoints = buildStopPoint(route.getObjectId(), stopTimesOfATrip, mapStopAreasByStopId);
+				List<StopPoint> jpStopPoints = buildStopPoint(route.getObjectId(), stopTimesOfATrip, mapStopAreasByStopId,report);
 				route.setStopPoints(jpStopPoints);
 				stopPoints.addAll(jpStopPoints);
 				for (int i = 0; i < jpStopPoints.size(); i++)
@@ -400,22 +404,31 @@ public class NeptuneConverter
 			journeyPattern.addVehicleJourney(vehicleJourney);
 			// vehicleJourneyAtStop
 			int stRank = 1;
+			boolean validVehicleJourney=true;
 			for (GtfsStopTime gtfsStopTime : stopTimesOfATrip)
 			{
 				VehicleJourneyAtStop vjas = vehicleJourneyAtStopProducer.produce(gtfsStopTime, report);
-				vjas.setVehicleJourney(vehicleJourney);
-				vehicleJourney.addVehicleJourneyAtStop(vjas);
 				String stopKey = journeyKey + "a" + stRank;
 				vjas.setOrder(stRank);
 				StopPoint spor = mapStopPointbyJourneyPatternRank.get(stopKey);
 				if (spor == null)
 				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"stop_times.txt",gtfsStopTime.getFileLineNumber(),"stop_id",gtfsStopTime.getStopId());
+					report.addItem(item);
 					logger.error("StopPoint " + stopKey + " not found");
+					validVehicleJourney = false;
+					break;
 				}
 				vjas.setStopPoint(spor);
+				vjas.setVehicleJourney(vehicleJourney);
+				vehicleJourney.addVehicleJourneyAtStop(vjas);
 				stRank++;
 			}
 			stopTimesOfATrip.clear();
+			if (!validVehicleJourney) 
+			{
+				continue;
+			}
 			// apply frequencies
 			for (GtfsFrequency frequency : data.getFrequencies().getAllFromParent(gtfsTrip.getTripId()))
 			{
@@ -435,17 +448,16 @@ public class NeptuneConverter
 				}
 				catch (Exception e)
 				{
+					// TODO add report
 					logger.error("cannot apply frequency ", e);
 				}
 			}
 
 			vjFactory.flush(vehicleJourney);
-			// System.gc();
 		}
 		logger.debug("process "+count+" vehicleJourneys ...");
 
 		// free some unused maps 
-		// mapStopTimesByTrip.clear();
 		data.getTrips().clear();
 		data.getStopTimes().clear();
 		vjFactory.flush();
@@ -515,6 +527,16 @@ public class NeptuneConverter
 			link.setEndOfLink(mapStopAreasByStopId.get(link.getEndOfLinkId()));
 			if (link.getStartOfLink() == null || link.getEndOfLink() == null)
 			{
+				if (link.getStartOfLink() == null)
+				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"transfers.txt",transfer.getFileLineNumber(),"from_stop_id",transfer.getFromStopId());
+					report.addItem(item);
+				}
+				if (link.getEndOfLink() == null)
+				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"transfers.txt",transfer.getFileLineNumber(),"to_stop_id",transfer.getToStopId());
+					report.addItem(item);
+				}
 				logger.error("line "+transfer.getFileLineNumber()+" invalid transfer : form or to stop unknown");
 				continue;
 			}
@@ -548,28 +570,6 @@ public class NeptuneConverter
 		return assembler;
 	}
 
-	/**
-	 * compare VehicleJourneys on vehicleJourneyAtStops departure and arrival
-	 * times
-	 * 
-	 * @param vj1
-	 * @param vj2
-	 * @return
-	 */
-	//   private boolean compareTimes2(VehicleJourney vj1, VehicleJourney vj2)
-	//   {
-	//      List<VehicleJourneyAtStop> vjass1 = vj1.getVehicleJourneyAtStops();
-	//      List<VehicleJourneyAtStop> vjass2 = vj2.getVehicleJourneyAtStops();
-	//
-	//      for (int i = 0; i < vjass1.size(); i++)
-	//      {
-	//         if (vjass1.get(i).getArrivalTime() != vjass2.get(i).getArrivalTime())
-	//            return false;
-	//         if (vjass1.get(i).getDepartureTime() != vjass2.get(i).getDepartureTime())
-	//            return false;
-	//      }
-	//      return true;
-	//   }
 
 	/**
 	 * create a copy of a route
@@ -607,7 +607,7 @@ public class NeptuneConverter
 	 * @return
 	 */
 	private List<StopPoint> buildStopPoint(String routeId, List<GtfsStopTime> stopTimesOfATrip,
-			Map<String, StopArea> mapStopAreasByStopId)
+			Map<String, StopArea> mapStopAreasByStopId, Report report)
 			{
 		List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 		Set<String> stopPointKeys = new HashSet<String>();
@@ -621,14 +621,22 @@ public class NeptuneConverter
 			StopPoint spor = new StopPoint();
 			spor.setObjectId(stopKey);
 			StopArea area = mapStopAreasByStopId.get(gtfsStopTime.getStopId());
-			area.addContainedStopPoint(spor);
-			spor.setContainedInStopArea(area);
-			spor.setName(area.getName());
-			spor.setLatitude(area.getLatitude());
-			spor.setLongitude(area.getLongitude());
-			spor.setLongLatType(area.getLongLatType());
-			stopPoints.add(spor);
-
+			if (area == null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"stop_times.txt",gtfsStopTime.getFileLineNumber(),"stop_id",gtfsStopTime.getStopId());
+				report.addItem(item);
+				logger.error("StopArea for stopId" + gtfsStopTime.getStopId() + " not found");
+			}
+			else
+			{
+				area.addContainedStopPoint(spor);
+				spor.setContainedInStopArea(area);
+				spor.setName(area.getName());
+				spor.setLatitude(area.getLatitude());
+				spor.setLongitude(area.getLongitude());
+				spor.setLongLatType(area.getLongLatType());
+				stopPoints.add(spor);
+			}
 		}
 		return stopPoints;
 

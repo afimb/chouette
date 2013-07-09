@@ -7,13 +7,13 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, GtfsTransfer> 
 {
 	private static Logger logger = Logger.getLogger(ConnectionLinkProducer.class);
 	@Override
-	public ConnectionLink produce(GtfsTransfer gtfsTransfer,ReportItem report) 
+	public ConnectionLink produce(GtfsTransfer gtfsTransfer,Report report) 
 	{
 
 		ConnectionLink link = new ConnectionLink();

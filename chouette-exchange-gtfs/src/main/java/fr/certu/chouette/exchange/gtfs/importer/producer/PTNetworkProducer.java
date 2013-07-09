@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsNetwork;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, GtfsNetwork> 
 {
@@ -15,7 +15,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, GtfsNetw
 	 * @see fr.certu.chouette.exchange.gtfs.importer.producer.IModelProducer#produce(java.lang.String, fr.certu.chouette.exchange.gtfs.model.GtfsBean, fr.certu.chouette.plugin.report.ReportItem)
 	 */
 	@Override
-	public PTNetwork produce(GtfsNetwork gtfsNetwork,ReportItem report) 
+	public PTNetwork produce(GtfsNetwork gtfsNetwork,Report report) 
 	{
 		if (gtfsNetwork == null) return null;
 		PTNetwork ptNetwork = new PTNetwork();

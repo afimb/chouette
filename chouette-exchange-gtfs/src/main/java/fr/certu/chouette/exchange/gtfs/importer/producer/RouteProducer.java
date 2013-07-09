@@ -4,12 +4,12 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class RouteProducer extends AbstractModelProducer<Route, GtfsRoute> 
 {
 	private static Logger logger = Logger.getLogger(RouteProducer.class);
-	public Route produce(GtfsRoute gtfsRoute,ReportItem report) 
+	public Route produce(GtfsRoute gtfsRoute,Report report) 
 	{
 		Route route = new Route();
 		

@@ -13,9 +13,6 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -28,6 +25,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
@@ -35,7 +33,6 @@ import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
  */
 public class ModelAssembler 
 {
-	private static Logger logger = Logger.getLogger(ModelAssembler.class);
 
 	@Getter @Setter private List<Line> lines;
 	@Getter @Setter private List<Route> routes;
@@ -50,6 +47,9 @@ public class ModelAssembler
 
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
+
+	@SuppressWarnings("unused")
+	private Report report;
 	//	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
 	//	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
 	//	private Map<String, JourneyPattern> journeyPatternsDictionary = new HashMap<String, JourneyPattern>();
@@ -58,8 +58,9 @@ public class ModelAssembler
 	//	private Map<String, StopArea> stopAreasDictionary = new HashMap<String, StopArea>();
 	//	private Map<String, Timetable> timetablesDictionary = new HashMap<String, Timetable>();
 
-	public void connect()
+	public void connect(Report report)
 	{
+		this.report = report;
 		populateDictionaries();
 		connectLines();
 		connectRoutes();

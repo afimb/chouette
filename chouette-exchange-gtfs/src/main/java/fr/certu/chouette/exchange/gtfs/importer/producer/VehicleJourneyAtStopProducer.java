@@ -2,7 +2,7 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
@@ -12,7 +12,7 @@ public class VehicleJourneyAtStopProducer extends AbstractModelProducer<VehicleJ
 {
 
 	@Override
-	public VehicleJourneyAtStop produce(GtfsStopTime gtfsStopTime,ReportItem report) 
+	public VehicleJourneyAtStop produce(GtfsStopTime gtfsStopTime,Report report) 
 	{
 		VehicleJourneyAtStop vjas = new VehicleJourneyAtStop();
 

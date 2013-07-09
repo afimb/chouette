@@ -4,13 +4,13 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency> 
 {
     private static Logger logger = Logger.getLogger(CompanyProducer.class);
 	@Override
-	public Company produce(GtfsAgency gtfsAgency,ReportItem report) 
+	public Company produce(GtfsAgency gtfsAgency,Report report) 
 	{
 
 		Company company = new Company();

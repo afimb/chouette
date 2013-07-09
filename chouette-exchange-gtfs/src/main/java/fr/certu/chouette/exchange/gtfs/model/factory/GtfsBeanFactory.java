@@ -76,6 +76,7 @@ public abstract class GtfsBeanFactory<T extends GtfsBean>
    protected T populate(ResultSet rst) throws SQLException
    {
       String[] data = new String[getColumnSize()];
+      
       String numst = "0"+rst.getString(1);
       int num = Integer.parseInt(numst);
       for (int i = 1; i < getColumnSize(); i++)

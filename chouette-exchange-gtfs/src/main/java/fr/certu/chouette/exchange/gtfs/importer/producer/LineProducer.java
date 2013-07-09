@@ -6,13 +6,13 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class LineProducer extends AbstractModelProducer<Line,GtfsRoute>
 {
 	private static Logger logger = Logger.getLogger(LineProducer.class);
 	
-	public Line produce(GtfsRoute gtfsLine,ReportItem report)
+	public Line produce(GtfsRoute gtfsLine,Report report)
 	{
 		Line line = new Line();
 

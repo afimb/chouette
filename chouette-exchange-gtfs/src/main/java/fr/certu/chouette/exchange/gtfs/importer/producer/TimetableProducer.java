@@ -14,7 +14,7 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCalendar> {
 	private static Logger logger = Logger.getLogger(TimetableProducer.class);
@@ -22,7 +22,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCale
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Override
-	public Timetable produce(GtfsCalendar gtfsCalendar,ReportItem report) 
+	public Timetable produce(GtfsCalendar gtfsCalendar,Report report) 
 	{
 		Timetable timetable= new Timetable();
 

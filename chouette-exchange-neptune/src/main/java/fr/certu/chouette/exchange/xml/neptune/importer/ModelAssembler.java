@@ -381,7 +381,7 @@ public class ModelAssembler
 			if (restriction.getLineId() == null || !restriction.getLineId().equals(line.getObjectId()))
 			{
 				logger.warn("ITL with lineId = " + restriction.getLineId() + ": rejected");
-				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,restriction.getObjectId(),restriction.getLineId());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"ITL",restriction.getObjectId(),"lineId",restriction.getLineId());
 				report.addItem(item);
 			}
 			for (String areaId : restriction.getRoutingConstraintIds())
@@ -396,7 +396,7 @@ public class ModelAssembler
 				else
 				{
 					logger.warn("ITL with stopAreaId = " + areaId + ": rejected");
-					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,restriction.getObjectId(),areaId);
+					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"ITL",restriction.getObjectId(),"stopAreaId",areaId);
 					report.addItem(item);
 				}
 			}
@@ -533,7 +533,7 @@ public class ModelAssembler
 				route.addJourneyPattern(journeyPattern);
 			else
 			{
-				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,journeyPattern.getObjectId(),journeyPattern.getRouteId());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"JourneyPattern",journeyPattern.getObjectId(),"routeId",journeyPattern.getRouteId());
 				report.addItem(item);
 			}
 
@@ -569,13 +569,13 @@ public class ModelAssembler
 			}
 			else
 			{
-				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,vehicleJourney.getObjectId(),vehicleJourney.getJourneyPatternId());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"VehicleJourney",vehicleJourney.getObjectId(),"journeyPatternId",vehicleJourney.getJourneyPatternId());
 				report.addItem(item);
 			}
 			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
 			if (vehicleJourney.getRoute() == null)
 			{
-				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,vehicleJourney.getObjectId(),vehicleJourney.getRouteId());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"VehicleJourney",vehicleJourney.getObjectId(),"routeId",vehicleJourney.getRouteId());
 				report.addItem(item);
 			}
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops())
@@ -583,7 +583,7 @@ public class ModelAssembler
 				vehicleJourneyAtStop.setStopPoint(getObjectFromId(vehicleJourneyAtStop.getStopPointId(), StopPoint.class));
 				if (vehicleJourneyAtStop.getStopPoint() == null)
 				{
-					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,vehicleJourney.getObjectId(),vehicleJourneyAtStop.getStopPointId());
+					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"VehicleJourneyAtStop",vehicleJourney.getObjectId(),"stopPointId",vehicleJourneyAtStop.getStopPointId());
 					report.addItem(item);
 				}
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
@@ -603,7 +603,7 @@ public class ModelAssembler
 			stopPoint.setContainedInStopArea(getObjectFromId(stopPoint.getContainedInStopAreaId(), StopArea.class));
 			if (stopPoint.getContainedInStopArea() == null)
 			{
-				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,stopPoint.getObjectId(),stopPoint.getContainedInStopAreaId());
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopPoint",stopPoint.getObjectId(),"containedInStopArea",stopPoint.getContainedInStopAreaId());
 				report.addItem(item);
 			}
 			// stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(),

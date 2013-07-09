@@ -14,7 +14,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 {
 	private static Logger logger = Logger.getLogger(StopAreaProducer.class);
 	@Override
-	public StopArea produce(GtfsStop gtfsStop,ReportItem report) 
+	public StopArea produce(GtfsStop gtfsStop,Report report) 
 	{
 		StopArea stopArea = new StopArea();
 

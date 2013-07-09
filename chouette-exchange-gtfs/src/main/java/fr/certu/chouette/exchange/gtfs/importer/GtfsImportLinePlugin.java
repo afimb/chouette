@@ -470,9 +470,26 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			if (ok && data.connect(report))
 			{
 				System.gc();
-				ModelAssembler assembler = converter.convert(optimizeMemory, objectIdPrefix, incrementalPrefix, data, maxDistanceForCommercialStop,  ignoreLastWord,  ignoreEndCharacters, maxDistanceForConnectionLink, mergeRouteByShortName);
-				assembler.connect();
+				ModelAssembler assembler = converter.convert(optimizeMemory, objectIdPrefix, incrementalPrefix, data, maxDistanceForCommercialStop,  ignoreLastWord,  ignoreEndCharacters, maxDistanceForConnectionLink, mergeRouteByShortName,report);
+				assembler.connect(report);
 				if (colorPath != null) produceColorFile(colorPath,data,assembler);
+				// report objects count
+				{
+					ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.LINE_COUNT,Report.STATE.OK,assembler.getLines().size());
+					report.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,assembler.getRoutes().size());
+					report.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,assembler.getJourneyPatterns().size());
+					report.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,assembler.getVehicleJourneys().size());
+					report.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,assembler.getStopAreas().size());
+					report.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,assembler.getConnectionLinks().size());
+					report.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,assembler.getTimetables().size());
+					report.addItem(countItem);
+				}
 				return assembler.getLines();
 			}
 			else
