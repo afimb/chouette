@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build route from csv line of GTFS route.txt file
@@ -38,7 +40,7 @@ public class GtfsRouteFactory extends GtfsBeanFactory<GtfsRoute>
 	@Getter private final String[] dbHeader = new String[]{"num", "route_id","route_short_name","route_long_name","route_desc","route_type","agency_id","route_url","route_color","route_text_color"};
 
 	@Override
-	public GtfsRoute getNewGtfsBean(int lineNumber, String[] csvLine) {
+	public GtfsRoute getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
 		GtfsRoute bean = new GtfsRoute();
 		bean.setFileLineNumber(lineNumber);
 		bean.setRouteId(getValue("route_id", csvLine));
@@ -48,10 +50,25 @@ public class GtfsRouteFactory extends GtfsBeanFactory<GtfsRoute>
 		bean.setRouteShortName(getValue("route_short_name", csvLine));
 		bean.setRouteLongName(getValue("route_long_name", csvLine));
 		bean.setRouteDesc(getValue("route_desc", csvLine));
-		bean.setRouteType(getIntValue("route_type", csvLine,1));
+		bean.setRouteType(getIntValue("route_type", csvLine,-1));
 		bean.setRouteURL(getUrlValue("route_url", csvLine,logger));
 		bean.setRouteColor(getColorValue("route_color", csvLine));
 		bean.setRouteTextColor(getColorValue("route_text_color", csvLine));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("routes.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 	@Override

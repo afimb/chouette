@@ -1,0 +1,7 @@
+stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,location_type,parent_station
+BP_Intermediaire_1__R__39530,,Intermediaire 1 (R),,46.2700288488884723,5.5326461791992188,0,C_Intermediaire_1_39530
+,,Intermediaire 1 (R),,46.2700288488884723,5.5326461791992188,0,C_Intermediaire_1_39530
+BP_Intermediaire_1__R__39530,,,,46.2700288488884723,5.5326461791992188,0,C_Intermediaire_1_39530
+BP_Intermediaire_1__R__39530,,Intermediaire 1 (R),,,5.5326461791992188,0,C_Intermediaire_1_39530
+BP_Intermediaire_1__R__39530,,Intermediaire 1 (R),,46.2700288488884723,,0,C_Intermediaire_1_39530
+,,,,,,0,C_Intermediaire_1_39530

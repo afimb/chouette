@@ -57,4 +57,30 @@ public class GtfsStop extends GtfsBean
 			csvLine += parentStation;
 		return csvLine;
 	}
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (stopId == null)
+		{
+			addMissingData("stop_id");
+			ret = false;
+		}
+		if (stopName == null)
+		{
+			addMissingData("stop_name");
+			ret = false;
+		}
+		if (stopLat == null)
+		{
+			addMissingData("stop_lat");
+			ret = false;
+		}
+		if (stopLon == null)
+		{
+			addMissingData("stop_lon");
+			ret = false;
+		}
+		return ret;
+	}
 }

@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build agency from csv line of GTFS agency.txt file
@@ -42,7 +44,7 @@ public class GtfsAgencyFactory extends GtfsBeanFactory<GtfsAgency>
 	 * @see fr.certu.chouette.exchange.gtfs.model.factory.GtfsBeanFactory#getNewGtfsBean(int, java.lang.String[])
 	 */
 	@Override
-	public GtfsAgency getNewGtfsBean(int lineNumber, String[] csvLine) 
+	public GtfsAgency getNewGtfsBean(int lineNumber, String[] csvLine,Report report) 
 	{
 		GtfsAgency bean = new GtfsAgency();
 		bean.setFileLineNumber(lineNumber);
@@ -55,7 +57,21 @@ public class GtfsAgencyFactory extends GtfsBeanFactory<GtfsAgency>
 		bean.setAgencyTimezone(getTimeZoneValue("agency_timezone", csvLine));
 		bean.setAgencyLang(getValue("agency_lang", csvLine));
 		bean.setAgencyPhone(getValue("agency_phone", csvLine));
-
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("agency.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 

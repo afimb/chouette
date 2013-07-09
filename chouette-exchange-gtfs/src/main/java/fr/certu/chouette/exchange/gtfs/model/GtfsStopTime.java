@@ -21,7 +21,7 @@ public class GtfsStopTime extends GtfsBean implements Comparable<GtfsStopTime>
    @Getter @Setter private GtfsTime   arrivalTime;
    @Getter @Setter private GtfsTime   departureTime;
    @Getter @Setter private String stopId;
-   @Getter @Setter private int    stopSequence;
+   @Getter @Setter private int    stopSequence = 0;
    // optional items
    @Getter @Setter private String stopHeadsign = null;
    @Getter @Setter private int    pickupType = 0;
@@ -125,5 +125,36 @@ public class GtfsStopTime extends GtfsBean implements Comparable<GtfsStopTime>
       copy.stopSequence = this.stopSequence;
       return copy;
    }
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (tripId == null)
+		{
+			addMissingData("trip_id");
+			ret = false;
+		}
+		if (arrivalTime == null)
+		{
+			addMissingData("arrival_time");
+			ret = false;
+		}
+		if (departureTime == null)
+		{
+			addMissingData("departure_time");
+			ret = false;
+		}
+		if (stopId == null)
+		{
+			addMissingData("stop_id");
+			ret = false;
+		}
+		if (stopSequence == 0)
+		{
+			addMissingData("stop_sequence");
+			ret = false;
+		}
+		return ret;
+	}
 
 }

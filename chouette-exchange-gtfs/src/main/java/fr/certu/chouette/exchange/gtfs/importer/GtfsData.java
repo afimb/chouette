@@ -49,6 +49,7 @@ import fr.certu.chouette.exchange.gtfs.model.factory.GtfsStopFactory;
 import fr.certu.chouette.exchange.gtfs.model.factory.GtfsStopTimeFactory;
 import fr.certu.chouette.exchange.gtfs.model.factory.GtfsTransferFactory;
 import fr.certu.chouette.exchange.gtfs.model.factory.GtfsTripFactory;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
@@ -162,7 +163,7 @@ public class GtfsData
 		network = new GtfsNetwork(objectIdPrefix);
 	}
 
-	private <T extends GtfsBean> void loadGtfsBean(String fileName,String beanName,InputStream input,GtfsBeanFactory<T> factory,DbList<T> beans) throws Exception
+	private <T extends GtfsBean> void loadGtfsBean(String fileName,String beanName,InputStream input,GtfsBeanFactory<T> factory,DbList<T> beans,Report report) throws Exception
 	{
 		// List<String[]> fileLines = loadFile(input);
 		CSVReader reader = new CSVReader(new InputStreamReader(input, "UTF-8"), ',', '"' );
@@ -172,15 +173,16 @@ public class GtfsData
 
 		factory.initHeader(csvLine);
 
-		int lineNumber = 2;
+		int lineNumber = 1;
 		while ((csvLine = reader.readNext()) != null)
 		{
+			lineNumber++;
 			if (csvLine.length == columns)
 			{
-				T bean = factory.getNewGtfsBean(lineNumber++,csvLine);
+				T bean = factory.getNewGtfsBean(lineNumber,csvLine,report);
 				if (bean == null)
 				{
-					logger.warn(fileName+" : line "+(lineNumber++)+" has missing mandatory data, ignored");        		 
+					logger.warn(fileName+" : line "+(lineNumber)+" has missing mandatory data, ignored");        		 
 				}
 				else
 				{
@@ -191,11 +193,11 @@ public class GtfsData
 			{
 				if (csvLine.length == 1 && csvLine[0].trim().isEmpty())
 				{
-					logger.debug(fileName+" : line "+(lineNumber++)+"empty, ignored");
+					logger.debug(fileName+" : line "+(lineNumber)+"empty, ignored");
 				}
 				else
 				{
-					logger.warn(fileName+" : line "+(lineNumber++)+" has wrong number of columns, ignored");
+					logger.warn(fileName+" : line "+(lineNumber)+" has wrong number of columns, ignored");
 				}
 			}
 			if (lineNumber % 10000 == 0)
@@ -210,52 +212,52 @@ public class GtfsData
 
 	}
 
-	public void loadAgencies(InputStream input) throws Exception
+	public void loadAgencies(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("agency.txt","agencies",input,new GtfsAgencyFactory(),agencies);
+		loadGtfsBean("agency.txt","agencies",input,new GtfsAgencyFactory(),agencies,report);
 	}
 
 
-	public void loadCalendarDates(InputStream input) throws Exception
+	public void loadCalendarDates(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("calendar_dates.txt","calendar dates",input,new GtfsCalendarDateFactory(),calendarDates);
+		loadGtfsBean("calendar_dates.txt","calendar dates",input,new GtfsCalendarDateFactory(),calendarDates,report);
 	}
 
-	public void loadCalendars(InputStream input) throws Exception
+	public void loadCalendars(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("calendar.txt","calendars",input,new GtfsCalendarFactory(),calendars);
+		loadGtfsBean("calendar.txt","calendars",input,new GtfsCalendarFactory(),calendars,report);
 	}
 
-	public void loadFrequencies(InputStream input) throws Exception
+	public void loadFrequencies(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("frequencies.txt","frequencies",input,new GtfsFrequencyFactory(),frequencies);
+		loadGtfsBean("frequencies.txt","frequencies",input,new GtfsFrequencyFactory(),frequencies,report);
 	}
-	public void loadRoutes(InputStream input) throws Exception
+	public void loadRoutes(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("routes.txt","routes",input,new GtfsRouteFactory(),routes);
+		loadGtfsBean("routes.txt","routes",input,new GtfsRouteFactory(),routes,report);
 	} 
-	public void loadStops(InputStream input) throws Exception
+	public void loadStops(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("stops.txt","stops",input,new GtfsStopFactory(),stops);
+		loadGtfsBean("stops.txt","stops",input,new GtfsStopFactory(),stops,report);
 	}
-	public void loadStopTimes(InputStream input) throws Exception
+	public void loadStopTimes(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("stop_times.txt","stopTimes",input,new GtfsStopTimeFactory(),stopTimes);
+		loadGtfsBean("stop_times.txt","stopTimes",input,new GtfsStopTimeFactory(),stopTimes,report);
 	}
-	public void loadTrips(InputStream input) throws Exception
+	public void loadTrips(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("trips.txt","trips",input,new GtfsTripFactory(),trips);
+		loadGtfsBean("trips.txt","trips",input,new GtfsTripFactory(),trips,report);
 	}
-	public void loadShapes(InputStream input) throws Exception
+	public void loadShapes(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("shapes.txt","shapes",input,new GtfsShapeFactory(),shapes);
+		loadGtfsBean("shapes.txt","shapes",input,new GtfsShapeFactory(),shapes,report);
 	}
-	public void loadTransfers(InputStream input) throws Exception
+	public void loadTransfers(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("transfers.txt","transfers",input,new GtfsTransferFactory(),transfers);
+		loadGtfsBean("transfers.txt","transfers",input,new GtfsTransferFactory(),transfers,report);
 	}
 
-	public boolean connect()
+	public boolean connect(Report report)
 	{
 		boolean ok = true;
 		Map<String,GtfsRoute> routeMap = new HashMap<String, GtfsRoute>();

@@ -1,6 +1,8 @@
 package fr.certu.chouette.exchange.gtfs.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +14,17 @@ public abstract class GtfsBean
 
 
    @Getter @Setter int fileLineNumber = 0; 
+   
+   @Getter List<String> missingData = new ArrayList<String>();
 
    public abstract String getCSVLine();
+   
+   public abstract boolean isValid();
+   
+   protected void addMissingData(String data)
+   {
+	   missingData.add(data); 
+   }
    
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)

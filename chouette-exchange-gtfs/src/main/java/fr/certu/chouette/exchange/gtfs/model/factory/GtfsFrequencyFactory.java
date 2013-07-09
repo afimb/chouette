@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsFrequency;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build frequency from csv line of GTFS frequency.txt file
@@ -37,13 +39,28 @@ public class GtfsFrequencyFactory extends GtfsBeanFactory<GtfsFrequency>
 	@Getter private final String selectSql = "select num, tripid, starttime,endtime,headwaysecs,exacttimes from frequency ";
 	@Getter private final String[] dbHeader = new String[]{"num","trip_id","start_time","end_time","headway_secs"};
 	@Override
-	public GtfsFrequency getNewGtfsBean(int lineNumber, String[] csvLine) {
+	public GtfsFrequency getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
 		GtfsFrequency bean = new GtfsFrequency();
 		bean.setFileLineNumber(lineNumber);
 		bean.setTripId(getValue("trip_id", csvLine));
 		bean.setStartTime(getTimeValue("start_time", csvLine));
 		bean.setEndTime(getTimeValue("end_time", csvLine));
 		bean.setHeadwaySecs(getIntValue("headway_secs", csvLine,0));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("frequencies.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 	@Override

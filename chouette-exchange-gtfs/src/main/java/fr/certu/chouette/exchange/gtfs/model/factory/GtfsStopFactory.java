@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build stop from csv line of GTFS stop.txt file
@@ -39,19 +41,34 @@ public class GtfsStopFactory extends GtfsBeanFactory<GtfsStop>
 	@Getter private final String[] dbHeader = new String[]{"num","stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station"};
 
 	@Override
-	public GtfsStop getNewGtfsBean(int lineNumber, String[] csvLine) {
+	public GtfsStop getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
 		GtfsStop bean = new GtfsStop();
 		bean.setFileLineNumber(lineNumber);
 		bean.setStopId(getValue("stop_id", csvLine));
 		bean.setStopCode(getValue("stop_code", csvLine));
 		bean.setStopName(getValue("stop_name", csvLine));
 		bean.setStopDesc(getValue("stop_desc", csvLine));
-		bean.setStopLat(BigDecimal.valueOf(getDoubleValue("stop_lat", csvLine,(double)0.0)));
-		bean.setStopLon(BigDecimal.valueOf(getDoubleValue("stop_lon", csvLine,(double)0.0)));
+		bean.setStopLat(getBigDecimalValue("stop_lat", csvLine,null));
+		bean.setStopLon(getBigDecimalValue("stop_lon", csvLine,null));
 		bean.setZoneId(getValue("zone_id", csvLine));
 		bean.setStopUrl(getUrlValue("stop_url", csvLine,logger));
 		bean.setLocationType(getIntValue("location_type", csvLine, 0));
 		bean.setParentStation(getValue("parent_station", csvLine));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("stops.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 	@Override

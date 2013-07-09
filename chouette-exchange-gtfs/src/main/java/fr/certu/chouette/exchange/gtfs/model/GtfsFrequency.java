@@ -23,9 +23,9 @@ public class GtfsFrequency extends GtfsBean
 	@Getter @Setter private String tripId;
 	@Getter @Setter private GtfsTime startTime ;
 	@Getter @Setter private GtfsTime endTime;
-	@Getter @Setter private int headwaySecs;
+	@Getter @Setter private int headwaySecs = 0;
 	@Getter @Setter private GtfsTrip trip;
-	@Getter @Setter private boolean exactTimes;
+	@Getter @Setter private boolean exactTimes = false;
 
 	public static final String header = "trip_id,start_time,end_time,headway_secs"; //,exact_times";
 	
@@ -83,5 +83,31 @@ public class GtfsFrequency extends GtfsBean
 		return true;
 	}
 
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (tripId == null)
+		{
+			addMissingData("trip_id");
+			ret = false;
+		}
+		if (startTime == null)
+		{
+			addMissingData("start_time");
+			ret = false;
+		}
+		if (endTime == null)
+		{
+			addMissingData("end_time");
+			ret = false;
+		}
+		if (headwaySecs == 0)
+		{
+			addMissingData("headway_secs");
+			ret = false;
+		}
+		return ret;
+	}
 
 }

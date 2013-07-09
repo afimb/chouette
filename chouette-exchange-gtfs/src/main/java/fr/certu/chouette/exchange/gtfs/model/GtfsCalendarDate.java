@@ -24,7 +24,7 @@ public class GtfsCalendarDate extends GtfsBean
    
    @Getter @Setter private String serviceId;
    @Getter @Setter private Date   date;
-   @Getter @Setter private int    exceptionType = 1;
+   @Getter @Setter private int    exceptionType = 0;
    @Getter @Setter private GtfsCalendar calendar;
 
    public static final String header = "service_id,date,exception_type";
@@ -82,5 +82,26 @@ public class GtfsCalendarDate extends GtfsBean
       }
       return true;
    }
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (serviceId == null)
+		{
+			addMissingData("service_id");
+			ret = false;
+		}
+		if (date == null)
+		{
+			addMissingData("date");
+			ret = false;
+		}
+		if (exceptionType == 0)
+		{
+			addMissingData("exception_type");
+			ret = false;
+		}
+		return ret;
+	}
 
 }

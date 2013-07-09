@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.model.factory;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
+import fr.certu.chouette.plugin.report.Report;
 
 public abstract class GtfsBeanFactory<T extends GtfsBean>
 {
@@ -40,7 +42,7 @@ public abstract class GtfsBeanFactory<T extends GtfsBean>
       }
    }
 
-   public abstract T getNewGtfsBean(int lineNumber,String[] csvLine);
+   public abstract T getNewGtfsBean(int lineNumber,String[] csvLine,Report report);
 
    public void initDb(Statement stmt) throws SQLException 
    {
@@ -80,7 +82,7 @@ public abstract class GtfsBeanFactory<T extends GtfsBean>
       {
          data[i] = rst.getString(i+1);
       }
-      return getNewGtfsBean(num, data);
+      return getNewGtfsBean(num, data,null);
    }
 
    public abstract String getId(T bean);
@@ -190,6 +192,15 @@ public abstract class GtfsBeanFactory<T extends GtfsBean>
       return Double.parseDouble(csvLine[i.intValue()].trim());
    }
 
+   protected  BigDecimal getBigDecimalValue(String column,String[] csvLine,BigDecimal defaultValue)
+   {
+      Integer i = getColumnRank().get(column);
+      if (i == null) return defaultValue;
+      if (csvLine[i.intValue()].trim().isEmpty()) return defaultValue;
+      return new BigDecimal(Double.parseDouble(csvLine[i.intValue()].trim()));
+   }
+
+   
    protected  GtfsTime getTimeValue(String column,String[] csvLine)
    {
       Integer i = getColumnRank().get(column);

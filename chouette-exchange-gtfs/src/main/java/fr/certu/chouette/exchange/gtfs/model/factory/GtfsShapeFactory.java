@@ -21,6 +21,8 @@ import lombok.Getter;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsShape;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build shape from csv line of GTFS shape.txt file
@@ -52,7 +54,7 @@ public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape>
 	}
 
 	@Override
-	public GtfsShape getNewGtfsBean(int lineNumber, String[] csvLine) {
+	public GtfsShape getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
 		GtfsShape bean = new GtfsShape();
 		bean.setFileLineNumber(lineNumber);
 		bean.setShapeId(getValue("shape_id", csvLine));
@@ -60,6 +62,21 @@ public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape>
 		bean.setShapePtLon(getDoubleValue("shape_pt_lon", csvLine,0.0));
 		bean.setShapePtSequence(getIntValue("shape_pt_sequence", csvLine,-1));
 		bean.setShapeDistTraveled(getDoubleValue("shape_dist_traveled", csvLine,-1.0));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("shapes.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		addToMap(bean);
 		return bean;
 	}

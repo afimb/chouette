@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build calendar from csv line of GTFS calendar.txt file
@@ -39,7 +41,7 @@ public class GtfsCalendarFactory extends GtfsBeanFactory<GtfsCalendar>
 	@Getter private final String[] dbHeader = new String[]{"num","service_id","monday","tuesday","wednesday","thursday","friday","saturday","sunday","start_date","end_date"};
 
 	@Override
-	public GtfsCalendar getNewGtfsBean(int lineNumber, String[] csvLine) {
+	public GtfsCalendar getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
 		GtfsCalendar bean = new GtfsCalendar();
 		bean.setFileLineNumber(lineNumber);
 		bean.setServiceId(getValue("service_id", csvLine));
@@ -52,6 +54,21 @@ public class GtfsCalendarFactory extends GtfsBeanFactory<GtfsCalendar>
 		bean.setSunday(asBool(getValue("sunday", csvLine)));
 		bean.setStartDate(getDateValue("start_date", csvLine,logger));
 		bean.setEndDate(getDateValue("end_date", csvLine,logger));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("calendar.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 

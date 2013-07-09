@@ -19,5 +19,12 @@ public class GtfsNetwork extends GtfsBean
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		return ret;
+	}
+	
 
 }

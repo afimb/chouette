@@ -180,7 +180,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 				{
 					try 
 					{
-						data.loadTransfers(zip.getInputStream(entry));
+						data.loadTransfers(zip.getInputStream(entry),report);
 					} 
 					catch (Exception e) 
 					{

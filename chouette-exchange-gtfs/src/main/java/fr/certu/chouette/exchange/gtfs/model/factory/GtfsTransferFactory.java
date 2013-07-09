@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build trip from csv line of GTFS trip.txt file
@@ -38,7 +40,7 @@ public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer>
    @Getter private final String[] dbHeader = new String[]{"from_stop_id","to_stop_id","transfer_type","min_transfer_time"};
 
    @Override
-   public GtfsTransfer getNewGtfsBean(int lineNumber, String[] csvLine) {
+   public GtfsTransfer getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
       GtfsTransfer bean = new GtfsTransfer();
       bean.setFileLineNumber(lineNumber);
       bean.setFromStopId(getValue("from_stop_id",csvLine));
@@ -54,6 +56,21 @@ public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer>
 
       }
       bean.setMinTransferTime(getTimeValue("min_transfer_time",csvLine));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("transfers.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
       return bean;
    }
    @Override

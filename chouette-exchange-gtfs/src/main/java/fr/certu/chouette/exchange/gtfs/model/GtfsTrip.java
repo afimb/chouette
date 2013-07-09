@@ -129,6 +129,28 @@ public class GtfsTrip extends GtfsBean
       }
       return true;
    }
+   
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (routeId == null)
+		{
+			addMissingData("route_id");
+			ret = false;
+		}
+		if (serviceId == null)
+		{
+			addMissingData("service_id");
+			ret = false;
+		}
+		if (tripId == null)
+		{
+			addMissingData("trip_id");
+			ret = false;
+		}
+		return ret;
+	}
 
 
 }

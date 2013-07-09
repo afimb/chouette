@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build trip from csv line of GTFS trip.txt file
@@ -40,7 +42,7 @@ public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip>
 	@Getter private final String[] dbHeader = new String[]{"num","trip_id","route_id","service_id","trip_headsign","trip_short_name","direction_id","block_id","shape_id"};
 
 	@Override
-	public GtfsTrip getNewGtfsBean(int lineNumber, String[] csvLine) {
+	public GtfsTrip getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
 		GtfsTrip bean = new GtfsTrip();
 		bean.setFileLineNumber(lineNumber);
 		bean.setRouteId(getValue("route_id",csvLine));
@@ -51,6 +53,21 @@ public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip>
 		bean.setDirectionId(getIntValue("direction_id",csvLine,0));
 		bean.setBlockId(getValue("block_id",csvLine));
 		bean.setShapeId(getValue("shape_id",csvLine));
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("trips.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 	@Override

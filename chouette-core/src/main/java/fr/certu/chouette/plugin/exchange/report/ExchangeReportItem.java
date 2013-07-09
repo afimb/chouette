@@ -21,6 +21,7 @@ public class ExchangeReportItem extends ReportItem
 	public enum KEY {
 		ZIP_FILE,
 		ZIP_ERROR,
+		ZIP_ENTRY,
 		ZIP_MISSING_ENTRY,
 		FILE,
 		FILE_ERROR,
@@ -37,6 +38,7 @@ public class ExchangeReportItem extends ReportItem
 		CONNECTION_LINK_COUNT,
 		ACCES_POINT_COUNT,
 		MANDATORY_TAG,
+		MANDATORY_DATA,
 		IGNORED_DATA,
 		UNKNOWN_ENUM, 
 		EMPTY_TAG,

@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * factory to build stoptime from csv line of GTFS stoptime.txt file
@@ -37,7 +39,7 @@ public class GtfsStopTimeFactory extends GtfsBeanFactory<GtfsStopTime>
 	@Getter private final String selectSql = "select num, tripid, arrivaltime,departuretime,stopid,stopsequence,stopheadsign,pickuptype,dropoftype,shapedisttraveled from stoptime ";
 	@Getter private final String[] dbHeader = new String[]{"num", "trip_id","arrival_time","departure_time","stop_id","stop_sequence","stop_headsign","pickup_type","drop_off_type","shape_dist_traveled"};
 	@Override
-	public GtfsStopTime getNewGtfsBean(int lineNumber, String[] csvLine) 
+	public GtfsStopTime getNewGtfsBean(int lineNumber, String[] csvLine,Report report) 
 	{
 		GtfsStopTime bean = new GtfsStopTime();
 		bean.setFileLineNumber(lineNumber);
@@ -45,16 +47,26 @@ public class GtfsStopTimeFactory extends GtfsBeanFactory<GtfsStopTime>
 		bean.setArrivalTime(getTimeValue("arrival_time", csvLine));
 		bean.setDepartureTime(getTimeValue("departure_time", csvLine));
 		bean.setStopId(getValue("stop_id", csvLine));
-		bean.setStopSequence(getIntValue("stop_sequence", csvLine,-1));
+		bean.setStopSequence(getIntValue("stop_sequence", csvLine,0));
 		bean.setStopHeadsign(getValue("stop_headsign", csvLine));
 		bean.setPickupType(getIntValue("pickup_type", csvLine,0));
 		bean.setDropOffType(getIntValue("drop_off_type", csvLine,0));
 		bean.setShapeDistTraveled(getDoubleValue("shape_dist_traveled", csvLine,(double)0.0));
-		if (bean.getTripId() == null ) return null;
-		if (bean.getArrivalTime() == null ) return null;
-		if (bean.getDepartureTime() == null ) return null;
-		if (bean.getStopId() == null ) return null;
-		if (bean.getStopSequence() == -1 ) return null;
+		// check mandatory values
+		if (!bean.isValid())		
+		{
+			String data = bean.getMissingData().toString();
+			if (report != null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_DATA,Report.STATE.WARNING,lineNumber,data);
+				report.addItem(item);
+			}
+			else
+			{
+				logger.warn("stop_times.txt : Line "+lineNumber+" missing required data = "+data);
+			}
+			return null;
+		}
 		return bean;
 	}
 	@Override

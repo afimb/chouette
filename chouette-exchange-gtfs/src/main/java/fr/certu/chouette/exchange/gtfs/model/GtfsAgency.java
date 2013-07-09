@@ -38,4 +38,27 @@ public class GtfsAgency extends GtfsBean
 			csvLine += agencyPhone;
 		return csvLine;
 	}
+
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (agencyName == null)
+		{
+			addMissingData("agency_name");
+			ret = false;
+		}
+		if (agencyURL == null)
+		{
+			addMissingData("agency_url");
+			ret = false;
+		}
+		if (agencyTimezone == null)
+		{
+			addMissingData("agency_timezone");
+			ret = false;
+		}
+		return ret;
+	}
+	
 }

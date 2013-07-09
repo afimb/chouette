@@ -34,7 +34,7 @@ public class GtfsRoute extends GtfsBean
 	@Getter @Setter private String routeShortName;
 	@Getter @Setter private String routeLongName;
 	@Getter @Setter private String routeDesc      = null;
-	@Getter @Setter private int    routeType      = 3;
+	@Getter @Setter private int    routeType      = -1;
     // optional items
 	@Getter @Setter private String agencyId       = null;
 	@Getter @Setter private URL    routeURL       = null;
@@ -73,5 +73,31 @@ public class GtfsRoute extends GtfsBean
     		trip.setRoute(this);
     	}
     }
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (routeId == null)
+		{
+			addMissingData("route_id");
+			ret = false;
+		}
+		if (routeShortName == null)
+		{
+			addMissingData("route_short_name");
+			ret = false;
+		}
+		if (routeLongName == null)
+		{
+			addMissingData("route_long_name");
+			ret = false;
+		}
+		if (routeType == -1)
+		{
+			addMissingData("route_type");
+			ret = false;
+		}
+		return ret;
+	}
     
 }

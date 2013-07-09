@@ -243,7 +243,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					agencyFound=true;
 					try 
 					{
-						data.loadAgencies(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadAgencies(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -259,7 +261,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					calendarFound=true;
 					try 
 					{
-						data.loadCalendars(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadCalendars(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -275,7 +279,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					calendarFound=true;
 					try 
 					{
-						data.loadCalendarDates(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadCalendarDates(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -290,7 +296,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				{
 					try 
 					{
-						data.loadFrequencies(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadFrequencies(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -306,7 +314,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					routeFound=true;
 					try 
 					{
-						data.loadRoutes(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadRoutes(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -322,7 +332,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					stopFound=true;
 					try 
 					{
-						data.loadStops(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadStops(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -338,7 +350,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					stopTimeFound=true;
 					try 
 					{
-						data.loadStopTimes(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadStopTimes(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -354,7 +368,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					tripFound=true;
 					try 
 					{
-						data.loadTrips(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadTrips(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -381,7 +397,9 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				{
 					try 
 					{
-						data.loadTransfers(zip.getInputStream(entry));
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						data.loadTransfers(zip.getInputStream(entry),item);
+						report.addItem(item);
 					} 
 					catch (Exception e) 
 					{
@@ -394,6 +412,8 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				}
 				else
 				{
+					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,entryName);
+					report.addItem(item);
 					logger.info("entry "+entryName+" unused");
 				}
 			}
@@ -447,7 +467,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				ok = false;				
 			}
 			
-			if (ok && data.connect())
+			if (ok && data.connect(report))
 			{
 				System.gc();
 				ModelAssembler assembler = converter.convert(optimizeMemory, objectIdPrefix, incrementalPrefix, data, maxDistanceForCommercialStop,  ignoreLastWord,  ignoreEndCharacters, maxDistanceForConnectionLink, mergeRouteByShortName);

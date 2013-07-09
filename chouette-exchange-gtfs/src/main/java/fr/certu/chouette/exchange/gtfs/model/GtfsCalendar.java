@@ -85,4 +85,38 @@ public class GtfsCalendar extends GtfsBean
     		
         return retVal;
     }
+    
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (serviceId == null)
+		{
+			addMissingData("service_id");
+			ret = false;
+		}
+		// Monday ... Sunday not really checked
+		if (!monday && !tuesday && !wednesday && !thursday && !friday && !saturday && !sunday)
+		{
+			addMissingData("monday");
+			addMissingData("tuesday");
+			addMissingData("wednesday");
+			addMissingData("thursday");
+			addMissingData("friday");
+			addMissingData("saturday");
+			addMissingData("sunday");
+			ret = false;
+		}
+		if (startDate == null)
+		{
+			addMissingData("start_date");
+			ret = false;
+		}
+		if (endDate == null)
+		{
+			addMissingData("end_date");
+			ret = false;
+		}
+		return ret;
+	}
 }

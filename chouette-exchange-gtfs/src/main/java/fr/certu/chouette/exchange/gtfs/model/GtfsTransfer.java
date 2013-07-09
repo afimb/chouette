@@ -105,5 +105,26 @@ public class GtfsTransfer extends GtfsBean
       return true;
    }
 
+	@Override
+	public boolean isValid() 
+	{
+		boolean ret = true;
+		if (fromStopId == null)
+		{
+			addMissingData("from_stop_id");
+			ret = false;
+		}
+		if (toStopId == null)
+		{
+			addMissingData("to_stop_id");
+			ret = false;
+		}
+		if (transferType == null)
+		{
+			addMissingData("transfer_type");
+			ret = false;
+		}
+		return ret;
+	}
 
 }
