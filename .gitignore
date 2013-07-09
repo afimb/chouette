@@ -9,3 +9,5 @@ bin/
 *.launch
 maven-eclipse.xml
 *~
+*.versionsBackup
+.classpath

@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.AreaCentroid;

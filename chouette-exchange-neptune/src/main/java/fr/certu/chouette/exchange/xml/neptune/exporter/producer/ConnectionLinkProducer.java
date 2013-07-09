@@ -11,18 +11,21 @@ public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouet
 	@Override
 	public chouette.schema.ConnectionLink produce(ConnectionLink connectionLink) {
 		chouette.schema.ConnectionLink castorConnectionLink = new chouette.schema.ConnectionLink();
-		
+
 		//
 		populateFromModel(castorConnectionLink, connectionLink);
-		
+
 		castorConnectionLink.setComment(getNotEmptyString(connectionLink.getComment()));
 		castorConnectionLink.setName(connectionLink.getName());
 		castorConnectionLink.setStartOfLink(getNonEmptyObjectId(connectionLink.getStartOfLink()));
 		castorConnectionLink.setEndOfLink(getNonEmptyObjectId(connectionLink.getEndOfLink()));
 		castorConnectionLink.setLinkDistance(connectionLink.getLinkDistance());
-		castorConnectionLink.setMobilityRestrictedSuitability(connectionLink.isMobilityRestrictedSuitable());
-		castorConnectionLink.setLiftAvailability(connectionLink.isLiftAvailable());
-		castorConnectionLink.setStairsAvailability(connectionLink.isStairsAvailable());
+		if (connectionLink.isMobilityRestrictedSuitable())
+			castorConnectionLink.setMobilityRestrictedSuitability(true);
+		if (connectionLink.isLiftAvailable())
+			castorConnectionLink.setLiftAvailability(true);
+		if (connectionLink.isStairsAvailable())
+			castorConnectionLink.setStairsAvailability(true);
 		if(connectionLink.getDefaultDuration() != null){
 			castorConnectionLink.setDefaultDuration(toDuration(connectionLink.getDefaultDuration()));
 		}
@@ -35,7 +38,7 @@ public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouet
 		if(connectionLink.getMobilityRestrictedTravellerDuration() != null){
 			castorConnectionLink.setMobilityRestrictedTravellerDuration(toDuration(connectionLink.getMobilityRestrictedTravellerDuration()));
 		}
-		
+
 		try {
 			ConnectionLinkTypeEnum linkType = connectionLink.getLinkType();
 			if(linkType != null){
@@ -44,7 +47,7 @@ public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouet
 		} catch (IllegalArgumentException e) {
 			// TODO generate report
 		}
-		
+
 		ConnectionLinkExtension connectionLinkExtension = new ConnectionLinkExtension();
 		AccessibilitySuitabilityDetails details = extractAccessibilitySuitabilityDetails(connectionLink.getUserNeeds());
 		if (details != null)
@@ -52,7 +55,7 @@ public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouet
 			connectionLinkExtension.setAccessibilitySuitabilityDetails(details);
 			castorConnectionLink.setConnectionLinkExtension(connectionLinkExtension);
 		}
-		
+
 		return castorConnectionLink;
 	}
 }

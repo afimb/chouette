@@ -12,9 +12,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import org.apache.log4j.Logger;
-
 import chouette.schema.ChouetteLineDescription;
 import chouette.schema.ChouettePTNetworkTypeType;
 import chouette.schema.ITL;
@@ -54,9 +51,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
-import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
@@ -65,7 +60,6 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class NeptuneConverter
 {
-   private static final Logger logger = Logger.getLogger(NeptuneConverter.class);
    /**
     * line producer
     */
