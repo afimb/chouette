@@ -368,25 +368,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             companies.add(line.getCompany());
          }
 
-
-//         HashSet<JourneyPattern> journeyPatterns = new HashSet<JourneyPattern>();
-//         for (Route route : line.getRoutes())
-//         {
-//            if (route.getJourneyPatterns() != null)
-//            {
-//               journeyPatterns.addAll(route.getJourneyPatterns());
-//            }
-//         }
          List<VehicleJourney> vehicleJourneys = line.getVehicleJourneys();
-
-//         HashSet<VehicleJourney> vehicleJourneys = new HashSet<VehicleJourney>();
-//         for (JourneyPattern journeyPattern : journeyPatterns)
-//         {
-//            if (journeyPattern.getVehicleJourneys() != null)
-//            {
-//               vehicleJourneys.addAll(journeyPattern.getVehicleJourneys());
-//            }
-//         }
 
          Set<String> validObjectIds = new HashSet<String>();
          Set<Timetable> timetables = new HashSet<Timetable>();
@@ -538,7 +520,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
 
          ChouetteArea chouetteArea = new ChouetteArea();
-//         HashSet<AreaCentroid> areaCentroids = new HashSet<AreaCentroid>();
          HashSet<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
          HashSet<AccessLink> accessLinks = new HashSet<AccessLink>();
          HashSet<AccessPoint> accessPoints = new HashSet<AccessPoint>();
@@ -581,11 +562,6 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                accessLinks.addAll(stopArea.getAccessLinks());
             }
          }
-
-//         for (AreaCentroid areaCentroid : areaCentroids)
-//         {
-//            chouetteArea.addAreaCentroid(areaCentroidProducer.produce(areaCentroid));
-//         }
 
          rootObject.setChouetteArea(chouetteArea);
 
@@ -771,6 +747,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       }
       reduced.setCalendarDays(dates);
       reduced.setPeriods(periods);
+      reduced.computeLimitOfPeriods();
       return  reduced;
 
    }
