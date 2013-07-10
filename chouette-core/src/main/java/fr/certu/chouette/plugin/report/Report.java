@@ -9,6 +9,7 @@ package fr.certu.chouette.plugin.report;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -37,6 +38,12 @@ public abstract class Report
       UNCHECK, OK, WARNING, ERROR, FATAL
    };
 
+   /**
+    * report creation date
+    */
+   @Getter
+   private Calendar           creationDate = Calendar.getInstance();
+   
    /**
     * report originKey
     */

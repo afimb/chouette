@@ -44,7 +44,8 @@ public abstract class LogMessage  extends ActiveRecordObject
 
 	public LogMessage(Long parentId,String format,Report report,int position)
 	{
-		this();
+		createdAt = report.getCreationDate().getTime();
+		updatedAt = createdAt;
 		this.parentId = parentId;
 		if (report instanceof ReportItem)
 		{
@@ -66,7 +67,8 @@ public abstract class LogMessage  extends ActiveRecordObject
 
 	public LogMessage(Long parentId,String format,ReportItem item, String prefix, int position)
 	{
-		this();
+		createdAt = item.getCreationDate().getTime();
+		updatedAt = createdAt;
 		this.parentId = parentId;
 		init(format,item,prefix,position);
 	}

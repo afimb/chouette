@@ -8,6 +8,8 @@
 
 package fr.certu.chouette.plugin.exchange.report;
 
+import java.util.ArrayList;
+
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -61,12 +63,19 @@ public class ExchangeReportItem extends ReportItem
         addMessageArgs(args);
 	}
 	
-	@Override
-	public void addItem(ReportItem item) 
-	{
-		super.addItem(item);
-		updateStatus(item.getStatus());
-	}
+    /**
+     * add but don't merge item in list
+     * 
+     * @param item
+     *           to add/merge
+     */
+    public void addItem(ReportItem item)
+    {
+       if (getItems() == null)
+          setItems(new ArrayList<ReportItem>());
+       updateStatus(item.getStatus());
+       getItems().add(item);
+    }
 	
 	
 }
