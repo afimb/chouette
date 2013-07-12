@@ -57,7 +57,7 @@ createdb -E UTF-8 -T template1 chouette_test
 Get git repository
 ```sh
 cd workspace
-git clone -b V2_0_3 git://github.com/dryade/chouette
+git clone -b V2_1_0 git://github.com/dryade/chouette
 cd chouette
 ```
 

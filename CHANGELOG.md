@@ -5,6 +5,12 @@
 * Amélioration de l'import GTFS
 ** consolidation de l'import
 ** clarification du rapport
+* Amélioration de l'export Neptune
+** ajout filtre sur une période calendaire
+* Amélioration de l'export GTFS
+** correction des courses(trip) en retour d'un trajet(route)
+** correction de la construction des calendriers (calendar et calendar_date)
+** export des correspondances (transfer)
 
 # Version 2.0.3 (27/05/13)
 * Import/export NeTex 
