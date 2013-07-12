@@ -26,6 +26,7 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.report.LimitedExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -243,7 +244,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					agencyFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadAgencies(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -261,7 +262,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					calendarFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadCalendars(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -279,7 +280,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					calendarFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadCalendarDates(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -296,7 +297,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				{
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadFrequencies(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -314,7 +315,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					routeFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadRoutes(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -332,7 +333,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					stopFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadStops(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -350,7 +351,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					stopTimeFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadStopTimes(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -368,7 +369,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					tripFound=true;
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadTrips(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 
@@ -397,7 +398,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				{
 					try 
 					{
-						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
+						ReportItem item = new LimitedExchangeReportItem(ExchangeReportItem.KEY.ZIP_ENTRY,Report.STATE.OK,entryName);
 						data.loadTransfers(zip.getInputStream(entry),item);
 						report.addItem(item);
 					} 

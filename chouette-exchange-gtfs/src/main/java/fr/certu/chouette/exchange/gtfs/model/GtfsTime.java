@@ -27,6 +27,8 @@ public class GtfsTime implements Comparable<GtfsTime>
 
 	public GtfsTime(String gtfsTimeFormat)
 	{
+		if (gtfsTimeFormat.contains(":"))
+		{
 		String[] token = gtfsTimeFormat.split(":");
 		long h = Long.parseLong(token[0]);
 		long m = Long.parseLong(token[1]);
@@ -40,6 +42,13 @@ public class GtfsTime implements Comparable<GtfsTime>
 
 		long t = (h*3600+m*60+s)*1000;
 		time = new Time(t);
+		}
+		else
+		{
+			long s = Long.parseLong(gtfsTimeFormat);
+			long t = s*1000;
+			time = new Time(t);
+		}
 	}
 
 	public GtfsTime(Time time,boolean tomorrow)
@@ -61,7 +70,11 @@ public class GtfsTime implements Comparable<GtfsTime>
 
 	}
 
-
+    public String toSeconds()
+    {
+    	long s = time.getTime()/1000;
+    	return Long.toString(s);
+    }
 
 	@Override
 	public int compareTo(GtfsTime other) 

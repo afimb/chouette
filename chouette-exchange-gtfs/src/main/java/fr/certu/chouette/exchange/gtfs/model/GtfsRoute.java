@@ -47,15 +47,15 @@ public class GtfsRoute extends GtfsBean
 	public static final String header = "route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color";
 	
     public String getCSVLine() {
-        String csvLine = routeId + ",";
+        String csvLine = toCSVString(routeId) + ",";
         if (agencyId != null)
-            csvLine += agencyId;
-        csvLine += "," + routeShortName + "," + routeLongName + ",";
+            csvLine += toCSVString(agencyId);
+        csvLine += "," + toCSVString(routeShortName) + "," + toCSVString(routeLongName) + ",";
         if (routeDesc != null)
-            csvLine += routeDesc;
+            csvLine += toCSVString(routeDesc);
         csvLine += "," + routeType + ",";
         if (routeURL != null)
-            csvLine += routeURL;
+            csvLine += toCSVString(routeURL.toString());
         csvLine += ",";
         if (routeColor != null)
             csvLine += Integer.toHexString(routeColor.getRGB()).toUpperCase().substring(2);

@@ -7,6 +7,7 @@
  */
 package fr.certu.chouette.exchange.gtfs.importer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +35,16 @@ import fr.certu.chouette.plugin.report.Report;
 public class ModelAssembler 
 {
 
-	@Getter @Setter private List<Line> lines;
-	@Getter @Setter private List<Route> routes;
-	@Getter @Setter private List<Company> companies;
+	@Getter @Setter private List<Line> lines = new ArrayList<Line>();
+	@Getter @Setter private List<Route> routes= new ArrayList<Route>();
+	@Getter @Setter private List<Company> companies = new ArrayList<Company>();
 	@Getter @Setter private PTNetwork ptNetwork;
-	@Getter @Setter private List<JourneyPattern> journeyPatterns;
-	@Getter @Setter private List<VehicleJourney> vehicleJourneys;
-	@Getter @Setter private List<StopPoint> stopPoints;
-	@Getter @Setter private List<StopArea> stopAreas;
-	@Getter @Setter private List<Timetable> timetables;
-	@Getter @Setter private List<ConnectionLink> connectionLinks;
+	@Getter @Setter private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>();
+	@Getter @Setter private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
+	@Getter @Setter private List<StopPoint> stopPoints = new ArrayList<StopPoint>();
+	@Getter @Setter private List<StopArea> stopAreas = new ArrayList<StopArea>();
+	@Getter @Setter private List<Timetable> timetables = new ArrayList<Timetable>();
+	@Getter @Setter private List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
 
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();

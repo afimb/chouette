@@ -30,12 +30,15 @@ public class GtfsAgency extends GtfsBean
 	public static final String header = "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone";
 
 	public String getCSVLine() {
-		String csvLine = agencyId + "," + agencyName + "," +agencyURL.toString() + ',' + agencyTimezone.getID() + ",";
+		String csvLine = toCSVString(agencyId) + "," 
+	                   + toCSVString(agencyName) + ","
+		               + toCSVString(agencyURL.toString())
+		               + ',' + toCSVString(agencyTimezone.getID()) + ",";
 		if (agencyLang != null)
-			csvLine += agencyLang;
+			csvLine += toCSVString(agencyLang);
 		csvLine += ",";
 		if (agencyPhone != null)
-			csvLine += agencyPhone;
+			csvLine += toCSVString(agencyPhone);
 		return csvLine;
 	}
 
@@ -61,4 +64,5 @@ public class GtfsAgency extends GtfsBean
 		return ret;
 	}
 	
+
 }

@@ -1783,7 +1783,7 @@ public class Command
 	  */
 	 protected Calendar toCalendar(String simpleval)
 	 {
-		 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		 try
 		 {
 			 Date d = sdf.parse(simpleval);
@@ -1793,8 +1793,8 @@ public class Command
 		 }
 		 catch (ParseException e)
 		 {
-			 logger.error("invalid date format : "+ simpleval+" dd/MM/yyyy expected");
-			 throw new RuntimeException("invalid date format : "+ simpleval+" dd/MM/yyyy expected");
+			 logger.error("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
+			 throw new RuntimeException("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
 		 }
 
 	 }

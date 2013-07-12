@@ -26,6 +26,25 @@ public abstract class GtfsBean
 	   missingData.add(data); 
    }
    
+   protected String toCSVString(String input)
+   {
+	   if (input.contains("\"") || input.contains (","))
+	   {
+		   StringBuilder builder = new StringBuilder();
+		   builder.append('"');
+		   for (char c : input.toCharArray()) 
+		   {
+			  if (c == '"')
+			  {
+				   builder.append('"');
+			  }
+			  builder.append(c);
+		   }
+		   builder.append('"');
+		   return builder.toString();
+	   }
+	   return input;
+   }
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */

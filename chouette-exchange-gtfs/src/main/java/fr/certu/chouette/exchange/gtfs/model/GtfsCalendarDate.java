@@ -31,7 +31,7 @@ public class GtfsCalendarDate extends GtfsBean
 
    
    public String getCSVLine() {
-      String csvLine = serviceId + "," + GtfsCalendar.sdf.format(date) + "," +exceptionType;
+      String csvLine = toCSVString(serviceId) + "," + GtfsCalendar.sdf.format(date) + "," +exceptionType;
       return csvLine;
    }
 

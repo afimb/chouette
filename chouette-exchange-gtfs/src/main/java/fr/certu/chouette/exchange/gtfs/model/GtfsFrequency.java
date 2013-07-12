@@ -30,7 +30,7 @@ public class GtfsFrequency extends GtfsBean
 	public static final String header = "trip_id,start_time,end_time,headway_secs"; //,exact_times";
 	
 	public String getCSVLine() {
-		String csvLine = tripId + ",";
+		String csvLine = toCSVString(tripId) + ",";
 		csvLine += startTime;
 		csvLine += ",";
 		csvLine += endTime;

@@ -48,18 +48,18 @@ public class GtfsTrip extends GtfsBean
    public static final String header = "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id";
    
    public String getCSVLine() {
-      String csvLine = routeId + "," + serviceId + "," + tripId + ",";
+      String csvLine = toCSVString(routeId) + "," + toCSVString(serviceId) + "," + toCSVString(tripId) + ",";
       if (tripHeadsign != null)
-         csvLine += tripHeadsign;
+         csvLine += toCSVString(tripHeadsign);
       csvLine += ",";
       if (tripShortName != null)
-         csvLine += tripShortName;
+         csvLine += toCSVString(tripShortName);
       csvLine += "," + directionId + ",";
 //      if (blockId != null)
 //         csvLine += blockId;
 //      csvLine += ",";
       if (shapeId != null)
-         csvLine += shapeId;
+         csvLine += toCSVString(shapeId);
       return csvLine;
    }
 

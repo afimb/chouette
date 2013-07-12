@@ -37,12 +37,12 @@ public class GtfsStop extends GtfsBean
 	public static final String header = "stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,location_type,parent_station";
 
 	public String getCSVLine() {
-		String csvLine = stopId + ",";
+		String csvLine = toCSVString(stopId) + ",";
 		if (stopCode != null)
-			csvLine += stopCode;
-		csvLine += "," + stopName + ",";
+			csvLine += toCSVString(stopCode);
+		csvLine += "," + toCSVString(stopName) + ",";
 		if (stopDesc != null)
-			csvLine += stopDesc;
+			csvLine += toCSVString(stopDesc);
 		csvLine += "," + stopLat + "," + stopLon + ",";
 //		if (zoneId != null)
 //			csvLine += zoneId;
@@ -54,7 +54,7 @@ public class GtfsStop extends GtfsBean
 			csvLine += locationType;
 		csvLine += ",";
 		if (parentStation != null)
-			csvLine += parentStation;
+			csvLine += toCSVString(parentStation);
 		return csvLine;
 	}
 	@Override

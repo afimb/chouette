@@ -47,7 +47,7 @@ public class GtfsStopTimeFactory extends GtfsBeanFactory<GtfsStopTime>
 		bean.setArrivalTime(getTimeValue("arrival_time", csvLine));
 		bean.setDepartureTime(getTimeValue("departure_time", csvLine));
 		bean.setStopId(getValue("stop_id", csvLine));
-		bean.setStopSequence(getIntValue("stop_sequence", csvLine,0));
+		bean.setStopSequence(getIntValue("stop_sequence", csvLine,-1));
 		bean.setStopHeadsign(getValue("stop_headsign", csvLine));
 		bean.setPickupType(getIntValue("pickup_type", csvLine,0));
 		bean.setDropOffType(getIntValue("drop_off_type", csvLine,0));

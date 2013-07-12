@@ -55,6 +55,7 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.report.LimitedExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.plugin.report.Report;
 
@@ -249,22 +250,24 @@ public class NeptuneConverter
 		}
 		data.getStops().clear();
 		// connect bps to parents
+		LimitedExchangeReportItem stopReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.STOP_ANALYSE, Report.STATE.OK);
 		for (StopArea bp : bps) 
 		{
+			
 			if (bp.getParentObjectId() != null)
 			{
 				StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
 				if (parent == null)
 				{
 					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
-					report.addItem(item);
+					stopReport.addItem(item);
 					logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
 					bp.setParentObjectId(null);
 				}
 				else if (!parent.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
 				{
 					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
-					report.addItem(item);
+					stopReport.addItem(item);
 					logger.error("stop "+bp.getName()+" has wrong parent station type "+bp.getParentObjectId());
 					bp.setParentObjectId(null);
 				}
@@ -277,6 +280,11 @@ public class NeptuneConverter
 			}
 		}
 
+		if (!stopReport.getStatus().equals(Report.STATE.OK))
+		{
+			report.addItem(stopReport);
+		}
+		
 		// add commercials
 		List<StopArea> areas = new ArrayList<StopArea>();
 		if (maxDistanceForCommercialStop > 0)
@@ -331,6 +339,7 @@ public class NeptuneConverter
 
 		logger.info("process vehicleJourneys :" + data.getTrips().size());
 		int count = 0;
+		LimitedExchangeReportItem vjReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.VEHICLE_JOURNEY_ANALYSE, Report.STATE.OK);
 		for (GtfsTrip gtfsTrip : data.getTrips().getAll()) 
 		{
 			count++;
@@ -344,7 +353,7 @@ public class NeptuneConverter
 			if (timetable == null) 
 			{
 				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"trips.txt",gtfsTrip.getFileLineNumber(),"service_id",gtfsTrip.getServiceId());
-				report.addItem(item);
+				vjReport.addItem(item);
 				logger.warn("service "+gtfsTrip.getServiceId()+" not found for trip "+gtfsTrip.getTripId());
 			}
 			else
@@ -414,7 +423,7 @@ public class NeptuneConverter
 				if (spor == null)
 				{
 					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"stop_times.txt",gtfsStopTime.getFileLineNumber(),"stop_id",gtfsStopTime.getStopId());
-					report.addItem(item);
+					vjReport.addItem(item);
 					logger.error("StopPoint " + stopKey + " not found");
 					validVehicleJourney = false;
 					break;
@@ -456,6 +465,11 @@ public class NeptuneConverter
 			vjFactory.flush(vehicleJourney);
 		}
 		logger.debug("process "+count+" vehicleJourneys ...");
+		if (!vjReport.getStatus().equals(Report.STATE.OK))
+		{
+			report.addItem(vjReport);
+		}
+		
 
 		// free some unused maps 
 		data.getTrips().clear();
@@ -519,7 +533,7 @@ public class NeptuneConverter
 		// ConnectionLinks
 		List<ConnectionLink> links = new ArrayList<ConnectionLink>();
 		List<ConnectionLink> excludedLinks = new ArrayList<ConnectionLink>();
-
+		LimitedExchangeReportItem connectionLinkReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.CONNECTION_LINK_ANALYSE, Report.STATE.OK);
 		for (GtfsTransfer transfer : data.getTransfers().getAll())
 		{
 			ConnectionLink link = connectionLinkProducer.produce(transfer, report);
@@ -530,12 +544,12 @@ public class NeptuneConverter
 				if (link.getStartOfLink() == null)
 				{
 					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"transfers.txt",transfer.getFileLineNumber(),"from_stop_id",transfer.getFromStopId());
-					report.addItem(item);
+					connectionLinkReport.addItem(item);
 				}
 				if (link.getEndOfLink() == null)
 				{
 					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"transfers.txt",transfer.getFileLineNumber(),"to_stop_id",transfer.getToStopId());
-					report.addItem(item);
+					connectionLinkReport.addItem(item);
 				}
 				logger.error("line "+transfer.getFileLineNumber()+" invalid transfer : form or to stop unknown");
 				continue;
@@ -556,6 +570,12 @@ public class NeptuneConverter
 			}
 		}
 
+		if (!connectionLinkReport.getStatus().equals(Report.STATE.OK))
+		{
+			report.addItem(connectionLinkReport);
+		}
+		
+
 		if (maxDistanceForConnectionLink > 0.)
 		{
 			if (links.size() > 0)
@@ -564,8 +584,8 @@ public class NeptuneConverter
 			}
 			links.addAll(connectionLinkGenerator.createConnectionLinks(commercials,
 					maxDistanceForConnectionLink,links,excludedLinks));
-			assembler.setConnectionLinks(links);
 		}
+		assembler.setConnectionLinks(links);
 
 		return assembler;
 	}

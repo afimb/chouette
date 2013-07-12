@@ -36,7 +36,7 @@ public class GtfsCalendar extends GtfsBean
 	public static final String header = "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date";
 
 	public String getCSVLine() {
-		String csvLine = serviceId + ",";
+		String csvLine = toCSVString(serviceId) + ",";
 		csvLine += (monday ? "1," : "0,");
 		csvLine += (tuesday ? "1," : "0,");
 		csvLine += (wednesday ? "1," : "0,");

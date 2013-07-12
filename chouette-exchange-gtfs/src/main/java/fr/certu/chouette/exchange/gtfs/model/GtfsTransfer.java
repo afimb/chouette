@@ -35,9 +35,9 @@ public class GtfsTransfer extends GtfsBean
    @Getter @Setter private GtfsTime minTransferTime  = null;
 
    public String getCSVLine() {
-      String csvLine = fromStopId + "," + toStopId + "," + transferType.ordinal() + ",";
+      String csvLine = toCSVString(fromStopId) + "," + toCSVString(toStopId) + "," + transferType.ordinal() + ",";
       if (transferType.equals(Type.MINIMAL))
-         csvLine += minTransferTime;
+         csvLine += minTransferTime.toSeconds();
       return csvLine;
    }
 
