@@ -1,16 +1,16 @@
-# Version 2.1.0 (en cours)
+# Version 2.1.0 (15/07/13)
 * Suppression des coordonnées projetées en base
-** calcul à la volée pour les exports
-** conversion à la volée pour les imports
+  * calcul à la volée pour les exports
+  * conversion à la volée pour les imports
 * Amélioration de l'import GTFS
-** consolidation de l'import
-** clarification du rapport
+  * consolidation de l'import
+  * clarification du rapport
 * Amélioration de l'export Neptune
-** ajout filtre sur une période calendaire
+  * ajout filtre sur une période calendaire
 * Amélioration de l'export GTFS
-** correction des courses(trip) en retour d'un trajet(route)
-** correction de la construction des calendriers (calendar et calendar_date)
-** export des correspondances (transfer)
+  * correction des courses(trip) en retour d'un trajet(route)
+  * correction de la construction des calendriers (calendar et calendar_date)
+  * export des correspondances (transfer)
 
 # Version 2.0.3 (27/05/13)
 * Import/export NeTex 
@@ -60,9 +60,9 @@
 * pour la migration des bases v1.6 et en deça : ajout d'une commande à chouette-command qui analyse les identifiants dans la base et produit un fichier SQL pour corriger ceux qui ne respectent pas le format TRIDENT/NEPTUNE; ce fichier est ensuite à corriger à la main et à passer par psql pour appliquer les corrections
 * suppression des doublons dans la table TimetableVehicleJourney dans la procédure de migration
 * correction des bugs de la version 1.7.0 :
-**  création de nouveaux horaires
-**  validation des formulaires
-**  export Neptune ne contient pas les références waybackRouteId dans les Route
+  *  création de nouveaux horaires
+  *  validation des formulaires
+  *  export Neptune ne contient pas les références waybackRouteId dans les Route
 		
 # Version 1.7.0 (07/11/11)
 

@@ -12,7 +12,7 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 * chouette-gui-command : Command Line tool used by Ruby Chouette2 GUI for Import/Export/Validation purpose
 * chouette-hibernate-dao : Access to the database via hibernate 
 * chouette-jdbc-dao : Access to the database via jdbc (mass upload only)
-* chouette-services : Some geographic and cleaning tools
+* chouette-services : Some cleaning tools (deprecated)
 * chouette-validation : Validate the data from import or database
 
 For more information see [Architecture Documentation](http://www.chouette.mobi/IMG/pdf/DARC_CHOUETTE_2-0.pdf) 
