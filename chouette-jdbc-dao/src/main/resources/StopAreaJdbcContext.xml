@@ -104,7 +104,7 @@
 				lift_availability = ?,
 				mobility_restricted_suitability = ?,
 				stairs_availability = ?,
-				int_user_needs = ?,
+				int_user_needs = ?
 				WHERE objectid = ?
 			</value>
 		</property>
