@@ -126,6 +126,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 	public void complete() 
 	{
 		super.complete();
+		if (!hasCoordinates()) return;
 		geographicService.convertToProjection(this);
 	}
 

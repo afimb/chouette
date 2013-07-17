@@ -79,7 +79,7 @@ public class NeptuneData
 					{
 						StopArea area = point.getContainedInStopArea();
 						physicalStops.add(area);
-						if (area.getParent() != null)
+						if (area.getParent() != null && area.getParent().hasCoordinates())
 						{
 							commercialStops.add(area.getParent());
 						}
