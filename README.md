@@ -1,4 +1,4 @@
-# Chouette [![Build Status](https://travis-ci.org/dryade/chouette.png)](http://travis-ci.org/dryade/chouette?branch=master)
+# Chouette [![Build Status](https://travis-ci.org/afimb/chouette.png)](http://travis-ci.org/afimb/chouette?branch=master)
 
 Chouette is a java open source project on transport offer. It's divided in differents module : 
 * chouette-castor-neptune : Data model built from Neptune XSD
@@ -26,7 +26,7 @@ Feel free to test and access to the demonstration web site at [http://www.chouet
 Requirements
 ------------
  
-This code has been run and tested on [Travis](http://travis-ci.org/dryade/chouette?branch=master) with : 
+This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouette?branch=master) with : 
 * oraclejdk7
 * openjdk7
 * openjdk6
@@ -44,9 +44,9 @@ sudo apt-get install git
 Installation
 ------------
  
-Install [Postgres](https://github.com/dryade/chouette/blob/master/doc/install/postgresql.md) 
+Install [Postgres](./doc/install/postgresql.md) 
 
-Install [Maven]((https://github.com/dryade/chouette/blob/master/doc/install/maven.md)
+Install [Maven](./doc/install/maven.md)
 
 Create test and development databases : 
 ```sh
@@ -71,8 +71,8 @@ mvn test
 More Information
 ----------------
  
-More information can be found on the [project website on GitHub](http://github.com/dryade/chouette). 
-There is extensive usage documentation available [on the wiki](https://github.com/dryade/chouette/wiki).
+More information can be found on the [project website on GitHub](.). 
+There is extensive usage documentation available [on the wiki](../../wiki).
 
 Example Usage 
 -------------
@@ -85,14 +85,14 @@ mvn -Dmaven.test.skip=true install
 License
 -------
  
-This project is licensed under the CeCILL-B license, a copy of which can be found in the [LICENSE](https://github.com/dryade/chouette/blob/master/LICENSE.md) file.
+This project is licensed under the CeCILL-B license, a copy of which can be found in the [LICENSE](./LICENSE.md) file.
 
 Release Notes
 -------------
 
-The release notes can be found in [CHANGELOG](https://github.com/dryade/chouette/blob/master/CHANGELOG.md) file 
+The release notes can be found in [CHANGELOG](./CHANGELOG.md) file 
  
 Support
 -------
  
-Users looking for support should file an issue on the GitHub issue tracking page (https://github.com/dryade/chouette/issues), or file a pull request (https://github.com/dryade/chouette/pulls) if you have a fix available.
+Users looking for support should file an issue on the GitHub [issue tracking page](../../issues), or file a [pull request](../../pulls) if you have a fix available.
