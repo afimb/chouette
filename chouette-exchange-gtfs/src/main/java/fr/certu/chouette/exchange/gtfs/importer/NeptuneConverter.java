@@ -253,7 +253,7 @@ public class NeptuneConverter
 		LimitedExchangeReportItem stopReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.STOP_ANALYSE, Report.STATE.OK);
 		for (StopArea bp : bps) 
 		{
-			
+
 			if (bp.getParentObjectId() != null)
 			{
 				StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
@@ -284,7 +284,7 @@ public class NeptuneConverter
 		{
 			report.addItem(stopReport);
 		}
-		
+
 		// add commercials
 		List<StopArea> areas = new ArrayList<StopArea>();
 		if (maxDistanceForCommercialStop > 0)
@@ -355,15 +355,22 @@ public class NeptuneConverter
 				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"trips.txt",gtfsTrip.getFileLineNumber(),"service_id",gtfsTrip.getServiceId());
 				vjReport.addItem(item);
 				logger.warn("service "+gtfsTrip.getServiceId()+" not found for trip "+gtfsTrip.getTripId());
+				continue;
 			}
-			else
-			{
-				vehicleJourney.addTimetable(timetable);
-				timetable.addVehicleJourney(vehicleJourney);
-			}
-			vehicleJourneys.add(vehicleJourney);
 			String routeId = gtfsTrip.getRouteId()+"_"+gtfsTrip.getDirectionId();
 			Route route = mapRouteByRouteId.get(routeId);
+			if (route == null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"trips.txt",gtfsTrip.getFileLineNumber(),"route_id",gtfsTrip.getRouteId());
+				vjReport.addItem(item);
+				logger.warn("route "+gtfsTrip.getRouteId()+" not found for trip "+gtfsTrip.getTripId());
+				continue;
+
+			}
+
+			vehicleJourney.addTimetable(timetable);
+			timetable.addVehicleJourney(vehicleJourney);
+			vehicleJourneys.add(vehicleJourney);
 			mapVehicleJourneyByTripId.put(gtfsTrip.getTripId(), vehicleJourney);
 			// stopSequence
 			List<GtfsStopTime> stopTimesOfATrip = data.getStopTimes().getAllFromParent(gtfsTrip.getTripId());
@@ -469,7 +476,7 @@ public class NeptuneConverter
 		{
 			report.addItem(vjReport);
 		}
-		
+
 
 		// free some unused maps 
 		data.getTrips().clear();
@@ -574,7 +581,7 @@ public class NeptuneConverter
 		{
 			report.addItem(connectionLinkReport);
 		}
-		
+
 
 		if (maxDistanceForConnectionLink > 0.)
 		{
