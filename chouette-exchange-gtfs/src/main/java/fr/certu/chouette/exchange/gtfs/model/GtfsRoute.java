@@ -82,13 +82,9 @@ public class GtfsRoute extends GtfsBean
 			addMissingData("route_id");
 			ret = false;
 		}
-		if (routeShortName == null)
+		if (routeShortName == null && routeLongName == null)
 		{
 			addMissingData("route_short_name");
-			ret = false;
-		}
-		if (routeLongName == null)
-		{
 			addMissingData("route_long_name");
 			ret = false;
 		}

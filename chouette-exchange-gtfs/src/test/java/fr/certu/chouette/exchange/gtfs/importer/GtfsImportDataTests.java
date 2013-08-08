@@ -76,8 +76,8 @@ public class GtfsImportDataTests extends AbstractTestNGSpringContextTests
 	   FileInputStream input = new FileInputStream(new File(path,"routes_missing_data.txt"));
 	   data.loadRoutes(input, report);
 	   printReport(report);    
-	   Assert.assertEquals(data.getRoutes().size(), 1,"only 1 route must be loaded");
-	   Assert.assertEquals(report.getItems().size(), 5,"report must have items ");
+	   Assert.assertEquals(data.getRoutes().size(), 3,"only 3 routes must be loaded");
+	   Assert.assertEquals(report.getItems().size(), 3,"report must have items ");
    }
 
    @Test (groups = {"GtfsData"}, description = "GtfsData should report missing mandatory data on stop_times.txt")
