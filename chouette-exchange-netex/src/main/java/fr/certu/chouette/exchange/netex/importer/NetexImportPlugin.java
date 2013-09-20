@@ -203,7 +203,7 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 			ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,ex.getLocalizedMessage());
 			fileReportItem.addItem(errorItem);
 			// log
-			logger.error(ex.getMessage()); 
+			logger.error(ex.getMessage(),ex); 
 		}
 
 		return line;
@@ -310,7 +310,7 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 				fileReportItem.addItem(errorItem);
 				// log
-				logger.error(e.getMessage());
+				logger.error(e.getMessage(),e);
 				logger.error(e.getLocalizedMessage());
 				continue;
 			}
