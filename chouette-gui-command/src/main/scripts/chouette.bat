@@ -23,4 +23,4 @@ if "%arguments%" == "" set "arguments=%*"
 
 cd /D %dirname%
 
-"%JAVA_HOME%\bin\java" %options% -Duser.timezone=UTC -Xmx1200M -jar chouette-gui-command-2.0.3.jar %arguments%
+"%JAVA_HOME%\bin\java" %options% -Duser.timezone=UTC -Xmx1200M -jar ${project.build.finalName}.jar %arguments%

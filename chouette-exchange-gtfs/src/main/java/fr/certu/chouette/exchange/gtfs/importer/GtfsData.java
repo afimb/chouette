@@ -16,6 +16,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,14 +167,18 @@ public class GtfsData
 	private <T extends GtfsBean> void loadGtfsBean(String fileName,String beanName,InputStream input,GtfsBeanFactory<T> factory,DbList<T> beans,Report report) throws Exception
 	{
 		// List<String[]> fileLines = loadFile(input);
+		// TODO: check bom
 		CSVReader reader = new CSVReader(new InputStreamReader(input, "UTF-8"), ',', '"' );
 		String[] csvLine = reader.readNext();
 
 		int columns = csvLine.length;
 
+		logger.debug(fileName+"header = "+Arrays.toString(csvLine));
+		
 		factory.initHeader(csvLine);
 
 		int lineNumber = 1;
+		int warnCount = 0;
 		while ((csvLine = reader.readNext()) != null)
 		{
 			lineNumber++;
@@ -182,7 +187,12 @@ public class GtfsData
 				T bean = factory.getNewGtfsBean(lineNumber,csvLine,report);
 				if (bean == null)
 				{
+					if(warnCount < 6)
+					{
 					logger.warn(fileName+" : line "+(lineNumber)+" has missing mandatory data, ignored");        		 
+					logger.warn(fileName+"line = "+Arrays.toString(csvLine));
+					}
+                    warnCount++;
 				}
 				else
 				{

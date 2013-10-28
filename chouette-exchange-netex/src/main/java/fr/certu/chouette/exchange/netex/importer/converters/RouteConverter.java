@@ -198,7 +198,15 @@ public class RouteConverter extends GenericConverter
             autoPilot4.resetXPath();
             
             StopPoint stopPoint = stopPointByObjectId.get( stopPointId);
-            stopPoint.setContainedInStopAreaId( quayId);
+            if (stopPoint == null)
+            {
+            	// TODO : manage error
+            	logger.error("missing ScheduledStopPoint "+stopPointId);
+            } 
+            else
+            {
+               stopPoint.setContainedInStopAreaId( quayId);
+            }
         }
         nav.pop();
         autoPilot2.resetXPath();
