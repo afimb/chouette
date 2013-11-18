@@ -1,16 +1,16 @@
 package fr.certu.chouette.exchange.netex.blueprint;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.Nullable;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
-import fr.certu.chouette.model.neptune.AreaCentroid;
+
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
-import java.math.BigDecimal;
-import java.util.UUID;
 
 @Blueprint(StopPoint.class)
 public class StopPointBlueprint {

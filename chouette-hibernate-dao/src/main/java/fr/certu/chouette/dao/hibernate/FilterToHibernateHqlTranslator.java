@@ -9,12 +9,8 @@ import java.util.Map.Entry;
 
 import lombok.Getter;
 
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.annotations.common.util.StringHelper;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.Type;
 
@@ -167,8 +163,9 @@ public class FilterToHibernateHqlTranslator {
          return null;
       case SQL_WHERE : 
          return null;
+      default:
+    	  return null;
       }
-      return null;
    }
 
    private String translateCombined(ClassMetadata metaData, Filter clause, Map<String, String> mapJoinBeans)
@@ -190,8 +187,9 @@ public class FilterToHibernateHqlTranslator {
 
          return null;
       }
+		default: 
+			return null; // TODO : throw exception
       }
-      return null;
    }
 
 
@@ -283,8 +281,9 @@ public class FilterToHibernateHqlTranslator {
       //			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
       //		case SQL_WHERE : 
       //			return Restrictions.sqlRestriction(propertyName);
-      }
+      default: 
       throw new NullPointerException(clause.getType()+" to HQL not yet implemented");
+      }
    }
 
    private String translateEmptyToHQLCount(ClassMetadata metadata) 
@@ -331,8 +330,9 @@ public class FilterToHibernateHqlTranslator {
       //			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
       //		case SQL_WHERE : 
       //			return Restrictions.sqlRestriction(propertyName);
-      }
+      default: 
       throw new NullPointerException(clause.getType()+" to HQL not yet implemented");
+      }
    }
 
    private String toHQL(Object[] array) 

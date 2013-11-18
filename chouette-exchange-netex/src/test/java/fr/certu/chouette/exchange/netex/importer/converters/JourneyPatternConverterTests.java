@@ -1,22 +1,25 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.vividsolutions.jts.util.Assert;
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.ParseException;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import java.io.File;
-import java.io.FileInputStream;
-import java.text.ParseException;
-import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
@@ -33,6 +36,7 @@ public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTes
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
+        fis.close();
         
         VTDGen vg = new VTDGen();
         vg.setDoc(b);
@@ -49,14 +53,13 @@ public class JourneyPatternConverterTests extends AbstractTestNGSpringContextTes
     public void verifyJourneyPatternConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<JourneyPattern> journeyPatterns = journeyPatternConverter.convert();
         
-        int result = -1;
         autoPilot.selectXPath("//netex:ServicePattern//netex:Name");
         int counter = 0;
         
-        while( (result = autoPilot.evalXPath()) != -1 )
+        while( autoPilot.evalXPath() != -1 )
         {       
              int position = nav.getText();                    
-             Assert.equals(nav.toNormalizedString(position), journeyPatterns.get(counter).getName());
+             Assert.assertEquals(nav.toNormalizedString(position), journeyPatterns.get(counter).getName());
              counter++;
         }
         

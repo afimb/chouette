@@ -69,11 +69,9 @@ public class StopAreaConverter extends GenericConverter
 		autoPilot.selectXPath( xPathFrames()+"netex:routingConstraintZones/"+
 				"netex:RoutingConstraintZone");
 
-		int result = -1;
-
 		nav.push();
                 logger.info( "ITL reading");
-		while( (result = autoPilot.evalXPath()) != -1 )
+		while(autoPilot.evalXPath() != -1 )
 		{  
                     String zoneUse = subXpathSelection("ZoneUse");
                     
@@ -101,10 +99,9 @@ public class StopAreaConverter extends GenericConverter
 		autoPilot.selectXPath("//netex:ServiceFrame/netex:tariffZones/"+
 				"netex:TariffZone");
 
-		int result = -1;
 
 		nav.push();
-		while( (result = autoPilot.evalXPath()) != -1 )
+		while( autoPilot.evalXPath() != -1 )
 		{  
 			String tariffId = subXpathSelection("@id");
 			String name = subXpathSelection("netex:Name");
@@ -119,10 +116,8 @@ public class StopAreaConverter extends GenericConverter
 				"netex:StopPlace");
 		Map<String,String> stopPlaceParentByStopPlace = new HashMap<String, String>();;
 
-		int result = -1;
-
 		nav.push();
-		while( (result = autoPilot2.evalXPath()) != -1 )
+		while( autoPilot2.evalXPath() != -1 )
 		{  
 			StopArea stopArea = new StopArea();
 
@@ -169,10 +164,8 @@ public class StopAreaConverter extends GenericConverter
 				"netex:StopPlace"+
 				"[@id='"+stopPlace.getObjectId()+"']/netex:quays/netex:Quay");
 
-		int result = -1;
-
 		nav.push();
-		while( (result = autoPilot2.evalXPath()) != -1 )
+		while( autoPilot2.evalXPath() != -1 )
 		{  
 			StopArea stopArea = new StopArea();
 

@@ -4,12 +4,13 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import fr.certu.chouette.model.neptune.GroupOfLine;
 import java.text.ParseException;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import org.testng.annotations.Test;
+
+import fr.certu.chouette.model.neptune.GroupOfLine;
 
 @Test(groups = {"GroupOfLines"}, description = "Validate GroupOfLines export in NeTEx format")
 public class GroupOfLinesTest extends ChouetteModelTest {

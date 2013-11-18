@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF8"?>
-<ChouettePTNetwork>
+<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:siri="http://www.siri.org.uk/siri">
     <PTNetwork>
         <objectId>NINOXE:PtNetwork:13689686</objectId>
         <objectVersion>1</objectVersion>

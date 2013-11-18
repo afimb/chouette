@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 

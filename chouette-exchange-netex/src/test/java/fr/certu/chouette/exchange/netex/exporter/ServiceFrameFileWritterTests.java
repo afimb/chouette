@@ -1,27 +1,28 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.exporter.NetexFileWriter;
-import com.tobedevoured.modelcitizen.ModelFactory;
-import fr.certu.chouette.exchange.netex.ComplexModelFactory;
-import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
-import javax.xml.xpath.XPathExpressionException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.Test;
-
-import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.Route;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+
+import com.tobedevoured.modelcitizen.ModelFactory;
+
+import fr.certu.chouette.exchange.netex.ComplexModelFactory;
+import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
+import fr.certu.chouette.model.neptune.Line;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")

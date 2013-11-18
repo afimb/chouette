@@ -8,7 +8,6 @@
 
 package fr.certu.chouette.exchange.gtfs.model.factory;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

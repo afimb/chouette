@@ -4,14 +4,12 @@
  */
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-import fr.certu.chouette.model.neptune.Company;
-import java.text.ParseException;
 import org.apache.log4j.Logger;
+
+import com.ximpleware.AutoPilot;
+import com.ximpleware.VTDNav;
+
+import fr.certu.chouette.model.neptune.Company;
 
 /**
  *

@@ -1,27 +1,21 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import java.io.IOException;
-import java.util.List;
-
-import fr.certu.chouette.model.neptune.Line;
-
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
@@ -29,6 +23,11 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.DateTool;
 import org.apache.velocity.tools.generic.EscapeTool;
 import org.springframework.ui.velocity.VelocityEngineUtils;
+
+import fr.certu.chouette.exchange.netex.ModelTranslator;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 
 public class NetexFileWriter {
 

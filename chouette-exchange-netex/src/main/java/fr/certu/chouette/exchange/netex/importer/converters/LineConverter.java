@@ -1,19 +1,23 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import lombok.Getter;
+
+import org.apache.log4j.Logger;
+
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
 import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
-import lombok.Getter;
-import org.apache.log4j.Logger;
 
 public class LineConverter extends GenericConverter 
 {    
@@ -36,10 +40,9 @@ public class LineConverter extends GenericConverter
     
     public Line convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
-        int result = -1;
         pilot.selectXPath("//netex:Line");
         
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {
             // Mandatory
             line.setObjectId( (String)parseMandatoryAttribute(nav, "id"));

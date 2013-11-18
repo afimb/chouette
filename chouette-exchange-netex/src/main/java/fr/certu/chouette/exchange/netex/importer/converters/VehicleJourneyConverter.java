@@ -55,13 +55,12 @@ public class VehicleJourneyConverter extends GenericConverter
         timetablesByVehicleJourneyObjectId.clear();
         vehicleJourneysByJPObjectId.clear();
         
-        int result = -1;
         autoPilot.selectXPath("/netex:PublicationDelivery/netex:dataObjects/"+
         "netex:CompositeFrame/netex:frames/" +
         "/netex:TimetableFrame/netex:vehicleJourneys/netex:ServiceJourney");
 
         nav.push();
-        while( (result = autoPilot.evalXPath()) != -1 )
+        while( autoPilot.evalXPath() != -1 )
         {                        
             VehicleJourney vehicleJourney = new VehicleJourney();
             // Mandatory                        

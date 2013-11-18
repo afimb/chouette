@@ -11,13 +11,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsCalendarProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
-import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;

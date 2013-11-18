@@ -74,8 +74,9 @@ public class FilterToHibernateClauseTranslator {
 			}
 			return criterion;
 		}
+		default: 
+			return null; // TODO : throw exception
 		}
-		return null;
 	}
 
 	/**
@@ -111,9 +112,11 @@ public class FilterToHibernateClauseTranslator {
 		case BETWEEN : 
 			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
 		case SQL_WHERE : 
-			return Restrictions.sqlRestriction(propertyName);
+			return Restrictions.sqlRestriction(propertyName);	
+		default: 
+			return null; // TODO : throw exception
 		}
-		return null; // TODO : throw exception
+		
 	}
 
 	/**
@@ -190,9 +193,10 @@ public class FilterToHibernateClauseTranslator {
 			}
 			return criterion;
 		}
+		default:
+			return null;
 		}
 
-		return null;
 	}
 
 
@@ -297,8 +301,9 @@ public class FilterToHibernateClauseTranslator {
 		//			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
 		//		case SQL_WHERE : 
 		//			return Restrictions.sqlRestriction(propertyName);
-		}
+        default:
 		throw new NullPointerException(clause.getType()+" to HQL not yet implemented");
+		}
 	}
 
 	private String translateEmptyToHQLCount(ClassMetadata metadata) 
@@ -345,8 +350,9 @@ public class FilterToHibernateClauseTranslator {
 		//			return Restrictions.between(propertyName, clause.getFirstValue(), clause.getSecondValue());
 		//		case SQL_WHERE : 
 		//			return Restrictions.sqlRestriction(propertyName);
-		}
+		default:
 		throw new NullPointerException(clause.getType()+" to HQL not yet implemented");
+		}
 	}
 
 	private String toHQL(Object[] array) 

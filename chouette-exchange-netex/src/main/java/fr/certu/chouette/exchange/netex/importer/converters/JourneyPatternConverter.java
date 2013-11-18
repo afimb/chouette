@@ -36,10 +36,9 @@ public class JourneyPatternConverter extends GenericConverter
     public List<JourneyPattern> convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
         journeyPatterns.clear();
-        int result = -1;
         autoPilot.selectXPath("//netex:servicePatterns//netex:ServicePattern");
         
-        while( (result = autoPilot.evalXPath()) != -1 )
+        while( autoPilot.evalXPath() != -1 )
         {                        
             JourneyPattern journeyPattern = new JourneyPattern();
             // Mandatory                        

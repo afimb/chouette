@@ -32,10 +32,9 @@ public class GroupOfLinesConverter extends GenericConverter {
     {
         groups.clear();
         
-        int result = -1;
         pilot.selectXPath("//netex:ServiceFrame/netex:groupsOfLines/netex:GroupOfLines");
         
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {
             GroupOfLine group = new GroupOfLine();
             

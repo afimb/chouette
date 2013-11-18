@@ -937,9 +937,7 @@ public class Command
 
 		List<Report> reports = new ArrayList<Report>();
 		// check if import exists and accept unzip before call
-		String format = getSimpleString(parameters,"format");
 		String inputFile = getSimpleString(parameters,"inputfile");
-		// String fileFormat = getSimpleString(parameters,"fileformat","");
 		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
 		if (!importDao.exists(importId))
 		{
@@ -948,9 +946,11 @@ public class Command
             return 1;
 		}
 		GuiImport guiImport = importDao.get(importId);
-		logger.info("Export data for export id "+importId);
-		logger.info("  type : "+guiImport.getType());
-		logger.info("  options : "+guiImport.getOptions());
+		logger.info("Import data for inport id "+importId);
+		logger.info("  format : "+guiImport.getFormat());
+		logger.info("  options : "+guiImport.getParameters());
+		
+		String format = guiImport.getFormat().toUpperCase(); // TODO : check values 
 
 		Referential referential = referentialDao.get(guiImport.getReferentialId());
 		logger.info("Referential "+guiImport.getReferentialId());

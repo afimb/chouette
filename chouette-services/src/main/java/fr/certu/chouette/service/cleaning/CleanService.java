@@ -73,9 +73,6 @@ public class CleanService implements ICleanService
          List<Timetable> timetables = timetableManager.getAll(null);
          List<Timetable> timetablesToUpdate = new ArrayList<Timetable>();
          List<Timetable> timetablesToDelete = new ArrayList<Timetable>();
-         long numberOfDates = 0;
-         long numberOfPeriodes = 0;
-         long numberOfPeriodesUpdates = 0;
          for (Timetable timetable : timetables)
          {
             boolean update = false;
@@ -86,13 +83,11 @@ public class CleanService implements ICleanService
                if (date == null)
                {
                   logger.error("null date for "+timetable.getObjectId());
-                  numberOfDates++;
                   iterator.remove();
                   update = true;
                }
                else if (checkDate(date, boundaryDate, before))
                {
-                  numberOfDates++;
                   iterator.remove();
                   update = true;
                }
@@ -103,13 +98,11 @@ public class CleanService implements ICleanService
                Period period = iterator.next();
                if (checkPeriod(period, boundaryDate, before))
                {
-                  numberOfPeriodes++;
                   iterator.remove();
                   update = true;
                }
                else if (shortenPeriod(period, boundaryDate, before))
                {
-                  numberOfPeriodesUpdates++;
                   update = true;
                }
             }

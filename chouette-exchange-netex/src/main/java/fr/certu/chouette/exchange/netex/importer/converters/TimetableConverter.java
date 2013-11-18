@@ -1,22 +1,26 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import lombok.Getter;
+
+import org.apache.log4j.Logger;
+
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
-import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.sql.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.xml.datatype.DatatypeConfigurationException;
-import lombok.Getter;
-import org.apache.log4j.Logger;
 
 public class TimetableConverter extends GenericConverter 
 {    
@@ -41,10 +45,9 @@ public class TimetableConverter extends GenericConverter
         timetables.clear();
         timetablesByObjectId.clear();
         
-        int result = -1;
         autoPilot.selectXPath("//netex:ServiceCalendarFrame");        
         
-        while( (result = autoPilot.evalXPath()) != -1 )
+        while( autoPilot.evalXPath() != -1 )
         {                     
             Timetable timetable = new Timetable();
             

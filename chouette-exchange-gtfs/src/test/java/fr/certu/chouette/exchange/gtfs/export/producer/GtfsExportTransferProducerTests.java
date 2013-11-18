@@ -1,8 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.export.producer;
 
-import java.sql.Date;
 import java.sql.Time;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,21 +10,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsCalendarProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer.Type;
-import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.Timetable;
-import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})

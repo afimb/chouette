@@ -62,10 +62,9 @@ public class RouteConverter extends GenericConverter
         routes.clear();
         
         autoPilot.selectXPath("//netex:ServiceFrame/netex:routes/netex:Route");
-        int result = -1;
         
         nav.push();
-        while( (result = autoPilot.evalXPath()) != -1 )
+        while( autoPilot.evalXPath() != -1 )
         {  
             Route route = new Route();
             
@@ -122,7 +121,6 @@ public class RouteConverter extends GenericConverter
     }
 
     private void convertDirectionProperties( Route route, String directionObjectId)  throws XPathParseException, NavException, ParseException, XPathEvalException {
-        int result = -1;
         
         // lecture des PassengerStopAssignment
         AutoPilot autoPilot2 = createAutoPilot(nav);
@@ -131,7 +129,7 @@ public class RouteConverter extends GenericConverter
         autoPilot2.selectXPath(xPath);
         
         nav.push();
-        while( (result = autoPilot2.evalXPath()) != -1 )
+        while( autoPilot2.evalXPath() != -1 )
         {  
             AutoPilot autoPilot3 = createAutoPilot(nav);
             autoPilot3.selectXPath("netex:Name");
@@ -153,7 +151,6 @@ public class RouteConverter extends GenericConverter
         autoPilot2.resetXPath();
     }
     private void convertKeyListProperties( Route route)  throws XPathParseException, NavException, ParseException, XPathEvalException {
-        int result = -1;
         
         // lecture des PassengerStopAssignment
         AutoPilot autoPilot2 = createAutoPilot(nav);
@@ -161,7 +158,7 @@ public class RouteConverter extends GenericConverter
         autoPilot2.selectXPath(xPath);
         
         nav.push();
-        while( (result = autoPilot2.evalXPath()) != -1 )
+        while( autoPilot2.evalXPath() != -1 )
         {  
             AutoPilot autoPilot3 = createAutoPilot(nav);
             autoPilot3.selectXPath("netex:KeyValue/netex:Key[text()='Comment']/../netex:Value");
@@ -178,14 +175,13 @@ public class RouteConverter extends GenericConverter
     }
     
     private void convertStopPoints() throws NavException, XPathParseException, XPathEvalException, ParseException {
-        int result = -1;
         
         // lecture des PassengerStopAssignment
         AutoPilot autoPilot2 = createAutoPilot(nav);
         autoPilot2.selectXPath("//netex:ServiceFrame/netex:stopAssignments/"+
                 "netex:PassengerStopAssignment");
         nav.push();
-        while( (result = autoPilot2.evalXPath()) != -1 )
+        while( autoPilot2.evalXPath() != -1 )
         {  
             AutoPilot autoPilot3 = createAutoPilot(nav);
             autoPilot3.selectXPath("netex:ScheduledStopPointRef/@ref");

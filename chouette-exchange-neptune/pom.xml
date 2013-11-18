@@ -4,12 +4,12 @@
 	<parent>
 		<artifactId>chouette</artifactId>
 		<groupId>fr.certu.chouette</groupId>
-		<version>2.1.0</version>
+		<version>2.2.0</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-exchange-neptune</artifactId>
 	<name>Chouette Exchange Neptune</name>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
     <packaging>jar</packaging>
 	<dependencies>
 		<dependency>
@@ -20,7 +20,10 @@
 			<groupId>fr.certu.chouette.schema</groupId>
 			<artifactId>chouette-castor-neptune</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-jaxb-neptune</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
@@ -41,6 +44,10 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>

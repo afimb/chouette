@@ -27,10 +27,9 @@ public class CompanyConverter extends GenericConverter
     
     public Company convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
-        int result = -1;
         pilot.selectXPath("//netex:ResourceFrame/netex:organisations/netex:Operator");
         
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {                        
             // Mandatory
             company.setRegistrationNumber( (String)parseOptionnalElement(nav, "CompanyNumber") );

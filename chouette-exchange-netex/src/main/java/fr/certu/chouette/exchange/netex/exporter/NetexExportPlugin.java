@@ -5,15 +5,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.zip.ZipOutputStream;
+
 import javax.xml.datatype.DatatypeConfigurationException;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.model.neptune.Line;
-
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.netex.NetexReport;
+import fr.certu.chouette.exchange.netex.NetexReportItem;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -21,14 +28,6 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
-
-
-import fr.certu.chouette.exchange.netex.NetexReport;
-import fr.certu.chouette.exchange.netex.NetexReportItem;
-import java.util.Iterator;
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.commons.io.FilenameUtils;
 
 /**
  *  Export lines in Netex format

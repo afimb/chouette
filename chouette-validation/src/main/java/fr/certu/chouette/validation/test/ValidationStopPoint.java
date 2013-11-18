@@ -17,7 +17,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
 import fr.certu.chouette.model.neptune.PTLink;
-import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.plugin.report.Report;

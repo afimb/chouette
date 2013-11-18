@@ -5,7 +5,6 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
 import com.ximpleware.AutoPilot;
-import com.ximpleware.ModifyException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XMLModifier;

@@ -29,10 +29,9 @@ public class PTNetworkConverter extends GenericConverter
     
     public PTNetwork convert() throws XPathEvalException, NavException, XPathParseException, ParseException
     {
-        int result = -1;
         pilot.selectXPath("//netex:ServiceFrame/netex:Network");
         
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {                        
             // Mandatory
             network.setName( (String)parseMandatoryElement(nav, "Name") );
@@ -60,9 +59,8 @@ public class PTNetworkConverter extends GenericConverter
         autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
         autoPilot2.selectXPath("//netex:ResourceFrame/netex:dataSources/"+
                 "netex:DataSource");
-        int result = -1;
         
-        while( (result = autoPilot2.evalXPath()) != -1 )
+        while( autoPilot2.evalXPath() != -1 )
         {  
             String sourceIdentifier = (String)parseOptionnalAttribute(nav, "id");
             if ( sourceIdentifier!=null) {

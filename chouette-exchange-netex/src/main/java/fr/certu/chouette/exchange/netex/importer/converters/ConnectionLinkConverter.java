@@ -4,21 +4,24 @@
  */
 package fr.certu.chouette.exchange.netex.importer.converters;
 
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.apache.log4j.Logger;
+
 import com.ximpleware.AutoPilot;
 import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
+
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Time;
-import java.text.ParseException;
-import java.util.List;
-import java.util.ArrayList;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.apache.log4j.Logger;
 
 public class ConnectionLinkConverter extends GenericConverter
 {
@@ -38,13 +41,12 @@ public class ConnectionLinkConverter extends GenericConverter
     {
         links.clear();
         
-        int result = -1;
         pilot.selectXPath("/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:ServiceFrame/netex:connections/netex:SiteConnection");
         
         nav.push();
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {                        
             ConnectionLink link = new ConnectionLink();
             

@@ -48,13 +48,12 @@ public class AccessLinkConverter extends GenericConverter {
         links.clear();
         accessLinksByStopPlaceObjectId.clear();
         
-        int result = -1;
         pilot.selectXPath("/netex:PublicationDelivery/netex:dataObjects/"+
                 "netex:CompositeFrame/netex:frames/" +
                 "/netex:SiteFrame/netex:pathLinks/netex:PathLink");
         
         nav.push();
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {                        
             AccessLink link = new AccessLink();
             

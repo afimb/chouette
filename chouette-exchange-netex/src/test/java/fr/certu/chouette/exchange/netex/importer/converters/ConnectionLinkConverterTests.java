@@ -41,6 +41,7 @@ public class ConnectionLinkConverterTests {
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
+        fis.close();
         
         VTDGen vg = new VTDGen();
         vg.setDoc(b);

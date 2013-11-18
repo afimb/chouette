@@ -1,5 +1,13 @@
 package fr.certu.chouette.exchange.netex.importer;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+
 import com.ximpleware.EOFException;
 import com.ximpleware.EncodingException;
 import com.ximpleware.EntityException;
@@ -9,16 +17,10 @@ import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 import com.ximpleware.XPathEvalException;
 import com.ximpleware.XPathParseException;
-import fr.certu.chouette.exchange.netex.importer.converters.LineConverter;
+
 import fr.certu.chouette.exchange.netex.importer.converters.NeptuneConverter;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.report.Report;
-
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 public class NetexFileReader {
     

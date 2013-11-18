@@ -11,15 +11,10 @@ package fr.certu.chouette.exchange.gtfs.exporter.producer;
 import java.util.List;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer.Type;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.plugin.report.Report.STATE;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate

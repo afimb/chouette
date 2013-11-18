@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.importer;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,17 +12,12 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.model.neptune.AccessLink;
-import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
-import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;

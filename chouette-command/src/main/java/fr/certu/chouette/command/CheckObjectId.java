@@ -1,7 +1,6 @@
 package fr.certu.chouette.command;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;

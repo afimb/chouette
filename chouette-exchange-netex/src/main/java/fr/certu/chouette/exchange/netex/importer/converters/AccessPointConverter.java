@@ -58,10 +58,9 @@ public class AccessPointConverter extends GenericConverter
         accessPointsByStopPlaceObjectId.clear();
         accessPointsByObjectId.clear();
         
-        int result = -1;
         pilot.selectXPath("//netex:SiteFrame//netex:stopPlaces/netex:StopPlace/netex:entrances/netex:StopPlaceEntrance");
         
-        while( (result = pilot.evalXPath()) != -1 )
+        while( pilot.evalXPath() != -1 )
         {
             AccessPoint accessPoint = new AccessPoint();
             

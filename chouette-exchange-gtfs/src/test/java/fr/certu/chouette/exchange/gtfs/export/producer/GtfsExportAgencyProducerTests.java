@@ -101,15 +101,15 @@ public class GtfsExportAgencyProducerTests extends AbstractTestNGSpringContextTe
 		return tokens[2];
 	}
 
-	private void printItems(String indent,List<ReportItem> items) 
-	{
-		if (items == null) return;
-		for (ReportItem item : items) 
-		{
-			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(indent+"   ",item.getItems());
-		}
-
-	}
+//	private void printItems(String indent,List<ReportItem> items) 
+//	{
+//		if (items == null) return;
+//		for (ReportItem item : items) 
+//		{
+//			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+//			printItems(indent+"   ",item.getItems());
+//		}
+//
+//	}
 
 }

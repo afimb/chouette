@@ -1,11 +1,15 @@
 package fr.certu.chouette.exchange.netex.blueprint;
 
+import java.util.List;
+import java.util.UUID;
+
 import com.google.inject.internal.Nullable;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
+
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Route;
@@ -14,9 +18,6 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 @Blueprint(VehicleJourney.class)
 public class VehicleJourneyBlueprint {
