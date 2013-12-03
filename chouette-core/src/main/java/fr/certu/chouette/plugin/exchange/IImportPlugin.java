@@ -29,5 +29,5 @@ public interface IImportPlugin<T extends NeptuneIdentifiedObject> extends IExcha
 	 * @return
 	 * @throws ExchangeException
 	 */
-	List<T> doImport(List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
+	List<T> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException;
 }

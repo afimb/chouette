@@ -84,7 +84,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 	}
 
 	@Override
-	public List<ConnectionLink> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException 
+	public List<ConnectionLink> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException 
 	{
 		String filePath = null;
 		String objectIdPrefix = null;
@@ -146,7 +146,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
 		report.setStatus(Report.STATE.OK);
-		reportContainer.setReport(report);
+		importReport.setReport(report);
 		
 		ZipFile zip = null;
 		try 

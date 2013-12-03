@@ -1,22 +1,27 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import lombok.Setter;
-import chouette.schema.VehicleJourneyAtStopTypeChoiceSequence;
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+
+import org.trident.schema.trident.VehicleJourneyAtStopType;
+import org.trident.schema.trident.VehicleJourneyType;
+
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, chouette.schema.VehicleJourney> 
+public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, VehicleJourneyType> 
 {
    @Setter private DbVehicleJourneyFactory factory;
 
    @Override
-   public VehicleJourney produce(chouette.schema.VehicleJourney xmlVehicleJourney,ReportItem report,SharedImportedData sharedData) 
+   public VehicleJourney produce(String sourceFile,VehicleJourneyType xmlVehicleJourney,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
    {
       VehicleJourney vehicleJourney = null;
       if (factory == null)
@@ -25,7 +30,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
          vehicleJourney = factory.getNewVehicleJourney();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney, report);
+      populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney, importReport);
 
       // Comment optional
       vehicleJourney.setComment(getNonEmptyTrimedString(xmlVehicleJourney.getComment()));
@@ -37,8 +42,8 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       vehicleJourney.setJourneyPatternId(getNonEmptyTrimedString(xmlVehicleJourney.getJourneyPatternId()));
 
       // Number optional
-      if (xmlVehicleJourney.hasNumber())
-         vehicleJourney.setNumber(Long.valueOf(xmlVehicleJourney.getNumber()));
+      if (xmlVehicleJourney.isSetNumber())
+         vehicleJourney.setNumber(xmlVehicleJourney.getNumber().longValue());
 
       // CompanyId optional
       vehicleJourney.setCompanyId(getNonEmptyTrimedString(xmlVehicleJourney.getOperatorId()));
@@ -85,7 +90,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 
       // VehicleJourneyAtStops [2..w]
       int order = 0;
-      for(chouette.schema.VehicleJourneyAtStop  xmlVehicleJourneyAtStop : xmlVehicleJourney.getVehicleJourneyAtStop()){
+      for(VehicleJourneyAtStopType  xmlVehicleJourneyAtStop : xmlVehicleJourney.getVehicleJourneyAtStop()){
          VehicleJourneyAtStop vehicleJourneyAtStop = new VehicleJourneyAtStop();
 
          // VehicleJourneyId optional
@@ -109,9 +114,9 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
          vehicleJourneyAtStop.setStopPointId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop.getStopPointId()));
 
          // Order optional
-         if (xmlVehicleJourneyAtStop.hasOrder())
+         if (xmlVehicleJourneyAtStop.isSetOrder())
          {
-             vehicleJourneyAtStop.setOrder(xmlVehicleJourneyAtStop.getOrder());
+             vehicleJourneyAtStop.setOrder(xmlVehicleJourneyAtStop.getOrder().longValue());
          }
          else
          {
@@ -120,27 +125,20 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
          order ++;
 
          // ([arrivalTime AND] departureTime [AND waitingTime]) XOR elapseDuration
-         if(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice() != null){
-            VehicleJourneyAtStopTypeChoiceSequence xmlVehicleJourneyAtStopTypeChoiceSequence = xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence();
-
-            if(xmlVehicleJourneyAtStopTypeChoiceSequence != null)
-            {
+         if(xmlVehicleJourneyAtStop.isSetElapseDuration())
+         {
+             vehicleJourneyAtStop.setElapseDuration(getTime(xmlVehicleJourneyAtStop.getElapseDuration()));        	 
+         }
+         else
+         {
                // ArrivalTime optional
-               vehicleJourneyAtStop.setArrivalTime(getTime(xmlVehicleJourneyAtStopTypeChoiceSequence.getArrivalTime()));
+               vehicleJourneyAtStop.setArrivalTime(getTime(xmlVehicleJourneyAtStop.getArrivalTime()));
 
                // DepartureTime mandatory
-               vehicleJourneyAtStop.setDepartureTime(getTime(xmlVehicleJourneyAtStopTypeChoiceSequence.getDepartureTime()));
+               vehicleJourneyAtStop.setDepartureTime(getTime(xmlVehicleJourneyAtStop.getDepartureTime()));
 
                // WaintingTime optional
-               vehicleJourneyAtStop.setWaitingTime(getTime(xmlVehicleJourneyAtStopTypeChoiceSequence.getWaitingTime()));
-            }
-
-            // ElapseDuration mandatory
-            if(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2() != null 
-                  && xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2().getElapseDuration() != null)
-            {
-               vehicleJourneyAtStop.setElapseDuration(getTime(xmlVehicleJourneyAtStop.getVehicleJourneyAtStopTypeChoice().getVehicleJourneyAtStopTypeChoiceSequence2().getElapseDuration()));
-            }
+               vehicleJourneyAtStop.setWaitingTime(getTime(xmlVehicleJourneyAtStop.getWaitingTime()));
          }
 
          // HeadwayFrequency optional
@@ -153,5 +151,6 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       vehicleJourney.sortVehicleJourneyAtStops();
       return vehicleJourney;
    }
+
 
 }

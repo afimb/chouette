@@ -18,5 +18,13 @@ public abstract class ActiveRecordObject extends NeptuneObject
 {
 	@Getter @Setter private Date createdAt;
 	@Getter @Setter private Date updatedAt;
+	
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(T another) 
+	{
+		return false;
+	}
+	
+	
 
 }

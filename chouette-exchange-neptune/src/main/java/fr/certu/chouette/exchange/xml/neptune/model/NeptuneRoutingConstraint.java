@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneObject;
 
 @NoArgsConstructor
 public class NeptuneRoutingConstraint extends NeptuneIdentifiedObject
@@ -30,4 +31,22 @@ public class NeptuneRoutingConstraint extends NeptuneIdentifiedObject
       if (routingConstraintIds.contains(routingConstraintId)) 
          routingConstraintIds.remove(routingConstraintId);
    }
+   
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof NeptuneRoutingConstraint)
+		{
+			NeptuneRoutingConstraint another = (NeptuneRoutingConstraint) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 }

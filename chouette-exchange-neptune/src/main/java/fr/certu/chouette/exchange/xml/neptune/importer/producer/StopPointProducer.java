@@ -1,21 +1,26 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+import org.trident.schema.trident.AddressType;
+import org.trident.schema.trident.ProjectedPointType;
+
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.schema.StopPoint>
+public class StopPointProducer extends AbstractModelProducer<StopPoint,org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.StopPoint>
 {
 	@Override
-	public StopPoint produce(chouette.schema.StopPoint xmlStopPoint,ReportItem report,SharedImportedData sharedData) 
+	public StopPoint produce(String sourceFile,org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.StopPoint xmlStopPoint,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
 	{
 		StopPoint stopPoint = new StopPoint();
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(stopPoint, xmlStopPoint, report);
+		populateFromCastorNeptune(stopPoint, xmlStopPoint, importReport);
 
 		// Name mandatory
 		stopPoint.setName(getNonEmptyTrimedString(xmlStopPoint.getName()));
@@ -54,7 +59,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 		stopPoint.setPtNetworkIdShortcut(ptNetworkId);
 		
 		// Address optional
-		chouette.schema.Address xmlAddress = xmlStopPoint.getAddress();		
+		AddressType xmlAddress = xmlStopPoint.getAddress();		
 		if(xmlAddress != null){
 			Address address = new Address();
 			address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
@@ -63,7 +68,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,chouette.
 		}
 		
 		// ProjectedPoint optional
-		chouette.schema.ProjectedPoint xmlProjectedPoint = xmlStopPoint.getProjectedPoint();
+		ProjectedPointType xmlProjectedPoint = xmlStopPoint.getProjectedPoint();
 		if(xmlProjectedPoint != null){
 			ProjectedPoint projectedPoint = new ProjectedPoint();
 			projectedPoint.setX(xmlProjectedPoint.getX());

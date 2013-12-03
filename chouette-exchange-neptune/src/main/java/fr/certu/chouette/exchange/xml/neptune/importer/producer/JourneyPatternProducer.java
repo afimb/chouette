@@ -1,18 +1,24 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
-import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.plugin.report.ReportItem;
+import java.util.List;
 
-public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern, chouette.schema.JourneyPattern> {
+import org.trident.schema.trident.JourneyPatternType;
+
+import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
+
+public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern, JourneyPatternType> {
 
 	@Override
-	public JourneyPattern produce(chouette.schema.JourneyPattern xmlJourneyPattern,ReportItem report,SharedImportedData sharedData) 
+	public JourneyPattern produce(String sourceFile,JourneyPatternType xmlJourneyPattern,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
 	{
 		JourneyPattern journeyPattern = new JourneyPattern();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(journeyPattern, xmlJourneyPattern,report);
+		populateFromCastorNeptune(journeyPattern, xmlJourneyPattern,importReport);
 		
 		// Name optional
 		journeyPattern.setName(getNonEmptyTrimedString(xmlJourneyPattern.getName()));
@@ -30,7 +36,7 @@ public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern
 		journeyPattern.setDestination(getNonEmptyTrimedString(xmlJourneyPattern.getDestination()));
 		
 		//StopPointIds [2..w]
-		String[] castorStopPointIds = xmlJourneyPattern.getStopPointList();
+		List<String> castorStopPointIds = xmlJourneyPattern.getStopPointList();
 		for (String castorStopPointId : castorStopPointIds) 
 		{
 			String stopPointId = getNonEmptyTrimedString(castorStopPointId);
@@ -45,7 +51,7 @@ public class JourneyPatternProducer extends AbstractModelProducer<JourneyPattern
 		}
 		
 		//RegistrationNumber optional
-		journeyPattern.setRegistrationNumber(getRegistrationNumber(xmlJourneyPattern.getRegistration(),report));
+		journeyPattern.setRegistrationNumber(getRegistrationNumber(xmlJourneyPattern.getRegistration(),importReport));
 		
 		//Comment optional
 		journeyPattern.setComment(getNonEmptyTrimedString(xmlJourneyPattern.getComment()));

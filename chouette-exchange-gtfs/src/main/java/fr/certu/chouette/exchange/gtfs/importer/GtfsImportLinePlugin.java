@@ -106,7 +106,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 	}
 
 	@Override
-	public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException 
+	public List<Line> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException 
 	{
 		String filePath = null;
 		String colorPath = null;
@@ -209,7 +209,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
 		report.setStatus(Report.STATE.OK);
-		reportContainer.setReport(report);
+		importReport.setReport(report);
 		
 		ZipFile zip = null;
 		try 

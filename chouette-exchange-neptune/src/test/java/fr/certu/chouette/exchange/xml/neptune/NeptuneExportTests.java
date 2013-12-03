@@ -150,7 +150,8 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 		parameters.add(simpleParameterValue);
 
 		ReportHolder report = new ReportHolder();
-		lines = importLine.doImport(parameters, report);
+		ReportHolder report2 = new ReportHolder();
+		lines = importLine.doImport(parameters, report,report2);
 		printReport(report.getReport());    
 
 		Assert.assertNotNull(lines,"lines can't be null");
@@ -289,7 +290,8 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 		parameters.add(simpleParameterValue);
 
 		ReportHolder report = new ReportHolder();
-		return importLine.doImport(parameters, report);
+		ReportHolder report2 = new ReportHolder();
+		return importLine.doImport(parameters, report,report2);
 
 	}
 

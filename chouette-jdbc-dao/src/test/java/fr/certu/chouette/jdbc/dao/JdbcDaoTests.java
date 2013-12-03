@@ -19,7 +19,11 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
+import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
@@ -31,11 +35,11 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 	private INeptuneManager<JourneyPattern> journeyPatternManager;
 	private INeptuneManager<Route> routeManager;
 	private INeptuneManager<StopArea> stopareaManager;
-	
+
 	private String neptuneFile = null;
 	private String neptuneZip = null;
 	private String path="src/test/resources/";
-   private String neptuneRCFile;
+	private String neptuneRCFile;
 
 	@Test(groups={"saveLine","saveRCLine","saveLines","purge"}, description="Get a bean from context")
 	public void getBean()
@@ -55,12 +59,12 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		this.neptuneFile = neptuneFile;
 	}
 
-   @Parameters({"neptuneRCFile"})
-   @Test (groups = {"saveRCLine"}, description = "try saving routingConstraint neptune file",dependsOnMethods={"getBean"})
-   public void getNeptuneRCFile(String neptuneRCFile)
-   {
-      this.neptuneRCFile = neptuneRCFile;
-   }
+	@Parameters({"neptuneRCFile"})
+	@Test (groups = {"saveRCLine"}, description = "try saving routingConstraint neptune file",dependsOnMethods={"getBean"})
+	public void getNeptuneRCFile(String neptuneRCFile)
+	{
+		this.neptuneRCFile = neptuneRCFile;
+	}
 	@Parameters({"neptuneZip"})
 	@Test (groups = {"saveLines"}, description = "try saving neptune zip file",dependsOnMethods={"getBean"})
 	public void getNeptuneZip(String neptuneZip)
@@ -68,19 +72,29 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		this.neptuneZip = neptuneZip;
 	}
 
-	
+
 	@Test (groups = {"saveLine"}, description = "dao should save line",dependsOnMethods={"getBean"})
 	public void verifyImportLine() throws ChouetteException
 	{
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-		simpleParameterValue.setFilepathValue(path+"/"+neptuneFile);
-		parameters.add(simpleParameterValue);
+		{
+			SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+			simpleParameterValue.setFilepathValue(path+"/"+neptuneFile);
+			parameters.add(simpleParameterValue);
+		}
+		{
+			SimpleParameterValue simpleParameterValue = new SimpleParameterValue("validate");
+			simpleParameterValue.setBooleanValue(true);
+			parameters.add(simpleParameterValue);
+		}
 
-		ReportHolder report = new ReportHolder();
+		ReportHolder ireport = new ReportHolder();
+		ReportHolder vreport = new ReportHolder();
 
-		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
+		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, ireport, vreport);
+
+		printReport(vreport.getReport());
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
@@ -91,45 +105,49 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 			Reporter.log(line.toString("\t",2));
 		}
 	}
-	
-   
-   @Test (groups = {"saveRCLine"}, description = "dao should save line with routingConstraints",dependsOnMethods={"getBean"})
-   public void verifyImportLineWithRoutingConstraints() throws ChouetteException
-   {
 
-      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-      SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-      simpleParameterValue.setFilepathValue(path+"/"+neptuneRCFile);
-      parameters.add(simpleParameterValue);
-      SimpleParameterValue validate = new SimpleParameterValue("validate");
-      validate.setBooleanValue(false);
-      parameters.add(validate);
 
-      ReportHolder report = new ReportHolder();
+	@Test (groups = {"saveRCLine"}, description = "dao should save line with routingConstraints",dependsOnMethods={"getBean"})
+	public void verifyImportLineWithRoutingConstraints() throws ChouetteException
+	{
 
-      List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+		simpleParameterValue.setFilepathValue(path+"/"+neptuneRCFile);
+		parameters.add(simpleParameterValue);
+		SimpleParameterValue validate = new SimpleParameterValue("validate");
+		validate.setBooleanValue(true);
+		parameters.add(validate);
 
-      Assert.assertNotNull(lines,"lines can't be null");
-      Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
-      lineManager.saveAll(null, lines, true, true);
-      for(Line line : lines)
-      {
-         Assert.assertNotNull(line.getId(),"line's id can't be null "+line.getObjectId());
-         Reporter.log(line.toString("\t",2));
-         Assert.assertNotNull(line.getRoutingConstraints(),"line must have routing constraints");
-         Assert.assertEquals(line.getRoutingConstraints().size(), 1,"line must have 1 routing constraint");
-         StopArea area = line.getRoutingConstraints().get(0);
-         Assert.assertNotNull(area.getId(),"ITL stopArea's id can't be null "+area.getObjectId());
-         Assert.assertNotNull(area.getRoutingConstraintAreas(), "routing constraint area must have stopArea children");
-         Assert.assertTrue(area.getRoutingConstraintAreas().size() > 0, "routing constraint area must have stopArea children");
-         for (StopArea child : area.getRoutingConstraintAreas())
-         {
-            Assert.assertNotNull(child.getId(),"ITL child's id can't be null "+child.getObjectId());
-         }
-      }
-   }
-   
-	
+		ReportHolder ireport = new ReportHolder();
+		ReportHolder vreport = new ReportHolder();
+
+		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, ireport, vreport);
+
+		printReport(vreport.getReport());
+		printReport(ireport.getReport());
+
+		Assert.assertNotNull(lines,"lines can't be null");
+		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
+		lineManager.saveAll(null, lines, true, true);
+		for(Line line : lines)
+		{
+			Assert.assertNotNull(line.getId(),"line's id can't be null "+line.getObjectId());
+			Reporter.log(line.toString("\t",2));
+			Assert.assertNotNull(line.getRoutingConstraints(),"line must have routing constraints");
+			Assert.assertEquals(line.getRoutingConstraints().size(), 1,"line must have 1 routing constraint");
+			StopArea area = line.getRoutingConstraints().get(0);
+			Assert.assertNotNull(area.getId(),"ITL stopArea's id can't be null "+area.getObjectId());
+			Assert.assertNotNull(area.getRoutingConstraintAreas(), "routing constraint area must have stopArea children");
+			Assert.assertTrue(area.getRoutingConstraintAreas().size() > 0, "routing constraint area must have stopArea children");
+			for (StopArea child : area.getRoutingConstraintAreas())
+			{
+				Assert.assertNotNull(child.getId(),"ITL child's id can't be null "+child.getObjectId());
+			}
+		}
+	}
+
+
 	@Test (groups = {"saveLines"}, description = "dao should save lines",dependsOnMethods={"getBean"})
 	public void verifyImportZipLines() throws ChouetteException
 	{
@@ -141,7 +159,7 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 
 		ReportHolder report = new ReportHolder();
 
-		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report);
+		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report, report);
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 2,"lines size must equals 2");
@@ -151,21 +169,68 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 			bid.add(line);
 			lineManager.saveAll(null, bid, true,true);
 			Assert.assertNotNull(line.getId(),"line's id can't be null");
-         Reporter.log(line.toString("\t",0));
+			Reporter.log(line.toString("\t",0));
 		}
-		
+
 	}
-	
+
 	@Test (groups = {"purge"}, description = "dao should purge",dependsOnMethods={"getBean"})
 	public void verifyPurge() throws ChouetteException
 	{
-	    int count = timetableManager.purge(null);
-	     count = vehicleJourneyManager.purge(null);
-	     count = journeyPatternManager.purge(null);
-	     count = routeManager.purge(null);
-	     count = lineManager.purge(null);
-	     count = stopareaManager.purge(null);
-	     Assert.assertTrue(count>=0,"count must be greater than zero");
+		int count = timetableManager.purge(null);
+		count = vehicleJourneyManager.purge(null);
+		count = journeyPatternManager.purge(null);
+		count = routeManager.purge(null);
+		count = lineManager.purge(null);
+		count = stopareaManager.purge(null);
+		Assert.assertTrue(count>=0,"count must be greater than zero");
+	}
+
+	private void printReport(Report report)
+	{
+		if (report == null)
+		{
+			Reporter.log("no report");
+		}
+		else
+		{
+			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
+			printItems("---",report.getItems());
+		}
+	}
+
+	/**
+	 * @param indent
+	 * @param items
+	 */
+	private void printItems(String indent,List<ReportItem> items) 
+	{
+		if (items == null) return;
+		for (ReportItem item : items) 
+		{
+			if (item instanceof CheckPointReportItem)
+			{
+				CheckPointReportItem citem = (CheckPointReportItem) item;
+				Reporter.log(indent+citem.getStatus().name()+" : "+citem.getMessageKey());
+
+			}
+			else if (item instanceof DetailReportItem)
+			{
+				DetailReportItem ditem = (DetailReportItem) item;
+				Reporter.log(indent+ditem.getStatus().name()+" : "+ditem.getMessageKey()+" file "+ditem.getLocation().getFileName()+" line "+ditem.getLocation().getLineNumber()+" col "+ditem.getLocation().getColumnNumber());
+				if (ditem.getLocation().getMessage() != null)
+					Reporter.log(indent+" message : "+ditem.getLocation().getMessage());
+				if (ditem.getLocation().getAttribute() != null)
+					Reporter.log(indent+" attribute : "+ditem.getLocation().getAttribute()+" = "+ditem.getLocation().getValue());
+
+			}
+			else
+			{
+				Reporter.log(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			}
+			printItems(indent+"---",item.getItems());
+		}
+
 	}
 
 }

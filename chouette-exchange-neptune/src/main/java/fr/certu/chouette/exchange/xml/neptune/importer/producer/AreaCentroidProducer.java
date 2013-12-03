@@ -1,20 +1,25 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+import org.trident.schema.trident.AddressType;
+import org.trident.schema.trident.ProjectedPointType;
+
 import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,chouette.schema.AreaCentroid>
+public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid>
 {
 	@Override
-	public AreaCentroid produce(chouette.schema.AreaCentroid xmlAreaCentroid,ReportItem report,SharedImportedData sharedData)
+	public AreaCentroid produce(String sourceFile,org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid xmlAreaCentroid,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData)
 	{
 		AreaCentroid areaCentroid = new AreaCentroid();
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(areaCentroid, xmlAreaCentroid,report);
+		populateFromCastorNeptune(areaCentroid, xmlAreaCentroid,importReport);
 
 		// Name mandatory
 		areaCentroid.setName(getNonEmptyTrimedString(xmlAreaCentroid.getName()));
@@ -46,7 +51,7 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,cho
 		areaCentroid.setContainedInStopAreaId(getNonEmptyTrimedString(xmlAreaCentroid.getContainedIn()));
 		
 		// Address optional
-		chouette.schema.Address xmlAddress = xmlAreaCentroid.getAddress();		
+		AddressType xmlAddress = xmlAreaCentroid.getAddress();		
 		if(xmlAddress != null)
 		{
 			Address address = new Address();
@@ -56,7 +61,7 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,cho
 		}
 		
 		// ProjectedPoint optional
-		chouette.schema.ProjectedPoint xmlProjectedPoint = xmlAreaCentroid.getProjectedPoint();
+		ProjectedPointType xmlProjectedPoint = xmlAreaCentroid.getProjectedPoint();
 		if(xmlProjectedPoint != null)
 		{
 			ProjectedPoint projectedPoint = new ProjectedPoint();

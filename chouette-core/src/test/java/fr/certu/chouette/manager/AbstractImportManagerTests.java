@@ -60,14 +60,15 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		SimpleParameterValue val = new SimpleParameterValue("first");
 		val.setStringValue("String value");
 		values.add(val);
-		ReportHolder report = new ReportHolder();
+		ReportHolder ireport = new ReportHolder();
+		ReportHolder vreport = new ReportHolder();
 		List<T> beans = new ArrayList<T>();
 		beans.add(bean);
 		expect(importMock.getDescription()).andStubReturn(importDescription);
-		expect(importMock.doImport(values, report)).andReturn(beans);
+		expect(importMock.doImport(values, ireport, vreport)).andReturn(beans);
 		replay(importMock);
 		manager.addImportPlugin(importMock);
-		List<T> retBeans = manager.doImport(null, importDescription.getName(), values, report);
+		List<T> retBeans = manager.doImport(null, importDescription.getName(), values, ireport, vreport);
 		Assert.assertEquals(retBeans, beans,"imported beans should match expected beans");
 		verify(importMock);
 	}
@@ -79,10 +80,11 @@ public abstract class AbstractImportManagerTests<T extends NeptuneIdentifiedObje
 		SimpleParameterValue val = new SimpleParameterValue("first");
 		val.setStringValue("String value");
 		values.add(val);
-		ReportHolder report = new ReportHolder();
+		ReportHolder ireport = new ReportHolder();
+		ReportHolder vreport = new ReportHolder();
 		List<T> beans = new ArrayList<T>();
 		beans.add(bean);
-		manager.doImport(null, "wrongformat", values, report);
+		manager.doImport(null, "wrongformat", values, ireport,vreport);
 		Assert.fail("expected exception not raised");
 	}
 

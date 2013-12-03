@@ -702,5 +702,33 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		}
 
 	}
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof VehicleJourney)
+		{
+			VehicleJourney another = (VehicleJourney) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getComment(), another.getComment())) return false;
+			if (!sameValue(this.getNumber(), another.getNumber())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+
+			if (!sameValue(this.getEndOfPeriod(), another.getEndOfPeriod())) return false;
+			if (!sameValue(this.getFacility(), another.getFacility())) return false;
+			if (!sameValue(this.getServiceStatusValue(), another.getServiceStatusValue())) return false;
+			if (!sameValue(this.getStartOfPeriod(), another.getStartOfPeriod())) return false;
+			if (!sameValue(this.getPublishedJourneyIdentifier(), another.getPublishedJourneyIdentifier())) return false;
+			if (!sameValue(this.getPublishedJourneyName(), another.getPublishedJourneyName())) return false;
+			if (!sameValue(this.getTransportMode(), another.getTransportMode())) return false;
+			if (!sameValue(this.getVehicleTypeIdentifier(), another.getVehicleTypeIdentifier())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 }

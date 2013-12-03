@@ -1,24 +1,27 @@
 package fr.certu.chouette.exchange.netex.importer;
 
-import static org.mockito.Mockito.*;
-import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.netex.ComplexModelFactory;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.report.ReportHolder;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
-@SuppressWarnings("unchecked")
 public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
     private ComplexModelFactory complexModelFactory;
     private NetexImportPlugin netexImportPlugin;
@@ -53,7 +56,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
         
         when(netexImportPluginSpy.readXmlFile(xmlPath, report)).thenReturn(netexLine);        
         
-        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), netexLines);
+        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer,null), netexLines);
            
         inputFile = new SimpleParameterValue("inputFile");        
         inputFile.setFilepathValue(zipPath);
@@ -61,7 +64,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
         
         when(netexImportPluginSpy.readZipFile(zipPath, report)).thenReturn(netexLines);        
         
-        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer), netexLines);
+        Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer,null), netexLines);
     }
     
     @Test(groups = {"NetexExportPlugin"}, description = "Must return a line")

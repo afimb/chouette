@@ -126,11 +126,11 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
     * fr.certu.chouette.plugin.report.ReportHolder)
     */
    @Override
-   public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
+   public List<Line> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException
    {
       CSVReport report = new CSVReport(CSVReport.KEY.IMPORT);
       report.setStatus(Report.STATE.UNCHECK);
-      reportContainer.setReport(report);
+      importReport.setReport(report);
       String filePath = null;
       String extension = "file extension";
       String objectIdPrefix = defaultObjectIdPrefix;

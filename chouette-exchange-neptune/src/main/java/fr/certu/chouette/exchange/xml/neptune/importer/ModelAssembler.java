@@ -41,10 +41,15 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.ImportedItems;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourney;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
+import fr.certu.chouette.plugin.validation.report.DetailReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * Assemble every extracted object to object referring it with its objectId
@@ -54,6 +59,9 @@ public class ModelAssembler
 {
 	private static final Logger                                                                           logger                    = Logger
 			.getLogger(ModelAssembler.class);
+
+	public static final String NETWORK_1 = "2-NEPTUNE-Network-1";
+	public static final String GROUP_OF_LINE_1 = "2-NEPTUNE-GroupOfLine-1";
 	/**
 	 * extracted line
 	 */
@@ -232,11 +240,23 @@ public class ModelAssembler
 	 */
 	private Map<String, TimeSlot>                                                                         timeSlotDictionary        = new HashMap<String, TimeSlot>();
 
-	private ReportItem report;
+	private ReportItem importReport;
 
-	public ModelAssembler(ReportItem report)
+	private PhaseReportItem validationReport;
+
+	private String sourceFile;
+
+	private SharedImportedData sharedData;
+
+	private UnsharedImportedData unsharedData;
+
+	public ModelAssembler(String sourceFile, SharedImportedData sharedData, UnsharedImportedData unsharedData, ReportItem report, PhaseReportItem validationItem)
 	{
-		this.report = report;
+		this.importReport = report;
+		this.validationReport = validationItem;
+		this.sourceFile = sourceFile;
+		this.sharedData = sharedData;
+		this.unsharedData = unsharedData;
 	}
 
 	/**
@@ -262,6 +282,14 @@ public class ModelAssembler
 		connectAccessLinks();
 		connectAccessPoints();
 		connectGroupOfLines();
+
+		validate();
+
+	}
+
+	private void validate()
+	{
+
 	}
 
 	/**
@@ -331,7 +359,8 @@ public class ModelAssembler
 		line.setCompanies(companies);
 
 		// bypass objectId check : connect ptnetwork in file to line
-		line.setPtNetwork(ptNetwork);
+		line.setPtNetwork(ptNetwork);		
+
 		// bypass objectId check : connect every route in file to line
 		line.setRoutes(routes);
 
@@ -382,7 +411,7 @@ public class ModelAssembler
 			{
 				logger.warn("ITL with lineId = " + restriction.getLineId() + ": rejected");
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"ITL",restriction.getObjectId(),"lineId",restriction.getLineId());
-				report.addItem(item);
+				importReport.addItem(item);
 			}
 			for (String areaId : restriction.getRoutingConstraintIds())
 			{
@@ -397,7 +426,7 @@ public class ModelAssembler
 				{
 					logger.warn("ITL with stopAreaId = " + areaId + ": rejected");
 					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"ITL",restriction.getObjectId(),"stopAreaId",areaId);
-					report.addItem(item);
+					importReport.addItem(item);
 				}
 			}
 		}
@@ -496,6 +525,8 @@ public class ModelAssembler
 	private void connectPTNetwork()
 	{
 		ptNetwork.setLines(getObjectsFromIds(ptNetwork.getLineIds(), Line.class));
+
+
 	}
 
 	/**
@@ -510,7 +541,7 @@ public class ModelAssembler
 			{
 				logger.error("journeyPattern has no stoppoints , rejected "+journeyPattern.getObjectId());
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_JOURNEY_PATTERN,Report.STATE.WARNING,journeyPattern.getObjectId());
-				report.addItem(item);
+				importReport.addItem(item);
 				continue;
 			}
 			for (StopPoint point : journeyPattern.getStopPoints())
@@ -534,7 +565,7 @@ public class ModelAssembler
 			else
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"JourneyPattern",journeyPattern.getObjectId(),"routeId",journeyPattern.getRouteId());
-				report.addItem(item);
+				importReport.addItem(item);
 			}
 
 		}
@@ -570,13 +601,13 @@ public class ModelAssembler
 			else
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"VehicleJourney",vehicleJourney.getObjectId(),"journeyPatternId",vehicleJourney.getJourneyPatternId());
-				report.addItem(item);
+				importReport.addItem(item);
 			}
 			vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(), Route.class));
 			if (vehicleJourney.getRoute() == null)
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"VehicleJourney",vehicleJourney.getObjectId(),"routeId",vehicleJourney.getRouteId());
-				report.addItem(item);
+				importReport.addItem(item);
 			}
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops())
 			{
@@ -584,7 +615,7 @@ public class ModelAssembler
 				if (vehicleJourneyAtStop.getStopPoint() == null)
 				{
 					ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"VehicleJourneyAtStop",vehicleJourney.getObjectId(),"stopPointId",vehicleJourneyAtStop.getStopPointId());
-					report.addItem(item);
+					importReport.addItem(item);
 				}
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			}
@@ -604,7 +635,7 @@ public class ModelAssembler
 			if (stopPoint.getContainedInStopArea() == null)
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopPoint",stopPoint.getObjectId(),"containedInStopArea",stopPoint.getContainedInStopAreaId());
-				report.addItem(item);
+				importReport.addItem(item);
 			}
 			// stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(),
 			// Line.class));
@@ -914,7 +945,7 @@ public class ModelAssembler
 				}
 				else
 				{
-					logger.warn("object "+id+" not found in file");
+					// logger.warn("object "+id+" not found in file");
 				}
 			}
 		}
@@ -950,4 +981,23 @@ public class ModelAssembler
 
 		return object;
 	}
+
+	private boolean isListEmpty(List<?> list)
+	{
+		return list == null || list.isEmpty();
+	}
+
+	protected void addValidationError(String checkPointKey,DetailReportItem item)
+	{
+		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
+		checkPoint.addItem(item);
+
+	}
+
+	protected void prepareCheckPoint(String checkPointKey)
+	{
+		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
+		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
+	}
+
 }

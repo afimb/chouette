@@ -236,11 +236,12 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param user user account for security check 
 	 * @param formatDescriptor name of the format found in ImportFormatDescription structure
 	 * @param parameters import parameter according to specified format
-	 * @param report import reporting container
+	 * @param importReport import reporting container
+	 * @param validationReport validation reporting container
 	 * @return a collection of imported beans (with all imported dependencies)
 	 * @throws ChouetteException invalid user access or import failure
 	 */
-	List<T> doImport(User user,String formatDescriptor,List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
+	List<T> doImport(User user,String formatDescriptor,List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException;
 
 	/**
 	 * save in storage the imported beans<br/>

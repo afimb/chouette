@@ -52,7 +52,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
-      importLine.doImport(parameters, report);
+      importLine.doImport(parameters, report,null);
       Assert.fail("expected exception not raised");
    }
 
@@ -68,7 +68,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
-      importLine.doImport(parameters, report);
+      importLine.doImport(parameters, report,null);
       Assert.fail("expected exception not raised");
    }
 
@@ -81,7 +81,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
-      importLine.doImport(parameters, report);
+      importLine.doImport(parameters, report,null);
       Assert.fail("expected exception not raised");
    }
 
@@ -98,7 +98,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
-      importLine.doImport(parameters, report);
+      importLine.doImport(parameters, report,null);
       Assert.fail("expected exception not raised");
    }
 
@@ -117,7 +117,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
-      List<Line> lines = importLine.doImport(parameters, report);
+      List<Line> lines = importLine.doImport(parameters, report,null);
       Assert.assertNull(lines,"lines must be null");
       List<ReportItem> items = report.getReport().getItems();
       printReport(report.getReport());
@@ -156,7 +156,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
-      List<Line> lines = importLine.doImport(parameters, report);
+      List<Line> lines = importLine.doImport(parameters, report,null);
       Assert.assertEquals(lines.size(),0,"lines must be empty");
       List<ReportItem> items = report.getReport().getItems();
       printReport(report.getReport());
@@ -217,7 +217,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 
       ReportHolder report = new ReportHolder();
 
-      List<Line> lines = importLine.doImport(parameters, report);
+      List<Line> lines = importLine.doImport(parameters, report,null);
 
       printReport(report.getReport());    
 

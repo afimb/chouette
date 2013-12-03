@@ -154,5 +154,52 @@ public abstract class NeptuneObject implements Serializable
 		validationProceeded = true;
 		return check;
 	}
-        
+
+    /**
+     * compare 2 Neptune Object for identical attributs 
+     * 
+     * @param another
+     * @return
+     */
+    public abstract <T extends NeptuneObject> boolean  compareAttributes(T another);
+    
+    /**
+     * compare attribute values even if null
+     * 
+     * @param first
+     * @param second
+     * @return
+     */
+    protected boolean sameValue(Object first, Object second)
+    {
+    	if (first == null) return second == null;
+    	return first.equals(second);
+    }
+    
+    /**
+     * compare int attribute values
+     * 
+     * @param first
+     * @param second
+     * @return
+     */
+    protected boolean sameValue(int first, int second)
+    {
+    	return first == second;
+    }
+
+    /**
+     * compare int attribute values
+     * 
+     * @param first
+     * @param second
+     * @return
+     */
+    protected boolean sameValues(List<?> first, List<?> second)
+    {
+    	if (first == null || first.isEmpty()) return second == null || second.isEmpty();
+    	return (first.containsAll(second) && second.containsAll(first));
+    }
+
+
 }

@@ -102,10 +102,10 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 	 * fr.certu.chouette.plugin.report.ReportHolder)
 	 */
 	@Override
-	public List<Line> doImport(List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
+	public List<Line> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException
 	{
 		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
-		reportContainer.setReport(report);
+		importReport.setReport(report);
 
 		String filePath = null;
 		String extension = "file extension";

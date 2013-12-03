@@ -1,92 +1,88 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import chouette.schema.AccessibilitySuitabilityDetailsItem;
-import chouette.schema.ConnectionLinkExtension;
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+import org.trident.schema.trident.ConnectionLinkExtensionType;
+
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, chouette.schema.ConnectionLink> {
+public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink> {
 
 	@Override
-	public ConnectionLink produce(chouette.schema.ConnectionLink xmlConnectionLink,ReportItem report,SharedImportedData sharedData) 
+	public ConnectionLink produce(String sourceFile,org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink xmlConnectionLink,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
 	{
 
 		ConnectionLink connectionLink= new ConnectionLink();
-		
+
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(connectionLink, xmlConnectionLink,report);
-		ConnectionLink sharedBean = sharedData.get(connectionLink);
-      if (sharedBean != null) return sharedBean;
-				
+		populateFromCastorNeptune(connectionLink, xmlConnectionLink,importReport);
+
 		// Name optional
 		connectionLink.setName(getNonEmptyTrimedString(xmlConnectionLink.getName()));
-		
+
 		// Comment optional
 		connectionLink.setComment(getNonEmptyTrimedString(xmlConnectionLink.getComment()));
-		
+
 		//StartOfLink mandatory
 		connectionLink.setStartOfLinkId(getNonEmptyTrimedString(xmlConnectionLink.getStartOfLink()));
-		
+
 		//EndOfLink mandatory
 		connectionLink.setEndOfLinkId(getNonEmptyTrimedString(xmlConnectionLink.getEndOfLink()));
-		
+
 		//LinkDistance optional
 		connectionLink.setLinkDistance(xmlConnectionLink.getLinkDistance());
-		
+
 		// LiftAvailability optional
-		connectionLink.setLiftAvailable(xmlConnectionLink.getLiftAvailability());
-		
+		if (xmlConnectionLink.isSetLiftAvailability())
+			connectionLink.setLiftAvailable(xmlConnectionLink.isLiftAvailability());
+
 		// MobilityRestrictedSuitability optional
-		connectionLink.setMobilityRestrictedSuitable(xmlConnectionLink.getMobilityRestrictedSuitability());
-		
+		if (xmlConnectionLink.isSetMobilityRestrictedSuitability())
+			connectionLink.setMobilityRestrictedSuitable(xmlConnectionLink.isMobilityRestrictedSuitability());
+
 		// StairsAvailability optional
-		connectionLink.setStairsAvailable(xmlConnectionLink.getStairsAvailability());
-		
+		if (xmlConnectionLink.isSetStairsAvailability())
+			connectionLink.setStairsAvailable(xmlConnectionLink.isStairsAvailability());
+
 		// ConnectionLinkExtension optional
-		ConnectionLinkExtension xmlConnectionLinkExtension = xmlConnectionLink.getConnectionLinkExtension();
+		ConnectionLinkExtensionType xmlConnectionLinkExtension = xmlConnectionLink.getConnectionLinkExtension();
 		if(xmlConnectionLinkExtension != null){
 			if(xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails() != null){
-				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
-					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
-						try
-						{
-							connectionLink.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
-						}
-						catch (IllegalArgumentException e) 
-						{
-							// TODO: traiter le cas de non correspondance
-						}
+				for(Object xmlAccessibilitySuitabilityDetailsItem : xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails().getMobilityNeedOrPsychosensoryNeedOrMedicalNeed()){
+					try
+					{
+						connectionLink.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.toString()));
 					}
+					catch (IllegalArgumentException e) 
+					{
+						// TODO: traiter le cas de non correspondance
+					}
+
 				}
 			}
 		}
-		
+
 		// DefaultDuration optional
-		if(xmlConnectionLink.getDefaultDuration() != null){
-			connectionLink.setDefaultDuration(getTime(xmlConnectionLink.getDefaultDuration()));
-		}
-		
+		connectionLink.setDefaultDuration(getTime(xmlConnectionLink.getDefaultDuration()));
+
 		// FrequentTravellerDuration optional
-		if(xmlConnectionLink.getFrequentTravellerDuration() != null){
-			connectionLink.setFrequentTravellerDuration(getTime(xmlConnectionLink.getFrequentTravellerDuration()));
-		}
-		
+		connectionLink.setFrequentTravellerDuration(getTime(xmlConnectionLink.getFrequentTravellerDuration()));
+
 		// OccasionalTravellerDuration optional
-		if(xmlConnectionLink.getOccasionalTravellerDuration() != null){
-			connectionLink.setOccasionalTravellerDuration(getTime(xmlConnectionLink.getOccasionalTravellerDuration()));
-		}
-		
+		connectionLink.setOccasionalTravellerDuration(getTime(xmlConnectionLink.getOccasionalTravellerDuration()));
+
 		// MobilityRestrictedTravellerDuration optional
-		if(xmlConnectionLink.getMobilityRestrictedTravellerDuration() != null){
-			connectionLink.setMobilityRestrictedTravellerDuration(getTime(xmlConnectionLink.getMobilityRestrictedTravellerDuration()));
-		}
-		
+		connectionLink.setMobilityRestrictedTravellerDuration(getTime(xmlConnectionLink.getMobilityRestrictedTravellerDuration()));
+
 		// LinkType optional
-		if(xmlConnectionLink.getLinkType() != null){
-			try{
+		if(xmlConnectionLink.getLinkType() != null)
+		{
+			try
+			{
 				connectionLink.setLinkType(ConnectionLinkTypeEnum.fromValue(xmlConnectionLink.getLinkType().value()));
 			}
 			catch (IllegalArgumentException e) 
@@ -94,7 +90,9 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 				// TODO: traiter le cas de non correspondance
 			}
 		}
-		
+
+		ConnectionLink sharedBean = getOrAddSharedData(sharedData, connectionLink, sourceFile, xmlConnectionLink,validationReport);
+		if (sharedBean != null) return sharedBean;
 		return connectionLink;
 	}
 

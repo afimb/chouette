@@ -421,5 +421,31 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 		}
 	}
    
-   
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof ConnectionLink)
+		{
+			ConnectionLink another = (ConnectionLink) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getComment(), another.getComment())) return false;
+			if (!sameValue(this.getIntUserNeeds(), another.getIntUserNeeds())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+			if (!sameValue(this.getDefaultDuration(), another.getDefaultDuration())) return false;
+			if (!sameValue(this.getFrequentTravellerDuration(), another.getFrequentTravellerDuration())) return false;
+			if (!sameValue(this.getLinkDistance(), another.getLinkDistance())) return false;
+			if (!sameValue(this.getMobilityRestrictedTravellerDuration(), another.getMobilityRestrictedTravellerDuration())) return false;
+			if (!sameValue(this.getOccasionalTravellerDuration(), another.getOccasionalTravellerDuration())) return false;
+
+			if (!sameValue(this.getLinkType(), another.getLinkType())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 }

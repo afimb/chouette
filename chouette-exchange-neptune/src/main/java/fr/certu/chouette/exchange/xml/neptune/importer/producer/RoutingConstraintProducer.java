@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.trident.schema.trident.ITLType;
 
-import chouette.schema.ITL;
 import fr.certu.chouette.exchange.xml.neptune.model.NeptuneRoutingConstraint;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  *  produce a temporary NeptuneRoutingConstraint object to create 
@@ -27,12 +30,12 @@ public class RoutingConstraintProducer extends AbstractProducer
     * @param report error reporting
     * @return relations created
     */
-   public List<NeptuneRoutingConstraint> produce(ITL[] itls,ReportItem report) 
+   public List<NeptuneRoutingConstraint> produce(String sourceFile,List<ITLType> itls,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
    {
       Map<String,NeptuneRoutingConstraint> constraintMap = new HashMap<String, NeptuneRoutingConstraint>();
       List<NeptuneRoutingConstraint> restrictions = new ArrayList<NeptuneRoutingConstraint>();
 
-      for (ITL itl : itls) 
+      for (ITLType itl : itls) 
       {
          String lineId = getNonEmptyTrimedString(itl.getLineIdShortCut());
          NeptuneRoutingConstraint restriction = constraintMap.get(lineId);

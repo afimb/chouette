@@ -345,12 +345,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	}
 
 	@Override
-	public List<T> doImport(User user, String formatDescriptor,List<ParameterValue> parameters,ReportHolder report) throws ChouetteException 
+	public List<T> doImport(User user, String formatDescriptor,List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException 
 	{
 		IImportPlugin<T> plugin = importPluginMap.get(formatDescriptor);
 		if (plugin == null) throw new CoreException(CoreExceptionCode.NO_PLUGIN_AVAILABLE,"unknown format :"+formatDescriptor);
 
-		return plugin.doImport(parameters,report);
+		return plugin.doImport(parameters,importReport,validationReport);
 
 
 	}

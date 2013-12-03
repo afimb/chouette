@@ -25,7 +25,8 @@ public class ParameterDescription
 		DATE,
 		STRING,
 		FILENAME,
-		FILEPATH
+		FILEPATH,
+		OBJECT
 		
 	};
 	

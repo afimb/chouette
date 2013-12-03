@@ -27,7 +27,7 @@
 		<module>chouette-exchange-gtfs</module>
 		<module>chouette-exchange-csv</module>
 		<module>chouette-export-geoportail</module>
-		<module>chouette-validation</module>
+		<!--  <module>chouette-validation</module>  -->
 		<module>chouette-services</module>
 		<module>chouette-command</module>
 		<module>chouette-gui-command</module>

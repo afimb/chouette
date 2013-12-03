@@ -36,7 +36,8 @@ public class GtfsExportTests extends AbstractTestNGSpringContextTests
       validate.setBooleanValue(Boolean.TRUE);
       values.add(validate);
       ReportHolder reportHolder = new ReportHolder();
-      List<Line> lines = lineManager.doImport(null, "NEPTUNE", values, reportHolder );
+      ReportHolder reportHolder2 = new ReportHolder();
+      List<Line> lines = lineManager.doImport(null, "NEPTUNE", values, reportHolder,reportHolder2 );
 
       Report importReport = reportHolder.getReport();
       printItems("",importReport.getItems());

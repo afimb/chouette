@@ -758,6 +758,8 @@
             <objectId>Hastustoto:Place:132824455</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
+            <longitude>5.9737800000000000</longitude>
+            <latitude>47.2196600000000000</latitude>
             <longLatType>WGS84</longLatType>
             <containedIn>Hastustoto:StopArea:PHYGARNIER1</containedIn>
             <name>GARNIER</name>
@@ -766,6 +768,8 @@
             <objectId>Hastustoto:Place:132824456</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
+            <longitude>5.9737800000000000</longitude>
+            <latitude>47.2196600000000000</latitude>
             <longLatType>WGS84</longLatType>
             <containedIn>Hastustoto:StopArea:PHYGARNIER2</containedIn>
             <name>GARNIER</name>
@@ -866,6 +870,7 @@
             <creationTime>2011-08-08T16:34:39.000+02:00</creationTime>
             <longitude>5.9780933333333337</longitude>
             <latitude>47.2207000000000008</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25056</countryCode>
             </address>
@@ -878,6 +883,7 @@
             <creationTime>2011-08-08T16:34:39.000+02:00</creationTime>
             <longitude>5.9698549999999999</longitude>
             <latitude>47.2191049999999990</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25056</countryCode>
             </address>
@@ -890,6 +896,7 @@
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
             <longitude>5.9649999999999999</longitude>
             <latitude>47.2025000000000006</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25036</countryCode>
             </address>
@@ -902,6 +909,7 @@
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
             <longitude>5.9672099999999997</longitude>
             <latitude>47.2156700000000029</latitude>
+            <longLatType>WGS84</longLatType>
             <containedIn>Hastustoto:StopArea:COMLAF</containedIn>
             <name>LA FAYETTE</name>
         </AreaCentroid>
@@ -911,6 +919,7 @@
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
             <longitude>5.9574999999999996</longitude>
             <latitude>47.2016666700000016</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25036</countryCode>
             </address>
@@ -923,6 +932,7 @@
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
             <longitude>5.9699999999999998</longitude>
             <latitude>47.2091666700000019</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25036</countryCode>
             </address>
@@ -935,6 +945,7 @@
             <creationTime>2011-08-12T15:05:08.000+02:00</creationTime>
             <longitude>5.9682949999999995</longitude>
             <latitude>47.2140399999999971</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25056</countryCode>
             </address>
@@ -947,6 +958,7 @@
             <creationTime>2011-08-08T16:34:39.000+02:00</creationTime>
             <longitude>6.1977777779999990</longitude>
             <latitude>47.1891666650000019</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25477</countryCode>
             </address>
@@ -959,6 +971,7 @@
             <creationTime>2011-08-08T16:34:39.000+02:00</creationTime>
             <longitude>5.9737799999999996</longitude>
             <latitude>47.2196599999999975</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25056</countryCode>
             </address>
@@ -969,6 +982,9 @@
             <objectId>ginko:Place:132818669</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2011-08-09T10:42:34.002+02:00</creationTime>
+            <longitude>5.9737799999999996</longitude>
+            <latitude>47.2196599999999975</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25036</countryCode>
             </address>
@@ -979,6 +995,9 @@
             <objectId>ginko:Place:132818668</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2011-08-09T10:39:10.571+02:00</creationTime>
+            <longitude>5.9737799999999996</longitude>
+            <latitude>47.2196599999999975</latitude>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>25477</countryCode>
             </address>
@@ -1878,6 +1897,8 @@
             <objectId>Hastustoto:StopPoint:52SP18SP2011SP05SP18SPGARNIER2</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2011-08-12T15:05:09.000+02:00</creationTime>
+            <longitude>5.9695000000000000</longitude>
+            <latitude>47.2191600000000000</latitude>
             <longLatType>WGS84</longLatType>
             <containedIn>Hastustoto:StopArea:PHYGARNIER2</containedIn>
             <name>GARNIER</name>
@@ -2046,6 +2067,8 @@
             <objectId>Hastustoto:StopPoint:52SP21SP2011SP08SP08SPGARNIER1</objectId>
             <objectVersion>1</objectVersion>
             <creationTime>2011-08-12T15:05:09.000+02:00</creationTime>
+            <longitude>5.9695000000000000</longitude>
+            <latitude>47.2191600000000000</latitude>
             <longLatType>WGS84</longLatType>
             <containedIn>Hastustoto:StopArea:PHYGARNIER1</containedIn>
             <name>GARNIER</name>

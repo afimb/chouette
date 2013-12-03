@@ -133,5 +133,27 @@ public class PTLink extends NeptuneIdentifiedObject
          endOfLinkId = endOfLink.getObjectId();
 
    }
+   
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof PTLink)
+		{
+			PTLink another = (PTLink) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getComment(), another.getComment())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+			if (!sameValue(this.getLinkDistance(), another.getLinkDistance())) return false;
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 
 }

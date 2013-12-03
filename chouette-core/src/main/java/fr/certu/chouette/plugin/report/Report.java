@@ -28,6 +28,7 @@ import lombok.Setter;
  * 
  */
 
+
 public abstract class Report
 {
    /**
@@ -80,6 +81,7 @@ public abstract class Report
       {
          if (it.getMessageKey() != null && it.getMessageKey().equals(messageKey))
          {
+        	it.updateStatus(item.getStatus());
             if (item.getItems() != null)
             {
                for (ReportItem sub : item.getItems())
@@ -237,6 +239,11 @@ public abstract class Report
          printItems(stream, indent + "   ", item.getItems());
       }
 
+   }
+   
+   public boolean hasItems()
+   {
+	   return items != null && !items.isEmpty();
    }
 
 }

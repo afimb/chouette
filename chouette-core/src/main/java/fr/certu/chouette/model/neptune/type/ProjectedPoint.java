@@ -58,4 +58,33 @@ public class ProjectedPoint implements Serializable
 		sb.append("x=").append(x).append(" y=").append(y).append(" projection=").append(projectionType);
 		return sb.toString();
 	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProjectedPoint other = (ProjectedPoint) obj;
+		if (projectionType == null) {
+			if (other.projectionType != null)
+				return false;
+		} else if (!projectionType.equals(other.projectionType))
+			return false;
+		if (x == null) {
+			if (other.x != null)
+				return false;
+		} else if (!x.equals(other.x))
+			return false;
+		if (y == null) {
+			if (other.y != null)
+				return false;
+		} else if (!y.equals(other.y))
+			return false;
+		return true;
+	}
+	
 }

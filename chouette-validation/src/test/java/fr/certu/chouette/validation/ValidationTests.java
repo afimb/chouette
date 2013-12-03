@@ -63,8 +63,9 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 		SimpleParameterValue validate = new SimpleParameterValue("validate");
 		validate.setBooleanValue(Boolean.TRUE);
 		values.add(validate);
+		ReportHolder ireportHolder = new ReportHolder();
 		ReportHolder reportHolder = new ReportHolder();
-		List<Line> lines = lineManager.doImport(null, "NEPTUNE", values, reportHolder );
+		List<Line> lines = lineManager.doImport(null, "NEPTUNE", values, ireportHolder, reportHolder );
 
 		Report importReport = reportHolder.getReport();
 		//		System.out.println(importReport.getLocalizedMessage());

@@ -1,43 +1,40 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import chouette.schema.AccessibilitySuitabilityDetailsItem;
-import chouette.schema.StopAreaExtension;
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.schema.StopArea>
+public class StopAreaProducer extends AbstractModelProducer<StopArea,org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea>
 {
 	@Override
-	public StopArea produce(chouette.schema.StopArea xmlStopArea,ReportItem report,SharedImportedData sharedData) 
+	public StopArea produce(String sourceFile,org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea xmlStopArea,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
 	{
 		StopArea stopArea = new StopArea();
-		
+
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(stopArea, xmlStopArea, report);
-		StopArea sharedBean = sharedData.get(stopArea);
-      if (sharedBean != null) return sharedBean;
-      
+		populateFromCastorNeptune(stopArea, xmlStopArea, importReport);
+
 		// AreaCentroid optional
 		stopArea.setAreaCentroidId(getNonEmptyTrimedString(xmlStopArea.getCentroidOfArea()));
-		
+
 		// Name optional
 		stopArea.setName(getNonEmptyTrimedString(xmlStopArea.getName()));
-		
+
 		// Comment optional
 		stopArea.setComment(getNonEmptyTrimedString(xmlStopArea.getComment()));
-		
+
 		// BoundaryPoints [0..w] : out of Neptune scope
-		
-		// ContainedStopIds [1..w]
-		for(String containedStopId : xmlStopArea.getContains()){
-			stopArea.addContainedStopId(getNonEmptyTrimedString(containedStopId));
-		}
-		
+
+
 		// StopAreaExtension optional
-		StopAreaExtension xmlStopAreaExtension = xmlStopArea.getStopAreaExtension();
+		org.trident.schema.trident.StopAreaExtensionType xmlStopAreaExtension = xmlStopArea.getStopAreaExtension();
 		if(xmlStopAreaExtension != null){
 			// AreaType mandatory
 			if(xmlStopAreaExtension.getAreaType() != null){
@@ -50,40 +47,57 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,chouette.sc
 					e.printStackTrace();
 				}
 			}
-			
+
 			// FareCode optional
 			stopArea.setFareCode(xmlStopAreaExtension.getFareCode());
-			
+
 			// LiftAvailability optional
-			stopArea.setLiftAvailable(xmlStopAreaExtension.getLiftAvailability());
-			
+			if (xmlStopAreaExtension.isSetLiftAvailability())
+				stopArea.setLiftAvailable(xmlStopAreaExtension.isLiftAvailability());
+
 			// MobilityRestrictedSuitability
-			stopArea.setMobilityRestrictedSuitable(xmlStopAreaExtension.getMobilityRestrictedSuitability());
-			
+			if (xmlStopAreaExtension.isSetMobilityRestrictedSuitability())
+				stopArea.setMobilityRestrictedSuitable(xmlStopAreaExtension.isMobilityRestrictedSuitability());
+
 			// NearestTopicName optional
 			stopArea.setNearestTopicName(getNonEmptyTrimedString(xmlStopAreaExtension.getNearestTopicName()));
-			
+
 			// RegistrationNumber optional
-			stopArea.setRegistrationNumber(getRegistrationNumber(xmlStopAreaExtension.getRegistration(), report));
-			
+			stopArea.setRegistrationNumber(getRegistrationNumber(xmlStopAreaExtension.getRegistration(), importReport));
+
 			//StairsAvailability optional
-			stopArea.setStairsAvailable(xmlStopAreaExtension.getStairsAvailability());
-			
-			if(xmlStopAreaExtension.getAccessibilitySuitabilityDetails() != null){
-				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlStopAreaExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
-					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
-						try{
-							stopArea.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
-						}
-						catch (IllegalArgumentException e) 
-						{
-							// TODO: traiter le cas de non correspondance
-						}
+			if (xmlStopAreaExtension.isSetStairsAvailability())
+				stopArea.setStairsAvailable(xmlStopAreaExtension.isStairsAvailability());
+
+			if(xmlStopAreaExtension.getAccessibilitySuitabilityDetails() != null)
+			{
+				for(Object xmlAccessibilitySuitabilityDetailsItem : xmlStopAreaExtension.getAccessibilitySuitabilityDetails().getMobilityNeedOrPsychosensoryNeedOrMedicalNeed())
+				{
+					try
+					{
+						stopArea.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.toString()));
 					}
+					catch (IllegalArgumentException e) 
+					{
+						// TODO: traiter le cas de non correspondance
+					}
+
 				}
 			}
 		}
 		
+		List<String> contains = new ArrayList<String>(xmlStopArea.getContains());
+		xmlStopArea.getContains().clear();
+
+		StopArea sharedBean = getOrAddSharedData(sharedData, stopArea, sourceFile, xmlStopArea,validationReport);
+		if (sharedBean != null) stopArea = sharedBean;
+		
+		xmlStopArea.getContains().addAll(contains);
+		
+		// ContainedStopIds [1..w]
+		for(String containedStopId : contains){
+			stopArea.addContainedStopId(getNonEmptyTrimedString(containedStopId));
+		}
 		return stopArea;
 	}
 

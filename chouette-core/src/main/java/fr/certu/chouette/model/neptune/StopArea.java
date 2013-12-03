@@ -1003,4 +1003,38 @@ public class StopArea extends NeptuneLocalizedObject
 			}
 		}
 	}
+	
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof StopArea)
+		{
+			StopArea another = (StopArea) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getComment(), another.getComment())) return false;
+			if (!sameValue(this.getIntUserNeeds(), another.getIntUserNeeds())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+			if (!sameValue(this.getCountryCode(), another.getCountryCode())) return false;
+			if (!sameValue(this.getStreetName(), another.getStreetName())) return false;
+			if (!sameValue(this.getLatitude(), another.getLatitude())) return false;
+			if (!sameValue(this.getLongitude(), another.getLongitude())) return false;
+			if (!sameValue(this.getLongLatType(), another.getLongLatType())) return false;
+			if (!sameValue(this.getProjectionType(), another.getProjectionType())) return false;
+			if (!sameValue(this.getX(), another.getX())) return false;
+			if (!sameValue(this.getY(), another.getY())) return false;
+
+			if (!sameValue(this.getAreaType(), another.getAreaType())) return false;
+			if (!sameValue(this.getFareCode(), another.getFareCode())) return false;
+			if (!sameValue(this.getNearestTopicName(), another.getNearestTopicName())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	
 }

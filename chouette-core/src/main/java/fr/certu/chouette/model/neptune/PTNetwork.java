@@ -175,5 +175,29 @@ public class PTNetwork extends NeptuneIdentifiedObject
       if (lines.contains(line))
          lines.remove(line);
    }
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof PTNetwork)
+		{
+			PTNetwork another = (PTNetwork) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getComment(), another.getComment())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+
+			if (!sameValue(this.getDescription(), another.getDescription())) return false;
+			if (!sameValue(this.getSourceIdentifier(), another.getSourceIdentifier())) return false;
+			if (!sameValue(this.getSourceName(), another.getSourceName())) return false;
+			if (!sameValue(this.getSourceType(), another.getSourceType())) return false;
+			if (!sameValue(this.getVersionDate(), another.getVersionDate())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 }

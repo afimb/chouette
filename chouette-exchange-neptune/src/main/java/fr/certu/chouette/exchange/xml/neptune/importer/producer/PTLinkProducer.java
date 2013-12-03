@@ -1,24 +1,28 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
-import fr.certu.chouette.model.neptune.PTLink;
-import fr.certu.chouette.plugin.report.ReportItem;
+import org.trident.schema.trident.PTLinkType;
 
-public class PTLinkProducer extends AbstractModelProducer<PTLink, chouette.schema.PtLink> {
+import fr.certu.chouette.model.neptune.PTLink;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
+
+public class PTLinkProducer extends AbstractModelProducer<PTLink, PTLinkType> {
 
 	@Override
-	public PTLink produce(chouette.schema.PtLink xmlPTLink,ReportItem report,SharedImportedData sharedData) 
+	public PTLink produce(String sourceFile,PTLinkType xmlPTLink,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
 	{
 		PTLink ptLink= new PTLink();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(ptLink, xmlPTLink,report);
+		populateFromCastorNeptune(ptLink, xmlPTLink,importReport);
 				
-		// Name optional
-		ptLink.setName(getNonEmptyTrimedString(xmlPTLink.getName()));
+		// Name optional : unused and unchecked 
+		// ptLink.setName(getNonEmptyTrimedString(xmlPTLink.getName()));
 		
-		// Comment optional
-		ptLink.setComment(getNonEmptyTrimedString(xmlPTLink.getComment()));
+		// Comment optional : unused and unchecked 
+		// ptLink.setComment(getNonEmptyTrimedString(xmlPTLink.getComment2()));
 		
 		//StartOfLink mandatory
 		ptLink.setStartOfLinkId(getNonEmptyTrimedString(xmlPTLink.getStartOfLink()));

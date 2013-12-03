@@ -272,4 +272,31 @@ public class StopPoint extends NeptuneIdentifiedObject
          setName(area.getName());
       }
    }
+   
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof StopPoint)
+		{
+			StopPoint another = (StopPoint) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getComment(), another.getComment())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+			if (!sameValue(this.getLatitude(), another.getLatitude())) return false;
+			if (!sameValue(this.getLongitude(), another.getLongitude())) return false;
+			if (!sameValue(this.getLongLatType(), another.getLongLatType())) return false;
+			if (!sameValue(this.getAddress(), another.getAddress())) return false;
+			if (!sameValue(this.getProjectedPoint(), another.getProjectedPoint())) return false;
+
+			if (!sameValue(this.getPosition(), another.getPosition())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 }

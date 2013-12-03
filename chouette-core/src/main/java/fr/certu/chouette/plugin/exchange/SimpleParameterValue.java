@@ -21,6 +21,7 @@ public class SimpleParameterValue extends ParameterValue
 	@Getter @Setter private String stringValue;
 	@Getter @Setter private String filenameValue;
 	@Getter @Setter private String filepathValue;
+	@Getter @Setter private Object objectValue;
 
 	public SimpleParameterValue(String name) 
 	{

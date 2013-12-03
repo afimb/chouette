@@ -160,4 +160,27 @@ public class VehicleJourneyAtStop extends NeptuneObject
 		return super.equals(obj);
 	}
 
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof VehicleJourneyAtStop)
+		{
+			VehicleJourneyAtStop another = (VehicleJourneyAtStop) anotherObject;
+
+			if (!sameValue(this.getArrivalTime(), another.getArrivalTime())) return false;
+			if (!sameValue(this.getBoardingAlightingPossibility(), another.getBoardingAlightingPossibility())) return false;
+			if (!sameValue(this.getConnectingServiceId(), another.getConnectingServiceId())) return false;
+			if (!sameValue(this.getDepartureTime(), another.getDepartureTime())) return false;
+			if (!sameValue(this.getElapseDuration(), another.getElapseDuration())) return false;
+			if (!sameValue(this.getHeadwayFrequency(), another.getHeadwayFrequency())) return false;
+			if (!sameValue(this.getOrder(), another.getOrder())) return false;
+			if (!sameValue(this.getWaitingTime(), another.getWaitingTime())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 }

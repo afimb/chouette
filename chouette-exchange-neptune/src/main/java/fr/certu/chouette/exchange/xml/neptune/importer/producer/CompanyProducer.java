@@ -1,21 +1,23 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.plugin.report.ReportItem;
+import org.trident.schema.trident.CompanyType;
 
-public class CompanyProducer extends AbstractModelProducer<Company, chouette.schema.Company> {
+import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
+import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
+
+public class CompanyProducer extends AbstractModelProducer<Company, CompanyType> {
 
 	@Override
-	public Company produce(chouette.schema.Company xmlCompany,ReportItem report,SharedImportedData sharedData) 
+	public Company produce(String sourceFile,CompanyType xmlCompany,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
 	{
 
 		Company company = new Company();
 		
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(company, xmlCompany, report);
-		Company sharedBean = sharedData.get(company);
-      if (sharedBean != null) return sharedBean;
+		populateFromCastorNeptune(company, xmlCompany, importReport);
 		// Name mandatory
 		company.setName(getNonEmptyTrimedString(xmlCompany.getName()));
 		
@@ -35,7 +37,7 @@ public class CompanyProducer extends AbstractModelProducer<Company, chouette.sch
 		company.setEmail(getNonEmptyTrimedString(xmlCompany.getEmail()));
 		
 		//RegistrationNumber optional
-		company.setRegistrationNumber(getRegistrationNumber(xmlCompany.getRegistration(),report));
+		company.setRegistrationNumber(getRegistrationNumber(xmlCompany.getRegistration(),importReport));
 		
 		//OperatingDepartmentName optional
 		company.setOperatingDepartmentName(getNonEmptyTrimedString(xmlCompany.getOperatingDepartmentName()));
@@ -43,6 +45,8 @@ public class CompanyProducer extends AbstractModelProducer<Company, chouette.sch
 		//OrganisationalUnit optional 
 		company.setOrganisationalUnit(getNonEmptyTrimedString(xmlCompany.getOrganisationalUnit()));
 		
+		Company sharedBean = getOrAddSharedData(sharedData, company, sourceFile, xmlCompany,validationReport);
+        if (sharedBean != null) return sharedBean;
 		return company;
 	}
 

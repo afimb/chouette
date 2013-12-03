@@ -1,26 +1,28 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import chouette.schema.AccessibilitySuitabilityDetailsItem;
-import chouette.schema.ConnectionLinkExtension;
-import fr.certu.chouette.exchange.xml.neptune.importer.SharedImportedData;
+import org.trident.schema.trident.ConnectionLinkExtensionType;
+
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 /**
  * 
  * @author mamadou keira
  *
  */
-public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouette.schema.AccessLink>{
+public class AccessLinkProducer extends AbstractModelProducer<AccessLink, org.trident.schema.trident.ChouettePTNetworkType.AccessLink>{
 
 	@Override
-	public AccessLink produce(chouette.schema.AccessLink xmlAccessLink, ReportItem report,SharedImportedData sharedData) {
+	public AccessLink produce(String sourceFile,org.trident.schema.trident.ChouettePTNetworkType.AccessLink xmlAccessLink, ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) {
 		AccessLink accessLink = new AccessLink();
 		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(accessLink, xmlAccessLink,report);
+		populateFromCastorNeptune(accessLink, xmlAccessLink,importReport);
 		// Name optional
 		accessLink.setName(getNonEmptyTrimedString(xmlAccessLink.getName()));
 		
@@ -37,51 +39,49 @@ public class AccessLinkProducer extends AbstractModelProducer<AccessLink, chouet
 		accessLink.setLinkDistance(xmlAccessLink.getLinkDistance());
 		
 		// LiftAvailability optional
-		accessLink.setLiftAvailable(xmlAccessLink.getLiftAvailability());
+		if (xmlAccessLink.isSetLiftAvailability())
+		accessLink.setLiftAvailable(xmlAccessLink.isLiftAvailability());
 		
 		// MobilityRestrictedSuitability optional
-		accessLink.setMobilityRestrictedSuitable(xmlAccessLink.getMobilityRestrictedSuitability());
+		if (xmlAccessLink.isSetMobilityRestrictedSuitability())
+		accessLink.setMobilityRestrictedSuitable(xmlAccessLink.isMobilityRestrictedSuitability());
 		
 		// StairsAvailability optional
-		accessLink.setStairsAvailable(xmlAccessLink.getStairsAvailability());
+		if (xmlAccessLink.isSetStairsAvailability())
+		accessLink.setStairsAvailable(xmlAccessLink.isStairsAvailability());
 		
 		// accessLinkExtension optional
-		ConnectionLinkExtension xmlConnectionLinkExtension = xmlAccessLink.getConnectionLinkExtension();
+		ConnectionLinkExtensionType xmlConnectionLinkExtension = xmlAccessLink.getConnectionLinkExtension();
 		if(xmlConnectionLinkExtension != null){
 			if(xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails() != null){
-				for(AccessibilitySuitabilityDetailsItem xmlAccessibilitySuitabilityDetailsItem : xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails().getAccessibilitySuitabilityDetailsItem()){
-					if(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup() != null){
+				for(Object xmlAccessibilitySuitabilityDetailsItem : xmlConnectionLinkExtension.getAccessibilitySuitabilityDetails().getMobilityNeedOrPsychosensoryNeedOrMedicalNeed()){
 						try{
-							accessLink.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.getUserNeedGroup().getChoiceValue().toString()));
+							accessLink.addUserNeed(UserNeedEnum.fromValue(xmlAccessibilitySuitabilityDetailsItem.toString()));
 						}
 						catch (IllegalArgumentException e) 
 						{
 							// TODO: traiter le cas de non correspondance
 						}
-					}
+					
 				}
 			}
 		}
 		
 		// DefaultDuration optional
-		if(xmlAccessLink.getDefaultDuration() != null){
 			accessLink.setDefaultDuration(getTime(xmlAccessLink.getDefaultDuration()));
-		}
+		
 		
 		// FrequentTravellerDuration optional
-		if(xmlAccessLink.getFrequentTravellerDuration() != null){
 			accessLink.setFrequentTravellerDuration(getTime(xmlAccessLink.getFrequentTravellerDuration()));
-		}
+		
 		
 		// OccasionalTravellerDuration optional
-		if(xmlAccessLink.getOccasionalTravellerDuration() != null){
 			accessLink.setOccasionalTravellerDuration(getTime(xmlAccessLink.getOccasionalTravellerDuration()));
-		}
+		
 		
 		// MobilityRestrictedTravellerDuration optional
-		if(xmlAccessLink.getMobilityRestrictedTravellerDuration() != null){
 			accessLink.setMobilityRestrictedTravellerDuration(getTime(xmlAccessLink.getMobilityRestrictedTravellerDuration()));
-		}
+		
 		
 		// LinkType optional
 		if(xmlAccessLink.getLinkType() != null){

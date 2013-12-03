@@ -669,6 +669,8 @@ public class Command
 						case FILEPATH : val.setFilepathList(vals); break;
 						case STRING : val.setStringList(vals); break;
 						case FILENAME : val.setFilenameList(vals); break;
+						default : 
+							throw new IllegalArgumentException("parameter -"+name+" is invalid ");
 						}
 						values.add(val);
 					}
@@ -680,17 +682,17 @@ public class Command
 						}
 						String simpleval = vals.get(0);
 
-									SimpleParameterValue val = new SimpleParameterValue(name);
-									switch (desc.getType())
-									{
-									case FILEPATH : val.setFilepathValue(simpleval); break;
-									case STRING : val.setStringValue(simpleval); break;
-									case FILENAME : val.setFilenameValue(simpleval); break;
-									case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
-									case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
-									case DATE : val.setDateValue(toCalendar(simpleval));break;
-									}
-									values.add(val);
+						SimpleParameterValue val = new SimpleParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathValue(simpleval); break;
+						case STRING : val.setStringValue(simpleval); break;
+						case FILENAME : val.setFilenameValue(simpleval); break;
+						case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
+						case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+						case DATE : val.setDateValue(toCalendar(simpleval));break;
+						}
+						values.add(val);
 					}
 				}
 			}
@@ -793,6 +795,8 @@ public class Command
 						case FILEPATH : val.setFilepathList(vals); break;
 						case STRING : val.setStringList(vals); break;
 						case FILENAME : val.setFilenameList(vals); break;
+                        default:
+							throw new IllegalArgumentException("parameter -"+name+" invalid, check command getDeletionExportFormats for list ");
 						}
 						values.add(val);
 					}
@@ -804,16 +808,18 @@ public class Command
 						}
 						String simpleval = vals.get(0);
 
-									SimpleParameterValue val = new SimpleParameterValue(name);
-									switch (desc.getType())
-									{
-									case FILEPATH : val.setFilepathValue(simpleval); break;
-									case STRING : val.setStringValue(simpleval); break;
-									case FILENAME : val.setFilenameValue(simpleval); break;
-									case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
-									case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
-									}
-									values.add(val);
+						SimpleParameterValue val = new SimpleParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathValue(simpleval); break;
+						case STRING : val.setStringValue(simpleval); break;
+						case FILENAME : val.setFilenameValue(simpleval); break;
+						case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
+						case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+                        default:
+							throw new IllegalArgumentException("parameter -"+name+" invalid, check command getDeletionExportFormats for list ");
+						}
+						values.add(val);
 					}
 				}
 			}
@@ -978,6 +984,8 @@ public class Command
 						case FILEPATH : val.setFilepathList(vals); break;
 						case STRING : val.setStringList(vals); break;
 						case FILENAME : val.setFilenameList(vals); break;
+                        default:
+							throw new IllegalArgumentException("parameter -"+name+" invalid, check command getImportFormats for list ");
 						}
 						values.add(val);
 					}
@@ -989,26 +997,41 @@ public class Command
 						}
 						String simpleval = vals.get(0);
 
-									SimpleParameterValue val = new SimpleParameterValue(name);
-									switch (desc.getType())
-									{
-									case FILEPATH : val.setFilepathValue(simpleval); break;
-									case STRING : val.setStringValue(simpleval); break;
-									case FILENAME : val.setFilenameValue(simpleval); break;
-									case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
-									case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
-									case DATE : val.setDateValue(toCalendar(simpleval));break;
-									}
-									values.add(val);
+						SimpleParameterValue val = new SimpleParameterValue(name);
+						switch (desc.getType())
+						{
+						case FILEPATH : val.setFilepathValue(simpleval); break;
+						case STRING : val.setStringValue(simpleval); break;
+						case FILENAME : val.setFilenameValue(simpleval); break;
+						case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
+						case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
+						case DATE : val.setDateValue(toCalendar(simpleval));break;
+						}
+						values.add(val);
 					}
 				}
 			}
 
-			ReportHolder holder = new ReportHolder();
-			List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,holder);
-			if (holder.getReport() != null)
+			ReportHolder ireport = new ReportHolder();
+			ReportHolder vreport = new ReportHolder();
+			List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values, ireport,vreport);
+			if (ireport.getReport() != null)
 			{
-				Report r = holder.getReport();
+				Report r = ireport.getReport();
+				if (reportFormat.equals("json"))
+				{
+					stream.println(r.toJSON());
+				}
+				else
+				{
+					stream.println(r.getLocalizedMessage());
+					printItems(stream,"",r.getItems());
+				}
+
+			}
+			if (vreport.getReport() != null)
+			{
+				Report r = vreport.getReport();
 				if (reportFormat.equals("json"))
 				{
 					stream.println(r.toJSON());
@@ -1109,7 +1132,7 @@ public class Command
 
 			}
 		}
-		stream.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués");
+		stream.println("Bilan : "+nbOK+" tests ok, "+nbWARN+" warnings, "+nbERROR+" erreurs, "+nbUNCHECK+" non effectués, "+nbFATAL+" fatals");
 		if (!fileName.isEmpty())
 		{
 			stream.close();

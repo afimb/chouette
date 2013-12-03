@@ -175,7 +175,16 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 		return map;
 	}
 
-
+    /**
+     * to be overrided; facility to check registration number on any object
+     * 
+     * @return null : when object has no registration number
+     */
+    public String getRegistrationNumber()
+    {
+    	return null;
+    }
+    
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.model.neptune.NeptuneObject#equals(java.lang.Object)

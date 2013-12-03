@@ -103,4 +103,31 @@ public class Company extends NeptuneIdentifiedObject
       return sb.toString();
    }
 
+	@Override
+	public <T extends NeptuneObject> boolean compareAttributes(
+			T anotherObject) {
+		if (anotherObject instanceof Company)
+		{
+			Company another = (Company) anotherObject;
+			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
+			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
+			if (!sameValue(this.getName(), another.getName())) return false;
+			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
+
+			if (!sameValue(this.getShortName(), another.getShortName())) return false;
+			if (!sameValue(this.getCode(), another.getCode())) return false;
+			if (!sameValue(this.getOrganisationalUnit(), another.getOrganisationalUnit())) return false;
+			if (!sameValue(this.getOperatingDepartmentName(), another.getOperatingDepartmentName())) return false;
+			if (!sameValue(this.getPhone(), another.getPhone())) return false;
+			if (!sameValue(this.getFax(), another.getFax())) return false;
+			if (!sameValue(this.getEmail(), another.getEmail())) return false;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+   
 }

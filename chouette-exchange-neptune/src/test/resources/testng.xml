@@ -8,10 +8,18 @@
   <parameter name="neptuneFileBadEnc"  value="C_NEPTUNE_1_bad_enc.xml"/>
   <parameter name="neptuneRCFile"  value="C_CHOUETTE_52.xml"/>
   <parameter name="neptuneZip"  value="lignes_neptune.zip"/>
-    <packages>
+  <parameter name="neptuneZipErr"  value="lignes_neptune_err.zip"/>
+    <!-- <packages>
       <package name="fr.certu.chouette.exchange.xml.neptune" >
       </package>
-   </packages>
+    </packages> -->
+      <classes>
+      <class name="fr.certu.chouette.exchange.xml.neptune.NeptuneImportTests">
+	<methods>
+        <include name="verifyImportZipLinesErr"/>
+      </methods>
+      </class>
+      </classes>
   </test>
   
 </suite>
