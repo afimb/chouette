@@ -491,8 +491,10 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		}
 		else
 		{
-			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
-			printItems("---",report.getItems());
+			Reporter.log(report.toJSON());
+
+//			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
+//			printItems("---",report.getItems());
 		}
 	}
 

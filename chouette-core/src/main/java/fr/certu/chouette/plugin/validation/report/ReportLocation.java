@@ -64,4 +64,29 @@ public class ReportLocation
 		this.value = value;
 	}
 
+	public Object toJSON() 
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("{");
+		if (fileName != null)
+			builder.append("\"fileName\":\""+fileName+"\",");
+		if (errorCode != null)
+			builder.append("\"errorCode\":\""+errorCode+"\",");
+		if (lineNumber != -1)
+			builder.append("\"lineNumber\":\""+lineNumber+"\",");
+		if (columnNumber != -1)
+			builder.append("\"columnNumber\":\""+columnNumber+"\",");
+		if (attribute != null)
+			builder.append("\"attribute\":\""+attribute+"\",");
+		if (value != null)
+			builder.append("\"value\":\""+value+"\",");
+		if (xpath != null)
+			builder.append("\"xpath\":\""+xpath+"\",");
+		if (url != null)
+			builder.append("\"url\":\""+url+"\",");
+		if (message != null)
+			builder.append("\"message\":\""+message+"\",");
+		return builder.subSequence(0, builder.length()-1)+"}";
+	}
+
 }

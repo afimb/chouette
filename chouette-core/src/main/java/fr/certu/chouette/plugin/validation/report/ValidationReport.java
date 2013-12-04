@@ -17,13 +17,13 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class ValidationReport extends Report 
 {
-    enum ORIGIN {DEFAULT} ;
+    enum ORIGIN {VALIDATION} ;
 	/**
 	 * 
 	 */
 	public ValidationReport() 
 	{
-		setOriginKey(ORIGIN.DEFAULT.name());
+		setOriginKey(ORIGIN.VALIDATION.name());
 		setStatus(STATE.OK);
 	}
 	

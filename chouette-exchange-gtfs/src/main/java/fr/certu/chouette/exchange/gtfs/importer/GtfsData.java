@@ -306,6 +306,11 @@ public class GtfsData
 		for (GtfsRoute route : routes.getAll())
 		{
 			routeMap.put(route.getRouteId(), route);
+			// agencyId is optionnal when only one agency is provided
+			if (route.getAgencyId() == null && agencyMap.size() == 1)
+			{
+				route.setAgencyId(agencyMap.keySet().iterator().next());
+			}
 			GtfsAgency agency = agencyMap.get(route.getAgencyId());
 			if (agency == null)
 			{

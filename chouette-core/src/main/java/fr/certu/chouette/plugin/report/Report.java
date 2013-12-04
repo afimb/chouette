@@ -15,6 +15,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.json.JSONObject;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -178,9 +180,9 @@ public abstract class Report
       builder.append("{\n");
       builder.append("  \"key\":\"");
       builder.append(getOriginKey());
-      builder.append("\",\n  \"message\":");
-      builder.append(getLocalizedMessage());
-      builder.append("\",\n  \"status\":");
+//      builder.append("\",\n  \"message\":\"");
+//      builder.append(getLocalizedMessage());
+      builder.append("\",\n  \"status\":\"");
       builder.append(getStatus());
       builder.append("\"");
       if (items != null && !items.isEmpty())
@@ -197,6 +199,11 @@ public abstract class Report
       builder.append("\n}\n");
 
       return builder.toString();
+   }
+   
+   public JSONObject toJSONObject()
+   {
+	   return new JSONObject(toJSON());
    }
    
    

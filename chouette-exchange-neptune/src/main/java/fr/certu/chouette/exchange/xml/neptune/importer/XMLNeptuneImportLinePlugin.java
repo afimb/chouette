@@ -219,8 +219,25 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			throw new IllegalArgumentException("invalid file type : " + extension);
 		}
 
-		Report iReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
-		Report vReport = new ValidationReport();
+		Report iReport = null; 
+		if (importReport.getReport() != null)
+		{
+			iReport = importReport.getReport();
+		}
+		else
+		{
+			iReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
+		}
+		
+		Report vReport = null; 
+		if (validationReport.getReport() != null)
+		{
+			vReport = validationReport.getReport();
+		}
+		else
+		{
+			vReport = new ValidationReport();
+		}
 
 		List<Line> lines = null;
 

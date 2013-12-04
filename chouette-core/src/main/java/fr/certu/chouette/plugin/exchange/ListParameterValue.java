@@ -7,8 +7,11 @@
  */
 package fr.certu.chouette.plugin.exchange;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import org.json.JSONArray;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +29,36 @@ public class ListParameterValue extends ParameterValue
 	public ListParameterValue(String name) 
 	{
 		super(name);
+	}
+
+	public void fillFilepathList(JSONArray vals) 
+	{
+		filepathList = toStringArray(vals);
+		
+	}
+	
+	public void fillStringList(JSONArray vals) 
+	{
+		stringList = toStringArray(vals);
+		
+	}
+	
+	public void fillFilenameList(JSONArray vals) 
+	{
+		filenameList = toStringArray(vals);
+		
+	}
+	
+	
+	
+	private List<String> toStringArray(JSONArray vals)
+	{
+		List<String> array = new ArrayList<String>();
+		
+		for (int i = 0; i < vals.length(); i++) 
+		{
+			array.add(vals.getString(i));
+		}
+		return array;
 	}
 }

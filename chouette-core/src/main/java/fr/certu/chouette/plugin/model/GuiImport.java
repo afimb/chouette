@@ -4,7 +4,8 @@
 package fr.certu.chouette.plugin.model;
 
 
-import org.json.simple.JSONObject;
+
+import org.json.JSONObject;
 
 import lombok.Getter;
 import lombok.Setter;

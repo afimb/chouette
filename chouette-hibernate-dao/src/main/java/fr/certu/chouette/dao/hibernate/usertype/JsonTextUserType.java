@@ -26,8 +26,7 @@ import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.JSONObject;
 
 
 
@@ -72,7 +71,7 @@ public class JsonTextUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		return resultSet.wasNull() ? null : JSONValue.parse(name);	
+		return resultSet.wasNull() ? null : new JSONObject(name);	
 	}
 	/* (non-Javadoc)
 	 * @see org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int)

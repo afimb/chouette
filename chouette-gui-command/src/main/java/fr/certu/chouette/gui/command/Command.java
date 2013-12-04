@@ -41,6 +41,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
@@ -64,25 +66,25 @@ import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
 import fr.certu.chouette.plugin.model.GuiFileValidation;
 import fr.certu.chouette.plugin.model.GuiImport;
-import fr.certu.chouette.plugin.model.ImportLogMessage;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.plugin.validation.report.ValidationReport;
 import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * 
- * 
- * import command :  ( -fileFormat utilisé si l'extension du fichier n'est pas représentative du format)
- * -c import -o line -format XXX -inputFile YYYY [-fileFormat TTT] -importId ZZZ ... 
+ * import command : 
+ * -c import -o line -inputFile YYYY -importId ZZZ  
  * 
  * export command : 
  * selected objects
@@ -155,8 +157,6 @@ public class Command
 	@Setter private IDaoTemplate<Referential> referentialDao;;
 
 	@Setter private IDaoTemplate<GuiImport> importDao;;
-
-	@Setter private IDaoTemplate<ImportLogMessage> importLogMessageDao;;
 
 	@Setter private IDaoTemplate<GuiExport> exportDao;
 
@@ -929,15 +929,15 @@ public class Command
 	 */
 	private int executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	{
-		parameters.put("reportforsave", Arrays.asList(new String[] {"true"} ));
+		// parameters.put("reportforsave", Arrays.asList(new String[] {"true"} ));
 		// parameters.put("validate",Arrays.asList(new String[]{"true"})); // force validation if possible
 
-		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
+//		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
 		Report importReport = null;
 		Report validationReport = null;
 
-		List<Report> ireports = new ArrayList<Report>();
-		List<Report> vreports = new ArrayList<Report>();
+//		List<Report> ireports = new ArrayList<Report>();
+//		List<Report> vreports = new ArrayList<Report>();
 		// check if import exists and accept unzip before call
 		String inputFile = getSimpleString(parameters,"inputfile");
 		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
@@ -951,6 +951,8 @@ public class Command
 		logger.info("Import data for inport id "+importId);
 		logger.info("  format : "+guiImport.getFormat());
 		logger.info("  options : "+guiImport.getParameters());
+		
+		JSONObject options = guiImport.getParameters();
 
 		String format = guiImport.getFormat().toUpperCase(); // TODO : check values 
 
@@ -1000,9 +1002,15 @@ public class Command
 					break;
 				}
 			}
-			List<ParameterValue> values = populateParameters(description,parameters,"inputfile","fileformat");
+			List<ParameterValue> values = populateParametersFromJSON(description,options,"inputfile","fileformat");
 			if (zipped && description.isUnzipAllowed())
 			{
+				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
+				ReportHolder importHolder = new ReportHolder();
+				validationReport = new ValidationReport();
+				ReportHolder validationHolder = new ReportHolder();
+				validationHolder.setReport(validationReport);
+				
 				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
 				values.add(inputFileParam);
 				// unzip files , import and save contents 
@@ -1014,6 +1022,8 @@ public class Command
 				{
 
 					zip = new ZipFile(inputFile);
+					ReportItem zipReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE,Report.STATE.OK,zip.getName());
+					importHolder.setReport(zipReportItem);
 					for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
 					{
 						ZipEntry entry = entries.nextElement();
@@ -1054,35 +1064,7 @@ public class Command
 						if (verbose) System.out.println("import file "+entry.getName());
 						logger.info("import file "+entry.getName());
 						inputFileParam.setFilepathValue(temp.getAbsolutePath());
-						ReportHolder importHolder = new ReportHolder();
-						ReportHolder validationHolder = new ReportHolder();
 						List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
-						if (importHolder.getReport() != null)
-						{
-							if (importReport == null) 
-							{
-								importReport = importHolder.getReport();
-								ireports.add(importReport);
-							}
-							else
-							{
-								importReport.addAll(importHolder.getReport().getItems());
-							}
-
-						}
-						if (validationHolder.getReport() != null)
-						{
-							if (validationReport == null) 
-							{
-								validationReport = validationHolder.getReport();
-								vreports.add(validationReport);
-							}
-							else
-							{
-								validationReport.addAll(validationHolder.getReport().getItems());
-							}
-
-						}
 						// save
 						if (beans != null && !beans.isEmpty())
 						{
@@ -1135,11 +1117,10 @@ public class Command
 				}
 				catch (IOException e)
 				{
-					//reports.add(saveReport);
-					System.out.println("import failed "+e.getMessage());
-					logger.error("import failed "+e.getMessage(),e);
+					ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
+		            importReport.addItem(fileErrorItem);
 					// TODO
-					saveImportReports(importId,format,ireports);
+					saveImportReports(guiImport, importReport, validationReport);
 					return 1;
 				}
 				finally
@@ -1173,13 +1154,11 @@ public class Command
 				if (importHolder.getReport() != null)
 				{
 					importReport = importHolder.getReport();
-					ireports.add(importReport);
 
 				}
 				if (validationHolder.getReport() != null)
 				{
 					validationReport = validationHolder.getReport();
-					vreports.add(validationReport);
 
 				}
 				logger.info("imported Lines "+beans.size());
@@ -1199,14 +1178,14 @@ public class Command
 						logger.info("save  Line "+bean.getName());
 						manager.saveAll(null, oneBean, true, true);
 						GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
-						saveReport.addItem(item);
+						importReport.addItem(item);
 						beanCount++;
 					}
 					catch (Exception e) 
 					{
 						logger.error("save failed "+e.getMessage(),e);
 						GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
-						saveReport.addItem(item);
+						importReport.addItem(item);
 					}
 				}
 			}
@@ -1214,25 +1193,36 @@ public class Command
 		catch (Exception e)
 		{
 			// fill report with error
-			if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
-				ireports.add(saveReport);
 			String msg = e.getMessage();
 			if (msg == null) msg = e.getClass().getName();
 			System.out.println("import failed "+msg);
 			logger.error("import failed "+msg,e);
-			GuiReport errorReport = new GuiReport("IMPORT_ERROR",Report.STATE.ERROR);
+			if (importReport == null)
+			{
+				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
+			}
 			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,msg);
-			errorReport.addItem(item);
-			ireports.add(errorReport);
-			saveImportReports(importId,format,ireports);
+			importReport.addItem(item);
+			saveImportReports(guiImport,importReport,validationReport);
 
 			return 1;
 		}
-		if (saveReport.getItems() != null  && !saveReport.getItems().isEmpty())
-			ireports.add(saveReport);
-		saveImportReports(importId,format,ireports);
+		
+		saveImportReports(guiImport,importReport,validationReport);
 		return (beanCount == 0?1:0);
 
+	}
+
+	private void saveImportReports(GuiImport guiImport, Report ireport, Report vreport) 
+	{
+		
+		guiImport.setResult(ireport.toJSONObject());
+		if (vreport != null && vreport.getItems() != null)
+		{
+			// save validation report
+		}
+		importDao.update(guiImport);
+		
 	}
 
 	private Object filter_chars(String message) 
@@ -1579,6 +1569,7 @@ public class Command
 		return arg.startsWith("-") && !Character.isDigit(arg.charAt(1));
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private List<ParameterValue> populateParameters(FormatDescription description,Map<String, List<String>> parameters,String ... excluded)
 	{
 		List<ParameterValue> values = new ArrayList<ParameterValue>();
@@ -1629,6 +1620,71 @@ public class Command
 					case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
 					case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
 					case DATE : val.setDateValue(toCalendar(simpleval));break;
+					}
+					values.add(val);
+					logger.debug("prepare simple parameter "+name);
+
+				}
+			}
+		}
+		return values;      
+	}
+
+	@SuppressWarnings("incomplete-switch")
+	private List<ParameterValue> populateParametersFromJSON(FormatDescription description,JSONObject options,String ... excluded)
+	{
+		List<ParameterValue> values = new ArrayList<ParameterValue>();
+		List<String> excludedParams = Arrays.asList(excluded);
+		for (ParameterDescription desc : description.getParameterDescriptions())
+		{
+			String name = desc.getName();
+			String key = name.toLowerCase();
+			if (excludedParams.contains(key)) continue;
+			// 
+			
+			
+			if (!options.has(key))
+			{
+				if (desc.isMandatory())
+				{
+					throw new IllegalArgumentException("parameter -"+name+" is required");
+				}
+			}
+			else
+			{
+				
+				if (desc.isCollection())
+				{
+					JSONArray vals =  options.getJSONArray(key);
+					ListParameterValue val = new ListParameterValue(name);
+					switch (desc.getType())
+					{
+					case FILEPATH : val.fillFilepathList(vals); break;
+					case STRING : val.fillStringList(vals); break;
+					case FILENAME : val.fillFilenameList(vals); break;
+					default:
+						throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
+					}
+					values.add(val);
+					logger.debug("prepare list parameter "+name);
+				}
+				else
+				{
+					if (options.optJSONArray(key) != null)
+					{
+						throw new IllegalArgumentException("parameter -"+name+" must be unique");
+					}
+					
+
+					SimpleParameterValue val = new SimpleParameterValue(name);
+					switch (desc.getType())
+					{
+					case FILEPATH : val.setFilepathValue(options.getString(key)); break;
+					case STRING : val.setStringValue(options.getString(key)); break;
+					case FILENAME : val.setFilenameValue(options.getString(key)); break;
+					case BOOLEAN : val.setBooleanValue(options.getBoolean(key)); break;
+					case INTEGER : val.setIntegerValue(options.getLong(key)); break;
+					case DATE : val.setDateValue(toCalendar(options.getString(key)));break;
 					}
 					values.add(val);
 					logger.debug("prepare simple parameter "+name);
@@ -1739,68 +1795,7 @@ public class Command
 		return position;
 	}
 
-	private int saveImportReport(Long importId, String format,Report report,int position)
-	{
-		String prefix = report.getOriginKey();
-		if (prefix == null && report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
-		prefix = format+prefix;
-		ImportLogMessage message = new ImportLogMessage(importId,format,report,position++);
-		importLogMessageDao.save(message);
-		if (report.getItems() != null)
-		{
-			for (ReportItem item : report.getItems())
-			{
-				position = saveImportReportItem(importId,format,item,prefix,position);
-			}
-		}
-		return position;
-	}
 
-	private int saveImportReportItem(Long importId, String format,ReportItem item, String prefix, int position)
-	{
-		ImportLogMessage message = new ImportLogMessage(importId,format,item,prefix,position++);
-		importLogMessageDao.save(message);
-		if (item.getItems() != null)
-		{
-			String subPrefix = prefix+"|"+format+item.getMessageKey();
-			for (ReportItem child : item.getItems())
-			{
-				position = saveImportReportItem(importId,format,child,subPrefix,position);
-			}
-		}
-		return position;
-	}
-
-	private int saveImportReports(Long importId, String format, List<Report> reports)
-	{
-		int position = 1;
-		Filter filter = Filter.getNewEqualsFilter("parentId", importId);
-		List<ImportLogMessage> messages = importLogMessageDao.select(filter);
-		if (messages != null)
-		{
-			for (ImportLogMessage message : messages)
-			{
-				if (message.getPosition() >= position)
-					position = message.getPosition() + 1;
-			}
-		}
-		return saveImportReports(importId,format,position,reports);
-	}
-
-
-	private int saveImportReports(Long importId, String format, int position, List<Report> reports)
-	{
-		for (Report report : reports)
-		{
-			if (report instanceof GuiReport || report instanceof ExchangeReport) 
-				position = saveImportReport(importId,"", report,position);
-			else
-				position = saveImportReport(importId,format+"_", report,position);
-
-		}
-		return position;
-
-	}
 
 	/**
 	 * convert date string to calendar

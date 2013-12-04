@@ -45,25 +45,39 @@ public class GeographicService implements IGeographicService
 
 	private MathTransform transformWGS84;
 	private MathTransform transformLambert2e;
-	CoordinateReferenceSystem sourceCRS;
-	CoordinateReferenceSystem targetCRS;
+	CoordinateReferenceSystem sourceCRS = null;
+	CoordinateReferenceSystem targetCRS = null;
 
 	GeometryFactory factoryWGS84;
 	GeometryFactory factoryLambert2e;
 
 	public void init()
 	{
-		try {
+		try 
+		{
 			sourceCRS = CRS.decode("epsg:"+epsgLambert);
-			targetCRS = CRS.decode("epsg:"+epsgWGS84);
-
-			transformWGS84 = CRS.findMathTransform(sourceCRS, targetCRS);
-			transformLambert2e = CRS.findMathTransform(targetCRS, sourceCRS);
 		} 
 		catch (FactoryException e) 
 		{
-			// TODO Auto-generated catch block
-			logger.error("fail to initialize Geographic Tool :" +e.getMessage());
+			logger.error("fail to initialize Geographic Tool for epsg:"+epsgLambert+" " +e.getMessage());
+		}
+		try {
+			targetCRS = CRS.decode("epsg:"+epsgWGS84);
+		} 
+		catch (FactoryException e) 
+		{
+			logger.error("fail to initialize Geographic Tool for epsg:"+epsgWGS84+" " +e.getMessage());
+		}
+		try {
+			if (sourceCRS != null && targetCRS != null)
+			{
+				transformWGS84 = CRS.findMathTransform(sourceCRS, targetCRS);
+				transformLambert2e = CRS.findMathTransform(targetCRS, sourceCRS);
+			}
+		} 
+		catch (FactoryException e) 
+		{
+			logger.error("fail to initialize Geographic Tool : transforms " +e.getMessage());
 		}
 		factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
 		factoryWGS84 = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgWGS84);
@@ -369,7 +383,7 @@ public class GeographicService implements IGeographicService
 			logger.error("no projection defined ");
 			return false;
 		}
-		
+
 		if (!area.hasProjection())
 		{
 			logger.error("no projected coordinate for "+ area.getName());
@@ -446,14 +460,15 @@ public class GeographicService implements IGeographicService
 			epsgLambert = Integer.parseInt(srid);
 			try {
 				sourceCRS = CRS.decode("epsg:"+epsgLambert);
+				transformWGS84 = CRS.findMathTransform(sourceCRS, targetCRS);
 				transformLambert2e = CRS.findMathTransform(targetCRS, sourceCRS);
+				factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
 			} 
 			catch (FactoryException e) 
 			{
 				// TODO Auto-generated catch block
-				logger.error("fail to initialize Geographic Tool :" +e.getMessage());
+				logger.error("fail to initialize Geographic Tool : epsg:"+epsgLambert + " " +e.getMessage());
 			}
-			factoryLambert2e = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), epsgLambert);
 		}
 	}
 
