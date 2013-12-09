@@ -5,6 +5,7 @@
   <parameter name="neptuneFile"  value="goodAFNORLineFile.xml"/>
   <parameter name="neptuneRCFile"  value="C_CHOUETTE_52.xml"/>
   <parameter name="neptuneZip"  value="rennes.zip"/>
+  <parameter name="bigNeptuneZip"  value="metro1.zip"/>
     <packages>
       <package name="fr.certu.chouette.jdbc.dao" >
       </package>

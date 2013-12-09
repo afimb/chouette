@@ -313,7 +313,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 				int hours = c.get(Calendar.HOUR_OF_DAY) ; 
 				int seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
-				Assert.assertEquals(seconds,600,"line must have links duration of 10 minutes");
+				Assert.assertEquals(seconds,4200,"line must have links duration of 1 hour and 10 minutes");
 				Reporter.log(connectionLink.toString("\t",1));
 
 			}
@@ -328,7 +328,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 				int hours = c.get(Calendar.HOUR_OF_DAY) ; 
 				int seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
-				Assert.assertEquals(seconds,600,"line must have links duration of 10 minutes");
+				Assert.assertEquals(seconds,60,"line must have links duration of 1 minutes");
 				Reporter.log(accessLink.toString("\t",1));
 				apoints.add(accessLink.getAccessPoint());
 
@@ -347,7 +347,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 				hours = c.get(Calendar.HOUR_OF_DAY) ; 
 				seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
-				Assert.assertEquals(seconds,23*3600,"line must have opening time of 23 hours");
+				Assert.assertEquals(seconds,22*3600+600,"line must have closing time of 22 hours 10");
 
 			}
 			Assert.assertEquals(facilities.size(),1,"line must have 1 facility");
@@ -460,28 +460,28 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		printReport(ireport.getReport());
 
 	}
-	@Parameters({"neptuneZipErr"})
-	@Test (groups = {"ImportZipLines"}, description = "Import Plugin should import zip file") //,dependsOnMethods={"getBean"})
-	public void verifyImportZipLinesErr(String neptuneZipErr) throws ChouetteException
-	{
-		importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
-
-		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-		simpleParameterValue.setFilepathValue(path+"/"+neptuneZipErr);
-		parameters.add(simpleParameterValue);
-
-		ReportHolder ireport = new ReportHolder();
-		ReportHolder vreport = new ReportHolder();
-
-		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
-		printReport(vreport.getReport());
-		printReport(ireport.getReport());
-
-		Assert.assertNotNull(lines,"lines can't be null");
-		Assert.assertEquals(lines.size(), 7,"lines size must equals 7");
-
-	}
+//	@Parameters({"neptuneZipErr"})
+//	@Test (groups = {"ImportZipLines"}, description = "Import Plugin should import zip file") //,dependsOnMethods={"getBean"})
+//	public void verifyImportZipLinesErr(String neptuneZipErr) throws ChouetteException
+//	{
+//		importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport") ;
+//
+//		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+//		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+//		simpleParameterValue.setFilepathValue(path+"/"+neptuneZipErr);
+//		parameters.add(simpleParameterValue);
+//
+//		ReportHolder ireport = new ReportHolder();
+//		ReportHolder vreport = new ReportHolder();
+//
+//		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
+//		printReport(vreport.getReport());
+//		printReport(ireport.getReport());
+//
+//		Assert.assertNotNull(lines,"lines can't be null");
+//		Assert.assertEquals(lines.size(), 7,"lines size must equals 7");
+//
+//	}
 
 	private void printReport(Report report)
 	{
@@ -491,10 +491,10 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		}
 		else
 		{
-			Reporter.log(report.toJSON());
+			//Reporter.log(report.toJSON());
 
-//			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
-//			printItems("---",report.getItems());
+			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
+			printItems("---",report.getItems());
 		}
 	}
 
@@ -516,12 +516,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 			else if (item instanceof DetailReportItem)
 			{
 				DetailReportItem ditem = (DetailReportItem) item;
-				Reporter.log(indent+ditem.getStatus().name()+" : "+ditem.getMessageKey()+" file "+ditem.getLocation().getFileName()+" line "+ditem.getLocation().getLineNumber()+" col "+ditem.getLocation().getColumnNumber());
-				if (ditem.getLocation().getMessage() != null)
-					Reporter.log(indent+" message : "+ditem.getLocation().getMessage());
-				if (ditem.getLocation().getAttribute() != null)
-					Reporter.log(indent+" attribute : "+ditem.getLocation().getAttribute()+" = "+ditem.getLocation().getValue());
-
+				Reporter.log(indent+ditem.toJSON());
 			}
 			else
 			{

@@ -8,10 +8,13 @@
 package fr.certu.chouette.neptune;
 
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.io.StringReader;
 import java.net.URISyntaxException;
@@ -25,6 +28,7 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
@@ -46,6 +50,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
 
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
@@ -59,7 +65,7 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
  * Reader tool to extract XML Neptune Schema Objects (jaxb) from a file or a stream 
  */
 @Log4j
-public class JaxbNeptuneFileReader 
+public class JaxbNeptuneFileConverter 
 {
 	private static final int BOM_SIZE = 4;
 
@@ -73,11 +79,10 @@ public class JaxbNeptuneFileReader
 	 * @throws SAXException 
 	 * @throws IOException 
 	 */
-	public JaxbNeptuneFileReader() throws JAXBException, SAXException, URISyntaxException, IOException 
+	public JaxbNeptuneFileConverter() throws JAXBException, SAXException, URISyntaxException, IOException 
 	{
 		context = JAXBContext.newInstance(ChouettePTNetworkType.class);
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		log.info(getClass().getClassLoader().getResource("neptune.xsd").getPath());
 		schema = schemaFactory.newSchema(getClass().getClassLoader().getResource("neptune.xsd"));
 	}
 
@@ -171,6 +176,22 @@ public class JaxbNeptuneFileReader
 		return chouettePTNetworkType;
 	}
 
+	public void write(JAXBElement<ChouettePTNetworkType> rootObject, File file) throws JAXBException, IOException
+	{
+		write(rootObject,new FileOutputStream( file ));
+	}
+	public void write(JAXBElement<ChouettePTNetworkType> network, OutputStream stream) throws JAXBException, IOException
+	{
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setSchema(schema);
+        marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8"); //NOI18N
+        marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        NamespacePrefixMapper mapper = new NeptuneNamespacePrefixMapper();  
+        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
+        marshaller.marshal(network,stream);
+        stream.close();
+	}
+	
 	/**
 	 * convert string data to Neptune model
 	 * 
@@ -184,11 +205,11 @@ public class JaxbNeptuneFileReader
 		ChouettePTNetworkType chouettePTNetworkType = null;
 		NeptuneValidationEventHandler handler = new NeptuneValidationEventHandler(contentName);
 		PhaseReportItem report = new PhaseReportItem(PhaseReportItem.PHASE.ONE);
-		CheckPointReportItem report1 = new CheckPointReportItem("1-NEPTUNE-XML-1",1,Report.STATE.OK);
+		CheckPointReportItem report1 = new CheckPointReportItem("1-NEPTUNE-XML-1",1,Report.STATE.OK,CheckPointReportItem.SEVERITY.ERROR);
 		//Locale.setDefault(Locale.ENGLISH);
 		try 
 		{
-			log.debug("UNMARSHALING content of "+contentName);
+			log.info("UNMARSHALING content of "+contentName);
 
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 
@@ -211,7 +232,7 @@ public class JaxbNeptuneFileReader
 
 			if (!validation || !handler.hasErrors)
 				chouettePTNetworkType = jaxbElt.getValue();
-			log.debug("END OF UNMARSHALING content of "+contentName);
+			log.info("END OF UNMARSHALING content of "+contentName);
 		} 
 		catch (JAXBException | ParserConfigurationException | SAXException e) 
 		{
@@ -353,7 +374,7 @@ public class JaxbNeptuneFileReader
 		private String fileName;
 
 		@Getter private List<ValidationEvent> events = new ArrayList<ValidationEvent>();
-		@Getter private CheckPointReportItem report = new CheckPointReportItem("1-NEPTUNE-XML-2",2,Report.STATE.OK);
+		@Getter private CheckPointReportItem report = new CheckPointReportItem("1-NEPTUNE-XML-2",2,Report.STATE.OK,CheckPointReportItem.SEVERITY.ERROR);
 		@Getter private boolean hasErrors = false;
 
 
@@ -394,6 +415,11 @@ public class JaxbNeptuneFileReader
 
 	}
 
+	/**
+	 * workaround to prevent failure on old fashioned Neptune file without namespace declaration
+	 * works only if no siri or ifopt items are used
+	 *
+	 */
 	private class NeptuneNamespaceFilter extends XMLFilterImpl 
 	{		
 		public NeptuneNamespaceFilter(XMLReader arg0) 
@@ -410,5 +436,36 @@ public class JaxbNeptuneFileReader
 					attributes);
 				}
 	}
+	
+	/**
+	 * Prefix mapper to have pretty namespace in xml instead of ns1,ns2,...
+	 *
+	 */
+	private class NeptuneNamespacePrefixMapper extends NamespacePrefixMapper
+	{
+
+	    private static final String TRIDENT_PREFIX = ""; // DEFAULT NAMESPACE
+	    private static final String TRIDENT_URI = "http://www.trident.org/schema/trident";
+	 
+	    private static final String SIRI_PREFIX = "siri";
+	    private static final String SIRI_URI = "http://www.siri.org.uk/siri";
+	 
+	    private static final String IFOPT_PREFIX = "IFOPT_PREFIX";
+	    private static final String IFOPT_URI = "http://www.ifopt.org.uk/acsb";
+	    
+	    @Override
+	    public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) 
+	    {
+	        if(TRIDENT_URI.equals(namespaceUri)) {
+	            return TRIDENT_PREFIX;
+	        } else if(SIRI_URI.equals(namespaceUri)) {
+	            return SIRI_PREFIX;
+	        } else if(IFOPT_URI.equals(namespaceUri)) {
+	            return IFOPT_PREFIX;
+	        }
+	        return suggestion;
+	    }		
+	}
+	
 
 }

@@ -27,7 +27,7 @@ import org.trident.schema.trident.ChouettePTNetworkType;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.neptune.ChouettePTNetworkHolder;
-import fr.certu.chouette.neptune.JaxbNeptuneFileReader;
+import fr.certu.chouette.neptune.JaxbNeptuneFileConverter;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -72,14 +72,14 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	 */
 	private List<String>        allowedExtensions = Arrays.asList(new String[] { "xml", "zip" });
 
-	private JaxbNeptuneFileReader reader;
+	private JaxbNeptuneFileConverter reader;
 
 	/**
 	 * Constructor
 	 */
 	public XMLNeptuneImportLinePlugin() throws Exception
 	{
-		reader = new JaxbNeptuneFileReader();
+		reader = new JaxbNeptuneFileConverter();
 		description = new FormatDescription(this.getClass().getName());
 		description.setName("NEPTUNE");
 		description.setUnzipAllowed(true);
@@ -97,7 +97,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		}
 		{
 			ParameterDescription param = new ParameterDescription("validate", ParameterDescription.TYPE.BOOLEAN, false,
-					"false");
+					"true");
 			params.add(param);
 		}
 		{
@@ -140,7 +140,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	{
 
 		String filePath = null;
-		boolean validate = false;
+		boolean validate = true;
 		String extension = "file extension";
 		boolean optimizeMemory = false;
 		SharedImportedData sharedData = new SharedImportedData();
@@ -555,29 +555,37 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	private void initValidation(PhaseReportItem validationItem) 
 	{
 		String prefix = "2-NEPTUNE-";
-		int order = addItemToValidation(validationItem,prefix,"Common",2,1);
-		order = addItemToValidation(validationItem,prefix,"Network",1,order);
-		order = addItemToValidation(validationItem,prefix,"GroupOfLine",1,order);
-		order = addItemToValidation(validationItem,prefix,"StopArea",5,order);
-		order = addItemToValidation(validationItem,prefix,"ITL",3,order);
-		order = addItemToValidation(validationItem,prefix,"AreaCentroid",1,order);
-		order = addItemToValidation(validationItem,prefix,"ConnectionLink",1,order);
-		order = addItemToValidation(validationItem,prefix,"AccessPoint",6,order);
-		order = addItemToValidation(validationItem,prefix,"AccessLink",1,order);
-		order = addItemToValidation(validationItem,prefix,"Line",2,order);
-		order = addItemToValidation(validationItem,prefix,"Route",9,order);
-		order = addItemToValidation(validationItem,prefix,"StopPoint",1,order);
-		order = addItemToValidation(validationItem,prefix,"Timetable",2,order);
-		order = addItemToValidation(validationItem,prefix,"VehicleJourney",3,order);
-		order = addItemToValidation(validationItem,prefix,"VehicleJourneyAtStop",1,order);
-		order = addItemToValidation(validationItem,prefix,"Facility",1,order);
+		int order = addItemToValidation(validationItem,prefix,"Common",2,1,"E","E");
+		order = addItemToValidation(validationItem,prefix,"Network",1,order,"W");
+		order = addItemToValidation(validationItem,prefix,"GroupOfLine",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"StopArea",5,order,"E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"ITL",3,order,"E","E","E");
+		order = addItemToValidation(validationItem,prefix,"AreaCentroid",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"ConnectionLink",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"AccessPoint",6,order,"E","E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"AccessLink",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"Line",2,order,"E","E");
+		order = addItemToValidation(validationItem,prefix,"Route",9,order,"E","E","E","E","E","W","E","W","W");
+		order = addItemToValidation(validationItem,prefix,"StopPoint",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"Timetable",2,order,"W","W");
+		order = addItemToValidation(validationItem,prefix,"VehicleJourney",2,order,"E","W");
+		order = addItemToValidation(validationItem,prefix,"VehicleJourneyAtStop",2,order,"E","E");
+		order = addItemToValidation(validationItem,prefix,"Facility",1,order,"E");
 	}
 
-	private int addItemToValidation(PhaseReportItem validationItem, String prefix, String name, int count, int order) 
+	private int addItemToValidation(PhaseReportItem validationItem, String prefix, String name, int count, int order, String... severities) 
 	{
 		for (int i = 1; i <= count; i++)
 		{
-		   validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK));
+			if (severities[i-1].equals("W"))
+			{
+				   validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.WARNING));
+
+			}
+			else
+			{
+		   validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.ERROR));
+			}
 		}
 		return order;
 	}

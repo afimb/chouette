@@ -62,6 +62,8 @@
                 <!-- external objects : log messages -->
 				<value>fr/certu/chouette/model/neptune/referential.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/import.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/validation.hbm.xml</value>
+				<value>fr/certu/chouette/model/neptune/validation_step.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/export.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/FileValidation.hbm.xml</value>
 			</list>
@@ -304,10 +306,6 @@
 	</bean>
 	<bean id="importDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
 		factory-method="createImportDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	<bean id="importLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
-		factory-method="createImportLogMessageDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	

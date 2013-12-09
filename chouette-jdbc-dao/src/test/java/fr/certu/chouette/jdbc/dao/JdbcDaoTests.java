@@ -38,6 +38,7 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 
 	private String neptuneFile = null;
 	private String neptuneZip = null;
+	private String bigNeptuneZip = null;
 	private String path="src/test/resources/";
 	private String neptuneRCFile;
 
@@ -70,6 +71,12 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 	public void getNeptuneZip(String neptuneZip)
 	{
 		this.neptuneZip = neptuneZip;
+	}
+	@Parameters({"bigNeptuneZip"})
+	@Test (groups = {"saveLines"}, description = "try saving neptune zip file",dependsOnMethods={"getBean"})
+	public void getBigNeptuneZip(String bigNeptuneZip)
+	{
+		this.bigNeptuneZip = bigNeptuneZip;
 	}
 
 
@@ -173,6 +180,38 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		}
 
 	}
+	
+	@Test (groups = {"saveLines"}, description = "dao should save lines",dependsOnMethods={"getBean"})
+	public void verifyImportBigZipLines() throws ChouetteException
+	{
+       
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+		simpleParameterValue.setFilepathValue(path+"/"+bigNeptuneZip);
+		parameters.add(simpleParameterValue);
+
+		ReportHolder report = new ReportHolder();
+
+		 long startTime = System.currentTimeMillis();
+		List<Line> lines = lineManager.doImport(null,"NEPTUNE",parameters, report, report);
+
+		Assert.assertNotNull(lines,"lines can't be null");
+		Assert.assertEquals(lines.size(), 2,"lines size must equals 2");
+		for(Line line : lines)
+		{
+			List<Line> bid = new ArrayList<Line>();
+			bid.add(line);
+			lineManager.saveAll(null, bid, true,true);
+			Assert.assertNotNull(line.getId(),"line's id can't be null");
+			Reporter.log(line.toString("\t",0));
+		}
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime) / 1000;
+		logger.info("import + save duration = "+duration+" s");
+		Reporter.log("import + save duration = "+duration+" s");
+
+	}
+
 
 	@Test (groups = {"purge"}, description = "dao should purge",dependsOnMethods={"getBean"})
 	public void verifyPurge() throws ChouetteException

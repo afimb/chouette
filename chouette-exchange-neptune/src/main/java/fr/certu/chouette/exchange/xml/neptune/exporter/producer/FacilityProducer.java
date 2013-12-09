@@ -4,8 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import chouette.schema.ChouetteFacilityTypeChoice;
-import chouette.schema.types.LongLatTypeType;
+import org.trident.schema.trident.AddressType;
+import org.trident.schema.trident.ChouetteFacilityType;
+import org.trident.schema.trident.ProjectedPointType;
+import org.trident.schema.trident.ChouetteFacilityType.FacilityLocation;
+import org.trident.schema.trident.LongLatTypeType;
+
+import uk.org.siri.siri.AllFacilitiesFeatureStructure;
+
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
@@ -26,163 +32,162 @@ import fr.certu.chouette.model.neptune.type.facility.RetailFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.SanitaryFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.TicketingFacilityEnumeration;
 
-public class FacilityProducer extends AbstractCastorNeptuneProducer<chouette.schema.Facility, Facility>
+public class FacilityProducer extends AbstractJaxbNeptuneProducer<ChouetteFacilityType, Facility>
 {
-   private Map<Class<?>,Integer> facilityEnumMap;
+	private Map<Class<?>,Integer> facilityEnumMap;
 
-   public void init()
-   {
-      facilityEnumMap = new HashMap<Class<?>, Integer>();
-      facilityEnumMap.put(AccessFacilityEnumeration.class,Integer.valueOf(0));
-      facilityEnumMap.put(AccommodationFacilityEnumeration.class,Integer.valueOf(1));
-      facilityEnumMap.put(AssistanceFacilityEnumeration.class,Integer.valueOf(2));
-      facilityEnumMap.put(FareClassFacilityEnumeration.class,Integer.valueOf(3));
-      facilityEnumMap.put(HireFacilityEnumeration.class, Integer.valueOf(4));
-      facilityEnumMap.put(LuggageFacilityEnumeration.class, Integer.valueOf(5));
-      facilityEnumMap.put(MobilityFacilityEnumeration.class,Integer.valueOf(6));
-      facilityEnumMap.put(NuisanceFacilityEnumeration.class, Integer.valueOf(7));
-      facilityEnumMap.put(ParkingFacilityEnumeration.class, Integer.valueOf(8));
-      facilityEnumMap.put(PassengerCommsFacilityEnumeration.class, Integer.valueOf(9));
-      facilityEnumMap.put(PassengerInformationFacilityEnumeration.class,Integer.valueOf(10));
-      facilityEnumMap.put(RefreshmentFacilityEnumeration.class, Integer.valueOf(11));
-      facilityEnumMap.put(ReservedSpaceFacilityEnumeration.class, Integer.valueOf(12));
-      facilityEnumMap.put(RetailFacilityEnumeration.class, Integer.valueOf(13));
-      facilityEnumMap.put(SanitaryFacilityEnumeration.class, Integer.valueOf(14));
-      facilityEnumMap.put(TicketingFacilityEnumeration.class, Integer.valueOf(15));
-   }
-   
-   @Override
-   public chouette.schema.Facility produce(Facility facility) {
-      chouette.schema.Facility castorFacility = new chouette.schema.Facility();
+	public void init()
+	{
+		facilityEnumMap = new HashMap<Class<?>, Integer>();
+		facilityEnumMap.put(AccessFacilityEnumeration.class,Integer.valueOf(0));
+		facilityEnumMap.put(AccommodationFacilityEnumeration.class,Integer.valueOf(1));
+		facilityEnumMap.put(AssistanceFacilityEnumeration.class,Integer.valueOf(2));
+		facilityEnumMap.put(FareClassFacilityEnumeration.class,Integer.valueOf(3));
+		facilityEnumMap.put(HireFacilityEnumeration.class, Integer.valueOf(4));
+		facilityEnumMap.put(LuggageFacilityEnumeration.class, Integer.valueOf(5));
+		facilityEnumMap.put(MobilityFacilityEnumeration.class,Integer.valueOf(6));
+		facilityEnumMap.put(NuisanceFacilityEnumeration.class, Integer.valueOf(7));
+		facilityEnumMap.put(ParkingFacilityEnumeration.class, Integer.valueOf(8));
+		facilityEnumMap.put(PassengerCommsFacilityEnumeration.class, Integer.valueOf(9));
+		facilityEnumMap.put(PassengerInformationFacilityEnumeration.class,Integer.valueOf(10));
+		facilityEnumMap.put(RefreshmentFacilityEnumeration.class, Integer.valueOf(11));
+		facilityEnumMap.put(ReservedSpaceFacilityEnumeration.class, Integer.valueOf(12));
+		facilityEnumMap.put(RetailFacilityEnumeration.class, Integer.valueOf(13));
+		facilityEnumMap.put(SanitaryFacilityEnumeration.class, Integer.valueOf(14));
+		facilityEnumMap.put(TicketingFacilityEnumeration.class, Integer.valueOf(15));
+	}
 
-      //
-      populateFromModel(castorFacility, facility);
+	@Override
+	public ChouetteFacilityType produce(Facility facility) {
+		ChouetteFacilityType jaxbFacility = tridentFactory.createChouetteFacilityType();
 
-      castorFacility.setComment(getNotEmptyString(facility.getComment()));
-      castorFacility.setName(facility.getName());
+		//
+		populateFromModel(jaxbFacility, facility);
 
-      if (facility.getLongLatType() != null && facility.getLatitude() != null && facility.getLongitude() != null)
-      {
-         chouette.schema.FacilityLocation castorLocation = new chouette.schema.FacilityLocation();
-         castorFacility.setFacilityLocation(castorLocation );
-         castorLocation.setLatitude(facility.getLatitude());
-         castorLocation.setLongitude(facility.getLongitude());
+		jaxbFacility.setComment(getNotEmptyString(facility.getComment()));
+		jaxbFacility.setName(facility.getName());
 
-            LongLatTypeEnum longLatType = facility.getLongLatType();
-            try 
-            {
-               castorLocation.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
-            } 
-            catch (IllegalArgumentException e) 
-            {
-               // TODO generate report
-            }
-         
+		if (facility.getLongLatType() != null && facility.getLatitude() != null && facility.getLongitude() != null)
+		{
+			FacilityLocation jaxbLocation = tridentFactory.createChouetteFacilityTypeFacilityLocation();
+			jaxbFacility.setFacilityLocation(jaxbLocation );
+			jaxbLocation.setContainedIn(facility.getContainedIn());
+			jaxbLocation.setLatitude(facility.getLatitude());
+			jaxbLocation.setLongitude(facility.getLongitude());
 
-         if(facility.getCountryCode() != null || facility.getStreetName() != null)
-         {
-            chouette.schema.Address castorAddress = new chouette.schema.Address();
-            castorAddress.setCountryCode(getNotEmptyString(facility.getCountryCode()));
-            castorAddress.setStreetName(getNotEmptyString(facility.getStreetName()));
-            castorLocation.setAddress(castorAddress);
-         }
+			LongLatTypeEnum longLatType = facility.getLongLatType();
+			try 
+			{
+				jaxbLocation.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+			} 
+			catch (IllegalArgumentException e) 
+			{
+				// TODO generate report
+			}
 
-         if(facility.getProjectionType() != null && facility.getX() != null && facility.getY() != null )
-         {
-            chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-            castorProjectedPoint.setProjectionType(facility.getProjectionType());
-            castorProjectedPoint.setX(facility.getX());
-            castorProjectedPoint.setY(facility.getY());
-            castorLocation.setProjectedPoint(castorProjectedPoint);
-         }
-      }
 
-      ChouetteFacilityTypeChoice chouetteFacilityTypeChoice = new ChouetteFacilityTypeChoice();
-      castorFacility.setChouetteFacilityTypeChoice(chouetteFacilityTypeChoice );
-      if (facility.getConnectionLink() != null)
-      {
-         chouetteFacilityTypeChoice.setConnectionLinkId(getNonEmptyObjectId(facility.getConnectionLink()));
-      }
-      if (facility.getLine() != null)
-      {
-         chouetteFacilityTypeChoice.setLineId(getNonEmptyObjectId(facility.getLine()));
-      }
-      if (facility.getStopArea() != null)
-      {
-         chouetteFacilityTypeChoice.setStopAreaId(getNonEmptyObjectId(facility.getStopArea()));
-      }
-      if (facility.getStopPoint() != null)
-      {
-         chouetteFacilityTypeChoice.setStopPointId(getNonEmptyObjectId(facility.getStopPoint()));
-      }
-      
-      castorFacility.setDescription(getNotEmptyString(facility.getDescription()));
-      //FreeAccess optional
-      if (facility.getFreeAccess() != null)
-         castorFacility.setFreeAccess(facility.getFreeAccess().booleanValue());
+			if(facility.getCountryCode() != null || facility.getStreetName() != null)
+			{
+				AddressType jaxbAddress = tridentFactory.createAddressType();
+				jaxbAddress.setCountryCode(getNotEmptyString(facility.getCountryCode()));
+				jaxbAddress.setStreetName(getNotEmptyString(facility.getStreetName()));
+				jaxbLocation.setAddress(jaxbAddress);
+			}
 
-      //FacilityFeature[1..n] mandatory
-      List<FacilityFeature> features = facility.getFacilityFeatures();
-      for (FacilityFeature feature : features) {
-         chouette.schema.FacilityFeature facilityFeature = new chouette.schema.FacilityFeature();
+			if(facility.getProjectionType() != null && facility.getX() != null && facility.getY() != null )
+			{
+				ProjectedPointType jaxbProjectedPoint = tridentFactory.createProjectedPointType();
+				jaxbProjectedPoint.setProjectionType(facility.getProjectionType());
+				jaxbProjectedPoint.setX(facility.getX());
+				jaxbProjectedPoint.setY(facility.getY());
+				jaxbLocation.setProjectedPoint(jaxbProjectedPoint);
+			}
+		}
 
-         int type = facilityEnumMap.get(feature.getChoiceValue().getClass()).intValue();
-         switch (type)
-         {
-         case 0 :  
-            facilityFeature.setAccessFacility(chouette.schema.types.AccessFacilityEnumeration.fromValue(feature.getAccessFacility().toString()));
-            break;
-         case 1 :  
-            facilityFeature.setAccommodationFacility(chouette.schema.types.AccommodationFacilityEnumeration.fromValue(feature.getAccommodationFacility().name()));
-            break;
-         case 2 :  
-            facilityFeature.setAssistanceFacility(chouette.schema.types.AssistanceFacilityEnumeration.fromValue(feature.getAssistanceFacility().name()));
-            break;
-         case 3 :  
-            facilityFeature.setFareClassFacility(chouette.schema.types.FareClassFacilityEnumeration.fromValue(feature.getFareClassFacility().name()));
-            break;
-         case 4 :  
-            facilityFeature.setHireFacility(chouette.schema.types.HireFacilityEnumeration.fromValue(feature.getHireFacility().name()));
-            break;
-         case 5 :  
-            facilityFeature.setLuggageFacility(chouette.schema.types.LuggageFacilityEnumeration.fromValue(feature.getLuggageFacility().name()));
-            break;
-         case 6 :  
-            facilityFeature.setMobilityFacility(chouette.schema.types.MobilityFacilityEnumeration.fromValue(feature.getMobilityFacility().name()));
-            break;
-         case 7 :  
-            facilityFeature.setNuisanceFacility(chouette.schema.types.NuisanceFacilityEnumeration.fromValue(feature.getNuisanceFacility().name()));
-            break;
-         case 8 :  
-            facilityFeature.setParkingFacility(chouette.schema.types.ParkingFacilityEnumeration.fromValue(feature.getParkingFacility().name()));
-            break;
-         case 9 :  
-            facilityFeature.setPassengerCommsFacility(chouette.schema.types.PassengerCommsFacilityEnumeration.fromValue(feature.getPassengerCommsFacility().name()));
-            break;
-         case 10 :  
-            facilityFeature.setPassengerInformationFacility(chouette.schema.types.PassengerInformationFacilityEnumeration.fromValue(feature.getPassengerInformationFacility().name()));
-            break;
-         case 11 :  
-            facilityFeature.setRefreshmentFacility(chouette.schema.types.RefreshmentFacilityEnumeration.fromValue(feature.getRefreshmentFacility().name()));
-            break;
-         case 12 :  
-            facilityFeature.setReservedSpaceFacility(chouette.schema.types.ReservedSpaceFacilityEnumeration.fromValue(feature.getReservedSpaceFacility().name()));
-            break;
-         case 13 :  
-            facilityFeature.setRetailFacility(chouette.schema.types.RetailFacilityEnumeration.fromValue(feature.getRetailFacility().name()));
-            break;
-         case 14 :  
-            facilityFeature.setSanitaryFacility(chouette.schema.types.SanitaryFacilityEnumeration.fromValue(feature.getSanitaryFacility().name()));
-            break;
-         case 15 :  
-            facilityFeature.setTicketingFacility(chouette.schema.types.TicketingFacilityEnumeration.fromValue(feature.getTicketingFacility().name()));
-            break;
-         }
-         castorFacility.addFacilityFeature(facilityFeature);
-      }  
-     
-      
-      return castorFacility;
-   }
+		if (facility.getConnectionLink() != null)
+		{
+			jaxbFacility.setConnectionLinkId(getNonEmptyObjectId(facility.getConnectionLink()));
+		}
+		if (facility.getLine() != null)
+		{
+			jaxbFacility.setLineId(getNonEmptyObjectId(facility.getLine()));
+		}
+		if (facility.getStopArea() != null)
+		{
+			jaxbFacility.setStopAreaId(getNonEmptyObjectId(facility.getStopArea()));
+		}
+		if (facility.getStopPoint() != null)
+		{
+			jaxbFacility.setStopPointId(getNonEmptyObjectId(facility.getStopPoint()));
+		}
+
+		jaxbFacility.setDescription(getNotEmptyString(facility.getDescription()));
+		//FreeAccess optional
+		if (facility.getFreeAccess() != null)
+			jaxbFacility.setFreeAccess(facility.getFreeAccess().booleanValue());
+
+		//FacilityFeature[1..n] mandatory
+		List<FacilityFeature> features = facility.getFacilityFeatures();
+		for (FacilityFeature feature : features) {
+			AllFacilitiesFeatureStructure facilityFeature = siriFactory.createAllFacilitiesFeatureStructure();
+
+			int type = facilityEnumMap.get(feature.getChoiceValue().getClass()).intValue();
+			switch (type)
+			{
+			case 0 :  
+				facilityFeature.setAccessFacility(uk.org.siri.siri.AccessFacilityEnumeration.fromValue(feature.getAccessFacility().toString()));
+				break;
+			case 1 :  
+				facilityFeature.setAccommodationFacility(uk.org.siri.siri.AccommodationFacilityEnumeration.fromValue(feature.getAccommodationFacility().name()));
+				break;
+			case 2 :  
+				facilityFeature.setAssistanceFacility(uk.org.siri.siri.AssistanceFacilityEnumeration.fromValue(feature.getAssistanceFacility().name()));
+				break;
+			case 3 :  
+				facilityFeature.setFareClassFacility(uk.org.siri.siri.FareClassFacilityEnumeration.fromValue(feature.getFareClassFacility().name()));
+				break;
+			case 4 :  
+				facilityFeature.setHireFacility(uk.org.siri.siri.HireFacilityEnumeration.fromValue(feature.getHireFacility().name()));
+				break;
+			case 5 :  
+				facilityFeature.setLuggageFacility(uk.org.siri.siri.LuggageFacilityEnumeration.fromValue(feature.getLuggageFacility().name()));
+				break;
+			case 6 :  
+				facilityFeature.setMobilityFacility(uk.org.siri.siri.MobilityFacilityEnumeration.fromValue(feature.getMobilityFacility().name()));
+				break;
+			case 7 :  
+				facilityFeature.setNuisanceFacility(uk.org.siri.siri.NuisanceFacilityEnumeration.fromValue(feature.getNuisanceFacility().name()));
+				break;
+			case 8 :  
+				facilityFeature.setParkingFacility(uk.org.siri.siri.ParkingFacilityEnumeration.fromValue(feature.getParkingFacility().name()));
+				break;
+			case 9 :  
+				facilityFeature.setPassengerCommsFacility(uk.org.siri.siri.PassengerCommsFacilityEnumeration.fromValue(feature.getPassengerCommsFacility().name()));
+				break;
+			case 10 :  
+				facilityFeature.setPassengerInformationFacility(uk.org.siri.siri.PassengerInformationFacilityEnumeration.fromValue(feature.getPassengerInformationFacility().name()));
+				break;
+			case 11 :  
+				facilityFeature.setRefreshmentFacility(uk.org.siri.siri.RefreshmentFacilityEnumeration.fromValue(feature.getRefreshmentFacility().name()));
+				break;
+			case 12 :  
+				facilityFeature.setReservedSpaceFacility(uk.org.siri.siri.ReservedSpaceFacilityEnumeration.fromValue(feature.getReservedSpaceFacility().name()));
+				break;
+			case 13 :  
+				facilityFeature.setRetailFacility(uk.org.siri.siri.RetailFacilityEnumeration.fromValue(feature.getRetailFacility().name()));
+				break;
+			case 14 :  
+				facilityFeature.setSanitaryFacility(uk.org.siri.siri.SanitaryFacilityEnumeration.fromValue(feature.getSanitaryFacility().name()));
+				break;
+			case 15 :  
+				facilityFeature.setTicketingFacility(uk.org.siri.siri.TicketingFacilityEnumeration.fromValue(feature.getTicketingFacility().name()));
+				break;
+			}
+			jaxbFacility.getFacilityFeature().add(facilityFeature);
+		}  
+
+
+		return jaxbFacility;
+	}
 
 }

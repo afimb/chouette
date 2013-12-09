@@ -1,27 +1,29 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import org.trident.schema.trident.CompanyType;
+
 import fr.certu.chouette.model.neptune.Company;
 
-public class CompanyProducer extends AbstractCastorNeptuneProducer<chouette.schema.Company, Company> {
+public class CompanyProducer extends AbstractJaxbNeptuneProducer<CompanyType, Company> {
 
 	@Override
-	public chouette.schema.Company produce(Company company) {
-		chouette.schema.Company castorCompany = new chouette.schema.Company();
+	public CompanyType produce(Company company) {
+		CompanyType jaxbCompany = tridentFactory.createCompanyType();
 		
 		//
-		populateFromModel(castorCompany, company);
+		populateFromModel(jaxbCompany, company);
 		
-		castorCompany.setName(company.getName());
-		castorCompany.setRegistration(getRegistration(company.getRegistrationNumber()));
-		castorCompany.setCode(getNotEmptyString(company.getCode()));
-		castorCompany.setEmail(getNotEmptyString(company.getEmail()));
-		castorCompany.setFax(getNotEmptyString(company.getFax()));
-		castorCompany.setOperatingDepartmentName(getNotEmptyString(company.getOperatingDepartmentName()));
-		castorCompany.setOrganisationalUnit(getNotEmptyString(company.getOrganisationalUnit()));
-		castorCompany.setPhone(getNotEmptyString(company.getPhone()));
-		castorCompany.setShortName(getNotEmptyString(company.getShortName()));
+		jaxbCompany.setName(company.getName());
+		jaxbCompany.setRegistration(getRegistration(company.getRegistrationNumber()));
+		jaxbCompany.setCode(getNotEmptyString(company.getCode()));
+		jaxbCompany.setEmail(getNotEmptyString(company.getEmail()));
+		jaxbCompany.setFax(getNotEmptyString(company.getFax()));
+		jaxbCompany.setOperatingDepartmentName(getNotEmptyString(company.getOperatingDepartmentName()));
+		jaxbCompany.setOrganisationalUnit(getNotEmptyString(company.getOrganisationalUnit()));
+		jaxbCompany.setPhone(getNotEmptyString(company.getPhone()));
+		jaxbCompany.setShortName(getNotEmptyString(company.getShortName()));
 		
-		return castorCompany;
+		return jaxbCompany;
 	}
 
 }

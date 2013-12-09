@@ -1,55 +1,54 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import chouette.schema.types.LongLatTypeType;
-import chouette.schema.types.TypeType;
+import org.trident.schema.trident.AddressType;
+import org.trident.schema.trident.LongLatTypeType;
+import org.trident.schema.trident.PTAccessPointType;
+import org.trident.schema.trident.ProjectedPointType;
+
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 
-public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.schema.AccessPoint, AccessPoint>
+public class AccessPointProducer extends AbstractJaxbNeptuneProducer<PTAccessPointType, AccessPoint>
 {
    @Override
-   public chouette.schema.AccessPoint produce(AccessPoint accessPoint) {
-      chouette.schema.AccessPoint castorAccessPoint = new chouette.schema.AccessPoint();
+   public PTAccessPointType produce(AccessPoint accessPoint) {
+	   PTAccessPointType jaxbAccessPoint = tridentFactory.createPTAccessPointType();
 
       //
-      populateFromModel(castorAccessPoint, accessPoint);
+      populateFromModel(jaxbAccessPoint, accessPoint);
 
-      castorAccessPoint.setComment(getNotEmptyString(accessPoint.getComment()));
-      castorAccessPoint.setName(accessPoint.getName());
+      jaxbAccessPoint.setComment(getNotEmptyString(accessPoint.getComment()));
+      jaxbAccessPoint.setName(accessPoint.getName());
 
       // type
       if(accessPoint.getType() != null){
           AccessPointTypeEnum type = accessPoint.getType();
-          try {
-             castorAccessPoint.setType(TypeType.fromValue(type.value()));
-          } catch (IllegalArgumentException e) {
-             // TODO generate report
-          }
+             jaxbAccessPoint.setType(type.value());
        }
 
       // opening/closingTime
-      castorAccessPoint.setOpeningTime(toCastorTime(accessPoint.getOpeningTime()));
-      castorAccessPoint.setClosingTime(toCastorTime(accessPoint.getClosingTime()));
+      jaxbAccessPoint.setOpeningTime(toCalendar(accessPoint.getOpeningTime()));
+      jaxbAccessPoint.setClosingTime(toCalendar(accessPoint.getClosingTime()));
 
       
       if (accessPoint.hasAddress())
       {
-         chouette.schema.Address castorAddress = new chouette.schema.Address();
+         AddressType castorAddress = tridentFactory.createAddressType();
          castorAddress.setCountryCode(getNotEmptyString(accessPoint.getCountryCode()));
          castorAddress.setStreetName(getNotEmptyString(accessPoint.getStreetName()));
-         castorAccessPoint.setAddress(castorAddress);
+         jaxbAccessPoint.setAddress(castorAddress);
       }
       
-      castorAccessPoint.setContainedIn(accessPoint.getContainedInStopArea());
+      jaxbAccessPoint.setContainedIn(accessPoint.getContainedInStopArea());
       
       if(accessPoint.hasCoordinates())
       {
          LongLatTypeEnum longLatType = accessPoint.getLongLatType();
          try {
-            castorAccessPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
-            castorAccessPoint.setLatitude(accessPoint.getLatitude());
-            castorAccessPoint.setLongitude(accessPoint.getLongitude());
+            jaxbAccessPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+            jaxbAccessPoint.setLatitude(accessPoint.getLatitude());
+            jaxbAccessPoint.setLongitude(accessPoint.getLongitude());
          } catch (IllegalArgumentException e) {
             // TODO generate report
          }
@@ -57,15 +56,15 @@ public class AccessPointProducer extends AbstractCastorNeptuneProducer<chouette.
       
       if(accessPoint.hasProjection())
       {
-         chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-         castorProjectedPoint.setProjectionType(accessPoint.getProjectionType());
-         castorProjectedPoint.setX(accessPoint.getX());
-         castorProjectedPoint.setY(accessPoint.getY());
-         castorAccessPoint.setProjectedPoint(castorProjectedPoint);
+         ProjectedPointType jaxbProjectedPoint = tridentFactory.createProjectedPointType();
+         jaxbProjectedPoint.setProjectionType(accessPoint.getProjectionType());
+         jaxbProjectedPoint.setX(accessPoint.getX());
+         jaxbProjectedPoint.setY(accessPoint.getY());
+         jaxbAccessPoint.setProjectedPoint(jaxbProjectedPoint);
       }
                   
 
-      return castorAccessPoint;
+      return jaxbAccessPoint;
    }
 
 }

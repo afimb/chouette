@@ -48,9 +48,6 @@
 		
 	</bean>
 	
-	<bean id="NeptuneLineDeletionExport" class="fr.certu.chouette.exchange.xml.neptune.exporter.XMLNeptuneDeletionExportLinePlugin">
-		<property name="lineProducer" ref="NeptuneLineExportProducer" />
-	</bean>
 	
 
 </beans>

@@ -2,17 +2,20 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import java.util.Date;
 
-import chouette.schema.types.DayTypeType;
+import org.trident.schema.trident.DayTypeType;
+import org.trident.schema.trident.PeriodType;
+import org.trident.schema.trident.TimetableType;
+
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
-public class TimetableProducer extends AbstractCastorNeptuneProducer<chouette.schema.Timetable, Timetable> {
+public class TimetableProducer extends AbstractJaxbNeptuneProducer<TimetableType, Timetable> {
 
 	@Override
-	public chouette.schema.Timetable produce(Timetable timetable) {
-		chouette.schema.Timetable castorTimetable = new chouette.schema.Timetable();
+	public TimetableType produce(Timetable timetable) {
+		TimetableType castorTimetable = tridentFactory.createTimetableType();
 		
 		//
 		populateFromModel(castorTimetable, timetable);
@@ -22,17 +25,17 @@ public class TimetableProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		if(timetable.getCalendarDays() != null){
 			for(Date calendarDay : timetable.getCalendarDays()){
 				if(calendarDay != null){
-					castorTimetable.addCalendarDay(new org.exolab.castor.types.Date(calendarDay));
+					castorTimetable.getCalendarDay().add(toCalendar(calendarDay));
 				}
 			}
 		}
 		if(timetable.getPeriods() != null){
 			for(Period period : timetable.getPeriods()){
 				if(period != null){
-					chouette.schema.Period castorPeriod = new chouette.schema.Period();
-					castorPeriod.setStartOfPeriod(new  org.exolab.castor.types.Date(period.getStartDate()));
-					castorPeriod.setEndOfPeriod(new  org.exolab.castor.types.Date(period.getEndDate()));
-					castorTimetable.addPeriod(castorPeriod);
+					PeriodType castorPeriod = tridentFactory.createPeriodType();
+					castorPeriod.setStartOfPeriod(toCalendar(period.getStartDate()));
+					castorPeriod.setEndOfPeriod(toCalendar(period.getEndDate()));
+					castorTimetable.getPeriod().add(castorPeriod);
 				}
 			}
 		}
@@ -40,7 +43,7 @@ public class TimetableProducer extends AbstractCastorNeptuneProducer<chouette.sc
 			for(DayTypeEnum dayType : timetable.getDayTypes()){
 				if(dayType != null){
 					try {
-						castorTimetable.addDayType(DayTypeType.fromValue(dayType.value()));						
+						castorTimetable.getDayType().add(DayTypeType.fromValue(dayType.value()));						
 					} catch (IllegalArgumentException e) {
 						// TODO: handle exception
 					}
@@ -49,7 +52,7 @@ public class TimetableProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		}
 		if(timetable.getVehicleJourneys() != null){
 			for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys()){
-				castorTimetable.addVehicleJourneyId(getNonEmptyObjectId(vehicleJourney));
+				castorTimetable.getVehicleJourneyId().add(getNonEmptyObjectId(vehicleJourney));
 			}
 		}
 								

@@ -1,25 +1,37 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import chouette.schema.StopAreaExtension;
-import chouette.schema.types.ChouetteAreaType;
+import org.trident.schema.trident.ChouetteAreaType;
+import org.trident.schema.trident.StopAreaExtensionType;
+import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
+import org.trident.schema.trident.StopAreaExtensionType.AccessibilitySuitabilityDetails;
+
+import uk.org.ifopt.acsb.EncumbranceEnumeration;
+import uk.org.ifopt.acsb.MedicalNeedEnumeration;
+import uk.org.ifopt.acsb.MobilityEnumeration;
+import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
+import uk.org.ifopt.acsb.UserNeedStructure;
+
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.schema.StopArea, StopArea> {
+public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea> {
 
 	@Override
-	public chouette.schema.StopArea produce(StopArea stopArea) {
-		chouette.schema.StopArea castorStopArea = new chouette.schema.StopArea();
+	public ChouetteArea.StopArea produce(StopArea stopArea) {
+		ChouetteArea.StopArea jaxbStopArea = tridentFactory.createChouettePTNetworkTypeChouetteAreaStopArea();
 
 		//
-		populateFromModel(castorStopArea, stopArea);
+		populateFromModel(jaxbStopArea, stopArea);
 
-		castorStopArea.setComment(getNotEmptyString(stopArea.getComment()));
-		castorStopArea.setName(stopArea.getName());
+		jaxbStopArea.setComment(getNotEmptyString(stopArea.getComment()));
+		jaxbStopArea.setName(stopArea.getName());
 		
 		// castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
@@ -33,9 +45,9 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
 			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));			
 		}
-		castorStopArea.getContainsAsReference().addAll(containsList);
+		jaxbStopArea.getContains().addAll(containsList);
 
-		StopAreaExtension stopAreaExtension = new StopAreaExtension();
+		StopAreaExtensionType stopAreaExtension = tridentFactory.createStopAreaExtensionType();
 		stopAreaExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea.getUserNeeds()));
 
 		try 
@@ -62,8 +74,45 @@ public class StopAreaProducer extends AbstractCastorNeptuneProducer<chouette.sch
 		if (stopArea.isStairsAvailable())
 			stopAreaExtension.setStairsAvailability(true);
 
-		castorStopArea.setStopAreaExtension(stopAreaExtension );
+		jaxbStopArea.setStopAreaExtension(stopAreaExtension );
 
-		return castorStopArea;
+		return jaxbStopArea;
 	}
+	
+	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
+		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
+		List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
+		if(userNeeds != null){
+			for(UserNeedEnum userNeed : userNeeds){
+				if(userNeed != null){
+					UserNeedStructure userNeedGroup = new UserNeedStructure();
+
+					switch (userNeed.category()) {
+					case ENCUMBRANCE:
+						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
+						break;
+					case MEDICAL:
+						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));					
+						break;
+					case PSYCHOSENSORY:
+						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));	
+						break;
+					case MOBILITY:
+						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));	
+						break;
+					default:
+						throw new IllegalArgumentException("bad value of userNeed");
+					}
+
+					detailsItems.add(userNeedGroup);
+
+				}
+			}
+		}
+
+		if (detailsItems.isEmpty()) return null;
+		details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(detailsItems);
+		return details;
+	}
+
 }

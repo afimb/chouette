@@ -24,7 +24,6 @@ import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
 import fr.certu.chouette.plugin.model.GuiFileValidation;
 import fr.certu.chouette.plugin.model.GuiImport;
-import fr.certu.chouette.plugin.model.ImportLogMessage;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 
@@ -52,11 +51,6 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    public static NeptuneObjectHibernateDaoTemplate<GuiImport> createImportDao()
    {
       return new NeptuneObjectHibernateDaoTemplate<GuiImport>( GuiImport.class);
-   }
-
-   public static NeptuneObjectHibernateDaoTemplate<ImportLogMessage> createImportLogMessageDao()
-   {
-      return new NeptuneObjectHibernateDaoTemplate<ImportLogMessage>( ImportLogMessage.class);
    }
 
    public static NeptuneObjectHibernateDaoTemplate<GuiExport> createExportDao()

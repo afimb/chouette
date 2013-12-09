@@ -1,25 +1,27 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import org.trident.schema.trident.GroupOfLineType;
+
 import fr.certu.chouette.model.neptune.GroupOfLine;
 
-public class GroupOfLineProducer extends AbstractCastorNeptuneProducer<chouette.schema.GroupOfLine, GroupOfLine> {
+public class GroupOfLineProducer extends AbstractJaxbNeptuneProducer<GroupOfLineType, GroupOfLine> {
 
    @Override
-   public chouette.schema.GroupOfLine produce(GroupOfLine bean) 
+   public GroupOfLineType produce(GroupOfLine bean) 
    {
-      chouette.schema.GroupOfLine castorGroupOfLine = new chouette.schema.GroupOfLine();
+	   GroupOfLineType jaxbGroupOfLine = tridentFactory.createGroupOfLineType();
 
-      populateFromModel(castorGroupOfLine, bean);
+      populateFromModel(jaxbGroupOfLine, bean);
 
-      castorGroupOfLine.setName(bean.getName());
-      castorGroupOfLine.setComment(getNotEmptyString(bean.getComment()));
+      jaxbGroupOfLine.setName(bean.getName());
+      jaxbGroupOfLine.setComment(getNotEmptyString(bean.getComment()));
       // populated after with only one line
       //		for (String objectId : bean.getLineIds())
       //      {
       //		   castorGroupOfLine.addLineId(objectId);
       //      }
 
-      return castorGroupOfLine;
+      return jaxbGroupOfLine;
    }
 
 }

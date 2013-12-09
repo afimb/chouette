@@ -1,40 +1,44 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import chouette.schema.types.LongLatTypeType;
+import org.trident.schema.trident.AddressType;
+import org.trident.schema.trident.ProjectedPointType;
+import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
+import org.trident.schema.trident.LongLatTypeType;
+
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 
-public class AreaCentroidProducer extends AbstractCastorNeptuneProducer<chouette.schema.AreaCentroid, StopArea> {
+public class AreaCentroidProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.AreaCentroid, StopArea> {
 
 	@Override
-	public chouette.schema.AreaCentroid produce(StopArea area) 
+	public ChouetteArea.AreaCentroid produce(StopArea area) 
 	{
-		chouette.schema.AreaCentroid castorAreaCentroid = new chouette.schema.AreaCentroid();
+		ChouetteArea.AreaCentroid jaxbAreaCentroid = tridentFactory.createChouettePTNetworkTypeChouetteAreaAreaCentroid();
 		
 		//
-		populateFromModel(castorAreaCentroid, area);
+		populateFromModel(jaxbAreaCentroid, area);
 		
-		castorAreaCentroid.setObjectId(castorAreaCentroid.getObjectId().replace(":StopArea:", ":AreaCentroid:"));
-		castorAreaCentroid.setComment(getNotEmptyString(area.getComment()));
-		castorAreaCentroid.setName(area.getName());
+		jaxbAreaCentroid.setObjectId(jaxbAreaCentroid.getObjectId().replace(":StopArea:", ":AreaCentroid:"));
+		jaxbAreaCentroid.setComment(getNotEmptyString(area.getComment()));
+		jaxbAreaCentroid.setName(area.getName());
 		
 		if(area.hasAddress())
 		{
-			chouette.schema.Address castorAddress = new chouette.schema.Address();
-			castorAddress.setCountryCode(getNotEmptyString(area.getCountryCode()));
-			castorAddress.setStreetName(getNotEmptyString(area.getStreetName()));
-			castorAreaCentroid.setAddress(castorAddress);
+			AddressType jaxbAddress = tridentFactory.createAddressType();
+			jaxbAddress.setCountryCode(getNotEmptyString(area.getCountryCode()));
+			jaxbAddress.setStreetName(getNotEmptyString(area.getStreetName()));
+			jaxbAreaCentroid.setAddress(jaxbAddress);
 		}
 		
-		castorAreaCentroid.setContainedIn(getNonEmptyObjectId(area));
+		jaxbAreaCentroid.setContainedIn(getNonEmptyObjectId(area));
 		
 		if(area.hasCoordinates())
 		{
 			LongLatTypeEnum longLatType = area.getLongLatType();
-			castorAreaCentroid.setLatitude(area.getLatitude());
-			castorAreaCentroid.setLongitude(area.getLongitude());
+			jaxbAreaCentroid.setLatitude(area.getLatitude());
+			jaxbAreaCentroid.setLongitude(area.getLongitude());
 			try {
-				castorAreaCentroid.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+				jaxbAreaCentroid.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}
@@ -42,14 +46,14 @@ public class AreaCentroidProducer extends AbstractCastorNeptuneProducer<chouette
 		
 		if(area.hasProjection())
 		{
-			chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-			castorProjectedPoint.setProjectionType(area.getProjectionType());
-			castorProjectedPoint.setX(area.getX());
-			castorProjectedPoint.setY(area.getY());
-			castorAreaCentroid.setProjectedPoint(castorProjectedPoint);
+			ProjectedPointType jaxbProjectedPoint = tridentFactory.createProjectedPointType();
+			jaxbProjectedPoint.setProjectionType(area.getProjectionType());
+			jaxbProjectedPoint.setX(area.getX());
+			jaxbProjectedPoint.setY(area.getY());
+			jaxbAreaCentroid.setProjectedPoint(jaxbProjectedPoint);
 		}
 						
-		return castorAreaCentroid;
+		return jaxbAreaCentroid;
 	}
 
 }

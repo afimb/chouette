@@ -8,6 +8,10 @@
 
 package fr.certu.chouette.plugin.validation.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.certu.chouette.plugin.model.GuiValidationStep;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -38,6 +42,18 @@ public class ValidationReport extends Report
 		int itemStatus = item.getStatus().ordinal();
 		if (itemStatus > status) setStatus(item.getStatus());
 	}
+	
+    public List<GuiValidationStep> toValidationResults()
+    {
+    	List<GuiValidationStep> list = new ArrayList<GuiValidationStep>();
+    	for (ReportItem item : getItems()) 
+    	{
+    		list.addAll(((PhaseReportItem) item).toValidationResults());
+		}
+    	return list;
+    	
+    }
+
 
 
 }

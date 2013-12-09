@@ -3,7 +3,7 @@
 <!-- Projet CHOUETTE ce projet est sous license libre voir LICENSE.txt pour 
 	plus de details -->
 <hibernate-mapping package="fr.certu.chouette.plugin.model" schema="public">
-	<class name="GuiImport" table="import_tasks" dynamic-insert="false"
+	<class name="GuiValidation" table="compliance_check_tasks" dynamic-insert="false"
 		dynamic-update="false">
 		<comment>Import Job</comment>
 		<id name="id" type="long">
@@ -17,23 +17,9 @@
 				<comment>Referential identification</comment>
 			</column>
 		</property>
-		
-		<one-to-one name="validationTask" class="GuiValidation" cascade="all" foreign-key="import_task_id">
-		</one-to-one>
-		
 		<property name="status" type="string">
 			<column name="status">
 				<comment>status</comment>
-			</column>
-		</property>
-		<property name="format" type="string">
-			<column name="format">
-				<comment>type</comment>
-			</column>
-		</property>
-		<property name="noSave" type="boolean">
-			<column name="no_save">
-				<comment>do not save data</comment>
 			</column>
 		</property>
 		<property name="parameters" type="fr.certu.chouette.dao.hibernate.usertype.JsonTextUserType">
@@ -56,11 +42,15 @@
 				<comment>import progress information</comment>
 			</column>
 		</property>
-		<property name="result" type="fr.certu.chouette.dao.hibernate.usertype.JsonTextUserType">
-			<column name="result">
-				<comment>import result for reporting</comment>
-			</column>
-		</property>
+		<bag lazy="false" name="steps" cascade="all-delete-orphan">
+			<comment>Vehicle Journey at Stop</comment>
+			<key foreign-key="compliance_check_results_compliance_check_task_id_fk">
+				<column name="compliance_check_task_id">
+					<comment>compliance task</comment>
+				</column>
+			</key>
+			<one-to-many class="GuiValidationStep" />
+		</bag>
         <property name="createdAt" column="created_at" type="timestamp"/>
         <property name="updatedAt" column="updated_at" type="timestamp"/>
 

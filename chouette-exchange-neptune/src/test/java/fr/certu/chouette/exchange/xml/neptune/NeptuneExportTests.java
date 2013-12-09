@@ -32,6 +32,8 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
+import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @SuppressWarnings("unchecked")
@@ -153,7 +155,8 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 		ReportHolder report2 = new ReportHolder();
 		lines = importLine.doImport(parameters, report,report2);
 		printReport(report.getReport());    
-
+		printReport(report2.getReport());    
+		
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
 		for(Line line : lines)
@@ -228,7 +231,7 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 				int hours = c.get(Calendar.HOUR_OF_DAY) ; 
 				int seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
-				Assert.assertEquals(seconds,600,"line must have links duration of 10 minutes");
+				Assert.assertEquals(seconds,4200,"line must have links duration of 1h 10 minutes");
 				Reporter.log(connectionLink.toString("\t",1));
 
 			}
@@ -243,7 +246,7 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 				int hours = c.get(Calendar.HOUR_OF_DAY) ; 
 				int seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
-				Assert.assertEquals(seconds,600,"line must have links duration of 10 minutes");
+				Assert.assertEquals(seconds,60,"line must have links duration of 1 minutes");
 				Reporter.log(accessLink.toString("\t",1));
 				apoints.add(accessLink.getAccessPoint());
 
@@ -262,7 +265,7 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 				hours = c.get(Calendar.HOUR_OF_DAY) ; 
 				seconds = c.get(Calendar.SECOND) + minutes* 60 + hours * 3600; 
 
-				Assert.assertEquals(seconds,23*3600,"line must have opening time of 23 hours");
+				Assert.assertEquals(seconds,22*3600+600,"line must have closing time of 22 hours 10");
 
 			}
 			//         Assert.assertEquals(facilities.size(),1,"line must have 1 facility");
@@ -291,7 +294,10 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 
 		ReportHolder report = new ReportHolder();
 		ReportHolder report2 = new ReportHolder();
-		return importLine.doImport(parameters, report,report2);
+		List<Line> result = importLine.doImport(parameters, report,report2);
+		
+		printReport(report2.getReport());
+		return result;
 
 	}
 
@@ -303,8 +309,10 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 		}
 		else
 		{
+			//Reporter.log(report.toJSON());
+
 			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
-			printItems("   ",report.getItems());
+			printItems("---",report.getItems());
 		}
 	}
 
@@ -317,11 +325,24 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 		if (items == null) return;
 		for (ReportItem item : items) 
 		{
-			Reporter.log(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(indent+"   ",item.getItems());
+			if (item instanceof CheckPointReportItem)
+			{
+				CheckPointReportItem citem = (CheckPointReportItem) item;
+				Reporter.log(indent+citem.getStatus().name()+" : "+citem.getMessageKey());
+
+			}
+			else if (item instanceof DetailReportItem)
+			{
+				DetailReportItem ditem = (DetailReportItem) item;
+				Reporter.log(indent+ditem.toJSON());
+			}
+			else
+			{
+				Reporter.log(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+			}
+			printItems(indent+"---",item.getItems());
 		}
 
 	}
-
 
 }

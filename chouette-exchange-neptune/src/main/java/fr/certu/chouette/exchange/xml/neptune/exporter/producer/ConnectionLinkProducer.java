@@ -1,61 +1,110 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import chouette.schema.AccessibilitySuitabilityDetails;
-import chouette.schema.ConnectionLinkExtension;
-import chouette.schema.types.ConnectionLinkTypeType;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.trident.schema.trident.ConnectionLinkExtensionType;
+import org.trident.schema.trident.ConnectionLinkTypeType;
+import org.trident.schema.trident.ChouettePTNetworkType;
+import org.trident.schema.trident.ConnectionLinkExtensionType.AccessibilitySuitabilityDetails;
+
+import uk.org.ifopt.acsb.EncumbranceEnumeration;
+import uk.org.ifopt.acsb.MedicalNeedEnumeration;
+import uk.org.ifopt.acsb.MobilityEnumeration;
+import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
+import uk.org.ifopt.acsb.UserNeedStructure;
+
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
+import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class ConnectionLinkProducer extends AbstractCastorNeptuneProducer<chouette.schema.ConnectionLink, ConnectionLink> {
+public class ConnectionLinkProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ConnectionLink, ConnectionLink> {
 
 	@Override
-	public chouette.schema.ConnectionLink produce(ConnectionLink connectionLink) {
-		chouette.schema.ConnectionLink castorConnectionLink = new chouette.schema.ConnectionLink();
+	public ChouettePTNetworkType.ConnectionLink produce(ConnectionLink connectionLink) {
+		ChouettePTNetworkType.ConnectionLink jaxbConnectionLink = tridentFactory.createChouettePTNetworkTypeConnectionLink();
 
 		//
-		populateFromModel(castorConnectionLink, connectionLink);
+		populateFromModel(jaxbConnectionLink, connectionLink);
 
-		castorConnectionLink.setComment(getNotEmptyString(connectionLink.getComment()));
-		castorConnectionLink.setName(connectionLink.getName());
-		castorConnectionLink.setStartOfLink(getNonEmptyObjectId(connectionLink.getStartOfLink()));
-		castorConnectionLink.setEndOfLink(getNonEmptyObjectId(connectionLink.getEndOfLink()));
-		castorConnectionLink.setLinkDistance(connectionLink.getLinkDistance());
+		jaxbConnectionLink.setComment(getNotEmptyString(connectionLink.getComment()));
+		jaxbConnectionLink.setName(connectionLink.getName());
+		jaxbConnectionLink.setStartOfLink(connectionLink.getStartOfLinkId());
+		jaxbConnectionLink.setEndOfLink(connectionLink.getEndOfLinkId());
+		jaxbConnectionLink.setLinkDistance(connectionLink.getLinkDistance());
 		if (connectionLink.isMobilityRestrictedSuitable())
-			castorConnectionLink.setMobilityRestrictedSuitability(true);
+			jaxbConnectionLink.setMobilityRestrictedSuitability(true);
 		if (connectionLink.isLiftAvailable())
-			castorConnectionLink.setLiftAvailability(true);
+			jaxbConnectionLink.setLiftAvailability(true);
 		if (connectionLink.isStairsAvailable())
-			castorConnectionLink.setStairsAvailability(true);
+			jaxbConnectionLink.setStairsAvailability(true);
 		if(connectionLink.getDefaultDuration() != null){
-			castorConnectionLink.setDefaultDuration(toDuration(connectionLink.getDefaultDuration()));
+			jaxbConnectionLink.setDefaultDuration(toDuration(connectionLink.getDefaultDuration()));
 		}
 		if(connectionLink.getFrequentTravellerDuration() != null){
-			castorConnectionLink.setFrequentTravellerDuration(toDuration(connectionLink.getFrequentTravellerDuration()));
+			jaxbConnectionLink.setFrequentTravellerDuration(toDuration(connectionLink.getFrequentTravellerDuration()));
 		}
 		if(connectionLink.getOccasionalTravellerDuration() != null){
-			castorConnectionLink.setOccasionalTravellerDuration(toDuration(connectionLink.getOccasionalTravellerDuration()));
+			jaxbConnectionLink.setOccasionalTravellerDuration(toDuration(connectionLink.getOccasionalTravellerDuration()));
 		}
 		if(connectionLink.getMobilityRestrictedTravellerDuration() != null){
-			castorConnectionLink.setMobilityRestrictedTravellerDuration(toDuration(connectionLink.getMobilityRestrictedTravellerDuration()));
+			jaxbConnectionLink.setMobilityRestrictedTravellerDuration(toDuration(connectionLink.getMobilityRestrictedTravellerDuration()));
 		}
 
 		try {
 			ConnectionLinkTypeEnum linkType = connectionLink.getLinkType();
 			if(linkType != null){
-				castorConnectionLink.setLinkType(ConnectionLinkTypeType.fromValue(linkType.value()));
+				jaxbConnectionLink.setLinkType(ConnectionLinkTypeType.fromValue(linkType.value()));
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO generate report
 		}
 
-		ConnectionLinkExtension connectionLinkExtension = new ConnectionLinkExtension();
+		ConnectionLinkExtensionType connectionLinkExtension = tridentFactory.createConnectionLinkExtensionType();
 		AccessibilitySuitabilityDetails details = extractAccessibilitySuitabilityDetails(connectionLink.getUserNeeds());
 		if (details != null)
 		{
 			connectionLinkExtension.setAccessibilitySuitabilityDetails(details);
-			castorConnectionLink.setConnectionLinkExtension(connectionLinkExtension);
+			jaxbConnectionLink.setConnectionLinkExtension(connectionLinkExtension);
 		}
 
-		return castorConnectionLink;
+		return jaxbConnectionLink;
 	}
+	
+	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
+		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
+		List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
+		if(userNeeds != null){
+			for(UserNeedEnum userNeed : userNeeds){
+				if(userNeed != null){
+					UserNeedStructure userNeedGroup = new UserNeedStructure();
+
+					switch (userNeed.category()) {
+					case ENCUMBRANCE:
+						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
+						break;
+					case MEDICAL:
+						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));					
+						break;
+					case PSYCHOSENSORY:
+						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));	
+						break;
+					case MOBILITY:
+						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));	
+						break;
+					default:
+						throw new IllegalArgumentException("bad value of userNeed");
+					}
+
+					detailsItems.add(userNeedGroup);
+
+				}
+			}
+		}
+
+		if (detailsItems.isEmpty()) return null;
+		details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(detailsItems);
+		return details;
+	}
+
 }

@@ -3,7 +3,8 @@
  */
 package fr.certu.chouette.plugin.model;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 
@@ -14,21 +15,24 @@ import lombok.Setter;
  * @author michel
  *
  */
-public class GuiImport extends ActiveRecordObject
+public class GuiValidation extends ActiveRecordObject 
 {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 896326851460511494L;
+	private static final long serialVersionUID = 5725000704712085992L;
 	@Getter @Setter private Long referentialId;
     @Getter @Setter private String status;
-    @Getter @Setter private String format;
-    @Getter @Setter private boolean noSave;
     @Getter @Setter private JSONObject parameters;
 	@Getter @Setter private Long userId;
 	@Getter @Setter private String userName;
     @Getter @Setter private JSONObject progressInfo;
-    @Getter @Setter private JSONObject result;
-    @Getter @Setter private GuiValidation validationTask;
+    @Getter @Setter private List<GuiValidationStep> steps;
+    
+    public void addStep(GuiValidationStep step)
+    {
+    	if (steps == null) steps = new ArrayList<GuiValidationStep>();
+    	steps.add(step);
+    }
 
 }

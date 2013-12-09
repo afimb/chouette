@@ -21,11 +21,6 @@
 				<ref bean="NeptuneLineExport" />
 			</list>
 		</property>
-		<property name="exportDeletionPlugins">
-			<list>
-				<ref bean="NeptuneLineDeletionExport" />
-			</list>
-		</property>
 
 	</bean>
 

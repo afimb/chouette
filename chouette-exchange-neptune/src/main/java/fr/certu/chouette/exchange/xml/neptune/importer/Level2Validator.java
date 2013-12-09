@@ -1,6 +1,9 @@
 package fr.certu.chouette.exchange.xml.neptune.importer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,7 @@ import org.trident.schema.trident.PTNetworkType;
 import org.trident.schema.trident.TimeSlotType;
 import org.trident.schema.trident.TimetableType;
 import org.trident.schema.trident.TridentObjectType;
+import org.trident.schema.trident.VehicleJourneyAtStopType;
 import org.trident.schema.trident.VehicleJourneyType;
 import org.xml.sax.Locator;
 
@@ -75,8 +79,8 @@ public class Level2Validator
 	private static final String TIMETABLE_2 = "2-NEPTUNE-Timetable-2";
 	private static final String VEHICLE_JOURNEY_1 = "2-NEPTUNE-VehicleJourney-1";
 	private static final String VEHICLE_JOURNEY_2 = "2-NEPTUNE-VehicleJourney-2";
-	private static final String VEHICLE_JOURNEY_3 = "2-NEPTUNE-VehicleJourney-3";
 	private static final String VEHICLE_JOURNEY_AT_STOP_1 = "2-NEPTUNE-VehicleJourneyAtStop-1";
+	private static final String VEHICLE_JOURNEY_AT_STOP_2 = "2-NEPTUNE-VehicleJourneyAtStop-2";
 	private static final String FACILITY_1 = "2-NEPTUNE-Facility-1";
 
 	@Setter private  PTNetworkType ptNetwork;
@@ -199,6 +203,7 @@ public class Level2Validator
 			tridentObjects.put(route.getObjectId(), route);
 		}
 	}
+	private Map<String,List<String>> sequenceOfRoutes = new HashMap<String,List<String>>(); // will be populate on validateRoutes
 
 	private Map<String,ITLType> routingConstraints = new HashMap<String,ITLType>();
 	public void addRoutingConstraints(List<ITLType> routingConstraintList) 
@@ -274,19 +279,117 @@ public class Level2Validator
 
 	public void validate()
 	{
+		long startTime = System.currentTimeMillis();
+		long startStepTIme = startTime;
 		validateNetwork();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating Network in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateGroupOfLines();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating GourpOfLines in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateStopAreas();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating StopAreas in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateAreaCentroids();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating AreaCentroids in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateConnectionLinks();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating ConnectionLinks in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateAccessPoints();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating AccessPoints in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateAccessLink();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating AccessLinks in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateLine();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating Line in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateRoutes();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating Routes in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateStopPoints();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating StopPoints in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateTimetables();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating Timetables in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateVehicleJourneys();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating VehicleJourneys in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
 		validateFacilities();
+		{
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startStepTIme) / 1000;
+			long millis = (endTime - startStepTIme) % 1000;
+			log.info("validating Facilities in "+duration+" s "+millis + " ms");
+			startStepTIme = endTime;
+		}
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime) / 1000;
+		long millis = (endTime - startTime) % 1000;
+		log.info("validating all in "+duration+" s "+millis + " ms");
+		
 	}
 
 	private void validateNetwork()
@@ -761,7 +864,6 @@ public class Level2Validator
 		if (route1ok && route2ok)
 		{
 
-			Map<String,List<String>> sequenceOfRoutes = new HashMap<String,List<String>>();
 			prepareCheckPoint(ROUTE_3);
 
 			for (ChouetteRoute route : routes.values()) 
@@ -897,8 +999,8 @@ public class Level2Validator
 						StopPoint start = stopPoints.get(pointIds.get(0));
 						StopPoint end = stopPoints.get(wbPointIds.get(wbPointIds.size()-1));
 						if (end.getContainedIn().equals(start.getContainedIn())) continue;
-                        String startParentCommercialId = mapStopAreaParent.get(start.getContainedIn());
-                        String endParentCommercialId = mapStopAreaParent.get(end.getContainedIn());
+						String startParentCommercialId = mapStopAreaParent.get(start.getContainedIn());
+						String endParentCommercialId = mapStopAreaParent.get(end.getContainedIn());
 						if (startParentCommercialId == null || endParentCommercialId == null) continue;
 						if (startParentCommercialId.equals(endParentCommercialId)) continue;
 						// warning 
@@ -906,7 +1008,7 @@ public class Level2Validator
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopPointId",pointIds.get(0));
 						DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.WARNING, location );
 						addValidationError(ROUTE_9, errorItem);						
-						
+
 					}
 				}
 
@@ -933,22 +1035,135 @@ public class Level2Validator
 
 	private void validateTimetables()
 	{
-		// 2-NEPTUNE-Timetable-1 : check if timetable refers at least one existing vehiclejourney
-		// 2-NEPTUNE-Timetable-2 : check if vehiclejourney is referred by at least one timetable
+		if (timetables.isEmpty()) return;
+		if (vehicleJourneys.isEmpty()) return;
+		// 2-NEPTUNE-Timetable-1 : check if timetable refers at least one existing vehiclejourney (w)
+		prepareCheckPoint(TIMETABLE_1);
+		// 2-NEPTUNE-Timetable-2 : check if vehiclejourney is referred by at least one timetable (w)
+		prepareCheckPoint(TIMETABLE_2);
+		List<String> unreferencedVehicleJourneys = new ArrayList<String>(vehicleJourneys.keySet());
+		for (TimetableType timetable : timetables.values()) 
+		{
+			boolean vjFound = false;
+			for (String vjId : timetable.getVehicleJourneyId())
+			{
+				if (vehicleJourneys.containsKey(vjId)) vjFound = true;
+				unreferencedVehicleJourneys.remove(vjId);
+			}
+			if (!vjFound)
+			{
+				Locator trdLocation = timetable.sourceLocation();
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(timetable.getObjectId(), Report.STATE.WARNING, location );
+				addValidationError(TIMETABLE_1, errorItem);		                	
+
+			}
+		}
+
+		if (!unreferencedVehicleJourneys.isEmpty())
+		{
+			for (String vjId : unreferencedVehicleJourneys) 
+			{
+				VehicleJourneyType vj = vehicleJourneys.get(vjId);
+				Locator trdLocation = vj.sourceLocation();
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.WARNING, location );
+				addValidationError(TIMETABLE_2, errorItem);		                	
+			}
+		}
 
 	}
 
 	private void validateVehicleJourneys()
 	{
-		// 2-NEPTUNE-VehicleJourney-1 : check if route and JourneyPattern are coherent
-		// 2-NEPTUNE-VehicleJourney-2 : check if journeypatterns have at least one vehiclejourney
-		// 2-NEPTUNE-VehicleJourneyAtStop-1 : check if stoppoints are coherent with journeyPattern
+		if (vehicleJourneys.isEmpty()) return;
+		if (!journeyPatterns.isEmpty())
+		{
+			// 2-NEPTUNE-VehicleJourney-1 : check if route and JourneyPattern are coherent (e)
+			prepareCheckPoint(VEHICLE_JOURNEY_1);
+			// 2-NEPTUNE-VehicleJourney-2 : check if journeypatterns have at least one vehiclejourney (w)
+			prepareCheckPoint(VEHICLE_JOURNEY_2);
+			// 2-NEPTUNE-VehicleJourneyAtStop-1 : check if stoppoints are coherent with journeyPattern(e)
+			prepareCheckPoint(VEHICLE_JOURNEY_AT_STOP_2);
+		}
+		List<String> unreferencedJourneyPatterns = new ArrayList<String>(journeyPatterns.keySet());
+		if (!sequenceOfRoutes.isEmpty())
+		{
+			// 2-NEPTUNE-VehicleJourneyAtStop-1 : check if stoppoints are coherent with route(e)
+			prepareCheckPoint(VEHICLE_JOURNEY_AT_STOP_1);
+		}
+
+		for (VehicleJourneyType vj : vehicleJourneys.values())
+		{
+			List<String> stopsOfVj = new ArrayList<String>();
+			List<VehicleJourneyAtStopType> vjass = vj.getVehicleJourneyAtStop();
+			if (vjass.get(0).isSetOrder())
+			{
+				Collections.sort(vjass,new VehicleJourneyAtStopSorter());
+			}
+			for (VehicleJourneyAtStopType vjas : vjass) 
+			{
+				stopsOfVj.add(vjas.getStopPointId());
+			}
+			if (!journeyPatterns.isEmpty())
+			{
+				JourneyPatternType journeyPattern = journeyPatterns.get(vj.getJourneyPatternId());
+				unreferencedJourneyPatterns.remove(journeyPattern.getObjectId());
+				if (!journeyPattern.getRouteId().equals(vj.getRouteId()))
+				{
+					Locator trdLocation = vj.sourceLocation();
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId", vj.getJourneyPatternId());
+					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					addValidationError(VEHICLE_JOURNEY_1, errorItem);		                	
+				}
+				else
+				{
+					List<String> stops = journeyPattern.getStopPointList();
+
+					if (stopsOfVj.size() != stops.size() || !stops.containsAll(stopsOfVj))
+					{
+						Locator trdLocation = vj.sourceLocation();
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId", vj.getJourneyPatternId());
+						DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+						addValidationError(VEHICLE_JOURNEY_AT_STOP_2, errorItem);		                	
+					}
+				}
+			}
+			// check vjas with route
+			List<String> sequence = new ArrayList<String>(sequenceOfRoutes.get(vj.getRouteId()));
+			sequence.retainAll(stopsOfVj);
+			if (!sequence.equals(stopsOfVj))
+			{
+				log.info("Route "+vj.getRouteId()+" arrêts "+Arrays.toString(sequenceOfRoutes.get(vj.getRouteId()).toArray()));
+				log.info("VJ "+vj.getObjectId()+" arrêts "+Arrays.toString(stopsOfVj.toArray())+"\n");
+				Locator trdLocation = vj.sourceLocation();
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"routeId", vj.getRouteId());
+				DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+				addValidationError(VEHICLE_JOURNEY_AT_STOP_1, errorItem);		                	
+			}
+
+
+		}
+		if (!unreferencedJourneyPatterns.isEmpty())
+		{
+			// unused journeyPatterns : warning
+			for (String jpId : unreferencedJourneyPatterns) 
+			{
+				JourneyPatternType jp = journeyPatterns.get(jpId);
+				Locator trdLocation = jp.sourceLocation();
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(jp.getObjectId(), Report.STATE.WARNING, location );
+				addValidationError(VEHICLE_JOURNEY_2, errorItem);		                	
+
+			}
+
+		}
 
 	}
 
 	private void validateFacilities()
 	{
-		// 2-NEPTUNE-Facility-1"; WGS84
+		// 2-NEPTUNE-Facility-1"; WGS84 (e)
 
 	}
 
@@ -982,5 +1197,17 @@ public class Level2Validator
 		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
 	}
 
+	private class VehicleJourneyAtStopSorter implements Comparator<VehicleJourneyAtStopType>
+	{
+
+		@Override
+		public int compare(VehicleJourneyAtStopType o1,
+				VehicleJourneyAtStopType o2) 
+		{
+
+			return o1.getOrder().intValue() - o2.getOrder().intValue();
+		}
+
+	}
 
 }

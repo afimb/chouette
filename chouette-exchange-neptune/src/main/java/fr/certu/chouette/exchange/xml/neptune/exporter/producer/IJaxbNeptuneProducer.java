@@ -8,14 +8,15 @@
 
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import chouette.schema.TridentObjectTypeType;
+import org.trident.schema.trident.TridentObjectType;
+
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 
 /**
  * @author michel
  *
  */
-public interface ICastorNeptuneProducer <T extends TridentObjectTypeType, U extends NeptuneIdentifiedObject> 
+public interface IJaxbNeptuneProducer <T extends TridentObjectType, U extends NeptuneIdentifiedObject> 
 {
     T produce(U o);
 }

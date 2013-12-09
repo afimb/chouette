@@ -934,7 +934,7 @@ public class Command
 
 //		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
 		Report importReport = null;
-		Report validationReport = null;
+		ValidationReport validationReport = null;
 
 //		List<Report> ireports = new ArrayList<Report>();
 //		List<Report> vreports = new ArrayList<Report>();
@@ -948,11 +948,12 @@ public class Command
 			return 1;
 		}
 		GuiImport guiImport = importDao.get(importId);
-		logger.info("Import data for inport id "+importId);
+		logger.info("Import data for import id "+importId);
 		logger.info("  format : "+guiImport.getFormat());
 		logger.info("  options : "+guiImport.getParameters());
 		
 		JSONObject options = guiImport.getParameters();
+		if (options == null) options = new JSONObject();
 
 		String format = guiImport.getFormat().toUpperCase(); // TODO : check values 
 
@@ -965,7 +966,7 @@ public class Command
 		String projectionType = null;
 		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
 		{
-			logger.info("  projection type for export: "+referential.getProjectionType());
+			logger.info("  projection type for import: "+referential.getProjectionType());
 			projectionType = referential.getProjectionType();
 			parameters.put("srid", Arrays.asList(new String[]{projectionType}));
 		}
@@ -1158,7 +1159,7 @@ public class Command
 				}
 				if (validationHolder.getReport() != null)
 				{
-					validationReport = validationHolder.getReport();
+					validationReport = (ValidationReport) validationHolder.getReport();
 
 				}
 				logger.info("imported Lines "+beans.size());
@@ -1213,13 +1214,27 @@ public class Command
 
 	}
 
-	private void saveImportReports(GuiImport guiImport, Report ireport, Report vreport) 
+	private void saveImportReports(GuiImport guiImport, Report ireport, ValidationReport vreport) 
 	{
 		
 		guiImport.setResult(ireport.toJSONObject());
 		if (vreport != null && vreport.getItems() != null)
 		{
-			// save validation report
+			switch (vreport.getStatus())
+			{
+			case WARNING:
+			case ERROR:
+			case FATAL:
+				guiImport.getValidationTask().setStatus("nok");
+				break;
+			case OK:
+				guiImport.getValidationTask().setStatus("ok");
+				break;
+			case UNCHECK:
+				guiImport.getValidationTask().setStatus("na");
+				break;
+			}
+			guiImport.getValidationTask().setSteps(vreport.toValidationResults());
 		}
 		importDao.update(guiImport);
 		

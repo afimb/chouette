@@ -25,7 +25,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation")
 	public void verifyFileReading(String neptuneFileUtf8) throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		ChouettePTNetworkHolder resultHolder = reader.read(path+"/"+neptuneFileUtf8);
 		ChouettePTNetworkType result = resultHolder.getChouettePTNetwork();
 		Assert.assertNotNull(result, "result should be not null");
@@ -44,7 +44,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation")
 	public void verifyMissingFile() throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		boolean gotException = false;
 		try
 		{
@@ -64,7 +64,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation")
 	public void verifyNonXmlFile(String neptuneNoXmlFile) throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		boolean gotException = false;
 		try
 		{
@@ -85,7 +85,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation")
 	public void verifyBadFileEncoding(String neptuneFileBadEnc) throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		boolean gotException = false;
 		try
 		{
@@ -108,7 +108,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation on broken file")
 	public void verifyBrokenFile(String neptuneBrokenFile) throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		ChouettePTNetworkHolder resultHolder = reader.read(path+"/"+neptuneBrokenFile);
 		ChouettePTNetworkType result = resultHolder.getChouettePTNetwork();
 		Assert.assertNull(result, "result should be null");
@@ -122,7 +122,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation on broken file")
 	public void verifyErrorFile(String neptuneErrorFile) throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		ChouettePTNetworkHolder resultHolder = reader.read(path+"/"+neptuneErrorFile,true);
 		ChouettePTNetworkType result = resultHolder.getChouettePTNetwork();
 		Assert.assertNull(result, "result should be null");
@@ -138,7 +138,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 	@Test (groups = {"JaxbNeptuneFileReader"}, description = "check file validation on broken file")
 	public void verifyErrorFileWithoutValidation(String neptuneErrorFile) throws Exception
 	{
-		JaxbNeptuneFileReader reader = new JaxbNeptuneFileReader();
+		JaxbNeptuneFileConverter reader = new JaxbNeptuneFileConverter();
 		ChouettePTNetworkHolder resultHolder = reader.read(path+"/"+neptuneErrorFile,false);
 		ChouettePTNetworkType result = resultHolder.getChouettePTNetwork();
 		Assert.assertNotNull(result, "result should not be null");

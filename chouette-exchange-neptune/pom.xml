@@ -16,10 +16,10 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>fr.certu.chouette.schema</groupId>
 			<artifactId>chouette-castor-neptune</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-jaxb-neptune</artifactId>
@@ -110,6 +110,7 @@
 				<configuration>
 					<suiteXmlFiles>
 						<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+  						<suiteXmlFile>src/test/resources/phase1.xml</suiteXmlFile>
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>

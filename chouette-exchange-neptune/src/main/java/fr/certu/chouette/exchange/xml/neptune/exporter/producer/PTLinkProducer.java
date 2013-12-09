@@ -1,23 +1,24 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
+import org.trident.schema.trident.PTLinkType;
+
 import fr.certu.chouette.model.neptune.PTLink;
 
-public class PTLinkProducer extends AbstractCastorNeptuneProducer<chouette.schema.PtLink, PTLink> {
+public class PTLinkProducer extends AbstractJaxbNeptuneProducer<PTLinkType, PTLink> {
 
 	@Override
-	public chouette.schema.PtLink produce(PTLink ptLink) {
-		chouette.schema.PtLink castorPTLink = new chouette.schema.PtLink();
+	public PTLinkType produce(PTLink ptLink) {
+		PTLinkType jaxbPTLink = tridentFactory.createPTLinkType();
 		
 		//
-		populateFromModel(castorPTLink, ptLink);
+		populateFromModel(jaxbPTLink, ptLink);
 		
-		castorPTLink.setComment(ptLink.getComment());
-		castorPTLink.setName(ptLink.getName());
-		castorPTLink.setStartOfLink(getNonEmptyObjectId(ptLink.getStartOfLink()));
-		castorPTLink.setEndOfLink(getNonEmptyObjectId(ptLink.getEndOfLink()));
-		castorPTLink.setLinkDistance(ptLink.getLinkDistance());
+		jaxbPTLink.setName(ptLink.getName());
+		jaxbPTLink.setStartOfLink(getNonEmptyObjectId(ptLink.getStartOfLink()));
+		jaxbPTLink.setEndOfLink(getNonEmptyObjectId(ptLink.getEndOfLink()));
+		jaxbPTLink.setLinkDistance(ptLink.getLinkDistance());
 						
-		return castorPTLink;
+		return jaxbPTLink;
 	}
 
 }

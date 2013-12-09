@@ -1,40 +1,44 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import chouette.schema.types.LongLatTypeType;
+import org.trident.schema.trident.AddressType;
+import org.trident.schema.trident.LongLatTypeType;
+import org.trident.schema.trident.ProjectedPointType;
+import org.trident.schema.trident.ChouettePTNetworkType;
+
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
-public class StopPointProducer extends AbstractCastorNeptuneProducer<chouette.schema.StopPoint, StopPoint> {
+public class StopPointProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.StopPoint, StopPoint> {
 
 	@Override
-	public chouette.schema.StopPoint produce(StopPoint stopPoint) {
-		chouette.schema.StopPoint castorStopPoint = new chouette.schema.StopPoint();
+	public ChouettePTNetworkType.ChouetteLineDescription.StopPoint produce(StopPoint stopPoint) {
+		ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbStopPoint = tridentFactory.createChouettePTNetworkTypeChouetteLineDescriptionStopPoint();
 		
 		//
-		populateFromModel(castorStopPoint, stopPoint);
+		populateFromModel(jaxbStopPoint, stopPoint);
 		
-		castorStopPoint.setComment(stopPoint.getComment());
-		castorStopPoint.setName(stopPoint.getName());
-		castorStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
+		jaxbStopPoint.setComment(stopPoint.getComment());
+		jaxbStopPoint.setName(stopPoint.getName());
+		jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 		
 		Address address = stopPoint.getAddress();
 		if(stopPoint.getAddress() != null){
-			chouette.schema.Address castorAddress = new chouette.schema.Address();
-			castorAddress.setCountryCode(address.getCountryCode());
-			castorAddress.setStreetName(address.getStreetName());
-			castorStopPoint.setAddress(castorAddress);
+			AddressType jaxbAddress = tridentFactory.createAddressType();
+			jaxbAddress.setCountryCode(address.getCountryCode());
+			jaxbAddress.setStreetName(address.getStreetName());
+			jaxbStopPoint.setAddress(jaxbAddress);
 		}
 		
-		castorStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
-		castorStopPoint.setLatitude(stopPoint.getLatitude());
-		castorStopPoint.setLongitude(stopPoint.getLongitude());
+		jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
+		jaxbStopPoint.setLatitude(stopPoint.getLatitude());
+		jaxbStopPoint.setLongitude(stopPoint.getLongitude());
 		
 		if(stopPoint.getLongLatType() != null){
 			LongLatTypeEnum longLatType = stopPoint.getLongLatType();
 			try {
-				castorStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+				jaxbStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}
@@ -42,15 +46,15 @@ public class StopPointProducer extends AbstractCastorNeptuneProducer<chouette.sc
 		
 		ProjectedPoint projectedPoint = stopPoint.getProjectedPoint();
 		if(projectedPoint != null){
-			chouette.schema.ProjectedPoint castorProjectedPoint = new chouette.schema.ProjectedPoint();
-			castorProjectedPoint.setProjectionType(projectedPoint.getProjectionType());
-			castorProjectedPoint.setX(projectedPoint.getX());
-			castorProjectedPoint.setY(projectedPoint.getY());
-			castorStopPoint.setProjectedPoint(castorProjectedPoint);
+			ProjectedPointType jaxbProjectedPoint = tridentFactory.createProjectedPointType();
+			jaxbProjectedPoint.setProjectionType(projectedPoint.getProjectionType());
+			jaxbProjectedPoint.setX(projectedPoint.getX());
+			jaxbProjectedPoint.setY(projectedPoint.getY());
+			jaxbStopPoint.setProjectedPoint(jaxbProjectedPoint);
 		}
-		castorStopPoint.setPtNetworkIdShortcut(stopPoint.getPtNetworkIdShortcut());
+		jaxbStopPoint.setPtNetworkIdShortcut(stopPoint.getPtNetworkIdShortcut());
 						
-		return castorStopPoint;
+		return jaxbStopPoint;
 	}
 
 }
