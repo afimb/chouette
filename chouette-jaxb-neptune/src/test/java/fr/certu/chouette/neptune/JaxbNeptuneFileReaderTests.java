@@ -131,7 +131,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 		Assert.assertEquals(resultHolder.getReport().getItems().size(),2, "report should have 2 entries");
 		Assert.assertEquals(resultHolder.getReport().getItems().get(0).getStatus(),Report.STATE.OK,"first report entry must be ok");
 		Assert.assertEquals(resultHolder.getReport().getItems().get(1).getStatus(),Report.STATE.ERROR,"second report entry must be error");
-		Assert.assertEquals(resultHolder.getReport().getItems().get(1).getItems().size(),3,"second report entry must contains 3 details");
+		Assert.assertEquals(resultHolder.getReport().getItems().get(1).getItems().size(),2,"second report entry must contains 2 details");
 	}
 
 	@Parameters({"neptuneErrorFile"})
@@ -147,7 +147,7 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 		Assert.assertEquals(resultHolder.getReport().getItems().size(),2, "report should have 2 entries");
 		Assert.assertEquals(resultHolder.getReport().getItems().get(0).getStatus(),Report.STATE.OK,"first report entry must be ok");
 		Assert.assertEquals(resultHolder.getReport().getItems().get(1).getStatus(),Report.STATE.ERROR,"second report entry must be error");
-		Assert.assertEquals(resultHolder.getReport().getItems().get(1).getItems().size(),3,"second report entry must contains 3 details");
+		Assert.assertEquals(resultHolder.getReport().getItems().get(1).getItems().size(),2,"second report entry must contains 2 details");
 	}
 
 	private void printReport(ReportItem report)

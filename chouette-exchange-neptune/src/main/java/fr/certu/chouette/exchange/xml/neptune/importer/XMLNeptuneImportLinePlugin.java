@@ -558,19 +558,21 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		int order = addItemToValidation(validationItem,prefix,"Common",2,1,"E","E");
 		order = addItemToValidation(validationItem,prefix,"Network",1,order,"W");
 		order = addItemToValidation(validationItem,prefix,"GroupOfLine",1,order,"E");
-		order = addItemToValidation(validationItem,prefix,"StopArea",5,order,"E","E","E","E","E");
-		order = addItemToValidation(validationItem,prefix,"ITL",3,order,"E","E","E");
-		order = addItemToValidation(validationItem,prefix,"AreaCentroid",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"StopArea",6,order,"E","E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"ITL",5,order,"E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"AreaCentroid",2,order,"E","E");
 		order = addItemToValidation(validationItem,prefix,"ConnectionLink",1,order,"E");
-		order = addItemToValidation(validationItem,prefix,"AccessPoint",6,order,"E","E","E","E","E","E");
-		order = addItemToValidation(validationItem,prefix,"AccessLink",1,order,"E");
-		order = addItemToValidation(validationItem,prefix,"Line",2,order,"E","E");
-		order = addItemToValidation(validationItem,prefix,"Route",9,order,"E","E","E","E","E","W","E","W","W");
-		order = addItemToValidation(validationItem,prefix,"StopPoint",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"AccessPoint",7,order,"E","E","E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"AccessLink",2,order,"E","E");
+		order = addItemToValidation(validationItem,prefix,"Line",5,order,"E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"Route",12,order,"E","E","E","E","E","E","E","E","W","E","W","W");
+		order = addItemToValidation(validationItem,prefix,"PTLink",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"JourneyPattern",3,order,"E","E","E");
+		order = addItemToValidation(validationItem,prefix,"StopPoint",4,order,"E","E","E","E");
 		order = addItemToValidation(validationItem,prefix,"Timetable",2,order,"W","W");
-		order = addItemToValidation(validationItem,prefix,"VehicleJourney",2,order,"E","W");
-		order = addItemToValidation(validationItem,prefix,"VehicleJourneyAtStop",2,order,"E","E");
-		order = addItemToValidation(validationItem,prefix,"Facility",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"VehicleJourney",7,order,"E","E","E","E","E","E","W");
+		order = addItemToValidation(validationItem,prefix,"VehicleJourneyAtStop",4,order,"E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"Facility",6,order,"E","E","E","E","E","E");
 	}
 
 	private int addItemToValidation(PhaseReportItem validationItem, String prefix, String name, int count, int order, String... severities) 

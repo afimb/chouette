@@ -190,10 +190,6 @@ Cette strucuture contient la totalité des données qui décrivent la ligne.</xsd:d
 				<xsd:annotation>
 					<xsd:documentation>Groupe de ligne auquel appartient la ligne décrite</xsd:documentation>
 				</xsd:annotation>
-				<xsd:unique name="uk_lines_groupofline">
-					<xsd:selector xpath=".//trd:lineId"/>
-					<xsd:field xpath="."/>
-				</xsd:unique>
 			</xsd:element>
 			<xsd:element name="Company" type="trd:CompanyType" minOccurs="0" maxOccurs="unbounded">
 				<xsd:annotation>
@@ -229,10 +225,6 @@ Cette strucuture contient la totalité des données qui décrivent la ligne.</xsd:d
 						</xsd:element>
 					</xsd:sequence>
 				</xsd:complexType>
-				<!-- <xsd:unique name="uk_contains_stoparea">
-					<xsd:selector xpath="trd:StopArea[.//trd:areaType != 'ITL']/trd:contains"/>
-					<xsd:field xpath="."/>
-				      </xsd:unique> -->
 			</xsd:element>
 			<xsd:element name="ConnectionLink" minOccurs="0" maxOccurs="unbounded">
 				<xsd:annotation>
@@ -403,7 +395,22 @@ Les correspondances relient un arrêt de la ligne avec un autre arrêt de cette mê
 			<xsd:selector xpath=".//trd:AccessPoint|.//trd:ChouetteArea/trd:StopArea"/>
 			<xsd:field xpath="trd:objectId"/>
 		</xsd:key>
-
+		<!--  disabled to accept external vehiclejourney refs 
+		<xsd:keyref name="fk_vehicle_timetable" refer="pk_vehicle">
+			<xsd:selector xpath=".//trd:Timetable/trd:vehicleJourneyId"/>
+			<xsd:field xpath="."/>
+		</xsd:keyref> -->
+		<!-- PtNetwork may reference external line ids
+		<xsd:keyref name="fk_line_ptnetwork" refer="pk_line">
+			<xsd:selector xpath=".//trd:PTNetwork"/>
+			<xsd:field xpath="trd:lineId"/>
+		</xsd:keyref>
+		--> 
+		<!-- Note : all fk are disabled for performance constraints: level 2 tests are hundreds of time faster
+		<xsd:keyref name="fk_centroid_stoparea" refer="pk_centroid">
+			<xsd:selector xpath=".//trd:ChouetteArea/trd:StopArea/trd:centroidOfArea"/>
+			<xsd:field xpath="."/>
+		</xsd:keyref> 
 		<xsd:keyref name="fk_stoparea_centroid" refer="pk_stoparea">
 			<xsd:selector xpath=".//trd:ChouetteArea/trd:AreaCentroid/trd:containedIn"/>
 			<xsd:field xpath="."/>
@@ -412,12 +419,10 @@ Les correspondances relient un arrêt de la ligne avec un autre arrêt de cette mê
 			<xsd:selector xpath=".//trd:ChouetteLineDescription/trd:StopPoint/trd:containedIn"/>
 			<xsd:field xpath="."/>
 		</xsd:keyref>
-		
 		<xsd:keyref name="fk_stoppoint_journey" refer="pk_stoppoint">
 			<xsd:selector xpath=".//trd:ChouetteLineDescription/trd:JourneyPattern/trd:stopPointList"/>
 			<xsd:field xpath="."/>
 		      </xsd:keyref>
-		  
 		<xsd:keyref name="fk_route_journey" refer="pk_route">
 			<xsd:selector xpath=".//trd:ChouetteLineDescription/trd:JourneyPattern/trd:routeId"/>
 			<xsd:field xpath="."/>
@@ -437,12 +442,7 @@ Les correspondances relient un arrêt de la ligne avec un autre arrêt de cette mê
 		<xsd:keyref name="fk_journey_vehicle" refer="pk_journey_pattern">
 			<xsd:selector xpath=".//trd:ChouetteLineDescription/trd:VehicleJourney/trd:journeyPatternId"/>
 			<xsd:field xpath="."/>
-		</xsd:keyref>
-		<!--  disabled to accept external vehiclejourney refs 
-		<xsd:keyref name="fk_vehicle_timetable" refer="pk_vehicle">
-			<xsd:selector xpath=".//trd:Timetable/trd:vehicleJourneyId"/>
-			<xsd:field xpath="."/>
-		</xsd:keyref> -->
+		      </xsd:keyref> 
 		<xsd:keyref name="fk_vehicle_vehicleatstop" refer="pk_vehicle">
 			<xsd:selector xpath=".//trd:ChouetteLineDescription/trd:VehicleJourney/trd:vehicleJourneyAtStop/trd:vehicleJourneyId"/>
 			<xsd:field xpath="."/>
@@ -466,13 +466,7 @@ Les correspondances relient un arrêt de la ligne avec un autre arrêt de cette mê
 		<xsd:keyref name="fk_wayback_route_route" refer="pk_route">
 			<xsd:selector xpath=".//trd:ChouetteLineDescription/trd:ChouetteRoute/trd:wayBackRouteId"/>
 			<xsd:field xpath="."/>
-		</xsd:keyref> 
-		<!-- PtNetwork may reference external line ids
-		<xsd:keyref name="fk_line_ptnetwork" refer="pk_line">
-			<xsd:selector xpath=".//trd:PTNetwork"/>
-			<xsd:field xpath="trd:lineId"/>
-		</xsd:keyref>
-		--> 
+		</xsd:keyref>  
 		<xsd:keyref name="fk_stoparea_accesspoint" refer="pk_stoparea">
 			<xsd:selector xpath=".//trd:AccessPoint/trd:containedIn"/>
 			<xsd:field xpath="."/>
@@ -481,10 +475,7 @@ Les correspondances relient un arrêt de la ligne avec un autre arrêt de cette mê
 			<xsd:selector xpath=".//trd:AccessLink/trd:startOfLink|.//trd:AccessLink/trd:endOfLink"/>
 			<xsd:field xpath="."/>
 		</xsd:keyref>
-		<xsd:keyref name="fk_centroid_stoparea" refer="pk_centroid">
-			<xsd:selector xpath=".//trd:ChouetteArea/trd:StopArea/trd:centroidOfArea"/>
-			<xsd:field xpath="."/>
-		</xsd:keyref>
+		-->
 	</xsd:element>
 	<xsd:simpleType name="ChouetteAreaType">
 		<xsd:restriction base="xsd:string">
