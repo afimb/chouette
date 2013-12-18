@@ -305,13 +305,14 @@ public class Command
 		shortCuts.put("v", "verbose");
 	}
 
-
+   private static Session session = null;
+	
 	/**
 	 * @param factory
 	 */
 	public static void closeDao() 
 	{
-
+        session.flush();
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
 		SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
@@ -325,7 +326,7 @@ public class Command
 	{
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
-		Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+		session = SessionFactoryUtils.getSession(sessionFactory, true);
 		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 	}
 
@@ -932,12 +933,12 @@ public class Command
 		// parameters.put("reportforsave", Arrays.asList(new String[] {"true"} ));
 		// parameters.put("validate",Arrays.asList(new String[]{"true"})); // force validation if possible
 
-//		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
+		//		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
 		Report importReport = null;
 		ValidationReport validationReport = null;
 
-//		List<Report> ireports = new ArrayList<Report>();
-//		List<Report> vreports = new ArrayList<Report>();
+		//		List<Report> ireports = new ArrayList<Report>();
+		//		List<Report> vreports = new ArrayList<Report>();
 		// check if import exists and accept unzip before call
 		String inputFile = getSimpleString(parameters,"inputfile");
 		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
@@ -951,7 +952,7 @@ public class Command
 		logger.info("Import data for import id "+importId);
 		logger.info("  format : "+guiImport.getFormat());
 		logger.info("  options : "+guiImport.getParameters());
-		
+
 		JSONObject options = guiImport.getParameters();
 		if (options == null) options = new JSONObject();
 
@@ -1011,7 +1012,7 @@ public class Command
 				validationReport = new ValidationReport();
 				ReportHolder validationHolder = new ReportHolder();
 				validationHolder.setReport(validationReport);
-				
+
 				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
 				values.add(inputFileParam);
 				// unzip files , import and save contents 
@@ -1119,7 +1120,7 @@ public class Command
 				catch (IOException e)
 				{
 					ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
-		            importReport.addItem(fileErrorItem);
+					importReport.addItem(fileErrorItem);
 					// TODO
 					saveImportReports(guiImport, importReport, validationReport);
 					return 1;
@@ -1208,7 +1209,7 @@ public class Command
 
 			return 1;
 		}
-		
+
 		saveImportReports(guiImport,importReport,validationReport);
 		return (beanCount == 0?1:0);
 
@@ -1216,28 +1217,31 @@ public class Command
 
 	private void saveImportReports(GuiImport guiImport, Report ireport, ValidationReport vreport) 
 	{
-		
+        logger.info("import report = "+ireport.toJSONObject());
 		guiImport.setResult(ireport.toJSONObject());
-		if (vreport != null && vreport.getItems() != null)
+		if (guiImport.getValidationTask() != null)
 		{
-			switch (vreport.getStatus())
+			if (vreport != null && vreport.getItems() != null)
 			{
-			case WARNING:
-			case ERROR:
-			case FATAL:
-				guiImport.getValidationTask().setStatus("nok");
-				break;
-			case OK:
-				guiImport.getValidationTask().setStatus("ok");
-				break;
-			case UNCHECK:
-				guiImport.getValidationTask().setStatus("na");
-				break;
+				switch (vreport.getStatus())
+				{
+				case WARNING:
+				case ERROR:
+				case FATAL:
+					guiImport.getValidationTask().setStatus("nok");
+					break;
+				case OK:
+					guiImport.getValidationTask().setStatus("ok");
+					break;
+				case UNCHECK:
+					guiImport.getValidationTask().setStatus("na");
+					break;
+				}
+				guiImport.getValidationTask().setSteps(vreport.toValidationResults());
 			}
-			guiImport.getValidationTask().setSteps(vreport.toValidationResults());
 		}
-		importDao.update(guiImport);
-		
+		importDao.save(guiImport);
+
 	}
 
 	private Object filter_chars(String message) 
@@ -1656,8 +1660,8 @@ public class Command
 			String key = name.toLowerCase();
 			if (excludedParams.contains(key)) continue;
 			// 
-			
-			
+
+
 			if (!options.has(key))
 			{
 				if (desc.isMandatory())
@@ -1667,7 +1671,7 @@ public class Command
 			}
 			else
 			{
-				
+
 				if (desc.isCollection())
 				{
 					JSONArray vals =  options.getJSONArray(key);
@@ -1689,7 +1693,7 @@ public class Command
 					{
 						throw new IllegalArgumentException("parameter -"+name+" must be unique");
 					}
-					
+
 
 					SimpleParameterValue val = new SimpleParameterValue(name);
 					switch (desc.getType())

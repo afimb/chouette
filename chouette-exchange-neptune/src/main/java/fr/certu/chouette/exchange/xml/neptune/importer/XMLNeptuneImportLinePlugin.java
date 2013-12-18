@@ -145,7 +145,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		boolean optimizeMemory = false;
 		SharedImportedData sharedData = new SharedImportedData();
 		UnsharedImportedData unsharedData = new UnsharedImportedData();
-		
+
 
 		for (ParameterValue value : parameters)
 		{
@@ -228,7 +228,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		{
 			iReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
 		}
-		
+
 		Report vReport = null; 
 		if (validationReport.getReport() != null)
 		{
@@ -265,10 +265,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			iReport.addItem(zipReportItem);
 		}
 		logger.info("import terminated");
-		
+
 		validationReport.setReport(vReport);
 		importReport.setReport(iReport);
-		
+
 		return lines;
 	}
 
@@ -297,7 +297,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		{
 			// report for save
 			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
-            importReport.addItem(fileErrorItem);
+			importReport.addItem(fileErrorItem);
 			// log
 			logger.error("zip import failed (cannot open zip)" + e.getLocalizedMessage());
 			return null;
@@ -316,7 +316,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			{
 				// report for save
 				ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,entryName);
-                importReport.addItem(fileReportItem);
+				importReport.addItem(fileReportItem);
 				// log
 				logger.info("zip entry " + entryName + " bypassed ; not a XML file");
 				continue;
@@ -486,9 +486,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				importReport.addItem(errorItem);
 				return null;
 			}
-			
+
 		}
-		
+
 		// report for save
 		ReportItem importItem = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
 		importReport.addItem(importItem);
@@ -496,18 +496,18 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		PhaseReportItem validationItem = new PhaseReportItem(PhaseReportItem.PHASE.TWO);
 		// init validation
 		initValidation(validationItem);
-		
-		
+
+
 		// process Line
 		// TODO : forward phase2 validation
 		ModelAssembler modelAssembler = new ModelAssembler(entryName, sharedData, unsharedData, importItem,validationItem);
 
 		Level2Validator validator = new Level2Validator(entryName,validationItem);
-		
+
 		Line line = converter.extractLine(entryName,rootObject, importItem,validationItem, sharedData, unsharedData,validator);
 		// should be made in converter.extractLine
 		importItem.addMessageArgs(line.getPublishedName());
-		
+
 		modelAssembler.setLine(line);
 		modelAssembler.setRoutes(converter.extractRoutes(entryName,rootObject, importItem,validationItem, sharedData, unsharedData, validator));
 		modelAssembler.setCompanies(converter.extractCompanies(entryName,rootObject, importItem,validationItem,sharedData, unsharedData, validator));
@@ -526,24 +526,24 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setFacilities(converter.extractFacilities(entryName,rootObject, importItem,validationItem,sharedData, unsharedData, validator));
 		modelAssembler.setTimeSlots(converter.extractTimeSlots(entryName,rootObject, importItem,validationItem,sharedData, unsharedData, validator));
 		modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(entryName,rootObject, importItem, validationItem, sharedData, unsharedData, validator));
-        validator.validate();
+		validator.validate();
 		modelAssembler.connect();
 		// report objects count
 		{
 			ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,modelAssembler.getRoutes().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,modelAssembler.getJourneyPatterns().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,modelAssembler.getVehicleJourneys().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,modelAssembler.getStopAreas().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,modelAssembler.getConnectionLinks().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,modelAssembler.getAccessPoints().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,modelAssembler.getTimetables().size());
-            importItem.addItem(countItem);
+			importItem.addItem(countItem);
 		}
 
 		rootObject.toString();
@@ -581,12 +581,11 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		{
 			if (severities[i-1].equals("W"))
 			{
-				   validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.WARNING));
-
+				validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.WARNING));
 			}
 			else
 			{
-		   validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.ERROR));
+				validationItem.addItem(new CheckPointReportItem(prefix+name+"-"+i,order++,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.ERROR));
 			}
 		}
 		return order;
