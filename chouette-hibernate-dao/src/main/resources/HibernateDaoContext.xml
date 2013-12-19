@@ -319,13 +319,5 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	<bean id="fileValidationDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
-		factory-method="createFileValidationDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	
-	<bean id="fileValidationLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
-		factory-method="createFileValidationLogMessageDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+
 </beans>

@@ -3,6 +3,8 @@
  */
 package fr.certu.chouette.plugin.model;
 
+import java.util.Calendar;
+
 import org.json.JSONObject;
 
 import lombok.Getter;
@@ -23,5 +25,12 @@ public class GuiValidationStep extends ActiveRecordObject
 	@Getter @Setter private String status;
 	@Getter @Setter private Long violationCount;
     @Getter @Setter private JSONObject detail;
+
+    
+	public GuiValidationStep()
+	{
+		setCreatedAt(Calendar.getInstance().getTime());
+		setUpdatedAt(getCreatedAt());
+	}
 
 }

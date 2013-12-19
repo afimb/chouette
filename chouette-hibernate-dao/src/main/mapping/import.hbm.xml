@@ -18,7 +18,7 @@
 			</column>
 		</property>
 		
-		<one-to-one name="validationTask" class="GuiValidation" cascade="all" foreign-key="import_task_id">
+		<one-to-one name="validationTask" class="GuiValidation" property-ref="importTask">
 		</one-to-one>
 		
 		<property name="status" type="string">

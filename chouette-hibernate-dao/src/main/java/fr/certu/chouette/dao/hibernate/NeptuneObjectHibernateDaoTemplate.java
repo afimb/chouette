@@ -1,5 +1,6 @@
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -19,10 +20,9 @@ import fr.certu.chouette.dao.hibernate.exception.HibernateDaoRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.plugin.model.ActiveRecordObject;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
-import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
-import fr.certu.chouette.plugin.model.GuiFileValidation;
 import fr.certu.chouette.plugin.model.GuiImport;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
@@ -63,15 +63,6 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
       return new NeptuneObjectHibernateDaoTemplate<ExportLogMessage>( ExportLogMessage.class);
    }
    
-   public static NeptuneObjectHibernateDaoTemplate<GuiFileValidation> createFileValidationDao()
-   {
-      return new NeptuneObjectHibernateDaoTemplate<GuiFileValidation>( GuiFileValidation.class);
-   }
-
-   public static NeptuneObjectHibernateDaoTemplate<FileValidationLogMessage> createFileValidationLogMessageDao()
-   {
-      return new NeptuneObjectHibernateDaoTemplate<FileValidationLogMessage>( FileValidationLogMessage.class);
-   }
 
    /* (non-Javadoc)
     * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
@@ -195,6 +186,12 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    {
       logger.debug("invoke save on "+type.getSimpleName());
 
+      if (object instanceof ActiveRecordObject)
+      {
+    	  ActiveRecordObject rec = (ActiveRecordObject) object;
+    	  if (rec.getCreatedAt() == null) rec.setCreatedAt(Calendar.getInstance().getTime());
+    	  rec.setUpdatedAt(Calendar.getInstance().getTime());
+      }
       try
       {
          getHibernateTemplate().saveOrUpdate( object);
@@ -225,6 +222,12 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    public void update(T object)
    {
       logger.debug("invoke update on "+type.getSimpleName());
+      if (object instanceof ActiveRecordObject)
+      {
+    	  ActiveRecordObject rec = (ActiveRecordObject) object;
+    	  if (rec.getCreatedAt() == null) rec.setCreatedAt(Calendar.getInstance().getTime());
+    	  rec.setUpdatedAt(Calendar.getInstance().getTime());
+      }
 
       try
       {

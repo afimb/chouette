@@ -17,6 +17,13 @@
 				<comment>Referential identification</comment>
 			</column>
 		</property>
+		
+		<many-to-one name="importTask" class="GuiImport" unique="true">
+			<column name="import_task_id" >
+				<comment>Import identification</comment>
+			</column>
+		</many-to-one>
+		
 		<property name="status" type="string">
 			<column name="status">
 				<comment>status</comment>
