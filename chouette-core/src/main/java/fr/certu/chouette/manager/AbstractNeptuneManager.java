@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -33,14 +34,9 @@ import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
-import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.IValidationPlugin;
-import fr.certu.chouette.plugin.validation.ValidationClassReportItem;
-import fr.certu.chouette.plugin.validation.ValidationParameters;
-import fr.certu.chouette.plugin.validation.ValidationReport;
-import fr.certu.chouette.plugin.validation.ValidationStepDescription;
+import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
@@ -64,7 +60,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	private Map<String,IImportPlugin<T>> importPluginMap = new HashMap<String, IImportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportPluginMap = new HashMap<String, IExportPlugin<T>>();
 	private Map<String,IExportPlugin<T>> exportDeletionPluginMap = new HashMap<String, IExportPlugin<T>>();
-	private List<IValidationPlugin<T>> validationPluginList = new ArrayList<IValidationPlugin<T>>();
+	private List<ICheckPointPlugin<T>> validationPluginList = new ArrayList<ICheckPointPlugin<T>>();
 
 	private static Map<Class<?>,INeptuneManager<?>> managers = new HashMap<Class<?>, INeptuneManager<?>>();
 
@@ -154,7 +150,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * @see fr.certu.chouette.manager.INeptuneManager#addValidationPlugin(fr.certu.chouette.plugin.validation.IValidationPlugin)
 	 */
 	@Override
-	public void addValidationPlugin(IValidationPlugin<T> plugin)
+	public void addCheckPointPlugin(ICheckPointPlugin<T> plugin)
 	{
 		validationPluginList.add(plugin);
 	}
@@ -536,7 +532,7 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 	 * @see fr.certu.chouette.manager.INeptuneManager#validate(fr.certu.chouette.model.user.User, java.util.List, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
 	@Override
-	public Report validate(User user, List<T> beans, ValidationParameters parameters, Boolean... propagate) throws ChouetteException 
+	public void validate(User user,List<T> beans,JSONObject parameters, PhaseReportItem report, Boolean ... propagate) throws ChouetteException 
 	{
 		if (validationPluginList.size() == 0) throw new CoreException(CoreExceptionCode.NO_VALIDATION_PLUGIN_AVAILABLE,"");
 
@@ -546,77 +542,49 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
 			hasToPropagate=propagate[0].booleanValue();
 		}
 
-		Report r = new ValidationReport();
-		ValidationClassReportItem[] validationClasses = new ValidationClassReportItem[ValidationClassReportItem.CLASS.values().length]; // see how manage max enum
-		for (int i = 0; i < validationClasses.length; i++)
-		{
-			validationClasses[i] = new ValidationClassReportItem(ValidationClassReportItem.CLASS.values()[i]);
-		}
 
-		for (IValidationPlugin<T> plugin : validationPluginList)
+		for (ICheckPointPlugin<T> plugin : validationPluginList)
 		{
-			List<ValidationClassReportItem> stepItems = plugin.doValidate(beans,parameters);
+			plugin.check(beans, parameters, report);
 
-			for (ValidationClassReportItem item : stepItems) 
-			{
-				int rank=item.getValidationClass().ordinal();
-				validationClasses[rank].addAll(item.getItems());
-			}
 
 		}
 
 		if (hasToPropagate)
 		{
-			Report propagationReport = propagateValidation(user, beans, parameters,hasToPropagate);
-			if (propagationReport != null && propagationReport.getItems() != null)
-			{
-				for (ReportItem item : propagationReport.getItems())
-				{
-					ValidationClassReportItem classItem = (ValidationClassReportItem) item;
-					validationClasses[classItem.getValidationClass().ordinal()].addAll(classItem.getItems());
-					validationClasses[classItem.getValidationClass().ordinal()].updateStatus(classItem.getStatus());
-				}
-			}
+			propagateValidation(user, beans, parameters,report, hasToPropagate);
 		}
 
-		for (ValidationClassReportItem item : validationClasses) 
-		{
-			if (item.getItems() != null && !item.getItems().isEmpty())
-			{
-				item.sortItems();
-				r.addItem(item);
-			}
-		}
-		return r;
+		return ;
 	}
 
-	protected Report propagateValidation(User user, List<T> beans, ValidationParameters parameters,boolean propagate) throws ChouetteException 
+	protected void propagateValidation(User user, List<T> beans, JSONObject parameters,PhaseReportItem report, boolean propagate) throws ChouetteException 
 	{
-		return null;
+		return;
 	}
 
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#getValidationSteps(fr.certu.chouette.model.user.User)
 	 */
-	@Override
-	public List<ValidationStepDescription> getValidationSteps(User user)
-	throws ChouetteException 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public List<ValidationStepDescription> getValidationSteps(User user)
+//	throws ChouetteException 
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.INeptuneManager#validateStep(fr.certu.chouette.model.user.User, java.util.List, java.lang.String, fr.certu.chouette.plugin.validation.ValidationParameters)
 	 */
-	@Override
-	public ReportItem validateStep(User user, List<T> beans, String stepDescriptor, ValidationParameters parameters)
-	throws ChouetteException 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ReportItem validateStep(User user, List<T> beans, String stepDescriptor, ValidationParameters parameters)
+//	throws ChouetteException 
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public void completeObject(User user, T bean) throws ChouetteException 

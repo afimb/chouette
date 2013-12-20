@@ -31,7 +31,7 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
-import fr.certu.chouette.plugin.validation.IValidationPlugin;
+import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
 
 /**
  * @author michel
@@ -112,7 +112,7 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
 	@Getter @Setter private List<IImportPlugin<T>> importPlugins;
 	@Getter @Setter private List<IExportPlugin<T>> exportPlugins;
 	@Getter @Setter private List<IExportPlugin<T>> exportDeletionPlugins;
-	@Getter @Setter private List<IValidationPlugin<T>> validationPlugins;
+	@Getter @Setter private List<ICheckPointPlugin<T>> checkPointPlugins;
 
 	public void init()
 	{
@@ -137,11 +137,11 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
 				manager.addExportDeletionPlugin(plugin);
 			}
 		}
-		if (validationPlugins != null)
+		if (checkPointPlugins != null)
 		{
-			for (IValidationPlugin<T> plugin : validationPlugins) 
+			for (ICheckPointPlugin<T> plugin : checkPointPlugins) 
 			{
-				manager.addValidationPlugin(plugin);
+				manager.addCheckPointPlugin(plugin);
 			}
 		}
 	}

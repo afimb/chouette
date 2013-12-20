@@ -6,11 +6,11 @@ package fr.certu.chouette.plugin.validation.report;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import lombok.Getter;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import lombok.Getter;
-import lombok.Setter;
 import fr.certu.chouette.plugin.model.GuiValidationStep;
 import fr.certu.chouette.plugin.report.ReportItem;
 

@@ -25,6 +25,7 @@ public class GuiValidationStep extends ActiveRecordObject
 	@Getter @Setter private String status;
 	@Getter @Setter private Long violationCount;
     @Getter @Setter private JSONObject detail;
+    @Getter @Setter private GuiValidation validation;
 
     
 	public GuiValidationStep()

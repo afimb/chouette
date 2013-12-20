@@ -43,6 +43,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
@@ -66,7 +67,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
@@ -87,13 +88,13 @@ public class Command
 
 	@Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
-	@Setter private ValidationParameters validationParameters;
-
 	@Setter private MigrateSchema migrationTool;
 
 	@Setter private CheckObjectId checkObjectId;
 
 	@Setter private IGeographicService geographicService;
+	
+	@Getter private JSONObject validationParameters;
 
 
 	public Map<String,List<String>> globals = new HashMap<String, List<String>>();;
@@ -563,6 +564,7 @@ public class Command
 	{
 		geographicService.propagateBarycentre();
 	}
+	
 	private void executeShowValidationParameters() 
 	{
 		if (validationParameters == null)
@@ -576,12 +578,13 @@ public class Command
 
 	}
 
+	// TODO à revoir
 	private void executeSetValidationParameters(Map<String, List<String>> parameters) 
 	{
 		for (String key : parameters.keySet()) 
 		{
 			String value = getSimpleString(parameters,key);
-			if (validationParameters == null) validationParameters = new ValidationParameters();
+			if (validationParameters == null) validationParameters = new JSONObject();
 			try 
 			{
 				setAttribute(validationParameters, key, value);
@@ -1091,7 +1094,8 @@ public class Command
 		String fileName = getSimpleString(parameters, "file", "");
 		boolean append = getBoolean(parameters, "append");
 
-		Report valReport = manager.validate(null, beans, validationParameters);
+		PhaseReportItem valReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
+				manager.validate(null, beans, validationParameters,valReport);
 		PrintStream stream = System.out;
 		if (!fileName.isEmpty())
 		{

@@ -68,16 +68,15 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
-import fr.certu.chouette.plugin.model.FileValidationLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
-import fr.certu.chouette.plugin.model.GuiFileValidation;
 import fr.certu.chouette.plugin.model.GuiImport;
+import fr.certu.chouette.plugin.model.GuiValidation;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.ValidationParameters;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ValidationReport;
 import fr.certu.chouette.service.geographic.IGeographicService;
 
@@ -150,7 +149,6 @@ public class Command
 
 	@Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
-	@Setter private ValidationParameters validationParameters;
 
 	@Setter private IDaoTemplate<Organisation> organisationDao;;
 
@@ -162,9 +160,7 @@ public class Command
 
 	@Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
 
-	@Setter private IDaoTemplate<GuiFileValidation> fileValidationDao;
-
-	@Setter private IDaoTemplate<FileValidationLogMessage> fileValidationLogMessageDao;
+	@Setter private IDaoTemplate<GuiValidation> validationDao;
 
 	@Setter private IGeographicService geographicService;
 
@@ -1218,7 +1214,7 @@ public class Command
 	private void saveImportReports(GuiImport guiImport, Report ireport, ValidationReport vreport) 
 	{
         logger.info("import report = "+ireport.toJSONObject());
-		guiImport.setResult(ireport.toJSONObject());
+		
 		if (guiImport.getValidationTask() != null)
 		{
 			if (vreport != null && vreport.getItems() != null)
@@ -1237,11 +1233,12 @@ public class Command
 					guiImport.getValidationTask().setStatus("na");
 					break;
 				}
-				guiImport.getValidationTask().setSteps(vreport.toValidationResults());
+				guiImport.getValidationTask().addAllSteps(vreport.toValidationResults());
 			}
 		}
+		guiImport.setResult(ireport.toJSONObject());
 		importDao.save(guiImport);
-
+        session.flush();
 	}
 
 	private Object filter_chars(String message) 
@@ -1277,41 +1274,6 @@ public class Command
 
 	}
 
-	/**
-	 * @param parameters
-	 */
-	private void executeSetValidationParameters(Map<String, List<String>> parameters) 
-	{
-		for (String key : parameters.keySet()) 
-		{
-			if (key.toLowerCase().startsWith("test") || key.toLowerCase().startsWith("projection"))
-			{
-				String value = "";
-				try
-				{ 
-					value = getSimpleString(parameters,key);
-				}
-				catch (Exception ex)
-				{
-					List<String> values = parameters.get(key);
-					for (String item : values)
-					{
-						value += item+" ";
-					}
-				}
-				if (validationParameters == null) validationParameters = new ValidationParameters();
-				try 
-				{
-					setAttribute(validationParameters, key, value);
-				} 
-				catch (Exception e) 
-				{
-					logger.error(e.getMessage());
-					System.err.println("unknown or unvalid parameter " + key);
-				}  
-			}
-		}
-	}
 
 	/**
 	 * validate command : 
@@ -1335,38 +1297,23 @@ public class Command
 
 		List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
 
-		String inputFile = getSimpleString(parameters,"inputfile","");
+		// TODO read parameters
+		JSONObject validationParameters = new JSONObject();
 		ReportHolder holder = new ReportHolder();
-		if (!inputFile.isEmpty())
-		{
-			parameters.put("validate",Arrays.asList(new String[]{"true"}));
-			beans = neptuneImport(manager,parameters,holder);
-		}
-		else
-		{
-			beans = executeGet(manager,parameters);
-		}
 
-		Report valReport = null;
+		PhaseReportItem valReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
 		if (beans != null && !beans.isEmpty())
 		{
-			executeSetValidationParameters(parameters);
-			valReport = manager.validate(null, beans, validationParameters);
+			manager.validate(null, beans, validationParameters,valReport);
 		}
 
-		// merge reports
-		if (holder.getReport() != null)
-		{
-			Report importReport = holder.getReport();
-			saveFileValidationReport(validationId,importReport);
-		}
 
 		// save report
 		if (valReport != null)
 		{
 			for (ReportItem item : valReport.getItems())
 			{
-				saveFileValidationReport(validationId,item);
+				saveValidationReport(validationId,item);
 			}
 		}
 
@@ -1769,49 +1716,8 @@ public class Command
 
 	}
 
-	private void saveFileValidationReport(Long validationId, Report report)
+	private void saveValidationReport(Long validationId, ReportItem report)
 	{
-		int position = 1;
-		Filter filter = Filter.getNewEqualsFilter("parentId", validationId);
-		List<FileValidationLogMessage> messages = fileValidationLogMessageDao.select(filter);
-		if (messages != null)
-		{
-			for (FileValidationLogMessage message : messages)
-			{
-				if (message.getPosition() >= position)
-					position = message.getPosition() + 1;
-			}
-		}
-		FileValidationLogMessage message = new FileValidationLogMessage(validationId,"",report,position++);
-		fileValidationLogMessageDao.save(message);
-		if (report.getItems() != null)
-		{
-			//         String prefix = report.getOriginKey();
-			//         if (prefix == null || prefix.isEmpty())
-			//         {
-			//            prefix = ((ReportItem) report).getMessageKey();
-			//         }
-			for (ReportItem item : report.getItems())
-			{
-				position = saveFileValidationReportItem(validationId,item,"",position);
-			}
-		}
-
-	}
-
-	private int saveFileValidationReportItem(Long validationId, ReportItem item, String prefix, int position)
-	{
-		FileValidationLogMessage message = new FileValidationLogMessage(validationId,"",item,"",position++);
-		fileValidationLogMessageDao.save(message);
-		if (item.getItems() != null)
-		{
-			//         String subPrefix = prefix+"|"+item.getMessageKey();
-			for (ReportItem child : item.getItems())
-			{
-				position = saveFileValidationReportItem(validationId,child,"",position);
-			}
-		}
-		return position;
 	}
 
 

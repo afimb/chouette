@@ -21,7 +21,7 @@
 		<module>chouette-hibernate-dao</module>
 		<module>chouette-jdbc-dao</module>
 		<module>chouette-exchange-netex</module>
-		<module>chouette-castor-neptune</module>
+		<!-- <module>chouette-castor-neptune</module>  --> 
 		<module>chouette-jaxb-neptune</module>
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>

@@ -49,9 +49,9 @@
 				<comment>import progress information</comment>
 			</column>
 		</property>
-		<bag lazy="false" name="steps" cascade="all-delete-orphan">
+		<bag lazy="false" name="steps" cascade="all-delete-orphan" inverse="true">
 			<comment>Vehicle Journey at Stop</comment>
-			<key foreign-key="compliance_check_results_compliance_check_task_id_fk">
+			<key not-null="true">
 				<column name="compliance_check_task_id">
 					<comment>compliance task</comment>
 				</column>

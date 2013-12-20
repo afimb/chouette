@@ -16,38 +16,6 @@
 	</bean>
 
 
-	<bean id="Validation"
-		class="fr.certu.chouette.plugin.validation.ValidationParameters">
-		<property name="test31MinimalDistance" value="${test3_1_MinimalDistance}" />
-		<property name="test32MinimalDistance" value="${test3_2_MinimalDistance}" />
-		<property name="test32PolygonPoints" value="${test3_2_Polygon}" />
-		<property name="test37MinimalDistance" value="${test3_7_MinimalDistance}" />
-		<property name="test37MaximalDistance" value="${test3_7_MaximalDistance}" />
-		<property name="test38aMinimalSpeed" value="${test3_8a_MinimalSpeed}" />
-		<property name="test38aMaximalSpeed" value="${test3_8a_MaximalSpeed}" />
-		<property name="test38bMinimalSpeed" value="${test3_8b_MinimalSpeed}" />
-		<property name="test38bMaximalSpeed" value="${test3_8b_MaximalSpeed}" />
-		<property name="test38cMinimalSpeed" value="${test3_8c_MinimalSpeed}" />
-		<property name="test38cMaximalSpeed" value="${test3_8c_MaximalSpeed}" />
-		<property name="test38dMinimalSpeed" value="${test3_8d_MinimalSpeed}" />
-		<property name="test38dMaximalSpeed" value="${test3_8d_MaximalSpeed}" />
-		<property name="test39MinimalSpeed" value="${test3_9_MinimalSpeed}" />
-		<property name="test39MaximalSpeed" value="${test3_9_MaximalSpeed}" />
-		<property name="test310MinimalDistance" value="${test3_10_MinimalDistance}" />
-		<property name="test315MinimalTime" value="${test3_15_MinimalTime}" />
-		<property name="test3161MaximalTime" value="${test3_16_1_MaximalTime}" />
-		<property name="test3163aMaximalTime" value="${test3_16_3a_MaximalTime}" />
-		<property name="test3163bMaximalTime" value="${test3_16_3b_MaximalTime}" />
-		<property name="test321aMinimalSpeed" value="${test3_21a_MinimalSpeed}" />
-		<property name="test321aMaximalSpeed" value="${test3_21a_MaximalSpeed}" />
-		<property name="test321bMinimalSpeed" value="${test3_21b_MinimalSpeed}" />
-		<property name="test321bMaximalSpeed" value="${test3_21b_MaximalSpeed}" />
-		<property name="test321cMinimalSpeed" value="${test3_21c_MinimalSpeed}" />
-		<property name="test321cMaximalSpeed" value="${test3_21c_MaximalSpeed}" />
-		<property name="test321dMinimalSpeed" value="${test3_21d_MinimalSpeed}" />
-		<property name="test321dMaximalSpeed" value="${test3_21d_MaximalSpeed}" />
-		<property name="projectionReference" value="${projection_reference}" />
-	</bean>
 
 	<bean id="Command" class="fr.certu.chouette.command.Command">
 		<property name="managers">
@@ -102,7 +70,6 @@
 				</entry>
 			</map>
 		</property>
-		<property name="validationParameters" ref="Validation" />
 		<property name="migrationTool" ref="migrate" />
 		<property name="checkObjectId" ref="checkObjectId"/>
 		<property name="geographicService" ref="geographicService"/>

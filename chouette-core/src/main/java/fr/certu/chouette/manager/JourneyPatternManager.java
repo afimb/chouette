@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -17,9 +18,7 @@ import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
-import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.validation.ValidationParameters;
-import fr.certu.chouette.plugin.validation.ValidationReport;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 @SuppressWarnings("unchecked")
 public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern> 
@@ -31,12 +30,11 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 	}
 
 	@Override
-	protected Report propagateValidation(User user, List<JourneyPattern> beans,
-			ValidationParameters parameters,boolean propagate) 
+	protected void propagateValidation(User user, List<JourneyPattern> beans,
+			JSONObject parameters, PhaseReportItem report, boolean propagate) 
 	throws ChouetteException 
 	{
-		Report globalReport = new ValidationReport();
-
+		
 		// aggregate dependent objects for validation
 		Set<StopPoint> stopPoints = new HashSet<StopPoint>();
 		List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
@@ -51,44 +49,32 @@ public class JourneyPatternManager extends AbstractNeptuneManager<JourneyPattern
 		// propagate validation on StopPoints
 		if (stopPoints.size() > 0)
 		{
-			Report report = null;
 			AbstractNeptuneManager<StopPoint> manager = (AbstractNeptuneManager<StopPoint>) getManager(StopPoint.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters,propagate);
+				manager.validate(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters,report, propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters,propagate);
-			}
-			if (report != null)
-			{
-				globalReport.addAll(report.getItems());
-				globalReport.updateStatus(report.getStatus());
+				manager.propagateValidation(user, Arrays.asList(stopPoints.toArray(new StopPoint[0])), parameters,report,propagate);
 			}
 		}
 
 		// propagate validation on journey patterns
 		if (vehicleJourneys.size() > 0)
 		{
-			Report report = null;
 			AbstractNeptuneManager<VehicleJourney> manager = (AbstractNeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
 			if (manager.canValidate())
 			{
-				report = manager.validate(user, vehicleJourneys, parameters,propagate);
+				manager.validate(user, vehicleJourneys, parameters,report,propagate);
 			}
 			else
 			{
-				report = manager.propagateValidation(user, vehicleJourneys, parameters,propagate);
-			}
-			if (report != null)
-			{
-				globalReport.addAll(report.getItems());
-				globalReport.updateStatus(report.getStatus());
+				manager.propagateValidation(user, vehicleJourneys, parameters,report,propagate);
 			}
 		}		
 
-		return globalReport;
+		return;
 	}
 
 	@Override

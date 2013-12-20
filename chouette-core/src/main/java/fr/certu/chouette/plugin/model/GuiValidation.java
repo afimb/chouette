@@ -42,6 +42,16 @@ public class GuiValidation extends ActiveRecordObject
     {
     	if (steps == null) steps = new ArrayList<GuiValidationStep>();
     	steps.add(step);
+    	step.setValidation(this);
     }
+    
+    public void addAllSteps(List<GuiValidationStep> steps)
+    {
+    	for (GuiValidationStep guiValidationStep : steps) 
+    	{
+			addStep(guiValidationStep);
+		}
+    }
+
 
 }

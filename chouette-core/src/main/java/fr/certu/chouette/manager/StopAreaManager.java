@@ -9,11 +9,8 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +25,6 @@ import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;
-import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.validation.ValidationParameters;
-import fr.certu.chouette.plugin.validation.ValidationReport;
 
 /**
  * @author michel
@@ -51,47 +45,47 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 		NeptuneLocalizedObject.setGeographicService(getGeographicService());		
 	}
 
-   @Override
-   protected Report propagateValidation(User user, List<StopArea> beans,
-         ValidationParameters parameters,boolean propagate) 
-   throws ChouetteException 
-   {
-      Report globalReport = new ValidationReport();
-
-      // aggregate dependent objects for validation
-      Set<ConnectionLink> links = new HashSet<ConnectionLink>();
-      for (StopArea bean : beans) 
-      {
-         if (bean.getConnectionLinks() != null)
-         {
-            links.addAll(bean.getConnectionLinks());
-         }
-
-      }
-
-      // propagate validation on ConnectionLink
-      if (links.size() > 0)
-      {
-         Report report = null;
-         AbstractNeptuneManager<ConnectionLink> manager = (AbstractNeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-         if (manager.canValidate())
-         {
-            report = manager.validate(user, Arrays.asList(links.toArray(new ConnectionLink[0])), parameters,propagate);
-         }
-         else
-         {
-            report = manager.propagateValidation(user, Arrays.asList(links.toArray(new ConnectionLink[0])), parameters,propagate);
-         }
-         if (report != null)
-         {
-            globalReport.addAll(report.getItems());
-            globalReport.updateStatus(report.getStatus());
-         }
-      }
-
-
-      return globalReport;
-   }
+//   @Override
+//   protected Report propagateValidation(User user, List<StopArea> beans,
+//         ValidationParameters parameters,boolean propagate) 
+//   throws ChouetteException 
+//   {
+//      Report globalReport = new ValidationReport();
+//
+//      // aggregate dependent objects for validation
+//      Set<ConnectionLink> links = new HashSet<ConnectionLink>();
+//      for (StopArea bean : beans) 
+//      {
+//         if (bean.getConnectionLinks() != null)
+//         {
+//            links.addAll(bean.getConnectionLinks());
+//         }
+//
+//      }
+//
+//      // propagate validation on ConnectionLink
+//      if (links.size() > 0)
+//      {
+//         Report report = null;
+//         AbstractNeptuneManager<ConnectionLink> manager = (AbstractNeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
+//         if (manager.canValidate())
+//         {
+//            report = manager.validate(user, Arrays.asList(links.toArray(new ConnectionLink[0])), parameters,propagate);
+//         }
+//         else
+//         {
+//            report = manager.propagateValidation(user, Arrays.asList(links.toArray(new ConnectionLink[0])), parameters,propagate);
+//         }
+//         if (report != null)
+//         {
+//            globalReport.addAll(report.getItems());
+//            globalReport.updateStatus(report.getStatus());
+//         }
+//      }
+//
+//
+//      return globalReport;
+//   }
    @Transactional
    @Override
    public void remove(User user,StopArea stopArea,boolean propagate) throws ChouetteException
@@ -161,7 +155,7 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
          INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
          INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
          //			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-         INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+         // INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
          if(!accessLinks.isEmpty())
          {
@@ -175,7 +169,8 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
          //				constraintManager.saveAll(user, constraints, propagate,fast);	
          if(!facilities.isEmpty())
          {
-            facilityManager.saveAll(user, facilities, propagate,fast);
+        	// not yet implemented
+            // facilityManager.saveAll(user, facilities, propagate,fast);
          }
       }
    }

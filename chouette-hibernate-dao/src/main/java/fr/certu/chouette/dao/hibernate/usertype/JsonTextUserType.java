@@ -74,7 +74,6 @@ public class JsonTextUserType implements UserType
 			throws HibernateException, SQLException 
 	{
 		String name = resultSet.getString(names[0]);
-		log.warn(" json get "+names[0]+" = "+name);
 		if (resultSet.wasNull()  || name.isEmpty() ) return null; 
 		if (name.equals("null")) name = "{}" ;
 		return new JSONObject(name);	
@@ -85,7 +84,7 @@ public class JsonTextUserType implements UserType
 	public void nullSafeSet(PreparedStatement statement, Object value, int index)
 			throws HibernateException, SQLException 
 	{
-		log.warn(" json set "+index+" = "+value);
+		// log.warn(" json set "+index+" = "+value);
 		if (value == null) 
 		{
 			statement.setNull(index, Types.VARCHAR);
@@ -97,7 +96,6 @@ public class JsonTextUserType implements UserType
     * @see org.hibernate.usertype.UserType#assemble(java.io.Serializable, java.lang.Object)
     */
    public Object assemble(Serializable cached, Object owner) throws HibernateException {
-		log.warn(" json assemble ");
        return cached;
    }
 
@@ -105,7 +103,6 @@ public class JsonTextUserType implements UserType
     * @see org.hibernate.usertype.UserType#disassemble(java.lang.Object)
     */
    public Serializable disassemble(Object value) throws HibernateException {
-		log.warn(" json disassemble ");
        return (Serializable)value;
    }
 
@@ -113,14 +110,12 @@ public class JsonTextUserType implements UserType
     * @see org.hibernate.usertype.UserType#replace(java.lang.Object, java.lang.Object, java.lang.Object)
     */
    public Object replace(Object original, Object target, Object owner) throws HibernateException {
-		log.warn(" json replace ");
        return original;
    }
    /* (non-Javadoc)
     * @see org.hibernate.usertype.UserType#hashCode(java.lang.Object)
     */
    public int hashCode(Object x) throws HibernateException {
-		log.warn(" json hashCode ");
        return x.toString().hashCode();
    }
 	/* (non-Javadoc)

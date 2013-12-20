@@ -65,7 +65,6 @@
 				<value>fr/certu/chouette/model/neptune/validation.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/validation_step.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/export.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/FileValidation.hbm.xml</value>
 			</list>
 		</property>
 		<!-- chouette specific parameters to complete hibernate update schema action -->

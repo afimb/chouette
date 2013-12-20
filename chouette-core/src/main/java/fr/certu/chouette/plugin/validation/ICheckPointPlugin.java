@@ -10,15 +10,16 @@ package fr.certu.chouette.plugin.validation;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * @author michel
  *
  */
-public interface IValidationPlugin<T extends NeptuneIdentifiedObject>
+public interface ICheckPointPlugin<T extends NeptuneIdentifiedObject>
 {
-    ValidationStepDescription getDescription();
-    
-    List<ValidationClassReportItem> doValidate(List<T> beans, ValidationParameters parameters);
+    void check(List<T> beans, JSONObject parameters, PhaseReportItem report);
 }

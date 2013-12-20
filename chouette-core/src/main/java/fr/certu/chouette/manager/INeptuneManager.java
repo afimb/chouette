@@ -9,6 +9,8 @@ package fr.certu.chouette.manager;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.core.CoreException;
 import fr.certu.chouette.dao.IDaoTemplate;
@@ -19,12 +21,9 @@ import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
-import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.IValidationPlugin;
-import fr.certu.chouette.plugin.validation.ValidationParameters;
-import fr.certu.chouette.plugin.validation.ValidationStepDescription;
+import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * the generic interface for every NeptuneBean manager
@@ -352,7 +351,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @return a diagnostic step by step 
 	 * @throws ChouetteException invalid user access or validation failure
 	 */
-	Report validate(User user,List<T> beans,ValidationParameters parameters, Boolean ... propagate) throws ChouetteException;
+	void validate(User user,List<T> beans,JSONObject parameters, PhaseReportItem report, Boolean ... propagate) throws ChouetteException;
 
 	/**
 	 * get the steps description for validation
@@ -361,7 +360,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @return a step description 
 	 * @throws ChouetteException invalid user access
 	 */
-	List<ValidationStepDescription> getValidationSteps(User user) throws ChouetteException;
+	// List<ValidationStepDescription> getValidationSteps(User user) throws ChouetteException;
 
 	/**
 	 * validate a list of beans according to one step of the model rules
@@ -373,7 +372,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @return the step diagnostic 
 	 * @throws ChouetteException invalid user access or export failure
 	 */
-	ReportItem validateStep(User user, List<T> beans, String stepDescriptor,ValidationParameters parameters) throws ChouetteException;
+	// ReportItem validateStep(User user, List<T> beans, String stepDescriptor,ValidationParameters parameters) throws ChouetteException;
 
 
 	/**
@@ -400,7 +399,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * 
 	 * @param plugin
 	 */
-	void addValidationPlugin(IValidationPlugin<T> plugin);
+	void addCheckPointPlugin(ICheckPointPlugin<T> plugin);
 	
 	/**
 	 * Object completion <br />

@@ -39,6 +39,13 @@
 		</property>
         <property name="createdAt" column="created_at" type="timestamp"/>
         <property name="updatedAt" column="updated_at" type="timestamp"/>
+        
+			<many-to-one class="GuiValidation" lazy="no-proxy" name="validation"
+				outer-join="auto" update="true" cascade="all" >
+				<column name="compliance_check_task_id">
+					<comment> foreign key </comment>
+				</column>
+			</many-to-one>
 
 	</class>
 </hibernate-mapping>

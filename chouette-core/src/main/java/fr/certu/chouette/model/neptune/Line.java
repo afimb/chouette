@@ -22,7 +22,6 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
@@ -241,13 +240,6 @@ public class Line extends NeptuneIdentifiedObject
 	@Getter
 	@Setter
 	private List<String>          routingConstraintIds;
-
-	/**
-	 * ImportedItems for import neptune process
-	 */
-	@Getter
-	@Setter
-	private ImportedItems         importedItems;
 
 	/**
 	 * list of facilities <br/>

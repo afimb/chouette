@@ -40,7 +40,6 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.model.neptune.type.ImportedItems;
 import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
@@ -341,7 +340,7 @@ public class ModelAssembler
 		if (list.size() > 0)
 		{
 			populatedDictionaries.put(list.get(0).getClass(), dictionnary);
-			logger.debug(list.get(0).getClass().getName()+" count = "+dictionnary.size());
+			// logger.debug(list.get(0).getClass().getName()+" count = "+dictionnary.size());
 		}
 	}
 
@@ -364,26 +363,6 @@ public class ModelAssembler
 		// bypass objectId check : connect every route in file to line
 		line.setRoutes(routes);
 
-		// add every objets for validation purpose
-		ImportedItems item = new ImportedItems();
-		item.setAccessLinks(accessLinks);
-		item.setAccessPoints(accessPoints);
-		item.setAreaCentroids(areaCentroids);
-		item.setCompanies(companies);
-		item.setConnectionLinks(connectionLinks);
-		item.setFacilities(facilities);
-		item.setGroupOfLines(groupOfLines);
-		item.setJourneyPatterns(journeyPatterns);
-		item.setPtLinks(ptLinks);
-		item.setPtNetwork(ptNetwork);
-		item.setRoutes(routes);
-		item.setStopAreas(stopAreas);
-		item.setStopPoints(stopPoints);
-		item.setTimetables(timetables);
-		item.setVehicleJourneys(vehicleJourneys);
-		item.setTimeSlots(timeSlots);
-
-		line.setImportedItems(item);
 		if (!groupOfLines.isEmpty())
 		{
 			for (GroupOfLine groupOfLine : groupOfLines)
@@ -637,20 +616,13 @@ public class ModelAssembler
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopPoint",stopPoint.getObjectId(),"containedInStopArea",stopPoint.getContainedInStopAreaId());
 				importReport.addItem(item);
 			}
-			// stopPoint.setLine(getObjectFromId(stopPoint.getLineIdShortcut(),
-			// Line.class));
-			stopPoint.setLine(line);
-			if (ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
-			{
 
-				stopPoint.setPtNetwork(ptNetwork);
-			}
-			else if (stopPoint.getPtNetworkIdShortcut() != null)
-			{
-				logger.warn("unknown PtNetworkIdShortcut " + stopPoint.getPtNetworkIdShortcut() + " for StopPoint "
-						+ stopPoint.getObjectId());
-				// TODO : report
-			}
+//			stopPoint.setLine(line);
+//			if (ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
+//			{
+//
+//				stopPoint.setPtNetwork(ptNetwork);
+//			}
 
 			for (Facility facility : facilities)
 			{
@@ -935,7 +907,7 @@ public class ModelAssembler
 
 		if (dictionary != null && ids != null)
 		{
-			logger.debug(dictionaryClass.getName()+" count = "+dictionary.size());
+			// logger.debug(dictionaryClass.getName()+" count = "+dictionary.size());
 			for (String id : ids)
 			{
 				T object = (T) dictionary.get(id);
@@ -982,22 +954,17 @@ public class ModelAssembler
 		return object;
 	}
 
-	private boolean isListEmpty(List<?> list)
-	{
-		return list == null || list.isEmpty();
-	}
-
-	protected void addValidationError(String checkPointKey,DetailReportItem item)
-	{
-		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
-		checkPoint.addItem(item);
-
-	}
-
-	protected void prepareCheckPoint(String checkPointKey)
-	{
-		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
-		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
-	}
+//	private void addValidationError(String checkPointKey,DetailReportItem item)
+//	{
+//		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
+//		checkPoint.addItem(item);
+//
+//	}
+//
+//	private void prepareCheckPoint(String checkPointKey)
+//	{
+//		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
+//		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
+//	}
 
 }
