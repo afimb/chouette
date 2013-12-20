@@ -1,5 +1,7 @@
 package fr.certu.chouette.plugin.validation.report;
 
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +14,7 @@ public class ReportLocation
 	@Getter @Setter private String attribute = null;
 	@Getter @Setter private String value = null;
 	@Getter @Setter private String xpath = null;
-	@Getter @Setter private String url = null;
+	@Getter @Setter private NeptuneIdentifiedObject object = null;
 	@Getter @Setter private String message = null;
 
 	public ReportLocation(String fileName, String errorCode, int lineNumber,
@@ -64,6 +66,12 @@ public class ReportLocation
 		this.value = value;
 	}
 
+	public ReportLocation(NeptuneIdentifiedObject chouetteObject) 
+	{
+		super();
+		this.object = chouetteObject;
+	}
+
 	public Object toJSON() 
 	{
 		StringBuilder builder = new StringBuilder();
@@ -82,8 +90,9 @@ public class ReportLocation
 			builder.append("\"value\":\""+value+"\",");
 		if (xpath != null)
 			builder.append("\"xpath\":\""+xpath+"\",");
-		if (url != null)
-			builder.append("\"url\":\""+url+"\",");
+		// TODO : build Url for objects 
+//		if (object != null)
+//			builder.append("\"url\":\""+url+"\",");
 		if (message != null)
 			builder.append("\"message\":\""+message+"\",");
 		return builder.subSequence(0, builder.length()-1)+"}";
