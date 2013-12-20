@@ -4,15 +4,5 @@
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
    default-init-method="init">
-	<bean id="Test_Line" class="fr.certu.chouette.validation.test.ValidationLine" />
-	<bean id="Test_StopArea" class="fr.certu.chouette.validation.test.ValidationStopArea" />
-	<bean id="Test_ConnectionLink" class="fr.certu.chouette.validation.test.ValidationConnectionLink" />
-	<bean id="Test_Timetable" class="fr.certu.chouette.validation.test.ValidationTimetable" />
-	<bean id="Test_Route" class="fr.certu.chouette.validation.test.ValidationRoute" />
-	<bean id="Test_StopPoint" class="fr.certu.chouette.validation.test.ValidationStopPoint" />
-	<bean id="Test_JourneyPattern" class="fr.certu.chouette.validation.test.ValidationJourneyPattern" />
-	<bean id="Test_VehicleJourney" class="fr.certu.chouette.validation.test.ValidationVehicleJourney" />
-	<bean id="Test_AccessLink" class="fr.certu.chouette.validation.test.ValidationAccessLink" />
-	<bean id="Test_AccessPoint" class="fr.certu.chouette.validation.test.ValidationAccessPoint" />
-	<bean id="Test_Facility" class="fr.certu.chouette.validation.test.ValidationFacility" />
+	<bean id="lineCheckPoints" class="fr.certu.chouette.validation.checkpoint.LineCheckPoints" />
 </beans>
