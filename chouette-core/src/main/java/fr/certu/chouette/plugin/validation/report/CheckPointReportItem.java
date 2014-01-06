@@ -24,7 +24,7 @@ public class CheckPointReportItem extends ReportItem
 	private static final int MAX_DETAIL = 50;
 
 	
-	@Getter private long detailItemCount = 0;
+	@Getter private int detailItemCount = 0;
 	@Getter private SEVERITY severity = SEVERITY.ERROR;
 	/**
 	 * 
@@ -89,7 +89,7 @@ public class CheckPointReportItem extends ReportItem
 		step.setCreatedAt(Calendar.getInstance().getTime());
 		step.setRuleCode(getMessageKey());
 		step.setSeverity(severity.toString().toLowerCase());
-		step.setViolationCount(Long.valueOf(detailItemCount));
+		step.setViolationCount(Integer.valueOf(detailItemCount));
 		switch (getStatus()) 
 		{
 		case UNCHECK:

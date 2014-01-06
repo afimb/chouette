@@ -17,6 +17,26 @@
 				<comment>rule code</comment>
 			</column>
 		</property>
+		<property name="ruleLevel" type="int">
+			<column name="rule_level">
+				<comment>rule level</comment>
+			</column>
+		</property>
+		<property name="ruleFormat" type="string">
+			<column name="rule_format">
+				<comment>rule exchange format</comment>
+			</column>
+		</property>
+		<property name="ruleTarget" type="string">
+			<column name="rule_target">
+				<comment>rule target object</comment>
+			</column>
+		</property>
+		<property name="ruleNumber" type="int">
+			<column name="rule_number">
+				<comment>rule number</comment>
+			</column>
+		</property>
 		<property name="severity" type="string">
 			<column name="severity">
 				<comment>severity</comment>
@@ -27,7 +47,7 @@
 				<comment>status</comment>
 			</column>
 		</property>
-		<property name="violationCount" type="long">
+		<property name="violationCount" type="int">
 			<column name="violation_count">
 				<comment>violation count</comment>
 			</column>
