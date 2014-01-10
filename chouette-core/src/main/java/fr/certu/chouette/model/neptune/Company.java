@@ -129,5 +129,11 @@ public class Company extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() 
+	{
+		return "companies/"+getId();
+	}
+
    
 }

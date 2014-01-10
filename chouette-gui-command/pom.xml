@@ -36,10 +36,6 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-export-geoportail</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>fr.certu.chouette.schema</groupId>
-			<artifactId>chouette-castor-neptune</artifactId>
-		</dependency> -->
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
@@ -48,10 +44,10 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-hibernate-dao</artifactId>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-validation</artifactId>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-jdbc-dao</artifactId>
@@ -74,8 +70,6 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 		</dependency>
-		<!--<dependency> <groupId>com.googlecode.json-simple</groupId> <artifactId>json-simple</artifactId> 
-			</dependency> -->
 		<!-- Postgres -->
 		<dependency>
 			<groupId>postgresql</groupId>

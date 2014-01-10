@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import lombok.Getter;
@@ -33,224 +34,246 @@ import lombok.Setter;
 
 public abstract class Report
 {
-   /**
-    * available values for report status
-    */
-   public enum STATE
-   {
-      UNCHECK, OK, WARNING, ERROR, FATAL
-   };
+	/**
+	 * available values for report status
+	 */
+	public enum STATE
+	{
+		UNCHECK, OK, WARNING, ERROR, FATAL
+	};
 
-   /**
-    * report creation date
-    */
-   @Getter
-   private Calendar           creationDate = Calendar.getInstance();
-   
-   /**
-    * report originKey
-    */
-   @Getter
-   @Setter
-   private String           originKey;
-   /**
-    * report status
-    */
-   @Getter
-   @Setter
-   private STATE            status;
-   /**
-    * reportItem list
-    */
-   @Getter
-   @Setter
-   private List<ReportItem> items;
+	/**
+	 * report creation date
+	 */
+	@Getter
+	private Calendar           creationDate = Calendar.getInstance();
 
-   /**
-    * add or merge item in list
-    * <p>
-    * if item's messageKey is already present, subItems lists will be merged
-    * 
-    * @param item
-    *           to add/merge
-    */
-   public void addItem(ReportItem item)
-   {
-      if (items == null)
-         items = new ArrayList<ReportItem>();
-      String messageKey = item.getMessageKey();
-      for (ReportItem it : items)
-      {
-         if (it.getMessageKey() != null && it.getMessageKey().equals(messageKey))
-         {
-        	it.updateStatus(item.getStatus());
-            if (item.getItems() != null)
-            {
-               for (ReportItem sub : item.getItems())
-               {
-                  it.addItem(sub);
-               }
-            }
-            return;
-         }
-      }
-      items.add(item);
-   }
+	/**
+	 * report originKey
+	 */
+	@Getter
+	@Setter
+	private String           originKey;
+	/**
+	 * report status
+	 */
+	@Getter
+	@Setter
+	private STATE            status;
+	/**
+	 * reportItem list
+	 */
+	@Getter
+	@Setter
+	private List<ReportItem> items;
 
-   /**
-    * add a list of ReportItems to list
-    * 
-    * @param itemsToAdd
-    *           list of items
-    */
-   public void addAll(List<ReportItem> itemsToAdd)
-   {
-      if (itemsToAdd == null)
-         return;
-      if (items == null)
-         items = new ArrayList<ReportItem>();
-      for (ReportItem it : itemsToAdd)
-      {
-         addItem(it);
-      }
-   }
+	/**
+	 * add or merge item in list
+	 * <p>
+	 * if item's messageKey is already present, subItems lists will be merged
+	 * 
+	 * @param item
+	 *           to add/merge
+	 */
+	public void addItem(ReportItem item)
+	{
+		if (items == null)
+			items = new ArrayList<ReportItem>();
+		String messageKey = item.getMessageKey();
+		for (ReportItem it : items)
+		{
+			if (it.getMessageKey() != null && it.getMessageKey().equals(messageKey))
+			{
+				it.updateStatus(item.getStatus());
+				if (item.getItems() != null)
+				{
+					for (ReportItem sub : item.getItems())
+					{
+						it.addItem(sub);
+					}
+				}
+				return;
+			}
+		}
+		items.add(item);
+	}
 
-   /**
-    * update status only if worst than previous one
-    * 
-    * @param statusToApply
-    *           new status
-    */
-   public void updateStatus(STATE statusToApply)
-   {
-      if (status == null || status.ordinal() < statusToApply.ordinal())
-      {
-         status = statusToApply;
-      }
+	/**
+	 * add a list of ReportItems to list
+	 * 
+	 * @param itemsToAdd
+	 *           list of items
+	 */
+	public void addAll(List<ReportItem> itemsToAdd)
+	{
+		if (itemsToAdd == null)
+			return;
+		if (items == null)
+			items = new ArrayList<ReportItem>();
+		for (ReportItem it : itemsToAdd)
+		{
+			addItem(it);
+		}
+	}
 
-   }
+	/**
+	 * update status only if worst than previous one
+	 * 
+	 * @param statusToApply
+	 *           new status
+	 */
+	public void updateStatus(STATE statusToApply)
+	{
+		if (status == null || status.ordinal() < statusToApply.ordinal())
+		{
+			status = statusToApply;
+		}
 
-   /**
-    * get report message for default Locale
-    * 
-    * @return report message
-    */
-   public final String getLocalizedMessage()
-   {
-      return getLocalizedMessage(Locale.getDefault());
-   }
+	}
 
-   /**
-    * get report message for a specified Locale
-    * <p>
-    * if no message available for locale, default locale is assumed
-    * 
-    * @param locale
-    *           asked locale
-    * @return report message
-    */
-   public String getLocalizedMessage(Locale locale)
-   {
-      String message = "";
-      try
-      {
-         ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName(), locale);
-         message = bundle.getString(getOriginKey());
-      }
-      catch (MissingResourceException e1)
-      {
-         try
-         {
-            ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
-            message = bundle.getString(getOriginKey());
-         }
-         catch (MissingResourceException e2)
-         {
-            message = getOriginKey();
-         }
-      }
+	/**
+	 * get report message for default Locale
+	 * 
+	 * @return report message
+	 */
+	public final String getLocalizedMessage()
+	{
+		return getLocalizedMessage(Locale.getDefault());
+	}
 
-      return message;
-   }
+	/**
+	 * get report message for a specified Locale
+	 * <p>
+	 * if no message available for locale, default locale is assumed
+	 * 
+	 * @param locale
+	 *           asked locale
+	 * @return report message
+	 */
+	public String getLocalizedMessage(Locale locale)
+	{
+		String message = "";
+		try
+		{
+			ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName(), locale);
+			message = bundle.getString(getOriginKey());
+		}
+		catch (MissingResourceException e1)
+		{
+			try
+			{
+				ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+				message = bundle.getString(getOriginKey());
+			}
+			catch (MissingResourceException e2)
+			{
+				message = getOriginKey();
+			}
+		}
 
-   public String toJSON()
-   {
-      StringBuilder builder = new StringBuilder();
-      
-      builder.append("{\n");
-      builder.append("  \"key\":\"");
-      builder.append(getOriginKey());
-//      builder.append("\",\n  \"message\":\"");
-//      builder.append(getLocalizedMessage());
-      builder.append("\",\n  \"status\":\"");
-      builder.append(getStatus());
-      builder.append("\"");
-      if (items != null && !items.isEmpty())
-      {
-         builder.append(",\n  \"items\":[\n");
-         for (int i = 0; i < items.size(); i++)
-         {
-             
-            builder.append(items.get(i).toJSON("    ",i == items.size()-1));
-         }
-         builder.append("  ]\n");
-      }
-      
-      builder.append("\n}\n");
+		return message;
+	}
 
-      return builder.toString();
-   }
-   
-   public JSONObject toJSONObject()
-   {
-	   return new JSONObject(toJSON());
-   }
-   
-   
-   /**
-    * pretty print a report in a stream
-    * 
-    * @param stream
-    *           target stream
-    * @param report
-    *           report to print
-    * @param closeOnExit
-    *           close stream after print
-    */
-   public static void print(PrintStream stream, Report report, boolean closeOnExit)
-   {
-      stream.println(report.getLocalizedMessage());
-      printItems(stream, "", report.getItems());
-      if (closeOnExit)
-         stream.close();
+	public JSONObject toJSON()
+	{
+		JSONObject json = new JSONObject();
+		json.put("key", getOriginKey());
+		json.put("status", getStatus().toString());
+		if (getItems() != null)
+		{
+			JSONArray array = new JSONArray();
+			for (ReportItem item : getItems()) 
+			{
+				array.put(item.toJSON());
+			}
+			json.put("items", array);
+		}
+			
+		return json;
+//		StringBuilder builder = new StringBuilder();
+//
+//		builder.append("{\n");
+//		builder.append("  \"key\":\"");
+//		builder.append(getOriginKey());
+//		//      builder.append("\",\n  \"message\":\"");
+//		//      builder.append(getLocalizedMessage());
+//		builder.append("\",\n  \"status\":\"");
+//		builder.append(getStatus());
+//		builder.append("\"");
+//		if (items != null && !items.isEmpty())
+//		{
+//			builder.append(",\n  \"items\":[\n");
+//			for (int i = 0; i < items.size(); i++)
+//			{
+//
+//				builder.append(items.get(i).toJSON("    ",i == items.size()-1));
+//			}
+//			builder.append("  ]\n");
+//		}
+//
+//		builder.append("\n}\n");
+//
+//		return builder.toString();
+	}
 
-   }
 
-   /**
-    * pretty print recursively reportItems
-    * 
-    * @param stream
-    *           target stream
-    * @param indent
-    *           indentation
-    * @param item
-    *           items to print
-    */
-   private static void printItems(PrintStream stream, String indent, List<ReportItem> items)
-   {
-      if (items == null)
-         return;
-      for (ReportItem item : items)
-      {
-         stream.println(indent + item.getStatus().name() + " : " + item.getLocalizedMessage());
-         printItems(stream, indent + "   ", item.getItems());
-      }
 
-   }
-   
-   public boolean hasItems()
-   {
-	   return items != null && !items.isEmpty();
-   }
+	/**
+	 * pretty print a report in a stream
+	 * 
+	 * @param stream
+	 *           target stream
+	 * @param report
+	 *           report to print
+	 * @param closeOnExit
+	 *           close stream after print
+	 */
+	public static void print(PrintStream stream, Report report, boolean closeOnExit)
+	{
+		stream.println(report.getLocalizedMessage());
+		printItems(stream, "", report.getItems());
+		if (closeOnExit)
+			stream.close();
+
+	}
+
+	/**
+	 * pretty print recursively reportItems
+	 * 
+	 * @param stream
+	 *           target stream
+	 * @param indent
+	 *           indentation
+	 * @param item
+	 *           items to print
+	 */
+	private static void printItems(PrintStream stream, String indent, List<ReportItem> items)
+	{
+		if (items == null)
+			return;
+		for (ReportItem item : items)
+		{
+			stream.println(indent + item.getStatus().name() + " : " + item.getLocalizedMessage());
+			printItems(stream, indent + "   ", item.getItems());
+		}
+
+	}
+
+	public boolean hasItems()
+	{
+		return items != null && !items.isEmpty();
+	}
+
+	public void refreshStatus()
+	{
+		if (items != null)
+		{
+			for (ReportItem item : items) 
+			{
+				item.refreshStatus();
+				updateStatus(item.getStatus());
+			}
+		}
+	}
 
 }

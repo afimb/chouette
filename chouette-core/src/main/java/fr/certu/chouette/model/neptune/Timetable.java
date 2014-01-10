@@ -550,5 +550,10 @@ public class Timetable extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return "time_tables/"+getId();
+	}
+
 
 }

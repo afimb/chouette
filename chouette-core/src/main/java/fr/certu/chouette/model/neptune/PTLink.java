@@ -155,5 +155,10 @@ public class PTLink extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return null;
+	}
+
 
 }

@@ -731,4 +731,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return getRoute().toURL()+"/vehicle_journeys/"+getId();
+	}
+
 }

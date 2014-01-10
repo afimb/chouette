@@ -527,29 +527,38 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setTimeSlots(converter.extractTimeSlots(entryName,rootObject, importItem,validationItem,sharedData, unsharedData, validator));
 		modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(entryName,rootObject, importItem, validationItem, sharedData, unsharedData, validator));
 		validator.validate();
-		modelAssembler.connect();
-		// report objects count
+
+		validationReport.addItem(validationItem);
+		validationReport.refreshStatus();
+		// check if validator failed ! 
+		logger.info("validation status = "+validationItem.getStatus().toString());
+		
+		if (!validationItem.getStatus().equals(Report.STATE.ERROR)) 
 		{
-			ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,modelAssembler.getRoutes().size());
-			importItem.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,modelAssembler.getJourneyPatterns().size());
-			importItem.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,modelAssembler.getVehicleJourneys().size());
-			importItem.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,modelAssembler.getStopAreas().size());
-			importItem.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,modelAssembler.getConnectionLinks().size());
-			importItem.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,modelAssembler.getAccessPoints().size());
-			importItem.addItem(countItem);
-			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,modelAssembler.getTimetables().size());
-			importItem.addItem(countItem);
+			   modelAssembler.connect();
+				// report objects count
+				{
+					ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,modelAssembler.getRoutes().size());
+					importItem.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,modelAssembler.getJourneyPatterns().size());
+					importItem.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,modelAssembler.getVehicleJourneys().size());
+					importItem.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,modelAssembler.getStopAreas().size());
+					importItem.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,modelAssembler.getConnectionLinks().size());
+					importItem.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,modelAssembler.getAccessPoints().size());
+					importItem.addItem(countItem);
+					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,modelAssembler.getTimetables().size());
+					importItem.addItem(countItem);
+				}
+				return line;
 		}
 
-		rootObject.toString();
-		validationReport.addItem(validationItem);
+		// rootObject.toString();
 
-		return line;
+		return null;
 			}
 
 	private void initValidation(PhaseReportItem validationItem) 

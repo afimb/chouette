@@ -221,7 +221,7 @@ public class Level2Validator
 					list = new ArrayList<PTLinkType>();
 					mapPTLinksByEndId.put(ptLink.getEndOfLink(),list);
 				}
-				list.add(ptLink);
+							list.add(ptLink);
 			}
 		}
 	}
@@ -452,8 +452,10 @@ public class Level2Validator
 			if (!ptNetwork.getLineId().contains(lineId))
 			{
 				Locator srcLoc = ptNetwork.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber(), "lineId", lineId);
-				DetailReportItem detail = new DetailReportItem(ptNetwork.getObjectId(), Report.STATE.WARNING, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("lineId", lineId);
+				ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
+				DetailReportItem detail = new DetailReportItem(NETWORK_1, ptNetwork.getObjectId(),  Report.STATE.WARNING, location, map);
 				addValidationError(NETWORK_1, detail);
 			}
 		}
@@ -471,8 +473,10 @@ public class Level2Validator
 				if (!groupOfLine.getLineId().contains(lineId))
 				{
 					Locator srcLoc = groupOfLine.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber(), "lineId", lineId);
-					DetailReportItem detail = new DetailReportItem(groupOfLine.getObjectId(), Report.STATE.WARNING, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("lineId", lineId);
+					ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
+					DetailReportItem detail = new DetailReportItem(GROUP_OF_LINE_1, groupOfLine.getObjectId(), Report.STATE.WARNING, location, map);
 					addValidationError(GROUP_OF_LINE_1, detail);
 				}
 			}
@@ -493,8 +497,10 @@ public class Level2Validator
 				{
 					// wrong reference type
 					Locator trdLocation = stopArea.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"contains",childId);
-					DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("contains",childId);
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(STOP_AREA_1, stopArea.getObjectId(), Report.STATE.ERROR, location ,map );
 					addValidationError(STOP_AREA_1, errorItem);		
 				}
 				else
@@ -510,8 +516,10 @@ public class Level2Validator
 						{
 							// wrong reference type
 							Locator trdLocation = stopArea.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"contains",childId);
-							DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("contains",childId);
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(STOP_AREA_2,stopArea.getObjectId(), Report.STATE.ERROR, location ,map);
 							addValidationError(STOP_AREA_2, errorItem);		
 						}
 						break;
@@ -524,8 +532,10 @@ public class Level2Validator
 						{
 							// wrong reference type
 							Locator trdLocation = stopArea.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"contains",childId);
-							DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("contains",childId);
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(STOP_AREA_3, stopArea.getObjectId(), Report.STATE.ERROR, location, map );
 							addValidationError(STOP_AREA_3, errorItem);		
 						}
 						break;
@@ -537,8 +547,10 @@ public class Level2Validator
 						{
 							// wrong reference type
 							Locator trdLocation = stopArea.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"contains",childId);
-							DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("contains",childId);
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(STOP_AREA_4, stopArea.getObjectId(), Report.STATE.ERROR, location, map );
 							addValidationError(STOP_AREA_4, errorItem);		
 						}
 						break;
@@ -549,8 +561,10 @@ public class Level2Validator
 						{
 							// wrong reference type
 							Locator trdLocation = stopArea.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"contains",childId);
-							DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("contains",childId);
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(ITL_1,stopArea.getObjectId(), Report.STATE.ERROR, location,map );
 							addValidationError(ITL_1, errorItem);		
 						}
 						break;
@@ -577,7 +591,7 @@ public class Level2Validator
 						// unused ITL Stop
 						Locator trdLocation = stopArea.sourceLocation();
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-						DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+						DetailReportItem errorItem = new DetailReportItem(ITL_2,stopArea.getObjectId(), Report.STATE.ERROR, location , null);
 						addValidationError(ITL_2, errorItem);		
 					}
 				}
@@ -596,21 +610,25 @@ public class Level2Validator
 					{
 						prepareCheckPoint(STOP_AREA_5);
 						Locator trdLocation = stopArea.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"centroidOfArea",stopArea.getCentroidOfArea());
-						DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("centroidOfArea",stopArea.getCentroidOfArea());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(STOP_AREA_5,stopArea.getObjectId(), Report.STATE.ERROR, location ,map);
 						addValidationError(STOP_AREA_5, errorItem);		                	
 					}
 					else
 					{
-						// 2-NEPTUNE-StopArea-6 : if stoparea is not ITL : check if it refers an existing araacentroid which refers the good stoparea.
+						// 2-NEPTUNE-StopArea-6 : if stoparea is not ITL : check if it refers an existing areacentroid which refers the good stoparea.
 						if (centroid.isSetContainedIn())
 						{
 							prepareCheckPoint(STOP_AREA_6);
 							if (!centroid.getContainedIn().equals(stopArea.getObjectId()))
 							{
 								Locator trdLocation = stopArea.sourceLocation();
-								ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"centroidOfArea",stopArea.getCentroidOfArea());
-								DetailReportItem errorItem = new DetailReportItem(stopArea.getObjectId(), Report.STATE.ERROR, location );
+								Map<String,Object> map = new HashMap<String,Object>();
+								map.put("centroidOfArea",stopArea.getCentroidOfArea());
+								ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+								DetailReportItem errorItem = new DetailReportItem(STOP_AREA_6, stopArea.getObjectId(), Report.STATE.ERROR, location ,map );
 								addValidationError(STOP_AREA_6, errorItem);		                	
 							}
 						}
@@ -630,8 +648,10 @@ public class Level2Validator
 				if (area == null)
 				{
 					Locator trdLocation = itl.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"areaId",itl.getAreaId());
-					DetailReportItem errorItem = new DetailReportItem(itl.getAreaId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("areaId",itl.getAreaId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(ITL_3, Report.STATE.ERROR, location ,map);
 					addValidationError(ITL_3, errorItem);		                	
 				}
 				else
@@ -641,8 +661,10 @@ public class Level2Validator
 					if (!typeOfStopArea(area).equals(ChouetteAreaType.ITL))
 					{
 						Locator trdLocation = itl.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"areaId",itl.getAreaId());
-						DetailReportItem errorItem = new DetailReportItem(itl.getAreaId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("areaId",itl.getAreaId());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ITL_4, Report.STATE.ERROR, location ,map);
 						addValidationError(ITL_4, errorItem);		                	
 
 					}
@@ -655,8 +677,10 @@ public class Level2Validator
 					if (!itl.getLineIdShortCut().equals(line.getObjectId()))
 					{
 						Locator trdLocation = itl.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineIdShortCut",itl.getLineIdShortCut());
-						DetailReportItem errorItem = new DetailReportItem(itl.getAreaId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("lineIdShortCut",itl.getLineIdShortCut());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ITL_5, Report.STATE.ERROR, location , map);
 						addValidationError(ITL_5, errorItem);		                	
 					}
 
@@ -678,8 +702,10 @@ public class Level2Validator
 			if (stopAreas.get(centroid.getContainedIn()) == null)
 			{
 				Locator trdLocation = centroid.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"containedIn",centroid.getContainedIn());
-				DetailReportItem errorItem = new DetailReportItem(centroid.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("containedIn",centroid.getContainedIn());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(AREA_CENTROID_1,centroid.getObjectId(), Report.STATE.ERROR, location,map );
 				addValidationError(AREA_CENTROID_1, errorItem);		
 			}
 		}
@@ -689,8 +715,10 @@ public class Level2Validator
 		{
 			if (centroid.getLongLatType().equals(LongLatTypeType.WGS_84)) continue;
 			Locator trdLocation = centroid.sourceLocation();
-			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"longLatType",centroid.getLongLatType().toString());
-			DetailReportItem errorItem = new DetailReportItem(centroid.getObjectId(), Report.STATE.ERROR, location );
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("longLatType",centroid.getLongLatType().toString());
+			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+			DetailReportItem errorItem = new DetailReportItem(AREA_CENTROID_2,centroid.getObjectId(), Report.STATE.ERROR, location ,map);
 			addValidationError(AREA_CENTROID_2, errorItem);		                	
 		}
 
@@ -706,7 +734,7 @@ public class Level2Validator
 			if (stopAreas.get(connectionLink.getStartOfLink())!= null || stopAreas.get(connectionLink.getEndOfLink()) != null) continue; 
 			Locator trdLocation = connectionLink.sourceLocation();
 			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-			DetailReportItem errorItem = new DetailReportItem(connectionLink.getObjectId(), Report.STATE.ERROR, location );
+			DetailReportItem errorItem = new DetailReportItem(CONNECTION_LINK_1,connectionLink.getObjectId(), Report.STATE.ERROR, location ,null);
 			addValidationError(CONNECTION_LINK_1, errorItem);		                	
 		}
 
@@ -752,8 +780,10 @@ public class Level2Validator
 			if (parent == null)
 			{
 				Locator trdLocation = accessPoint.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"containedIn",accessPoint.getContainedIn());
-				DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("containedIn",accessPoint.getContainedIn());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_1,accessPoint.getObjectId(), Report.STATE.ERROR, location ,map);
 				addValidationError(ACCESS_POINT_1, errorItem);
 			}
 			else
@@ -763,8 +793,10 @@ public class Level2Validator
 				if (typeOfStopArea(parent).equals(ChouetteAreaType.ITL))
 				{
 					Locator trdLocation = accessPoint.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"containedIn",accessPoint.getContainedIn());
-					DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("containedIn",accessPoint.getContainedIn());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_2,accessPoint.getObjectId(), Report.STATE.ERROR, location ,map);
 					addValidationError(ACCESS_POINT_2, errorItem);
 				}
 			}
@@ -775,7 +807,7 @@ public class Level2Validator
 			{
 				Locator trdLocation = accessPoint.sourceLocation();
 				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-				DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+				DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_3, accessPoint.getObjectId(), Report.STATE.ERROR, location ,null);
 				addValidationError(ACCESS_POINT_3, errorItem);
 			}
 
@@ -796,7 +828,7 @@ public class Level2Validator
 				{
 					Locator trdLocation = accessPoint.sourceLocation();
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_4,accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
 					addValidationError(ACCESS_POINT_4, errorItem);
 				}
 			}
@@ -808,7 +840,7 @@ public class Level2Validator
 				{
 					Locator trdLocation = accessPoint.sourceLocation();
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_5, accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
 					addValidationError(ACCESS_POINT_5, errorItem);
 				}
 
@@ -821,7 +853,7 @@ public class Level2Validator
 				{
 					Locator trdLocation = accessPoint.sourceLocation();
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_6, accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
 					addValidationError(ACCESS_POINT_6, errorItem);
 				}
 			}
@@ -829,8 +861,10 @@ public class Level2Validator
 			// 2-NEPTUNE-AccessPoint-7 : check centroid projection type as WSG84
 			if (accessPoint.getLongLatType().equals(LongLatTypeType.WGS_84)) continue;
 			Locator trdLocation = accessPoint.sourceLocation();
-			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(), "longLatType",accessPoint.getLongLatType().toString());
-			DetailReportItem errorItem = new DetailReportItem(accessPoint.getObjectId(), Report.STATE.ERROR, location );
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("longLatType",accessPoint.getLongLatType().toString());
+			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+			DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_7, accessPoint.getObjectId(), Report.STATE.ERROR, location, map );
 			addValidationError(ACCESS_POINT_7, errorItem);		                	
 		}
 
@@ -846,19 +880,25 @@ public class Level2Validator
 		for (AccessLink link : accessLinks.values())
 		{
 			boolean step1 = true;
-			if (!stopAreas.containsKey(link.getStartOfLink()) && accessPoints.containsKey(link.getStartOfLink()))
+			if (!stopAreas.containsKey(link.getStartOfLink()) && !accessPoints.containsKey(link.getStartOfLink()))
 			{
 				Locator trdLocation = link.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"startOfLink",link.getStartOfLink());
-				DetailReportItem errorItem = new DetailReportItem(link.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("link","startOfLink");
+				map.put("target",link.getStartOfLink());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_1, link.getObjectId(), Report.STATE.ERROR, location ,map);
 				addValidationError(ACCESS_LINK_1, errorItem);	
 				step1=false;
 			}
-			if (!stopAreas.containsKey(link.getEndOfLink()) && accessPoints.containsKey(link.getEndOfLink()))
+			if (!stopAreas.containsKey(link.getEndOfLink()) && !accessPoints.containsKey(link.getEndOfLink()))
 			{
 				Locator trdLocation = link.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"endOfLink",link.getEndOfLink());
-				DetailReportItem errorItem = new DetailReportItem(link.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("link","endOfLink");
+				map.put("target",link.getEndOfLink());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_1, link.getObjectId(), Report.STATE.ERROR, location ,map);
 				addValidationError(ACCESS_LINK_1, errorItem);	
 				step1=false;
 			}
@@ -871,8 +911,12 @@ public class Level2Validator
 			if (startObject instanceof StopArea && endObject instanceof PTAccessPointType) continue;
 			if (startObject instanceof PTAccessPointType && endObject instanceof StopArea) continue;
 			Locator trdLocation = link.sourceLocation();
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("startOfLink",link.getStartOfLink());
+			map.put("endOfLink",link.getEndOfLink());
+			map.put("type",startObject.getClass().getSimpleName());
 			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-			DetailReportItem errorItem = new DetailReportItem(link.getObjectId(), Report.STATE.ERROR, location );
+			DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_2, link.getObjectId(), Report.STATE.ERROR, location ,map);
 			addValidationError(ACCESS_LINK_2, errorItem);		                	
 		}
 
@@ -888,8 +932,10 @@ public class Level2Validator
 			if (!line.getPtNetworkIdShortcut().equals(ptNetwork.getObjectId()))
 			{
 				Locator trdLocation = line.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"ptNetworkIdShortcut",line.getPtNetworkIdShortcut());
-				DetailReportItem errorItem = new DetailReportItem(line.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("ptNetworkIdShortcut",line.getPtNetworkIdShortcut());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(LINE_1,line.getObjectId(), Report.STATE.ERROR, location,map );
 				addValidationError(LINE_1, errorItem);		                	
 			}
 		}
@@ -904,8 +950,10 @@ public class Level2Validator
 				if (!stopPoints.containsKey(endId))
 				{
 					Locator trdLocation = line.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineEnd",endId);
-					DetailReportItem errorItem = new DetailReportItem(line.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("lineEnd",endId);
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(LINE_2,line.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(LINE_2, errorItem);		                	
 
 				}
@@ -933,8 +981,10 @@ public class Level2Validator
 					if (!oneRef)
 					{
 						Locator trdLocation = line.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineEnd",endId);
-						DetailReportItem errorItem = new DetailReportItem(line.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("lineEnd",endId);
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(LINE_3,line.getObjectId(), Report.STATE.ERROR, location,map );
 						addValidationError(LINE_3, errorItem);		                	
 
 					}
@@ -951,8 +1001,10 @@ public class Level2Validator
 			if (!routes.containsKey(routeId))
 			{
 				Locator trdLocation = line.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"routeId",routeId);
-				DetailReportItem errorItem = new DetailReportItem(line.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("routeId",routeId);
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(LINE_4,line.getObjectId(), Report.STATE.ERROR, location, map );
 				addValidationError(LINE_4, errorItem);		                	
 			}
 		}
@@ -964,8 +1016,10 @@ public class Level2Validator
 			if (!line.getRouteId().contains(routeId))
 			{
 				Locator trdLocation = line.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"routeId",routeId);
-				DetailReportItem errorItem = new DetailReportItem(line.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("routeId",routeId);
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(LINE_5, line.getObjectId(), Report.STATE.ERROR, location, map );
 				addValidationError(LINE_5, errorItem);		                	
 			}
 		}
@@ -977,7 +1031,7 @@ public class Level2Validator
 		boolean route1ok = true; // indicate if ptlinks of routes are correctly defined
 		boolean route2ok = true; // indicate if stoppoints are correctly used in ptlinks
 		// 2-NEPTUNE-Route-2 : check existence of ptlink
-		prepareCheckPoint(ROUTE_4);
+		prepareCheckPoint(ROUTE_2);
 		Map<String,String> ptLinkInRoute = new HashMap<String,String>();
 		for (ChouetteRoute route : routes.values())
 		{
@@ -986,8 +1040,10 @@ public class Level2Validator
 				if (!ptLinks.containsKey(ptLinkId))
 				{
 					Locator trdLocation = route.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"ptLinkId",ptLinkId);
-					DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("ptLinkId",ptLinkId);
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(ROUTE_2,route.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(ROUTE_2, errorItem);		                	
 					route1ok = false;
 					continue;
@@ -999,8 +1055,10 @@ public class Level2Validator
 					route1ok = false;
 					// ptlink is referenced by more than one route
 					Locator trdLocation = route.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"ptLinkId",ptLinkId);
-					DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("ptLinkId",ptLinkId);
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(ROUTE_4,route.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(ROUTE_4, errorItem);		                	
 				}
 				else
@@ -1017,8 +1075,10 @@ public class Level2Validator
 					if (!journeyPatterns.containsKey(journeyPatternId))
 					{
 						Locator trdLocation = route.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId",journeyPatternId);
-						DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("journeyPatternId",journeyPatternId);
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ROUTE_1,route.getObjectId(), Report.STATE.ERROR, location , map);
 						addValidationError(ROUTE_1, errorItem);		                							
 					}
 
@@ -1036,8 +1096,11 @@ public class Level2Validator
 			{
 				route2ok = false;
 				Locator trdLocation = ptLinkType.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"startOfLink",stopPointId);
-				DetailReportItem errorItem = new DetailReportItem(ptLinkType.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("link","startOfLink");
+				map.put("target",stopPointId);
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(ROUTE_5,ptLinkType.getObjectId(), Report.STATE.ERROR, location,map );
 				addValidationError(ROUTE_5, errorItem);		                	
 			}		
 		}
@@ -1047,9 +1110,13 @@ public class Level2Validator
 			if (ptLinkOfStop == null || ptLinkOfStop.size() == 1) continue;
 			for (PTLinkType ptLinkType : ptLinkOfStop) 
 			{
+				route2ok = false;
 				Locator trdLocation = ptLinkType.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"endOfLink",stopPointId);
-				DetailReportItem errorItem = new DetailReportItem(ptLinkType.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("link","endOfLink");
+				map.put("target",stopPointId);
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(ROUTE_5,ptLinkType.getObjectId(), Report.STATE.ERROR, location,map );
 				addValidationError(ROUTE_5, errorItem);		                	
 			}		
 		}
@@ -1064,8 +1131,10 @@ public class Level2Validator
 				if (route != null && !route.getJourneyPatternId().contains(journeyPattern.getObjectId()))
 				{
 					Locator trdLocation = route.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId",journeyPattern.getObjectId());
-					DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("journeyPatternId",journeyPattern.getObjectId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(ROUTE_7,route.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(ROUTE_7, errorItem);		                	
 				}
 
@@ -1095,8 +1164,10 @@ public class Level2Validator
 						{
 							// broken route !
 							Locator trdLocation = route.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"ptLinkId",link.getObjectId());
-							DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("ptLinkId",link.getObjectId());
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(ROUTE_6,route.getObjectId(), Report.STATE.ERROR, location, map );
 							addValidationError(ROUTE_6, errorItem);		                	
 
 						}
@@ -1107,7 +1178,7 @@ public class Level2Validator
 					// no first id : circle route 
 					Locator trdLocation = route.sourceLocation();
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+					DetailReportItem errorItem = new DetailReportItem(ROUTE_6,route.getObjectId(), Report.STATE.ERROR, location , null );
 					addValidationError(ROUTE_6, errorItem);	
 					continue;
 				}
@@ -1125,7 +1196,7 @@ public class Level2Validator
 					// ptlinks does not build complete stop sequence
 					Locator trdLocation = route.sourceLocation();
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+					DetailReportItem errorItem = new DetailReportItem(ROUTE_6,route.getObjectId(), Report.STATE.ERROR, location , null);
 					addValidationError(ROUTE_6, errorItem);	
 					continue;
 				}
@@ -1146,8 +1217,10 @@ public class Level2Validator
 						if (!pointIds.containsAll(jp.getStopPointList()))
 						{
 							Locator trdLocation = jp.sourceLocation();
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("journeyPatternId",jp.getObjectId());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-							DetailReportItem errorItem = new DetailReportItem(jp.getObjectId(), Report.STATE.ERROR, location );
+							DetailReportItem errorItem = new DetailReportItem(ROUTE_8,route.getObjectId(), Report.STATE.ERROR, location ,map );
 							addValidationError(ROUTE_8, errorItem);	
 						}
 						unusedPointIds.removeAll(jp.getStopPointList());
@@ -1159,8 +1232,10 @@ public class Level2Validator
 						for (String stopPointId : unusedPointIds) 
 						{
 							Locator trdLocation = route.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopPointId",stopPointId);
-							DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.WARNING, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("stopPointId",stopPointId);
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(ROUTE_9,route.getObjectId(), Report.STATE.WARNING, location ,map);
 							addValidationError(ROUTE_9, errorItem);	
 
 						}
@@ -1181,8 +1256,10 @@ public class Level2Validator
 					if (wayBackRoute == null)
 					{
 						Locator trdLocation = route.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"waybackRouteId",route.getWayBackRouteId());
-						DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("waybackRouteId",route.getWayBackRouteId());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ROUTE_3,route.getObjectId(), Report.STATE.ERROR, location ,map);
 						addValidationError(ROUTE_3, errorItem);						
 						continue;
 					}
@@ -1192,8 +1269,10 @@ public class Level2Validator
 					if (wayBackRoute.getWayBackRouteId() == null || !wayBackRoute.getWayBackRouteId().equals(route.getObjectId()))
 					{
 						Locator trdLocation = route.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"waybackRouteId",route.getWayBackRouteId());
-						DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("waybackRouteId",route.getWayBackRouteId());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ROUTE_10,route.getObjectId(), Report.STATE.ERROR, location ,map);
 						addValidationError(ROUTE_10, errorItem);						
 					}
 
@@ -1206,8 +1285,10 @@ public class Level2Validator
 						if (wk1.equals(wk2))
 						{
 							Locator trdLocation = route.sourceLocation();
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"waybackRouteId",route.getWayBackRouteId());
-							DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.WARNING, location );
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("waybackRouteId",route.getWayBackRouteId());
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(ROUTE_11,route.getObjectId(), Report.STATE.WARNING, location , map);
 							addValidationError(ROUTE_11, errorItem);						
 
 						}
@@ -1228,8 +1309,10 @@ public class Level2Validator
 						if (startParentCommercialId.equals(endParentCommercialId)) continue;
 						// warning 
 						Locator trdLocation = route.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopPointId",pointIds.get(0));
-						DetailReportItem errorItem = new DetailReportItem(route.getObjectId(), Report.STATE.WARNING, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("stopPointId",pointIds.get(0));
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ROUTE_12,route.getObjectId(), Report.STATE.WARNING, location ,map);
 						addValidationError(ROUTE_12, errorItem);						
 
 					}
@@ -1250,15 +1333,21 @@ public class Level2Validator
 			if (!stopPoints.containsKey(link.getStartOfLink()))
 			{
 				Locator trdLocation = link.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"startOfLink",link.getStartOfLink());
-				DetailReportItem errorItem = new DetailReportItem(link.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("link","startOfLink");
+				map.put("target",link.getStartOfLink());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(PT_LINK_1,link.getObjectId(), Report.STATE.ERROR, location ,map);
 				addValidationError(PT_LINK_1, errorItem);	
 			}
 			if (!stopPoints.containsKey(link.getEndOfLink()))
 			{
 				Locator trdLocation = link.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"endOfLink",link.getEndOfLink());
-				DetailReportItem errorItem = new DetailReportItem(link.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("link","endOfLink");
+				map.put("target",link.getEndOfLink());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(PT_LINK_1,link.getObjectId(), Report.STATE.ERROR, location,map );
 				addValidationError(PT_LINK_1, errorItem);	
 			}
 		}
@@ -1279,11 +1368,13 @@ public class Level2Validator
 			// 2-NEPTUNE-JourneyPattern-1 : check existence of route
 			if (journeyPattern.isSetRouteId())
 			{
-				if (!routes.containsKey(journeyPattern.isSetRouteId()))
+				if (!routes.containsKey(journeyPattern.getRouteId()))
 				{
 					Locator trdLocation = journeyPattern.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"routeId",journeyPattern.getRouteId());
-					DetailReportItem errorItem = new DetailReportItem(journeyPattern.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("routeId",journeyPattern.getRouteId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(JOURNEY_PATTERN_1,journeyPattern.getObjectId(), Report.STATE.ERROR, location,map );
 					addValidationError(JOURNEY_PATTERN_1, errorItem);						
 
 				}
@@ -1295,8 +1386,10 @@ public class Level2Validator
 				if (!stopPoints.containsKey(stopPointId))
 				{
 					Locator trdLocation = journeyPattern.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopPointId",stopPointId);
-					DetailReportItem errorItem = new DetailReportItem(journeyPattern.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("stopPointId",stopPointId);
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(JOURNEY_PATTERN_2,journeyPattern.getObjectId(), Report.STATE.ERROR, location ,map);
 					addValidationError(JOURNEY_PATTERN_2, errorItem);						
 				}
 			}
@@ -1307,8 +1400,10 @@ public class Level2Validator
 				if (!line.getObjectId().equals(journeyPattern.getLineIdShortcut()))
 				{
 					Locator trdLocation = journeyPattern.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineIdShortcut",journeyPattern.getLineIdShortcut());
-					DetailReportItem errorItem = new DetailReportItem(journeyPattern.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("lineIdShortcut",journeyPattern.getLineIdShortcut());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(JOURNEY_PATTERN_3,journeyPattern.getObjectId(), Report.STATE.ERROR, location ,map);
 					addValidationError(JOURNEY_PATTERN_3, errorItem);						
 
 				}
@@ -1338,8 +1433,10 @@ public class Level2Validator
 				if (!line.getObjectId().equals(point.getLineIdShortcut()))
 				{
 					Locator trdLocation = point.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineIdShortcut",point.getLineIdShortcut());
-					DetailReportItem errorItem = new DetailReportItem(point.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("lineIdShortcut",point.getLineIdShortcut());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(STOP_POINT_1,point.getObjectId(), Report.STATE.ERROR, location ,map);
 					addValidationError(STOP_POINT_1, errorItem);	
 				}
 
@@ -1351,8 +1448,10 @@ public class Level2Validator
 				if (!ptNetwork.getObjectId().equals(point.getPtNetworkIdShortcut()))
 				{
 					Locator trdLocation = point.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"ptNetworkIdShortcut",point.getPtNetworkIdShortcut());
-					DetailReportItem errorItem = new DetailReportItem(point.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("ptNetworkIdShortcut",point.getPtNetworkIdShortcut());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(STOP_POINT_2, point.getObjectId(), Report.STATE.ERROR, location,map );
 					addValidationError(STOP_POINT_2, errorItem);	
 				}
 
@@ -1361,16 +1460,20 @@ public class Level2Validator
 			if (!stopAreas.containsKey(point.getContainedIn()))
 			{
 				Locator trdLocation = point.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"containedIn",point.getContainedIn());
-				DetailReportItem errorItem = new DetailReportItem(point.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("containedIn",point.getContainedIn());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(STOP_POINT_3, point.getObjectId(), Report.STATE.ERROR, location, map );
 				addValidationError(STOP_POINT_3, errorItem);	
 			}
 
 			if (!point.getLongLatType().equals(LongLatTypeType.WGS_84)) 
 			{
 				Locator trdLocation = point.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"longLatType",point.getLongLatType().toString());
-				DetailReportItem errorItem = new DetailReportItem(point.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("longLatType",point.getLongLatType().toString());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(STOP_POINT_4, point.getObjectId(), Report.STATE.ERROR, location , map);
 				addValidationError(STOP_POINT_4, errorItem);	
 			}
 		}
@@ -1398,7 +1501,7 @@ public class Level2Validator
 			{
 				Locator trdLocation = timetable.sourceLocation();
 				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-				DetailReportItem errorItem = new DetailReportItem(timetable.getObjectId(), Report.STATE.WARNING, location );
+				DetailReportItem errorItem = new DetailReportItem(TIMETABLE_1,timetable.getObjectId(), Report.STATE.WARNING, location, null );
 				addValidationError(TIMETABLE_1, errorItem);		                	
 
 			}
@@ -1411,7 +1514,7 @@ public class Level2Validator
 				VehicleJourneyType vj = vehicleJourneys.get(vjId);
 				Locator trdLocation = vj.sourceLocation();
 				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-				DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.WARNING, location );
+				DetailReportItem errorItem = new DetailReportItem(TIMETABLE_2, vj.getObjectId(), Report.STATE.WARNING, location , null);
 				addValidationError(TIMETABLE_2, errorItem);		                	
 			}
 		}
@@ -1450,8 +1553,10 @@ public class Level2Validator
 			if (!routes.containsKey(vj.getRouteId()))
 			{
 				Locator trdLocation = vj.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"routeId", vj.getRouteId());
-				DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("routeId", vj.getRouteId());
+				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+				DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_1, vj.getObjectId(), Report.STATE.ERROR, location, map );
 				addValidationError(VEHICLE_JOURNEY_1, errorItem);	
 				fkOK = false;
 			}
@@ -1462,8 +1567,10 @@ public class Level2Validator
 				if (!journeyPatterns.containsKey(vj.getJourneyPatternId()))
 				{
 					Locator trdLocation = vj.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId", vj.getJourneyPatternId());
-					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("journeyPatternId", vj.getJourneyPatternId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_2, vj.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(VEHICLE_JOURNEY_2, errorItem);	
 					fkOK = false;
 				}
@@ -1475,8 +1582,10 @@ public class Level2Validator
 				if (!line.getObjectId().equals(vj.getLineIdShortcut()))
 				{
 					Locator trdLocation = vj.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineIdShortcut", vj.getLineIdShortcut());
-					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("lineIdShortcut", vj.getLineIdShortcut());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_3, vj.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(VEHICLE_JOURNEY_3, errorItem);	
 				}
 			}
@@ -1487,8 +1596,10 @@ public class Level2Validator
 				if (!companies.containsKey(vj.getOperatorId()))
 				{
 					Locator trdLocation = vj.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"operatorId", vj.getOperatorId());
-					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("operatorId", vj.getOperatorId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_4,vj.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(VEHICLE_JOURNEY_4, errorItem);	
 				}
 			}
@@ -1499,8 +1610,10 @@ public class Level2Validator
 				if (!timeSlots.containsKey(vj.getTimeSlotId()))
 				{
 					Locator trdLocation = vj.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"timeSlotId", vj.getTimeSlotId());
-					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("timeSlotId", vj.getTimeSlotId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_5, vj.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(VEHICLE_JOURNEY_5, errorItem);	
 				}
 			}
@@ -1516,8 +1629,10 @@ public class Level2Validator
 				if (!stopPoints.containsKey(vjas.getStopPointId()))
 				{
 					Locator trdLocation = vjas.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopPointId", vjas.getStopPointId());
-					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("stopPointId", vjas.getStopPointId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_AT_STOP_1, vj.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(VEHICLE_JOURNEY_AT_STOP_1, errorItem);	
 					fkOK = false;
 				}
@@ -1529,8 +1644,10 @@ public class Level2Validator
 					if (!vj.getObjectId().equals(vjas.getVehicleJourneyId()))
 					{
 						Locator trdLocation = vjas.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"vehicleJourneyId", vjas.getVehicleJourneyId());
-						DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("vehicleJourneyId", vjas.getVehicleJourneyId());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_AT_STOP_2, vj.getObjectId(), Report.STATE.ERROR, location , map);
 						addValidationError(VEHICLE_JOURNEY_AT_STOP_2, errorItem);	
 					}
 				}
@@ -1542,8 +1659,10 @@ public class Level2Validator
 				if (!journeyPattern.getRouteId().equals(vj.getRouteId()))
 				{
 					Locator trdLocation = vj.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId", vj.getJourneyPatternId());
-					DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("journeyPatternId", vj.getJourneyPatternId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_6, vj.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(VEHICLE_JOURNEY_6, errorItem);		                	
 				}
 				else
@@ -1553,8 +1672,10 @@ public class Level2Validator
 					if (stopsOfVj.size() != stops.size() || !stops.containsAll(stopsOfVj))
 					{
 						Locator trdLocation = vj.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"journeyPatternId", vj.getJourneyPatternId());
-						DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("journeyPatternId", vj.getJourneyPatternId());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_AT_STOP_4,vj.getObjectId(), Report.STATE.ERROR, location , map);
 						addValidationError(VEHICLE_JOURNEY_AT_STOP_4, errorItem);		                	
 					}
 				}
@@ -1562,14 +1683,19 @@ public class Level2Validator
 
 			if (!fkOK) continue; // if fk are not valid, it is impossible to proceed these checkpoints
 			// check vjas with route
-			List<String> sequence = new ArrayList<String>(sequenceOfRoutes.get(vj.getRouteId()));
-			sequence.retainAll(stopsOfVj);
-			if (!sequence.equals(stopsOfVj))
+			if (sequenceOfRoutes.containsKey(vj.getRouteId()))
 			{
-				Locator trdLocation = vj.sourceLocation();
-				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"routeId", vj.getRouteId());
-				DetailReportItem errorItem = new DetailReportItem(vj.getObjectId(), Report.STATE.ERROR, location );
-				addValidationError(VEHICLE_JOURNEY_AT_STOP_3, errorItem);		                	
+				List<String> sequence = new ArrayList<String>(sequenceOfRoutes.get(vj.getRouteId()));
+				sequence.retainAll(stopsOfVj);
+				if (!sequence.equals(stopsOfVj))
+				{
+					Locator trdLocation = vj.sourceLocation();
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("routeId", vj.getRouteId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_AT_STOP_3, vj.getObjectId(), Report.STATE.ERROR, location, map );
+					addValidationError(VEHICLE_JOURNEY_AT_STOP_3, errorItem);		                	
+				}
 			}
 
 
@@ -1582,7 +1708,7 @@ public class Level2Validator
 				JourneyPatternType jp = journeyPatterns.get(jpId);
 				Locator trdLocation = jp.sourceLocation();
 				ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-				DetailReportItem errorItem = new DetailReportItem(jp.getObjectId(), Report.STATE.WARNING, location );
+				DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_7, jp.getObjectId(), Report.STATE.WARNING, location, null );
 				addValidationError(VEHICLE_JOURNEY_7, errorItem);		                	
 
 			}
@@ -1604,8 +1730,10 @@ public class Level2Validator
 				if (!stopAreas.containsKey(facility.getStopAreaId()))
 				{
 					Locator trdLocation = facility.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopAreaId",facility.getStopAreaId());
-					DetailReportItem errorItem = new DetailReportItem(facility.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("stopAreaId",facility.getStopAreaId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(FACILITY_2, facility.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(FACILITY_2, errorItem);	
 				}
 			}
@@ -1617,8 +1745,10 @@ public class Level2Validator
 				if (!line.getObjectId().equals(facility.getLineId()))
 				{
 					Locator trdLocation = facility.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"lineId",facility.getLineId());
-					DetailReportItem errorItem = new DetailReportItem(facility.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("lineId",facility.getLineId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(FACILITY_3, facility.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(FACILITY_3, errorItem);	
 				}
 			}
@@ -1630,8 +1760,10 @@ public class Level2Validator
 				if (!connectionLinks.containsKey(facility.getConnectionLinkId()))
 				{
 					Locator trdLocation = facility.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"connectionLinkId",facility.getConnectionLinkId());
-					DetailReportItem errorItem = new DetailReportItem(facility.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("connectionLinkId",facility.getConnectionLinkId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(FACILITY_4, facility.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(FACILITY_4, errorItem);	
 				}
 			}
@@ -1643,8 +1775,10 @@ public class Level2Validator
 				if (!stopPoints.containsKey(facility.getStopPointId()))
 				{
 					Locator trdLocation = facility.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"stopPointId",facility.getStopPointId());
-					DetailReportItem errorItem = new DetailReportItem(facility.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("stopPointId",facility.getStopPointId());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(FACILITY_5, facility.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(FACILITY_5, errorItem);	
 				}
 			}
@@ -1659,8 +1793,10 @@ public class Level2Validator
 					if (!stopAreas.containsKey(facilityLocation.getContainedIn()))
 					{
 						Locator trdLocation = facilityLocation.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"containedId",facilityLocation.getContainedIn());
-						DetailReportItem errorItem = new DetailReportItem(facility.getObjectId(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("containedId",facilityLocation.getContainedIn());
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(FACILITY_1, facility.getObjectId(), Report.STATE.ERROR, location , map);
 						addValidationError(FACILITY_1, errorItem);	
 					}
 				}
@@ -1671,8 +1807,10 @@ public class Level2Validator
 				if (!facilityLocation.getLongLatType().equals(LongLatTypeType.WGS_84)) 
 				{
 					Locator trdLocation = facilityLocation.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber(),"longLatType",facilityLocation.getLongLatType().toString());
-					DetailReportItem errorItem = new DetailReportItem(facility.getObjectId(), Report.STATE.ERROR, location );
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("longLatType",facilityLocation.getLongLatType().toString());
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(FACILITY_6, facility.getObjectId(), Report.STATE.ERROR, location , map);
 					addValidationError(FACILITY_6, errorItem);	
 				}
 			}

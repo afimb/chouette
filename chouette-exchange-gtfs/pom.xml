@@ -21,11 +21,6 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
 		</dependency>
-		<!-- for coherent geotools dependencies only -->
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-services</artifactId>
-		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

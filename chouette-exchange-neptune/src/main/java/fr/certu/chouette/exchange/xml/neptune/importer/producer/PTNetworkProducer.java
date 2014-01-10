@@ -23,8 +23,6 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, PTNetwor
 	{
 		if (xmlPTNetwork == null) return null;
 		
-		
-		
 		PTNetwork ptNetwork = new PTNetwork();
 		
 		// objectId, objectVersion, creatorId, creationTime
@@ -55,7 +53,8 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, PTNetwor
 		ptNetwork.setSourceIdentifier(getNonEmptyTrimedString(xmlPTNetwork.getSourceIdentifier()));
 		
 		// SourceType optional
-		if(xmlPTNetwork.getSourceType() != null){
+		if(xmlPTNetwork.getSourceType() != null)
+		{
 			try{
 				ptNetwork.setSourceType(PTNetworkSourceTypeEnum.fromValue(xmlPTNetwork.getSourceType().value()));
 			}
@@ -77,7 +76,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, PTNetwor
 		PTNetwork sharedBean = getOrAddSharedData(sharedData, ptNetwork, sourceFile, xmlPTNetwork,validationReport);
 		if (sharedBean != null) ptNetwork = sharedBean;
 		
-		// replace lineRefs
+		// replace lineRefs for level 2 validation
 		xmlPTNetwork.getLineId().addAll(xmlLineIds);
 		
 		// LineIds [O..w]

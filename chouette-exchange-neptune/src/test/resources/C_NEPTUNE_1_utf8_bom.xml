@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF8"?>
-<ChouettePTNetwork xmlns:ifopt="http://www.ifopt.org.uk/acsb" xmlns:siri="http://www.siri.org.uk/siri">
+<ChouettePTNetwork xmlns="http://www.trident.org/schema/trident" xmlns:siri="http://www.siri.org.uk/siri">
     <PTNetwork>
         <objectId>NINOXE:PtNetwork:13689686</objectId>
         <objectVersion>1</objectVersion>
@@ -483,7 +483,7 @@
             <creationTime>2007-12-16T10:37:35.000+01:00</creationTime>
             <longitude>5.4870700836181640</longitude>
             <latitude>46.3887999464583900</latitude>
-            <longLatType>Standard</longLatType>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>39273</countryCode>
             </address>
@@ -574,7 +574,7 @@
             <creationTime>2007-12-16T10:37:35.000+01:00</creationTime>
             <longitude>5.8651542663574200</longitude>
             <latitude>46.3926479843100400</latitude>
-            <longLatType>Standard</longLatType>
+            <longLatType>WGS84</longLatType>
             <address>
                 <countryCode>39478</countryCode>
             </address>
@@ -1181,7 +1181,7 @@
             <creationTime>2007-12-16T10:37:35.000+01:00</creationTime>
             <longitude>5.8651542663574200</longitude>
             <latitude>46.3926479843100400</latitude>
-            <longLatType>Standard</longLatType>
+            <longLatType>WGS84</longLatType>
             <containedIn>NINOXE:StopArea:15574347</containedIn>
             <name>Les Bucoliques (A)</name>
         </StopPoint>
@@ -1251,7 +1251,7 @@
             <creationTime>2007-12-16T10:37:35.000+01:00</creationTime>
             <longitude>5.8651542663574200</longitude>
             <latitude>46.3926479843100400</latitude>
-            <longLatType>Standard</longLatType>
+            <longLatType>WGS84</longLatType>
             <containedIn>NINOXE:StopArea:15574347</containedIn>
             <name>Les Bucoliques (A)</name>
         </StopPoint>
@@ -1321,7 +1321,7 @@
             <creationTime>2007-12-16T10:37:35.000+01:00</creationTime>
             <longitude>5.4870700836181640</longitude>
             <latitude>46.3887999464583900</latitude>
-            <longLatType>Standard</longLatType>
+            <longLatType>WGS84</longLatType>
             <containedIn>NINOXE:StopArea:15574355</containedIn>
             <name>Collège St James (R)</name>
         </StopPoint>
@@ -7539,7 +7539,7 @@
             <longitude>5.5656909942626950</longitude>
             <latitude>46.3934175593246250</latitude>
 			      <longLatType>WGS84</longLatType>
-			      <containedIn>NINOXE:StopArea:24</containedIn>
+			      <containedIn>NINOXE:StopArea:15572066</containedIn>
 		    </facilityLocation>
 		    <stopAreaId>NINOXE:StopArea:15572066</stopAreaId>
 		    <facilityFeature>
@@ -7555,7 +7555,7 @@
             <longLatType>WGS84</longLatType>
             <containedIn>NINOXE:StopArea:15572066</containedIn>
             <name>Bill Boquet Road</name>
-					  <type>InOut</type>
+					  <type>In</type>
 					<openingTime>06:00:00</openingTime>
 					<closingTime>23:00:00</closingTime>
 					<mobilityRestrictedSuitability>false</mobilityRestrictedSuitability>

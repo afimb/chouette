@@ -402,4 +402,10 @@ public class AccessLink extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() 
+	{
+		return "access_points/"+getAccessPoint().getId()+"/access_links/"+getId();
+	}
+
 }

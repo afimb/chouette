@@ -1035,6 +1035,11 @@ public class StopArea extends NeptuneLocalizedObject
 			return false;
 		}
 	}
+
+	@Override
+	public String toURL() {
+		return "stop_areas/"+getId();
+	}
 	
 	
 }

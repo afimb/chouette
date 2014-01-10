@@ -175,10 +175,11 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		ReportHolder vreport = new ReportHolder();
 
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
+		printReport(ireport.getReport());
+		printReport(vreport.getReport());
 		Assert.assertNotNull(lines,"lines must not be null");
 		Line line = lines.get(0);
 		Assert.assertTrue(line.getName().endsWith("é"));
-		printReport(ireport.getReport());
 	}
 
 	@Parameters({"neptuneFileUtf8Bom"})
@@ -196,10 +197,11 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		ReportHolder vreport = new ReportHolder();
 
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
+		printReport(ireport.getReport());
+		printReport(vreport.getReport());
 		Assert.assertNotNull(lines,"lines must not be null");
 		Line line = lines.get(0);
 		Assert.assertTrue(line.getName().endsWith("é"));
-		printReport(ireport.getReport());
 	}
 
 	@Parameters({"neptuneFileBadEnc"})
@@ -217,8 +219,9 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		ReportHolder vreport = new ReportHolder();
 
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
-		Assert.assertNull(lines,"lines must be null");
 		printReport(ireport.getReport());
+		printReport(vreport.getReport());
+		Assert.assertNull(lines,"lines must be null");
 		Assert.assertEquals(ireport.getReport().getStatus(), Report.STATE.ERROR,"report status must be ERROR");
 	}
 
@@ -238,6 +241,7 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
 
 		printReport(ireport.getReport());    
+		printReport(vreport.getReport());    
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
@@ -386,6 +390,8 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		ReportHolder vreport = new ReportHolder();
 
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
+		printReport(ireport.getReport());    
+		printReport(vreport.getReport());    
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
@@ -401,7 +407,6 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 			Assert.assertNull(area.getParent(), "routing constraint area must not have stopArea parent");
 			Assert.assertTrue(area.getRoutingConstraintAreas().size() > 0, "routing constraint area must have stopArea children as routing constraints");
 		}
-		printReport(ireport.getReport());    
 	}
 
 
@@ -419,6 +424,8 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		ReportHolder vreport = new ReportHolder();
 
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
+		printReport(ireport.getReport());
+		printReport(vreport.getReport());
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
@@ -426,7 +433,6 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		{
 			Reporter.log(line.toString("\t",0));
 		}
-		printReport(ireport.getReport());
 
 	}
 	@Parameters({"neptuneZip"})
@@ -450,6 +456,8 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		ReportHolder vreport = new ReportHolder();
 
 		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
+		printReport(ireport.getReport());
+		printReport(vreport.getReport());
 
 		Assert.assertNotNull(lines,"lines can't be null");
 		Assert.assertEquals(lines.size(), 6,"lines size must equals 6");
@@ -457,7 +465,6 @@ public class NeptuneImportTests extends AbstractTestNGSpringContextTests
 		{
 			Reporter.log(line.toString("\t",0));
 		}
-		printReport(ireport.getReport());
 
 	}
 //	@Parameters({"neptuneZipErr"})

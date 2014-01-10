@@ -49,4 +49,9 @@ public class NeptuneRoutingConstraint extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return null;
+	}
+
 }

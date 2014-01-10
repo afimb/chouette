@@ -299,4 +299,9 @@ public class StopPoint extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return null;
+	}
+
 }

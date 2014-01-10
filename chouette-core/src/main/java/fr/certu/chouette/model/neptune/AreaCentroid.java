@@ -147,6 +147,12 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 			return false;
 		}
 	}
+
+	@Override
+	public String toURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

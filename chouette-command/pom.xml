@@ -36,10 +36,6 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-export-geoportail</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>fr.certu.chouette.schema</groupId>
-			<artifactId>chouette-castor-neptune</artifactId>
-		</dependency> -->
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
@@ -48,13 +44,9 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-hibernate-dao</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-validation</artifactId>
-		</dependency> -->
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-services</artifactId>
+			<artifactId>chouette-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>

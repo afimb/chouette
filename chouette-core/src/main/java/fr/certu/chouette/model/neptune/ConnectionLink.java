@@ -448,4 +448,10 @@ public class ConnectionLink extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() 
+	{
+		return "connection_links/"+getId();
+	}
+
 }

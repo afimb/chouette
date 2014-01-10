@@ -59,8 +59,6 @@ public class ModelAssembler
 	private static final Logger                                                                           logger                    = Logger
 			.getLogger(ModelAssembler.class);
 
-	public static final String NETWORK_1 = "2-NEPTUNE-Network-1";
-	public static final String GROUP_OF_LINE_1 = "2-NEPTUNE-GroupOfLine-1";
 	/**
 	 * extracted line
 	 */
@@ -436,18 +434,24 @@ public class ModelAssembler
 				for (PTLink ptLink : sortedLinks)
 				{
 					StopPoint startPoint = getObjectFromId(ptLink.getStartOfLinkId(), StopPoint.class);
-					startPoint.setPosition(position++);
-					startPoint.setRoute(route);
-					if (!stopPoints.contains(startPoint))
+					if (startPoint != null)
 					{
-						stopPoints.add(startPoint);
+						startPoint.setPosition(position++);
+						startPoint.setRoute(route);
+						if (!stopPoints.contains(startPoint))
+						{
+							stopPoints.add(startPoint);
+						}
 					}
 					StopPoint endPoint = getObjectFromId(ptLink.getEndOfLinkId(), StopPoint.class);
-					if (!stopPoints.contains(endPoint))
+					if (endPoint != null)
 					{
-						endPoint.setPosition(position);
-						endPoint.setRoute(route);
-						stopPoints.add(endPoint);
+						if (!stopPoints.contains(endPoint))
+						{
+							endPoint.setPosition(position);
+							endPoint.setRoute(route);
+							stopPoints.add(endPoint);
+						}
 					}
 				}
 				route.setStopPoints(stopPoints);
@@ -477,14 +481,18 @@ public class ModelAssembler
 		starts.addAll(linkByStart.keySet());
 		starts.removeAll(linkByEnd.keySet());
 
-		String start = starts.toArray(new String[0])[0];
-		PTLink link = linkByStart.get(start);
 		List<PTLink> sortedLinks = new ArrayList<PTLink>();
-		while (link != null)
+
+		if (!starts.isEmpty())
 		{
-			sortedLinks.add(link);
-			start = link.getEndOfLinkId();
-			link = linkByStart.get(start);
+			String start = starts.toArray(new String[0])[0];
+			PTLink link = linkByStart.get(start);
+			while (link != null)
+			{
+				sortedLinks.add(link);
+				start = link.getEndOfLinkId();
+				link = linkByStart.remove(start);
+			}
 		}
 
 		return sortedLinks;
@@ -617,12 +625,12 @@ public class ModelAssembler
 				importReport.addItem(item);
 			}
 
-//			stopPoint.setLine(line);
-//			if (ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
-//			{
-//
-//				stopPoint.setPtNetwork(ptNetwork);
-//			}
+			//			stopPoint.setLine(line);
+			//			if (ptNetwork != null && ptNetwork.getObjectId().equals(stopPoint.getPtNetworkIdShortcut()))
+			//			{
+			//
+			//				stopPoint.setPtNetwork(ptNetwork);
+			//			}
 
 			for (Facility facility : facilities)
 			{
@@ -951,20 +959,25 @@ public class ModelAssembler
 		if (dictionary != null)
 			object = (T) dictionary.get(id);
 
+		if (object == null && id != null)
+		{
+			logger.warn("object not found "+id+" in "+dictionaryClass.getName());
+		}
+
 		return object;
 	}
 
-//	private void addValidationError(String checkPointKey,DetailReportItem item)
-//	{
-//		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
-//		checkPoint.addItem(item);
-//
-//	}
-//
-//	private void prepareCheckPoint(String checkPointKey)
-//	{
-//		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
-//		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
-//	}
+	//	private void addValidationError(String checkPointKey,DetailReportItem item)
+	//	{
+	//		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
+	//		checkPoint.addItem(item);
+	//
+	//	}
+	//
+	//	private void prepareCheckPoint(String checkPointKey)
+	//	{
+	//		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
+	//		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
+	//	}
 
 }

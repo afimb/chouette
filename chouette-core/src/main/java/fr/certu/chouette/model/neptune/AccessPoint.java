@@ -186,5 +186,11 @@ public class AccessPoint extends NeptuneLocalizedObject{
 		}
 	}
 
+	@Override
+	public String toURL() 
+	{
+		return getContainedIn().toURL()+"/access_points/"+getId();
+	}
+
 
 }

@@ -372,4 +372,11 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() 
+	{
+		
+		return getRoute().toURL()+"/journey_patterns/"+getId();
+	}
+
 }

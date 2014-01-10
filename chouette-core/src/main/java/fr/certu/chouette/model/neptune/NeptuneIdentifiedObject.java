@@ -269,4 +269,6 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
             else
                 return "";
         }
+	
+	public abstract String toURL();
 }

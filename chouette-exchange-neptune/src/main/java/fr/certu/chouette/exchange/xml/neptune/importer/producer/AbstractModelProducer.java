@@ -2,6 +2,8 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.io.StringWriter;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -73,8 +75,8 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		String number = registration.getRegistrationNumber();
 		if (number == null || number.trim().length() == 0) 
 		{
-			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"RegistrationNumber") ;
-			report.addItem(item);
+//			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.MANDATORY_TAG,Report.STATE.ERROR,"RegistrationNumber") ;
+//			report.addItem(item);
 			return null;
 		}
 		return number.trim();
@@ -132,7 +134,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 				// error already set : add detail
 				Locator srcLoc = source.sourceLocation() ;
 				ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
-				DetailReportItem detail = new DetailReportItem(model.getObjectId(), Report.STATE.ERROR, location );
+				DetailReportItem detail = new DetailReportItem(COMMON_1,model.getObjectId(), Report.STATE.ERROR, location ,null);
 				addValidationError(validationReport,COMMON_1, detail);
 				
 			}
@@ -155,7 +157,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 					{
 						Locator srcLoc = origin.getSourceLocation() ;
 						ReportLocation location = new ReportLocation(origin.getSourceFile(), srcLoc.getLineNumber(), srcLoc.getColumnNumber());
-						DetailReportItem detail = new DetailReportItem(model.getObjectId(), Report.STATE.ERROR, location );
+						DetailReportItem detail = new DetailReportItem(COMMON_1, model.getObjectId(), Report.STATE.ERROR, location, null);
 						addValidationError(validationReport,COMMON_1, detail);
 					}
 				}
@@ -189,8 +191,10 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 			{
 				// error already set : add detail
 				Locator srcLoc = source.sourceLocation() ;
-				ReportLocation location = new ReportLocation(sourceFile, null, srcLoc.getLineNumber(), srcLoc.getColumnNumber(),"RegistrationNumber",model.getRegistrationNumber());
-				DetailReportItem detail = new DetailReportItem(source.getObjectId(), Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("RegistrationNumber", model.getRegistrationNumber());
+				ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
+				DetailReportItem detail = new DetailReportItem(COMMON_2, source.getObjectId(), Report.STATE.ERROR, location, map);
 				addValidationError(validationReport,COMMON_2, detail);
 				
 			}
@@ -212,8 +216,10 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 					for (Origin origin : data.getOrigins()) 
 					{
 						Locator srcLoc = origin.getSourceLocation() ;
-						ReportLocation location = new ReportLocation(origin.getSourceFile(), null, srcLoc.getLineNumber(), srcLoc.getColumnNumber(),"RegistrationNumber",model.getRegistrationNumber());
-						DetailReportItem detail = new DetailReportItem(origin.getSourceData(), Report.STATE.ERROR, location );
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("RegistrationNumber", model.getRegistrationNumber());
+						ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
+						DetailReportItem detail = new DetailReportItem(COMMON_2, source.getObjectId(), Report.STATE.ERROR, location, map);
 						addValidationError(validationReport,COMMON_2, detail);
 					}
 				}

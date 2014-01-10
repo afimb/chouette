@@ -187,6 +187,11 @@ public class Route extends NeptuneIdentifiedObject
 	@Setter
 	private List<StopPoint>      stopPoints;
 
+	/**
+	 * for validation usage only
+	 */
+	private List<StopArea>       stopAreas = null;
+	
 	public Route()
 	{
 		journeyPatterns = new ArrayList<JourneyPattern>();
@@ -751,6 +756,24 @@ public class Route extends NeptuneIdentifiedObject
 		{
 			return false;
 		}
+	}
+	
+	public List<StopArea> getStopAreas()
+	{
+		if (stopAreas == null)
+		{
+			stopAreas = new ArrayList<StopArea>();
+			for (StopPoint stopPoint : stopPoints) 
+			{
+				stopAreas.add(stopPoint.getContainedInStopArea());
+			}
+		}
+		return stopAreas;
+	}
+
+	@Override
+	public String toURL() {
+		return getLine().toURL()+"/routes/"+getId();
 	}
 
 }

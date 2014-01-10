@@ -124,5 +124,11 @@ public class GroupOfLine extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() 
+	{
+		return "group_of_lines/"+getId();
+	}
+
 
 }

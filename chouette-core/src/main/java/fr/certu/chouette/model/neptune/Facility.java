@@ -194,4 +194,10 @@ public class Facility extends NeptuneLocalizedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

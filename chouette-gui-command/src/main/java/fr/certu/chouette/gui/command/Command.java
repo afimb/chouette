@@ -301,14 +301,14 @@ public class Command
 		shortCuts.put("v", "verbose");
 	}
 
-   private static Session session = null;
-	
+	private static Session session = null;
+
 	/**
 	 * @param factory
 	 */
 	public static void closeDao() 
 	{
-        session.flush();
+		session.flush();
 		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
 		SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
@@ -926,15 +926,11 @@ public class Command
 	 */
 	private int executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
 	{
-		// parameters.put("reportforsave", Arrays.asList(new String[] {"true"} ));
-		// parameters.put("validate",Arrays.asList(new String[]{"true"})); // force validation if possible
-
-		//		GuiReport saveReport = new GuiReport("SAVE",Report.STATE.OK);
 		Report importReport = null;
 		ValidationReport validationReport = null;
+		boolean save = true;
+		List<Long> savedIds = new ArrayList<Long>();
 
-		//		List<Report> ireports = new ArrayList<Report>();
-		//		List<Report> vreports = new ArrayList<Report>();
 		// check if import exists and accept unzip before call
 		String inputFile = getSimpleString(parameters,"inputfile");
 		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
@@ -946,8 +942,11 @@ public class Command
 		}
 		GuiImport guiImport = importDao.get(importId);
 		logger.info("Import data for import id "+importId);
-		logger.info("  format : "+guiImport.getFormat());
+		logger.info("  format  : "+guiImport.getFormat());
+		logger.info("  no save : "+guiImport.isNoSave());
 		logger.info("  options : "+guiImport.getParameters());
+
+		save = !guiImport.isNoSave();
 
 		JSONObject options = guiImport.getParameters();
 		if (options == null) options = new JSONObject();
@@ -958,7 +957,6 @@ public class Command
 		logger.info("Referential "+guiImport.getReferentialId());
 		logger.info("  name : "+referential.getName());
 		logger.info("  slug : "+referential.getSlug());
-		logger.info("  projection type : "+referential.getProjectionType());
 
 		String projectionType = null;
 		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
@@ -969,8 +967,6 @@ public class Command
 		}
 		// set projection for import (inactive if not set)
 		geographicService.switchProjection(projectionType);
-
-		int beanCount = 0;
 
 		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
 
@@ -1049,7 +1045,7 @@ public class Command
 						}
 						byte[] bytes = new byte[4096];
 						int len = stream.read(bytes);
-						temp = new File(tempRep, entry.getName());
+						temp = new File(tempRep.getAbsolutePath()+"/"+entry.getName());
 						FileOutputStream fos = new FileOutputStream(temp);
 						while (len > 0)
 						{
@@ -1064,7 +1060,7 @@ public class Command
 						inputFileParam.setFilepathValue(temp.getAbsolutePath());
 						List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
 						// save
-						if (beans != null && !beans.isEmpty())
+						if (save && beans != null && !beans.isEmpty())
 						{
 
 							for (NeptuneIdentifiedObject bean : beans)
@@ -1088,7 +1084,7 @@ public class Command
 								{
 									GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
 									importReport.addItem(item);
-									beanCount++;
+									savedIds.add(bean.getId());
 								}
 							}
 							catch (Exception e) 
@@ -1117,7 +1113,7 @@ public class Command
 				{
 					ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 					importReport.addItem(fileErrorItem);
-					// TODO
+
 					saveImportReports(guiImport, importReport, validationReport);
 					return 1;
 				}
@@ -1149,6 +1145,7 @@ public class Command
 				ReportHolder importHolder = new ReportHolder();
 				ReportHolder validationHolder = new ReportHolder();
 				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
+
 				if (importHolder.getReport() != null)
 				{
 					importReport = importHolder.getReport();
@@ -1159,31 +1156,36 @@ public class Command
 					validationReport = (ValidationReport) validationHolder.getReport();
 
 				}
-				logger.info("imported Lines "+beans.size());
-
-
-				for (NeptuneIdentifiedObject bean : beans) 
+				if (beans != null)
 				{
-					if (bean instanceof Line)
+					logger.info("imported Lines "+beans.size());
+
+					if (save)
 					{
-						Line line = (Line) bean;
-						checkProjection(line);
-					}
-					List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
-					oneBean.add(bean);
-					try
-					{
-						logger.info("save  Line "+bean.getName());
-						manager.saveAll(null, oneBean, true, true);
-						GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
-						importReport.addItem(item);
-						beanCount++;
-					}
-					catch (Exception e) 
-					{
-						logger.error("save failed "+e.getMessage(),e);
-						GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
-						importReport.addItem(item);
+						for (NeptuneIdentifiedObject bean : beans) 
+						{
+							if (bean instanceof Line)
+							{
+								Line line = (Line) bean;
+								checkProjection(line);
+							}
+							List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
+							oneBean.add(bean);
+							try
+							{
+								logger.info("save  Line "+bean.getName());
+								manager.saveAll(null, oneBean, true, true);
+								GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
+								importReport.addItem(item);
+								savedIds.add(bean.getId());
+							}
+							catch (Exception e) 
+							{
+								logger.error("save failed "+e.getMessage(),e);
+								GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
+								importReport.addItem(item);
+							}
+						}
 					}
 				}
 			}
@@ -1205,20 +1207,28 @@ public class Command
 
 			return 1;
 		}
+		
+		// launch phase3 validation if required and possible
+		if (save && !savedIds.isEmpty() && guiImport.getValidationTask() != null)
+		{
+			// launch validation on objects
+		}
+		
 
 		saveImportReports(guiImport,importReport,validationReport);
-		return (beanCount == 0?1:0);
+		return (0);
 
 	}
 
 	private void saveImportReports(GuiImport guiImport, Report ireport, ValidationReport vreport) 
 	{
-        logger.info("import report = "+ireport.toJSONObject());
-		
+		logger.info("import report = "+ireport.toJSON().toString(3));
+
 		if (guiImport.getValidationTask() != null)
 		{
 			if (vreport != null && vreport.getItems() != null)
 			{
+				// logger.info("validation report = "+vreport.toJSON().toString(3));
 				switch (vreport.getStatus())
 				{
 				case WARNING:
@@ -1236,9 +1246,9 @@ public class Command
 				guiImport.getValidationTask().addAllSteps(vreport.toValidationResults());
 			}
 		}
-		guiImport.setResult(ireport.toJSONObject());
+		guiImport.setResult(ireport.toJSON());
 		importDao.save(guiImport);
-        session.flush();
+		session.flush();
 	}
 
 	private Object filter_chars(String message) 

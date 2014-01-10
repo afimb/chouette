@@ -109,7 +109,7 @@ public class CheckPointReportItem extends ReportItem
 			JSONArray array = new JSONArray();
 			for (ReportItem item : getItems()) 
 			{
-				array.put(item.toJSONObject());
+				array.put(item.toJSON());
 			}
 			if (array.length() > 0)
 			{

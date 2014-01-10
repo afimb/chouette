@@ -5,7 +5,7 @@
 <hibernate-mapping package="fr.certu.chouette.plugin.model" schema="public">
 	<class name="GuiValidationStep" table="compliance_check_results" dynamic-insert="false"
 		dynamic-update="false">
-		<comment>Import Job</comment>
+		<comment>Validation Job</comment>
 		<id name="id" type="long">
 			<column name="id">
 				<comment>Internal identification</comment>

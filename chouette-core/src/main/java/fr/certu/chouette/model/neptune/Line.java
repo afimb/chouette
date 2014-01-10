@@ -1057,4 +1057,9 @@ public class Line extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return "lines/"+getId();
+	}
+
 }

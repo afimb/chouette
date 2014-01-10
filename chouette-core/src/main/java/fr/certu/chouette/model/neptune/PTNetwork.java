@@ -200,4 +200,9 @@ public class PTNetwork extends NeptuneIdentifiedObject
 		}
 	}
 
+	@Override
+	public String toURL() {
+		return "networks/"+getId();
+	}
+
 }

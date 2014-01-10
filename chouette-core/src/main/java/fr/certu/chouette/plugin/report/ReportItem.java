@@ -16,6 +16,9 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -77,56 +80,69 @@ public abstract  class ReportItem extends Report implements Comparable<ReportIte
 		return order-item.order;
 	}
 
-	public String toJSON(String indent,boolean last)
+	public JSONObject toJSON()
 	{
-		StringBuilder builder = new StringBuilder();
-
-		builder.append(indent+"{\n");
-		builder.append(indent+"  \"key\":\"");
-		builder.append(getMessageKey());
-		//      builder.append("\",\n"+indent+"  \"message\":\"");
-		//      builder.append(getLocalizedMessage());
-		builder.append("\",\n"+indent+"  \"status\":\"");
-		builder.append(getStatus());
-		builder.append("\",\n"+indent+"  \"order\":\"");
-		builder.append(getOrder());
-		builder.append("\"");
-		List<ReportItem> subitems = getItems();
-		List<Object> args = getMessageArgs();
-		if (args != null && !args.isEmpty())
+		JSONObject json = new JSONObject();
+		json.put("key", getMessageKey());
+		json.put("status", getStatus().toString());
+		json.put("order", Integer.valueOf(getOrder()));
+		if (getMessageArgs() != null)
+		   json.put("args", getMessageArgs());
+		if (getItems() != null)
 		{
-			builder.append(",\n"+indent+"  \"args\":[\n");
-			for (int i = 0; i < args.size(); i++)
+			JSONArray array = new JSONArray();
+			for (ReportItem item : getItems()) 
 			{
-
-				builder.append("\""+args.get(i)+"\"");
-				if (i < args.size() -1) builder.append(",");
+				array.put(item.toJSON());
 			}
-
-			builder.append(indent+"  ]\n");
-
+			json.put("items", array);
 		}
-		if (subitems != null && !subitems.isEmpty())
-		{
-			builder.append(",\n"+indent+"  \"items\":[\n");
-			for (int i = 0; i < subitems.size(); i++)
-			{
-
-				builder.append(subitems.get(i).toJSON(indent+"    ",i == subitems.size()-1));
-			}
-			builder.append(indent+"  ]\n");
-		}
-
-		builder.append("\n"+indent+"}");
-		if (!last) builder.append(",");
-		builder.append("\n");
-
-		return builder.toString();
+			
+		return json;
+//		StringBuilder builder = new StringBuilder();
+//
+//		builder.append(indent+"{\n");
+//		builder.append(indent+"  \"key\":\"");
+//		builder.append(getMessageKey());
+//		//      builder.append("\",\n"+indent+"  \"message\":\"");
+//		//      builder.append(getLocalizedMessage());
+//		builder.append("\",\n"+indent+"  \"status\":\"");
+//		builder.append(getStatus());
+//		builder.append("\",\n"+indent+"  \"order\":\"");
+//		builder.append(getOrder());
+//		builder.append("\"");
+//		List<ReportItem> subitems = getItems();
+//		List<Object> args = getMessageArgs();
+//		if (args != null && !args.isEmpty())
+//		{
+//			builder.append(",\n"+indent+"  \"args\":[\n");
+//			for (int i = 0; i < args.size(); i++)
+//			{
+//
+//				builder.append("\""+args.get(i)+"\"");
+//				if (i < args.size() -1) builder.append(",");
+//			}
+//
+//			builder.append(indent+"  ]\n");
+//
+//		}
+//		if (subitems != null && !subitems.isEmpty())
+//		{
+//			builder.append(",\n"+indent+"  \"items\":[\n");
+//			for (int i = 0; i < subitems.size(); i++)
+//			{
+//
+//				builder.append(subitems.get(i).toJSON(indent+"    ",i == subitems.size()-1));
+//			}
+//			builder.append(indent+"  ]\n");
+//		}
+//
+//		builder.append("\n"+indent+"}");
+//		if (!last) builder.append(",");
+//		builder.append("\n");
+//
+//		return builder.toString();
 	}
 
-	public String toJSON()
-	{
-		return toJSON("",false);
-	}
 
 }

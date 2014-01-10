@@ -20,7 +20,9 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -68,6 +70,9 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
 public class JaxbNeptuneFileConverter 
 {
 	private static final int BOM_SIZE = 4;
+	
+	private static final String XML_1 = "1-NEPTUNE-XML-1" ;
+	private static final String XML_2 = "1-NEPTUNE-XML-2" ;
 
 	private JAXBContext context = null;
 
@@ -205,7 +210,7 @@ public class JaxbNeptuneFileConverter
 		ChouettePTNetworkType chouettePTNetworkType = null;
 		NeptuneValidationEventHandler handler = new NeptuneValidationEventHandler(contentName);
 		PhaseReportItem report = new PhaseReportItem(PhaseReportItem.PHASE.ONE);
-		CheckPointReportItem report1 = new CheckPointReportItem("1-NEPTUNE-XML-1",1,Report.STATE.OK,CheckPointReportItem.SEVERITY.ERROR);
+		CheckPointReportItem report1 = new CheckPointReportItem(XML_1,1,Report.STATE.OK,CheckPointReportItem.SEVERITY.ERROR);
 		//Locale.setDefault(Locale.ENGLISH);
 		try 
 		{
@@ -239,14 +244,20 @@ public class JaxbNeptuneFileConverter
 			if (e.getCause() != null && e.getCause() instanceof SAXParseException)
 			{
 				SAXParseException cause = (SAXParseException) e.getCause();
-				ReportLocation location = new ReportLocation(contentName, "xml-grammar", cause.getLineNumber(), cause.getColumnNumber(), cause.getMessage());
-				DetailReportItem item = new DetailReportItem( "xml-grammar", Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("xmlKey", "xml-grammar");
+				map.put("message", cause.getMessage());
+				ReportLocation location = new ReportLocation(contentName, cause.getLineNumber(), cause.getColumnNumber());
+				DetailReportItem item = new DetailReportItem( XML_1, "xml-grammar", Report.STATE.ERROR, location, map );
 				report1.addItem(item);
 			}
 			else
 			{
-				ReportLocation location = new ReportLocation(contentName, "xml-failure", -1 , -1 , e.getMessage());
-				DetailReportItem item = new DetailReportItem( "xml-failure", Report.STATE.ERROR, location );
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("xmlKey", "xml-failure");
+				map.put("message", e.getMessage());
+				ReportLocation location = new ReportLocation(contentName, -1 , -1 );
+				DetailReportItem item = new DetailReportItem(XML_1, "xml-failure", Report.STATE.ERROR, location , map);
 				report1.addItem(item);
 			}
 		}
@@ -374,7 +385,7 @@ public class JaxbNeptuneFileConverter
 		private String fileName;
 
 		@Getter private List<ValidationEvent> events = new ArrayList<ValidationEvent>();
-		@Getter private CheckPointReportItem report = new CheckPointReportItem("1-NEPTUNE-XML-2",2,Report.STATE.OK,CheckPointReportItem.SEVERITY.ERROR);
+		@Getter private CheckPointReportItem report = new CheckPointReportItem(XML_2,2,Report.STATE.OK,CheckPointReportItem.SEVERITY.ERROR);
 		@Getter private boolean hasErrors = false;
 
 
@@ -407,8 +418,12 @@ public class JaxbNeptuneFileConverter
 				status=Report.STATE.WARNING; break;	
 			}
 
-			ReportLocation location = new ReportLocation(fileName, key, event.getLocator().getLineNumber(), event.getLocator().getColumnNumber(), event.getMessage());
-			DetailReportItem item = new DetailReportItem(key, status, location);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("xmlKey", key);
+			map.put("message", event.getMessage());
+			
+			ReportLocation location = new ReportLocation(fileName, event.getLocator().getLineNumber(), event.getLocator().getColumnNumber());
+			DetailReportItem item = new DetailReportItem(XML_1,key, status, location, map);
 			report.addItem(item);
 			return true;
 		}

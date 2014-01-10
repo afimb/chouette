@@ -233,43 +233,9 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 		}
 		else
 		{
-			Reporter.log(report.getStatus().name()+" : "+report.getLocalizedMessage());
-			printItems("---",report.getItems());
+			Reporter.log(report.toJSON().toString(3));
 		}
 	}
 
-	/**
-	 * @param indent
-	 * @param items
-	 */
-	private void printItems(String indent,List<ReportItem> items) 
-	{
-		if (items == null) return;
-		for (ReportItem item : items) 
-		{
-			if (item instanceof CheckPointReportItem)
-			{
-				CheckPointReportItem citem = (CheckPointReportItem) item;
-				Reporter.log(indent+citem.getStatus().name()+" : "+citem.getMessageKey());
-
-			}
-			else if (item instanceof DetailReportItem)
-			{
-				DetailReportItem ditem = (DetailReportItem) item;
-				Reporter.log(indent+ditem.getStatus().name()+" : "+ditem.getMessageKey()+" file "+ditem.getLocation().getFileName()+" line "+ditem.getLocation().getLineNumber()+" col "+ditem.getLocation().getColumnNumber());
-				if (ditem.getLocation().getMessage() != null)
-					Reporter.log(indent+" message : "+ditem.getLocation().getMessage());
-				if (ditem.getLocation().getAttribute() != null)
-					Reporter.log(indent+" attribute : "+ditem.getLocation().getAttribute()+" = "+ditem.getLocation().getValue());
-
-			}
-			else
-			{
-				Reporter.log(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			}
-			printItems(indent+"---",item.getItems());
-		}
-
-	}
 
 }

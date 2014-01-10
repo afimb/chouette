@@ -159,38 +159,8 @@ public class JaxbNeptuneFileReaderTests  extends AbstractTestNGSpringContextTest
 		else
 		{
 
-			Reporter.log(report.getStatus().name()+" : "+report.getMessageKey()+" ( "+getSize(report.getItems())+" item(s) )");
-			printItems("----",report.getItems());
+			Reporter.log(report.toJSON().toString(3));
 		}
 	}
-
-	private int getSize(List<? extends Object> list)
-	{
-		return (list == null?0:list.size());
-	}
-	/**
-	 * @param indent
-	 * @param items
-	 */
-	private void printItems(String indent,List<ReportItem> items) 
-	{
-		if (items == null) return;
-		for (ReportItem item : items) 
-		{
-			if (item instanceof DetailReportItem)
-			{
-				DetailReportItem ditem = (DetailReportItem) item;
-				Reporter.log(indent+ditem.getStatus().name()+" : "+item.getMessageKey()+" line "+ditem.getLocation().getLineNumber()+" col "+ditem.getLocation().getColumnNumber());
-				Reporter.log(indent+ditem.getLocation().getMessage());
-			}
-			else
-			{
-			Reporter.log(indent+item.getStatus().name()+" : "+item.getMessageKey()+" ( "+getSize(item.getItems())+" item(s) )");
-			printItems(indent+"----",item.getItems());
-			}
-		}
-
-	}
-
 
 }
