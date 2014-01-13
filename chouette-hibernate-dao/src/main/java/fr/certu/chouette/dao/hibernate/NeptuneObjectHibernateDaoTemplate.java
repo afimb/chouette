@@ -21,6 +21,7 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.model.ActiveRecordObject;
+import fr.certu.chouette.plugin.model.CompilanceCheckTask;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
 import fr.certu.chouette.plugin.model.ImportTask;
@@ -51,6 +52,11 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    public static NeptuneObjectHibernateDaoTemplate<ImportTask> createImportDao()
    {
       return new NeptuneObjectHibernateDaoTemplate<ImportTask>( ImportTask.class);
+   }
+
+   public static NeptuneObjectHibernateDaoTemplate<CompilanceCheckTask> createValidationDao()
+   {
+      return new NeptuneObjectHibernateDaoTemplate<CompilanceCheckTask>( CompilanceCheckTask.class);
    }
 
    public static NeptuneObjectHibernateDaoTemplate<GuiExport> createExportDao()

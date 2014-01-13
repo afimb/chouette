@@ -18,7 +18,7 @@
 			</column>
 		</property>
 		
-		<many-to-one name="importTask" class="ImportTAsk" unique="true">
+		<many-to-one name="importTask" class="ImportTask" unique="true">
 			<column name="import_task_id" >
 				<comment>Import identification</comment>
 			</column>

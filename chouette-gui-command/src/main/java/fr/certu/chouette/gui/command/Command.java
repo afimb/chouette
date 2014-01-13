@@ -844,7 +844,7 @@ public class Command
 		String format = options.getString("format").toUpperCase();
 		String inputFile = options.getString("file_path");
 
-		save = options.getInt("no_save") == 0;
+		save = !options.getBoolean("no_save");
 
 		Referential referential = referentialDao.get(importTask.getReferentialId());
 		logger.info("Referential "+importTask.getReferentialId());

@@ -308,6 +308,11 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
+	<bean id="validationDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+		factory-method="createValidationDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
 	<bean id="exportDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
 		factory-method="createExportDao">
 		<property name="sessionFactory" ref="sessionFactory" />

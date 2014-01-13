@@ -60,7 +60,7 @@
         <property name="createdAt" column="created_at" type="timestamp"/>
         <property name="updatedAt" column="updated_at" type="timestamp"/>
         
-			<many-to-one class="CompilanceCheckTask" lazy="no-proxy" name="compilanceCheckResult"
+			<many-to-one class="CompilanceCheckTask" lazy="no-proxy" name="compilanceCheckTask"
 				outer-join="auto" update="true" cascade="all" >
 				<column name="compliance_check_task_id">
 					<comment> foreign key </comment>
