@@ -23,7 +23,7 @@ import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.model.ActiveRecordObject;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
-import fr.certu.chouette.plugin.model.GuiImport;
+import fr.certu.chouette.plugin.model.ImportTask;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 
@@ -48,9 +48,9 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
       return new NeptuneObjectHibernateDaoTemplate<Referential>( Referential.class);
    }
 
-   public static NeptuneObjectHibernateDaoTemplate<GuiImport> createImportDao()
+   public static NeptuneObjectHibernateDaoTemplate<ImportTask> createImportDao()
    {
-      return new NeptuneObjectHibernateDaoTemplate<GuiImport>( GuiImport.class);
+      return new NeptuneObjectHibernateDaoTemplate<ImportTask>( ImportTask.class);
    }
 
    public static NeptuneObjectHibernateDaoTemplate<GuiExport> createExportDao()

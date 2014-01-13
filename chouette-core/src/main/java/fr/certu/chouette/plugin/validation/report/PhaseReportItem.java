@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.certu.chouette.plugin.model.GuiValidationStep;
+import fr.certu.chouette.plugin.model.CompilanceCheckResult;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 
@@ -78,9 +78,9 @@ public class PhaseReportItem extends ReportItem
 		return phase;
 	}
 
-    public List<GuiValidationStep> toValidationResults()
+    public List<CompilanceCheckResult> toValidationResults()
     {
-    	List<GuiValidationStep> list = new ArrayList<GuiValidationStep>();
+    	List<CompilanceCheckResult> list = new ArrayList<CompilanceCheckResult>();
     	for (ReportItem item : getItems()) 
     	{
     		list.add(((CheckPointReportItem) item).toValidationResult());

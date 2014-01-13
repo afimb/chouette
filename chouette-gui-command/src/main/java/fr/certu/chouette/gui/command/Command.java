@@ -70,8 +70,8 @@ import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
-import fr.certu.chouette.plugin.model.GuiImport;
-import fr.certu.chouette.plugin.model.GuiValidation;
+import fr.certu.chouette.plugin.model.ImportTask;
+import fr.certu.chouette.plugin.model.CompilanceCheckTask;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 import fr.certu.chouette.plugin.report.Report;
@@ -155,13 +155,13 @@ public class Command
 
 	@Setter private IDaoTemplate<Referential> referentialDao;;
 
-	@Setter private IDaoTemplate<GuiImport> importDao;;
+	@Setter private IDaoTemplate<ImportTask> importDao;;
 
 	@Setter private IDaoTemplate<GuiExport> exportDao;
 
 	@Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
 
-	@Setter private IDaoTemplate<GuiValidation> validationDao;
+	@Setter private IDaoTemplate<CompilanceCheckTask> validationDao;
 
 	@Setter private IGeographicService geographicService;
 
@@ -831,22 +831,23 @@ public class Command
 			logger.error("import not found "+importId);
 			return 1;
 		}
-		GuiImport guiImport = importDao.get(importId);
+		ImportTask importTask = importDao.get(importId);
 		logger.info("Import data for import id "+importId);
-		logger.info("  format  : "+guiImport.getFormat());
-		logger.info("  no save : "+guiImport.isNoSave());
-		logger.info("  options : "+guiImport.getParameters());
-		String inputFile = getSimpleString(parameters,"inputfile");
+		logger.info("  options : "+importTask.getParameters());
 
-		save = !guiImport.isNoSave();
+		JSONObject options = importTask.getParameters();
+		if (options == null) 
+		{
+			logger.error("import without parameters "+importId);
+			return 1;
+		}
+		String format = options.getString("format").toUpperCase();
+		String inputFile = options.getString("file_path");
 
-		JSONObject options = guiImport.getParameters();
-		if (options == null) options = new JSONObject();
+		save = options.getInt("no_save") == 0;
 
-		String format = guiImport.getFormat().toUpperCase(); // TODO : check values 
-
-		Referential referential = referentialDao.get(guiImport.getReferentialId());
-		logger.info("Referential "+guiImport.getReferentialId());
+		Referential referential = referentialDao.get(importTask.getReferentialId());
+		logger.info("Referential "+importTask.getReferentialId());
 		logger.info("  name : "+referential.getName());
 		logger.info("  slug : "+referential.getSlug());
 
@@ -1006,7 +1007,7 @@ public class Command
 					ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 					importReport.addItem(fileErrorItem);
 
-					saveImportReports(guiImport, importReport, validationReport);
+					saveImportReports(importTask, importReport, validationReport);
 					return 1;
 				}
 				finally
@@ -1089,13 +1090,13 @@ public class Command
 			}
 			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,msg);
 			importReport.addItem(item);
-			saveImportReports(guiImport,importReport,validationReport);
+			saveImportReports(importTask,importReport,validationReport);
 
 			return 1;
 		}
 
 		// launch phase3 validation if required and possible
-		if (save && !savedIds.isEmpty() && guiImport.getValidationTask() != null)
+		if (save && !savedIds.isEmpty() && importTask.getCompilanceCheckTask() != null)
 		{
 			logger.info("processing phase 3 validation on "+savedIds.size()+" lines");
 			// launch validation on objects
@@ -1112,7 +1113,7 @@ public class Command
 				{
 					PhaseReportItem phaseReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
 					validationReport.addItem(phaseReport);
-					manager.validate(null, beans, guiImport.getValidationTask().getParameters(), phaseReport, true);
+					manager.validate(null, beans, importTask.getCompilanceCheckTask().getParameters(), phaseReport, true);
 				}
 			} 
 			catch (ChouetteException e) 
@@ -1122,16 +1123,16 @@ public class Command
 		}
 
 
-		saveImportReports(guiImport,importReport,validationReport);
+		saveImportReports(importTask,importReport,validationReport);
 		return (0);
 
 	}
 
-	private void saveImportReports(GuiImport guiImport, Report ireport, ValidationReport vreport) 
+	private void saveImportReports(ImportTask guiImport, Report ireport, ValidationReport vreport) 
 	{
 		//logger.info("import report = "+ireport.toJSON().toString(3));
 
-		if (guiImport.getValidationTask() != null)
+		if (guiImport.getCompilanceCheckTask() != null)
 		{
 			if (vreport != null && vreport.getItems() != null)
 			{
@@ -1141,16 +1142,16 @@ public class Command
 				case WARNING:
 				case ERROR:
 				case FATAL:
-					guiImport.getValidationTask().setStatus("nok");
+					guiImport.getCompilanceCheckTask().setStatus("nok");
 					break;
 				case OK:
-					guiImport.getValidationTask().setStatus("ok");
+					guiImport.getCompilanceCheckTask().setStatus("ok");
 					break;
 				case UNCHECK:
-					guiImport.getValidationTask().setStatus("na");
+					guiImport.getCompilanceCheckTask().setStatus("na");
 					break;
 				}
-				guiImport.getValidationTask().addAllSteps(vreport.toValidationResults());
+				guiImport.getCompilanceCheckTask().addAllResults(vreport.toValidationResults());
 			}
 		}
 		guiImport.setResult(ireport.toJSON());
@@ -1212,7 +1213,7 @@ public class Command
 			logger.error("compilanceCheckTask not found "+validationId);
 			return 1;
 		}
-		GuiValidation compilanceCheckTask = validationDao.get(validationId);
+		CompilanceCheckTask compilanceCheckTask = validationDao.get(validationId);
 
 		// read parameters
 		JSONObject validationParameters = compilanceCheckTask.getParameters();
@@ -1666,7 +1667,7 @@ public class Command
 
 	}
 
-	private void saveValidationReport(GuiValidation compilanceCheckTask, PhaseReportItem vreport)
+	private void saveValidationReport(CompilanceCheckTask compilanceCheckTask, PhaseReportItem vreport)
 	{
 		if (vreport != null && vreport.getItems() != null)
 		{
@@ -1684,7 +1685,7 @@ public class Command
 				compilanceCheckTask.setStatus("na");
 				break;
 			}
-			compilanceCheckTask.addAllSteps(vreport.toValidationResults());
+			compilanceCheckTask.addAllResults(vreport.toValidationResults());
 			validationDao.save(compilanceCheckTask);
 			session.flush();
 		}

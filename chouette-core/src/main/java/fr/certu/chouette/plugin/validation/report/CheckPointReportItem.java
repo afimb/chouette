@@ -11,7 +11,7 @@ import lombok.Getter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fr.certu.chouette.plugin.model.GuiValidationStep;
+import fr.certu.chouette.plugin.model.CompilanceCheckResult;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
@@ -83,9 +83,9 @@ public class CheckPointReportItem extends ReportItem
 		return null;
 	}
 	
-	public GuiValidationStep toValidationResult()
+	public CompilanceCheckResult toValidationResult()
 	{
-		GuiValidationStep step = new GuiValidationStep();
+		CompilanceCheckResult step = new CompilanceCheckResult();
 		step.setCreatedAt(Calendar.getInstance().getTime());
 		step.setRuleCode(getMessageKey());
 		step.setSeverity(severity.toString().toLowerCase());

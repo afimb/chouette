@@ -59,12 +59,12 @@
 				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
 				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
-                <!-- external objects : log messages -->
-				<value>fr/certu/chouette/model/neptune/referential.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/import.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/validation.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/validation_step.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/export.hbm.xml</value>
+                <!-- external objects only for chouette2 interface -->
+				<value>fr/certu/chouette/model/gui/referential.hbm.xml</value>
+				<value>fr/certu/chouette/model/gui/import_task.hbm.xml</value>
+				<value>fr/certu/chouette/model/gui/compilance_check_task.hbm.xml</value>
+				<value>fr/certu/chouette/model/gui/compilance_check_result.hbm.xml</value>
+				<value>fr/certu/chouette/model/gui/export.hbm.xml</value>
 			</list>
 		</property>
 		<!-- chouette specific parameters to complete hibernate update schema action -->

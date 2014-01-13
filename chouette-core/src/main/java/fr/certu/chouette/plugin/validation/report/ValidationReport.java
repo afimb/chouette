@@ -11,7 +11,7 @@ package fr.certu.chouette.plugin.validation.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.certu.chouette.plugin.model.GuiValidationStep;
+import fr.certu.chouette.plugin.model.CompilanceCheckResult;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
@@ -43,9 +43,9 @@ public class ValidationReport extends Report
 		if (itemStatus > status) setStatus(item.getStatus());
 	}
 	
-    public List<GuiValidationStep> toValidationResults()
+    public List<CompilanceCheckResult> toValidationResults()
     {
-    	List<GuiValidationStep> list = new ArrayList<GuiValidationStep>();
+    	List<CompilanceCheckResult> list = new ArrayList<CompilanceCheckResult>();
     	for (ReportItem item : getItems()) 
     	{
     		list.addAll(((PhaseReportItem) item).toValidationResults());

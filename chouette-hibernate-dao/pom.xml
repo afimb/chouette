@@ -124,7 +124,14 @@
 			</resource>
 			<resource>
 				<targetPath>fr/certu/chouette/model/neptune</targetPath>
-				<directory>src/main/mapping</directory>
+				<directory>src/main/mapping/neptune</directory>
+				<includes>
+					<include>*.hbm.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>fr/certu/chouette/model/gui</targetPath>
+				<directory>src/main/mapping/gui</directory>
 				<includes>
 					<include>*.hbm.xml</include>
 				</includes>

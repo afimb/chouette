@@ -14,7 +14,7 @@ import lombok.Setter;
  * @author michel
  *
  */
-public class GuiValidationStep extends ActiveRecordObject 
+public class CompilanceCheckResult extends ActiveRecordObject 
 {
     /**
 	 * 
@@ -29,10 +29,10 @@ public class GuiValidationStep extends ActiveRecordObject
 	@Getter @Setter private String status;
 	@Getter @Setter private Integer violationCount;
     @Getter @Setter private JSONObject detail;
-    @Getter @Setter private GuiValidation validation;
+    @Getter @Setter private CompilanceCheckTask compilanceCheckTask;
 
     
-	public GuiValidationStep()
+	public CompilanceCheckResult()
 	{
 		setCreatedAt(Calendar.getInstance().getTime());
 		setUpdatedAt(getCreatedAt());
