@@ -2,9 +2,12 @@ package fr.certu.chouette.validation.checkpoint;
 
 import java.util.List;
 
+import lombok.Setter;
+
 import org.json.JSONObject;
 
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
@@ -15,6 +18,8 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
 public class LineCheckPoints extends AbstractValidation implements ICheckPointPlugin<Line>
 {
 
+	@Setter private RouteCheckPoints routeCheckPoints; 
+	
 	@Override
 	public void check(List<Line> beans, JSONObject parameters,
 			PhaseReportItem report) 
@@ -25,20 +30,23 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 		
 		// 3-Line-1 : check if two lines have same name
 		// 3-Line-2 : check if line has routes
-		if (beans.size() > 1)
+		if (beans.size() > 0)
 		{
 			// checkPoint is applicable
-			prepareCheckPoint(report, LINE_1);
 			prepareCheckPoint(report, LINE_2);
 			
 			// en cas d'erreur, on reporte autant de detail que de lignes en erreur
-			for (int i = 0; i < beans.size() -1; i++)
+			for (int i = 0; i < beans.size(); i++)
 			{
 				Line line1 = beans.get(i);
 				// 3-Line-1 : check if two lines have same name
                 checkLine1(beans, report, i, line1);
         		// 3-Line-2 : check if line has routes
 				checkLine2(report, line1);
+				
+				// forward on routes
+				List<Route> routes = line1.getRoutes();
+				routeCheckPoints.check(routes, parameters, report);
 			}
 		}
 		
@@ -66,7 +74,9 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 	 */
 	private void checkLine1(List<Line> beans, PhaseReportItem report,
 			int lineRank, Line line1) {
+		if (beans.size() <= 1) return;
 		boolean error_1 = false; // if true, add detail for this line
+		prepareCheckPoint(report, LINE_1);
 		for (int j = lineRank+1; j < beans.size(); j++)
 		{
 			Line line2 = beans.get(j);

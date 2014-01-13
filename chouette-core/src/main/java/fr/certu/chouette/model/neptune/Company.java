@@ -7,6 +7,8 @@
  */
 package fr.certu.chouette.model.neptune;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -78,6 +80,16 @@ public class Company extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private String            registrationNumber;
+
+   /**
+    * List of the company lines <br/>
+    * not initialized after import<br/>
+    * readable from database but not updatable <br/>
+    * <i>readable/writable</i>
+    */
+   @Getter
+   @Setter
+   private List<Line>              lines;
 
    /*
     * (non-Javadoc)

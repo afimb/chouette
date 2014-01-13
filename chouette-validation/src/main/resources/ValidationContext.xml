@@ -4,5 +4,8 @@
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
    default-init-method="init">
-	<bean id="lineCheckPoints" class="fr.certu.chouette.validation.checkpoint.LineCheckPoints" />
+	<bean id="lineCheckPoints" class="fr.certu.chouette.validation.checkpoint.LineCheckPoints" >
+		<property name="routeCheckPoints" ref="routeCheckPoints" />
+   </bean>
+	<bean id="routeCheckPoints" class="fr.certu.chouette.validation.checkpoint.RouteCheckPoints" />
 </beans>

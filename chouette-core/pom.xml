@@ -73,10 +73,10 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>javax.media</groupId>
 			<artifactId>jai-core</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -85,8 +85,6 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 		</dependency>
-		<!--<dependency> <groupId>com.googlecode.json-simple</groupId> <artifactId>json-simple</artifactId> 
-			</dependency> -->
 	</dependencies>
 	<build>
 		<resources>

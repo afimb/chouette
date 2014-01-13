@@ -44,6 +44,16 @@
 				<comment>type</comment>
 			</column>
 		</property>
+		<property name="referencesType" type="string">
+			<column name="references_type">
+				<comment>object type when no import</comment>
+			</column>
+		</property>
+		<property name="referenceIds" type="string">
+			<column name="reference_ids">
+				<comment>object ids when no import</comment>
+			</column>
+		</property>
 		<property name="progressInfo" type="fr.certu.chouette.dao.hibernate.usertype.JsonTextUserType">
 			<column name="progress_info">
 				<comment>import progress information</comment>

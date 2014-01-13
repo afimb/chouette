@@ -78,5 +78,11 @@
 				<comment>Registration number</comment>
 			</column>
 		</property>
+		<!-- comment on Line definition -->
+		<bag name="lines" lazy="true" inverse="true">
+			<key column="company_id" foreign-key="line_company_fkey"
+				update="false" on-delete="noaction" />
+			<one-to-many class="Line" />
+		</bag>
 	</class>
 </hibernate-mapping>

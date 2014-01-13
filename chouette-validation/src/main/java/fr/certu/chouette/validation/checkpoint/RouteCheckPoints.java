@@ -40,14 +40,14 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 		initCheckPoint(report, ROUTE_6, CheckPointReportItem.SEVERITY.ERROR);
 		initCheckPoint(report, ROUTE_7, CheckPointReportItem.SEVERITY.ERROR);
 
-		if (beans.size() > 1)
+		if (beans.size() > 0)
 		{
 			// checkPoint is applicable
 			prepareCheckPoint(report, ROUTE_6);
 			prepareCheckPoint(report, ROUTE_7);
 
 			// en cas d'erreur, on reporte autant de detail que de route en erreur
-			for (int i = 0; i < beans.size() -1; i++)
+			for (int i = 0; i < beans.size(); i++)
 			{
 				Route route = beans.get(i);
 
@@ -180,6 +180,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 	private void checkRoute4(PhaseReportItem report, List<Route> beans, int routeRank,
 			Route route)
 	{
+		if (beans.size() <= 1) return;
 		if (isEmpty(route.getStopPoints())) return;
 		prepareCheckPoint(report, ROUTE_4);
 		List<StopArea> areas = route.getStopAreas();
@@ -217,6 +218,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 	private void checkRoute5(PhaseReportItem report, List<Route> beans, int routeRank, Route route) 
 	{
 		if (route.getWayBackRoute() != null) return;
+		if (beans.size() <= 1) return;
 		List<StopArea> areas = route.getStopAreas();
 		// test can be passed if areas exist and have parents
 		if (areas.isEmpty()) return;

@@ -12,10 +12,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Time;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,11 +20,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -55,8 +53,11 @@ import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AreaCentroid;
+import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -491,12 +492,11 @@ public class Command
 			return;
 		}
 
-		INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
 		long tdeb = System.currentTimeMillis();
 
 		if (name.equals("import"))
 		{
-			int code = executeImport(manager,parameters);
+			int code = executeImport(parameters);
 			if (code > 0)
 			{
 				logger.error("   command failed with code "+code);
@@ -505,7 +505,7 @@ public class Command
 		}
 		else if (name.equals("validate"))
 		{
-			int code = executeValidate(manager,parameters);
+			int code = executeValidate(parameters);
 			if (code > 0)
 			{
 				logger.error("   command failed with code "+code);
@@ -514,16 +514,9 @@ public class Command
 		}
 		else if (name.equals("export"))
 		{
+			// old fashioned interface
+			INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
 			int code = executeExport(manager,parameters);
-			if (code > 0)
-			{
-				logger.error("   command failed with code "+code);
-				System.exit(code);
-			}
-		}
-		else if (name.equals("exportForDeletion"))
-		{
-			int code = executeExportDeletion(manager,parameters);
 			if (code > 0)
 			{
 				logger.error("   command failed with code "+code);
@@ -667,113 +660,6 @@ public class Command
 	}
 
 
-	/**
-	 * @param beans
-	 * @param manager
-	 * @param parameters
-	 * @return 
-	 */
-	private int executeExportDeletion(
-			INeptuneManager<NeptuneIdentifiedObject> manager,
-			Map<String, List<String>> parameters) 
-	{
-		List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
-
-		String format = getSimpleString(parameters,"format");
-		try
-		{
-			List<FormatDescription> formats = manager.getDeleteExportFormats(null);
-			FormatDescription description = null;
-
-			for (FormatDescription formatDescription : formats)
-			{
-				if (formatDescription.getName().equalsIgnoreCase(format))
-				{
-					description=formatDescription;
-					break;
-				}
-			}
-			if (description == null)
-			{
-				throw new IllegalArgumentException("format "+format+" unavailable, check command getDeletionExportFormats for list ");
-			}
-
-
-			List<ParameterValue> values = new ArrayList<ParameterValue>();
-			for (ParameterDescription desc : description.getParameterDescriptions())
-			{
-				String name = desc.getName();
-				String key = name.toLowerCase();
-				List<String> vals = parameters.get(key);
-				if (vals == null)
-				{
-					if (desc.isMandatory())
-					{
-						throw new IllegalArgumentException("parameter -"+name+" is required, check command getDeletionExportFormats for list ");
-					}
-				}
-				else
-				{
-					if (desc.isCollection())
-					{
-						ListParameterValue val = new ListParameterValue(name);
-						switch (desc.getType())
-						{
-						case FILEPATH : val.setFilepathList(vals); break;
-						case STRING : val.setStringList(vals); break;
-						case FILENAME : val.setFilenameList(vals); break;
-						default:
-							throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
-						}
-						values.add(val);
-					}
-					else
-					{
-						if (vals.size() != 1)
-						{
-							throw new IllegalArgumentException("parameter -"+name+" must be unique, check command getDeletionExportFormats for list ");
-						}
-						String simpleval = vals.get(0);
-
-						SimpleParameterValue val = new SimpleParameterValue(name);
-						switch (desc.getType())
-						{
-						case FILEPATH : val.setFilepathValue(simpleval); break;
-						case STRING : val.setStringValue(simpleval); break;
-						case FILENAME : val.setFilenameValue(simpleval); break;
-						case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
-						case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
-						default:
-							throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
-						}
-						values.add(val);
-					}
-				}
-			}
-
-			ReportHolder holder = new ReportHolder();
-			manager.doExportDeleted(null, beans, format, values, holder );
-			if (holder.getReport() != null)
-			{
-				Report r = holder.getReport();
-				System.out.println(r.getLocalizedMessage());
-				// printItems(System.out,"",r.getItems());
-			}
-		}
-		catch (ChouetteException e)
-		{
-			logger.error(e.getMessage());
-
-			Throwable caused = e.getCause();
-			while (caused != null)
-			{
-				logger.error("caused by "+ caused.getMessage());
-				caused = caused.getCause();
-			}
-			throw new RuntimeException("export failed, see details in log");
-		}
-		return 0;
-	}
 
 
 	/**
@@ -918,22 +804,27 @@ public class Command
 
 
 	/**
-	 * import command :  ( -fileFormat utilisé si l'extension du fichier n'est pas représentative du format)
-	 * -c import -o line -format XXX -inputFile YYYY [-fileFormat TTT] -importId ZZZ ... 
+	 * import command :  
+	 * -c import -id ZZZ 
 	 * @param manager
 	 * @param parameters
 	 * @return
 	 */
-	private int executeImport(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
+	private int executeImport(Map<String, List<String>> parameters)
 	{
 		Report importReport = null;
 		ValidationReport validationReport = null;
 		boolean save = true;
 		List<Long> savedIds = new ArrayList<Long>();
 
+		INeptuneManager<NeptuneIdentifiedObject> manager = getManagers().get("line");
 		// check if import exists and accept unzip before call
-		String inputFile = getSimpleString(parameters,"inputfile");
-		Long importId = Long.valueOf(getSimpleString(parameters,"importid"));
+		Long importId = Long.valueOf(getSimpleString(parameters,"id","0"));
+		// TODO remove when Rails is updated
+		if (importId.equals(Long.valueOf(0)))
+		{
+			importId = Long.valueOf(getSimpleString(parameters,"importid"));
+		}
 		if (!importDao.exists(importId))
 		{
 			// error import not found
@@ -945,6 +836,7 @@ public class Command
 		logger.info("  format  : "+guiImport.getFormat());
 		logger.info("  no save : "+guiImport.isNoSave());
 		logger.info("  options : "+guiImport.getParameters());
+		String inputFile = getSimpleString(parameters,"inputfile");
 
 		save = !guiImport.isNoSave();
 
@@ -1135,12 +1027,6 @@ public class Command
 				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
 				inputFileParam.setFilepathValue(inputFile);
 				values.add(inputFileParam);
-				//				if (!fileFormat.isEmpty())
-				//				{
-				//					SimpleParameterValue fileFormatParam = new SimpleParameterValue("fileFormat");
-				//					fileFormatParam.setStringValue(fileFormat);
-				//					values.add(fileFormatParam);
-				//				}
 				// surround with try catch 
 				ReportHolder importHolder = new ReportHolder();
 				ReportHolder validationHolder = new ReportHolder();
@@ -1207,13 +1093,34 @@ public class Command
 
 			return 1;
 		}
-		
+
 		// launch phase3 validation if required and possible
 		if (save && !savedIds.isEmpty() && guiImport.getValidationTask() != null)
 		{
+			logger.info("processing phase 3 validation on "+savedIds.size()+" lines");
 			// launch validation on objects
+			Filter filter = Filter.getNewInFilter("id", savedIds);
+			try 
+			{
+				List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
+				if (beans == null || beans.isEmpty())
+				{
+					logger.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
+
+				}
+				else
+				{
+					PhaseReportItem phaseReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
+					validationReport.addItem(phaseReport);
+					manager.validate(null, beans, guiImport.getValidationTask().getParameters(), phaseReport, true);
+				}
+			} 
+			catch (ChouetteException e) 
+			{
+				logger.error("cannot read previously saved objects",e);
+			}
 		}
-		
+
 
 		saveImportReports(guiImport,importReport,validationReport);
 		return (0);
@@ -1222,7 +1129,7 @@ public class Command
 
 	private void saveImportReports(GuiImport guiImport, Report ireport, ValidationReport vreport) 
 	{
-		logger.info("import report = "+ireport.toJSON().toString(3));
+		//logger.info("import report = "+ireport.toJSON().toString(3));
 
 		if (guiImport.getValidationTask() != null)
 		{
@@ -1286,30 +1193,83 @@ public class Command
 
 
 	/**
-	 * validate command : 
-	 * from neptune file :
-	 * -c validate -o line -inputFile YYYY  [-fileFormat TTT] -validateId ZZZ 
-	 * 
-	 * from database : 
-	 * -c validate -o line|network|company -validateId ZZZ [-id list_of_ids_separated_by_commas]
+	 * validate command from database : 
+	 * -c validation -o line|network|company -validationId ZZZ
 	 *
-	 * @param manager
 	 * @param parameters 
 	 * @return 
 	 * @throws ChouetteException
 	 */
 	private int executeValidate(
-			INeptuneManager<NeptuneIdentifiedObject> manager, 
 			Map<String, List<String>> parameters)
 					throws ChouetteException 
 					{
-		Long validationId = Long.valueOf(getSimpleString(parameters,"validationid"));
+		INeptuneManager<NeptuneIdentifiedObject> manager = getManagers().get("line");
+		Long validationId = Long.valueOf(getSimpleString(parameters,"id"));
+		if (!validationDao.exists(validationId))
+		{
+			// error validation not found
+			logger.error("compilanceCheckTask not found "+validationId);
+			return 1;
+		}
+		GuiValidation compilanceCheckTask = validationDao.get(validationId);
+
+		// read parameters
+		JSONObject validationParameters = compilanceCheckTask.getParameters();
+
+		// read object type
+		String objectType = extractObjectType(compilanceCheckTask.getReferencesType().toLowerCase());
+
+		String idstring = compilanceCheckTask.getReferenceIds();
+		String[] ids = idstring.split(",");
+		List<Long> checkIds = new ArrayList<>();
+		for (String id : ids) 
+		{
+			checkIds.add(Long.valueOf(id));
+		}
 
 		List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
+		if (!objectType.startsWith("line"))
+		{
+			INeptuneManager<NeptuneIdentifiedObject> loadManager = getManagers().get(objectType);
+			if (loadManager == null)
+			{
+				logger.error("object type "+objectType+" not found "+validationId);
+				return 1;
+			}
+			Filter filter = Filter.getNewInFilter("id", ids);
+			List<NeptuneIdentifiedObject> containerBeans = loadManager.getAll(null,filter);
+			Set<NeptuneIdentifiedObject> beanSet = new HashSet<NeptuneIdentifiedObject>();
+			for (NeptuneIdentifiedObject container : containerBeans) 
+			{
+				if (objectType.equals("network"))
+				{
+					PTNetwork network = (PTNetwork) container;
+					beanSet.addAll(network.getLines());
+				}
+				else if (objectType.equals("company"))
+				{
+					Company company = (Company) container;
+					beanSet.addAll(company.getLines());
+				}
+				else if (objectType.equals("groupofline"))
+				{
+					GroupOfLine group = (GroupOfLine) container;
+					beanSet.addAll(group.getLines());
+				}
+				else
+				{
+					logger.error("object type "+objectType+" not managed "+validationId);
+				}
+			}
+			beans.addAll(beanSet);
+		}
+		else
+		{
+			Filter filter = Filter.getNewInFilter("id", ids);
+			beans = manager.getAll(null,filter);
 
-		// TODO read parameters
-		JSONObject validationParameters = new JSONObject();
-		ReportHolder holder = new ReportHolder();
+		}
 
 		PhaseReportItem valReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
 		if (beans != null && !beans.isEmpty())
@@ -1317,19 +1277,23 @@ public class Command
 			manager.validate(null, beans, validationParameters,valReport);
 		}
 
-
 		// save report
 		if (valReport != null)
 		{
-			for (ReportItem item : valReport.getItems())
-			{
-				saveValidationReport(validationId,item);
-			}
+				saveValidationReport(compilanceCheckTask,valReport);
 		}
 
 		return 0;
 					}
 
+
+	private String extractObjectType(String type) 
+	{
+		// type shall begin by chouette::
+		if (type.startsWith("chouette::")) return type.substring(10);
+
+		return type;
+	}
 
 	/**
 	 * @param parameters
@@ -1451,30 +1415,6 @@ public class Command
 	}
 
 
-	private List<NeptuneIdentifiedObject> neptuneImport(INeptuneManager<NeptuneIdentifiedObject> manager,
-			Map<String, List<String>> parameters, ReportHolder holder) throws ChouetteException
-			{
-		String format = "NEPTUNE";
-		ReportHolder ireportHolder = new ReportHolder();
-		List<FormatDescription> formats = manager.getImportFormats(null);
-		FormatDescription description = null;
-
-		for (FormatDescription formatDescription : formats)
-		{
-			if (formatDescription.getName().equalsIgnoreCase(format))
-			{
-				description=formatDescription;
-				break;
-			}
-		}
-		if (description == null)
-		{
-			throw new IllegalArgumentException("format "+format+" unavailable");
-		}
-		List<ParameterValue> values = populateParameters(description,parameters);
-		List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,ireportHolder,holder);
-		return beans;
-			}
 
 	private List<CommandArgument> parseArgs(String[] args) throws Exception
 	{
@@ -1726,8 +1666,29 @@ public class Command
 
 	}
 
-	private void saveValidationReport(Long validationId, ReportItem report)
+	private void saveValidationReport(GuiValidation compilanceCheckTask, PhaseReportItem vreport)
 	{
+		if (vreport != null && vreport.getItems() != null)
+		{
+			switch (vreport.getStatus())
+			{
+			case WARNING:
+			case ERROR:
+			case FATAL:
+				compilanceCheckTask.setStatus("nok");
+				break;
+			case OK:
+				compilanceCheckTask.setStatus("ok");
+				break;
+			case UNCHECK:
+				compilanceCheckTask.setStatus("na");
+				break;
+			}
+			compilanceCheckTask.addAllSteps(vreport.toValidationResults());
+			validationDao.save(compilanceCheckTask);
+			session.flush();
+		}
+	
 	}
 
 
@@ -1737,7 +1698,7 @@ public class Command
 	 * @param simpleval
 	 * @return
 	 */
-	protected Calendar toCalendar(String simpleval)
+	private Calendar toCalendar(String simpleval)
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		try
@@ -1770,153 +1731,6 @@ public class Command
 			System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
 		}
 	}
-	/**
-	 * @param object
-	 * @param attrname
-	 * @param value
-	 * @throws Exception
-	 */
-	private void setAttribute(Object object, String attrname, String value) throws Exception 
-	{
-		String name = attrname.toLowerCase();
-		if (name.equals("id")) 
-		{
-			throw new Exception("non writable attribute id for any object , process stopped ");
-		}
-		if (!name.equals("objectid") && !name.equals("creatorid") && !name.equals("areacentroid")&& name.endsWith("id")) 
-		{
-			throw new Exception("non writable attribute "+attrname+" use setReference instand , process stopped ");
-		}
-		Class<?> beanClass = object.getClass();
-		Method setter = findSetter(beanClass, attrname);
-		Class<?> type = setter.getParameterTypes()[0];
-		if (type.isArray() || type.getSimpleName().equals("List"))
-		{
-			throw new Exception("list attribute "+attrname+" for object "+beanClass.getName()+" must be update with (add/remove)Attribute, process stopped ");
-		}
-		Object arg = null;
-		if (type.isEnum())
-		{
-			arg = toEnum(type,value);
-		}
-		else if (type.isPrimitive())
-		{
-			arg = toPrimitive(type,value);
-		}
-		else
-		{
-			arg = toObject(type,value);
-		}
-		setter.invoke(object, arg);
-	}
-
-	/**
-	 * @param beanClass
-	 * @param attribute
-	 * @return
-	 * @throws Exception
-	 */
-	private Method findSetter(
-			Class<?> beanClass, String attribute)
-					throws Exception {
-		return findAccessor(beanClass, attribute, "set",true);
-	}
-	/**
-	 * @param beanClass
-	 * @param attribute
-	 * @return
-	 * @throws Exception
-	 */
-	private Method findAccessor(
-			Class<?> beanClass, String attribute, String prefix, boolean ex)
-					throws Exception {
-		String methodName = prefix+attribute;
-		Method[] methods = beanClass.getMethods();
-		Method accessor = null;
-		for (Method method : methods) 
-		{
-			if (method.getName().equalsIgnoreCase(methodName))
-			{
-				accessor = method;
-				break;
-			}
-		}
-		if (ex && accessor == null)
-		{
-			throw new Exception("unknown accessor "+prefix+" for attribute "+attribute+" for object "+beanClass.getName()+", process stopped ");
-		}
-		return accessor;
-	}
-	protected Object toObject(Class<?> type, String value) throws Exception 
-	{
-		if (value == null) return null;
-		String name = type.getSimpleName();
-		if (name.equals("String")) return value;
-		if (name.equals("Long")) return Long.valueOf(value);
-		if (name.equals("Boolean")) return Boolean.valueOf(value);
-		if (name.equals("Integer")) return Integer.valueOf(value);
-		if (name.equals("Float")) return Float.valueOf(value);
-		if (name.equals("Double")) return Double.valueOf(value);
-		if (name.equals("BigDecimal")) return BigDecimal.valueOf(Double.parseDouble(value));
-		if (name.equals("Date")) 
-		{
-			DateFormat dateFormat = null;
-			if (value.contains("-") && value.contains(":"))
-			{
-				dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-			}
-			else if (value.contains("-") )
-			{
-				dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			}
-			else if ( value.contains(":"))
-			{
-				dateFormat = new SimpleDateFormat("HH:mm:ss");
-			}
-			else
-			{
-				throw new Exception("unable to convert "+value+" to Date");
-			}
-			Date date = dateFormat.parse(value);
-			return date;
-		}
-		if (name.equals("Time")) 
-		{
-			DateFormat dateFormat = null;
-			if ( value.contains(":"))
-			{
-				dateFormat = new SimpleDateFormat("H:m:s");
-			}
-			else
-			{
-				throw new Exception("unable to convert "+value+" to Time");
-			}
-			Date date = dateFormat.parse(value);
-			Time time = new Time(date.getTime());
-			return time;
-		}
-
-		throw new Exception("unable to convert String to "+type.getCanonicalName());
-	}
-
-	protected Object toPrimitive(Class<?> type, String value) throws Exception 
-	{
-		if (value == null) throw new Exception("primitive type "+type.getName()+" cannot be set to null");
-		String name = type.getName();
-		if (name.equals("long")) return Long.valueOf(value);
-		if (name.equals("boolean")) return Boolean.valueOf(value);
-		if (name.equals("int")) return Integer.valueOf(value);
-		if (name.equals("float")) return Float.valueOf(value);
-		if (name.equals("double")) return Double.valueOf(value);
-		throw new Exception("unable to convert String to "+type.getName());
-	}
-
-	protected Object toEnum(Class<?> type, String value) throws Exception 
-	{
-		Method m = type.getMethod("fromValue", String.class);
-		return m.invoke(null, value);
-	}
-
 
 
 }

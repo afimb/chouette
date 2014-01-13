@@ -30,6 +30,8 @@ public class GuiValidation extends ActiveRecordObject
 	@Getter @Setter private String userName;
     @Getter @Setter private JSONObject progressInfo;
     @Getter @Setter private List<GuiValidationStep> steps;
+    @Getter @Setter private String referencesType;
+    @Getter @Setter private String referenceIds;
     
 	public GuiValidation()
 	{

@@ -98,7 +98,7 @@ public abstract class AbstractValidation
 	protected void initCheckPoint(PhaseReportItem validationItem, String checkPointKey, CheckPointReportItem.SEVERITY severity) 
 	{
 		int order = validationItem.hasItems()? validationItem.getItems().size() : 0  ;
-		validationItem.addItem(new CheckPointReportItem(checkPointKey,order,Report.STATE.UNCHECK,CheckPointReportItem.SEVERITY.WARNING));
+		validationItem.addItem(new CheckPointReportItem(checkPointKey,order,Report.STATE.UNCHECK,severity));
 	}
 
 	/**
