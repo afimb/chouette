@@ -649,7 +649,7 @@ public class Command
 		{
 			logger.error("export failed "+e.getMessage(),e);
 			GuiReport errorReport = new GuiReport("EXPORT_ERROR",Report.STATE.ERROR);
-			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,e.getMessage());
+			GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,Report.STATE.ERROR,e.getMessage());
 			errorReport.addItem(item);
 			reports.add(errorReport);
 			saveExportReports(exportId,format,reports);
@@ -905,11 +905,12 @@ public class Command
 				File temp = null;
 				File tempRep = new File(FileUtils.getTempDirectory(),"massImport"+importId);
 				if (!tempRep.exists()) tempRep.mkdirs();
+				File zipFile = new File(inputFile);
+				ReportItem zipReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE,Report.STATE.OK,zipFile.getName());
 				try
 				{
 
 					zip = new ZipFile(inputFile);
-					ReportItem zipReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE,Report.STATE.OK,zip.getName());
 					importHolder.setReport(zipReportItem);
 					for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
 					{
@@ -923,7 +924,9 @@ public class Command
 						}
 						if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),suffixes))
 						{
-							logger.error("entry "+entry.getName()+" ignored, unknown extension");
+							ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,entry.getName());
+							zipReportItem.addItem(fileReportItem);
+							logger.info("entry "+entry.getName()+" ignored, unknown extension");
 							continue;
 						}
 						InputStream stream = null;
@@ -933,6 +936,8 @@ public class Command
 						}
 						catch (IOException e)
 						{
+							ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.WARNING,entry.getName());
+							importReport.addItem(fileReportItem);
 							logger.error("entry "+entry.getName()+" cannot read");
 							continue;
 						}
@@ -952,43 +957,55 @@ public class Command
 						logger.info("import file "+entry.getName());
 						inputFileParam.setFilepathValue(temp.getAbsolutePath());
 						List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
-						// save
-						if (save && beans != null && !beans.isEmpty())
+						if (beans != null && !beans.isEmpty())
 						{
+							// save
+							if (save)
+							{
 
-							for (NeptuneIdentifiedObject bean : beans)
-							{
-								if (verbose)
-								{
-									System.out.println("save "+bean.getName()+" ("+bean.getObjectId()+")");
-								}
-								logger.info("save "+bean.getName()+" ("+bean.getObjectId()+")");
-								// check all stopareas
-								if (bean instanceof Line)
-								{
-									Line line = (Line) bean;
-									checkProjection(line);
-								}
-							}
-							try
-							{
-								manager.saveAll(null, beans, true, true);
 								for (NeptuneIdentifiedObject bean : beans)
 								{
-									GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
-									importReport.addItem(item);
-									savedIds.add(bean.getId());
+									if (verbose)
+									{
+										System.out.println("save "+bean.getName()+" ("+bean.getObjectId()+")");
+									}
+									logger.info("save "+bean.getName()+" ("+bean.getObjectId()+")");
+									// check all stopareas
+									if (bean instanceof Line)
+									{
+										Line line = (Line) bean;
+										checkProjection(line);
+									}
+								}
+								try
+								{
+									manager.saveAll(null, beans, true, true);
+									for (NeptuneIdentifiedObject bean : beans)
+									{
+										GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
+										importReport.addItem(item);
+										savedIds.add(bean.getId());
+									}
+								}
+								catch (Exception e) 
+								{
+									logger.error("fail to save data :"+e.getMessage(),e);
+									for (NeptuneIdentifiedObject bean : beans)
+									{
+										GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_ERROR,Report.STATE.ERROR,bean.getName(),filter_chars
+												(e.getMessage()));
+										importReport.addItem(item);
+									}
 								}
 							}
-							catch (Exception e) 
+							else
 							{
-								logger.error("fail to save data :"+e.getMessage(),e);
 								for (NeptuneIdentifiedObject bean : beans)
 								{
-									GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),filter_chars
-											(e.getMessage()));
+									GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
 									importReport.addItem(item);
 								}
+								
 							}
 						}
 						temp.delete();
@@ -1001,12 +1018,13 @@ public class Command
 					{
 						logger.info("cannot close zip file");
 					}
+					importReport.addItem(zipReportItem);
 				}
 				catch (IOException e)
 				{
 					ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
-					importReport.addItem(fileErrorItem);
-
+					zipReportItem.addItem(fileErrorItem);
+					importReport.addItem(zipReportItem);
 					saveImportReports(importTask, importReport, validationReport);
 					return 1;
 				}
@@ -1062,17 +1080,26 @@ public class Command
 							{
 								logger.info("save  Line "+bean.getName());
 								manager.saveAll(null, oneBean, true, true);
-								GuiReportItem item = new GuiReportItem("SAVE_OK",Report.STATE.OK,bean.getName());
+								GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
 								importReport.addItem(item);
 								savedIds.add(bean.getId());
 							}
 							catch (Exception e) 
 							{
 								logger.error("save failed "+e.getMessage(),e);
-								GuiReportItem item = new GuiReportItem("SAVE_ERROR",Report.STATE.ERROR,bean.getName(),e.getMessage());
+								GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_ERROR,Report.STATE.ERROR,bean.getName(),e.getMessage());
 								importReport.addItem(item);
 							}
 						}
+					}
+					else
+					{
+						for (NeptuneIdentifiedObject bean : beans) 
+						{
+							GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
+							importReport.addItem(item);
+						}
+						
 					}
 				}
 			}
@@ -1088,7 +1115,7 @@ public class Command
 			{
 				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
 			}
-			GuiReportItem item = new GuiReportItem("EXCEPTION",Report.STATE.ERROR,msg);
+			GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,Report.STATE.ERROR,msg);
 			importReport.addItem(item);
 			saveImportReports(importTask,importReport,validationReport);
 
@@ -1098,27 +1125,30 @@ public class Command
 		// launch phase3 validation if required and possible
 		if (save && !savedIds.isEmpty() && importTask.getCompilanceCheckTask() != null)
 		{
-			logger.info("processing phase 3 validation on "+savedIds.size()+" lines");
-			// launch validation on objects
-			Filter filter = Filter.getNewInFilter("id", savedIds);
-			try 
+			if (importTask.getCompilanceCheckTask().getParameters() != null)
 			{
-				List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
-				if (beans == null || beans.isEmpty())
+				logger.info("processing phase 3 validation on "+savedIds.size()+" lines");
+				// launch validation on objects
+				Filter filter = Filter.getNewInFilter("id", savedIds);
+				try 
 				{
-					logger.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
+					List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
+					if (beans == null || beans.isEmpty())
+					{
+						logger.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
 
-				}
-				else
+					}
+					else
+					{
+						PhaseReportItem phaseReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
+						validationReport.addItem(phaseReport);
+						manager.validate(null, beans, importTask.getCompilanceCheckTask().getParameters(), phaseReport, true);
+					}
+				} 
+				catch (ChouetteException e) 
 				{
-					PhaseReportItem phaseReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
-					validationReport.addItem(phaseReport);
-					manager.validate(null, beans, importTask.getCompilanceCheckTask().getParameters(), phaseReport, true);
+					logger.error("cannot read previously saved objects",e);
 				}
-			} 
-			catch (ChouetteException e) 
-			{
-				logger.error("cannot read previously saved objects",e);
 			}
 		}
 
@@ -1130,13 +1160,13 @@ public class Command
 
 	private void saveImportReports(ImportTask guiImport, Report ireport, ValidationReport vreport) 
 	{
-		//logger.info("import report = "+ireport.toJSON().toString(3));
+		// logger.info("import report = "+ireport.toJSON().toString(3));
+		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
 
 		if (guiImport.getCompilanceCheckTask() != null)
 		{
 			if (vreport != null && vreport.getItems() != null)
 			{
-				// logger.info("validation report = "+vreport.toJSON().toString(3));
 				switch (vreport.getStatus())
 				{
 				case WARNING:
@@ -1154,7 +1184,7 @@ public class Command
 				guiImport.getCompilanceCheckTask().addAllResults(vreport.toValidationResults());
 			}
 		}
-		guiImport.setResult(ireport.toJSON());
+		guiImport.setResult(converter.toJSONObject());
 		importDao.save(guiImport);
 		session.flush();
 	}
@@ -1281,7 +1311,7 @@ public class Command
 		// save report
 		if (valReport != null)
 		{
-				saveValidationReport(compilanceCheckTask,valReport);
+			saveValidationReport(compilanceCheckTask,valReport);
 		}
 
 		return 0;
@@ -1689,7 +1719,7 @@ public class Command
 			validationDao.save(compilanceCheckTask);
 			session.flush();
 		}
-	
+
 	}
 
 

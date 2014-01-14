@@ -418,7 +418,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	 * @return loaded line
 	 * @throws ExchangeException
 	 */
-	private Line processFileImport(String filePath, boolean validate, Report importReport, Report validationReport, boolean optimizeMemory, SharedImportedData sharedData, UnsharedImportedData unsharedData) throws ExchangeException
+	private Line processFileImport(String filePath, boolean validate, ReportItem importReport, Report validationReport, boolean optimizeMemory, SharedImportedData sharedData, UnsharedImportedData unsharedData) throws ExchangeException
 	{
 		ChouettePTNetworkHolder holder = null;
 		try
@@ -466,7 +466,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	 * @return builded line
 	 * @throws ExchangeException
 	 */
-	private Line processImport(ChouettePTNetworkHolder holder, boolean validate, Report importReport, Report validationReport, String entryName, SharedImportedData sharedData, UnsharedImportedData unsharedData,boolean optimizeMemory)
+	private Line processImport(ChouettePTNetworkHolder holder, boolean validate, ReportItem importReport, Report validationReport, String entryName, SharedImportedData sharedData, UnsharedImportedData unsharedData,boolean optimizeMemory)
 			throws ExchangeException
 			{
 		ChouettePTNetworkType rootObject = holder.getChouettePTNetwork();
@@ -477,6 +477,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				// report for save
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.VALIDATION_ERROR,Report.STATE.ERROR,"");
 				importReport.addItem(errorItem);
+				importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
 				return null;
 			}
 			if (validationReport.getStatus().ordinal() >= Report.STATE.ERROR.ordinal())
@@ -484,6 +485,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				// report for save
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.VALIDATION_ERROR,Report.STATE.ERROR,"");
 				importReport.addItem(errorItem);
+				importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
 				return null;
 			}
 
@@ -506,7 +508,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 		Line line = converter.extractLine(entryName,rootObject, importItem,validationItem, sharedData, unsharedData,validator);
 		// should be made in converter.extractLine
-		importItem.addMessageArgs(line.getPublishedName());
+		importItem.addMessageArgs(line.getName());
 
 		modelAssembler.setLine(line);
 		modelAssembler.setRoutes(converter.extractRoutes(entryName,rootObject, importItem,validationItem, sharedData, unsharedData, validator));

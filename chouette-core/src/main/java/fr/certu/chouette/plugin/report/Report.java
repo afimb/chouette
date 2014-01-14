@@ -80,6 +80,7 @@ public abstract class Report
 		if (items == null)
 			items = new ArrayList<ReportItem>();
 		String messageKey = item.getMessageKey();
+		updateStatus(item.getStatus());
 		for (ReportItem it : items)
 		{
 			if (it.getMessageKey() != null && it.getMessageKey().equals(messageKey))
@@ -190,30 +191,6 @@ public abstract class Report
 		}
 			
 		return json;
-//		StringBuilder builder = new StringBuilder();
-//
-//		builder.append("{\n");
-//		builder.append("  \"key\":\"");
-//		builder.append(getOriginKey());
-//		//      builder.append("\",\n  \"message\":\"");
-//		//      builder.append(getLocalizedMessage());
-//		builder.append("\",\n  \"status\":\"");
-//		builder.append(getStatus());
-//		builder.append("\"");
-//		if (items != null && !items.isEmpty())
-//		{
-//			builder.append(",\n  \"items\":[\n");
-//			for (int i = 0; i < items.size(); i++)
-//			{
-//
-//				builder.append(items.get(i).toJSON("    ",i == items.size()-1));
-//			}
-//			builder.append("  ]\n");
-//		}
-//
-//		builder.append("\n}\n");
-//
-//		return builder.toString();
 	}
 
 
