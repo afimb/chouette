@@ -19,7 +19,9 @@ public class ImportReportToJSONConverter
 {
 	List<ReportItem> lineReports = new ArrayList<ReportItem>();
 	List<ReportItem> saveReports = new ArrayList<ReportItem>();
-	List<ReportItem> fileReports = new ArrayList<ReportItem>();
+	List<ReportItem> fileErrorReports = new ArrayList<ReportItem>();
+	List<ReportItem> fileIgnoredReports = new ArrayList<ReportItem>();
+	List<ReportItem> fileOkReports = new ArrayList<ReportItem>();
 	ReportItem zipReport;
 	int fileOkCount = 0;
 	int fileNOKCount = 0;
@@ -49,17 +51,17 @@ public class ImportReportToJSONConverter
 			if (key.equals(ExchangeReportItem.KEY.FILE.name())) 
 			{
 				fileOkCount++;
-				fileReports.add(item);
+				fileOkReports.add(item);
 			}
 			if (key.equals(ExchangeReportItem.KEY.FILE_ERROR.name())) 
 			{
 				fileNOKCount++;
-				fileReports.add(item);
+				fileErrorReports.add(item);
 			}
 			if (key.equals(ExchangeReportItem.KEY.FILE_IGNORED.name())) 
 			{
 				fileIGNOREDCount++;
-				fileReports.add(item);
+				fileIgnoredReports.add(item);
 			}
 			if (item.hasItems()) parseItems(item,1);
 		}
@@ -76,36 +78,40 @@ public class ImportReportToJSONConverter
 		jsonFileStats.put("ignored_count",fileIGNOREDCount);
 
 		jsonFiles.put("stats", jsonFileStats);
-		JSONArray fileArray = new JSONArray();
-		for (ReportItem item : fileReports) 
+		JSONObject jsonFileList = new JSONObject();
+		JSONArray fileErrorArray = new JSONArray();
+		for (ReportItem item : fileErrorReports) 
 		{
-			String key = item.getMessageKey();
-			String status = null;
-			JSONArray errorList = null;
+			JSONArray errorList = getErrors(item.getItems());
 			String name = item.getMessageArgs().get(0).toString();
-			if (key.equals(ExchangeReportItem.KEY.FILE.name())) 
-			{
-				status="ok";
-			}
-			if (key.equals(ExchangeReportItem.KEY.FILE_IGNORED.name())) 
-			{
-				status="ignored";
-			}
-			if (key.equals(ExchangeReportItem.KEY.FILE_ERROR.name())) 
-			{
-				status="error";
-				errorList = getErrors(item.getItems());
-			}
 			JSONObject fileInfo = new JSONObject();
 			fileInfo.put("name", name);
-			fileInfo.put("status", status);
 			if (errorList != null)
 			{
 				fileInfo.put("errors", errorList);
 			}
-			fileArray.put(fileInfo);
+			fileErrorArray.put(fileInfo);
 		}
-		jsonFiles.put("list", fileArray);
+		jsonFileList.put("error", fileErrorArray);
+		JSONArray fileIgnoredArray = new JSONArray();
+		for (ReportItem item : fileIgnoredReports) 
+		{
+			String name = item.getMessageArgs().get(0).toString();
+			JSONObject fileInfo = new JSONObject();
+			fileInfo.put("name", name);
+			fileIgnoredArray.put(fileInfo);
+		}
+		jsonFileList.put("ignored", fileIgnoredArray);
+		JSONArray fileOkArray = new JSONArray();
+		for (ReportItem item : fileOkReports) 
+		{
+			String name = item.getMessageArgs().get(0).toString();
+			JSONObject fileInfo = new JSONObject();
+			fileInfo.put("name", name);
+			fileOkArray.put(fileInfo);
+		}
+		jsonFileList.put("ok", fileOkArray);
+		jsonFiles.put("list", jsonFileList);
 		json.put("files", jsonFiles);
 		Map<Object,JSONObject> jsonLineMap = new HashMap<Object,JSONObject>();
 		for (ReportItem item : saveReports) 
@@ -207,22 +213,22 @@ public class ImportReportToJSONConverter
 			StringBuffer indent = new StringBuffer();
 			for (int i = 0; i < level; i++) indent.append("  ");
 			// log.info(indent+key);
-			if (key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())) fileReports.add(item);
-			if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name())) fileReports.add(item);
+			if (key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())) fileOkReports.add(item);
+			if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name())) fileErrorReports.add(item);
 			if (key.equals(ExchangeReportItem.KEY.FILE.name())) 
 			{
 				fileOkCount++;
-				fileReports.add(item);
+				fileOkReports.add(item);
 			}
 			if (key.equals(ExchangeReportItem.KEY.FILE_ERROR.name())) 
 			{
 				fileNOKCount++;
-				fileReports.add(item);
+				fileErrorReports.add(item);
 			}
 			if (key.equals(ExchangeReportItem.KEY.FILE_IGNORED.name())) 
 			{
 				fileIGNOREDCount++;
-				fileReports.add(item);
+				fileIgnoredReports.add(item);
 			}
 			if (key.equals(ExchangeReportItem.KEY.IMPORTED_LINE.name())) 
 			{
