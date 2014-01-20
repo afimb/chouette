@@ -80,7 +80,7 @@ public class ReportLocation
 //		StringBuilder builder = new StringBuilder();
 //		builder.append("{");
 		if (fileName != null)
-			json.put("filemane", fileName);
+			json.put("filename", fileName);
 //			builder.append("\"fileName\":\""+fileName+"\",");
 //		if (errorCode != null)
 //			builder.append("\"errorCode\":\""+errorCode+"\",");

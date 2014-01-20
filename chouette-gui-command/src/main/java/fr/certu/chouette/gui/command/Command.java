@@ -843,6 +843,11 @@ public class Command
 		}
 		String format = options.getString("format").toUpperCase();
 		String inputFile = options.getString("file_path");
+		if (!options.has("input_file"))
+		{
+			options.put("input_file", inputFile); // for import compatibility
+			logger.info("  options : "+options);
+		}
 
 		save = !options.getBoolean("no_save");
 
@@ -1005,7 +1010,7 @@ public class Command
 									GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
 									importReport.addItem(item);
 								}
-								
+
 							}
 						}
 						temp.delete();
@@ -1099,7 +1104,7 @@ public class Command
 							GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
 							importReport.addItem(item);
 						}
-						
+
 					}
 				}
 			}
@@ -1585,7 +1590,7 @@ public class Command
 		for (ParameterDescription desc : description.getParameterDescriptions())
 		{
 			String name = desc.getName();
-			String key = name.toLowerCase();
+			String key = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
 			if (excludedParams.contains(key)) continue;
 			// 
 
@@ -1617,11 +1622,10 @@ public class Command
 				}
 				else
 				{
-					if (options.optJSONArray(key) != null)
-					{
-						throw new IllegalArgumentException("parameter -"+name+" must be unique");
-					}
-
+					//					if (options.optJSONObject(key) == null) // will be a JSONArray
+					//					{
+					//						throw new IllegalArgumentException("parameter -"+name+" must be unique");
+					//					}
 
 					SimpleParameterValue val = new SimpleParameterValue(name);
 					switch (desc.getType())
@@ -1629,7 +1633,7 @@ public class Command
 					case FILEPATH : val.setFilepathValue(options.getString(key)); break;
 					case STRING : val.setStringValue(options.getString(key)); break;
 					case FILENAME : val.setFilenameValue(options.getString(key)); break;
-					case BOOLEAN : val.setBooleanValue(options.getBoolean(key)); break;
+					case BOOLEAN : val.setBooleanValue(!options.getString(key).equals("0")); break;
 					case INTEGER : val.setIntegerValue(options.getLong(key)); break;
 					case DATE : val.setDateValue(toCalendar(options.getString(key)));break;
 					}
