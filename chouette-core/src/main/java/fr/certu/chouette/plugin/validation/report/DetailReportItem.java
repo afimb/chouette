@@ -3,6 +3,7 @@
  */
 package fr.certu.chouette.plugin.validation.report;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -59,30 +60,20 @@ public class DetailReportItem extends ReportItem
 		   
 		  JSONObject json = new JSONObject();
 		  
+		  if (args == null) args = new HashMap<String, Object>();
 		  if (objectId != null)
+		  {
 			  json.put("objectId", objectId);
+			  if (!args.containsKey("objectId"))
+			  {
+				  args.put("objectId", objectId);
+			  }
+		  }
 		  json.put("location", location.toJSON());
 		  json.put("messageKey", getMessageKey());
-		  if (args != null)
+		  if (!args.isEmpty())
 		      json.put("messageArgs", args);
 			
-// 	      StringBuilder builder = new StringBuilder();
-
-//	      builder.append(indent+"{\n");
-//	      builder.append(indent+"  \"objectRef\":\"");
-//	      builder.append(getMessageKey()+"\"");
-////	      builder.append("\",\n"+indent+"  \"status\":\"");
-////	      builder.append(getStatus());
-////	      builder.append("\",\n"+indent+"  \"order\":");
-////	      builder.append(getOrder());
-//	      builder.append(",\n"+indent+"  \"location\":");
-//	      
-//	      builder.append(getLocation().toJSON());
-//	      
-//	      
-//	      builder.append("\n"+indent+"}");
-//	      if (!last) builder.append(",");
-//	      builder.append("\n");
 
 	      return json;
 	   }

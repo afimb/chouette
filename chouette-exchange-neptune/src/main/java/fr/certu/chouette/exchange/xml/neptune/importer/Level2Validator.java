@@ -1287,6 +1287,8 @@ public class Level2Validator
 							Locator trdLocation = route.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
 							map.put("waybackRouteId",route.getWayBackRouteId());
+							map.put("waybackValue",route.getRouteExtension().getWayBack());
+							map.put("oppositeWaybackValue",wayBackRoute.getRouteExtension().getWayBack());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 							DetailReportItem errorItem = new DetailReportItem(ROUTE_11,route.getObjectId(), Report.STATE.WARNING, location , map);
 							addValidationError(ROUTE_11, errorItem);						
