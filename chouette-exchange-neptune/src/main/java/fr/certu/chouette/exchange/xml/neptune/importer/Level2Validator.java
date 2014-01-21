@@ -1301,7 +1301,7 @@ public class Level2Validator
 					if (pointIds != null && wbPointIds != null)
 					{
 						prepareCheckPoint(ROUTE_12);	
-						// check start of route (end will be tested on wayback check
+						// check start of route (end will be tested on wayback check)
 						StopPoint start = stopPoints.get(pointIds.get(0));
 						StopPoint end = stopPoints.get(wbPointIds.get(wbPointIds.size()-1));
 						if (end.getContainedIn().equals(start.getContainedIn())) continue;
@@ -1312,7 +1312,9 @@ public class Level2Validator
 						// warning 
 						Locator trdLocation = route.sourceLocation();
 						Map<String,Object> map = new HashMap<String,Object>();
-						map.put("stopPointId",pointIds.get(0));
+						map.put("stopPointId",start.getObjectId());
+						map.put("waybackStopPointId",end.getObjectId());
+						map.put("waybackRouteId",wayBackRoute.getObjectId());
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 						DetailReportItem errorItem = new DetailReportItem(ROUTE_12,route.getObjectId(), Report.STATE.WARNING, location ,map);
 						addValidationError(ROUTE_12, errorItem);						
