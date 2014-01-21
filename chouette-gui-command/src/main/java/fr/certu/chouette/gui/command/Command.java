@@ -835,6 +835,8 @@ public class Command
 		logger.info("Import data for import id "+importId);
 		logger.info("  options : "+importTask.getParameters());
 
+		startProcess(importTask);
+		
 		JSONObject options = importTask.getParameters();
 		if (options == null) 
 		{
@@ -1163,6 +1165,26 @@ public class Command
 
 	}
 
+	private void startProcess(ImportTask importTask) 
+	{
+		importTask.setStatus("processing");
+		if (importTask.getCompilanceCheckTask() != null)
+		{
+			importTask.getCompilanceCheckTask().setStatus("processing");
+		}
+		importDao.save(importTask);
+		session.flush();
+		
+	}
+
+	private void startProcess(CompilanceCheckTask compilanceCheckTask) 
+	{
+		compilanceCheckTask.setStatus("processing");
+		validationDao.save(compilanceCheckTask);
+		session.flush();
+		
+	}
+
 	private void saveImportReports(ImportTask guiImport, Report ireport, ValidationReport vreport) 
 	{
 		// logger.info("import report = "+ireport.toJSON().toString(3));
@@ -1249,6 +1271,7 @@ public class Command
 			return 1;
 		}
 		CompilanceCheckTask compilanceCheckTask = validationDao.get(validationId);
+		startProcess(compilanceCheckTask);
 
 		// read parameters
 		JSONObject validationParameters = compilanceCheckTask.getParameters();
@@ -1273,7 +1296,7 @@ public class Command
 				logger.error("object type "+objectType+" not found "+validationId);
 				return 1;
 			}
-			Filter filter = Filter.getNewInFilter("id", ids);
+			Filter filter = Filter.getNewInFilter("id", checkIds);
 			List<NeptuneIdentifiedObject> containerBeans = loadManager.getAll(null,filter);
 			Set<NeptuneIdentifiedObject> beanSet = new HashSet<NeptuneIdentifiedObject>();
 			for (NeptuneIdentifiedObject container : containerBeans) 

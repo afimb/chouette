@@ -361,7 +361,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 			}
 			map.put("names", name.substring(2));
 			ReportLocation location = new ReportLocation(route);
-			DetailReportItem detail = new DetailReportItem(ROUTE_8, route.getObjectId(), Report.STATE.WARNING, location);
+			DetailReportItem detail = new DetailReportItem(ROUTE_8, route.getObjectId(), Report.STATE.WARNING, location,map);
 			addValidationError(report, ROUTE_8, detail);					
 		}
 	}
