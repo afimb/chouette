@@ -1302,7 +1302,7 @@ public class Command
 		}
 		else
 		{
-			Filter filter = Filter.getNewInFilter("id", ids);
+			Filter filter = Filter.getNewInFilter("id", checkIds);
 			beans = manager.getAll(null,filter);
 
 		}

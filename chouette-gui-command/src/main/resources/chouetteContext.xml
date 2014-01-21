@@ -73,6 +73,7 @@
 		<property name="organisationDao" ref="organisationDao" />
 		<property name="referentialDao" ref="referentialDao" />
 		<property name="importDao" ref="importDao" />
+		<property name="validationDao" ref="validationDao" />
 		<property name="exportDao" ref="exportDao" />
 		<property name="exportLogMessageDao" ref="exportLogMessageDao" />
 		<property name="geographicService" ref="geographicService" />

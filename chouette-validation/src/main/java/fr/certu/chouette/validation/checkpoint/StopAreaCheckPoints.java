@@ -4,14 +4,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
-import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
-import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
 public class StopAreaCheckPoints extends AbstractValidation implements ICheckPointPlugin<StopArea>
 {

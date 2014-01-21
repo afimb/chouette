@@ -25,4 +25,67 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="JourneyPatternValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createJourneyPatternPluginInjector">
+		<property name="manager" ref="journeyPatternManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="journeyPatternCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="VehicleJourneyValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createVehicleJourneyPluginInjector">
+		<property name="manager" ref="vehicleJourneyManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="vehicleJourneyCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="AccessLinkValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createAccessLinkPluginInjector">
+		<property name="manager" ref="accessLinkManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="accessLinkCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="AccessPointValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createAccessPointPluginInjector">
+		<property name="manager" ref="accessPointManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="accessPointCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="ConnectionLinkValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createConnectionLinkPluginInjector">
+		<property name="manager" ref="connectionLinkManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="connectionLinkCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="FacilityValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createFacilityPluginInjector">
+		<property name="manager" ref="facilityManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="facilityCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="StopAreaValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createStopAreaPluginInjector">
+		<property name="manager" ref="stopAreaManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="stopAreaCheckPoints" />
+			</list>
+		</property>
+	</bean>
 </beans>

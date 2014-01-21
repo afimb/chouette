@@ -1,13 +1,19 @@
 package fr.certu.chouette.validation.checkpoint;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 import org.json.JSONObject;
 
+import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
@@ -19,10 +25,13 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
 public class RouteCheckPoints extends AbstractValidation implements ICheckPointPlugin<Route>
 {
 
+	@Setter private JourneyPatternCheckPoints journeyPatternCheckPoints; 
+
 	@Override
 	public void check(List<Route> beans, JSONObject parameters,
 			PhaseReportItem report) 
 	{
+		if (isEmpty(beans)) return;
 		// init checkPoints : add here all defined check points for this kind of object
 		// 3-Route-1 : check if two successive stops are in same area
 		// 3-Route-2 : check if two wayback routes are actually waybacks
@@ -31,6 +40,8 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 		// 3-Route-5 : check for potentially waybacks
 		// 3-Route-6 : check if route has minimum 2 StopPoints
 		// 3-Route-7 : check if route has minimum 1 JourneyPattern
+		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
+		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 
 		initCheckPoint(report, ROUTE_1, CheckPointReportItem.SEVERITY.WARNING);
 		initCheckPoint(report, ROUTE_2, CheckPointReportItem.SEVERITY.WARNING);
@@ -39,42 +50,51 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 		initCheckPoint(report, ROUTE_5, CheckPointReportItem.SEVERITY.WARNING);
 		initCheckPoint(report, ROUTE_6, CheckPointReportItem.SEVERITY.ERROR);
 		initCheckPoint(report, ROUTE_7, CheckPointReportItem.SEVERITY.ERROR);
+		initCheckPoint(report, ROUTE_8, CheckPointReportItem.SEVERITY.WARNING);
+		initCheckPoint(report, ROUTE_9, CheckPointReportItem.SEVERITY.WARNING);
 
-		if (beans.size() > 0)
+		// checkPoint is applicable
+		prepareCheckPoint(report, ROUTE_6);
+		prepareCheckPoint(report, ROUTE_7);
+
+		// en cas d'erreur, on reporte autant de detail que de route en erreur
+		for (int i = 0; i < beans.size(); i++)
 		{
-			// checkPoint is applicable
-			prepareCheckPoint(report, ROUTE_6);
-			prepareCheckPoint(report, ROUTE_7);
+			Route route = beans.get(i);
 
-			// en cas d'erreur, on reporte autant de detail que de route en erreur
-			for (int i = 0; i < beans.size(); i++)
+			// 3-Route-1 : check if two successive stops are in same area
+			checkRoute1(report, route);
+
+			// 3-Route-2 : check if two wayback routes are actually waybacks
+			checkRoute2(report, route);
+
+			// 3-Route-3 : check distance between stops 
+			checkRoute3(report, route, parameters);
+
+			// 3-Route-4 : check identical routes
+			checkRoute4(report, beans, i, route);
+
+			// 3-Route-5 : check for potentially waybacks
+			checkRoute5(report, beans, i, route);
+
+			// 3-Route-6 : check if route has minimum 2 StopPoints
+			checkRoute6(report, route);
+
+			// 3-Route-7 : check if route has minimum 1 JourneyPattern
+			checkRoute7(report, route);
+
+			// 3-Route-8 : check if all stopPoints are used by journeyPatterns
+			checkRoute8(report, route);
+
+			// 3-Route-9 : check if one journeyPattern uses all stopPoints
+			checkRoute9(report, route);
+
+			// chain on journeyPatterns
+			if (journeyPatternCheckPoints != null)
 			{
-				Route route = beans.get(i);
-
-				// 3-Route-1 : check if two successive stops are in same area
-				checkRoute1(report, route);
-
-				// 3-Route-2 : check if two wayback routes are actually waybacks
-				checkRoute2(report, route);
-
-				// 3-Route-3 : check distance between stops 
-				checkRoute3(report, route, parameters);
-
-				// 3-Route-4 : check identical routes
-				checkRoute4(report, beans, i, route);
-
-				// 3-Route-5 : check for potentially waybacks
-				checkRoute5(report, beans, i, route);
-
-				// 3-Route-6 : check if route has minimum 2 StopPoints
-				checkRoute6(report, route);
-
-				// 3-Route-7 : check if route has minimum 1 JourneyPattern
-				checkRoute7(report, route);
-
+				journeyPatternCheckPoints.check(route.getJourneyPatterns(), parameters, report);
 			}
 		}
-
 	}
 
 	/**
@@ -157,7 +177,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 		double distanceMax = mode.getLong(INTER_STOP_AREA_DISTANCE_MAX);
 
 		List<StopArea> areas = route.getStopAreas();
-		
+
 		for (int i = 1; i < areas.size(); i++)
 		{
 			StopArea firstArea = areas.get(i-1);
@@ -165,14 +185,40 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 			double distance = distance(firstArea, nextArea);
 			if (distance < distanceMin) 
 			{
-				
+				ReportLocation location = new ReportLocation(route);
+
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("firstStop", firstArea.getName());
+				map.put("firstStopRank", Integer.valueOf(i-1));
+				map.put("nextStop", nextArea.getName());
+				map.put("nextStopRank", Integer.valueOf(i));
+				map.put("orientation", "<");
+				map.put("distance", Integer.valueOf((int) distance));
+				map.put("distanceLimit", Integer.valueOf((int) distanceMin));
+
+				DetailReportItem detail = new DetailReportItem(ROUTE_3,route.getObjectId(), Report.STATE.WARNING, location,map);
+				addValidationError(report, ROUTE_3, detail);
+
 			}
 			if (distance > distanceMax)
 			{
-				
+				ReportLocation location = new ReportLocation(route);
+
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("firstStop", firstArea.getName());
+				map.put("firstStopRank", Integer.valueOf(i-1));
+				map.put("nextStop", nextArea.getName());
+				map.put("nextStopRank", Integer.valueOf(i));
+				map.put("orientation", ">");
+				map.put("distance", Integer.valueOf((int) distance));
+				map.put("distanceLimit", Integer.valueOf((int) distanceMax));
+
+				DetailReportItem detail = new DetailReportItem(ROUTE_3,route.getObjectId(), Report.STATE.WARNING, location,map);
+				addValidationError(report, ROUTE_3, detail);
+
 			}
 		}
-		
+
 
 	}
 
@@ -259,12 +305,13 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 	 * @param report
 	 * @param route
 	 */
-	private void checkRoute6(PhaseReportItem report, Route route) {
+	private void checkRoute6(PhaseReportItem report, Route route) 
+	{
 		if (isEmpty(route.getStopPoints()) || route.getStopPoints().size() < 2 )
 		{
 			// failure encountered, add route 1
 			ReportLocation location = new ReportLocation(route);
-			DetailReportItem detail = new DetailReportItem(ROUTE_6, route.getObjectId(), Report.STATE.WARNING, location);
+			DetailReportItem detail = new DetailReportItem(ROUTE_6, route.getObjectId(), Report.STATE.ERROR, location);
 			addValidationError(report, ROUTE_6, detail);					
 		}
 	}
@@ -274,13 +321,75 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 	 * @param report
 	 * @param route
 	 */
-	private void checkRoute7(PhaseReportItem report, Route route) {
+	private void checkRoute7(PhaseReportItem report, Route route) 
+	{
 		if (isEmpty(route.getJourneyPatterns()))
 		{
 			// failure encountered, add route 1
 			ReportLocation location = new ReportLocation(route);
-			DetailReportItem detail = new DetailReportItem(ROUTE_7, route.getObjectId(), Report.STATE.WARNING, location);
+			DetailReportItem detail = new DetailReportItem(ROUTE_7, route.getObjectId(), Report.STATE.ERROR, location);
 			addValidationError(report, ROUTE_7, detail);					
+		}
+	}
+
+	/**
+	 * @param report
+	 * @param route
+	 */
+	private void checkRoute8(PhaseReportItem report, Route route) 
+	{
+		if (isEmpty(route.getJourneyPatterns())) return;
+		prepareCheckPoint(report, ROUTE_8);
+		List<StopPoint> points = new ArrayList<StopPoint>(route.getStopPoints());
+		for (JourneyPattern jp : route.getJourneyPatterns()) 
+		{
+			points.removeAll(jp.getStopPoints());
+			if (points.isEmpty()) break; // useless to continue as soon as all points are found
+		}
+		if (!points.isEmpty())
+		{
+			// failure encountered, add route 1
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("count", points.size());
+			String name = "";
+			for (StopPoint stopPoint : points) 
+			{
+				if (stopPoint.getContainedInStopArea() != null)
+				{
+					name += ", "+ stopPoint.getContainedInStopArea().getName();
+				}
+			}
+			map.put("names", name.substring(2));
+			ReportLocation location = new ReportLocation(route);
+			DetailReportItem detail = new DetailReportItem(ROUTE_8, route.getObjectId(), Report.STATE.WARNING, location);
+			addValidationError(report, ROUTE_8, detail);					
+		}
+	}
+
+	/**
+	 * @param report
+	 * @param route
+	 */
+	private void checkRoute9(PhaseReportItem report, Route route) 
+	{
+		if (isEmpty(route.getJourneyPatterns())) return;
+		prepareCheckPoint(report, ROUTE_9);
+		boolean found = false;
+		int count = route.getStopPoints().size();
+		for (JourneyPattern jp : route.getJourneyPatterns()) 
+		{
+			if (jp.getStopPoints().size() == count)
+			{
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			// failure encountered, add route 1
+			ReportLocation location = new ReportLocation(route);
+			DetailReportItem detail = new DetailReportItem(ROUTE_9, route.getObjectId(), Report.STATE.WARNING, location);
+			addValidationError(report, ROUTE_9, detail);					
 		}
 	}
 

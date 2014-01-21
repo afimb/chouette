@@ -19,7 +19,7 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 {
 
 	@Setter private RouteCheckPoints routeCheckPoints; 
-	
+
 	@Override
 	public void check(List<Line> beans, JSONObject parameters,
 			PhaseReportItem report) 
@@ -27,29 +27,30 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 		// init checkPoints : add here all defined check points for this kind of object
 		initCheckPoint(report, LINE_1, CheckPointReportItem.SEVERITY.WARNING);
 		initCheckPoint(report, LINE_2, CheckPointReportItem.SEVERITY.ERROR);
-		
+
 		// 3-Line-1 : check if two lines have same name
 		// 3-Line-2 : check if line has routes
 		if (beans.size() > 0)
 		{
 			// checkPoint is applicable
 			prepareCheckPoint(report, LINE_2);
-			
+
 			// en cas d'erreur, on reporte autant de detail que de lignes en erreur
 			for (int i = 0; i < beans.size(); i++)
 			{
 				Line line1 = beans.get(i);
 				// 3-Line-1 : check if two lines have same name
-                checkLine1(beans, report, i, line1);
-        		// 3-Line-2 : check if line has routes
+				checkLine1(beans, report, i, line1);
+				// 3-Line-2 : check if line has routes
 				checkLine2(report, line1);
-				
+
 				// forward on routes
 				List<Route> routes = line1.getRoutes();
-				routeCheckPoints.check(routes, parameters, report);
+				if (routeCheckPoints != null)
+					routeCheckPoints.check(routes, parameters, report);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 					ReportLocation location = new ReportLocation(line2);
 					DetailReportItem detail = new DetailReportItem(LINE_1,line2.getObjectId(), Report.STATE.WARNING, location, null);
 					addValidationError(report, LINE_1, detail);
-					
+
 					error_1 = true; // to add detail for line1
 				}
 			}

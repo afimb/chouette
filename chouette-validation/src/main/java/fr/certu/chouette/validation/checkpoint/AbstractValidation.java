@@ -10,6 +10,8 @@ package fr.certu.chouette.validation.checkpoint;
 
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 
 import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
@@ -22,6 +24,7 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
  * @author michel
  *
  */
+@Log4j
 public abstract class AbstractValidation 
 {
 	// test keys
@@ -48,9 +51,9 @@ public abstract class AbstractValidation
 	protected static final String ROUTE_5 = "3-Route-5";
 	protected static final String ROUTE_6 = "3-Route-6";
 	protected static final String ROUTE_7 = "3-Route-7";
+	protected static final String ROUTE_8 = "3-Route-8";
+	protected static final String ROUTE_9 = "3-Route-9";
 	protected static final String JOURNEY_PATTERN_1 = "3-JourneyPattern-1";
-	protected static final String JOURNEY_PATTERN_2 = "3-JourneyPattern-2";
-	protected static final String JOURNEY_PATTERN_3 = "3-JourneyPattern-3";
 	protected static final String VEHICLE_JOURNEY_1 = "3-VehicleJourney-1";
 	protected static final String VEHICLE_JOURNEY_2 = "3-VehicleJourney-2";
 	protected static final String VEHICLE_JOURNEY_3 = "3-VehicleJourney-3";
@@ -173,4 +176,22 @@ public abstract class AbstractValidation
 		return camelcase.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
 	}
 
+	protected long getModeParameter(JSONObject parameters, String modeKey, String key)
+	{
+		// find transportMode : 
+		modeKey = MODE_PREFIX+toUnderscore(modeKey);
+		JSONObject mode = parameters.optJSONObject(modeKey);
+		JSONObject modeOther = parameters.optJSONObject(MODE_OTHER);
+		if (mode == null || !mode.has(key))
+		{
+			log.error("no parameter "+key+" for mode "+modeKey);
+			mode = parameters.optJSONObject(MODE_OTHER);
+			if (modeOther == null  || !modeOther.has(key)) 
+			{
+				log.error("no parameter "+key+" for mode "+MODE_OTHER);
+				mode = mode_default;
+			}
+		}
+		return mode.getLong(key);
+	}
 }
