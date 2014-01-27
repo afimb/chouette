@@ -7,40 +7,23 @@
  */
 package fr.certu.chouette.gui.command;
 
-// import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
@@ -49,37 +32,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.IDaoTemplate;
-import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.AreaCentroid;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.GroupOfLine;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.plugin.exchange.FormatDescription;
-import fr.certu.chouette.plugin.exchange.ListParameterValue;
-import fr.certu.chouette.plugin.exchange.ParameterDescription;
-import fr.certu.chouette.plugin.exchange.ParameterValue;
-import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
-import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
-import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
-import fr.certu.chouette.plugin.model.ExportLogMessage;
-import fr.certu.chouette.plugin.model.GuiExport;
-import fr.certu.chouette.plugin.model.ImportTask;
-import fr.certu.chouette.plugin.model.CompilanceCheckTask;
-import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
-import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.report.ReportHolder;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
-import fr.certu.chouette.plugin.validation.report.ValidationReport;
-import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * 
@@ -103,7 +58,7 @@ import fr.certu.chouette.service.geographic.IGeographicService;
  * 
  */
 @NoArgsConstructor
-public class Command
+public class Command extends AbstractCommand
 {
 
 	private static final Logger logger = Logger.getLogger(Command.class);
@@ -148,22 +103,12 @@ public class Command
 		printBloc(bundle,"Footer","");
 	}
 
-	@Getter @Setter private Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
 
+	@Getter @Setter private ImportCommand importCommand;
 
-	@Setter private IDaoTemplate<Organisation> organisationDao;;
+	@Getter @Setter private ExportCommand exportCommand;
 
-	@Setter private IDaoTemplate<Referential> referentialDao;;
-
-	@Setter private IDaoTemplate<ImportTask> importDao;;
-
-	@Setter private IDaoTemplate<GuiExport> exportDao;
-
-	@Setter private IDaoTemplate<ExportLogMessage> exportLogMessageDao;
-
-	@Setter private IDaoTemplate<CompilanceCheckTask> validationDao;
-
-	@Setter private IGeographicService geographicService;
+	@Getter @Setter private ValidateCommand validateCommand;
 
 	private static String getHelpString(ResourceBundle bundle,String key)
 	{
@@ -289,8 +234,6 @@ public class Command
 
 	public static Map<String,String> shortCuts ;
 
-	public boolean verbose = false;
-
 	public static Locale locale = Locale.getDefault();
 
 	static
@@ -302,15 +245,14 @@ public class Command
 		shortCuts.put("v", "verbose");
 	}
 
-	private static Session session = null;
+	@Getter @Setter private static Session session = null;
 
 	/**
 	 * @param factory
 	 */
-	public static void closeDao() 
+	public static void closeDao(BeanFactory factory) 
 	{
 		session.flush();
-		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
 		SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
 		SessionFactoryUtils.closeSession(sessionHolder.getSession());
@@ -319,12 +261,12 @@ public class Command
 	/**
 	 * @param factory
 	 */
-	public static void initDao() 
+	public static void initDao(BeanFactory factory) 
 	{
-		ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 		SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
 		session = SessionFactoryUtils.getSession(sessionFactory, true);
 		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
+
 	}
 
 	/**
@@ -342,19 +284,59 @@ public class Command
 				printHelp();
 				System.exit(0);
 			}
+			int code = 0;
+			Command command = null;
+			try
+			{
+				applicationContext = new ClassPathXmlApplicationContext(context);
+				applicationContext.registerShutdownHook();
+				ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
+				command = (Command) factory.getBean("Command");
 
-			applicationContext = new ClassPathXmlApplicationContext(context);
-			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
-			Command command = (Command) factory.getBean("Command");
+				initDao(applicationContext.getBeanFactory());
+			}
+			catch (Exception ex)
+			{
+				logger.fatal("global failure",ex);
+				System.exit(2);
+			}
+			catch (Error e)
+			{
+				logger.fatal("global error",e);
+				System.exit(2);
+			}
 
-			initDao();
+			try
+			{
+				code = command.execute(args);
+			}
+			catch (Exception ex)
+			{
+				logger.fatal("global failure",ex);
+				code = 2;
+			}
+			catch (Error e)
+			{
+				logger.fatal("global error",e);
+				code = 2;
+			}
+			command = null;
+			try
+			{
+				closeDao(applicationContext.getBeanFactory());
+			}
+			catch (Exception ex)
+			{
+				logger.fatal("global failure",ex);
+				System.exit(2);
+			}
+			catch (Error e)
+			{
+				logger.fatal("global error",e);
+				System.exit(2);
+			}
 
-			command.execute(args);
-
-			closeDao();
-
-			System.runFinalization();
-
+			System.exit(code);
 		}
 		else
 		{
@@ -366,7 +348,7 @@ public class Command
 	/**
 	 * @param args
 	 */
-	public void execute(String[] args)
+	public int execute(String[] args)
 	{
 		List<CommandArgument> commands = null;
 		try 
@@ -378,58 +360,43 @@ public class Command
 			if (getBoolean(globals,"help"))
 			{
 				printHelp();
-				return;
+				return 0;
 			}
 			else
 			{
 				System.err.println("invalid syntax : "+e1.getMessage());
 				logger.error(e1.getMessage(),e1);
-				System.exit(1);
+				return 1;
 			}
 		}
 		if (getBoolean(globals,"help"))
 		{
 			printHelp();
-			return;
+			return 0;
 		}
 
-		if (getBoolean(globals,"verbose"))
-		{
-			verbose = true;
-			for (String key : globals.keySet())
-			{
-				System.out.println("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
-			}
-		}
 		for (String key : globals.keySet())
 		{
 			logger.info("global parameters "+key+" : "+ Arrays.toString(globals.get(key).toArray()));
 		}
 
 		int commandNumber = 0;
-
+		int code = 0;
 		try
 		{
 			for (CommandArgument command : commands) 
 			{
 				commandNumber++;
-				executeCommand(commandNumber, command);
+				code = executeCommand(commandNumber, command);
 			}
 		}
 		catch (Exception e)
 		{
-			if (getBoolean(globals,"help"))
-			{
-				printHelp();
-			}
-			else
-			{
-				System.out.println("command failed : "+e.getMessage());
-				logger.error(e.getMessage(),e);
-				System.exit(1);
-			}
+			System.out.println("command failed : "+e.getMessage());
+			logger.error(e.getMessage(),e);
+			return 1;
 		}
-
+		return code;
 
 	}
 
@@ -441,27 +408,18 @@ public class Command
 	 * @throws ChouetteException
 	 * @throws Exception
 	 */
-	public void executeCommand(
+	private int executeCommand(
 			int commandNumber,
 			CommandArgument command) throws Exception 
 			{
 		String name = command.getName();
 		Map<String, List<String>> parameters = command.getParameters();
-		if (verbose)
-		{
-			traceCommand(commandNumber, name, parameters);
-		}
 		logger.info("Command "+commandNumber+" : "+name);
 		for (String key : parameters.keySet())
 		{
 			logger.info("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
 		}
 
-		if (name.equals("verbose"))
-		{
-			verbose = !(getBoolean(parameters, "off")) ;
-			return ;
-		}
 		if (name.equals("help"))
 		{
 			String cmd = getSimpleString(parameters, "cmd","");
@@ -473,7 +431,7 @@ public class Command
 			{
 				printCommandSyntax(true);
 			}
-			return;
+			return 0;
 		}
 		if (name.equals("lang"))
 		{
@@ -489,38 +447,38 @@ public class Command
 			{
 				System.out.println(locale);
 			}
-			return;
+			return 0;
 		}
 
 		long tdeb = System.currentTimeMillis();
 
 		if (name.equals("import"))
 		{
-			int code = executeImport(parameters);
+			int code = importCommand.executeImport(session,parameters);
 			if (code > 0)
 			{
 				logger.error("   command failed with code "+code);
-				System.exit(code);
+				return code;
 			}
 		}
 		else if (name.equals("validate"))
 		{
-			int code = executeValidate(parameters);
+			int code = validateCommand.executeValidate(session,parameters);
 			if (code > 0)
 			{
 				logger.error("   command failed with code "+code);
-				System.exit(code);
+				return code;
 			}
 		}
 		else if (name.equals("export"))
 		{
 			// old fashioned interface
 			INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
-			int code = executeExport(manager,parameters);
+			int code = exportCommand.executeExport(manager,parameters);
 			if (code > 0)
 			{
 				logger.error("   command failed with code "+code);
-				System.exit(code);
+				return code;
 			}
 		}
 		else
@@ -528,859 +486,16 @@ public class Command
 			throw new Exception("Command "+commandNumber+": unknown command :" +command.getName());
 		}
 		long tfin = System.currentTimeMillis();
-		if (verbose)
-		{
-			System.out.println("command "+command.getName()+" executed in "+getTimeAsString(tfin-tdeb));
-		}
 		logger.info("    command "+command.getName()+" executed in "+getTimeAsString(tfin-tdeb));
-		return;
-			}
-
-	/**
-	 * export command : 
-	 * selected objects
-	 * -c export -o line -format XXX -outputFile YYYY -exportId ZZZ -id list_of_id_separated_by_commas ...
-	 * all objects 
-	 * -c export -o line -format XXX -outputFile YYYY -exportId ZZZ 
-	 * dependency criteria : sample for all lines of one network
-	 * -c export -o network -format XXX -outputFile YYYY -exportId ZZZ -id list_of_network_id_separated_by_commas
-	 * 
-	 * @param manager
-	 * @param parameters
-	 * @return 
-	 */
-	private int executeExport(
-			INeptuneManager<NeptuneIdentifiedObject> manager,
-			Map<String, List<String>> parameters) 
-	{
-		String format = getSimpleString(parameters,"format");
-		Long exportId = Long.valueOf(getSimpleString(parameters,"exportid"));
-
-		if (!exportDao.exists(exportId))
-		{
-			// error export not found
-			logger.error("export not found "+exportId);
-			return 1;
-		}
-		GuiExport guiExport = exportDao.get(exportId);
-		logger.info("Export data for export id "+exportId);
-		logger.info("  type : "+guiExport.getType());
-		logger.info("  options : "+guiExport.getOptions());
-		logger.info("  references type : "+guiExport.getReferencesType());
-		logger.info("  reference ids : "+guiExport.getReferenceIds());
-
-		Referential referential = referentialDao.get(guiExport.getReferentialId());
-		logger.info("Referential "+guiExport.getReferentialId());
-		logger.info("  name : "+referential.getName());
-		logger.info("  slug : "+referential.getSlug());
-		logger.info("  projection type : "+referential.getProjectionType());
-
-		String projectionType = null;
-		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
-		{
-			logger.info("  projection type for export: "+referential.getProjectionType());
-			projectionType = referential.getProjectionType();
-		}
-		// set projection for export (inactive if not set)
-		geographicService.switchProjection(projectionType);
-
-		List<Report> reports = new ArrayList<Report>();
-
-		String[] ids = new String[0];
-		if (parameters.containsKey("id"))
-			ids = getSimpleString(parameters,"id").split(",");
-		try
-		{
-			List<FormatDescription> formats = manager.getExportFormats(null);
-			FormatDescription description = null;
-
-			for (FormatDescription formatDescription : formats)
-			{
-				if (formatDescription.getName().equalsIgnoreCase(format))
-				{
-					description=formatDescription;
-					break;
-				}
-			}
-			if (description == null)
-			{
-				String objectName = getActiveObject(parameters);
-				List<String> objects = parameters.get("object");
-				objects.clear();
-				objects.add("line");
-				manager = getManager(parameters);
-				parameters.remove("id");
-				List<String> filter = new ArrayList<String>();
-				if (objectName.equals("network"))
-				{
-					filter.add("ptNetwork.id");
-				}
-				else if (objectName.equals("company"))
-				{
-					filter.add("company.id");
-				}
-				else
-				{
-					throw new IllegalArgumentException("format "+format+" unavailable for "+objectName);
-				}
-				if (ids != null && ids.length > 0)
-				{
-					filter.add("in");
-					filter.addAll(Arrays.asList(ids));
-					parameters.put("filter", filter);
-				}
-
-				return executeExport(manager,parameters);
-
-			}
-
-			List<ParameterValue> values = populateParameters(description, parameters);
-
-			ReportHolder holder = new ReportHolder();
-			List<NeptuneIdentifiedObject> beans = executeGet(manager, parameters);
-			manager.doExport(null, beans, format, values, holder );
-			if (holder.getReport() != null)
-			{
-				Report r = holder.getReport();
-				reports.add(r);
-			}
-		}
-		catch (Exception e)
-		{
-			logger.error("export failed "+e.getMessage(),e);
-			GuiReport errorReport = new GuiReport("EXPORT_ERROR",Report.STATE.ERROR);
-			GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,Report.STATE.ERROR,e.getMessage());
-			errorReport.addItem(item);
-			reports.add(errorReport);
-			saveExportReports(exportId,format,reports);
-			return 1;
-		}
-		saveExportReports(exportId,format,reports);
 		return 0;
-	}
-
-
-
-
-	/**
-	 * @param manager
-	 * @param parameters 
-	 * @return 
-	 * @throws ChouetteException
-	 */
-	private List<NeptuneIdentifiedObject> executeGet(INeptuneManager<NeptuneIdentifiedObject> manager, Map<String, List<String>> parameters)
-			throws ChouetteException
-			{
-		Filter filter = null;
-		if (parameters.containsKey("id"))
-		{
-			String[] sids = getSimpleString(parameters,"id").split(",");
-			List<Long> ids = new ArrayList<Long>();
-
-			for (String id : sids)
-			{
-				ids.add(Long.valueOf(id));
-			}
-			filter = Filter.getNewInFilter("id", ids);
-		}
-		else if (parameters.containsKey("objectid"))
-		{
-			List<String> sids = parameters.get("objectid");
-			filter = Filter.getNewInFilter("objectId", sids);
-		}
-		else if (parameters.containsKey("filter"))
-		{
-			List<String> filterArgs = parameters.get("filter");
-			if (filterArgs.size() < 2) 
-			{
-				throw new IllegalArgumentException("invalid syntax for filter ");
-			}
-			String filterKey = filterArgs.get(0);
-			String filterOp = filterArgs.get(1);
-			if (filterArgs.size() == 2)
-			{
-				if (filterOp.equalsIgnoreCase("null") || filterOp.equalsIgnoreCase("isnull"))
-				{
-					filter = Filter.getNewIsNullFilter(filterKey);
-				}
-				else 
-				{
-					throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
-				}
-			}
-			else if (filterOp.equalsIgnoreCase("in"))
-			{
-				if (filterKey.endsWith(".id"))
-				{
-					List<String> values = filterArgs.subList(2, filterArgs.size());
-					List<Long> ids = new ArrayList<Long>();
-
-					for (String id : values)
-					{
-						ids.add(Long.valueOf(id));
-					}
-					filter = Filter.getNewInFilter(filterKey, ids );
-				}
-				else
-				{
-					List<String> values = filterArgs.subList(2, filterArgs.size());
-					filter = Filter.getNewInFilter(filterKey, values );
-				}
-			}
-			else if (filterArgs.size() == 3)
-			{
-				String value = filterArgs.get(2);
-				if (filterOp.equalsIgnoreCase("eq") || filterOp.equals("="))
-				{
-					filter = Filter.getNewEqualsFilter(filterKey, value);
-				}
-				else if (filterOp.equalsIgnoreCase("like"))
-				{
-					filter = Filter.getNewLikeFilter(filterKey, value);
-				}
-				else 
-				{
-					throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
-				}
-			}
-			else
-			{
-				throw new IllegalArgumentException(filterOp+" : invalid syntax or not yet implemented");
-			}
-		}
-		else
-		{
-			filter = Filter.getNewEmptyFilter();
-		}
-
-		if (parameters.containsKey("orderby"))
-		{
-			List<String> orderFields = parameters.get("orderby");
-
-			boolean desc = getBoolean(parameters,"desc");
-
-			if (desc)
-			{
-				for (String field : orderFields)
-				{
-					filter.addOrder(FilterOrder.desc(field));
-				}
-			}
-			else
-			{
-				for (String field : orderFields)
-				{
-					filter.addOrder(FilterOrder.asc(field));
-				}
-			}
-		}
-
-		String limit = getSimpleString(parameters, "limit","none");
-		if (!limit.equalsIgnoreCase("none"))
-		{
-			filter.addLimit(Integer.parseInt(limit));
-		}
-
-		List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
-
-		if (verbose)
-		{
-			int count = 0;
-			for (NeptuneIdentifiedObject bean : beans)
-			{
-				if (count > 10) 
-				{
-					System.out.println(" ... ");
-					break;
-				}
-				count++;
-				System.out.println(bean.getName()+" : ObjectId = "+bean.getObjectId());
-			}
-		}
-		System.out.println("beans count = "+beans.size());
-		return beans;
 			}
 
-
-
-	/**
-	 * import command :  
-	 * -c import -id ZZZ 
-	 * @param manager
-	 * @param parameters
-	 * @return
-	 */
-	private int executeImport(Map<String, List<String>> parameters)
-	{
-		Report importReport = null;
-		ValidationReport validationReport = null;
-		boolean save = true;
-		List<Long> savedIds = new ArrayList<Long>();
-
-		INeptuneManager<NeptuneIdentifiedObject> manager = getManagers().get("line");
-		// check if import exists and accept unzip before call
-		Long importId = Long.valueOf(getSimpleString(parameters,"id","0"));
-		// TODO remove when Rails is updated
-		if (importId.equals(Long.valueOf(0)))
-		{
-			importId = Long.valueOf(getSimpleString(parameters,"importid"));
-		}
-		if (!importDao.exists(importId))
-		{
-			// error import not found
-			logger.error("import not found "+importId);
-			return 1;
-		}
-		ImportTask importTask = importDao.get(importId);
-		logger.info("Import data for import id "+importId);
-		logger.info("  options : "+importTask.getParameters());
-
-		startProcess(importTask);
-		
-		JSONObject options = importTask.getParameters();
-		if (options == null) 
-		{
-			logger.error("import without parameters "+importId);
-			return 1;
-		}
-		String format = options.getString("format").toUpperCase();
-		String inputFile = options.getString("file_path");
-		if (!options.has("input_file"))
-		{
-			options.put("input_file", inputFile); // for import compatibility
-			logger.info("  options : "+options);
-		}
-
-		save = !options.getBoolean("no_save");
-
-		Referential referential = referentialDao.get(importTask.getReferentialId());
-		logger.info("Referential "+importTask.getReferentialId());
-		logger.info("  name : "+referential.getName());
-		logger.info("  slug : "+referential.getSlug());
-
-		String projectionType = null;
-		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
-		{
-			logger.info("  projection type for import: "+referential.getProjectionType());
-			projectionType = referential.getProjectionType();
-			parameters.put("srid", Arrays.asList(new String[]{projectionType}));
-		}
-		// set projection for import (inactive if not set)
-		geographicService.switchProjection(projectionType);
-
-		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
-
-		try
-		{
-			List<FormatDescription> formats = manager.getImportFormats(null);
-			FormatDescription description = null;
-
-			for (FormatDescription formatDescription : formats)
-			{
-				if (formatDescription.getName().equalsIgnoreCase(format))
-				{
-					description=formatDescription;
-					break;
-				}
-			}
-			if (description == null)
-			{
-				throw new IllegalArgumentException("format "+format+" unavailable");
-			}
-			List<String> suffixes = new ArrayList<String>();
-			for (ParameterDescription desc : description.getParameterDescriptions())
-			{
-				if (desc.getName().equalsIgnoreCase("inputfile"))
-				{
-					suffixes = desc.getAllowedExtensions();
-					break;
-				}
-			}
-			List<ParameterValue> values = populateParametersFromJSON(description,options,"inputfile","fileformat");
-			if (zipped && description.isUnzipAllowed())
-			{
-				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
-				ReportHolder importHolder = new ReportHolder();
-				validationReport = new ValidationReport();
-				ReportHolder validationHolder = new ReportHolder();
-				validationHolder.setReport(validationReport);
-
-				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
-				values.add(inputFileParam);
-				// unzip files , import and save contents 
-				ZipFile zip = null;
-				File temp = null;
-				File tempRep = new File(FileUtils.getTempDirectory(),"massImport"+importId);
-				if (!tempRep.exists()) tempRep.mkdirs();
-				File zipFile = new File(inputFile);
-				ReportItem zipReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE,Report.STATE.OK,zipFile.getName());
-				try
-				{
-
-					zip = new ZipFile(inputFile);
-					importHolder.setReport(zipReportItem);
-					for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
-					{
-						ZipEntry entry = entries.nextElement();
-
-						if (entry.isDirectory())
-						{
-							File dir = new File(tempRep, entry.getName());
-							dir.mkdirs();
-							continue;
-						}
-						if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),suffixes))
-						{
-							ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,entry.getName());
-							zipReportItem.addItem(fileReportItem);
-							logger.info("entry "+entry.getName()+" ignored, unknown extension");
-							continue;
-						}
-						InputStream stream = null;
-						try
-						{
-							stream = zip.getInputStream(entry);
-						}
-						catch (IOException e)
-						{
-							ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.WARNING,entry.getName());
-							importReport.addItem(fileReportItem);
-							logger.error("entry "+entry.getName()+" cannot read");
-							continue;
-						}
-						byte[] bytes = new byte[4096];
-						int len = stream.read(bytes);
-						temp = new File(tempRep.getAbsolutePath()+"/"+entry.getName());
-						FileOutputStream fos = new FileOutputStream(temp);
-						while (len > 0)
-						{
-							fos.write(bytes, 0, len);
-							len = stream.read(bytes);
-						}
-						fos.close();
-
-						// import
-						if (verbose) System.out.println("import file "+entry.getName());
-						logger.info("import file "+entry.getName());
-						inputFileParam.setFilepathValue(temp.getAbsolutePath());
-						List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
-						if (beans != null && !beans.isEmpty())
-						{
-							// save
-							if (save)
-							{
-
-								for (NeptuneIdentifiedObject bean : beans)
-								{
-									if (verbose)
-									{
-										System.out.println("save "+bean.getName()+" ("+bean.getObjectId()+")");
-									}
-									logger.info("save "+bean.getName()+" ("+bean.getObjectId()+")");
-									// check all stopareas
-									if (bean instanceof Line)
-									{
-										Line line = (Line) bean;
-										checkProjection(line);
-									}
-								}
-								try
-								{
-									manager.saveAll(null, beans, true, true);
-									for (NeptuneIdentifiedObject bean : beans)
-									{
-										GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
-										importReport.addItem(item);
-										savedIds.add(bean.getId());
-									}
-								}
-								catch (Exception e) 
-								{
-									logger.error("fail to save data :"+e.getMessage(),e);
-									for (NeptuneIdentifiedObject bean : beans)
-									{
-										GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_ERROR,Report.STATE.ERROR,bean.getName(),filter_chars
-												(e.getMessage()));
-										importReport.addItem(item);
-									}
-								}
-							}
-							else
-							{
-								for (NeptuneIdentifiedObject bean : beans)
-								{
-									GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
-									importReport.addItem(item);
-								}
-
-							}
-						}
-						temp.delete();
-					}        
-					try
-					{
-						zip.close();
-					}
-					catch (IOException e)
-					{
-						logger.info("cannot close zip file");
-					}
-					importReport.addItem(zipReportItem);
-				}
-				catch (IOException e)
-				{
-					ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
-					zipReportItem.addItem(fileErrorItem);
-					importReport.addItem(zipReportItem);
-					saveImportReports(importTask, importReport, validationReport);
-					return 1;
-				}
-				finally
-				{
-					try
-					{
-						FileUtils.deleteDirectory(tempRep);
-					}
-					catch (IOException e) 
-					{
-						logger.warn("temporary directory "+tempRep.getAbsolutePath()+" could not be deleted");
-					}
-				}
-
-			}
-			else
-			{
-				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
-				inputFileParam.setFilepathValue(inputFile);
-				values.add(inputFileParam);
-				// surround with try catch 
-				ReportHolder importHolder = new ReportHolder();
-				ReportHolder validationHolder = new ReportHolder();
-				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
-
-				if (importHolder.getReport() != null)
-				{
-					importReport = importHolder.getReport();
-
-				}
-				if (validationHolder.getReport() != null)
-				{
-					validationReport = (ValidationReport) validationHolder.getReport();
-
-				}
-				if (beans != null)
-				{
-					logger.info("imported Lines "+beans.size());
-
-					if (save)
-					{
-						for (NeptuneIdentifiedObject bean : beans) 
-						{
-							if (bean instanceof Line)
-							{
-								Line line = (Line) bean;
-								checkProjection(line);
-							}
-							List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
-							oneBean.add(bean);
-							try
-							{
-								logger.info("save  Line "+bean.getName());
-								manager.saveAll(null, oneBean, true, true);
-								GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
-								importReport.addItem(item);
-								savedIds.add(bean.getId());
-							}
-							catch (Exception e) 
-							{
-								logger.error("save failed "+e.getMessage(),e);
-								GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_ERROR,Report.STATE.ERROR,bean.getName(),e.getMessage());
-								importReport.addItem(item);
-							}
-						}
-					}
-					else
-					{
-						for (NeptuneIdentifiedObject bean : beans) 
-						{
-							GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
-							importReport.addItem(item);
-						}
-
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			// fill report with error
-			String msg = e.getMessage();
-			if (msg == null) msg = e.getClass().getName();
-			System.out.println("import failed "+msg);
-			logger.error("import failed "+msg,e);
-			if (importReport == null)
-			{
-				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
-			}
-			GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,Report.STATE.ERROR,msg);
-			importReport.addItem(item);
-			saveImportReports(importTask,importReport,validationReport);
-
-			return 1;
-		}
-
-		// launch phase3 validation if required and possible
-		if (save && !savedIds.isEmpty() && importTask.getCompilanceCheckTask() != null)
-		{
-			if (importTask.getCompilanceCheckTask().getParameters() != null)
-			{
-				logger.info("processing phase 3 validation on "+savedIds.size()+" lines");
-				// launch validation on objects
-				Filter filter = Filter.getNewInFilter("id", savedIds);
-				try 
-				{
-					List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
-					if (beans == null || beans.isEmpty())
-					{
-						logger.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
-
-					}
-					else
-					{
-						PhaseReportItem phaseReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
-						validationReport.addItem(phaseReport);
-						manager.validate(null, beans, importTask.getCompilanceCheckTask().getParameters(), phaseReport, true);
-					}
-				} 
-				catch (ChouetteException e) 
-				{
-					logger.error("cannot read previously saved objects",e);
-				}
-			}
-		}
-
-
-		saveImportReports(importTask,importReport,validationReport);
-		return (0);
-
-	}
-
-	private void startProcess(ImportTask importTask) 
-	{
-		importTask.setStatus("processing");
-		if (importTask.getCompilanceCheckTask() != null)
-		{
-			importTask.getCompilanceCheckTask().setStatus("processing");
-		}
-		importDao.save(importTask);
-		session.flush();
-		
-	}
-
-	private void startProcess(CompilanceCheckTask compilanceCheckTask) 
-	{
-		compilanceCheckTask.setStatus("processing");
-		validationDao.save(compilanceCheckTask);
-		session.flush();
-		
-	}
-
-	private void saveImportReports(ImportTask guiImport, Report ireport, ValidationReport vreport) 
-	{
-		// logger.info("import report = "+ireport.toJSON().toString(3));
-		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
-
-		if (guiImport.getCompilanceCheckTask() != null)
-		{
-			if (vreport != null && vreport.getItems() != null)
-			{
-				switch (vreport.getStatus())
-				{
-				case WARNING:
-				case ERROR:
-				case FATAL:
-					guiImport.getCompilanceCheckTask().setStatus("nok");
-					break;
-				case OK:
-					guiImport.getCompilanceCheckTask().setStatus("ok");
-					break;
-				case UNCHECK:
-					guiImport.getCompilanceCheckTask().setStatus("na");
-					break;
-				}
-				guiImport.getCompilanceCheckTask().addAllResults(vreport.toValidationResults());
-			}
-		}
-		guiImport.setResult(converter.toJSONObject());
-		importDao.save(guiImport);
-		session.flush();
-	}
-
-	private Object filter_chars(String message) 
-	{
-		if (message == null) return "";
-		return message.replaceAll("\t", "").replaceAll("\"", "'");
-	}
-
-	private void checkProjection(Line line)
-	{
-		for (Route route : line.getRoutes())
-		{
-			for (StopPoint point : route.getStopPoints())
-			{
-				checkProjection(point.getContainedInStopArea());
-			}
-		}
-
-	}
-
-	private void checkProjection(StopArea area)
-	{
-		if (area == null) return;
-		if (area.getAreaCentroid() != null)
-		{
-			AreaCentroid centroid = area.getAreaCentroid();
-			if (centroid.getLongLatType() == null)
-			{
-				geographicService.convertToWGS84(area);
-			}
-		}
-		checkProjection(area.getParent());
-
-	}
-
-
-	/**
-	 * validate command from database : 
-	 * -c validation -o line|network|company -validationId ZZZ
-	 *
-	 * @param parameters 
-	 * @return 
-	 * @throws ChouetteException
-	 */
-	private int executeValidate(
-			Map<String, List<String>> parameters)
-					throws ChouetteException 
-					{
-		INeptuneManager<NeptuneIdentifiedObject> manager = getManagers().get("line");
-		Long validationId = Long.valueOf(getSimpleString(parameters,"id"));
-		if (!validationDao.exists(validationId))
-		{
-			// error validation not found
-			logger.error("compilanceCheckTask not found "+validationId);
-			return 1;
-		}
-		CompilanceCheckTask compilanceCheckTask = validationDao.get(validationId);
-		startProcess(compilanceCheckTask);
-
-		// read parameters
-		JSONObject validationParameters = compilanceCheckTask.getParameters();
-
-		// read object type
-		String objectType = extractObjectType(compilanceCheckTask.getReferencesType().toLowerCase());
-
-		String idstring = compilanceCheckTask.getReferenceIds();
-		String[] ids = idstring.split(",");
-		List<Long> checkIds = new ArrayList<>();
-		for (String id : ids) 
-		{
-			checkIds.add(Long.valueOf(id));
-		}
-
-		List<NeptuneIdentifiedObject> beans = new ArrayList<NeptuneIdentifiedObject>();
-		if (!objectType.startsWith("line"))
-		{
-			INeptuneManager<NeptuneIdentifiedObject> loadManager = getManagers().get(objectType);
-			if (loadManager == null)
-			{
-				logger.error("object type "+objectType+" not found "+validationId);
-				return 1;
-			}
-			Filter filter = Filter.getNewInFilter("id", checkIds);
-			List<NeptuneIdentifiedObject> containerBeans = loadManager.getAll(null,filter);
-			Set<NeptuneIdentifiedObject> beanSet = new HashSet<NeptuneIdentifiedObject>();
-			for (NeptuneIdentifiedObject container : containerBeans) 
-			{
-				if (objectType.equals("network"))
-				{
-					PTNetwork network = (PTNetwork) container;
-					beanSet.addAll(network.getLines());
-				}
-				else if (objectType.equals("company"))
-				{
-					Company company = (Company) container;
-					beanSet.addAll(company.getLines());
-				}
-				else if (objectType.equals("groupofline"))
-				{
-					GroupOfLine group = (GroupOfLine) container;
-					beanSet.addAll(group.getLines());
-				}
-				else
-				{
-					logger.error("object type "+objectType+" not managed "+validationId);
-				}
-			}
-			beans.addAll(beanSet);
-		}
-		else
-		{
-			Filter filter = Filter.getNewInFilter("id", checkIds);
-			beans = manager.getAll(null,filter);
-
-		}
-
-		PhaseReportItem valReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
-		if (beans != null && !beans.isEmpty())
-		{
-			manager.validate(null, beans, validationParameters,valReport);
-		}
-
-		// save report
-		if (valReport != null)
-		{
-			saveValidationReport(compilanceCheckTask,valReport);
-		}
-
-		return 0;
-					}
-
-
-	private String extractObjectType(String type) 
-	{
-		// type shall begin by chouette::
-		if (type.startsWith("chouette::")) return type.substring(10);
-
-		return type;
-	}
-
-	/**
-	 * @param parameters
-	 * @return
-	 */
-	private String getActiveObject(Map<String, List<String>> parameters) 
-	{
-		String object = null;
-		try
-		{
-			object = getSimpleString(parameters,"object").toLowerCase();
-		}
-		catch (IllegalArgumentException e)
-		{
-			object = getSimpleString(globals,"object","xxx").toLowerCase();
-		}
-		if (!managers.containsKey(object))
-		{
-			return "unknown object";
-		}
-		return object;
-	}
 
 	/**
 	 * @param string
 	 * @return
 	 */
-	public boolean getBoolean(Map<String, List<String>> parameters,String key)
+	private boolean getBoolean(Map<String, List<String>> parameters,String key)
 	{
 		List<String> values = parameters.get(key);
 		if (values == null) return false;
@@ -1392,7 +507,7 @@ public class Command
 	 * @param parameters
 	 * @return
 	 */
-	public INeptuneManager<NeptuneIdentifiedObject> getManager(Map<String, List<String>> parameters) 
+	private INeptuneManager<NeptuneIdentifiedObject> getManager(Map<String, List<String>> parameters) 
 	{
 		String object = null;
 		try
@@ -1418,7 +533,7 @@ public class Command
 	 * @param string
 	 * @return
 	 */
-	public String getSimpleString(Map<String, List<String>> parameters,String key)
+	private String getSimpleString(Map<String, List<String>> parameters,String key)
 	{
 		List<String> values = parameters.get(key);
 		if (values == null) throw new IllegalArgumentException("parameter -"+key+" of String type is required");
@@ -1430,7 +545,7 @@ public class Command
 	 * @param string
 	 * @return
 	 */
-	public String getSimpleString(Map<String, List<String>> parameters,String key,String defaultValue)
+	private String getSimpleString(Map<String, List<String>> parameters,String key,String defaultValue)
 	{
 		List<String> values = parameters.get(key);
 		if (values == null) return defaultValue;
@@ -1472,8 +587,6 @@ public class Command
 		res += milli + " ms" ;
 		return res;
 	}
-
-
 
 	private List<CommandArgument> parseArgs(String[] args) throws Exception
 	{
@@ -1544,251 +657,6 @@ public class Command
 		return arg.startsWith("-") && !Character.isDigit(arg.charAt(1));
 	}
 
-	@SuppressWarnings("incomplete-switch")
-	private List<ParameterValue> populateParameters(FormatDescription description,Map<String, List<String>> parameters,String ... excluded)
-	{
-		List<ParameterValue> values = new ArrayList<ParameterValue>();
-		List<String> excludedParams = Arrays.asList(excluded);
-		for (ParameterDescription desc : description.getParameterDescriptions())
-		{
-			String name = desc.getName();
-			String key = name.toLowerCase();
-			if (excludedParams.contains(key)) continue;
-			List<String> vals = parameters.get(key);
-			if (vals == null)
-			{
-				if (desc.isMandatory())
-				{
-					throw new IllegalArgumentException("parameter -"+name+" is required");
-				}
-			}
-			else
-			{
-				if (desc.isCollection())
-				{
-					ListParameterValue val = new ListParameterValue(name);
-					switch (desc.getType())
-					{
-					case FILEPATH : val.setFilepathList(vals); break;
-					case STRING : val.setStringList(vals); break;
-					case FILENAME : val.setFilenameList(vals); break;
-					default:
-						throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
-					}
-					values.add(val);
-					logger.debug("prepare list parameter "+name);
-				}
-				else
-				{
-					if (vals.size() != 1)
-					{
-						throw new IllegalArgumentException("parameter -"+name+" must be unique");
-					}
-					String simpleval = vals.get(0);
-
-					SimpleParameterValue val = new SimpleParameterValue(name);
-					switch (desc.getType())
-					{
-					case FILEPATH : val.setFilepathValue(simpleval); break;
-					case STRING : val.setStringValue(simpleval); break;
-					case FILENAME : val.setFilenameValue(simpleval); break;
-					case BOOLEAN : val.setBooleanValue(Boolean.parseBoolean(simpleval)); break;
-					case INTEGER : val.setIntegerValue(Long.parseLong(simpleval)); break;
-					case DATE : val.setDateValue(toCalendar(simpleval));break;
-					}
-					values.add(val);
-					logger.debug("prepare simple parameter "+name);
-
-				}
-			}
-		}
-		return values;      
-	}
-
-	@SuppressWarnings("incomplete-switch")
-	private List<ParameterValue> populateParametersFromJSON(FormatDescription description,JSONObject options,String ... excluded)
-	{
-		List<ParameterValue> values = new ArrayList<ParameterValue>();
-		List<String> excludedParams = Arrays.asList(excluded);
-		for (ParameterDescription desc : description.getParameterDescriptions())
-		{
-			String name = desc.getName();
-			String key = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
-			if (excludedParams.contains(key)) continue;
-			// 
-
-
-			if (!options.has(key))
-			{
-				if (desc.isMandatory())
-				{
-					throw new IllegalArgumentException("parameter -"+name+" is required");
-				}
-			}
-			else
-			{
-
-				if (desc.isCollection())
-				{
-					JSONArray vals =  options.getJSONArray(key);
-					ListParameterValue val = new ListParameterValue(name);
-					switch (desc.getType())
-					{
-					case FILEPATH : val.fillFilepathList(vals); break;
-					case STRING : val.fillStringList(vals); break;
-					case FILENAME : val.fillFilenameList(vals); break;
-					default:
-						throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
-					}
-					values.add(val);
-					logger.debug("prepare list parameter "+name);
-				}
-				else
-				{
-					//					if (options.optJSONObject(key) == null) // will be a JSONArray
-					//					{
-					//						throw new IllegalArgumentException("parameter -"+name+" must be unique");
-					//					}
-
-					SimpleParameterValue val = new SimpleParameterValue(name);
-					switch (desc.getType())
-					{
-					case FILEPATH : val.setFilepathValue(options.getString(key)); break;
-					case STRING : val.setStringValue(options.getString(key)); break;
-					case FILENAME : val.setFilenameValue(options.getString(key)); break;
-					case BOOLEAN : val.setBooleanValue(!options.getString(key).equals("0")); break;
-					case INTEGER : val.setIntegerValue(options.getLong(key)); break;
-					case DATE : val.setDateValue(toCalendar(options.getString(key)));break;
-					}
-					values.add(val);
-					logger.debug("prepare simple parameter "+name);
-
-				}
-			}
-		}
-		return values;      
-	}
-
-	private int saveExportReport(Long exportId, String format,Report report,int position)
-	{
-		String prefix = report.getOriginKey();
-		if (prefix == null || report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
-		prefix = format+prefix;
-		ExportLogMessage message = new ExportLogMessage(exportId,format,report,position++);
-		exportLogMessageDao.save(message);
-		if (report.getItems() != null)
-		{
-			for (ReportItem item : report.getItems())
-			{
-				position = saveExportReportItem(exportId,format,item,prefix,position);
-			}
-		}
-		return position;
-	}
-
-	private int saveExportReportItem(Long exportId, String format,ReportItem item, String prefix, int position)
-	{
-		ExportLogMessage message = new ExportLogMessage(exportId,format,item,prefix,position++);
-		exportLogMessageDao.save(message);
-		if (item.getItems() != null)
-		{
-			String subPrefix = prefix+"|"+format+item.getMessageKey();
-			for (ReportItem child : item.getItems())
-			{
-				position = saveExportReportItem(exportId,format,child,subPrefix,position);
-			}
-		}
-		return position;
-	}
-
-	private void saveExportReports(Long exportId, String format,List<Report> reports)
-	{
-		int position = 1;
-		Filter filter = Filter.getNewEqualsFilter("parentId", exportId);
-		List<ExportLogMessage> messages = exportLogMessageDao.select(filter);
-		if (messages != null)
-		{
-			for (ExportLogMessage message : messages)
-			{
-				if (message.getPosition() >= position)
-					position = message.getPosition() + 1;
-			}
-		}
-		for (Report report : reports)
-		{
-			if (report instanceof GuiReport) 
-				position = saveExportReport(exportId,"",report,position);
-			else
-				position = saveExportReport(exportId,format+"_",report,position);
-		}
-
-	}
-
-	private void saveValidationReport(CompilanceCheckTask compilanceCheckTask, PhaseReportItem vreport)
-	{
-		if (vreport != null && vreport.getItems() != null)
-		{
-			switch (vreport.getStatus())
-			{
-			case WARNING:
-			case ERROR:
-			case FATAL:
-				compilanceCheckTask.setStatus("nok");
-				break;
-			case OK:
-				compilanceCheckTask.setStatus("ok");
-				break;
-			case UNCHECK:
-				compilanceCheckTask.setStatus("na");
-				break;
-			}
-			compilanceCheckTask.addAllResults(vreport.toValidationResults());
-			validationDao.save(compilanceCheckTask);
-			session.flush();
-		}
-
-	}
-
-
-
-	/**
-	 * convert date string to calendar
-	 * @param simpleval
-	 * @return
-	 */
-	private Calendar toCalendar(String simpleval)
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		try
-		{
-			Date d = sdf.parse(simpleval);
-			Calendar c = Calendar.getInstance();
-			c.setTime(d);
-			return c;
-		}
-		catch (ParseException e)
-		{
-			logger.error("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
-			throw new RuntimeException("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
-		}
-
-	}
-
-
-
-	/**
-	 * @param commandNumber
-	 * @param name
-	 * @param parameters
-	 */
-	public void traceCommand(int commandNumber, String name, Map<String, List<String>> parameters)
-	{
-		System.out.println("Command "+commandNumber+" : "+name);
-		for (String key : parameters.keySet())
-		{
-			System.out.println("    parameters "+key+" : "+ Arrays.toString(parameters.get(key).toArray()));
-		}
-	}
 
 
 }

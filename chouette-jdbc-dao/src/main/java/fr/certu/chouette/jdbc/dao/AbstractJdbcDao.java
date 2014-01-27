@@ -733,5 +733,10 @@ IDaoTemplate<T>
 	{
 
 	}
+	@Override
+	public void detach(T bean)
+	{
+
+	}
 
 }

@@ -518,6 +518,8 @@ public class Level2Validator
 							Locator trdLocation = stopArea.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
 							map.put("contains",childId);
+							map.put("type",getType(trdObject));
+							map.put("parentType",ChouetteAreaType.STOP_PLACE.toString());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 							DetailReportItem errorItem = new DetailReportItem(STOP_AREA_2,stopArea.getObjectId(), Report.STATE.ERROR, location ,map);
 							addValidationError(STOP_AREA_2, errorItem);		
@@ -534,6 +536,8 @@ public class Level2Validator
 							Locator trdLocation = stopArea.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
 							map.put("contains",childId);
+							map.put("type",getType(trdObject));
+							map.put("parentType",ChouetteAreaType.COMMERCIAL_STOP_POINT.toString());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 							DetailReportItem errorItem = new DetailReportItem(STOP_AREA_3, stopArea.getObjectId(), Report.STATE.ERROR, location, map );
 							addValidationError(STOP_AREA_3, errorItem);		
@@ -549,6 +553,8 @@ public class Level2Validator
 							Locator trdLocation = stopArea.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
 							map.put("contains",childId);
+							map.put("type",getType(trdObject));
+							map.put("parentType",typeOfStopArea(stopArea).toString());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 							DetailReportItem errorItem = new DetailReportItem(STOP_AREA_4, stopArea.getObjectId(), Report.STATE.ERROR, location, map );
 							addValidationError(STOP_AREA_4, errorItem);		
@@ -563,6 +569,8 @@ public class Level2Validator
 							Locator trdLocation = stopArea.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
 							map.put("contains",childId);
+							map.put("type",getType(trdObject));
+							map.put("parentType",typeOfStopArea(stopArea).toString());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 							DetailReportItem errorItem = new DetailReportItem(ITL_1,stopArea.getObjectId(), Report.STATE.ERROR, location,map );
 							addValidationError(ITL_1, errorItem);		
@@ -627,6 +635,7 @@ public class Level2Validator
 								Locator trdLocation = stopArea.sourceLocation();
 								Map<String,Object> map = new HashMap<String,Object>();
 								map.put("centroidOfArea",stopArea.getCentroidOfArea());
+								map.put("containedIn", centroid.getContainedIn());
 								ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 								DetailReportItem errorItem = new DetailReportItem(STOP_AREA_6, stopArea.getObjectId(), Report.STATE.ERROR, location ,map );
 								addValidationError(STOP_AREA_6, errorItem);		                	
@@ -650,6 +659,7 @@ public class Level2Validator
 					Locator trdLocation = itl.sourceLocation();
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("areaId",itl.getAreaId());
+					map.put("name",itl.getName());
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 					DetailReportItem errorItem = new DetailReportItem(ITL_3, Report.STATE.ERROR, location ,map);
 					addValidationError(ITL_3, errorItem);		                	
@@ -663,6 +673,8 @@ public class Level2Validator
 						Locator trdLocation = itl.sourceLocation();
 						Map<String,Object> map = new HashMap<String,Object>();
 						map.put("areaId",itl.getAreaId());
+						map.put("type",typeOfStopArea(area).toString());
+						map.put("name",itl.getName());
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 						DetailReportItem errorItem = new DetailReportItem(ITL_4, Report.STATE.ERROR, location ,map);
 						addValidationError(ITL_4, errorItem);		                	
@@ -678,6 +690,8 @@ public class Level2Validator
 					{
 						Locator trdLocation = itl.sourceLocation();
 						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("name",itl.getName());
+						map.put("lineId",line.getObjectId());
 						map.put("lineIdShortCut",itl.getLineIdShortCut());
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 						DetailReportItem errorItem = new DetailReportItem(ITL_5, Report.STATE.ERROR, location , map);
@@ -690,6 +704,16 @@ public class Level2Validator
 		}
 
 	}
+
+	private Object getType(TridentObjectType trdObject) 
+	{
+		if (trdObject instanceof StopArea)
+		{
+			return typeOfStopArea(trdObject).toString();
+		}
+		return trdObject.getClass().getSimpleName();
+	}
+
 
 	private void validateAreaCentroids()
 	{
@@ -733,8 +757,11 @@ public class Level2Validator
 		{
 			if (stopAreas.get(connectionLink.getStartOfLink())!= null || stopAreas.get(connectionLink.getEndOfLink()) != null) continue; 
 			Locator trdLocation = connectionLink.sourceLocation();
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("startOfLink",connectionLink.getStartOfLink());
+			map.put("endOfLink",connectionLink.getEndOfLink());
 			ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-			DetailReportItem errorItem = new DetailReportItem(CONNECTION_LINK_1,connectionLink.getObjectId(), Report.STATE.ERROR, location ,null);
+			DetailReportItem errorItem = new DetailReportItem(CONNECTION_LINK_1,connectionLink.getObjectId(), Report.STATE.ERROR, location ,map);
 			addValidationError(CONNECTION_LINK_1, errorItem);		                	
 		}
 
@@ -847,7 +874,7 @@ public class Level2Validator
 			}
 			else // inout
 			{
-				// 2-NEPTUNE-AccessPoint-6 : if type out : check minimum one accessLink in each direction
+				// 2-NEPTUNE-AccessPoint-6 : if type inout : check minimum one accessLink in each direction
 				prepareCheckPoint(ACCESS_POINT_6);
 				if (!startFound || !endFound)
 				{
@@ -953,7 +980,7 @@ public class Level2Validator
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("lineEnd",endId);
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(LINE_2,line.getObjectId(), Report.STATE.ERROR, location , map);
+					DetailReportItem errorItem = new DetailReportItem(LINE_2,line.getObjectId(), Report.STATE.WARNING, location , map);
 					addValidationError(LINE_2, errorItem);		                	
 
 				}
@@ -984,7 +1011,7 @@ public class Level2Validator
 						Map<String,Object> map = new HashMap<String,Object>();
 						map.put("lineEnd",endId);
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-						DetailReportItem errorItem = new DetailReportItem(LINE_3,line.getObjectId(), Report.STATE.ERROR, location,map );
+						DetailReportItem errorItem = new DetailReportItem(LINE_3,line.getObjectId(), Report.STATE.WARNING, location,map );
 						addValidationError(LINE_3, errorItem);		                	
 
 					}
@@ -1057,6 +1084,7 @@ public class Level2Validator
 					Locator trdLocation = route.sourceLocation();
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("ptLinkId",ptLinkId);
+					map.put("routeId",ptLinkInRoute.get(ptLinkId));
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 					DetailReportItem errorItem = new DetailReportItem(ROUTE_4,route.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(ROUTE_4, errorItem);		                	
@@ -1665,6 +1693,7 @@ public class Level2Validator
 					Locator trdLocation = vj.sourceLocation();
 					Map<String,Object> map = new HashMap<String,Object>();
 					map.put("journeyPatternId", vj.getJourneyPatternId());
+					map.put("routeId", vj.getRouteId());
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_6, vj.getObjectId(), Report.STATE.ERROR, location, map );
 					addValidationError(VEHICLE_JOURNEY_6, errorItem);		                	

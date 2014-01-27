@@ -76,7 +76,7 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    public T get(Long id)
    {
       logger.debug("invoke get on "+type.getSimpleName());
-      T object = ( T)getHibernateTemplate().get( type, id);
+      T object = getHibernateTemplate().get( type, id);
       if ( object==null)
       {
          throw new ObjectRetrievalFailureException( type, id);
@@ -330,11 +330,18 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends 
    {
       for (T bean : beans)
       {
-         if (getSession().contains(bean))
-            getSession().evict(bean);
+         detach(bean);
       }
      
    }
+   @Override
+   public void detach(T bean)
+   {
+         if (getSession().contains(bean))
+            getSession().evict(bean);
+     
+   }
+   
    
    
    @Override

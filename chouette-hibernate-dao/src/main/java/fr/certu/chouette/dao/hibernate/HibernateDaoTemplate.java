@@ -118,12 +118,11 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
    /* (non-Javadoc)
     * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
     */
-   @SuppressWarnings("unchecked")
    public T get(Long id)
    {
       logger.debug("invoke get on "+type.getSimpleName());
       if (id == null) return null;
-      T object = ( T)getHibernateTemplate().get( type, id);
+      T object = getHibernateTemplate().get( type, id);
       if ( object==null)
       {
          return null;
@@ -393,11 +392,18 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
    {
       for (T bean : beans)
       {
-         if (getSession().contains(bean))
-            getSession().evict(bean);
+         detach(bean);
       }
      
    }
+   @Override
+   public void detach(T bean)
+   {
+         if (getSession().contains(bean))
+            getSession().evict(bean);
+     
+   }
+   
    
    
    @Override

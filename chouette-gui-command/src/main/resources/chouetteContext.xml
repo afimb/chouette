@@ -12,12 +12,10 @@
 				<value>classpath:chouette.properties</value>
 			</list>
 		</property>
-		<property name="ignoreResourceNotFound" value="false" />
+		<property name="ignoreResourceNotFound" value="true" />
 	</bean>
 
-
-
-	<bean id="Command" class="fr.certu.chouette.gui.command.Command">
+	<bean id="AbstractCommand" class="fr.certu.chouette.gui.command.AbstractCommand" abstract="true" >
 		<property name="managers">
 			<map>
 				<entry key="accesslink">
@@ -70,15 +68,33 @@
 				</entry>
 			</map>
 		</property>
-		<property name="organisationDao" ref="organisationDao" />
+	</bean>
+
+
+	<bean id="Command" class="fr.certu.chouette.gui.command.Command" parent="AbstractCommand">
+		<property name="importCommand" ref="ImportCommand" />
+		<property name="exportCommand" ref="ExportCommand" />
+		<property name="validateCommand" ref="ValidateCommand" />
+	</bean>
+	
+	<bean id="ImportCommand" class="fr.certu.chouette.gui.command.ImportCommand" parent="AbstractCommand">
 		<property name="referentialDao" ref="referentialDao" />
 		<property name="importDao" ref="importDao" />
-		<property name="validationDao" ref="validationDao" />
+		<property name="geographicService" ref="geographicService" />
+	</bean>
+
+	<bean id="ExportCommand" class="fr.certu.chouette.gui.command.ExportCommand" parent="AbstractCommand">
+		<property name="referentialDao" ref="referentialDao" />
 		<property name="exportDao" ref="exportDao" />
 		<property name="exportLogMessageDao" ref="exportLogMessageDao" />
 		<property name="geographicService" ref="geographicService" />
 	</bean>
-
+	
+	<bean id="ValidateCommand" class="fr.certu.chouette.gui.command.ValidateCommand" parent="AbstractCommand">
+		<property name="referentialDao" ref="referentialDao" />
+		<property name="validationDao" ref="validationDao" />
+	</bean>
+	
 	<bean id="commandDataSource" class="fr.certu.chouette.dao.ChouetteDriverManagerDataSource"
 		lazy-init="true">
 		<property name="driverClassName" value="${jdbc.driver}" />

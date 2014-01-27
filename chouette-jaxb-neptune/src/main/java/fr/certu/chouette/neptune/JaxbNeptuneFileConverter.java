@@ -465,7 +465,7 @@ public class JaxbNeptuneFileConverter
 	    private static final String SIRI_PREFIX = "siri";
 	    private static final String SIRI_URI = "http://www.siri.org.uk/siri";
 	 
-	    private static final String IFOPT_PREFIX = "IFOPT_PREFIX";
+	    private static final String IFOPT_PREFIX = "acsb";
 	    private static final String IFOPT_URI = "http://www.ifopt.org.uk/acsb";
 	    
 	    @Override

@@ -104,5 +104,11 @@ public interface IDaoTemplate <T extends NeptuneObject>
 	 * @param beans
 	 */
 	void detach(List<T> beans);
-	
+
+	/**
+	 * detach object from dao cache
+	 * @param bean
+	 */
+	void detach(T bean);
+
 }

@@ -34,6 +34,8 @@ public class ImportReportToJSONConverter
 	int connectionLinkCount = 0;
 	int accessPointCount = 0;
 	int timeTableCount = 0;
+	int companyCount = 0;
+	int networkCount = 0;
 	Report ireport = null;
 
 
@@ -161,6 +163,8 @@ public class ImportReportToJSONConverter
 		jsonLineStats.put("connection_link_count",connectionLinkCount);
 		jsonLineStats.put("access_point_count",accessPointCount);
 		jsonLineStats.put("time_table_count",timeTableCount);
+//		jsonLineStats.put("company_count",companyCount);
+//		jsonLineStats.put("network_count",networkCount);
 		
 		jsonLines.put("stats",jsonLineStats);
 		jsonLines.put("list",lineList);
@@ -210,8 +214,8 @@ public class ImportReportToJSONConverter
 		for (ReportItem item : parent.getItems()) 
 		{
 			String key = item.getMessageKey();
-			StringBuffer indent = new StringBuffer();
-			for (int i = 0; i < level; i++) indent.append("  ");
+			// StringBuffer indent = new StringBuffer();
+			// for (int i = 0; i < level; i++) indent.append("  ");
 			// log.info(indent+key);
 			if (key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())) fileOkReports.add(item);
 			if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name())) fileErrorReports.add(item);

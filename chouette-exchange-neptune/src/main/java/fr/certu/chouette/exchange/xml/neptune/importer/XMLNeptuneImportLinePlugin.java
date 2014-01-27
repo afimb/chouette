@@ -101,7 +101,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 			params.add(param);
 		}
 		{
-			ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "false");
+			ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "true");
 			params.add(param);
 		}
 		{
@@ -142,7 +142,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		String filePath = null;
 		boolean validate = true;
 		String extension = "file extension";
-		boolean optimizeMemory = false;
+		boolean optimizeMemory = true;
 		SharedImportedData sharedData = new SharedImportedData();
 		UnsharedImportedData unsharedData = new UnsharedImportedData();
 
@@ -478,14 +478,17 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.VALIDATION_ERROR,Report.STATE.ERROR,"");
 				importReport.addItem(errorItem);
 				importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
+				logger.error("no rootObject produced" );
 				return null;
 			}
-			if (validationReport.getStatus().ordinal() >= Report.STATE.ERROR.ordinal())
+			if (holder.getReport().getStatus().ordinal() >= Report.STATE.ERROR.ordinal())
 			{
 				// report for save
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.VALIDATION_ERROR,Report.STATE.ERROR,"");
 				importReport.addItem(errorItem);
 				importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
+				logger.error("level 1 validation returns status "+holder.getReport().getStatus() );
+				logger.error(holder.getReport().toJSON());
 				return null;
 			}
 
@@ -534,28 +537,28 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		validationReport.refreshStatus();
 		// check if validator failed ! 
 		logger.info("validation status = "+validationItem.getStatus().toString());
-		
+
 		if (!validationItem.getStatus().equals(Report.STATE.ERROR)) 
 		{
-			   modelAssembler.connect();
-				// report objects count
-				{
-					ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,modelAssembler.getRoutes().size());
-					importItem.addItem(countItem);
-					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,modelAssembler.getJourneyPatterns().size());
-					importItem.addItem(countItem);
-					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,modelAssembler.getVehicleJourneys().size());
-					importItem.addItem(countItem);
-					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,modelAssembler.getStopAreas().size());
-					importItem.addItem(countItem);
-					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,modelAssembler.getConnectionLinks().size());
-					importItem.addItem(countItem);
-					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,modelAssembler.getAccessPoints().size());
-					importItem.addItem(countItem);
-					countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,modelAssembler.getTimetables().size());
-					importItem.addItem(countItem);
-				}
-				return line;
+			modelAssembler.connect();
+			// report objects count
+			{
+				ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,modelAssembler.getRoutes().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,modelAssembler.getJourneyPatterns().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,modelAssembler.getVehicleJourneys().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,modelAssembler.getStopAreas().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,modelAssembler.getConnectionLinks().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,modelAssembler.getAccessPoints().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,modelAssembler.getTimetables().size());
+				importItem.addItem(countItem);
+			}
+			return line;
 		}
 
 		// rootObject.toString();
@@ -575,7 +578,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		order = addItemToValidation(validationItem,prefix,"ConnectionLink",1,order,"E");
 		order = addItemToValidation(validationItem,prefix,"AccessPoint",7,order,"E","E","E","E","E","E","E");
 		order = addItemToValidation(validationItem,prefix,"AccessLink",2,order,"E","E");
-		order = addItemToValidation(validationItem,prefix,"Line",5,order,"E","E","E","E","E");
+		order = addItemToValidation(validationItem,prefix,"Line",5,order,"E","W","W","E","E");
 		order = addItemToValidation(validationItem,prefix,"Route",12,order,"E","E","E","E","E","E","E","E","W","E","W","W");
 		order = addItemToValidation(validationItem,prefix,"PTLink",1,order,"E");
 		order = addItemToValidation(validationItem,prefix,"JourneyPattern",3,order,"E","E","E");
