@@ -10,8 +10,8 @@
 			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
 		</classes>
 	</test>
-	<!-- 
-<	 <test name="Test_2_Network_1" preserve-order="true">
+ 
+	 <test name="Test_2_Network_1" preserve-order="true">
 		<parameter name="description" value="line missing in network's list" />
 		<parameter name="testFile" value="2-NEPTUNE-Network-1.xml" />
 		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-Network-1" />
@@ -470,7 +470,6 @@
 			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
 		</classes>
 	</test>
-	-->
 	 <test name="Test_2_PtLink_1_1" preserve-order="true">
 		<parameter name="description" value="PtLink refers unknown start stoppoint" />
 		<parameter name="testFile" value="2-NEPTUNE-PtLink-1-1.xml" />
@@ -511,6 +510,169 @@
 		<parameter name="description" value="JourneyPattern refers unknown Line" />
 		<parameter name="testFile" value="2-NEPTUNE-JourneyPattern-3.xml" />
 		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-JourneyPattern-3" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_StopPoint_1" preserve-order="true">
+		<parameter name="description" value="StopPoint refers unknown Line" />
+		<parameter name="testFile" value="2-NEPTUNE-StopPoint-1.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-StopPoint-1" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_StopPoint_2" preserve-order="true">
+		<parameter name="description" value="StopPoint refers unknown Network" />
+		<parameter name="testFile" value="2-NEPTUNE-StopPoint-2.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-StopPoint-2" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_StopPoint_3" preserve-order="true">
+		<parameter name="description" value="StopPoint refers unknown Parent" />
+		<parameter name="testFile" value="2-NEPTUNE-StopPoint-3.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-StopPoint-3" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_StopPoint_4_1" preserve-order="true">
+		<parameter name="description" value="StopPoint uses invalid geographical referential (Standard)" />
+		<parameter name="testFile" value="2-NEPTUNE-StopPoint-4-1.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-StopPoint-4" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_StopPoint_4_2" preserve-order="true">
+		<parameter name="description" value="StopPoint uses invalid geographical referential (WGS92)" />
+		<parameter name="testFile" value="2-NEPTUNE-StopPoint-4-2.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-StopPoint-4" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_Timetable_1" preserve-order="true">
+		<parameter name="description" value="Timetable refers none of present VehicleJourneys" />
+		<parameter name="testFile" value="2-NEPTUNE-Timetable-1.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-Timetable-1" />
+		<parameter name="status" value="WARNING" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_Timetable_2" preserve-order="true">
+		<parameter name="description" value="VehicleJourney has no Timetable" />
+		<parameter name="testFile" value="2-NEPTUNE-Timetable-2.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-Timetable-2" />
+		<parameter name="status" value="WARNING" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_1" preserve-order="true">
+		<parameter name="description" value="VehicleJourney refers unknown Route" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-1.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-1" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_2" preserve-order="true">
+		<parameter name="description" value="VehicleJourney refers unknown JourneyPattern" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-2.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-2" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_3" preserve-order="true">
+		<parameter name="description" value="VehicleJourney refers unknown Line" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-3.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-3" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_4" preserve-order="true">
+		<parameter name="description" value="VehicleJourney refers unknown Operator" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-4.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-4" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_5" preserve-order="true">
+		<parameter name="description" value="VehicleJourney refers unknown TimeSlot" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-5.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-5" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_6" preserve-order="true">
+		<parameter name="description" value="VehicleJourney refers Wrong Route/JourneyPattern" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-6.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-6" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourney_7" preserve-order="true">
+		<parameter name="description" value="No VehicleJourney refers JourneyPattern" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourney-7.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourney-7" />
+		<parameter name="status" value="WARNING" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+
+	 <test name="Test_2_VehicleJourneyAtStop_1" preserve-order="true">
+		<parameter name="description" value="VehicleJourneyAtStop refers unknown StopPoint" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourneyAtStop-1.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourneyAtStop-1" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourneyAtStop_2" preserve-order="true">
+		<parameter name="description" value="VehicleJourneyAtStop refers wrong vehicleJourney" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourneyAtStop-2.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourneyAtStop-2" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourneyAtStop_3" preserve-order="true">
+		<parameter name="description" value="VehicleJourneyAtStop orders stoppoint against route" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourneyAtStop-3.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourneyAtStop-3" />
+		<parameter name="status" value="ERROR" />
+		<classes>
+			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
+		</classes>
+	</test>
+	 <test name="Test_2_VehicleJourneyAtStop_4" preserve-order="true">
+		<parameter name="description" value="VehicleJourneyAtStop has missing StopPoint against journeypattern" />
+		<parameter name="testFile" value="2-NEPTUNE-VehicleJourneyAtStop-4.xml" />
+		<parameter name="mandatoryErrorTest" value="2-NEPTUNE-VehicleJourneyAtStop-4" />
 		<parameter name="status" value="ERROR" />
 		<classes>
 			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />

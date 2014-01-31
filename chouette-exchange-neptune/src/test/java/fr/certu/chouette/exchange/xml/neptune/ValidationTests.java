@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.ITestContext;
 import org.testng.Reporter;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -30,14 +28,6 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 
 	private IImportPlugin<Line> importLine = null;
 	private String path="src/test/resources/lignes_neptune_err/";
-
-	private String currentTest ;
-
-	@BeforeTest
-	public void beforeTest(ITestContext ctx) 
-	{
-		currentTest = ctx.getCurrentXmlTest().getName();
-	}
 
 
 	@SuppressWarnings("unchecked")
@@ -78,22 +68,32 @@ public class ValidationTests extends AbstractTestNGSpringContextTests
 	private void checkMandatoryTest(String mandatoryTest,
 			ValidationReport valReport, String status) 
 	{
-		CheckPointReportItem foundItem = null;
-		for (ReportItem phase : valReport.getItems())
+		if (mandatoryTest.equals("NONE"))
 		{
-			for (ReportItem item : phase.getItems()) 
+			for (ReportItem phase : valReport.getItems())
 			{
-				CheckPointReportItem cp = (CheckPointReportItem) item;
-				if (cp.getMessageKey().equals(mandatoryTest))
-				{
-					foundItem = cp;
-					break;
-				}
+				Assert.assertEquals(phase.getStatus().toString(),status, phase.getMessageKey()+ " must have status "+ status);
 			}
-			if (foundItem != null) break;
 		}
-		Assert.assertNotNull(foundItem,mandatoryTest+" must be reported");
-		Assert.assertEquals(foundItem.getStatus().toString(),status, mandatoryTest+ " must have status "+ status);
+		else
+		{
+			CheckPointReportItem foundItem = null;
+			for (ReportItem phase : valReport.getItems())
+			{
+				for (ReportItem item : phase.getItems()) 
+				{
+					CheckPointReportItem cp = (CheckPointReportItem) item;
+					if (cp.getMessageKey().equals(mandatoryTest))
+					{
+						foundItem = cp;
+						break;
+					}
+				}
+				if (foundItem != null) break;
+			}
+			Assert.assertNotNull(foundItem,mandatoryTest+" must be reported");
+			Assert.assertEquals(foundItem.getStatus().toString(),status, mandatoryTest+ " must have status "+ status);
+		}
 	}
 
 	private void printReport(Report report)
