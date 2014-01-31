@@ -1,7 +1,6 @@
 # Chouette [![Build Status](https://travis-ci.org/afimb/chouette.png)](http://travis-ci.org/afimb/chouette?branch=master)
 
 Chouette is a java open source project on transport offer. It's divided in differents module : 
-* chouette-castor-neptune : Data model built from Neptune XSD
 * chouette-command : Lite command line tool to manipulate data
 * chouette-core : Core functionnalities (Internal model and managers)
 * chouette-exchange-csv : Import/Export in a chouette specific csv format
@@ -12,7 +11,7 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 * chouette-gui-command : Command Line tool used by Ruby Chouette2 GUI for Import/Export/Validation purpose
 * chouette-hibernate-dao : Access to the database via hibernate 
 * chouette-jdbc-dao : Access to the database via jdbc (mass upload only)
-* chouette-services : Some cleaning tools (deprecated)
+* chouette-jaxb-neptune : JAXB object model upon Neptune xsd 
 * chouette-validation : Validate the data from import or database
 
 For more information see [Architecture Documentation](http://www.chouette.mobi/IMG/pdf/DARC_CHOUETTE_2-0.pdf) 
@@ -29,7 +28,7 @@ Requirements
 This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouette?branch=master) with : 
 * oraclejdk7
 * openjdk7
-* openjdk6
+
 
 External Deps
 -------------
@@ -57,7 +56,7 @@ createdb -E UTF-8 -T template1 chouette_test
 Get git repository
 ```sh
 cd workspace
-git clone -b V2_1_0 git://github.com/afimb/chouette
+git clone -b V2_2_0 git://github.com/afimb/chouette
 cd chouette
 ```
 

@@ -1,3 +1,10 @@
+# Version 2.2.0 (en cours ...)
+* refonte de la validation
+	* suppression de la validation de fichiers
+	* mise en place de la validation durant l'import
+	* ajout de la validation sur les objets en base
+	* redéfinition des tests
+
 # Version 2.1.0 (15/07/13)
 * Suppression des coordonnées projetées en base
   * calcul à la volée pour les exports
