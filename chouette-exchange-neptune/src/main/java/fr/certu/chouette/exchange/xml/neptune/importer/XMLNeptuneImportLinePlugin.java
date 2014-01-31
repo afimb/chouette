@@ -571,7 +571,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		String prefix = "2-NEPTUNE-";
 		int order = addItemToValidation(validationItem,prefix,"Common",2,1,"E","E");
 		order = addItemToValidation(validationItem,prefix,"Network",1,order,"W");
-		order = addItemToValidation(validationItem,prefix,"GroupOfLine",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"GroupOfLine",1,order,"W");
 		order = addItemToValidation(validationItem,prefix,"StopArea",6,order,"E","E","E","E","E","E");
 		order = addItemToValidation(validationItem,prefix,"ITL",5,order,"E","E","E","E","E");
 		order = addItemToValidation(validationItem,prefix,"AreaCentroid",2,order,"E","E");
@@ -580,7 +580,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		order = addItemToValidation(validationItem,prefix,"AccessLink",2,order,"E","E");
 		order = addItemToValidation(validationItem,prefix,"Line",5,order,"E","W","W","E","E");
 		order = addItemToValidation(validationItem,prefix,"Route",12,order,"E","E","E","E","E","E","E","E","W","E","W","W");
-		order = addItemToValidation(validationItem,prefix,"PTLink",1,order,"E");
+		order = addItemToValidation(validationItem,prefix,"PtLink",1,order,"E");
 		order = addItemToValidation(validationItem,prefix,"JourneyPattern",3,order,"E","E","E");
 		order = addItemToValidation(validationItem,prefix,"StopPoint",4,order,"E","E","E","E");
 		order = addItemToValidation(validationItem,prefix,"Timetable",2,order,"W","W");

@@ -86,7 +86,7 @@ public class Level2Validator
 	private static final String ROUTE_10 = "2-NEPTUNE-Route-10";
 	private static final String ROUTE_11 = "2-NEPTUNE-Route-11";
 	private static final String ROUTE_12 = "2-NEPTUNE-Route-12";
-	private static final String PT_LINK_1 = "2-NEPTUNE-PTLink-1";
+	private static final String PT_LINK_1 = "2-NEPTUNE-PtLink-1";
 	private static final String JOURNEY_PATTERN_1 = "2-NEPTUNE-JourneyPattern-1";
 	private static final String JOURNEY_PATTERN_2 = "2-NEPTUNE-JourneyPattern-2";
 	private static final String JOURNEY_PATTERN_3 = "2-NEPTUNE-JourneyPattern-3";
@@ -221,7 +221,7 @@ public class Level2Validator
 					list = new ArrayList<PTLinkType>();
 					mapPTLinksByEndId.put(ptLink.getEndOfLink(),list);
 				}
-							list.add(ptLink);
+				list.add(ptLink);
 			}
 		}
 	}
@@ -594,14 +594,14 @@ public class Level2Validator
 						found = true;
 						break;
 					}
-					if (!found)
-					{
-						// unused ITL Stop
-						Locator trdLocation = stopArea.sourceLocation();
-						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-						DetailReportItem errorItem = new DetailReportItem(ITL_2,stopArea.getObjectId(), Report.STATE.ERROR, location , null);
-						addValidationError(ITL_2, errorItem);		
-					}
+				}
+				if (!found)
+				{
+					// unused ITL Stop
+					Locator trdLocation = stopArea.sourceLocation();
+					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+					DetailReportItem errorItem = new DetailReportItem(ITL_2,stopArea.getObjectId(), Report.STATE.ERROR, location , null);
+					addValidationError(ITL_2, errorItem);		
 				}
 
 			}
@@ -837,51 +837,53 @@ public class Level2Validator
 				DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_3, accessPoint.getObjectId(), Report.STATE.ERROR, location ,null);
 				addValidationError(ACCESS_POINT_3, errorItem);
 			}
-
-			boolean startFound = false;
-			boolean endFound = false;
-			String objectId = accessPoint.getObjectId();
-			for (AccessLink link : links) 
+			else
 			{
-				if (link.getStartOfLink().equals(objectId)) startFound = true;
-				if (link.getEndOfLink().equals(objectId)) endFound = true;
-			}
-
-			if (accessPoint.getType().equalsIgnoreCase("in"))
-			{
-				// 2-NEPTUNE-AccessPoint-4 : if type in : check only accesslinks on start
-				prepareCheckPoint(ACCESS_POINT_4);
-				if (endFound)
+				boolean startFound = false;
+				boolean endFound = false;
+				String objectId = accessPoint.getObjectId();
+				for (AccessLink link : links) 
 				{
-					Locator trdLocation = accessPoint.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_4,accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
-					addValidationError(ACCESS_POINT_4, errorItem);
-				}
-			}
-			else if (accessPoint.getType().equalsIgnoreCase("out"))
-			{
-				// 2-NEPTUNE-AccessPoint-5 : if type out : check only accesslinks on end
-				prepareCheckPoint(ACCESS_POINT_5);
-				if (startFound)
-				{
-					Locator trdLocation = accessPoint.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_5, accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
-					addValidationError(ACCESS_POINT_5, errorItem);
+					if (link.getStartOfLink().equals(objectId)) startFound = true;
+					if (link.getEndOfLink().equals(objectId)) endFound = true;
 				}
 
-			}
-			else // inout
-			{
-				// 2-NEPTUNE-AccessPoint-6 : if type inout : check minimum one accessLink in each direction
-				prepareCheckPoint(ACCESS_POINT_6);
-				if (!startFound || !endFound)
+				if (accessPoint.getType().equalsIgnoreCase("in"))
 				{
-					Locator trdLocation = accessPoint.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_6, accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
-					addValidationError(ACCESS_POINT_6, errorItem);
+					// 2-NEPTUNE-AccessPoint-4 : if type in : check only accesslinks on start
+					prepareCheckPoint(ACCESS_POINT_4);
+					if (endFound)
+					{
+						Locator trdLocation = accessPoint.sourceLocation();
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_4,accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
+						addValidationError(ACCESS_POINT_4, errorItem);
+					}
+				}
+				else if (accessPoint.getType().equalsIgnoreCase("out"))
+				{
+					// 2-NEPTUNE-AccessPoint-5 : if type out : check only accesslinks on end
+					prepareCheckPoint(ACCESS_POINT_5);
+					if (startFound)
+					{
+						Locator trdLocation = accessPoint.sourceLocation();
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_5, accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
+						addValidationError(ACCESS_POINT_5, errorItem);
+					}
+
+				}
+				else // inout
+				{
+					// 2-NEPTUNE-AccessPoint-6 : if type inout : check minimum one accessLink in each direction
+					prepareCheckPoint(ACCESS_POINT_6);
+					if (!startFound || !endFound)
+					{
+						Locator trdLocation = accessPoint.sourceLocation();
+						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+						DetailReportItem errorItem = new DetailReportItem(ACCESS_POINT_6, accessPoint.getObjectId(), Report.STATE.ERROR, location,null );
+						addValidationError(ACCESS_POINT_6, errorItem);
+					}
 				}
 			}
 
@@ -993,15 +995,17 @@ public class Level2Validator
 					List<PTLinkType> startLinks = mapPTLinksByStartId.get(endId);
 					List<PTLinkType> endLinks = mapPTLinksByEndId.get(endId);
 					boolean oneRef = true;
-					if (startLinks == null && endLinks == null) 
+					// protect from null pointers
+					if (startLinks == null)  
+						startLinks = new ArrayList<PTLinkType>();
+					if (endLinks == null)  
+						endLinks = new ArrayList<PTLinkType>();
+
+					if (startLinks.size() != 0 && endLinks.size() != 0)
 					{
 						oneRef = false;
 					}
-					else if (startLinks == null && endLinks.size() != 1)
-					{
-						oneRef = false;
-					}
-					else if (endLinks == null && startLinks.size() != 1)
+					else if (startLinks.size() > 1 || endLinks.size() > 1)
 					{
 						oneRef = false;
 					}
@@ -1107,7 +1111,7 @@ public class Level2Validator
 						map.put("journeyPatternId",journeyPatternId);
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
 						DetailReportItem errorItem = new DetailReportItem(ROUTE_1,route.getObjectId(), Report.STATE.ERROR, location , map);
-						addValidationError(ROUTE_1, errorItem);		                							
+						addValidationError(ROUTE_1, errorItem);
 					}
 
 				}
@@ -1177,95 +1181,114 @@ public class Level2Validator
 			for (ChouetteRoute route : routes.values()) 
 			{
 				// 2-NEPTUNE-Route-6 : check if stoppoints build a linear route
-				List<String> pointIds = new ArrayList<String>();
+				boolean route3ok = true; // journey pattern stopPoints should be checked
 				// find first stop : does not appears as end of link
+				PTLinkType startLink = null;
 				for (String linkId : route.getPtLinkId()) 
 				{
 					PTLinkType link = ptLinks.get(linkId);
 					if (!mapPTLinksByEndId.containsKey(link.getStartOfLink()))
 					{
-						if (pointIds.isEmpty())
+						if (startLink == null)
 						{
-							pointIds.add(link.getStartOfLink());
+							startLink = link;
 						}
 						else
 						{
-							// broken route !
+							// found 2 startLink = broken Route
 							Locator trdLocation = route.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
 							map.put("ptLinkId",link.getObjectId());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-							DetailReportItem errorItem = new DetailReportItem(ROUTE_6,route.getObjectId(), Report.STATE.ERROR, location, map );
-							addValidationError(ROUTE_6, errorItem);		                	
-
-						}
+							DetailReportItem errorItem = new DetailReportItem(ROUTE_6+"_2",route.getObjectId(), Report.STATE.ERROR, location, map );
+							addValidationError(ROUTE_6, errorItem);	
+							route3ok = false;
+						}						
 					}
 				}
-				if (pointIds.isEmpty())
+				List<String> pointIds = new ArrayList<String>();
+				if (startLink == null)
 				{
 					// no first id : circle route 
 					Locator trdLocation = route.sourceLocation();
 					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(ROUTE_6,route.getObjectId(), Report.STATE.ERROR, location , null );
+					DetailReportItem errorItem = new DetailReportItem(ROUTE_6+"_1",route.getObjectId(), Report.STATE.ERROR, location , null );
 					addValidationError(ROUTE_6, errorItem);	
-					continue;
+					route3ok = false;
 				}
-				String start = pointIds.get(0); 
-				while (pointIds.size() < route.getPtLinkId().size() + 2)
+				else
 				{
-					List<PTLinkType> links = mapPTLinksByStartId.get(start);
-					if (links == null) break; // normal loop exit
-					start = links.get(0).getEndOfLink();
-					pointIds.add(start);
-				}
+					// build pointIds 
+					pointIds.add(startLink.getStartOfLink());
+					pointIds.add(startLink.getEndOfLink());
 
-				if (pointIds.size() != route.getPtLinkId().size() + 1)
-				{
-					// ptlinks does not build complete stop sequence
-					Locator trdLocation = route.sourceLocation();
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(ROUTE_6,route.getObjectId(), Report.STATE.ERROR, location , null);
-					addValidationError(ROUTE_6, errorItem);	
-					continue;
-				}
-
-				sequenceOfRoutes.put(route.getObjectId(), pointIds);
-
-				if (!journeyPatterns.isEmpty())
-				{
-					prepareCheckPoint(ROUTE_8);
-					prepareCheckPoint(ROUTE_9);	
-
-					List<String> unusedPointIds = new ArrayList<String>(pointIds);
-
-					for (String jpId : route.getJourneyPatternId()) 
+					List<PTLinkType> links = mapPTLinksByStartId.get(startLink.getEndOfLink()); 
+					while (!isListEmpty(links)) 
 					{
-						JourneyPatternType jp = journeyPatterns.get(jpId);
-						// 2-NEPTUNE-Route-8 : check journey pattern stoppoints included in route stoppoints
-						if (!pointIds.containsAll(jp.getStopPointList()))
+						PTLinkType link = links.get(0);
+						if (route.getPtLinkId().contains(link.getObjectId()))
 						{
-							Locator trdLocation = jp.sourceLocation();
-							Map<String,Object> map = new HashMap<String,Object>();
-							map.put("journeyPatternId",jp.getObjectId());
-							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-							DetailReportItem errorItem = new DetailReportItem(ROUTE_8,route.getObjectId(), Report.STATE.ERROR, location ,map );
-							addValidationError(ROUTE_8, errorItem);	
+							pointIds.add(link.getEndOfLink());
+							links = mapPTLinksByStartId.get(link.getEndOfLink()); 
 						}
-						unusedPointIds.removeAll(jp.getStopPointList());
-					}
-
-					// 2-NEPTUNE-Route-9 : check usage of stoppoint in a journeypattern of route (W)
-					if (!unusedPointIds.isEmpty())
-					{
-						for (String stopPointId : unusedPointIds) 
+						else
 						{
+							// broken route but ptlink exists
 							Locator trdLocation = route.sourceLocation();
 							Map<String,Object> map = new HashMap<String,Object>();
-							map.put("stopPointId",stopPointId);
+							map.put("ptLinkId",link.getObjectId());
 							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-							DetailReportItem errorItem = new DetailReportItem(ROUTE_9,route.getObjectId(), Report.STATE.WARNING, location ,map);
-							addValidationError(ROUTE_9, errorItem);	
+							DetailReportItem errorItem = new DetailReportItem(ROUTE_6+"_2",route.getObjectId(), Report.STATE.ERROR, location, map );
+							addValidationError(ROUTE_6, errorItem);	
+							route3ok = false;
+							break;
+						}
+					}
 
+				}
+				if (route3ok)
+				{
+					sequenceOfRoutes.put(route.getObjectId(), pointIds);
+
+					if (!journeyPatterns.isEmpty())
+					{
+						prepareCheckPoint(ROUTE_8);
+						prepareCheckPoint(ROUTE_9);	
+
+						List<String> unusedPointIds = new ArrayList<String>(pointIds);
+
+						for (String jpId : route.getJourneyPatternId()) 
+						{
+							JourneyPatternType jp = journeyPatterns.get(jpId);
+							if (jp != null)
+							{
+								// 2-NEPTUNE-Route-8 : check journey pattern stoppoints included in route stoppoints
+								if (!pointIds.containsAll(jp.getStopPointList()))
+								{
+									Locator trdLocation = jp.sourceLocation();
+									Map<String,Object> map = new HashMap<String,Object>();
+									map.put("journeyPatternId",jp.getObjectId());
+									ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+									DetailReportItem errorItem = new DetailReportItem(ROUTE_8,route.getObjectId(), Report.STATE.ERROR, location ,map );
+									addValidationError(ROUTE_8, errorItem);	
+								}
+								unusedPointIds.removeAll(jp.getStopPointList());
+							}
+						}
+
+						// 2-NEPTUNE-Route-9 : check usage of stoppoint in a journeypattern of route (W)
+						if (!unusedPointIds.isEmpty())
+						{
+							for (String stopPointId : unusedPointIds) 
+							{
+								Locator trdLocation = route.sourceLocation();
+								Map<String,Object> map = new HashMap<String,Object>();
+								map.put("stopPointId",stopPointId);
+								ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+								DetailReportItem errorItem = new DetailReportItem(ROUTE_9,route.getObjectId(), Report.STATE.WARNING, location ,map);
+								addValidationError(ROUTE_9, errorItem);	
+
+							}
 						}
 					}
 				}
@@ -1687,29 +1710,32 @@ public class Level2Validator
 			if (!journeyPatterns.isEmpty())
 			{
 				JourneyPatternType journeyPattern = journeyPatterns.get(vj.getJourneyPatternId());
-				unreferencedJourneyPatterns.remove(journeyPattern.getObjectId());
-				if (!journeyPattern.getRouteId().equals(vj.getRouteId()))
+				if (journeyPattern != null)
 				{
-					Locator trdLocation = vj.sourceLocation();
-					Map<String,Object> map = new HashMap<String,Object>();
-					map.put("journeyPatternId", vj.getJourneyPatternId());
-					map.put("routeId", vj.getRouteId());
-					ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-					DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_6, vj.getObjectId(), Report.STATE.ERROR, location, map );
-					addValidationError(VEHICLE_JOURNEY_6, errorItem);		                	
-				}
-				else
-				{
-					List<String> stops = journeyPattern.getStopPointList();
-
-					if (stopsOfVj.size() != stops.size() || !stops.containsAll(stopsOfVj))
+					unreferencedJourneyPatterns.remove(journeyPattern.getObjectId());
+					if (!journeyPattern.getRouteId().equals(vj.getRouteId()))
 					{
 						Locator trdLocation = vj.sourceLocation();
 						Map<String,Object> map = new HashMap<String,Object>();
 						map.put("journeyPatternId", vj.getJourneyPatternId());
+						map.put("routeId", vj.getRouteId());
 						ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-						DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_AT_STOP_4,vj.getObjectId(), Report.STATE.ERROR, location , map);
-						addValidationError(VEHICLE_JOURNEY_AT_STOP_4, errorItem);		                	
+						DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_6, vj.getObjectId(), Report.STATE.ERROR, location, map );
+						addValidationError(VEHICLE_JOURNEY_6, errorItem);		                	
+					}
+					else
+					{
+						List<String> stops = journeyPattern.getStopPointList();
+
+						if (stopsOfVj.size() != stops.size() || !stops.containsAll(stopsOfVj))
+						{
+							Locator trdLocation = vj.sourceLocation();
+							Map<String,Object> map = new HashMap<String,Object>();
+							map.put("journeyPatternId", vj.getJourneyPatternId());
+							ReportLocation location = new ReportLocation(sourceFile, trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+							DetailReportItem errorItem = new DetailReportItem(VEHICLE_JOURNEY_AT_STOP_4,vj.getObjectId(), Report.STATE.ERROR, location , map);
+							addValidationError(VEHICLE_JOURNEY_AT_STOP_4, errorItem);		                	
+						}
 					}
 				}
 			}
