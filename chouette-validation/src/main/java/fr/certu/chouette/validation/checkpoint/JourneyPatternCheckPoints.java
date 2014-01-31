@@ -36,7 +36,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements ICh
 
 			// 3-JourneyPattern-1 : check if two journey patterns use same stops
 			checkJourneyPattern1(report, beans, i, jp);
-			
+
 			vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(), parameters, report);
 		}
 
@@ -50,22 +50,20 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements ICh
 		if (beans.size() <= 1) return;
 		prepareCheckPoint(report, JOURNEY_PATTERN_1);
 		int pointCount = jp.getStopPoints().size();
-		for (int j = 0; j < beans.size() ; j++)
+		for (int j = jpRank+1; j < beans.size() ; j++)
 		{
-			if (j != jpRank)
+			JourneyPattern jp2 = beans.get(j);
+			if (pointCount != jp2.getStopPoints().size()) continue;
+			if (jp.getStopPoints().equals(jp2.getStopPoints()))
 			{
-				JourneyPattern jp2 = beans.get(j);
-				if (pointCount != jp2.getStopPoints().size()) continue;
-				if (jp.getStopPoints().equals(jp2.getStopPoints()))
-				{
-					ReportLocation location = new ReportLocation(jp);
+				ReportLocation location = new ReportLocation(jp);
 
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("stopPointCount", pointCount);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("stopPointCount", pointCount);
+				map.put("journeyPatternId", jp2.getObjectId());
 
-					DetailReportItem detail = new DetailReportItem(JOURNEY_PATTERN_1,jp.getObjectId(), Report.STATE.WARNING, location,map);
-					addValidationError(report, JOURNEY_PATTERN_1, detail);
-				}
+				DetailReportItem detail = new DetailReportItem(JOURNEY_PATTERN_1,jp.getObjectId(), Report.STATE.WARNING, location,map);
+				addValidationError(report, JOURNEY_PATTERN_1, detail);
 			}
 		}
 

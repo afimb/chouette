@@ -1,6 +1,8 @@
 package fr.certu.chouette.validation.checkpoint;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Setter;
 
@@ -54,20 +56,6 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 	}
 
 	/**
-	 * @param report
-	 * @param line1
-	 */
-	private void checkLine2(PhaseReportItem report, Line line1) {
-		if (isEmpty(line1.getRoutes()))
-		{
-			// failure encountered, add line 1
-			ReportLocation location = new ReportLocation(line1);
-			DetailReportItem detail = new DetailReportItem(LINE_2,line1.getObjectId(), Report.STATE.ERROR, location,null);
-			addValidationError(report, LINE_2, detail);
-		}
-	}
-
-	/**
 	 * @param beans
 	 * @param report
 	 * @param lineRank
@@ -88,7 +76,12 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 				{
 					// failure ! add only line2 location
 					ReportLocation location = new ReportLocation(line2);
-					DetailReportItem detail = new DetailReportItem(LINE_1,line2.getObjectId(), Report.STATE.WARNING, location, null);
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("name", line2.getName());
+					map.put("number", line2.getNumber());
+					map.put("networkName", line2.getPtNetwork().getName());
+					map.put("networkId", line2.getPtNetwork().getObjectId());
+					DetailReportItem detail = new DetailReportItem(LINE_1,line2.getObjectId(), Report.STATE.WARNING, location, map);
 					addValidationError(report, LINE_1, detail);
 
 					error_1 = true; // to add detail for line1
@@ -100,10 +93,32 @@ public class LineCheckPoints extends AbstractValidation implements ICheckPointPl
 		{
 			// failure encountered, add line 1
 			ReportLocation location = new ReportLocation(line1);
-			DetailReportItem detail = new DetailReportItem(LINE_1,line1.getObjectId(), Report.STATE.WARNING, location, null);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("name", line1.getName());
+			map.put("number", line1.getNumber());
+			map.put("networkName", line1.getPtNetwork().getName());
+			map.put("networkId", line1.getPtNetwork().getObjectId());
+			DetailReportItem detail = new DetailReportItem(LINE_1,line1.getObjectId(), Report.STATE.WARNING, location, map);
 			addValidationError(report, LINE_1, detail);
 		}
 	}
+	/**
+	 * @param report
+	 * @param line1
+	 */
+	private void checkLine2(PhaseReportItem report, Line line1) {
+		if (isEmpty(line1.getRoutes()))
+		{
+			// failure encountered, add line 1
+			ReportLocation location = new ReportLocation(line1);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("name", line1.getName());
+			map.put("number", line1.getNumber());
+			DetailReportItem detail = new DetailReportItem(LINE_2,line1.getObjectId(), Report.STATE.ERROR, location,map);
+			addValidationError(report, LINE_2, detail);
+		}
+	}
+
 
 
 }

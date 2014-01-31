@@ -8,17 +8,32 @@
 
 package fr.certu.chouette.validation.checkpoint;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
+import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
 /**
  * @author michel
@@ -58,7 +73,6 @@ public abstract class AbstractValidation
 	protected static final String VEHICLE_JOURNEY_2 = "3-VehicleJourney-2";
 	protected static final String VEHICLE_JOURNEY_3 = "3-VehicleJourney-3";
 	protected static final String VEHICLE_JOURNEY_4 = "3-VehicleJourney-4";
-	protected static final String VEHICLE_JOURNEY_5 = "3-VehicleJourney-5";
 	protected static final String FACILITY_1 = "3-Facility-1";
 	protected static final String FACILITY_2 = "3-Facility-2";
 
@@ -90,6 +104,7 @@ public abstract class AbstractValidation
 			"\"inter_stop_duration_variation_max\": 10 "+
 			"}");
 
+	private GeometryFactory geometryFactory;
 
 	/**
 	 * create checkPoint entry with status uncheck
@@ -130,6 +145,16 @@ public abstract class AbstractValidation
 
 	}
 
+	/**
+	 * check if an object has coordinates
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	protected boolean hasCoordinates(NeptuneLocalizedObject obj)
+	{
+		return obj.getLongLatType() != null && obj.getLongitude() != null && obj.getLatitude() != null;
+	}
 
 	/**
 	 * calculate distance on spheroid
@@ -194,4 +219,84 @@ public abstract class AbstractValidation
 		}
 		return mode.getLong(key);
 	}
+
+	/**
+	 * @param parameters
+	 * @return
+	 */
+	protected Polygon getEnveloppe(JSONObject parameters) 
+	{
+		// validationPerimeter : defalut = France
+		String perimeter = parameters.optString(STOP_AREAS_AREA,"[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]");
+		JSONArray array = new JSONArray(perimeter);
+		List<Coordinate> listCoordinates = new ArrayList<Coordinate>();
+		for (int i = 0; i < array.length(); i++)
+		{
+			JSONArray coords = array.getJSONArray(i);
+			Coordinate coord = new Coordinate(coords.getDouble(0), coords.getDouble(1));
+			listCoordinates.add(coord);
+		}
+		if (!listCoordinates.get(0).equals(listCoordinates.get(listCoordinates.size()-1)))
+		{
+			listCoordinates.add(listCoordinates.get(0));
+		}
+		Coordinate[] coordinates = listCoordinates.toArray(new Coordinate[0]);
+		LinearRing shell = getGeometryFactory().createLinearRing(coordinates);
+        LinearRing[] holes = null;
+        Polygon polygon = getGeometryFactory().createPolygon(shell, holes);		
+		return polygon;
+	}
+	
+	private GeometryFactory getGeometryFactory()
+	{
+		if (geometryFactory == null)
+		{
+		PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
+		geometryFactory = new GeometryFactory(precisionModel, LongLatTypeEnum.WGS84.epsgCode());
+		}
+		return geometryFactory;
+	}
+	
+	protected Point buildPoint(NeptuneLocalizedObject obj)
+	{
+		double y1 = obj.getLatitude().doubleValue() ;
+        double x1 = obj.getLongitude().doubleValue() ;
+        Coordinate coordinate = new Coordinate(x1, y1);
+        Point point = getGeometryFactory().createPoint(coordinate);
+        return point;
+	}
+	/**
+	 * @param report
+	 * @param object
+	 * @param duration
+	 * @param distance
+	 * @param maxDefaultSpeed
+	 * @param testCode
+	 * @param resultCode
+	 */
+	protected void checkLinkSpeed(PhaseReportItem report, NeptuneIdentifiedObject object,
+			Time duration, double distance,
+			double maxDefaultSpeed, String testCode, String resultCode) {
+		if (duration != null)
+		{
+			long time = duration.getTime() / 1000; // in seconds
+			if (time > 0)
+			{
+				double speed = distance / (double) time * 36 / 10 ; // (km/h)
+				if (speed > maxDefaultSpeed)
+				{
+					ReportLocation location = new ReportLocation(object);
+
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("name", object.getName());
+					map.put("speed", Integer.valueOf((int) distance));
+					map.put("speedLimit", Integer.valueOf((int) maxDefaultSpeed));
+
+					DetailReportItem detail = new DetailReportItem(testCode+resultCode,object.getObjectId(), Report.STATE.WARNING, location,map);
+					addValidationError(report, testCode, detail);
+				}
+			}
+		}
+	}
+
 }
