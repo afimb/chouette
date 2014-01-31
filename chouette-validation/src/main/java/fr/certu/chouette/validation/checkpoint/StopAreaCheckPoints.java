@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONObject;
-import org.trident.schema.trident.ChouetteAreaType;
 
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -55,7 +54,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements ICheckPoi
 		{
 			StopArea stopArea = beans.get(i);
 			// no test for ITL
-			if (stopArea.getAreaType().equals(ChouetteAreaType.ITL)) continue;
+			if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL)) continue;
 			checkStopArea1(report, stopArea);
 			checkStopArea4(report, stopArea, enveloppe);
 			checkStopArea5(report, stopArea, parameters);
