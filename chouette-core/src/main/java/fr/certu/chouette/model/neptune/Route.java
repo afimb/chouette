@@ -136,6 +136,7 @@ public class Route extends NeptuneIdentifiedObject
 	 * <i>readable</i>
 	 */
 	@Getter
+	@Setter
 	private Route               wayBackRoute;
 	/**
 	 * Neptune identification referring to the JourneyPatterns of the route<br/>
