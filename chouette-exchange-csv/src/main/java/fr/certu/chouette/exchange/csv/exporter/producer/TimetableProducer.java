@@ -35,6 +35,11 @@ public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 		List<String[]> csvLinesList = new ArrayList<String[]>();
 		
 		csvLinesList.add(createCSVLine(TIMETABLE_LABEL_TITLE, timetable.getComment()));
+		if (timetable.getVersion() == null || timetable.getVersion().isEmpty())
+		{
+			// force as third part of object id
+			timetable.setVersion(timetable.getObjectId().split(":")[2]);
+		}
 		csvLinesList.add(createCSVLine(ALIAS_TITLE, timetable.getVersion()));
 		List<DayTypeEnum> timetableDayTypes = timetable.getDayTypes();
 		csvLinesList.add(createCSVLine(MONDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.MONDAY)));
