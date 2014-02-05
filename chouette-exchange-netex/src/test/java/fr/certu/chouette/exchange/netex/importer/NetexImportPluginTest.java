@@ -19,6 +19,7 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
@@ -54,7 +55,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
         
         NetexImportPlugin netexImportPluginSpy = spy(netexImportPlugin);
         
-        when(netexImportPluginSpy.readXmlFile(xmlPath, report)).thenReturn(netexLine);        
+        when(netexImportPluginSpy.readXmlFile(xmlPath, (Report) report)).thenReturn(netexLine);        
         
         Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer,null), netexLines);
            
@@ -62,7 +63,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
         inputFile.setFilepathValue(zipPath);
         parameters.add(inputFile);
         
-        when(netexImportPluginSpy.readZipFile(zipPath, report)).thenReturn(netexLines);        
+        when(netexImportPluginSpy.readZipFile(zipPath, (Report)report)).thenReturn(netexLines);        
         
         Assert.assertEquals(netexImportPluginSpy.doImport(parameters, reportContainer,null), netexLines);
     }
@@ -71,7 +72,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
     public void verifyReadXmlFile() throws ChouetteException 
     {
 		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
-        Line line = netexImportPlugin.readXmlFile(xmlPath, report);
+        Line line = netexImportPlugin.readXmlFile(xmlPath, (Report)report);
         Assert.assertNotNull(line);
     }
     
@@ -79,7 +80,7 @@ public class NetexImportPluginTest extends AbstractTestNGSpringContextTests {
     public void verifyReadZipFile() throws ChouetteException 
     {
 		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
-       List<Line> lines = netexImportPlugin.readZipFile(zipPath, report); 
+       List<Line> lines = netexImportPlugin.readZipFile(zipPath, (Report)report); 
        Assert.assertTrue(!lines.isEmpty());
     }
 }

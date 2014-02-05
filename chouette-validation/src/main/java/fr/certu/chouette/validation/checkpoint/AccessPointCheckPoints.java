@@ -105,7 +105,7 @@ public class AccessPointCheckPoints extends AbstractValidation implements ICheck
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("name", accessPoint.getName());
 			map.put("parentId", stopArea.getObjectId());
-			map.put("ParentName", stopArea.getName());
+			map.put("parentName", stopArea.getName());
 			map.put("distance", Integer.valueOf((int) distance));
 			map.put("distanceLimit", Integer.valueOf((int) distanceMax));
 

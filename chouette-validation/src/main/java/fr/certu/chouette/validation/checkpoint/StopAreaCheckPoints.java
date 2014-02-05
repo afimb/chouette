@@ -174,7 +174,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements ICheckPoi
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("name", stopArea.getName());
 			map.put("parentId", stopArea2.getObjectId());
-			map.put("ParentName", stopArea2.getName());
+			map.put("parentName", stopArea2.getName());
 			map.put("distance", Integer.valueOf((int) distance));
 			map.put("distanceLimit", Integer.valueOf((int) distanceMax));
 

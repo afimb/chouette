@@ -45,12 +45,13 @@ public class ImportReportToJSONConverter
 		for (ReportItem item : ireport.getItems()) 
 		{
 			String key = item.getMessageKey();
-			// log.info(key);
+			log.info(key);
 			if (key.equals(GuiReportItem.KEY.NO_SAVE.name())) saveReports.add(item);
 			if (key.equals(GuiReportItem.KEY.SAVE_OK.name())) saveReports.add(item);
 			if (key.equals(GuiReportItem.KEY.SAVE_ERROR.name())) saveReports.add(item);
 			if (key.equals(ExchangeReportItem.KEY.ZIP_FILE.name())) zipReport = item;
-			if (key.equals(ExchangeReportItem.KEY.FILE.name())) 
+			if (key.equals(ExchangeReportItem.KEY.FILE.name()) || 
+					key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())	) 
 			{
 				fileOkCount++;
 				fileOkReports.add(item);
@@ -64,6 +65,11 @@ public class ImportReportToJSONConverter
 			{
 				fileIGNOREDCount++;
 				fileIgnoredReports.add(item);
+			}
+			if (key.equals(ExchangeReportItem.KEY.IMPORTED_LINE.name())) 
+			{
+				lineCount++;
+				lineReports.add(item);
 			}
 			if (item.hasItems()) parseItems(item,1);
 		}
@@ -163,9 +169,9 @@ public class ImportReportToJSONConverter
 		jsonLineStats.put("connection_link_count",connectionLinkCount);
 		jsonLineStats.put("access_point_count",accessPointCount);
 		jsonLineStats.put("time_table_count",timeTableCount);
-//		jsonLineStats.put("company_count",companyCount);
-//		jsonLineStats.put("network_count",networkCount);
-		
+		//		jsonLineStats.put("company_count",companyCount);
+		//		jsonLineStats.put("network_count",networkCount);
+
 		jsonLines.put("stats",jsonLineStats);
 		jsonLines.put("list",lineList);
 		json.put("lines", jsonLines);
@@ -214,11 +220,19 @@ public class ImportReportToJSONConverter
 		for (ReportItem item : parent.getItems()) 
 		{
 			String key = item.getMessageKey();
-			// StringBuffer indent = new StringBuffer();
-			// for (int i = 0; i < level; i++) indent.append("  ");
-			// log.info(indent+key);
-			if (key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())) fileOkReports.add(item);
-			if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name())) fileErrorReports.add(item);
+			 StringBuffer indent = new StringBuffer();
+			 for (int i = 0; i < level; i++) indent.append("  ");
+			log.info(indent+key);
+			if (key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())) 
+			{
+				fileOkCount++;
+				fileOkReports.add(item);
+			}
+			if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name())) 
+				{
+				fileNOKCount++;
+				fileErrorReports.add(item);
+				}
 			if (key.equals(ExchangeReportItem.KEY.FILE.name())) 
 			{
 				fileOkCount++;

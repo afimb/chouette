@@ -104,8 +104,15 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 	@Override
 	public List<Line> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException
 	{
-		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
-		importReport.setReport(report);
+		Report iReport = null; 
+		if (importReport.getReport() != null)
+		{
+			iReport = importReport.getReport();
+		}
+		else
+		{
+			iReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
+		}
 
 		String filePath = null;
 		String extension = "file extension";
@@ -149,26 +156,23 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 		if (extension.equals("xml"))
 		{
 			logger.info("start import simple file " + filePath);
-			Line line = readXmlFile(filePath, report);
+			Line line = readXmlFile(filePath, iReport);
 			if (line != null)
 				lines.add(line);         
 		}
 		else
 		{
 			logger.info("start import zip file " + filePath);
-			lines = readZipFile(filePath, report);
+			lines = readZipFile(filePath, iReport);
 		}
 
 		logger.info("import terminated");
 
-//      sheet1_1.addItem(report1_1_1);
-//      sheet1_2.addItem(report1_2_1);
-//      report.addItem(sheet1_1);
-//      report.addItem(sheet1_2);
+
 		return lines;
 	}
 
-	public Line readXmlFile(String filePath, ExchangeReport report)           
+	public Line readXmlFile(String filePath, Report report)           
 	{   
 		Line line = null;
 		File f = new File(filePath);
@@ -179,25 +183,25 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 			stream = new FileInputStream(filePath);
 
 			line = netexFileReader.readInputStream(stream,report);
+			ReportItem importItem = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+			report.addItem(importItem);
+			importItem.addMessageArgs(line.getName());
+			line.complete();
+			ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,line.getRoutes().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,line.getJourneyPatterns().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,line.getVehicleJourneys().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,line.getStopAreas().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,line.getConnectionLinks().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,line.getAccessPoints().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,line.getTimetables().size());
+			importItem.addItem(countItem);
 			stream.close();                               
-//		} catch (java.text.ParseException ex) {
-//			logger.error(ex.getMessage());            
-//		} catch (IOException ex) {
-//			logger.error(ex.getMessage());
-//		} catch (EncodingException ex) {
-//			logger.error(ex.getMessage());
-//		} catch (EOFException ex) {
-//			logger.error(ex.getMessage());
-//		} catch (EntityException ex) {
-//			logger.error(ex.getMessage());           
-//		} catch (ParseException ex) {
-//			logger.error(ex.getMessage());
-//		} catch (XPathParseException ex) {
-//			logger.error(ex.getMessage());
-//		} catch (XPathEvalException ex) {
-//			logger.error(ex.getMessage());
-//		} catch (NavException ex) {
-//			logger.error(ex.getMessage()); 
 		} catch (Exception ex) {
 			// report for save
 			ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,ex.getLocalizedMessage());
@@ -209,20 +213,14 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 		return line;
 	}
 
-	public List<Line> readZipFile(String filePath, ExchangeReport report) {
+	public List<Line> readZipFile(String filePath, Report report) {
 		List<Line> lines = new ArrayList<Line>();    
 		Line line;
-//        boolean ofType1 = false;
-//        boolean ofType2 = false;
-//        boolean someOk = false;
 
 		ZipFile zip = null;
 		try {
 			zip = new ZipFile(filePath);
 		} catch (IOException e) {
-			// report for validation
-//            ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_fatal", Report.STATE.FATAL, filePath);
-//            report1_1_1.addItem(detailReportItem);
 			// report for save
 			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 			report.addItem(fileErrorItem);
@@ -241,10 +239,6 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 
 			String entryName = entry.getName();
 			if (!FilenameUtils.getExtension(entryName).toLowerCase().equals("xml")) {
-				// report for validation
-//                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step0_warning", Report.STATE.WARNING,
-//                        entryName);
-//                report1_1_1.addItem(detailReportItem);
 				// report for save
 				ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,entryName);
 				report.addItem(fileReportItem);
@@ -260,16 +254,27 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 				InputStream stream = zip.getInputStream(entry);
 
 				line = netexFileReader.readInputStream(stream,fileReportItem);
+				ReportItem importItem = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+				report.addItem(importItem);
+				importItem.addMessageArgs(line.getName());
+				line.complete();
+				ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,line.getRoutes().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,line.getJourneyPatterns().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,line.getVehicleJourneys().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,line.getStopAreas().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,line.getConnectionLinks().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,line.getAccessPoints().size());
+				importItem.addItem(countItem);
+				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,line.getTimetables().size());
+				importItem.addItem(countItem);
 				stream.close();
 				lines.add(line);
-//                someOk = true;
-//                report1_1_1.updateStatus(Report.STATE.OK);
-//                report1_2_1.updateStatus(Report.STATE.OK);
 			} catch (IOException e) {
-				// report for validation
-//                ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step2_error", Report.STATE.ERROR,
-//                        entryName);
-//                report1_1_1.addItem(detailReportItem);
 				// report for save
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 				fileReportItem.addItem(errorItem);
@@ -277,28 +282,6 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 				logger.error("zip entry " + entryName + " import failed (get entry)" + e.getLocalizedMessage());
 				continue;
 			} catch (ExchangeRuntimeException e) {
-//                if (ExchangeExceptionCode.INVALID_XML_FILE.name().equals(e.getCode())) {
-//                    ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
-//                            entryName);
-//                    report1_1_1.addItem(detailReportItem);
-//                    report1_1_1.computeDetailItemCount();
-//                    ofType1 = true;
-//                } else if (e.getCode().equals(ExchangeExceptionCode.INVALID_NEPTUNE_FILE.name())) {
-//                    ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_error", Report.STATE.ERROR,
-//                            entryName);
-//                    report1_2_1.addItem(detailReportItem);
-//                    report1_1_1.updateStatus(Report.STATE.OK);
-//                    ofType2 = true;
-//                } else if (e.getCode().equals(ExchangeExceptionCode.INVALID_ENCODING.name())) {
-//                    ReportItem detailReportItem = new DetailReportItem("Test1_Sheet2_Step1_encoding", Report.STATE.ERROR, entryName);
-//                    report1_2_1.addItem(detailReportItem);
-//                    report1_1_1.updateStatus(Report.STATE.OK);
-//                } else if (e.getCode().equals(ExchangeExceptionCode.FILE_NOT_FOUND.name())) {
-//                    ReportItem detailReportItem = new DetailReportItem("Test1_Sheet1_Step1_error", Report.STATE.ERROR,
-//                            entryName);
-//                    report1_1_1.addItem(detailReportItem);
-//                    ofType1 = true;
-//                }
 				// report for save
 				ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 				fileReportItem.addItem(errorItem);

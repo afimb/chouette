@@ -90,7 +90,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			params.add(param);
 		}
 		{
-			ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "false");
+			ParameterDescription param = new ParameterDescription("optimizeMemory", ParameterDescription.TYPE.BOOLEAN,false , "true");
 			params.add(param);
 		}
 
@@ -116,7 +116,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		boolean ignoreLastWord = false;;
 		int ignoreEndCharacters = 0;
 		boolean mergeRouteByShortName = false;
-		boolean optimizeMemory = false;
+		boolean optimizeMemory = true;
 		String incrementalPrefix = "";
 		String extension = "file extension";
 		boolean agencyFound = false;

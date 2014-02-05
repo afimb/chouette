@@ -26,7 +26,9 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  * @author michel
@@ -49,7 +51,6 @@ public class ModelAssembler
 	private Map<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>> populatedDictionaries = new HashMap<Class<? extends NeptuneIdentifiedObject>, Map<String,? extends NeptuneIdentifiedObject>>();
 	private Map<String, Company> companiesDictionary = new HashMap<String, Company>();
 
-	@SuppressWarnings("unused")
 	private Report report;
 	//	private Map<String, Line> linesDictionary = new HashMap<String, Line>();
 	//	private Map<String, Route> routesDictionary = new HashMap<String, Route>();
@@ -72,8 +73,35 @@ public class ModelAssembler
 		connectStopPoints();
 		connectStopAreas();
 		connectTimetables();
+		reportLines();
 	}
 
+	private void reportLines()
+	{
+		for (Line line : lines) 
+		{
+			ReportItem importItem = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
+			report.addItem(importItem);
+			importItem.addMessageArgs(line.getName());
+			line.complete();
+			ExchangeReportItem countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ROUTE_COUNT,Report.STATE.OK,line.getRoutes().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,Report.STATE.OK,line.getJourneyPatterns().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,Report.STATE.OK,line.getVehicleJourneys().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.STOP_AREA_COUNT,Report.STATE.OK,line.getStopAreas().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,Report.STATE.OK,line.getConnectionLinks().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.ACCES_POINT_COUNT,Report.STATE.OK,line.getAccessPoints().size());
+			importItem.addItem(countItem);
+			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,line.getTimetables().size());
+			importItem.addItem(countItem);
+			
+		}
+
+	}
 
 	private void populateDictionaries()
 	{
