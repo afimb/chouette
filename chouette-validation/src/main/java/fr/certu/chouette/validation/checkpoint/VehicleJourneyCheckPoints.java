@@ -42,7 +42,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 			PhaseReportItem report) 
 	{
 		if (isEmpty(beans)) return;
-
+		// 3-VehicleJourney-1 : check if time progress correctly on each stop
+		// 3-VehicleJourney-2 : check speed progression
+		// 3-VehicleJourney-3 : check if two journeys progress similarly
+		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
 		initCheckPoint(report, VEHICLE_JOURNEY_1, CheckPointReportItem.SEVERITY.WARNING);
 		initCheckPoint(report, VEHICLE_JOURNEY_2, CheckPointReportItem.SEVERITY.WARNING);
 		initCheckPoint(report, VEHICLE_JOURNEY_3, CheckPointReportItem.SEVERITY.WARNING);

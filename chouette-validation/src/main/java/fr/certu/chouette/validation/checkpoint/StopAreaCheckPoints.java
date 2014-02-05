@@ -164,6 +164,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements ICheckPoi
 		if (!hasCoordinates(stopArea)) return; 
 		long distanceMax = parameters.optLong(PARENT_STOP_AREA_DISTANCE_MAX,300);
 		StopArea stopArea2 = stopArea.getParent();
+		if (stopArea2 == null) return; // no parent
 		if (!hasCoordinates(stopArea2)) return; 
 		double distance = distance(stopArea, stopArea2);
 		if (distance > distanceMax)

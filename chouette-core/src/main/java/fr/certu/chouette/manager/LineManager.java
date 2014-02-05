@@ -8,7 +8,9 @@
 package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -49,88 +51,120 @@ public class LineManager extends AbstractNeptuneManager<Line>
 
 	@Override
 	protected void propagateValidation(User user, List<Line> beans,JSONObject parameters, PhaseReportItem report, boolean propagate)
-	throws ChouetteException {
+			throws ChouetteException {
 
-		List<PTNetwork> networks = new ArrayList<PTNetwork>();
-		List<Company> companies = new ArrayList<Company>();
-		List<ConnectionLink> connectionLinks = new ArrayList<ConnectionLink>();
-		List<StopArea> stopAreas = new ArrayList<StopArea>();
-		List<Timetable> timetables = new ArrayList<Timetable>();
-		List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
-		List<AccessLink> accessLinks = new ArrayList<AccessLink>();
-		List<AccessPoint> accessPoints = new ArrayList<AccessPoint>();
-		List<Facility> facilities = new ArrayList<Facility>();
-		List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
+		Set<PTNetwork> networks = new HashSet<PTNetwork>();
+		Set<Company> companies = new HashSet<Company>();
+		Set<GroupOfLine> groupOfLines = new HashSet<GroupOfLine>();
+		Set<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
+		Set<StopArea> stopAreas = new HashSet<StopArea>();
+		Set<Timetable> timetables = new HashSet<Timetable>();
+		Set<TimeSlot> timeSlots = new HashSet<TimeSlot>();
+		Set<AccessLink> accessLinks = new HashSet<AccessLink>();
+		Set<AccessPoint> accessPoints = new HashSet<AccessPoint>();
+		Set<Facility> facilities = new HashSet<Facility>();
 
-			for (Line line : beans)
-			{
-				if (line.getPtNetwork() != null)
-					networks.add(line.getPtNetwork());
-				if (line.getCompany() != null)
-					companies.add(line.getCompany());
-				
-			}
+		List<PTNetwork> networkList = new ArrayList<PTNetwork>();
+		List<Company> companyList = new ArrayList<Company>();
+		List<GroupOfLine> groupOfLineList = new ArrayList<GroupOfLine>();
+		List<ConnectionLink> connectionLinkList = new ArrayList<ConnectionLink>();
+		List<StopArea> stopAreaList = new ArrayList<StopArea>();
+		List<Timetable> timetableList = new ArrayList<Timetable>();
+		List<TimeSlot> timeSlotList = new ArrayList<TimeSlot>();
+		List<AccessLink> accessLinkList = new ArrayList<AccessLink>();
+		List<AccessPoint> accessPointList = new ArrayList<AccessPoint>();
+		List<Facility> facilityList = new ArrayList<Facility>();
+
+		for (Line line : beans)
+		{
+			line.complete();
+			if (line.getPtNetwork() != null)
+				networks.add(line.getPtNetwork());
+			if (line.getCompany() != null)
+				companies.add(line.getCompany());
+			if (line.getGroupOfLines() != null)
+				groupOfLines.addAll(line.getGroupOfLines());
+			if (line.getConnectionLinks() != null)
+				connectionLinks.addAll(line.getConnectionLinks());
+			if (line.getStopAreas() != null)
+				stopAreas.addAll(line.getStopAreas());
+			if (line.getTimetables() != null)
+				timetables.addAll(line.getTimetables());
+			if (line.getAccessLinks() != null)
+				accessLinks.addAll(line.getAccessLinks());
+			if (line.getAccessPoints() != null)
+				accessPoints.addAll(line.getAccessPoints());
+		}
+		networkList.addAll(networks);
+		companyList.addAll(companies);
+		groupOfLineList.addAll(groupOfLines);
+		connectionLinkList.addAll(connectionLinks);
+		stopAreaList.addAll(stopAreas);
+		timetableList.addAll(timetables);
+		timeSlotList.addAll(timeSlots);
+		accessLinkList.addAll(accessLinks);
+		accessPointList.addAll(accessPoints);
 
 		// propagate validation on networks
 		if (networks.size() > 0) {
 			AbstractNeptuneManager<PTNetwork> manager = (AbstractNeptuneManager<PTNetwork>) getManager(PTNetwork.class);
-			validateReport(user, manager, networks, parameters, report, propagate);
+			validateReport(user, manager, networkList, parameters, report, propagate);
 		}
 
 		// propagate validation on companies
 		if (companies.size() > 0) {
 			AbstractNeptuneManager<Company> manager = (AbstractNeptuneManager<Company>) getManager(Company.class);
-			validateReport(user, manager, companies, parameters, report, propagate);
+			validateReport(user, manager, companyList, parameters, report, propagate);
 		}
 
 
 		// propagate validation on connectionLinks
 		if (!connectionLinks.isEmpty()) {
 			AbstractNeptuneManager<ConnectionLink> manager = (AbstractNeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-			validateReport(user, manager, connectionLinks, parameters, report, propagate);
+			validateReport(user, manager, connectionLinkList, parameters, report, propagate);
 		}
 
 		// propagate validation on stopAreas
 		if (!stopAreas.isEmpty()) {
 			AbstractNeptuneManager<StopArea> manager = (AbstractNeptuneManager<StopArea>) getManager(StopArea.class);
-			validateReport(user, manager, stopAreas, parameters, report, propagate);
+			validateReport(user, manager, stopAreaList, parameters, report, propagate);
 		}
 
 		// propagate validation on timetables
 		if (!timetables.isEmpty()) {
 			AbstractNeptuneManager<Timetable> manager = (AbstractNeptuneManager<Timetable>) getManager(Timetable.class);
-			validateReport(user, manager, timetables, parameters, report, propagate);
+			validateReport(user, manager, timetableList, parameters, report, propagate);
 		}
 
 		// propagate validation on timeSlots
 		if(!timeSlots.isEmpty()){
 			AbstractNeptuneManager<TimeSlot> manager = (AbstractNeptuneManager<TimeSlot>) getManager(TimeSlot.class);
-		 validateReport(user, manager, timeSlots, parameters, report, propagate);
+			validateReport(user, manager, timeSlotList, parameters, report, propagate);
 		}
 
 		// propagate validation on accessLinks
 		if(!accessLinks.isEmpty()){
 			AbstractNeptuneManager<AccessLink> manager = (AbstractNeptuneManager<AccessLink>) getManager(AccessLink.class);
-			validateReport(user, manager, accessLinks, parameters, report, propagate);
+			validateReport(user, manager, accessLinkList, parameters, report, propagate);
 		}
 
 		// propagate validation on accessPoints
 		if(!accessPoints.isEmpty()){
 			AbstractNeptuneManager<AccessPoint> manager = (AbstractNeptuneManager<AccessPoint>) getManager(AccessPoint.class);
-			validateReport(user, manager, accessPoints, parameters, report, propagate);
+			validateReport(user, manager, accessPointList, parameters, report, propagate);
 		}
 
 
 		// propagate validation on facilities
 		if(!facilities.isEmpty()){
 			AbstractNeptuneManager<Facility> manager = (AbstractNeptuneManager<Facility>) getManager(Facility.class);
-			validateReport(user, manager, facilities, parameters, report, propagate);
+			validateReport(user, manager, facilityList, parameters, report, propagate);
 		}
 
 		// propagate validation on groupOfLines
 		if(!groupOfLines.isEmpty()){
 			AbstractNeptuneManager<GroupOfLine> manager = (AbstractNeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
-			validateReport(user, manager, groupOfLines, parameters, report, propagate);
+			validateReport(user, manager, groupOfLineList, parameters, report, propagate);
 		}
 
 		return ;
@@ -168,7 +202,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 	@Override
 	public void completeObject(User user, Line line) throws ChouetteException 
 	{
-	   line.complete();
+		line.complete();
 	}
 	@Transactional
 	@Override
@@ -182,7 +216,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) getManager(PTNetwork.class);
 			INeptuneManager<GroupOfLine> groupOfLineManager = (INeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
-         INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
+			INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
 
 			List<PTNetwork> networks = new ArrayList<PTNetwork>();
 			List<Company> companies = new ArrayList<Company>();
@@ -208,13 +242,13 @@ public class LineManager extends AbstractNeptuneManager<Line>
 				networkManager.saveAll(user,networks,propagate,fast);
 
 			super.saveAll(user, lines,propagate,fast);
-			
+
 			if(!routes.isEmpty())
 				routeManager.saveAll(user, routes,propagate,fast);
 			if(!facilities.isEmpty())
 				facilityManager.saveAll(user, facilities, propagate,fast);
-         if(!routingConstraints.isEmpty())
-            stopAreaManager.saveAll(user, routingConstraints, propagate,fast);
+			if(!routingConstraints.isEmpty())
+				stopAreaManager.saveAll(user, routingConstraints, propagate,fast);
 		}
 		else 
 		{
@@ -233,10 +267,10 @@ public class LineManager extends AbstractNeptuneManager<Line>
 			// INeptuneManager<Route> routeManager = (INeptuneManager<Route>) getManager(Route.class);
 			INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 			// INeptuneManager<RestrictionConstraint> restrictionConstraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-	        Filter dependentFilter = Filter.getNewEqualsFilter("line."+filter.getAttribute(), filter.getFirstValue());
-	        // routeManager.removeAll(user, dependentFilter);
-	        facilityManager.removeAll(user, dependentFilter);
-	        // restrictionConstraintManager.removeAll(user, dependentFilter);
+			Filter dependentFilter = Filter.getNewEqualsFilter("line."+filter.getAttribute(), filter.getFirstValue());
+			// routeManager.removeAll(user, dependentFilter);
+			facilityManager.removeAll(user, dependentFilter);
+			// restrictionConstraintManager.removeAll(user, dependentFilter);
 		}
 		else
 		{
@@ -245,8 +279,8 @@ public class LineManager extends AbstractNeptuneManager<Line>
 		int ret =  getDao().removeAll(filter);
 		logger.debug(""+ret+" lines deleted");
 		return ret;
-		
+
 	}
-	
-	
+
+
 }

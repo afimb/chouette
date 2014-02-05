@@ -106,10 +106,10 @@ public class ConnectionLinkCheckPoints extends AbstractValidation implements ICh
 		{
 			distance = connectionLink.getLinkDistance().doubleValue();
 		}
-		double maxDefaultSpeed = parameters.optDouble(WALK_DEFAULT_SPEED_MAX,4); // km/h
-		double maxFrequentSpeed = parameters.optDouble(WALK_FREQUENT_TRAVELLER_SPEED_MAX,5);
-		double maxMobilitySpeed = parameters.optDouble(WALK_MOBILITY_RESTRICTED_TRAVELLER_SPEED_MAX,1);
-		double maxOccasionalSpeed = parameters.optDouble(WALK_OCCASIONAL_TRAVELLER_SPEED_MAX,2);
+		int maxDefaultSpeed = parameters.optInt(WALK_DEFAULT_SPEED_MAX,4); // km/h
+		int maxFrequentSpeed = parameters.optInt(WALK_FREQUENT_TRAVELLER_SPEED_MAX,5);
+		int maxMobilitySpeed = parameters.optInt(WALK_MOBILITY_RESTRICTED_TRAVELLER_SPEED_MAX,1);
+		int maxOccasionalSpeed = parameters.optInt(WALK_OCCASIONAL_TRAVELLER_SPEED_MAX,2);
 		
 		checkLinkSpeed(report, connectionLink, connectionLink.getDefaultDuration(), distance, maxDefaultSpeed, CONNECTION_LINK_3,"_1");
 		checkLinkSpeed(report, connectionLink, connectionLink.getOccasionalTravellerDuration(), distance, maxOccasionalSpeed, CONNECTION_LINK_3,"_2");

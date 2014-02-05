@@ -1,13 +1,13 @@
 {
     "stop_areas_area": "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]",
     "inter_stop_area_distance_min": 20,
-    "parent_stop_area_distance_max": 300,
+    "parent_stop_area_distance_max": 350,
     "inter_access_point_distance_min": 20,
-    "inter_connection_link_distance_max": 400,
-    "walk_default_speed_max": 4,
-    "walk_occasional_traveller_speed_max": 2,
-    "walk_frequent_traveller_speed_max": 5,
-    "walk_mobility_restricted_traveller_speed_max": 1,
+    "inter_connection_link_distance_max": 800,
+    "walk_default_speed_max": 5,
+    "walk_occasional_traveller_speed_max": 4,
+    "walk_frequent_traveller_speed_max": 6,
+    "walk_mobility_restricted_traveller_speed_max": 2,
     "inter_access_link_distance_max": 300,
     "inter_stop_duration_max": 180,
     "facility_stop_area_distance_max": 300,
@@ -34,10 +34,10 @@
     },
     "mode_bus": {
         "inter_stop_area_distance_min": 100,
-        "inter_stop_area_distance_max": 10000,
-        "speed_max": 60,
+        "inter_stop_area_distance_max": 40000,
+        "speed_max": 1000,
         "speed_min": 5,
-        "inter_stop_duration_variation_max": 180
+        "inter_stop_duration_variation_max": 2000
     },
     "mode_ferry": {
         "inter_stop_area_distance_min": 200,
@@ -55,10 +55,10 @@
     },
     "mode_metro": {
         "inter_stop_area_distance_min": 300,
-        "inter_stop_area_distance_max": 2000,
-        "speed_max": 60,
+        "inter_stop_area_distance_max": 20000,
+        "speed_max": 500,
         "speed_min": 30,
-        "inter_stop_duration_variation_max": 30
+        "inter_stop_duration_variation_max": 2000
     },
     "mode_shuttle": {
         "inter_stop_area_distance_min": 500,

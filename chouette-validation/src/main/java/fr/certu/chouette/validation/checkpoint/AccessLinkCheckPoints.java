@@ -51,7 +51,7 @@ public class AccessLinkCheckPoints extends AbstractValidation implements ICheckP
 		StopArea start = accessLink.getStopArea();
 		AccessPoint end = accessLink.getAccessPoint();
 		if (!hasCoordinates(start) || !hasCoordinates(end)) return; 
-		long distanceMax = parameters.optLong(INTER_CONNECTION_LINK_DISTANCE_MAX,400);
+		long distanceMax = parameters.optLong(INTER_ACCESS_LINK_DISTANCE_MAX,400);
 
 		double distance = distance(start, end);
 		if (distance > distanceMax)
@@ -107,10 +107,10 @@ public class AccessLinkCheckPoints extends AbstractValidation implements ICheckP
 		{
 			distance = accessLink.getLinkDistance().doubleValue();
 		}
-		double maxDefaultSpeed = parameters.optDouble(WALK_DEFAULT_SPEED_MAX,4); // km/h
-		double maxFrequentSpeed = parameters.optDouble(WALK_FREQUENT_TRAVELLER_SPEED_MAX,5);
-		double maxMobilitySpeed = parameters.optDouble(WALK_MOBILITY_RESTRICTED_TRAVELLER_SPEED_MAX,1);
-		double maxOccasionalSpeed = parameters.optDouble(WALK_OCCASIONAL_TRAVELLER_SPEED_MAX,2);
+		int maxDefaultSpeed = parameters.optInt(WALK_DEFAULT_SPEED_MAX,4); // km/h
+		int maxFrequentSpeed = parameters.optInt(WALK_FREQUENT_TRAVELLER_SPEED_MAX,5);
+		int maxMobilitySpeed = parameters.optInt(WALK_MOBILITY_RESTRICTED_TRAVELLER_SPEED_MAX,1);
+		int maxOccasionalSpeed = parameters.optInt(WALK_OCCASIONAL_TRAVELLER_SPEED_MAX,2);
 		
 		checkLinkSpeed(report, accessLink, accessLink.getDefaultDuration(), distance, maxDefaultSpeed, ACCESS_LINK_3,"_1");
 		checkLinkSpeed(report, accessLink, accessLink.getOccasionalTravellerDuration(), distance, maxOccasionalSpeed, ACCESS_LINK_3,"_2");

@@ -3,8 +3,6 @@ package fr.certu.chouette.validation;
 import java.io.IOException;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,21 +21,19 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
-import fr.certu.chouette.validation.checkpoint.LineCheckPoints;
+import fr.certu.chouette.validation.checkpoint.RouteCheckPoints;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
-@Log4j
 public class ValidationRoutes extends AbstractValidation
 {
-
-
 	@SuppressWarnings("unchecked")
 	@Test (groups = {"route"}, description = "3-Route-1" )
 	public void verifyTest1() throws ChouetteException 
 	{
 		// 3-Route-1 : check if two successive stops are in same area
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
+		checkPoint.setJourneyPatternCheckPoints(null);
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -67,7 +63,7 @@ public class ValidationRoutes extends AbstractValidation
 
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -106,7 +102,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-2 : check if two wayback routes are actually waybacks
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -146,7 +142,7 @@ public class ValidationRoutes extends AbstractValidation
 		
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -187,7 +183,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-3 : check distance between stops 
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -222,7 +218,6 @@ public class ValidationRoutes extends AbstractValidation
         {
         	StopArea area1 = route1.getStopPoints().get(i).getContainedInStopArea();
         	double distance = distance(area0, area1);
-        	log.info("distance = "+distance);
         	if (distance > distanceMax) distanceMax = distance;
         	if (distance < distanceMin) distanceMin = distance;
         	area0 = area1;
@@ -232,7 +227,6 @@ public class ValidationRoutes extends AbstractValidation
         {
         	StopArea area1 = route2.getStopPoints().get(i).getContainedInStopArea();
         	double distance = distance(area0, area1);
-        	log.info("distance = "+distance);
         	if (distance > distanceMax) distanceMax = distance;
         	if (distance < distanceMin) distanceMin = distance;
         	area0 = area1;
@@ -242,7 +236,7 @@ public class ValidationRoutes extends AbstractValidation
         parameters.getJSONObject("mode_bus").put("inter_stop_area_distance_max",(int) distanceMax - 10);
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -282,7 +276,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-4 : check identical routes
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -329,7 +323,7 @@ public class ValidationRoutes extends AbstractValidation
 		
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -367,7 +361,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-5 : check for potentially waybacks
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -401,7 +395,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -440,7 +434,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-6 : check if route has minimum 2 StopPoints
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -475,7 +469,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -514,7 +508,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-7 : check if route has minimum 1 JourneyPattern
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -546,7 +540,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -585,7 +579,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -617,7 +611,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);
@@ -656,7 +650,7 @@ public class ValidationRoutes extends AbstractValidation
 	{
 		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 
-		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		RouteCheckPoints checkPoint = (RouteCheckPoints) applicationContext.getBean("routeCheckPoints");
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;
@@ -688,7 +682,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(beans, parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report);
 		report.refreshStatus();
 
 		printReport(report);

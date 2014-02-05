@@ -33,6 +33,7 @@ public class ValidationLines extends AbstractValidation
 	{
 		// 3-Line-1 : check if two lines have same name
 		LineCheckPoints checkPoint = (LineCheckPoints) applicationContext.getBean("lineCheckPoints");
+		checkPoint.setRouteCheckPoints(null);
 		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
 
 		long id = 1;

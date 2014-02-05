@@ -1,5 +1,6 @@
 package fr.certu.chouette.validation;
 
+import java.sql.Time;
 import java.util.List;
 
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -64,7 +65,7 @@ public class AbstractValidation extends AbstractTestNGSpringContextTests
 	 * @param obj2
 	 * @return
 	 */
-	protected double distance(NeptuneLocalizedObject obj1,NeptuneLocalizedObject obj2)
+	public static double distance(NeptuneLocalizedObject obj1,NeptuneLocalizedObject obj2)
 	{
 		double long1rad = Math.toRadians(obj1.getLongitude().doubleValue());
 		double lat1rad = Math.toRadians(obj1.getLatitude().doubleValue());
@@ -76,6 +77,14 @@ public class AbstractValidation extends AbstractTestNGSpringContextTests
 		double distance = 6378. * Math.acos(alpha);
 
 		return distance * 1000.;
+	}
+
+	public static long diffTime(Time first, Time last) 
+	{
+		if (first == null || last == null) return Long.MIN_VALUE; // TODO
+		long diff = last.getTime()/1000L - first.getTime() / 1000L;
+		if (diff < 0) diff += 86400L; // step upon midnight : add one day in seconds  
+		return diff;
 	}
 
 

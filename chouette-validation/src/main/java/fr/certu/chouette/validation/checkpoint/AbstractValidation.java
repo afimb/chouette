@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import lombok.extern.log4j.Log4j;
 
@@ -184,19 +185,6 @@ public abstract class AbstractValidation
 
 	protected String toUnderscore(String camelcase)
 	{
-		//		StringBuffer buffer = new StringBuffer();
-		//		for (char car : camelcase.toCharArray()) 
-		//		{
-		//			if (Character.isUpperCase(car))
-		//			{
-		//				if (buffer.length() != 0) buffer.append("_");
-		//				buffer.append(Character.toLowerCase(car));
-		//			}
-		//			else
-		//			{
-		//				buffer.append(car);
-		//			}
-		//		}
 
 		return camelcase.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
 	}
@@ -276,27 +264,38 @@ public abstract class AbstractValidation
 	 */
 	protected void checkLinkSpeed(PhaseReportItem report, NeptuneIdentifiedObject object,
 			Time duration, double distance,
-			double maxDefaultSpeed, String testCode, String resultCode) {
+			int maxDefaultSpeed, String testCode, String resultCode) 
+	{
 		if (duration != null)
 		{
-			long time = duration.getTime() / 1000; // in seconds
+			long time = getTimeInSeconds(duration); // in seconds
+
 			if (time > 0)
 			{
-				double speed = distance / (double) time * 36 / 10 ; // (km/h)
+				int speed = (int) (distance / (double) time * 36 / 10  + 0.5) ; // (km/h)
+				
 				if (speed > maxDefaultSpeed)
 				{
 					ReportLocation location = new ReportLocation(object);
 
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("name", object.getName());
-					map.put("speed", Integer.valueOf((int) distance));
-					map.put("speedLimit", Integer.valueOf((int) maxDefaultSpeed));
+					map.put("speed", Integer.valueOf( speed));
+					map.put("speedLimit", Integer.valueOf( maxDefaultSpeed));
 
 					DetailReportItem detail = new DetailReportItem(testCode+resultCode,object.getObjectId(), Report.STATE.WARNING, location,map);
 					addValidationError(report, testCode, detail);
 				}
 			}
 		}
+	}
+	
+	protected long getTimeInSeconds(Time time)
+	{
+		TimeZone tz = TimeZone.getDefault();
+		long millis = 0;
+		millis = time.getTime() + tz.getRawOffset();
+		return millis / 1000;
 	}
 
 }

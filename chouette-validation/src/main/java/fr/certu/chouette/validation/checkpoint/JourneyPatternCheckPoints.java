@@ -37,7 +37,8 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements ICh
 			// 3-JourneyPattern-1 : check if two journey patterns use same stops
 			checkJourneyPattern1(report, beans, i, jp);
 
-			vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(), parameters, report);
+			if (vehicleJourneyCheckPoints != null)
+			   vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(), parameters, report);
 		}
 
 
