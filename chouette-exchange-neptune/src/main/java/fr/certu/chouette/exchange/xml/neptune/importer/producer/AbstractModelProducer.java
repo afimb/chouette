@@ -165,10 +165,6 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 		}
 		
 		checkRegistrationNumber(sharedImportedData, model, sourceFile, source, validationReport);
-		// 2-NEPTUNE-Common-2 : check if a shareable object has a unique registrationNumber 
-		{
-
-		}
 		return (T) data.getObject();
 	}
 
@@ -219,7 +215,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 						Map<String,Object> map = new HashMap<String,Object>();
 						map.put("RegistrationNumber", model.getRegistrationNumber());
 						ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
-						DetailReportItem detail = new DetailReportItem(COMMON_2, source.getObjectId(), Report.STATE.ERROR, location, map);
+						DetailReportItem detail = new DetailReportItem(COMMON_2, origin.getSourceData(), Report.STATE.ERROR, location, map);
 						addValidationError(validationReport,COMMON_2, detail);
 					}
 				}

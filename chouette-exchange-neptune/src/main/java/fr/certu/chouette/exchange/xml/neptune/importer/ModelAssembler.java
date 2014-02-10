@@ -46,8 +46,6 @@ import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourney;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
-import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
