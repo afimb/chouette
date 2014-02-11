@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import lombok.extern.log4j.Log4j;
+
 import org.trident.schema.trident.ConnectionLinkExtensionType;
 
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -7,9 +9,11 @@ import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
-
+@Log4j
 public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink> {
 
 	@Override
@@ -59,7 +63,9 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 					}
 					catch (IllegalArgumentException e) 
 					{
-						// TODO: traiter le cas de non correspondance
+						log.error("unknown userneeds enum "+xmlAccessibilitySuitabilityDetailsItem.toString());
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"UserNeed",xmlAccessibilitySuitabilityDetailsItem.toString());
+						importReport.addItem(item);
 					}
 
 				}

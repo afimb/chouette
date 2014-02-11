@@ -2,6 +2,8 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
+
 import org.trident.schema.trident.LineExtensionType;
 
 import fr.certu.chouette.model.neptune.Line;
@@ -15,6 +17,7 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
+@Log4j
 public class LineProducer extends AbstractModelProducer<Line,org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.Line>
 {
 	@Override
@@ -116,6 +119,7 @@ public class LineProducer extends AbstractModelProducer<Line,org.trident.schema.
 					}
 					catch (IllegalArgumentException e) 
 					{
+						log.error("unknown userneeds enum "+xmlAccessibilitySuitabilityDetailsItem.toString());
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"UserNeed",xmlAccessibilitySuitabilityDetailsItem.toString());
 						importReport.addItem(item);
 					}

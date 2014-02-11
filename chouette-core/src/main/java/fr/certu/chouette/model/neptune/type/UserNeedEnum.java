@@ -13,47 +13,47 @@ public enum UserNeedEnum implements java.io.Serializable {
 	/**
 	 * Constant HEARTCONDITION
 	 */
-	HEARTCONDITION("heartCondition",NeedCategoryEnum.MEDICAL),
+	HEART_CONDITION("heartCondition",NeedCategoryEnum.MEDICAL),
 	/**
 	 * Constant OTHERMEDICALNEED
 	 */
-	OTHERMEDICALNEED("otherMedicalNeed",NeedCategoryEnum.MEDICAL),
+	OTHER_MEDICAL_NEED("otherMedicalNeed",NeedCategoryEnum.MEDICAL),
 	/**
 	 * Constant VISUALIMPAIRMENT
 	 */
-	VISUALIMPAIRMENT("visualImpairment",NeedCategoryEnum.PSYCHOSENSORY),
+	VISUAL_IMPAIRMENT("visualImpairment",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant AUDITORYIMPAIRMENT
 	 */
-	AUDITORYIMPAIRMENT("auditoryImpairment",NeedCategoryEnum.PSYCHOSENSORY),
+	AUDITORY_IMPAIRMENT("auditoryImpairment",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant COGNITIVEINPUTIMPAIRMENT
 	 */
-	COGNITIVEINPUTIMPAIRMENT("cognitiveInputImpairment",NeedCategoryEnum.PSYCHOSENSORY),
+	COGNITIVE_INPUT_IMPAIRMENT("cognitiveInputImpairment",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant AVERSETOLIFTS
 	 */
-	AVERSETOLIFTS("averseToLifts",NeedCategoryEnum.PSYCHOSENSORY),
+	AVERSE_TO_LIFTS("averseToLifts",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant AVERSETOESCALATORS
 	 */
-	AVERSETOESCALATORS("averseToEscalators",NeedCategoryEnum.PSYCHOSENSORY),
+	AVERSE_TO_ESCALATORS("averseToEscalators",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant AVERSETOCONFINEDSPACES
 	 */
-	AVERSETOCONFINEDSPACES("averseToConfinedSpaces",NeedCategoryEnum.PSYCHOSENSORY),
+	AVERSE_TO_CONFINED_SPACES("averseToConfinedSpaces",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant AVERSETOCROWDS
 	 */
-	AVERSETOCROWDS("averseToCrowds",NeedCategoryEnum.PSYCHOSENSORY),
+	AVERSE_TO_CROWDS("averseToCrowds",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant OTHERPSYCHOSENSORYNEED
 	 */
-	OTHERPSYCHOSENSORYNEED("otherPsychosensoryNeed",NeedCategoryEnum.PSYCHOSENSORY),
+	OTHER_PSYCHOSENSORY_NEED("otherPsychosensoryNeed",NeedCategoryEnum.PSYCHOSENSORY),
 	/**
 	 * Constant LUGGAGEENCUMBERED
 	 */
-	LUGGAGEENCUMBERED("luggageEncumbered",NeedCategoryEnum.ENCUMBRANCE),
+	LUGGAGE_ENCUMBERED("luggageEncumbered",NeedCategoryEnum.ENCUMBRANCE),
 	/**
 	 * Constant PUSHCHAIR
 	 */
@@ -61,23 +61,23 @@ public enum UserNeedEnum implements java.io.Serializable {
 	/**
 	 * Constant BAGGAGETROLLEY
 	 */
-	BAGGAGETROLLEY("baggageTrolley",NeedCategoryEnum.ENCUMBRANCE),
+	BAGGAGE_TROLLEY("baggageTrolley",NeedCategoryEnum.ENCUMBRANCE),
 	/**
 	 * Constant OVERSIZEBAGGAGE
 	 */
-	OVERSIZEBAGGAGE("oversizeBaggage",NeedCategoryEnum.ENCUMBRANCE),
+	OVERSIZE_BAGGAGE("oversizeBaggage",NeedCategoryEnum.ENCUMBRANCE),
 	/**
 	 * Constant GUIDEDOG
 	 */
-	GUIDEDOG("guideDog",NeedCategoryEnum.ENCUMBRANCE),
+	GUIDE_DOG("guideDog",NeedCategoryEnum.ENCUMBRANCE),
 	/**
 	 * Constant OTHERANIMAL
 	 */
-	OTHERANIMAL("otherAnimal",NeedCategoryEnum.ENCUMBRANCE),
+	OTHER_ANIMAL("otherAnimal",NeedCategoryEnum.ENCUMBRANCE),
 	/**
 	 * Constant OTHERENCUMBRANCE
 	 */
-	OTHERENCUMBRANCE("otherEncumbrance",NeedCategoryEnum.ENCUMBRANCE),
+	OTHER_ENCUMBRANCE("otherEncumbrance",NeedCategoryEnum.ENCUMBRANCE),
 	/**
 	 * Constant WHEELCHAIR
 	 */
@@ -85,23 +85,23 @@ public enum UserNeedEnum implements java.io.Serializable {
 	/**
 	 * Constant ASSISTEDWHEELCHAIR
 	 */
-	ASSISTEDWHEELCHAIR("assistedWheelchair",NeedCategoryEnum.MOBILITY),
+	ASSISTED_WHEELCHAIR("assistedWheelchair",NeedCategoryEnum.MOBILITY),
 	/**
 	 * Constant MOTORIZEDWHEELCHAIR
 	 */
-	MOTORIZEDWHEELCHAIR("motorizedWheelchair",NeedCategoryEnum.MOBILITY),
+	MOTORIZED_WHEELCHAIR("motorizedWheelchair",NeedCategoryEnum.MOBILITY),
 	/**
 	 * Constant WALKINGFRAME
 	 */
-	WALKINGFRAME("walkingFrame",NeedCategoryEnum.MOBILITY),
+	WALKING_FRAME("walkingFrame",NeedCategoryEnum.MOBILITY),
 	/**
 	 * Constant RESTRICTEDMOBILITY
 	 */
-	RESTRICTEDMOBILITY("restrictedMobility",NeedCategoryEnum.MOBILITY),
+	RESTRICTED_MOBILITY("restrictedMobility",NeedCategoryEnum.MOBILITY),
 	/**
 	 * Constant OTHERMOBILITYNEED
 	 */
-	OTHERMOBILITYNEED("otherMobilityNeed",NeedCategoryEnum.MOBILITY);
+	OTHER_MOBILITY_NEED("otherMobilityNeed",NeedCategoryEnum.MOBILITY);
 
 	// --------------------------/
 	// - Class/Member Variables -/
@@ -138,7 +138,7 @@ public enum UserNeedEnum implements java.io.Serializable {
 				return c;
 			}
 		}
-		throw new IllegalArgumentException(value);
+		return valueOf(value);
 	}
 
 	/**

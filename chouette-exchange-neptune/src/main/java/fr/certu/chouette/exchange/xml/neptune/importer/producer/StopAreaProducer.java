@@ -3,14 +3,19 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
+
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
+@Log4j
 public class StopAreaProducer extends AbstractModelProducer<StopArea,org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea>
 {
 	@Override
@@ -79,7 +84,9 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,org.trident
 					}
 					catch (IllegalArgumentException e) 
 					{
-						// TODO: traiter le cas de non correspondance
+						log.error("unknown userneeds enum "+xmlAccessibilitySuitabilityDetailsItem.toString());
+						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,"UserNeed",xmlAccessibilitySuitabilityDetailsItem.toString());
+						importReport.addItem(item);
 					}
 
 				}
