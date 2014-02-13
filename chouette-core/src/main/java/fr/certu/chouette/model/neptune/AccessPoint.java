@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 
 /**
@@ -17,14 +18,28 @@ import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
  * when writable is added to comment, a implicit setter is available
  * 
  */
+@Log4j
 public class AccessPoint extends NeptuneLocalizedObject{
 	private static final long serialVersionUID = 7520070228185917225L;
 	
 	/**
-	 * Comment
-	 * <br/><i>readable/writable</i>
+	 * Comment <br/>
+	 * <i>readable/writable</i>
 	 */
-	@Getter @Setter private String comment;
+	@Getter
+	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 	/**
 	 * ObjectId of container
 	 * <br/><i>readable/writable</i>

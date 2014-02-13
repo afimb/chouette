@@ -18,6 +18,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.filter.Filter;
@@ -33,6 +34,7 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * when writable is added to comment, a implicit setter is available
  */
 @NoArgsConstructor
+@Log4j
 public class Line extends NeptuneIdentifiedObject
 {
 	private static final long     serialVersionUID           = -8086291270595894778L;
@@ -111,19 +113,41 @@ public class Line extends NeptuneIdentifiedObject
 	@Setter
 	private TransportModeNameEnum transportModeName;
 	/**
-	 * Registration number <br/>
+	 * RegistrationNumber <br/>
 	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
-	private String                registrationNumber;
+	private String               registrationNumber;
+	public void setRegistrationNumber(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("registrationNumber too long, truncated "+ value);
+		   registrationNumber = value.substring(0, 255);
+		}
+		else
+		{
+			registrationNumber = value;
+		}
+	}
 	/**
 	 * Comment <br/>
 	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
-	private String                comment;
+	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 	/**
 	 * Neptune identification referring to the line's network <br/>
 	 * <i>readable/writable</i>

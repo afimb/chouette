@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.core.CoreRuntimeException;
 import fr.certu.chouette.filter.Filter;
@@ -36,6 +37,7 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@Log4j
 public class StopArea extends NeptuneLocalizedObject
 {
 	private static final long    serialVersionUID            = 4548672479038099240L;
@@ -128,12 +130,41 @@ public class StopArea extends NeptuneLocalizedObject
 	 */
 	private AreaCentroid         areaCentroid;
 	/**
-	 * Comment
-	 * <br/><i>readable/writable</i>
+	 * RegistrationNumber <br/>
+	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
+	private String               registrationNumber;
+	public void setRegistrationNumber(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("registrationNumber too long, truncated "+ value);
+		   registrationNumber = value.substring(0, 255);
+		}
+		else
+		{
+			registrationNumber = value;
+		}
+	}
+	/**
+	 * Comment <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
 	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 	/**
 	 * List of Children objectIds for import/export purpose
 	 * <p/>
@@ -199,13 +230,6 @@ public class StopArea extends NeptuneLocalizedObject
 	@Getter
 	@Setter
 	private String               nearestTopicName;
-	/**
-	 * registration number
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter
-	@Setter
-	private String               registrationNumber;
 	/**
 	 * List of the specific user needs available <br/>
 	 * <i>readable/writable</i>

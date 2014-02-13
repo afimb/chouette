@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 /**
  * Neptune Journey Pattern : pattern for vehicle journeys in a route
@@ -14,23 +15,46 @@ import lombok.Setter;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@Log4j
 public class JourneyPattern extends NeptuneIdentifiedObject
 {
 	private static final long    serialVersionUID = 7895941111990419404L;
 	/**
-	 * Comment <br/>
+	 * RegistrationNumber <br/>
 	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
 	private String               registrationNumber;
+	public void setRegistrationNumber(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("registrationNumber too long, truncated "+ value);
+		   registrationNumber = value.substring(0, 255);
+		}
+		else
+		{
+			registrationNumber = value;
+		}
+	}
 	/**
 	 * Comment <br/>
 	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
 	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 	/**
 	 * Start StopPoint id <br/>
 	 * import/export usage <br/>

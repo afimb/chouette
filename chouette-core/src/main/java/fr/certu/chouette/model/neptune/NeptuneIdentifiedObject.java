@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 /**
  * Abstract object used for all Identified Neptune Object
@@ -26,6 +27,7 @@ import lombok.Setter;
  * when writable is added to comment, a implicit setter is available
  */
 @SuppressWarnings("serial")
+@Log4j
 public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
 	// constant for persistence fields
@@ -58,7 +60,19 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	/**
 	 * Neptune unique identifier : mandatory
 	 */
-	@Getter @Setter private String objectId;  // BD
+	@Getter private String objectId;  // BD
+	public void setObjectId(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("objectId too long, truncated "+ value);
+		   objectId = value.substring(0, 255);
+		}
+		else
+		{
+			objectId = value;
+		}
+	}
 	/**
 	 * Version of Neptune Object (default = 1) 
 	 */
@@ -74,7 +88,19 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 	/**
 	 * Object Name
 	 */
-	@Getter @Setter private String name; // BD
+	@Getter private String name; // BD
+	public void setName(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("name too long, truncated "+ value);
+		   name = value.substring(0, 255);
+		}
+		else
+		{
+			name = value;
+		}
+	}
 
 	/**
 	 * indicated if object is completed for export purpose

@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 /**
  * Neptune Company
@@ -21,6 +22,7 @@ import lombok.Setter;
  * when writable is added to comment, a implicit setter is available
  */
 @NoArgsConstructor
+@Log4j
 public class Company extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -8086291270595894778L;
@@ -73,13 +75,24 @@ public class Company extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private String            email;
-   /**
-    * Registration Number <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private String            registrationNumber;
+	/**
+	 * RegistrationNumber <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	private String               registrationNumber;
+	public void setRegistrationNumber(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("registrationNumber too long, truncated "+ value);
+		   registrationNumber = value.substring(0, 255);
+		}
+		else
+		{
+			registrationNumber = value;
+		}
+	}
 
    /**
     * List of the company lines <br/>

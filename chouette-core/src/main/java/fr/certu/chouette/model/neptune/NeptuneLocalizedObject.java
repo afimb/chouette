@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.service.geographic.IGeographicService;
 
@@ -22,6 +23,7 @@ import fr.certu.chouette.service.geographic.IGeographicService;
  * when writable is added to comment, a implicit setter is available
  */
 @SuppressWarnings("serial")
+@Log4j
 public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 {
 	// geographic tool for coordinate conversion
@@ -55,12 +57,36 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 	 * address street name 
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private String streetName;
+	@Getter private String streetName;
+	public void setStreetName(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("streetName too long, truncated "+ value);
+		   streetName = value.substring(0, 255);
+		}
+		else
+		{
+			streetName = value;
+		}
+	}
 	/**
 	 * address city or district code
 	 * <br/><i>readable/writable</i>
 	 */
-	@Getter @Setter private String countryCode;
+	@Getter private String countryCode;
+	public void setCountryCode(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("countryCode too long, truncated "+ value);
+		   countryCode = value.substring(0, 255);
+		}
+		else
+		{
+			countryCode = value;
+		}
+	}
 
 	/**
 	 * x coordinate

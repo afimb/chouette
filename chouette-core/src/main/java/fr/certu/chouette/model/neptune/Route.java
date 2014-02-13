@@ -16,6 +16,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
@@ -26,6 +27,7 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@Log4j
 public class Route extends NeptuneIdentifiedObject
 {
 	private static final long    serialVersionUID = -2249654966081042738L;
@@ -105,8 +107,19 @@ public class Route extends NeptuneIdentifiedObject
 	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
-	private String               comment;                                 // BD
+	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 	/**
 	 * A logical direction (French extension)
 	 * <ul>

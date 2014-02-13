@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 /**
  * Neptune GroupOfLine : to associate lines with common purpose
@@ -13,6 +14,7 @@ import lombok.Setter;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@Log4j
 public class GroupOfLine extends NeptuneIdentifiedObject
 {
 
@@ -32,13 +34,24 @@ public class GroupOfLine extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private List<Line>        lines;
-   /**
-    * Comment <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private String            comment;
+	/**
+	 * Comment <br/>
+	 * <i>readable/writable</i>
+	 */
+	@Getter
+	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 
    /**
     * add a lineId to list only if not already present <br/>

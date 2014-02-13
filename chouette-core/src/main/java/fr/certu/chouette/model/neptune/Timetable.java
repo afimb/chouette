@@ -9,6 +9,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
@@ -19,6 +20,7 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@Log4j
 public class Timetable extends NeptuneIdentifiedObject
 {
 	private static final long    serialVersionUID = -1598554061982685113L;
@@ -57,13 +59,23 @@ public class Timetable extends NeptuneIdentifiedObject
 		DayTypeEnum.FRIDAY,
 		DayTypeEnum.SATURDAY};
 	/**
-	 * comment <br/>
-	 * (import/export usage) <br/>
+	 * Comment <br/>
 	 * <i>readable/writable</i>
 	 */
 	@Getter
-	@Setter
 	private String               comment;
+	public void setComment(String value)
+	{
+		if (value != null && value.length() > 255)
+		{
+		   log.warn("comment too long, truncated "+ value);
+		   comment = value.substring(0, 255);
+		}
+		else
+		{
+			comment = value;
+		}
+	}
 	@Getter
 	@Setter
 	private String               version;
