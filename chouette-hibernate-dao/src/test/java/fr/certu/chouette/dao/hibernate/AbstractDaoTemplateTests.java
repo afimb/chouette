@@ -489,7 +489,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       accessLink.setCreationTime(new Date());
       accessLink.setStopArea(createStopArea());
       accessLink.addUserNeed(UserNeedEnum.ALLERGIC);
-      accessLink.addUserNeed(UserNeedEnum.ASSISTEDWHEELCHAIR);
+      accessLink.addUserNeed(UserNeedEnum.ASSISTED_WHEELCHAIR);
       accessLink.setDefaultDuration(new Time(new Date().getTime()));
 
       return accessLink;
