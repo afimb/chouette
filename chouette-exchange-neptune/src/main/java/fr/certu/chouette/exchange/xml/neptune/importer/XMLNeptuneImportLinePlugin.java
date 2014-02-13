@@ -533,6 +533,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(entryName,rootObject, importItem, validationItem, sharedData, unsharedData, validator));
 		validator.validate();
 
+		validationItem.refreshStatus(); // check why this is needed
+
 		validationReport.addItem(validationItem);
 		validationReport.refreshStatus();
 		// check if validator failed ! 

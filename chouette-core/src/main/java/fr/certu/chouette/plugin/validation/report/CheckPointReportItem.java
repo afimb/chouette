@@ -33,7 +33,7 @@ public class CheckPointReportItem extends ReportItem
 	{
 		this.setOrder(order);
 		setMessageKey(key);
-		setStatus(STATE.UNCHECK);
+		updateStatus(STATE.UNCHECK);
 
 	}
 	/**
@@ -43,7 +43,7 @@ public class CheckPointReportItem extends ReportItem
 	{
 		this.setOrder(order);
 		setMessageKey(key);
-		setStatus(status);
+		updateStatus(status);
 		this.severity = severity;
 
 	}
@@ -56,9 +56,7 @@ public class CheckPointReportItem extends ReportItem
 	{
 		if (item instanceof DetailReportItem)
 		{
-			int status = getStatus().ordinal();
-			int itemStatus = item.getStatus().ordinal();
-			if (itemStatus > status) setStatus(item.getStatus());
+			updateStatus(item.getStatus());
 			detailItemCount ++;
 			if (detailItemCount > MAX_DETAIL) return;
 			if (getItems() == null) setItems(new ArrayList<ReportItem>());

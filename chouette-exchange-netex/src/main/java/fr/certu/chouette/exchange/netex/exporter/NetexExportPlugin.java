@@ -50,7 +50,7 @@ public class NetexExportPlugin implements IExportPlugin<Line>
     */
    public NetexExportPlugin()
    {
-      report.setStatus(Report.STATE.OK);
+      report.updateStatus(Report.STATE.OK);
        
       description = new FormatDescription(this.getClass().getName());
       description.setName("NETEX");

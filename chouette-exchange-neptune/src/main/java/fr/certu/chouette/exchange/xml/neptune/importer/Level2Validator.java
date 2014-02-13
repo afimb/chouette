@@ -249,10 +249,14 @@ public class Level2Validator
 	public void addStopAreas(List<ChouettePTNetworkType.ChouetteArea.StopArea> stopAreaList) 
 	{
 		for (ChouettePTNetworkType.ChouetteArea.StopArea stopArea : stopAreaList) {
+			if (stopArea.getStopAreaExtension() == null) continue;
+			if (stopArea.getStopAreaExtension().getAreaType() == null) continue;
+			
 			stopAreas.put(stopArea.getObjectId(), stopArea);
 			tridentObjects.put(stopArea.getObjectId(), stopArea);
 			if (!stopArea.getStopAreaExtension().getAreaType().equals(ChouetteAreaType.ITL))
 			{
+				if (stopArea.getContains() == null) continue;
 				for (String childId : stopArea.getContains()) 
 				{
 					mapStopAreaParent.put(childId,stopArea.getObjectId());
@@ -1691,7 +1695,10 @@ public class Level2Validator
 					addValidationError(VEHICLE_JOURNEY_AT_STOP_1, errorItem);	
 					fkOK = false;
 				}
-				stopsOfVj.add(vjas.getStopPointId());
+				else
+				{
+				    stopsOfVj.add(vjas.getStopPointId());
+				}
 				if (vjas.isSetVehicleJourneyId())
 				{
 					// 2-NEPTUNE-VehicleJourneyAtStop-2 : check existence of vehicleJourney
@@ -1927,7 +1934,7 @@ public class Level2Validator
 	protected void prepareCheckPoint(String checkPointKey)
 	{
 		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
-		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
+		if (!checkPoint.hasItems()) checkPoint.updateStatus(Report.STATE.OK);
 	}
 
 	/**

@@ -208,7 +208,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
-		report.setStatus(Report.STATE.OK);
+		report.updateStatus(Report.STATE.OK);
 		importReport.setReport(report);
 		
 		ZipFile zip = null;
@@ -220,7 +220,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		{
 			ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,e.getLocalizedMessage());
 			report.addItem(item);
-			report.setStatus(Report.STATE.FATAL);
+			report.updateStatus(Report.STATE.ERROR);
 			logger.error("zip import failed (cannot open zip)" + e.getLocalizedMessage());
 			return null;
 		}
@@ -252,7 +252,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"agency.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read agency.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -270,7 +270,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"calendar.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read calendar.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -288,7 +288,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"calendar_dates.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read calendar_dates.txt )" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -305,7 +305,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"frequencies.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read frequencies.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -323,7 +323,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"routes.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read routes.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -341,7 +341,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"stops.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 					logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -359,7 +359,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"stop_times.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read stop_times.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -377,7 +377,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"trips.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read trips.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -406,7 +406,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 					{
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"transfers.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
-						report.setStatus(Report.STATE.ERROR);
+						report.updateStatus(Report.STATE.ERROR);
 						logger.error("zip import failed (cannot read transfers.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
@@ -423,7 +423,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"agency.txt",filePath);
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
+				report.updateStatus(Report.STATE.ERROR);
 				logger.error("zip import failed (missing entry agency.txt)");
 				ok = false;				
 			}
@@ -431,7 +431,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"routes.txt",filePath);
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
+				report.updateStatus(Report.STATE.ERROR);
 				logger.error("zip import failed (missing entry routes.txt)");
 				ok = false;				
 			}
@@ -439,7 +439,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"stops.txt",filePath);
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
+				report.updateStatus(Report.STATE.ERROR);
 				logger.error("zip import failed (missing entry stops.txt)");
 				ok = false;				
 			}
@@ -447,7 +447,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"stop_times.txt",filePath);
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
+				report.updateStatus(Report.STATE.ERROR);
 				logger.error("zip import failed (missing entry stop_times.txt)");
 				ok = false;				
 			}
@@ -455,7 +455,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"calendars.txt, calendar_dates.txt",filePath);
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
+				report.updateStatus(Report.STATE.ERROR);
 				logger.error("zip import failed (missing entry calendars.txt, calendar_dates.txt)");
 				ok = false;				
 			}
@@ -463,7 +463,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY,Report.STATE.ERROR,"trips.txt",filePath);
 				report.addItem(item);
-				report.setStatus(Report.STATE.ERROR);
+				report.updateStatus(Report.STATE.ERROR);
 				logger.error("zip import failed (missing entry trips.txt)");
 				ok = false;				
 			}

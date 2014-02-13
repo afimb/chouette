@@ -235,6 +235,6 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 	protected void prepareCheckPoint(PhaseReportItem validationReport,String checkPointKey)
 	{
 		CheckPointReportItem checkPoint = validationReport.getItem(checkPointKey);
-		if (!checkPoint.hasItems()) checkPoint.setStatus(Report.STATE.OK);
+		if (!checkPoint.hasItems()) checkPoint.updateStatus(Report.STATE.OK);
 	}
 }

@@ -33,7 +33,7 @@ public class PhaseReportItem extends ReportItem
 		this.phase = phase;
 		setOrder(phase.ordinal());
 		setMessageKey(phase.name());
-		setStatus(STATE.OK);
+		updateStatus(STATE.OK);
 	}
 
 	/* (non-Javadoc)
@@ -45,9 +45,7 @@ public class PhaseReportItem extends ReportItem
 		if (item instanceof CheckPointReportItem) 
 		{
 			super.addItem(item);
-			int status = getStatus().ordinal();
-			int itemStatus = item.getStatus().ordinal();
-			if (itemStatus > status) setStatus(item.getStatus());
+			updateStatus(item.getStatus());
 		}
 		else
 		{

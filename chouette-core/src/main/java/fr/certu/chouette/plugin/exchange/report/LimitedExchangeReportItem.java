@@ -43,14 +43,14 @@ public class LimitedExchangeReportItem extends ReportItem
 
 	public LimitedExchangeReportItem(ExchangeReportItem.KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
 		setMessageKey(key.name());
 		addMessageArgs(args);
 	}
 
 	public LimitedExchangeReportItem(LimitedExchangeReportItem.KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
 		setMessageKey(key.name());
 		addMessageArgs(args);
 	}

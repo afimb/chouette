@@ -30,7 +30,7 @@ public class GuiReportItem extends ReportItem
    public GuiReportItem(KEY key, STATE status, Object... args)
    {
       setMessageKey(key.toString());
-      setStatus(status);
+      updateStatus(status);
       if (args != null) setMessageArgs(Arrays.asList(args));
    }
    

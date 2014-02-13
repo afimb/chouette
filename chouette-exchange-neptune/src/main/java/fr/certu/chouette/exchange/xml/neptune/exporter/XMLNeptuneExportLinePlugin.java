@@ -29,7 +29,6 @@ import org.trident.schema.trident.ITLType;
 import org.trident.schema.trident.JourneyPatternType;
 import org.trident.schema.trident.ObjectFactory;
 import org.trident.schema.trident.TimetableType;
-import org.trident.schema.trident.TridentObjectType;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.AbstractJaxbNeptuneProducer;
@@ -178,7 +177,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 			throws ChouetteException
 			{
 		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.EXPORT,description.getName());
-		report.setStatus(Report.STATE.OK);
+		report.updateStatus(Report.STATE.OK);
 		reportContainer.setReport(report);
 
 		String fileName = null;

@@ -65,7 +65,7 @@ public class ExchangeReportItem extends ReportItem
 	
 	public ExchangeReportItem(KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
         setMessageKey(key.name());
         addMessageArgs(args);
 	}

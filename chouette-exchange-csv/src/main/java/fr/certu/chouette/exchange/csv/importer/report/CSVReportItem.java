@@ -26,7 +26,7 @@ public class CSVReportItem extends ReportItem
 
 	public CSVReportItem(KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
         setMessageKey(key.name());
         addMessageArgs(args);
 	}

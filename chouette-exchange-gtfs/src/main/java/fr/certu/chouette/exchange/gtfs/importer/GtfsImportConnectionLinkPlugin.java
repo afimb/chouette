@@ -145,7 +145,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 		}
 
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
-		report.setStatus(Report.STATE.OK);
+		report.updateStatus(Report.STATE.OK);
 		importReport.setReport(report);
 		
 		ZipFile zip = null;

@@ -24,7 +24,7 @@ public class GtfsReportItem extends ReportItem
 
 	public GtfsReportItem(KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
         setMessageKey(key.name());
         addMessageArgs(args);
 	}

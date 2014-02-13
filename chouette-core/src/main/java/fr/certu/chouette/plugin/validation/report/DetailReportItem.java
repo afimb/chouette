@@ -28,7 +28,7 @@ public class DetailReportItem extends ReportItem
 	{
 		
 		setMessageKey("detail_"+key.replaceAll("-","_").toLowerCase());
-		setStatus(state);
+		updateStatus(state);
 		this.location = location;
 		this.objectId = objectId;
 		this.args = args;
@@ -39,7 +39,7 @@ public class DetailReportItem extends ReportItem
 	{
 		
 		setMessageKey("detail_"+key.replaceAll("-","_").toLowerCase());
-		setStatus(state);
+		updateStatus(state);
 		this.location = location;
 		this.objectId = objectId;
 		this.args = null;
@@ -49,7 +49,7 @@ public class DetailReportItem extends ReportItem
 	public DetailReportItem(String key,STATE state,ReportLocation location, Map<String,Object> args)
 	{
 		setMessageKey("detail_"+key.replaceAll("-","_").toLowerCase());
-		setStatus(state);
+		updateStatus(state);
 		this.location = location;
 		this.objectId = null;
 		this.args = args;

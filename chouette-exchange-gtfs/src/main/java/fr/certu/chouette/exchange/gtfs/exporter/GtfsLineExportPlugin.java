@@ -128,7 +128,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 			throws ChouetteException
 			{
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-		report .setStatus(Report.STATE.OK);
+		report.updateStatus(Report.STATE.OK);
 		reportHolder.setReport(report);
 		String fileName = null;
 		TimeZone timeZone = null;

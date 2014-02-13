@@ -28,7 +28,7 @@ public class ValidationReport extends Report
 	public ValidationReport() 
 	{
 		setOriginKey(ORIGIN.VALIDATION.name());
-		setStatus(STATE.OK);
+		updateStatus(STATE.OK);
 	}
 	
 	/* (non-Javadoc)
@@ -38,9 +38,7 @@ public class ValidationReport extends Report
 	public void addItem(ReportItem item) 
 	{
 		super.addItem(item);
-		int status = getStatus().ordinal();
-		int itemStatus = item.getStatus().ordinal();
-		if (itemStatus > status) setStatus(item.getStatus());
+		updateStatus(item.getStatus());
 	}
 	
     public List<CompilanceCheckResult> toValidationResults()

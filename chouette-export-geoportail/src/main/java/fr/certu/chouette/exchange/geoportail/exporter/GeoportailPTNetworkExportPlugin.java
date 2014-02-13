@@ -240,7 +240,7 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
    {
       GeoportailReport report = new GeoportailReport(GeoportailReport.KEY.EXPORT);
       reportHolder.setReport(report);
-      report.setStatus(STATE.OK);
+      report.updateStatus(STATE.OK);
       if (beans == null || beans.isEmpty())
       {
          GeoportailReportItem item = new GeoportailReportItem(GeoportailReportItem.KEY.NO_NETWORK, STATE.ERROR);

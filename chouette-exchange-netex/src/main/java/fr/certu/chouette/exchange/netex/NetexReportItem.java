@@ -33,7 +33,7 @@ public class NetexReportItem extends ReportItem
 	*/
 	public NetexReportItem(KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
         setMessageKey(key.name());
         addMessageArgs(args);
 	}

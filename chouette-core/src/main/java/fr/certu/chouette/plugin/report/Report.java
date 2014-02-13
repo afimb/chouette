@@ -58,7 +58,7 @@ public abstract class Report
 	 * report status
 	 */
 	@Getter
-	@Setter
+	// @Setter
 	private STATE            status;
 	/**
 	 * reportItem list
@@ -123,7 +123,7 @@ public abstract class Report
 	 * @param statusToApply
 	 *           new status
 	 */
-	public void updateStatus(STATE statusToApply)
+	public final void updateStatus(STATE statusToApply)
 	{
 		if (status == null || status.ordinal() < statusToApply.ordinal())
 		{
@@ -241,7 +241,7 @@ public abstract class Report
 		return items != null && !items.isEmpty();
 	}
 
-	public void refreshStatus()
+	public final void refreshStatus()
 	{
 		if (items != null)
 		{

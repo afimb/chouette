@@ -64,7 +64,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 			ReportHolder reportContainer) throws ChouetteException {
 		String fileName = null;
       CSVReport report = new CSVReport(CSVReport.KEY.EXPORT);
-      report.setStatus(Report.STATE.OK);
+      report.updateStatus(Report.STATE.OK);
       reportContainer.setReport(report);
 
 		if(beans == null || beans.size() ==0) 

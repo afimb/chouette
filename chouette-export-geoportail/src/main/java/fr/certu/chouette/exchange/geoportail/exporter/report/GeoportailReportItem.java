@@ -25,7 +25,7 @@ public class GeoportailReportItem extends ReportItem
 
 	public GeoportailReportItem(KEY key,Report.STATE status, Object... args)
 	{
-		setStatus(status);
+		updateStatus(status);
         setMessageKey(key.name());
         addMessageArgs(args);
 	}

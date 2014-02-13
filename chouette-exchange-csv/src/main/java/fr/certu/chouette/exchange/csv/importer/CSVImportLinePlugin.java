@@ -139,7 +139,7 @@ public class CSVImportLinePlugin implements IImportPlugin<Line>
 		else
 		{
 			iReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
-			iReport.setStatus(Report.STATE.UNCHECK);
+			iReport.updateStatus(Report.STATE.UNCHECK);
 			importReport.setReport(iReport);
 		}
 		// CSVReport report = new CSVReport(CSVReport.KEY.IMPORT);
