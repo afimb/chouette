@@ -214,7 +214,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 						Locator srcLoc = origin.getSourceLocation() ;
 						Map<String,Object> map = new HashMap<String,Object>();
 						map.put("RegistrationNumber", model.getRegistrationNumber());
-						ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
+						ReportLocation location = new ReportLocation(origin.getSourceFile(), srcLoc.getLineNumber(), srcLoc.getColumnNumber());
 						DetailReportItem detail = new DetailReportItem(COMMON_2, origin.getSourceData(), Report.STATE.ERROR, location, map);
 						addValidationError(validationReport,COMMON_2, detail);
 					}

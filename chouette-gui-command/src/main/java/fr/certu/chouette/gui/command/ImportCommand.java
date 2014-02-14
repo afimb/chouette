@@ -27,10 +27,10 @@ import java.util.zip.ZipFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,7 +49,9 @@ import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.ListParameterValue;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
+import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.model.ImportTask;
@@ -68,10 +70,9 @@ import fr.certu.chouette.service.geographic.IGeographicService;
  * 
  */
 @NoArgsConstructor
+@Log4j
 public class ImportCommand extends AbstractCommand
 {
-
-	private static final Logger logger = Logger.getLogger(ImportCommand.class);
 
 	@Getter @Setter private IDaoTemplate<Referential> referentialDao;;
 
@@ -99,19 +100,19 @@ public class ImportCommand extends AbstractCommand
 		if (!importDao.exists(importId))
 		{
 			// error import not found
-			logger.error("import not found "+importId);
+			log.error("import not found "+importId);
 			return 1;
 		}
 		ImportTask importTask = importDao.get(importId);
-		logger.info("Import data for import id "+importId);
-		logger.info("  options : "+importTask.getParameters());
+		log.info("Import data for import id "+importId);
+		log.info("  options : "+importTask.getParameters());
 
 		startProcess(session, importTask);
 
 		JSONObject options = importTask.getParameters();
 		if (options == null) 
 		{
-			logger.error("import without parameters "+importId);
+			log.error("import without parameters "+importId);
 			return 1;
 		}
 		String format = options.getString("format").toUpperCase();
@@ -119,20 +120,20 @@ public class ImportCommand extends AbstractCommand
 		if (!options.has("input_file"))
 		{
 			options.put("input_file", inputFile); // for import compatibility
-			logger.info("  options : "+options);
+			log.info("  options : "+options);
 		}
 
 		save = !options.getBoolean("no_save");
 
 		Referential referential = referentialDao.get(importTask.getReferentialId());
-		logger.info("Referential "+importTask.getReferentialId());
-		logger.info("  name : "+referential.getName());
-		logger.info("  slug : "+referential.getSlug());
+		log.info("Referential "+importTask.getReferentialId());
+		log.info("  name : "+referential.getName());
+		log.info("  slug : "+referential.getSlug());
 
 		String projectionType = null;
 		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
 		{
-			logger.info("  projection type for import: "+referential.getProjectionType());
+			log.info("  projection type for import: "+referential.getProjectionType());
 			projectionType = referential.getProjectionType();
 			parameters.put("srid", Arrays.asList(new String[]{projectionType}));
 		}
@@ -204,7 +205,7 @@ public class ImportCommand extends AbstractCommand
 				}
 				if (beans != null && !beans.isEmpty())
 				{
-					logger.info("imported Lines "+beans.size());
+					log.info("imported Lines "+beans.size());
 					if (save)
 					{
 						saveBeans(manager, beans, savedIds, importReport);
@@ -226,7 +227,7 @@ public class ImportCommand extends AbstractCommand
 			// fill report with error
 			String msg = e.getMessage();
 			if (msg == null) msg = e.getClass().getName();
-			logger.error("import failed "+msg,e);
+			log.error("import failed "+msg,e);
 			if (importReport == null)
 			{
 				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
@@ -275,6 +276,15 @@ public class ImportCommand extends AbstractCommand
 		values.add(inputFileParam);
 		
 		ReportHolder zipHolder = new ReportHolder();
+		SharedImportedData sharedData = new SharedImportedData();
+		UnsharedImportedData unsharedData = new UnsharedImportedData();
+		SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
+		sharedDataParam.setObjectValue(sharedData);
+		values.add(sharedDataParam);
+		SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
+		unsharedDataParam.setObjectValue(unsharedData);
+		values.add(unsharedDataParam);
+
 		// unzip files , import and save contents 
 		ZipFile zip = null;
 		File temp = null;
@@ -299,9 +309,9 @@ public class ImportCommand extends AbstractCommand
 				}
 				if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),suffixes))
 				{
-					ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,entry.getName());
+					ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,FilenameUtils.getName(entry.getName()));
 					zipReportItem.addItem(fileReportItem);
-					logger.info("entry "+entry.getName()+" ignored, unknown extension");
+					log.info("entry "+entry.getName()+" ignored, unknown extension");
 					continue;
 				}
 				InputStream stream = null;
@@ -311,9 +321,9 @@ public class ImportCommand extends AbstractCommand
 				}
 				catch (IOException e)
 				{
-					ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.WARNING,entry.getName());
+					ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.WARNING,FilenameUtils.getName(entry.getName()));
 					zipReportItem.addItem(fileReportItem);
-					logger.error("entry "+entry.getName()+" cannot read");
+					log.error("entry "+entry.getName()+" cannot read",e);
 					continue;
 				}
 				byte[] bytes = new byte[4096];
@@ -328,7 +338,7 @@ public class ImportCommand extends AbstractCommand
 				fos.close();
 
 				// import
-				logger.info("import file "+entry.getName());
+				log.info("import file "+entry.getName());
 				inputFileParam.setFilepathValue(temp.getAbsolutePath());
 				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,zipHolder,validationHolder);
 				if (beans != null && !beans.isEmpty())
@@ -356,12 +366,13 @@ public class ImportCommand extends AbstractCommand
 			}
 			catch (IOException e)
 			{
-				logger.info("cannot close zip file");
+				log.info("cannot close zip file");
 			}
 			importHolder.getReport().addItem(zipReportItem);
 		}
 		catch (IOException e)
 		{
+			log.error("IO error",e);
 			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 			zipReportItem.addItem(fileErrorItem);
 			importHolder.getReport().addItem(zipReportItem);
@@ -376,7 +387,7 @@ public class ImportCommand extends AbstractCommand
 			}
 			catch (IOException e) 
 			{
-				logger.warn("temporary directory "+tempRep.getAbsolutePath()+" could not be deleted");
+				log.warn("temporary directory "+tempRep.getAbsolutePath()+" could not be deleted");
 			}
 		}
 		return 0;
@@ -395,7 +406,7 @@ public class ImportCommand extends AbstractCommand
 		
 		if (parameters != null)
 		{
-			logger.info("processing phase 3 validation on "+savedIds.size()+" lines");
+			log.info("processing phase 3 validation on "+savedIds.size()+" lines");
 			// launch validation on objects
 			Filter filter = Filter.getNewInFilter("id", savedIds);
 			try 
@@ -403,7 +414,7 @@ public class ImportCommand extends AbstractCommand
 				List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
 				if (beans == null || beans.isEmpty())
 				{
-					logger.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
+					log.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
 
 				}
 				else
@@ -413,9 +424,9 @@ public class ImportCommand extends AbstractCommand
 					manager.validate(null, beans, parameters, phaseReport, true);
 				}
 			} 
-			catch (ChouetteException e) 
+			catch (Exception e) 
 			{
-				logger.error("cannot read previously saved objects",e);
+				log.error("cannot read previously saved objects",e);
 			}
 		}
 	}
@@ -440,7 +451,7 @@ public class ImportCommand extends AbstractCommand
 			oneBean.add(bean);
 			try
 			{
-				logger.info("save  Line "+bean.getName());
+				log.info("save  Line "+bean.getName());
 				manager.saveAll(null, oneBean, true, true);
 				GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
 				importReport.addItem(item);
@@ -448,7 +459,7 @@ public class ImportCommand extends AbstractCommand
 			}
 			catch (Exception e) 
 			{
-				logger.error("save failed "+e.getMessage(),e);
+				log.error("save failed "+e.getMessage(),e);
 				GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_ERROR,Report.STATE.ERROR,bean.getName(),e.getMessage());
 				importReport.addItem(item);
 			}
@@ -472,7 +483,7 @@ public class ImportCommand extends AbstractCommand
 
 	private void saveImportReports(Session session,ImportTask importTask, Report ireport, Report vreport) 
 	{
-		// logger.info("import report = "+ireport.toJSON().toString(3));
+		// log.info("import report = "+ireport.toJSON().toString(3));
 		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
 
 		if (importTask.getCompilanceCheckTask() != null)
@@ -498,7 +509,7 @@ public class ImportCommand extends AbstractCommand
 			}
 			else
 			{
-				logger.error("validation report null or empty");
+				log.error("validation report null or empty");
 			}
 		}
 		importTask.setResult(converter.toJSONObject());
@@ -582,7 +593,6 @@ public class ImportCommand extends AbstractCommand
 						throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
 					}
 					values.add(val);
-					logger.debug("prepare list parameter "+name);
 				}
 				else
 				{
@@ -602,7 +612,6 @@ public class ImportCommand extends AbstractCommand
 					case DATE : val.setDateValue(toCalendar(options.getString(key)));break;
 					}
 					values.add(val);
-					logger.debug("prepare simple parameter "+name);
 
 				}
 			}
@@ -627,7 +636,7 @@ public class ImportCommand extends AbstractCommand
 		}
 		catch (ParseException e)
 		{
-			logger.error("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
+			log.error("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
 			throw new RuntimeException("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
 		}
 

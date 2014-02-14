@@ -45,7 +45,7 @@ public class ImportReportToJSONConverter
 		for (ReportItem item : ireport.getItems()) 
 		{
 			String key = item.getMessageKey();
-			// log.info(key);
+//			log.info(key);
 			if (key.equals(GuiReportItem.KEY.NO_SAVE.name())) saveReports.add(item);
 			if (key.equals(GuiReportItem.KEY.SAVE_OK.name())) saveReports.add(item);
 			if (key.equals(GuiReportItem.KEY.SAVE_ERROR.name())) saveReports.add(item);
@@ -143,7 +143,7 @@ public class ImportReportToJSONConverter
 				lineInfo.put("errors", errorList);
 			}
 			jsonLineMap.put(name, lineInfo);
-			// log.info("save info for "+name);
+// 			log.info("save info for "+name);
 
 		}
 		JSONArray lineList = new JSONArray();
@@ -220,8 +220,8 @@ public class ImportReportToJSONConverter
 		for (ReportItem item : parent.getItems()) 
 		{
 			String key = item.getMessageKey();
-//			 StringBuffer indent = new StringBuffer();
-//			 for (int i = 0; i < level; i++) indent.append("  ");
+//			StringBuffer indent = new StringBuffer();
+//			for (int i = 0; i < level; i++) indent.append("  ");
 //			log.info(indent+key);
 			if (key.equals(ExchangeReportItem.KEY.ZIP_ENTRY.name())) 
 			{
@@ -229,10 +229,10 @@ public class ImportReportToJSONConverter
 				fileOkReports.add(item);
 			}
 			if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name())) 
-				{
+			{
 				fileNOKCount++;
 				fileErrorReports.add(item);
-				}
+			}
 			if (key.equals(ExchangeReportItem.KEY.FILE.name())) 
 			{
 				fileOkCount++;

@@ -496,7 +496,6 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 		// report for save
 		ReportItem importItem = new ExchangeReportItem(ExchangeReportItem.KEY.IMPORTED_LINE, Report.STATE.OK);
-		importReport.addItem(importItem);
 
 		PhaseReportItem validationItem = new PhaseReportItem(PhaseReportItem.PHASE.TWO);
 		// init validation
@@ -504,7 +503,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
 
 		// process Line
-		// TODO : forward phase2 validation
+		// forward phase2 validation
 		ModelAssembler modelAssembler = new ModelAssembler(entryName, sharedData, unsharedData, importItem,validationItem);
 
 		Level2Validator validator = new Level2Validator(entryName,validationItem);
@@ -560,10 +559,14 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 				countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,modelAssembler.getTimetables().size());
 				importItem.addItem(countItem);
 			}
+			importReport.addItem(importItem);
 			return line;
 		}
 
-		// rootObject.toString();
+		ReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.VALIDATION_ERROR,Report.STATE.ERROR,"");
+		importReport.addItem(errorItem);
+		importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
+		logger.error("level 2 validation failed" );
 
 		return null;
 			}

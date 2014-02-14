@@ -15,11 +15,11 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * report for Import/export/validation trace
@@ -30,7 +30,6 @@ import lombok.Setter;
  * may be used in every case where reporting is required
  * 
  */
-
 
 public abstract class Report
 {
@@ -243,6 +242,14 @@ public abstract class Report
 
 	public final void refreshStatus()
 	{
+//		if (this instanceof ReportItem)
+//		{
+//			log.info(getClass().getSimpleName()+" "+((ReportItem) this).getMessageKey()+ " status = "+ getStatus());
+//		}
+//		else
+//		{
+//			log.info(getClass().getSimpleName()+" "+this.getOriginKey()+ " status = "+ getStatus());
+//		}
 		if (items != null)
 		{
 			for (ReportItem item : items) 
@@ -250,6 +257,14 @@ public abstract class Report
 				item.refreshStatus();
 				updateStatus(item.getStatus());
 			}
+//			if (this instanceof ReportItem)
+//			{
+//				log.info("after prop "+getClass().getSimpleName()+" "+((ReportItem) this).getMessageKey()+ " status = "+ getStatus());
+//			}
+//			else
+//			{
+//				log.info("after prop "+getClass().getSimpleName()+" "+this.getOriginKey()+ " status = "+ getStatus());
+//			}
 		}
 	}
 
