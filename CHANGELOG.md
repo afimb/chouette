@@ -1,4 +1,4 @@
-# Version 2.2.0 (en cours ...)
+# Version 2.2.0 (14/02/14, en cours de qualification)
 * refonte de la validation
 	* suppression de la validation de fichiers
 	* mise en place de la validation durant l'import
