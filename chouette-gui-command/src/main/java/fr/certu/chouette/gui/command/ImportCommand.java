@@ -276,6 +276,8 @@ public class ImportCommand extends AbstractCommand
 		values.add(inputFileParam);
 		
 		ReportHolder zipHolder = new ReportHolder();
+		if (format.equalsIgnoreCase("neptune"))
+		{
 		SharedImportedData sharedData = new SharedImportedData();
 		UnsharedImportedData unsharedData = new UnsharedImportedData();
 		SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
@@ -284,6 +286,7 @@ public class ImportCommand extends AbstractCommand
 		SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
 		unsharedDataParam.setObjectValue(unsharedData);
 		values.add(unsharedDataParam);
+		}
 
 		// unzip files , import and save contents 
 		ZipFile zip = null;
