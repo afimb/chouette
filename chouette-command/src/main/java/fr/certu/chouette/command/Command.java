@@ -48,8 +48,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
+import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -188,6 +188,7 @@ public class Command
 		{
 			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 			SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
+			
 			SessionHolder sessionHolder = (SessionHolder) TransactionSynchronizationManager.unbindResource(sessionFactory);
 			SessionFactoryUtils.closeSession(sessionHolder.getSession());
 		}
@@ -201,7 +202,8 @@ public class Command
 		{
 			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
 			SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
-			Session session = SessionFactoryUtils.getSession(sessionFactory, true);
+         Session session = sessionFactory.openSession();
+			//Session session = SessionFactoryUtils.getSession(sessionFactory, true);
 			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 		}
 	}

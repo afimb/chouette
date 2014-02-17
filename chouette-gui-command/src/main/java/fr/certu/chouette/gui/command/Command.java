@@ -26,15 +26,13 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
+import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-import fr.certu.chouette.plugin.model.Referential;
 
 /**
  * 
@@ -264,7 +262,7 @@ public class Command extends AbstractCommand
 	public static void initDao(BeanFactory factory) 
 	{
 		SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
-		session = SessionFactoryUtils.getSession(sessionFactory, true);
+      session = sessionFactory.openSession();
 		TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 
 	}

@@ -3,16 +3,19 @@ package fr.certu.chouette.dao.hibernate;
 import java.util.Calendar;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.orm.hibernate3.HibernateSystemException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.HibernateSystemException;
 
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
@@ -28,8 +31,7 @@ import fr.certu.chouette.plugin.model.ImportTask;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 
-public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends
-      HibernateDaoSupport implements IDaoTemplate<T>
+public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> implements IDaoTemplate<T>
 {
    private static final Logger logger = Logger
          .getLogger(NeptuneObjectHibernateDaoTemplate.class);
@@ -76,6 +78,20 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends
             ExportLogMessage.class);
    }
 
+   @Getter
+   @Setter
+   private SessionFactory sessionFactory;
+
+   private Session getHibernateTemplate()
+   {
+      return sessionFactory.getCurrentSession();
+   }
+
+   private Session getSession()
+   {
+      return sessionFactory.getCurrentSession();
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -84,7 +100,7 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends
    public T get(Long id)
    {
       logger.debug("invoke get on " + type.getSimpleName());
-      T object = getHibernateTemplate().get(type, id);
+      T object = (T) getHibernateTemplate().get(type, id);
       if (object == null)
       {
          throw new ObjectRetrievalFailureException(type, id);
@@ -318,7 +334,10 @@ public class NeptuneObjectHibernateDaoTemplate<T extends NeptuneObject> extends
    {
       logger.debug("invoke removeAll on " + type.getSimpleName());
 
-      getHibernateTemplate().deleteAll(objects);
+      for (T t : objects)
+      {
+         getHibernateTemplate().delete(t);
+      }
       getHibernateTemplate().flush();
    }
 

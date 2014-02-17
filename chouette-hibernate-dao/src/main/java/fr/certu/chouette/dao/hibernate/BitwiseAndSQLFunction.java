@@ -5,7 +5,7 @@ import java.util.List;
 import org.hibernate.QueryException;
 import org.hibernate.dialect.function.SQLFunction;
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.engine.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.type.Type;
 
 public class BitwiseAndSQLFunction extends StandardSQLFunction implements SQLFunction {

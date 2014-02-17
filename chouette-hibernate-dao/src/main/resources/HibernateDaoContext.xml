@@ -190,7 +190,7 @@
 				<value>CREATE TABLE ${database.schema}.temp_duplicate AS select {2}
 					from ${database.schema}.{0} group by {2} having count(*) > 1
 				</value>
-				<value>DELETE FROM ${database.schema}.{0} tv USING
+				<value>DELETE FROM ${database.schema}.{0} tv USINGnull
 					${database.schema}.temp_duplicate td WHERE tv.{3} = td.{3} AND
 					tv.{4} = td.{4}</value>
 				<value>INSERT INTO ${database.schema}.{0} ({2}) SELECT {2} FROM
@@ -209,7 +209,7 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 

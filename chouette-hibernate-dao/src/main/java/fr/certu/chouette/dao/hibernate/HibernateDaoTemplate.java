@@ -2,18 +2,21 @@ package fr.certu.chouette.dao.hibernate;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.orm.hibernate3.HibernateSystemException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.HibernateSystemException;
 
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
@@ -38,7 +41,7 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
-public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends HibernateDaoSupport implements
+public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
       IDaoTemplate<T>
 {
    private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
@@ -130,6 +133,20 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       return new HibernateDaoTemplate<VehicleJourney>(VehicleJourney.class);
    }
 
+   @Getter
+   @Setter
+   private SessionFactory sessionFactory;
+
+   private Session getHibernateTemplate()
+   {
+      return sessionFactory.getCurrentSession();
+   }
+
+   private Session getSession()
+   {
+      return sessionFactory.getCurrentSession();
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -140,7 +157,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       logger.debug("invoke get on " + type.getSimpleName());
       if (id == null)
          return null;
-      T object = getHibernateTemplate().get(type, id);
+      T object = (T) getHibernateTemplate().get(type, id);
       if (object == null)
       {
          return null;
@@ -244,7 +261,9 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       DetachedCriteria criteria = DetachedCriteria.forClass(type);
       criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
       criteria.add(Restrictions.eq("objectId", objectId));
-      final List<Object> list = getHibernateTemplate().findByCriteria(criteria);
+      // final List<Object> list =
+      // getHibernateTemplate().findByCriteria(criteria);
+      final List<Object> list = criteria.getExecutableCriteria(getSession()).list();
       final int total = list.size();
 
       if (total == 0)
@@ -391,7 +410,10 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
    {
       logger.debug("invoke removeAll on " + type.getSimpleName());
 
-      getHibernateTemplate().deleteAll(objects);
+      for (T t : objects)
+      {
+         getHibernateTemplate().delete(t);
+      }
       getHibernateTemplate().flush();
    }
 
