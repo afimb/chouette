@@ -12,7 +12,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<chouette.publishRelease.activateArtifactFolder>true</chouette.publishRelease.activateArtifactFolder>
-		<spring.version>3.2.4.RELEASE</spring.version>
+		<spring.version>4.0.0.RELEASE</spring.version>
 		<hibernate.version>3.6.10.Final</hibernate.version>
 	</properties>
 

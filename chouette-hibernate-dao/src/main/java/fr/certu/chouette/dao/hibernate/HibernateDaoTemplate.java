@@ -38,92 +38,110 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 
-public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends HibernateDaoSupport implements IDaoTemplate<T>
+public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends HibernateDaoSupport implements
+      IDaoTemplate<T>
 {
    private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
 
    private Class<T> type;
 
-   private HibernateDaoTemplate(Class<T> type) 
+   private HibernateDaoTemplate(Class<T> type)
    {
       this.type = type;
    }
 
    public static HibernateDaoTemplate<AccessLink> createAccessLinkDao()
    {
-      return new HibernateDaoTemplate<AccessLink>( AccessLink.class);
+      return new HibernateDaoTemplate<AccessLink>(AccessLink.class);
    }
+
    public static HibernateDaoTemplate<AccessPoint> createAccessPointDao()
    {
-      return new HibernateDaoTemplate<AccessPoint>( AccessPoint.class);
+      return new HibernateDaoTemplate<AccessPoint>(AccessPoint.class);
    }
+
    public static HibernateDaoTemplate<Company> createCompanyDao()
    {
-      return new HibernateDaoTemplate<Company>( Company.class);
+      return new HibernateDaoTemplate<Company>(Company.class);
    }
+
    public static HibernateDaoTemplate<ConnectionLink> createConnectionLinkDao()
    {
-      return new HibernateDaoTemplate<ConnectionLink>( ConnectionLink.class);
+      return new HibernateDaoTemplate<ConnectionLink>(ConnectionLink.class);
    }
+
    public static HibernateDaoTemplate<Facility> createFacilityDao()
    {
-      return new HibernateDaoTemplate<Facility>( Facility.class);
+      return new HibernateDaoTemplate<Facility>(Facility.class);
    }
+
    public static HibernateDaoTemplate<GroupOfLine> createGroupOfLineDao()
    {
-      return new HibernateDaoTemplate<GroupOfLine>( GroupOfLine.class);
+      return new HibernateDaoTemplate<GroupOfLine>(GroupOfLine.class);
    }
+
    public static HibernateDaoTemplate<JourneyPattern> createJourneyPatternDao()
    {
-      return new HibernateDaoTemplate<JourneyPattern>( JourneyPattern.class);
+      return new HibernateDaoTemplate<JourneyPattern>(JourneyPattern.class);
    }
+
    public static HibernateDaoTemplate<Line> createLineDao()
    {
-      return new HibernateDaoTemplate<Line>( Line.class);
+      return new HibernateDaoTemplate<Line>(Line.class);
    }
+
    public static HibernateDaoTemplate<PTLink> createPTLinkDao()
    {
-      return new HibernateDaoTemplate<PTLink>( PTLink.class);
+      return new HibernateDaoTemplate<PTLink>(PTLink.class);
    }
+
    public static HibernateDaoTemplate<PTNetwork> createPTNetworkDao()
    {
-      return new HibernateDaoTemplate<PTNetwork>( PTNetwork.class);
+      return new HibernateDaoTemplate<PTNetwork>(PTNetwork.class);
    }
+
    public static HibernateDaoTemplate<Route> createRouteDao()
    {
-      return new HibernateDaoTemplate<Route>( Route.class);
+      return new HibernateDaoTemplate<Route>(Route.class);
    }
+
    public static HibernateDaoTemplate<StopArea> createStopAreaDao()
    {
-      return new HibernateDaoTemplate<StopArea>( StopArea.class);
+      return new HibernateDaoTemplate<StopArea>(StopArea.class);
    }
+
    public static HibernateDaoTemplate<StopPoint> createStopPointDao()
    {
-      return new HibernateDaoTemplate<StopPoint>( StopPoint.class);
+      return new HibernateDaoTemplate<StopPoint>(StopPoint.class);
    }
+
    public static HibernateDaoTemplate<Timetable> createTimetableDao()
    {
-      return new HibernateDaoTemplate<Timetable>( Timetable.class);
+      return new HibernateDaoTemplate<Timetable>(Timetable.class);
    }
+
    public static HibernateDaoTemplate<TimeSlot> createTimeSlotDao()
    {
-      return new HibernateDaoTemplate<TimeSlot>( TimeSlot.class);
+      return new HibernateDaoTemplate<TimeSlot>(TimeSlot.class);
    }
+
    public static HibernateDaoTemplate<VehicleJourney> createVehicleJourneyDao()
    {
-      return new HibernateDaoTemplate<VehicleJourney>( VehicleJourney.class);
+      return new HibernateDaoTemplate<VehicleJourney>(VehicleJourney.class);
    }
 
-
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
     */
    public T get(Long id)
    {
-      logger.debug("invoke get on "+type.getSimpleName());
-      if (id == null) return null;
-      T object = getHibernateTemplate().get( type, id);
-      if ( object==null)
+      logger.debug("invoke get on " + type.getSimpleName());
+      if (id == null)
+         return null;
+      T object = getHibernateTemplate().get(type, id);
+      if (object == null)
       {
          return null;
          // throw new ObjectRetrievalFailureException( type, id);
@@ -131,13 +149,16 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       return object;
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
     */
    @SuppressWarnings("unchecked")
-   public List<T> select(final Filter filter) 
+   public List<T> select(final Filter filter)
    {
-      logger.debug("invoke select on "+type.getSimpleName());
+      logger.debug("invoke select on " + type.getSimpleName());
 
       Session session = getSession();
 
@@ -148,9 +169,9 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       if (!filter.isEmpty())
       {
          FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
-         criteria.add(translator.translate(filter,criteria,getSessionFactory().getClassMetadata(type)));
+         criteria.add(translator.translate(filter, criteria, getSessionFactory().getClassMetadata(type)));
       }
-      if (filter.getOrderList()!= null)
+      if (filter.getOrderList() != null)
       {
          for (FilterOrder order : filter.getOrderList())
          {
@@ -169,7 +190,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
          }
       }
       // HibernateTemplate ht = getHibernateTemplate();
-      List<T> beans = null; 
+      List<T> beans = null;
       if (filter.getLimit() > 0 || filter.getStart() > 0)
       {
          logger.debug("call with start and/or limit");
@@ -181,10 +202,9 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       {
          beans = criteria.list(); // ht.findByCriteria(criteria);
       }
-      logger.debug(type.getSimpleName()+" founds = "+beans.size());
+      logger.debug(type.getSimpleName() + " founds = " + beans.size());
 
       return beans;
-
 
    }
 
@@ -200,7 +220,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       {
          Query query = session.createQuery(hql);
          int pos = 0;
-         for (Object value : values) 
+         for (Object value : values)
          {
             query.setParameter(pos++, value);
          }
@@ -209,109 +229,129 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       }
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.dao.IDaoTemplate#getByObjectId(java.lang.String)
     */
    @SuppressWarnings("unchecked")
-   public T getByObjectId( final String objectId)
+   public T getByObjectId(final String objectId)
    {
-      logger.debug("invoke getByObjectId on "+type.getSimpleName());
-      if ( objectId==null || objectId.isEmpty()) return null;
+      logger.debug("invoke getByObjectId on " + type.getSimpleName());
+      if (objectId == null || objectId.isEmpty())
+         return null;
 
       DetachedCriteria criteria = DetachedCriteria.forClass(type);
       criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
       criteria.add(Restrictions.eq("objectId", objectId));
-      final List<T> list = getHibernateTemplate().findByCriteria(criteria);
+      final List<Object> list = getHibernateTemplate().findByCriteria(criteria);
       final int total = list.size();
 
-      if ( total==0)
+      if (total == 0)
       {
          return null;
          // throw new ObjectRetrievalFailureException( type, objectId);
       }
-      else if ( total>1)
+      else if (total > 1)
       {
-         throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "+type.getName()+" id =" + objectId);
+         throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "
+               + type.getName() + " id =" + objectId);
       }
 
-      return list.get( 0);
-   }	
+      return (T) list.get(0);
+   }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.dao.IDaoTemplate#getAll()
     */
-   public List<T> getAll() 
+   public List<T> getAll()
    {
-      logger.debug("invoke getAll on "+type.getSimpleName());
-      // return getHibernateTemplate().loadAll(type); 
+      logger.debug("invoke getAll on " + type.getSimpleName());
+      // return getHibernateTemplate().loadAll(type);
       // wrong call, may contains duplicate entry if join clause
       Filter f = Filter.getNewEmptyFilter();
       return select(f);
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.dao.IDaoTemplate#remove(java.lang.Long)
     */
    public void remove(Long id)
    {
-      logger.debug("invoke remove on "+type.getSimpleName());
-      getHibernateTemplate().delete( get( id));
+      logger.debug("invoke remove on " + type.getSimpleName());
+      getHibernateTemplate().delete(get(id));
       getHibernateTemplate().flush();
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.dao.IDaoTemplate#save(fr.certu.chouette.model.neptune.NeptuneObject)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.IDaoTemplate#save(fr.certu.chouette.model.neptune
+    * .NeptuneObject)
     */
    public void save(T object)
    {
-      logger.debug("invoke save on "+type.getSimpleName());
+      logger.debug("invoke save on " + type.getSimpleName());
 
       try
       {
-         getHibernateTemplate().saveOrUpdate( object);
+         getHibernateTemplate().saveOrUpdate(object);
       }
-      catch(HibernateSystemException hse)
+      catch (HibernateSystemException hse)
       {
-         if ( hse.getCause()!=null && 
+         if (hse.getCause() != null &&
                hse.getCause() instanceof NonUniqueObjectException)
-            getHibernateTemplate().merge( object);
-         else throw hse;
-      }	
-      //		T existing = getByObjectId(object.getObjectId());
-      //		if (existing == null)
-      //		{
-      //			getHibernateTemplate().saveOrUpdate( object);
-      //		}
-      //		else
-      //		{
-      //			object.setId(existing.getId());
-      //			getHibernateTemplate().merge( object);
-      //		}
+            getHibernateTemplate().merge(object);
+         else
+            throw hse;
+      }
+      // T existing = getByObjectId(object.getObjectId());
+      // if (existing == null)
+      // {
+      // getHibernateTemplate().saveOrUpdate( object);
+      // }
+      // else
+      // {
+      // object.setId(existing.getId());
+      // getHibernateTemplate().merge( object);
+      // }
       // getHibernateTemplate().flush();
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.dao.IDaoTemplate#update(fr.certu.chouette.model.neptune.NeptuneObject)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.IDaoTemplate#update(fr.certu.chouette.model.neptune
+    * .NeptuneObject)
     */
    public void update(T object)
    {
-      logger.debug("invoke update on "+type.getSimpleName());
+      logger.debug("invoke update on " + type.getSimpleName());
 
       try
       {
-         getHibernateTemplate().saveOrUpdate( object);
+         getHibernateTemplate().saveOrUpdate(object);
       }
-      catch(HibernateSystemException hse)
+      catch (HibernateSystemException hse)
       {
-         if ( hse.getCause()!=null && 
+         if (hse.getCause() != null &&
                hse.getCause() instanceof NonUniqueObjectException)
-            getHibernateTemplate().merge( object);
-         else throw hse;
-      }	
+            getHibernateTemplate().merge(object);
+         else
+            throw hse;
+      }
       // getHibernateTemplate().flush();
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.dao.IDaoTemplate#exists(java.lang.Long)
     */
    @Override
@@ -321,14 +361,16 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       {
          return (get(id) != null);
       }
-      catch (ObjectRetrievalFailureException e) 
+      catch (ObjectRetrievalFailureException e)
       {
          return false;
       }
 
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.dao.IDaoTemplate#exists(java.lang.String)
     */
    @Override
@@ -338,52 +380,55 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       {
          return (getByObjectId(objectId) != null);
       }
-      catch (ObjectRetrievalFailureException e) 
+      catch (ObjectRetrievalFailureException e)
       {
          return false;
       }
    }
 
    @Override
-   public void removeAll(List<T> objects) 
+   public void removeAll(List<T> objects)
    {
-      logger.debug("invoke removeAll on "+type.getSimpleName());
+      logger.debug("invoke removeAll on " + type.getSimpleName());
 
       getHibernateTemplate().deleteAll(objects);
       getHibernateTemplate().flush();
    }
 
    @Override
-   public int removeAll(Filter clause) 
+   public int removeAll(Filter clause)
    {
-      logger.debug("invoke removeAll on "+type.getSimpleName());
+      logger.debug("invoke removeAll on " + type.getSimpleName());
 
       Session session = getSession();
       FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
       String hql = translator.translateToHQLDelete(clause, getSessionFactory().getClassMetadata(type));
-      logger.debug("hql = "+hql);
+      logger.debug("hql = " + hql);
       return session.createQuery(hql).executeUpdate();
    }
 
    @Override
-   public void saveOrUpdateAll(List<T> objects) 
+   public void saveOrUpdateAll(List<T> objects)
    {
-      logger.debug("invoke saveOrUpdateAll on "+type.getSimpleName());
-      for (T object : objects) 
+      logger.debug("invoke saveOrUpdateAll on " + type.getSimpleName());
+      for (T object : objects)
       {
          T existing = getByObjectId(object.getObjectId());
          if (existing != null)
          {
-            logger.debug("update object :"+object.getObjectId());
+            logger.debug("update object :" + object.getObjectId());
             getHibernateTemplate().evict(existing);
             object.setId(existing.getId());
          }
          else
          {
-            logger.debug("save object :"+object.getObjectId());
+            logger.debug("save object :" + object.getObjectId());
          }
       }
-      getHibernateTemplate().saveOrUpdateAll(objects);
+      for (T t : objects)
+      {
+         getHibernateTemplate().saveOrUpdate(t);
+      }
       getHibernateTemplate().flush();
    }
 
@@ -394,39 +439,39 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> extends Hib
       {
          detach(bean);
       }
-     
+
    }
+
    @Override
    public void detach(T bean)
    {
-         if (getSession().contains(bean))
-            getSession().evict(bean);
-     
+      if (getSession().contains(bean))
+         getSession().evict(bean);
+
    }
-   
-   
-   
+
    @Override
-   public int purge() 
+   public int purge()
    {
       throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.NOT_YET_IMPLEMENTED, "purge");
    }
 
    @Override
-   public long count(Filter clause) 
+   public long count(Filter clause)
    {
-      if (clause == null) clause = Filter.getNewEmptyFilter();
+      if (clause == null)
+         clause = Filter.getNewEmptyFilter();
       Session session = getSession();
       FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
       String hql = translator.translateToHQLCount(clause, getSessionFactory().getClassMetadata(type));
-      logger.debug("hql = "+hql);
+      logger.debug("hql = " + hql);
       if (translator.getValues().isEmpty())
          return ((Long) session.createQuery(hql).uniqueResult()).longValue();
       else
       {
          Query query = session.createQuery(hql);
          int pos = 0;
-         for (Object value : translator.getValues()) 
+         for (Object value : translator.getValues())
          {
             query.setParameter(pos++, value);
          }
