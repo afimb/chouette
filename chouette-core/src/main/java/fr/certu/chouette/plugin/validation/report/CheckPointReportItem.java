@@ -4,7 +4,11 @@
 package fr.certu.chouette.plugin.validation.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import lombok.Getter;
 
@@ -46,6 +50,38 @@ public class CheckPointReportItem extends ReportItem
 		updateStatus(status);
 		this.severity = severity;
 
+	}
+	/**
+	 * @param locale
+	 * @return
+	 */
+	@Override
+	public  String getLocalizedMessage(Locale locale)
+	{
+		String format = "";
+		String message = "";
+		try
+		{
+			ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName(),locale);
+			format = bundle.getString(getMessageKey());
+			message = getMessageKey() + " : "+ format;
+		}
+		catch (MissingResourceException e1)
+		{
+			try
+			{
+				ResourceBundle bundle = ResourceBundle.getBundle(this.getClass().getName());
+				format = bundle.getString(getMessageKey());
+				message = getMessageKey() + " : "+ format;
+			}
+			catch (MissingResourceException e2)
+			{
+				message = getMessageKey(); 
+			}
+		}
+		message = message.replaceAll("''", "'");
+
+		return message;
 	}
 	
 	/* (non-Javadoc)

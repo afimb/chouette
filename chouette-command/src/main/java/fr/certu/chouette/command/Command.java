@@ -94,8 +94,6 @@ public class Command
 
 	@Setter private IGeographicService geographicService;
 	
-	@Getter private JSONObject validationParameters;
-
 
 	public Map<String,List<String>> globals = new HashMap<String, List<String>>();;
 
@@ -521,18 +519,6 @@ public class Command
 		{
 			executeInfo(manager);
 		}
-		else if (name.equals("setValidationParameters"))
-		{
-			executeSetValidationParameters(parameters);
-		}
-		else if (name.equals("showValidationParameters"))
-		{
-			executeShowValidationParameters();
-		}
-		else if (name.equals("infoValidationParameters"))
-		{
-			executeInfoValidationParameters();
-		}
 		else
 		{
 			throw new Exception("Command "+commandNumber+": unknown command :" +command.getName());
@@ -565,61 +551,7 @@ public class Command
 		geographicService.propagateBarycentre();
 	}
 	
-	private void executeShowValidationParameters() 
-	{
-		if (validationParameters == null)
-		{
-			System.out.println("no validationParameters defined ; use setValidationParameters to initialize it");
-		}
-		else
-		{
-			System.out.println(validationParameters);
-		}
 
-	}
-
-	// TODO à revoir
-	private void executeSetValidationParameters(Map<String, List<String>> parameters) 
-	{
-		for (String key : parameters.keySet()) 
-		{
-			String value = getSimpleString(parameters,key);
-			if (validationParameters == null) validationParameters = new JSONObject();
-			try 
-			{
-				setAttribute(validationParameters, key, value);
-			} 
-			catch (Exception e) 
-			{
-				logger.error(e.getMessage());
-				System.err.println("unknown or unvalid parameter " + key);
-			}	
-		}
-	}
-
-	private void executeInfoValidationParameters() throws Exception
-	{
-		try
-		{
-			Class<?> c = validationParameters.getClass();
-			Field[] fields =  c.getDeclaredFields();
-			for (Field field : fields) 
-			{
-				if (field.getName().equals("test3_2_Polygon")) continue;
-				int m = field.getModifiers();
-				if (Modifier.isPrivate(m) && !Modifier.isStatic(m) )
-				{
-					printField(c,field,"");
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw e;
-		}
-
-	}
 	/**
 	 * @param beans
 	 * @param manager
@@ -1093,6 +1025,17 @@ public class Command
 					{
 		String fileName = getSimpleString(parameters, "file", "");
 		boolean append = getBoolean(parameters, "append");
+		JSONObject validationParameters;
+		
+		try {
+			String json = FileUtils.readFileToString(new File("parameterset.json"));
+			validationParameters = new JSONObject(json);
+		} catch (IOException e1) 
+		{
+			System.err.println("cannot open file :parameterset.json");
+			e1.printStackTrace();
+			return;
+		}
 
 		PhaseReportItem valReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
 				manager.validate(null, beans, validationParameters,valReport);
@@ -1118,11 +1061,10 @@ public class Command
 		int nbFATAL = 0;
 		for (ReportItem item1  : valReport.getItems()) // Categorie
 		{
+			if (item1.getItems() != null)
 			for (ReportItem item2 : item1.getItems()) // fiche
 			{
-				for (ReportItem item3 : item2.getItems()) //test
-				{
-					STATE status = item3.getStatus();
+					STATE status = item2.getStatus();
 					switch (status)
 					{
 					case UNCHECK : nbUNCHECK++; break;
@@ -1132,7 +1074,7 @@ public class Command
 					case FATAL : nbFATAL++; break;
 					}
 
-				}
+				
 
 			}
 		}
