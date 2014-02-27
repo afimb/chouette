@@ -169,8 +169,16 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
 		List<ConnectionLink> beans  = connectionLinkManager.getAll(null);
 		Assert.assertFalse(beans.isEmpty(),"No data for test");
 
-		ConnectionLink link = beans.get(0);
-		double distance = AbstractValidation.distance(link.getStartOfLink(), link.getEndOfLink());
+		ConnectionLink link = null; 
+		for (ConnectionLink connectionLink : beans) 
+		{
+			if (connectionLink.getObjectId().equals("NINOXE:ConnectionLink:15627089"))
+			{
+				link = connectionLink;
+				break;
+			}
+		}
+		
 		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 600000);
 		link.getOccasionalTravellerDuration().setTime(link.getOccasionalTravellerDuration().getTime() - 800000);
 		link.getFrequentTravellerDuration().setTime(link.getFrequentTravellerDuration().getTime() - 600000);

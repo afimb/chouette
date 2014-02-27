@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,8 +17,6 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;
@@ -33,7 +28,6 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 @TransactionConfiguration(transactionManager="transactionManager",defaultRollback=true)
 
-@Log4j
 public class ValidationAccessPoints extends AbstractTransactionalTestNGSpringContextTests
 {
 
@@ -79,12 +73,6 @@ public class ValidationAccessPoints extends AbstractTransactionalTestNGSpringCon
 		List<AccessPoint> beans  = accessPointManager.getAll(null);
 		Assert.assertFalse(beans.isEmpty(),"No data for test");
 		
-		for (AccessPoint accessPoint : beans) 
-		{
-			log.info("oid = "+accessPoint.getObjectId());
-			log.info("name = "+accessPoint.getName());
-		}
-
 		AccessPoint access1 = beans.get(0);
 		access1.setLongLatType(null);
 		BigDecimal svLon = access1.getLongitude();

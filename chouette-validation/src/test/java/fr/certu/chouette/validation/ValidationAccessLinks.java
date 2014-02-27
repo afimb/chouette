@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AccessLink;
+import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;
@@ -118,6 +119,7 @@ public class ValidationAccessLinks extends AbstractTransactionalTestNGSpringCont
 		Assert.assertFalse(beans.isEmpty(),"No data for test");
 
 		AccessLink link = beans.get(0);
+		
 		double distance = AbstractValidation.distance(link.getStopArea(), link.getAccessPoint());
 
 		link.setLinkDistance(BigDecimal.valueOf(distance-50));
@@ -166,7 +168,15 @@ public class ValidationAccessLinks extends AbstractTransactionalTestNGSpringCont
 		List<AccessLink> beans  = accessLinkManager.getAll(null);
 		Assert.assertFalse(beans.isEmpty(),"No data for test");
 
-		AccessLink link = beans.get(2);
+		AccessLink link = null; 
+		for (AccessLink accessLink : beans) 
+		{
+			if (accessLink.getObjectId().equals("NINOXE:AccessLink:7"))
+			{
+				link = accessLink;
+				break;
+			}
+		}
 		double distance = AbstractValidation.distance(link.getAccessPoint(), link.getStopArea());
 		link.setLinkDistance(BigDecimal.valueOf(distance));
 		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 150000);

@@ -18,12 +18,16 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import lombok.extern.log4j.Log4j;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.w3c.dom.Document;
 
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
 @SuppressWarnings("unchecked")
+@Log4j
 public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextTests {
 
     protected ModelTranslator modelTranslator = new ModelTranslator();
@@ -37,6 +41,8 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
 
     @BeforeClass
     protected void setUp() throws Exception {
+    	try
+    	{
         xPath.setNamespaceContext(new NetexNamespaceContext());
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
         modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
@@ -54,6 +60,12 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         domFactory.setNamespaceAware(true);
         DocumentBuilder builder = domFactory.newDocumentBuilder();
         xmlDocument = builder.parse(fileName);
+    	}
+    	catch (Exception ex)
+    	{
+    		log.error("setup fails",ex);
+    		throw ex;
+    	}
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if 2 vehicle journeys exists")
